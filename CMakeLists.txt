@@ -33,13 +33,13 @@ if( ${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME} )
       set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/2.8" ${CMAKE_MODULE_PATH} )
   endif()
 
-  include(mars_include_macros)  # define our macros
-  include(mars_variables)       # define mars global variables
+  include(ecmwf_include_macros)  # define our macros
+  include(ecmwf_variables)       # define mars global variables
   include(CTest)                # add cmake testing support
-  include(mars_define_options)  # define build options
-  include(mars_check_os)        # check for os characteristics
-  include(mars_check_functions) # check for available functions
-  include(mars_find_packages)   # find packages we depend on
+  include(ecmwf_define_options)  # define build options
+  include(ecmwf_check_os)        # check for os characteristics
+  include(ecmwf_check_functions) # check for available functions
+  include(ecmwf_find_packages)   # find packages we depend on
 
 endif()
 
@@ -52,7 +52,7 @@ option( BUILD_MIGRATOR "wether or not to build the migrator" OFF )
 # macro processing
 
 # define installation paths
-include(mars_define_paths)
+include(ecmwf_define_paths)
 
 # find_package( STUFF )
 
@@ -70,15 +70,15 @@ add_subdirectory( src )
 # summary
 
 # add cmake packing support
-# include(mars_install_package)
+# include(ecmwf_install_package)
 
 # print the summary of the configuration
-include(mars_print_summary)
+include(ecmwf_print_summary)
 
 # local project summary
 include( project_summary.cmake )
 
 # issue warnings / errors in case ther are unused project files
-include(mars_warn_unused_files)
+include(ecmwf_warn_unused_files)
 
 

@@ -288,13 +288,13 @@ WriterDispatchingIterator.cc
 
 # define Odb library
 
-mars_add_library( TARGET     Odb
+ecmwf_add_library( TARGET     Odb
                   COMPONENT  server
                   SOURCES    ${odblib_src_files}
                   TEMPLATES  ${odblib_templates}
                   LIBS       Ec )
 
-mars_generate_yy( YYPREFIX odblib_
+ecmwf_generate_yy( YYPREFIX odblib_
                   YACC sqly
                   LEX  sqll
                   DEPENDANT SQLParser.cc )
