@@ -1,0 +1,80 @@
+############################################################################################
+# cmake
+#   options:
+#       -DCMAKE_BUILD_TYPE=Debug|RelWithDebInfo|Release|Production
+#       -DCMAKE_INSTALL_PREFIX=/path/to/install
+#
+#       -DCMAKE_C_COMPILER=gcc
+#       -DCMAKE_C_COMPILER=g++
+#
+#       -DCMAKE_PREFIX_PATH=/path/to/jasper:/path/to/any/package/out/of/place
+#
+#       -DGRIB_API_PATH=/path/to/grib
+#       -DHPSS_PATH=/path/to/hpss
+#       -DADSM_PATH=/path/to/adsm
+#       -DREADLINE_PATH=/path/to/readline
+#
+#       -DWITH_READLINE=ON          [default: OFF]
+#       -DWITH_DUMMY_TAPES=ON       [default: OFF]
+
+cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
+
+project( odb_api C CXX )
+
+###############################################################################
+# include our cmake modules first because we override some cmake default macros
+# but only do so if this is the top project
+if( ${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME} )
+
+  set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} )
+
+  # add backward support from 2.8 to 2.6
+  if( ${CMAKE_VERSION} VERSION_LESS "2.8" )
+      set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/2.8" ${CMAKE_MODULE_PATH} )
+  endif()
+
+  include(mars_include_macros)  # define our macros
+  include(mars_variables)       # define mars global variables
+  include(CTest)                # add cmake testing support
+  include(mars_define_options)  # define build options
+  include(mars_check_os)        # check for os characteristics
+  include(mars_check_functions) # check for available functions
+  include(mars_find_packages)   # find packages we depend on
+
+endif()
+
+###############################################################################
+# some variables/options of this project
+
+option( BUILD_MIGRATOR "wether or not to build the migrator" OFF )
+
+###############################################################################
+# macro processing
+
+# define installation paths
+include(mars_define_paths)
+
+# find_package( STUFF )
+
+############################################################################################
+# contents
+
+# source files
+add_subdirectory( src )
+
+############################################################################################
+# summary
+
+# add cmake packing support
+# include(mars_install_package)
+
+# print the summary of the configuration
+include(mars_print_summary)
+
+# local project summary
+include( project_summary.cmake )
+
+# issue warnings / errors in case ther are unused project files
+include(mars_warn_unused_files)
+
+
