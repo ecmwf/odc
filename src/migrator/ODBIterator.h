@@ -1,0 +1,68 @@
+#ifndef ODBIterator_H
+#define ODBIterator_H
+
+class PathName;
+
+namespace odb { namespace sql { class SchemaAnalyzer; class SQLInteractiveSession; } }
+
+namespace odb {
+namespace tool {
+
+class ODBIterator : public odb::RowsReaderIterator {
+public:
+
+	ODBIterator(const PathName& db, const std::string& sql); 
+	~ODBIterator ();
+
+	void destroy();
+
+	const ODBIterator& end() { return *reinterpret_cast<ODBIterator*>(0); }
+
+	bool operator!=(const ODBIterator& o) { ASSERT(&o == 0); return hasNext_; }
+
+	ODBIterator& operator++() { next(); return *this; }
+
+	odb::MetaData& columns();
+
+	virtual bool isNewDataset();
+	virtual double* data();
+
+	static PathName schemaFile(const PathName db);
+
+	virtual bool next();
+
+protected:
+	int setColumn(unsigned long index, std::string& name, odb::ColumnType type, double missingValue);
+	//virtual bool next();
+
+private:
+	void createColumns();
+
+	PathName db_;
+
+	void *odbHandle_;
+	int noOfColumns_;
+	//colinfo_t *ci_;
+	void *ci_;
+	odb::MetaData *columns_;
+	int newDataset_;
+	double* data_;
+	unsigned long long count_;
+	bool hasNext_;
+
+	std::string defaultSQL(const PathName db);
+	const odb::sql::SchemaAnalyzer& getSchema(const PathName db);
+	bool schemaParsed_;
+	odb::sql::SQLInteractiveSession session_;
+
+	friend class FakeODBIterator;
+	//friend class ReptypeGenIterator;
+public:
+	int refCount_;
+	bool noMore_;
+};
+
+} // namespace tool 
+} // namespace odb 
+
+#endif

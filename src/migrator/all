@@ -1,0 +1,36 @@
+
+echo select \"~/\(LINK\)/\" from desc,sat,timeslot_index,index, hdr, body,errstat,atovs, atovs_pred, atovs_body, update_1, update_2, update_3 >sql
+
+echo select \"~/\(LINK\)/\" from desc, sat, timeslot_index, index, hdr, body,errstat, update_1, update_2, update_3 >sql_amsre
+echo select \"~/\(LINK\)/\" from desc, timeslot_index, index, hdr, body, errstat, update_1, update_2, update_3 >sql_conv
+echo select \"~/\(LINK\)/\" from desc,sat,timeslot_index,index, hdr, body,errstat,update_1, update_2, update_3 >sql_gpsro
+echo select \"~/\(LINK\)/\" from desc,sat,timeslot_index,index, hdr, body,errstat, update_1, update_2, update_3 >sql_meris
+echo select \"~/\(LINK\)/\" from desc,sat,timeslot_index,index, hdr, body,errstat, update_1, update_2, update_3 >sql_reo3
+echo select \"~/\(LINK\)/\" from desc,sat,timeslot_index,index, hdr, body,errstat, update_1, update_2, update_3 >sql_satob
+echo select \"~/\(LINK\)/\" from desc,sat,timeslot_index,index, hdr, body,errstat, update_1, update_2, update_3 >sql_scatt
+echo select \"~/\(LINK\)/\" from desc,sat,timeslot_index,index, hdr, body,errstat, update_1, update_2, update_3 >sql_ssmi
+
+echo select station_type@hdr from desc, timeslot_index, index, hdr, body, errstat, update_1, update_2, update_3 >sql_conv_debug
+echo select \"~/\(LINK\)/\" from desc, sat, index, hdr, body, errstat, atovs, atovs_pred >sql_old
+echo select \"~/\(LINK\)/\" from desc, sat, index, hdr, body, errstat, atovs, atovs_pred where maxcount\(10\) >sql_old_short
+
+./odb2oda /hugetmp/data/2009072800/ECMA.airs sql
+./odb2oda /hugetmp/data/2009072800/ECMA.amsre sql_amsre
+./odb2oda /hugetmp/data/2009072800/ECMA.amsua sql
+./odb2oda /hugetmp/data/2009072800/ECMA.amsub sql
+./odb2oda /hugetmp/data/2009072800/ECMA.audit sql
+./odb2oda /hugetmp/data/2009072800/ECMA.conv sql_conv
+./odb2oda /hugetmp/data/2009072800/ECMA.geos sql
+./odb2oda /hugetmp/data/2009072800/ECMA.gpsro sql_gpsro
+./odb2oda /hugetmp/data/2009072800/ECMA.hirs sql
+./odb2oda /hugetmp/data/2009072800/ECMA.iasi sql
+./odb2oda /hugetmp/data/2009072800/ECMA.meris sql_meris
+./odb2oda /hugetmp/data/2009072800/ECMA.mhs sql
+./odb2oda /hugetmp/data/2009072800/ECMA.reo3 sql_reo3
+./odb2oda /hugetmp/data/2009072800/ECMA.satob sql_satob
+./odb2oda /hugetmp/data/2009072800/ECMA.scatt sql_scatt
+./odb2oda /hugetmp/data/2009072800/ECMA.ssmi sql_ssmi
+./odb2oda /hugetmp/data/2009072800/ECMA.ssmis sql
+./odb2oda /hugetmp/data/2009072800/ECMA.tmi sql
+
+

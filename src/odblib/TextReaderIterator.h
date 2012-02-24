@@ -1,0 +1,93 @@
+///
+/// \file TextReaderIterator.h
+///
+/// @author Piotr Kuchta, Oct 2010
+
+#ifndef TextReaderIterator_H
+#define TextReaderIterator_H
+
+#include "SimpleFilterIterator.h"
+#include "TReadOnlyMemoryDataHandle.h"
+
+
+class PathName;
+class DataHandle;
+
+namespace odb {
+	namespace sql {
+		template <typename T> class SQLIteratorSession;
+		class ODATableIterator;
+	}
+}
+
+namespace odb {
+
+class TextReader;
+
+class TextReaderIterator : public RowsReaderIterator
+{
+public:
+	TextReaderIterator (TextReader &owner);
+	TextReaderIterator (TextReader &owner, const PathName&);
+	~TextReaderIterator ();
+
+	virtual bool isNewDataset();
+	const double* data();
+	//virtual long integer(int i);
+
+	bool operator!=(const TextReaderIterator& other);
+
+	virtual MetaData& columns() { return columns_; }
+
+//protected:
+
+	virtual int close();
+
+// next() is public cause it needs to be used by the C API functions - normally client code should not use it
+	virtual bool next();
+protected:
+	static string defaultDelimiter;
+
+private:
+// No copy allowed.
+    TextReaderIterator(const TextReaderIterator&);
+    TextReaderIterator& operator=(const TextReaderIterator&);
+
+	void initRowBuffer();
+	void parseHeader();
+
+	TextReader& owner_;
+	MetaData columns_;
+	double* lastValues_;
+	unsigned long long nrows_;
+
+	std::istream* in_;
+	//DataHandle *f;
+	//Properties properties_;
+
+	bool newDataset_;
+	bool noMore_;
+
+	bool ownsF_;
+
+	//ReadOnlyMemoryDataHandle memDataHandle_;
+
+protected:
+	// FIXME:
+    TextReaderIterator(): owner_(*((TextReader *) 0)), columns_(0) {}
+
+	int refCount_;
+
+	//friend ::oda_write_iterator* ::oda_create_write_iterator(::oda*, const char *,int *); // for next()
+	//friend int ::oda_read_iterator_get_next_row(::oda_read_iterator*, int, double*, int*);
+
+	friend class odb::TextReader;
+	friend class odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double>;
+	friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double> >;
+	friend class odb::Header<odb::TextReaderIterator>;
+	friend class odb::sql::ODATableIterator;
+};
+
+} // namespace odb
+
+#endif

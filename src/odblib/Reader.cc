@@ -1,0 +1,105 @@
+///
+/// \file ODA.cc
+///
+/// @author Piotr Kuchta, Feb 2009
+
+
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <errno.h>
+#include <math.h>
+
+using namespace std;
+
+#include "LimitValues.h"
+
+#include "Exceptions.h"
+#include "PathName.h"
+#include "MemoryBlock.h"
+#include "DataHandle.h"
+#include "FileHandle.h"
+
+#include "SQLBitfield.h"
+#include "DataStream.h"
+#include "HashTable.h"
+#include "Codec.h"
+#include "Column.h"
+#include "HashTable.h"
+#include "SQLBitfield.h"
+#include "SQLIteratorSession.h"
+#include "MetaData.h"
+#include "RowsIterator.h"
+#include "Header.h"
+#include "IteratorProxy.h"
+#include "Writer.h"
+#include "Reader.h"
+#include "ReaderIterator.h"
+#include "WriterBufferingIterator.h"
+#include "FixedSizeWriterIterator.h"
+#include "RowsIterator.h"
+#include "SelectIterator.h"
+
+
+#include "SQLType.h"
+#include "SQLInteractiveSession.h"
+#include "SQLIteratorSession.h"
+#include "SQLTable.h"
+#include "SQLSelect.h"
+#include "SQLParser.h"
+#include "SQLExpression.h"
+
+
+using namespace std;
+
+namespace odb {
+#define MEGA(x) (x*1024*1024)
+
+Reader::Reader(DataHandle &dh)
+: dataHandle_(&dh),
+  deleteDataHandle_(false)
+{}
+
+Reader::Reader()
+: dataHandle_(0),
+  deleteDataHandle_(true),
+  path_("")
+{}
+
+Reader::Reader(const string& path)
+: dataHandle_(new FileHandle(path)),
+  deleteDataHandle_(true),
+  path_(path)
+{
+        dataHandle_->openForRead();
+}
+
+Reader::~Reader()
+{
+        if (dataHandle_ && deleteDataHandle_)
+        {
+                dataHandle_->close();
+                delete dataHandle_;
+        }
+}
+
+ReaderIterator* Reader::createReadIterator(const PathName& pathName)
+{
+        return new ReaderIterator(*this, pathName);
+}
+
+ReaderIterator* Reader::createReadIterator()
+{
+	return createReadIterator(path_);
+}
+
+Reader::iterator Reader::begin()
+{
+        ReaderIterator * it = new ReaderIterator(*this);
+        it->next();
+        return iterator(it);
+}
+
+const Reader::iterator Reader::end() { return iterator(0); }
+
+} // namespace odb

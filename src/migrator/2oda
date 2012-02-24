@@ -1,0 +1,49 @@
+#!/bin/ksh
+
+OBSGROUPS="gpsro mhs"
+OBSGROUPS="amsua amsub geos gpsro hirs meris mhs reo3"
+DATES="2009072812 "
+DATES="2009072800 2009072812 2009072900 2009072912 2009073000 2009073012"
+
+for DATE in $DATES;
+do
+	echo `date` ------ Processing data from $DATE
+	echo
+
+	for OBSGROUP in $OBSGROUPS;
+	do
+		echo `date` --- Importing data from /hugetmp/data/$DATE/ECMA.$OBSGROUP
+
+		./odb2oda -addcolumns reptype=0,class="'od'",stream="'oper'",type="'oda'" \
+		 -obsgroup $OBSGROUP \
+		 -reptypecfg $OBSGROUP.cfg \
+		/hugetmp/data/$DATE/ECMA.$OBSGROUP sql_$OBSGROUP /hugetmp/data/oda/ECMA.$OBSGROUP.$DATE.{reptype}.oda || exit 1
+
+		echo `date` --- DONE
+	done
+	#continue
+
+	for OBSGROUP in $OBSGROUPS;
+	do
+		for f in /hugetmp/data/oda/ECMA.$OBSGROUP.$DATE.*.oda;
+		do
+			echo `date` --- Creating request for $f
+
+			oda oda2request $f $OBSGROUP $f.arch.request;
+
+			echo `date` --- DONE
+		done 
+	done
+
+	for OBSGROUP in $OBSGROUPS;
+	do
+		for f in /hugetmp/data/oda/ECMA.$OBSGROUP.$DATE.*.oda.arch.request;
+		do
+			echo `date` --- Archiving $f on MARS 
+
+			time mars -t < $f;
+
+			echo `date` --- DONE
+		done
+	done
+done

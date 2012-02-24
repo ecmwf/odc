@@ -1,0 +1,74 @@
+#include "FunctionTDIFF.h"
+#include "DateTime.h"
+
+#define RMDI   -2147483647
+#define trunc(x) ((x) -fmod((x), 1))
+
+namespace odb {
+namespace sql {
+namespace expression {
+namespace function {
+
+FunctionTDIFF::FunctionTDIFF(const string& name, const expression::Expressions& args)
+: FunctionExpression(name, args)
+{}
+
+FunctionTDIFF::FunctionTDIFF(const FunctionTDIFF& other)
+: FunctionExpression(other.name_, other.args_)
+{}
+
+SQLExpression* FunctionTDIFF::clone() const { return new FunctionTDIFF(*this);  }
+
+FunctionTDIFF::~FunctionTDIFF() {}
+
+double FunctionTDIFF::eval(bool& missing) const
+{
+    int indate = (int) args_[0]->eval(missing);
+    int intime = (int) args_[1]->eval(missing);
+    int andate = (int) args_[2]->eval(missing);
+    int antime = (int) args_[3]->eval(missing);
+
+    int year_target = indate/10000;
+    int month_target = (indate%10000)/100;
+    int day_target = indate%100;
+    int hour_target = intime/10000;
+    int min_target = (intime%10000)/100;
+    int sec_target = intime%100;
+
+    int year_anal = andate/10000;
+    int month_anal = (andate%10000)/100;
+    int day_anal = andate%100;
+    int hour_anal = antime/10000;
+    int min_anal = (antime%10000)/100;
+    int sec_anal = antime%100;
+
+    int seconds=RMDI;
+
+    utils::DateTime d1(year_target, month_target, day_target,
+                   hour_target, min_target, sec_target);
+    utils::DateTime d2(year_anal, month_anal, day_anal, 
+                   hour_anal, min_anal, sec_anal);
+
+    seconds = d1.secondsDateMinusDate(d2);
+
+    return seconds;
+}
+
+const odb::sql::type::SQLType* FunctionTDIFF::type() const
+{
+	return &odb::sql::type::SQLType::lookup("integer");
+}
+
+void FunctionTDIFF::output(ostream& s) const
+{
+	bool missing;
+    s << static_cast<long long int>(eval(missing));
+}
+
+static FunctionMaker<FunctionTDIFF> make_TDIFF("tdiff",4);
+
+} // namespace function
+} // namespace expression
+} // namespace sql
+} // namespace odb
+

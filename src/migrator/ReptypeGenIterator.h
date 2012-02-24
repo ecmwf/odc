@@ -1,0 +1,78 @@
+#ifndef ReptypeGenIterator_H
+#define ReptypeGenIterator_H
+
+#include "ODBIterator.h"
+
+class PathName;
+
+namespace odb {
+namespace tool {
+
+class ODBIterator;
+
+typedef vector<size_t> Indices;
+typedef vector<double> Values;
+
+typedef map<Values, int> ReptypeTableBase;
+
+class ReptypeTable : public ReptypeTableBase
+{
+};
+
+class ReptypeTableConfig {
+public:
+	static void load(const PathName&);
+
+	template <typename I>
+	static void addColumns(I begin, I end) { columns_.insert(columns_.end(), begin, end); }
+
+	static const vector<std::string> columns() { return columns_; }
+	static const ReptypeTable& reptypeTable() { return reptypeTable_; }
+
+	static void reptypeTable(const ReptypeTable &rt) { reptypeTable_ = rt; }
+private:
+	static vector<std::string> columns_;
+	static ReptypeTable reptypeTable_;
+};
+
+template<typename ITERATOR = ODBIterator, typename CONFIG = ReptypeTableConfig>
+class ReptypeGenIterator : public odb::RowsReaderIterator {
+public:
+
+	ReptypeGenIterator(const PathName& db, const std::string& sql); 
+	~ReptypeGenIterator ();
+
+	odb::MetaData& columns();
+
+	virtual bool isNewDataset();
+	virtual double* data();
+
+	const ReptypeGenIterator<ITERATOR,CONFIG>& end() { return *reinterpret_cast<ReptypeGenIterator<ITERATOR,CONFIG>*>(0); }
+	//bool operator!=(const ReptypeGenIterator<ITERATOR,CONFIG>& o) { ASSERT(&o == 0); return iterator_ != iterator_.end(); }
+	//ReptypeGenIterator<ITERATOR,CONFIG>& operator++() { next(); return *this; }
+
+	int refCount_;
+	bool noMore_;
+
+//protected:
+	virtual bool next();
+	//void addColumn(std::string name);
+
+private:
+	ITERATOR iterator_;
+
+	double* data_;
+
+	size_t reptypeIndex_;
+
+	Indices indices_;
+	Values values_;
+	ReptypeTable reptypeTable_;
+
+	int lastIndex_;
+};
+
+} // namespace tool 
+} // namespace odb 
+
+#endif

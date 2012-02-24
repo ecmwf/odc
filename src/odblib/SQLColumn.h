@@ -1,0 +1,92 @@
+// File SQLColumn.h
+// Baudouin Raoult - ECMWF Dec 03
+
+#ifndef SQLColumn_H
+#define SQLColumn_H
+
+class PathName;
+
+#include "SQLIterator.h"
+#include "SQLTable.h"
+#include "SQLIndex.h"
+#include "SQLBitfield.h"
+
+namespace odb {
+namespace sql {
+
+class SQLBitColumn;
+
+class SQLColumn : public SQLIterator {
+public:
+	SQLColumn(const type::SQLType&, SQLTable&, const string&, int,
+				bool hasMissingValue, double missingValue, bool isBitfield, const BitfieldDef& bitfieldDef);
+	virtual ~SQLColumn();
+
+
+	void scan();
+
+	unsigned long long noRows() const;
+
+	const string& name() const { return name_; }
+	int index() { return index_; }
+	void index(int i) { index_ = i; }
+	string fullName()    const;
+	SQLTable* table()    const;
+
+
+	bool hasMissingValue() const { return hasMissingValue_; }
+	double missingValue() const { return missingValue_; }
+	bool isBitfield() const { return isBitfield_; }
+	const BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
+
+// -- Overridden methods
+	// From SQLIterator
+
+	virtual void rewind();
+	virtual double next(bool& missing);
+	virtual void advance(unsigned long);
+
+	bool hasIndex() const { return indexing_.get() != 0; }
+	void createIndex();
+	void loadIndex();
+	SQLIndex* getIndex(double*);
+
+	PathName indexPath();
+protected:
+	unsigned long long noRows_;
+
+	virtual void print(ostream&) const; // Change to virtual if base class	
+//private:
+protected:
+	SQLColumn(const SQLColumn&);
+	SQLColumn& operator=(const SQLColumn&);
+
+	void setPool(int);
+
+
+	SQLTable& owner_;
+	string    name_;
+	int       index_;
+
+	vector<int>          rows_;
+	vector<SQLIterator*> iterators_;
+
+	long long current_;
+	long long last_;
+	long long position_;
+	SQLIterator* iterator_;
+
+	auto_ptr<SQLIndex> indexing_;
+
+	bool hasMissingValue_;
+	double missingValue_;
+	bool isBitfield_;
+	const BitfieldDef bitfieldDef_;
+
+	friend class odb::sql::SQLBitColumn;
+};
+
+} // namespace sql 
+} // namespace odb 
+
+#endif

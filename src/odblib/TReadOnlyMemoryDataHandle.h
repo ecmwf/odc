@@ -1,0 +1,97 @@
+/// \file TReadOnlyMemoryDataHandle.h
+/// Piotr Kuchta - ECMWF September 2010
+
+#ifndef TReadOnlyMemoryDataHandle_H
+#define TReadOnlyMemoryDataHandle_H
+
+#include "PathName.h"
+#include "Length.h"
+#include "Offset.h"
+#include "TransferWatcher.h"
+#include "DataHandle.h"
+#include "MemoryBlock.h"
+
+namespace odb {
+
+class NonVirtualBase {};
+
+template <typename T = DataHandle>
+class TReadOnlyMemoryDataHandle : public T {
+public:
+
+	friend ostream& operator<<(ostream& s, const TReadOnlyMemoryDataHandle& handle) 
+		{ handle.print(s); return s;}
+
+    TReadOnlyMemoryDataHandle() : buffer_(0), it_(0), end_(0), bufferSize_(0) {}
+
+    ~TReadOnlyMemoryDataHandle() { delete [] buffer_; }
+
+// -- Methods
+
+	unsigned char * buffer() { return buffer_; }
+
+	void size() const { return bufferSize_; }
+
+	void size(size_t n)
+	{
+		if (n > bufferSize_)
+		{
+			delete [] buffer_;
+			buffer_ = new unsigned char [n];
+			ASSERT(buffer_ && "Cannot allocate buffer_");
+			bufferSize_ = n;
+		}
+		it_ = buffer_;
+		end_ = buffer_ + n;
+	}
+
+	void print(ostream& s) const { /*TODO*/ }
+
+	bool hasSomeData() { return it_ != end_; }
+
+	/// Return estimated length.
+    virtual Length openForRead()
+	{
+		it_ = buffer_;
+		return end_ - it_;
+	}
+
+	// Receive estimated length.
+    void openForWrite(const Length&) { NOTIMP; }
+
+	// Receive estimated length
+    void openForAppend(const Length&) {}
+
+    long read(void* p, long n)
+	{
+		char *dst = reinterpret_cast<char *>(p);
+		long i = 0;
+		for ( ; i < n && it_ != end_; ++i, ++it_)
+			dst[i] = *it_;
+		return i;
+	}
+
+    long write(const void* pd, long n) { NOTIMP; }
+
+    void close() {}
+
+    void rewind()                { it_ = buffer_; }
+	Length estimate()            { return end_ - it_; }
+	Offset position()            { return it_ - buffer_; }
+
+private:
+// No copy allowed
+    TReadOnlyMemoryDataHandle(const TReadOnlyMemoryDataHandle&);
+    TReadOnlyMemoryDataHandle& operator=(const TReadOnlyMemoryDataHandle&);
+
+	unsigned char *buffer_;
+	unsigned char *it_;
+	unsigned char *end_;
+	size_t bufferSize_;
+};
+
+typedef TReadOnlyMemoryDataHandle<DataHandle> ReadOnlyMemoryDataHandle;
+
+} // namespace odb 
+
+#endif

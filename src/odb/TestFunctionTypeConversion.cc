@@ -1,0 +1,90 @@
+/// \file TestFunctionTypeConversion.cc
+///
+/// @author ECMWF, July 2010
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+
+#define __STDC_LIMIT_MACROS
+
+#include <stdint.h>
+
+#define RMDI   -2147483647
+#define NMDI   2147483647
+#define EPS    7e-6
+
+using namespace std;
+
+#include "Tool.h"
+#include "TestCase.h"
+#include "TestFunctionTypeConversion.h"
+#include "ToolFactory.h"
+#include "piconst.h"
+
+#define SRC __FILE__, __LINE__
+
+#include "oda.h"
+
+namespace odb {
+namespace tool {
+namespace test {
+
+ToolFactory<TestFunctionTypeConversion> _TestFunctionTypeConversion("TestFunctionTypeConversion");
+
+TestFunctionTypeConversion::TestFunctionTypeConversion(int argc, char **argv)
+: TestCase(argc, argv)
+{}
+
+TestFunctionTypeConversion::~TestFunctionTypeConversion() { }
+
+
+void TestFunctionTypeConversion::test()
+{
+	testReaderIterator();
+}
+
+void TestFunctionTypeConversion::setUp()
+{
+	Timer t("Test TypeConversion function");
+	odb::Writer<> oda("test_type_conversion.odb");
+
+	odb::Writer<>::iterator row = oda.begin();
+	row->columns().setSize(1);
+
+	row->setColumn(0, "obsvalue", odb::REAL);
+	
+	row->writeHeader();
+
+	(*row)[0] = 247.53;
+
+    ++row;
+}
+
+void TestFunctionTypeConversion::tearDown() 
+{ 
+	ksh("rm -f test_type_conversion.odb", SRC);
+}
+
+void TestFunctionTypeConversion::testReaderIterator()
+{
+    const string sql = "select ceil(obsvalue),floor(obsvalue), trunc(obsvalue),int(obsvalue),nint(obsvalue) from \"test_type_conversion.odb\";";
+
+	Log::info() << "Executing: '" << sql << "'" << endl;
+
+	odb::Select oda(sql);
+	odb::Select::iterator it = oda.begin();
+
+	ASSERT((*it)[0] == 248); // 
+	ASSERT((*it)[1] == 247); // 
+	ASSERT((*it)[2] == 247); // 
+	ASSERT((*it)[3] == 247); // 
+	ASSERT((*it)[4] == 248); // 
+
+}
+
+} // namespace test 
+} // namespace tool 
+} // namespace odb 
+

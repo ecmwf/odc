@@ -1,0 +1,110 @@
+/// \file SQLCreateTable.h
+/// 
+/// Piotr Kuchta - ECMWF Jan 09
+/// 
+
+#ifndef SQLCreateTable_H
+#define SQLCreateTable_H
+
+// Headers
+#include "machine.h"
+#include "SQLAST.h"
+#include "SQLExpression.h"
+
+namespace odb {
+namespace sql {
+
+// Forward declarations
+class SQLCreateTable {
+public:
+
+// -- Exceptions
+	// None
+
+// -- Contructors
+
+	SQLCreateTable(string tableName, ColumnDefs &cols);
+
+// -- Destructor
+
+	virtual ~SQLCreateTable(); // Change to virtual if base class
+
+// -- Convertors
+	// None
+
+// -- Operators
+	// None
+
+// -- Methods
+
+	virtual unsigned long long execute();
+
+	// TODO: This method makes no sense for statements not producing
+	// result sets, like e.g. CREATE TABLE, so I think it could be
+	// removed from SQLStatement. Perhaps SQLStatement should have two
+	// abstract subclasses, one for statements which produce result sets
+	// (rows of data), one for those producing update count
+	// (like UPDATE, DELETE, CREATE TABLE|INDEX|...), similarly as in JDBC.
+	virtual Expressions output() const { return Expressions(); }
+
+// -- Overridden methods
+	// None
+
+// -- Class members
+	// None
+
+// -- Class methods
+	// None
+
+	virtual void print(ostream&) const; // Change to virtual if base class	
+protected:
+
+// -- Members
+	// None
+
+// -- Methods
+	
+	//virtual void print(ostream&) const; // Change to virtual if base class	
+
+// -- Overridden methods
+	// None
+
+// -- Class members
+	// None
+
+// -- Class methods
+	// None
+
+private:
+
+// No copy allowed
+
+	SQLCreateTable(const SQLCreateTable&);
+	SQLCreateTable& operator=(const SQLCreateTable&);
+
+// -- Members
+	string tableName_;
+	ColumnDefs cols_;
+
+// -- Methods
+	// None
+
+// -- Overridden methods
+	// None
+
+// -- Class members
+	// None
+
+// -- Class methods
+	// None
+
+// -- Friends
+
+	friend ostream& operator<<(ostream& s,const SQLCreateTable& p)
+		{ p.print(s); return s; }
+
+};
+
+} // namespace sql 
+} // namespace odb 
+#endif

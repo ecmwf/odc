@@ -1,0 +1,124 @@
+# This is a valgrind suppression file that should be used when using valgrind.
+# (valgrind command line option used: --gen-suppressions=yes)
+
+{
+Singleton_SQLSession
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZN15ThreadSingletonIPN3odb3sql10SQLSessionEE8instanceEv
+   ...
+}
+
+{
+Singleton_Monitor
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZN15ThreadSingletonI7MonitorE8instanceEv
+   ...
+}
+
+{
+Singleton_ODBAPISettings
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZN15ThreadSingletonIN3odb14ODBAPISettingsEE8instanceEv
+   fun:_ZN3odb14ODBAPISettings8instanceEv
+   ...
+}
+
+{
+Singleton_Log::error
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN11ErrorStreamC1Ev
+   fun:_ZN15ThreadSingletonI11ErrorStreamE8instanceEv
+   ...
+}
+
+{
+Singleton_Log::warning
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN13WarningStreamC1Ev
+   fun:_ZN15ThreadSingletonI13WarningStreamE8instanceEv
+   ...
+}
+
+{
+Singleton_Log::warning
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN13WarningStreamC1Ev
+   fun:_ZN15ThreadSingletonI13WarningStreamE8instanceEv
+   ...
+}
+
+{
+Singleton_Log::info
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs12_S_constructIPKcEEPcT_S3_RKSaIcESt20forward_iterator_tag
+   fun:_ZNSsC1EPKcRKSaIcE
+   fun:_ZN10InfoStreamC1Ev
+   fun:_ZN15ThreadSingletonI10InfoStreamE8instanceEv
+   ...
+}
+
+{
+Configurable::add
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorISt13_Rb_tree_nodeIP12ResourceBaseEE8allocateEmPKv
+   fun:_ZNSt8_Rb_treeIP12ResourceBaseS1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE11_M_get_nodeEv
+   fun:_ZNSt8_Rb_treeIP12ResourceBaseS1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE14_M_create_nodeERKS1_
+   fun:_ZNSt8_Rb_treeIP12ResourceBaseS1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE10_M_insert_EPKSt18_Rb_tree_node_baseSA_RKS1_
+   fun:_ZNSt8_Rb_treeIP12ResourceBaseS1_St9_IdentityIS1_ESt4lessIS1_ESaIS1_EE16_M_insert_uniqueERKS1_
+   fun:_ZNSt3setIP12ResourceBaseSt4lessIS1_ESaIS1_EE6insertERKS1_
+   fun:_ZN12Configurable3addEP12ResourceBase
+   fun:_ZN12ResourceBaseC1EP12ConfigurableRKSs
+   ...
+}
+
+{
+Singleton_SQLSelectFactory
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZN15ThreadSingletonIN3odb3sql16SQLSelectFactoryEE8instanceEv
+   fun:_ZN3odb3sql16SQLSelectFactory8instanceEv
+   ...
+}
+
+{
+TmpFile::TmpFile
+   Memcheck:Leak
+   fun:_Znam
+   fun:_ZN6MemBlk4findEm
+   fun:_ZN10MemoryPool13largeAllocateEm
+   fun:_ZN6Buffer6createEv
+   fun:_ZN6BufferC1ERKSs
+   fun:_ZN7TmpFileC1Ev
+   ...
+}
+
+{
+Resource_odb.cc:81
+   Memcheck:Leak
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs9_M_mutateEmmm
+   fun:_ZNSs15_M_replace_safeEmmPKcm
+   fun:_ZN12ResourceBaseC1EP12ConfigurableRKSs
+   ...
+}
+
+

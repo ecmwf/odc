@@ -1,0 +1,66 @@
+/// \file Dictionary.h
+/// Piotr Kuchta - ECMWF Dec 11
+
+#ifndef Dictionary_H
+#define Dictionary_H
+
+#include <machine.h>
+
+#include "Exceptions.h"
+#include "SQLExpression.h"
+
+namespace odb {
+namespace sql {
+namespace expression {
+
+typedef map<string,odb::sql::expression::SQLExpression*> Map;
+
+class Dictionary : public SQLExpression, public Map
+{
+public:
+	Dictionary() : Map() {}
+	Dictionary(const Dictionary& e)
+	: SQLExpression(), Map(e)
+	{}
+
+	Dictionary& operator=(const Dictionary&);
+
+	virtual void release();
+
+	virtual void print(ostream& s) const;
+
+	friend ostream& operator<<(ostream& o, const Dictionary& e)
+		{ e.print(o); return o; }
+
+//////////////////////////////////////////////////////////////////////////////////////
+	virtual void prepare(SQLSelect&)  { NOTIMP; }
+	virtual void cleanup(SQLSelect&)  { NOTIMP; }
+
+	// -- For WHERE
+	virtual double eval(bool& missing) const  { NOTIMP; }
+
+	virtual bool isConstant() const  { NOTIMP; }
+	virtual bool isNumber() const { return false; }
+	virtual bool isVector() const { return false; }
+	//virtual const Vector& vector() const { return *this; }
+	virtual bool isDictionary() const { return true; }
+	virtual Dictionary& dictionary() { return *this; }
+
+	virtual SQLExpression* simplify(bool&) { NOTIMP; }
+
+	virtual SQLExpression* clone() const;
+	
+	virtual bool isAggregate() const { return false; }
+	// For select expression
+
+	virtual void output(SQLOutput&) const { return NOTIMP; }
+	virtual void partialResult() {}
+	virtual void expandStars(const std::vector<SQLTable*>&,expression::Dictionary&) { NOTIMP; }
+//////////////////////////////////////////////////////////////////////////////////////
+};
+
+} // namespace expression
+} // namespace sql
+} // namespace odb
+
+#endif
