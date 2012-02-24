@@ -36,16 +36,16 @@
 static Mutex mutex;
 
 
-static string        odalib_path;
+static string        odblib_path;
 
 /* #define _CPP_IOSTREAMS 1 */
 #define  YYDEBUG      1
 
 namespace SQLYacc {
 
-extern int odalib_lineno;
+extern int odblib_lineno;
 
-void odalib_error(const char* msg);
+void odblib_error(const char* msg);
 
 using namespace odb;
 using namespace odb::sql;
@@ -54,10 +54,10 @@ using namespace odb::sql::expression::function;
 
 #include "sqly.c"
 
-void odalib_error(const char* msg)
+void odblib_error(const char* msg)
 {
     StrStream os;
-    os << msg << " line " << odalib_lineno << " of " << odalib_path << StrStream::ends;
+    os << msg << " line " << odblib_lineno << " of " << odblib_path << StrStream::ends;
     throw SeriousBug(string(os));
 }
 
@@ -69,27 +69,27 @@ struct Include {
     string    path;
     FILE*     in;
 
-    Include() : lineno(SQLYacc::odalib_lineno), path(odalib_path), in(SQLYacc::odalib_in) {}
+    Include() : lineno(SQLYacc::odblib_lineno), path(odblib_path), in(SQLYacc::odblib_in) {}
     ~Include() {}
 };
 
 static vector<Include> includeStack;
 
-extern "C" int odalib_wrap()
+extern "C" int odblib_wrap()
 {
     if(includeStack.size() == 0)
         return 1;
 
-    Log::info() << "End of " << odalib_path
-                << " at " << SQLYacc::odalib_lineno << ", back to "
+    Log::info() << "End of " << odblib_path
+                << " at " << SQLYacc::odblib_lineno << ", back to "
                 << includeStack.back().path << " at " << includeStack.back().lineno
                 << endl;
 
-    fclose(SQLYacc::odalib_in);
+    fclose(SQLYacc::odblib_in);
 
-    SQLYacc::odalib_lineno = includeStack.back().lineno;
-    odalib_path   = includeStack.back().path;
-    SQLYacc::odalib_in     = includeStack.back().in;
+    SQLYacc::odblib_lineno = includeStack.back().lineno;
+    odblib_path   = includeStack.back().path;
+    SQLYacc::odblib_in     = includeStack.back().in;
 
     includeStack.pop_back();
 
@@ -102,7 +102,7 @@ namespace sql {
 int SQLParser::line()
 {
     using namespace SQLYacc;
-    return SQLYacc::odalib_lineno;
+    return SQLYacc::odblib_lineno;
 }
 
 #if 0
@@ -111,10 +111,10 @@ void SQLParser::include(const PathName& path)
 {
     string p = string(path);
     if(p[0] != '/')
-        p = string(PathName(odalib_path).dirName()) + "/" + string(path);
+        p = string(PathName(odblib_path).dirName()) + "/" + string(path);
 
     Log::info() << "Including " << p
-                << " from " << odalib_path << " at " << SQLYacc::odalib_lineno
+                << " from " << odblib_path << " at " << SQLYacc::odblib_lineno
                 << endl;
 
     includeStack.push_back(Include());
@@ -123,9 +123,9 @@ void SQLParser::include(const PathName& path)
     if(!in)
         throw CantOpenFile(p);
 
-    SQLYacc::odalib_lineno = 0;
-    odalib_path   = p;
-    SQLYacc::odalib_in     = in;
+    SQLYacc::odblib_lineno = 0;
+    odblib_path   = p;
+    SQLYacc::odblib_in     = in;
 }
 #endif
 
@@ -144,21 +144,21 @@ void SQLParser::parseFile(const PathName& path, istream* is, SQLOutputConfig cfg
     SQLSelectFactory::instance().implicitFromTableSourceStream(is);
     SQLSelectFactory::instance().config(cfg);
 
-    odalib_path = path;
+    odblib_path = path;
 
-    FILE* in = fopen64(odalib_path.c_str(),"r");
+    FILE* in = fopen64(odblib_path.c_str(),"r");
     if(!in) throw CantOpenFile(path);
 
-    SQLYacc::odalib_lineno = 0;
-    SQLYacc::odalib_in     = in;
-    SQLYacc::odalib_debug  = Resource<long>("$YYDEBUG;-odalib_debug;odalib_debug", 0);
+    SQLYacc::odblib_lineno = 0;
+    SQLYacc::odblib_in     = in;
+    SQLYacc::odblib_debug  = Resource<long>("$YYDEBUG;-odblib_debug;odblib_debug", 0);
 
-    SQLYacc::odalib_parse();
+    SQLYacc::odblib_parse();
 
 #if YY_FLEX_MAJOR_VERSION >= 2
 #if YY_FLEX_MINOR_VERSION >= 5
 #if YY_FLEX_SUBMINOR_VERSION >=33
-    SQLYacc::odalib_lex_destroy();
+    SQLYacc::odblib_lex_destroy();
 #endif
 #endif
 #endif
@@ -176,21 +176,21 @@ void SQLParser::parseFile(const PathName& path, DataHandle* dh, SQLOutputConfig 
     SQLSelectFactory::instance().implicitFromTableSource(dh);
     SQLSelectFactory::instance().config(cfg);
 
-    odalib_path = path;
+    odblib_path = path;
 
-    FILE* in = fopen64(odalib_path.c_str(),"r");
+    FILE* in = fopen64(odblib_path.c_str(),"r");
     if(!in) throw CantOpenFile(path);
 
-    SQLYacc::odalib_lineno = 0;
-    SQLYacc::odalib_in     = in;
-    SQLYacc::odalib_debug  = Resource<long>("$YYDEBUG;-odalib_debug;odalib_debug", 0);
+    SQLYacc::odblib_lineno = 0;
+    SQLYacc::odblib_in     = in;
+    SQLYacc::odblib_debug  = Resource<long>("$YYDEBUG;-odblib_debug;odblib_debug", 0);
 
-    SQLYacc::odalib_parse();
+    SQLYacc::odblib_parse();
 
 #if YY_FLEX_MAJOR_VERSION >= 2
 #if YY_FLEX_MINOR_VERSION >= 5
 #if YY_FLEX_SUBMINOR_VERSION >=33
-    SQLYacc::odalib_lex_destroy();
+    SQLYacc::odblib_lex_destroy();
 #endif
 #endif
 #endif
@@ -256,21 +256,21 @@ void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig
     SQLSelectFactory::instance().database(&db);
     SQLSelectFactory::instance().config(cfg);
 
-    odalib_path = path;
+    odblib_path = path;
 
-    FILE* in = fopen64(odalib_path.c_str(),"r");
+    FILE* in = fopen64(odblib_path.c_str(),"r");
     if(!in) throw CantOpenFile(path);
 
-    SQLYacc::odalib_lineno = 0;
-    SQLYacc::odalib_in     = in;
-    SQLYacc::odalib_debug  = Resource<long>("$YYDEBUG;-odalib_debug;odalib_debug", 0);
+    SQLYacc::odblib_lineno = 0;
+    SQLYacc::odblib_in     = in;
+    SQLYacc::odblib_debug  = Resource<long>("$YYDEBUG;-odblib_debug;odblib_debug", 0);
 
-    SQLYacc::odalib_parse();
+    SQLYacc::odblib_parse();
 
 #if YY_FLEX_MAJOR_VERSION >= 2
 #if YY_FLEX_MINOR_VERSION >= 5
 #if YY_FLEX_SUBMINOR_VERSION >=33
-    SQLYacc::odalib_lex_destroy();
+    SQLYacc::odblib_lex_destroy();
 #endif
 #endif
 #endif

@@ -1,4 +1,4 @@
-list( APPEND odalib_src_files
+list( APPEND odblib_src_files
 Array.h
 BitColumnExpression.cc
 BitColumnExpression.h
@@ -270,7 +270,7 @@ piconst.h
 
 # templates
 
-list( APPEND odalib_templates
+list( APPEND odblib_templates
 CodecOptimizer.cc
 ConstantSetter.cc
 DataStream.cc
@@ -286,15 +286,15 @@ TODATableIterator.cc
 WriterDispatchingIterator.cc
 )
 
-# define Oda library
+# define Odb library
 
-mars_add_library( TARGET     Oda
+mars_add_library( TARGET     Odb
                   COMPONENT  server
-                  SOURCES    ${odalib_src_files}
-                  TEMPLATES  ${odalib_templates}
+                  SOURCES    ${odblib_src_files}
+                  TEMPLATES  ${odblib_templates}
                   LIBS       Ec )
 
-mars_generate_yy( YYPREFIX odalib_
+mars_generate_yy( YYPREFIX odblib_
                   YACC sqly
                   LEX  sqll
                   DEPENDANT SQLParser.cc )
