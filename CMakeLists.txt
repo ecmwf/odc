@@ -59,6 +59,9 @@ include(mars_define_paths)
 ############################################################################################
 # contents
 
+set( ODB_API_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src PARENT_SCOPE )
+set( ODB_API_LIBRARIES Odb PARENT_SCOPE )
+
 # source files
 add_subdirectory( src )
 
