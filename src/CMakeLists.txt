@@ -9,4 +9,4 @@ add_subdirectory( fortran )
 
 add_subdirectory( odb )
 
-add_subdirectory( odbmigrator )
+add_subdirectory( migrator )
