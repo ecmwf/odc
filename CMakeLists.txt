@@ -46,7 +46,8 @@ endif()
 ###############################################################################
 # some variables/options of this project
 
-option( BUILD_MIGRATOR "wether or not to build the migrator" OFF )
+option( BUILD_ODB_MIGRATOR "whether or not to build the migrator" OFF )
+option( BUILD_ODB_FORTRAN  "whether or not to build the fortan interface" OFF )
 
 ###############################################################################
 # macro processing
