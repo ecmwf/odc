@@ -176,8 +176,8 @@ bool StringTool::matchEx(const string& regex, const string& s)
 
 bool StringTool::isColumnRegex(const string& s)
 {
-	return s[0] == '/' && s[s.size() - 1] == '/'
-		|| s[0] == '~' && s[1] == '/' && s[s.size() - 1] == '/';
+    return ( s[0] == '/' && s[s.size() - 1] == '/' )
+        || ( s[0] == '~' && s[1] == '/' && s[s.size() - 1] == '/' );
 }
 
 bool StringTool::matchAny(const vector<string>& regs, const string& s)
