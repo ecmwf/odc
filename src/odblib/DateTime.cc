@@ -140,7 +140,7 @@ int DateTime::eatChars (istream & is, int nchars) {
 // -----------------------------------------------------------------------------
 
 bool DateTime::isLeapYear (int year) {
-  return (year%4 == 0 && (year%100 != 0) || year%400) == 0;
+  return ( ( year%4 == 0 && ( year%100 != 0 ) ) || year%400 ) == 0;
 }
 
 // -----------------------------------------------------------------------------
@@ -268,7 +268,8 @@ void DateTime::julianToDate(const unsigned long long &julian)
 
   jdate = julian;
 
-  if (jdate >= JULIAN_MIN) {
+//  if (jdate >= JULIAN_MIN) { // always true : unsigned >= 0
+
     l = jdate + 68569;
     n = ( 4 * l ) / 146097;
     l = l - ( 146097 * n + 3 ) / 4;
@@ -285,7 +286,9 @@ void DateTime::julianToDate(const unsigned long long &julian)
     month_ = (int) month;
     year_ = (int) year;
     //} 
-  } 
+
+// }
+
 }
 //==============================================================================
 int DateTime::hmsToSeconds() const
