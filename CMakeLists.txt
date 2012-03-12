@@ -55,7 +55,10 @@ option( BUILD_ODB_FORTRAN  "whether or not to build the fortan interface" OFF )
 # define installation paths
 include(ecmwf_define_paths)
 
-# find_package( STUFF )
+find_package( SWIG )
+if( SWIG_FOUND )
+    include( ${SWIG_USE_FILE} )
+endif()
 
 ############################################################################################
 # contents

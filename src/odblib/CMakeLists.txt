@@ -298,3 +298,27 @@ ecmwf_generate_yy( YYPREFIX odblib_
                   YACC sqly
                   LEX  sqll
                   DEPENDANT SQLParser.cc )
+
+###############################################################################
+# swig python interface
+
+if( SWIG_FOUND AND PYTHONLIBS_FOUND )
+
+    set(CMAKE_SWIG_FLAGS "")
+
+    include_directories( ${PYTHON_INCLUDE_PATH} )
+
+    set_source_files_properties( pyodbapi.swig PROPERTIES CPLUSPLUS ON )
+    set_source_files_properties( pyodbapi.swig PROPERTIES SWIG_FLAGS "-includeall")
+
+    swig_add_module( pyodbapi python pyodbapi.swig )
+
+    swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} )
+
+    set_target_properties( _pyodbapi PROPERTIES LINKER_LANGUAGE CXX )
+
+#    set(PYTHON_DEST "lib64/python${PYTHON_VERSION}/site-packages" )
+#    install(TARGETS _partio DESTINATION ${PYTHON_DEST})
+#    install(FILES ${CMAKE_BINARY_DIR}/${outdir}/src/py/partio.py  DESTINATION ${PYTHON_DEST})
+
+endif()
