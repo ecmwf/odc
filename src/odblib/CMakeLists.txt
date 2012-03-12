@@ -315,10 +315,8 @@ if( SWIG_FOUND AND PYTHONLIBS_FOUND )
 
     swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} )
 
-#    set_target_properties( _pyodbapi PROPERTIES LINKER_LANGUAGE CXX )
-
-#    set(PYTHON_DEST "lib64/python${PYTHON_VERSION}/site-packages" )
-#    install(TARGETS _partio DESTINATION ${PYTHON_DEST})
-#    install(FILES ${CMAKE_BINARY_DIR}/${outdir}/src/py/partio.py  DESTINATION ${PYTHON_DEST})
+    set(PYTHON_DEST "lib/python${PYTHON_VERSION}/site-packages" )
+    install(TARGETS _pyodbapi DESTINATION ${PYTHON_DEST} )
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyodbapi.py  DESTINATION ${PYTHON_DEST})
 
 endif()
