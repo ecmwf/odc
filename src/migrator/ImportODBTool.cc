@@ -259,7 +259,7 @@ PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
 	str ecfsPath = str("ec:/ERAS/era40/EXPVER1/") + year + "/" + datetime + "/ECMA.tar";
 	PathName localPath = datetime + ".ECMA.tar";
 
-	if (localPath.exist() && localPath.isDir())
+	if (localPath.exists() && localPath.isDir())
 		Log::info() << "Directory " << localPath
 			<< " already exists. Skipping copying from ECFS." << endl;
 	else
@@ -269,7 +269,7 @@ PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
 	}
 
 	PathName unpackDir(datetime);
-	if (unpackDir.exist() && unpackDir.isDir())
+	if (unpackDir.exists() && unpackDir.isDir())
 		Log::info() << "Directory " << unpackDir << " exist, skipping unpacking." << endl;
 	else
 	{

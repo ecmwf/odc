@@ -9,4 +9,8 @@ add_subdirectory( fortran )
 
 add_subdirectory( odb )
 
+# needed due to inclusions to odb code
+# remove this once headers include their directories
+include_directories( odb ) 
+
 add_subdirectory( migrator )

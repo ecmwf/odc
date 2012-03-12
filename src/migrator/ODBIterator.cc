@@ -42,13 +42,13 @@ ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
 {
 	Log::info() << "ODBIterator::ODBIterator: @" << this << " db=" << db << endl;
 
-	const char *odbDirectory = db.c_str();
+	const char *odbDirectory = db.asString().c_str();
 	Log::info(SRC) << "Opening ODB in " << odbDirectory << endl;
-	ASSERT(PathName(odbDirectory).exist());
+	ASSERT(PathName(odbDirectory).exists());
 
 	std::string select = sql != "" ? sql : defaultSQL(db);
 
-	const char *db_path = db.c_str();
+	const char *db_path = db.asString().c_str();
 	const char *sql_select = select.c_str();
 
 	Log::info() << "ODBIterator::ODBIterator: Calling odbdump_open(\"" << db_path << "\",\"" << sql_select << "\", NULL, NULL, NULL, &" << noOfColumns_ << ")" << endl;
