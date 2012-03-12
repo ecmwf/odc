@@ -21,6 +21,11 @@ cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
 project( odb_api C CXX )
 
+message( STATUS "---------------------------------------------------------" )
+message( STATUS " [${PROJECT_NAME}]" )
+
+set( ECMWF_PROJECTS ${ECMWF_PROJECTS} ${PROJECT_NAME} CACHE INTERNAL "list of (sub)projects" )
+
 ###############################################################################
 # include our cmake modules first because we override some cmake default macros
 # but only do so if this is the top project
@@ -73,14 +78,14 @@ add_subdirectory( src )
 ############################################################################################
 # summary
 
+# local project summary
+include( project_summary.cmake )
+
 # add cmake packing support
 # include(ecmwf_install_package)
 
 # print the summary of the configuration
 include(ecmwf_print_summary)
-
-# local project summary
-include( project_summary.cmake )
 
 # issue warnings / errors in case ther are unused project files
 include(ecmwf_warn_unused_files)

@@ -1,4 +1,3 @@
-message( STATUS "---------------------------------------------------------" )
-message( STATUS " subproject : [${PROJECT_NAME}]" )
-
-
+if( SWIG_FOUND )
+  message( STATUS " SWIG     : [${SWIG_EXECUTABLE}]" )
+endif()
