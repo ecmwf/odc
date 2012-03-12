@@ -308,14 +308,14 @@ if( SWIG_FOUND AND PYTHONLIBS_FOUND )
 
     include_directories( ${PYTHON_INCLUDE_PATH} )
 
-    set_source_files_properties( pyodbapi.swig PROPERTIES CPLUSPLUS ON )
-    set_source_files_properties( pyodbapi.swig PROPERTIES SWIG_FLAGS "-includeall")
+    set_source_files_properties( pyodbapi.i PROPERTIES CPLUSPLUS ON )
+#    set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
 
-    swig_add_module( pyodbapi python pyodbapi.swig )
+    swig_add_module( pyodbapi python pyodbapi.i )
 
     swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} )
 
-    set_target_properties( _pyodbapi PROPERTIES LINKER_LANGUAGE CXX )
+#    set_target_properties( _pyodbapi PROPERTIES LINKER_LANGUAGE CXX )
 
 #    set(PYTHON_DEST "lib64/python${PYTHON_VERSION}/site-packages" )
 #    install(TARGETS _partio DESTINATION ${PYTHON_DEST})
