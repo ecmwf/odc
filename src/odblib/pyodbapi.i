@@ -45,8 +45,9 @@ using namespace std;
 %include "odblib/ODBSelect.h"
 %include "odblib/SQLType.h"
 
+%include "odblib/ColumnType.h"
 %include "odblib/Types.h"
-%include "SQLBitfield.h"
+%include "odblib/SQLBitfield.h"
 #include "odblib/StringTool.h"
 #include "odblib/DataStream.h"
 %include "odblib/HashTable.h"
