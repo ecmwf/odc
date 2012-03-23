@@ -16,10 +16,10 @@
 
 class PathName;
 
-#include "SQLIterator.h"
-#include "SQLTable.h"
-#include "SQLIndex.h"
-#include "SQLBitfield.h"
+#include "odblib/SQLIterator.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLIndex.h"
+#include "odblib/SQLBitfield.h"
 
 namespace odb {
 namespace sql {

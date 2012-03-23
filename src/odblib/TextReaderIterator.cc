@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 namespace odb {
 

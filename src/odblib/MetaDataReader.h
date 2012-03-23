@@ -20,6 +20,8 @@
 #include <Python.h>
 #endif
 
+#include "odblib/IteratorProxy.h"
+
 class PathName;
 class DataHandle;
 

@@ -8,14 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "LimitValues.h"
+#include <climits>
+#include <cfloat>
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "SQLIteratorSession.h"
-#include "SQLSelect.h"
-#include "SQLType.h"
-#include "SQLIteratorOutput.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLType.h"
+#include "odblib/SQLIteratorOutput.h"
 
 namespace odb {
 namespace sql {

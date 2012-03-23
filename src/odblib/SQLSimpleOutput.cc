@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLSelect.h"
-#include "SQLSimpleOutput.h"
-#include "Decoder.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLSimpleOutput.h"
+#include "odblib/Decoder.h"
 
 namespace odb {
 namespace sql {

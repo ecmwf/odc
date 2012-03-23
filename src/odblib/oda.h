@@ -16,60 +16,62 @@
 #ifndef PUBLIC_ODA_H
 #define PUBLIC_ODA_H
 
-#include <iostream>
-#include <sstream>
+#include <cfloat>
+#include <climits>
 #include <errno.h>
+#include <iostream>
 #include <math.h>
+#include <sstream>
 #include <stdint.h>
 
 using namespace std;
 
-#include "LimitValues.h"
+#include "eclib/DataHandle.h"
+#include "eclib/FileHandle.h"
+#include "eclib/PathName.h"
+#include "eclib/Resource.h"
+#include "eclib/Timer.h"
 
-#include "ODBAPIVersion.h"
-#include "ODBAPISettings.h"
+#include "odblib/ODBAPIVersion.h"
+#include "odblib/ODBAPISettings.h"
 
-#include "StringTool.h"
-#include "PathName.h"
-#include "MemoryBlock.h"
-#include "DataHandle.h"
-#include "FileHandle.h"
-#include "Timer.h"
-#include "Resource.h"
+#include "odblib/Types.h"
 
-#include "SQLBitfield.h"
-#include "DataStream.h"
-#include "HashTable.h"
-#include "Codec.h"
-#include "Column.h"
-#include "HashTable.h"
-#include "SQLIteratorSession.h"
-#include "MetaData.h"
-#include "RowsIterator.h"
-#include "Header.h"
-#include "IteratorProxy.h"
-#include "TemplateParameters.h"
-#include "Reader.h"
-#include "TextReader.h"
-#include "ODBSelect.h"
-#include "Writer.h"
-#include "WriterBufferingIterator.h"
-#include "WriterDispatchingIterator.h"
-#include "DispatchingWriter.h"
-#include "DispatchingWriter.h"
-#include "ReaderIterator.h"
-#include "TextReaderIterator.h"
-#include "RowsIterator.h"
-#include "SelectIterator.h"
-#include "FixedSizeWriterIterator.h"
+#include "odblib/StringTool.h"
+#include "odblib/MemoryBlock.h"
 
-#include "SQLType.h"
-#include "SQLInteractiveSession.h"
-#include "SQLIteratorSession.h"
-#include "SQLTable.h"
-#include "SQLSelect.h"
-#include "SQLParser.h"
-#include "SQLExpression.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/Column.h"
+#include "odblib/HashTable.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/MetaData.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/Header.h"
+#include "odblib/IteratorProxy.h"
+#include "odblib/TemplateParameters.h"
+#include "odblib/Reader.h"
+#include "odblib/TextReader.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Writer.h"
+#include "odblib/WriterBufferingIterator.h"
+#include "odblib/WriterDispatchingIterator.h"
+#include "odblib/DispatchingWriter.h"
+#include "odblib/DispatchingWriter.h"
+#include "odblib/ReaderIterator.h"
+#include "odblib/TextReaderIterator.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SelectIterator.h"
+#include "odblib/FixedSizeWriterIterator.h"
+
+#include "odblib/SQLType.h"
+#include "odblib/SQLInteractiveSession.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLParser.h"
+#include "odblib/SQLExpression.h"
 
 #ifndef MEGA
 #define MEGA(x) (x*1024*1024)

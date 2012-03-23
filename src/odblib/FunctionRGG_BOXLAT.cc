@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionRGG_BOXLAT.h"
-#include "RggRegionCache.h"
+#include "odblib/FunctionRGG_BOXLAT.h"
+#include "odblib/RggRegionCache.h"
 
 
 namespace odb {

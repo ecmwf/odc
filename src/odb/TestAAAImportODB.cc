@@ -19,37 +19,36 @@
 
 using namespace std;
 
-#include "oda.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestAAAImportODB.h"
-#include "ToolFactory.h"
 
 #define SRC __FILE__, __LINE__
 
 
-#include "PathName.h"
-#include "DataHandle.h"
-#include "DataStream.h"
-#include "HashTable.h"
-#include "Codec.h"
-#include "Column.h"
-#include "MetaData.h"
-#include "DataHandle.h"
-#include "DataStream.h"
-#include "RowsIterator.h"
-#include "HashTable.h"
-#include "Log.h"
-#include "SQLBitfield.h"
-#include "SQLAST.h"
-#include "SchemaAnalyzer.h"
-#include "SQLIteratorSession.h"
-#include "Header.h"
-#include "Reader.h"
-#include "DataHandle.h"
-#include "SelectIterator.h"
-#include "ReaderIterator.h"
-#include "oda.h"
+#include "eclib/PathName.h"
+#include "eclib/Log.h"
+#include "eclib/DataHandle.h"
+
+#include "odb/Tool.h"
+#include "odb/TestCase.h"
+#include "odb/TestAAAImportODB.h"
+#include "odb/ToolFactory.h"
+
+#include "odblib/oda.h"
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/DataStream.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/HashTable.h"
+#include "odblib/Header.h"
+#include "odblib/MetaData.h"
+#include "odblib/Reader.h"
+#include "odblib/ReaderIterator.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLAST.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SelectIterator.h"
 
 namespace odb {
 namespace tool {

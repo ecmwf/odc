@@ -14,7 +14,7 @@
 #ifndef SQLServer_H
 #define SQLServer_H
 
-#include "ThreadControler.h"
+#include "eclib/ThreadControler.h"
 
 namespace odb {
 namespace sql {

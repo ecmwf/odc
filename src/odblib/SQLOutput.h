@@ -14,9 +14,10 @@
 #ifndef SQLOutput_H
 #define SQLOutput_H
 
-#include "Exceptions.h"
-#include "SQLExpression.h"
-#include "SQLOutputConfig.h"
+#include "eclib/Exceptions.h"
+
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {

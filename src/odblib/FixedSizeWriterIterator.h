@@ -16,6 +16,8 @@
 #ifndef FixedSizeWriterIterator_H
 #define FixedSizeWriterIterator_H
 
+#include "odblib/WriterBufferingIterator.h"
+
 class PathName;
 class DataHandle;
 

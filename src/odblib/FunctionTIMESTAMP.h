@@ -14,7 +14,7 @@
 #ifndef FunctionTIMESTAMP_H
 #define FunctionTIMESTAMP_H
 
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

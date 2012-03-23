@@ -11,6 +11,8 @@
 #ifndef HeaderTool_H
 #define HeaderTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

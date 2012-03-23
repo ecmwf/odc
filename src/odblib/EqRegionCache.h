@@ -18,10 +18,10 @@
 #ifndef EqRegionCache_H
 #define EqRegionCache_H
 
-
-#include "piconst.h"
-#include "RegionCache.h"
 #include <vector>
+
+#include "odblib/piconst.h"
+#include "odblib/RegionCache.h"
 
 class EqRegionCache : public RegionCache {
 public:

@@ -14,8 +14,9 @@
 #ifndef SQLServerSession_H
 #define SQLServerSession_H
 
-#include "SQLSession.h"
-#include "TCPServer.h"
+#include "eclib/TCPServer.h"
+
+#include "odblib/SQLSession.h"
 
 namespace odb {
 namespace sql {

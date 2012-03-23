@@ -14,10 +14,10 @@
 #ifndef OrderByExpressions_H
 #define OrderByExpressions_H
 
-#include <machine.h>
+#include "eclib/machine.h"
 #include <vector>
 
-#include "Expressions.h"
+#include "odblib/Expressions.h"
 
 namespace odb {
 namespace sql {

@@ -8,17 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Tokenizer.h"
-#include "Translator.h"
-#include "ODA2RequestTool.h"
-#include "FastODA2Request.h"
-
 #include <iostream>
 #include <fstream>
+
 using namespace std;
+
+#include "eclib/Tokenizer.h"
+#include "eclib/Translator.h"
+
+#include "odb/ODA2RequestTool.h"
+#include "odb/Tool.h"
+#include "odb/ToolFactory.h"
+
+#include "odblib/FastODA2Request.h"
+#include "odblib/oda.h"
 
 namespace odb {
 namespace tool {

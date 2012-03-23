@@ -14,10 +14,11 @@
 #ifndef Dictionary_H
 #define Dictionary_H
 
-#include <machine.h>
+#include "eclib/machine.h"
 
-#include "Exceptions.h"
-#include "SQLExpression.h"
+#include "eclib/Exceptions.h"
+
+#include "odblib/SQLExpression.h"
 
 namespace odb {
 namespace sql {

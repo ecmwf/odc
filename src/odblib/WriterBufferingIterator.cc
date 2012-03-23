@@ -15,14 +15,17 @@
 
 #include <arpa/inet.h>
 
-#include "oda.h"
-#include "DataStream.h"
-#include "Codec.h"
-#include "CodecOptimizer.h"
-#include "Resource.h"
-#include "InMemoryDataHandle.h"
-#include "MemoryBlock.h"
-#include "ODBAPISettings.h"
+#include "eclib/Resource.h"
+
+#include "odblib/oda.h"
+
+#include "odblib/Codec.h"
+#include "odblib/CodecOptimizer.h"
+#include "odblib/DataStream.h"
+#include "odblib/InMemoryDataHandle.h"
+#include "odblib/MemoryBlock.h"
+#include "odblib/ODBAPISettings.h"
+
 
 #define SRC __FILE__, __LINE__
 

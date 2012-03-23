@@ -8,10 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLExpressionEvaluated.h"
-#include "SQLExpression.h"
-#include "StrStream.h"
-#include "SQLType.h"
+#include "eclib/StrStream.h"
+
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLExpressionEvaluated.h"
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

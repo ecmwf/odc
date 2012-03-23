@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLServer.h"
-#include "SQLService.h"
+#include "odblib/SQLServer.h"
+#include "odblib/SQLService.h"
 
 namespace odb {
 namespace sql {

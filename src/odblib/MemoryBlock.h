@@ -8,14 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-// File MemoryBlock.h
-// Baudouin Raoult - ECMWF Jul 96
-
 #ifndef MemoryBlock_H
 #define MemoryBlock_H
 
-#include "machine.h"
-#include "Exceptions.h"
+#include "eclib/machine.h"
+#include "eclib/Exceptions.h"
 
 // A simple class to implement buffers
 

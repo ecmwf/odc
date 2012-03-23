@@ -13,8 +13,8 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "oda.h"
-#include "DataStream.h"
+#include "odblib/oda.h"
+#include "odblib/DataStream.h"
 
 namespace odb {
 

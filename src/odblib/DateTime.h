@@ -11,12 +11,11 @@
 #ifndef TIME_HEADER_H
 #define TIME_HEADER_H
 
-// C++ header files
 #include <string>
 #include <iostream>
 
 // Forward declarations
-namespace utils {
+namespace utils { 
   class Duration;
 }
 
@@ -28,9 +27,6 @@ const int SEC_DAY     = 86400;
 const int HOUR_DAY    =    24;
 const int MIN_HOUR    =    60;
 const int MIN_DAY     =  1440;
-
-// Forward declarations
-    // ---- No forward declarations ---- //
 
 //! This class represents time, and provides methods to manipulate time
 /*! 

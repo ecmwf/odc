@@ -13,8 +13,8 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "oda.h"
-#include "TemplateParameters.h"
+#include "odblib/oda.h"
+#include "odblib/TemplateParameters.h"
 
 #define SRC __FILE__, __LINE__
 

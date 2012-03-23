@@ -15,6 +15,7 @@
 #define SQLOutputConfig_H
 
 #include <string>
+
 using namespace std;
 
 namespace odb {

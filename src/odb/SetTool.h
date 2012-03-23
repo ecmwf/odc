@@ -11,6 +11,8 @@
 #ifndef SetTool_H
 #define SetTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

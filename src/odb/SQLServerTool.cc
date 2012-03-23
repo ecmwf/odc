@@ -8,12 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "SQLServer.h"
-#include "SQLServerTool.h"
+#include "odb/SQLServerTool.h"
+
+#include "odb/Tool.h"
+#include "odb/ToolFactory.h"
+#include "odblib/SQLServer.h"
 
 namespace odb {
 namespace tool {

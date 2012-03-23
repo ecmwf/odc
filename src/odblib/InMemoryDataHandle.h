@@ -14,12 +14,13 @@
 #ifndef InMemoryDataHandle_H
 #define InMemoryDataHandle_H
 
-#include "PathName.h"
-#include "Length.h"
-#include "Offset.h"
-#include "TransferWatcher.h"
-#include "DataHandle.h"
-#include "MemoryBlock.h"
+#include "eclib/DataHandle.h"
+#include "eclib/Length.h"
+#include "eclib/Offset.h"
+#include "eclib/PathName.h"
+#include "eclib/TransferWatcher.h"
+
+#include "odblib/MemoryBlock.h"
 
 namespace odb {
 

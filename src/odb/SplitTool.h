@@ -11,6 +11,8 @@
 #ifndef SplitTool_H
 #define SplitTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

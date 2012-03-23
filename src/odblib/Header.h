@@ -19,7 +19,7 @@
 class PathName;
 class DataHandle;
 
-#include "UnsafeInMemoryDataHandle.h"
+#include "odblib/UnsafeInMemoryDataHandle.h"
 
 namespace odb {
 

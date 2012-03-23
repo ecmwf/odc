@@ -13,10 +13,11 @@
 ///
 /// @author Piotr Kuchta, June 2009
 
-#include "oda.h"
-#include "DataStream.h"
-#include "Header.h"
-#include "ODAUpdatingIterator.h"
+#include "odblib/oda.h"
+#include "odblib/DataStream.h"
+#include "odblib/Header.h"
+#include "odblib/ODAUpdatingIterator.h"
+
 
 namespace odb {
 

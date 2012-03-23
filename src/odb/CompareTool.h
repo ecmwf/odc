@@ -11,6 +11,8 @@
 #ifndef CompareTool_H
 #define CompareTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

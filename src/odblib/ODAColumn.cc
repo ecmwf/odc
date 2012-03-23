@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "ODAColumn.h"
+#include "odblib/ODAColumn.h"
 
 namespace odb {
 namespace sql {

@@ -8,11 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-// mac doesnt have the <values.h> header
+#ifndef odblib_Types_h
+#define odblib_Types_h
 
-#ifndef __APPLE_CC__
-#include <values.h>
-#else
-#include <climits>
-#include <cfloat>
-#endif
+#include <stdint.h>
+
+#include "eclib/machine.h"
+
+namespace odb {
+
+typedef std::vector<std::string>             FieldNames;
+typedef std::vector<int32_t>                 Sizes;
+typedef std::pair<FieldNames, Sizes>         BitfieldDef;
+typedef std::map<std::string, BitfieldDef>   BitfieldDefs;
+
+}
+
+#endif // odblib_Types_h

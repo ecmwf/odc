@@ -10,12 +10,12 @@
 
 #include <values.h>
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "SQLIteratorSession.h"
-#include "SQLSelect.h"
-#include "SQLType.h"
-#include "SQLODAOutput.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLType.h"
+#include "odblib/SQLODAOutput.h"
 
 #define SRC __FILE__,__LINE__
 

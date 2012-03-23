@@ -11,12 +11,13 @@
 #ifndef SQLSelectFactory_H
 #define SQLSelectFactory_H
 
-#include "SQLExpression.h"
-#include "SQLSelect.h"
-#include "SQLTable.h"
-#include "DataHandle.h"
-#include "ThreadSingleton.h"
-#include "SQLOutputConfig.h"
+#include "eclib/DataHandle.h"
+#include "eclib/ThreadSingleton.h"
+
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLOutputConfig.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLTable.h"
 
 namespace odb { namespace sql { class SQLSelectFactory; } }
 

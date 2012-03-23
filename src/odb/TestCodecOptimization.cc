@@ -21,7 +21,7 @@
 
 using namespace std;
 
-#include "oda.h"
+#include "odblib/oda.h"
 #include "Tool.h"
 #include "TestCase.h"
 #include "TestCodecOptimization.h"
@@ -30,26 +30,26 @@ using namespace std;
 #define SRC __FILE__, __LINE__
 
 
-#include "PathName.h"
-#include "DataHandle.h"
-#include "DataStream.h"
-#include "HashTable.h"
-#include "Codec.h"
-#include "HashTable.h"
-#include "Column.h"
-#include "MetaData.h"
-#include "RowsIterator.h"
-#include "HashTable.h"
-#include "Log.h"
-#include "SQLBitfield.h"
-#include "SQLAST.h"
-#include "SchemaAnalyzer.h"
-#include "SQLIteratorSession.h"
-#include "Header.h"
-#include "Reader.h"
-#include "SelectIterator.h"
-#include "ReaderIterator.h"
-#include "oda.h"
+#include "eclib/PathName.h"
+#include "eclib/DataHandle.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/Codec.h"
+#include "odblib/HashTable.h"
+#include "odblib/Column.h"
+#include "odblib/MetaData.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/HashTable.h"
+#include "eclib/Log.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLAST.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/Header.h"
+#include "odblib/Reader.h"
+#include "odblib/SelectIterator.h"
+#include "odblib/ReaderIterator.h"
+#include "odblib/oda.h"
 
 namespace odb {
 namespace tool {

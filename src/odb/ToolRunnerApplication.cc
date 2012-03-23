@@ -12,9 +12,9 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <Application.h>
-#include <PathName.h>
-#include <FileHandle.h>
+#include "eclib/Application.h"
+#include "eclib/PathName.h"
+#include "eclib/FileHandle.h"
 
 #include "Tool.h"
 #include "TestCase.h"

@@ -20,11 +20,12 @@
 
 using namespace std;
 
-#include "Exceptions.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "ToolFactory.h"
-#include "Regex.h"
+#include "eclib/Exceptions.h"
+#include "eclib/Regex.h"
+
+#include "odb/Tool.h"
+#include "odb/TestCase.h"
+#include "odb/ToolFactory.h"
 
 namespace odb {
 namespace tool {

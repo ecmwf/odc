@@ -14,7 +14,7 @@
 #ifndef SQLService_H
 #define SQLService_H
 
-#include "NetService.h"
+#include "eclib/NetService.h"
 
 namespace odb {
 namespace sql {

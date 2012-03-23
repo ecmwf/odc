@@ -8,29 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef MockReader_H
-#define MockReader_H
-
-#include "odblib/oda.h"
+#ifndef odblib_ColumnType_H
+#define odblib_ColumnType_H
 
 namespace odb {
-namespace tool {
 
-template <typename T>
-class MockReader
+enum ColumnType
 {
-public:
-	typedef T iterator_class;
-	typedef odb::IteratorProxy<T, MockReader, const double> iterator;
-
-	iterator begin() { return iterator(new T); }
-	const iterator end() { return iterator(0); }
+	IGNORE   = 0,
+	INTEGER  = 1,
+	REAL     = 2,
+	STRING   = 3,
+	BITFIELD = 4,
+	DOUBLE   = 5
 };
 
-#include "MockReader.cc"
-
-} // namespace tool 
 } // namespace odb 
 
-#endif
-
+#endif // odblib_ColumnType_H

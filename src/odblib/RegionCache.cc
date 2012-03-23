@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "RegionCache.h"
-#include "Log.h"
-#include "ThreadSingleton.h"
+#include <math.h>
 
+#include "eclib/Log.h"
+#include "eclib/ThreadSingleton.h"
 
-#include "math.h"
+#include "odblib/RegionCache.h"
 
 
 template class ThreadSingleton<VectorRegionCache>;

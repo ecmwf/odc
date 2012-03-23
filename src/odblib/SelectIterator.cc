@@ -14,8 +14,8 @@
 /// @author Piotr Kuchta, Feb 2009
 
 
-#include "oda.h"
-#include "SQLSelectFactory.h"
+#include "odblib/oda.h"
+#include "odblib/SQLSelectFactory.h"
 
 #define SRC __FILE__,__LINE__
 

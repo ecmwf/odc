@@ -14,7 +14,7 @@
 #ifndef FunctionIN_H
 #define FunctionIN_H
 
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

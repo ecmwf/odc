@@ -14,10 +14,10 @@
 /// @author Piotr Kuchta, Jan 2010
 
 
-#include "oda.h"
-#include "DataStream.h"
-#include "Codec.h"
-#include "CodecOptimizer.h"
+#include "odblib/oda.h"
+#include "odblib/DataStream.h"
+#include "odblib/Codec.h"
+#include "odblib/CodecOptimizer.h"
 
 //#define SRC __FILE__, __LINE__
 

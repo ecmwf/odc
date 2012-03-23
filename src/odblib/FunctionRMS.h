@@ -14,7 +14,7 @@
 #ifndef FunctionRMS_H
 #define FunctionRMS_H
 
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

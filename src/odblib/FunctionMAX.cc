@@ -8,8 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionMAX.h"
-#include <values.h>
+#include <climits>
+#include <cfloat>
+
+#include "odblib/FunctionMAX.h"
 
 namespace odb {
 namespace sql {

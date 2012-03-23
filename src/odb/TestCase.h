@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include "odb/Tool.h"
+
 #ifndef TestCase_H
 #define TestCase_H
 

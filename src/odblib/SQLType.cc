@@ -8,9 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLType.h"
-#include "Exceptions.h"
 #include <set>
+
+#include "eclib/Exceptions.h"
+
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

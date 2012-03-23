@@ -13,7 +13,7 @@
 #ifndef ODAColumn_H
 #define ODAColumn_H
 
-#include "SQLColumn.h"
+#include "odblib/SQLColumn.h"
 
 namespace odb {
 namespace sql {

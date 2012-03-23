@@ -9,15 +9,16 @@
  */
 
 #include <sstream>
+#include <math.h>
 
-#include "RggRegionCache.h"
-#include "RegionCache.h"
-#include "Log.h"
-#include "ThreadSingleton.h"
-#include "PathName.h"
-#include "Resource.h"
+#include "eclib/Log.h"
+#include "eclib/PathName.h"
+#include "eclib/Resource.h"
+#include "eclib/ThreadSingleton.h"
 
-#include "math.h"
+#include "odblib/RegionCache.h"
+#include "odblib/RggRegionCache.h"
+
 
 #undef MIN
 #define MIN(a,b) ( ((a) < (b)) ? (a) :  (b) )

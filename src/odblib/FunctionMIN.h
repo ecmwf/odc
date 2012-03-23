@@ -14,7 +14,7 @@
 #ifndef FunctionMIN_H
 #define FunctionMIN_H
 
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

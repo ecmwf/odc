@@ -11,21 +11,22 @@
 #include <values.h>
 #include <iostream>
 #include <map>
+
 using namespace std;
 
-#include "oda.h"
-#include "DataHandle.h"
-#include "DataStream.h"
+#include "eclib/DataHandle.h"
+#include "eclib/Exceptions.h"
 
-#include "Exceptions.h"
+#include "odblib/oda.h"
+#include "odblib/DataStream.h"
 
-#include "HashTable.h"
-#include "Codec.h"
-#include "Column.h"
-#include "SQLBitfield.h"
-#include "SQLSession.h"
-#include "SQLDatabase.h"
-#include "SchemaAnalyzer.h"
+#include "odblib/HashTable.h"
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLSession.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SchemaAnalyzer.h"
 
 namespace odb {
 

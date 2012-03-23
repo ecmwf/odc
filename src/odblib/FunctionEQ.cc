@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionEQ.h"
-#include "ColumnExpression.h"
-#include "SQLType.h"
-#include "Log.h"
-#include "StringTool.h"
+#include "eclib/Log.h"
+#include "odblib/ColumnExpression.h"
+#include "odblib/FunctionEQ.h"
+#include "odblib/SQLType.h"
+#include "odblib/StringTool.h"
 
 namespace odb {
 namespace sql {

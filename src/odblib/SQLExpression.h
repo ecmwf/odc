@@ -14,10 +14,10 @@
 #ifndef SQLExpression_H
 #define SQLExpression_H
 
-#include <machine.h>
+#include "eclib/machine.h"
 
-#include "SQLType.h"
-#include "SQLBitfield.h"
+#include "odblib/SQLType.h"
+#include "odblib/SQLBitfield.h"
 
 namespace odb {
 namespace sql {
@@ -109,7 +109,7 @@ private:
 } // namespace sql
 } // namespace odb
 
-#include "Expressions.h"
+#include "odblib/Expressions.h"
 
 using namespace odb::sql::expression;
 

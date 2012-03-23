@@ -8,8 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionIntegerExpression.h"
-#include "math.h"
+#include <math.h>
+
+#include "odblib/FunctionIntegerExpression.h"
 
 #define RMDI   -2147483647
 #define NMDI    2147483647

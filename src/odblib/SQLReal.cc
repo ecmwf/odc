@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLReal.h"
-#include "SQLOutput.h"
+#include "odblib/SQLReal.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {

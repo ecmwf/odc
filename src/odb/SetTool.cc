@@ -8,13 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
+#include "eclib/Tokenizer.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Tokenizer.h"
-#include "ConstantSetter.h"
-#include "SetTool.h"
+#include "odblib/oda.h"
+#include "odblib/ConstantSetter.h"
+
+#include "odb/SetTool.h"
+#include "odb/Tool.h"
+#include "odb/ToolFactory.h"
 
 namespace odb {
 namespace tool {

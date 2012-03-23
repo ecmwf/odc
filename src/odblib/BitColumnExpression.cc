@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include "BitColumnExpression.h"
-#include "SQLSelect.h"
-#include "SQLBit.h"
-#include "SQLTable.h"
+#include "odblib/BitColumnExpression.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLBit.h"
+#include "odblib/SQLTable.h"
 
 namespace odb {
 namespace sql {

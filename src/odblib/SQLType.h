@@ -14,7 +14,7 @@
 #ifndef SQLType_H
 #define SQLType_H
 
-#include <machine.h>
+#include "eclib/machine.h"
 
 namespace odb {
 namespace sql {

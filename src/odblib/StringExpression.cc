@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "StringExpression.h"
-#include "Exceptions.h"
-#include "StringTool.h"
-#include "SQLTable.h"
-#include "StringExpression.h"
-#include "ColumnExpression.h"
+#include "eclib/Exceptions.h"
 
+#include "odblib/ColumnExpression.h"
+#include "odblib/SQLTable.h"
+#include "odblib/StringExpression.h"
+#include "odblib/StringExpression.h"
+#include "odblib/StringTool.h"
 
 namespace odb {
 namespace sql {

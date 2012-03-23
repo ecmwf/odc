@@ -8,18 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#include <Application.h>
-#include <PathName.h>
-#include <FileHandle.h>
-#include <Timer.h>
+#include "eclib/Application.h"
+#include "eclib/PathName.h"
+#include "eclib/FileHandle.h"
+#include "eclib/Timer.h"
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 extern "C" {
-#include "odbcapi.h"
+#include "odblib/odbcapi.h"
 }
 
-#include "TestOdaCAPI.h"
+#include "odb/TestOdaCAPI.h"
 
 using namespace std;
 

@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionTDIFF.h"
-#include "DateTime.h"
+#include "odblib/FunctionTDIFF.h"
+#include "odblib/DateTime.h"
 
 #define RMDI   -2147483647
 #define trunc(x) ((x) -fmod((x), 1))

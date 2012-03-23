@@ -8,17 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-#include "Log.h"
-#include "SQLAST.h"
-#include "SQLBitfield.h"
-#include "SchemaAnalyzer.h"
-#include "ColumnExpression.h"
-#include "SQLSelect.h"
-#include "SQLDatabase.h"
-#include "SQLType.h"
-#include "SQLTable.h"
 #include <sstream>
 
+#include "eclib/Log.h"
+#include "eclib/Translator.h"
+
+#include "odblib/SQLAST.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/ColumnExpression.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLType.h"
+#include "odblib/SQLTable.h"
 
 namespace odb {
 namespace sql {

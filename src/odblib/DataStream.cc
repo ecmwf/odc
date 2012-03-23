@@ -13,9 +13,12 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
-#include "stdint.h"
-#include "oda.h"
-#include "DataStream.h"
+#include <stdint.h>
+
+#include "eclib/Length.h"
+
+#include "odblib/DataStream.h"
+#include "odblib/MemoryBlock.h"
 
 namespace odb {
 

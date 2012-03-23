@@ -8,24 +8,26 @@
  * does it submit to any jurisdiction.
  */
 
-#include "machine.h"
-#include "SQLBitfield.h"
-#include "SQLODAOutput.h"
-#include "DataStream.h"
-#include "ODBAPISettings.h"
-#include "SQLSession.h"
-#include "TemplateParameters.h"
-#include "Codec.h"
-#include "Column.h"
-#include "IteratorProxy.h"
-#include "Writer.h"
-#include "RowsIterator.h"
-#include "WriterDispatchingIterator.h"
-#include "DispatchingWriter.h"
-#include "SQLOutput.h"
-#include "SQLDistinctOutput.h"
-#include "SQLOrderOutput.h"
-#include "SQLDatabase.h"
+#include "eclib/machine.h"
+
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/DataStream.h"
+#include "odblib/DispatchingWriter.h"
+#include "odblib/IteratorProxy.h"
+#include "odblib/ODBAPISettings.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLDistinctOutput.h"
+#include "odblib/SQLODAOutput.h"
+#include "odblib/SQLOrderOutput.h"
+#include "odblib/SQLOutput.h"
+#include "odblib/SQLSession.h"
+#include "odblib/TemplateParameters.h"
+#include "odblib/Writer.h"
+#include "odblib/WriterDispatchingIterator.h"
+
 
 template class ThreadSingleton<odb::ODBAPISettings>;
 static ThreadSingleton<odb::ODBAPISettings> instance_;

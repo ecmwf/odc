@@ -16,6 +16,8 @@
 #ifndef ODAWRITER_H
 #define ODAWRITER_H
 
+#include "odblib/IteratorProxy.h"
+
 class PathName;
 class DataHandle;
 

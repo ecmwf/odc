@@ -14,16 +14,19 @@
 #ifndef ODATranslator_H
 #define ODATranslator_H
 
-#include "machine.h"
 #include <strings.h>
-#include "Time.h"
-#include "Date.h"
-#include "Types.h"
-#include "PathName.h"
-#include "Translator.h"
-#include "StringTool.h"
-
 #include <sstream>
+
+#include "eclib/machine.h"
+
+#include "eclib/Date.h"
+#include "eclib/PathName.h"
+#include "eclib/Time.h"
+#include "eclib/Translator.h"
+#include "eclib/Types.h"
+
+#include "odblib/StringTool.h"
+
 
 #ifndef SRC
 #define SRC __FILE__,__LINE__

@@ -14,7 +14,7 @@
 #ifndef SQLDistinctOutput_H
 #define SQLDistinctOutput_H
 
-#include "SQLOutput.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {

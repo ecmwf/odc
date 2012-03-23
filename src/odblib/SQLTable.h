@@ -14,9 +14,10 @@
 #ifndef SQLTable_H
 #define SQLTable_H
 
-#include "PathName.h"
-#include "SQLBitfield.h"
-#include "SQLType.h"
+#include "eclib/PathName.h"
+
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

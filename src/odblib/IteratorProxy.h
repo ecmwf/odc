@@ -16,14 +16,19 @@
 #ifndef IteratorProxy_H
 #define IteratorProxy_H
 
+#include "odblib/ColumnType.h"
+#include "odblib/Types.h"
+
 class PathName;
 class DataHandle;
 
 #ifdef SWIGPYTHON
 
 #include <Python.h>
-#include "Column.h"
-#include "Application.h"
+
+#include "eclib/Application.h"
+
+#include "odblib/Column.h"
 
 struct ODBStopIteration : public std::exception {
 	const char* what() const throw() { return "end of data"; }
@@ -60,6 +65,7 @@ class HashTable;
 class SQLIteratorSession;
 class RowsReaderIterator;
 class ReaderIterator;
+class MetaData;
 class MetaDataReaderIterator;
 class SelectIterator;
 

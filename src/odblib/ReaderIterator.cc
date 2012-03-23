@@ -15,10 +15,10 @@
 
 #include <arpa/inet.h>
 
-#include "oda.h"
-#include "Codec.h"
-#include "DataStream.h"
-#include "Header.h"
+#include "odblib/oda.h"
+#include "odblib/Codec.h"
+#include "odblib/DataStream.h"
+#include "odblib/Header.h"
 
 namespace odb {
 

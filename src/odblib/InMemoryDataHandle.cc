@@ -8,11 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "machine.h"
-#include "InMemoryDataHandle.h"
-#include "FileHandle.h"
-#include "Timer.h"
-#include "Bytes.h"
+#include "eclib/machine.h"
+#include "eclib/Bytes.h"
+#include "eclib/FileHandle.h"
+#include "eclib/Timer.h"
+
+#include "odblib/InMemoryDataHandle.h"
 
 namespace odb {
 

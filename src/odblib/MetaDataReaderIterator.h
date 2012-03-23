@@ -16,8 +16,8 @@
 #ifndef MetaDataReaderIterator_H
 #define MetaDataReaderIterator_H
 
-#include "SimpleFilterIterator.h"
-#include "TReadOnlyMemoryDataHandle.h"
+#include "odblib/SimpleFilterIterator.h"
+#include "odblib/TReadOnlyMemoryDataHandle.h"
 
 
 class PathName;

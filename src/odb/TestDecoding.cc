@@ -16,13 +16,15 @@
 
 using namespace std;
 
-#include "oda.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestDecoding.h"
-#include "ToolFactory.h"
-#include "SimpleFilterIterator.h"
-#include "SimpleFilter.h"
+#include "odblib/oda.h"
+#include "odblib/SimpleFilterIterator.h"
+#include "odblib/SimpleFilter.h"
+
+#include "odb/Tool.h"
+#include "odb/TestCase.h"
+#include "odb/TestDecoding.h"
+#include "odb/ToolFactory.h"
+
 #define SRC __FILE__, __LINE__
 
 namespace odb {

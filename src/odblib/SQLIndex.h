@@ -14,10 +14,7 @@
 #ifndef SQLIndex_H
 #define SQLIndex_H
 
-// Headers
-#ifndef   machine_H
-#include <machine.h>
-#endif
+#include "eclib/machine.h"
 
 namespace odb {
 namespace sql {

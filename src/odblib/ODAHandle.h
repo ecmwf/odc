@@ -14,13 +14,14 @@
 #ifndef ODAHandle_H
 #define ODAHandle_H
 
-#include <machine.h>
+#include "eclib/machine.h"
 
-#include "Buffer.h"
-#include "Date.h"
-#include "Time.h"
-#include "Offset.h"
-#include "ODATranslator.h"
+#include "eclib/Buffer.h"
+#include "eclib/Date.h"
+#include "eclib/Time.h"
+#include "eclib/Offset.h"
+
+#include "odblib/ODATranslator.h"
 
 
 class ODAHandle {

@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "ODAHandle.h"
-#include "ODATranslator.h"
+#include "odblib/ODAHandle.h"
+#include "odblib/ODATranslator.h"
 
 ODAHandle::ODAHandle(Offset start, Offset end)
 : start_(start),

@@ -16,7 +16,7 @@
 
 class PathName;
 
-#include "SQLDatabase.h"
+#include "odblib/SQLDatabase.h"
 
 namespace odb {
 namespace sql {

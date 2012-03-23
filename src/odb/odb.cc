@@ -10,19 +10,17 @@
 
 #include <sstream>
 
-#include <Application.h>
-#include <PathName.h>
-#include <FileHandle.h>
+#include "eclib/Application.h"
+#include "eclib/PathName.h"
+#include "eclib/FileHandle.h"
 
-#include "ToolFactory.h"
-#include "ToolRunnerApplication.h"
-#include "TestRunnerApplication.h"
+#include "odblib/oda.h"
+#include "odblib/odbcapi.h"
 
-#include "oda.h"
-#include "odbcapi.h"
-
-#include "TestOdaCAPI.h"
-
+#include "odb/ToolFactory.h"
+#include "odb/ToolRunnerApplication.h"
+#include "odb/TestRunnerApplication.h"
+#include "odb/TestOdaCAPI.h"
 
 using namespace std;
 using namespace odb::tool;

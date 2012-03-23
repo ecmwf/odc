@@ -8,19 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "Types.h"
-#include "SQLSelect.h"
-#include "SQLTable.h"
-#include "Exceptions.h"
-#include "SQLAST.h"
-#include "SchemaAnalyzer.h"
-#include "SQLDatabase.h"
-#include "SQLColumn.h"
-#include "SQLTable.h"
-#include "SQLType.h"
-#include "BigNum.h"
-#include "SQLSession.h"
-#include "ConstantExpression.h"
+#include "eclib/BigNum.h"
+#include "eclib/Exceptions.h"
+#include "eclib/Types.h"
+
+#include "odblib/ConstantExpression.h"
+#include "odblib/SQLAST.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLSession.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLType.h"
+#include "odblib/SchemaAnalyzer.h"
 
 #define SRC __FILE__,__LINE__
 

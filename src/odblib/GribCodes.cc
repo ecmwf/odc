@@ -13,20 +13,19 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include <iostream>
-using namespace std;
-
-#include "Application.h"
-#include "Translator.h"
-
-#include "MemoryBlock.h"
-#include "FileHandle.h"
-#include "PathName.h"
-#include "GribCodes.h"
-#include "Regex.h"
-#include "StringTool.h"
-
 #include <strings.h>
 
+using namespace std;
+
+#include "eclib/Application.h"
+#include "eclib/FileHandle.h"
+#include "eclib/PathName.h"
+#include "eclib/Regex.h"
+#include "eclib/Translator.h"
+
+#include "odblib/GribCodes.h"
+#include "odblib/MemoryBlock.h"
+#include "odblib/StringTool.h"
 
 namespace odb {
 

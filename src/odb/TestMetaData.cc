@@ -20,14 +20,14 @@
 
 using namespace std;
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 #include "Tool.h"
 #include "ToolFactory.h"
 #include "TestCase.h"
 
-#include "MetaData.h"
-#include "DataStream.h"
+#include "odblib/MetaData.h"
+#include "odblib/DataStream.h"
 #include "TestMetaData.h"
 
 namespace odb {

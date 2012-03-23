@@ -16,10 +16,13 @@
 #ifndef WriterBufferingIterator_H
 #define WriterBufferingIterator_H
 
-#include "Array.h"
-#include "UnsafeInMemoryDataHandle.h"
-
 #include <memory>
+
+#include "odblib/Array.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/UnsafeInMemoryDataHandle.h"
+#include "odblib/Writer.h"
+#include "odblib/Header.h"
 
 class PathName;
 class DataHandle;

@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 #include "Tool.h"
 #include "TestCase.h"

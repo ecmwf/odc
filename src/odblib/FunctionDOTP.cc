@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionDOTP.h"
+#include "odblib/FunctionDOTP.h"
 
 namespace odb {
 namespace sql {

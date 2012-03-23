@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "Tracer.h"
+#include "odblib/Tracer.h"
 
 Tracer::Tracer(ostream& o, const string& m)
 : out_(o), message_(m)

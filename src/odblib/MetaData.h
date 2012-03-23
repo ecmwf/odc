@@ -11,8 +11,10 @@
 #ifndef MetaData_H
 #define MetaData_H
 
+#include "eclib/machine.h"
+
 #ifdef SWIGPYTHON
-#include "IteratorProxy.h"
+#include "odblib/IteratorProxy.h"
 #endif
 
 namespace odb {

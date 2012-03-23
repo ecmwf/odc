@@ -14,7 +14,7 @@
 #ifndef FunctionMAX_H
 #define FunctionMAX_H
 
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

@@ -17,10 +17,10 @@
 #include <map>
 using namespace std;
 
-#include "Log.h"
+#include "eclib/Log.h"
 #include "Tool.h"
 #include "TestCase.h"
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 #include "TestSQLFunctionsInfo.h"
 #include "ToolFactory.h"
 

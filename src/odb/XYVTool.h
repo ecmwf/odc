@@ -11,6 +11,8 @@
 #ifndef XYVTool_H
 #define XYVTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

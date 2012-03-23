@@ -4,12 +4,14 @@ BitColumnExpression.cc
 BitColumnExpression.h
 Codec.cc
 Codec.h
+CodecFactory.h
 CodecOptimizer.cc
 CodecOptimizer.h
 Column.cc
 Column.h
 ColumnExpression.cc
 ColumnExpression.h
+ColumnType.h
 Comparator.cc
 Comparator.h
 ConstantExpression.cc
@@ -108,7 +110,6 @@ Header.h
 InMemoryDataHandle.cc
 InMemoryDataHandle.h
 IteratorProxy.h
-LimitValues.h
 MD5.cc
 MD5.h
 MemoryBlock.cc
@@ -251,6 +252,7 @@ TextReaderIterator.cc
 TextReaderIterator.h
 Tracer.cc
 Tracer.h
+Types.h
 UnsafeInMemoryDataHandle.h
 VariableExpression.cc
 VariableExpression.h

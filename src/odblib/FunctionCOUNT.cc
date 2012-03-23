@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionCOUNT.h"
+#include "odblib/FunctionCOUNT.h"
 
 namespace odb {
 namespace sql {

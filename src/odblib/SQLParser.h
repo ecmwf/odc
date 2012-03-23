@@ -14,7 +14,7 @@
 #ifndef SQLParser_H
 #define SQLParser_H
 
-#include "SQLOutputConfig.h"
+#include "odblib/SQLOutputConfig.h"
 
 class PathName;
 class DataHandle;

@@ -11,6 +11,8 @@
 #ifndef CountTool_H
 #define CountTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

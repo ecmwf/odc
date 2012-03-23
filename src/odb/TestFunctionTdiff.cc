@@ -30,11 +30,11 @@ using namespace std;
 #include "TestCase.h"
 #include "TestFunctionTdiff.h"
 #include "ToolFactory.h"
-#include "piconst.h"
+#include "odblib/piconst.h"
 
 #define SRC __FILE__, __LINE__
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 namespace odb {
 namespace tool {

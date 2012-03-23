@@ -14,15 +14,15 @@
 #ifndef SelectOneTable_H
 #define SelectOneTable_H
 
-// Headers
-#include <machine.h>
 #include <stack>
 
-#include "SQLStatement.h"
-#include "SQLColumn.h"
-#include "SQLExpression.h"
-#include "SQLOutput.h"
-#include "FunctionROWNUMBER.h"
+#include "eclib/machine.h"
+
+#include "odblib/SQLStatement.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLOutput.h"
+#include "odblib/FunctionROWNUMBER.h"
 
 namespace odb {
 namespace sql {

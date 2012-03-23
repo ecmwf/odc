@@ -19,45 +19,45 @@
 #include <sstream>
 #include <errno.h>
 #include <math.h>
+#include <climits>
+#include <cfloat>
 
 using namespace std;
 
-#include "LimitValues.h"
+#include "eclib/Exceptions.h"
+#include "eclib/PathName.h"
+#include "odblib/MemoryBlock.h"
+#include "eclib/DataHandle.h"
+#include "eclib/FileHandle.h"
 
-#include "Exceptions.h"
-#include "PathName.h"
-#include "MemoryBlock.h"
-#include "DataHandle.h"
-#include "FileHandle.h"
-
-#include "SQLBitfield.h"
-#include "DataStream.h"
-#include "HashTable.h"
-#include "Codec.h"
-#include "Column.h"
-#include "HashTable.h"
-#include "SQLBitfield.h"
-#include "SQLIteratorSession.h"
-#include "MetaData.h"
-#include "RowsIterator.h"
-#include "Header.h"
-#include "IteratorProxy.h"
-#include "Writer.h"
-#include "ODBSelect.h"
-#include "ReaderIterator.h"
-#include "WriterBufferingIterator.h"
-#include "FixedSizeWriterIterator.h"
-#include "RowsIterator.h"
-#include "SelectIterator.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/HashTable.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/MetaData.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/Header.h"
+#include "odblib/IteratorProxy.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/ReaderIterator.h"
+#include "odblib/WriterBufferingIterator.h"
+#include "odblib/FixedSizeWriterIterator.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SelectIterator.h"
 
 
-#include "SQLType.h"
-#include "SQLInteractiveSession.h"
-#include "SQLIteratorSession.h"
-#include "SQLTable.h"
-#include "SQLSelect.h"
-#include "SQLParser.h"
-#include "SQLExpression.h"
+#include "odblib/SQLType.h"
+#include "odblib/SQLInteractiveSession.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLParser.h"
+#include "odblib/SQLExpression.h"
 
 
 using namespace std;

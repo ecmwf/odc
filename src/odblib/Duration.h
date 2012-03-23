@@ -11,12 +11,10 @@
 #ifndef DURATION_HEADER_H
 #define DURATION_HEADER_H
 
-// C++ header files
-#include<iostream>
-#include<stdint.h>
+#include <iostream>
+#include <stdint.h>
 
 // Forward declarations
-    // ---- No forward declarations ---- //
 
 namespace utils {
 

@@ -4,7 +4,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 %}
 
@@ -34,25 +34,26 @@ using namespace std;
 %include "ODBAPIVersion.h"
 %include "ODBAPISettings.h"
 
-#include "PathName.h"
-#include "MemoryBlock.h"
-#include "DataHandle.h"
-#include "FileHandle.h"
-#include "Timer.h"
-#include "Resource.h"
+#include "eclib/PathName.h"
+#include "odblib/MemoryBlock.h"
+#include "eclib/DataHandle.h"
+#include "eclib/FileHandle.h"
+#include "eclib/Timer.h"
+#include "eclib/Resource.h"
 
 
-%include "ODBSelect.h"
-%include "SQLType.h"
+%include "odblib/ODBSelect.h"
+%include "odblib/SQLType.h"
 
+%include "odblib/Types.h"
 %include "SQLBitfield.h"
-#include "StringTool.h"
-#include "DataStream.h"
-#include "HashTable.h"
-#include "Codec.h"
-%include "Column.h"
-#include "HashTable.h"
-#include "SQLIteratorSession.h"
+#include "odblib/StringTool.h"
+#include "odblib/DataStream.h"
+%include "odblib/HashTable.h"
+%include "odblib/Codec.h"
+%include "odblib/Column.h"
+#include "odblib/HashTable.h"
+#include "odblib/SQLIteratorSession.h"
 
 using namespace odb;
 
@@ -60,7 +61,7 @@ using namespace odb;
 %include "MetaData.h"
 
 %include "RowsIterator.h"
-#include "Header.h"
+#include "odblib/Header.h"
 
 %include "exception.i"
 
@@ -71,7 +72,7 @@ using namespace odb;
 %template(SelectIteratorProxy) odb::IteratorProxy<odb::SelectIterator,odb::Select,const double>;
 %template(SelectIteratorRow) odb::Row_<odb::SelectIterator,odb::Select,const double,odb::IteratorProxy<odb::SelectIterator,odb::Select,const double> >;
 
-#include "TemplateParameters.h"
+#include "odblib/TemplateParameters.h"
 %include "Reader.h"
 %include "TextReader.h"
 %include "ODBSelect.h"
@@ -82,17 +83,17 @@ using namespace odb;
 %include "DispatchingWriter.h"
 %include "ReaderIterator.h"
 %include "TextReaderIterator.h"
-#include "RowsIterator.h"
+#include "odblib/RowsIterator.h"
 %include "SelectIterator.h"
-#include "FixedSizeWriterIterator.h"
+#include "odblib/FixedSizeWriterIterator.h"
 
-#include "SQLType.h"
-#include "SQLInteractiveSession.h"
-#include "SQLIteratorSession.h"
-#include "SQLTable.h"
-#include "SQLSelect.h"
-#include "SQLParser.h"
-#include "SQLExpression.h"
+#include "odblib/SQLType.h"
+#include "odblib/SQLInteractiveSession.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLParser.h"
+#include "odblib/SQLExpression.h"
 
 #include "odbcapi.h"
 %init %{

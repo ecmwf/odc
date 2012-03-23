@@ -13,11 +13,12 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
-#include "Application.h"
-#include "oda.h"
-#include "MetaDataReaderIterator.h"
-#include "MetaDataReader.h"
-#include "FastODA2Request.h"
+#include "eclib/Application.h"
+
+#include "odblib/oda.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/FastODA2Request.h"
 
 using namespace odb;
 

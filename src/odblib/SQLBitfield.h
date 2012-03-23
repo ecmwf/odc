@@ -14,21 +14,16 @@
 #ifndef SQLBitfield_H
 #define SQLBitfield_H
 
-#include "SQLType.h"
+#include "odblib/Types.h"
+#include "odblib/SQLType.h"
 
 namespace odb {
-
-typedef vector<string>           FieldNames;
-typedef vector<int32_t>          Sizes;
-typedef pair<FieldNames, Sizes>  BitfieldDef;
-typedef map<string, BitfieldDef> BitfieldDefs;
-
 namespace sql {
 namespace type {
 
 class SQLBitfield : public SQLType {
 public:
-	SQLBitfield(const string&, const FieldNames&, const Sizes&, const string&);
+	SQLBitfield(const string&, const odb::FieldNames&, const odb::Sizes&, const string&);
 	~SQLBitfield(); // Change to virtual if base class
 
 	unsigned long mask(const string& n) const;

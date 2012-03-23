@@ -9,7 +9,7 @@
  */
 
 
-#include "SQLIteratorOutput.h"
+#include "odblib/SQLIteratorOutput.h"
 
 namespace odb {
 namespace sql {

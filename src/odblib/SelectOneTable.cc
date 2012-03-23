@@ -11,15 +11,15 @@
 /// \file SelectOneTable.cc
 /// Piotr Kuchta - ECMWF Jul 11
 
-#include <machine.h>
+#include "eclib/machine.h"
 #include <stack>
 
-#include "SQLStatement.h"
-#include "SQLColumn.h"
-#include "SQLExpression.h"
-#include "SQLOutput.h"
-#include "FunctionROWNUMBER.h"
-#include "SelectOneTable.h"
+#include "odblib/SQLStatement.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLOutput.h"
+#include "odblib/FunctionROWNUMBER.h"
+#include "odblib/SelectOneTable.h"
 
 namespace odb {
 namespace sql {

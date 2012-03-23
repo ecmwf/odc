@@ -11,6 +11,8 @@
 #ifndef HashTable_H
 #define HashTable_H
 
+#include "odblib/DataStream.h"
+
 namespace odb {
 
 class Reader;

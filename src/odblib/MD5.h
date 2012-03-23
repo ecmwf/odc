@@ -18,7 +18,7 @@ extern "C" {
 #include "md5.h"
 } // extern "C"
 
-#include "machine.h"
+#include "eclib/machine.h"
 
 // Forward declarations
 

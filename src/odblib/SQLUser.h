@@ -14,7 +14,7 @@
 #ifndef SQLUser_H
 #define SQLUser_H
 
-#include "NetUser.h"
+#include "eclib/NetUser.h"
 
 namespace odb {
 namespace sql {

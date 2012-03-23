@@ -22,7 +22,7 @@ using namespace std;
 #include "Tool.h"
 #include "ToolFactory.h"
 #include "TestCase.h"
-#include "InMemoryDataHandle.h"
+#include "odblib/InMemoryDataHandle.h"
 #include "TestInMemoryDataHandle.h"
 
 namespace odb {

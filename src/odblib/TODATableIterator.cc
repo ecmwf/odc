@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "SQLDatabase.h"
-#include "SQLType.h"
-#include "TODATable.h"
-#include "ODAColumn.h"
-#include "TODATableIterator.h"
+#include "odblib/ODAColumn.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLType.h"
+#include "odblib/TODATable.h"
+#include "odblib/TODATableIterator.h"
 
 #define SRC __FILE__,__LINE__
 

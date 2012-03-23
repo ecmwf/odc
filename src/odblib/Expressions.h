@@ -14,10 +14,11 @@
 #ifndef Expressions_H
 #define Expressions_H
 
-#include <machine.h>
+#include "eclib/machine.h"
 
-#include "Exceptions.h"
-#include "SQLExpression.h"
+#include "eclib/Exceptions.h"
+
+#include "odblib/SQLExpression.h"
 
 namespace odb {
 namespace sql {

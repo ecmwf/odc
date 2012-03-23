@@ -11,25 +11,17 @@
 #ifndef Column_H
 #define Column_H
 
+#include "odblib/Types.h"
+#include "odblib/Codec.h"
+#include "odblib/ColumnType.h"
+
 class DataHandle;
 
 namespace odb {
 
 class Reader;
-namespace codec { class Codec; }
 class HashTable;
 class MetaData;
-
-enum ColumnType
-{
-	IGNORE   = 0,
-	INTEGER  = 1,
-	REAL     = 2,
-	STRING   = 3,
-	BITFIELD = 4,
-	DOUBLE   = 5
-};
-
 
 class Column {
 

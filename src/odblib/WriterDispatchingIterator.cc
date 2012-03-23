@@ -13,15 +13,15 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "oda.h"
-#include "DataStream.h"
-#include "Codec.h"
-#include "Writer.h"
-#include "WriterBufferingIterator.h"
-#include "TemplateParameters.h"
-#include "DataStream.h"
-#include "UnsafeInMemoryDataHandle.h"
-#include "FunctionEQ.h"
+#include "odblib/oda.h"
+#include "odblib/Codec.h"
+#include "odblib/DataStream.h"
+#include "odblib/DataStream.h"
+#include "odblib/FunctionEQ.h"
+#include "odblib/TemplateParameters.h"
+#include "odblib/UnsafeInMemoryDataHandle.h"
+#include "odblib/Writer.h"
+#include "odblib/WriterBufferingIterator.h"
 
 namespace odb {
 
@@ -349,7 +349,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 
 template <>
 template <typename T>
-unsigned long WriterDispatchingIterator<WriterBufferingIterator>::pass1(T& it, const T& end)
+unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::pass1(T& it, const T& end)
 {
 	Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1:" << endl;
 

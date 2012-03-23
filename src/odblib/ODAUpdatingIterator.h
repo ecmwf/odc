@@ -71,6 +71,6 @@ public:
 
 } // namespace odb 
 
-#include "ODAUpdatingIterator.cc"
+#include "odblib/ODAUpdatingIterator.cc"
 
 #endif

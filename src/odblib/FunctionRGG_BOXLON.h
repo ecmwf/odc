@@ -14,7 +14,7 @@
 #ifndef FunctionRGG_BOXLON_H
 #define FunctionRGG_BOXLON_H
 
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

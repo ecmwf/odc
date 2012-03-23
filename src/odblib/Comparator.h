@@ -11,7 +11,11 @@
 #ifndef Comparator_H
 #define Comparator_H
 
+#include <cmath>
+
 namespace odb {
+
+class MetaData;
 
 const double maxAbsoluteError = 1e-9;
 const double maxRelativeError = 1e-9;

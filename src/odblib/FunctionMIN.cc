@@ -8,8 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include "FunctionMIN.h"
-#include <values.h>
+#include <climits>
+#include <cfloat>
+
+#include "odblib/FunctionMIN.h"
 
 namespace odb {
 namespace sql {

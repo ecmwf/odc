@@ -8,10 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "Decoder.h"
-#include "Log.h"
-#include "Exceptions.h"
-#include "Endian.h"
+#include "eclib/Exceptions.h"
+#include "eclib/Log.h"
+
+#include "odblib/Decoder.h"
+#include "odblib/Endian.h"
 
 namespace odb {
 

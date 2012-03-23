@@ -8,11 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "Dictionary.h"
-#include "NumberExpression.h"
-#include "StrStream.h"
-#include "SQLType.h"
-#include "SQLOutput.h"
+
+#include "eclib/StrStream.h"
+
+#include "odblib/Dictionary.h"
+#include "odblib/NumberExpression.h"
+#include "odblib/SQLType.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {

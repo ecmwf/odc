@@ -13,8 +13,8 @@
 #ifndef ColumnExpression_H
 #define ColumnExpression_H
 
-#include "SQLExpression.h"
-#include "SQLType.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

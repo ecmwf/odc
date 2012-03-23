@@ -16,6 +16,8 @@
 #ifndef Reader_H
 #define Reader_H
 
+#include "odblib/IteratorProxy.h"
+
 #ifdef SWIGPYTHON
 #include <Python.h>
 #endif
@@ -42,7 +44,7 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	DataHandle* dataHandle() { return dataHandle_; };
+	DataHandle* dataHandle() { return dataHandle_; }
 	// For C API
 	ReaderIterator* createReadIterator(const PathName&);
 	ReaderIterator* createReadIterator();

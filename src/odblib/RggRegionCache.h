@@ -14,10 +14,10 @@
 #ifndef RggRegionCache_H
 #define RggRegionCache_H
 
-
-#include "piconst.h"
-#include "RegionCache.h"
 #include <vector>
+
+#include "odblib/piconst.h"
+#include "odblib/RegionCache.h"
 
 class RggRegionCache : public RegionCache {
 public:

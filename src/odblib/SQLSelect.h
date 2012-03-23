@@ -14,21 +14,21 @@
 #ifndef SQLSelect_H
 #define SQLSelect_H
 
-// Headers
-#include <machine.h>
 #include <stack>
 
-#include "SQLStatement.h"
-#include "SQLColumn.h"
-#include "SQLExpression.h"
-#include "SQLOutput.h"
-#include "SQLOutputConfig.h"
-#include "FunctionROWNUMBER.h"
-#include "FunctionTHIN.h"
-#include "SelectOneTable.h"
-#include "Environment.h"
-#include "Stack.h"
-#include "SQLOutputConfig.h"
+#include "eclib/machine.h"
+
+#include "odblib/Environment.h"
+#include "odblib/FunctionROWNUMBER.h"
+#include "odblib/FunctionTHIN.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLOutput.h"
+#include "odblib/SQLOutputConfig.h"
+#include "odblib/SQLOutputConfig.h"
+#include "odblib/SQLStatement.h"
+#include "odblib/SelectOneTable.h"
+#include "odblib/Stack.h"
 
 namespace odb {
 

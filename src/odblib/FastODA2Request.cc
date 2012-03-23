@@ -8,21 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
-#include "Exceptions.h"
-#include "DataHandle.h"
-#include "DataStream.h"
-#include "HashTable.h"
-#include "FastODA2Request.h"
-#include "Codec.h"
-#include "Column.h"
-#include "MetaDataReaderIterator.h"
-#include "MetaDataReader.h"
-#include "CodecOptimizer.h"
-#include "FastODA2Request.h"
-#include "GribCodes.h"
-#include "ODAHandle.h"
-#include "StringTool.h"
+#include "odblib/oda.h"
+#include "eclib/Exceptions.h"
+#include "eclib/DataHandle.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/FastODA2Request.h"
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/CodecOptimizer.h"
+#include "odblib/FastODA2Request.h"
+#include "odblib/GribCodes.h"
+#include "odblib/ODAHandle.h"
+#include "odblib/StringTool.h"
 
 namespace odb {
 

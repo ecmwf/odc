@@ -12,7 +12,7 @@
 /// This file will be updated autmatically by the make.sms script
 ///
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 namespace odb {
 

@@ -12,13 +12,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 #include "Tool.h"
 #include "TestCase.h"
 #include "TestConstCodec.h"
 #include "ToolFactory.h"
-#include "IteratorProxy.h"
+#include "odblib/IteratorProxy.h"
 #include "MockReader.h"
 
 #define SRC __FILE__, __LINE__

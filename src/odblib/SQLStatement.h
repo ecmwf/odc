@@ -14,8 +14,8 @@
 #ifndef SQLStatement_H
 #define SQLStatement_H
 
-#include <machine.h>
-#include "SQLExpression.h"
+#include "eclib/machine.h"
+#include "odblib/SQLExpression.h"
 
 namespace odb {
 namespace sql {

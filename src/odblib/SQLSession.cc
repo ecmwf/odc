@@ -8,21 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "Exceptions.h"
-#include "SQLAST.h"
-#include "Log.h"
-#include "SQLBitfield.h"
-#include "SchemaAnalyzer.h"
-#include "SQLSession.h"
-#include "SQLDatabase.h"
+#include "eclib/Exceptions.h"
+#include "eclib/Log.h"
+#include "eclib/ThreadSingleton.h"
+#include "eclib/Timer.h"
 
-#include "ODADatabase.h"
-
-#include "SQLStatement.h"
-#include "ThreadSingleton.h"
-#include "Timer.h"
-#include "SQLTable.h"
-#include "SQLColumn.h"
+#include "odblib/ODADatabase.h"
+#include "odblib/SQLAST.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLSession.h"
+#include "odblib/SQLStatement.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SchemaAnalyzer.h"
 
 template class ThreadSingleton<odb::sql::SQLSession*>;
 static ThreadSingleton<odb::sql::SQLSession*> instance_;

@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLOrderOutput.h"
-#include "SQLExpressionEvaluated.h"
-#include "OrderByExpressions.h"
+#include "odblib/SQLOrderOutput.h"
+#include "odblib/SQLExpressionEvaluated.h"
+#include "odblib/OrderByExpressions.h"
 
 namespace odb {
 namespace sql {

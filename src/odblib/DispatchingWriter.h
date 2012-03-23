@@ -16,6 +16,9 @@
 #ifndef DispatchingWriter_H
 #define DispatchingWriter_H
 
+#include "odblib/WriterDispatchingIterator.h"
+#include "odblib/WriterBufferingIterator.h"
+
 class PathName;
 
 namespace odb {
@@ -23,7 +26,7 @@ namespace odb {
 class DispatchingWriter
 {
 public:
-	typedef WriterDispatchingIterator<> iterator_class;
+	typedef WriterDispatchingIterator<WriterBufferingIterator, DispatchingWriter> iterator_class;
 	typedef IteratorProxy<iterator_class, DispatchingWriter>  iterator;
 
 	DispatchingWriter(const string &outputFileTemplate, int maxOpenFiles = 0);

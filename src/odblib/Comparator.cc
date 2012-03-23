@@ -8,11 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
-#include "Comparator.h"
 #include <cmath>
-#include "Resource.h"
-#include "Tracer.h"
+
+#include "eclib/Resource.h"
+
+#include "odblib/oda.h"
+#include "odblib/Comparator.h"
+#include "odblib/Tracer.h"
 
 #define SRC __FILE__, __LINE__
 

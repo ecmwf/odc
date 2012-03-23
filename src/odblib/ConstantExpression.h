@@ -14,12 +14,13 @@
 #ifndef ConstantExpression_H
 #define ConstantExpression_H
 
-#include <machine.h>
+#include "eclib/machine.h"
 
-#include "SQLType.h"
-#include "SQLExpression.h"
-#include "SQLBitfield.h"
-#include "Exceptions.h"
+#include "eclib/Exceptions.h"
+
+#include "odblib/SQLType.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLBitfield.h"
 
 namespace odb {
 namespace sql {

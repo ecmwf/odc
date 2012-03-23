@@ -8,11 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "machine.h"
-#include "TReadOnlyMemoryDataHandle.h"
-#include "FileHandle.h"
-#include "Timer.h"
-#include "Bytes.h"
+#include "odblib/TReadOnlyMemoryDataHandle.h"
 
 namespace odb {
 

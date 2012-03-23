@@ -14,7 +14,7 @@
 #ifndef piconst_H
 #define piconst_H
 
-#include "math.h"
+#include <math.h>
 
 namespace piconst {
 //  const double  pi                = ((double)3.14159265358979323844e0);

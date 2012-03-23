@@ -11,17 +11,18 @@
 #ifndef Environment_H
 #define Environment_H
 
-// Headers
-#include <machine.h>
 #include <stack>
 
-#include "SQLStatement.h"
-#include "SQLColumn.h"
-#include "SQLExpression.h"
-#include "SQLOutput.h"
-#include "FunctionROWNUMBER.h"
-#include "SelectOneTable.h"
-#include "Stack.h"
+#include "eclib/machine.h"
+
+#include "odblib/SQLStatement.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLOutput.h"
+#include "odblib/FunctionROWNUMBER.h"
+
+#include "odblib/SelectOneTable.h"
+#include "odblib/Stack.h"
 
 namespace odb {
 namespace sql {

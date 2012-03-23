@@ -14,7 +14,7 @@
 #ifndef FUNCTION_INTEGER_EXPRESSION_H
 #define FUNCTION_INTEGER_EXPRESSION_H
 
-#include "FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

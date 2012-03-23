@@ -8,15 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 #include "Tool.h"
 #include "ToolFactory.h"
 #include "LSTool.h"
 
-#include "MetaData.h"
-#include "Column.h"
-#include "SQLSelectFactory.h"
+#include "odblib/MetaData.h"
+#include "odblib/Column.h"
+#include "odblib/SQLSelectFactory.h"
 
 namespace odb {
 namespace tool {

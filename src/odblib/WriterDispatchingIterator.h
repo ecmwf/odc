@@ -16,7 +16,12 @@
 #ifndef WriterDispatchingIterator_H
 #define WriterDispatchingIterator_H
 
-//#include "DispatchingWriter.h"
+//#include "odblib/DispatchingWriter.h"
+//#include "odblib/WriterBufferingIterator.h"
+
+#include "odblib/RowsIterator.h"
+#include "odblib/TemplateParameters.h"
+#include "odblib/Writer.h"
 
 class PathName;
 class DataHandle;
@@ -27,7 +32,8 @@ class HashTable;
 class SQLIteratorSession;
 class TemplateParameters;
 
-template <typename WRITE_ITERATOR = WriterBufferingIterator, typename OWNER = DispatchingWriter>
+//template <typename WRITE_ITERATOR = WriterBufferingIterator, typename OWNER = DispatchingWriter>
+template <typename WRITE_ITERATOR, typename OWNER >
 class WriterDispatchingIterator : public RowsWriterIterator
 {
 	typedef vector<double> Values;
@@ -116,11 +122,11 @@ private:
 
 	map<string,int> filesCreated_;
 
-	friend class IteratorProxy<WriterDispatchingIterator<WRITE_ITERATOR>, DispatchingWriter>;
+	friend class IteratorProxy<WriterDispatchingIterator<WRITE_ITERATOR,DispatchingWriter>, DispatchingWriter>;
 };
 
 } // namespace odb 
 
-#include "WriterDispatchingIterator.cc"
+#include "odblib/WriterDispatchingIterator.cc"
 
 #endif

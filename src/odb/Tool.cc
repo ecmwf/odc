@@ -15,15 +15,15 @@
 #include <iostream>
 using namespace std;
 
-#include "Application.h"
-#include "Translator.h"
+#include "eclib/Application.h"
+#include "eclib/Translator.h"
 
-#include "MemoryBlock.h"
-#include "FileHandle.h"
-#include "PathName.h"
+#include "odblib/MemoryBlock.h"
+#include "eclib/FileHandle.h"
+#include "eclib/PathName.h"
 #include "Tool.h"
-#include "Endian.h"
-#include "Regex.h"
+#include "odblib/Endian.h"
+#include "eclib/Regex.h"
 
 #include <strings.h>
 

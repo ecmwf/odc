@@ -19,7 +19,7 @@
 #include <set>
 #include <vector>
 
-#include "Tokenizer.h"
+#include "eclib/Tokenizer.h"
 
 using namespace std;
 

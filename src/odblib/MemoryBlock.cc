@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "MemoryBlock.h"
-#include "Exceptions.h"
+#include "eclib/Exceptions.h"
+#include "odblib/MemoryBlock.h"
 
 MemoryBlock::MemoryBlock(size_t size):
 	buffer_(0),

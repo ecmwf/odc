@@ -15,15 +15,16 @@
 #include <iostream>
 #include <vector>
 #include <map>
+
 using namespace std;
 
-#include "Log.h"
-#include "Exceptions.h"
+#include "eclib/Log.h"
+#include "eclib/Exceptions.h"
 
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestCommandLineParsing.h"
-#include "ToolFactory.h"
+#include "odb/Tool.h"
+#include "odb/TestCase.h"
+#include "odb/TestCommandLineParsing.h"
+#include "odb/ToolFactory.h"
 
 namespace odb {
 namespace tool {

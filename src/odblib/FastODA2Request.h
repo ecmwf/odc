@@ -11,8 +11,10 @@
 #ifndef FastODA2Request_H
 #define FastODA2Request_H
 
-#include "MetaDataReader.h"
-#include "ODAHandle.h"
+#include "odblib/Column.h"
+#include "odblib/MetaData.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/ODAHandle.h"
 
 namespace odb {
 
@@ -86,7 +88,7 @@ struct ODA2RequestClientTraits {
 
 } // namespace odb
 
-#include "FastODA2Request.cc"
+#include "odblib/FastODA2Request.cc"
 
 #endif
 

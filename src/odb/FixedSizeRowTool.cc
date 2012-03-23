@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
+#include "odblib/oda.h"
 
 #include "Tool.h"
 #include "ToolFactory.h"
-#include "Comparator.h"
+#include "odblib/Comparator.h"
 #include "FixedSizeRowTool.h"
 
 namespace odb {

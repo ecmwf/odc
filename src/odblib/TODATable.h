@@ -14,8 +14,8 @@
 #ifndef TODATable_H
 #define TODATable_H
 
-#include "SQLTable.h"
-#include "TODATableIterator.h"
+#include "odblib/SQLTable.h"
+#include "odblib/TODATableIterator.h"
 
 namespace odb {
 namespace sql {

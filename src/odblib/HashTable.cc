@@ -9,9 +9,10 @@
  */
 
 
-#include "stdint.h"
-#include "oda.h"
-#include "DataStream.h"
+#include <stdint.h>
+
+#include "odblib/oda.h"
+#include "odblib/DataStream.h"
 
 namespace odb {
 namespace codec {

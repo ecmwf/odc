@@ -14,9 +14,7 @@
 #ifndef Decoder_H
 #define Decoder_H
 
-#ifndef machine_H
-#include "machine.h"
-#endif
+#include "eclib/machine.h"
 
 namespace odb {
 

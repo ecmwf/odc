@@ -8,19 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
-#include "Exceptions.h"
-#include "DataHandle.h"
-#include "DataStream.h"
-#include "HashTable.h"
-#include "MetaData.h"
-#include "Codec.h"
-#include "Column.h"
-#include "MetaDataReaderIterator.h"
-#include "MetaDataReader.h"
-#include "CodecOptimizer.h"
-#include "MetaData.h"
-#include "Codec.h"
+#include "eclib/DataHandle.h"
+#include "eclib/Exceptions.h"
+
+#include "odblib/oda.h"
+#include "odblib/Codec.h"
+#include "odblib/CodecOptimizer.h"
+#include "odblib/Column.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/MetaData.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
 
 namespace odb {
 

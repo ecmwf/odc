@@ -14,7 +14,7 @@
 #ifndef BitColumnExpression_H
 #define BitColumnExpression_H
 
-#include "ColumnExpression.h"
+#include "odblib/ColumnExpression.h"
 
 namespace odb {
 namespace sql {

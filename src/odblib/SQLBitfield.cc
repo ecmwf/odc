@@ -8,14 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLBitfield.h"
-#include "Translator.h"
-#include "Exceptions.h"
-#include "Tokenizer.h"
-#include "SQLBit.h"
-#include "Decoder.h"
-#include "Types.h"
-#include "SQLOutput.h"
+#include "eclib/Exceptions.h"
+#include "eclib/Tokenizer.h"
+#include "eclib/Translator.h"
+#include "eclib/Types.h"
+
+#include "odblib/Decoder.h"
+#include "odblib/SQLBit.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {

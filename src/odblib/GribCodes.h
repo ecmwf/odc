@@ -19,8 +19,9 @@
 #include <set>
 #include <vector>
 
-#include "Tokenizer.h"
-#include "StringTool.h"
+#include "eclib/Tokenizer.h"
+
+#include "odblib/StringTool.h"
 
 using namespace std;
 

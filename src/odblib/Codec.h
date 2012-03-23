@@ -11,11 +11,13 @@
 #ifndef Codec_H
 #define Codec_H
 
-class DataHandle;
-
-#include "UnsafeInMemoryDataHandle.h"
 #include <strings.h>
 #include <limits>
+
+#include "odblib/HashTable.h"
+#include "odblib/UnsafeInMemoryDataHandle.h"
+
+class DataHandle;
 
 namespace odb {
 
@@ -116,92 +118,7 @@ private:
 	Codec& operator=(const Codec&);
 };
 
-template <typename DATAHANDLE>
-class AbstractCodecFactory {
-public:
-	static Codec* getCodec(const string& name, bool differentByteOrder) {
-		return codecFactories[name]->create(differentByteOrder);
-	};
-
-	static Codec* loadCodec(DATAHANDLE *dh, bool differentByteOrder) {
-		string name;
-		if (differentByteOrder)
-		{
-			DataStream<OtherByteOrder,DATAHANDLE> ds(dh);
-			ds.readString(name);
-		}
-		else
-		{
-			DataStream<SameByteOrder,DATAHANDLE> ds(dh);
-			ds.readString(name);
-		}
-		AbstractCodecFactory *factory = codecFactories[name];
-		Codec *codec = factory->load(dh, differentByteOrder);
-		return codec;
-	};
-
-	
-	template<typename BYTEORDER>
-		static void save(Codec *codec, DataStream<BYTEORDER,DATAHANDLE> &f);
-
-	virtual Codec* create(bool sourceHasDifferentByteOrder) = 0;
-
-	virtual Codec* load(DataHandle *, bool sourceHasDifferentByteOrder) = 0;
-	virtual Codec* load(FastInMemoryDataHandle*, bool sourceHasDifferentByteOrder) { NOTIMP; return 0; } //= 0;
-
-	virtual void save(Codec *, DataHandle *, bool sourceHasDifferentByteOrder) = 0;
-	
-protected:
-	AbstractCodecFactory(const string& name) { codecFactories[name] = this; }
-
-private:
-	static map<string, AbstractCodecFactory<DATAHANDLE> *> codecFactories;
-};
-
-
-template <template <typename> class CODEC,typename DATAHANDLE>
-class CodecFactory : public AbstractCodecFactory<DATAHANDLE> {
-public:
-	CodecFactory (const string& name) : AbstractCodecFactory<DATAHANDLE>(name) { }
-
-	virtual Codec* create(bool sourceHasDifferentByteOrder)
-	{
-		if (sourceHasDifferentByteOrder)
-			return new CODEC<OtherByteOrder>; 
-		else
-			return new CODEC<SameByteOrder>;
-	}
-
-	virtual Codec* load(DataHandle *dh, bool sourceHasDifferentByteOrder)
-	{
-		if(sourceHasDifferentByteOrder)
-		{
-			CODEC<OtherByteOrder> *codec = new CODEC<OtherByteOrder>;
-			codec->load(dh);
-			return codec;
-		}
-		else
-		{
-			CODEC<SameByteOrder> *codec = new CODEC<SameByteOrder>;
-			codec->load(dh);
-			return codec;
-		}
-	}
-
-	virtual void save(Codec *codec, DataHandle *dh, bool sourceHasDifferentByteOrder)
-	{
-		if(sourceHasDifferentByteOrder)
-		{
-			CODEC<OtherByteOrder> *theCodec = static_cast<CODEC<OtherByteOrder> *>(codec);
-			theCodec->save(dh);
-		}
-		else
-		{
-			CODEC<SameByteOrder> *theCodec = static_cast<CODEC<SameByteOrder> *>(codec);
-			theCodec->save(dh);
-		}
-	}
-};
+#include "odblib/CodecFactory.h"
 
 template<typename DATASTREAM>
 void Codec::save(DATASTREAM &f)

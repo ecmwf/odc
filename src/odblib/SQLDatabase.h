@@ -14,8 +14,10 @@
 #ifndef SQLDatabase_H
 #define SQLDatabase_H
 
-#include "PathName.h"
-#include "SQLTable.h"
+#include "eclib/PathName.h"
+
+#include "odblib/SQLTable.h"
+#include "odblib/SchemaAnalyzer.h"
 
 class DataHandle;
 

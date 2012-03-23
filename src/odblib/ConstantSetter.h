@@ -11,8 +11,8 @@
 #ifndef ConstantSetter_H
 #define ConstantSetter_H
 
-#include "IteratorProxy.h"
-#include "ODAUpdatingIterator.h"
+#include "odblib/IteratorProxy.h"
+#include "odblib/ODAUpdatingIterator.h"
 
 namespace odb {
 

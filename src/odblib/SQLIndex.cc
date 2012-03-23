@@ -8,10 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLIndex.h"
-#include "SQLColumn.h"
-#include "SQLTable.h"
-#include "Timer.h"
+#include "eclib/Timer.h"
+
+#include "odblib/SQLIndex.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLTable.h"
 
 namespace odb {
 namespace sql {

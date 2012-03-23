@@ -11,6 +11,8 @@
 #ifndef ImportTool_H
 #define ImportTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

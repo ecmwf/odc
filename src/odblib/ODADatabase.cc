@@ -9,12 +9,13 @@
  */
 
 #include <cctype>
-#include "FILEHandle.h"
 
-#include "oda.h"
-#include "ODADatabase.h"
-#include "TODATable.h"
-#include "StringTool.h"
+#include "eclib/FILEHandle.h"
+
+#include "odblib/oda.h"
+#include "odblib/ODADatabase.h"
+#include "odblib/StringTool.h"
+#include "odblib/TODATable.h"
 
 namespace odb {
 namespace sql {

@@ -14,7 +14,7 @@
 #ifndef SQLIteratorOutput_H
 #define SQLIteratorOutput_H
 
-#include "SQLOutput.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 
@@ -68,6 +68,6 @@ private:
 } // namespace sql
 } // namespace odb
 
-#include "SQLIteratorOutput.cc"
+#include "odblib/SQLIteratorOutput.cc"
 
 #endif

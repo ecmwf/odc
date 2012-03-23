@@ -11,6 +11,8 @@
 #ifndef _SQLTool_H
 #define _SQLTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

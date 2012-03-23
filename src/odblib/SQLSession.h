@@ -17,9 +17,10 @@
 class PathName;
 class DataHandle;
 
-#include "machine.h"
-#include "SQLAST.h"
-#include "SchemaAnalyzer.h"
+#include "eclib/machine.h"
+
+#include "odblib/SQLAST.h"
+#include "odblib/SchemaAnalyzer.h"
 
 namespace odb {
 namespace sql {

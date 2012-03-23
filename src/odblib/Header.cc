@@ -13,11 +13,10 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "oda.h"
-#include "DataStream.h"
-#include "InMemoryDataHandle.h"
-#include "MD5.h"
-#include "Header.h"
+#include "odblib/DataStream.h"
+#include "odblib/Header.h"
+#include "odblib/InMemoryDataHandle.h"
+#include "odblib/MD5.h"
 
 namespace odb {
 

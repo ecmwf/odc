@@ -8,14 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "Types.h"
+#include "eclib/Types.h"
+#include "eclib/Tokenizer.h"
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Tokenizer.h"
-#include "ImportTool.h"
+#include "odb/Tool.h"
+#include "odb/ToolFactory.h"
+#include "odb/ImportTool.h"
+
 #define SRC __FILE__,__LINE__
 
 using namespace std;

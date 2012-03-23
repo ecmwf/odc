@@ -16,6 +16,10 @@
 #ifndef DataStream_H
 #define DataStream_H
 
+#include "eclib/machine.h"
+
+#include "odblib/SQLBitfield.h"
+
 class DataHandle;
 class MemoryBlock;
 
@@ -26,7 +30,6 @@ typedef std::vector<double> Flags;
 
 class Column;
 class Reader;
-namespace codec { class Codec; }
 class HashTable;
 class SQLIteratorSession;
 

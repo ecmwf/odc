@@ -16,8 +16,8 @@
 #ifndef ReaderIterator_H
 #define ReaderIterator_H
 
-#include "SimpleFilterIterator.h"
-#include "TReadOnlyMemoryDataHandle.h"
+#include "odblib/SimpleFilterIterator.h"
+#include "odblib/TReadOnlyMemoryDataHandle.h"
 
 
 class PathName;

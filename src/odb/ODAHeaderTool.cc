@@ -8,13 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "ODAHeaderTool.h"
-#include "MetaDataReaderIterator.h"
-#include "MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/MetaDataReader.h"
+
+#include "odb/ODAHeaderTool.h"
+#include "odb/Tool.h"
+#include "odb/ToolFactory.h"
 
 namespace odb {
 namespace tool {

@@ -14,12 +14,13 @@
 #ifndef UnsafeInMemoryDataHandle_H
 #define UnsafeInMemoryDataHandle_H
 
-#include "PathName.h"
-#include "Length.h"
-#include "Offset.h"
-#include "TransferWatcher.h"
-#include "DataHandle.h"
-#include "MemoryBlock.h"
+#include "eclib/PathName.h"
+#include "eclib/Length.h"
+#include "eclib/Offset.h"
+#include "eclib/TransferWatcher.h"
+#include "eclib/DataHandle.h"
+
+#include "odblib/MemoryBlock.h"
 
 namespace odb {
 

@@ -8,15 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-#include "AutoAlarm.h"
-#include "Exceptions.h"
-#include "SQLAST.h"
-#include "Log.h"
-#include "SQLBitfield.h"
-#include "SchemaAnalyzer.h"
-#include "Endian.h"
-#include "SQLServerOutput.h"
-#include "SQLServerSession.h"
+#include "eclib/AutoAlarm.h"
+#include "eclib/Exceptions.h"
+#include "eclib/Log.h"
+
+#include "odblib/Endian.h"
+#include "odblib/SQLAST.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLServerOutput.h"
+#include "odblib/SQLServerSession.h"
+#include "odblib/SchemaAnalyzer.h"
+
 
 namespace odb {
 namespace sql {

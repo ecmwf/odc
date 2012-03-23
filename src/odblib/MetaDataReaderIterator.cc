@@ -15,12 +15,12 @@
 
 #include <arpa/inet.h>
 
-#include "oda.h"
-#include "Codec.h"
-#include "DataStream.h"
-#include "Header.h"
-#include "MetaDataReader.h"
-#include "MetaDataReaderIterator.h"
+#include "odblib/oda.h"
+#include "odblib/Codec.h"
+#include "odblib/DataStream.h"
+#include "odblib/Header.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
 
 namespace odb {
 

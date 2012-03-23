@@ -16,10 +16,10 @@
 #ifndef SQLCreateTable_H
 #define SQLCreateTable_H
 
-// Headers
-#include "machine.h"
-#include "SQLAST.h"
-#include "SQLExpression.h"
+#include "eclib/machine.h"
+
+#include "odblib/SQLAST.h"
+#include "odblib/SQLExpression.h"
 
 namespace odb {
 namespace sql {

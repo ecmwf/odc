@@ -12,13 +12,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <Application.h>
-#include <PathName.h>
-#include <FileHandle.h>
-#include <Timer.h>
-#include <Tokenizer.h>
-
 #include <sstream>
+
+#include "eclib/Application.h"
+#include "eclib/PathName.h"
+#include "eclib/FileHandle.h"
+#include "eclib/Timer.h"
+#include "eclib/Tokenizer.h"
 
 #include "Tool.h"
 #include "TestCase.h"

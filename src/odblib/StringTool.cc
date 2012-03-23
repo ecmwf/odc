@@ -13,22 +13,22 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include <iostream>
-using namespace std;
-
-#include "Application.h"
-#include "Translator.h"
-
-#include "MemoryBlock.h"
-#include "FileHandle.h"
-#include "PathName.h"
-#include "StringTool.h"
-#include "Endian.h"
-#include "Regex.h"
-
 #include <strings.h>
 #include <sstream>
 #include <iomanip>
 #include <ctype.h>
+
+using namespace std;
+
+#include "eclib/Application.h"
+#include "eclib/FileHandle.h"
+#include "eclib/PathName.h"
+#include "eclib/Regex.h"
+#include "eclib/Translator.h"
+
+#include "odblib/Endian.h"
+#include "odblib/MemoryBlock.h"
+#include "odblib/StringTool.h"
 
 namespace odb {
 

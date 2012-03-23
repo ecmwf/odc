@@ -14,9 +14,11 @@
 #ifndef SQLIterator_H
 #define SQLIterator_H
 
-#include <machine.h>
-#include "MemoryPool.h"
-#include "SQLType.h"
+#include "eclib/machine.h"
+
+#include "eclib/MemoryPool.h"
+
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

@@ -14,7 +14,7 @@
 #ifndef SQLBitColumn_H
 #define SQLBitColumn_H
 
-#include "SQLColumn.h"
+#include "odblib/SQLColumn.h"
 
 namespace odb {
 namespace sql {

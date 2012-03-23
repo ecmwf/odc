@@ -11,6 +11,8 @@
 #ifndef MergeTool_H
 #define MergeTool_H
 
+#include "odb/Tool.h"
+
 namespace odb {
 namespace tool {
 

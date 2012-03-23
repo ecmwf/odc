@@ -8,24 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
-#include "stdint.h"
-
+#include <stdint.h>
 #include <iostream>
 #include <sstream>
 #include <limits>
 #include <strings.h>
 
-#include "Exceptions.h"
-#include "MemoryBlock.h"
+#include "eclib/Exceptions.h"
+#include "eclib/DataHandle.h"
 
-#include "Comparator.h"
-#include "Codec.h"
-#include "DataHandle.h"
-#include "DataStream.h"
-#include "SQLIteratorSession.h"
-#include "DataHandle.h"
-#include "UnsafeInMemoryDataHandle.h"
+#include "odblib/Codec.h"
+#include "odblib/Comparator.h"
+#include "odblib/DataStream.h"
+#include "odblib/MemoryBlock.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/UnsafeInMemoryDataHandle.h"
 
 namespace odb {
 namespace codec {

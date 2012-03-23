@@ -14,8 +14,9 @@
 #ifndef SQLServerOutput_H
 #define SQLServerOutput_H
 
-#include "SQLOutput.h"
-#include "TCPSocket.h"
+#include "eclib/TCPSocket.h"
+
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {

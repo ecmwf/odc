@@ -1,6 +1,9 @@
 ### libs
 
-include_directories( odblib ${CMAKE_CURRENT_BINARY_DIR}/odblib ) # needed for yacc & flex
+# these should be the only directories included
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
+
 add_subdirectory( odblib  )
 
 add_subdirectory( fortran )
@@ -8,9 +11,5 @@ add_subdirectory( fortran )
 ### apps
 
 add_subdirectory( odb )
-
-# needed due to inclusions to odb code
-# remove this once headers include their directories
-include_directories( odb ) 
 
 add_subdirectory( migrator )

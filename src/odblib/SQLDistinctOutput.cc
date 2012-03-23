@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "SQLDistinctOutput.h"
+#include "odblib/SQLDistinctOutput.h"
 
 namespace odb {
 namespace sql {
