@@ -1,4 +1,4 @@
-############################################################################################
+###############################################################################
 # cmake
 #   options:
 #       -DCMAKE_BUILD_TYPE=Debug|RelWithDebInfo|Release|Production
@@ -69,7 +69,7 @@ if( WITH_ODB OR DEFINED ODB_PATH ) # old version of odb
     find_package(ODB) 
 endif()
 
-############################################################################################
+###############################################################################
 # contents
 
 set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src PARENT_SCOPE )
@@ -79,7 +79,7 @@ set( ODB_API_FOUND          TRUE PARENT_SCOPE )
 # source files
 add_subdirectory( src )
 
-############################################################################################
+###############################################################################
 # summary
 
 # local project summary
