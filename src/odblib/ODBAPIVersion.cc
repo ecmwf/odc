@@ -12,11 +12,13 @@
 /// This file will be updated autmatically by the make.sms script
 ///
 
-#include "odblib/oda.h"
+#include "odb_api_config.h"
+
+#include "odblib/ODBAPIVersion.h"
 
 namespace odb {
 
-	const char *ODBAPIVersion::version() { return "0.9.11"; }
+	const char *ODBAPIVersion::version() { return ODB_API_VERSION; }
 
 	unsigned int ODBAPIVersion::formatVersionMajor() { return FORMAT_VERSION_NUMBER_MAJOR; }
 	unsigned int ODBAPIVersion::formatVersionMinor() { return FORMAT_VERSION_NUMBER_MINOR ;}

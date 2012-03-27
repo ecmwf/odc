@@ -19,6 +19,8 @@
 class PathName;
 class DataHandle;
 
+#include "odb_api_config.h"
+
 #include "odblib/UnsafeInMemoryDataHandle.h"
 
 namespace odb {
@@ -29,8 +31,8 @@ class SQLIteratorSession;
 const int32_t BYTE_ORDER_INDICATOR = 1;
 const uint16_t ODA_MAGIC_NUMBER = 0xffff;
 
-const int32_t FORMAT_VERSION_NUMBER_MAJOR = 0;
-const int32_t FORMAT_VERSION_NUMBER_MINOR = 5;
+const int32_t FORMAT_VERSION_NUMBER_MAJOR = ODB_API_MAJOR_VERSION;
+const int32_t FORMAT_VERSION_NUMBER_MINOR = ODB_API_MINOR_VERSION;
 
 template <typename OWNER>
 class Header 
