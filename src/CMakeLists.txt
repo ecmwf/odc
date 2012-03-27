@@ -1,7 +1,12 @@
-### libs
+### config header
 
-# these should be the only directories included
+configure_file( odb_api_config.h.in odb_api_config.h )
+
+### include directories
+
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
+
+### libs
 
 add_subdirectory( odblib  )
 
