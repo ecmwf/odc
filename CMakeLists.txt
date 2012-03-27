@@ -8,14 +8,6 @@
 #       -DCMAKE_C_COMPILER=g++
 #
 #       -DCMAKE_PREFIX_PATH=/path/to/jasper:/path/to/any/package/out/of/place
-#
-#       -DGRIB_API_PATH=/path/to/grib
-#       -DHPSS_PATH=/path/to/hpss
-#       -DADSM_PATH=/path/to/adsm
-#       -DREADLINE_PATH=/path/to/readline
-#
-#       -DWITH_READLINE=ON          [default: OFF]
-#       -DWITH_DUMMY_TAPES=ON       [default: OFF]
 
 cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
