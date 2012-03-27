@@ -12,7 +12,7 @@
 /// This file will be updated autmatically by the make.sms script
 ///
 
-#include "odb_api_config.h"
+#include "odblib/Header.h"
 
 #include "odblib/ODBAPIVersion.h"
 
