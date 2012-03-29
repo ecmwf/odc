@@ -14,24 +14,24 @@ cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 project( odb_api C CXX )
 
 ###############################################################################
-# include our cmake modules first because we override some cmake default macros
-# but only do so if this is the top project
+# include our cmake macros, but only do so if this is the top project
 if( ${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME} )
+    
+    set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} )
 
-  set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} )
+    # add backward support from 2.8 to 2.6
+    if( ${CMAKE_VERSION} VERSION_LESS "2.8" )
+        set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/2.8" ${CMAKE_MODULE_PATH} )
+    endif()
 
-  # add backward support from 2.8 to 2.6
-  if( ${CMAKE_VERSION} VERSION_LESS "2.8" )
-      set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/2.8" ${CMAKE_MODULE_PATH} )
-  endif()
-
-  include(ecmwf_include_macros)  # define our macros
-  include(ecmwf_variables)       # define mars global variables
-  include(CTest)                # add cmake testing support
-  include(ecmwf_define_options)  # define build options
-  include(ecmwf_check_os)        # check for os characteristics
-  include(ecmwf_check_functions) # check for available functions
-  include(ecmwf_find_packages)   # find packages we depend on
+    include(CTest)                 # add cmake testing support
+    enable_testing()
+    
+    include(ecmwf_include_macros)  # define our macros
+    include(ecmwf_define_options)  # define build options
+    include(ecmwf_check_os)        # check for os characteristics
+    include(ecmwf_check_functions) # check for available functions
+    include(ecmwf_find_packages)   # find packages we depend on
 
 endif()
 
