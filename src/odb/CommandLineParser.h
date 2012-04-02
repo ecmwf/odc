@@ -56,8 +56,6 @@ private:
 	int argc();
 	string argv(int i);
 
-	const Application *app_;
-
 	bool commandLineParsed_;
 	int argc_;
 	char **argv_;

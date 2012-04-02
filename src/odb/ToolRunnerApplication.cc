@@ -52,7 +52,7 @@ void ToolRunnerApplication::run()
 {
 	if (tool_ == 0)
 	{
-		cerr << argv(0) << ": Unknown command '" << argv(1) << "'" << endl;
+		cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << endl;
 		return;
 	}
 
@@ -70,7 +70,7 @@ int ToolRunnerApplication::printHelp(ostream &out)
 {
 	if (tool_ == 0)
 	{
-		cerr << argv(0) << ": Unknown command '" << argv(1) << "'" << endl;
+		cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << endl;
 		return 1;
 	}
 	//tool_->help(out);
