@@ -14,7 +14,7 @@
 #include "odblib/Comparator.h"
 #include "MergeTool.h"
 
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 namespace tool {

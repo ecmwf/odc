@@ -23,7 +23,7 @@ using namespace std;
 #include "ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "eclib/TmpFile.h"
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 namespace tool {
@@ -55,7 +55,7 @@ void TestTextSelect2::selectStarOneColumn()
 	
 	odb::Select oda(sql, fs);
 	
-	Log::info(SRC) << "TestTextSelect2::selectStarOneColumn: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestTextSelect2::selectStarOneColumn: Execute '" << sql << "'" << endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -80,7 +80,7 @@ void TestTextSelect2::selectSumOneColumn()
 	
 	odb::Select oda(sql, fs);
 	
-	Log::info(SRC) << "TestTextSelect2::selectSumOneColumn: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestTextSelect2::selectSumOneColumn: Execute '" << sql << "'" << endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 

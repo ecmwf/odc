@@ -23,7 +23,7 @@
 #include "odblib/SQLType.h"
 #include "odblib/SchemaAnalyzer.h"
 
-#define SRC __FILE__,__LINE__
+
 
 namespace odb {
 namespace sql {
@@ -163,7 +163,7 @@ void SQLSelect::prepareExecute() {
 
 		(*c)->prepare(*this);
 
-		Log::debug(SRC) << "SQLSelect::prepareExecute: '" << *(*c) << "'" << endl;
+		Log::debug(Here()) << "SQLSelect::prepareExecute: '" << *(*c) << "'" << endl;
 	}
 	ASSERT(select_.size() == mixedResultColumnIsAggregated_.size());
 	ASSERT(select_.size() == aggregated_.size() + nonAggregated_.size());

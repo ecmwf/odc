@@ -27,7 +27,7 @@ using namespace std;
 #include "TestSelectTwoFiles.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 
 #include "eclib/PathName.h"

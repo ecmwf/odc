@@ -27,7 +27,7 @@ using namespace std;
 #include "TestAtTableInTheOutput.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 
 #include "eclib/PathName.h"

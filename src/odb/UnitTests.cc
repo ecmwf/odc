@@ -21,7 +21,7 @@
 
 using namespace std;
 
-#define SRC __FILE__, __LINE__
+
 
 #include "eclib/PathName.h"
 #include "eclib/DataHandle.h"
@@ -57,12 +57,6 @@ using namespace std;
 #include "odb/TestCase.h"
 #include "odb/TestWriteCatFiles.h"
 #include "odb/ToolFactory.h"
-
-
-#ifdef SRC
-#undef SRC
-#endif
-#define SRC __FILE__,__LINE__
 
 namespace odb {
 namespace tool {
@@ -105,7 +99,7 @@ void selectAggregatedAndNonAggregated()
 
 	double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2];
 
-	Log::info(SRC) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << endl;
 
 	ASSERT(Comparator::same(r0, 1));
 	ASSERT(Comparator::same(r1, 0.2));
@@ -117,7 +111,7 @@ void selectAggregatedAndNonAggregated()
 	r1 = (*it)[1];
 	r2 = (*it)[2];
 
-	Log::info(SRC) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << endl;
 
 	//ASSERT((*it)[0] == 2 && (*it)[1] == 0.1);
 	ASSERT(r0 == 2);
@@ -158,9 +152,9 @@ void selectAggregatedAndNonAggregated2()
 	for ( ; it != oda.end(); ++it, ++counter)
 	{
 		//double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2], r3 = (*it)[3];
-		//Log::info(SRC) << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 << endl;
+		//Log::info(Here()) << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 << endl;
 	}
-	Log::info(SRC) << "selectAggregatedAndNonAggregated2: counter= " << counter << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated2: counter= " << counter << endl;
 	ASSERT(counter == 110);
 }
 TESTCASE(selectAggregatedAndNonAggregated2);
@@ -189,9 +183,9 @@ void selectAggregatedAndNonAggregated3()
 	for ( ; it != oda.end(); ++it, ++counter)
 	{
 		double r0 = (*it)[0], r1 = (*it)[1];
-		Log::info(SRC) << "selectAggregatedAndNonAggregated3: " << r0 << ", " << r1 << endl;
+		Log::info(Here()) << "selectAggregatedAndNonAggregated3: " << r0 << ", " << r1 << endl;
 	}
-	Log::info(SRC) << "selectAggregatedAndNonAggregated3: counter= " << counter << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated3: counter= " << counter << endl;
 	ASSERT(counter == 2);
 }
 TESTCASE(selectAggregatedAndNonAggregated3);
@@ -225,9 +219,9 @@ void selectAggregatedAndNonAggregatedNULL()
 	for ( ; it != oda.end(); ++it, ++counter)
 	{
 		double r0 = (*it)[0], r1 = (*it)[1];
-		Log::info(SRC) << "selectAggregatedAndNonAggregatedNULL: " << r0 << ", " << r1 << endl;
+		Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: " << r0 << ", " << r1 << endl;
 	}
-	Log::info(SRC) << "selectAggregatedAndNonAggregatedNULL: counter= " << counter << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: counter= " << counter << endl;
 	ASSERT(counter == 3);
 }
 TESTCASE(selectAggregatedAndNonAggregatedNULL);

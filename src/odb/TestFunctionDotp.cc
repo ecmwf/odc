@@ -32,7 +32,7 @@ using namespace std;
 #include "ToolFactory.h"
 #include "odblib/piconst.h"
 
-#define SRC __FILE__, __LINE__
+
 
 #include "odblib/oda.h"
 
@@ -80,7 +80,7 @@ void TestFunctionDotp::setUp()
 
 void TestFunctionDotp::tearDown() 
 { 
-	ksh("rm -f test_dotp.odb", SRC);
+	ksh("rm -f test_dotp.odb", Here());
 }
 
 void TestFunctionDotp::testReaderIterator()

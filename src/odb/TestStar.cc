@@ -19,7 +19,7 @@
 
 using namespace std;
 
-#define SRC __FILE__, __LINE__
+
 
 #include "eclib/DataHandle.h"
 #include "eclib/DataHandle.h"

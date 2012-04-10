@@ -16,7 +16,7 @@
 #include "odblib/Comparator.h"
 #include "odblib/Tracer.h"
 
-#define SRC __FILE__, __LINE__
+
 
 
 namespace odb {
@@ -64,12 +64,12 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 					break;
 			}
 		} catch (...) {
-			Log::info(SRC) << "While comparing rows number " << nRow_ << ", columns " << i
+			Log::info( Here() ) << "While comparing rows number " << nRow_ << ", columns " << i
 				<< " found different." << endl;
-			Log::info(SRC) << " data1[" << i << "] = " << fixed << data1[i] << endl;
-			Log::info(SRC) << " data2[" << i << "] = " << fixed << data2[i] << endl;
+			Log::info( Here() ) << " data1[" << i << "] = " << fixed << data1[i] << endl;
+			Log::info( Here() ) << " data2[" << i << "] = " << fixed << data2[i] << endl;
 
-			Log::info(SRC) << " md[" << i << "] is " << *md[i] << endl;
+			Log::info( Here() ) << " md[" << i << "] is " << *md[i] << endl;
 			
 			throw;
 		}
@@ -141,7 +141,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2)
 			if (column1.hasMissing() && column2.hasMissing())
 				ASSERT(column1.missingValue() == column2.missingValue());
 		} catch (...) {
-			Log::info(SRC) << "While comparing column " << i << ": "
+			Log::info( Here() ) << "While comparing column " << i << ": "
 				<< column1.name() << endl;
 			throw;
 		}

@@ -23,7 +23,7 @@ using namespace std;
 #include "ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "eclib/TmpFile.h"
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 namespace tool {
@@ -50,7 +50,7 @@ void TestSelectDataHandle::test()
 	fh.openForRead();
 	odb::Select oda(sql, fh);
 	
-	Log::info(SRC) << "TestSelectDataHandle::test: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestSelectDataHandle::test: Execute '" << sql << "'" << endl;
 	long n = 0;
 	{
 		Timer t("TestSelectDataHandle::test: selecting rows using SQL" );
@@ -61,7 +61,7 @@ void TestSelectDataHandle::test()
 		for( ; it != end; ++it)
 			++n;
 	}
-	Log::info(SRC) << "TestSelectDataHandle::test: selected " << n << " rows." << endl;
+	Log::info(Here()) << "TestSelectDataHandle::test: selected " << n << " rows." << endl;
 	ASSERT(n == 3134386); 
 	fh.close();
 }

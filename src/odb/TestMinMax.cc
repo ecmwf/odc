@@ -31,7 +31,7 @@ using namespace std;
 #include "TestMinMax.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 #include "odblib/oda.h"
 

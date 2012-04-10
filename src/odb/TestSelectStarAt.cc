@@ -25,7 +25,7 @@ using namespace std;
 #include "TestSelectStarAt.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 
 #include "eclib/PathName.h"

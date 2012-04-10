@@ -25,7 +25,7 @@ using namespace std;
 #include "TestAAAImportODBDispatching.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 
 #include "eclib/PathName.h"
@@ -65,7 +65,7 @@ TestAAAImportODBDispatching::~TestAAAImportODBDispatching() {}
 
 void TestAAAImportODBDispatching::test()
 {
-	ksh("cd ../odb2oda && ./odb2oda era40:2000010106 . 2000010106.{obstype}.{sensor}.oda", SRC);
+    ksh("cd ../odb2oda && ./odb2oda era40:2000010106 . 2000010106.{obstype}.{sensor}.oda", Here());
 }
 
 void TestAAAImportODBDispatching::setUp() {}

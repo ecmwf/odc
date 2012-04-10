@@ -30,7 +30,7 @@ using namespace std;
 #include "TestFunctionsForTemperatureConversion.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 #include "odblib/oda.h"
 
@@ -73,7 +73,7 @@ void TestFunctionsForTemperatureConversion::setUp()
 
 void TestFunctionsForTemperatureConversion::tearDown() 
 { 
-	ksh("rm -f test_tempconv.odb", SRC);
+	ksh("rm -f test_tempconv.odb", Here());
 }
 
 void TestFunctionsForTemperatureConversion::testReaderIterator()

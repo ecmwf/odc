@@ -16,7 +16,7 @@
 #include "odblib/oda.h"
 #include "odblib/TemplateParameters.h"
 
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 

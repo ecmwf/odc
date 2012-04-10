@@ -32,7 +32,7 @@ using namespace std;
 #include "ToolFactory.h"
 #include "odblib/piconst.h"
 
-#define SRC __FILE__, __LINE__
+
 
 #include "odblib/oda.h"
 
@@ -82,7 +82,7 @@ void TestFunctionsForAngleConversion::setUp()
 
 void TestFunctionsForAngleConversion::tearDown() 
 { 
-	ksh("rm -f test_angleconv.odb", SRC);
+	ksh("rm -f test_angleconv.odb", Here());
 }
 
 void TestFunctionsForAngleConversion::testReaderIterator()

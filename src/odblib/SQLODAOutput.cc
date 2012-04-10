@@ -17,7 +17,7 @@
 #include "odblib/SQLType.h"
 #include "odblib/SQLODAOutput.h"
 
-#define SRC __FILE__,__LINE__
+
 
 
 namespace odb {
@@ -87,7 +87,7 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql)
 			: t.find("Bitfield") == 0 ? BITFIELD
 			: IGNORE;
 
-		Log::debug(SRC) << "SQLODAOutput::output: " << i << " " << name
+		Log::debug(Here()) << "SQLODAOutput::output: " << i << " " << name
 			<< " hasMissingValue: " << (c.hasMissingValue() ? "true" : "false")
 			<< ", missingValue: " << c.missingValue() << endl;
 
@@ -98,7 +98,7 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql)
 
 		(**writer_).missingValue(i, c.missingValue());
 	}
-	Log::debug(SRC) << "SQLODAOutput::output: write header" << endl;
+	Log::debug(Here()) << "SQLODAOutput::output: write header" << endl;
 	(**writer_).writeHeader();
 }
 

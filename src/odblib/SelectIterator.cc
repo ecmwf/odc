@@ -17,7 +17,7 @@
 #include "odblib/oda.h"
 #include "odblib/SQLSelectFactory.h"
 
-#define SRC __FILE__,__LINE__
+
 
 namespace odb {
 

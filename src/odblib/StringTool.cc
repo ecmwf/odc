@@ -62,19 +62,19 @@ std::string StringTool::readFile(const PathName fileName, bool logging)
 	return ret;
 }
 
-int StringTool::ksh(std::string cmd, const char *file, int line, bool assertSuccess)
+int StringTool::ksh(std::string cmd, const CodeLocation& where, bool assertSuccess)
 {
 	std::string c = "ksh -c \"" + cmd + "\"";
 
 	Log::info() << "Executing '" + c + "' ";
-	if (file) Log::info() << " " << file << " +" << line;
+    Log::info() << " " << where.file() << " +" << where.line();
 	Log::info() << endl;
 
 	int rc = system(c.c_str());
 
 	if (assertSuccess && rc != 0)
 	{
-		throw SeriousBug(string(" \"") + cmd + "\" failed. " + file + " +" + Translator<int, string>()(line));
+		throw SeriousBug(string(" \"") + cmd + "\" failed. " + where.file() + " +" + Translator<int, string>()(where.line()));
 		ASSERT(rc == 0);
 	}
 	return rc;

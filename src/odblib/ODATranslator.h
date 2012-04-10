@@ -27,11 +27,6 @@
 
 #include "odblib/StringTool.h"
 
-
-#ifndef SRC
-#define SRC __FILE__,__LINE__
-#endif
-
 template <typename T>
 struct ODATranslator {
 	T operator()(double n) { return T(n); }
@@ -41,7 +36,7 @@ template <>
 struct ODATranslator<string> {
 	string operator()(double n) {
 		string r = odb::StringTool::double_as_string(n);
-		Log::info(SRC) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << endl;
+		Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << endl;
 		return r;
 	}
 };
@@ -57,7 +52,7 @@ struct ODATranslator<Time> {
 			t = string(zeroes + t.size()) + t;
 		Time tm = t;
 
-		Log::info(SRC) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
+		Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
 		return tm;
 	}
 };
@@ -73,7 +68,7 @@ struct ODATranslator<Date> {
 			t = string(zeroes + t.size()) + t;
 		Date d = t;
 
-		Log::info(SRC) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
+		Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
 		return d;
 	}
 };

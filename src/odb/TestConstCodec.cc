@@ -21,7 +21,7 @@
 #include "odblib/IteratorProxy.h"
 #include "MockReader.h"
 
-#define SRC __FILE__, __LINE__
+
 
 using namespace odb;
 using namespace odb::codec;

@@ -23,7 +23,7 @@ using namespace std;
 #include "ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/SimpleFilter.h"
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 namespace tool {

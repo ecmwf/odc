@@ -20,7 +20,7 @@
 using namespace std;
 
 
-#define SRC __FILE__, __LINE__
+
 
 
 #include "eclib/PathName.h"
@@ -64,7 +64,7 @@ TestAAAImportODB::~TestAAAImportODB() {}
 
 void TestAAAImportODB::test()
 {
-	ksh("cd ../odb2oda && ./odb2oda era40:2000010106", SRC);
+    ksh("cd ../odb2oda && ./odb2oda era40:2000010106", Here());
 }
 
 

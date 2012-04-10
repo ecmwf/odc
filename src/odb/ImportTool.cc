@@ -17,7 +17,7 @@
 #include "odb/ToolFactory.h"
 #include "odb/ImportTool.h"
 
-#define SRC __FILE__,__LINE__
+
 
 using namespace std;
 
@@ -68,7 +68,7 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const strin
 
 	unsigned long long n = output->pass1(it, end);
 
-	Log::info(SRC) << "ImportTool::importFile: = copied " << n << " rows." << endl;
+	Log::info(Here()) << "ImportTool::importFile: = copied " << n << " rows." << endl;
 }
 
 void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
@@ -84,7 +84,7 @@ void ImportTool::importText(const string& s, const PathName& out, const string& 
 
 	unsigned long long n = output->pass1(it, end);
 
-	Log::info(SRC) << "ImportTool::importText: = copied " << n << " rows." << endl;
+	Log::info(Here()) << "ImportTool::importText: = copied " << n << " rows." << endl;
 }
 
 } // namespace tool 

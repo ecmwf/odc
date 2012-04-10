@@ -19,7 +19,7 @@
 #include "odblib/TODATable.h"
 
 
-#define SRC __FILE__,__LINE__
+
 
 namespace odb {
 namespace sql {

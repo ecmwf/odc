@@ -27,7 +27,7 @@
 #include "odblib/ODBAPISettings.h"
 
 
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 
@@ -62,7 +62,7 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
 		FILE* cFile = fh->file();
 		long size = ODBAPISettings::instance().setvbufferSize();
 
-		//Log::debug(SRC) << "WriterBufferingIterator::WriterBufferingIterator: setvbuf = " << size << endl;
+		//Log::debug(Here()) << "WriterBufferingIterator::WriterBufferingIterator: setvbuf = " << size << endl;
 
 		setvBuffer_.size(size);
 		::setvbuf(cFile, setvBuffer_, _IOFBF, size);
@@ -266,7 +266,7 @@ void WriterBufferingIterator::flush()
 	InMemoryDataHandle bufferForHeader;
 	doWriteHeader(bufferForHeader, memoryDataHandle_.position(), rowsWritten);
 
-	//Log::debug(SRC) << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << endl;
+	//Log::debug(Here()) << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << endl;
 
 	MemoryBlock buff(bufferForHeader.position());
 	bufferForHeader.openForRead();
@@ -274,7 +274,7 @@ void WriterBufferingIterator::flush()
 
 	if (buff.size() < maxAnticipatedHeaderSize_)
 	{
-		//Log::debug(SRC) << "WriterBufferingIterator::flush: writing header and data in one go. "
+		//Log::debug(Here()) << "WriterBufferingIterator::flush: writing header and data in one go. "
 		//	"Block size: " << buff.size() + memoryDataHandle_.position() << endl;
 		copy(static_cast<unsigned char*>(buff), static_cast<unsigned char*>(buff) + buff.size(),
 			memoryDataHandle_.buffer() - buff.size());
@@ -283,13 +283,13 @@ void WriterBufferingIterator::flush()
 	}
 	else
 	{
-		Log::debug(SRC) << "WriterBufferingIterator::flush: writing header and data separately." << endl;
+		Log::debug(Here()) << "WriterBufferingIterator::flush: writing header and data separately." << endl;
 
 		this->f->write(buff, buff.size()); // Write header
 		this->f->write(memoryDataHandle_.buffer(), memoryDataHandle_.position()); // Write encodedd data
 	}
 
-	//Log::debug(SRC) << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << endl;
+	//Log::debug(Here()) << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << endl;
 
 	memoryDataHandle_.buffer(rowsBuffer_.cast<unsigned char>());
 

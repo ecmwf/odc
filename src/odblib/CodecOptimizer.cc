@@ -19,7 +19,7 @@
 #include "odblib/Codec.h"
 #include "odblib/CodecOptimizer.h"
 
-//#define SRC __FILE__, __LINE__
+//
 
 namespace odb {
 namespace codec {

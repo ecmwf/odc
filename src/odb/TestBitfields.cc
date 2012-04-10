@@ -47,7 +47,7 @@ using namespace std;
 #include "odblib/ReaderIterator.h"
 #include "odblib/oda.h"
 
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 namespace tool {

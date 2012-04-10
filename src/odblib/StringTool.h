@@ -19,6 +19,7 @@
 #include <set>
 #include <vector>
 
+#include "eclib/CodeLocation.h"
 #include "eclib/Tokenizer.h"
 
 using namespace std;
@@ -57,7 +58,7 @@ public:
 
 	static string int_as_double2string(double);
 
-	static int ksh(std::string cmd, const char *file, int line, bool assertSuccess = true);
+	static int ksh(std::string cmd, const CodeLocation &where, bool assertSuccess = true);
 
 	static double translate(const string& v);
 	static string patchTimeForMars(const string& v);

@@ -25,7 +25,7 @@ using namespace std;
 #include "TestSelectIterator3.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 #include "eclib/PathName.h"
 #include "eclib/DataHandle.h"

@@ -27,7 +27,7 @@ using namespace std;
 #include "TestCatFiles.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 
 #include "eclib/PathName.h"
@@ -152,21 +152,21 @@ void TestCatFiles::testSelectIterator()
 	odb::Select::iterator it = oda.begin();
 	int j = 1;
 
-	Log::info(SRC) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << endl;
 	const double * data = it->data();
 	ASSERT(data);
-	Log::info(SRC) << "data[0] = " << data[0] << endl;
-	Log::info(SRC) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << endl;
+	Log::info(Here()) << "data[1] = " << data[1] << endl;
 	ASSERT(data[0] == j);
 	ASSERT(data[1] == j);
 	++j;
 
 	++it;
-	Log::info(SRC) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(SRC) << "data[0] = " << data[0] << endl;
-	Log::info(SRC) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << endl;
+	Log::info(Here()) << "data[1] = " << data[1] << endl;
 	ASSERT(data[0] == j);
 	ASSERT(data[1] == j);
 	++j;
@@ -174,21 +174,21 @@ void TestCatFiles::testSelectIterator()
 	j = 1; // data from file2.oda
 
 	++it;
-	Log::info(SRC) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(SRC) << "data[0] = " << data[0] << endl;
-	Log::info(SRC) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << endl;
+	Log::info(Here()) << "data[1] = " << data[1] << endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 	++j;
 
 	++it;
-	Log::info(SRC) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(SRC) << "data[0] = " << data[0] << endl;
-	Log::info(SRC) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << endl;
+	Log::info(Here()) << "data[1] = " << data[1] << endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 
@@ -196,21 +196,21 @@ void TestCatFiles::testSelectIterator()
 	j = 1; // data from file3.oda
 
 	++it;
-	Log::info(SRC) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(SRC) << "data[0] = " << data[0] << endl;
-	Log::info(SRC) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << endl;
+	Log::info(Here()) << "data[1] = " << data[1] << endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 	++j;
 
 	++it;
-	Log::info(SRC) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(SRC) << "data[0] = " << data[0] << endl;
-	Log::info(SRC) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << endl;
+	Log::info(Here()) << "data[1] = " << data[1] << endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 }

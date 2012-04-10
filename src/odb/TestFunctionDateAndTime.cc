@@ -32,7 +32,7 @@ using namespace std;
 #include "ToolFactory.h"
 #include "odblib/piconst.h"
 
-#define SRC __FILE__, __LINE__
+
 
 #include "odblib/oda.h"
 
@@ -75,7 +75,7 @@ void TestFunctionDateAndTime::setUp()
 
 void TestFunctionDateAndTime::tearDown() 
 { 
-	ksh("rm -f test_date_and_time.odb", SRC);
+	ksh("rm -f test_date_and_time.odb", Here());
 }
 
 void TestFunctionDateAndTime::testReaderIterator()

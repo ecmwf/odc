@@ -26,7 +26,7 @@ using namespace std;
 #include "ToolFactory.h"
 #include "CountTool.h"
 
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 namespace tool {
@@ -66,7 +66,7 @@ void TestDispatchingWriter::test()
 	}
 
 	ASSERT(n1 == sum);
-	ksh("ls -l disp.*.*.oda", SRC);
+	ksh("ls -l disp.*.*.oda", Here());
 }
 
 void TestDispatchingWriter::setUp() {}

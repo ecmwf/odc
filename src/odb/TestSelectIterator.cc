@@ -25,7 +25,7 @@ using namespace std;
 #include "TestSelectIterator.h"
 #include "ToolFactory.h"
 
-#define SRC __FILE__, __LINE__
+
 
 
 #include "eclib/PathName.h"
@@ -191,7 +191,7 @@ void TestSelectIterator::testReaderIteratorForEach()
 	Count<odb::Reader::row> counter1;
 	counter1 = for_each(oda.begin(), oda.end(), counter1);
 
-	//Log::info(SRC) << "for_each ReaderIterator: Read " << counter1.counter << " row(s)." << endl;
+	//Log::info(Here()) << "for_each ReaderIterator: Read " << counter1.counter << " row(s)." << endl;
 
 	ASSERT(counter1.counter == 10);
 }
