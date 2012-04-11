@@ -21,6 +21,7 @@ using namespace std;
 #include "eclib/FileHandle.h"
 #include "eclib/PathName.h"
 #include "eclib/Regex.h"
+#include "eclib/Resource.h"
 #include "eclib/Translator.h"
 
 #include "odblib/GribCodes.h"
