@@ -3,12 +3,13 @@
 /// @author Piotr Kuchta, ECMWF, July 2009
 
 #include <iostream>
+
 using namespace std;
 
-#include "Application.h"
-#include "Translator.h"
+#include "eclib/Application.h"
+#include "eclib/Translator.h"
 
-#include "CommandLineParser.h"
+#include "odblib/CommandLineParser.h"
 
 namespace odb {
 namespace tool {

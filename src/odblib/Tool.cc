@@ -2,20 +2,15 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include <strings.h>
 #include <iostream>
+
 using namespace std;
 
-#include "Application.h"
-#include "Translator.h"
+#include "eclib/Application.h"
 
-#include "MemoryBlock.h"
-#include "FileHandle.h"
-#include "PathName.h"
-#include "Tool.h"
-#include "Endian.h"
-#include "Regex.h"
-
-#include <strings.h>
+#include "odblib/CommandLineParser.h"
+#include "odblib/Tool.h"
 
 namespace odb {
 namespace tool {

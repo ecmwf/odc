@@ -1,34 +1,6 @@
 list( APPEND odb_src_files
-CommandLineParser.cc
-CommandLineParser.h
-CompactTool.cc
-CompactTool.h
-CompareTool.cc
-CompareTool.h
-CountTool.cc
-CountTool.h
-FixedSizeRowTool.cc
-FixedSizeRowTool.h
-ImportTool.cc
-ImportTool.h
-LSTool.cc
-LSTool.h
-MergeTool.cc
-MergeTool.h
 MockReader.cc
 MockReader.h
-ODA2RequestTool.cc
-ODA2RequestTool.h
-ODAHeaderTool.cc
-ODAHeaderTool.h
-SQLServerTool.cc
-SQLServerTool.h
-SQLTool.cc
-SQLTool.h
-SetTool.cc
-SetTool.h
-SplitTool.cc
-SplitTool.h
 TestAAAImportODB.cc
 TestAAAImportODB.h
 TestAAAImportODBDispatching.cc
@@ -43,8 +15,6 @@ TestAtTableInTheOutput.cc
 TestAtTableInTheOutput.h
 TestBitfields.cc
 TestBitfields.h
-TestCase.cc
-TestCase.h
 TestCatFiles.cc
 TestCatFiles.h
 TestCodec.cc
@@ -67,6 +37,8 @@ TestFastODA2Request.cc
 TestFastODA2Request.h
 TestFastODA2Request2.cc
 TestFastODA2Request2.h
+TestFastODA2Request3.cc
+TestFastODA2Request3.h
 TestFunctionCircle.cc
 TestFunctionCircle.h
 TestFunctionDateAndTime.cc
@@ -109,10 +81,6 @@ TestOdaCAPI.cc
 TestOdaCAPI.h
 TestOrderBy.cc
 TestOrderBy.h
-TestRunner.cc
-TestRunner.h
-TestRunnerApplication.cc
-TestRunnerApplication.h
 TestSQLFunctionsInfo.cc
 TestSQLFunctionsInfo.h
 TestSelectDataHandle.cc
@@ -145,15 +113,7 @@ TestTextSelect3.cc
 TestTextSelect3.h
 TestWriteCatFiles.cc
 TestWriteCatFiles.h
-Tool.cc
-Tool.h
-ToolFactory.cc
-ToolFactory.h
-ToolRunnerApplication.cc
-ToolRunnerApplication.h
 UnitTests.cc
-XYVTool.cc
-XYVTool.h
 obsdump.h
 odb.cc
 )
@@ -162,4 +122,3 @@ ecmwf_add_executable( TARGET    odb
                       COMPONENT odb_api
                       SOURCES   ${odb_src_files}
                       LIBS      Odb Ec )
-
