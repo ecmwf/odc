@@ -8,7 +8,7 @@ TestImportODB.cc
 ImportODBTool.cc
 )
 
-if( ODB_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
+if( ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
 
   ecmwf_add_executable( TARGET     odb_migrator
                         COMPONENT odb_api
