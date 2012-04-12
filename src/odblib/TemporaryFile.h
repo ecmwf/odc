@@ -4,10 +4,7 @@
 #ifndef TemporaryFile_H
 #define TemporaryFile_H
 
-#ifndef PathName_H
-#include "PathName.h"
-#endif
-
+#include "eclib/PathName.h"
 
 class TemporaryFile : public PathName {
 public:

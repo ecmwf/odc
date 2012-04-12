@@ -1,6 +1,6 @@
-#include "oda.h"
-#include "Tool.h"
-#include "ToolFactory.h"
+#include "odblib/oda.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
 #include "XYVTool.h"
 
 #include <iostream>
@@ -31,7 +31,7 @@ void XYVTool::run()
 	PathName outputFile = parameters(3);
 
 	ofstream out;
-	out.open(outputFile.c_str());
+	out.open(outputFile.asString().c_str());
 
 	out << "#GEO" << endl << endl;
 	out << "#FORMAT XYV" << endl << endl;

@@ -1,6 +1,8 @@
 #ifndef ODA2RequestTool_H
 #define ODA2RequestTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 namespace tool {
 

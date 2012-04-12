@@ -20,10 +20,10 @@ using namespace std;
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/SimpleFilter.h"
 
-#include "odb/Tool.h"
-#include "odb/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "odb/TestDecoding.h"
-#include "odb/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 
 

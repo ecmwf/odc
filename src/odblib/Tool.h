@@ -9,9 +9,9 @@
 #include <set>
 #include <vector>
 
-#include "Tokenizer.h"
-#include "StringTool.h"
-#include "CommandLineParser.h"
+#include "eclib/Tokenizer.h"
+#include "odblib/StringTool.h"
+#include "odblib/CommandLineParser.h"
 
 using namespace std;
 
@@ -23,6 +23,7 @@ namespace tool {
 
 class Tool : public StringTool, public CommandLineParser {
 public:
+
 	virtual void run() = 0;
 
 	virtual ~Tool();
@@ -31,8 +32,8 @@ public:
 	void name(string s) { name_ = s; }
 
 protected:
+    
 	Tool(int argc, char **argv);
-	Tool(const Application *);
 	Tool(const CommandLineParser&);
 
 private:

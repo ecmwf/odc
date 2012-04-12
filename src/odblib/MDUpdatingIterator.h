@@ -6,6 +6,9 @@
 #ifndef MDUpdatingIterator_H
 #define MDUpdatingIterator_H
 
+#include "odblib/Column.h"
+#include "odblib/RowsIterator.h"
+
 class PathName;
 class DataHandle;
 

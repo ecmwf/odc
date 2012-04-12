@@ -19,38 +19,30 @@
 
 using namespace std;
 
-#include "odblib/oda.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestAggregateFunctions3.h"
-#include "ToolFactory.h"
-
-
-
-
 #include "eclib/PathName.h"
+#include "eclib/Log.h"
 #include "eclib/DataHandle.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
+
+#include "odblib/oda.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
-#include "odblib/MetaData.h"
-#include "eclib/DataHandle.h"
 #include "odblib/DataStream.h"
-#include "odblib/RowsIterator.h"
 #include "odblib/HashTable.h"
-#include "eclib/Log.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLAST.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SQLIteratorSession.h"
 #include "odblib/Header.h"
+#include "odblib/MetaData.h"
 #include "odblib/Reader.h"
-#include "eclib/DataHandle.h"
-#include "eclib/FILEHandle.h"
-#include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
-#include "odblib/oda.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLAST.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SelectIterator.h"
+#include "odblib/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+
+#include "odb/TestAggregateFunctions3.h"
 
 namespace odb {
 namespace tool {

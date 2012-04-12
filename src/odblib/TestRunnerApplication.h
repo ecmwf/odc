@@ -5,6 +5,8 @@
 #ifndef TestRunnerApplication_H
 #define TestRunnerApplication_H
 
+#include "eclib/Application.h"
+
 namespace odb {
 namespace tool {
 namespace test {

@@ -1,12 +1,10 @@
-#include "Types.h"
+#include "eclib/Tokenizer.h"
+#include "eclib/Types.h"
 
-#include "oda.h"
-
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Tokenizer.h"
-#include "ImportTool.h"
-#define SRC __FILE__,__LINE__
+#include "odblib/oda.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/ImportTool.h"
 
 using namespace std;
 
@@ -46,7 +44,7 @@ void ImportTool::run()
 
 void ImportTool::importFile(const PathName& in, const PathName& out, const string& delimiter)
 {
-	ifstream fs(in.c_str());
+	ifstream fs( in.asString().c_str() );
 	odb::Select input("select *", fs);
 
 	odb::Writer<> writer(out);
@@ -57,7 +55,7 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const strin
 
 	unsigned long long n = output->pass1(it, end);
 
-	Log::info(SRC) << "ImportTool::importFile: = copied " << n << " rows." << endl;
+    Log::info( Here() ) << "ImportTool::importFile: = copied " << n << " rows." << endl;
 }
 
 void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
@@ -73,7 +71,7 @@ void ImportTool::importText(const string& s, const PathName& out, const string& 
 
 	unsigned long long n = output->pass1(it, end);
 
-	Log::info(SRC) << "ImportTool::importText: = copied " << n << " rows." << endl;
+    Log::info( Here() ) << "ImportTool::importText: = copied " << n << " rows." << endl;
 }
 
 } // namespace tool 

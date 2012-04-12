@@ -14,13 +14,13 @@
 #include "eclib/PathName.h"
 #include "eclib/FileHandle.h"
 
+#include "odb/TestOdaCAPI.h"
+
 #include "odblib/oda.h"
 #include "odblib/odbcapi.h"
-
-#include "odb/ToolFactory.h"
-#include "odb/ToolRunnerApplication.h"
-#include "odb/TestRunnerApplication.h"
-#include "odb/TestOdaCAPI.h"
+#include "odblib/TestRunnerApplication.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/ToolRunnerApplication.h"
 
 using namespace std;
 using namespace odb::tool;

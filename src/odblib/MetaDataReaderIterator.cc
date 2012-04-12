@@ -62,7 +62,7 @@ MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, const PathName& pat
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-	f = pathName.fileHandle();
+    f = new FileHandle( pathName );
 	ASSERT(f);
 	ownsF_ = true;
 	f->openForRead();
@@ -126,9 +126,11 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 	{
 		Log::debug() << "MetaDataReaderIterator::readBuffer: fseeko64(" << dataSize << ")" << endl;
 
-		if(::fseeko64(f->file(), static_cast<off64_t>(dataSize), SEEK_CUR) < 0)
-			return false;
-		return true;
+        // TODO: check this code and refactor dur to changes in return condition 
+        
+        f->skip(dataSize); // will throw if fails
+        
+        return true;
 	}
 
 	Log::debug() << "MetaDataReaderIterator::skip: sizeOfEncodedData_=" << sizeOfEncodedData_ << endl;

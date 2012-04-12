@@ -18,11 +18,11 @@
 using namespace std;
 
 #include "eclib/Log.h"
-#include "Tool.h"
-#include "TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "odblib/FunctionExpression.h"
 #include "TestSQLFunctionsInfo.h"
-#include "ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 namespace odb {
 namespace tool {

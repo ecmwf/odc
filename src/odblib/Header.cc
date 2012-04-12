@@ -17,6 +17,8 @@
 #include "odblib/Header.h"
 #include "odblib/InMemoryDataHandle.h"
 #include "odblib/MD5.h"
+#include "odblib/Column.h"
+#include "odblib/MetaData.h"
 
 namespace odb {
 

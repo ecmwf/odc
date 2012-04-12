@@ -1,11 +1,11 @@
-#include "oda.h"
+#include "eclib/Tokenizer.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Tokenizer.h"
-#include "MetaDataReader.h"
-#include "MDSetTool.h"
-#include "DataStream.h"
+#include "odblib/oda.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/MDSetTool.h"
+#include "odblib/DataStream.h"
 
 namespace odb {
 namespace tool {
@@ -31,7 +31,7 @@ void MDSetTool::run()
 
 	PathName outFile = parameters(3);
 	FileHandle outHandle(outFile, true);
-	outHandle.openForWrite(outFile.exist() ? outHandle.estimate() : Length(0) );
+	outHandle.openForWrite(outFile.exists() ? outHandle.estimate() : Length(0) );
 
 	parseUpdateList(parameters(1), columns, types);
     ASSERT(columns.size() == types.size());

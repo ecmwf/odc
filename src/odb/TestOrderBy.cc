@@ -20,10 +20,10 @@
 using namespace std;
 
 #include "odblib/oda.h"
-#include "Tool.h"
-#include "TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "TestOrderBy.h"
-#include "ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 
 
@@ -51,7 +51,7 @@ using namespace std;
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
 #include "odblib/oda.h"
-#include "ImportTool.h"
+#include "odblib/ImportTool.h"
 #include "odblib/StringTool.h"
 
 namespace odb {

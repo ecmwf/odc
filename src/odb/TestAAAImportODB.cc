@@ -19,25 +19,14 @@
 
 using namespace std;
 
-
-
-
-
 #include "eclib/PathName.h"
 #include "eclib/Log.h"
 #include "eclib/DataHandle.h"
-
-#include "odb/Tool.h"
-#include "odb/TestCase.h"
-#include "odb/TestAAAImportODB.h"
-#include "odb/ToolFactory.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
 #include "odblib/DataStream.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
 #include "odblib/HashTable.h"
 #include "odblib/Header.h"
 #include "odblib/MetaData.h"
@@ -49,6 +38,11 @@ using namespace std;
 #include "odblib/SQLIteratorSession.h"
 #include "odblib/SchemaAnalyzer.h"
 #include "odblib/SelectIterator.h"
+#include "odblib/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+
+#include "odb/TestAAAImportODB.h"
 
 namespace odb {
 namespace tool {

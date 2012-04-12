@@ -1,14 +1,16 @@
-#include "oda.h"
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Tokenizer.h"
-#include "Translator.h"
-#include "ODA2RequestTool.h"
-#include "FastODA2Request.h"
-
 #include <iostream>
 #include <fstream>
+
 using namespace std;
+
+#include "eclib/Tokenizer.h"
+#include "eclib/Translator.h"
+
+#include "odblib/oda.h"
+#include "odblib/FastODA2Request.h"
+#include "odblib/ODA2RequestTool.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
 
 namespace odb {
 namespace tool {

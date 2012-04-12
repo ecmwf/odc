@@ -51,12 +51,12 @@ using namespace std;
 #include "odblib/InMemoryDataHandle.h"
 #include "odblib/oda.h"
 #include "odblib/odbcapi.h"
+#include "odblib/ImportTool.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 
-#include "odb/ImportTool.h"
-#include "odb/Tool.h"
-#include "odb/TestCase.h"
 #include "odb/TestWriteCatFiles.h"
-#include "odb/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 namespace odb {
 namespace tool {

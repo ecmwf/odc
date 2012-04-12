@@ -1,8 +1,8 @@
 #ifndef ToolFactory_H
 #define ToolFactory_H
 
-#include "Tool.h"
-#include "TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 
 namespace odb {
 namespace tool {

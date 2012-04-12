@@ -14,10 +14,10 @@
 
 #include "odblib/oda.h"
 
-#include "Tool.h"
-#include "TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "TestInt16_MissingCodec.h"
-#include "ToolFactory.h"
+#include "odblib/ToolFactory.h"
 #include "MockReader.h"
 
 

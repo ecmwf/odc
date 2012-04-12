@@ -20,12 +20,12 @@
 using namespace std;
 
 #include "odblib/oda.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestDispatchingWriter.h"
-#include "ToolFactory.h"
-#include "CountTool.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/CountTool.h"
 
+#include "odb/TestDispatchingWriter.h"
 
 
 namespace odb {

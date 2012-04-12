@@ -1,6 +1,6 @@
-#include "oda.h"
-#include "Tool.h"
-#include "ToolFactory.h"
+#include "odblib/oda.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
 #include "Comparator.h"
 #include "CompareTool.h"
 #include "StringTool.h"
@@ -24,8 +24,8 @@ CompareTool::CompareTool (int argc, char *argv[])
 		return;
 	}
 
-	ASSERT("First file does not exist!" && PathName(parameters()[1]).exist());
-	ASSERT("Second file does not exist!" && PathName(parameters()[2]).exist());
+	ASSERT("First file does not exist!" && PathName(parameters()[1]).exists());
+	ASSERT("Second file does not exist!" && PathName(parameters()[2]).exists());
 
 	//ASSERT("First parameter is a directory name!" && !path1.isDir());
 	//ASSERT("Second parameter is a directory name!" && !path2.isDir());

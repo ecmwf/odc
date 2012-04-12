@@ -21,10 +21,10 @@ using namespace std;
 #include "eclib/Log.h"
 #include "eclib/Exceptions.h"
 
-#include "odb/Tool.h"
-#include "odb/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "odb/TestCommandLineParsing.h"
-#include "odb/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 namespace odb {
 namespace tool {

@@ -11,15 +11,13 @@
 
 using namespace std;
 
-class Application;
-
 namespace odb {
 namespace tool {
 
 class CommandLineParser {
 public:
-	CommandLineParser(int argc, char **argv);
-	CommandLineParser(const Application *);
+
+    CommandLineParser(int argc, char **argv);
 
     CommandLineParser(const CommandLineParser&);
     CommandLineParser& operator=(const CommandLineParser&);
@@ -41,12 +39,11 @@ public:
 	template <typename T> T optionArgument(const std::string&, T defaultValue);
 
 private:
+    
 	void parseCommandLine();
 
 	int argc();
 	string argv(int i);
-
-	const Application *app_;
 
 	bool commandLineParsed_;
 	int argc_;

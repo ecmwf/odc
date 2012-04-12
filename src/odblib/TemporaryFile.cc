@@ -1,6 +1,8 @@
-#include "TemporaryFile.h"
-#include "Buffer.h"
 #include <sstream>
+
+#include "eclib/Buffer.h"
+
+#include "odblib/TemporaryFile.h"
 
 TemporaryFile::TemporaryFile()
 : PathName()

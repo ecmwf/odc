@@ -2,14 +2,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <Application.h>
-#include <PathName.h>
-#include <FileHandle.h>
+#include "eclib/Context.h"
+#include "eclib/PathName.h"
 
-#include "Tool.h"
-#include "TestCase.h"
-#include "ToolFactory.h"
-#include "ToolRunnerApplication.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/ToolRunnerApplication.h"
 
 namespace odb {
 namespace tool {
@@ -42,7 +41,7 @@ void ToolRunnerApplication::run()
 {
 	if (tool_ == 0)
 	{
-		cerr << argv(0) << ": Unknown command '" << argv(1) << "'" << endl;
+		cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << endl;
 		return;
 	}
 
@@ -60,7 +59,7 @@ int ToolRunnerApplication::printHelp(ostream &out)
 {
 	if (tool_ == 0)
 	{
-		cerr << argv(0) << ": Unknown command '" << argv(1) << "'" << endl;
+		cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << endl;
 		return 1;
 	}
 	//tool_->help(out);

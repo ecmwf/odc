@@ -1,11 +1,14 @@
 #ifndef CountTool_H
 #define CountTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 namespace tool {
 
 class CountTool : public Tool {
 public:
+    
 	CountTool (int argc, char *argv[]); 
 
 	static unsigned long long rowCount(const PathName &);

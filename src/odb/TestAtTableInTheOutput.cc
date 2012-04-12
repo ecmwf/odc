@@ -21,38 +21,31 @@
 
 using namespace std;
 
-#include "odblib/oda.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestAtTableInTheOutput.h"
-#include "ToolFactory.h"
-
-
-
-
 #include "eclib/PathName.h"
-#include "eclib/DataHandle.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
-#include "odblib/Codec.h"
-#include "odblib/HashTable.h"
-#include "odblib/Column.h"
-#include "odblib/MetaData.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/HashTable.h"
 #include "eclib/Log.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLAST.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/Header.h"
-#include "odblib/Reader.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/ReaderIterator.h"
+#include "eclib/DataHandle.h"
+
 #include "odblib/oda.h"
 #include "odblib/Comparator.h"
-#include "odblib/Tracer.h"
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/Header.h"
+#include "odblib/MetaData.h"
+#include "odblib/Reader.h"
+#include "odblib/ReaderIterator.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLAST.h"
 #include "odblib/SQLBitfield.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SelectIterator.h"
+#include "odblib/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+
+#include "odb/TestAtTableInTheOutput.h"
 
 namespace odb {
 namespace tool {
@@ -75,8 +68,6 @@ void TestAtTableInTheOutput::test()
 
 void TestAtTableInTheOutput::setUp()
 {
-	Tracer t(Log::debug(), "TestAtTableInTheOutput::setUp");
-
 	odb::Writer<> f("TestAtTableInTheOutput.odb");
 	odb::Writer<>::iterator it = f.begin();
 	MetaData& md = it->columns();
@@ -107,8 +98,6 @@ void TestAtTableInTheOutput::setUp()
 
 void TestAtTableInTheOutput::selectIntoSecondFile()
 {
-	Tracer t(Log::debug(), "TestAtTableInTheOutput::selectIntoSecondFile");
-
 	const string fileName = "TestAtTableInTheOutput.odb";
 	string sql = "select lat,lon,obsvalue,bf into \"TestAtTableInTheOutput2.odb\"";
 	sql += " from \"" + fileName + "\" ;";
@@ -128,8 +117,6 @@ void TestAtTableInTheOutput::selectIntoSecondFile()
 
 void TestAtTableInTheOutput::compareFiles()
 {
-	Tracer t(Log::debug(), "TestAtTableInTheOutput::compareFiles");
-
 	odb::Reader oda1("TestAtTableInTheOutput.odb");
 	odb::Reader oda2("TestAtTableInTheOutput2.odb");
 

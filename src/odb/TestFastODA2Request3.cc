@@ -10,12 +10,12 @@
 
 using namespace std;
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "TestCase.h"
-#include "FastODA2Request.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/TestCase.h"
+#include "odblib/FastODA2Request.h"
 #include "TestFastODA2Request3.h"
 
 namespace odb {

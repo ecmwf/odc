@@ -301,6 +301,7 @@ WriterDispatchingIterator.h
 XYVTool.cc
 XYVTool.h
 md5.h
+md5.c
 oda.h
 odbcapi.cc
 odbcapi.h
@@ -323,6 +324,8 @@ SimpleFilterIterator.cc
 TODATable.cc
 TODATableIterator.cc
 WriterDispatchingIterator.cc
+MDUpdatingIterator.cc
+MetaDataReader.cc
 )
 
 # define Odb library

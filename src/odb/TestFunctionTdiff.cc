@@ -26,10 +26,10 @@
 
 using namespace std;
 
-#include "Tool.h"
-#include "TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "TestFunctionTdiff.h"
-#include "ToolFactory.h"
+#include "odblib/ToolFactory.h"
 #include "odblib/piconst.h"
 
 

@@ -22,9 +22,9 @@ using namespace std;
 
 #include "odblib/oda.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/TestCase.h"
 
 #include "TestTEMPLATE.h"
 

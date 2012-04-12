@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#include "eclib/Application.h"
+#include "eclib/Context.h"
 #include "eclib/Translator.h"
 
 #include "odblib/CommandLineParser.h"
@@ -17,11 +17,7 @@ namespace tool {
 CommandLineParser::~CommandLineParser() {}
 
 CommandLineParser::CommandLineParser(int argc, char **argv)
-: app_(0), commandLineParsed_(false), argc_(argc), argv_(argv), registeredOptionsWithArguments_(), optionsWithArguments_(), optionsNoArguments_(), parameters_()
-{}
-
-CommandLineParser::CommandLineParser(const Application *app)
-: app_(app), commandLineParsed_(false), argc_(0), argv_(0), registeredOptionsWithArguments_(), optionsWithArguments_(), optionsNoArguments_(), parameters_()
+: commandLineParsed_(false), argc_(argc), argv_(argv), registeredOptionsWithArguments_(), optionsWithArguments_(), optionsNoArguments_(), parameters_()
 {}
 
 CommandLineParser::CommandLineParser(const CommandLineParser& other)
@@ -54,9 +50,9 @@ CommandLineParser& CommandLineParser::operator=(const CommandLineParser& other)
 	return *this;
 }
 
-int CommandLineParser::argc() { return app_ ? app_->argc() : argc_; }
+int CommandLineParser::argc() { return Context::instance().argc(); }
 
-string CommandLineParser::argv(int i) { return app_ ? app_->argv(i) : argv_[i]; }
+string CommandLineParser::argv(int i) { return Context::instance().argv(i); }
 
 void CommandLineParser::registerOptionWithArgument(const std::string& option)
 {

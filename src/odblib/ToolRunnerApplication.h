@@ -5,6 +5,10 @@
 #ifndef ToolRunnerApplication_H
 #define ToolRunnerApplication_H
 
+#include "eclib/Application.h"
+
+#include "odblib/Tool.h"
+
 namespace odb {
 namespace tool {
 

@@ -21,10 +21,6 @@ Tool::Tool(int argc, char **argv)
 : CommandLineParser(argc, argv)
 {}
 
-Tool::Tool(const Application *app)
-: CommandLineParser(app)
-{}
-
 Tool::Tool(const CommandLineParser& clp)
 : CommandLineParser(clp)
 {}

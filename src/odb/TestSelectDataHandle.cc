@@ -19,10 +19,11 @@ using namespace std;
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
-#include "odblib/TestSelectDataHandle.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/TemporaryFile.h"
+
+#include "odb/TestSelectDataHandle.h"
 
 namespace odb {
 namespace tool {

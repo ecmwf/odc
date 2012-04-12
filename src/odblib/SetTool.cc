@@ -1,8 +1,8 @@
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Tokenizer.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "eclib/Tokenizer.h"
 #include "ConstantSetter.h"
 #include "SetTool.h"
 

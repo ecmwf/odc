@@ -16,6 +16,7 @@
 #ifndef MetaDataReaderIterator_H
 #define MetaDataReaderIterator_H
 
+#include "odblib/MetaDataReader.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 
@@ -96,7 +97,7 @@ private:
 	odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 protected:
-	DataHandle *f;
+	FileHandle *f;
 	Properties properties_;
 	bool newDataset_;
 public:

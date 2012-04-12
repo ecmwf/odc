@@ -28,7 +28,8 @@ namespace odb {
 
 template <typename T>
 FastODA2Request<T>::FastODA2Request()
-: rowsNumber_(0),
+: firstMD_(0),
+  rowsNumber_(0),
   mergeSimilarBlocks_(true)
 {}
 

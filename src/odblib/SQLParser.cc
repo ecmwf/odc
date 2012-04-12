@@ -1,36 +1,45 @@
-#include "SQLExpression.h"
-#include "ColumnExpression.h"
-#include "BitColumnExpression.h"
-#include "FunctionExpression.h"
-#include "ParameterExpression.h"
-#include "NumberExpression.h"
-#include "StringExpression.h"
-#include "Dictionary.h"
-#include "Resource.h"
-#include "Exceptions.h"
-#include "PathName.h"
+/*
+ * © Copyright 1996-2012 ECMWF.
+ * 
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
+ * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
 
-#include "oda.h"
+#include "eclib/AutoLock.h"
+#include "eclib/DataHandle.h"
+#include "eclib/Exceptions.h"
+#include "eclib/Mutex.h"
+#include "eclib/PathName.h"
+#include "eclib/Resource.h"
+#include "eclib/Translator.h"
 
-#include "SQLParser.h"
-#include "SQLDatabase.h"
-#include "SQLSelect.h"
-#include "SQLSimpleOutput.h"
-#include "SQLDistinctOutput.h"
-#include "SQLIteratorSession.h"
-#include "SQLOrderOutput.h"
-#include "SQLODAOutput.h"
-#include "SQLSession.h"
+#include "odblib/oda.h"
+#include "odblib/BitColumnExpression.h"
+#include "odblib/ColumnExpression.h"
+#include "odblib/Dictionary.h"
+#include "odblib/FunctionExpression.h"
+#include "odblib/NumberExpression.h"
+#include "odblib/ParameterExpression.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLCreateTable.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLDistinctOutput.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLODAOutput.h"
+#include "odblib/SQLOrderOutput.h"
+#include "odblib/SQLParser.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLSelectFactory.h"
+#include "odblib/SQLSession.h"
+#include "odblib/SQLSimpleOutput.h"
+#include "odblib/SQLType.h"
+#include "odblib/StringExpression.h"
+#include "odblib/TemporaryFile.h"
 
-#include "Mutex.h"
-#include "AutoLock.h"
-#include "TemporaryFile.h"
-#include "SQLType.h"
-#include "SQLBitfield.h"
-#include "Translator.h"
-#include "SQLCreateTable.h"
-#include "DataHandle.h"
-#include "SQLSelectFactory.h"
 
 static Mutex mutex;
 
@@ -45,36 +54,36 @@ char* inputEnd;
 
 namespace SQLYacc {
 
-// Original lex defines yylineno, but it's not documented, so flex does not define it (thank you, RMS).
+// Original lex defines odblib_lineno, but it's not documented, so flex does not define it (thank you, RMS).
 #ifndef AIX
 	extern
 #endif
-int yylineno;
+int odblib_lineno;
 
-void yyerror(const char* msg);
+void odblib_error(const char* msg);
 
 using namespace odb;
 using namespace odb::sql;
 using namespace odb::sql::expression;
 using namespace odb::sql::expression::function;
 
-#include "sqly.c"
+#include "odblib/sqly.c"
 
-void yyerror(const char* msg)
+void odblib_error(const char* msg)
 {
 	stringstream os;
-	os << msg << " line " << yylineno << " of " << yypath;
+	os << msg << " line " << odblib_lineno << " of " << yypath;
 	throw SyntaxError(os.str()); 
 }
 
-};
+}
 
-extern "C" int yywrap() { return 1; }
+extern "C" int odblib_wrap() { return 1; }
 
 namespace odb {
 namespace sql {
 
-//int SQLParser::line() { using namespace SQLYacc; return SQLYacc::yylineno; }
+//int SQLParser::line() { using namespace SQLYacc; return SQLYacc::odblib_lineno; }
 
 //=========================================================================
 
@@ -83,7 +92,8 @@ void SQLParser::lexRelease()
 #if YY_FLEX_MAJOR_VERSION >= 2
 #if YY_FLEX_MINOR_VERSION >= 5
 #if YY_FLEX_SUBMINOR_VERSION >=33
-	SQLYacc::yylex_destroy();
+    // TODO: come back here and fix this
+    //	SQLYacc::yylex_destroy(); 
 #endif
 #endif
 #endif
@@ -106,7 +116,7 @@ void SQLParser::parseFile(const PathName& path, istream* is, SQLOutputConfig cfg
 	FILE* in = fopen64(yypath.c_str(),"r");
 	if(!in) throw CantOpenFile(path);
 
-	SQLYacc::yylineno = 0;
+	SQLYacc::odblib_lineno = 0;
 	SQLYacc::yyin     = in;
 	SQLYacc::yydebug  = Resource<long>("$YYDEBUG;-yydebug;yydebug", 0);
 
@@ -131,7 +141,7 @@ void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg)
 	inputText = const_cast<char *>(inputString.c_str());
 	inputEnd = inputText + inputString.size();
 
-	SQLYacc::yyparse();
+    SQLYacc::odblib_parse();
 
 	lexRelease();
 	SQLSelectFactory::instance().implicitFromTableSourceStream(0);
@@ -149,7 +159,7 @@ void SQLParser::parseFile(const PathName& path, DataHandle* dh, SQLOutputConfig 
 	FILE* in = fopen64(yypath.c_str(),"r");
 	if(!in) throw CantOpenFile(path);
 
-	SQLYacc::yylineno = 0;
+	SQLYacc::odblib_lineno = 0;
 	SQLYacc::yyin     = in;
 	SQLYacc::yydebug  = Resource<long>("$YYDEBUG;-yydebug;yydebug", 0);
 
@@ -173,7 +183,7 @@ void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg
 	inputText = const_cast<char *>(inputString.c_str());
 	inputEnd = inputText + inputString.size();
 
-	SQLYacc::yyparse();
+	SQLYacc::odblib_parse();
 	lexRelease();
 
 	SQLSelectFactory::instance().implicitFromTableSource(0);
@@ -191,7 +201,7 @@ void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig
 	FILE* in = fopen64(yypath.c_str(),"r");
 	if(!in) throw CantOpenFile(path);
 
-	SQLYacc::yylineno = 0;
+	SQLYacc::odblib_lineno = 0;
 	SQLYacc::yyin     = in;
 	SQLYacc::yydebug  = Resource<long>("$YYDEBUG;-yydebug;yydebug", 0);
 
@@ -214,7 +224,7 @@ void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cf
 	inputText = const_cast<char *>(inputString.c_str());
 	inputEnd = inputText + inputString.size();
 
-	SQLYacc::yyparse();
+	SQLYacc::odblib_parse();
 	lexRelease();
 
 	SQLSelectFactory::instance().implicitFromTableSource(0);

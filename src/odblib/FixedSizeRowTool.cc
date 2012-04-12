@@ -1,7 +1,7 @@
-#include "oda.h"
+#include "odblib/oda.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
 #include "Comparator.h"
 #include "FixedSizeRowTool.h"
 

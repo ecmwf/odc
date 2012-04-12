@@ -1,6 +1,6 @@
-#include "oda.h"
-#include "Tool.h"
-#include "ToolFactory.h"
+#include "odblib/oda.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
 #include "Comparator.h"
 #include "MergeTool.h"
 
@@ -26,8 +26,8 @@ MergeTool::MergeTool (int argc, char *argv[])
 	file1_ = PathName(argv[1]);
 	file2_ = PathName(argv[2]);
 
-	ASSERT("First file does not exist!" && file1_.exist());
-	ASSERT("Second file does not exist!" && file2_.exist());
+	ASSERT("First file does not exist!" && file1_.exists());
+	ASSERT("Second file does not exist!" && file2_.exists());
 
 	outputFile_ = PathName(argv[3]);
 }

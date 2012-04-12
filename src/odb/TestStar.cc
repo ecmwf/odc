@@ -27,10 +27,10 @@ using namespace std;
 #include "eclib/Log.h"
 #include "eclib/PathName.h"
 
-#include "odb/Tool.h"
-#include "odb/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "odb/TestStar.h"
-#include "odb/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"

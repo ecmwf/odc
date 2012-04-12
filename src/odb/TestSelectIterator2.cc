@@ -20,10 +20,10 @@
 using namespace std;
 
 #include "odblib/oda.h"
-#include "Tool.h"
-#include "TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
 #include "TestSelectIterator2.h"
-#include "ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 
 

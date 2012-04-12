@@ -12,15 +12,31 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include "eclib/PathName.h"
+#include "eclib/Log.h"
+#include "eclib/DataHandle.h"
+
 #include "odblib/oda.h"
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/DataStream.h"
+#include "odblib/HashTable.h"
+#include "odblib/Header.h"
+#include "odblib/MetaData.h"
+#include "odblib/Reader.h"
+#include "odblib/ReaderIterator.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLAST.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SelectIterator.h"
+#include "odblib/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
 
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestConstCodec.h"
-#include "ToolFactory.h"
-#include "odblib/IteratorProxy.h"
-#include "MockReader.h"
-
+#include "odb/MockReader.h"
+#include "odb/TestConstCodec.h"
 
 
 using namespace odb;

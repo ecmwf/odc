@@ -2,19 +2,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <Application.h>
-#include <PathName.h>
-#include <FileHandle.h>
-#include <Timer.h>
-#include <Tokenizer.h>
-
 #include <sstream>
 
-#include "Tool.h"
-#include "TestCase.h"
-#include "ToolFactory.h"
-#include "TestRunnerApplication.h"
-#include "TestRunner.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/TestRunnerApplication.h"
+#include "odblib/TestRunner.h"
 
 namespace odb {
 namespace tool {
