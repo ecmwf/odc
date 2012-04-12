@@ -1,4 +1,4 @@
-if( BUILD_ODB_FORTRAN )
+if( ODB_FORTRAN )
 
   ecmwf_add_library(TARGET     Odb_fortran
                     COMPONENT  odb_api

@@ -43,8 +43,9 @@ ecmwf_declare_project()
 ###############################################################################
 # some variables/options of this project
 
-option( BUILD_ODB_MIGRATOR "whether or not to build the migrator" OFF )
-option( BUILD_ODB_FORTRAN  "whether or not to build the fortan interface" OFF )
+option( ODB_API_MIGRATOR "whether or not to build the migrator"         OFF )
+option( ODB_API_FORTRAN  "whether or not to build the fortan interface" OFF )
+option( ODB_API_PYTHON   "whether or not to build the python interface" OFF )
 
 ###############################################################################
 # macro processing
