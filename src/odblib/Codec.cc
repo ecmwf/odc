@@ -100,7 +100,8 @@ template<> Codec* Codec::loadCodec(DataStream<OtherByteOrder,PrettyFastInMemoryD
 
 template<>
 template<> void AbstractCodecFactory<DataHandle>::save<SameByteOrder>(Codec *codec, DataStream<SameByteOrder,DataHandle> &f) { codecFactories[codec->name()]->save(codec, f.dataHandle(), false); }
-//template<> void AbstractCodecFactory<DataHandle>::save<OtherByteOrder>(Codec *codec, DataStream<OtherByteOrder,DataHandle> &f) { codecFactories[codec->name()]->save(codec, f.dataHandle(), true); }
+template<> 
+template<> void AbstractCodecFactory<DataHandle>::save<OtherByteOrder>(Codec *codec, DataStream<OtherByteOrder,DataHandle> &f) { codecFactories[codec->name()]->save(codec, f.dataHandle(), true); }
 
 
 CodecFactory<CodecConstant,DataHandle> codecConstantFactory("constant");

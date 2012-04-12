@@ -50,9 +50,10 @@ double odb_count(const char * filename)
 	double n = 0;
 
 	PathName path = filename;
-	MetaDataReader mdReader(path);
-	MetaDataReader::iterator it = mdReader.begin();
-	MetaDataReader::iterator end = mdReader.end();
+	typedef MetaDataReader<MetaDataReaderIterator> MDR;
+	MDR mdReader(path);
+	MDR::iterator it = mdReader.begin();
+	MDR::iterator end = mdReader.end();
 	for (; it != end; ++it)
 	{
 		MetaData &md = it->columns();

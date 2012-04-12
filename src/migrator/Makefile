@@ -24,15 +24,6 @@ ODBIterator.cc \
 FakeODBIterator.cc \
 ReptypeGenIterator.cc \
 ksh.cc \
-../oda/Tool.cc \
-../oda/CommandLineParser.cc \
-../oda/ToolFactory.cc \
-../oda/ToolRunnerApplication.cc \
-../oda/TestCase.cc \
-../oda/TestRunnerApplication.cc \
-../oda/TestRunner.cc \
-../oda/ODA2RequestTool.cc \
-../oda/CountTool.cc \
 TestImportODB.cc \
 
 

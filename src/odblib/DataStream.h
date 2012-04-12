@@ -66,16 +66,16 @@ public:
 	void dataHandle(D *dh) { f = dh; }
 
 	void readInt64(int64_t &);
-	void writeInt64(const int64_t &);
+	void writeInt64(int64_t);
 
 	void readInt32(int32_t &);
-	void writeInt32(const int32_t &);
+	void writeInt32(int32_t);
 
 	void readInt16(int16_t &);
-	void writeInt16(const int16_t &);
+	void writeInt16(int16_t);
 
 	void readUInt16(uint16_t &);
-	void writeUInt16(const uint16_t &);
+	void writeUInt16(uint16_t);
 
 	void readString(string &);
 	void writeString(const string &);
@@ -84,19 +84,19 @@ public:
 	void writeBuffer(const MemoryBlock &);
 
 	void readChar(char &);
-	void writeChar(const char &);
+	void writeChar(char);
 
 	void readUChar(unsigned char &);
-	void writeUChar(const unsigned char &);
+	void writeUChar(unsigned char);
 
 	void readBytes(char *, size_t &);
-	void writeBytes(const char *, size_t &);
+	void writeBytes(const char *, size_t);
 
 	void readDouble(double &);
-	void writeDouble(const double &);
+	void writeDouble(double);
 
 	void readFloat(float &);
-	void writeFloat(const float &);
+	void writeFloat(float);
 
 	void readProperties(Properties &);
 	void writeProperties(const Properties &);

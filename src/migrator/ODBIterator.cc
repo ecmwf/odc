@@ -21,6 +21,7 @@
 #include "ODBIterator.h"
 #include "Tool.h"
 #include "SQLSelectFactory.h"
+#include "StringTool.h"
 
 namespace odb { namespace sql { class SQLInteractiveSession; } }
 
@@ -218,7 +219,9 @@ const odb::sql::SchemaAnalyzer& ODBIterator::getSchema(const PathName db)
 		Log::info() << "ImportODBTool::getSchema: parsing '" << schemaFile << "'" << endl;
 	
 		odb::sql::SQLParser p;
-		p.parseFile(schemaFile, static_cast<DataHandle*>(0));
+		p.parseString(StringTool::readFile(schemaFile),
+			static_cast<DataHandle*>(0),
+			odb::sql::SQLSelectFactory::instance().config());
 		schemaParsed_ = true;
 	}
 

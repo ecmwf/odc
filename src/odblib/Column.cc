@@ -35,7 +35,7 @@ Column::Column(MetaData &owner)
 {}
 
 Column::Column(const Column& o)
-: owner_(o.owner_), name_(o.name_), type_(o.type_), coder_(0)
+: owner_(o.owner_), name_(o.name_), type_(o.type_), coder_(o.coder_ ? o.coder_->clone() : 0)
 {}
 
 Column::~Column()
@@ -47,11 +47,13 @@ Column::~Column()
 Column& Column::operator=(const Column& other)
 {
 	name(other.name()); 
+
 	type<DataStream<SameByteOrder, DataHandle> >(other.type(), false);
-	delete coder_;
-	coder_ = (other.coder_)->clone();
 	if (type_ == BITFIELD)
 		bitfieldDef(other.bitfieldDef());
+
+	delete coder_;
+	coder_ = (other.coder_)->clone();
 	//hasMissing(other.hasMissing());
 	//missingValue(other.missingValue());
 	return *this;
@@ -84,7 +86,11 @@ ColumnType Column::type(const string& t)
 	return IGNORE;
 }
 
-bool Column::isConstant() { return coder().name() == "constant" ||  coder().name() == "constant_string"; }
+bool Column::isConstant()
+{
+	return coder().name() == "constant"
+		|| coder().name() == "constant_string";
+}
 
 //Column::Column(DataHandle *dataHandle) : dataHandle_(dataHandle), name_(), type_(IGNORE/*?*/), coder_(0) {}
 

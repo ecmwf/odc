@@ -27,7 +27,14 @@ Comparator::Comparator(bool checkMissingFlag)
   NaN_isOK_(Resource<bool>("$ODB_API_NAN_IS_OK", false))
 {}
 
+
 void Comparator::compare(const PathName& p1, const PathName& p2)
+{
+	vector<string> noExcludedColumnTypes;
+	compare(p1, p2, noExcludedColumnTypes);
+}
+
+void Comparator::compare(const PathName& p1, const PathName& p2, const vector<string>& excludedColumnsTypes)
 {
 	Tracer t(Log::debug(), string() + "Comparator::compare: " + p1 + ", " + p2);
 
@@ -39,7 +46,7 @@ void Comparator::compare(const PathName& p1, const PathName& p2)
 	odb::Reader::iterator it2(oda2.begin());
 	odb::Reader::iterator end2(oda2.end());
 	
-	compare(it1, end1, it2, end2, p1, p2);
+	compare(it1, end1, it2, end2, p1, p2, excludedColumnsTypes);
 }
 
 void Comparator::compare(int nCols, const double *data1, const double *data2, const MetaData& md)
@@ -76,9 +83,11 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 }
 
 
-void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2)
+void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, const vector<string>& exColumnsTypes)
 {
 	ASSERT("Number of columns must be the same" && (metaData1.size() == metaData2.size()));
+
+	std::set<string> excludedColumnsTypes(exColumnsTypes.begin(), exColumnsTypes.end());
 
 	size_t size = metaData1.size();
 	for (size_t i = 0; i < size; i++)
@@ -88,16 +97,18 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2)
 
 		try {
 			ASSERT(column1.name() == column2.name());
-			ASSERT(column1.type() == column2.type());
 
-			if (column1.type() == BITFIELD)
+			if (excludedColumnsTypes.find(column1.name()) == excludedColumnsTypes.end())
 			{
-				if (! (column1.bitfieldDef() == column2.bitfieldDef()))
-				{
-					Log::error() << "Comparator::compare: bitfield definitions for column "
-						<< i << " '" << column1.name() << "' differ." << endl;
-					ASSERT(column1.bitfieldDef() == column2.bitfieldDef());
-				}
+				ASSERT(column1.type() == column2.type());
+
+				if (column1.type() == BITFIELD)
+					if (! (column1.bitfieldDef() == column2.bitfieldDef()))
+					{
+						Log::error() << "Comparator::compare: bitfield definitions for column "
+							<< i << " '" << column1.name() << "' differ." << endl;
+						ASSERT(column1.bitfieldDef() == column2.bitfieldDef());
+					}
 			}
 		
 			if (checkMissingFlag_)	

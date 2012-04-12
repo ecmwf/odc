@@ -60,8 +60,6 @@ public:
 	SQLDatabase& currentDatabase() const;
 	SQLDatabase& currentDatabase(SQLDatabase*);
 
-	SQLStatement& currentSQLStatement() const;
-
 	static SQLSession& current();
 
 protected:
@@ -84,8 +82,6 @@ private:
 	map<int,double> params_;
 
 	map<string,SQLDatabase*> databases_;
-
-	SQLStatement* currentSQLStatement_;
 
 // -- Friends
 

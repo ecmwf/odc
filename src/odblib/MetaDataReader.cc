@@ -1,91 +1,102 @@
-/*
- * © Copyright 1996-2012 ECMWF.
- * 
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
- * granted to it by virtue of its status as an intergovernmental organisation nor
- * does it submit to any jurisdiction.
- */
+///
+/// \file ODA.cc
+///
+/// @author Piotr Kuchta, Feb 2009
+
 
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <errno.h>
 #include <math.h>
-#include <climits>
-#include <cfloat>
+#include <values.h>
 
 using namespace std;
 
-#include "eclib/BufferedHandle.h"
-#include "eclib/DataHandle.h"
-#include "eclib/Exceptions.h"
-#include "eclib/FileHandle.h"
-#include "eclib/PathName.h"
+#include "Exceptions.h"
+#include "PathName.h"
+#include "MemoryBlock.h"
+#include "DataHandle.h"
+#include "FileHandle.h"
 
-#include "odblib/Codec.h"
-#include "odblib/Column.h"
-#include "odblib/DataStream.h"
-#include "odblib/FixedSizeWriterIterator.h"
-#include "odblib/HashTable.h"
-#include "odblib/Header.h"
-#include "odblib/IteratorProxy.h"
-#include "odblib/MemoryBlock.h"
-#include "odblib/MetaData.h"
-#include "odblib/MetaDataReader.h"
-#include "odblib/MetaDataReaderIterator.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/SQLParser.h"
-#include "odblib/SQLSelect.h"
-#include "odblib/SQLTable.h"
-#include "odblib/SQLType.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/Writer.h"
-#include "odblib/WriterBufferingIterator.h"
+#include "SQLBitfield.h"
+#include "DataStream.h"
+#include "HashTable.h"
+#include "Codec.h"
+#include "Column.h"
+#include "HashTable.h"
+#include "SQLBitfield.h"
+#include "SQLIteratorSession.h"
+#include "MetaData.h"
+#include "RowsIterator.h"
+#include "Header.h"
+#include "IteratorProxy.h"
+#include "Writer.h"
+#include "MetaDataReader.h"
+#include "MetaDataReaderIterator.h"
+#include "WriterBufferingIterator.h"
+#include "FixedSizeWriterIterator.h"
+#include "RowsIterator.h"
+#include "SelectIterator.h"
+
+
+#include "SQLType.h"
+#include "SQLInteractiveSession.h"
+#include "SQLIteratorSession.h"
+#include "SQLTable.h"
+#include "SQLSelect.h"
+#include "SQLParser.h"
+#include "SQLExpression.h"
+
+
+using namespace std;
 
 namespace odb {
 #define MEGA(x) (x*1024*1024)
 
-MetaDataReader::MetaDataReader()
+template <typename T>
+MetaDataReader<T>::MetaDataReader()
 : dataHandle_(0),
   deleteDataHandle_(true),
-  path_("")
-{}
+  path_(""),
+  skipData_(true)
+{} 
 
-MetaDataReader::MetaDataReader(const PathName& path)
-: dataHandle_(path.fileHandle()),
+template <typename T>
+MetaDataReader<T>::MetaDataReader(const string& path, bool skipData)
+: dataHandle_(new FileHandle(path)),
   deleteDataHandle_(true),
-  path_(path)
+  path_(path),
+  skipData_(skipData)
 {
-        dataHandle_->openForRead();
+	dataHandle_->openForRead();
+} 
+
+template <typename T>
+MetaDataReader<T>::~MetaDataReader()
+{
+	if (dataHandle_ && deleteDataHandle_)
+	{
+		dataHandle_->close();
+		delete dataHandle_;
+	}
 }
 
-MetaDataReader::~MetaDataReader()
+template <typename T>
+typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(const PathName& pathName)
 {
-        if (dataHandle_ && deleteDataHandle_)
-        {
-                dataHandle_->close();
-                delete dataHandle_;
-        }
+	return new T(*this, pathName, skipData_);
 }
 
-MetaDataReaderIterator* MetaDataReader::createReadIterator(const PathName& pathName)
+template <typename T>
+typename MetaDataReader<T>::iterator MetaDataReader<T>::begin()
 {
-        return new MetaDataReaderIterator(*this, pathName);
+	T* it = new T(*this, skipData_);
+	it->next();
+	return iterator(it);
 }
 
-MetaDataReader::iterator MetaDataReader::begin()
-{
-        MetaDataReaderIterator * it = new MetaDataReaderIterator(*this);
-        it->next();
-        return iterator(it);
-}
+template <typename T>
+const typename MetaDataReader<T>::iterator MetaDataReader<T>::end() { return iterator(0); }
 
-const MetaDataReader::iterator MetaDataReader::end() { return iterator(0); }
-
-} // namespace odb
+} // namespace odb 

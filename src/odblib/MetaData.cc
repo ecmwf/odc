@@ -30,11 +30,14 @@ MetaData::MetaData(const MetaData& md) : vector<Column*>(0), rowsNumber_(0), sel
 
 MetaData MetaData::scanFile(const PathName& fileName)
 {
-	Log::info() << "Iterating over headers of '" << fileName << "'" <<  endl;
+	ostream& L(Log::debug());
+	L << "Iterating over headers of '" << fileName << "'" <<  endl;
 
-	MetaDataReader mdReader(fileName);
-	MetaDataReader::iterator it = mdReader.begin();
-	MetaDataReader::iterator end = mdReader.end();
+	typedef MetaDataReader<MetaDataReaderIterator> MDR;
+
+	MDR mdReader(fileName);
+	MDR::iterator it = mdReader.begin();
+	MDR::iterator end = mdReader.end();
 
 	MetaData wholeFileMD(it->columns());
 
@@ -46,11 +49,11 @@ MetaData MetaData::scanFile(const PathName& fileName)
 		if (it->isNewDataset())
 		{
 			++mds;
-			Log::info() << it->columns() << endl;
+			L << it->columns() << endl;
 			wholeFileMD |= it->columns();
 		}
 	}
-	Log::info() << "TestMetaDataReader::test i=" << i << ", mds=" << mds << endl;
+	L << "TestMetaDataReader::test i=" << i << ", mds=" << mds << endl;
 
 	codec::CodecOptimizer::setOptimalCodecs<DataStream<> >(wholeFileMD);
 
@@ -134,11 +137,11 @@ MetaData& MetaData::operator+=(const MetaData& rhs)
 	for (size_t i = 0; i < rhs.size(); ++i)
 	{
 		Column& rhsColumn = *rhs[i];
-		Column* c = new Column(*this);
+
+		//Log::debug() << "MetaData::operator+=: adding " << rhsColumn << endl;
+
+		Column* c = new Column(rhsColumn);
 		ASSERT(c);
-		c->name(rhsColumn.name());
-		// DataStream not important for stats gathering
-		c->type<DataStream<> >(rhsColumn.type(), false);
 		push_back(c);
 	}
 	return *this;
@@ -166,10 +169,11 @@ MetaData MetaData::operator+(const MetaData& rhs)
 
 bool MetaData::equalsIncludingConstants(const MetaData& other, const vector<string>& constColumns) const 
 {
-	//if (! MetaData::operator==(other)) return false;
+	ostream& L = Log::debug();
 	for (size_t i = 0; i < constColumns.size(); ++i)
 	{
 		const string& columnName = constColumns[i];
+		L << "MetaData::equalsIncludingConstants: check " << columnName << endl;
 
 		if ( !self.hasColumn(columnName) && !other.hasColumn(columnName))
 			continue;
@@ -178,17 +182,29 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const vector<stri
 		Column& c2 = *(other.columnByName(columnName));
 
 		if ( ! c1.isConstant() || ! c2.isConstant())
+		{
+			L << "MetaData::equalsIncludingConstants: c1 " << c1 << " " << c1.coder() << endl;
+			L << "MetaData::equalsIncludingConstants: c2 " << c2 << " " << c2.coder() << endl;
+			L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << endl;
 			return false;
+		}
 		else
 		{
 			odb::codec::Codec& codec1 = c1.coder();
 			odb::codec::Codec& codec2 = c2.coder();
-			if ( (codec1.min() != codec2.min())
-				|| (codec1.max() != codec2.max()))
+			if ( codec1.min() != codec2.min() )
+			{
+				L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << endl;
+				L << "MetaData::equalsIncludingConstants: min1=" << codec1.min() << ", max1=" << codec1.max() << endl;
+				L << "MetaData::equalsIncludingConstants: min2=" << codec2.min() << ", max2=" << codec2.max() << endl;
+				L << "MetaData::equalsIncludingConstants: c1.coder: " << codec1 << endl;
+				L << "MetaData::equalsIncludingConstants: c2.coder: " << codec2 << endl;
 				return false;
+			}
 		}
 	}
-		
+
+	L << "MetaData::equalsIncludingConstants: yes" << endl;
 	return true;
 }
 

@@ -456,7 +456,7 @@ select_: '*' table_reference                              { $$ = new ColumnExpre
 			int end = $5->eval(missing); //ASSERT(!missing);
 			$$ = new ColumnExpression($1, $7, begin, end);
 		}
-	  | expression AS IDENT { $$ = $1; $$->title($3); }
+	  | expression AS IDENT table_reference { $$ = $1; $$->title($3 + $4); }
 	  | expression
 	  ;
 

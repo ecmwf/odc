@@ -10,8 +10,6 @@ BINLIB=-L$(INSTALLLIBDIR) -lEc -lOdb
 PROGRAM.TARGET=odb
 
 SRC.cc= \
-Tool.cc \
-CommandLineParser.cc \
 TestTEMPLATE.cc \
 TestMetaDataReader.cc \
 TestFunctionNorm.cc \
@@ -26,11 +24,8 @@ TestFunctionEqBox.cc \
 TestFunctionDistance.cc \
 TestFunctionsForTemperatureConversion.cc \
 TestFunctionsForAngleConversion.cc \
-TestCase.cc \
 TestAAAImportODB.cc \
 TestAAAImportODBDispatching.cc \
-TestRunnerApplication.cc \
-TestRunner.cc \
 TestInMemoryDataHandle.cc \
 TestCommandLineParsing.cc \
 TestSelectIterator.cc \
@@ -66,25 +61,10 @@ TestSQLFunctionsInfo.cc \
 TestIntegerValues.cc \
 TestFastODA2Request.cc \
 TestFastODA2Request2.cc \
+TestFastODA2Request3.cc \
 TestAtTableInTheOutput.cc \
 TestMissingValue.cc \
 TestSelectTwoFiles.cc \
-ToolFactory.cc \
-ToolRunnerApplication.cc \
-CompactTool.cc \
-SetTool.cc \
-ImportTool.cc \
-SplitTool.cc \
-FixedSizeRowTool.cc \
-CompareTool.cc \
-MergeTool.cc \
-ODAHeaderTool.cc \
-CountTool.cc \
-LSTool.cc \
-SQLTool.cc \
-XYVTool.cc \
-ODA2RequestTool.cc \
-SQLServerTool.cc \
 TestSetvbuffer.cc \
 UnitTests.cc
 

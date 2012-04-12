@@ -22,23 +22,29 @@ class DataHandle;
 namespace odb {
 namespace sql {
 
+class SyntaxError : public SeriousBug {
+public:
+	SyntaxError(const string& s): SeriousBug(s) {}
+};
+
 class SQLParser {
 public:
 
 	static int line();
 	static void include(const PathName&);
 
-	static void parseFile(const PathName&, DataHandle*);
-	static void parseFile(const PathName&, DataHandle*, SQLOutputConfig);
+	//static void parseFile(const PathName&, DataHandle*);
+	//static void parseFile(const PathName&, DataHandle*, SQLOutputConfig);
 	static void parseString(const string&, DataHandle*, SQLOutputConfig);
 
-	static void parseFile(const PathName&, istream*);
-	static void parseFile(const PathName&, istream*, SQLOutputConfig);
+	//static void parseFile(const PathName&, istream*);
+	//static void parseFile(const PathName&, istream*, SQLOutputConfig);
 	static void parseString(const string&, istream*, SQLOutputConfig);
 
 
-	static void parseFile(const PathName&, SQLDatabase&, SQLOutputConfig);
+	//static void parseFile(const PathName&, SQLDatabase&, SQLOutputConfig);
 	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
+	static void lexRelease();
 };
 
 } // namespace sql

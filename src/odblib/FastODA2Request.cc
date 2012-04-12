@@ -28,8 +28,7 @@ namespace odb {
 
 template <typename T>
 FastODA2Request<T>::FastODA2Request()
-: firstMD_(0),
-  rowsNumber_(0),
+: rowsNumber_(0),
   mergeSimilarBlocks_(true)
 {}
 
@@ -80,17 +79,20 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName)
 template <typename T>
 bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets, LengthList& lengths, vector<ODAHandle*>& handles)
 {
-	Log::debug() << "Iterating over headers of '" << fileName << "'" <<  endl;
+	ostream& L(Log::debug());
+	L << "Iterating over headers of '" << fileName << "'" <<  endl;
 	inputFile_ = fileName;
 
-	MetaDataReader mdReader(fileName);
-	MetaDataReader::iterator it = mdReader.begin(), end = mdReader.end();
+	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 
-	firstMD_ = it->columns();
-	rowsNumber_ = firstMD_.rowsNumber();
+	MDR mdReader(fileName);
+	MDR::iterator it = mdReader.begin();
+	MDR::iterator end = mdReader.end();
+
 	MetaData currentMD = it->columns();
+	rowsNumber_ = currentMD.rowsNumber();
 
-	values_ = vector<set<string> >(firstMD_.size(), set<string>());
+	values_ = vector<set<string> >(currentMD.size(), set<string>());
 
 	unsigned long int mds = 0;	
 	for ( ; it != end; ++it)
@@ -104,12 +106,18 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 				endOffset = (**it).blockEndOffset();
 		Length blockSize = endOffset - startOffset;
 
-		if (!mergeSimilarBlocks_ || !currentMD.equalsIncludingConstants(md, columnNames_))
+		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD.equalsIncludingConstants(md, columnNames_))
 		{
+			L << "FastODA2Request::scanFile: new handle for <" << startOffset << "," << endOffset << ">" << endl;
+
 			ODAHandle* odaHandle = new ODAHandle(startOffset, endOffset);
 			if (! collectValues(md, *odaHandle))
+			{
+				L << "FastODA2Request<T>::scanFile: collectValues returned false" << endl;
 				return false;
+			}
 			currentMD = md;
+			ASSERT(currentMD.equalsIncludingConstants(md, columnNames_));
 
 			offsets.push_back(startOffset);
 			lengths.push_back(blockSize);
@@ -117,6 +125,8 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 		}
 		else
 		{
+			L << "FastODA2Request::scanFile: append <" << startOffset << "," << endOffset << "> to existing handle" << endl;
+
 			ODAHandle& lastHandle = *(handles.back());
 			lastHandle.end(lastHandle.end() + blockSize);
 			lengths.back() += blockSize;
@@ -124,10 +134,10 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 
 		rowsNumber_ += md.rowsNumber();
 	}
-	Log::debug() << "FastODA2Request<T>::scanFile => offsets=" << offsets << endl;
-	Log::debug() << "FastODA2Request<T>::scanFile => lengths=" << lengths << endl;
-	Log::debug() << "FastODA2Request<T>::scanFile => handles=" << handles << endl;
-	Log::debug() << "FastODA2Request<T>::scanFile => rowsNumber_=" << rowsNumber_ << endl;
+	L << "FastODA2Request<T>::scanFile => offsets=" << offsets << endl;
+	L << "FastODA2Request<T>::scanFile => lengths=" << lengths << endl;
+	L << "FastODA2Request<T>::scanFile => handles=" << handles << endl;
+	L << "FastODA2Request<T>::scanFile => rowsNumber_=" << rowsNumber_ << endl;
 	return true;
 }
 

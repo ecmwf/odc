@@ -50,7 +50,7 @@ public:
 
 	void operator|=(const MetaData& other);
 
-	template<typename DATASTREAM> void save(DATASTREAM &);
+	template<typename DATASTREAM> void save(DATASTREAM &) const;
 	template<typename DATASTREAM> void load(DATASTREAM &);
 
 	void setSize(size_t);
@@ -93,7 +93,7 @@ private:
 
 
 template<typename DATASTREAM>
-void MetaData::save(DATASTREAM &f)
+void MetaData::save(DATASTREAM &f) const
 {
 	int32_t count = size();
 	f.writeInt32(count);

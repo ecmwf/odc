@@ -72,6 +72,8 @@ public:
 	const std::string& codecName(unsigned long index) const;
 	double columnMissingValue(unsigned long index);
 	const BitfieldDef& bitfieldDef(unsigned long index);
+
+	int32_t byteOrder() const { return byteOrder_; }
 //protected:
 
 	virtual int close();
@@ -108,13 +110,14 @@ private:
 	ReadOnlyMemoryDataHandle memDataHandle_;
 
 	unsigned long headerCounter_;
+	int32_t byteOrder_;
 
 public:
 	int refCount_;
 
 protected:
 	// FIXME:
-    ReaderIterator(): owner_(*((Reader *) 0)), columns_(0) {}
+    //ReaderIterator(): owner_(*((Reader *) 0)), columns_(0) {}
 
 
 	friend ::oda_write_iterator* ::odb_create_write_iterator(::oda*, const char *,int *); // for next()

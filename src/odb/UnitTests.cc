@@ -409,12 +409,33 @@ void blocksSizes()
 	{
 		Log::info() << "Test_blocksSizes: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << endl;
 	}
+	Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << endl;
 	ASSERT(numberOfBlocks == 5);
 	
 	release_blocks_offsets(&offsets);
 	release_blocks_sizes(&sizes);
 }
 TESTCASE(blocksSizes)
+
+
+void rownumber1()
+{
+    //string path("/scratch/rd/datk/piotr/selecting_rownumber/dribu.odb");
+    string path("selectAggregatedAndNonAggregated2.odb");
+    string query("SELECT rownumber() from \"" + path + "\";");
+
+    odb::Select select(query);
+    odb::Select::iterator it = select.begin();
+    odb::Select::iterator end = select.end();
+
+	long long i = 0;
+    for (; it != end; ++it)
+    {
+        ASSERT((*it)[0] == ++i);
+    }
+	ASSERT(i == 1000000);
+}
+TESTCASE(rownumber1)
 
 
 } // namespace test 

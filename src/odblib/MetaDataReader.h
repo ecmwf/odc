@@ -1,13 +1,3 @@
-/*
- * © Copyright 1996-2012 ECMWF.
- * 
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
- * granted to it by virtue of its status as an intergovernmental organisation nor
- * does it submit to any jurisdiction.
- */
-
 ///
 /// \file MetaDataReader.h
 ///
@@ -20,8 +10,6 @@
 #include <Python.h>
 #endif
 
-#include "odblib/IteratorProxy.h"
-
 class PathName;
 class DataHandle;
 
@@ -29,13 +17,14 @@ namespace odb {
 
 class MetaDataReaderIterator;
 
+template <typename T>
 class MetaDataReader
 {
 public:
-	typedef IteratorProxy<MetaDataReaderIterator,MetaDataReader,const double> iterator;
-	typedef iterator::Row row;
+	typedef IteratorProxy<T,MetaDataReader,const double> iterator;
+	//typedef typename iterator::Row row;
 
-	MetaDataReader(const PathName& path);
+	MetaDataReader(const std::string& path, bool skipData = true);
 	MetaDataReader();
 
 	virtual ~MetaDataReader();
@@ -43,9 +32,9 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	DataHandle* dataHandle() { return dataHandle_; };
+	FileHandle* dataHandle() { return dataHandle_; };
 	// For C API
-	MetaDataReaderIterator* createReadIterator(const PathName&);
+	iterator* createReadIterator(const PathName&);
 
 #ifdef SWIGPYTHON
 	iterator __iter__() { return begin(); }
@@ -56,15 +45,18 @@ private:
     MetaDataReader(const MetaDataReader&);
     MetaDataReader& operator=(const MetaDataReader&);
 
-    DataHandle* dataHandle_;
+	FileHandle* dataHandle_;
 	bool deleteDataHandle_;
 	//const PathName path_;
 	const string path_;
+	bool skipData_;
 
 	friend class IteratorProxy<MetaDataReaderIterator,MetaDataReader,const double>;
 	friend class MetaDataReaderIterator;
 };
 
 } // namespace odb
+
+#include "MetaDataReader.cc"
 
 #endif

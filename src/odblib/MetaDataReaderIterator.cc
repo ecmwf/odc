@@ -24,7 +24,7 @@
 
 namespace odb {
 
-MetaDataReaderIterator::MetaDataReaderIterator(MetaDataReader &owner)
+MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, bool skipData)
 : owner_(owner),
   columns_(0),
   lastValues_(0),
@@ -35,13 +35,17 @@ MetaDataReaderIterator::MetaDataReaderIterator(MetaDataReader &owner)
   noMore_(false),
   ownsF_(false),
   headerCounter_(0),
+  skipData_(skipData),
+  encodedData_(0),
+  sizeOfEncodedData_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
 	f = owner.dataHandle();
 	ASSERT(f);
 }
 
-MetaDataReaderIterator::MetaDataReaderIterator(MetaDataReader &owner, const PathName& pathName)
+MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, const PathName& pathName, bool skipData)
 : owner_(owner),
   columns_(0),
   lastValues_(0),
@@ -52,6 +56,10 @@ MetaDataReaderIterator::MetaDataReaderIterator(MetaDataReader &owner, const Path
   noMore_(false),
   ownsF_(false),
   headerCounter_(0),
+  skipData_(skipData),
+  encodedData_(0),
+  sizeOfEncodedData_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
 	f = pathName.fileHandle();
@@ -65,6 +73,7 @@ void MetaDataReaderIterator::loadHeaderAndBufferData()
 {
 	Header<MetaDataReaderIterator> header(*this);
 	header.load();
+	byteOrder_ = header.byteOrder();
 	++headerCounter_;
 
 	initRowBuffer();
@@ -111,8 +120,34 @@ void MetaDataReaderIterator::initRowBuffer()
 
 bool MetaDataReaderIterator::skip(size_t dataSize)
 {
-	Log::debug() << "MetaDataReaderIterator::readBuffer: fseeko64(" << dataSize << ")" << endl;
-	f->skip(dataSize);
+	Log::debug() << "MetaDataReaderIterator::skip: skipData_=" << skipData_ << endl;
+
+	if (skipData_)
+	{
+		Log::debug() << "MetaDataReaderIterator::readBuffer: fseeko64(" << dataSize << ")" << endl;
+
+		if(::fseeko64(f->file(), static_cast<off64_t>(dataSize), SEEK_CUR) < 0)
+			return false;
+		return true;
+	}
+
+	Log::debug() << "MetaDataReaderIterator::skip: sizeOfEncodedData_=" << sizeOfEncodedData_ << endl;
+	if (sizeOfEncodedData_ < dataSize)
+	{
+		Log::debug() << "MetaDataReaderIterator::skip: allocating " << dataSize << " bytes." << endl;
+		delete [] encodedData_;
+		encodedData_ = new char[dataSize];
+	}
+	
+	size_t actualNumberOfBytes = 0;
+	if ((actualNumberOfBytes = f->read(encodedData_, dataSize)) != dataSize)
+	{
+		Log::warning() << "MetaDataReaderIteratorReadingData::skip: expected " << dataSize 
+						<< " could read only " << actualNumberOfBytes << endl;
+		return false;
+	}
+
+	sizeOfEncodedData_ = dataSize;
 	return true;
 }
 
@@ -144,6 +179,7 @@ bool MetaDataReaderIterator::next()
 
 			Header<MetaDataReaderIterator> header(*this);
 			header.loadAfterMagic();
+			byteOrder_ = header.byteOrder();
 			++headerCounter_;
 			nrows_ += columns().rowsNumber();
 			initRowBuffer();
@@ -202,6 +238,10 @@ const std::string& MetaDataReaderIterator::columnName(unsigned long index) const
 const std::string& MetaDataReaderIterator::codecName(unsigned long index) const { return columns_[index]->coder().name(); }
 double MetaDataReaderIterator::columnMissingValue(unsigned long index) { return columns_[index]->missingValue(); }
 const BitfieldDef& MetaDataReaderIterator::bitfieldDef(unsigned long index) { return columns_[index]->bitfieldDef(); }
+
+
+
+
 
 } // namespace odb
 

@@ -47,8 +47,7 @@ double FunctionROWNUMBER::eval(bool& missing) const { return *count_; }
 
 void FunctionROWNUMBER::prepare(SQLSelect& sql)
 {
-    SQLSelect &sqlSelect = dynamic_cast<SQLSelect &>(SQLSession::current().currentSQLStatement());
-    count_ = &sqlSelect.total_;
+	count_ = &sql.total_;
 }
 
 void FunctionROWNUMBER::cleanup(SQLSelect& sql) {}

@@ -33,6 +33,7 @@ ReaderIterator::ReaderIterator(Reader &owner)
   noMore_(false),
   ownsF_(false),
   headerCounter_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
 	f = owner.dataHandle();
@@ -52,6 +53,7 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   noMore_(false),
   ownsF_(false),
   headerCounter_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
 	f = new FileHandle(pathName);
@@ -66,6 +68,7 @@ void ReaderIterator::loadHeaderAndBufferData()
 {
 	Header<ReaderIterator> header(*this);
 	header.load();
+	byteOrder_ = header.byteOrder();
 	++headerCounter_;
 
 	initRowBuffer();
@@ -148,6 +151,7 @@ bool ReaderIterator::next()
 
 			Header<ReaderIterator> header(*this);
 			header.loadAfterMagic();
+			byteOrder_ = header.byteOrder();
 			++headerCounter_;
 			initRowBuffer();
 

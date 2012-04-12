@@ -306,10 +306,9 @@ void WriterBufferingIterator::doWriteHeader(T& dataHandle, size_t dataSize, size
 	//Log::debug() << "WriterBufferingIterator::doWriteHeader: dataSize=" << dataSize << ", rowsNumber=" << rowsNumber << endl;
 
 	allocBuffers();
-	Header<WriterBufferingIterator> header(*this);
-	header.dataSize(dataSize);
-	header.rowsNumber(rowsNumber);
-	header.save<T>(dataHandle);
+
+	//  FIXME: copy properties from input - props are not initialised now
+	serializeHeader<SameByteOrder,T>(dataHandle, dataSize, rowsNumber, properties_, columns()); 
 }
 
 int WriterBufferingIterator::close()

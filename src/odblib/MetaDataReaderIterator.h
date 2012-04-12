@@ -19,7 +19,6 @@
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 
-
 class PathName;
 class FileHandle;
 
@@ -41,18 +40,18 @@ namespace odb {
 
 namespace odb {
 
-class MetaDataReader;
 
 class MetaDataReaderIterator : public RowsReaderIterator
 {
+protected:
+	typedef MetaDataReader<MetaDataReaderIterator> Owner;
 public:
-	MetaDataReaderIterator (MetaDataReader &owner);
-	MetaDataReaderIterator (MetaDataReader &owner, const PathName&);
-	~MetaDataReaderIterator ();
+	MetaDataReaderIterator (Owner &owner, bool skipData);
+	MetaDataReaderIterator (Owner &owner, const PathName&, bool skipData);
+	virtual ~MetaDataReaderIterator ();
 
 	virtual bool isNewDataset();
 	const double* data();
-	//virtual long integer(int i);
 
 	bool operator!=(const MetaDataReaderIterator& other);
 
@@ -64,19 +63,24 @@ public:
 	Offset blockStartOffset() { return blockStartOffset_; }
 	Offset blockEndOffset() { return blockEndOffset_; }
 
+	int32_t byteOrder() const { return byteOrder_; }
+
 	ColumnType columnType(unsigned long index);
 	const std::string& columnName(unsigned long index) const;
 	const std::string& codecName(unsigned long index) const;
 	double columnMissingValue(unsigned long index);
 	const BitfieldDef& bitfieldDef(unsigned long index);
+	
+	char *encodedData() { return encodedData_; }
+	size_t sizeOfEncodedData() { return sizeOfEncodedData_; }
 //protected:
 
 	virtual int close();
 
-// next() is public because it is used be C API functions
+// next() is public because it is used in C API functions
 	virtual bool next();
 protected:
-	bool skip(size_t dataSize);
+	virtual bool skip(size_t dataSize);
 
 private:
 // No copy allowed.
@@ -86,38 +90,39 @@ private:
 	void initRowBuffer();
 	void loadHeaderAndBufferData();
 
-	MetaDataReader& owner_;
+	Owner& owner_;
 	MetaData columns_;
 	double* lastValues_;
 	odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
-
+protected:
 	DataHandle *f;
 	Properties properties_;
-
 	bool newDataset_;
+public:
 	bool noMore_;
 
 	bool ownsF_;
-
-	//PrettyFastInMemoryDataHandle
+private:
 	ReadOnlyMemoryDataHandle memDataHandle_;
 
 	unsigned long headerCounter_;
 
 	Offset blockStartOffset_;
 	Offset blockEndOffset_;
-protected:
-	// FIXME:
-    MetaDataReaderIterator(): owner_(*((MetaDataReader *) 0)), columns_(0) {}
 
+protected:
+	bool skipData_;
+	char *encodedData_;
+	size_t sizeOfEncodedData_;
+	int32_t byteOrder_;
+
+public:
 	int refCount_;
 
-	//friend ::oda_write_iterator* ::oda_create_write_iterator(::oda*, const char *,int *); // for next()
-	//friend int ::oda_read_iterator_get_next_row(::oda_read_iterator*, int, double*, int*);
-	friend class odb::MetaDataReader;
-	friend class odb::IteratorProxy<odb::MetaDataReaderIterator, odb::MetaDataReader, const double>;
-	friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::MetaDataReaderIterator, odb::MetaDataReader, const double> >;
+	friend class MetaDataReader<MetaDataReaderIterator>;
+	friend class odb::IteratorProxy<odb::MetaDataReaderIterator, Owner>;
+	friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::MetaDataReaderIterator, Owner, const double> >;
 	friend class odb::Header<odb::MetaDataReaderIterator>;
 	friend class odb::sql::ODATableIterator;
 };

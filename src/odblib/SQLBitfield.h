@@ -24,7 +24,7 @@ namespace type {
 class SQLBitfield : public SQLType {
 public:
 	SQLBitfield(const string&, const odb::FieldNames&, const odb::Sizes&, const string&);
-	~SQLBitfield(); // Change to virtual if base class
+	~SQLBitfield();
 
 	unsigned long mask(const string& n) const;
 	unsigned long shift(const string& n) const;
@@ -39,13 +39,9 @@ private:
 	SQLBitfield(const SQLBitfield&);
 	SQLBitfield& operator=(const SQLBitfield&);
 
-
-	//FieldNames	fields_;
-	//Sizes		sizes_;
 	BitfieldDef bitfieldDef_;
 	map<string, unsigned long> mask_;
 	map<string, unsigned long> shift_;
-
 
 	virtual size_t size() const;
 	virtual void output(SQLOutput& s, double, bool) const;

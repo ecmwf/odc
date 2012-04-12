@@ -123,7 +123,7 @@ void ColumnExpression::output(SQLOutput& o) const
 
 void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
 {
-	ostream& L(Log::info());
+	ostream& L(Log::debug());
 	L << "ColumnExpression::expandStars: expanding '" << columnName_ << "' (" << tableReference_ << ")" << endl;
 
 	if(beginIndex_ != -1 && endIndex_ != -1)

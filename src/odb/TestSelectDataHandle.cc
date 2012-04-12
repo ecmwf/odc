@@ -17,13 +17,12 @@
 using namespace std;
 
 #include "odblib/oda.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestSelectDataHandle.h"
-#include "ToolFactory.h"
+#include "odblib/Tool.h"
+#include "odblib/TestCase.h"
+#include "odblib/TestSelectDataHandle.h"
+#include "odblib/ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
-#include "eclib/TmpFile.h"
-
+#include "odblib/TemporaryFile.h"
 
 namespace odb {
 namespace tool {
@@ -71,7 +70,7 @@ void TestSelectDataHandle::setUp()
 #if 0
 	string s = "Data to be saved";
 	
-	TmpFile tmp;
+	TemporaryFile tmp;
 	ofstream os(tmp.c_str());
 	os << s;
 	os.close();

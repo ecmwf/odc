@@ -24,7 +24,6 @@ using namespace std;
 #include "odblib/SimpleFilterIterator.h"
 #include "eclib/TmpFile.h"
 
-
 namespace odb {
 namespace tool {
 namespace test {

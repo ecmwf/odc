@@ -24,7 +24,8 @@ template <typename OWNER>
 Header<OWNER>::Header(OWNER& owner)
 : owner_(owner),
   dataSize_(0),
-  rowsNumber_(0)
+  rowsNumber_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR)
 {} 
 
 template <typename OWNER>
@@ -53,10 +54,9 @@ void Header<OWNER>::loadAfterMagic()
 {
 	DataStream<SameByteOrder> f(owner_.f);
 
-	int32_t byteOrder;
-	f.readInt32(byteOrder);
+	f.readInt32(byteOrder_);
 
-	if (byteOrder != BYTE_ORDER_INDICATOR)
+	if (byteOrder_ != BYTE_ORDER_INDICATOR)
 	{
 		DataStream<OtherByteOrder> ds(owner_.f);
 		load(ds);
@@ -92,8 +92,8 @@ void Header<OWNER>::load(DATASTREAM &ff)
 
 	if (! (headerDigest == actualHeaderDigest))
 	{
-		Log::info() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << endl;
-		Log::info() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << endl;
+		//Log::debug() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << endl;
+		//Log::debug() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << endl;
 		ASSERT(headerDigest == actualHeaderDigest);
 	}
 	
@@ -129,11 +129,10 @@ void Header<OWNER>::load(DATASTREAM &ff)
 	owner_.columns().load(f);
 }
 
-template <typename OWNER>
-template <typename DATAHANDLE>
-void Header<OWNER>::save(DATAHANDLE &dh)
+template <typename BYTEORDER, typename DATAHANDLE>
+void serializeHeader(DATAHANDLE &dh, size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns)
 {
-	DataStream<SameByteOrder, DATAHANDLE> ff(dh);
+	DataStream<BYTEORDER, DATAHANDLE> ff(dh);
 
 	// Header.
 	uint16_t c = ODA_MAGIC_NUMBER;
@@ -143,32 +142,34 @@ void Header<OWNER>::save(DATAHANDLE &dh)
 	c = 'D'; ff.writeChar(c); 
 	c = 'A'; ff.writeChar(c);
 
-	int32_t byteOrderIndicator = 1;
-	ff.writeInt32(byteOrderIndicator);
+	int32_t byteOrder = BYTE_ORDER_INDICATOR;
+	ff.writeInt32(byteOrder);
 
-	ff.writeInt32(FORMAT_VERSION_NUMBER_MAJOR);
-	ff.writeInt32(FORMAT_VERSION_NUMBER_MINOR);
-	
+	int32_t versionMajor = FORMAT_VERSION_NUMBER_MAJOR;
+	int32_t versionMinor = FORMAT_VERSION_NUMBER_MINOR;
+	ff.writeInt32(versionMajor);
+	ff.writeInt32(versionMinor);
+
 	InMemoryDataHandle memoryHandle;
-	DataStream<SameByteOrder> f(memoryHandle);
+	DataStream<BYTEORDER> f(memoryHandle);
 
 	// Reserved.	
-	int64_t nextFrameOffset = dataSize_;
+	int64_t nextFrameOffset = dataSize;
 	f.writeInt64(nextFrameOffset);
 
 	// Reserved.	
 	int64_t prevFrameOffset = 0;
 	f.writeInt64(prevFrameOffset);
 
-	int64_t numberOfRows = rowsNumber_;
+	int64_t numberOfRows = rowsNumber;
 	f.writeInt64(numberOfRows);
 
 	Flags flags(10, 0);
 	f.writeFlags(flags);
 
-	f.writeProperties(owner_.properties_);
+	f.writeProperties(properties);
 
-	owner_.columns().save(f);
+	columns.save(f);
 
 	Length len = memoryHandle.openForRead();
 

@@ -15,13 +15,33 @@ SHLIB.TARGET=../lib/libOdb.a
 
 SRC.cc= \
 ODBAPIVersion.cc \
+CommandLineParser.cc \
+Tool.cc \
+ToolFactory.cc \
+ToolRunnerApplication.cc \
+TestCase.cc \
+TestRunnerApplication.cc \
+TestRunner.cc \
+ODA2RequestTool.cc \
+CountTool.cc \
+CompactTool.cc \
+CompareTool.cc \
+FixedSizeRowTool.cc \
+ImportTool.cc \
+LSTool.cc \
+MDSetTool.cc \
+MergeTool.cc \
+ODAHeaderTool.cc \
+SQLTool.cc \
+SetTool.cc \
+SplitTool.cc \
+XYVTool.cc \
 StringTool.cc \
 md5.cc \
 MD5.cc \
 InMemoryDataHandle.cc \
 TReadOnlyMemoryDataHandle.cc \
 Reader.cc \
-MetaDataReader.cc \
 MetaDataReaderIterator.cc \
 TextReader.cc \
 ODBSelect.cc \
@@ -42,11 +62,7 @@ ODADatabase.cc \
 ODAColumn.cc \
 ParameterExpression.cc \
 Decoder.cc \
-SQLServerSession.cc \
-SQLServerOutput.cc \
-SQLService.cc \
 SQLType.cc \
-SQLUser.cc \
 SQLIndex.cc \
 SQLBit.cc \
 SQLReal.cc \
@@ -58,7 +74,6 @@ SQLBitColumn.cc \
 SQLBitfield.cc \
 FunctionEQ.cc \
 FunctionJOIN.cc \
-SQLServer.cc \
 SQLSession.cc \
 SQLInteractiveSession.cc \
 SQLDatabase.cc \
@@ -128,6 +143,7 @@ ODBAPISettings.cc \
 ODAHandle.cc \
 ConstantExpression.cc \
 SQLExpressionEvaluated.cc \
+TemporaryFile.cc \
 odbcapi.cc
 
 

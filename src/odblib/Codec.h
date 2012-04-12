@@ -171,12 +171,9 @@ public:
 
 	void save(DataHandle *dh)
 	{
-		Codec::saveBasics<BYTEORDER>(dh);
-		// This is not needed now, as we always save in the SameByteOrder
-		// as the machine we are running on, but I put it here
-		// in case we'd like to save data in the OtherByteOrder one day.
 		BYTEORDER::swap(this->min_);
 		BYTEORDER::swap(this->max_);
+		Codec::saveBasics<BYTEORDER>(dh);
 	}
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }

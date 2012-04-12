@@ -53,14 +53,16 @@ void DataStream<T,D>::readInt64(int64_t& i)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeInt32(const int32_t& i)
+void DataStream<T,D>::writeInt32(int32_t i)
 {
+	T::swap(i);
 	ASSERT(f->write(&i, sizeof(int32_t)) == sizeof(int32_t));
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeInt64(const int64_t& i)
+void DataStream<T,D>::writeInt64(int64_t i)
 {
+	T::swap(i);
 	ASSERT(f->write(&i, sizeof(int64_t)) == sizeof(int64_t));
 }
 
@@ -72,8 +74,9 @@ void DataStream<T,D>::readInt16(int16_t& i)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeInt16(const int16_t& i)
+void DataStream<T,D>::writeInt16(int16_t i)
 {
+	T::swap(i);
 	ASSERT(f->write(&i, sizeof(int16_t)) == sizeof(int16_t));
 }
 
@@ -85,8 +88,9 @@ void DataStream<T,D>::readUInt16(uint16_t& i)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeUInt16(const uint16_t& i)
+void DataStream<T,D>::writeUInt16(uint16_t i)
 {
+	T::swap(i);
 	ASSERT(f->write(&i, sizeof(uint16_t)) == sizeof(uint16_t));
 }
 
@@ -111,8 +115,7 @@ template <typename T, typename D>
 void DataStream<T,D>::readString(string &s)
 {
 	int32_t len;
-	ASSERT(f->read(&len, sizeof(len)) == sizeof(len));
-	T::swap(len);
+	readInt32(len);
 
 #ifdef _HPUX_SOURCE
 	char buff[8 * 1024 * 1024];
@@ -131,8 +134,7 @@ template <typename T, typename D>
 void DataStream<T,D>::writeString(const string &s)
 {
 	int32_t len = s.size();
-
-	ASSERT(f->write(&len, sizeof(len)) == sizeof(len));
+	writeInt32(len);
 	ASSERT(f->write(s.c_str(), len) == len);
 }
 
@@ -143,9 +145,8 @@ void DataStream<T,D>::readChar(char &c)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeChar(const char &c)
+void DataStream<T,D>::writeChar(char c)
 {
-	//ASSERT(f->write(&c, sizeof(char)) == sizeof(char));
 	size_t n = f->write(&c, sizeof(char));
 	ASSERT(n == sizeof(char));
 }
@@ -158,7 +159,7 @@ void DataStream<T,D>::readUChar(unsigned char &c)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeUChar(const unsigned char &c)
+void DataStream<T,D>::writeUChar(const unsigned char c)
 {
 	ASSERT(f->write(&c, sizeof(unsigned char)) == sizeof(unsigned char));
 }
@@ -170,7 +171,7 @@ void DataStream<T,D>::readBytes(char *buff, size_t &len)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeBytes(const char *buff, size_t &len)
+void DataStream<T,D>::writeBytes(const char *buff, size_t len)
 {
 	ASSERT(f->write(buff, len) == static_cast<long>(len));
 }
@@ -183,8 +184,9 @@ void DataStream<T,D>::readDouble(double &d)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeDouble(const double &d)
+void DataStream<T,D>::writeDouble(double d)
 {
+	T::swap(d);
 	ASSERT(f->write(&d, sizeof(double)) == sizeof(double));
 }
 
@@ -196,8 +198,9 @@ void DataStream<T,D>::readFloat(float &d)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeFloat(const float &d)
+void DataStream<T,D>::writeFloat(float d)
 {
+	T::swap(d);
 	ASSERT(f->write(&d, sizeof(float)) == sizeof(float));
 }
 

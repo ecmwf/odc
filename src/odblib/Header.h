@@ -47,12 +47,13 @@ public:
 	size_t rowsNumber() const { return rowsNumber_; }
 	void rowsNumber(size_t n) { rowsNumber_ = n; }
 
+	int32_t byteOrder() { return byteOrder_; }
 	//size_t dataSizeOffset() const { return sizeof(uint16_t) + 3*1 + 3*sizeof(int32_t) + /*MD5*/ sizeof(int32_t)+32 + sizeof(int32_t); }
 	//size_t rowsNumberOffset() const { return dataSizeOffset() + 2 * sizeof(int64_t); }
 
 	void load();
 
-	template <typename DATAHANDLE> void save(DATAHANDLE &);
+	//template <typename DATAHANDLE> void save(DATAHANDLE &);
 
 	void loadAfterMagic();
 private:
@@ -65,6 +66,8 @@ private:
 	OWNER& owner_;
 	size_t dataSize_;
 	size_t rowsNumber_;
+
+	int32_t byteOrder_;
 };
 
 } // namespace odb 

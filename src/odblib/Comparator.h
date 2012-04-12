@@ -31,13 +31,17 @@ public:
 	template <typename T1, typename T2>
 		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2);
 
-	void compare(const PathName&, const PathName&);
+	template <typename T1, typename T2>
+		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2,
+					const vector<string>& excludedColumnsTypes);
 
-	void compare(const MetaData&, const MetaData&);
+	void compare(const PathName&, const PathName&);
+	void compare(const PathName&, const PathName&, const vector<string>& excludedColumnsTypes);
+
+	void compare(const MetaData&, const MetaData&, const vector<string>&);
 	void compare(int nCols, const double *data1, const double *data2, const MetaData&);
 
 	void checkMissingFlag(bool v) { checkMissingFlag_ = v; }
-
 
 	inline static double err(double A, double B)
 	{
@@ -63,22 +67,28 @@ private:
 template<typename T1, typename T2>
 bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2)
 {
+	vector<string> noExcludedColumns;
+	return compare(it1, end1, it2, end2, desc1, desc2, noExcludedColumns);
+}
+
+template<typename T1, typename T2>
+bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2,
+						const vector<string>& excludedColumnsTypes)
+{
 	Log::info() << "Comparator::compare: (1) " << desc1 << " to (2) " << desc2 << endl;
 
 	nRow_ = 0;
 
-	compare(it1->columns(), it2->columns());
+	compare(it1->columns(), it2->columns(), excludedColumnsTypes);
 
 	for (; it1 != end1 && it2 != end2; ++it1, ++it2)
 	{
 		++nRow_;
 
 		if (it1->isNewDataset())
-			compare(it1->columns(), it2->columns());
+			compare(it1->columns(), it2->columns(), excludedColumnsTypes);
 		if (it2->isNewDataset())
-			compare(it1->columns(), it2->columns());
-		//if (it1->isNewDataset() || it2->isNewDataset())
-			//compare(it1->columns(), it2->columns());
+			compare(it1->columns(), it2->columns(), excludedColumnsTypes);
 
 		compare(it1->columns().size(), it1->data(), it2->data(), it1->columns());
 	}

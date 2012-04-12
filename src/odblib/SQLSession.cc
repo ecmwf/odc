@@ -88,9 +88,7 @@ unsigned long long SQLSession::execute(SQLStatement& sql)
 	Timer timer("Execute");
 	ASSERT(current_);	
 
-	currentSQLStatement_ = &sql;
 	unsigned long long n = sql.execute();
-	currentSQLStatement_ = 0;
 	return lastExecuteResult_ = n;
 }
 
@@ -98,12 +96,6 @@ SQLDatabase& SQLSession::currentDatabase() const
 {
 	ASSERT(current_);	
 	return *current_;
-}
-
-SQLStatement& SQLSession::currentSQLStatement() const
-{
-	ASSERT(currentSQLStatement_);
-	return *currentSQLStatement_;
 }
 
 double SQLSession::getParameter(int which) const
