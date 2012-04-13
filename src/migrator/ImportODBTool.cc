@@ -8,23 +8,23 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
-#include "PathName.h"
-#include "BigNum.h"
+#include "eclib/LocalPathName.h"
+#include "eclib/BigNum.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "Comparator.h"
-#include "SQLDatabase.h"
-#include "SchemaAnalyzer.h"
-#include "SQLInteractiveSession.h"
+#include "odblib/oda.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/Comparator.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SQLInteractiveSession.h"
+#include "odblib/CountTool.h"
+#include "odblib/ODA2RequestTool.h"
 
-#include "ImportODBTool.h"
-#include "CountTool.h"
-#include "ODA2RequestTool.h"
-#include "ReptypeGenIterator.h"
+#include "migrator/ImportODBTool.h"
+#include "migrator/ReptypeGenIterator.h"
 
-#define SRC __FILE__, __LINE__
+
 
 #include <iostream>
 #include <fstream>
@@ -35,8 +35,6 @@ extern "C" {
 
 #include "ODBIterator.h"
 #include "FakeODBIterator.h"
-
-#include "ksh.h"
 
 namespace odb {
 namespace tool {
@@ -141,7 +139,7 @@ void ImportODBTool<IN>::archiveFiles(const vector<PathName>& files)
 
 		str cmd = "mars -t ";
 		cmd += requestFile;
-		ksh(cmd, SRC, false);
+		ksh(cmd, Here(), false);
 	}
 }
 
@@ -222,7 +220,7 @@ unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, PathName odb, str
 		n = w->pass1(begin, end);
 		//w->close();
 	} catch (...) {
-		ksh("cat odbdump.stderr && cp odbdump.stderr " + odb + ".odb.log", SRC);
+		ksh("cat odbdump.stderr && cp odbdump.stderr " + odb + ".odb.log", Here());
 		throw;
 	}
 	return n;
@@ -257,7 +255,7 @@ PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
 	Log::info() << "year: " << year << endl;
 
 	str ecfsPath = str("ec:/ERAS/era40/EXPVER1/") + year + "/" + datetime + "/ECMA.tar";
-	PathName localPath = datetime + ".ECMA.tar";
+	LocalPathName localPath = datetime + ".ECMA.tar";
 
 	if (localPath.exists() && localPath.isDir())
 		Log::info() << "Directory " << localPath
@@ -265,21 +263,21 @@ PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
 	else
 	{
 		str cmd = "$ECFS_SYS_PATH/ecp.p " + ecfsPath + " " + localPath;
-		ksh(cmd, SRC);
+		ksh(cmd, Here());
 	}
 
-	PathName unpackDir(datetime);
+	LocalPathName unpackDir(datetime);
 	if (unpackDir.exists() && unpackDir.isDir())
 		Log::info() << "Directory " << unpackDir << " exist, skipping unpacking." << endl;
 	else
 	{
 		Log::info() << "Creating directory '" << unpackDir << "'" << endl;
 		str cmd = "mkdir " + unpackDir;
-		ksh(cmd, SRC, false);
+		ksh(cmd, Here(), false);
 
 		Log::info() << "Unpacking '" << localPath << "' to '" << unpackDir << "'" << endl;
 		cmd = "cd " + datetime + " && tar xvf ../" + localPath;
-		ksh(cmd, SRC);
+		ksh(cmd, Here());
 	}
 
 	str localODB = unpackDir + "/ECMA";

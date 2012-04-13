@@ -19,20 +19,18 @@
 
 using namespace std;
 
-#include "oda.h"
-#include "PathName.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "TestImportODB.h"
-#include "ToolFactory.h"
-#include "SchemaAnalyzer.h"
-#include "SQLInteractiveSession.h"
-#include "ImportODBTool.h"
-#include "ODBIterator.h"
+#include "eclib/PathName.h"
 
-#define SRC __FILE__, __LINE__
+#include "odblib/SQLInteractiveSession.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/TestCase.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/oda.h"
 
-#include "oda.h"
+#include "migrator/ImportODBTool.h"
+#include "migrator/ODBIterator.h"
+#include "migrator/TestImportODB.h"
 
 namespace odb {
 namespace tool {

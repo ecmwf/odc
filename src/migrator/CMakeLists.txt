@@ -1,11 +1,20 @@
 list( APPEND migrator_srcs
-ODB2ODATool.cc
-ODBIterator.cc
 FakeODBIterator.cc
-ReptypeGenIterator.cc
-ksh.cc
-TestImportODB.cc
+FakeODBIterator.h
 ImportODBTool.cc
+ImportODBTool.h
+ODB2ODATool.cc
+ODB2ODATool.h
+ODBIterator.cc
+ODBIterator.h
+OldODBReader.h
+ReptypeGenIterator.cc
+ReptypeGenIterator.h
+TSQLReader.cc
+TSQLReader.h
+TestImportODB.cc
+TestImportODB.h
+odb2oda.cc
 )
 
 if( ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
@@ -14,9 +23,9 @@ if( ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
                         COMPONENT odb_api
                         SOURCES    ${migrator_srcs}
                         TEMPLATES  
-                          ImportODBTool.cc
+                          ImportODBTool.cc TSQLReader.cc
                         INCLUDES   ${ODB_INCLUDE_DIRS}
-                        LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} )
+                        LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
 
 else()
    ecmwf_declare_project_files( ${migrator_srcs} )

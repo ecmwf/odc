@@ -109,7 +109,7 @@ void TestSelectIterator::testBug01()
 
 	const double *OBSVALUE = reinterpret_cast<const double*>(REF_DATA);
 
-	//ksh("cd ../odb2oda && ./odb2oda era40:2000010106", SRC, false);
+	//ksh("cd ../odb2oda && ./odb2oda era40:2000010106", Here(), false);
 	const string SELECT = "select obsvalue from \"../odb2oda/2000010106/ECMA.odb\";";
 
 	odb::Select oda(SELECT);

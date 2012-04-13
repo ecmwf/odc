@@ -8,19 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-#include "oda.h"
-#include <Application.h>
-#include <PathName.h>
-#include <FileHandle.h>
+#include "eclib/Application.h"
+#include "eclib/PathName.h"
+#include "eclib/FileHandle.h"
 
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "ToolRunnerApplication.h"
-#include "TestRunnerApplication.h"
-#include "ReptypeGenIterator.h"
-#include "ODBIterator.h"
-#include "FakeODBIterator.h"
-#include "ODB2ODATool.h"
+#include "odblib/oda.h"
+
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/ToolRunnerApplication.h"
+#include "odblib/TestRunnerApplication.h"
+
+#include "migrator/ReptypeGenIterator.h"
+#include "migrator/ODBIterator.h"
+#include "migrator/FakeODBIterator.h"
+#include "migrator/ODB2ODATool.h"
 
 using namespace std;
 using namespace odb::tool;
@@ -84,7 +86,7 @@ int gdb(int argc, char *argv[])
 		args += str(" ") + argv[i];
 
 	PathName scriptFile = str(".gdb_") + str(argv[2]);
-	if (! scriptFile.exist())
+	if (! scriptFile.exists())
 	{
 		str s = str("file ") + cmd + "\nbreak main\nrun " + args + "\n";
 		FileHandle f(scriptFile);

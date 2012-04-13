@@ -58,7 +58,7 @@ public:
 	FakeODBIterator(const PathName& db, const std::string& sql); 
 	~FakeODBIterator ();
 
-	const FakeODBIterator& end() { return *reinterpret_cast<FakeODBIterator*>(0); };
+	const FakeODBIterator& end() { return *reinterpret_cast<FakeODBIterator*>(0); }
 	//bool operator!=(const FakeODBIterator& o) { ASSERT(&o == 0); return iterator_ != iterator_.end(); }
 	//FakeODBIterator& operator++() { next(); return *this; }
 

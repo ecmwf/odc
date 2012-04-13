@@ -58,7 +58,7 @@ if( SWIG_FOUND )
     include( ${SWIG_USE_FILE} )
 endif()
 
-if( WITH_ODB OR DEFINED ODB_PATH ) # old version of odb
+if( WITH_ODB OR DEFINED ODB_PATH OR ODB_API_MIGRATOR ) # old version of odb
     find_package(ODB) 
 endif()
 

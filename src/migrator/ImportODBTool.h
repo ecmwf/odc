@@ -11,7 +11,7 @@
 #ifndef ImportODBTool_H
 #define ImportODBTool_H
 
-#define SRC __FILE__, __LINE__
+
 
 class ODBIterator;
 class Application;

@@ -13,13 +13,14 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "oda.h"
+#include "odblib/oda.h"
 
-#define SRC __FILE__,__LINE__
+
 
 #include <strings.h>
-#include "Tool.h"
-#include "Tokenizer.h"
+
+#include "odblib/Tool.h"
+#include "eclib/Tokenizer.h"
 
 extern "C" {
 #include "odbdump.h"

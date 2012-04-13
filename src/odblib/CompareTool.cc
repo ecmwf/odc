@@ -5,7 +5,7 @@
 #include "CompareTool.h"
 #include "StringTool.h"
 
-#define SRC __FILE__, __LINE__
+
 
 namespace odb {
 namespace tool {

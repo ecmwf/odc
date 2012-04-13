@@ -1,7 +1,7 @@
 #ifndef MDSetter_H
 #define MDSetter_H
 
-#include "IteratorProxy.h"
+#include "odblib/IteratorProxy.h"
 #include "MDUpdatingIterator.h"
 
 namespace odb {

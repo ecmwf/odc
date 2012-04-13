@@ -13,15 +13,13 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "oda.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLSelectFactory.h"
+#include "odblib/StringTool.h"
+#include "odblib/Tool.h"
+#include "odblib/oda.h"
 
-#define SRC __FILE__,__LINE__
-
-#include "SQLDatabase.h"
-#include "ODBIterator.h"
-#include "Tool.h"
-#include "SQLSelectFactory.h"
-#include "StringTool.h"
+#include "migrator/ODBIterator.h"
 
 namespace odb { namespace sql { class SQLInteractiveSession; } }
 
@@ -44,7 +42,7 @@ ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
 	Log::info() << "ODBIterator::ODBIterator: @" << this << " db=" << db << endl;
 
 	const char *odbDirectory = db.asString().c_str();
-	Log::info(SRC) << "Opening ODB in " << odbDirectory << endl;
+	Log::info(Here()) << "Opening ODB in " << odbDirectory << endl;
 	ASSERT(PathName(odbDirectory).exists());
 
 	std::string select = sql != "" ? sql : defaultSQL(db);

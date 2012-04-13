@@ -13,24 +13,22 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "Types.h"
-#include "Tool.h"
-#include "Tokenizer.h"
-#include "Translator.h"
+#include <strings.h>
 
-#include "oda.h"
+#include "eclib/Tokenizer.h"
+#include "eclib/Translator.h"
+#include "eclib/Types.h"
 
-#define SRC __FILE__,__LINE__
+#include "odblib/oda.h"
+#include "odblib/Tool.h"
 
 extern "C" {
 #include "odbdump.h"
 }
 
-#include "ODBIterator.h"
-#include "FakeODBIterator.h"
-#include "ReptypeGenIterator.h"
-
-#include <strings.h>
+#include "migrator/ODBIterator.h"
+#include "migrator/FakeODBIterator.h"
+#include "migrator/ReptypeGenIterator.h"
 
 namespace odb {
 namespace tool {
