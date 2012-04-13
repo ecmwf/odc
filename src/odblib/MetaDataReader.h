@@ -10,6 +10,8 @@
 #include <Python.h>
 #endif
 
+#include "eclib/FileHandle.h"
+
 class PathName;
 class DataHandle;
 
