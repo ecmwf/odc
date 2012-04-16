@@ -2,11 +2,10 @@
 
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
-#include "LSTool.h"
-
-#include "MetaData.h"
-#include "Column.h"
-#include "SQLSelectFactory.h"
+#include "odblib/LSTool.h"
+#include "odblib/MetaData.h"
+#include "odblib/Column.h"
+#include "odblib/SQLSelectFactory.h"
 
 namespace odb {
 namespace tool {
@@ -114,7 +113,7 @@ void LSTool::run()
 
 	string db = parameters(1);
 	string selectList = optionArgument("-s", string(defaultColumns));
-	vector<string> columns = split(",", selectList);
+	vector<string> columns = StringTools::split(",", selectList);
 
 	auto_ptr<ofstream> foutPtr;
 	if (optionIsSet("-o"))

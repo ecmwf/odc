@@ -1,6 +1,8 @@
 #ifndef LSTool_H
 #define LSTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 namespace tool {
 

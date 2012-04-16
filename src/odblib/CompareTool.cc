@@ -46,7 +46,7 @@ void CompareTool::run()
 	odb::Reader::iterator it2(oda2.begin());
 	odb::Reader::iterator end2(oda2.end());
 
-	vector<string> excludedColumnsTypes = StringTool::split(",", optionArgument("-excludeColumnsTypes", string("")));
+	vector<string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", string("")));
 
 	Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << endl;
 	

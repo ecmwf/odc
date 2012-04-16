@@ -58,14 +58,14 @@ void TextReaderIterator::parseHeader()
 {
 	string header;
 	std::getline(*in_, header);
-	vector<string> columns = StringTool::split(defaultDelimiter, header);
+	vector<string> columns = StringTools::split(defaultDelimiter, header);
 
 	Log::debug() << "TextReaderIterator::parseHeader: defaultDelimiter: '" << defaultDelimiter << "'" << endl;
 	Log::debug() << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
-		vector<string> column = StringTool::split(":", columns[i]);
+		vector<string> column = StringTools::split(":", columns[i]);
 		const string& columnName = column[0];
 		const string& columnType = column[1];
 		// FIXME: add parameter: missingValue
@@ -105,7 +105,7 @@ bool TextReaderIterator::next()
 
 	string line;
 	std::getline(*in_, line);
-	vector<string> values = StringTool::split(defaultDelimiter, line);
+	vector<string> values = StringTools::split(defaultDelimiter, line);
 
 	size_t nCols = values.size();
 	if (nCols == 0)

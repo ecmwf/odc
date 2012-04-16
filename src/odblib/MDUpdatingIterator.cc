@@ -37,10 +37,10 @@ MDUpdatingIterator<T>::MDUpdatingIterator (T& ii, const T& end, const vector<str
 		ASSERT(types[i][types[i].size() - 1] == ']');
 
 		BitfieldDef bf;
-		vector<string> parts(StringTool::split(";", types[i].substr(1, types[i].size() - 2)));
+		vector<string> parts(StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
 		for (size_t p = 0; p < parts.size(); ++p)
 		{
-			vector<string> field = StringTool::split(":", parts[p]);
+			vector<string> field = StringTools::split(":", parts[p]);
 			bf.first.push_back(field[0]);
 			bf.second.push_back(atoi(field[1].c_str()));
 		}

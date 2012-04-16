@@ -47,7 +47,7 @@ void GribCodes::load()
 string GribCodes::numeric(const string& keyword, const string& alphanumeric)
 {
 	load();
-	const string kw = StringTool::upper(keyword);
+	const string kw = StringTools::upper(keyword);
 	if (kw == "TYPE")
 	{
 		// HACK:
@@ -67,7 +67,7 @@ string GribCodes::numeric(const string& keyword, const string& alphanumeric)
 string GribCodes::alphanumeric(const string& keyword, const string& numeric)
 {
 	load();
-	const string kw = StringTool::upper(keyword);
+	const string kw = StringTools::upper(keyword);
 	if (kw == "TYPE") 
 	{
 		// HACK:
@@ -117,11 +117,11 @@ void GribCodesBase::readConfig(const PathName& fileName)
 	vector<string> lines = StringTool::readLines(fileName);
 	for (size_t i = 0; i < lines.size(); ++i)
 	{
-		vector<string> words = StringTool::split(fieldDelimiter_, lines[i]);
+		vector<string> words = StringTools::split(fieldDelimiter_, lines[i]);
 		if (words.size() >= 2)
 		{
-			string num = StringTool::trim(words[0]);
-			string alpha = StringTool::trim(words[1]);
+			string num = StringTools::trim(words[0]);
+			string alpha = StringTools::trim(words[1]);
 			numeric2alpha_[num] = alpha;
 			alpha2numeric_[alpha] = num;
 			Log::debug() << "GribCodesBase::readConfig: num='" << num << "' alpha='" << alpha << "'" << endl;

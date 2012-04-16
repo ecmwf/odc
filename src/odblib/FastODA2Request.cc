@@ -192,7 +192,7 @@ string FastODA2Request<T>::genRequest() const
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
 		const string& key = keywords_[i];
-		string k = StringTool::upper(key);
+		string k = StringTools::upper(key);
 		string valuesList;
 		const set<string>& vs = values_[i];
 		for (set<string>::const_iterator vi = vs.begin(); vi != vs.end(); ++vi)
@@ -210,7 +210,7 @@ string FastODA2Request<T>::genRequest() const
 template <typename T>
 string FastODA2Request<T>::patchValue(const string& k, const string& value) const
 {
-	string v = StringTool::trim(value);
+	string v = StringTools::trim(value);
 	Log::debug() << "FastODA2Request::patchValue: v = '" << v  << "', key = " << k << endl;
 	if (k == "TIME")
 		v = StringTool::patchTimeForMars(v);
@@ -220,10 +220,10 @@ string FastODA2Request<T>::patchValue(const string& k, const string& value) cons
 		if (StringTool::check(v, isdigit))
 		{
 			Log::debug() << "FastODA2Request::genRequest: replacing " << v << " with ";
-			v = GribCodes::alphanumeric(StringTool::lower(k), v);
+			v = GribCodes::alphanumeric(StringTools::lower(k), v);
 			Log::debug() << v << endl;
 		}
-		v = StringTool::upper(v);
+		v = StringTools::upper(v);
 	}
 	return v;
 }

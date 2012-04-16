@@ -186,7 +186,7 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 			if (request.str().size()) request << ",\n";
 
 			const string& key = it->second;
-			const string k = StringTool::upper(key);
+			const string k = StringTools::upper(key);
 
 			string valuesList;	
 			Values& vs = values_[i++];
@@ -202,12 +202,12 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 					Log::debug() << "ODA2RequestTool::genRequest: checking if '" << v << "' is numeric" << endl;
 					if (StringTool::check(v, isdigit))
 					{
-						v = StringTool::trim(v);
+						v = StringTools::trim(v);
 						Log::debug() << "ODA2RequestTool::genRequest: replacing " << v << " with ";
-						v = GribCodes::alphanumeric(StringTool::lower(key), v);
+						v = GribCodes::alphanumeric(StringTools::lower(key), v);
 						Log::debug() << v << endl;
 					}
-					v = StringTool::upper(v);
+					v = StringTools::upper(v);
 				}
 
 				if (vi != vs.begin())

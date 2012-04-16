@@ -35,7 +35,7 @@ namespace odb {
 vector<string> StringTool::readLines(const PathName fileName, bool logging)
 {
 	string s = readFile(fileName, logging);
-	return split("\n", s);
+	return StringTools::split("\n", s);
 }
 
 std::string StringTool::readFile(const PathName fileName, bool logging)
@@ -88,20 +88,6 @@ bool StringTool::check(const std::string& s, ctypeFun fun)
 	return true;
 }
 
-std::string StringTool::upper(const string& v)
-{
-	string r = v;
-	transform(r.begin(), r.end(), r.begin(), static_cast < int(*)(int) > (toupper));
-	return r;
-}
-
-std::string StringTool::lower(const string& v)
-{
-	string r = v;
-	transform(r.begin(), r.end(), r.begin(), static_cast < int(*)(int) > (tolower));
-	return r;
-}
-
 bool StringTool::isInQuotes(const std::string& value)
 {
 	return value.size() > 1
@@ -150,18 +136,7 @@ double StringTool::translate(const string& v)
 	return isInQuotes(v) ? cast_as_double(unQuote(v)) : Translator<string, double>()(v);
 }
 
-std::string StringTool::trim(const std::string &str)
-{
-    size_t startpos = str.find_first_not_of(" \t");
-    size_t endpos = str.find_last_not_of(" \t");
-
-    if((string::npos == startpos) || (string::npos == endpos))
-        return "";
-    else
-        return str.substr(startpos, endpos - startpos + 1);
-}
-
-void StringTool::trimInPlace(std::string &str) { str = trim(str); }
+void StringTool::trimInPlace(std::string &str) { str = StringTools::trim(str); }
 
 bool StringTool::match(const string& regex, const string& s)
 {
@@ -196,26 +171,6 @@ bool StringTool::matchAny(const vector<string>& regs, const string& s)
 		if (match(regs[i], s))
 			return true;
 	return false;
-}
-
-vector<std::string> StringTool::split(const string &delim, const string &text)
-{
-	vector<std::string> ss;
-	Tokenizer tokenizer(delim);
-	tokenizer(text, ss);
-	return ss;
-}
-
-std::string StringTool::join(const string &delimiter, const vector<std::string>& words)
-{
-	string r;
-	for (size_t i = 0; i < words.size(); ++i)
-	{
-		if (i > 0)
-			r += delimiter;
-		r += words[i];
-	}
-	return r;
 }
 
 ostream& operator<<(ostream& s, const vector<string>& st) 

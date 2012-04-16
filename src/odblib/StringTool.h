@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "eclib/CodeLocation.h"
+#include "eclib/StringTools.h"
 #include "eclib/Tokenizer.h"
 
 using namespace std;
@@ -29,24 +30,20 @@ class PathName;
 namespace odb {
 
 class StringTool {
-	typedef int(*ctypeFun)(int);
+
+    typedef int(*ctypeFun)(int);
+
 public:
-	static std::string readFile(const PathName fileName, bool logging = false);
+
+    static std::string readFile(const PathName fileName, bool logging = false);
 	static vector<std::string> readLines(const PathName fileName, bool logging = false);
 
-	static std::string trim(const std::string &);
-	static void trimInPlace(std::string &);
+    static void trimInPlace(std::string &);
 
-	static bool isColumnRegex(const string&);
+    static bool isColumnRegex(const string&);
 	static bool match(const string& regex, const string&);
 	static bool matchEx(const string& regex, const string&);
 	static bool matchAny(const vector<string>& regs, const string&);
-
-	static vector<std::string> split(const string& delim, const string& text);
-	static std::string join(const string &, const vector<std::string>&);
-
-	static std::string upper(const std::string &);
-	static std::string lower(const std::string &);
 
 	static bool check(const std::string&, ctypeFun);
 	static bool isInQuotes(const std::string &);
@@ -62,6 +59,7 @@ public:
 
 	static double translate(const string& v);
 	static string patchTimeForMars(const string& v);
+
 };
 
 ostream& operator<<(ostream&, const vector<string>&);

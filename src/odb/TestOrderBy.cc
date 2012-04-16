@@ -160,7 +160,7 @@ void TestOrderBy::test()
 		}
 		Log::debug()  << "TestOrderBy::test: i = " <<  i  << endl;
 		ASSERT(i == 4);
-		ASSERT(v1 == 1 && v2 == 20 && StringTool::trim(s) == "two");
+		ASSERT(v1 == 1 && v2 == 20 && StringTools::trim(s) == "two");
 	}
 }
 

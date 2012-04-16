@@ -140,12 +140,12 @@ void TestRunner::readConfig(const PathName fileName)
     vector<string> lines = StringTool::readLines(fileName);
     for (size_t i = 0; i < lines.size(); ++i)
 	{
-		vector<string> words = Tool::split(":", lines[i]);
+		vector<string> words = StringTools::split(":", lines[i]);
 		if (words.size() == 0)
 			continue;
 		ASSERT("Each line of config file should be like: '<suite_name> : TestPattern1 TestPattern2 ...'" && words.size() == 2);
 
-		suites_[words[0]] = Tool::split(" \t", words[1]);
+		suites_[words[0]] = StringTools::split(" \t", words[1]);
 		Log::debug() << "TestRunner::readConfig(\"" << fileName << "\"): "
 			<< words[0] << ": "
 			<< suites_[words[0]].size() << " entries." << endl;
