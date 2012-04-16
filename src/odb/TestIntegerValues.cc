@@ -25,6 +25,7 @@ using namespace std;
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/TestCase.h"
+#include "odblib/ImportTool.h"
 
 #include "TestIntegerValues.h"
 
@@ -40,7 +41,15 @@ TestIntegerValues::TestIntegerValues(int argc, char **argv)
 
 TestIntegerValues::~TestIntegerValues() { }
 
-void TestIntegerValues::setUp() {}
+void TestIntegerValues::setUp()
+{
+	const char* data =
+	"date:REAL\n"
+	"20101130\n"
+	"20101201\n"
+	"20101202\n";
+	ImportTool::importText(data, "TestIntegerValues.odb");
+}
 
 
 void TestIntegerValues::test()

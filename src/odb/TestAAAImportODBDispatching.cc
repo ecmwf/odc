@@ -58,7 +58,7 @@ TestAAAImportODBDispatching::~TestAAAImportODBDispatching() {}
 
 void TestAAAImportODBDispatching::test()
 {
-    ksh("cd ../odb2oda && ./odb2oda era40:2000010106 . 2000010106.{obstype}.{sensor}.oda", Here());
+    ksh("./odb_migrator era40:2000010106 . 2000010106.{obstype}.{sensor}.oda", Here());
 }
 
 void TestAAAImportODBDispatching::setUp() {}

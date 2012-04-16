@@ -74,7 +74,7 @@ log +++ Test: Input file command line option: -i. Also, test option -T: do not p
 [ `./odb sql select \* -i test_import.odb -T|grep stream|wc|awk '{print $1}'` == 0 ]
 log +++ odb Completed OK
 
-./odb sql select time,lat,lon,obsvalue  order by time,lat,lon -i ../odb2oda/2000010106.1.0.oda.odb -f odb -o order_by_out.odb
+./odb sql select time,lat,lon,obsvalue  order by time,lat,lon -i 2000010106.1.0.oda.odb -f odb -o order_by_out.odb
 ./odb header order_by_out.odb
 
 log +++ Test SELECT with mixed aggregated and non-aggregated functions

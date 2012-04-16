@@ -36,7 +36,13 @@ TestTextSelect::TestTextSelect(int argc, char **argv)
 
 TestTextSelect::~TestTextSelect() { }
 
-void TestTextSelect::setUp() { }
+void TestTextSelect::setUp()
+{
+	ofstream o("TestTextSelect.txt");
+	o << "a:REAL" << endl;
+	for (size_t i = 1; i <= 10; ++i)
+		o << i << endl;
+}
 
 /// Tests syntax 'select lat, lon' (no file name)
 ///
@@ -57,7 +63,6 @@ void TestTextSelect::selectStarOneColumn()
 	Log::info(Here()) << "TestTextSelect::selectStarOneColumn: Execute '" << sql << "'" << endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
-
 
 	double v = 5;
 	unsigned long n = 0;

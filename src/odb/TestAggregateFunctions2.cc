@@ -41,6 +41,7 @@ using namespace std;
 #include "odblib/TestCase.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/ImportTool.h"
 
 #include "odb/TestAggregateFunctions2.h"
 
@@ -88,7 +89,14 @@ void TestAggregateFunctions2::test()
 	ASSERT( i == 1);
 }
 
-void TestAggregateFunctions2::setUp() {}
+void TestAggregateFunctions2::setUp()
+{
+	stringstream s;
+	s << "a:REAL" << endl;
+	for (size_t i = 1; i <= 10; ++i)
+		s << i << endl;
+	ImportTool::importText(s.str().c_str(), "TestAggregateFunctions2.odb");
+}
 
 void TestAggregateFunctions2::tearDown() {}
 

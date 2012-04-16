@@ -24,7 +24,7 @@ SELECT
 
 --obstype@hdr as obstype, varno@body as varno,  status@body as status, lldegrees(lat@hdr)<=-20 as latbin0, lldegrees(lat@hdr)<=20 AND lldegrees(lat@hdr)>-20 as latbin1, lldegrees(lat@hdr)>20 as latbin2 
 
-FROM "../odb2oda/2000010106/ECMA.odb" 
+FROM "2000010106/ECMA.odb" 
 
 WHERE (biascorr@body is not NULL and biascorr@body <> 0)
 	AND  not((obstype@hdr == 10 and obschar.codetype@hdr == 250))

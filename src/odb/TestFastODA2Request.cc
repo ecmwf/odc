@@ -58,7 +58,7 @@ void TestFastODA2Request::test()
 {
 	FastODA2Request<ODA2RequestClientTraits> o;
 	o.parseConfig(cfg);
-	o.scanFile("../odb2oda/2000010106.2.0.oda.odb");
+	o.scanFile("2000010106.2.0.oda.odb");
 
 	//o.parseConfig(StringTool::readFile(cfgFile));
 	//o.scanFile("/hugetmp/odb/mondb_conv.17.16001.odb");

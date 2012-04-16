@@ -69,10 +69,10 @@ void TestSelectStarAt::test()
 {
 	// TODO: make sure a 'select ... into ... from ...', e.g.:
 	//
-	//	const string SELECT = "select *@hdr into \"out.oda\" from \"../odb2oda/2000010106/ECMA.odb\";";
+	//	const string SELECT = "select *@hdr into \"out.oda\" from \"2000010106/ECMA.odb\";";
 	//  is not returning a result set (iterator). Or perhaps it is returning an empty result set.
 
-	const string SELECT = "select *@hdr from \"../odb2oda/2000010106/ECMA.odb\";";
+	const string SELECT = "select *@hdr from \"2000010106/ECMA.odb\";";
 
 	odb::Select oda(SELECT);
 

@@ -44,7 +44,7 @@ TestSimpleFilterIterator::~TestSimpleFilterIterator() { }
 ///
 void TestSimpleFilterIterator::test()
 {
-	const string fileName = "../odb2oda/2000010106/ECMA.odb";
+	const string fileName = "2000010106/ECMA.odb";
 	string sql = string("select * from \"") + fileName + "\" where obstype = 7;";
 	long n0 = 0;
 	long n1 = 0;

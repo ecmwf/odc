@@ -17,7 +17,13 @@ namespace tool {
 CommandLineParser::~CommandLineParser() {}
 
 CommandLineParser::CommandLineParser(int argc, char **argv)
-: commandLineParsed_(false), argc_(argc), argv_(argv), registeredOptionsWithArguments_(), optionsWithArguments_(), optionsNoArguments_(), parameters_()
+: commandLineParsed_(false),
+  argc_(argc),
+  argv_(argv),
+  registeredOptionsWithArguments_(),
+  optionsWithArguments_(),
+  optionsNoArguments_(),
+  parameters_()
 {}
 
 CommandLineParser::CommandLineParser(const CommandLineParser& other)
@@ -50,9 +56,9 @@ CommandLineParser& CommandLineParser::operator=(const CommandLineParser& other)
 	return *this;
 }
 
-int CommandLineParser::argc() { return Context::instance().argc(); }
+int CommandLineParser::argc() { return argc_; }
 
-string CommandLineParser::argv(int i) { return Context::instance().argv(i); }
+string CommandLineParser::argv(int i) { return argv_[i]; }
 
 void CommandLineParser::registerOptionWithArgument(const std::string& option)
 {

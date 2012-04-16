@@ -19,11 +19,13 @@ using namespace std;
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
-#include "TestTextSelect2.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
+#include "odblib/ImportTool.h"
+
 #include "eclib/TmpFile.h"
 
+#include "TestTextSelect2.h"
 
 namespace odb {
 namespace tool {
@@ -37,7 +39,22 @@ TestTextSelect2::TestTextSelect2(int argc, char **argv)
 
 TestTextSelect2::~TestTextSelect2() { }
 
-void TestTextSelect2::setUp() { }
+void TestTextSelect2::setUp()
+{
+	const char* data =
+	"a:REAL,b:REAL\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n";
+	ImportTool::importText(data, "TestTextSelect2.txt");
+}
 
 /// Tests syntax 'select lat, lon' (no file name)
 ///

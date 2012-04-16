@@ -60,12 +60,11 @@ TestBitfields::~TestBitfields() { }
 ///
 void TestBitfields::test()
 {
-	//const string SELECT = "select status@body, status.*@body from \"../odb2oda/2000010106/ECMA.odb\";";AA
 	string statusFields =
 "status.active@body,status.passive@body,status.rejected@body,status.blacklisted@body,status.monthly@body,status.constant@body,status.experimental@body,status.whitelist@body";
 
 	statusFields = "status.*@body";
-	const string SELECT = string("select status@body, ") + statusFields + " from \"../odb2oda/2000010106/ECMA.odb\";";
+	const string SELECT = string("select status@body, ") + statusFields + " from \"2000010106/ECMA.odb\";";
 
 	Log::info() << "Executing '" << SELECT << "'" << endl;
 

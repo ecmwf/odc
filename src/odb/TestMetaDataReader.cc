@@ -25,6 +25,7 @@ using namespace std;
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/TestCase.h"
+#include "odblib/ImportTool.h"
 
 #include "TestMetaDataReader.h"
 
@@ -40,7 +41,10 @@ TestMetaDataReader::TestMetaDataReader(int argc, char **argv)
 
 TestMetaDataReader::~TestMetaDataReader() { }
 
-void TestMetaDataReader::setUp() {}
+void TestMetaDataReader::setUp()
+{
+	ImportTool::importText("x:REAL\n1\n2\n3\n", "TestMetaDataReader.odb");
+}
 
 
 void TestMetaDataReader::test()

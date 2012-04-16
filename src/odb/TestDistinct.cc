@@ -43,6 +43,7 @@ using namespace std;
 #include "odblib/TestCase.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/ImportTool.h"
 
 #include "odb/TestDistinct.h"
 
@@ -76,7 +77,14 @@ void TestDistinct::test()
 	ASSERT((*it2)[0] == 10);
 }
 
-void TestDistinct::setUp() {}
+void TestDistinct::setUp()
+{
+	stringstream s;
+	s << "a:REAL" << endl;
+	for (size_t i = 1; i <= 10; ++i) s << i << endl;
+	for (size_t i = 1; i <= 10; ++i) s << i << endl;
+	ImportTool::importText(s.str().c_str(), "a1to10twice.odb");
+}
 
 void TestDistinct::tearDown() {}
 
