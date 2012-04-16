@@ -41,7 +41,8 @@ TestTextSelect2::~TestTextSelect2() { }
 
 void TestTextSelect2::setUp()
 {
-	const char* data =
+	ofstream f("TestTextSelect2.txt");
+	f << 
 	"a:REAL,b:REAL\n"
 	"1,1\n"
 	"2,2\n"
@@ -53,7 +54,6 @@ void TestTextSelect2::setUp()
 	"8,8\n"
 	"9,9\n"
 	"10,10\n";
-	ImportTool::importText(data, "TestTextSelect2.txt");
 }
 
 /// Tests syntax 'select lat, lon' (no file name)
