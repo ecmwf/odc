@@ -17,9 +17,9 @@ TestImportODB.h
 odb2oda.cc
 )
 
-debug_var( ODB_API_MIGRATOR )
-debug_var( ODB_FOUND )
-debug_var( FORTRAN_LIBRARIES)
+# debug_var( ODB_API_MIGRATOR )
+# debug_var( ODB_FOUND )
+# debug_var( FORTRAN_LIBRARIES)
 
 if( ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
 
