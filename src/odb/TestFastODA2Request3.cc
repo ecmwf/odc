@@ -55,7 +55,7 @@ void TestFastODA2Request3::test()
 	vector<ODAHandle*> handles;
 
 	//PathName pathName("mondb_conv.17.16001.odb.fn6x");
-	PathName pathName("mondb.1.12.odb");
+	PathName pathName("../../../../odb_api/src/odb/mondb.1.12.odb");
 	bool rc = o.scanFile(pathName, offsets, lengths, handles);
 	ASSERT(rc == true);
 
