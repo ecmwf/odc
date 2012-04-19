@@ -79,16 +79,16 @@ void ReptypeTableConfig::load(const PathName& fileName)
 	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << endl;
 	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << "'" << s << "'" << endl;
 
-    vector<std::string> lines = Tool::split("\n", s);
+    vector<std::string> lines = StringTools::split("\n", s);
 
 	size_t i = 0;
 	while (lines[i] == "")
 		++i;
 
-	vector<std::string> firstLine = Tool::split(":", lines[i]);
+	vector<std::string> firstLine = StringTools::split(":", lines[i]);
 	ASSERT(firstLine[0] == "reptype");
 
-	vector<std::string> columnNames = Tool::split(",", firstLine[1]);
+	vector<std::string> columnNames = StringTools::split(",", firstLine[1]);
 	std::for_each(columnNames.begin(), columnNames.end(), Tool::trimInPlace);
 
 	columns_.insert(columns_.end(), columnNames.begin(), columnNames.end());
@@ -106,7 +106,7 @@ void ReptypeTableConfig::load(const PathName& fileName)
 
 		int reptype_value = Translator<std::string, int>()(lr[0]);
 
-		vector<std::string> rvalues = Tool::split(",", lr[1]);
+		vector<std::string> rvalues = StringTools::split(",", lr[1]);
 		//Log::debug() << "ReptypeTableConfig::load: rvalues = " << rvalues << endl;
 
 		ASSERT("Number of values must be equal to number of column names (first line)"

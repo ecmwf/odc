@@ -201,7 +201,7 @@ PathName ODBIterator::schemaFile(const PathName db)
 	if (d[d.size() - 1] != '/')
 		d += "//";
 
-	std::string s = Tool::split(".", Tool::split("//", d).back())[0];
+	std::string s = StringTools::split(".", StringTools::split("//", d).back())[0];
 
 	return d + s + ".sch";
 }

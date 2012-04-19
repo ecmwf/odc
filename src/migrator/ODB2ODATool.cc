@@ -16,10 +16,11 @@
 #include <iostream>
 #include <fstream>
 
-#include "odblib/oda.h"
+#include "eclib/StringTools.h"
 
-#include "odblib/Tool.h"
+#include "odblib/oda.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/Tool.h"
 
 #include "migrator/ODBIterator.h"
 #include "migrator/FakeODBIterator.h"
@@ -58,7 +59,7 @@ void ODB2ODATool::run()
 
 	if (genReptype)
 	{
-		vector<std::string> columns = Tool::split(",", optionArgument<std::string>("-genreptype", ""));
+		vector<std::string> columns = StringTools::split(",", optionArgument<std::string>("-genreptype", ""));
 		ReptypeTableConfig::addColumns(columns.begin(), columns.end());
 	}
 
