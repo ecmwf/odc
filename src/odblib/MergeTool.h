@@ -10,13 +10,13 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o) { o << "Merges rows from two files"; }
+	static void help(ostream &o) { o << "Merges rows from files"; }
 	static void usage(const string& name, ostream &o)
 	{
-		o << name << " <file1.odb> <file2.odb> <output-file.odb>";
+		o << name << " -o <output-file.odb> <input1.odb> <input2.odb> ...";
 	}
 
-	static void merge(const PathName& file1, const PathName& file2, const PathName& outputFileName);
+	static void merge(const vector<PathName>& inputFiles, const PathName& outputFileName);
 
 private:
 // No copy allowed
@@ -26,8 +26,7 @@ private:
 
 	static char* dummyArgv_[];
 
-	PathName file1_;
-	PathName file2_;
+	vector<PathName> inputFiles_;
 	PathName outputFile_;
 
 };

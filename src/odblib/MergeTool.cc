@@ -11,64 +11,78 @@ namespace tool {
 
 ToolFactory<MergeTool> mergeTool("merge");
 
-MergeTool::MergeTool (int argc, char *argv[])
-: Tool(argc, argv) 
+MergeTool::MergeTool (int ac, char *av[])
+: Tool(ac, av) 
 {
-	if (argc != 4)
+	registerOptionWithArgument("-o");
+	if (parameters().size() < 3)
 	{
 		Log::error() << "Usage:";
 		usage(parameters(0), Log::error());
 		Log::error() << endl;
 		return;
 	}
-	
+	string o = optionArgument("-o", string("<no-default>"));
+	if (o == "<no-default>")
+		UserError("Output file is obligatory (option -o)");
+	outputFile_ = o;
 
-	file1_ = PathName(argv[1]);
-	file2_ = PathName(argv[2]);
-
-	ASSERT("First file does not exist!" && file1_.exists());
-	ASSERT("Second file does not exist!" && file2_.exists());
-
-	outputFile_ = PathName(argv[3]);
+	for (size_t i = 1; i < parameters().size(); ++i) 
+		inputFiles_.push_back(PathName(parameters()[i]));
 }
 
 
 void MergeTool::run()
 {
-	Timer t(string("Merging files '") + file1_ + "' and '" + file2_ + "' into '" + + "'");
-	merge(file1_, file2_, outputFile_);
+	stringstream s;
+	for (size_t i = 0; i < inputFiles_.size(); ++i)
+		s << inputFiles_[i] << ",";
+	Timer t(string("Merging files '") + s.str() + "' into '" + outputFile_ + "'");
+	merge(inputFiles_, outputFile_);
 }
 
-void MergeTool::merge(const PathName& file1, const PathName& file2, const PathName& outputFile)
+void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& outputFile)
 {
-	odb::Reader f1(file1);
-	odb::Reader f2(file2);
+	struct R : public vector<odb::Reader*> {
+		~R() { for (size_t i = 0; i < size(); ++i) delete at(i); }
+	} readers;
 
-	odb::Reader::iterator it1(f1.begin()), end1(f1.end());
-	odb::Reader::iterator it2(f2.begin()), end2(f2.end());
+	vector<pair<odb::Reader::iterator, odb::Reader::iterator> > iterators;
+
+	for (size_t i = 0; i < inputFiles.size(); ++i)
+	{
+		readers.push_back(new odb::Reader(inputFiles[i]));
+		iterators.push_back(make_pair(readers[i]->begin(), readers[i]->end()));
+	}
 
 	odb::Writer<> writer(outputFile);
 	odb::Writer<>::iterator out(writer.begin());
 
-	out->columns() = it1->columns() + it2->columns();
+	for (size_t i = 0; i < iterators.size(); ++i)
+	{
+		MetaData& columns(iterators[i].first->columns());
 
-	size_t n = out->columns().size();
-	size_t n1 = it1->columns().size();
-	size_t n2 = it2->columns().size();
-	ASSERT(n == it1->columns().size() + it2->columns().size());
+		for (size_t i = 0; i < columns.size(); ++i)
+			if (out->columns().hasColumn(columns[i]->name()))
+				throw UserError(string("Column '") + columns[i]->name() + "' occurs in more than one input file of merge.");
 
+		out->columns() += columns;
+	}
 	out->writeHeader();
 
-	//double buff[n]; 
-	for (; it1 != end1; ++it1, ++it2)
+	odb::Reader::iterator it = iterators[0].first,
+						  end = iterators[0].second;
+	for (; it != end; ++out)
 	{
 		double* buff = out->data();
 		size_t i = 0;
-		for (size_t i1 = 0; i1 < n1; ++i1)
-			buff[i++] = (*it1)[i1];
-		for (size_t i2 = 0; i2 < n2; ++i2)
-			buff[i++] = (*it2)[i2];
-		++out;
+
+		for (size_t ii = 0; ii < iterators.size(); ++ii)
+		{
+			for (size_t cn = 0; cn < iterators[ii].first->columns().size(); ++cn)
+				buff[i++] = (*iterators[ii].first)[cn];
+			++iterators[ii].first;
+		}
 	}
 }
 

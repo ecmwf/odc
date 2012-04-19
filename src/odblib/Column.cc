@@ -31,11 +31,19 @@ using namespace std;
 namespace odb {
 
 Column::Column(MetaData &owner)
-: owner_(owner), name_(), type_(IGNORE/*?*/), coder_(0)
+: owner_(owner),
+  name_(),
+  type_(IGNORE/*?*/),
+  coder_(0),
+  bitfieldDef_()
 {}
 
 Column::Column(const Column& o)
-: owner_(o.owner_), name_(o.name_), type_(o.type_), coder_(o.coder_ ? o.coder_->clone() : 0)
+: owner_(o.owner_),
+  name_(o.name_),
+  type_(o.type_),
+  coder_(o.coder_ ? o.coder_->clone() : 0),
+  bitfieldDef_(o.bitfieldDef_)
 {}
 
 Column::~Column()
