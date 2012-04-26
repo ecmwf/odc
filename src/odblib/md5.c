@@ -8,8 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-// File md5.c
-// Baudouin Raoult - (c) ECMWF Sep 11
+/* File md5.c
+ * Baudouin Raoult - (c) ECMWF Sep 11
+ */
 
 #include "md5.h"
 

@@ -55,10 +55,10 @@ char* inputEnd;
 namespace SQLYacc {
 
 // Original lex defines odblib_lineno, but it's not documented, so flex does not define it (thank you, RMS).
-#ifndef AIX
-	extern
-#endif
-int odblib_lineno;
+//#ifndef AIX
+//	extern
+//#endif
+extern int odblib_lineno;
 
 void odblib_error(const char* msg);
 
