@@ -145,7 +145,6 @@ void createDataForMixedAggregated2()
 void selectAggregatedAndNonAggregated2()
 {
 	createDataForMixedAggregated2();
-
 	odb::Select oda("select x,min(v),y,max(v) from \"selectAggregatedAndNonAggregated2.odb\"");
 	odb::Select::iterator it = oda.begin();
 	unsigned long counter = 0;
@@ -321,8 +320,7 @@ void bitfieldsLength()
 }
 TESTCASE(bitfieldsLength);
 
-
-void stringInWhere()
+void create_stringInWhere_file()
 {
 	const char *data = 
 	"a:STRING,b:INTEGER\n"
@@ -332,7 +330,11 @@ void stringInWhere()
 	"'bbbc',2\n"
 	;
 	ImportTool::importText(data, "stringInWhere.odb");
+}
 
+void stringInWhere()
+{
+	create_stringInWhere_file();
 	odb::Select oda("select * from 'stringInWhere.odb' where a = 'aaa'");
 	
 	unsigned long counter = 0;
@@ -355,6 +357,7 @@ TESTCASE(vector_syntax2);
 
 void filterInPlace()
 {
+	create_stringInWhere_file();
 	PathName fn("stringInWhere.odb");
 	size_t dataSize = fn.size();
 	MemoryBlock mbIn(dataSize);
@@ -382,6 +385,7 @@ TESTCASE(filterInPlace);
 
 void filterInPlace2()
 {
+	create_stringInWhere_file();
 	PathName fn("stringInWhere.odb");
 	size_t dataSize = fn.size();
 	MemoryBlock mbIn(dataSize);
@@ -420,7 +424,7 @@ TESTCASE(blocksSizes)
 
 void rownumber1()
 {
-    //string path("/scratch/rd/datk/piotr/selecting_rownumber/dribu.odb");
+	createDataForMixedAggregated2();
     string path("selectAggregatedAndNonAggregated2.odb");
     string query("SELECT rownumber() from \"" + path + "\";");
 
