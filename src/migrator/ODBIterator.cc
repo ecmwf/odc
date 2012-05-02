@@ -13,6 +13,8 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
+#include <map>
+
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/StringTool.h"
@@ -104,10 +106,12 @@ void ODBIterator::createColumns()
 	int nci = 0;
 	ci_ = (colinfo_t *) odbdump_create_colinfo(odbHandle_, &nci); 
 	ASSERT(nci == noOfColumns_);
+    map<std::string, std::string> truenames;
 	for (int i = 0; i < noOfColumns_; i++)
 	{
 		colinfo_t *pci = &((colinfo_t *) ci_)[i];
 		std::string name = pci->nickname ? pci->nickname : pci->name;
+        truenames[names] = pci->name;
 		odb::ColumnType type = odb::REAL;
 		double missing = odb::MISSING_VALUE_INT; 
 
@@ -147,7 +151,7 @@ void ODBIterator::createColumns()
 		}
 		setColumn(i, name, type, missing);
 	}
-	getSchema(db_).updateBitfieldsDefs(columns());
+	getSchema(db_).updateBitfieldsDefs(columns(), truenames);
 
 	Log::info() << " <= ODBIterator::createColumns: " << endl;
 }

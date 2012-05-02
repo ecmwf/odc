@@ -123,13 +123,15 @@ const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const string column
 	return bitfieldTypes_[columnType];
 }
 
-void SchemaAnalyzer::updateBitfieldsDefs(MetaData &md) const
+void SchemaAnalyzer::updateBitfieldsDefs(MetaData &md, map<string,string> & truenames) const
 {
 	for (size_t i = 0; i < md.size(); i++)
 	{
 		Column &c = *md[i];
-		if (c.type() == BITFIELD)
-			c.bitfieldDef(const_cast<SchemaAnalyzer*>(this)->getBitfieldTypeDefinition(c.name()));
+		if (c.type() == BITFIELD) {
+            //Log::info() << "colname = " << c.name() << " truename = " << truenames[c.name()] << endl;
+			c.bitfieldDef(const_cast<SchemaAnalyzer*>(this)->getBitfieldTypeDefinition(truenames[c.name()]));
+        }
 	}
 }
 

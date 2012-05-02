@@ -36,7 +36,7 @@ public:
 	void addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature);
 	bool isBitfield(const string columnName) const; 
 	const BitfieldDef& getBitfieldTypeDefinition(const string columnName); 
-	void updateBitfieldsDefs(MetaData &) const;
+	void updateBitfieldsDefs(MetaData &, map<string, string> &) const;
 
 	void skipTable(string tableName);
 	string generateSELECT() const;
