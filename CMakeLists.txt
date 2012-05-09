@@ -72,19 +72,14 @@ set( ODB_API_FOUND          TRUE PARENT_SCOPE )
 # source files
 add_subdirectory( src )
 
+############################################################################################
+# installation 
+
+ecmwf_install_project( NAME OdbAPI )
+
 ###############################################################################
 # summary
 
-# local project summary
-include( project_summary.cmake )
-
-# add cmake packing support
-# include(ecmwf_install_package)
-
 # print the summary of the configuration
-include(ecmwf_print_summary)
-
-# issue warnings / errors in case ther are unused project files
-include(ecmwf_warn_unused_files)
-
+include( ecmwf_print_summary )
 
