@@ -111,7 +111,7 @@ void ODBIterator::createColumns()
 	{
 		colinfo_t *pci = &((colinfo_t *) ci_)[i];
 		std::string name = pci->nickname ? pci->nickname : pci->name;
-        truenames[names] = pci->name;
+        truenames[name] = pci->name;
 		odb::ColumnType type = odb::REAL;
 		double missing = odb::MISSING_VALUE_INT; 
 
