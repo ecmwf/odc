@@ -32,10 +32,7 @@ option( ODB_API_FORTRAN  "whether or not to build the fortan interface" OFF )
 option( ODB_API_PYTHON   "whether or not to build the python interface" OFF )
 
 ###############################################################################
-# macro processing
-
-# define installation paths
-include(ecmwf_define_paths)
+# find extra packages
 
 find_package( SWIG )
 if( SWIG_FOUND )
