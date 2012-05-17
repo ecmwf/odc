@@ -104,7 +104,7 @@ void ODBIterator::createColumns()
 	delete columns_;
 	columns_ = new odb::MetaData(noOfColumns_, (odb::Column *) 0);
 
-        bool preservePrecision = Resource<bool>("$ODB2ODA_PRESERVE_PRECISION", false);
+	bool preservePrecision = Resource<bool>("$ODB2ODA_PRESERVE_PRECISION", false);
 	
 	ci_ = (colinfo_t *) odbdump_destroy_colinfo( (colinfo_t *) ci_, noOfColumns_); 
 	int nci = 0;
@@ -127,10 +127,7 @@ void ODBIterator::createColumns()
 				break;
 
 			case DATATYPE_REAL8:
-                                if (preservePrecision)
-                                    type = odb::DOUBLE;
-                                else
-                                    type = odb::REAL;
+				type = ? preservePrecision : odb::DOUBLE : odb::REAL;
 				missing = odb::MISSING_VALUE_REAL; 
 				break;
 
@@ -156,7 +153,6 @@ void ODBIterator::createColumns()
 		setColumn(i, name, type, missing);
 	}
 	getSchema(db_).updateBitfieldsDefs(columns(), truenames);
-
 	Log::info() << " <= ODBIterator::createColumns: " << endl;
 }
 
