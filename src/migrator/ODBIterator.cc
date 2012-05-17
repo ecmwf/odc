@@ -127,7 +127,7 @@ void ODBIterator::createColumns()
 				break;
 
 			case DATATYPE_REAL8:
-				type = ? preservePrecision : odb::DOUBLE : odb::REAL;
+				type = preservePrecision ? odb::DOUBLE : odb::REAL;
 				missing = odb::MISSING_VALUE_REAL; 
 				break;
 
