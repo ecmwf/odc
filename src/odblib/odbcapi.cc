@@ -14,7 +14,9 @@
 /// @author Piotr Kuchta, March 2009
 
 #include "eclib/Application.h"
-
+#include "eclib/Context.h"
+#include "eclib/StandardBehavior.h" 
+#include "eclib/StdLogger.h" 
 #include "odblib/oda.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/MetaDataReader.h"
@@ -22,15 +24,12 @@
 
 using namespace odb;
 
-char *dummyAppsArgs[] = { const_cast<char*>("odbcapi"), 0 };
+char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };
 
-class DummyApplication : public Application {
-public:
-	DummyApplication() : Application(1, dummyAppsArgs)
-	{
-		Log::info() << "Eclib initialised." << endl;
-	}
-	void run() {}
+class ODBBehaviour : public StandardBehavior
+{
+    Logger* createInfoLogger() { return new StdLogger( std::cerr ); }
+    Logger* createDebugLogger() { return new StdLogger( std::cerr ); } 
 };
 
 #include "odbcapi.h"
@@ -39,10 +38,13 @@ extern "C" {
 
 void odb_start()
 {
-	static DummyApplication * dummyApplication = 0;
+	static ContextBehavior* contextBehaviour = 0;
+	if (contextBehaviour == 0)
+	{
+		contextBehaviour = new ODBBehaviour();
+		Context::instance().setup(1, dummyCommandLineArgs, contextBehaviour);
+	}
 
-	if (dummyApplication == 0)
-		dummyApplication = new DummyApplication;
 }
 
 double odb_count(const char * filename)
