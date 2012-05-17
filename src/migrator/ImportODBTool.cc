@@ -20,11 +20,10 @@
 #include "odblib/SQLInteractiveSession.h"
 #include "odblib/CountTool.h"
 #include "odblib/ODA2RequestTool.h"
+#include "odblib/SchemaAnalyzer.h"
 
 #include "migrator/ImportODBTool.h"
 #include "migrator/ReptypeGenIterator.h"
-
-
 
 #include <iostream>
 #include <fstream>
@@ -156,10 +155,10 @@ void ImportODBTool<IN>::run()
 		db = readFromECFS(db);
 	}
 	
-	//const SchemaAnalyzer &schema = getSchema(db);
+	str sql = parameters().size() > 2 && parameters(2) != "." ? readFile(parameters(2)) : "";
 
-	//If the second param is '.' then generate select using ODB's schema
-	str sql = parameters().size() > 2 && parameters(2) != "." ? readFile(parameters(2)) : "";//defaultSQL(db);
+	Log::info() << "ImportODBTool::run: sql='" << sql << "'" << endl;
+
 	str dumpFile = (parameters().size() > 3) ? parameters(3) : (db + ".odb");
 
 	if (dumpFile.substr(dumpFile.size() - 4) != ".odb")
