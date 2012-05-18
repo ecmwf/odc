@@ -32,9 +32,16 @@ const double EPS          = 1e-7;
 const double D2R          = piconst::pi/180.0;
 const double R2D          = 180.0/piconst::pi;
 
-static map<pair<string,int>,FunctionFactory*>* map_ = 0;
 static ThreadSingleton<FunctionFactory> functionFactory_;
-static vector<pair<string, int> > functionInfo_;
+
+class FFMap : public map<pair<string,int>, FunctionFactoryBase*> {
+public:
+	static map<pair<string,int>, FunctionFactoryBase*>& instance();
+};
+
+static ThreadSingleton<FFMap> map_;
+
+map<pair<string,int>, FunctionFactoryBase*>& FFMap::instance() { return map_.instance(); }
 
 FunctionFactory& FunctionFactory::instance() { return functionFactory_.instance(); }
 
@@ -124,65 +131,65 @@ void FunctionExpression::tables(set<SQLTable*>& t)
 
 //===============================
 
-FunctionFactory::FunctionFactory(const string& name,int arity)
+FunctionFactoryBase::FunctionFactoryBase(const string& name, int arity)
 : arity_(arity),
   name_(name)
 {
 	pair<string,int> p(name_,arity_);
-	if(!map_) map_ = new map<pair<string,int>,FunctionFactory*>();
+	//if(!map_) map_ = new map<pair<string,int>,FunctionFactoryBase*>();
 
-	ASSERT(map_->find(p) == map_->end());
-	(*map_)[p] = this;
+	ASSERT(FFMap::instance().find(p) == FFMap::instance().end());
+	FFMap::instance()[p] = this;
 
 }
 
 vector<pair<string, int> >& FunctionFactory::functionsInfo()
 {
-	ASSERT(map_ != 0);
 	if (functionInfo_.size() == 0)
-		for (map<pair<string,int>,FunctionFactory*>::iterator i = map_->begin(); i != map_->end(); ++i)
+		for (map<pair<string,int>,FunctionFactoryBase*>::iterator i = FFMap::instance().begin(); i != FFMap::instance().end(); ++i)
 			functionInfo_.push_back(make_pair(i->first.first, i->first.second));
 	return functionInfo_;
 }
 
-FunctionFactory::~FunctionFactory()
+FunctionFactoryBase::~FunctionFactoryBase()
 {
-	pair<string,int> p(name_,arity_);
-	map_->erase(p);
-	if (map_->empty())
-	{
-		delete map_;
-		map_ = 0;
-	}
+
+//	pair<string,int> p(name_,arity_);
+//	mapa().erase(p);
+//	if (mapa().empty())
+//	{
+//		delete map_;
+//		map_ = 0;
+//	}
 }
 
-FunctionExpression* FunctionFactory::build(const string& name,const expression::Expressions& args)
+FunctionExpression* FunctionFactoryBase::build(const string& name, const expression::Expressions& args)
 {
 	pair<string,int> p(name,args.size());	
-	map<pair<string,int>,FunctionFactory*>::iterator j = map_->find(p);
+	map<pair<string,int>,FunctionFactoryBase*>::iterator j = FFMap::instance().find(p);
 
 	// Try -1
-	if(j == map_->end())
+	if(j == FFMap::instance().end())
 	{
 		p = pair<string,int>(name,-1);
-		j = map_->find(p);
+		j = FFMap::instance().find(p);
 	}
 
-	if(j == map_->end())
+	if(j == FFMap::instance().end())
 		throw UserError(name + ": function not defined");
 
 	return (*j).second->make(name,args);
 
 }
 
-FunctionExpression* FunctionFactory::build(const string& name,SQLExpression* arg)
+FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression* arg)
 {
 	expression::Expressions args;
 	args.push_back(arg);
 	return build(name,args);
 }
 
-FunctionExpression* FunctionFactory::build(const string& name,SQLExpression* arg1,SQLExpression* arg2)
+FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression* arg1, SQLExpression* arg2)
 {
 	expression::Expressions args;
 	args.push_back(arg1);
@@ -190,7 +197,7 @@ FunctionExpression* FunctionFactory::build(const string& name,SQLExpression* arg
 	return build(name,args);
 }
 
-FunctionExpression* FunctionFactory::build(const string& name,SQLExpression* arg1,SQLExpression* arg2,SQLExpression *arg3)
+FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression* arg1, SQLExpression* arg2, SQLExpression *arg3)
 {
 	expression::Expressions args;
 	args.push_back(arg1);
@@ -214,7 +221,7 @@ public:
 
 template<class T> 
 class MathFunctionExpression_2 : public FunctionExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing)); }
+	double eval(bool& missing) const { return T()(args_[0]->eval(missing), args_[1]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(name_, 2); }
 public:
 	MathFunctionExpression_2(const string& name,const expression::Expressions& args)

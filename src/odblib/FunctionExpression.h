@@ -26,12 +26,12 @@ namespace function {
 class FunctionExpression : public SQLExpression {
 public:
 	FunctionExpression(const string&,const expression::Expressions&);
-	~FunctionExpression(); // Change to virtual if base class
+	~FunctionExpression();
 
 protected:
 	string name_;
 	expression::Expressions args_;
-	// void print(ostream&) const; // Change to virtual if base class	
+	// void print(ostream&) const;
 
 // -- Overridden methods
 	virtual void print(ostream& s) const;
@@ -50,30 +50,43 @@ private:
 	FunctionExpression& operator=(const FunctionExpression&);
 };
 
-class FunctionFactory {
+class FunctionFactoryBase {
 protected:
 	int    arity_;
 	string name_;
-	virtual FunctionExpression* make(const string&,const expression::Expressions&) { NOTIMP; return 0; } // = 0;
+	virtual FunctionExpression* make(const string&,const expression::Expressions&) = 0;
 
 public:
+	//FunctionFactoryBase() : name_("FunctionFactory"), arity_(-1) {}
+	FunctionFactoryBase(const string& name, int arity = -1);
+	~FunctionFactoryBase();
+
+	FunctionExpression* build(const string&, SQLExpression*);
+	FunctionExpression* build(const string&, SQLExpression*, SQLExpression*);
+	FunctionExpression* build(const string&, SQLExpression*, SQLExpression*, SQLExpression*);
+	FunctionExpression* build(const string&, const expression::Expressions&);
+};
+
+class FunctionFactory : public FunctionFactoryBase {
+public:
 	static FunctionFactory& instance();
-	FunctionFactory() : name_("FunctionFactory"), arity_(-1) {}
-	FunctionFactory(const string& name, int arity = -1);
-	~FunctionFactory();
+	FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1) {}
+
 	vector<pair<string, int> >& functionsInfo();
-	FunctionExpression* build(const string&,SQLExpression*);
-	FunctionExpression* build(const string&,SQLExpression*,SQLExpression*);
-	FunctionExpression* build(const string&,SQLExpression*,SQLExpression*,SQLExpression*);
-	FunctionExpression* build(const string&,const expression::Expressions&);
+
+private:
+	FunctionExpression* make(const string&,const expression::Expressions&) { NOTIMP; return 0; }
+
+	map<pair<string,int>, FunctionFactoryBase*> map_;
+	vector<pair<string, int> > functionInfo_;
 };
 
 template<class T>
-class FunctionMaker : public FunctionFactory {
-	virtual FunctionExpression* make(const string& name,const expression::Expressions& args)
-	{ return new T(name,args); }
+class FunctionMaker : public FunctionFactoryBase {
+	FunctionExpression* make(const string& name, const expression::Expressions& args)
+	{ return new T(name, args); }
 public:
-	FunctionMaker(const string& name, int arity = -1) : FunctionFactory(name, arity) {}
+	FunctionMaker(const string& name, int arity = -1) : FunctionFactoryBase(name, arity) {}
 };
 
 } // namespace function

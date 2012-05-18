@@ -44,7 +44,7 @@ void TestRunner::run()
 	}
 	else
 	{
-		readConfig("TestRunnerApplication.cfg");
+		readConfig("../../../odb_api/src/odb/TestRunnerApplication.cfg");
 		tests.reset(new TestCases());
 		for (size_t i = 1; i < clp_.parameters().size(); ++i)
 		{
