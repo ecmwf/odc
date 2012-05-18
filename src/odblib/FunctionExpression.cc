@@ -32,6 +32,12 @@ const double EPS          = 1e-7;
 const double D2R          = piconst::pi/180.0;
 const double R2D          = 180.0/piconst::pi;
 
+static map<pair<string,int>,FunctionFactory*>* map_ = 0;
+static ThreadSingleton<FunctionFactory> functionFactory_;
+static vector<pair<string, int> > functionInfo_;
+
+FunctionFactory& FunctionFactory::instance() { return functionFactory_.instance(); }
+
 FunctionExpression::FunctionExpression(const string& name, const expression::Expressions& args)
 : name_(name),
   args_(args)
@@ -117,8 +123,6 @@ void FunctionExpression::tables(set<SQLTable*>& t)
 }
 
 //===============================
-static map<pair<string,int>,FunctionFactory*>* map_ = 0;
-static vector<pair<string, int> > functionInfo_;
 
 FunctionFactory::FunctionFactory(const string& name,int arity)
 : arity_(arity),

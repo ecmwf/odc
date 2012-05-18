@@ -44,7 +44,7 @@ TestDispatchingWriter::~TestDispatchingWriter() { }
 ///
 void TestDispatchingWriter::test()
 {
-	const string fileName = "2000010106/ECMA.odb";
+	const string fileName = "2000010106.odb";
 
 	odb::Reader oda(fileName);
 	odb::Reader::iterator it = oda.begin();

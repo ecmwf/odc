@@ -64,7 +64,7 @@ void TestBitfields::test()
 "status.active@body,status.passive@body,status.rejected@body,status.blacklisted@body,status.monthly@body,status.constant@body,status.experimental@body,status.whitelist@body";
 
 	statusFields = "status.*@body";
-	const string SELECT = string("select status@body, ") + statusFields + " from \"2000010106/ECMA.odb\";";
+	const string SELECT = string("select status@body, ") + statusFields + " from \"2000010106.odb\";";
 
 	Log::info() << "Executing '" << SELECT << "'" << endl;
 

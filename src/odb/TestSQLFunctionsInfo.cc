@@ -38,7 +38,7 @@ void TestSQLFunctionsInfo::test()
 {
 	typedef vector<pair<string, int> > FI;
 
-	FI& functionsInfo = odb::sql::expression::function::FunctionFactory::functionsInfo();
+	FI& functionsInfo = odb::sql::expression::function::FunctionFactory::instance().functionsInfo();
 
 	Log::info() << "FunctionFactory::functionsInfo().size() == " << functionsInfo.size() << endl;
 	for (FI::iterator i = functionsInfo.begin(); i != functionsInfo.end(); ++i)

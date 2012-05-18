@@ -65,7 +65,7 @@ TestStar::~TestStar() { }
 ///
 void TestStar::test()
 {
-	const string SELECT = "select *@hdr from \"2000010106/ECMA.odb\";";
+	const string SELECT = "select *@hdr from \"2000010106.odb\";";
 
 	odb::Select oda(SELECT);
 

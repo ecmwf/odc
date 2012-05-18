@@ -58,7 +58,7 @@ TestAAAImportODB::~TestAAAImportODB() {}
 
 void TestAAAImportODB::test()
 {
-    ksh("./odb_migrator era40:2000010106", Here());
+    ksh("./odb_migrator era40:2000010106 . 2000010106.odb", Here());
 }
 
 

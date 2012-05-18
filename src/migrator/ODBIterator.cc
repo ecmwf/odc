@@ -53,7 +53,8 @@ ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
 
 	ASSERT(select.size() != 0 && select != "");
 
-	const char *db_path = db.asString().c_str();
+	const std::string dbPath = db.asString();
+	const char *db_path = dbPath.c_str();
 	const char *sql_select = select.c_str();
 
 	Log::info() << "ODBIterator::ODBIterator: Calling odbdump_open(\"" << db_path << "\",\"" << sql_select << "\", NULL, NULL, NULL, &" << noOfColumns_ << ")" << endl;

@@ -45,7 +45,7 @@ void TestSelectDataHandle::test()
 	//string sql = "select * where obstype = 7;";
 	//string sql = "select obstype from \"input.oda\";";
 
-	const string fileName = "2000010106/ECMA.odb";
+	const string fileName = "2000010106.odb";
 	FileHandle fh(fileName);
 	fh.openForRead();
 	odb::Select oda(sql, fh);

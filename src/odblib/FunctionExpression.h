@@ -14,6 +14,8 @@
 #ifndef FunctionExpression_H
 #define FunctionExpression_H
 
+#include "eclib/ThreadSingleton.h"
+
 #include "odblib/SQLExpression.h"
 
 namespace odb {
@@ -52,15 +54,18 @@ class FunctionFactory {
 protected:
 	int    arity_;
 	string name_;
-	virtual FunctionExpression* make(const string&,const expression::Expressions&) = 0;
+	virtual FunctionExpression* make(const string&,const expression::Expressions&) { NOTIMP; return 0; } // = 0;
+
 public:
+	static FunctionFactory& instance();
+	FunctionFactory() : name_("FunctionFactory", -1) {}
 	FunctionFactory(const string& name,int arity = -1);
 	~FunctionFactory();
-	static vector<pair<string, int> >& functionsInfo();
-	static FunctionExpression* build(const string&,SQLExpression*);
-	static FunctionExpression* build(const string&,SQLExpression*,SQLExpression*);
-	static FunctionExpression* build(const string&,SQLExpression*,SQLExpression*,SQLExpression*);
-	static FunctionExpression* build(const string&,const expression::Expressions&);
+	vector<pair<string, int> >& functionsInfo();
+	FunctionExpression* build(const string&,SQLExpression*);
+	FunctionExpression* build(const string&,SQLExpression*,SQLExpression*);
+	FunctionExpression* build(const string&,SQLExpression*,SQLExpression*,SQLExpression*);
+	FunctionExpression* build(const string&,const expression::Expressions&);
 };
 
 template<class T>

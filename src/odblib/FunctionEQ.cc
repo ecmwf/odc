@@ -93,7 +93,7 @@ SQLExpression* FunctionEQ::simplify(bool& changed)
 	if(a && b) {
 		args_[0] = 0;
 		args_[1] = 0;
-		return FunctionFactory::build("join",a,b);
+		return FunctionFactory::instance().build("join",a,b);
 	}
 
 	//

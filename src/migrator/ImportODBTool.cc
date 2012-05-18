@@ -203,6 +203,7 @@ template <typename IN>
 template <typename OUT_ITERATOR>
 unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, PathName odb, str sql) //, const SchemaAnalyzer &schema)
 {
+	Log::info() << "ImportODBTool<IN>::saveData: odb='" << odb << "', sql='" << sql << "'" << endl;
 	unsigned long long n = 0;
 	try {
 		(**w).property("ODB_DATABASE", odb);

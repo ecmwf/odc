@@ -43,7 +43,7 @@ TestDecoding::~TestDecoding() { }
 ///
 void TestDecoding::test()
 {
-	const string fileName = "2000010106/ECMA.odb";
+	const string fileName = "2000010106.odb";
 
 	Timer t(string("TestDecoding::test: reading file '") + fileName + "'");
 

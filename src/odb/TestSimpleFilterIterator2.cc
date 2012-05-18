@@ -41,7 +41,7 @@ TestSimpleFilterIterator2::~TestSimpleFilterIterator2() { }
 ///
 void TestSimpleFilterIterator2::test()
 {
-	const string fileName = "2000010106/ECMA.odb";
+	const string fileName = "2000010106.odb";
 	string sql = string("select * from \"") + fileName + "\" where obstype = 7 and sensor = 1;";
 	odb::Reader oda(fileName);
 	odb::Select odas(sql, fileName);
