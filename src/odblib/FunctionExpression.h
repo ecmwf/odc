@@ -58,8 +58,8 @@ protected:
 
 public:
 	static FunctionFactory& instance();
-	FunctionFactory() : name_("FunctionFactory", -1) {}
-	FunctionFactory(const string& name,int arity = -1);
+	FunctionFactory() : name_("FunctionFactory"), arity_(-1) {}
+	FunctionFactory(const string& name, int arity = -1);
 	~FunctionFactory();
 	vector<pair<string, int> >& functionsInfo();
 	FunctionExpression* build(const string&,SQLExpression*);
