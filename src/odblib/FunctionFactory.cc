@@ -157,45 +157,45 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression
 
 #include <math.h>
 
-template<class T> 
+template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing)); }
+	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(name_, 1); }
 public:
-	MathFunctionExpression_1(const string& name,const expression::Expressions& args)
-	: FunctionExpression(name,args) {}
+	MathFunctionExpression_1(const string& name, const expression::Expressions& args)
+	: FunctionExpression(name, args) {}
 };
 
-template<class T> 
+template<double (*T)(double, double)> 
 class MathFunctionExpression_2 : public FunctionExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing), args_[1]->eval(missing)); }
+	double eval(bool& missing) const { return T(args_[0]->eval(missing), args_[1]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(name_, 2); }
 public:
-	MathFunctionExpression_2(const string& name,const expression::Expressions& args)
+	MathFunctionExpression_2(const string& name, const expression::Expressions& args)
 	: FunctionExpression(name,args) {}
 };
 
-template<class T> 
+template<double (*T)(double,double,double)> 
 class MathFunctionExpression_3 : public FunctionExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing)); }
+	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(name_, 3); }
 public:
 	MathFunctionExpression_3(const string& name,const expression::Expressions& args)
 	: FunctionExpression(name,args) {}
 };
 
-template<class T> 
+template<double (*T)(double,double,double,double)> 
 class MathFunctionExpression_4 : public FunctionExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing)); }
+	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(name_, 4); }
 public:
 	MathFunctionExpression_4(const string& name,const expression::Expressions& args)
 	: FunctionExpression(name,args) {}
 };
 
-template<class T> 
+template<double (*T)(double,double,double,double,double)> 
 class MathFunctionExpression_5 : public FunctionExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing),args_[4]->eval(missing)); }
+	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing),args_[4]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(name_, 5); }
 public:
 	MathFunctionExpression_5(const string& name,const expression::Expressions& args)
@@ -203,109 +203,53 @@ public:
 };
 
 #define DEFINE_MATH_FUNC_1(F) \
-struct math_1_##F { double operator()(double val) const { return F(val); } }; \
-static FunctionMaker<MathFunctionExpression_1<math_1_##F> > make_1_##F(#F,1)
+/*struct math_1_##F { double operator()(double val) const { return F(val); } }; */ \
+static FunctionMaker<MathFunctionExpression_1<F> > make_1_##F(#F,1)
 
 #define DEFINE_MATH_FUNC_1F(FuncName, Name) \
-struct math_1_##FuncName { double operator()(double val) const { return FuncName(val); } }; \
-static FunctionMaker<MathFunctionExpression_1<math_1_##FuncName> > make_1_##FuncName(#Name,1)
+/* struct math_1_##FuncName { double operator()(double val) const { return FuncName(val); } }; */ \
+static FunctionMaker<MathFunctionExpression_1<FuncName> > make_1_##FuncName(#Name,1)
 
 #define DEFINE_MATH_FUNC_2(F) \
-struct math_2_##F { double operator()(double v1,double v2) const { return F(v1,v2); } }; \
-static FunctionMaker<MathFunctionExpression_2<math_2_##F> > make_2_##F(#F,2)
+/*struct math_2_##F { double operator()(double v1,double v2) const { return F(v1,v2); } }; */ \
+static FunctionMaker<MathFunctionExpression_2<F> > make_2_##F(#F,2)
 
 #define DEFINE_MATH_FUNC_2F(FuncName, Name) \
-struct math_2_##FuncName { double operator()(double v1,double v2) const { return FuncName(v1,v2); } }; \
-static FunctionMaker<MathFunctionExpression_2<math_2_##FuncName> > make_2_##FuncName(#Name,2)
+/*struct math_2_##FuncName { double operator()(double v1,double v2) const { return FuncName(v1,v2); } }; */ \
+static FunctionMaker<MathFunctionExpression_2<FuncName> > make_2_##FuncName(#Name,2)
 
 #define DEFINE_MATH_FUNC_3(F) \
-struct math_3_##F { double operator()(double v1,double v2,double v3) const { return F(v1,v2,v3); } }; \
-static FunctionMaker<MathFunctionExpression_3<math_3_##F> > make_3_##F(#F,3)
+/*struct math_3_##F { double operator()(double v1,double v2,double v3) const { return F(v1,v2,v3); } };*/ \
+static FunctionMaker<MathFunctionExpression_3<F> > make_3_##F(#F,3)
 
 #define DEFINE_MATH_FUNC_4(F) \
-struct math_4_##F { double operator()(double v1,double v2,double v3,double v4) const { return F(v1,v2,v3,v4); } }; \
-static FunctionMaker<MathFunctionExpression_4<math_4_##F> > make_4_##F(#F,4)
+/*struct math_4_##F { double operator()(double v1,double v2,double v3,double v4) const { return F(v1,v2,v3,v4); } }; */ \
+static FunctionMaker<MathFunctionExpression_4<F> > make_4_##F(#F,4)
 
 #define DEFINE_MATH_FUNC_5(F) \
-struct math_5_##F { double operator()(double v1,double v2,double v3,double v4,double v5) const { return F(v1,v2,v3,v4,v5); } }; \
-static FunctionMaker<MathFunctionExpression_5<math_5_##F> > make_5_##F(#F,5)
+/*struct math_5_##F { double operator()(double v1,double v2,double v3,double v4,double v5) const { return F(v1,v2,v3,v4,v5); } * };*/ \
+static FunctionMaker<MathFunctionExpression_5<F> > make_5_##F(#F,5)
 
 //--------------------------------------------------------------
 
-#define DEFINE_UNARY(N,T)  static FunctionMaker<MathFunctionExpression_1<T<double> > > make_##T(#N,1)
-#define DEFINE_BINARY(N,T) static FunctionMaker<MathFunctionExpression_2<T<double> > > make_##T(#N,2)
-
-DEFINE_BINARY(<>,not_equal_to);
-DEFINE_BINARY(>,greater);
-DEFINE_BINARY(<,less);
-DEFINE_BINARY(>=,greater_equal);
-DEFINE_BINARY(<=,less_equal);
-
-DEFINE_BINARY(+,plus);
-DEFINE_BINARY(-,minus);
-DEFINE_BINARY(*,multiplies);
-DEFINE_BINARY(/,divides);
-
-DEFINE_UNARY(-,negate);
-DEFINE_UNARY(not,logical_not);
-
-//--------------------------------------------------------------
-
+#define DEFINE_UNARY(N,T)  static FunctionMaker<MathFunctionExpression_1<T> > make_##T(#N,1)
+#define DEFINE_BINARY(N,T) static FunctionMaker<MathFunctionExpression_2<T> > make_##T(#N,2)
 
 inline double abs(double x) { return fabs(x); }
-DEFINE_MATH_FUNC_1(abs);
-DEFINE_MATH_FUNC_1(fabs);
-
 // Note: ODB's trigonometric funcs require args in degrees 
 // and return degrees (where applicable)
-
 inline double Func_acos(double x) { return (R2D*acos(x)); }
-DEFINE_MATH_FUNC_1F(Func_acos, acos);
-
 inline double Func_asin(double x) { return (R2D*asin(x)); }
-DEFINE_MATH_FUNC_1F(Func_asin, asin);
-
 inline double Func_atan(double x) { return (R2D*atan(x)); }
-DEFINE_MATH_FUNC_1F(Func_atan, atan);
-
 inline double Func_atan2(double x, double y) { return (R2D*atan2(x,y)); }
-DEFINE_MATH_FUNC_2F(Func_atan2, atan2);
-
 inline double Func_cos(double x) { return (cos(D2R*x)); }
-DEFINE_MATH_FUNC_1F(Func_cos, cos);
-
 inline double Func_sin(double x) { return (sin(D2R*x)); }
-DEFINE_MATH_FUNC_1F(Func_sin, sin);
-
 inline double Func_tan(double x) { return (tan(D2R*x)); }
-DEFINE_MATH_FUNC_1F(Func_tan, tan);
-
-
-DEFINE_MATH_FUNC_1(exp);
-DEFINE_MATH_FUNC_1(cosh);
-DEFINE_MATH_FUNC_1(sinh);
-DEFINE_MATH_FUNC_1(tanh);
-DEFINE_MATH_FUNC_1(log);
-DEFINE_MATH_FUNC_1(log10);
-DEFINE_MATH_FUNC_1(sqrt);
-
-DEFINE_MATH_FUNC_2(ldexp);
-
 inline double mod(double x, double y) { return fmod(x,y); }
-DEFINE_MATH_FUNC_2(mod);
-DEFINE_MATH_FUNC_2(fmod);
-
 inline double Func_pow(double x, double y) { return ((y) == 2 ? (x)*(x) : pow(x,y)); }
-DEFINE_MATH_FUNC_2F(Func_pow, pow);
-
-//--------------------------------------------------------------
 inline double ln(double x) { return log(x); }
 inline double lg(double x) { return log10(x); }
 
-DEFINE_MATH_FUNC_1(ln);
-DEFINE_MATH_FUNC_1(lg);
-
-//--------------------------------------------------------------
 const double ZERO_POINT=((double)273.15e0);
 
 inline double celsius(double x) { return x - ZERO_POINT; }
@@ -317,19 +261,6 @@ inline double f2c(double x) { return ((x - 32)*5)/9; }
 inline double f2k(double x) { return c2k(f2c(x)); }
 inline double k2f(double x) { return c2f(k2c(x)); }
 inline double fahrenheit(double x) { return c2f(k2c(x)); }
-
-
-DEFINE_MATH_FUNC_1(celsius);
-DEFINE_MATH_FUNC_1(k2c);
-DEFINE_MATH_FUNC_1(kelvin);
-DEFINE_MATH_FUNC_1(c2k);
-DEFINE_MATH_FUNC_1(c2f);
-DEFINE_MATH_FUNC_1(f2c);
-DEFINE_MATH_FUNC_1(f2k);
-DEFINE_MATH_FUNC_1(k2f);
-DEFINE_MATH_FUNC_1(fahrenheit);
-
-
 
 
 inline double radians(double x) { return x * D2R; }
@@ -358,19 +289,6 @@ inline double dist(double reflat, double reflon, double refdist_km, double obsla
            Func_sin(reflat) * Func_sin(obslat)) <= (refdist_km) );
 }
 
-DEFINE_MATH_FUNC_4(distance);
-DEFINE_MATH_FUNC_5(dist);
-
-DEFINE_MATH_FUNC_1(km);
-DEFINE_MATH_FUNC_4(km);
-
-DEFINE_MATH_FUNC_1(radians);
-DEFINE_MATH_FUNC_1(deg2rad);
-DEFINE_MATH_FUNC_1(degrees);
-DEFINE_MATH_FUNC_1(rad2deg);
-
-//--------------------------------------------------------------
-
 inline double circle(double x, double x0, double y, double y0, double r)
 { return ( Func_pow(x-x0,2) + Func_pow(y-y0,2) <= Func_pow(r,2) ); }
 
@@ -393,15 +311,6 @@ inline double between_exclude_second(double x,double a,double b) { return x >= a
 inline double between_exclude_both(double x,double a,double b) { return x > a && x < b; }
 inline double twice(double x) { return 2*x; }
 
-DEFINE_MATH_FUNC_1(twice);
-
-DEFINE_MATH_FUNC_3(between);
-DEFINE_MATH_FUNC_3(not_between);
-DEFINE_MATH_FUNC_3(between_exclude_first);
-DEFINE_MATH_FUNC_3(between_exclude_second);
-DEFINE_MATH_FUNC_3(between_exclude_both);
-
-//--------------------------------------------------------------
 
 /* No. of bits for "int" */
 #define MAXBITS 32
@@ -503,11 +412,98 @@ double ibits(double X, double Pos, double Len)
   return (double) rc;
 }
 
+double negate_double(double n) { return -n; }
+double logical_not_double(double n) { return !n; }
+double not_equal_to_double(double l, double r) { return l != r; }
+double greater_double(double l, double r) { return l > r; }
+double greater_equal_double(double l, double r) { return l >= r; }
+double less_double(double l, double r) { return l < r; }
+double less_equal_double(double l, double r) { return l <= r; }
+
+double plus_double(double l, double r) { return l + r; }
+double minus_double(double l, double r) { return l - r; }
+double multiplies_double(double l, double r) { return l * r; }
+double divides_double(double l, double r) { return l / r; }
+double ldexp_double(double l, double r) { return ldexp(l, r); }
+
+FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1)
+{
+
+DEFINE_BINARY(<>,not_equal_to_double);
+DEFINE_BINARY(>,greater_double);
+DEFINE_BINARY(<,less_double);
+DEFINE_BINARY(>=,greater_equal_double);
+DEFINE_BINARY(<=,less_equal_double);
+
+DEFINE_BINARY(+,plus_double);
+DEFINE_BINARY(-,minus_double);
+DEFINE_BINARY(*,multiplies_double);
+DEFINE_BINARY(/,divides_double);
+
+DEFINE_UNARY(-,negate_double);
+DEFINE_UNARY(not,logical_not_double);
+
+DEFINE_MATH_FUNC_1(abs);
+DEFINE_MATH_FUNC_1(fabs);
+
+DEFINE_MATH_FUNC_1F(Func_acos, acos);
+DEFINE_MATH_FUNC_1F(Func_asin, asin);
+DEFINE_MATH_FUNC_1F(Func_atan, atan);
+DEFINE_MATH_FUNC_2F(Func_atan2, atan2);
+DEFINE_MATH_FUNC_1F(Func_cos, cos);
+DEFINE_MATH_FUNC_1F(Func_sin, sin);
+DEFINE_MATH_FUNC_1F(Func_tan, tan);
+
+DEFINE_MATH_FUNC_1(exp);
+DEFINE_MATH_FUNC_1(cosh);
+DEFINE_MATH_FUNC_1(sinh);
+DEFINE_MATH_FUNC_1(tanh);
+DEFINE_MATH_FUNC_1(log);
+DEFINE_MATH_FUNC_1(log10);
+DEFINE_MATH_FUNC_1(sqrt);
+
+DEFINE_MATH_FUNC_2(ldexp_double);
+
+DEFINE_MATH_FUNC_2(mod);
+DEFINE_MATH_FUNC_2(fmod);
+
+DEFINE_MATH_FUNC_2F(Func_pow, pow);
+
+DEFINE_MATH_FUNC_1(ln);
+DEFINE_MATH_FUNC_1(lg);
+
+
+DEFINE_MATH_FUNC_1(celsius);
+DEFINE_MATH_FUNC_1(k2c);
+DEFINE_MATH_FUNC_1(kelvin);
+DEFINE_MATH_FUNC_1(c2k);
+DEFINE_MATH_FUNC_1(c2f);
+DEFINE_MATH_FUNC_1(f2c);
+DEFINE_MATH_FUNC_1(f2k);
+DEFINE_MATH_FUNC_1(k2f);
+DEFINE_MATH_FUNC_1(fahrenheit);
+
+DEFINE_MATH_FUNC_4(distance);
+DEFINE_MATH_FUNC_5(dist);
+
+DEFINE_MATH_FUNC_1(km);
+DEFINE_MATH_FUNC_4(km);
+
+DEFINE_MATH_FUNC_1(radians);
+DEFINE_MATH_FUNC_1(deg2rad);
+DEFINE_MATH_FUNC_1(degrees);
+DEFINE_MATH_FUNC_1(rad2deg);
+
+DEFINE_MATH_FUNC_1(twice);
+
+DEFINE_MATH_FUNC_3(between);
+DEFINE_MATH_FUNC_3(not_between);
+DEFINE_MATH_FUNC_3(between_exclude_first);
+DEFINE_MATH_FUNC_3(between_exclude_second);
+DEFINE_MATH_FUNC_3(between_exclude_both);
+
+
 DEFINE_MATH_FUNC_3(ibits);
-
-
-
-
 
 static FunctionMaker<FunctionAND> make_AND("and",2);
 static FunctionMaker<FunctionAVG> make_AVG("avg",1);
@@ -544,6 +540,8 @@ static FunctionMaker<FunctionTHIN> make_THIN("thin", 2);
 static FunctionMaker<FunctionTIMESTAMP> make_TIMESTAMP("timestamp",2);
 static FunctionMaker<FunctionVAR> make_VAR("var",1);
 static FunctionMaker<FunctionVAR> make_VARP("varp",1);
+
+}
 
 
 

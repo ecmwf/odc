@@ -44,7 +44,7 @@ public:
 class FunctionFactory : public FunctionFactoryBase {
 public:
 	static FunctionFactory& instance();
-	FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1) {}
+	FunctionFactory(); // : FunctionFactoryBase("FunctionFactory", -1) {}
 
 	vector<pair<string, int> >& functionsInfo();
 
