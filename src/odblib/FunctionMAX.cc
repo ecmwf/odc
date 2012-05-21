@@ -70,8 +70,6 @@ void FunctionMAX::partialResult()
 			value_ = value;
 }
 
-static FunctionMaker<FunctionMAX> make_MAX("max",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

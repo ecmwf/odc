@@ -68,8 +68,6 @@ void FunctionNORM::partialResult()
 	}
 }
 
-static FunctionMaker<FunctionNORM> make_NORM("norm",2);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

@@ -50,10 +50,6 @@ double FunctionJULIAN::eval(bool& missing) const
     return d1.dateToJulian();
 }
 
-static FunctionMaker<FunctionJULIAN> make_JULIAN("julian",2);
-static FunctionMaker<FunctionJULIAN> make_JD("jd",2);
-static FunctionMaker<FunctionJULIAN> make_JULIAN_DATE("julian_date",2);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

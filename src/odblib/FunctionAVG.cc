@@ -71,8 +71,6 @@ void FunctionAVG::partialResult()
 //	else cout << "missing" << endl;
 }
 
-static FunctionMaker<FunctionAVG> make_AVG("avg",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

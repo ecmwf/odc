@@ -10,6 +10,7 @@
 
 #include <math.h>
 
+#include "odblib/FunctionFactory.h"
 #include "odblib/FunctionIntegerExpression.h"
 
 #define RMDI   -2147483647

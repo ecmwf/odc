@@ -52,8 +52,6 @@ SQLExpression* FunctionOR::simplify(bool& changed)
 	return 0;
 }
 
-static FunctionMaker<FunctionOR> make_OR("or",2);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

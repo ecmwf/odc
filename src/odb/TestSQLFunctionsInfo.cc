@@ -21,6 +21,7 @@ using namespace std;
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "odblib/FunctionExpression.h"
+#include "odblib/FunctionFactory.h"
 #include "TestSQLFunctionsInfo.h"
 #include "odblib/ToolFactory.h"
 

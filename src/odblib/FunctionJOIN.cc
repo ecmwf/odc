@@ -49,7 +49,6 @@ SQLIndex* FunctionJOIN::getIndex(double*)
 	return 0;
 }
 
-static FunctionMaker<FunctionJOIN> make_JOIN("join",2);
 
 } // namespace function
 } // namespace expression

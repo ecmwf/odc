@@ -35,9 +35,6 @@ double FunctionNULL::eval(bool& ) const
 	return missing;
 }
 
-static FunctionMaker<FunctionNULL> make_NULL("null",1);
-static FunctionMaker<FunctionNULL> make_ISNULL("isnull",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

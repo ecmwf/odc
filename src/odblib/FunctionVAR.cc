@@ -78,9 +78,6 @@ void FunctionVAR::partialResult()
 //	else cout << "missing" << endl;
 }
 
-static FunctionMaker<FunctionVAR> make_VAR("var",1);
-static FunctionMaker<FunctionVAR> make_VARP("varp",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

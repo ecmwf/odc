@@ -67,6 +67,8 @@ FunctionEQ_BOXLON.cc
 FunctionEQ_BOXLON.h
 FunctionExpression.cc
 FunctionExpression.h
+FunctionFactory.h
+FunctionFactory.cc
 FunctionIN.cc
 FunctionIN.h
 FunctionIntegerExpression.cc

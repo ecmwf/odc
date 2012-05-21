@@ -43,7 +43,6 @@ double FunctionRGG_BOXLAT::eval(bool& missing) const
 }
 
 
-static FunctionMaker<FunctionRGG_BOXLAT> make_RGG_BOXLAT("rgg_boxlat", 3);
 
 } // namespace function
 } // namespace expression

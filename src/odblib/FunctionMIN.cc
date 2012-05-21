@@ -70,8 +70,6 @@ void FunctionMIN::partialResult()
 			value_ = value;
 }
 
-static FunctionMaker<FunctionMIN> make_MIN("min",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

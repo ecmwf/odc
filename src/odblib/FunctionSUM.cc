@@ -61,8 +61,6 @@ void FunctionSUM::partialResult()
 	}
 }
 
-static FunctionMaker<FunctionSUM> make_SUM("sum",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sqol

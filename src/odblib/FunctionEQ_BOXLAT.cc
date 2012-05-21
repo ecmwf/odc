@@ -42,8 +42,6 @@ double FunctionEQ_BOXLAT::eval(bool& missing) const
     return res;
 }
 
-static FunctionMaker<FunctionEQ_BOXLAT> make_EQ_BOXLAT("eq_boxlat", 3);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

@@ -35,7 +35,6 @@ double FunctionNVL::eval(bool& ) const
 	return missing ? args_[1]->eval(missing) : x;
 }
 
-static FunctionMaker<FunctionNVL> make_NVL("nvl",2);
 
 } // namespace function
 } // namespace expression

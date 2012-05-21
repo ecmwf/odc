@@ -57,8 +57,6 @@ void FunctionCOUNT::partialResult()
 //cout << "FunctionCOUNT::partialResult " << count_ << endl;
 }
 
-static FunctionMaker<FunctionCOUNT> make_COUNT("count",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

@@ -62,7 +62,6 @@ void FunctionTIMESTAMP::output(ostream& s) const
     s << static_cast<long long int>(eval(missing));
 }
 
-static FunctionMaker<FunctionTIMESTAMP> make_TIMESTAMP("timestamp",2);
 
 } // namespace function
 } // namespace expression

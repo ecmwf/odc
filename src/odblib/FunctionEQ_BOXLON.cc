@@ -40,8 +40,6 @@ double FunctionEQ_BOXLON::eval(bool& missing) const
 	return res;
 }
 
-static FunctionMaker<FunctionEQ_BOXLON> make_EQ_BOXLON("eq_boxlon",3);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

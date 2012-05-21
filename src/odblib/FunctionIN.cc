@@ -39,8 +39,6 @@ double FunctionIN::eval(bool& missing) const
 	return false;
 }
 
-static FunctionMaker<FunctionIN> make_IN("in");
-
 } // namespace function
 } // namespace expression
 } // namespace sql

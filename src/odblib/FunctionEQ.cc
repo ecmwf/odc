@@ -13,6 +13,7 @@
 #include "odblib/FunctionEQ.h"
 #include "odblib/SQLType.h"
 #include "odblib/StringTool.h"
+#include "odblib/FunctionFactory.h"
 
 namespace odb {
 namespace sql {
@@ -114,8 +115,6 @@ SQLIndex* FunctionEQ::getIndex(double*)
 	tmp_ = args_[1]->eval(missing);
 	return args_[0]->getIndex(&tmp_);
 }
-
-static FunctionMaker<FunctionEQ> make_EQ("=",2);
 
 } // namespace function
 } // namespace expression

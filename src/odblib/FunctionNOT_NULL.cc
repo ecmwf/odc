@@ -41,8 +41,6 @@ double FunctionNOT_NULL::eval(bool&) const
 	return !missing;
 }
 
-static FunctionMaker<FunctionNOT_NULL> make_NOT_NULL("not_null",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

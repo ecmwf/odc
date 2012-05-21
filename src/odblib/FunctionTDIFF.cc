@@ -75,8 +75,6 @@ void FunctionTDIFF::output(ostream& s) const
     s << static_cast<long long int>(eval(missing));
 }
 
-static FunctionMaker<FunctionTDIFF> make_TDIFF("tdiff",4);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

@@ -62,8 +62,6 @@ void FunctionDOTP::partialResult()
 	}
 }
 
-static FunctionMaker<FunctionDOTP> make_DOTP("dotp",2);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

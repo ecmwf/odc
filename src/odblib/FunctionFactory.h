@@ -8,49 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-// File FunctionExpression.h
+// File FunctionFactory.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef FunctionExpression_H
-#define FunctionExpression_H
+#ifndef FunctionFactory_H
+#define FunctionFactory_H
 
 #include "eclib/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {
 namespace expression {
 namespace function {
-
-class FunctionExpression : public SQLExpression {
-public:
-	FunctionExpression(const string&,const expression::Expressions&);
-	~FunctionExpression();
-
-protected:
-	string name_;
-	expression::Expressions args_;
-	// void print(ostream&) const;
-
-// -- Overridden methods
-	virtual void print(ostream& s) const;
-	virtual void prepare(SQLSelect& sql);
-	virtual void cleanup(SQLSelect& sql);
-	virtual bool isConstant() const;
-	virtual SQLExpression* simplify(bool&);
-	//virtual double eval() const;
-	bool isAggregate() const;
-	void partialResult();
-
-	void tables(set<SQLTable*>&);
-private:
-// No copy allowed
-	FunctionExpression(const FunctionExpression&);
-	FunctionExpression& operator=(const FunctionExpression&);
-};
-
-/*
 
 class FunctionFactoryBase {
 protected:
@@ -90,7 +62,6 @@ class FunctionMaker : public FunctionFactoryBase {
 public:
 	FunctionMaker(const string& name, int arity = -1) : FunctionFactoryBase(name, arity) {}
 };
-*/
 
 } // namespace function
 } // namespace expression 

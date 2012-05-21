@@ -91,8 +91,6 @@ SQLExpression* FunctionAND::simplify(bool& changed)
 }
 
 
-static FunctionMaker<FunctionAND> make_AND("and",2);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

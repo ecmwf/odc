@@ -43,8 +43,6 @@ double FunctionNOT_IN::eval(bool& missing) const
 	return true;
 }
 
-static FunctionMaker<FunctionNOT_IN> make_NOT_IN("not_in");
-
 } // namespace function
 } // namespace expression
 } // namespace sql

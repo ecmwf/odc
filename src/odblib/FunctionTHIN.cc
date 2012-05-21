@@ -85,8 +85,6 @@ SQLExpression* FunctionTHIN::simplify(bool&)
     return 0;
 }
 
-static FunctionMaker<FunctionTHIN> make_THIN("thin", 2);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

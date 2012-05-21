@@ -69,7 +69,6 @@ void FunctionROWNUMBER::output(ostream& s) const
     s << static_cast<unsigned long>(eval(missing));
 }
 
-static FunctionMaker<FunctionROWNUMBER> make_ROWNUMBER("rownumber", 0);
 
 } // namespace function
 } // namespace expression

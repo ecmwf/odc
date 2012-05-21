@@ -70,7 +70,6 @@ void FunctionRMS::partialResult()
 //	else cout << "missing" << endl;
 }
 
-static FunctionMaker<FunctionRMS> make_RMS("rms",1);
 
 } // namespace function
 } // namespace expression

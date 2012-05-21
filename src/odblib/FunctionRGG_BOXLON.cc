@@ -40,8 +40,6 @@ double FunctionRGG_BOXLON::eval(bool& missing) const
 	return res;
 }
 
-static FunctionMaker<FunctionRGG_BOXLON> make_RGG_BOXLON("rgg_boxlon",3);
-
 } // namespace function
 } // namespace expression
 } // namespace sql

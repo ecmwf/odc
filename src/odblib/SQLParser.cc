@@ -21,6 +21,7 @@
 #include "odblib/ColumnExpression.h"
 #include "odblib/Dictionary.h"
 #include "odblib/FunctionExpression.h"
+#include "odblib/FunctionFactory.h"
 #include "odblib/NumberExpression.h"
 #include "odblib/ParameterExpression.h"
 #include "odblib/SQLBitfield.h"

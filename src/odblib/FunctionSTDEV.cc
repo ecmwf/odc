@@ -36,9 +36,6 @@ double FunctionSTDEV::eval(bool& missing) const
 	return sqrt(x);
 }
 
-static FunctionMaker<FunctionSTDEV> make_STDEV("stdev",1);
-static FunctionMaker<FunctionSTDEV> make_STDEVP("stdevp",1);
-
 } // namespace function
 } // namespace expression
 } // namespace sql 
