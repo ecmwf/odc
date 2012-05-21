@@ -48,15 +48,17 @@ void FunctionIntegerExpression::output(ostream& s) const
 
 #include <math.h>
 
-template<class T> 
+template<double (*T)(double)> 
 class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing)); }
+	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionIntegerExpression_1<T>(this->name_,this->args_); }
 public:
 	MathFunctionIntegerExpression_1(const string& name,const expression::Expressions& args)
 // TODO: FIXME: simillarly we need to propagate missing values to function expressions from their arguments everywhere
 	: FunctionIntegerExpression(name, args) { this->missingValue_ = args_[0]->missingValue(); }
 };
+
+/*
 
 template<class T> 
 class MathFunctionIntegerExpression_2 : public FunctionIntegerExpression {
@@ -93,26 +95,27 @@ public:
 	MathFunctionIntegerExpression_5(const string& name,const expression::Expressions& args)
 	: FunctionIntegerExpression(name,args) {}
 };
+*/
 
 #define DEFINE_MATH_INT_FUNC_1F(FuncName, Name) \
-struct math_1_##FuncName { double operator()(double val) const { return FuncName(val); } }; \
-static FunctionMaker<MathFunctionIntegerExpression_1<math_1_##FuncName> > make_1_##FuncName(#Name,1)
+/*struct math_1_##FuncName { double operator()(double val) const { return FuncName(val); } }; */ \
+static FunctionMaker<MathFunctionIntegerExpression_1<FuncName> > make_1_##FuncName(#Name,1)
 
-#define DEFINE_MATH_INT_FUNC_2F(FuncName, Name) \
-struct math_2_##FuncName { double operator()(double v1,double v2) const { return FuncName(v1,v2); } }; \
-static FunctionMaker<MathFunctionIntegerExpression_2<math_2_##FuncName> > make_2_##FuncName(#Name,2)
+//#define DEFINE_MATH_INT_FUNC_2F(FuncName, Name) \
+//struct math_2_##FuncName { double operator()(double v1,double v2) const { return FuncName(v1,v2); } }; \
+//static FunctionMaker<MathFunctionIntegerExpression_2<math_2_##FuncName> > make_2_##FuncName(#Name,2)
 
-#define DEFINE_MATH_INT_FUNC_3F(FuncName, Name) \
-struct math_3_##FuncName { double operator()(double v1,double v2,double v3) const { return FuncName(v1,v2,v3); } }; \
-static FunctionMaker<MathFunctionIntegerExpression_3<math_3_##FuncName> > make_3_##FuncName(#Name,3)
+//#define DEFINE_MATH_INT_FUNC_3F(FuncName, Name) \
+//struct math_3_##FuncName { double operator()(double v1,double v2,double v3) const { return FuncName(v1,v2,v3); } }; \
+//static FunctionMaker<MathFunctionIntegerExpression_3<math_3_##FuncName> > make_3_##FuncName(#Name,3)
 
-#define DEFINE_MATH_INT_FUNC_4F(FuncName, Name) \
-struct math_4_##FuncName { double operator()(double v1,double v2,double v3,double v4) const { return FuncName(v1,v2,v3,v4); } }; \
-static FunctionMaker<MathFunctionIntegerExpression_4<math_4_##FuncName> > make_4_##FuncName(#Name,4)
+//#define DEFINE_MATH_INT_FUNC_4F(FuncName, Name) \
+//struct math_4_##FuncName { double operator()(double v1,double v2,double v3,double v4) const { return FuncName(v1,v2,v3,v4); } }; \
+//static FunctionMaker<MathFunctionIntegerExpression_4<math_4_##FuncName> > make_4_##FuncName(#Name,4)
 
-#define DEFINE_MATH_INT_FUNC_5(FuncName, Name) \
-struct math_5_##FuncName { double operator()(double v1,double v2,double v3,double v4,double v5) const { return FuncName(v1,v2,v3,v4,v5); } }; \
-static FunctionMaker<MathFunctionIntegerExpression_5<math_5_##FuncName> > make_5_##FuncName(#Name,5)
+//#define DEFINE_MATH_INT_FUNC_5(FuncName, Name) \
+//struct math_5_##FuncName { double operator()(double v1,double v2,double v3,double v4,double v5) const { return FuncName(v1,v2,v3,v4,v5); } }; \
+//static FunctionMaker<MathFunctionIntegerExpression_5<math_5_##FuncName> > make_5_##FuncName(#Name,5)
 
 
 //--------------------------------------------------------------
@@ -127,14 +130,6 @@ inline double minutes(double x) {return minute(x);}
 inline double second(double x) {return ((fabs(x) != fabs((double)RMDI)) ? (double)(((int)(x))%100) : (double)NMDI);}
 inline double seconds(double x) {return second(x);}
 
-DEFINE_MATH_INT_FUNC_1F(year,year);
-DEFINE_MATH_INT_FUNC_1F(month,month);
-DEFINE_MATH_INT_FUNC_1F(day,day);
-DEFINE_MATH_INT_FUNC_1F(hour,hour);
-DEFINE_MATH_INT_FUNC_1F(minute,minute);
-DEFINE_MATH_INT_FUNC_1F(minutes,minutes);
-DEFINE_MATH_INT_FUNC_1F(second,second);
-DEFINE_MATH_INT_FUNC_1F(seconds, seconds);
 
 inline double Func_ftrunc(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(ftrunc(x)) : (double) NMDI); }
 inline double Func_dnint(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(F90nint(x)) : (double)NMDI); }
@@ -142,11 +137,23 @@ inline double Func_dint(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (
 inline double Func_ceil(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(ceil(x)) : (double) NMDI);}
 inline double Func_floor(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(floor(x)) : (double) NMDI);}
 
-DEFINE_MATH_INT_FUNC_1F(Func_ceil,ceil);
-DEFINE_MATH_INT_FUNC_1F(Func_floor,floor);
-DEFINE_MATH_INT_FUNC_1F(Func_ftrunc,trunc);
-DEFINE_MATH_INT_FUNC_1F(Func_dint,int);
-DEFINE_MATH_INT_FUNC_1F(Func_dnint,nint);
+void FunctionIntegerExpression::registerIntegerFunctions()
+{
+
+	DEFINE_MATH_INT_FUNC_1F(year,year);
+	DEFINE_MATH_INT_FUNC_1F(month,month);
+	DEFINE_MATH_INT_FUNC_1F(day,day);
+	DEFINE_MATH_INT_FUNC_1F(hour,hour);
+	DEFINE_MATH_INT_FUNC_1F(minute,minute);
+	DEFINE_MATH_INT_FUNC_1F(minutes,minutes);
+	DEFINE_MATH_INT_FUNC_1F(second,second);
+	DEFINE_MATH_INT_FUNC_1F(seconds, seconds);
+	DEFINE_MATH_INT_FUNC_1F(Func_ceil,ceil);
+	DEFINE_MATH_INT_FUNC_1F(Func_floor,floor);
+	DEFINE_MATH_INT_FUNC_1F(Func_ftrunc,trunc);
+	DEFINE_MATH_INT_FUNC_1F(Func_dint,int);
+	DEFINE_MATH_INT_FUNC_1F(Func_dnint,nint);
+}
 
 } // namespace function
 } // namespace expression

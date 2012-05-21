@@ -23,6 +23,8 @@ namespace function {
 
 class FunctionIntegerExpression : public FunctionExpression {
 public:
+	static void registerIntegerFunctions();
+
 	FunctionIntegerExpression(const string&,const expression::Expressions&);
 	~FunctionIntegerExpression(); // Change to virtual if base class
 

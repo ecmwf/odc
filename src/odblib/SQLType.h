@@ -65,6 +65,8 @@ private:
 
 	string name_;
 
+	static void registerStaticTypes();
+
 	friend ostream& operator<<(ostream& s,const SQLType& p)
 		{ p.print(s); return s; }
 };

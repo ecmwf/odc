@@ -113,7 +113,6 @@ const SQLType* SQLBitfield::subType(const string& name) const
 	return DynamicallyCreatedTypesDestroyer::registerType(new SQLBit(full, mask(field), shift(field)));
 }
 
-//static SQLBitfield bitfield("SQLSQLBitColumn");
 } // namespace type 
 } // namespace sql 
 } // namespace odb 

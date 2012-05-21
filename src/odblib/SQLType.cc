@@ -13,12 +13,14 @@
 #include "eclib/Exceptions.h"
 
 #include "odblib/SQLType.h"
+#include "odblib/SQLInt.h"
+#include "odblib/SQLReal.h"
+#include "odblib/SQLDouble.h"
+#include "odblib/SQLString.h"
 
 namespace odb {
 namespace sql {
 namespace type {
-
-// Need a mutex
 
 static map<string,SQLType*>* map_ = 0;
 
@@ -86,11 +88,15 @@ SQLType::~SQLType()
 
 bool SQLType::exists(const string& name)
 {
+	registerStaticTypes();
+
 	return (map_->find(name) != map_->end());
 }
 
 const SQLType& SQLType::lookup(const string& name)
 {
+	registerStaticTypes();
+
 	map<string,SQLType*>::iterator j = map_->find(name);
 	if(j == map_->end())
 	{
@@ -116,22 +122,36 @@ const SQLType& SQLType::lookup(const string& name)
 
 void SQLType::createAlias(const string& name, const string& alias)
 {
+	registerStaticTypes();
+
 	ASSERT(map_);
 	ASSERT(SQLType::exists(name));
 
 	(*map_)[alias] = (*map_)[name];
 }
 
-void SQLType::print(ostream& s) const
-{
-	s << name_;
-}
+void SQLType::print(ostream& s) const { s << name_; }
 
 //void SQLType::output(ostream& s,double x) const { s << x; }
 
-const SQLType* SQLType::subType(const string&) const
+const SQLType* SQLType::subType(const string&) const { return this; }
+
+void SQLType::registerStaticTypes()
 {
-	return this;
+	static SQLInt integer("integer");
+
+	/*
+	static SQLInt_YYYYMMDD yyyymmdd;
+	static SQLInt_HHMMSS   hhmmss;
+
+	static SQLInt pk1int("pk1int");
+	static SQLInt pk9int("pk9int");
+	static SQLInt linkoffset_t("linkoffset_t");
+	static SQLInt linklen_t("linklen_t");
+	*/
+	static SQLReal real("real");
+	static SQLString type("string");
+	static SQLDouble double_("double");
 }
 
 } // namespace type

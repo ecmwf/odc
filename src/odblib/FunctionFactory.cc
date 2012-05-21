@@ -48,6 +48,7 @@
 #include "FunctionTIMESTAMP.h"
 #include "FunctionVAR.h"
 #include "FunctionFactory.h"
+#include "FunctionIntegerExpression.h"
 
 
 namespace odb {
@@ -428,122 +429,120 @@ double ldexp_double(double l, double r) { return ldexp(l, r); }
 
 FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1)
 {
+	DEFINE_BINARY(<>,not_equal_to_double);
+	DEFINE_BINARY(>,greater_double);
+	DEFINE_BINARY(<,less_double);
+	DEFINE_BINARY(>=,greater_equal_double);
+	DEFINE_BINARY(<=,less_equal_double);
 
-DEFINE_BINARY(<>,not_equal_to_double);
-DEFINE_BINARY(>,greater_double);
-DEFINE_BINARY(<,less_double);
-DEFINE_BINARY(>=,greater_equal_double);
-DEFINE_BINARY(<=,less_equal_double);
+	DEFINE_BINARY(+,plus_double);
+	DEFINE_BINARY(-,minus_double);
+	DEFINE_BINARY(*,multiplies_double);
+	DEFINE_BINARY(/,divides_double);
 
-DEFINE_BINARY(+,plus_double);
-DEFINE_BINARY(-,minus_double);
-DEFINE_BINARY(*,multiplies_double);
-DEFINE_BINARY(/,divides_double);
+	DEFINE_UNARY(-,negate_double);
+	DEFINE_UNARY(not,logical_not_double);
 
-DEFINE_UNARY(-,negate_double);
-DEFINE_UNARY(not,logical_not_double);
+	DEFINE_MATH_FUNC_1(abs);
+	DEFINE_MATH_FUNC_1(fabs);
 
-DEFINE_MATH_FUNC_1(abs);
-DEFINE_MATH_FUNC_1(fabs);
+	DEFINE_MATH_FUNC_1F(Func_acos, acos);
+	DEFINE_MATH_FUNC_1F(Func_asin, asin);
+	DEFINE_MATH_FUNC_1F(Func_atan, atan);
+	DEFINE_MATH_FUNC_2F(Func_atan2, atan2);
+	DEFINE_MATH_FUNC_1F(Func_cos, cos);
+	DEFINE_MATH_FUNC_1F(Func_sin, sin);
+	DEFINE_MATH_FUNC_1F(Func_tan, tan);
 
-DEFINE_MATH_FUNC_1F(Func_acos, acos);
-DEFINE_MATH_FUNC_1F(Func_asin, asin);
-DEFINE_MATH_FUNC_1F(Func_atan, atan);
-DEFINE_MATH_FUNC_2F(Func_atan2, atan2);
-DEFINE_MATH_FUNC_1F(Func_cos, cos);
-DEFINE_MATH_FUNC_1F(Func_sin, sin);
-DEFINE_MATH_FUNC_1F(Func_tan, tan);
+	DEFINE_MATH_FUNC_1(exp);
+	DEFINE_MATH_FUNC_1(cosh);
+	DEFINE_MATH_FUNC_1(sinh);
+	DEFINE_MATH_FUNC_1(tanh);
+	DEFINE_MATH_FUNC_1(log);
+	DEFINE_MATH_FUNC_1(log10);
+	DEFINE_MATH_FUNC_1(sqrt);
 
-DEFINE_MATH_FUNC_1(exp);
-DEFINE_MATH_FUNC_1(cosh);
-DEFINE_MATH_FUNC_1(sinh);
-DEFINE_MATH_FUNC_1(tanh);
-DEFINE_MATH_FUNC_1(log);
-DEFINE_MATH_FUNC_1(log10);
-DEFINE_MATH_FUNC_1(sqrt);
+	DEFINE_MATH_FUNC_2(ldexp_double);
 
-DEFINE_MATH_FUNC_2(ldexp_double);
+	DEFINE_MATH_FUNC_2(mod);
+	DEFINE_MATH_FUNC_2(fmod);
 
-DEFINE_MATH_FUNC_2(mod);
-DEFINE_MATH_FUNC_2(fmod);
+	DEFINE_MATH_FUNC_2F(Func_pow, pow);
 
-DEFINE_MATH_FUNC_2F(Func_pow, pow);
-
-DEFINE_MATH_FUNC_1(ln);
-DEFINE_MATH_FUNC_1(lg);
-
-
-DEFINE_MATH_FUNC_1(celsius);
-DEFINE_MATH_FUNC_1(k2c);
-DEFINE_MATH_FUNC_1(kelvin);
-DEFINE_MATH_FUNC_1(c2k);
-DEFINE_MATH_FUNC_1(c2f);
-DEFINE_MATH_FUNC_1(f2c);
-DEFINE_MATH_FUNC_1(f2k);
-DEFINE_MATH_FUNC_1(k2f);
-DEFINE_MATH_FUNC_1(fahrenheit);
-
-DEFINE_MATH_FUNC_4(distance);
-DEFINE_MATH_FUNC_5(dist);
-
-DEFINE_MATH_FUNC_1(km);
-DEFINE_MATH_FUNC_4(km);
-
-DEFINE_MATH_FUNC_1(radians);
-DEFINE_MATH_FUNC_1(deg2rad);
-DEFINE_MATH_FUNC_1(degrees);
-DEFINE_MATH_FUNC_1(rad2deg);
-
-DEFINE_MATH_FUNC_1(twice);
-
-DEFINE_MATH_FUNC_3(between);
-DEFINE_MATH_FUNC_3(not_between);
-DEFINE_MATH_FUNC_3(between_exclude_first);
-DEFINE_MATH_FUNC_3(between_exclude_second);
-DEFINE_MATH_FUNC_3(between_exclude_both);
+	DEFINE_MATH_FUNC_1(ln);
+	DEFINE_MATH_FUNC_1(lg);
 
 
-DEFINE_MATH_FUNC_3(ibits);
+	DEFINE_MATH_FUNC_1(celsius);
+	DEFINE_MATH_FUNC_1(k2c);
+	DEFINE_MATH_FUNC_1(kelvin);
+	DEFINE_MATH_FUNC_1(c2k);
+	DEFINE_MATH_FUNC_1(c2f);
+	DEFINE_MATH_FUNC_1(f2c);
+	DEFINE_MATH_FUNC_1(f2k);
+	DEFINE_MATH_FUNC_1(k2f);
+	DEFINE_MATH_FUNC_1(fahrenheit);
 
-static FunctionMaker<FunctionAND> make_AND("and",2);
-static FunctionMaker<FunctionAVG> make_AVG("avg",1);
-static FunctionMaker<FunctionCOUNT> make_COUNT("count",1);
-static FunctionMaker<FunctionDOTP> make_DOTP("dotp",2);
-static FunctionMaker<FunctionEQ> make_EQ("=",2);
-static FunctionMaker<FunctionEQ_BOXLAT> make_EQ_BOXLAT("eq_boxlat", 3);
-static FunctionMaker<FunctionEQ_BOXLON> make_EQ_BOXLON("eq_boxlon",3);
-//#define DEFINE_UNARY(N,T)  static FunctionMaker<MathFunctionExpression_1<T<double> > > make_##T(#N,1)
-//#define DEFINE_BINARY(N,T) static FunctionMaker<MathFunctionExpression_2<T<double> > > make_##T(#N,2)
-static FunctionMaker<FunctionIN> make_IN("in");
-static FunctionMaker<FunctionJOIN> make_JOIN("join",2);
-static FunctionMaker<FunctionJULIAN> make_JULIAN("julian",2);
-static FunctionMaker<FunctionJULIAN> make_JD("jd",2);
-static FunctionMaker<FunctionJULIAN> make_JULIAN_DATE("julian_date",2);
-static FunctionMaker<FunctionMAX> make_MAX("max",1);
-static FunctionMaker<FunctionMIN> make_MIN("min",1);
-static FunctionMaker<FunctionNORM> make_NORM("norm",2);
-static FunctionMaker<FunctionNOT_IN> make_NOT_IN("not_in");
-static FunctionMaker<FunctionNOT_NULL> make_NOT_NULL("not_null",1);
-static FunctionMaker<FunctionNULL> make_NULL("null",1);
-static FunctionMaker<FunctionNULL> make_ISNULL("isnull",1);
-static FunctionMaker<FunctionNVL> make_NVL("nvl",2);
-static FunctionMaker<FunctionOR> make_OR("or",2);
-static FunctionMaker<FunctionRGG_BOXLAT> make_RGG_BOXLAT("rgg_boxlat", 3);
-static FunctionMaker<FunctionRGG_BOXLON> make_RGG_BOXLON("rgg_boxlon",3);
-static FunctionMaker<FunctionRMS> make_RMS("rms",1);
-static FunctionMaker<FunctionROWNUMBER> make_ROWNUMBER("rownumber", 0);
-static FunctionMaker<FunctionSTDEV> make_STDEV("stdev",1);
-static FunctionMaker<FunctionSTDEV> make_STDEVP("stdevp",1);
-static FunctionMaker<FunctionSUM> make_SUM("sum",1);
-static FunctionMaker<FunctionTDIFF> make_TDIFF("tdiff",4);
-static FunctionMaker<FunctionTHIN> make_THIN("thin", 2);
-static FunctionMaker<FunctionTIMESTAMP> make_TIMESTAMP("timestamp",2);
-static FunctionMaker<FunctionVAR> make_VAR("var",1);
-static FunctionMaker<FunctionVAR> make_VARP("varp",1);
+	DEFINE_MATH_FUNC_4(distance);
+	DEFINE_MATH_FUNC_5(dist);
 
+	DEFINE_MATH_FUNC_1(km);
+	DEFINE_MATH_FUNC_4(km);
+
+	DEFINE_MATH_FUNC_1(radians);
+	DEFINE_MATH_FUNC_1(deg2rad);
+	DEFINE_MATH_FUNC_1(degrees);
+	DEFINE_MATH_FUNC_1(rad2deg);
+
+	DEFINE_MATH_FUNC_1(twice);
+
+	DEFINE_MATH_FUNC_3(between);
+	DEFINE_MATH_FUNC_3(not_between);
+	DEFINE_MATH_FUNC_3(between_exclude_first);
+	DEFINE_MATH_FUNC_3(between_exclude_second);
+	DEFINE_MATH_FUNC_3(between_exclude_both);
+
+
+	DEFINE_MATH_FUNC_3(ibits);
+
+	static FunctionMaker<FunctionAND> make_AND("and",2);
+	static FunctionMaker<FunctionAVG> make_AVG("avg",1);
+	static FunctionMaker<FunctionCOUNT> make_COUNT("count",1);
+	static FunctionMaker<FunctionDOTP> make_DOTP("dotp",2);
+	static FunctionMaker<FunctionEQ> make_EQ("=",2);
+	static FunctionMaker<FunctionEQ_BOXLAT> make_EQ_BOXLAT("eq_boxlat", 3);
+	static FunctionMaker<FunctionEQ_BOXLON> make_EQ_BOXLON("eq_boxlon",3);
+	//#define DEFINE_UNARY(N,T)  static FunctionMaker<MathFunctionExpression_1<T<double> > > make_##T(#N,1)
+	//#define DEFINE_BINARY(N,T) static FunctionMaker<MathFunctionExpression_2<T<double> > > make_##T(#N,2)
+	static FunctionMaker<FunctionIN> make_IN("in");
+	static FunctionMaker<FunctionJOIN> make_JOIN("join",2);
+	static FunctionMaker<FunctionJULIAN> make_JULIAN("julian",2);
+	static FunctionMaker<FunctionJULIAN> make_JD("jd",2);
+	static FunctionMaker<FunctionJULIAN> make_JULIAN_DATE("julian_date",2);
+	static FunctionMaker<FunctionMAX> make_MAX("max",1);
+	static FunctionMaker<FunctionMIN> make_MIN("min",1);
+	static FunctionMaker<FunctionNORM> make_NORM("norm",2);
+	static FunctionMaker<FunctionNOT_IN> make_NOT_IN("not_in");
+	static FunctionMaker<FunctionNOT_NULL> make_NOT_NULL("not_null",1);
+	static FunctionMaker<FunctionNULL> make_NULL("null",1);
+	static FunctionMaker<FunctionNULL> make_ISNULL("isnull",1);
+	static FunctionMaker<FunctionNVL> make_NVL("nvl",2);
+	static FunctionMaker<FunctionOR> make_OR("or",2);
+	static FunctionMaker<FunctionRGG_BOXLAT> make_RGG_BOXLAT("rgg_boxlat", 3);
+	static FunctionMaker<FunctionRGG_BOXLON> make_RGG_BOXLON("rgg_boxlon",3);
+	static FunctionMaker<FunctionRMS> make_RMS("rms",1);
+	static FunctionMaker<FunctionROWNUMBER> make_ROWNUMBER("rownumber", 0);
+	static FunctionMaker<FunctionSTDEV> make_STDEV("stdev",1);
+	static FunctionMaker<FunctionSTDEV> make_STDEVP("stdevp",1);
+	static FunctionMaker<FunctionSUM> make_SUM("sum",1);
+	static FunctionMaker<FunctionTDIFF> make_TDIFF("tdiff",4);
+	static FunctionMaker<FunctionTHIN> make_THIN("thin", 2);
+	static FunctionMaker<FunctionTIMESTAMP> make_TIMESTAMP("timestamp",2);
+	static FunctionMaker<FunctionVAR> make_VAR("var",1);
+	static FunctionMaker<FunctionVAR> make_VARP("varp",1);
+
+	FunctionIntegerExpression::registerIntegerFunctions();
 }
-
-
 
 
 } // namespace function
