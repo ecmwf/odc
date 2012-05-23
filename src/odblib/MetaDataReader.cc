@@ -57,8 +57,8 @@ MetaDataReader<T>::MetaDataReader()
 {} 
 
 template <typename T>
-MetaDataReader<T>::MetaDataReader(const string& path, bool skipData)
-: dataHandle_(new FileHandle(path)),
+MetaDataReader<T>::MetaDataReader(const PathName& path, bool skipData)
+: dataHandle_(path.fileHandle()),
   deleteDataHandle_(true),
   path_(path),
   skipData_(skipData)

@@ -62,7 +62,7 @@ MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, const PathName& pat
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-    f = new FileHandle( pathName );
+    f = pathName.fileHandle();
 	ASSERT(f);
 	ownsF_ = true;
 	f->openForRead();

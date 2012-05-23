@@ -97,7 +97,7 @@ private:
 	odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 protected:
-	FileHandle *f;
+	DataHandle *f;
 	Properties properties_;
 	bool newDataset_;
 public:

@@ -26,7 +26,7 @@ public:
 	typedef IteratorProxy<T,MetaDataReader,const double> iterator;
 	//typedef typename iterator::Row row;
 
-	MetaDataReader(const std::string& path, bool skipData = true);
+	MetaDataReader(const PathName &path, bool skipData = true);
 	MetaDataReader();
 
 	virtual ~MetaDataReader();
@@ -34,7 +34,8 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	FileHandle* dataHandle() { return dataHandle_; };
+	DataHandle* dataHandle() { return dataHandle_; }
+    
 	// For C API
 	iterator* createReadIterator(const PathName&);
 
@@ -47,7 +48,7 @@ private:
     MetaDataReader(const MetaDataReader&);
     MetaDataReader& operator=(const MetaDataReader&);
 
-	FileHandle* dataHandle_;
+	DataHandle* dataHandle_;
 	bool deleteDataHandle_;
 	//const PathName path_;
 	const string path_;
