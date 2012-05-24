@@ -20,7 +20,6 @@
 
 using namespace std;
 
-#include "eclib/Application.h"
 #include "eclib/FileHandle.h"
 #include "eclib/PathName.h"
 #include "eclib/Regex.h"

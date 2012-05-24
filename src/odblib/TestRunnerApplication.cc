@@ -4,20 +4,21 @@
 
 #include <sstream>
 
+#include "eclib/Context.h"
+
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/TestRunnerApplication.h"
 #include "odblib/TestRunner.h"
+#include "odblib/ODBBehavior.h"
 
 namespace odb {
 namespace tool {
 namespace test {
 
 TestRunnerApplication::TestRunnerApplication (int argc, char **argv)
-: Application(argc, argv),
-  argc_(argc),
-  argv_(argv)
+: ODBApplication(argc, argv)
 {}
 
 TestRunnerApplication::~TestRunnerApplication ()
@@ -27,7 +28,7 @@ TestRunnerApplication::~TestRunnerApplication ()
 
 void TestRunnerApplication::run()
 {
-	TestRunner testRunner(argc_, argv_);
+	TestRunner testRunner(commandLineParser());
 	testRunner.run();
 }
 

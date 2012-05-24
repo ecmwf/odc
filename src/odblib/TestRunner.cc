@@ -7,6 +7,7 @@
 #include "eclib/PathName.h"
 #include "eclib/Timer.h"
 
+#include "odblib/CommandLineParser.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
@@ -16,8 +17,8 @@ namespace odb {
 namespace tool {
 namespace test {
 
-TestRunner::TestRunner (int argc, char **argv)
-: clp_(argc, argv),
+TestRunner::TestRunner (CommandLineParser& clp)
+: clp_(clp),
   mars_sms_label_(false),
   label_()
 {

@@ -5,14 +5,14 @@
 #ifndef ToolRunnerApplication_H
 #define ToolRunnerApplication_H
 
-#include "eclib/Application.h"
+#include "odblib/ODBApplication.h"
 
 #include "odblib/Tool.h"
 
 namespace odb {
 namespace tool {
 
-class ToolRunnerApplication : public Application {
+class ToolRunnerApplication : public ODBApplication {
 public:
 	ToolRunnerApplication (int argc, char **argv, bool createCommandLineTool = true, bool deleteTool=true);
 	ToolRunnerApplication (Tool &tool, int argc, char **argv);

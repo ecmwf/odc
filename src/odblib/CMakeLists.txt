@@ -159,12 +159,16 @@ ODAHeaderTool.h
 ODATranslator.h
 ODAUpdatingIterator.cc
 ODAUpdatingIterator.h
+ODBApplication.h
+ODBApplication.cc
 ODBAPISettings.cc
 ODBAPISettings.h
 ODBAPIVersion.cc
 ODBAPIVersion.h
 ODBSelect.cc
 ODBSelect.h
+ODBBehavior.h
+ODBBehavior.cc
 OrderByExpressions.cc
 OrderByExpressions.h
 ParameterExpression.cc

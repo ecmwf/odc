@@ -13,7 +13,7 @@ namespace test {
 
 class TestRunner {
 public:
-	TestRunner (int argc, char **argv);
+	TestRunner (CommandLineParser&);
 	virtual ~TestRunner ();
 
 	size_t numberOfFailed() { return failed_.size(); }

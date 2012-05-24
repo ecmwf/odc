@@ -9,18 +9,20 @@
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/ToolRunnerApplication.h"
+#include "odblib/ODBBehavior.h"
+#include "odblib/ODBApplication.h"
 
 namespace odb {
 namespace tool {
 
 ToolRunnerApplication::ToolRunnerApplication (int argc, char **argv, bool createCommandLineTool, bool deleteTool)
-: Application(argc, argv),
+: ODBApplication(argc, argv),
   tool_(!createCommandLineTool ? 0 : AbstractToolFactory::createTool(PathName(argv[1]).baseName(), argc - 1, argv + 1)),
   deleteTool_(deleteTool)
 {}
 
 ToolRunnerApplication::ToolRunnerApplication (Tool &tool, int argc, char **argv)
-: Application(argc, argv),
+: ODBApplication(argc, argv),
   tool_(&tool),
   deleteTool_(false)
 {}

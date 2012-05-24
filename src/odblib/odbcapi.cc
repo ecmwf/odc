@@ -21,16 +21,11 @@
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/FastODA2Request.h"
+#include "odblib/ODBBehavior.h"
 
 using namespace odb;
 
 char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };
-
-class ODBBehaviour : public StandardBehavior
-{
-    Logger* createInfoLogger() { return new StdLogger( std::cerr ); }
-    Logger* createDebugLogger() { return new StdLogger( std::cerr ); } 
-};
 
 #include "odbcapi.h"
 
@@ -38,11 +33,11 @@ extern "C" {
 
 void odb_start()
 {
-	static ContextBehavior* contextBehaviour = 0;
-	if (contextBehaviour == 0)
+	static ContextBehavior* contextBehavior = 0;
+	if (contextBehavior == 0)
 	{
-		contextBehaviour = new ODBBehaviour();
-		Context::instance().setup(1, dummyCommandLineArgs, contextBehaviour);
+		contextBehavior = new ODBBehavior();
+		Context::instance().setup(1, dummyCommandLineArgs, contextBehavior);
 	}
 
 }

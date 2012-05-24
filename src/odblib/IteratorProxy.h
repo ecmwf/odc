@@ -26,9 +26,8 @@ class DataHandle;
 
 #include <Python.h>
 
-#include "eclib/Application.h"
-
 #include "odblib/Column.h"
+#include "odblib/odbcapi.h"
 
 struct ODBStopIteration : public std::exception {
 	const char* what() const throw() { return "end of data"; }
@@ -38,22 +37,9 @@ struct ODBIndexError : public std::exception {
 	const char* what() const throw() { return "index out of range"; }
 };
 
-char *dummyAppArgs[] = { const_cast<char*>("pyodbapi"), 0 };
-
-class DummyEclibApplication : public Application {
-public:
-	DummyEclibApplication() : Application(1, dummyAppArgs)
-	{
-		Log::info() << "Eclib initialised." << endl;
-	}
-	void run() {}
-};
-
 void python_api_start()
 {
-	static DummyEclibApplication * dummyApplication = 0;
-	if (dummyApplication == 0)
-		dummyApplication = new DummyEclibApplication;
+	odb_start();
 }
 
 #endif
