@@ -42,10 +42,7 @@ DynamicallyCreatedTypesDestroyer::~DynamicallyCreatedTypesDestroyer ()
 	if (dynamicallyCreatedTypes_)
 	{
 		for (set<SQLType*>::iterator it = dynamicallyCreatedTypes_->begin(); it != dynamicallyCreatedTypes_->end(); ++it)
-		{
-			Log::debug() << "DynamicallyCreatedTypesDestroyer::~DynamicallyCreatedTypesDestroyer: " << *it << endl;
 			delete *it;
-		}
 		delete dynamicallyCreatedTypes_;
 		dynamicallyCreatedTypes_ = 0;
 	}

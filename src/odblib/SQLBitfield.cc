@@ -39,10 +39,7 @@ SQLBitfield::SQLBitfield(const string& name, const FieldNames& fields, const Siz
 	}
 }
 
-SQLBitfield::~SQLBitfield()
-{
-	Log::debug() << "SQLBitfield::~SQLBitfield@" << this << endl;
-}
+SQLBitfield::~SQLBitfield() {}
 
 unsigned long SQLBitfield::mask(const string& n) const
 {
