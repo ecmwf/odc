@@ -128,7 +128,7 @@ int valgrind(int argc, char *argv[])
 
 	string logFile = string("vg.") + argv[2] + ".log";
 	string vg = string("valgrind --log-file=") + logFile + " --show-reachable=yes --leak-check=full "
-		 + " --db-attach=yes --suppressions=eclib.supp "
+		 + " --db-attach=yes " // --suppressions=eclib.supp "
 		 + cmd + " " + args;
 	cout << "Executing '" << vg << "'" << endl;
 	return system(vg.c_str());
