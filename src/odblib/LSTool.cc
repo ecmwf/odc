@@ -15,79 +15,42 @@ ToolFactory<LSTool> lsTool("ls");
 LSTool::LSTool (int argc, char *argv[]) : Tool(argc, argv)
 {
 	registerOptionWithArgument("-o"); // Text Output
-	registerOptionWithArgument("-O"); // Reader Output
-	registerOptionWithArgument("-s"); // Select
-	registerOptionWithArgument("-w"); // Where
 }
-
-const char * LSTool::defaultColumns = "andate,date,antime,time,reportype";
 
 const string LSTool::nullString;
 
-unsigned long long LSTool::runSQLSelect(const string &db, const string &selectList, const string &whereClause, ostream &out, const string &odaOutput)
+unsigned long long LSTool::runFast(const string &db, ostream &out)
 {
-	string sql = string("select ") + selectList + " ";
-	if (odaOutput != nullString)
-		sql += string("into \"") + odaOutput +"\" ";
+	odb::Reader f(db);
+	odb::Reader::iterator it = f.begin();
+	odb::Reader::iterator end = f.end();
 
-	sql += "from \"" + db + "\" ";
-
-	if (whereClause != nullString)
-		sql += "where " + whereClause;
-	sql += ";";
-
-	Log::debug() << "runSQLSelect: " << sql << endl;
-
-	odb::sql::SQLInteractiveSession session(out);
-	odb::sql::SQLParser p;
-	p.parseString(sql, static_cast<DataHandle*>(0), odb::sql::SQLSelectFactory::instance().config());
-	return session.lastExecuteResult();
-}
-
-unsigned long long LSTool::runFast(const string &db, const vector<string> &columns, ostream &out)
-{
-	odb::Reader oda(db);
-	odb::Reader::iterator row = oda.begin();
-	odb::Reader::iterator end = oda.end();
-
-	vector<size_t> indices;
-	vector<odb::ColumnType> types;
-
-	odb::MetaData &md = row->columns();
-	for (size_t i = 0; i < columns.size(); ++i)
-	{
-		size_t index = md.columnIndex(columns[i]);
-		indices.push_back(index);
-	
-		odb::Column &column = *md[index];
-		odb::ColumnType type = column.type();
-		types.push_back(type);
-
-		out << column.name() << "\t";
-	}
-	out << endl;
-
+	odb::MetaData md(0);
 	// Formatting of real values:
 	out << fixed;
-
 	unsigned long long n = 0;
-	for ( ; row != end; ++row, ++n)
+	for ( ; it != end; ++it, ++n)
 	{
-		for (size_t c = 0; c < indices.size(); ++c)
+		if (md != it->columns())
 		{
-			size_t index = indices[c];
-			switch(types[c])
+			md = it->columns();
+			for (size_t i = 0; i < md.size(); ++i)
+				out << md[i]->name() << "\t";
+			out << endl;
+		}
+		for (size_t i = 0; i < md.size(); ++i)
+		{
+			switch(md[i]->type())
 			{
 				case odb::INTEGER:
 				case odb::BITFIELD:
-					//out << row.integer(index);
-					out << static_cast<int>((*row)[index]);
+					out << static_cast<int>((*it)[i]);
 					break;
 				case odb::REAL:
-					out << (*row)[index];
+					out << (*it)[i];
 					break;
 				case odb::STRING:
-					out << "'" << (*row).string(index) << "'";
+					out << "'" << (*it).string(i) << "'";
 					break;
 				case odb::IGNORE:
 				default:
@@ -112,25 +75,14 @@ void LSTool::run()
 	}
 
 	string db = parameters(1);
-	string selectList = optionArgument("-s", string(defaultColumns));
-	vector<string> columns = StringTools::split(",", selectList);
 
 	auto_ptr<ofstream> foutPtr;
 	if (optionIsSet("-o"))
 		foutPtr.reset(new ofstream(optionArgument("-o", string("")).c_str()));
 	ostream& out = optionIsSet("-o") ? *foutPtr : cout;
 
-	string odaOutput = optionArgument("-O", nullString);
-
 	unsigned long long n = 0;
-
-	// TODO: If -O set and  -w not set then process without SQL
-
-	if (! (optionIsSet("-w") || optionIsSet("-O") || selectList == "*"))
-		n = runFast(db, columns, out);
-	else
-		n = runSQLSelect(db, selectList, optionArgument("-w", nullString), out, odaOutput);
-
+	n = runFast(db, out);
 	Log::info() << "Selected " << n << " row(s)." << endl;
 }
 

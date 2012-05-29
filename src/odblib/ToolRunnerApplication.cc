@@ -29,8 +29,6 @@ ToolRunnerApplication::ToolRunnerApplication (Tool &tool, int argc, char **argv)
 
 ToolRunnerApplication::~ToolRunnerApplication ()
 {
-	Log::info() << "ToolRunnerApplication::~ToolRunnerApplication" << endl;
-
 	if (deleteTool_) delete tool_;
 }
 
