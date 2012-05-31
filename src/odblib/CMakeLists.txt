@@ -336,13 +336,13 @@ MetaDataReader.cc
 
 # define Odb library
 
-ecmwf_add_library( TARGET     Odb
+ecbuild_add_library( TARGET     Odb
                   COMPONENT  server
                   SOURCES    ${odblib_src_files}
                   TEMPLATES  ${odblib_templates}
                   LIBS       Ec )
 
-ecmwf_generate_yy( YYPREFIX odblib_
+ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly
                   LEX  sqll
                   DEPENDANT SQLParser.cc )

@@ -23,7 +23,7 @@ odb2oda.cc
 
 if( ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
 
-  ecmwf_add_executable( TARGET     odb_migrator
+  ecbuild_add_executable( TARGET     odb_migrator
                         COMPONENT  odb_api
                         SOURCES    ${migrator_srcs}
                         TEMPLATES  
@@ -32,5 +32,5 @@ if( ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
                         LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
 
 else()
-   ecmwf_declare_project_files( ${migrator_srcs} )
+   ecbuild_declare_project_files( ${migrator_srcs} )
 endif()
