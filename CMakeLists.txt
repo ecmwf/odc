@@ -11,7 +11,7 @@
 
 cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
-project( odb_api C CXX )
+project( odb_api )
 
 enable_language( Fortran OPTIONAL )
 
@@ -46,9 +46,11 @@ endif()
 ###############################################################################
 # contents
 
-set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src PARENT_SCOPE )
-set( ODB_API_LIBRARIES      Odb PARENT_SCOPE )
-set( ODB_API_FOUND          TRUE PARENT_SCOPE )
+if( NOT ${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME} )
+    set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src PARENT_SCOPE )
+    set( ODB_API_LIBRARIES      Odb PARENT_SCOPE )
+    set( ODB_API_FOUND          TRUE PARENT_SCOPE )
+endif()
 
 # source files
 add_subdirectory( src )
