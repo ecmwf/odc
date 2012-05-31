@@ -17,7 +17,7 @@ enable_language( Fortran OPTIONAL )
 
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} )
 
-include( ecbuild_build_system )
+include( ecbuild_system )
 
 ###############################################################################
 # local project
