@@ -306,8 +306,8 @@ WriterDispatchingIterator.cc
 WriterDispatchingIterator.h
 XYVTool.cc
 XYVTool.h
-md5.h
-md5.c
+md5_hash.h
+md5_hash.c
 oda.h
 odbcapi.cc
 odbcapi.h

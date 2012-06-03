@@ -47,7 +47,7 @@ using namespace std;
 #include "odblib/Header.h"
 #include "odblib/Reader.h"
 #include "eclib/DataHandle.h"
-#include "eclib/FILEHandle.h"
+#include "eclib/StdFileHandle.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
 #include "odblib/oda.h"

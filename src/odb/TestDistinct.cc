@@ -21,7 +21,7 @@ using namespace std;
 
 
 #include "eclib/DataHandle.h"
-#include "eclib/FILEHandle.h"
+#include "eclib/StdFileHandle.h"
 #include "eclib/Log.h"
 #include "eclib/PathName.h"
 

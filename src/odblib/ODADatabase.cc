@@ -10,8 +10,6 @@
 
 #include <cctype>
 
-#include "eclib/FILEHandle.h"
-
 #include "odblib/oda.h"
 #include "odblib/ODADatabase.h"
 #include "odblib/StringTool.h"

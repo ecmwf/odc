@@ -15,7 +15,7 @@
 #define MD5_H
 
 extern "C" {
-#include "md5.h"
+#include "md5_hash.h"
 } // extern "C"
 
 #include "eclib/machine.h"

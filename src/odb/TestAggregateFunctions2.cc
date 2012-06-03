@@ -21,7 +21,7 @@ using namespace std;
 
 #include "eclib/PathName.h"
 #include "eclib/Log.h"
-#include "eclib/FILEHandle.h"
+#include "eclib/StdFileHandle.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"
@@ -75,7 +75,7 @@ void TestAggregateFunctions2::test()
 	odb::Select::iterator end2 = sel.end();
 
 	FILE *fout = fopen("TestAggregateFunctions2_out.odb", "w");
-	FILEHandle fhout(fout);
+	StdFileHandle fhout(fout);
 	odb::Writer<> writer(fhout);
 	odb::Writer<>::iterator outit = writer.begin();
 
