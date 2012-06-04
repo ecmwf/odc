@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <values.h>
+//#include <values.h>
 
 #include "odblib/oda.h"
 
