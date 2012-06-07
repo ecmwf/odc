@@ -58,7 +58,7 @@ TestAAAImportODB::~TestAAAImportODB() {}
 
 void TestAAAImportODB::test()
 {
-    ksh("./odb_migrator era40:2000010106 . 2000010106.odb", Here());
+    ksh("gzip -d <../../../odb_api/src/migrator/2000010106.old.ECMA.tar.gz | tar xf - && ./odb_migrator 2000010106/ECMA . 2000010106.odb", Here());
 }
 
 
