@@ -58,7 +58,7 @@ TestAAAImportODBDispatching::~TestAAAImportODBDispatching() {}
 
 void TestAAAImportODBDispatching::test()
 {
-    ksh("gzip -d <../../../odb_api/src/migrator/2000010106.old.ECMA.tar.gz | tar xf - && ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
+    ksh("gzip -d <../../../odb_api/src/migrator/2000010106.old.ECMA.tar.gz | tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
 }
 
 void TestAAAImportODBDispatching::setUp() {}
