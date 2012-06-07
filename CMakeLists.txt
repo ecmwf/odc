@@ -13,7 +13,7 @@ cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
 project( odb_api )
 
-enable_language( Fortran OPTIONAL )
+set( EC_FORTRAN "OPTIONAL" )
 
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} )
 
