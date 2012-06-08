@@ -14,7 +14,6 @@
 
 
 class ODBIterator;
-class Application;
 class CommandLineParser;
 
 #include "OldODBReader.h"
@@ -26,7 +25,6 @@ template <typename IN = odb::tool::OldODBReader>
 class ImportODBTool : public Tool {
 public:
 	ImportODBTool (int argc, char *argv[]); 
-	ImportODBTool (const Application *); 
 	ImportODBTool (const CommandLineParser&); 
 
 	void run(); 

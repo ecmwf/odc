@@ -46,11 +46,6 @@ ImportODBTool<IN>::ImportODBTool (int argc, char *argv[])
 {}
 
 template <typename IN>
-ImportODBTool<IN>::ImportODBTool (const Application *app)
-: Tool(app)
-{}
-
-template <typename IN>
 ImportODBTool<IN>::ImportODBTool (const CommandLineParser& clp)
 : Tool(clp)
 {}
