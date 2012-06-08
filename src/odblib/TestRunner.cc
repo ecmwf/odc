@@ -75,7 +75,7 @@ void TestRunner::run()
 	if (failed_.size() == 0) {
 		Log::info() << endl << "+- Phew, made it! All " << nTests << " tests passed successfully." << endl;
 		allTestsTimer.reset();
-		Log::info() << runningTimes_.str();
+		Log::info() << runningTimes_.str() << endl;;
 	}
 	else
 	{
