@@ -21,6 +21,9 @@
 
 #include <stdint.h>
 
+#warning "INT32_MIN is system defined in stdint.h"
+#warning "INT32_MAX is system defined in stdint.h"
+
 # define INT32_MIN		(-2147483647-1)
 # define INT32_MAX		(2147483647)
 
