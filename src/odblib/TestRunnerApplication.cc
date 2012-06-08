@@ -31,10 +31,7 @@ TestRunnerApplication::TestRunnerApplication (int argc, char **argv)
 : ODBApplication(argc, argv)
 {}
 
-TestRunnerApplication::~TestRunnerApplication ()
-{
-	Log::info() << "TestRunnerApplication::~TestRunnerApplication" << endl;
-}
+TestRunnerApplication::~TestRunnerApplication () {}
 
 void TestRunnerApplication::run()
 {
