@@ -112,7 +112,7 @@ int gdb(int argc, char *argv[])
 	string vi = string("vi ") + scriptFile;
 	string gdb = string("gdb -x ") + scriptFile;
 	cout << "Executing '" << vi << "'" << endl;
-	system(vi.c_str());
+    (void)system(vi.c_str());
 	cout << "Executing '" << gdb << "'" << endl;
 	return system(gdb.c_str());
 }

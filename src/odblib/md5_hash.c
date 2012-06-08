@@ -259,10 +259,10 @@ void md5_end(md5_state* s, char *digest)
     }
 
     sprintf(digest, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-            s->h0 & 0xff, (s->h0 >> 8) & 0xff, (s->h0 >> 16) & 0xff, (s->h0 >> 24) & 0xff,
-            s->h1 & 0xff, (s->h1 >> 8) & 0xff, (s->h1 >> 16) & 0xff, (s->h1 >> 24) & 0xff,
-            s->h2 & 0xff, (s->h2 >> 8) & 0xff, (s->h2 >> 16) & 0xff, (s->h2 >> 24) & 0xff,
-            s->h3 & 0xff, (s->h3 >> 8) & 0xff, (s->h3 >> 16) & 0xff, (s->h3 >> 24) & 0xff);
+            (int)(s->h0 & 0xff), (int)((s->h0 >> 8) & 0xff), (int)((s->h0 >> 16) & 0xff), (int)((s->h0 >> 24) & 0xff),
+            (int)(s->h1 & 0xff), (int)((s->h1 >> 8) & 0xff), (int)((s->h1 >> 16) & 0xff), (int)((s->h1 >> 24) & 0xff),
+            (int)(s->h2 & 0xff), (int)((s->h2 >> 8) & 0xff), (int)((s->h2 >> 16) & 0xff), (int)((s->h2 >> 24) & 0xff),
+            (int)(s->h3 & 0xff), (int)((s->h3 >> 8) & 0xff), (int)((s->h3 >> 16) & 0xff), (int)((s->h3 >> 24) & 0xff));
 }
 
 #if 0
