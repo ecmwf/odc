@@ -258,11 +258,12 @@ void md5_end(md5_state* s, char *digest)
         md5_add(s,&c,1);
     }
 
+	typedef unsigned int ui;
     sprintf(digest, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-            s->h0 & 0xff, (s->h0 >> 8) & 0xff, (s->h0 >> 16) & 0xff, (s->h0 >> 24) & 0xff,
-            s->h1 & 0xff, (s->h1 >> 8) & 0xff, (s->h1 >> 16) & 0xff, (s->h1 >> 24) & 0xff,
-            s->h2 & 0xff, (s->h2 >> 8) & 0xff, (s->h2 >> 16) & 0xff, (s->h2 >> 24) & 0xff,
-            s->h3 & 0xff, (s->h3 >> 8) & 0xff, (s->h3 >> 16) & 0xff, (s->h3 >> 24) & 0xff);
+            ui(s->h0 & 0xff), ui((s->h0 >> 8) & 0xff), ui((s->h0 >> 16) & 0xff), ui((s->h0 >> 24) & 0xff),
+            ui(s->h1 & 0xff), ui((s->h1 >> 8) & 0xff), ui((s->h1 >> 16) & 0xff), ui((s->h1 >> 24) & 0xff),
+            ui(s->h2 & 0xff), ui((s->h2 >> 8) & 0xff), ui((s->h2 >> 16) & 0xff), ui((s->h2 >> 24) & 0xff),
+            ui(s->h3 & 0xff), ui((s->h3 >> 8) & 0xff), ui((s->h3 >> 16) & 0xff), ui((s->h3 >> 24) & 0xff));
 }
 
 #if 0
