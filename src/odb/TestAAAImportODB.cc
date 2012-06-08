@@ -58,7 +58,7 @@ TestAAAImportODB::~TestAAAImportODB() {}
 
 void TestAAAImportODB::test()
 {
-    ksh("gzip -d <../../../odb_api/src/migrator/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.odb", Here());
+    ksh("rm -rf 2000010106 && gzip -d <../../../odb_api/src/migrator/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.odb", Here());
 }
 
 
