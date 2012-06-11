@@ -87,6 +87,8 @@ void TestFunctionRggBox::testReaderIterator()
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();
 
+	Log::info() << "TestFunctionRggBox: '" << sql << "' => [" << (*it)[0] << ", " << (*it)[1] << "]" << endl;
+
 	ASSERT(fabs((*it)[0] - 47.069642059688e0)<EPS); // 
 	ASSERT(fabs((*it)[1] - 6)<EPS); // 
 
