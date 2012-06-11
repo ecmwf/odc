@@ -95,6 +95,9 @@ void TestRunner::run()
 
 void TestRunner::runTests(const TestCases& tests)
 {
+	stringstream xml;
+	xml << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+	xml << "<testsuite>" << endl;
 	for (TestCases::const_iterator it = tests.begin(); it != tests.end(); ++it)
 	{
 		bool exceptionThrown = false;
@@ -133,14 +136,22 @@ void TestRunner::runTests(const TestCases& tests)
 
 		if (exceptionThrown) {
 			failed_.push_back(make_pair(name, what));
+			xml << "<testcase classname=\"test\" name=\"" << name << "\">" << endl;
+			xml << "	<failure type=\"exception\"><![CDATA[" << what << "]]></failure>" << endl;
+			xml << "</testcase>" << endl;
 		}
 		else {
 			timer.reset();
 			runningTimes_ << runningTime.str();
 			
 			Log::info() << "+- Passed." << endl << endl;
+
+		 	xml << "<testcase classname=\"test\" name=\"" << name << "\"/>" << endl;
 		}
 	}
+	xml << "</testsuite>" << endl;
+	ofstream xmlf("testresults.xml");
+	xmlf << xml.str();
 }
 
 void TestRunner::readConfig(const PathName fileName)
