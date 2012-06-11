@@ -169,7 +169,7 @@ void TestRunner::smslabel(const string &s)
 		return;
 	string cmd = "smslabel ";
 	cmd += label_ + " " + s;
-    (void)system(cmd.c_str());
+    system(cmd.c_str());
 }
 
 } // namespace test
