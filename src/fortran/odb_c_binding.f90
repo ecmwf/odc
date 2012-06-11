@@ -213,7 +213,8 @@ interface
      integer(kind=C_INT)                  :: odb_write_set_column
    end function odb_write_set_column
 
-   function odb_write_set_bitfield(odb_iterator, n, type, colname, bitfield_names, bitfield_sizes) bind(C, name="odb_write_iterator_set_bitfield")
+   function odb_write_set_bitfield(odb_iterator, n, type, colname, bitfield_names, bitfield_sizes) &
+ bind(C, name="odb_write_iterator_set_bitfield")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: odb_iterator
      integer(kind=C_INT),VALUE            :: n
