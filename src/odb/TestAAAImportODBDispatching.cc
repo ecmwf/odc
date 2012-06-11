@@ -58,8 +58,12 @@ TestAAAImportODBDispatching::~TestAAAImportODBDispatching() {}
 
 void TestAAAImportODBDispatching::test()
 {
-    //ksh("gzip -d <../../../odb_api/src/migrator/2000010106.old.ECMA.tar.gz | tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
-    ksh("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
+	if (getenv("ODB_ROOT"))
+		ksh("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
+	else {
+		Log::warning() << "TestAAAImportODBDispatching: ODB_ROOT not set, skipping testing of odb_migrator" << endl;
+		ksh("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
+	}
 }
 
 void TestAAAImportODBDispatching::setUp() {}
