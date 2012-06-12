@@ -21,12 +21,13 @@
 
 #include <stdint.h>
 
-#ifndef INT32_MIN
-# define INT32_MIN		(-2147483647-1)
-#endif
 
 #ifndef INT32_MAX
 # define INT32_MAX		(2147483647)
+#endif
+
+#ifndef INT32_MIN
+# define INT32_MIN		(-INT32_MAX-1)
 #endif
 
 using namespace std;
