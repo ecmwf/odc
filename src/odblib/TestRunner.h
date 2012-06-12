@@ -44,6 +44,7 @@ private:
 	Suites suites_;
 	vector<FailedTest> failed_;
 	stringstream runningTimes_;
+	stringstream xml_;
 
 	bool mars_sms_label_;
 	string label_;

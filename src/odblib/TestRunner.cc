@@ -16,6 +16,7 @@
 
 #include "eclib/PathName.h"
 #include "eclib/Timer.h"
+#include "eclib/StringTools.h"
 
 #include "odblib/CommandLineParser.h"
 #include "odblib/Tool.h"
@@ -43,7 +44,8 @@ TestRunner::~TestRunner () {}
 
 void TestRunner::run()
 {
-	auto_ptr<Timer> allTestsTimer(new Timer("Total"));
+	stringstream totalRunningTime;
+	auto_ptr<Timer> allTestsTimer(new Timer("Total", totalRunningTime));
 	auto_ptr<TestCases> tests(0);
 	
 	failed_.clear();
@@ -68,21 +70,29 @@ void TestRunner::run()
 		}
 	}
 
+	allTestsTimer.reset();
+
+	ofstream xmlf("testresults.xml");
+	xmlf << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+	xmlf << "<testsuite name=\"unittests\" time=\"" << StringTools::split(" ", totalRunningTime.str())[1] << "\">" << endl;
+	xmlf << xml_.str();
+	xmlf << "</testsuite>" << endl;
+
 	size_t nTests = tests->size();
 	for (size_t i = 0; i < nTests; ++i)
 		delete (*tests)[i];
 
 	if (failed_.size() == 0) {
-		Log::info() << endl << "+- Phew, made it! All " << nTests << " tests passed successfully." << endl;
-		allTestsTimer.reset();
+		Log::info() << endl << "+- Phew, made it! All " << nTests << " tests passed successfully. " << endl << endl;
 		Log::info() << runningTimes_.str() << endl;;
+		Log::info() << totalRunningTime.str() << endl;
 	}
 	else
 	{
 		Log::error() << endl << "+- Summary: " << failed_.size() << " test(s) failed." << endl;
 		for (vector<FailedTest>::iterator it = failed_.begin(); it != failed_.end(); ++it) {
-			string name = it->first;
-			string what = it->second;
+			const string& name = it->first;
+			const string& what = it->second;
 			Log::error() << "\t" << name << ": " << endl << what;
 		}
 		Log::error() << endl;
@@ -95,15 +105,12 @@ void TestRunner::run()
 
 void TestRunner::runTests(const TestCases& tests)
 {
-	stringstream xml;
-	xml << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-	xml << "<testsuite>" << endl;
 	for (TestCases::const_iterator it = tests.begin(); it != tests.end(); ++it)
 	{
 		bool exceptionThrown = false;
 		string what;
 		TestCase *tst = *it;
-		string name = tst->name();
+		const string& name = tst->name();
 
 		Log::info() << "+- Running " << name << " ..." << endl;
 		smslabel(name);
@@ -136,22 +143,18 @@ void TestRunner::runTests(const TestCases& tests)
 
 		if (exceptionThrown) {
 			failed_.push_back(make_pair(name, what));
-			xml << "<testcase classname=\"test\" name=\"" << name << "\">" << endl;
-			xml << "	<failure type=\"exception\"><![CDATA[" << what << "]]></failure>" << endl;
-			xml << "</testcase>" << endl;
+			xml_ << "<testcase classname=\"test\" name=\"" << name << "\">" << endl;
+			xml_ << "	<failure type=\"exception\"><![CDATA[" << what << "]]></failure>" << endl;
+			xml_ << "</testcase>" << endl;
 		}
 		else {
 			timer.reset();
 			runningTimes_ << runningTime.str();
-			
 			Log::info() << "+- Passed." << endl << endl;
-
-		 	xml << "<testcase classname=\"test\" name=\"" << name << "\"/>" << endl;
+		 	xml_ << "<testcase classname=\"test\" name=\"" << name 
+				<< "\" time=\"" << StringTools::split(" ", runningTime.str())[1] << "\"/>" << endl;
 		}
 	}
-	xml << "</testsuite>" << endl;
-	ofstream xmlf("testresults.xml");
-	xmlf << xml.str();
 }
 
 void TestRunner::readConfig(const PathName fileName)
