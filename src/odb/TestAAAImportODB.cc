@@ -56,9 +56,10 @@ TestAAAImportODB::~TestAAAImportODB() {}
 
 void TestAAAImportODB::test()
 {
-	string testDataPath = getenv("ODB_API_TEST_DATA_PATH") 
-			? getenv("ODB_API_TEST_DATA_PATH")
-			: "../../../odb_api/src/migrator";
+	string e(getenv("ODB_API_TEST_DATA_PATH")); 
+	if (e.size())
+		Log::info() << "ODB_API_TEST_DATA_PATH=" << e << endl;
+	string testDataPath = e.size() ? e : "../../../odb_api/src/migrator";
 
 	string cmd;
 	if (getenv("ODB_ROOT"))
