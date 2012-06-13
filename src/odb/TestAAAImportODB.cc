@@ -56,12 +56,22 @@ TestAAAImportODB::~TestAAAImportODB() {}
 
 void TestAAAImportODB::test()
 {
+	string testDataPath = getenv("ODB_API_TEST_DATA_PATH") 
+			? getenv("ODB_API_TEST_DATA_PATH")
+			: "../../../odb_api/src/migrator";
+
+	string cmd;
 	if (getenv("ODB_ROOT"))
-    	ksh("rm -rf 2000010106 && gzip -d <../../../odb_api/src/migrator/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.odb", Here());
-	else {
-		Log::warning() << "TestAAAImportODB: ODB_ROOT not set, skipping testing of odb_migrator" << endl;
-    	ksh("rm -rf 2000010106 && gzip -d <../../../odb_api/src/migrator/2000010106.odb.gz >2000010106.odb", Here());
+	{
+		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.odb";
 	}
+	else
+	{
+		Log::warning() << "TestAAAImportODB: ODB_ROOT not set, skipping testing of odb_migrator" << endl;
+
+		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.odb.gz >2000010106.odb";
+	}
+   	ksh(cmd.c_str(), Here());
 }
 
 
