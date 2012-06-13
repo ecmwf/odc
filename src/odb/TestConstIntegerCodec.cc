@@ -88,8 +88,8 @@ TestConstIntegerCodec::~TestConstIntegerCodec() { }
 
 void TestConstIntegerCodec::setUp()
 {
-	Timer t("Writing test_integer_const.oda");
-	odb::Writer<> oda("test_integer_const.oda");
+	Timer t("Writing test_integer_const.odb");
+	odb::Writer<> oda("test_integer_const.odb");
 
 	typedef MockReader<MockReaderIterator2> M;
 	M reader;
@@ -103,7 +103,7 @@ void TestConstIntegerCodec::setUp()
 
 void TestConstIntegerCodec::test()
 {
-	odb::Reader oda("test_integer_const.oda");
+	odb::Reader oda("test_integer_const.odb");
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 

@@ -105,8 +105,8 @@ TestConstCodec::~TestConstCodec() { }
 
 void TestConstCodec::setUp()
 {
-	Timer t("Writing TestConstCodec.oda");
-	odb::Writer<> oda("TestConstCodec.oda");
+	Timer t("Writing TestConstCodec.odb");
+	odb::Writer<> oda("TestConstCodec.odb");
 
 	typedef MockReader<MockReaderIterator> M;
 
@@ -121,7 +121,7 @@ void TestConstCodec::setUp()
 
 void TestConstCodec::test()
 {
-	odb::Reader oda("TestConstCodec.oda");
+	odb::Reader oda("TestConstCodec.odb");
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 

@@ -62,7 +62,7 @@ TestSelectIterator3::TestSelectIterator3(int argc, char **argv)
 
 TestSelectIterator3::~TestSelectIterator3() { }
 
-const string testFile = "TestSelectIterator3.oda";
+const string testFile = "TestSelectIterator3.odb";
 
 const double VALUE[] = { 1, 2, 3 };
 

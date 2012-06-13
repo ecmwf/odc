@@ -51,7 +51,7 @@ void TestDispatchingWriter::test()
 	const odb::Reader::iterator end = oda.end();
 	ASSERT(it->columns().size() > 0);
 
-	odb::DispatchingWriter writer("disp.{obstype}.{sensor}.oda");
+	odb::DispatchingWriter writer("disp.{obstype}.{sensor}.odb");
 	odb::DispatchingWriter::iterator wi = writer.begin();
 	unsigned long long n1 = wi->pass1(it, end);
 	wi->close();
@@ -66,7 +66,7 @@ void TestDispatchingWriter::test()
 	}
 
 	ASSERT(n1 == sum);
-	ksh("ls -l disp.*.*.oda", Here());
+	ksh("ls -l disp.*.*.odb", Here());
 }
 
 void TestDispatchingWriter::setUp() {}

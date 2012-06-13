@@ -54,7 +54,7 @@ TestMinMax::TestMinMax(int argc, char **argv)
 TestMinMax::~TestMinMax() { }
 
 
-const string SELECT  = "select * from \"test.oda\";";
+const string SELECT  = "select * from \"test.odb\";";
 
 void TestMinMax::test()
 {
@@ -63,8 +63,8 @@ void TestMinMax::test()
 
 void TestMinMax::setUp()
 {
-	Timer t("Writing testminmax.oda");
-	odb::Writer<> oda("testminmax.oda");
+	Timer t("Writing testminmax.odb");
+	odb::Writer<> oda("testminmax.odb");
 
 	odb::Writer<>::iterator row = oda.begin();
 	row->columns().setSize(2);
@@ -91,7 +91,7 @@ void TestMinMax::tearDown() { }
 
 void TestMinMax::testReaderIterator()
 {
-	odb::Reader oda("testminmax.oda");
+	odb::Reader oda("testminmax.odb");
 	odb::Reader::iterator it = oda.begin();
 
 	//ASSERT(it->integer(0) == INT32_MIN);

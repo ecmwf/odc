@@ -64,7 +64,7 @@ TestSelectIterator::TestSelectIterator(int argc, char **argv)
 TestSelectIterator::~TestSelectIterator() { }
 
 
-const string SELECT  = "select * from \"test.oda\";";
+const string SELECT  = "select * from \"test.odb\";";
 
 unsigned char REF_DATA[] = 
 {
@@ -159,8 +159,8 @@ void TestSelectIterator::setUp()
 {
 	Log::debug() << "TestSelectIterator::setUp" << endl;
 
-	Timer t("Writing test.oda");
-	odb::Writer<> oda("test.oda");
+	Timer t("Writing test.odb");
+	odb::Writer<> oda("test.odb");
 
 	odb::Writer<>::iterator writer = oda.begin();
 	writer->columns().setSize(3);
@@ -185,8 +185,8 @@ void TestSelectIterator::testReaderIteratorForEach()
 {
 	Log::debug() << "TestSelectIterator::testReaderIteratorForEach" << endl;
 
-	odb::Reader oda("test.oda");
-	Timer t("for_each oda.reader Reading test.oda");
+	odb::Reader oda("test.odb");
+	Timer t("for_each oda.reader Reading test.odb");
 	Count<odb::Reader::row> counter1;
 	counter1 = for_each(oda.begin(), oda.end(), counter1);
 
@@ -199,7 +199,7 @@ void TestSelectIterator::testReaderIteratorLoop()
 {
 	Log::debug() << "TestSelectIterator::testReaderIteratorLoop" << endl;
 
-	odb::Reader oda("test.oda");
+	odb::Reader oda("test.odb");
 	int j = 0;
 	for (odb::Reader::iterator it = oda.begin();
 		it != oda.end();
@@ -224,7 +224,7 @@ void TestSelectIterator::testReaderIteratorLoop()
 
 void TestSelectIterator::testSelectIteratorLoop()
 {
-	odb::Select oda(SELECT, "test.oda");
+	odb::Select oda(SELECT, "test.odb");
 	int i=0;
 	for (odb::Select::iterator it = oda.begin();
 		it != oda.end();
@@ -244,7 +244,7 @@ void TestSelectIterator::testSelectIteratorLoop()
 
 void TestSelectIterator::testSelectIteratorForEach()
 {
-	odb::Select oda(SELECT, "test.oda");
+	odb::Select oda(SELECT, "test.odb");
 	Count<odb::Select::row> counter;
 	counter = for_each(oda.begin(), oda.end(), counter);
 	

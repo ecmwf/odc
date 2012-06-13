@@ -41,7 +41,7 @@ int test_odacapi(int argc, char *argv[])
 
 int test_odacapi_setup_in_C(int argc, char *argv[])
 {
-	const char *filename = "test.oda";
+	const char *filename = "test.odb";
 	int err = 0;
 
 	oda_writer* writer = odb_writer_create("", &err);
@@ -72,8 +72,8 @@ int test_odacapi_setup_in_C(int argc, char *argv[])
 
 int test_odacapi_setup(int argc, char *argv[])
 {
-	Timer t("Writing test.oda");
-	odb::Writer<> oda("test.oda");
+	Timer t("Writing test.odb");
+	odb::Writer<> oda("test.odb");
 
 	odb::Writer<>::iterator writer = oda.begin();
 	writer->columns().setSize(2);
@@ -103,7 +103,7 @@ int test_odacapi1(int argc, char *argv[])
 
 	oda* oh = odb_create("", &err);
 	
-	oda_read_iterator* it = odb_create_read_iterator(oh, "test.oda", &err);
+	oda_read_iterator* it = odb_create_read_iterator(oh, "test.odb", &err);
 	ASSERT(0 == err);
 	ASSERT(0 != it);
 
@@ -162,7 +162,7 @@ int test_odacapi2(int argc, char *argv[])
 	
 	Log::info() << "Log::info initialised properly." << endl;
 	
-	oda_select_iterator* it = odb_create_select_iterator(oh, "select * from \"test.oda\";", &err);
+	oda_select_iterator* it = odb_create_select_iterator(oh, "select * from \"test.odb\";", &err);
 	ASSERT(0 == err);
 	ASSERT(0 != it);
 

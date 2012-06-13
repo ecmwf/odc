@@ -67,7 +67,7 @@ void TestCatFiles::test()
 void TestCatFiles::setUp()
 {
  {
-	odb::Writer<> oda("file1.oda");
+	odb::Writer<> oda("file1.odb");
 	odb::Writer<>::iterator row = oda.begin();
 
 	MetaData& md = row->columns();
@@ -87,7 +87,7 @@ void TestCatFiles::setUp()
 		++row;
 	}
 
-	odb::Writer<> oda2("file2.oda");
+	odb::Writer<> oda2("file2.odb");
 	odb::Writer<>::iterator row2 = oda2.begin();
 	row2->columns().setSize(3);
 	row2->setColumn(0, "x", odb::REAL);
@@ -104,7 +104,7 @@ void TestCatFiles::setUp()
 		++row2;
 	}
 
-	odb::Writer<> oda3("file3.oda");
+	odb::Writer<> oda3("file3.odb");
 	odb::Writer<>::iterator row3 = oda3.begin();
 	row3->columns().setSize(4);
 
@@ -125,7 +125,7 @@ void TestCatFiles::setUp()
 	// dtors fire here
  }
 
-	int catStatus = system("cat file1.oda file2.oda file3.oda >concatenated.oda");
+	int catStatus = system("cat file1.odb file2.odb file3.odb >concatenated.odb");
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 
 }
@@ -134,8 +134,8 @@ void TestCatFiles::tearDown() { }
 
 void TestCatFiles::testSelectIterator()
 {
-	const string sql = "select X,Y from \"concatenated.oda\";";
-	const string fileName = "concatenated.oda";
+	const string sql = "select X,Y from \"concatenated.odb\";";
+	const string fileName = "concatenated.odb";
 	odb::Select oda(sql, fileName);
 	Log::info() << "Iterating " << sql << endl;
 

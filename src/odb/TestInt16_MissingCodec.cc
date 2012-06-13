@@ -94,8 +94,8 @@ TestInt16_MissingCodec::~TestInt16_MissingCodec() { }
 
 void TestInt16_MissingCodec::setUp()
 {
-	Timer t("Writing test_int16_missing.oda");
-	odb::Writer<> oda("test_int16_missing.oda");
+	Timer t("Writing test_int16_missing.odb");
+	odb::Writer<> oda("test_int16_missing.odb");
 
 	typedef MockReader<MockReaderIterator3> M;
 	M reader;
@@ -108,7 +108,7 @@ void TestInt16_MissingCodec::setUp()
 
 void TestInt16_MissingCodec::test()
 {
-	odb::Reader oda("test_int16_missing.oda");
+	odb::Reader oda("test_int16_missing.odb");
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 
