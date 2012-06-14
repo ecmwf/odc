@@ -63,7 +63,7 @@ std::string StringTool::readFile(const PathName fileName, bool logging)
 
 int StringTool::ksh(std::string cmd, const CodeLocation& where, bool assertSuccess)
 {
-	std::string c = "ksh -c \"" + cmd + "\"";
+	std::string c = "/bin/sh -c \"" + cmd + "\"";
 
 	Log::info() << "Executing '" + c + "' ";
     Log::info() << " " << where.file() << " +" << where.line();
