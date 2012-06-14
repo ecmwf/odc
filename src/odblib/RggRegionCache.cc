@@ -26,32 +26,17 @@
 #undef MAX
 #define MAX(a,b) ( ((a) > (b)) ? (a) :  (b) )
 
-//==============================================================================
-RggRegionCache::RggRegionCache()
-//==============================================================================
-: RegionCache()
-{
-}
+RggRegionCache::RggRegionCache() : RegionCache() {}
 
-//==============================================================================
 RggRegionCache::~RggRegionCache() {}
-//==============================================================================
 
-//==============================================================================
-double RggRegionCache::get_resol(const double & nval) 
-//==============================================================================
-{
-  return nval;
-}
+double RggRegionCache::get_resol(const double & nval) { return nval; }
 
-//==============================================================================
+/// Reads F90 namelist file $ODB_RTABLE_PATH/rtablel_2<xxxx>
+/// to find out how many latitude bands there are (must be xxxx+1)
+/// and how many longitudes boxes per latband there are */
 int * RggRegionCache::read_rtablel_2_file(const int & Txxxx, int *NRGRI_len, int *Nlons)
-//==============================================================================
 {
-// Reads F90 namelist file $ODB_RTABLE_PATH/rtablel_2<xxxx>
-// to find out how many latitude bands there are (must be xxxx+1)
-// and how many longitudes boxes per latband there are */
-
   int *NRGRI = NULL;
   int nb = 0;
   int nlons = 0;
@@ -109,21 +94,19 @@ int * RggRegionCache::read_rtablel_2_file(const int & Txxxx, int *NRGRI_len, int
   return NRGRI;
 }
 
-//==============================================================================
+/// compute knum zeros, or if knum>50, knum approximate zeros of the 
+/// bessel function J0.
+///
+///  pbes - array, imensione knum, to receive the values
+///  knum - number of zeros requeste.
+///
+/// Method:
+/// -------
+///      The first 50 values are obtained from a lookup table.
+///      Any additional values requested are interpolated.
+///
 void RggRegionCache::bsslzr(double pbes[], const int & knum)
-//==============================================================================
 {
-// compute knum zeros, or if knum>50, knum approximate zeros of the 
-// bessel function J0.
-//
-//  pbes - array, imensione knum, to receive the values
-//  knum - number of zeros requeste.
-//
-// Method:
-// -------
-//      The first 50 values are obtained from a lookup table.
-//      Any additional values requested are interpolated.
-//
   int inum;
   
   double zapi, zpi;
@@ -200,11 +183,11 @@ void RggRegionCache::bsslzr(double pbes[], const int & knum)
   }
 
 }
-//==============================================================================
+
+
+/// gauaw - compute abscissas and weights for gaussian integration
 int RggRegionCache::gauaw(double pa[], double pw[], const int &k)
-//==============================================================================
 {
-// gauaw - compute abscissas and weights for gaussian integration
   double zeps = 1e-14;
   double zpi, zc, zxz, zkm2, zkm1, zfn, zpk, zkmrk, zsp, zvsp;
   int ifk, ikk, /*js,*/ iter, jn, il;
@@ -282,9 +265,8 @@ int RggRegionCache::gauaw(double pa[], double pw[], const int &k)
   } 
  return iret;
 }
-//==============================================================================
+
 void RggRegionCache::create_cache(const double & resol, const int & n) 
-//==============================================================================
 {
 // nothing done for this resolution
   int iret = 0;
@@ -346,7 +328,6 @@ void RggRegionCache::create_cache(const double & resol, const int & n)
     }
   }
 
-
    // Store in cache 
    //double rgg_resol = (deltalon[iequator] + deltalon[iequator+1])/2;
    RegionCacheKind kind = rgg_cache_kind;
@@ -354,7 +335,5 @@ void RggRegionCache::create_cache(const double & resol, const int & n)
                      latband, midlat,
                      stlon, deltalon,
                      loncnt);
-
 }
-
 
