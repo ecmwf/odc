@@ -72,7 +72,7 @@ void TestAAAImportODB::test()
 
 		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.odb.gz >2000010106.odb";
 	}
-   	ksh(cmd.c_str(), Here());
+   	shell(cmd.c_str(), Here());
 }
 
 
