@@ -75,7 +75,7 @@ void TestFunctionDateAndTime::setUp()
 
 void TestFunctionDateAndTime::tearDown() 
 { 
-	ksh("rm -f test_date_and_time.odb", Here());
+	PathName("test_date_and_time.odb").unlink();
 }
 
 void TestFunctionDateAndTime::testReaderIterator()

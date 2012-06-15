@@ -80,7 +80,7 @@ void TestFunctionNorm::setUp()
 
 void TestFunctionNorm::tearDown() 
 { 
-	ksh("rm -f test_norm.odb", Here());
+	PathName("test_norm.odb").unlink();
 }
 
 void TestFunctionNorm::testReaderIterator()

@@ -80,7 +80,7 @@ void TestFunctionDotp::setUp()
 
 void TestFunctionDotp::tearDown() 
 { 
-	ksh("rm -f test_dotp.odb", Here());
+	PathName("test_dotp.odb").unlink();
 }
 
 void TestFunctionDotp::testReaderIterator()

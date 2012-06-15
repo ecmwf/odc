@@ -74,7 +74,7 @@ void TestFunctionTypeConversion::setUp()
 
 void TestFunctionTypeConversion::tearDown() 
 { 
-	ksh("rm -f test_type_conversion.odb", Here());
+	PathName("test_type_conversion.odb").unlink();
 }
 
 void TestFunctionTypeConversion::testReaderIterator()

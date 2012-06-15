@@ -75,7 +75,7 @@ void TestFunctionThin::setUp()
 
 void TestFunctionThin::tearDown() 
 { 
-	ksh("rm -f test_thin.odb", Here());
+	PathName("test_thin.odb").unlink();
 }
 
 void TestFunctionThin::testReaderIterator()

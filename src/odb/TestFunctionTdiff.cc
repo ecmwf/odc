@@ -75,7 +75,7 @@ void TestFunctionTdiff::setUp()
 
 void TestFunctionTdiff::tearDown() 
 { 
-	ksh("rm -f test_tdiff.odb", Here());
+	PathName("test_tdiff.odb").unlink();
 }
 
 void TestFunctionTdiff::testReaderIterator()

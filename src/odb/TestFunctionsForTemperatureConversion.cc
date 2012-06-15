@@ -73,7 +73,7 @@ void TestFunctionsForTemperatureConversion::setUp()
 
 void TestFunctionsForTemperatureConversion::tearDown() 
 { 
-	ksh("rm -f test_tempconv.odb", Here());
+	PathName("test_tempconv.odb").unlink();
 }
 
 void TestFunctionsForTemperatureConversion::testReaderIterator()

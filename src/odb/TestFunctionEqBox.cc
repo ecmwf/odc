@@ -75,7 +75,7 @@ void TestFunctionEqBox::setUp()
 
 void TestFunctionEqBox::tearDown() 
 { 
-	ksh("rm -f test_eq_box.odb", Here());
+	PathName("test_eq_box.odb").unlink();
 }
 
 void TestFunctionEqBox::testReaderIterator()

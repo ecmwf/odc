@@ -82,7 +82,7 @@ void TestFunctionsForAngleConversion::setUp()
 
 void TestFunctionsForAngleConversion::tearDown() 
 { 
-	ksh("rm -f test_angleconv.odb", Here());
+	PathName("test_angleconv.odb").unlink();
 }
 
 void TestFunctionsForAngleConversion::testReaderIterator()

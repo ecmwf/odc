@@ -75,7 +75,7 @@ void TestFunctionDistance::setUp()
 
 void TestFunctionDistance::tearDown() 
 { 
-	ksh("rm -f test_distance.odb", Here());
+	PathName("test_distance.odb").unlink();
 }
 
 void TestFunctionDistance::testReaderIterator()

@@ -75,7 +75,7 @@ void TestFunctionRggBox::setUp()
 
 void TestFunctionRggBox::tearDown() 
 { 
-	ksh("rm -f test_rgg_box.odb", Here());
+	PathName("test_rgg_box.odb").unlink();
 }
 
 void TestFunctionRggBox::testReaderIterator()

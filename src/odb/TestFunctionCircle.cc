@@ -75,7 +75,7 @@ void TestFunctionCircle::setUp()
 
 void TestFunctionCircle::tearDown() 
 { 
-	ksh("rm -f test_circle.odb", Here());
+	PathName("test_circle.odb").unlink();
 }
 
 void TestFunctionCircle::testReaderIterator()
