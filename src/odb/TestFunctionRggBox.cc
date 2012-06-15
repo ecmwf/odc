@@ -80,6 +80,7 @@ void TestFunctionRggBox::tearDown()
 
 void TestFunctionRggBox::testReaderIterator()
 {
+	ASSERT(getenv("ODB_RTABLE_PATH") && "environment variable must be set for rgg_boxlat and rgg_boxlon to work properly");
     const string sql = "select rgg_boxlat(lat,lon,31), rgg_boxlon(lat,lon,31) from \"test_rgg_box.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << endl;
