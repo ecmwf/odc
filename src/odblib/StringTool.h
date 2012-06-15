@@ -55,7 +55,7 @@ public:
 
 	static string int_as_double2string(double);
 
-	static int ksh(std::string cmd, const CodeLocation &where, bool assertSuccess = true);
+	static int shell(std::string cmd, const CodeLocation &where, bool assertSuccess = true);
 
 	static double translate(const string& v);
 	static string patchTimeForMars(const string& v);

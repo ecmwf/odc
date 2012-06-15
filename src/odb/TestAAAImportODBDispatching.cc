@@ -59,10 +59,10 @@ TestAAAImportODBDispatching::~TestAAAImportODBDispatching() {}
 void TestAAAImportODBDispatching::test()
 {
 	if (getenv("ODB_ROOT"))
-		ksh("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
+		shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
 	else {
 		Log::warning() << "TestAAAImportODBDispatching: ODB_ROOT not set, skipping testing of odb_migrator" << endl;
-		ksh("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
+		shell("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
 	}
 }
 

@@ -133,7 +133,7 @@ void ImportODBTool<IN>::archiveFiles(const vector<PathName>& files)
 
 		str cmd = "mars -t ";
 		cmd += requestFile;
-		ksh(cmd, Here(), false);
+		shell(cmd, Here(), false);
 	}
 }
 
@@ -215,7 +215,7 @@ unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, PathName odb, str
 		n = w->pass1(begin, end);
 		//w->close();
 	} catch (...) {
-		ksh("cat odbdump.stderr && cp odbdump.stderr " + odb + ".odb.log", Here());
+		shell("cat odbdump.stderr && cp odbdump.stderr " + odb + ".odb.log", Here());
 		throw;
 	}
 	return n;
@@ -258,7 +258,7 @@ PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
 	else
 	{
 		str cmd = "$ECFS_SYS_PATH/ecp.p " + ecfsPath + " " + localPath;
-		ksh(cmd, Here());
+		shell(cmd, Here());
 	}
 
 	LocalPathName unpackDir(datetime);
@@ -267,12 +267,11 @@ PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
 	else
 	{
 		Log::info() << "Creating directory '" << unpackDir << "'" << endl;
-		str cmd = "mkdir " + unpackDir;
-		ksh(cmd, Here(), false);
+		PathName(unpackDir).mkdir();
 
 		Log::info() << "Unpacking '" << localPath << "' to '" << unpackDir << "'" << endl;
-		cmd = "cd " + datetime + " && tar xvf ../" + localPath;
-		ksh(cmd, Here());
+		str cmd = "cd " + datetime + " && tar xvf ../" + localPath;
+		shell(cmd, Here());
 	}
 
 	str localODB = unpackDir + "/ECMA";

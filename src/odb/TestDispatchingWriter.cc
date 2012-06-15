@@ -66,7 +66,7 @@ void TestDispatchingWriter::test()
 	}
 
 	ASSERT(n1 == sum);
-	ksh("ls -l disp.*.*.odb", Here());
+	shell("ls -l disp.*.*.odb", Here());
 }
 
 void TestDispatchingWriter::setUp() {}
