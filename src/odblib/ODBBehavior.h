@@ -12,12 +12,12 @@
 #define ODBBehavior_H
 
 #include "eclib/StandardBehavior.h"
-#include "eclib/DHSBehavior.h"
+#include "eclib/DHSBehaviorStdout.h"
 
-class ODBBehavior : public DHSBehavior
+class ODBBehavior : public DHSBehaviorStdout
 {
-    Logger* createInfoLogger();
-    Logger* createDebugLogger();
+public:
+    ODBBehavior();
 };
 
 #endif
