@@ -149,7 +149,7 @@ void TestOrderBy::test()
 		odb::Select::iterator end = sel.end();
 
 		Log::info()  << "TestOrderBy::test: entering the loop" << endl;
-		int i = 0, v1, v2;
+        int i = 0, v1 = 0 , v2 = 0;
 		string s;
 		for (; it != end; ++it, ++i)
 		{
