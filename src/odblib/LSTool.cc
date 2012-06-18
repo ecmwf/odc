@@ -29,7 +29,7 @@ LSTool::LSTool (int argc, char *argv[]) : Tool(argc, argv)
 
 const string LSTool::nullString;
 
-unsigned long long LSTool::runFast(const string &db, ostream &out)
+unsigned long long LSTool::printData(const string &db, ostream &out)
 {
 	odb::Reader f(db);
 	odb::Reader::iterator it = f.begin();
@@ -57,6 +57,7 @@ unsigned long long LSTool::runFast(const string &db, ostream &out)
 					out << static_cast<int>((*it)[i]);
 					break;
 				case odb::REAL:
+				case odb::DOUBLE:
 					out << (*it)[i];
 					break;
 				case odb::STRING:
@@ -92,7 +93,7 @@ void LSTool::run()
 	ostream& out = optionIsSet("-o") ? *foutPtr : cout;
 
 	unsigned long long n = 0;
-	n = runFast(db, out);
+	n = printData(db, out);
 	Log::info() << "Selected " << n << " row(s)." << endl;
 }
 

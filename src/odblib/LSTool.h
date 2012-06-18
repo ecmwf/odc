@@ -28,8 +28,7 @@ public:
 	static void usage(const string& name, ostream &o)
 	{ o << name << " [-o <output-file>] <file-name>" << endl << endl; }
 
-protected:
-	virtual unsigned long long runFast(const string &db, ostream &out);
+	unsigned long long printData(const string &db, ostream &out);
 
 private:
 // No copy allowed
