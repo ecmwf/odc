@@ -1,3 +1,6 @@
+### check if all sources are used
+ecbuild_find_project_files()
+
 ### config header
 
 configure_file( odb_api_config.h.in odb_api_config.h )
