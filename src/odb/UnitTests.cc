@@ -441,6 +441,46 @@ void rownumber1()
 }
 TESTCASE(rownumber1)
 
+void sqlOutputFormatting()
+{
+	// See TestAggregateFunctions.sql as well
+	const char *data = 
+	"x:REAL,y:INTEGER,v:DOUBLE\n"
+	"100,1,0.3\n"
+	"100,1,0.2\n"
+	"101,2,0.4\n"
+	"101,2,0.1\n"
+	"NULL,1,0.1\n"
+	"NULL,2,0.2\n"
+	"NULL,3,0.3\n"
+	;
+
+	const char* testFile("sqlOutputFormatting.odb");
+
+	ImportTool::importText(data, testFile);
+
+	bool doNotWriteColumnNames(false); // -T
+	bool doNotWriteNULL(false);        // -N
+	string delimiter(" ");           // -delimiter
+	string inputFile(testFile);           // -i
+	string outputFile;          // -o
+	string outputFormat;        // default is ascii
+
+	odb::sql::SQLSelectFactory::instance()
+		.config(odb::sql::SQLOutputConfig(doNotWriteColumnNames, doNotWriteNULL, delimiter, outputFile, outputFormat));
+
+	ostream& out = cout;
+	odb::sql::SQLInteractiveSession session(out);
+	odb::sql::SQLParser p;
+
+	FileHandle fh(inputFile);
+	fh.openForRead();
+	//p.parseString(StringTool::readFile(fileName), &fh, odb::sql::SQLSelectFactory::instance().config());
+	p.parseString("select x,y,v", &fh, odb::sql::SQLSelectFactory::instance().config());
+
+}
+TESTCASE(sqlOutputFormatting);
+
 
 } // namespace test 
 } // namespace tool 
