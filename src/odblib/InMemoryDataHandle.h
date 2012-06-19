@@ -73,9 +73,6 @@ public:
 
 	void print(ostream& s) const { /*TODO*/ }
 private:
-// No copy allowed
-    InMemoryDataHandle(const InMemoryDataHandle&);
-    InMemoryDataHandle& operator=(const InMemoryDataHandle&);
 
 	vector<unsigned char> buf_;
 	vector<unsigned char>::iterator readIterator_;
