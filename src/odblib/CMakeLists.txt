@@ -337,10 +337,11 @@ MetaDataReader.cc
 # define Odb library
 
 ecbuild_add_library( TARGET     Odb
-                  COMPONENT  server
-                  SOURCES    ${odblib_src_files}
-                  TEMPLATES  ${odblib_templates}
-                  LIBS       Ec )
+                     INSTALL_HEADERS LISTED
+                     COMPONENT  server
+                     SOURCES    ${odblib_src_files}
+                     TEMPLATES  ${odblib_templates}
+                     LIBS       Ec )
 
 ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly
