@@ -64,10 +64,7 @@ double FunctionTDIFF::eval(bool& missing) const
     return seconds;
 }
 
-const odb::sql::type::SQLType* FunctionTDIFF::type() const
-{
-	return &odb::sql::type::SQLType::lookup("integer");
-}
+const odb::sql::type::SQLType* FunctionTDIFF::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
 void FunctionTDIFF::output(ostream& s) const
 {

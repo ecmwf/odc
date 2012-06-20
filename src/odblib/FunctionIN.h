@@ -35,6 +35,7 @@ private:
 
 	size_t size_;
 
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 
 // -- Friends

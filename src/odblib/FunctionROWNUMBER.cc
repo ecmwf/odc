@@ -58,10 +58,7 @@ SQLExpression* FunctionROWNUMBER::simplify(bool&) { return 0; }
 
 void FunctionROWNUMBER::partialResult() { /*NOTIMP;*/ }
 
-const odb::sql::type::SQLType* FunctionROWNUMBER::type() const
-{
-    return &odb::sql::type::SQLType::lookup("integer");
-}
+const odb::sql::type::SQLType* FunctionROWNUMBER::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
 void FunctionROWNUMBER::output(ostream& s) const
 {

@@ -27,6 +27,9 @@ SQLExpression* FunctionAND::clone() const { return new FunctionAND(*this); }
 
 FunctionAND::~FunctionAND() {}
 
+// TODO: bool?
+const type::SQLType* FunctionAND::type() const { return &type::SQLType::lookup("real"); }
+
 double FunctionAND::eval(bool& missing) const
 {
 	return args_[0]->eval(missing) && args_[1]->eval(missing);

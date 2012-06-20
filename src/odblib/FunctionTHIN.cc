@@ -40,10 +40,7 @@ FunctionTHIN::~FunctionTHIN() {}
 
 SQLExpression* FunctionTHIN::clone() const { return new FunctionTHIN(*this); }
 
-const odb::sql::type::SQLType* FunctionTHIN::type() const
-{
-    return &odb::sql::type::SQLType::lookup("integer");
-}
+const odb::sql::type::SQLType* FunctionTHIN::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
 void FunctionTHIN::output(ostream& s) const
 {

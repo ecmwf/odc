@@ -34,6 +34,7 @@ private:
 	FunctionEQ_BOXLON& operator=(const FunctionEQ_BOXLON&);
 
 // -- Overridden methods
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 
 // -- Friends

@@ -20,6 +20,8 @@ namespace odb {
 namespace sql {
 namespace expression {
 
+const odb::sql::type::SQLType* StringExpression::type() const { return &odb::sql::type::SQLType::lookup("string"); }
+
 StringExpression::StringExpression(const string& name)
 : name_(name)
 {

@@ -51,10 +51,7 @@ double FunctionTIMESTAMP::eval(bool& missing) const
 	return outstamp;
 }
 
-const odb::sql::type::SQLType* FunctionTIMESTAMP::type() const
-{
-	return &odb::sql::type::SQLType::lookup("integer");
-}
+const odb::sql::type::SQLType* FunctionTIMESTAMP::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
 void FunctionTIMESTAMP::output(ostream& s) const
 {

@@ -26,6 +26,8 @@ SQLExpression* NumberExpression::clone() const { return new NumberExpression(*th
 
 NumberExpression::~NumberExpression() {}
 
+const type::SQLType* NumberExpression::type() const { return &type::SQLType::lookup("real"); }
+
 double NumberExpression::eval(bool& missing) const { return value_; }
 
 void NumberExpression::prepare(SQLSelect& sql) {}

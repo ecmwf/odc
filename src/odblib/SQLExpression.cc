@@ -74,11 +74,7 @@ string SQLExpression::title() const
 }
 
 
-const type::SQLType* SQLExpression::type() const
-{
-	const type::SQLType& x = type::SQLType::lookup("real");
-	return &x;
-}
+//const type::SQLType* SQLExpression::type() const { const type::SQLType& x = type::SQLType::lookup("real"); return &x; }
 
 void SQLExpression::expandStars(const std::vector<SQLTable*>&, expression::Expressions& e)
 {

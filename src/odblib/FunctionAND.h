@@ -34,6 +34,7 @@ private:
 	FunctionAND& operator=(const FunctionAND&);
 
 // -- Overridden methods
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 	virtual SQLExpression* simplify(bool&);
 	virtual bool andSplit(expression::Expressions&);

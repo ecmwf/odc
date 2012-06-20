@@ -20,6 +20,9 @@ namespace odb {
 namespace sql {
 namespace expression {
 
+// TODO: a special type for Dictionary?
+const type::SQLType* Dictionary::type() const { return &type::SQLType::lookup("real"); }
+
 Dictionary& Dictionary::operator=(const Dictionary& e)
 {
 	Map::operator=(e);

@@ -31,6 +31,7 @@ public:
 	SQLExpression* clone() const;
 
 	virtual double eval(bool& missing) const;
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual SQLExpression* simplify(bool&);
 
 private:

@@ -27,6 +27,8 @@ FunctionOR::~FunctionOR() {}
 
 SQLExpression* FunctionOR::clone() const { return new FunctionOR(*this); }
 
+const type::SQLType* FunctionOR::type() const { return &type::SQLType::lookup("real"); }
+
 double FunctionOR::eval(bool& missing) const
 {
 	return args_[0]->eval(missing) || args_[1]->eval(missing);

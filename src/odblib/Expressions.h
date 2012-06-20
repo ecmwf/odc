@@ -51,6 +51,8 @@ public:
 	virtual void prepare(SQLSelect&)  {}
 	virtual void cleanup(SQLSelect&)  {}
 
+	const type::SQLType* type() const;
+
 	// -- For WHERE
 	virtual double eval(bool& missing) const  { NOTIMP; }
 

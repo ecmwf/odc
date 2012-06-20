@@ -60,7 +60,7 @@ public:
 	virtual void title(const string&);
 	virtual string title() const;
 
-	virtual const odb::sql::type::SQLType* type() const;
+	virtual const odb::sql::type::SQLType* type() const = 0;
 	// ----
 
 	virtual SQLExpression* clone() const = 0;

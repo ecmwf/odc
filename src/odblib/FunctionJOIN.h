@@ -34,6 +34,7 @@ private:
 	FunctionJOIN& operator=(const FunctionJOIN&);
 
 // -- Overridden methods
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 	bool useIndex();
 	SQLIndex* getIndex(double*);

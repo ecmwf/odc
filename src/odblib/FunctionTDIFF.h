@@ -28,7 +28,6 @@ public:
 	~FunctionTDIFF(); // Change to virtual if base class
 
 // -- Overridden methods
-	virtual const odb::sql::type::SQLType* type() const;
 	virtual void output(ostream& s) const;
 
 	SQLExpression* clone() const;
@@ -38,6 +37,7 @@ private:
 	FunctionTDIFF& operator=(const FunctionTDIFF&);
 
 // -- Overridden methods
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 
 // -- Friends

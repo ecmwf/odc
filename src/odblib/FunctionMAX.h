@@ -29,8 +29,6 @@ public:
 
 	SQLExpression* clone() const;
 
-	virtual const odb::sql::type::SQLType* type() const;
-
 private:
 // No copy allowed
 	FunctionMAX& operator=(const FunctionMAX&);
@@ -38,6 +36,7 @@ private:
 	double value_;
 
 // -- Overridden methods
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 	virtual void partialResult();

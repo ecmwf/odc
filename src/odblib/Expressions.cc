@@ -19,6 +19,8 @@ namespace odb {
 namespace sql {
 namespace expression {
 
+const type::SQLType* Expressions::type() const { return &type::SQLType::lookup("real"); }
+
 Expressions& Expressions::operator=(const Expressions& e)
 {
 	ExpressionsVector::operator=(e);

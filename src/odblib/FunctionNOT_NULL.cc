@@ -27,6 +27,8 @@ FunctionNOT_NULL::~FunctionNOT_NULL() {}
 
 SQLExpression* FunctionNOT_NULL::clone() const { return new FunctionNOT_NULL(*this); }
 
+const type::SQLType* FunctionNOT_NULL::type() const { return &type::SQLType::lookup("real"); }
+
 // Don't set the missing flags
 double FunctionNOT_NULL::eval(bool&) const
 {

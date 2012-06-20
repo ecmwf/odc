@@ -37,6 +37,9 @@ SQLExpression* ParameterExpression::ParameterExpression::clone() const { return 
 
 ParameterExpression::~ParameterExpression() {}
 
+// TODO: are only real parameters allowed?
+const type::SQLType* ParameterExpression::type() const { return &type::SQLType::lookup("real"); }
+
 double ParameterExpression::eval(bool& missing) const { return value_; }
 
 void ParameterExpression::prepare(SQLSelect& sql)

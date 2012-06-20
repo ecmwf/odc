@@ -41,6 +41,7 @@ private:
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
 
+	virtual const odb::sql::type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 	virtual bool isConstant() const { return true; }
 	virtual bool isNumber() const { return true; }

@@ -160,6 +160,7 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression
 
 template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {
+	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(name_, 1); }
 public:
@@ -169,6 +170,7 @@ public:
 
 template<double (*T)(double, double)> 
 class MathFunctionExpression_2 : public FunctionExpression {
+	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing), args_[1]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(name_, 2); }
 public:
@@ -178,6 +180,7 @@ public:
 
 template<double (*T)(double,double,double)> 
 class MathFunctionExpression_3 : public FunctionExpression {
+	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(name_, 3); }
 public:
@@ -187,6 +190,7 @@ public:
 
 template<double (*T)(double,double,double,double)> 
 class MathFunctionExpression_4 : public FunctionExpression {
+	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(name_, 4); }
 public:
@@ -196,6 +200,7 @@ public:
 
 template<double (*T)(double,double,double,double,double)> 
 class MathFunctionExpression_5 : public FunctionExpression {
+	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing),args_[4]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(name_, 5); }
 public:

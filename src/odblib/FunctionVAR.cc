@@ -15,6 +15,8 @@ namespace sql {
 namespace expression {
 namespace function {
 
+const type::SQLType* FunctionVAR::type() const { return &type::SQLType::lookup("real"); }
+
 FunctionVAR::FunctionVAR(const string& name,const expression::Expressions& args)
 : FunctionExpression(name,args),
   count_(0),

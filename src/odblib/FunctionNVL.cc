@@ -27,6 +27,8 @@ FunctionNVL::~FunctionNVL() {}
 
 SQLExpression* FunctionNVL::clone() const { return new FunctionNVL(*this); }
 
+const type::SQLType* FunctionNVL::type() const { return &type::SQLType::lookup("real"); }
+
 // Don't set the missing flag
 double FunctionNVL::eval(bool& ) const
 {

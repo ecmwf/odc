@@ -30,6 +30,8 @@ SQLExpression* FunctionRGG_BOXLAT::clone() const { return new FunctionRGG_BOXLAT
 
 FunctionRGG_BOXLAT::~FunctionRGG_BOXLAT() {}
 
+const type::SQLType* FunctionRGG_BOXLAT::type() const { return &type::SQLType::lookup("real"); }
+
 double FunctionRGG_BOXLAT::eval(bool& missing) const
 {
     double lat_degrees = args_[0]->eval(missing);

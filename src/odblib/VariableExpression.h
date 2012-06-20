@@ -40,6 +40,7 @@ private:
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
 
+	const type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 
 	virtual bool isConstant() const;

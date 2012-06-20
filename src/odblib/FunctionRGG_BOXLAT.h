@@ -34,6 +34,7 @@ private:
 
 // -- Overridden methods
 	virtual double eval(bool& missing) const;
+	virtual const odb::sql::type::SQLType* type() const;
 
 // -- Friends
 	//friend ostream& operator<<(ostream& s,const FunctionRGG_BOXLAT& p)

@@ -44,6 +44,9 @@ public:
 		{ e.print(o); return o; }
 
 //////////////////////////////////////////////////////////////////////////////////////
+	
+	virtual const odb::sql::type::SQLType* type() const;
+
 	virtual void prepare(SQLSelect&)  { NOTIMP; }
 	virtual void cleanup(SQLSelect&)  { NOTIMP; }
 

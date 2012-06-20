@@ -37,6 +37,7 @@ private:
 	double value_;
 
 // -- Overridden methods
+	const type::SQLType* type() const; 
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 	virtual void partialResult();

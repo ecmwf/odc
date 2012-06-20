@@ -21,6 +21,8 @@ namespace odb {
 namespace sql {
 namespace expression {
 
+const odb::sql::type::SQLType* VariableExpression::type() const { return &odb::sql::type::SQLType::lookup("real"); }
+
 VariableExpression::VariableExpression(const string& name)
 : value_(0),
   name_(name)

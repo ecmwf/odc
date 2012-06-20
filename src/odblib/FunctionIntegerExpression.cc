@@ -50,6 +50,7 @@ void FunctionIntegerExpression::output(ostream& s) const
 
 template<double (*T)(double)> 
 class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {
+	const type::SQLType* type() const { const type::SQLType& x = type::SQLType::lookup("integer"); return &x; }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionIntegerExpression_1<T>(this->name_,this->args_); }
 public:

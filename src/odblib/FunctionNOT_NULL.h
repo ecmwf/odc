@@ -30,6 +30,7 @@ public:
 	SQLExpression* clone() const;
 private:
 // No copy allowed
+	virtual const odb::sql::type::SQLType* type() const;
 	FunctionNOT_NULL& operator=(const FunctionNOT_NULL&);
 
 // -- Overridden methods

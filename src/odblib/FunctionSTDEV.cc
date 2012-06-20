@@ -29,6 +29,8 @@ FunctionSTDEV::~FunctionSTDEV() {}
 
 SQLExpression* FunctionSTDEV::clone() const { return new FunctionSTDEV(*this); }
 
+const type::SQLType* FunctionSTDEV::type() const { return &type::SQLType::lookup("real"); }
+
 double FunctionSTDEV::eval(bool& missing) const
 {
 	double x = FunctionVAR::eval(missing);

@@ -33,6 +33,8 @@ SQLExpression* FunctionJULIAN::clone() const { return new FunctionJULIAN(*this);
 
 FunctionJULIAN::~FunctionJULIAN() {}
 
+const type::SQLType* FunctionJULIAN::type() const { return &type::SQLType::lookup("real"); }
+
 double FunctionJULIAN::eval(bool& missing) const
 {
     int indate = (int) args_[0]->eval(missing);
