@@ -25,6 +25,8 @@ size_t SQLString::size() const { return sizeof(double); }
 
 void SQLString::output(SQLOutput& o, double d, bool missing) const { o.outputString(d, missing); }
 
+SQLType::manipulator SQLString::format() const { return &std::left; }
+
 } // namespace type 
 } // namespace sql
 } // namespace odb

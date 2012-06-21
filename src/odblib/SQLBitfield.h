@@ -48,6 +48,8 @@ private:
 	virtual const SQLType* subType(const string&) const;
 	virtual int getKind() const { return bitmapType; }
 
+	size_t width_;
+	virtual size_t width() const;
 	//friend ostream& operator<<(ostream& s,const SQLBitfield& p)
 	//	{ p.print(s); return s; }
 };

@@ -37,6 +37,7 @@ private:
 	virtual size_t size() const;
 	virtual void output(SQLOutput&, double, bool) const;
 	virtual int getKind() const { return stringType; }
+	virtual manipulator format() const;
 
 	//friend ostream& operator<<(ostream& s,const SQLString& p)
 	//	{ p.print(s); return s; }

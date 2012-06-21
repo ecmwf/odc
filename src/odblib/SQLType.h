@@ -50,6 +50,11 @@ public:
 
 	virtual int getKind() const = 0;
 
+	// Formating functions (used by SQLSimpleOutput)
+	virtual size_t width() const;
+	typedef std::ios_base& (*manipulator)(std::ios_base&);
+	virtual manipulator format() const;
+
 	static const SQLType& lookup(const string&);
 
 	static void createAlias(const string&, const string&);

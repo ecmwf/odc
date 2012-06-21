@@ -37,6 +37,7 @@ SQLBitfield::SQLBitfield(const string& name, const FieldNames& fields, const Siz
 		//cout << fields[i] << " " << sizes_[i] << " mask=" << hex << mask << dec << " shift=" << shift << endl;
 		shift += sizes[i];
 	}
+	width_ = shift;
 }
 
 SQLBitfield::~SQLBitfield() {}
@@ -80,6 +81,8 @@ string SQLBitfield::make(const string& name, const FieldNames& fields, const Siz
 
 	return s;
 }
+
+size_t SQLBitfield::width() const { return width_; }
 
 size_t SQLBitfield::size() const
 {

@@ -21,10 +21,7 @@ public:
 	~SQLTool();
 	virtual void run();
 
-	static void help(ostream &o)
-	{
-		o << "Executes SQL statement";
-	}
+	static void help(ostream &o) { o << "Executes SQL statement"; }
 
 	static void usage(const string& name, ostream &o)
 	{

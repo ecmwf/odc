@@ -29,6 +29,12 @@ void SQLSimpleOutput::print(ostream& s) const
 	s << "SQLSimpleOutput";
 }
 
+ostream& SQLSimpleOutput::format(ostream& o, size_t i) const
+{
+	o.width(columnWidths_[i]);
+	return o << *columnAlignments_[i];
+}
+
 void SQLSimpleOutput::size(int) {}
 void SQLSimpleOutput::reset() { count_ = 0; }
 void SQLSimpleOutput::flush() { out_ << std::flush; }
@@ -39,6 +45,7 @@ bool SQLSimpleOutput::output(const expression::Expressions& results)
     for(size_t i = 0; i < n; i++)
     {
         if(i) out_ << config_.fieldDelimiter;
+		currentColumn_ = i;
         results[i]->output(*this);
     }
     out_ << endl;
@@ -48,6 +55,7 @@ bool SQLSimpleOutput::output(const expression::Expressions& results)
 
 void SQLSimpleOutput::outputReal(double x, bool missing) const
 {
+	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL)
 		out_ << "NULL";
 	else
@@ -56,6 +64,7 @@ void SQLSimpleOutput::outputReal(double x, bool missing) const
 
 void SQLSimpleOutput::outputDouble(double x, bool missing) const
 {
+	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL)
 		out_ << "NULL";
 	else
@@ -64,6 +73,7 @@ void SQLSimpleOutput::outputDouble(double x, bool missing) const
 
 void SQLSimpleOutput::outputInt(double x, bool missing) const
 {
+	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL)
 		out_ << "NULL";
 	else
@@ -72,6 +82,7 @@ void SQLSimpleOutput::outputInt(double x, bool missing) const
 
 void SQLSimpleOutput::outputUnsignedInt(double x, bool missing) const
 {
+	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL)
 		out_ << "NULL";
 	else
@@ -80,25 +91,34 @@ void SQLSimpleOutput::outputUnsignedInt(double x, bool missing) const
 
 void SQLSimpleOutput::outputString(double x, bool missing) const
 {
+	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL)
 		out_ << "NULL";
 	else
 	{
-		out_ << "'";
+		stringstream ss;
+		ss << "'";
 		char *p = reinterpret_cast<char*>(&x);
 		for(size_t i = 0; i < sizeof(x); i++)
 			if(p[i] != ' ' && isprint(p[i]))
-				out_ << p[i];
-		out_ << "'";
+				ss << p[i];
+		ss << "'";
+
+		out_ << ss.str();
 	}
 }
 
 void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 {
+	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL)
 		out_ << "NULL";
 	else
-		Decoder::printBinary(out_, static_cast<unsigned long>(x));
+	{
+		stringstream ss;
+		Decoder::printBinary(ss, static_cast<unsigned long>(x));
+		out_ << ss.str();
+	}
 }
 
 void SQLSimpleOutput::prepare(SQLSelect& sql)
@@ -110,12 +130,19 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 	for (size_t i = 0; i < columns.size(); i++)
 	{
 		string name = columns[i]->title();
-		//TODO: get types of columns - these can be any expressions, not only selected tables' columns
-		//SQLTable *table = sql.findTable(name);
-		//string typeName = sql.typeOf(name, table)->name();
-		if(i)
-			out_ << config_.fieldDelimiter;
-		out_ << name; // << ":" << typeName;
+		const type::SQLType* type = columns[i]->type();
+
+		columnWidths_.push_back(type->width());
+		columnAlignments_.push_back(type->format());
+
+		if(i) out_ << config_.fieldDelimiter;
+
+		format(out_, i);
+		//stringstream ss;
+		//ss << name;
+		//ss << ":" << type->name();
+		//out_ << ss.str();
+		out_ << name;
 		
 	}
     out_ << endl;
