@@ -25,6 +25,8 @@ include( ecbuild_system )
 ###############################################################################
 # local project
 
+ecbuild_use_package( PROJECT eclib NAME EcLib REQUIRED )
+
 ecbuild_declare_project()
 
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
