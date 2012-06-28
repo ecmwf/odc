@@ -41,8 +41,7 @@
 #include "odblib/StringExpression.h"
 #include "odblib/TemporaryFile.h"
 
-
-static Mutex mutex;
+CREATE_MUTEX();
 
 static string        yypath;
 
@@ -107,6 +106,7 @@ void SQLParser::parseFile(const PathName& path, istream* is) { parseFile(path, i
 
 void SQLParser::parseFile(const PathName& path, istream* is, SQLOutputConfig cfg)
 {
+    INIT_MUTEX();
 	AutoLock<Mutex> lock(mutex);
 
 	SQLSelectFactory::instance().implicitFromTableSourceStream(is);
@@ -133,6 +133,7 @@ void SQLParser::parseFile(const PathName& path, istream* is, SQLOutputConfig cfg
 
 void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg)
 {
+    INIT_MUTEX();
 	AutoLock<Mutex> lock(mutex);
 
 	SQLSelectFactory::instance().implicitFromTableSourceStream(is);
@@ -150,6 +151,7 @@ void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg)
 /*
 void SQLParser::parseFile(const PathName& path, DataHandle* dh, SQLOutputConfig cfg)
 {
+    INIT_MUTEX();
 	AutoLock<Mutex> lock(mutex);
 
 	SQLSelectFactory::instance().implicitFromTableSource(dh);
@@ -176,7 +178,8 @@ void SQLParser::parseFile(const PathName& path, DataHandle* dh, SQLOutputConfig 
 
 void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg)
 {
-	AutoLock<Mutex> lock(mutex);
+	INIT_MUTEX();
+    AutoLock<Mutex> lock(mutex);
 	SQLSelectFactory::instance().implicitFromTableSource(dh);
 	SQLSelectFactory::instance().config(cfg);
 
@@ -192,7 +195,8 @@ void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg
 /*
 void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig cfg)
 {
-	AutoLock<Mutex> lock(mutex);
+	INIT_MUTEX();
+    AutoLock<Mutex> lock(mutex);
 
 	SQLSelectFactory::instance().database(&db);
 	SQLSelectFactory::instance().config(cfg);
@@ -217,7 +221,8 @@ void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig
 */
 void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
-	AutoLock<Mutex> lock(mutex);
+	INIT_MUTEX();
+    AutoLock<Mutex> lock(mutex);
 	SQLSelectFactory::instance().database(&db);
 	SQLSelectFactory::instance().config(cfg);
 
