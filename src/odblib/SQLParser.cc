@@ -41,8 +41,7 @@
 #include "odblib/StringExpression.h"
 #include "odblib/TemporaryFile.h"
 
-CREATE_MUTEX();
-
+static Mutex mutex;
 static string        yypath;
 
 static string inputString;
@@ -133,7 +132,6 @@ void SQLParser::parseFile(const PathName& path, istream* is, SQLOutputConfig cfg
 
 void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg)
 {
-    INIT_MUTEX();
 	AutoLock<Mutex> lock(mutex);
 
 	SQLSelectFactory::instance().implicitFromTableSourceStream(is);
@@ -178,7 +176,6 @@ void SQLParser::parseFile(const PathName& path, DataHandle* dh, SQLOutputConfig 
 
 void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg)
 {
-	INIT_MUTEX();
     AutoLock<Mutex> lock(mutex);
 	SQLSelectFactory::instance().implicitFromTableSource(dh);
 	SQLSelectFactory::instance().config(cfg);
@@ -195,7 +192,6 @@ void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg
 /*
 void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig cfg)
 {
-	INIT_MUTEX();
     AutoLock<Mutex> lock(mutex);
 
 	SQLSelectFactory::instance().database(&db);
@@ -221,7 +217,6 @@ void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig
 */
 void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
-	INIT_MUTEX();
     AutoLock<Mutex> lock(mutex);
 	SQLSelectFactory::instance().database(&db);
 	SQLSelectFactory::instance().config(cfg);
