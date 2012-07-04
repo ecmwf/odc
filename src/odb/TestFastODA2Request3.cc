@@ -65,7 +65,9 @@ void TestFastODA2Request3::test()
 	vector<ODAHandle*> handles;
 
 	//PathName pathName("mondb_conv.17.16001.odb.fn6x");
-	PathName pathName("../../../odb_api/src/odb/mondb.1.12.odb");
+	ASSERT(getenv("ODB_API_TEST_DATA_PATH") && "ODB_API_TEST_DATA_PATH must be set");
+	string e(Resource<string>("$ODB_API_TEST_DATA_PATH", string("../../../odb_api/src/odb")));
+	PathName pathName(e + "/mondb.1.12.odb");
 	bool rc = o.scanFile(pathName, offsets, lengths, handles);
 	ASSERT(rc == true);
 
