@@ -19,4 +19,11 @@ server="-DDHSHOME=/tmp/mak/dhs -DWITH_DUMMY_TAPES=ON"
 
 client="-DBUILD_MARS_CLIENT=ON -DEMOS_PATH=/usr/local/lib/metaps/lib/libemos_for_mars -DFDB_PATH=/usr/local/lib/metaps -DPGI_PATH=/usr/local/apps/pgi/pgi-10.8/linux86-64/10.8 -DBUILD_MARSLITE=OFF -DODB_PATH=/usr/local/apps/odb/CY37R3.001/pgf90/LP64/"
 
-$1 $cmake ../.. $cc $fc $build_type $install $common $grib_api $server $client $2 -DODB_PATH=$ODB_ROOT -DODB_API_MIGRATOR=ON -DODB_API_FORTRAN=ON -DODB_API_PYTHON=ON -DPGI_PATH=/usr/local/apps/pgi/pgi\-10.8/linux86-64/current
+$1 $cmake ../.. $cc $fc $build_type $install $common $grib_api $server $client $2 \
+	-DODB_PATH=$ODB_ROOT \
+	-DODB_API_MIGRATOR=ON \
+	-DECLIB_SOURCE=/tmp/p4/source/eclib \
+	-DCMAKE_MODULE_PATH=/tmp/p4/source/ecbuild/cmake \
+	-DODB_API_FORTRAN=ON \
+	-DODB_API_PYTHON=ON \
+	-DPGI_PATH=/usr/local/apps/pgi/pgi\-10.8/linux86-64/current
