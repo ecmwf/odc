@@ -9,9 +9,9 @@ build_type="-DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//')"
 
 install="-DCMAKE_INSTALL_PREFIX=/tmp/mak/odb_api/"
 
-common="-DCMAKE_PREFIX_PATH=/usr/local/lib/metaps/lib/grib_api/jasper;/usr/local/apps/python/2.7 -DCHECK_UNUSED_FILES=OFF -DWITH_READLINE=ON"
+common="-DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7 -DCHECK_UNUSED_FILES=OFF "
 
-grib_api="-DGRIB_API_PATH=/usr/local/lib/metaps/lib/grib_api/1.9.9  -DWITH_PNG=ON "
+#grib_api="-DGRIB_API_PATH=/usr/local/lib/metaps/lib/grib_api/1.9.9  -DWITH_PNG=ON "
 
 server="-DDHSHOME=/tmp/mak/dhs -DWITH_DUMMY_TAPES=ON"
 
@@ -19,6 +19,9 @@ client="-DBUILD_MARS_CLIENT=ON -DEMOS_PATH=/usr/local/lib/metaps/lib/libemos_for
 
 $1 $cmake ../.. $cc $fc $build_type $install $common $grib_api $server $client $2 \
 	-DODB_PATH=$ODB_ROOT \
+    -DCMAKE_MODULE_PATH=/marsdev/data/p4/odb_api_dev/ecbuild/cmake \
+    -DECLIB_SOURCE=/marsdev/data/p4/odb_api_dev/eclib \
+    -DBUILD_SHARED_LIBS=OFF \
 	-DODB_API_MIGRATOR=ON \
 	-DODB_API_FORTRAN=ON \
 	-DODB_API_PYTHON=ON \
