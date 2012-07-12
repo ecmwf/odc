@@ -18,8 +18,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<SetTool> set("set");
-
 SetTool::SetTool (int argc, char *parameters[]) : Tool(argc, parameters) { }
 
 void SetTool::run()

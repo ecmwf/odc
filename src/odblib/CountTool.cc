@@ -18,8 +18,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<CountTool> countTool("count");
-
 CountTool::CountTool (int argc, char *argv[]) : Tool(argc, argv) { }
 
 unsigned long long CountTool::fastRowCount(const PathName &db)

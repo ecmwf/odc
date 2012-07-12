@@ -20,8 +20,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<LSTool> lsTool("ls");
-
 LSTool::LSTool (int argc, char *argv[]) : Tool(argc, argv)
 {
 	registerOptionWithArgument("-o"); // Text Output

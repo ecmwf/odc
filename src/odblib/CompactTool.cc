@@ -18,8 +18,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<CompactTool> compact("compact");
-
 CompactTool::CompactTool (int argc, char *argv[]) : Tool(argc, argv) { }
 
 void CompactTool::run()

@@ -19,8 +19,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<HeaderTool> odaHeader("header");
-
 HeaderTool::HeaderTool (int argc, char *argv[]) : Tool(argc, argv) { }
 
 void HeaderTool::run()

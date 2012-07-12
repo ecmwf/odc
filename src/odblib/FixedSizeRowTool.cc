@@ -18,8 +18,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<FixedSizeRowTool> fixedSizeRow("fixrowsize");
-
 FixedSizeRowTool::FixedSizeRowTool (int argc, char *argv[]) : Tool(argc, argv) { }
 
 void FixedSizeRowTool::run()

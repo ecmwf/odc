@@ -21,8 +21,6 @@ using namespace std;
 namespace odb {
 namespace tool {
 
-ToolFactory<ImportTool> import("import");
-
 string ImportTool::defaultDelimiter = ",";
 
 ImportTool::ImportTool(int argc, char *parameters[])

@@ -18,8 +18,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<SplitTool> split("split");
-
 SplitTool::SplitTool (int argc, char *argv[]) : Tool(argc, argv) { }
 
 void SplitTool::run()

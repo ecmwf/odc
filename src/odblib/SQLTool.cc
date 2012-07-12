@@ -18,8 +18,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<SQLTool> sqlTool("sql");
-
 SQLTool::SQLTool(int argc,char **argv)
 : Tool(argc,argv)
 {

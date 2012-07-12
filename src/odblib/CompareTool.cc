@@ -15,12 +15,8 @@
 #include "CompareTool.h"
 #include "StringTool.h"
 
-
-
 namespace odb {
 namespace tool {
-
-ToolFactory<CompareTool> compare("compare");
 
 CompareTool::CompareTool (int argc, char *argv[])
 : Tool(argc, argv) 

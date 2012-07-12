@@ -20,8 +20,6 @@ using namespace std;
 namespace odb {
 namespace tool {
 
-ToolFactory<XYVTool> xyvTool("xyv");
-
 XYVTool::XYVTool(int argc,char **argv): Tool(argc, argv) {}
 
 XYVTool::~XYVTool() {}

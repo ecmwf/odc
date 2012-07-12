@@ -12,6 +12,9 @@
 #define CompareTool_H
 
 namespace odb {
+
+class RowsReaderIterator;
+
 namespace tool {
 
 class CompareTool : public Tool {

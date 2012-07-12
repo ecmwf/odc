@@ -41,6 +41,8 @@ public:
 	string name() { return name_; }
 	void name(string s) { name_ = s; }
 
+	static void registerTools();
+
 protected:
     
 	Tool(int argc, char **argv);

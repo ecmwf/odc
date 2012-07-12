@@ -30,6 +30,8 @@ int valgrind(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
+	Tool::registerTools();
+
 	if (argc < 2)
 	{
 		odb_start();
@@ -72,7 +74,7 @@ int main(int argc, char *argv[])
 		if (argc == 2)
 			AbstractToolFactory::printToolsHelp(cout);
 		else
-			{
+		{
 			AbstractToolFactory::printToolHelp(argv[2], cout);
 			cout << endl << "Usage:" << endl << endl << "\t";
 			AbstractToolFactory::printToolUsage(argv[2], cout);

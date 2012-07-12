@@ -27,8 +27,6 @@ namespace tool {
 
 char * static_argv[] = { const_cast<char *>("oda2request") };
 
-ToolFactory<ODA2RequestTool> oda2requestTool("oda2request");
-
 ODA2RequestTool::ODA2RequestTool(int argc, char **argv)
 : Tool(argc, argv)
 {

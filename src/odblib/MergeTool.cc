@@ -19,8 +19,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<MergeTool> mergeTool("merge");
-
 MergeTool::MergeTool (int ac, char *av[])
 : Tool(ac, av) 
 {

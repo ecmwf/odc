@@ -20,8 +20,6 @@
 namespace odb {
 namespace tool {
 
-ToolFactory<MDSetTool> mdset("mdset");
-
 MDSetTool::MDSetTool (int argc, char *parameters[]) : Tool(argc, parameters) { }
 
 void MDSetTool::run()
