@@ -9,4 +9,9 @@ install="-DCMAKE_INSTALL_PREFIX=/usr/"
 
 /usr/bin/gfortran --version
 
-$1 $cmake ../.. $build_type $install $2  -DODB_API_MIGRATOR=OFF -DODB_API_FORTRAN=ON -DODB_API_PYTHON=ON 
+$1 $cmake ../.. $build_type $install $2  \
+	-DECLIB_SOURCE=$P4ROOT/odb_api/eclib \
+	-DCMAKE_MODULE_PATH=$P4ROOT/odb_api/ecbuild/cmake \
+	-DODB_API_MIGRATOR=OFF \
+	-DODB_API_FORTRAN=ON \
+	-DODB_API_PYTHON=ON 
