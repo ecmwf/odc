@@ -1,0 +1,71 @@
+Following software packages are required to build ODB API library and command line tool:
+
+ - cmake 2.8.1 or newer,
+ - bison 2.3 or newer,
+ - flex (all known versions should be OK),
+ - a C++ compiler.
+
+Optionally, to build:
+
+ - ODB API Fortran bindings, a Fortran compiler is required,
+ - odb_migrator, a program to convert old ODB databases to the new format, it is required to have a valid installation of the old
+   ODB, and a Fortran compiler (the same one as the one used to build the old ODB installation),
+ - ODB API Python bindings, SWIG 1.3.40 or newer and Python 2.7.
+
+After unpacking ODB API source a build directory called build/production or build/debug should be created inside the source's
+directory. Next cmake should be called from within the build/production of build/debug.
+
+It is recommended to create a shell script which calls cmake with appropriate options. In case of the example shell session below
+this script is called configure.sh. Detailed information on available cmake build options follows the example.
+
+Cmake creates Makefiles only, so the next step is to call make and actually build the binaries:
+
+  $ pwd
+  /tmp/test
+  $ tar zxf OdbAPI-0.9.20-dev-Source.tar.gz
+  $ cd OdbAPI-0.9.20-dev-Source
+  $ mkdir -p build/production
+  $ cd build/production
+  $ ../../configure.sh 
+  $ make
+  $ make install
+
+Cmake options.
+
+All cmake options have to be passed to cmake with prepended '-D' and followed by '=' and option's value.
+
+
+	CMAKE_BUILD_TYPE
+
+Build type. Possible values: Debug, Production (case insensitive). At ECMWF we use following snippet to use build directory name
+as build type:
+
+  -DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//')
+
+
+    CMAKE_INSTALL_PREFIX
+
+Installation directory. The following shell command can be used to set this to a directory with added extra subdirectory for
+the current version of the software:
+
+  -DCMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/"`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
+
+    CMAKE_PREFIX_PATH
+
+    CHECK_UNUSED_FILES
+
+	PGI_PATH
+
+    ODB_PATH=$ODB_ROOT
+    CMAKE_MODULE_PATH=/tmp/test/OdbAPI-0.9.20-dev-Source/ecbuild/cmake
+    ECLIB_SOURCE=/tmp/test/OdbAPI-0.9.20-dev-Source/eclib
+    BUILD_SHARED_LIBS=OFF
+    DODB_API_MIGRATOR=ON
+    ODB_API_FORTRAN=ON
+    ODB_API_PYTHON=OFF
+    SWIG_EXECUTABLE=/usr/local/apps/swig/2.0.5/bin/swig
+    XLF_PATH=/usr/lpp/xlf
+    BISON_EXECUTABLE=
+    FLEX_EXECUTABLE=
+
+
