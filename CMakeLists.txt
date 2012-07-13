@@ -14,7 +14,7 @@
 
 cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
-project( odb_api )
+project( odb_api CXX )
 
 set( EC_FORTRAN "OPTIONAL" )
 
@@ -41,6 +41,8 @@ option( ODB_API_PYTHON   "whether or not to build the python interface" OFF )
 
 ###############################################################################
 # find extra packages
+
+ecbuild_find_python( VERSION 2.7 )
 
 find_package( SWIG )
 if( SWIG_FOUND )
