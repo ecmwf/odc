@@ -26,7 +26,7 @@ Cmake creates Makefiles only, so the next step is to call make and actually buil
   $ cd OdbAPI-0.9.20-dev-Source
   $ mkdir -p build/production
   $ cd build/production
-  $ ../../configure.sh 
+  $ ../../configure_ecmwf_ecgate.sh
   $ make
   $ make install
 
@@ -34,8 +34,8 @@ Cmake creates Makefiles only, so the next step is to call make and actually buil
 Cmake options.
 
 All cmake options have to be passed to cmake with prepended '-D' and followed by '=' and option's value. Most of the options can be
-omitted. For those cmake will try to find appropriate values. We have included a template file configure.sh - please note that it
-must be edited before being used.
+omitted. For those cmake will try to find appropriate values. We have included a script configure_ecmwf_ecgate.sh which can be
+used to build ODB API on ECMWF ecgate system.
 
 
 	CMAKE_C_COMPILER
