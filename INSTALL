@@ -50,6 +50,7 @@ name equal to the current version of the software:
 
   -DCMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/"`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
 
+
     CMAKE_PREFIX_PATH
 
 A comma separated list of directories where cmake will try to find libraries and tools.
@@ -76,6 +77,7 @@ directory /tmp/test then CMAKE_MODULE_PATH should be set to /tmp/test/OdbAPI-0.9
 Path to EClib source. EClib is supplied with ODB API source. For example, if the ODB API source code was unpacked in directory
 /tmp/test then ECLIB_SOURCE should be set to /tmp/test/OdbAPI-0.9.20-dev-Source/eclib
 
+
     BUILD_SHARED_LIBS
 
 Possible values: ON or OFF
@@ -85,25 +87,31 @@ Possible values: ON or OFF
 
 Spcifies if odb_migrator should be built. Possible values: ON or OFF
 
+
     ODB_API_FORTRAN
 
 Specifies if ODB API Fortran interface should be built. Possiblle values: ON or OFF
+
 
     ODB_API_PYTHON
 
 Specifies if ODB API Python interface should be built. Possiblle values: ON or OFF
 
+
     SWIG_EXECUTABLE
 
 Path to swig executable. This option is only needed if a different swig executable should be needed than the one available on PATH
+
 
     XLF_PATH
 
 Path to the IBM's XLF compiler
 
+
     BISON_EXECUTABLE
 
 Path to bison executable.
+
 
     FLEX_EXECUTABLE
 
