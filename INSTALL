@@ -30,9 +30,27 @@ Cmake creates Makefiles only, so the next step is to call make and actually buil
   $ make
   $ make install
 
+
 Cmake options.
 
-All cmake options have to be passed to cmake with prepended '-D' and followed by '=' and option's value.
+All cmake options have to be passed to cmake with prepended '-D' and followed by '=' and option's value. Most of the options can be
+omitted. For those cmake will try to find appropriate values. We have included a template file configure.sh - please note that it
+must be edited before being used.
+
+
+	CMAKE_C_COMPILER
+
+C compiler.
+
+
+	CMAKE_CXX_COMPILER
+
+C++ compiler.
+
+
+	CMAKE_Fortran_COMPILER
+
+Fortran compiler.
 
 
 	CMAKE_BUILD_TYPE
@@ -48,7 +66,7 @@ as build type:
 Installation directory. The following shell command can be used to set this to a directory with added extra subdirectory with a
 name equal to the current version of the software:
 
-  -DCMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/"`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
+  -DCMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
 
 
     CMAKE_PREFIX_PATH
