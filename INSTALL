@@ -12,11 +12,15 @@ Optionally, to build:
    ODB, and a Fortran compiler (the same as the one used to build the old ODB installation),
  - ODB API Python bindings, SWIG 1.3.40 or newer and Python 2.7.
 
-After unpacking ODB API source a build directory called build/production or build/debug should be created inside the source's
-directory. Next cmake should be called from within the build/production of build/debug.
+After unpacking ODB API source create a build directory called build/production or build/debug inside the source's
+directory. This is where cmake will build binaries - we call it an external build because all the object files and binaries will
+be created outside of the source directory. Next step is to call cmake from within the directory (build/production of build/debug).
 
 It is recommended to create a shell script which calls cmake with appropriate options. In case of the example shell session below
-this script is called configure.sh. Detailed information on available cmake options follows the example.
+this script is called configure_ecmwf_ecgate.sh. 
+
+First parameter passed to cmake in case of an external build must be path to source code directory, in our case: ../.. All other
+parameters are optional. Detailed information on available cmake options follows the example.
 
 Cmake creates Makefiles only, so the next step is to call make and actually build the binaries:
 
@@ -33,9 +37,11 @@ Cmake creates Makefiles only, so the next step is to call make and actually buil
 
 Cmake options.
 
-All cmake options have to be passed to cmake with prepended '-D' and followed by '=' and option's value. Most of the options can be
-omitted. For those cmake will try to find appropriate values. We have included a script configure_ecmwf_ecgate.sh which can be
-used to build ODB API on ECMWF ecgate system.
+In case of an external build the first parameter passed to cmake must be path to source code directory, in our case: ../.. 
+
+Other, optional, cmake options should be passed to cmake with prepended '-D' and followed by '=' and option's value. 
+For omitted options cmake will try to find appropriate values. We have included a script configure_ecmwf_ecgate.sh which 
+can be used to build ODB API on ECMWF ecgate system.
 
 
 	CMAKE_C_COMPILER
