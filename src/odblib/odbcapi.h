@@ -71,6 +71,7 @@ oda_writer_ptr odb_writer_create(const char *, int *);
 int odb_writer_destroy(oda_writer_ptr);
 
 oda_write_iterator_ptr odb_create_write_iterator(oda_writer_ptr, const char* , int * );
+oda_write_iterator_ptr odb_create_append_iterator(oda_writer_ptr, const char* , int * );
 int odb_write_iterator_destroy(oda_write_iterator_ptr);
 int odb_write_iterator_set_no_of_columns(oda_write_iterator_ptr, int);
 
@@ -82,6 +83,7 @@ int odb_write_iterator_set_missing_value(oda_write_iterator_ptr, int, double);
 int odb_write_iterator_write_header(oda_write_iterator_ptr);
 int odb_write_iterator_set_next_row(oda_write_iterator_ptr, double *, int);
 
+// FIXME: This needs to be changed: return error code like all the rest of the functions
 double odb_count(const char *);
 
 int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks, off64_t** offsets, size_t** sizes);

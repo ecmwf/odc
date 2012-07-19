@@ -291,6 +291,21 @@ int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, doub
 	return 0;
 }
 
+oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filename, int *err)
+{
+	Writer<> *o = reinterpret_cast<Writer<> *>(co);
+	string fileName(filename);
+	PathName fn(fileName);
+	FileHandle *fh = new FileHandle(fn, /* overwrite */ false);
+	Length foo;
+	fh->openForAppend(foo);
+
+	// TODO: make sure there's no leaks (FileHandle)
+	Writer<>::iterator_class* w = new Writer<>::iterator_class(*o, fh, false);
+	*err = !w;
+	return oda_write_iterator_ptr(w);
+}
+
 oda_write_iterator_ptr odb_create_write_iterator(oda_ptr co, const char *filename, int *err)
 {
 	Writer<> *o = reinterpret_cast<Writer<> *>(co);

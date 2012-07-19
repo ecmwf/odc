@@ -54,9 +54,12 @@ using namespace std;
 #include "odblib/ImportTool.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
+#include "odblib/DateTime.h"
 
 #include "odb/TestWriteCatFiles.h"
 #include "odblib/ToolFactory.h"
+
+#include "odb/TestOdaCAPI.h"
 
 namespace odb {
 namespace tool {
@@ -480,6 +483,38 @@ void sqlOutputFormatting()
 
 }
 TESTCASE(sqlOutputFormatting);
+
+double julian(double d, double t)
+{
+    int indate = (int) d;
+    int intime = (int) t;
+    int year_target = indate/10000;
+    int month_target = (indate%10000)/100;
+    int day_target = indate%100;
+    int hour_target = intime/10000;
+    int min_target = (intime%10000)/100;
+    int sec_target = intime%100;
+
+    utils::DateTime d1(year_target, month_target, day_target,
+                   hour_target, min_target, sec_target);
+
+    return d1.dateToJulian();
+}
+
+void dateTime()
+{
+	int j1 = julian(20120714, 120000);
+	int j2 = julian(20120714, 0);
+	//ASSERT(j1 > j2);
+}
+TESTCASE(dateTime);
+
+void odbcapi()
+{
+	odb::tool::test::test_odacapi_setup_in_C(0,0);
+	odb::tool::test::test_odacapi3(0,0);
+}
+TESTCASE(odbcapi);
 
 
 } // namespace test 

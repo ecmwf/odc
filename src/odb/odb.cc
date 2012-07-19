@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 
 	if (firstArg == "g") { odb_start(); return gdb(argc, argv); }
 	if (firstArg == "vg") { odb_start(); return valgrind(argc, argv); }
-	if (firstArg == "testodacapi") return odb::tool::test::test_odacapi(argc, argv);
+	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
 	if (firstArg == "test")
 	{
 		if (argc == 2) //no args => test all

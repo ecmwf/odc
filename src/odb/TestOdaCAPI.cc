@@ -36,7 +36,8 @@ int test_odacapi(int argc, char *argv[])
 	//return test_odacapi_setup(argc, argv)
 	return test_odacapi_setup_in_C(argc, argv)
 		|| test_odacapi1(argc, argv)
-		|| test_odacapi2(argc, argv);
+		|| test_odacapi2(argc, argv)
+		|| test_odacapi3(argc, argv);
 }
 
 int test_odacapi_setup_in_C(int argc, char *argv[])
@@ -153,10 +154,10 @@ int test_odacapi2(int argc, char *argv[])
 
 	int err;
 
-	cout << "Calling oda_init..." << endl;
+	cout << "Calling odb_start..." << endl;
 	odb_start();
 
-	cout << "Calling oda_create..." << endl;
+	cout << "Calling odb_create..." << endl;
 
 	oda* oh = odb_create("", &err);
 	
@@ -203,6 +204,51 @@ int test_odacapi2(int argc, char *argv[])
 	ASSERT(0 == odb_select_iterator_destroy(it));
 	ASSERT(0 == odb_destroy(oh));
 	cout << "OK" << endl;
+	return 0;
+}
+
+int test_odacapi3(int argc, char *argv[])
+{
+	cout << "Testing ODB C API append to file functionality..." << endl;
+
+	const char *filename = "test.odb";
+	int err = 0;
+
+	double n = odb_count(filename);
+	cout << "test_odacapi3: number of rows = " << n << endl;
+	ASSERT(n == 10);
+
+	oda_writer* writer = odb_writer_create("", &err);
+	ASSERT(writer);
+
+	oda_write_iterator* wi = odb_create_append_iterator(writer, filename, &err);
+	ASSERT(wi);
+	ASSERT(0 == err);
+	ASSERT(0 != wi);
+
+	ASSERT(0 == odb_write_iterator_set_no_of_columns(wi, 2));
+	ASSERT(0 == odb_write_iterator_set_column(wi, 0, odb::INTEGER, "ifoo"));
+	ASSERT(0 == odb_write_iterator_set_column(wi, 1, odb::REAL, "nbar"));
+	
+	ASSERT(0 == odb_write_iterator_write_header(wi));
+
+	double data[2];
+	for (int i = 1; i <= 10; i++)
+	{
+		data[0] = i;
+		data[1] = i;
+
+		ASSERT(0 == odb_write_iterator_set_next_row(wi, data, 2));
+	}
+
+	ASSERT(0 == odb_write_iterator_destroy(wi));
+	ASSERT(0 == odb_writer_destroy(writer));
+
+
+	n = odb_count(filename);
+	cout << "test_odacapi3: number of rows = " << n << endl;
+	ASSERT(n == 20);
+
 	return 0;
 }
 

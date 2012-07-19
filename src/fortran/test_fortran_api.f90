@@ -36,7 +36,7 @@ subroutine test_fortran_api_setup
  character(len=100)                            :: expver="fihn"//achar(0)
 
  write(0,*) 'test_fortran_api_setup'
- c_ncolumns=ncolumns
+ c_ncolumns = ncolumns
  odb_handle = odb_write_new(config, cerr)
  odb_it = odb_write_iterator_new(odb_handle, outputfile, cerr);
  
@@ -71,7 +71,7 @@ subroutine test_fortran_api1
  type(C_PTR)                                   :: odb_handle, odb_it
  integer(kind=C_INT)                           :: cerr
  character(kind=C_CHAR, len=max_varlen)        :: config = C_NULL_CHAR
- character(kind=C_CHAR, len=max_varlen)        :: inputfile="test.odb"//achar(0)
+ character(kind=C_CHAR, len=max_varlen)        :: inputfile = "test.odb"//achar(0)
  type(C_PTR)                                   :: ptr_colname
  character(kind=C_CHAR,len=1), dimension(:), pointer :: f_ptr_colname
  character(len=max_varlen)                     :: colname
@@ -110,17 +110,15 @@ subroutine test_fortran_api1
  
  if (cerr /= 0) STOP 12
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 1 : ', colname(1:i)
 
- cerr = odb_read_get_column_name(odb_it, 1, ptr_colname,size_name)
+ cerr = odb_read_get_column_name(odb_it, 1, ptr_colname, size_name)
  if (cerr /=0) STOP 1
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 2 : ', colname(1:i)
@@ -128,8 +126,7 @@ subroutine test_fortran_api1
  cerr = odb_read_get_column_name(odb_it, 2, ptr_colname,size_name)
  if (cerr /=0) STOP 1
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 3 : ', colname(1:i)
@@ -137,8 +134,7 @@ subroutine test_fortran_api1
  cerr = odb_read_get_column_name(odb_it, 3, ptr_colname,size_name)
  if (cerr /=0) STOP 1
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 4 : ', colname(1:i)
@@ -208,36 +204,32 @@ subroutine test_fortran_api2
  cerr = odb_select_get_column_name(odb_it, 0, ptr_colname,size_name)
  if (cerr /=0) STOP 1
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name 
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 1 : ', colname(1:i)
 
- cerr = odb_select_get_column_name(odb_it, 1, ptr_colname,size_name)
+ cerr = odb_select_get_column_name(odb_it, 1, ptr_colname, size_name)
  if (cerr /=0) STOP 1
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 2 : ', colname(1:i)
 
- cerr = odb_select_get_column_name(odb_it, 2, ptr_colname,size_name)
+ cerr = odb_select_get_column_name(odb_it, 2, ptr_colname, size_name)
  if (cerr /=0) STOP 1
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 3 : ', colname(1:i)
 
 
- cerr = odb_select_get_column_name(odb_it, 3, ptr_colname,size_name)
+ cerr = odb_select_get_column_name(odb_it, 3, ptr_colname, size_name)
  if (cerr /=0) STOP 1
  call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, max_varlen ! should not be hard-coded...
-    if (f_ptr_colname(i) .eq. C_NULL_CHAR) exit  ! should be C_CHAR_NULL
+ do i=1, size_name
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 4 : ', colname(1:i)

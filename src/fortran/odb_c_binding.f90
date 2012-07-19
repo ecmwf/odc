@@ -191,6 +191,14 @@ interface
      type(C_PTR)                          :: odb_write_iterator_new
    end function odb_write_iterator_new
 
+   function odb_append_iterator_new(odb, filename, err) bind(C, name="odb_create_append_iterator")
+     use, intrinsic                       :: iso_c_binding
+     type(C_PTR), VALUE                   :: odb
+     character(kind=C_CHAR),dimension(*)  :: filename
+     integer(kind=C_INT)                  :: err
+     type(C_PTR)                          :: odb_append_iterator_new
+   end function odb_append_iterator_new
+
    function odb_write_iterator_delete(odb_iterator) bind(C, name="odb_write_iterator_destroy")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: odb_iterator

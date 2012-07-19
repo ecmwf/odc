@@ -21,6 +21,7 @@ int test_odacapi_setup_in_C(int argc, char *argv[]);
 int test_odacapi_setup(int argc, char *argv[]);
 int test_odacapi1(int argc, char *argv[]);
 int test_odacapi2(int argc, char *argv[]);
+int test_odacapi3(int argc, char *argv[]);
 
 } // namespace test 
 } // namespace tool 
