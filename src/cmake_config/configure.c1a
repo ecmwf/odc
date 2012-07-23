@@ -20,6 +20,9 @@ server="-DDHSHOME=/tmp/mak/dhs -DWITH_DUMMY_TAPES=ON"
 client="-DBUILD_MARS_CLIENT=ON -DEMOS_PATH=/usr/local/lib/metaps/lib/libemos_for_mars -DFDB_PATH=/usr/local/lib/metaps -DPGI_PATH=/usr/local/apps/pgi/pgi-10.8/linux86-64/10.8 -DBUILD_MARSLITE=OFF -DODB_PATH=/usr/local/apps/odb/CY37R3.001/xlf90_r/LP64/"
 
 $1 $cmake ../.. $cc $fc $build_type $install $common $grib_api $server $client $2 \
+	-DCMAKE_Fortran_COMPILER=xlf90_r \
+	-DCMAKE_CXX_COMPILER=xlC_r \
+	-DCMAKE_C_COMPILER=xlc_r \
 	-DODB_PATH=$ODB_ROOT \
     -DCMAKE_MODULE_PATH=/marsdev/data/p4/odb_api_dev/ecbuild/cmake \
     -DECLIB_SOURCE=/marsdev/data/p4/odb_api_dev/eclib \
