@@ -189,7 +189,7 @@ void ImportODBTool<IN>::run()
 		Log::info() << "Verifying." << endl;
 		Log::info() << "Comparing data from: 1) ODB, and 2) ODA" << endl;
 
-		validate(db, sql, dumpFile);
+		if (importedRowsNumber) validate(db, sql, dumpFile);
 	}
 	Log::info() << "ImportODBTool: Finished OK" << endl;
 }
@@ -211,6 +211,11 @@ unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, PathName odb, str
 		// Unfortunately we don't get any info about bitfields definitions from ODB directly, so:
 		//w->columns() = it.columns();
 		//schema.updateBitfieldsDefs(w->columns());
+		if ( &(begin->columns()) == 0 )
+		{
+			Log::warning() << "ImportODBTool<IN>::saveData: empty input data set." << endl;
+			return 0;
+		}
 
 		n = w->pass1(begin, end);
 		//w->close();
