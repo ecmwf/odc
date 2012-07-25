@@ -42,7 +42,7 @@ option( ODB_API_PYTHON   "whether or not to build the python interface" OFF )
 ###############################################################################
 # find extra packages
 
-ecbuild_find_python( VERSION 2.7 )
+#ecbuild_find_python( VERSION 2.7 )
 
 find_package( SWIG )
 if( SWIG_FOUND )
