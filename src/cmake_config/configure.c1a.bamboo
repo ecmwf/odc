@@ -8,6 +8,7 @@ cmake="/usr/local/apps/cmake/current/bin/cmake"
 build_type="-DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//')"
 
 install="-DCMAKE_INSTALL_PREFIX=/tmp/mak/odb_api/"
+install="-DCMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/"`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
 
 common="-DCMAKE_PREFIX_PATH=/usr/local/lib/metaps/lib/grib_api/jasper;/usr/local/apps/python/2.7 -DCHECK_UNUSED_FILES=OFF -DWITH_READLINE=ON"
 

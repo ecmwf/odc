@@ -24,8 +24,8 @@ $1 $cmake ../.. $cc $fc $build_type $install $common $grib_api $server $client $
 	-DCMAKE_CXX_COMPILER=xlC_r \
 	-DCMAKE_C_COMPILER=xlc_r \
 	-DODB_PATH=$ODB_ROOT \
-    -DCMAKE_MODULE_PATH=/marsdev/data/p4/odb_api_dev/ecbuild/cmake \
-    -DECLIB_SOURCE=/marsdev/data/p4/odb_api_dev/eclib \
+    -DCMAKE_MODULE_PATH=/marsdev/data/p4/odb_api_dev/odb_api_release/ecbuild/cmake \
+    -DECLIB_SOURCE=/marsdev/data/p4/odb_api_dev/odb_api_release/eclib \
     -DBUILD_SHARED_LIBS=OFF \
 	-DODB_API_MIGRATOR=ON \
 	-DODB_API_FORTRAN=ON \

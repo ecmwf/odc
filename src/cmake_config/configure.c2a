@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-CMAKE_INSTALL_PREFIX_PATH=/usr/local/apps/odb_api/0.9.19
+CMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
 
 extra_params="$1"
 
