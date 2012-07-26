@@ -40,7 +40,7 @@ Cmake options.
 In case of an external build the first parameter passed to cmake must be path to source code directory, in our case: ../.. 
 
 Other, optional, cmake options should be passed to cmake with prepended '-D' and followed by '=' and option's value. 
-For omitted options cmake will try to find appropriate values. We have included a script configure_ecmwf_ecgate.sh which 
+For omitted options cmake will try to find appropriate values. We have included a script configure_example.sh which 
 can be used to build ODB API on ECMWF ecgate system.
 
 
