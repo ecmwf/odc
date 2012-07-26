@@ -509,6 +509,40 @@ void dateTime()
 }
 TESTCASE(dateTime);
 
+void createDataForWindSpeedWindDirection()
+{
+	const char *data = 
+	"u:REAL,v:REAL\n"
+	"11.7,-5.8\n"
+	"0.0,0.0\n"
+	"0,5.4\n"
+	"5.4,0.0\n"
+	;
+
+	ImportTool::importText(data, "uv.odb");
+}
+void windSpeedWindDirection()
+{
+	createDataForWindSpeedWindDirection();
+    string path("uv.odb");
+    string query("SELECT ff(u,v), dd(u,v), speed(u,v),dir(u,v), sqrt(u*u+v*v), fmod(atan2(-u,-v)+360.,360.) from \"" + path + "\";");
+
+    odb::Select select(query);
+    odb::Select::iterator it = select.begin();
+    odb::Select::iterator end = select.end();
+
+	long long i = 0;
+    for (; it != end; ++it)
+    {
+        Log::info() << " ff = " << (*it)[0] << " speed sqrt= " << (*it)[4] << endl;
+        Log::info() << " dd = " << (*it)[1] << " direction atan= " << (*it)[5] << endl;
+        ASSERT((*it)[0] == (*it)[4]);
+        ASSERT((*it)[1] == (*it)[5]);
+    }
+
+}
+TESTCASE(windSpeedWindDirection);
+
 void odbcapi()
 {
 	odb::tool::test::test_odacapi_setup_in_C(0,0);
