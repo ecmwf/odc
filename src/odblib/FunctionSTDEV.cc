@@ -22,7 +22,7 @@ FunctionSTDEV::FunctionSTDEV(const string& name,const expression::Expressions& a
 {}
 
 FunctionSTDEV::FunctionSTDEV(const FunctionSTDEV& other)
-: FunctionVAR(other.name_, other.args_)
+: FunctionVAR(static_cast<const FunctionVAR&>(other))
 {}
 
 FunctionSTDEV::~FunctionSTDEV() {}

@@ -23,9 +23,17 @@ namespace function {
 
 class FunctionVAR : public FunctionExpression {
 public:
-	FunctionVAR(const string&,const expression::Expressions&);
+	FunctionVAR(const string&, const expression::Expressions&);
 	FunctionVAR(const FunctionVAR&);
 	~FunctionVAR();
+
+// -- Overridden methods
+	virtual const odb::sql::type::SQLType* type() const;
+	virtual void prepare(SQLSelect&);
+	virtual void cleanup(SQLSelect&);
+	virtual void partialResult();
+
+	bool isAggregate() const { return true; }
 
 	SQLExpression* clone() const;
 protected:
@@ -40,14 +48,6 @@ private:
 	unsigned long long count_;
 	double value_;
 	double squares_;
-
-// -- Overridden methods
-	virtual const odb::sql::type::SQLType* type() const;
-	virtual void prepare(SQLSelect&);
-	virtual void cleanup(SQLSelect&);
-	virtual void partialResult();
-
-	bool isAggregate() const { return true; }
 
 // -- Friends
 	//friend ostream& operator<<(ostream& s,const FunctionVAR& p)

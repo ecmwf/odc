@@ -28,12 +28,6 @@ public:
 	FunctionExpression(const string&,const expression::Expressions&);
 	~FunctionExpression();
 
-protected:
-	string name_;
-	expression::Expressions args_;
-	// void print(ostream&) const;
-
-// -- Overridden methods
 	virtual void print(ostream& s) const;
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
@@ -42,6 +36,13 @@ protected:
 	//virtual double eval() const;
 	bool isAggregate() const;
 	void partialResult();
+
+protected:
+	string name_;
+	expression::Expressions args_;
+	// void print(ostream&) const;
+
+// -- Overridden methods
 
 	void tables(set<SQLTable*>&);
 private:
