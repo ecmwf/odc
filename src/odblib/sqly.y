@@ -447,7 +447,6 @@ select: select_ access_decl { $$ = $1; }
 
 select_: '*' table_reference                              { $$ = new ColumnExpression("*", $2);  } 
 	  | IDENT '.' '*'   table_reference                   { $$ = new BitColumnExpression($1, "*", $4); }
-	  | IDENT '.' IDENT table_reference                   { $$ = new BitColumnExpression($1, $3, $4); }
 	  | IDENT '[' expression ':' expression ']' table
 		{
 			// TODO: Add simillar rule for BitColumnExpression.
@@ -509,6 +508,7 @@ atom_or_number
 			   | '-' expression               { $$ = FunctionFactory::instance().build("-",$2); }
 			   | DOUBLE                       { $$ = new NumberExpression($1); }
 			   | column                   
+			   | IDENT '.' IDENT table_reference { $$ = new BitColumnExpression($1, $3, $4); }
 			   | VAR                          { $$ = SQLSession::current().currentDatabase().getVariable($1); } 
 			   | '?' DOUBLE                   { $$ = new ParameterExpression($2); }
 			   | func '(' expression_list ')' { $$ = FunctionFactory::instance().build($1, $3); }
