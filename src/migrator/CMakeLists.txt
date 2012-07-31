@@ -14,6 +14,7 @@ TSQLReader.cc
 TSQLReader.h
 TestImportODB.cc
 TestImportODB.h
+odbdump_sami.c
 odb2oda.cc
 )
 
