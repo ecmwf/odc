@@ -14,6 +14,7 @@ $1 $cmake ../.. $build_type $2 \
 	-DCMAKE_CXX_COMPILER=g++ \
 	-DODB_PATH=$ODB_ROOT \
 	-DODB_API_MIGRATOR=ON \
+	-DCMAKE_Fortran_COMPILER=$PGI/bin/pgf90
 	-DPGI_PATH=$PGI \
 	-DCMAKE_INSTALL_PREFIX=$PREFIX \
 	-DECLIB_SOURCE=/vol/marsdev/data/p4/linux/ia32/opensuse103/odb_api_dev/odb_api_release/eclib \
