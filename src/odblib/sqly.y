@@ -396,11 +396,8 @@ set_statement : SET DATABASE STRING AS IDENT ';'
 
 set_statement : SET VAR EQ assignment_rhs ';'
 	{ 
-		cout << "== set variable " << $2 << " to ";
-		if ($4)
-			cout << *($4) << endl;
-		else
-			cout << "NULL" << endl;
+		//cout << "== set variable " << $2 << " to ";
+		//if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
 		SQLSession::current().currentDatabase().setVariable($2, $4);
 	}
 	; 
@@ -622,7 +619,7 @@ expression  : disjonction
 				{
 					// TODO: check title always returns string repr of it's value
 					string key = index->title();
-					cerr << "==== key: '" << key << "'" << endl;
+					//cerr << "==== key: '" << key << "'" << endl;
 					if (container->dictionary().find(key) == container->dictionary().end())
 					{
 						stringstream ss;
