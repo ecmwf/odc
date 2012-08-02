@@ -14,7 +14,7 @@ echo Install prefix is $PREFIX
     -DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7 \
     -DCMAKE_C_COMPILER=xlc \
     -DCMAKE_CXX_COMPILER=xlc++ \
-    -DCMAKE_Fortran_COMPILER=xlf \
+    -DCMAKE_Fortran_COMPILER=xlf90_r \
     -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DODB_PATH=$ODB_ROOT \
     -DCMAKE_MODULE_PATH=$SRC/ecbuild/cmake \
