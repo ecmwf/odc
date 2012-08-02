@@ -14,7 +14,7 @@ $1 $cmake ../.. $build_type $2 \
 	-DCMAKE_CXX_COMPILER=g++ \
 	-DODB_PATH=$ODB_ROOT \
 	-DODB_API_MIGRATOR=ON \
-	-DPGI_PATH=/usr/local/apps/pgi/pgi-10.8/linux86/10.8 \
+	-DPGI_PATH=$PGI \
 	-DCMAKE_INSTALL_PREFIX=$PREFIX \
 	-DECLIB_SOURCE=/vol/marsdev/data/p4/linux/ia32/opensuse103/odb_api_dev/odb_api_release/eclib \
 	-DCMAKE_MODULE_PATH=/vol/marsdev/data/p4/linux/ia32/opensuse103/odb_api_dev/odb_api_release/ecbuild/cmake \
