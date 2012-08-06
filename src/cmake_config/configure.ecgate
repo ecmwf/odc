@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/usr/bin/ksh
 
 # This is a template of a script for building ODB API. See instructions in file INSTALL.
 # Please edit values of the cmake options or delete them.
 
-use odb
+export ODB_VERSION=CY37R3.001
+. /usr/local/share/ecmwf/use/sh.odb
 
 SRC=$(cd ../.. && pwd)
 PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/  
@@ -12,8 +13,8 @@ echo Install prefix is $PREFIX
 /usr/local/apps/cmake/2.8.8/bin/cmake ../.. \
     -DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//') \
     -DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7 \
-    -DCMAKE_C_COMPILER=xlc \
-    -DCMAKE_CXX_COMPILER=xlc++ \
+    -DCMAKE_C_COMPILER=xlc_r \
+    -DCMAKE_CXX_COMPILER=xlc++_r \
     -DCMAKE_Fortran_COMPILER=xlf90_r \
     -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DODB_PATH=$ODB_ROOT \
