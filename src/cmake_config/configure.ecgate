@@ -13,6 +13,7 @@ echo Install prefix is $PREFIX
 /usr/local/apps/cmake/2.8.8/bin/cmake ../.. \
     -DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//') \
     -DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7 \
+	-DXLF_PATH=/usr/lpp/xlf \
     -DCMAKE_C_COMPILER=xlc_r \
     -DCMAKE_CXX_COMPILER=xlc++_r \
     -DCMAKE_Fortran_COMPILER=xlf90_r \
@@ -27,7 +28,6 @@ echo Install prefix is $PREFIX
 	-DBISON_EXECUTABLE=/usr/local/apps/bison/current/bin/bison  
 
 #-DPGI_PATH=/path/to/pgf95 
-#-DXLF_PATH=/path/to/xlf 
 #-DSWIG_EXECUTABLE=/usr/local/apps/swig/current/bin/swig
 
 #-DYACC_EXECUTABLE=/usr/bin/yacc 
