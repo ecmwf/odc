@@ -59,7 +59,9 @@ void HeaderTool::run()
 		//{
 			o << endl << "Header " << ++headerCount << ". "
 				<< "Begin offset: " << (**r).blockStartOffset() << ", end offset: " << (**r).blockEndOffset()
-				<< ", number of rows in block: " << r->columns().rowsNumber() << endl
+				<< ", number of rows in block: " << r->columns().rowsNumber() 
+				<< ", byteOrder: " << (((**r).byteOrder() == 1) ? "same" : "other")
+				<< endl
 				<< r->columns();
 		//}
 
