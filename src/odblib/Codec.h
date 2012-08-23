@@ -84,6 +84,7 @@ public:
 	friend ostream& operator<<(ostream& s, const Codec& p)
 		{ p.print(s); return s; }
 
+	static void loadCodecs();
 protected:
 
 	template<typename BYTEORDER>
@@ -130,6 +131,7 @@ void Codec::save(DATASTREAM &f)
 template <typename DATASTREAM>
 Codec* Codec::findCodec(const string& name, bool differentByteOrder)
 {
+	Codec::loadCodecs();
 	return AbstractCodecFactory<typename DATASTREAM::DataHandleType>::getCodec(name, differentByteOrder);
 }
 

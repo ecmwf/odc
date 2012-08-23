@@ -19,6 +19,7 @@ public:
 	}
 
 	static Codec* loadCodec(DATAHANDLE *dh, bool differentByteOrder) {
+		Codec::loadCodecs();
 		string name;
 		if (differentByteOrder)
 		{

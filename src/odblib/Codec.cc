@@ -103,51 +103,52 @@ template<> void AbstractCodecFactory<DataHandle>::save<SameByteOrder>(Codec *cod
 template<> 
 template<> void AbstractCodecFactory<DataHandle>::save<OtherByteOrder>(Codec *codec, DataStream<OtherByteOrder,DataHandle> &f) { codecFactories[codec->name()]->save(codec, f.dataHandle(), true); }
 
+void Codec::loadCodecs() {
+	static CodecFactory<CodecConstant,DataHandle> codecConstantFactory("constant");
+	static CodecFactory<CodecConstantString,DataHandle> codecConstantStringFactory("constant_string");
+	static CodecFactory<CodecConstantOrMissing,DataHandle> codecConstantOrMissingFactory("constant_or_missing");
+	static CodecFactory<CodecRealConstantOrMissing,DataHandle> codecRealConstantOrMissingFactory("real_constant_or_missing");
+	static CodecFactory<CodecChars,DataHandle> codecCharsFactory("chars");
+	static CodecFactory<CodecLongReal,DataHandle> codecLongRealFactory("long_real");
+	static CodecFactory<CodecShortReal,DataHandle> codecShortRealFactory("short_real");
+	static CodecFactory<CodecInt32,DataHandle> codecInt32Factory("int32");
+	static CodecFactory<CodecInt16,DataHandle> codecInt16Factory("int16");
+	static CodecFactory<CodecInt8,DataHandle> codecInt8Factory("int8");
+	static CodecFactory<CodecInt16Missing,DataHandle> codecInt16MissingFactory("int16_missing");
+	static CodecFactory<CodecInt8Missing,DataHandle> codecInt8MissingFactory("int8_missing");
+	static CodecFactory<CodecInt16String,DataHandle> codecInt16StringFactory("int16_string");
+	static CodecFactory<CodecInt8String,DataHandle> codecInt8StringFactory("int8_string");
 
-CodecFactory<CodecConstant,DataHandle> codecConstantFactory("constant");
-CodecFactory<CodecConstantString,DataHandle> codecConstantStringFactory("constant_string");
-CodecFactory<CodecConstantOrMissing,DataHandle> codecConstantOrMissingFactory("constant_or_missing");
-CodecFactory<CodecRealConstantOrMissing,DataHandle> codecRealConstantOrMissingFactory("real_constant_or_missing");
-CodecFactory<CodecChars,DataHandle> codecCharsFactory("chars");
-CodecFactory<CodecLongReal,DataHandle> codecLongRealFactory("long_real");
-CodecFactory<CodecShortReal,DataHandle> codecShortRealFactory("short_real");
-CodecFactory<CodecInt32,DataHandle> codecInt32Factory("int32");
-CodecFactory<CodecInt16,DataHandle> codecInt16Factory("int16");
-CodecFactory<CodecInt8,DataHandle> codecInt8Factory("int8");
-CodecFactory<CodecInt16Missing,DataHandle> codecInt16MissingFactory("int16_missing");
-CodecFactory<CodecInt8Missing,DataHandle> codecInt8MissingFactory("int8_missing");
-CodecFactory<CodecInt16String,DataHandle> codecInt16StringFactory("int16_string");
-CodecFactory<CodecInt8String,DataHandle> codecInt8StringFactory("int8_string");
+	static CodecFactory<CodecConstant,FastInMemoryDataHandle> fastCodecConstantFactory("constant");
+	static CodecFactory<CodecConstantString,FastInMemoryDataHandle> fastCodecConstantStringFactory("constant_string");
+	static CodecFactory<CodecConstantOrMissing,FastInMemoryDataHandle> fastCodecConstantOrMissingFactory("constant_or_missing");
+	static CodecFactory<CodecRealConstantOrMissing,FastInMemoryDataHandle> fastCodecRealConstantOrMissingFactory("real_constant_or_missing");
+	static CodecFactory<CodecChars,FastInMemoryDataHandle> fastCodecCharsFactory("chars");
+	static CodecFactory<CodecLongReal,FastInMemoryDataHandle> fastCodecLongRealFactory("long_real");
+	static CodecFactory<CodecShortReal,FastInMemoryDataHandle> fastCodecShortRealFactory("short_real");
+	static CodecFactory<CodecInt32,FastInMemoryDataHandle> fastCodecInt32Factory("int32");
+	static CodecFactory<CodecInt16,FastInMemoryDataHandle> fastCodecInt16Factory("int16");
+	static CodecFactory<CodecInt8,FastInMemoryDataHandle> fastCodecInt8Factory("int8");
+	static CodecFactory<CodecInt16Missing,FastInMemoryDataHandle> fastCodecInt16MissingFactory("int16_missing");
+	static CodecFactory<CodecInt8Missing,FastInMemoryDataHandle> fastCodecInt8MissingFactory("int8_missing");
+	static CodecFactory<CodecInt16String,FastInMemoryDataHandle> fastCodecInt16StringFactory("int16_string");
+	static CodecFactory<CodecInt8String,FastInMemoryDataHandle> fastCodecInt8StringFactory("int8_string");
 
-CodecFactory<CodecConstant,FastInMemoryDataHandle> fastCodecConstantFactory("constant");
-CodecFactory<CodecConstantString,FastInMemoryDataHandle> fastCodecConstantStringFactory("constant_string");
-CodecFactory<CodecConstantOrMissing,FastInMemoryDataHandle> fastCodecConstantOrMissingFactory("constant_or_missing");
-CodecFactory<CodecRealConstantOrMissing,FastInMemoryDataHandle> fastCodecRealConstantOrMissingFactory("real_constant_or_missing");
-CodecFactory<CodecChars,FastInMemoryDataHandle> fastCodecCharsFactory("chars");
-CodecFactory<CodecLongReal,FastInMemoryDataHandle> fastCodecLongRealFactory("long_real");
-CodecFactory<CodecShortReal,FastInMemoryDataHandle> fastCodecShortRealFactory("short_real");
-CodecFactory<CodecInt32,FastInMemoryDataHandle> fastCodecInt32Factory("int32");
-CodecFactory<CodecInt16,FastInMemoryDataHandle> fastCodecInt16Factory("int16");
-CodecFactory<CodecInt8,FastInMemoryDataHandle> fastCodecInt8Factory("int8");
-CodecFactory<CodecInt16Missing,FastInMemoryDataHandle> fastCodecInt16MissingFactory("int16_missing");
-CodecFactory<CodecInt8Missing,FastInMemoryDataHandle> fastCodecInt8MissingFactory("int8_missing");
-CodecFactory<CodecInt16String,FastInMemoryDataHandle> fastCodecInt16StringFactory("int16_string");
-CodecFactory<CodecInt8String,FastInMemoryDataHandle> fastCodecInt8StringFactory("int8_string");
-
-CodecFactory<CodecConstant,PrettyFastInMemoryDataHandle> prettyFastCodecConstantFactory("constant");
-CodecFactory<CodecConstantString,PrettyFastInMemoryDataHandle> prettyFastCodecConstantStringFactory("constant_string");
-CodecFactory<CodecConstantOrMissing,PrettyFastInMemoryDataHandle> prettyFastCodecConstantOrMissingFactory("constant_or_missing");
-CodecFactory<CodecRealConstantOrMissing,PrettyFastInMemoryDataHandle> prettyFastCodecRealConstantOrMissingFactory("real_constant_or_missing");
-CodecFactory<CodecChars,PrettyFastInMemoryDataHandle> prettyFastCodecCharsFactory("chars");
-CodecFactory<CodecLongReal,PrettyFastInMemoryDataHandle> prettyFastCodecLongRealFactory("long_real");
-CodecFactory<CodecShortReal,PrettyFastInMemoryDataHandle> prettyFastCodecShortRealFactory("short_real");
-CodecFactory<CodecInt32,PrettyFastInMemoryDataHandle> prettyFastCodecInt32Factory("int32");
-CodecFactory<CodecInt16,PrettyFastInMemoryDataHandle> prettyFastCodecInt16Factory("int16");
-CodecFactory<CodecInt8,PrettyFastInMemoryDataHandle> prettyFastCodecInt8Factory("int8");
-CodecFactory<CodecInt16Missing,PrettyFastInMemoryDataHandle> prettyFastCodecInt16MissingFactory("int16_missing");
-CodecFactory<CodecInt8Missing,PrettyFastInMemoryDataHandle> prettyFastCodecInt8MissingFactory("int8_missing");
-CodecFactory<CodecInt16String,PrettyFastInMemoryDataHandle> prettyFastCodecInt16StringFactory("int16_string");
-CodecFactory<CodecInt8String,PrettyFastInMemoryDataHandle> prettyFastCodecInt8StringFactory("int8_string");
+	static CodecFactory<CodecConstant,PrettyFastInMemoryDataHandle> prettyFastCodecConstantFactory("constant");
+	static CodecFactory<CodecConstantString,PrettyFastInMemoryDataHandle> prettyFastCodecConstantStringFactory("constant_string");
+	static CodecFactory<CodecConstantOrMissing,PrettyFastInMemoryDataHandle> prettyFastCodecConstantOrMissingFactory("constant_or_missing");
+	static CodecFactory<CodecRealConstantOrMissing,PrettyFastInMemoryDataHandle> prettyFastCodecRealConstantOrMissingFactory("real_constant_or_missing");
+	static CodecFactory<CodecChars,PrettyFastInMemoryDataHandle> prettyFastCodecCharsFactory("chars");
+	static CodecFactory<CodecLongReal,PrettyFastInMemoryDataHandle> prettyFastCodecLongRealFactory("long_real");
+	static CodecFactory<CodecShortReal,PrettyFastInMemoryDataHandle> prettyFastCodecShortRealFactory("short_real");
+	static CodecFactory<CodecInt32,PrettyFastInMemoryDataHandle> prettyFastCodecInt32Factory("int32");
+	static CodecFactory<CodecInt16,PrettyFastInMemoryDataHandle> prettyFastCodecInt16Factory("int16");
+	static CodecFactory<CodecInt8,PrettyFastInMemoryDataHandle> prettyFastCodecInt8Factory("int8");
+	static CodecFactory<CodecInt16Missing,PrettyFastInMemoryDataHandle> prettyFastCodecInt16MissingFactory("int16_missing");
+	static CodecFactory<CodecInt8Missing,PrettyFastInMemoryDataHandle> prettyFastCodecInt8MissingFactory("int8_missing");
+	static CodecFactory<CodecInt16String,PrettyFastInMemoryDataHandle> prettyFastCodecInt16StringFactory("int16_string");
+	static CodecFactory<CodecInt8String,PrettyFastInMemoryDataHandle> prettyFastCodecInt8StringFactory("int8_string");
+}
 
 } // namespace codec
 } // namespace odb
