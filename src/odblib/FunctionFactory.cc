@@ -304,7 +304,6 @@ inline double dist(double reflat, double reflon, double refdist_km, double obsla
 inline double circle(double x, double x0, double y, double y0, double r)
 { return ( Func_pow(x-x0,2) + Func_pow(y-y0,2) <= Func_pow(r,2) ); }
 
-DEFINE_MATH_FUNC_5(circle);
 
 
 inline double rad(double reflat, double reflon, double refdeg, double obslat, double obslon)
@@ -313,7 +312,6 @@ inline double rad(double reflat, double reflon, double refdeg, double obslat, do
                Func_sin(reflat) * Func_sin(obslat) ) <= D2R*refdeg);
 }
 
-DEFINE_MATH_FUNC_5(rad);
 
 //--------------------------------------------------------------
 inline double between(double x,double a,double b) { return x >= a && x <= b; }
@@ -517,8 +515,10 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1)
 	DEFINE_MATH_FUNC_3(between_exclude_second);
 	DEFINE_MATH_FUNC_3(between_exclude_both);
 
-
 	DEFINE_MATH_FUNC_3(ibits);
+
+	DEFINE_MATH_FUNC_5(circle);
+	DEFINE_MATH_FUNC_5(rad);
 
 	static FunctionMaker<FunctionAND> make_AND("and",2);
 	static FunctionMaker<FunctionAVG> make_AVG("avg",1);
