@@ -2,6 +2,7 @@
 #
 
 CMAKE="/usr/local/apps/cmake/current/bin/cmake"
+CMAKE=cmake
 BUILD_TYPE="-DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//')"
 SRC=$(cd ../.. && pwd)
 
@@ -10,11 +11,12 @@ $CMAKE ../.. $BUILD_TYPE $1 \
 	-DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7 \
 	-DCMAKE_C_COMPILER=gcc \
 	-DCMAKE_CXX_COMPILER=g++ \
-	-DCMAKE_INSTALL_PREFIX=/tmp/mak/odb_api/ \
-	-DCMAKE_Fortran_COMPILER=/usr/local/apps/pgi/pgi-10.8/linux86-64/10.8/bin/pgf90 \
-	-DODB_API_MIGRATOR=ON \
+	-DCMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'` \
+	-DODB_API_MIGRATOR=OFF \
+	-DODB_API_FORTRAN=OFF \
 	-DECLIB_SOURCE=$SRC/eclib \
 	-DCMAKE_MODULE_PATH=$SRC/ecbuild/cmake \
-	-DODB_API_FORTRAN=ON \
-	-DODB_API_PYTHON=ON \
-	-DPGI_PATH=/usr/local/apps/pgi/pgi\-10.8/linux86-64/current
+	-DODB_API_PYTHON=OFF \
+
+#-DCMAKE_Fortran_COMPILER=/usr/local/apps/pgi/pgi-10.8/linux86-64/10.8/bin/pgf90 \
+#-DPGI_PATH=/usr/local/apps/pgi/pgi\-10.8/linux86-64/current
