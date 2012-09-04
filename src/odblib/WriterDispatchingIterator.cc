@@ -22,6 +22,8 @@
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Writer.h"
 #include "odblib/WriterBufferingIterator.h"
+#include "odblib/Comparator.h"
+#include "eclib/Timer.h"
 
 namespace odb {
 
@@ -76,7 +78,10 @@ WRITE_ITERATOR& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatch(const
 		dispatchedValues.push_back(values[dispatchedIndexes_[i]]);
 
 	if (dispatchedValues == lastDispatchedValues_)
+	{
+		rowsOutputFileIndex_.push_back(lastIndex_);
 		return *iterators_[lastIndex_];
+	}
 
 	Values2IteratorIndex::iterator p = values2iteratorIndex_.find(dispatchedValues);
 	size_t iteratorIndex = (p != values2iteratorIndex_.end())
@@ -88,6 +93,7 @@ WRITE_ITERATOR& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatch(const
 
 	lastDispatch_[iteratorIndex] = nrows_;
 
+	rowsOutputFileIndex_.push_back(iteratorIndex);
 	return *iterators_[iteratorIndex];
 }
 
@@ -152,9 +158,15 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Value
 	//L << "WriterDispatchingIterator::dispatch: iterator " << iteratorIndex << ":" << operation << " '" << fileName << "'" << endl;
 
 	if (iteratorIndex == iterators_.size())
+	{
 		iterators_.push_back(iteratorsOwner_.createWriteIterator(fileName, append));
+		files_.push_back(fileName);
+	}
 	else
+	{
 		iterators_[iteratorIndex] = iteratorsOwner_.createWriteIterator(fileName, append);
+		ASSERT(files_[iteratorIndex] == fileName);
+	}
 	values2iteratorIndex_[dispatchedValues] = iteratorIndex;
 	iteratorIndex2fileName_[iteratorIndex] = fileName;
 
@@ -194,6 +206,7 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
   initialized_(false),
   refCount_(0),
   iterators_(),
+  files_(),
   templateParameters_(),
   maxOpenFiles_(maxOpenFiles),
   filesCreated_()
@@ -370,7 +383,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 
 	Log::debug() << "WriterDispatchingIterator::pass1<WriterBufferingIterator>: columns().size() => " << maxcols << endl;
 
-	unsigned long nrows  = 0;
+	nrows_  = 0;
 	for (; it != end; ++it)
 	{
 		if (it->isNewDataset() && columns() != it->columns() )
@@ -385,16 +398,67 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 				iterators_[i]->columns() = columns();
 				iterators_[i]->writeHeader();
 			}
-				
 		}
 
 		ASSERT(writeRow(it->data(), it->columns().size()) == 0);
-		nrows++;
 	} 
 
-	Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: processed " << nrows << " row(s)." << endl;
+	Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: processed " << nrows_ << " row(s)." << endl;
+	return nrows_;
+}
 
-	return nrows;
+template <>
+template <typename T>
+void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verify(T& it, const T& end)
+{
+	Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::verify: Verifying..." << endl;
+	close();
+
+	Timer timer("Split verification");
+
+	vector<Reader*> readers;
+	vector<pair<Reader::iterator, Reader::iterator> > iterators;
+	for (size_t i = 0; i < files_.size(); ++i)
+	{
+		Log::info() << "Opening '" << files_[i] << "'" << endl;
+		Reader* reader(new Reader(files_[i]));
+		readers.push_back(reader);
+		iterators.push_back(make_pair(reader->begin(), reader->end()));
+	}
+
+	Comparator comparator;
+	for (size_t i = 0; rowsOutputFileIndex_.size(); ++i)
+	{
+		size_t fileIndex = rowsOutputFileIndex_[i];
+		//Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::verify: Row " << i
+		//	<< ", fileIndex: " << fileIndex << endl;
+		//Log::info() << "    file: " << files_[fileIndex] << endl;
+
+		ASSERT(it != end);
+		try {
+			//ASSERT (! (iterators[rowsOutputFileIndex_[i]]->columns() != it->columns()));
+			MetaData& metaData(it->columns());
+			size_t n(metaData.size());
+			pair<Reader::iterator, Reader::iterator>& its(iterators[rowsOutputFileIndex_[i]]);
+			Reader::iterator& sIt(its.first);
+			Reader::iterator& sEnd(its.second);
+			ASSERT(sIt != sEnd);
+			const double* const& outputData(sIt->data());
+			const double* const& originalData(it->data());
+			comparator.compare(n, originalData, outputData, metaData);
+			++sIt;
+		} catch (...)
+		{
+			Log::info() << "Row " << i << " of input not correct." << endl;
+			throw;
+		}
+		++it;
+	}
+	ASSERT(! (it != end));
+
+	for (size_t i = 0; i < readers.size(); ++i)
+		delete readers[i];
+
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>

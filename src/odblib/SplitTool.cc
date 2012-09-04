@@ -36,10 +36,13 @@ void SplitTool::run()
 	odb::Reader in(inFile);
 	odb::DispatchingWriter out(outFile);
 
-	odb::Reader::iterator it = in.begin();
-	odb::Reader::iterator end = in.end();
 	odb::DispatchingWriter::iterator outIt = out.begin();
-	outIt->pass1(it, end);
+	outIt->pass1(in.begin(), in.end());
+
+	odb::Reader input(inFile);
+	odb::Reader::iterator begin(input.begin());
+	odb::Reader::iterator end(input.end());
+	(**outIt).verify(begin, end);
 }
 
 } // namespace tool 

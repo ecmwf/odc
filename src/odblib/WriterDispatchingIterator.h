@@ -53,6 +53,7 @@ public:
 	void missingValue(size_t i, double); 
 
 	template <typename T> unsigned long pass1(T&, const T&);
+	template <typename T> void verify(T&, const T&);
 	unsigned long gatherStats(const double* values, unsigned long count);
 
 	virtual int close();
@@ -116,11 +117,13 @@ private:
 	int refCount_;
 
 	Iterators iterators_;
+	vector<PathName> files_;
 
 	TemplateParameters templateParameters_;
 	int maxOpenFiles_;
 
 	map<string,int> filesCreated_;
+	vector<unsigned int> rowsOutputFileIndex_;
 
 	friend class IteratorProxy<WriterDispatchingIterator<WRITE_ITERATOR,DispatchingWriter>, DispatchingWriter>;
 };
