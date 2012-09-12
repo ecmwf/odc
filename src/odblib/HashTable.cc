@@ -19,36 +19,27 @@ namespace codec {
 
 HashTable::HashTable()
 : nextIndex_(0),
-  strings_(0)
+  strings_(),
+  cloned_(false)
 {
 	//Log::info() << "HashTable@" << this << "::HashTable()" << endl;
-
 	for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
 		table[i] = 0;
 }
 
 HashTable::HashTable(const HashTable& other)
 : nextIndex_(other.nextIndex_),
-  strings_(0)
+  strings_(other.strings_),
+  cloned_(true)
 {
 	for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
 		table[i] = other.table[i] ? new hashrec(*other.table[i]) : 0;
-
-	if (other.strings_)
-	{
-		strings_ = new string*[nextIndex_];
-
-		for (int32_t i = 0; i < other.nextIndex_; i++ )
-			strings_[i] = other.strings_[i] ? new string(*other.strings_[i]) : 0;
-	}
 }
 
 HashTable& HashTable::operator=(const HashTable& other)
 {
-	for (int32_t i = 0; i < nextIndex_; i++)
-		delete strings_[i];
-
-	delete [] strings_;
+	cloned_ = true;
+	strings_.clear();
 
 	nextIndex_ = other.nextIndex_;
 	for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
@@ -57,26 +48,20 @@ HashTable& HashTable::operator=(const HashTable& other)
 		table[i] = other.table[i] ? new hashrec(*other.table[i]) : 0;
 	}
 	
-	if (other.strings_)
-	{
-		strings_ = new string*[nextIndex_];
-
-		for (int32_t i = 0; i < other.nextIndex_; i++ )
-			strings_[i] = other.strings_[i] ? new string(*other.strings_[i]) : 0;
-	}
+	strings_ = other.strings_;
 	return *this;
+}
+
+HashTable* HashTable::clone() {
+	HashTable *h = new HashTable;
+	*h = *this;
+	return h;
 }
 
 HashTable::~HashTable()
 {
 	//Log::info() << "HashTable@" << this << "::~HashTable()" << endl;
 
-	if (strings_)
-	{
-		for (int32_t i = 0; i < nextIndex_; i++ )
-			delete strings_[i];
-		delete [] strings_;
-	}
 	for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
 		delete table[i];
 }
@@ -98,11 +83,21 @@ int HashTable::hash(const char *name)
 
 void HashTable::store(const char *name)
 {
-	hashrec *h;
-	int32_t    n;
+	if (cloned_)
+	{
+		// TODO: leave the current (last seen by the CharCodec) value ?
+		for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
+		{
+			delete table[i];
+			table[i] = 0;
+		}
+		strings_.clear();
+		nextIndex_ = 0;
+		cloned_ = false;
+	}
 
-	n = hash(name);
-	h = table[n];
+	int32_t n = hash(name);
+	hashrec *h = table[n];
 
 	while(h)
 	{
@@ -117,6 +112,10 @@ void HashTable::store(const char *name)
 	h = new hashrec(table[n], name, 1, nextIndex_++);
 	table[n] = h;
 
+	//if (nextIndex_ - 1 > strings_.size())
+
+	strings_.push_back(name);
+	//ASSERT(strings_.size() == nextIndex_);
 	//Log::info() << "HashTable@" << this << "::store(" << name << "): n = " << n << ", nextIndex = " << nextIndex_  << endl;
 }
 
@@ -194,8 +193,7 @@ void HashTable::load(DataStream<BYTEORDER> &f)
 
 	f.readInt32(nextIndex_);
 
-	delete strings_;
-	strings_ = new std::string* [nextIndex_];
+	strings_.resize(nextIndex_);
 
 	for(int32_t i = 0; i < nextIndex_; i++)
 	{
@@ -211,8 +209,8 @@ void HashTable::load(DataStream<BYTEORDER> &f)
 		//Log::info() << "HashTable::load: " << index << " : '" << s << "'" << endl;
 
 		ASSERT(index < nextIndex_);
-		strings_[index] = new std::string(s);
-		ASSERT(strings_[index]);
+		strings_[index] = std::string(s);
+		ASSERT(strings_[index].size());
 	}
 	//Log::info() << "HashTable@" << this << "::load END" << endl;
 }

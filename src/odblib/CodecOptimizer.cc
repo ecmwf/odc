@@ -31,6 +31,9 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 
 	for (size_t i = 0; i < columns.size(); i++) {
 		Column& col = *columns[i];
+		
+		//if (odb::ODBAPISettings::debug && i == 28) Log::info() << ": BEFORE " << col << endl;
+
 		string codec = "long_real";
 		long long n;
 		double min = col.min();
@@ -130,6 +133,8 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 			default: Log::error() << "Unsupported type: [" << col.type() << "]" << endl;
 				break;
 		}
+
+		//if (odb::ODBAPISettings::debug && i == 28) Log::info() << ": AFTER " << col << " -> " << col.coder() << endl;
 	}
 	return 0;
 }

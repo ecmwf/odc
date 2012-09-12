@@ -28,6 +28,7 @@ public:
 	MetaData(int);
 	MetaData(int, Column *);
 	MetaData(const MetaData&);
+	MetaData* clone() const;
 
 	static MetaData scanFile(const PathName&);
 

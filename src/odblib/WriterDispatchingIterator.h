@@ -47,8 +47,8 @@ public:
 
 	double* data();
 
-	virtual int setColumn(size_t index, std::string name, ColumnType type);
-	virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
+	virtual int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
+	virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
 
 	void missingValue(size_t i, double); 
 
@@ -73,7 +73,6 @@ public:
 	vector<PathName> getFiles();
 
 //protected:
-	int setOptimalCodecs();
 	void writeHeader();
 
 	int writeRow(const double* values, unsigned long count);
@@ -83,7 +82,7 @@ protected:
 
 	/// Find iterator data should be dispatched to.
 	WRITE_ITERATOR& dispatch(const double* values, unsigned long count);
-	int createIterator(const Values& dispatchedValues, const std::string& fileName);
+	int createIterator(const Values& dispatchedValues, const std::string& fileName, const double* values, unsigned long count);
 
 	string generateFileName(const double* values, unsigned long count);
 

@@ -16,6 +16,8 @@
 
 #include "odblib/HashTable.h"
 #include "odblib/UnsafeInMemoryDataHandle.h"
+#include "odblib/ODBAPISettings.h"
+
 
 class DataHandle;
 
@@ -254,6 +256,7 @@ class CodecChars : public Codec {
 public:
 	CodecChars();
 	~CodecChars();
+	virtual Codec* clone();
 
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
@@ -278,6 +281,17 @@ protected:
 };
 
 template<typename BYTEORDER>
+Codec* CodecChars<BYTEORDER>::clone()
+{
+	CodecChars* c = static_cast<CodecChars*>(this->Codec::clone());
+	*(c->hashTable_) = *hashTable_;
+	ASSERT(c->min() == this->min());
+	ASSERT(c->max() == this->max());
+	//hashTable_->dumpTable(Log::info());
+	return c;
+}
+
+template<typename BYTEORDER>
 class CodecLongReal : public Codec {
 public:
 	CodecLongReal() : Codec("long_real") {}
@@ -292,6 +306,7 @@ private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
 };
+
 
 template<typename BYTEORDER>
 class CodecShortReal : public Codec {
@@ -357,6 +372,7 @@ private:
 	DataStream<BYTEORDER> ds_;
 };
 
+
 template<typename BYTEORDER>
 class CodecInt16String : public CodecChars<BYTEORDER> {
 public:
@@ -367,6 +383,7 @@ public:
 		intCodec.min(0);
 	}
 	~CodecInt16String() {}
+	virtual Codec* clone();
 
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
@@ -384,6 +401,17 @@ private:
 };
 
 template<typename BYTEORDER>
+Codec* CodecInt16String<BYTEORDER>::clone()
+{
+	CodecInt16String* c = static_cast<CodecInt16String*>(this->CodecChars<BYTEORDER>::clone());
+	c->intCodec.min(intCodec.min());
+	c->intCodec.max(intCodec.max());
+	c->min(this->min());
+	c->max(this->max());
+	return c;
+}
+
+template<typename BYTEORDER>
 class CodecInt8String : public CodecChars<BYTEORDER> {
 public:
 	CodecInt8String() : CodecChars<BYTEORDER>(), intCodec() 
@@ -393,6 +421,7 @@ public:
 		intCodec.min(0);
 	}
 	~CodecInt8String() {}
+	virtual Codec* clone();
 
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
@@ -409,15 +438,40 @@ private:
 	CodecInt8<BYTEORDER> intCodec;
 };
 
+template<typename BYTEORDER>
+Codec* CodecInt8String<BYTEORDER>::clone()
+{
+	CodecInt8String* c = static_cast<CodecInt8String*>(this->CodecChars<BYTEORDER>::clone());
+	c->intCodec.min(intCodec.min());
+	c->intCodec.max(intCodec.max());
+	c->min(this->min());
+	c->max(this->max());
+
+	//if (odb::ODBAPISettings::debug) 
+	//{
+	//	Log::info() << "CodecInt8String<BYTEORDER>::clone: " << "" << endl;
+	//	c->hashTable().dumpTable(Log::info());
+	//}
+	return c;
+}
+
 
 template<typename BYTEORDER>
 void CodecChars<BYTEORDER>::gatherStats(double v) 
 {
+	const char*ispd = "ISPDv2.2";
+	const char*bufr = "BUFRDATA";
+
+	//if (v == *(reinterpret_cast<const double*>(ispd))) Log::info() << "gatherStats: ISPDv2.2" << endl;
+
+	//if (min_ == *(reinterpret_cast<const double*>(bufr)) && v == *(reinterpret_cast<const double*>(ispd))) Log::info() << "gatherStats: BUFRDATA => ISPDv2.2" << endl;
+
 	char buf[255];
 	memcpy(buf, &v, sizeof(double));
 	buf[sizeof(double)] = 0;
 	hashTable_->store(buf);
 
+	//TODO: check this is preserved during 
 	// In case the column is const, the const value will be copied and used by the optimized codec.
 	min_ = v;
 }
@@ -578,7 +632,7 @@ double CodecInt8String<BYTEORDER>::decode()
 
 	ASSERT(i < this->hashTable_->nextIndex());
 	
-	const char* s = this->hashTable_->strings()[i]->c_str();
+	const char* s = this->hashTable_->strings()[i].c_str();
 	strncpy(buf, s, sizeof(d));
 
 	memcpy(&d, buf, sizeof(d));
@@ -604,7 +658,7 @@ double CodecInt16String<BYTEORDER>::decode()
 
 	ASSERT(i < this->hashTable_->nextIndex());
 	
-	const char* s = this->hashTable_->strings()[i]->c_str();
+	const char* s = this->hashTable_->strings()[i].c_str();
 	strncpy(buf, s, sizeof(d));
 
 	memcpy(&d, buf, sizeof(d));

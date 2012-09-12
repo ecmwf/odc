@@ -42,9 +42,11 @@ Column::Column(const Column& o)
 : owner_(o.owner_),
   name_(o.name_),
   type_(o.type_),
-  coder_(o.coder_ ? o.coder_->clone() : 0),
+  coder_( 0),
   bitfieldDef_(o.bitfieldDef_)
-{}
+{
+	*this = o;
+}
 
 Column::~Column()
 {
@@ -60,10 +62,10 @@ Column& Column::operator=(const Column& other)
 	if (type_ == BITFIELD)
 		bitfieldDef(other.bitfieldDef());
 
-	delete coder_;
-	coder_ = (other.coder_)->clone();
+	//delete coder_;
+	//coder_ = (other.coder_)->clone();
 	//hasMissing(other.hasMissing());
-	//missingValue(other.missingValue());
+	missingValue(other.missingValue());
 	return *this;
 }
 
@@ -96,6 +98,7 @@ ColumnType Column::type(const string& t)
 
 bool Column::isConstant()
 {
+	// FIXME
 	return coder().name() == "constant"
 		|| coder().name() == "constant_string";
 }

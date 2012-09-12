@@ -90,10 +90,10 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 	MDR::iterator it = mdReader.begin();
 	MDR::iterator end = mdReader.end();
 
-	MetaData currentMD = it->columns();
-	rowsNumber_ = currentMD.rowsNumber();
+	auto_ptr<MetaData> currentMD(it->columns().clone());
+	rowsNumber_ = currentMD->rowsNumber();
 
-	values_ = vector<set<string> >(currentMD.size(), set<string>());
+	values_ = vector<set<string> >(currentMD->size(), set<string>());
 
 	unsigned long int mds = 0;	
 	for ( ; it != end; ++it)
@@ -107,7 +107,7 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 				endOffset = (**it).blockEndOffset();
 		Length blockSize = endOffset - startOffset;
 
-		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD.equalsIncludingConstants(md, columnNames_))
+		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD->equalsIncludingConstants(md, columnNames_))
 		{
 			L << "FastODA2Request::scanFile: new handle for <" << startOffset << "," << endOffset << ">" << endl;
 
@@ -117,8 +117,8 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 				L << "FastODA2Request<T>::scanFile: collectValues returned false" << endl;
 				return false;
 			}
-			currentMD = md;
-			ASSERT(currentMD.equalsIncludingConstants(md, columnNames_));
+			currentMD.reset(md.clone());
+			ASSERT(currentMD->equalsIncludingConstants(md, columnNames_));
 
 			offsets.push_back(startOffset);
 			lengths.push_back(blockSize);

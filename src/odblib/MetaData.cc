@@ -28,6 +28,14 @@ MetaData::MetaData(int i, Column *p) : vector<Column*>(i, p), rowsNumber_(0), se
 MetaData::MetaData(const MetaData& md) : vector<Column*>(0), rowsNumber_(0), self(*this)
 { self += md; }
 
+MetaData* MetaData::clone() const {
+	const MetaData& self(*this);
+	MetaData* md = new MetaData(*this);
+	for (size_t i = 0; i < size(); ++i)
+		(*md)[i]->coder(self[i]->coder().clone());
+	return md;
+}
+
 MetaData MetaData::scanFile(const PathName& fileName)
 {
 	ostream& L(Log::debug());

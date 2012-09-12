@@ -25,6 +25,8 @@
 #include "odblib/Comparator.h"
 #include "eclib/Timer.h"
 
+void debugMeNow();
+
 namespace odb {
 
 template <typename WRITE_ITERATOR, typename OWNER>
@@ -77,6 +79,10 @@ WRITE_ITERATOR& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatch(const
 	for (size_t i = 0; i < dispatchedIndexes_.size(); ++i)
 		dispatchedValues.push_back(values[dispatchedIndexes_[i]]);
 
+	if (odb::ODBAPISettings::debug && dispatchedValues[0] == 17 && dispatchedValues[1] == 16007)
+		//Log::info(Here()) << "dispatch: groupid == 17 && reportype == 16007" << endl;
+		odb::ODBAPISettings::debug = odb::ODBAPISettings::debug;
+
 	if (dispatchedValues == lastDispatchedValues_)
 	{
 		rowsOutputFileIndex_.push_back(lastIndex_);
@@ -86,7 +92,7 @@ WRITE_ITERATOR& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatch(const
 	Values2IteratorIndex::iterator p = values2iteratorIndex_.find(dispatchedValues);
 	size_t iteratorIndex = (p != values2iteratorIndex_.end())
 		? p->second
-		: createIterator(dispatchedValues, generateFileName(values, count));
+		: createIterator(dispatchedValues, generateFileName(values, count), values, count);
 
 	lastDispatchedValues_ = dispatchedValues;
 	lastIndex_ = iteratorIndex;
@@ -98,7 +104,8 @@ WRITE_ITERATOR& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatch(const
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName,
+const double* values, unsigned long count)
 {
 	//ostream& L(Log::debug());
 	
@@ -172,7 +179,9 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Value
 
 	// Prop. metadata
 	iterators_[iteratorIndex]->columns() = columns();
-	iterators_[iteratorIndex]->writeHeader();
+	//iterators_[iteratorIndex]->writeHeader();
+	//iterators_[iteratorIndex]->allocBuffers();
+	//iterators_[iteratorIndex]->gatherStats(values, count);
 
 	return iteratorIndex;
 } 
@@ -228,16 +237,6 @@ unsigned long WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::gatherStats(cons
 {
 	return dispatch(values, count).gatherStats(values, count);
 } 
-
-template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setOptimalCodecs()
-{
-	int rc = 0;
-	for (typename Iterators::iterator it = iterators_.begin(); it != iterators_.end(); ++it)
-		rc |= (*it)->setOptimalCodecs();
-
-	return rc; 
-}
 
 template <typename WRITE_ITERATOR, typename OWNER>
 void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
@@ -299,12 +298,9 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeRow(const double* val
 } 
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::open()
-{
-	return 0;
-}
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::open() { return 0; }
 
-
+/*
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, ColumnType type)
 {
@@ -324,16 +320,6 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 		(*it)->setColumn(index, name, type);
 
 	return 0;
-}
-
-template <typename WRITE_ITERATOR, typename OWNER>
-void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::missingValue(size_t i, double missingValue)
-{
-	ASSERT(i < columns().size());
-	Column* col = columns_[i];
-	ASSERT(col);
-
-	col->missingValue(missingValue);
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
@@ -360,6 +346,18 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
     return 0;
 }
 
+*/
+
+template <typename WRITE_ITERATOR, typename OWNER>
+void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::missingValue(size_t i, double missingValue)
+{
+	ASSERT(i < columns().size());
+	Column* col = columns_[i];
+	ASSERT(col);
+
+	col->missingValue(missingValue);
+}
+
 template <>
 template <typename T>
 unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::pass1(T& it, const T& end)
@@ -375,8 +373,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	// Copy columns from the input iterator.
 	columns() = it->columns();
 
-	if (!initialized_)
-		parseTemplateParameters();
+	if (!initialized_) parseTemplateParameters();
 
 	size_t maxcols = columns().size();
 	ASSERT(maxcols > 0);
@@ -386,6 +383,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	nrows_  = 0;
 	for (; it != end; ++it)
 	{
+		//if (nrows_ == 336788) debugMeNow();
 		if (it->isNewDataset() && columns() != it->columns() )
 		{
 			columns() = it->columns();
@@ -400,7 +398,10 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 			}
 		}
 
-		ASSERT(writeRow(it->data(), it->columns().size()) == 0);
+		const double* data = it->data();
+		size_t size = it->columns().size();
+		int rc = writeRow(data, size);
+		ASSERT(rc == 0);
 	} 
 
 	Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: processed " << nrows_ << " row(s)." << endl;
@@ -420,45 +421,56 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 	vector<pair<Reader::iterator, Reader::iterator> > iterators;
 	for (size_t i = 0; i < files_.size(); ++i)
 	{
-		Log::info() << "Opening '" << files_[i] << "'" << endl;
+		//Log::info() << "Opening '" << files_[i] << "'" << endl;
 		Reader* reader(new Reader(files_[i]));
 		readers.push_back(reader);
 		iterators.push_back(make_pair(reader->begin(), reader->end()));
 	}
 
+	vector<size_t> rowsRead(files_.size());
 	Comparator comparator;
-	for (size_t i = 0; rowsOutputFileIndex_.size(); ++i)
+	unsigned long numberOfDifferences = 0;
+	size_t i = 0;
+	for (; i < rowsOutputFileIndex_.size(); ++i)
 	{
 		size_t fileIndex = rowsOutputFileIndex_[i];
-		//Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::verify: Row " << i
-		//	<< ", fileIndex: " << fileIndex << endl;
-		//Log::info() << "    file: " << files_[fileIndex] << endl;
+		const string& outFileName = files_[fileIndex];
+		MetaData& metaData(it->columns());
+		size_t n(metaData.size());
 
-		ASSERT(it != end);
+		typedef Reader::iterator I;
+		pair<I, I>& its(iterators[fileIndex]);
+		I& sIt(its.first),
+		sEnd(its.second);
+
+		MetaData& sMetaData(sIt->columns());
+
 		try {
-			//ASSERT (! (iterators[rowsOutputFileIndex_[i]]->columns() != it->columns()));
-			MetaData& metaData(it->columns());
-			size_t n(metaData.size());
-			pair<Reader::iterator, Reader::iterator>& its(iterators[rowsOutputFileIndex_[i]]);
-			Reader::iterator& sIt(its.first);
-			Reader::iterator& sEnd(its.second);
+			ASSERT(it != end);
 			ASSERT(sIt != sEnd);
-			const double* const& outputData(sIt->data());
+			ASSERT(sMetaData == metaData);
+
+			++rowsRead[fileIndex];
+
 			const double* const& originalData(it->data());
-			comparator.compare(n, originalData, outputData, metaData);
-			++sIt;
+			const double* const& outputData(sIt->data());
+			comparator.compare(n, originalData, outputData, metaData, sMetaData);
 		} catch (...)
 		{
-			Log::info() << "Row " << i << " of input not correct." << endl;
-			throw;
+			++numberOfDifferences; 
+			Log::info() << "Row " << i << " of input (" << rowsRead[fileIndex] << " of " << outFileName << ") not correct." 
+			<< endl
+			<< endl;
+			//throw;
 		}
 		++it;
+		++sIt;
 	}
+	Log::info() << "Number of rows: " << i << ". Total number of differences: " << numberOfDifferences  << endl;
 	ASSERT(! (it != end));
 
-	for (size_t i = 0; i < readers.size(); ++i)
-		delete readers[i];
-
+	for (size_t j = 0; j < readers.size(); ++j)
+		delete readers[j];
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
@@ -469,10 +481,7 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(string key, stri
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(string key)
-{
-    return properties_[key];
-}
+string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(string key) { return properties_[key]; }
 
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::close()

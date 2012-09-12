@@ -23,6 +23,8 @@
 #include "eclib/StringTools.h"
 #include "eclib/Tokenizer.h"
 
+#include "odblib/ColumnType.h"
+
 using namespace std;
 
 class PathName;
@@ -58,7 +60,10 @@ public:
 	static int shell(std::string cmd, const CodeLocation &where, bool assertSuccess = true);
 
 	static double translate(const string& v);
+	static string valueAsString(double, ColumnType);
+
 	static string patchTimeForMars(const string& v);
+
 
 };
 

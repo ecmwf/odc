@@ -39,7 +39,9 @@ public:
 	void compare(const PathName&, const PathName&, const vector<string>& excludedColumnsTypes);
 
 	void compare(const MetaData&, const MetaData&, const vector<string>&);
-	void compare(int nCols, const double *data1, const double *data2, const MetaData&);
+	void compare(int nCols, const double *data1, const double *data2, const MetaData&, const MetaData&);
+	void compare(int nCols, const double *data1, const double *data2, const MetaData& md)
+	{ compare(nCols, data1, data2, md, md); } 
 
 	void checkMissingFlag(bool v) { checkMissingFlag_ = v; }
 

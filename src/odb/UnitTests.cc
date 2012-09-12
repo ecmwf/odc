@@ -550,6 +550,16 @@ void odbcapi()
 }
 TESTCASE(odbcapi);
 
+void HashTable_clone()
+{
+	using namespace odb::codec;
+	odb::codec::HashTable *h = new odb::codec::HashTable;
+	h->store("BUFRDATA");
+	h->store("OTHER_ST");
+	odb::codec::HashTable *h2 = h->clone();
+}
+TESTCASE(HashTable_clone);
+
 
 } // namespace test 
 } // namespace tool 

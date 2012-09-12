@@ -35,7 +35,10 @@ struct hashrec {
 //private:
 //	// No copy allowed.
 	explicit hashrec(const hashrec& other)
-	: next(other.next ? new hashrec(*other.next) : 0), name(other.name), cnt(other.cnt), index(other.index)
+	: next(other.next ? new hashrec(*other.next) : 0),
+	  name(other.name),
+	  cnt(other.cnt),
+	  index(other.index)
 	{}
 
 	hashrec& operator=(const hashrec& other)
@@ -46,7 +49,6 @@ struct hashrec {
 		cnt = other.cnt;
 		index = other.index;
 		next = other.next ? new hashrec(*other.next) : 0;
-
 		return *this;
 	}
 };
@@ -56,6 +58,7 @@ class HashTable {
 public:
 	HashTable();
 	~HashTable();
+	HashTable* clone();
 
 	template<typename BYTEORDER> void save(DataStream<BYTEORDER> &);
 	template<typename BYTEORDER> void load(DataStream<BYTEORDER> &);
@@ -63,7 +66,7 @@ public:
 	void dumpTable(ostream &out) const;
 	void store(const char *name);
 	int32_t findIndex(const char *name);
-	std::string** strings() const { return strings_; }
+	const vector<std::string>& strings() const { return strings_; }
 	int32_t nextIndex() const { return nextIndex_; }
 
 //private:
@@ -73,9 +76,11 @@ public:
 protected:
 	int32_t nextIndex_;
 	hashrec* table[SIZE];
-	std::string** strings_;
+	vector<std::string> strings_;
 	
 	int32_t hash(const char *);
+private:
+	bool cloned_;
 };
 
 } // namespace codec

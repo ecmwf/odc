@@ -31,6 +31,8 @@ public:
 	size_t setvbufferSize();
 	void setvbufferSize(size_t);
 
+	static bool debug;
+
 private:
 	ODBAPISettings();
 

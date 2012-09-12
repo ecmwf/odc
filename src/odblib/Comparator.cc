@@ -11,12 +11,20 @@
 #include <cmath>
 
 #include "eclib/Resource.h"
+#include "eclib/Exceptions.h"
 
 #include "odblib/oda.h"
+#include "odblib/Column.h"
+#include "odblib/ColumnType.h"
 #include "odblib/Comparator.h"
 #include "odblib/Tracer.h"
 
 
+
+class ValuesDifferent : public Exception {
+public:
+	ValuesDifferent(const string& what) : Exception(what) {}
+};
 
 
 namespace odb {
@@ -49,18 +57,27 @@ void Comparator::compare(const PathName& p1, const PathName& p2, const vector<st
 	compare(it1, end1, it2, end2, p1, p2, excludedColumnsTypes);
 }
 
-void Comparator::compare(int nCols, const double *data1, const double *data2, const MetaData& md)
+void Comparator::compare(int nCols, const double *data1, const double *data2, const MetaData& md1, const MetaData& md2)
 {
 	for (int i=0; i < nCols; i++)
 		try
 		{
-			switch (md[i]->type())
+			const Column& column(*md1[i]);
+			ColumnType type(column.type());
+			switch (type)
 			{
 				case INTEGER:
 				case BITFIELD:
 				case STRING:
 				case DOUBLE:
-					ASSERT(same(data1[i], data2[i]) || (NaN_isOK_ && (isnan(data1[i]) && isnan(data2[i]))));
+					if (! (same(data1[i], data2[i]) || (NaN_isOK_ && (isnan(data1[i]) && isnan(data2[i])))))
+					{
+						stringstream ss;
+						ss << "Values different: " 
+						<< " data1[" << i << "]==" << StringTool::valueAsString(data1[i], type)
+						<< " data2[" << i << "]==" << StringTool::valueAsString(data2[i], type)  << endl;
+						throw ValuesDifferent(ss.str());
+					}
 					break;
 				case REAL:
 					ASSERT(same(float(data1[i]), float(data2[i])) || (NaN_isOK_ && (isnan(data1[i]) && isnan(data2[i]))));
@@ -70,14 +87,16 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 					ASSERT(!"Unknown type");
 					break;
 			}
-		} catch (...) {
-			Log::info( Here() ) << "While comparing rows number " << nRow_ << ", columns " << i
+		} catch (Exception &e) {
+			Log::info() << "While comparing rows number " << nRow_ << ", columns " << i
 				<< " found different." << endl;
-			Log::info( Here() ) << " data1[" << i << "] = " << fixed << data1[i] << endl;
-			Log::info( Here() ) << " data2[" << i << "] = " << fixed << data2[i] << endl;
+			Log::info() << " data1[" << i << "] = " << fixed << data1[i] << endl;
+			Log::info() << " data2[" << i << "] = " << fixed << data2[i] << endl;
 
-			Log::info( Here() ) << " md[" << i << "] is " << *md[i] << endl;
-			
+			Log::info() << " md1[" << i << "] = " << *md1[i] << endl;
+			Log::info() << " md2[" << i << "] = " << *md2[i] << endl;
+
+			Log::info() << " " << e.what() << endl;
 			throw;
 		}
 }

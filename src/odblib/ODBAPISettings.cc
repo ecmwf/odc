@@ -32,6 +32,13 @@
 template class ThreadSingleton<odb::ODBAPISettings>;
 static ThreadSingleton<odb::ODBAPISettings> instance_;
 
+bool odb::ODBAPISettings::debug = false;
+
+void debugMeNow() {
+	Log::info() << "Debug me now" << endl;
+	odb::ODBAPISettings::debug = true;
+}
+
 namespace odb {
 
 ODBAPISettings& ODBAPISettings::instance()

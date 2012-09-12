@@ -181,6 +181,25 @@ ostream& operator<<(ostream& s, const vector<string>& st)
     return s;
 }
 
+
+string StringTool::valueAsString(double d, ColumnType t)
+{
+	stringstream s;
+	switch (t) {
+	case INTEGER: return int_as_double2string(d);
+	case BITFIELD: return int_as_double2string(d); // TODO: have something to print bitfields in StringTool
+	case STRING: return double_as_string(d);
+	case DOUBLE:
+	case REAL: 
+		 s << d; return s.str();
+	case IGNORE:
+	default:
+		ASSERT(0 && "Type not known.");
+	}
+	s << d;
+	return s.str();
+}
+
 string StringTool::patchTimeForMars(const string& ss)
 {
 	string v = ss;
