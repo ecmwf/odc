@@ -33,7 +33,7 @@ FunctionRMS::~FunctionRMS() {}
 
 SQLExpression* FunctionRMS::clone() const { return new FunctionRMS(*this); } 
 
-const type::SQLType* FunctionRMS::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionRMS::type() const { return &type::SQLType::lookup("double"); }
 
 double FunctionRMS::eval(bool& missing) const
 {

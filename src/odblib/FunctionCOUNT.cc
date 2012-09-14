@@ -15,7 +15,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-const type::SQLType* FunctionCOUNT::type() const { const type::SQLType& x = type::SQLType::lookup("real"); return &x; }
+const type::SQLType* FunctionCOUNT::type() const { const type::SQLType& x = type::SQLType::lookup("double"); return &x; }
 
 FunctionCOUNT::FunctionCOUNT(const string& name, const expression::Expressions& args)
 : FunctionExpression(name, args),

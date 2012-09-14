@@ -22,7 +22,7 @@ namespace function {
 
 using namespace odb::sql::type;
 
-const type::SQLType* FunctionEQ::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionEQ::type() const { return &type::SQLType::lookup("double"); }
 
 FunctionEQ::FunctionEQ(const FunctionEQ& other)
 : FunctionExpression(other.name_, other.args_),

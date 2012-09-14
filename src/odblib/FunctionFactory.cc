@@ -160,7 +160,6 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression
 
 template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {
-	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(name_, 1); }
 public:
@@ -170,7 +169,6 @@ public:
 
 template<double (*T)(double, double)> 
 class MathFunctionExpression_2 : public FunctionExpression {
-	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing), args_[1]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(name_, 2); }
 public:
@@ -180,7 +178,6 @@ public:
 
 template<double (*T)(double,double,double)> 
 class MathFunctionExpression_3 : public FunctionExpression {
-	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(name_, 3); }
 public:
@@ -190,7 +187,6 @@ public:
 
 template<double (*T)(double,double,double,double)> 
 class MathFunctionExpression_4 : public FunctionExpression {
-	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(name_, 4); }
 public:
@@ -200,7 +196,6 @@ public:
 
 template<double (*T)(double,double,double,double,double)> 
 class MathFunctionExpression_5 : public FunctionExpression {
-	const type::SQLType* type() const { return &type::SQLType::lookup("real"); }
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing),args_[4]->eval(missing)); }
 	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(name_, 5); }
 public:
@@ -432,7 +427,26 @@ double less_equal_double(double l, double r) { return l <= r; }
 
 double plus_double(double l, double r) { return l + r; }
 double minus_double(double l, double r) { return l - r; }
+
+class MultiplyExpression : public FunctionExpression {
+	double eval(bool& missing) const
+	{
+		bool m = missing;
+		double left = args_[0]->eval(m);
+		double right = args_[1]->eval(m);
+		if (left == 0 || right == 0)
+			return 0;
+		missing = m;
+		return left * right;
+	}
+	SQLExpression* clone() const { return new MultiplyExpression(name_, 2); }
+public:
+	MultiplyExpression(const string& name, const expression::Expressions& args)
+	: FunctionExpression(name,args) {}
+};
+
 double multiplies_double(double l, double r) { return l * r; }
+
 double divides_double(double l, double r) { return l / r; }
 double ldexp_double(double l, double r) { return ldexp(l, r); }
 
@@ -446,7 +460,8 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1)
 
 	DEFINE_BINARY(+,plus_double);
 	DEFINE_BINARY(-,minus_double);
-	DEFINE_BINARY(*,multiplies_double);
+	//DEFINE_BINARY(*,multiplies_double);
+	static FunctionMaker<MultiplyExpression> make_MultiplyExpression("*",2);
 	DEFINE_BINARY(/,divides_double);
 
 	DEFINE_UNARY(-,negate_double);

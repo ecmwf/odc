@@ -33,7 +33,7 @@ SQLExpression* FunctionNORM::clone() const { return new FunctionNORM(*this); }
 
 FunctionNORM::~FunctionNORM() {}
 
-const type::SQLType* FunctionNORM::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionNORM::type() const { return &type::SQLType::lookup("double"); }
 
 double FunctionNORM::eval(bool& missing) const
 {

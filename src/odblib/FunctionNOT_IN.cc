@@ -30,7 +30,7 @@ FunctionNOT_IN::~FunctionNOT_IN() {}
 
 SQLExpression* FunctionNOT_IN::clone() const { return new FunctionNOT_IN(*this); }
 
-const type::SQLType* FunctionNOT_IN::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionNOT_IN::type() const { return &type::SQLType::lookup("double"); }
 
 double FunctionNOT_IN::eval(bool& missing) const
 {

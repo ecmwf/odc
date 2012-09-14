@@ -37,6 +37,8 @@ public:
 	bool isAggregate() const;
 	void partialResult();
 
+	virtual const odb::sql::type::SQLType* type() const;
+
 protected:
 	string name_;
 	expression::Expressions args_;

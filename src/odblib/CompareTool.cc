@@ -27,14 +27,18 @@ CompareTool::CompareTool (int argc, char *argv[])
 		Log::error() << "Usage:";
 		usage(parameters(0), Log::error());
 		Log::error() << endl;
-		return;
+		throw Exception("Wrong number of parameters.");
 	}
 
-	ASSERT("First file does not exist!" && PathName(parameters()[1]).exists());
-	ASSERT("Second file does not exist!" && PathName(parameters()[2]).exists());
 
-	//ASSERT("First parameter is a directory name!" && !path1.isDir());
-	//ASSERT("Second parameter is a directory name!" && !path2.isDir());
+	PathName p;
+	if (! (p = PathName(parameters()[1])).exists()
+		|| ! (p = PathName(parameters()[2])).exists())
+	{
+		stringstream s;
+		s << "File " << p << " does not exist.";
+		throw Exception(s.str());
+	}
 
 	file1 = new PathName(parameters()[1]);
 	file2 = new PathName(parameters()[2]);
@@ -54,7 +58,8 @@ void CompareTool::run()
 
 	vector<string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", string("")));
 
-	Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << endl;
+	if (excludedColumnsTypes.size())
+		Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << endl;
 	
 	bool checkMissing = ! optionIsSet("-dontCheckMissing");
 	odb::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1, *file2, excludedColumnsTypes);

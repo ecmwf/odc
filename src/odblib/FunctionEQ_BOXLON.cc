@@ -16,7 +16,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-const type::SQLType* FunctionEQ_BOXLON::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionEQ_BOXLON::type() const { return &type::SQLType::lookup("double"); }
 
 FunctionEQ_BOXLON::FunctionEQ_BOXLON(const string& name,const expression::Expressions& args)
 : FunctionExpression(name,args)

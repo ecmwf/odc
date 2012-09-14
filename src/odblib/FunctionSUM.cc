@@ -31,7 +31,7 @@ FunctionSUM::~FunctionSUM() {}
 
 SQLExpression* FunctionSUM::clone() const { return new FunctionSUM(*this); }
 
-const type::SQLType* FunctionSUM::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionSUM::type() const { return &type::SQLType::lookup("double"); }
 
 double FunctionSUM::eval(bool& missing) const
 {

@@ -30,6 +30,8 @@ FunctionExpression::FunctionExpression(const string& name, const expression::Exp
 //	cout << "new FunctionExpression " << name << endl;
 }
 
+const type::SQLType* FunctionExpression::type() const { return &type::SQLType::lookup("double"); }
+
 FunctionExpression::~FunctionExpression() {}
 
 void FunctionExpression::prepare(SQLSelect& sql)

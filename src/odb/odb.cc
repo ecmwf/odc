@@ -25,13 +25,22 @@
 using namespace std;
 using namespace odb::tool;
 
+int executeCommand(int argc, char *argv[]);
 int gdb(int argc, char *argv[]);
 int valgrind(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
-	Tool::registerTools();
+	try { return executeCommand(argc, argv);
+	} catch (std::exception& e) {
+		cerr << argv[0] << ": " << e.what() << endl;
+		return 1;
+	}
+}
 
+int executeCommand(int argc, char *argv[])
+{
+	Tool::registerTools();
 	if (argc < 2)
 	{
 		odb_start();
@@ -90,7 +99,6 @@ int main(int argc, char *argv[])
 
 	ToolRunnerApplication runner(argc, argv);
 	runner.start();
-		
 	return 0;
 }
 

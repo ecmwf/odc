@@ -30,7 +30,7 @@ FunctionAVG::FunctionAVG(const FunctionAVG& other)
 
 SQLExpression* FunctionAVG::clone() const { return new FunctionAVG(*this); }
 
-const type::SQLType* FunctionAVG::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionAVG::type() const { return &type::SQLType::lookup("double"); }
 
 FunctionAVG::~FunctionAVG() {}
 

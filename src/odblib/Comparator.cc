@@ -90,14 +90,16 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 		} catch (Exception &e) {
 			Log::info() << "While comparing rows number " << nRow_ << ", columns " << i
 				<< " found different." << endl;
-			Log::info() << " data1[" << i << "] = " << fixed << data1[i] << endl;
-			Log::info() << " data2[" << i << "] = " << fixed << data2[i] << endl;
+			Log::info() << " " << e.what() << endl;
+
+			Log::info() << " data1[" << i << "] = " << std::scientific << data1[i] << endl;
+			Log::info() << " data2[" << i << "] = " << std::scientific << data2[i] << endl;
 
 			Log::info() << " md1[" << i << "] = " << *md1[i] << endl;
 			Log::info() << " md2[" << i << "] = " << *md2[i] << endl;
 
-			Log::info() << " " << e.what() << endl;
-			throw;
+			//TODO: make it an option to stop when an error found
+			//throw;
 		}
 }
 

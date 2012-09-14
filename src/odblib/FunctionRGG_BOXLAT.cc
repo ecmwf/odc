@@ -30,7 +30,7 @@ SQLExpression* FunctionRGG_BOXLAT::clone() const { return new FunctionRGG_BOXLAT
 
 FunctionRGG_BOXLAT::~FunctionRGG_BOXLAT() {}
 
-const type::SQLType* FunctionRGG_BOXLAT::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionRGG_BOXLAT::type() const { return &type::SQLType::lookup("double"); }
 
 double FunctionRGG_BOXLAT::eval(bool& missing) const
 {

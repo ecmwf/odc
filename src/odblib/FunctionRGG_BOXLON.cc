@@ -28,7 +28,7 @@ SQLExpression* FunctionRGG_BOXLON::clone() const { return new FunctionRGG_BOXLON
 
 FunctionRGG_BOXLON::~FunctionRGG_BOXLON() {}
 
-const type::SQLType* FunctionRGG_BOXLON::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionRGG_BOXLON::type() const { return &type::SQLType::lookup("double"); }
 
 double FunctionRGG_BOXLON::eval(bool& missing) const
 {

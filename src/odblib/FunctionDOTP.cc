@@ -15,7 +15,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-const type::SQLType* FunctionDOTP::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionDOTP::type() const { return &type::SQLType::lookup("double"); }
 
 FunctionDOTP::FunctionDOTP(const string& name,const expression::Expressions& args)
 : FunctionExpression(name,args),

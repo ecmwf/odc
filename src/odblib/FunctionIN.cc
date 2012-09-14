@@ -28,8 +28,7 @@ FunctionIN::FunctionIN(const FunctionIN& other)
 
 FunctionIN::~FunctionIN() {}
 
-//TODO: bool?
-const type::SQLType* FunctionIN::type() const { return &type::SQLType::lookup("real"); }
+const type::SQLType* FunctionIN::type() const { return &type::SQLType::lookup("real"); } //TODO: bool?
 
 SQLExpression* FunctionIN::clone() const { return new FunctionIN(*this); }
 

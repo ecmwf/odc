@@ -446,12 +446,6 @@ Codec* CodecInt8String<BYTEORDER>::clone()
 	c->intCodec.max(intCodec.max());
 	c->min(this->min());
 	c->max(this->max());
-
-	//if (odb::ODBAPISettings::debug) 
-	//{
-	//	Log::info() << "CodecInt8String<BYTEORDER>::clone: " << "" << endl;
-	//	c->hashTable().dumpTable(Log::info());
-	//}
 	return c;
 }
 
@@ -459,19 +453,11 @@ Codec* CodecInt8String<BYTEORDER>::clone()
 template<typename BYTEORDER>
 void CodecChars<BYTEORDER>::gatherStats(double v) 
 {
-	const char*ispd = "ISPDv2.2";
-	const char*bufr = "BUFRDATA";
-
-	//if (v == *(reinterpret_cast<const double*>(ispd))) Log::info() << "gatherStats: ISPDv2.2" << endl;
-
-	//if (min_ == *(reinterpret_cast<const double*>(bufr)) && v == *(reinterpret_cast<const double*>(ispd))) Log::info() << "gatherStats: BUFRDATA => ISPDv2.2" << endl;
-
 	char buf[255];
 	memcpy(buf, &v, sizeof(double));
 	buf[sizeof(double)] = 0;
 	hashTable_->store(buf);
 
-	//TODO: check this is preserved during 
 	// In case the column is const, the const value will be copied and used by the optimized codec.
 	min_ = v;
 }
