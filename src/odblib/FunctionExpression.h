@@ -26,6 +26,7 @@ namespace function {
 class FunctionExpression : public SQLExpression {
 public:
 	FunctionExpression(const string&,const expression::Expressions&);
+	FunctionExpression(const FunctionExpression&);
 	~FunctionExpression();
 
 	virtual void print(ostream& s) const;
@@ -49,7 +50,7 @@ protected:
 	void tables(set<SQLTable*>&);
 private:
 // No copy allowed
-	FunctionExpression(const FunctionExpression&);
+	//FunctionExpression(const FunctionExpression&);
 	FunctionExpression& operator=(const FunctionExpression&);
 };
 

@@ -161,46 +161,46 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression
 template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {
 	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(name_, 1); }
+	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(*this); }
 public:
-	MathFunctionExpression_1(const string& name, const expression::Expressions& args)
-	: FunctionExpression(name, args) {}
+	MathFunctionExpression_1(const string& name, const expression::Expressions& args) : FunctionExpression(name, args) {}
+	MathFunctionExpression_1(const MathFunctionExpression_1& o) : FunctionExpression(o) {}
 };
 
 template<double (*T)(double, double)> 
 class MathFunctionExpression_2 : public FunctionExpression {
 	double eval(bool& missing) const { return T(args_[0]->eval(missing), args_[1]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(name_, 2); }
+	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(*this); }
 public:
-	MathFunctionExpression_2(const string& name, const expression::Expressions& args)
-	: FunctionExpression(name,args) {}
+	MathFunctionExpression_2(const string& name, const expression::Expressions& args) : FunctionExpression(name,args) {}
+	MathFunctionExpression_2(const MathFunctionExpression_2& o) : FunctionExpression(o) {}
 };
 
 template<double (*T)(double,double,double)> 
 class MathFunctionExpression_3 : public FunctionExpression {
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(name_, 3); }
+	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(*this); }
 public:
-	MathFunctionExpression_3(const string& name,const expression::Expressions& args)
-	: FunctionExpression(name,args) {}
+	MathFunctionExpression_3(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
+	MathFunctionExpression_3(const MathFunctionExpression_3& o) : FunctionExpression(o) {}
 };
 
 template<double (*T)(double,double,double,double)> 
 class MathFunctionExpression_4 : public FunctionExpression {
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(name_, 4); }
+	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(*this); }
 public:
-	MathFunctionExpression_4(const string& name,const expression::Expressions& args)
-	: FunctionExpression(name,args) {}
+	MathFunctionExpression_4(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
+	MathFunctionExpression_4(const MathFunctionExpression_4& o) : FunctionExpression(o) {}
 };
 
 template<double (*T)(double,double,double,double,double)> 
 class MathFunctionExpression_5 : public FunctionExpression {
 	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing),args_[4]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(name_, 5); }
+	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(*this); }
 public:
-	MathFunctionExpression_5(const string& name,const expression::Expressions& args)
-	: FunctionExpression(name,args) {}
+	MathFunctionExpression_5(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
+	MathFunctionExpression_5(const MathFunctionExpression_5& o) : FunctionExpression(o) {}
 };
 
 #define DEFINE_MATH_FUNC_1(F) \
