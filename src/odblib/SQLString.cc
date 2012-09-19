@@ -17,7 +17,7 @@ namespace odb {
 namespace sql {
 namespace type {
 
-SQLString::SQLString(const string& name): SQLType(name) {} 
+SQLString::SQLString(const string& name) : SQLType(name) {} 
 
 SQLString::~SQLString() {}
 
@@ -26,6 +26,8 @@ size_t SQLString::size() const { return sizeof(double); }
 void SQLString::output(SQLOutput& o, double d, bool missing) const { o.outputString(d, missing); }
 
 SQLType::manipulator SQLString::format() const { return &std::left; }
+
+size_t SQLString::width() const { return 10; }
 
 } // namespace type 
 } // namespace sql

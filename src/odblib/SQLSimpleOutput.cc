@@ -132,7 +132,7 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 		string name = columns[i]->title();
 		const type::SQLType* type = columns[i]->type();
 
-		columnWidths_.push_back(type->width());
+		columnWidths_.push_back(max(type->width(), name.size()));
 		columnAlignments_.push_back(type->format());
 
 		if(i) out_ << config_.fieldDelimiter;

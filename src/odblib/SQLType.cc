@@ -50,7 +50,7 @@ DynamicallyCreatedTypesDestroyer::~DynamicallyCreatedTypesDestroyer ()
 
 DynamicallyCreatedTypesDestroyer destroyer_; // TODO: make it a proper singleton
 
-size_t SQLType::width() const { return 10; }
+size_t SQLType::width() const { return 14; }
 SQLType::manipulator SQLType::format() const { return &std::right; }
 
 SQLType::SQLType(const string& name):
