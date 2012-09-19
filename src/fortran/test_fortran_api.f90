@@ -22,8 +22,76 @@ program test_fortran_api
   call test_fortran_api_setup()
   call test_fortran_api1()
   call test_fortran_api2()
+  call test_fortran_api_append()
 
 contains
+subroutine test_fortran_api_append
+ implicit none
+ type(C_PTR)                                   :: odb_handle, odb_it
+ integer(kind=C_INT)                           :: cerr
+ character(kind=C_CHAR, len=max_varlen)        :: config = C_NULL_CHAR
+ character(kind=C_CHAR, len=max_varlen)        :: outputfile="test_append.odb"//achar(0)
+ integer(kind=4)                               :: i
+ integer(kind=C_INT)                           :: itype, c_ncolumns 
+ real(kind=C_DOUBLE), dimension(:), allocatable:: one_row
+ character(len=100)                            :: expver="fihn"//achar(0)
+
+ write(0,*) 'test_fortran_api_append'
+ c_ncolumns = ncolumns
+ odb_handle = odb_write_new(config, cerr)
+ odb_it = odb_write_iterator_new(odb_handle, outputfile, cerr);
+ 
+ cerr = odb_write_set_no_of_columns(odb_it, ncolumns)
+ cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
+ cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
+ cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
+                                     "active:passive:blacklisted:"//achar(0), &
+                                     "1:1:4:"//achar(0))
+ cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "expver"//achar(0))
+
+ cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
+ cerr = odb_write_header(odb_it)
+
+ allocate(one_row(ncolumns))
+ do i=1,10
+   one_row(1) = i
+   one_row(2) = i 
+   one_row(3) = 5 
+   one_row(4) = transfer(expver, one_row(4))
+   cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
+ enddo
+ deallocate(one_row)
+
+ cerr = odb_write_iterator_delete(odb_it)
+
+ odb_it = odb_append_iterator_new(odb_handle, outputfile, cerr);
+ 
+ cerr = odb_write_set_no_of_columns(odb_it, ncolumns)
+ cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
+ cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
+ cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
+                                     "active:passive:blacklisted:"//achar(0), &
+                                     "1:1:4:"//achar(0))
+ cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "expver"//achar(0))
+
+ cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
+ cerr = odb_write_header(odb_it)
+
+ allocate(one_row(ncolumns))
+ do i=1,10
+   one_row(1) = i
+   one_row(2) = i 
+   one_row(3) = 5 
+   one_row(4) = transfer(expver, one_row(4))
+   cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
+ enddo
+ deallocate(one_row)
+
+ cerr = odb_write_iterator_delete(odb_it)
+ cerr = odb_write_delete(odb_handle)
+
+end subroutine test_fortran_api_append
+
 subroutine test_fortran_api_setup
  implicit none
  type(C_PTR)                                   :: odb_handle, odb_it
