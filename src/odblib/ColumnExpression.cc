@@ -158,7 +158,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 				continue;
 			}
 			
-			ss << "'" << names[i] << "', ";
+			ss << names[i] << ", ";
 			++matched;
 			e.push_back(new ColumnExpression(names[i], table));
 		}
