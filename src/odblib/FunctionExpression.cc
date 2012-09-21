@@ -33,8 +33,7 @@ FunctionExpression::FunctionExpression(const string& name, const expression::Exp
 FunctionExpression::FunctionExpression(const FunctionExpression& other)
 : name_(other.name_),
   args_(other.args_)
-{
-}
+{}
 
 
 const type::SQLType* FunctionExpression::type() const { return &type::SQLType::lookup("double"); }

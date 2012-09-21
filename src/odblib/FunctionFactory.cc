@@ -160,7 +160,7 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression
 
 template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {
-	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
+	double eval(bool& m) const { double v = args_[0]->eval(m); return m ? this->missingValue_ : T(v); }
 	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(*this); }
 public:
 	MathFunctionExpression_1(const string& name, const expression::Expressions& args) : FunctionExpression(name, args) {}
@@ -169,7 +169,13 @@ public:
 
 template<double (*T)(double, double)> 
 class MathFunctionExpression_2 : public FunctionExpression {
-	double eval(bool& missing) const { return T(args_[0]->eval(missing), args_[1]->eval(missing)); }
+	double eval(bool& m) const {
+		double left = args_[0]->eval(m);
+		if (m) return this->missingValue_;
+		double right = args_[1]->eval(m);
+		if (m) return this->missingValue_;
+		return T(left, right);
+	}
 	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(*this); }
 public:
 	MathFunctionExpression_2(const string& name, const expression::Expressions& args) : FunctionExpression(name,args) {}
@@ -178,7 +184,15 @@ public:
 
 template<double (*T)(double,double,double)> 
 class MathFunctionExpression_3 : public FunctionExpression {
-	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing)); }
+	double eval(bool& m) const {
+		double a0 = args_[0]->eval(m);
+		if (m) return this->missingValue_;
+		double a1 = args_[1]->eval(m);
+		if (m) return this->missingValue_;
+		double a2 = args_[2]->eval(m);
+		if (m) return this->missingValue_;
+		return T(a0, a1, a2);
+	}
 	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(*this); }
 public:
 	MathFunctionExpression_3(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
@@ -187,7 +201,17 @@ public:
 
 template<double (*T)(double,double,double,double)> 
 class MathFunctionExpression_4 : public FunctionExpression {
-	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing)); }
+	double eval(bool& m) const {
+		double a0 = args_[0]->eval(m);
+		if (m) return this->missingValue_;
+		double a1 = args_[1]->eval(m);
+		if (m) return this->missingValue_;
+		double a2 = args_[2]->eval(m);
+		if (m) return this->missingValue_;
+		double a3 = args_[3]->eval(m);
+		if (m) return this->missingValue_;
+		return T(a0, a1, a2, a3);
+	}
 	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(*this); }
 public:
 	MathFunctionExpression_4(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
@@ -196,7 +220,19 @@ public:
 
 template<double (*T)(double,double,double,double,double)> 
 class MathFunctionExpression_5 : public FunctionExpression {
-	double eval(bool& missing) const { return T(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing),args_[4]->eval(missing)); }
+	double eval(bool& m) const {
+		double a0 = args_[0]->eval(m);
+		if (m) return this->missingValue_;
+		double a1 = args_[1]->eval(m);
+		if (m) return this->missingValue_;
+		double a2 = args_[2]->eval(m);
+		if (m) return this->missingValue_;
+		double a3 = args_[3]->eval(m);
+		if (m) return this->missingValue_;
+		double a4 = args_[4]->eval(m);
+		if (m) return this->missingValue_;
+		return T(a0, a1, a2, a3, a4);
+	}
 	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(*this); }
 public:
 	MathFunctionExpression_5(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
@@ -204,31 +240,24 @@ public:
 };
 
 #define DEFINE_MATH_FUNC_1(F) \
-/*struct math_1_##F { double operator()(double val) const { return F(val); } }; */ \
 static FunctionMaker<MathFunctionExpression_1<F> > make_1_##F(#F,1)
 
 #define DEFINE_MATH_FUNC_1F(FuncName, Name) \
-/* struct math_1_##FuncName { double operator()(double val) const { return FuncName(val); } }; */ \
 static FunctionMaker<MathFunctionExpression_1<FuncName> > make_1_##FuncName(#Name,1)
 
 #define DEFINE_MATH_FUNC_2(F) \
-/*struct math_2_##F { double operator()(double v1,double v2) const { return F(v1,v2); } }; */ \
 static FunctionMaker<MathFunctionExpression_2<F> > make_2_##F(#F,2)
 
 #define DEFINE_MATH_FUNC_2F(FuncName, Name) \
-/*struct math_2_##FuncName { double operator()(double v1,double v2) const { return FuncName(v1,v2); } }; */ \
 static FunctionMaker<MathFunctionExpression_2<FuncName> > make_2_##FuncName(#Name,2)
 
 #define DEFINE_MATH_FUNC_3(F) \
-/*struct math_3_##F { double operator()(double v1,double v2,double v3) const { return F(v1,v2,v3); } };*/ \
 static FunctionMaker<MathFunctionExpression_3<F> > make_3_##F(#F,3)
 
 #define DEFINE_MATH_FUNC_4(F) \
-/*struct math_4_##F { double operator()(double v1,double v2,double v3,double v4) const { return F(v1,v2,v3,v4); } }; */ \
 static FunctionMaker<MathFunctionExpression_4<F> > make_4_##F(#F,4)
 
 #define DEFINE_MATH_FUNC_5(F) \
-/*struct math_5_##F { double operator()(double v1,double v2,double v3,double v4,double v5) const { return F(v1,v2,v3,v4,v5); } * };*/ \
 static FunctionMaker<MathFunctionExpression_5<F> > make_5_##F(#F,5)
 
 //--------------------------------------------------------------

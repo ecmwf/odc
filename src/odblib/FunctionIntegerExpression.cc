@@ -12,6 +12,7 @@
 
 #include "odblib/FunctionFactory.h"
 #include "odblib/FunctionIntegerExpression.h"
+#include "odblib/Codec.h"
 
 #define RMDI   -2147483647
 #define NMDI    2147483647
@@ -50,72 +51,18 @@ void FunctionIntegerExpression::output(ostream& s) const
 
 template<double (*T)(double)> 
 class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {
-	double eval(bool& missing) const { return T(args_[0]->eval(missing)); }
+	double eval(bool& m) const {
+		double v = args_[0]->eval(m);
+		return m ? this->missingValue_ : T(v);
+	}
 	SQLExpression* clone() const { return new MathFunctionIntegerExpression_1<T>(this->name_,this->args_); }
 public:
 	MathFunctionIntegerExpression_1(const string& name,const expression::Expressions& args)
-// TODO: FIXME: simillarly we need to propagate missing values to function expressions from their arguments everywhere
-	: FunctionIntegerExpression(name, args) { this->missingValue_ = args_[0]->missingValue(); }
+	: FunctionIntegerExpression(name, args) { this->missingValue_ = MISSING_VALUE_INT; }
 };
-
-/*
-
-template<class T> 
-class MathFunctionIntegerExpression_2 : public FunctionIntegerExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionIntegerExpression_2<T>(name_,args_); }
-public:
-	MathFunctionIntegerExpression_2(const string& name,const expression::Expressions& args)
-	: FunctionIntegerExpression(name,args) {}
-};
-
-template<class T> 
-class MathFunctionIntegerExpression_3 : public FunctionIntegerExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionIntegerExpression_3<T>(name_,args_); }
-public:
-	MathFunctionIntegerExpression_3(const string& name,const expression::Expressions& args)
-	: FunctionIntegerExpression(name,args) {}
-};
-
-template<class T> 
-class MathFunctionIntegerExpression_4 : public FunctionIntegerExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionIntegerExpression_4<T>(name_,args_); }
-public:
-	MathFunctionIntegerExpression_4(const string& name,const expression::Expressions& args)
-	: FunctionIntegerExpression(name,args) {}
-};
-
-template<class T> 
-class MathFunctionIntegerExpression_5 : public FunctionIntegerExpression {
-	double eval(bool& missing) const { return T()(args_[0]->eval(missing),args_[1]->eval(missing),args_[2]->eval(missing),args_[3]->eval(missing),args_[4]->eval(missing)); }
-	SQLExpression* clone() const { return new MathFunctionIntegerExpression_5<T>(name_,args_); }
-public:
-	MathFunctionIntegerExpression_5(const string& name,const expression::Expressions& args)
-	: FunctionIntegerExpression(name,args) {}
-};
-*/
 
 #define DEFINE_MATH_INT_FUNC_1F(FuncName, Name) \
-/*struct math_1_##FuncName { double operator()(double val) const { return FuncName(val); } }; */ \
 static FunctionMaker<MathFunctionIntegerExpression_1<FuncName> > make_1_##FuncName(#Name,1)
-
-//#define DEFINE_MATH_INT_FUNC_2F(FuncName, Name) \
-//struct math_2_##FuncName { double operator()(double v1,double v2) const { return FuncName(v1,v2); } }; \
-//static FunctionMaker<MathFunctionIntegerExpression_2<math_2_##FuncName> > make_2_##FuncName(#Name,2)
-
-//#define DEFINE_MATH_INT_FUNC_3F(FuncName, Name) \
-//struct math_3_##FuncName { double operator()(double v1,double v2,double v3) const { return FuncName(v1,v2,v3); } }; \
-//static FunctionMaker<MathFunctionIntegerExpression_3<math_3_##FuncName> > make_3_##FuncName(#Name,3)
-
-//#define DEFINE_MATH_INT_FUNC_4F(FuncName, Name) \
-//struct math_4_##FuncName { double operator()(double v1,double v2,double v3,double v4) const { return FuncName(v1,v2,v3,v4); } }; \
-//static FunctionMaker<MathFunctionIntegerExpression_4<math_4_##FuncName> > make_4_##FuncName(#Name,4)
-
-//#define DEFINE_MATH_INT_FUNC_5(FuncName, Name) \
-//struct math_5_##FuncName { double operator()(double v1,double v2,double v3,double v4,double v5) const { return FuncName(v1,v2,v3,v4,v5); } }; \
-//static FunctionMaker<MathFunctionIntegerExpression_5<math_5_##FuncName> > make_5_##FuncName(#Name,5)
 
 
 //--------------------------------------------------------------

@@ -39,6 +39,7 @@ double FunctionJULIAN::eval(bool& missing) const
 {
     int indate = (int) args_[0]->eval(missing);
     int intime = (int) args_[1]->eval(missing);
+	// TODO: shold we return MISSING_VALUE_INT in case missing == true here?
     int year_target = indate/10000;
     int month_target = (indate%10000)/100;
     int day_target = indate%100;
