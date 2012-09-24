@@ -29,7 +29,7 @@ $1 $cmake ../../ $2 \
 	-DBUILD_SHARED_LIBS=OFF \
         -DODB_API_MIGRATOR=ON \
         -DODB_API_FORTRAN=ON \
-        -DODB_API_PYTHON=ON \
+        -DODB_API_PYTHON=OFF \
         -DSWIG_EXECUTABLE=/usr/local/apps/swig/2.0.5/bin/swig \
         -DBISON_EXECUTABLE='/usr/local/apps/bison/2.3/bin/bison' \
         -DFLEX_EXECUTABLE='/usr/bin/flex' \
