@@ -27,6 +27,8 @@ public:
 	{
 		o << name << " <select-statement> | <script-filename>" << endl;
         o << "             [-T]                  Disables printing of column names" << endl;
+        o << "             [-offset <offset>]    Start processing file at a given offset" << endl;
+        o << "             [-length <length>]    Process only given bytes of data" << endl;
         o << "             [-N]                  Do not write NULLs, but proper missing data values" << endl;
         o << "             [-i <inputfile>]      ODB input file" << endl;
         o << "             [-o <outputfile>]     ODB output file" << endl;
@@ -42,6 +44,8 @@ private:
 	string inputFile_;           // -i
 	string outputFile_;          // -o
 	string outputFormat_;        // default is ascii
+	Offset offset_;              // -offset
+	Length length_;              // -length
 };
 
 } // namespace tool 

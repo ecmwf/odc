@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eclib/PartFileHandle.h"
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
@@ -19,12 +20,16 @@ namespace odb {
 namespace tool {
 
 SQLTool::SQLTool(int argc,char **argv)
-: Tool(argc,argv)
+: Tool(argc,argv),
+  offset_(),
+  length_()
 {
 	registerOptionWithArgument("-o");
 	registerOptionWithArgument("-i");
 	registerOptionWithArgument("-delimiter");
 	registerOptionWithArgument("-f"); // output format ( -f odb  for binary ODB format); default is ascii
+	registerOptionWithArgument("-offset"); 
+	registerOptionWithArgument("-length");
 
 	doNotWriteColumnNames_ = optionIsSet("-T");
 	doNotWriteNULL_ = optionIsSet("-N");
@@ -39,6 +44,9 @@ SQLTool::SQLTool(int argc,char **argv)
 		outputFile_ = "/dev/tty";
 
 	outputFormat_ = optionArgument("-f", string("default"));
+
+	offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
+	length_ = optionArgument("-length", (long) 0);
 
 	odb::sql::SQLSelectFactory::instance()
 		.config(odb::sql::SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_));
@@ -74,8 +82,15 @@ void SQLTool::run()
 		odb::sql::SQLParser p;
 		if (inputFile_.size() == 0)
 			p.parseString(sql, static_cast<DataHandle*>(0), odb::sql::SQLSelectFactory::instance().config());
-		else
+		else if (offset_ != Offset(0) || length_ != Length(0))
 		{
+			// FIXME: PartFileHandle doesn't think length 0 means to the enfd of the file - get correct length
+			Log::info() << "Selecting " << length_ << " bytes from offset " << offset_ 
+					<< " of " << inputFile_ << endl;
+			PartFileHandle fh(inputFile_, offset_, length_); 
+			fh.openForRead();
+			p.parseString(sql, &fh, odb::sql::SQLSelectFactory::instance().config());
+		} else {
 			FileHandle fh(inputFile_);
 			fh.openForRead();
 			p.parseString(sql, &fh, odb::sql::SQLSelectFactory::instance().config());
