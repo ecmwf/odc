@@ -26,17 +26,14 @@ public:
 
 	static void usage(const string& name, ostream &o)
 	{
-		o << name << " <file-name>";
+		o << name << " [-offsets] <file-name>";
 	}
 
 private:
-
 // No copy allowed
-
     HeaderTool(const HeaderTool&);
     HeaderTool& operator=(const HeaderTool&);
 
-	
 	string readFile(const string &fileName);
 };
 

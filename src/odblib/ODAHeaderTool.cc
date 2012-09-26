@@ -15,11 +15,50 @@
 #include "ODAHeaderTool.h"
 #include "MetaDataReaderIterator.h"
 #include "MetaDataReader.h"
+#include "eclib/Offset.h"
+#include "eclib/Length.h"
 
 namespace odb {
 namespace tool {
 
-HeaderTool::HeaderTool (int argc, char *argv[]) : Tool(argc, argv) { }
+typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
+
+class MDPrinter {
+public:
+	virtual void print(ostream&, MDReader::iterator &) = 0;
+};
+
+class VerbosePrinter : public MDPrinter {
+public:
+	VerbosePrinter() : headerCount_() {}
+	void print(ostream& o, MDReader::iterator &r)
+	{
+		o << endl << "Header " << ++headerCount_ << ". "
+			<< "Begin offset: " << (**r).blockStartOffset() << ", end offset: " << (**r).blockEndOffset()
+			<< ", number of rows in block: " << r->columns().rowsNumber() 
+			<< ", byteOrder: " << (((**r).byteOrder() == 1) ? "same" : "other")
+			<< endl
+			<< r->columns();
+	}
+private:
+	unsigned long headerCount_;
+};
+
+class OffsetsPrinter : public MDPrinter {
+public:
+	OffsetsPrinter() {}
+	void print(ostream& o, MDReader::iterator &r)
+	{
+		Offset offset ((**r).blockStartOffset());
+		Length length ((**r).blockEndOffset() - (**r).blockStartOffset());
+		o << offset << " " << length << " " << r->columns().rowsNumber() << endl;
+	}
+private:
+	unsigned long headerCount_;
+};
+
+HeaderTool::HeaderTool (int argc, char *argv[]) : Tool(argc, argv) {}
+
 
 void HeaderTool::run()
 {
@@ -34,37 +73,21 @@ void HeaderTool::run()
 	string db = parameters(1);
 
 	ostream& o = cout;
+	VerbosePrinter verbosePrinter;
+	OffsetsPrinter offsetsPrinter;
+	MDPrinter& printer(* (optionIsSet("-offsets")
+		? static_cast<MDPrinter*>(&offsetsPrinter)
+		: static_cast<MDPrinter*>(&verbosePrinter)));
 
-	typedef odb::MetaDataReader<odb::MetaDataReaderIterator> R;
-	R oda(db);
-	R::iterator r(oda.begin());
-	R::iterator end(oda.end());
+	MDReader oda(db);
+	MDReader::iterator r(oda.begin());
+	MDReader::iterator end(oda.end());
 
-	odb::MetaData metaData(0);
-
-	size_t headerCount = 0;
-	// NOTE: Currently it prints columns' meta data only.
-	// TODO: print out the whole header.
-
-	metaData = r->columns();
-	//o << endl << "Header " << ++headerCount << ":";
-	//o << endl << r->columns();
-
-	int nrows = 0;
-	for(; r != end; ++r, ++nrows)
+	odb::MetaData metaData(r->columns());
+	for(; r != end; ++r)
 	{
 		ASSERT (r->isNewDataset());
-
-		//if (! (metaData == r->columns()))
-		//{
-			o << endl << "Header " << ++headerCount << ". "
-				<< "Begin offset: " << (**r).blockStartOffset() << ", end offset: " << (**r).blockEndOffset()
-				<< ", number of rows in block: " << r->columns().rowsNumber() 
-				<< ", byteOrder: " << (((**r).byteOrder() == 1) ? "same" : "other")
-				<< endl
-				<< r->columns();
-		//}
-
+		printer.print(o, r);
 		metaData = r->columns();
 	}
 }
