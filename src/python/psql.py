@@ -51,4 +51,8 @@ def sql(processes = 2, inputFile = None, outputFile = None, select='*', where = 
 	os.system("cat " + " ".join(outputFiles) + " >" + outputFile)
 
 if __name__ == '__main__':
-	sql(processes = 2, inputFile = "/tmp/p4/source/main/build/Debug/bin/2000010106.odb", outputFile = 'out.odb')
+	sql(processes = 2,
+		inputFile = "/tmp/p4/source/main/build/Debug/bin/2000010106.odb",
+		select = "obstype,count(*) as counts",
+		outputFile = 'out.odb')
+	subprocess.call([exe, "sql", "-i", "out.odb", "select obstype,sum(counts)"])
