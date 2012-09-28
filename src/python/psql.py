@@ -2,19 +2,18 @@ import os, subprocess, multiprocessing
 
 exe = "/tmp/p4/source/main/build/Debug/bin/odb"
 exe = "/marsdev/data/p4/odb_api_dev/development/build/Production/bin/odb"
+exe = "/vol/marsdev/data/p4/linux/x86_64/sles11/odb_api_dev/main/build/Production/bin/odb"
 
 def mergeBlocks(blocks, maxBlockSize):
-	currentOffset, currentLength, currentNumberOfRows  = blocks[0]
-	for offset, length, nrows in blocks[1:]:
+	currentOffset, currentLength, currentNumberOfRows, currentNumberOfColumns = blocks[0]
+	for offset, length, nrows, ncolumns in blocks[1:]:
 		if (currentLength + length) > maxBlockSize:
-			yield currentOffset, currentLength, currentNumberOfRows
-			currentOffset = offset
-			currentLength = length
-			currentNumberOfRows = nrows
+			yield currentOffset, currentLength, currentNumberOfRows, currentNumberOfColumns
+			currentOffset, currentLength, currentNumberOfRows, currentNumberOfColumns = offset, length, nrows, ncolumns
 		else:
 			currentLength += length
 			currentNumberOfRows += nrows
-	yield currentOffset, currentLength, currentNumberOfRows
+	yield currentOffset, currentLength, currentNumberOfRows, currentNumberOfColumns
 
 def getBlocks(fileName):
 	l = [exe, "header", "-offsets", fileName]
@@ -33,7 +32,7 @@ def outputFileName(offset, length, nrows):
 	return 'out_' + offset + '_' + length + '.odb'
 
 def filterPartOfFile(inputFile, fileChunk, select = '*', where = ''):
-	offset, length, nrows = map(str, fileChunk)
+	offset, length, nrows, ncolumns = map(str, fileChunk)
 	outputFile = outputFileName(offset, length, nrows)
 	sql = "select " + select + " into " + '"' + outputFile  + '"'
 	if where: sql += ' where ' + where
@@ -53,7 +52,7 @@ def sql(processes = 2, inputFile = None, outputFile = None, select='*', where = 
 
 if __name__ == '__main__':
 	sql(processes = 5,
-		inputFile = "ofb_1656_20040602to20040603.odb", #"ofb_1657_20040602to20040603.odb",
+		inputFile = "/scratch/ma/mak/paul/allobs_110.odb", #"ofb_1656_20040602to20040603.odb", #"ofb_1657_20040602to20040603.odb",
 		select = "source,count(*) as counts",
 		outputFile = 'out.odb')
 	subprocess.call([exe, "sql", "-i", "out.odb", "select source,sum(counts)"])
