@@ -51,7 +51,7 @@ public:
 	{
 		Offset offset ((**r).blockStartOffset());
 		Length length ((**r).blockEndOffset() - (**r).blockStartOffset());
-		o << offset << " " << length << " " << r->columns().rowsNumber() << endl;
+		o << offset << " " << length << " " << r->columns().rowsNumber() << " " << r->columns().size() << endl;
 	}
 private:
 	unsigned long headerCount_;
