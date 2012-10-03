@@ -38,6 +38,7 @@ void odb_start()
 	{
 		contextBehavior = new ODBBehavior();
 		Context::instance().setup(1, dummyCommandLineArgs, contextBehavior);
+        Context::instance().behavior()->initialize();
 	}
 
 }
