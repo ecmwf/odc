@@ -38,8 +38,7 @@ private:
 	auto_ptr<SQLOutput> output_;
 	pair<Expressions,vector<bool> > by_;
 	
-	typedef map<OrderByExpressions, vector<Expressions> >
-			SortedResults;
+	typedef map<OrderByExpressions, VectorOfExpressions> SortedResults;
 
 	SortedResults sortedResults_;
 

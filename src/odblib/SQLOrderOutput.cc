@@ -22,7 +22,19 @@ SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const pair<Expressions,vector<
 	Log::info() << *this << endl;
 }
 
-SQLOrderOutput::~SQLOrderOutput() {}
+SQLOrderOutput::~SQLOrderOutput()
+{
+	for (SortedResults::iterator it(sortedResults_.begin()); it != sortedResults_.end(); ++it)
+	{
+		VectorOfExpressions& v(it->second);
+		for (size_t i = 0; i < v.size(); ++i)
+		{
+			Expressions& es(v[i]);
+			for (size_t j = 0; j < es.size(); ++j)
+				delete es[j];
+		}
+	}
+}
 
 void SQLOrderOutput::print(ostream& s) const
 {
@@ -59,9 +71,7 @@ bool SQLOrderOutput::output(const Expressions& results)
 	for (size_t i = 0; i < results.size(); ++i)
 		resultValues.push_back(new SQLExpressionEvaluated(*results[i]));
 
-	vector<Expressions>& otherResultsWithTheSameKey = sortedResults_[byValues];
-	otherResultsWithTheSameKey.push_back(resultValues);
-	
+	sortedResults_[byValues].push_back(resultValues);
 	return false;
 }
 
