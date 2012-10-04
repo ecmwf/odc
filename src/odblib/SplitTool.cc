@@ -12,13 +12,23 @@
 
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
-#include "Comparator.h"
-#include "SplitTool.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/Comparator.h"
+#include "odblib/SplitTool.h"
+#include "odblib/TemplateParameters.h"
+
+#include "eclib/PartFileHandle.h"
 
 namespace odb {
 namespace tool {
 
-SplitTool::SplitTool (int argc, char *argv[]) : Tool(argc, argv) { }
+SplitTool::SplitTool (int argc, char *argv[])
+: Tool(argc, argv),
+  sort_(true),
+  maxOpenFiles_(1)
+{
+	registerOptionWithArgument("-maxopenfiles");
+}
 
 void SplitTool::run()
 {
@@ -30,11 +40,60 @@ void SplitTool::run()
 		return;
 	}
 
-	PathName inFile = parameters(1);
-	PathName outFile = parameters(2);
+	if (optionIsSet("-nosort")) sort_ = false;
+	maxOpenFiles_ = optionArgument("-maxopenfiles", maxOpenFiles_);
 
+	PathName inFile = parameters(1);
+	string outFile = parameters(2);
+
+	if (sort_)
+		presortAndSplit(inFile, outFile);
+	else
+		split(inFile, outFile, maxOpenFiles_);
+}
+
+void SplitTool::presortAndSplit(const PathName& inFile, const string& outFile)
+{
+	typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
+    MDReader mdr(inFile);
+    MDReader::iterator it(mdr.begin()), end(mdr.end());
+
+    odb::MetaData metaData(it->columns());
+	odb::DispatchingWriter out(outFile, 1); //, append);
+	odb::DispatchingWriter::iterator outIt = out.begin();
+
+    TemplateParameters templateParameters;
+    TemplateParameters::parse(outFile, templateParameters, it->columns());
+	stringstream ss;
+	ss << "select * order by ";
+	for (size_t i = 0; i < templateParameters.size(); ++i)
+	{
+		Log::info() << "SplitTool::presortAndSplit: " << templateParameters[i]->name << endl;
+		if (i) ss << ",";
+		ss << templateParameters[i]->name;
+	}
+	string sql = ss.str();
+	Log::info() << "SplitTool::presortAndSplit: sql: '" << sql << "'" << endl;
+
+	Log::info() << "sql: " << sql << endl;
+    for(; it != end; ++it)
+    {   
+        ASSERT (it->isNewDataset());
+        metaData = it->columns();
+
+        Offset offset((**it).blockStartOffset());
+        Length length((**it).blockEndOffset() - (**it).blockStartOffset());
+		PartFileHandle h(inFile, offset, length);
+		h.openForRead();
+		odb::Select in(sql, h);
+		outIt->pass1(in.begin(), in.end());
+    } 
+}
+
+void SplitTool::split(const PathName& inFile, const string& outFile, size_t maxOpenFiles)
+{
 	odb::Reader in(inFile);
-	odb::DispatchingWriter out(outFile);
+	odb::DispatchingWriter out(outFile, maxOpenFiles);
 
 	odb::DispatchingWriter::iterator outIt = out.begin();
 	outIt->pass1(in.begin(), in.end());

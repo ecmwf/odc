@@ -64,7 +64,7 @@ int executeCommand(int argc, char *argv[])
 		{
 			cout << "Testing C API" << endl;
 
-			string testCapi = string(argv[0]) + " testodacapi";
+			string testCapi = string(argv[0]) + " testodbcapi";
 			cerr << "Executing '" << testCapi << "'" << endl;
 			int rc = system(testCapi.c_str());
 			if (rc) return rc;

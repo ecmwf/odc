@@ -44,6 +44,8 @@ TestRunner::~TestRunner () {}
 
 void TestRunner::run()
 {
+	ASSERT(getenv("ODB_API_TEST_DATA_PATH") && "ODB_API_TEST_DATA_PATH must be set");
+
 	stringstream totalRunningTime;
 	auto_ptr<Timer> allTestsTimer(new Timer("Total", totalRunningTime));
 	auto_ptr<TestCases> tests(0);

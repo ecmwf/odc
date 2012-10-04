@@ -29,7 +29,7 @@ public:
 	typedef WriterDispatchingIterator<WriterBufferingIterator, DispatchingWriter> iterator_class;
 	typedef IteratorProxy<iterator_class, DispatchingWriter>  iterator;
 
-	DispatchingWriter(const string &outputFileTemplate, int maxOpenFiles = 0);
+	DispatchingWriter(const string &outputFileTemplate, int maxOpenFiles = 0, bool append = false);
 	virtual ~DispatchingWriter();
 
 	const string outputFileTemplate() { return outputFileTemplate_; }
@@ -46,6 +46,7 @@ private:
 
 	const string outputFileTemplate_;
 	int maxOpenFiles_; 
+	bool append_;
 };
 
 } // namespace odb 

@@ -40,7 +40,7 @@ class WriterDispatchingIterator : public RowsWriterIterator
 	typedef map<Values,int> Values2IteratorIndex;
 	typedef vector<WRITE_ITERATOR *> Iterators;
 public:
-	WriterDispatchingIterator (OWNER &owner, int maxOpenFiles);
+	WriterDispatchingIterator (OWNER &owner, int maxOpenFiles, bool append = false);
 	~WriterDispatchingIterator();
 
 	int open();
@@ -71,6 +71,7 @@ public:
 	string property(string);
 
 	vector<PathName> getFiles();
+	TemplateParameters& templateParameters() { return templateParameters_; }
 
 //protected:
 	void writeHeader();
@@ -105,6 +106,7 @@ protected:
 	Values lastDispatchedValues_;
 	int lastIndex_;
 	bool initialized_;
+	bool append_;
 
 private:
 // No copy allowed.

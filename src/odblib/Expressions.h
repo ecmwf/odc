@@ -74,6 +74,9 @@ public:
 //////////////////////////////////////////////////////////////////////////////////////
 };
 
+typedef vector<Expressions> VectorOfExpressions;
+//class VectorOfExpressions : public vector<Expressions> { public: ~VectorOfExpressions() { for (size_t i=0; i < size(); ++i) ; } };
+
 } // namespace expression
 } // namespace sql
 } // namespace odb

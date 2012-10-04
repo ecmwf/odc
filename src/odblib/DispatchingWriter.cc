@@ -55,9 +55,10 @@
 namespace odb {
 #define MEGA(x) (x*1024*1024)
 
-DispatchingWriter::DispatchingWriter(const string& outputFileTemplate, int maxOpenFiles)
+DispatchingWriter::DispatchingWriter(const string& outputFileTemplate, int maxOpenFiles, bool append)
 : outputFileTemplate_(outputFileTemplate),
-  maxOpenFiles_(maxOpenFiles ? maxOpenFiles :  Resource<long>("$ODBAPI_MAX_OPEN_FILES;-maxOpenFiles;maxOpenFiles", 250))
+  maxOpenFiles_(maxOpenFiles ? maxOpenFiles : Resource<long>("$ODBAPI_MAX_OPEN_FILES;-maxOpenFiles;maxOpenFiles", 250)),
+  append_(append)
 {}
 
 DispatchingWriter::~DispatchingWriter() {}
@@ -71,7 +72,7 @@ DispatchingWriter::iterator_class* DispatchingWriter::writer()
 
 DispatchingWriter::iterator DispatchingWriter::begin()
 {
-	return iterator(new iterator_class(*this, maxOpenFiles_));
+	return iterator(new iterator_class(*this, maxOpenFiles_, append_));
 }
 
 } // namespace odb

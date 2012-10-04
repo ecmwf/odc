@@ -30,6 +30,33 @@ void debugMeNow();
 namespace odb {
 
 template <typename WRITE_ITERATOR, typename OWNER>
+WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNER &owner, int maxOpenFiles, bool append)
+: buffer_(0),
+  owner_(owner),
+  iteratorsOwner_(),
+  columns_(0),
+  lastValues_(0),
+  nextRow_(0),
+  nrows_(0),
+  outputFileTemplate_(owner_.outputFileTemplate()),
+  properties_(),
+  dispatchedIndexes_(),
+  values2iteratorIndex_(),
+  lastDispatch_(maxOpenFiles, -1),
+  iteratorIndex2fileName_(maxOpenFiles),
+  lastDispatchedValues_(),
+  lastIndex_(),
+  initialized_(false),
+  refCount_(0),
+  iterators_(),
+  files_(),
+  templateParameters_(),
+  maxOpenFiles_(maxOpenFiles),
+  filesCreated_(),
+  append_(append)
+{}
+
+template <typename WRITE_ITERATOR, typename OWNER>
 string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const double* values, unsigned long count)
 {
 	string fileName = outputFileTemplate_;
@@ -79,10 +106,6 @@ WRITE_ITERATOR& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatch(const
 	for (size_t i = 0; i < dispatchedIndexes_.size(); ++i)
 		dispatchedValues.push_back(values[dispatchedIndexes_[i]]);
 
-	if (odb::ODBAPISettings::debug && dispatchedValues[0] == 17 && dispatchedValues[1] == 16007)
-		//Log::info(Here()) << "dispatch: groupid == 17 && reportype == 16007" << endl;
-		odb::ODBAPISettings::debug = odb::ODBAPISettings::debug;
-
 	if (dispatchedValues == lastDispatchedValues_)
 	{
 		rowsOutputFileIndex_.push_back(lastIndex_);
@@ -107,8 +130,7 @@ template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName,
 const double* values, unsigned long count)
 {
-	//ostream& L(Log::debug());
-	
+	ostream& L(Log::info());
 	int iteratorIndex = iterators_.size();
 	if (iterators_.size() >= maxOpenFiles_)
 	{
@@ -126,9 +148,9 @@ const double* values, unsigned long count)
 		}
 		iteratorIndex = oldest;
 
-		//L << "WriterDispatchingIterator::createIterator: evicted iterator " << iteratorIndex
-		//	<< "' " << iteratorIndex2fileName_[iteratorIndex] << "' "
-		//	<< " (oldest row: " << oldestRow << "), nrows_=" << nrows_ <<  endl;
+		L << "WriterDispatchingIterator::createIterator: evicted iterator " << iteratorIndex
+			<< "' " << iteratorIndex2fileName_[iteratorIndex] << "' "
+			<< " (oldest row: " << oldestRow << "), nrows_=" << nrows_ <<  endl;
 
 		delete iterators_[iteratorIndex];
 		iterators_[iteratorIndex] = 0;
@@ -141,8 +163,8 @@ const double* values, unsigned long count)
 	}
 
 	string operation;
-	bool append = false;
-    if (! PathName(fileName).exists())
+	//bool append = false;
+    if (append_ || !PathName(fileName).exists())
 	{
 		filesCreated_[fileName] = 1;
 		operation = "creating";
@@ -151,28 +173,27 @@ const double* values, unsigned long count)
 	{
 		if (filesCreated_.find(fileName) == filesCreated_.end())
 		{
-			filesCreated_[fileName] = 1;
-			operation = "overwriting";
+			filesCreated_[fileName] = 1; operation = "overwriting";
 		}
 		else
 		{
-			append = true;
-			filesCreated_[fileName]++;
-			operation = "appending";
+			append_ = true;
+			filesCreated_[fileName]++; operation = "appending";
 		}
 	}
 
-	//L << "WriterDispatchingIterator::dispatch: iterator " << iteratorIndex << ":" << operation << " '" << fileName << "'" << endl;
+	L << "WriterDispatchingIterator::dispatch: iterator " << iteratorIndex << ":" << operation << " '" << fileName << "'" << endl;
 
 	if (iteratorIndex == iterators_.size())
 	{
-		iterators_.push_back(iteratorsOwner_.createWriteIterator(fileName, append));
+		iterators_.push_back(iteratorsOwner_.createWriteIterator(fileName, append_));
 		files_.push_back(fileName);
 	}
 	else
 	{
-		iterators_[iteratorIndex] = iteratorsOwner_.createWriteIterator(fileName, append);
-		ASSERT(files_[iteratorIndex] == fileName);
+		iterators_[iteratorIndex] = iteratorsOwner_.createWriteIterator(fileName, append_);
+		files_[iteratorIndex] = fileName;
+		//ASSERT(files_[iteratorIndex] == fileName);
 	}
 	values2iteratorIndex_[dispatchedValues] = iteratorIndex;
 	iteratorIndex2fileName_[iteratorIndex] = fileName;
@@ -194,32 +215,6 @@ vector<PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::getFiles()
 		paths.push_back(it->first);
 	return paths;
 }
-
-template <typename WRITE_ITERATOR, typename OWNER>
-WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNER &owner, int maxOpenFiles)
-: buffer_(0),
-  owner_(owner),
-  iteratorsOwner_(),
-  columns_(0),
-  lastValues_(0),
-  nextRow_(0),
-  nrows_(0),
-  outputFileTemplate_(owner_.outputFileTemplate()),
-  properties_(),
-  dispatchedIndexes_(),
-  values2iteratorIndex_(),
-  lastDispatch_(maxOpenFiles, -1),
-  iteratorIndex2fileName_(maxOpenFiles),
-  lastDispatchedValues_(),
-  lastIndex_(),
-  initialized_(false),
-  refCount_(0),
-  iterators_(),
-  files_(),
-  templateParameters_(),
-  maxOpenFiles_(maxOpenFiles),
-  filesCreated_()
-{}
 
 template <typename WRITE_ITERATOR, typename OWNER>
 WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::~WriterDispatchingIterator()
@@ -300,7 +295,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeRow(const double* val
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::open() { return 0; }
 
-/*
+/* * /
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, ColumnType type)
 {
@@ -345,7 +340,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 
     return 0;
 }
-
+/ *
 */
 
 template <typename WRITE_ITERATOR, typename OWNER>

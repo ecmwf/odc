@@ -27,14 +27,18 @@ public:
 
 	static void usage(const string& name, ostream &o)
 	{
-		o << name << " <input.odb> <output_template.odb>";
+		o << name << " [-nosort] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 	}
+
+	static void split(const PathName&, const string&, size_t);
+	static void presortAndSplit(const PathName&, const string&);
 
 private:
 // No copy allowed
-
     SplitTool(const SplitTool&);
     SplitTool& operator=(const SplitTool&);
+	long maxOpenFiles_;
+	bool sort_;
 };
 
 } // namespace tool 
