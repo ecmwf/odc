@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Application.h"
 #include "eclib/PathName.h"
 #include "eclib/FileHandle.h"
 #include "eclib/Timer.h"
