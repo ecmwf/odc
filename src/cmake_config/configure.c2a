@@ -12,7 +12,7 @@ then
 	exit 1
 fi
 
-module load odb/CY38R1.001
+module load odb #/CY38R1.001
 
 CMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
 
@@ -30,8 +30,8 @@ $1 $cmake ../../ $2 \
         -DODB_API_MIGRATOR=ON \
         -DODB_API_FORTRAN=ON \
         -DODB_API_PYTHON=OFF \
-        -DSWIG_EXECUTABLE=/usr/local/apps/swig/2.0.5/bin/swig \
+        -DSWIG_EXECUTABLE=/usr/local/apps/swig/2.0.8/LP64/bin/swig \
         -DBISON_EXECUTABLE='/usr/local/apps/bison/2.3/bin/bison' \
         -DFLEX_EXECUTABLE='/usr/bin/flex' \
-	-DCMAKE_PREFIX_PATH=/usr/local/lib/metaps/lib/grib_api/jasper:/usr/local/apps/python/2.7
+	-DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7
 
