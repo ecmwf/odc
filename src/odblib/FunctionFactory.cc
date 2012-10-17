@@ -460,13 +460,20 @@ double minus_double(double l, double r) { return l - r; }
 class MultiplyExpression : public FunctionExpression {
 	double eval(bool& missing) const
 	{
-		bool m = missing;
-		double left = args_[0]->eval(m);
-		double right = args_[1]->eval(m);
-		if (left == 0 || right == 0)
+		bool leftMissing = false;
+		bool rightMissing = false;
+		double left = args_[0]->eval(leftMissing);
+		double right = args_[1]->eval(rightMissing);
+
+		// Special case: 0 * anything = 0
+		if ( (left == 0 || right == 0) && ! (leftMissing && rightMissing))
+		{
+			missing = false;
 			return 0;
-		missing = m;
-		return left * right;
+		}
+		return (missing = leftMissing | rightMissing)
+				? this->missingValue_ 
+				: left * right;
 	}
 	SQLExpression* clone() const { return new MultiplyExpression(name_, 2); }
 public:

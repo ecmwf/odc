@@ -54,10 +54,11 @@ template<typename ITERATOR>
 bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results)
 {
 	size_t nCols = results.size();
-	bool missing = false;
-
     for(size_t i = 0; i < nCols; i++)
+	{
+		bool missing = false;
 		(*writer_)[i] = results[i]->eval(missing);
+	}
 
 	++writer_;
 	++count_;
