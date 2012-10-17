@@ -218,6 +218,8 @@ void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig
 void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(mutex);
+    SQLSession& session = SQLSession::current();
+    session.currentDatabase(&db);
 	SQLSelectFactory::instance().database(&db);
 	SQLSelectFactory::instance().config(cfg);
 
