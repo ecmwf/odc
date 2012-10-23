@@ -32,6 +32,12 @@ public:
 			ds.readString(name);
 		}
 		AbstractCodecFactory *factory = codecFactories[name];
+		if (factory == 0)
+		{
+			stringstream ss;
+			ss << "Unknown codec '" << name << "'. You may need to use a newer version of ODB API.";
+			throw UserError(ss.str());
+		}
 		Codec *codec = factory->load(dh, differentByteOrder);
 		return codec;
 	}

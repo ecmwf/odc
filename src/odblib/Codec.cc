@@ -111,6 +111,7 @@ void Codec::loadCodecs() {
 	static CodecFactory<CodecChars,DataHandle> codecCharsFactory("chars");
 	static CodecFactory<CodecLongReal,DataHandle> codecLongRealFactory("long_real");
 	static CodecFactory<CodecShortReal,DataHandle> codecShortRealFactory("short_real");
+	static CodecFactory<CodecShortReal2,DataHandle> codecShortReal2Factory("short_real2");
 	static CodecFactory<CodecInt32,DataHandle> codecInt32Factory("int32");
 	static CodecFactory<CodecInt16,DataHandle> codecInt16Factory("int16");
 	static CodecFactory<CodecInt8,DataHandle> codecInt8Factory("int8");
@@ -126,6 +127,7 @@ void Codec::loadCodecs() {
 	static CodecFactory<CodecChars,FastInMemoryDataHandle> fastCodecCharsFactory("chars");
 	static CodecFactory<CodecLongReal,FastInMemoryDataHandle> fastCodecLongRealFactory("long_real");
 	static CodecFactory<CodecShortReal,FastInMemoryDataHandle> fastCodecShortRealFactory("short_real");
+	static CodecFactory<CodecShortReal2,FastInMemoryDataHandle> fastCodecShortReal2Factory("short_real2");
 	static CodecFactory<CodecInt32,FastInMemoryDataHandle> fastCodecInt32Factory("int32");
 	static CodecFactory<CodecInt16,FastInMemoryDataHandle> fastCodecInt16Factory("int16");
 	static CodecFactory<CodecInt8,FastInMemoryDataHandle> fastCodecInt8Factory("int8");
@@ -141,6 +143,7 @@ void Codec::loadCodecs() {
 	static CodecFactory<CodecChars,PrettyFastInMemoryDataHandle> prettyFastCodecCharsFactory("chars");
 	static CodecFactory<CodecLongReal,PrettyFastInMemoryDataHandle> prettyFastCodecLongRealFactory("long_real");
 	static CodecFactory<CodecShortReal,PrettyFastInMemoryDataHandle> prettyFastCodecShortRealFactory("short_real");
+	static CodecFactory<CodecShortReal2,PrettyFastInMemoryDataHandle> prettyFastCodecShortReal2Factory("short_real2");
 	static CodecFactory<CodecInt32,PrettyFastInMemoryDataHandle> prettyFastCodecInt32Factory("int32");
 	static CodecFactory<CodecInt16,PrettyFastInMemoryDataHandle> prettyFastCodecInt16Factory("int16");
 	static CodecFactory<CodecInt8,PrettyFastInMemoryDataHandle> prettyFastCodecInt8Factory("int8");

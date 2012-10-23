@@ -325,6 +325,22 @@ private:
 };
 
 template<typename BYTEORDER>
+class CodecShortReal2 : public Codec {
+public:
+	CodecShortReal2() : Codec("short_real2") {}
+	virtual unsigned char* encode(unsigned char* p, double d);
+	virtual double decode();
+
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<DataHandle*>(p)); }
+
+	void load(DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+private:
+	DataStream<BYTEORDER>& ds() { return ds_; }
+	DataStream<BYTEORDER> ds_;
+};
+
+template<typename BYTEORDER>
 class CodecInt32 : public Codec {
 public:
 	CodecInt32() : Codec("int32") { this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT; }
@@ -518,6 +534,24 @@ double CodecShortReal<BYTEORDER>::decode()
 	ds().readFloat(s);
 
 	return s == std::numeric_limits<float>::min() ? missingValue_ : s;
+}
+
+
+template<typename BYTEORDER>
+unsigned char* CodecShortReal2<BYTEORDER>::encode(unsigned char* p, double d)
+{
+	float s = (d == missingValue_) ? - std::numeric_limits<float>::max() : d;
+	memcpy(p, &s, sizeof(s));
+	return p + sizeof(s);
+}
+
+template<typename BYTEORDER>
+double CodecShortReal2<BYTEORDER>::decode()
+{
+	float s;
+	ds().readFloat(s);
+
+	return s == - std::numeric_limits<float>::max() ? missingValue_ : s;
 }
 
 template<typename BYTEORDER>

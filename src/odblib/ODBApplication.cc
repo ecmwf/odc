@@ -30,7 +30,7 @@ ODBApplication::ODBApplication (int argc, char **argv)
 : clp_(argc, argv)
 {
 	 Context::instance().setup( argc, argv, new ODBBehavior() );
-     Context::instance().behavior()->initialize();
+     //Context::instance().behavior()->initialize();
 }
 
 ODBApplication::~ODBApplication() {}

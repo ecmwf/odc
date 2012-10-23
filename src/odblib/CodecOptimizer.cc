@@ -47,7 +47,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				if(max == min)
 					codec = col.hasMissing() ? "real_constant_or_missing" : "constant";
 				else
-					codec = "short_real";
+					codec = "short_real2";
 				col.coder(Codec::findCodec<DATASTREAM>(codec, false));
 				col.hasMissing(hasMissing);
 				col.missingValue(missing);
