@@ -25,8 +25,6 @@
 #include "odblib/Comparator.h"
 #include "eclib/Timer.h"
 
-void debugMeNow();
-
 namespace odb {
 
 template <typename WRITE_ITERATOR, typename OWNER>
@@ -378,7 +376,6 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	nrows_  = 0;
 	for (; it != end; ++it)
 	{
-		//if (nrows_ == 336788) debugMeNow();
 		if (it->isNewDataset() && columns() != it->columns() )
 		{
 			columns() = it->columns();
@@ -408,7 +405,6 @@ template <typename T>
 void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verify(T& it, const T& end)
 {
 	Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::verify: Verifying..." << endl;
-	close();
 
 	Timer timer("Split verification");
 
@@ -416,7 +412,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 	vector<pair<Reader::iterator, Reader::iterator> > iterators;
 	for (size_t i = 0; i < files_.size(); ++i)
 	{
-		//Log::info() << "Opening '" << files_[i] << "'" << endl;
+		Log::info() << "Opening '" << files_[i] << "'" << endl;
 		Reader* reader(new Reader(files_[i]));
 		readers.push_back(reader);
 		iterators.push_back(make_pair(reader->begin(), reader->end()));
