@@ -75,7 +75,7 @@ private:
 	bool noMore_;
 	bool aggregateResultRead_;
 	bool isCachingRows_;
-	vector<vector<double> > rowCache_;
+	list<vector<double> > rowCache_;
 
 protected:
 	SelectIterator (Select &owner);

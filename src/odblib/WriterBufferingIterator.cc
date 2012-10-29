@@ -92,14 +92,16 @@ unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigne
 	return 0;
 } 
 
+void WriterBufferingIterator::resetColumnsBuffer()
+{
+	columnsBuffer_ = columns();
+	columnsBuffer_.resetStats();
+}
+
 template <typename DATASTREAM>
 int WriterBufferingIterator::setOptimalCodecs()
 {
-	if (columnsBuffer_.size() == 0)
-	{
-		columnsBuffer_ = columns();
-		columnsBuffer_.resetStats();
-	}
+	if (columnsBuffer_.size() == 0) resetColumnsBuffer();
 
 	//return codec::CodecOptimizer::setOptimalCodecs<DATASTREAM>(columns());
 	return codec::CodecOptimizer::setOptimalCodecs<DATASTREAM>(columns());
@@ -138,6 +140,7 @@ void WriterBufferingIterator::writeHeader()
 	allocBuffers();
 	for (size_t i = 0; i < columns_.size(); ++i)
 		columns_[i]->coder().resetStats();
+	resetColumnsBuffer();
 }
 
 bool WriterBufferingIterator::next() { return writeRow(nextRow_, columns().size()) == 0; }
@@ -148,18 +151,18 @@ double* WriterBufferingIterator::data() { return nextRow_; }
 int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 {
 	ASSERT(nCols == columns().size());
+	if (rowsBuffer_ == 0) allocRowsBuffer();
 
-	if (rowsBuffer_ == 0)
-		allocRowsBuffer();
+	if (p_ + nCols * sizeof(double) > rowsBuffer_ + rowsBuffer_.size())
+		flush();
 
 	gatherStats(data, nCols);
 
 	copy(data, data + nCols, p_);
 	p_ += nCols;
 
-	ASSERT(p_ <= rowsBuffer_ + rowsBuffer_.size());
-	if (p_ == rowsBuffer_ + rowsBuffer_.size())
-		flush();
+	//ASSERT(p_ <= static_cast<double *>(rowsBuffer_) + rowsBuffer_.size());
+	//if (p_ == rowsBuffer_ + rowsBuffer_.size()) flush();
 
 	return 0;
 }

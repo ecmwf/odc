@@ -97,6 +97,8 @@ private:
 
 	void allocBuffers();
 	void allocRowsBuffer();
+	void resetColumnsBuffer();
+
 	int doWriteRow(const double*, unsigned long);
 
 	int refCount_;

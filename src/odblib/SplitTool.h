@@ -33,10 +33,14 @@ public:
 	static void split(const PathName&, const string&, size_t);
 	static void presortAndSplit(const PathName&, const string&);
 
+	static vector<pair<Offset,Length> > getChunks(const PathName&, size_t maxExpandedSize = 100*1024*1024);
 private:
 // No copy allowed
     SplitTool(const SplitTool&);
     SplitTool& operator=(const SplitTool&);
+
+	static string genOrderBySelect(const string&, const string&);
+
 	long maxOpenFiles_;
 	bool sort_;
 };

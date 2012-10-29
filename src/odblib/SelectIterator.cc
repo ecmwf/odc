@@ -117,9 +117,11 @@ bool SelectIterator::next()
 		else
 		{
 			noMore_ = false;
-			for (size_t i = 0; i < rowCache_[0].size(); ++i)
-				data_[i] = rowCache_[0][i];
-			rowCache_.erase(rowCache_.begin());
+			vector<double>& r(rowCache_.front());
+			//for (size_t i = 0; i < r.size(); ++i) data_[i] = r[i];
+			copy(r.begin(), r.end(), data_);
+	
+			rowCache_.pop_front();
 			return true;
 		}
 	}
@@ -142,9 +144,10 @@ bool SelectIterator::next()
 		if (rowCache_.size())
 		{
 			noMore_ = false;
-			for (size_t i = 0; i < rowCache_[0].size(); ++i)
-				data_[i] = rowCache_[0][i];
-			rowCache_.erase(rowCache_.begin());
+			vector<double>& r(rowCache_.front());
+			//for (size_t i = 0; i < r.size(); ++i) data_[i] = r[i];
+			copy(r.begin(), r.end(), data_);
+			rowCache_.pop_front();
 			return true;
 		}
 	}

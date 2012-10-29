@@ -22,10 +22,12 @@
 namespace odb {
 namespace tool {
 
+typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
+
 SplitTool::SplitTool (int argc, char *argv[])
 : Tool(argc, argv),
   sort_(true),
-  maxOpenFiles_(1)
+  maxOpenFiles_(200)
 {
 	registerOptionWithArgument("-maxopenfiles");
 }
@@ -42,58 +44,100 @@ void SplitTool::run()
 
 	if (optionIsSet("-nosort")) sort_ = false;
 	maxOpenFiles_ = optionArgument("-maxopenfiles", maxOpenFiles_);
+	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
 
 	PathName inFile = parameters(1);
-	string outFile = parameters(2);
+	string outFileTemplate = parameters(2);
 
 	if (sort_)
-		presortAndSplit(inFile, outFile);
+		presortAndSplit(inFile, outFileTemplate);
 	else
-		split(inFile, outFile, maxOpenFiles_);
+		split(inFile, outFileTemplate, maxOpenFiles_);
 }
 
-void SplitTool::presortAndSplit(const PathName& inFile, const string& outFile)
+/**
+ * @param maxExpandedSize maximum size of the data in chunks after decoding
+*/
+vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
 {
-	typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
+	ostream &L(Log::debug());
+	L << "SplitTool::getChunks: " << endl;
+
+	vector<pair<Offset,Length> > r;
+
     MDReader mdr(inFile);
     MDReader::iterator it(mdr.begin()), end(mdr.end());
 
-    odb::MetaData metaData(it->columns());
-	odb::DispatchingWriter out(outFile, 1); //, append);
-	odb::DispatchingWriter::iterator outIt = out.begin();
+	Offset currentOffset(0);
+	Length currentLength(0);
 
+	size_t currentSize = 0;
+
+    for(; it != end; ++it)
+    {   
+        Offset offset((**it).blockStartOffset());
+        Length length((**it).blockEndOffset() - offset);
+		size_t numberOfRows = it->columns().rowsNumber();
+		size_t numberOfColumns = it->columns().size();
+
+		L << "SplitTool::getChunks: " << offset << " " << length << endl;
+
+		size_t size = numberOfRows * numberOfColumns * sizeof(double);
+		if (currentSize + size > maxExpandedSize)
+		{
+			L << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << endl;
+			r.push_back(make_pair(currentOffset, currentLength));
+			currentOffset = offset;
+			currentLength = length;
+		} else {
+			currentLength += length;
+			currentSize += numberOfRows * numberOfColumns * sizeof(double);
+		}
+    } 
+	if (r.size() == 0 || r.back().first != currentOffset)
+		r.push_back(make_pair(currentOffset, currentLength));
+	return r;
+}
+
+string SplitTool::genOrderBySelect(const string& inFile, const string& outFileTemplate)
+{
+    MDReader mdr(inFile);
+    MDReader::iterator it(mdr.begin());
     TemplateParameters templateParameters;
-    TemplateParameters::parse(outFile, templateParameters, it->columns());
+    TemplateParameters::parse(outFileTemplate, templateParameters, it->columns());
 	stringstream ss;
 	ss << "select * order by ";
 	for (size_t i = 0; i < templateParameters.size(); ++i)
 	{
-		Log::info() << "SplitTool::presortAndSplit: " << templateParameters[i]->name << endl;
 		if (i) ss << ",";
 		ss << templateParameters[i]->name;
 	}
 	string sql = ss.str();
-	Log::info() << "SplitTool::presortAndSplit: sql: '" << sql << "'" << endl;
+	Log::info() << "SplitTool::genOrderBySelect: sql: '" << sql << "'" << endl;
+	return sql;
+}
 
-	Log::info() << "sql: " << sql << endl;
-    for(; it != end; ++it)
+void SplitTool::presortAndSplit(const PathName& inFile, const string& outFileTemplate)
+{
+	odb::DispatchingWriter out(outFileTemplate, 1); 
+	odb::DispatchingWriter::iterator outIt = out.begin();
+
+	string sql(genOrderBySelect(inFile, outFileTemplate));
+	
+	vector<pair<Offset,Length> > chunks(getChunks(inFile));
+    for(size_t i=0; i < chunks.size(); ++i)
     {   
-        ASSERT (it->isNewDataset());
-        metaData = it->columns();
-
-        Offset offset((**it).blockStartOffset());
-        Length length((**it).blockEndOffset() - (**it).blockStartOffset());
-		PartFileHandle h(inFile, offset, length);
+		PartFileHandle h(inFile, chunks[i].first, chunks[i].second);
 		h.openForRead();
 		odb::Select in(sql, h);
 		outIt->pass1(in.begin(), in.end());
     } 
 }
 
-void SplitTool::split(const PathName& inFile, const string& outFile, size_t maxOpenFiles)
+void SplitTool::split(const PathName& inFile, const string& outFileTemplate, size_t maxOpenFiles)
 {
 	odb::Reader in(inFile);
-	odb::DispatchingWriter out(outFile, maxOpenFiles);
+	odb::DispatchingWriter out(outFileTemplate, maxOpenFiles);
 
 	odb::DispatchingWriter::iterator outIt = out.begin();
 	outIt->pass1(in.begin(), in.end());
@@ -101,6 +145,7 @@ void SplitTool::split(const PathName& inFile, const string& outFile, size_t maxO
 	odb::Reader input(inFile);
 	odb::Reader::iterator begin(input.begin());
 	odb::Reader::iterator end(input.end());
+	outIt->close();
 	(**outIt).verify(begin, end);
 }
 
