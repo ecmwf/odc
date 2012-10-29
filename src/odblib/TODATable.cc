@@ -107,18 +107,19 @@ template <typename T>
 void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
 {
 	Log::debug() << "ODATableIterator::updateMetaData: " << endl;
+	MetaData& newColumns(reader_->columns());
 	for(size_t i = 0; i < selected.size(); i++)
 	{
 		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);
 		ASSERT(c);
-		if (reader_->columns()[c->index()]->name() != c->name()) 
+		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name()) 
 		{
 			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl;
 			Log::warning() << "Was: " << c->index() << "." << endl;
 			bool newIndexFound = false;
-			for (size_t j = 0; j < reader_->columns().size(); ++j)
+			for (size_t j = 0; j < newColumns.size(); ++j)
 			{
-				Column &other = *reader_->columns()[j];
+				Column &other(*newColumns[j]);
 				if (other.name() == c->name() || other.name() == c->fullName())
 				{
 					newIndexFound = true;
