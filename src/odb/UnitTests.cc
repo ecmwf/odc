@@ -572,7 +572,7 @@ void SplitTool_chunks()
 	Log::info() << "chunks.size():" << chunks.size() << endl;
 	ASSERT(chunks.size() == 1 && chunks[0].first == Offset(0) && chunks[0].second == Length(357));
 }
-TESTCASE(SplitTool_chunks);
+//TESTCASE(SplitTool_chunks);
 
 
 void FilePool1()
