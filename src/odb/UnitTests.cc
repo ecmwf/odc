@@ -18,10 +18,9 @@
 #include <algorithm>
 
 #include <stdlib.h>
+#include <memory> 
 
 using namespace std;
-
-
 
 #include "eclib/PathName.h"
 #include "eclib/DataHandle.h"
@@ -55,6 +54,9 @@ using namespace std;
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "odblib/DateTime.h"
+#include "odblib/SplitTool.h"
+#include "odblib/CountTool.h"
+//#include "odblib/FilePool.h"
 
 #include "odb/TestWriteCatFiles.h"
 #include "odblib/ToolFactory.h"
@@ -539,7 +541,6 @@ void windSpeedWindDirection()
         ASSERT((*it)[0] == (*it)[4]);
         ASSERT((*it)[1] == (*it)[5]);
     }
-
 }
 TESTCASE(windSpeedWindDirection);
 
@@ -550,15 +551,59 @@ void odbcapi()
 }
 TESTCASE(odbcapi);
 
-void HashTable_clone()
+auto_ptr<odb::codec::HashTable> HashTable_clone()
 {
 	using namespace odb::codec;
 	odb::codec::HashTable *h = new odb::codec::HashTable;
 	h->store("BUFRDATA");
 	h->store("OTHER_ST");
-	odb::codec::HashTable *h2 = h->clone();
+
+	return auto_ptr<odb::codec::HashTable>(h->clone());
 }
+
 TESTCASE(HashTable_clone);
+
+void SplitTool_chunks()
+{
+	const char * fn = "selectAggregatedAndNonAggregated.odb";
+	unsigned long long n = CountTool::fastRowCount(fn);
+	vector<pair<Offset,Length> > chunks = SplitTool::getChunks(fn);
+
+	Log::info() << "chunks.size():" << chunks.size() << endl;
+	ASSERT(chunks.size() == 1 && chunks[0].first == Offset(0) && chunks[0].second == Length(357));
+}
+TESTCASE(SplitTool_chunks);
+
+
+void FilePool1()
+{
+	//FilePool<SimpleFilePoolTraits> pool(1);
+}
+//TESTCASE(FilePool1);
+
+void copyVectorToArray()
+{
+	const size_t size = 1024; 
+	const size_t n = 1000000;
+
+	vector<double> v(size);
+	double a[size];
+
+	{ 
+		Timer timer("std::copy");
+		for (size_t i = 0; i < n; ++i)
+			std::copy(v.begin(), v.end(), a);
+	}
+
+	{
+		Timer timer("for loop");
+		for (size_t i = 0; i < n; ++i)
+			for (size_t j = 0; j < size; ++j)
+				a[j] = v[j];
+	}
+
+}
+//TESTCASE(copyVectorToArray);
 
 
 } // namespace test 
