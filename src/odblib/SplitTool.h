@@ -27,7 +27,8 @@ public:
 
 	static void usage(const string& name, ostream &o)
 	{
-		o << name << " [-nosort] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
+		o << name << " [-maxopenfiles <N>] <input.odb> <output_template.odb>";
+		//o << name << " [-sort] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 	}
 
 	static void split(const PathName&, const string&, size_t);

@@ -26,7 +26,7 @@ typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
 
 SplitTool::SplitTool (int argc, char *argv[])
 : Tool(argc, argv),
-  sort_(true),
+  sort_(false),
   maxOpenFiles_(200)
 {
 	registerOptionWithArgument("-maxopenfiles");
@@ -42,7 +42,7 @@ void SplitTool::run()
 		return;
 	}
 
-	if (optionIsSet("-nosort")) sort_ = false;
+	if (optionIsSet("-sort")) sort_ = true;
 	maxOpenFiles_ = optionArgument("-maxopenfiles", maxOpenFiles_);
 	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
 
