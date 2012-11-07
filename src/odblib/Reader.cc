@@ -31,6 +31,8 @@ using namespace std;
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
+#include "odblib/MetaData.h"
+#include "odblib/CodecOptimizer.h"
 #include "odblib/DataStream.h"
 #include "odblib/FixedSizeWriterIterator.h"
 #include "odblib/HashTable.h"

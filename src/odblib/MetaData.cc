@@ -63,7 +63,7 @@ MetaData MetaData::scanFile(const PathName& fileName)
 	}
 	L << "TestMetaDataReader::test i=" << i << ", mds=" << mds << endl;
 
-	codec::CodecOptimizer::setOptimalCodecs<DataStream<> >(wholeFileMD);
+	codec::CodecOptimizer().setOptimalCodecs<DataStream<> >(wholeFileMD);
 
 	return wholeFileMD;
 }

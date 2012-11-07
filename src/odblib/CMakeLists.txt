@@ -317,7 +317,6 @@ piconst.h
 # templates
 
 list( APPEND odblib_templates
-CodecOptimizer.cc
 ConstantSetter.cc
 DataStream.cc
 FastODA2Request.cc

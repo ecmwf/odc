@@ -104,7 +104,7 @@ int WriterBufferingIterator::setOptimalCodecs()
 	if (columnsBuffer_.size() == 0) resetColumnsBuffer();
 
 	//return codec::CodecOptimizer::setOptimalCodecs<DATASTREAM>(columns());
-	return codec::CodecOptimizer::setOptimalCodecs<DATASTREAM>(columns());
+	return this->codecOptimizer_.setOptimalCodecs<DATASTREAM>(columns());
 }
 
 void WriterBufferingIterator::allocBuffers()

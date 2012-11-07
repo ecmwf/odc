@@ -15,6 +15,7 @@
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"
+#include "odblib/CodecOptimizer.h"
 #include "odblib/DataStream.h"
 #include "odblib/DataStream.h"
 #include "odblib/FunctionEQ.h"

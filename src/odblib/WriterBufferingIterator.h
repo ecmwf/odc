@@ -23,6 +23,7 @@
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Writer.h"
 #include "odblib/Header.h"
+#include "odblib/CodecOptimizer.h"
 
 class PathName;
 class DataHandle;
@@ -113,6 +114,8 @@ private:
 	size_t rowsBufferSize_;
 	MemoryBlock setvBuffer_;
 	size_t maxAnticipatedHeaderSize_;
+
+	codec::CodecOptimizer codecOptimizer_;
 
 	friend class IteratorProxy<WriterBufferingIterator, Owner>;
 	friend class Header<WriterBufferingIterator>;
