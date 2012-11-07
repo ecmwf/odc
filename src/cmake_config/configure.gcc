@@ -14,6 +14,7 @@ $CMAKE ../.. $BUILD_TYPE $1 \
 	-DCMAKE_Fortran_COMPILER=/usr/local/apps/pgi/pgi-10.8/linux86-64/10.8/bin/pgf90 \
 	-DODB_API_MIGRATOR=ON \
 	-DECLIB_SOURCE=$SRC/eclib \
+	-DBUILD_SHARED_LIBS=OFF \
 	-DCMAKE_MODULE_PATH=$SRC/ecbuild/cmake \
 	-DODB_API_FORTRAN=ON \
 	-DODB_API_PYTHON=ON \

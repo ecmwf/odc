@@ -19,19 +19,19 @@ CMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{prin
 $1 $cmake ../../ $2 \
 	-DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//') \
 	-DCMAKE_INSTALL_PREFIX=$CMAKE_INSTALL_PREFIX \
-        -DXLF_PATH=/usr/local/lpp/xlf13109/usr \
+	-DXLF_PATH=/usr/local/lpp/xlf13109/usr \
 	-DCMAKE_Fortran_COMPILER=xlf90_r \
 	-DCMAKE_CXX_COMPILER=xlC_r \
 	-DCMAKE_C_COMPILER=xlc_r \
-        -DODB_PATH=$ODB_ROOT \
+	-DODB_PATH=$ODB_ROOT \
 	-DCMAKE_MODULE_PATH=$(cd ../../ecbuild/cmake && pwd) \
 	-DECLIB_SOURCE=$(cd ../../eclib && pwd) \
 	-DBUILD_SHARED_LIBS=OFF \
-        -DODB_API_MIGRATOR=ON \
-        -DODB_API_FORTRAN=ON \
-        -DODB_API_PYTHON=OFF \
-        -DSWIG_EXECUTABLE=/usr/local/apps/swig/2.0.8/LP64/bin/swig \
-        -DBISON_EXECUTABLE='/usr/local/apps/bison/2.3/bin/bison' \
-        -DFLEX_EXECUTABLE='/usr/bin/flex' \
+	-DODB_API_MIGRATOR=ON \
+	-DODB_API_FORTRAN=ON \
+	-DODB_API_PYTHON=OFF \
+	-DSWIG_EXECUTABLE=/usr/local/apps/swig/2.0.8/LP64/bin/swig \
+	-DBISON_EXECUTABLE='/usr/local/apps/bison/2.3/bin/bison' \
+	-DFLEX_EXECUTABLE='/usr/bin/flex' \
 	-DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7
 

@@ -12,6 +12,7 @@ $1 $cmake ../.. $cc $build_type $install $client $2 \
 	-DCMAKE_CXX_COMPILER=g++ \
 	-DODB_API_MIGRATOR=OFF \
 	-DECLIB_SOURCE=/marsdev/data/p4/linux/amd64/odb_api_dev/odb_api_release/eclib \
+	-DBUILD_SHARED_LIBS=OFF \
 	-DCMAKE_MODULE_PATH=/marsdev/data/p4/linux/amd64/odb_api_dev/odb_api_release/ecbuild/cmake \
 	-DODB_API_FORTRAN=OFF \
 	-DODB_API_PYTHON=OFF \
