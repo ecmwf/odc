@@ -25,5 +25,4 @@ $1 $cmake ../.. $build_type $2 \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCMAKE_MODULE_PATH=/vol/marsdev/data/p4/linux/ia32/opensuse103/odb_api_dev/odb_api_release/ecbuild/cmake \
 	-DODB_API_FORTRAN=ON \
-	-DODB_API_PYTHON=ON \
 	-DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7

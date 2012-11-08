@@ -19,6 +19,6 @@ $1 $cmake ../.. $cc $build_type  $2 \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DCMAKE_MODULE_PATH=/gpfs/lxab/marsdev/data/p4/linux/x86_64/sles11/odb_api_dev/odb_api_release/ecbuild/cmake \
 	-DODB_API_FORTRAN=ON \
-	-DODB_API_PYTHON=ON \
 	-DPGI_PATH=/usr/local/apps/pgi/pgi\-10.8/linux86-64/current \
 	-DCMAKE_INSTALL_PREFIX=$PREFIX
+
