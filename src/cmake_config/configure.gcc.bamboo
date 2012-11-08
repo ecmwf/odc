@@ -14,5 +14,7 @@ $1 $cmake ../.. $build_type $install $2  \
 	-DCMAKE_MODULE_PATH=$P4ROOT/odb_api/ecbuild/cmake \
 	-DODB_API_MIGRATOR=OFF \
 	-DBUILD_SHARED_LIBS=OFF \
+	-DCMAKE_CXX_FLAGS=-fPIC \
+	-DCMAKE_C_FLAGS=-fPIC \
 	-DODB_API_FORTRAN=ON \
 	-DODB_API_PYTHON=ON 

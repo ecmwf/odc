@@ -19,6 +19,8 @@ $cmake ../..  $build_type \
 	-DODB_API_MIGRATOR=ON \
 	-DECLIB_SOURCE=/vol/marsdev/data/p4/linux/x86_64/opensuse113/odb_api_dev/odb_api_release/eclib \
 	-DBUILD_SHARED_LIBS=OFF \
+	-DCMAKE_CXX_FLAGS=-fPIC \
+	-DCMAKE_C_FLAGS=-fPIC \
 	-DCMAKE_MODULE_PATH=/vol/marsdev/data/p4/linux/x86_64/opensuse113/odb_api_dev/odb_api_release/ecbuild/cmake \
 	-DODB_API_FORTRAN=ON \
 	-DPGI_PATH=/usr/local/apps/pgi/pgi\-10.8/linux86-64/10.8
