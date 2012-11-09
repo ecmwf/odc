@@ -16,6 +16,8 @@ echo Install prefix is $PREFIX
 	-DXLF_PATH=/usr/lpp/xlf \
     -DCMAKE_C_COMPILER=xlc_r \
     -DCMAKE_CXX_COMPILER=xlc++_r \
+	-DCMAKE_CXX_FLAGS=-q64 \
+	-DCMAKE_C_FLAGS=-q64 \
     -DCMAKE_Fortran_COMPILER=xlf90_r \
     -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DODB_PATH=$ODB_ROOT \
