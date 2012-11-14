@@ -297,9 +297,7 @@ oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filena
 	Writer<> *o = reinterpret_cast<Writer<> *>(co);
 	string fileName(filename);
 	PathName fn(fileName);
-	FileHandle *fh = new FileHandle(fn, /* overwrite */ false);
-	Length foo;
-	fh->openForAppend(foo);
+	DataHandle *fh = ODBAPISettings::instance().appendToFile(fn);
 
 	// TODO: make sure there's no leaks (FileHandle)
 	Writer<>::iterator_class* w = new Writer<>::iterator_class(*o, fh, false);
@@ -312,7 +310,7 @@ oda_write_iterator_ptr odb_create_write_iterator(oda_ptr co, const char *filenam
 	Writer<> *o = reinterpret_cast<Writer<> *>(co);
 	string fileName(filename);
 	PathName fn(fileName);
-	FileHandle *fh = new FileHandle(fn);
+	DataHandle *fh = ODBAPISettings::instance().appendToFile(fn);
 
 	// TODO: make sure there's no leaks (FileHandle)
 	Writer<>::iterator_class* w = new Writer<>::iterator_class(*o, fh);

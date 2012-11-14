@@ -38,8 +38,7 @@ void MDSetTool::run()
 	PathName inFile = parameters(2);
 
 	PathName outFile = parameters(3);
-	FileHandle outHandle(outFile, true);
-	outHandle.openForWrite(outFile.exists() ? outHandle.estimate() : Length(0) );
+	auto_ptr<DataHandle> outHandle(ODBAPISettings::instance().writeToFile(outFile));
 
 	parseUpdateList(parameters(1), columns, types);
     ASSERT(columns.size() == types.size());
@@ -90,15 +89,15 @@ void MDSetTool::run()
 		{
 			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << endl;
 
-			serializeHeader<SameByteOrder,DataHandle>(outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
-			DataStream<SameByteOrder,DataHandle>(outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
+			serializeHeader<SameByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
+			DataStream<SameByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
 		}
 		else
 		{
 			Log::info() << "MDSetTool::run: OTHER ORDER " << sizeOfEncodedData << endl;
 			
-			serializeHeader<OtherByteOrder,DataHandle>(outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
-			DataStream<OtherByteOrder,DataHandle>(outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
+			serializeHeader<OtherByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
+			DataStream<OtherByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
 		}
 	}
 

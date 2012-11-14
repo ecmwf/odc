@@ -42,7 +42,7 @@ std::string StringTool::readFile(const PathName fileName, bool logging)
 	const size_t CHUNK_SIZE = 1024;
 	char buffer[CHUNK_SIZE]; 
 
-	FileHandle f(fileName, "r");
+	FileHandle f(fileName);
 	Length estimated = f.openForRead();
 	
 	std::string ret;

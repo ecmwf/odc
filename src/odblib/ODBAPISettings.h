@@ -31,6 +31,9 @@ public:
 	size_t setvbufferSize();
 	void setvbufferSize(size_t);
 
+	DataHandle* writeToFile(const PathName&, const Length& = Length(0));
+	DataHandle* appendToFile(const PathName&, const Length& = Length(0));
+
 	static bool debug;
 
 private:
@@ -42,6 +45,8 @@ private:
 
 	size_t headerBufferSize_;
 	size_t setvbufferSize_;
+
+	bool useAIO_;
 
 friend class ThreadSingleton<ODBAPISettings>;
 };

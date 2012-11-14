@@ -9,6 +9,7 @@
  */
 
 #include "eclib/machine.h"
+#include "eclib/AIOHandle.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
@@ -49,7 +50,8 @@ ODBAPISettings& ODBAPISettings::instance()
 
 ODBAPISettings::ODBAPISettings()
 : headerBufferSize_(Resource<long>("$ODB_HEADER_BUFFER_SIZE;-headerBufferSize;headerBufferSize", MEGA(4))),
-  setvbufferSize_(Resource<long>("$ODB_SETVBUFFER_SIZE;-setvbufferSize;setvbufferSize", MEGA(8)))
+  setvbufferSize_(Resource<long>("$ODB_SETVBUFFER_SIZE;-setvbufferSize;setvbufferSize", MEGA(8))),
+  useAIO_(Resource<bool>("$ODB_API_USE_AIO", false))
 {}
 
 size_t ODBAPISettings::headerBufferSize() { return headerBufferSize_; }
@@ -57,5 +59,21 @@ void ODBAPISettings::headerBufferSize(size_t n) { headerBufferSize_ = n; }
 
 size_t ODBAPISettings::setvbufferSize() { return setvbufferSize_; }
 void ODBAPISettings::setvbufferSize(size_t n) { setvbufferSize_ = n; }
+
+DataHandle* ODBAPISettings::writeToFile(const PathName& fn, const Length& length)
+{
+	DataHandle* h = 0;
+	h = useAIO_ ? static_cast<DataHandle*>(new AIOHandle(fn)) : static_cast<DataHandle*>(new FileHandle(fn));
+	h->openForWrite(length);
+	return h;
+}
+
+DataHandle* ODBAPISettings::appendToFile(const PathName& fn, const Length& length)
+{
+	DataHandle *h = 0;
+	h = useAIO_ ? static_cast<DataHandle*>(new AIOHandle(fn)) : static_cast<DataHandle*>(new FileHandle(fn));
+	h->openForAppend(length);
+	return h;
+}
 
 } // namespace odb

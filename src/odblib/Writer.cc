@@ -25,7 +25,6 @@ using namespace std;
 
 #include "eclib/DataHandle.h"
 #include "eclib/Exceptions.h"
-#include "eclib/FileHandle.h"
 #include "eclib/PathName.h"
 
 
@@ -55,6 +54,7 @@ using namespace std;
 #include "odblib/Writer.h"
 #include "odblib/WriterBufferingIterator.h"
 #include "odblib/WriterBufferingIterator.h"
+#include "odblib/ODBAPISettings.h"
 
 using namespace std;
 
@@ -105,7 +105,7 @@ ITERATOR* Writer<ITERATOR>::writer(bool fixedSizeRows)
 {
 	if (string(path_).size())
 	{
-		FileHandle *fh = new FileHandle(path_);
+		DataHandle *fh = ODBAPISettings::instance().writeToFile(path_);
 		return fixedSizeRows ?
 			new FixedSizeWriterIterator(*this, fh)
 			: new ITERATOR(*this, fh);
@@ -113,7 +113,6 @@ ITERATOR* Writer<ITERATOR>::writer(bool fixedSizeRows)
 		
 	ASSERT(dataHandle_);	
 
-	// TODO: check what iterators do with the data handle (closing, deleting).
 	return fixedSizeRows ?
 		new FixedSizeWriterIterator(*this, dataHandle_)
 		: new ITERATOR(*this, dataHandle_);
@@ -124,7 +123,7 @@ typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 {
 	DataHandle *dh = 0;
 	if (string(path_).size())
-		dh = new FileHandle(path_);
+		dh = ODBAPISettings::instance().writeToFile(path_);
 	else
 	{
 		ASSERT(dataHandle_);
@@ -136,13 +135,11 @@ typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 template <typename ITERATOR>
 ITERATOR* Writer<ITERATOR>::createWriteIterator(PathName pathName, bool append)
 {
-	DataHandle *h = new FileHandle(pathName);
-	if (append)
-	{
-		Length estimatedLength = 10*1024*1024;
-		h->openForAppend(estimatedLength);
-	}
-	return new ITERATOR(*this, h, !append);
+	Length estimatedLength = 10*1024*1024;
+	DataHandle *h = append
+					? ODBAPISettings::instance().appendToFile(pathName, estimatedLength)
+					: ODBAPISettings::instance().writeToFile(pathName, estimatedLength);
+	return new ITERATOR(*this, h, false);
 }
 
 // Explicit templates' instantiations.
