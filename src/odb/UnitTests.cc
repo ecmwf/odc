@@ -56,7 +56,7 @@ using namespace std;
 #include "odblib/DateTime.h"
 #include "odblib/SplitTool.h"
 #include "odblib/CountTool.h"
-//#include "odblib/FilePool.h"
+#include "odblib/MapReduce.h"
 
 #include "odb/TestWriteCatFiles.h"
 #include "odblib/ToolFactory.h"
@@ -66,6 +66,8 @@ using namespace std;
 namespace odb {
 namespace tool {
 namespace test {
+
+typedef long long llong;
 
 void foobar()
 {
@@ -437,7 +439,7 @@ void rownumber1()
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
 
-	long long i = 0;
+	llong i = 0;
     for (; it != end; ++it)
     {
         ASSERT((*it)[0] == ++i);
@@ -533,7 +535,7 @@ void windSpeedWindDirection()
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
 
-	long long i = 0;
+	llong i = 0;
     for (; it != end; ++it)
     {
         Log::info() << " ff = " << (*it)[0] << " speed sqrt= " << (*it)[4] << endl;
@@ -604,6 +606,53 @@ void copyVectorToArray()
 
 }
 //TESTCASE(copyVectorToArray);
+
+
+void count(void *counter, const double* data, size_t n) { ++*((llong*)counter); }
+void *create_counter()
+{
+	llong* r = new llong;
+	*r = 0;
+	return r;
+}
+void destroy_counter(void *counter) { delete (llong*) counter; }
+void *reduce_counter(void *left, void *right)
+{
+	llong *result = new llong;
+	*result = (*(llong *) left) + (*(llong *) right);
+	return result;
+}
+CallBackProcessOneRow create_counter_callback() 
+{
+	CallBackProcessOneRow cb;
+	cb.mapper = count;
+	cb.reducer = reduce_counter;
+	cb.create = create_counter;
+	cb.destroy = destroy_counter;
+	return cb;
+}
+
+const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+const string sql = "select lat,lon";
+
+void map_reduce_mt()
+{
+	llong n = CountTool::fastRowCount(fileName);
+	llong* result = (llong*) MultipleThreadMapReduce::forEachRow(0, fileName, sql, create_counter_callback());
+	Log::info() << "map_reduce: MultipleThreadMapReduce::forEachRow => " << *result << endl;
+	ASSERT(*result == n);
+}
+TESTCASE(map_reduce_mt);
+
+void map_reduce_st()
+{
+	llong n = CountTool::fastRowCount(fileName);
+	llong r = 0;
+	llong* result = (llong*) SingleThreadMapReduce::forEachRow(&r, fileName, sql, create_counter_callback());
+	Log::info() << "map_reduce: SingleThreadMapReduce::forEachRow => " << *result << endl;
+	ASSERT(*result == n);
+}
+TESTCASE(map_reduce_st);
 
 
 } // namespace test 

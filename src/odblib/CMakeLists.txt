@@ -304,6 +304,8 @@ WriterBufferingIterator.cc
 WriterBufferingIterator.h
 WriterDispatchingIterator.cc
 WriterDispatchingIterator.h
+MapReduce.cc
+MapReduce.h
 XYVTool.cc
 XYVTool.h
 md5_hash.h
