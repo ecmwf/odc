@@ -210,7 +210,7 @@ void HashTable::load(DataStream<BYTEORDER> &f)
 
 		ASSERT(index < nextIndex_);
 		strings_[index] = std::string(s);
-		ASSERT(strings_[index].size());
+
 	}
 	//Log::info() << "HashTable@" << this << "::load END" << endl;
 }
