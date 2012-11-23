@@ -1,5 +1,9 @@
 set -e
 
+ROOT_DIR=${1-/tmp/p4/source/main/build/Debug/bin}
+ls -l $ROOT_DIR/*odb
+cd $ROOT_DIR
+
 function log
 {
 	if [ x$MARS_SMS_LABEL != x ];
@@ -17,15 +21,15 @@ set -x
 
 log +++ Test: odb set
 
-export INPUT=saved.disp.4.0.oda
-export OUTPUT=disp.4.0.modified.oda
+export INPUT=disp.4.0.odb
+export OUTPUT=disp.4.0.modified.odb
 
 
 log Check the input data is there and has the expected values
 ls -l $INPUT
 ./odb header $INPUT | grep expver | grep 0018
 ./odb header $INPUT | grep andate | grep 20000101
-./odb ls -s expver,andate $INPUT | grep 0018 | grep 20000101 >/dev/null
+./odb sql select expver,andate -i $INPUT | grep 0018 | grep 20000101 >/dev/null
 
 log Create new file with changed values of expver and andate
 ./odb set "expver@desc='0019    ',andate=20100101" $INPUT $OUTPUT
@@ -74,7 +78,7 @@ log +++ Test: Input file command line option: -i. Also, test option -T: do not p
 [ `./odb sql select \* -i test_import.odb -T|grep stream|wc|awk '{print $1}'` == 0 ]
 log +++ odb Completed OK
 
-./odb sql select time,lat,lon,obsvalue  order by time,lat,lon -i 2000010106.1.0.oda.odb -f odb -o order_by_out.odb
+./odb sql select time,lat,lon,obsvalue  order by time,lat,lon -i 2000010106.1.0.odb -f odb -o order_by_out.odb
 ./odb header order_by_out.odb
 
 log +++ Test SELECT with mixed aggregated and non-aggregated functions
@@ -93,7 +97,7 @@ NULL,5,0.5
 log +++ Test portability of the split tool
 
 rm -rf split.*.*.odb
-./odb split split_crash_on_andate_and_antime.odb split.{andate}.{antime}.odb
+./odb split $ODB_API_TEST_DATA_PATH/split_crash_on_andate_and_antime.odb split.{andate}.{antime}.odb
 ls -l split.*.*.odb
 
 log +++ odb Completed OK
