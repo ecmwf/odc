@@ -1,9 +1,5 @@
 set -e
 
-ROOT_DIR=${1-/tmp/p4/source/main/build/Debug/bin}
-ls -l $ROOT_DIR/*odb
-cd $ROOT_DIR
-
 function log
 {
 	if [ x$MARS_SMS_LABEL != x ];
