@@ -65,6 +65,16 @@ namespace tool {
 
 typedef void (*CallBackProcessOneRowMapper)(void *, const double*, size_t);
 typedef void* (*CallBackProcessOneRowReducer)(void *, void*);
+
+struct Array {
+	const double* data;
+	size_t nCols;
+	size_t nRows;
+};
+
+typedef void (*CallBackProcessArrayMapper)(void *, struct Array);
+typedef void* (*CallBackProcessArrayReducer)(void *, void*);
+
 typedef void* (*CreateResult)();
 typedef void (*DestroyResult)(void *);
 
@@ -75,16 +85,31 @@ struct CallBackProcessOneRow {
 	DestroyResult destroy;
 };
 
+struct CallBackProcessArray {
+	CallBackProcessArrayMapper mapper;
+	CallBackProcessArrayReducer reducer;
+	CreateResult create;
+	DestroyResult destroy;
+};
+
 class SingleThreadMapReduce {
+	static const size_t N;
 public:
-	static void * forEachRow(void* userData, DataHandle& dh, const string& sql, CallBackProcessOneRow);
-	static void * forEachRow(void* userData, const PathName& fileName, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, DataHandle& dh, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, const PathName& fileName, const string& sql, CallBackProcessOneRow);
+
+	static void * process(void* userData, const PathName& fileName, const string& sql, CallBackProcessArray);
+	static void * process(void* userData, DataHandle& dh, const string& sql, CallBackProcessArray);
 };
 
 class MultipleThreadMapReduce {
+	static const size_t threadPoolSize_;
 public:
-	static void * forEachRow(void* userData, DataHandle& dh, const string& sql, CallBackProcessOneRow);
-	static void * forEachRow(void* userData, const PathName& fileName, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, DataHandle& dh, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, const PathName& fileName, const string& sql, CallBackProcessOneRow);
+
+	static void * process(void* userData, const PathName& fileName, const string& sql, CallBackProcessArray);
+	static void * process(void* userData, DataHandle& dh, const string& sql, CallBackProcessArray);
 };
 
 } // namespace tool 

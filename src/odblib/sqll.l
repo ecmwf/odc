@@ -82,6 +82,7 @@ SEMICOLON [;]
 <LEX_ORDERBY>[dD][eE][sS][cC]     return DESC;
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
+\#                                return HASH; 
 
 \"|\'  {
 			int c,q = yytext[0];
@@ -119,11 +120,6 @@ SEMICOLON [;]
 			return DOUBLE;
 		}
 
-\#      {
-           int c;
-           while((c = yyinput()) && (c != '\n'))
-                    ;
-        }
 "--".*  ;
 "//".*  ;
 

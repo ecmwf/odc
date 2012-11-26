@@ -52,7 +52,8 @@ def sql(processes = 2, inputFile = None, outputFile = None, select='*', where = 
 
 if __name__ == '__main__':
 	sql(processes = 5,
-		inputFile = "/scratch/ma/mak/paul/allobs_110.odb", #"ofb_1656_20040602to20040603.odb", #"ofb_1657_20040602to20040603.odb",
+		#inputFile = "/scratch/ma/mak/paul/allobs_110.odb", #"ofb_1656_20040602to20040603.odb", #"ofb_1657_20040602to20040603.odb",
+		inputFile = "/scratch/ma/mak/odb-16/all.odb",
 		select = "source,count(*) as counts",
 		outputFile = 'out.odb')
 	subprocess.call([exe, "sql", "-i", "out.odb", "select source,sum(counts)"])

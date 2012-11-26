@@ -15,7 +15,19 @@
 
 using namespace SQLYacc;
 
-typedef pair<string, odb::sql::expression::SQLExpression*> indexedColumn;
+
+struct IndexedColumn {
+	IndexedColumn() : columnName(), index(), shift() {}
+	IndexedColumn(const string& c, SQLExpression* i, SQLExpression* s)
+	: columnName(c), index(i), shift(s)
+	{}
+
+	string columnName;
+	SQLExpression* index;
+	SQLExpression* shift;
+};
+
+//typedef pair<string, odb::sql::expression::SQLExpression*> indexedColumn;
 
 typedef odb::sql::expression::SQLExpression* SQLExpressionPtr; // For casts.
 
@@ -33,7 +45,7 @@ struct YYSTYPE {
 	vector<SQLTable*>      tablist;
 	ColumnDefs             coldefs;
 	ColumnDef              coldef;
-	indexedColumn          idxColumn;
+	IndexedColumn          idxColumn;
 	Range                  r;
 	bool                   bol;
 };
@@ -48,16 +60,16 @@ int yylex();
 
 extern "C" int isatty(int);
 
-string eval_index(indexedColumn& ic)
+string eval_index(IndexedColumn& c)
 {
-	if (ic.second == NULL)
-		return ic.first;
+	if (c.index == NULL)
+		return c.columnName;
 	else
 	{
 		bool missing;
-		string idx = Translator<int,string>()(int(ic.second->eval(missing)));
+		string idx = Translator<int,string>()(int(c.index->eval(missing)));
 		ASSERT(!missing);
-		return ic.first + "_" + idx;
+		return c.columnName + "_" + idx;
 	}
 }
 
@@ -116,6 +128,8 @@ Expressions emptyExpressionList;
 
 %token ASC
 %token DESC
+
+%token HASH
 
 %type <exp>column
 %type <exp>vector_index 
@@ -409,7 +423,8 @@ column: indexed_column table_reference { $$ = new ColumnExpression(eval_index($1
 		| indexed_column '.' indexed_column table_reference { $$ = new BitColumnExpression(eval_index($1), eval_index($3), $4); }
 	  ;
 
-indexed_column: IDENT vector_index   { $$ = make_pair($1, SQLExpressionPtr($2)); }
+indexed_column: IDENT vector_index   { $$ = IndexedColumn($1, SQLExpressionPtr($2), 0); }
+              | IDENT vector_index HASH expression { $$ = IndexedColumn($1, SQLExpressionPtr($2), SQLExpressionPtr($4)); }
               ;
 
 vector_index : '[' expression ']'    { $$ = $2; }

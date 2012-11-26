@@ -63,6 +63,8 @@ using namespace std;
 
 #include "odb/TestOdaCAPI.h"
 
+namespace odb { namespace tool { void producer_consumer(); }}
+
 namespace odb {
 namespace tool {
 namespace test {
@@ -638,8 +640,8 @@ const string sql = "select lat,lon";
 void map_reduce_mt()
 {
 	llong n = CountTool::fastRowCount(fileName);
-	llong* result = (llong*) MultipleThreadMapReduce::forEachRow(0, fileName, sql, create_counter_callback());
-	Log::info() << "map_reduce: MultipleThreadMapReduce::forEachRow => " << *result << endl;
+	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_counter_callback());
+	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << endl;
 	ASSERT(*result == n);
 }
 TESTCASE(map_reduce_mt);
@@ -648,12 +650,66 @@ void map_reduce_st()
 {
 	llong n = CountTool::fastRowCount(fileName);
 	llong r = 0;
-	llong* result = (llong*) SingleThreadMapReduce::forEachRow(&r, fileName, sql, create_counter_callback());
-	Log::info() << "map_reduce: SingleThreadMapReduce::forEachRow => " << *result << endl;
+	llong* result = (llong*) SingleThreadMapReduce::process(&r, fileName, sql, create_counter_callback());
+	Log::info() << "map_reduce: SingleThreadMapReduce::process => " << *result << endl;
 	ASSERT(*result == n);
+	//delete result;
 }
 TESTCASE(map_reduce_st);
 
+
+///////////////////////////////////////////////////////////////////////
+
+void array_count(void *counter, struct Array a)
+{
+	*((llong*) counter) += a.nRows;
+
+	for (size_t i = 0; i < a.nRows; ++i)
+	{
+		for (size_t j = 0; j < a.nCols; ++j)
+		{
+			//double x = *( ((double *) a.data) + i * a.nRows + j);
+		}
+	}
+}
+
+CallBackProcessArray create_array_counter_callback()
+{
+	CallBackProcessArray cb;
+	cb.mapper = array_count;
+	cb.reducer = reduce_counter;
+	cb.create = create_counter;
+	cb.destroy = destroy_counter;
+	return cb;
+}
+
+void process_array_st()
+{
+	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
+	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
+	
+	llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
+	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
+}
+TESTCASE(process_array_st);
+
+
+void process_array_mt()
+{
+	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
+	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
+	
+	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
+	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
+}
+TESTCASE(process_array_mt);
+
+
+void producer_consumer()
+{
+	odb::tool::producer_consumer();
+}
+TESTCASE(producer_consumer);
 
 } // namespace test 
 } // namespace tool 
