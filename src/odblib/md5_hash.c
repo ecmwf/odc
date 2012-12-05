@@ -8,8 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-/* File md5.c
- * Baudouin Raoult - (c) ECMWF Sep 11
+/** 
+ * @file md5.c
+ * @author Baudouin Raoult
  */
 
 #include "md5_hash.h"
@@ -37,13 +38,13 @@ static unsigned long k[] = {
 
 static const unsigned long t = 32;
 
-static unsigned long rotate(unsigned long x,unsigned long c) { return (x << c) | (x >> (t-c)); }
+//static unsigned long rotate(unsigned long x,unsigned long c) { return (x << c) | (x >> (t-c)); }
 
 
-static unsigned long F(unsigned long x,unsigned long y,unsigned long z) { return (x&y)|((~x)&z); }
-static unsigned long G(unsigned long x,unsigned long y,unsigned long z) { return (x&z)|(y&(~z)); }
-static unsigned long H(unsigned long x,unsigned long y,unsigned long z) { return x^y^z;          }
-static unsigned long I(unsigned long x,unsigned long y,unsigned long z) { return y^(x|(~z));     }
+//static unsigned long F(unsigned long x,unsigned long y,unsigned long z) { return (x&y)|((~x)&z); }
+//static unsigned long G(unsigned long x,unsigned long y,unsigned long z) { return (x&z)|(y&(~z)); }
+//static unsigned long H(unsigned long x,unsigned long y,unsigned long z) { return x^y^z;          }
+//static unsigned long I(unsigned long x,unsigned long y,unsigned long z) { return y^(x|(~z));     }
 
 
 #define ROT(x,c) ((x << c) | (x >> (32-c)))
@@ -61,15 +62,15 @@ static unsigned long I(unsigned long x,unsigned long y,unsigned long z) { return
 static void md5_flush(md5_state* s)
 {
 
-    unsigned long i, g;
+//    unsigned long i, g;
     unsigned long a = s->h0;
     unsigned long b = s->h1;
     unsigned long c = s->h2;
     unsigned long d = s->h3;
-    unsigned long f;
-    unsigned long temp;
+//    unsigned long f;
+//    unsigned long temp;
     unsigned long *w = &s->words[0];
-    unsigned long h;
+//    unsigned long h;
 
 #if 1
     F_(a,b,c,d, 0, 0);
