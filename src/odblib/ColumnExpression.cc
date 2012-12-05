@@ -72,16 +72,13 @@ double ColumnExpression::eval(bool& missing) const
 void ColumnExpression::prepare(SQLSelect& sql)
 {
 	string fullName;
-	//bool hasMissing;
-	//double missingValue;
-	//BitfieldDef bitfieldDef;
 
 	SQLTable* table = sql.findTable(columnName_, &fullName, &hasMissingValue_, &missingValue_, &isBitfield_, &bitfieldDef_);
 
 	if(!table_) table_ = table;
-
-	value_ = sql.column(columnName_,table_);
-	type_  = sql.typeOf(columnName_,table_);
+ 
+	value_ = sql.column(columnName_, table_);
+	type_  = sql.typeOf(columnName_, table_);
 
 	Log::debug() << "ColumnExpression::prepare: columnName_=" << columnName_ 
 	<< ", title=" << title()

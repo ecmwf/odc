@@ -20,7 +20,7 @@ namespace expression {
 BitColumnExpression::BitColumnExpression(const string& name, const string& field, SQLTable* table)
 : ColumnExpression(name + "." + field + "@" + table->name(), table),
   mask_(0),
-  shift_(0),
+  bitShift_(0),
   field_(field),
   name_(name)
 {
@@ -33,7 +33,7 @@ BitColumnExpression::BitColumnExpression(const string& name, const string& field
 BitColumnExpression::BitColumnExpression(const string& name, const string& field, const string& tableReference)
 : ColumnExpression(name + "." + field + tableReference, tableReference),
   mask_(0),
-  shift_(0),
+  bitShift_(0),
   field_(field),
   name_(name)
 {
@@ -64,14 +64,14 @@ void BitColumnExpression::prepare(SQLSelect& sql)
 	if(bit)
 	{
 		mask_  = bit->mask();
-		shift_ = bit->shift();
+		bitShift_ = bit->shift();
 	}
 	else
 	{
 		// This is for .length and .offset
 		// Not very nice, I know
 		mask_  = 0xffffffff;
-		shift_ = 0;
+		bitShift_ = 0;
 	}
 
 }
@@ -80,7 +80,7 @@ double BitColumnExpression::eval(bool& missing) const
 {
 	if(value_->second) missing = true;
 	unsigned long x = static_cast<unsigned long>(value_->first);
-	return (x & mask_) >> shift_;
+	return (x & mask_) >> bitShift_;
 }
 
 void BitColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)

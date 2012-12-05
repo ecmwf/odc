@@ -30,8 +30,9 @@ private:
 	BitColumnExpression(const BitColumnExpression&);
 	BitColumnExpression& operator=(const BitColumnExpression&);
 
+protected:
 	unsigned long mask_;
-	unsigned long shift_;
+	unsigned long bitShift_;
 
 	string field_;
 	string name_;

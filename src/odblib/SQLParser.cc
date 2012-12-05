@@ -18,7 +18,9 @@
 
 #include "odblib/oda.h"
 #include "odblib/BitColumnExpression.h"
+#include "odblib/ShiftedBitColumnExpression.h"
 #include "odblib/ColumnExpression.h"
+#include "odblib/ShiftedColumnExpression.h"
 #include "odblib/Dictionary.h"
 #include "odblib/FunctionExpression.h"
 #include "odblib/FunctionFactory.h"

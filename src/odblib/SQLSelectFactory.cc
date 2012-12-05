@@ -66,7 +66,9 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 
 		SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
 			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_)
-			: database_->table("defaultTable");
+			: database_ ? database_->table("defaultTable") : 0;
+		if (table == 0)
+			throw UserError("No table specified");
 		from.push_back(table);
 	}
 

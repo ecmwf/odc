@@ -49,8 +49,6 @@ protected:
 	int                    beginIndex_;
 	int                    endIndex_;
 
-// -- Methods
-	
 // -- Overridden methods
 
 	virtual void print(ostream& s) const;

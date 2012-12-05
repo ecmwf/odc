@@ -16,15 +16,31 @@
 using namespace SQLYacc;
 
 
-struct IndexedColumn {
-	IndexedColumn() : columnName(), index(), shift() {}
+class IndexedColumn {
+public:
+	IndexedColumn() : columnName_(), index_(), shift_() {}
 	IndexedColumn(const string& c, SQLExpression* i, SQLExpression* s)
-	: columnName(c), index(i), shift(s)
+	: columnName_(c), index_(i), shift_(s)
 	{}
 
-	string columnName;
-	SQLExpression* index;
-	SQLExpression* shift;
+	string index()
+	{
+		if (index_ == NULL) return columnName_;
+		else
+		{
+			bool missing = false;
+			string idx = Translator<int,string>()(int(index_->eval(missing)));
+			ASSERT(! missing);
+			return columnName_ + "_" + idx;
+		}
+	}
+
+	SQLExpression* shift() { return shift_; }
+
+private:
+	string columnName_;
+	SQLExpression* index_;
+	SQLExpression* shift_;
 };
 
 //typedef pair<string, odb::sql::expression::SQLExpression*> indexedColumn;
@@ -59,19 +75,6 @@ int yylex();
 #endif
 
 extern "C" int isatty(int);
-
-string eval_index(IndexedColumn& c)
-{
-	if (c.index == NULL)
-		return c.columnName;
-	else
-	{
-		bool missing;
-		string idx = Translator<int,string>()(int(c.index->eval(missing)));
-		ASSERT(!missing);
-		return c.columnName + "_" + idx;
-	}
-}
 
 Expressions emptyExpressionList;
 
@@ -418,9 +421,37 @@ set_statement : SET VAR EQ assignment_rhs ';'
 
 /* we can do better here .... */
 
-column: indexed_column table_reference { $$ = new ColumnExpression(eval_index($1) + $2, $2); }
+column: indexed_column table_reference
+		  {
+			int shift = 0;
+			SQLExpression* pshift = ($1).shift();
+			if (pshift) {
+				ASSERT("Shift operator must be constant" && pshift->isConstant());
+				bool missing = false;
+				shift = pshift->eval(missing);
+			}
+			if (shift)
+				$$ = new ShiftedColumnExpression(($1).index() + $2, $2, shift);
+			else
+				$$ = new ColumnExpression(($1).index() + $2, $2);
+		  }
 		/* E.g.: blacklist.fg_depar@body */
-		| indexed_column '.' indexed_column table_reference { $$ = new BitColumnExpression(eval_index($1), eval_index($3), $4); }
+		| indexed_column '.' indexed_column table_reference
+		  {
+			ASSERT("Shift operator in bitcolumn expression can occur once only" && !(($1).shift() && ($3).shift()));
+			int shift = 0;
+			SQLExpression* pshift = ($1).shift();
+			if (pshift == 0) pshift = ($3).shift();
+			if (pshift) {
+				ASSERT("Shift operator must be constant" && (pshift->isConstant()));
+				bool missing = false;
+				shift = pshift->eval(missing);
+			}
+			if (shift)
+				$$ = new ShiftedBitColumnExpression(($1).index(), ($3).index(), $4, shift);
+			else
+				$$ = new BitColumnExpression(($1).index(), ($3).index(), $4);
+		  }
 	  ;
 
 indexed_column: IDENT vector_index   { $$ = IndexedColumn($1, SQLExpressionPtr($2), 0); }

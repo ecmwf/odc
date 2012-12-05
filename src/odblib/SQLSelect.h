@@ -36,8 +36,6 @@ namespace odb {
 
 namespace sql {
 
-// Forward declarations
-
 class SQLTableIterator;
 
 class SQLSelect : public SQLStatement {
@@ -59,6 +57,7 @@ public:
 
 	pair<double,bool>* column(const string& name, SQLTable*);
 	const type::SQLType* typeOf(const string& name, SQLTable*) const;
+	// FIXME: do we really need all these optional parameters?
 	SQLTable* findTable(const string& name, string *fullName = 0, bool *hasMissingValue=0, double *missingValue=0, bool* isBitfield=0, BitfieldDef* =0) const;
 
 	virtual Expressions output() const; 
@@ -117,8 +116,8 @@ private:
 	friend class odb::sql::expression::function::FunctionROWNUMBER; // needs access to count_
 	friend class odb::sql::expression::function::FunctionTHIN; // needs access to count_
 
-	//friend ostream& operator<<(ostream& s,const SQLSelect& p)
-	//	{ p.print(s); return s; }
+	friend ostream& operator<<(ostream& s,const SQLSelect& p)
+		{ p.print(s); return s; }
 };
 
 } // namespace sql

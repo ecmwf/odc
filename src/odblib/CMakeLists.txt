@@ -2,6 +2,8 @@ list( APPEND odblib_src_files
 Array.h
 BitColumnExpression.cc
 BitColumnExpression.h
+ShiftedBitColumnExpression.cc
+ShiftedBitColumnExpression.h
 Codec.cc
 Codec.h
 CodecFactory.h
@@ -11,6 +13,8 @@ Column.cc
 Column.h
 ColumnExpression.cc
 ColumnExpression.h
+ShiftedColumnExpression.cc
+ShiftedColumnExpression.h
 ColumnType.h
 CommandLineParser.cc
 CommandLineParser.h

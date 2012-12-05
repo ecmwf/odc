@@ -67,7 +67,16 @@ CommandLineParser& CommandLineParser::operator=(const CommandLineParser& other)
 
 int CommandLineParser::argc() { return argc_; }
 
-string CommandLineParser::argv(int i) { return argv_[i]; }
+string CommandLineParser::argv(int i)
+{
+	if (i >= argc_)
+	{
+		stringstream ss;
+		ss << "Expected at least " << i << " command line parameters";
+		throw UserError(ss.str());
+	}
+	return argv_[i];
+}
 
 void CommandLineParser::registerOptionWithArgument(const std::string& option)
 {
