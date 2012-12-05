@@ -435,23 +435,6 @@ column: indexed_column table_reference
 			else
 				$$ = new ColumnExpression(($1).index() + $2, $2);
 		  }
-		/* E.g.: blacklist.fg_depar@body */
-		| indexed_column '.' indexed_column table_reference
-		  {
-			ASSERT("Shift operator in bitcolumn expression can occur once only" && !(($1).shift() && ($3).shift()));
-			int shift = 0;
-			SQLExpression* pshift = ($1).shift();
-			if (pshift == 0) pshift = ($3).shift();
-			if (pshift) {
-				ASSERT("Shift operator must be constant" && (pshift->isConstant()));
-				bool missing = false;
-				shift = pshift->eval(missing);
-			}
-			if (shift)
-				$$ = new ShiftedBitColumnExpression(($1).index(), ($3).index(), $4, shift);
-			else
-				$$ = new BitColumnExpression(($1).index(), ($3).index(), $4);
-		  }
 	  ;
 
 indexed_column: IDENT vector_index   { $$ = IndexedColumn($1, SQLExpressionPtr($2), 0); }
@@ -550,8 +533,14 @@ atom_or_number
 			   : '(' expression ')'           { $$ = $2; }
 			   | '-' expression               { $$ = FunctionFactory::instance().build("-",$2); }
 			   | DOUBLE                       { $$ = new NumberExpression($1); }
-			   | column                   
 			   | IDENT '.' IDENT table_reference { $$ = new BitColumnExpression($1, $3, $4); }
+			   | IDENT '.' IDENT table_reference HASH expression 
+				{
+					ASSERT("Shift operator must be constant" && (($6)->isConstant()));
+					bool missing = false;
+					$$ = new ShiftedBitColumnExpression($1, $3, $4, ($6)->eval(missing));
+				 }
+			   | column                   
 			   | VAR                          { $$ = SQLSession::current().currentDatabase().getVariable($1); } 
 			   | '?' DOUBLE                   { $$ = new ParameterExpression($2); }
 			   | func '(' expression_list ')' { $$ = FunctionFactory::instance().build($1, $3); }

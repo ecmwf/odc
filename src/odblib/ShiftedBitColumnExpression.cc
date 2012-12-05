@@ -41,6 +41,8 @@ double ShiftedBitColumnExpression::eval(bool& missing) const
 	return (x & mask_) >> bitShift_;
 }
 
+void ShiftedBitColumnExpression::print(ostream& s) const { s << columnName_ << "#" << shift_; }
+
 } // namespace expression
 } // namespace sql
 } // namespace odb

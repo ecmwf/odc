@@ -35,9 +35,10 @@ private:
 // -- Overridden methods
 	virtual void prepare(SQLSelect& sql);
 	virtual double eval(bool& missing) const;
+	virtual void print(ostream& s) const;
 
-	//friend ostream& operator<<(ostream& s,const ShiftedBitColumnExpression& p)
-	//	{ p.print(s); return s; }
+	friend ostream& operator<<(ostream& s, const ShiftedBitColumnExpression& p)
+		{ p.print(s); return s; }
 };
 
 } // namespace expression 
