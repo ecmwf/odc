@@ -740,7 +740,7 @@ void hash_operator()
 	ScratchFile f("hash_operator.odb");
 	ImportTool::importText(data, f);
 
-    odb::Select select("select x,x#1 from \"" + f + "\"");
+    odb::Select select("select x,x#-1 from \"" + f + "\"");
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
     for (; it != end; ++it)
