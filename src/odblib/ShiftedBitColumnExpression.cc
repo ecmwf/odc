@@ -16,24 +16,7 @@
 namespace odb {
 namespace sql {
 namespace expression {
-
-ShiftedBitColumnExpression::ShiftedBitColumnExpression(const string& name, const string& field, SQLTable* table, int shift)
-: BitColumnExpression(name, field, table),
-  shift_(shift)
-{}
-
-ShiftedBitColumnExpression::ShiftedBitColumnExpression(const string& name, const string& field, const string& tableReference, int shift)
-: BitColumnExpression(name, field, tableReference),
-  shift_(shift)
-{}
-
-ShiftedBitColumnExpression::~ShiftedBitColumnExpression() {}
-
-void ShiftedBitColumnExpression::prepare(SQLSelect& sql)
-{
-	BitColumnExpression::prepare(sql);
-}
-
+/*
 double ShiftedBitColumnExpression::eval(bool& missing) const
 {
 	if(value_->second) missing = true;
@@ -42,6 +25,7 @@ double ShiftedBitColumnExpression::eval(bool& missing) const
 }
 
 void ShiftedBitColumnExpression::print(ostream& s) const { s << columnName_ << "#" << shift_; }
+*/
 
 } // namespace expression
 } // namespace sql

@@ -266,6 +266,7 @@ void regex1()
 
 void vector_syntax()
 {
+
 	const char *data = 
 	"a:INTEGER,b:INTEGER\n"
 	"1,1\n"
@@ -710,6 +711,60 @@ void producer_consumer()
 	odb::tool::producer_consumer();
 }
 TESTCASE(producer_consumer);
+
+
+class TemporaryPathName : public PathName {
+public:
+	 TemporaryPathName(const string &fn) : PathName (fn) {}
+	 ~TemporaryPathName() { unlink(); }
+};
+
+typedef TemporaryPathName ScratchFile;
+
+void hash_operator()
+{
+	const char *data = 
+	"x:INTEGER,y:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ScratchFile f("hash_operator.odb");
+	ImportTool::importText(data, f);
+
+    odb::Select select("select x,x#1 from \"" + f + "\"");
+    odb::Select::iterator it = select.begin();
+    odb::Select::iterator end = select.end();
+    for (; it != end; ++it)
+    {
+		Log::info() << it << endl;
+	}
+
+}
+TESTCASE(hash_operator);
+
+void bitfields_hash_operator()
+{
+	PathName f("2000010106.4.0.odb");
+    //odb::Select select("select lat,lat#1 from \"" + f + "\"");
+    odb::Select select("select anflag.final@body,anflag.final@body#-1 from \"" + f + "\"");
+    odb::Select::iterator it = select.begin();
+    odb::Select::iterator end = select.end();
+    for (; it != end; ++it)
+    {
+		Log::info() << it << endl;
+	}
+	
+}
+TESTCASE(bitfields_hash_operator);
 
 } // namespace test 
 } // namespace tool 

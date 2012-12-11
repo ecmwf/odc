@@ -15,31 +15,13 @@
 #define ShiftedBitColumnExpression_H
 
 #include "odblib/BitColumnExpression.h"
+#include "odblib/ShiftedColumnExpression.h"
 
 namespace odb {
 namespace sql {
 namespace expression {
 
-class ShiftedBitColumnExpression : public BitColumnExpression {
-public:
-	ShiftedBitColumnExpression(const string&, const string&, SQLTable*, int shift);
-	ShiftedBitColumnExpression(const string&, const string&, const string&, int shift);
-	~ShiftedBitColumnExpression(); 
-private:
-// No copy allowed
-	ShiftedBitColumnExpression(const ShiftedBitColumnExpression&);
-	ShiftedBitColumnExpression& operator=(const ShiftedBitColumnExpression&);
-
-	int shift_;
-
-// -- Overridden methods
-	virtual void prepare(SQLSelect& sql);
-	virtual double eval(bool& missing) const;
-	virtual void print(ostream& s) const;
-
-	friend ostream& operator<<(ostream& s, const ShiftedBitColumnExpression& p)
-		{ p.print(s); return s; }
-};
+typedef ShiftedColumnExpression<BitColumnExpression> ShiftedBitColumnExpression;
 
 } // namespace expression 
 } // namespace sql

@@ -22,17 +22,23 @@ class SQLOutput;
 
 namespace expression {
 
-class ShiftedColumnExpression : public ColumnExpression {
+template <typename T = ColumnExpression>
+class ShiftedColumnExpression : public T {
 public:
 	ShiftedColumnExpression(const string&, SQLTable*, int shift, int begin = -1, int end = -1);
 	ShiftedColumnExpression(const string&, const string& tableReference, int shift, int begin = -1, int end = -1);
 	ShiftedColumnExpression(const ShiftedColumnExpression&);
 
+	// for bitfields columns
+	ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift);
+	ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int shift);
+
+
 	~ShiftedColumnExpression(); // Change to virtual if base class
 
-	SQLTable* table() { return table_; }
+	SQLTable* table() { return this->table_; }
 
-	double* current() { NOTIMP; return &(value_->first); }
+	double* current() { NOTIMP; return &(this->value_->first); }
 
 	SQLExpression* clone() const;
 
@@ -58,5 +64,7 @@ private:
 } // namespace expression 
 } // namespace sql
 } // namespace odb 
+
+#include "ShiftedColumnExpression.cc"
 
 #endif

@@ -26,42 +26,77 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-static pair<double,bool> zero_(0,false);
 
+template <typename T>
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, SQLTable* table, int shift, int begin, int end)
+: T(name, table, begin, end),
+  shift_(shift),
+  oldValues_()
+{
 // FIXME: we need to retrieve actual value of missing value for this column
-double const MISSING_VALUE_REAL = -2147483647.0;
-static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
-
-ShiftedColumnExpression::ShiftedColumnExpression(const string& name, SQLTable* table, int shift, int begin, int end)
-: ColumnExpression(name, table, begin, end),
-  shift_(shift),
-  oldValues_()
-{
+	double const MISSING_VALUE_REAL = -2147483647.0;
+	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
 	for (size_t i = 0; i < shift_; ++i)
 		oldValues_.push_front(missing_);
 }
 
-ShiftedColumnExpression::ShiftedColumnExpression(const string& name, const string& tableReference, int shift, int begin, int end)
-: ColumnExpression(name, tableReference, begin, end),
+template <typename T>
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& tableReference, int shift, int begin, int end)
+: T(name, tableReference, begin, end),
   shift_(shift),
   oldValues_()
 {
+// FIXME: we need to retrieve actual value of missing value for this column
+	double const MISSING_VALUE_REAL = -2147483647.0;
+	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
 	for (size_t i = 0; i < shift_; ++i)
 		oldValues_.push_front(missing_);
 }
 
-ShiftedColumnExpression::ShiftedColumnExpression(const ShiftedColumnExpression& e)
-: ColumnExpression(e),
+template <typename T>
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift)
+: T(name, field, table),
+  shift_(shift),
+  oldValues_()
+{
+// FIXME: we need to retrieve actual value of missing value for this column
+	double const MISSING_VALUE_REAL = -2147483647.0;
+	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
+	for (size_t i = 0; i < shift_; ++i)
+		oldValues_.push_front(missing_);
+}
+
+template <typename T>
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int shift)
+: T(name, field, tableReference),
+  shift_(shift),
+  oldValues_()
+{
+// FIXME: we need to retrieve actual value of missing value for this column
+	double const MISSING_VALUE_REAL = -2147483647.0;
+	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
+	for (size_t i = 0; i < shift_; ++i)
+		oldValues_.push_front(missing_);
+}
+
+template <typename T>
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const ShiftedColumnExpression& e)
+: T(e),
   shift_(e.shift_),
   oldValues_(e.oldValues_)
 {}
 
-SQLExpression* ShiftedColumnExpression::clone() const { return new ShiftedColumnExpression(*this); }
-ShiftedColumnExpression::~ShiftedColumnExpression() {}
-void ShiftedColumnExpression::print(ostream& s) const { s << columnName_ << "#" << shift_; }
+template <typename T>
+SQLExpression* ShiftedColumnExpression<T>::clone() const { NOTIMP; return 0; } // return new ShiftedColumnExpression(*this); }
 
+template <typename T>
+ShiftedColumnExpression<T>::~ShiftedColumnExpression() {}
 
-double ShiftedColumnExpression::eval(bool& missing) const
+template <typename T>
+void ShiftedColumnExpression<T>::print(ostream& s) const { s << this->columnName_ << "#" << shift_; }
+
+template <typename T>
+double ShiftedColumnExpression<T>::eval(bool& missing) const
 {
 
 	pair<double,bool> const& v(oldValues_.back());
@@ -70,27 +105,32 @@ double ShiftedColumnExpression::eval(bool& missing) const
 
 	list<pair<double,bool> >&oldValues(*const_cast<list<pair<double,bool> >*>(&oldValues_));
 	oldValues.pop_back();
-	oldValues.push_front(*value_);
+
+	pair<double,bool> ev;
+	ev.first = T::eval(ev.second);
+	oldValues.push_front(ev);
 
 	if(miss) missing = true;
 	return value;
 }
 
-void ShiftedColumnExpression::cleanup(SQLSelect& sql)
+template <typename T>
+void ShiftedColumnExpression<T>::cleanup(SQLSelect& sql)
 {
-	value_ = &zero_;
-	type_  = 0;
+	static pair<double,bool> zero_(0,false);
+	this->value_ = &zero_;
+	this->type_  = 0;
 	oldValues_.clear();
 }
 
-
-void ShiftedColumnExpression::output(SQLOutput& o) const 
+template <typename T>
+void ShiftedColumnExpression<T>::output(SQLOutput& o) const 
 { 
 	//Log::info() << "ShiftedColumnExpression::output:" << endl;
 
 	bool missing = false;
 	double v = eval(missing);
-	type_->output(o, v, missing); 
+	this->type_->output(o, v, missing); 
 }
 
 } // namespace expression

@@ -288,6 +288,11 @@ public:
 
 	friend class ReaderIterator;
 	friend class MetaDataReaderIterator;
+	friend ostream& operator<<(ostream &o, const IteratorProxy& it) {
+		for (size_t i = 0; i < it.iter_->columns().size(); ++i)
+			o << it.iter_->data()[i] << "\t";
+		return o;
+	}
 };
 
 } // namespace odb 

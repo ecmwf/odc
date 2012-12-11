@@ -337,6 +337,7 @@ TODATableIterator.cc
 WriterDispatchingIterator.cc
 MDUpdatingIterator.cc
 MetaDataReader.cc
+ShiftedColumnExpression.cc
 )
 
 # define Odb library

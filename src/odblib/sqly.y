@@ -61,7 +61,6 @@ struct YYSTYPE {
 	vector<SQLTable*>      tablist;
 	ColumnDefs             coldefs;
 	ColumnDef              coldef;
-	IndexedColumn          idxColumn;
 	Range                  r;
 	bool                   bol;
 };
@@ -147,6 +146,7 @@ Expressions emptyExpressionList;
 %type <exp>term;
 %type <exp>conjonction;
 %type <exp>disjonction;
+%type <exp>optional_hash;
 
 %type <exp>where;
 
@@ -187,7 +187,6 @@ Expressions emptyExpressionList;
 %type <coldefs>bitfield_def_list_;
 %type <coldef>bitfield_def;
 %type <val>data_type;
-%type <idxColumn>indexed_column;
 %%
 
 start : statements { SQLSession::current().currentDatabase().setLinks(); }
@@ -421,25 +420,21 @@ set_statement : SET VAR EQ assignment_rhs ';'
 
 /* we can do better here .... */
 
-column: indexed_column table_reference
+column: IDENT vector_index table_reference optional_hash
 		  {
+			IndexedColumn ic($1, $2, $4);
 			int shift = 0;
-			SQLExpression* pshift = ($1).shift();
+			SQLExpression* pshift = ic.shift();
 			if (pshift) {
-				ASSERT("Shift operator must be constant" && pshift->isConstant());
+				if (! pshift->isConstant()) throw UserError("Shift operator must be constant");
 				bool missing = false;
 				shift = pshift->eval(missing);
 			}
-			if (shift)
-				$$ = new ShiftedColumnExpression(($1).index() + $2, $2, shift);
-			else
-				$$ = new ColumnExpression(($1).index() + $2, $2);
+			if (shift > 0) throw UserError("Shift operator can only be negative");
+			$$ = shift == 0 ? new ColumnExpression(ic.index() + $3, $3)
+			                : new ShiftedColumnExpression<ColumnExpression>(ic.index() + $3, $3, -shift);
 		  }
 	  ;
-
-indexed_column: IDENT vector_index   { $$ = IndexedColumn($1, SQLExpressionPtr($2), 0); }
-              | IDENT vector_index HASH expression { $$ = IndexedColumn($1, SQLExpressionPtr($2), SQLExpressionPtr($4)); }
-              ;
 
 vector_index : '[' expression ']'    { $$ = $2; }
              | empty                 { $$ = NULL; }
@@ -528,17 +523,29 @@ expression_list : expression         {  $$ = Expressions(1, $1); }
 				| expression_list ',' expression { $$ = $1; $$.push_back($3); }
 				;
 
+optional_hash : HASH expression { $$ = $2; }
+			  |                 { $$ = new NumberExpression(0); }
+			  ;
+
 
 atom_or_number  
 			   : '(' expression ')'           { $$ = $2; }
 			   | '-' expression               { $$ = FunctionFactory::instance().build("-",$2); }
 			   | DOUBLE                       { $$ = new NumberExpression($1); }
-			   | IDENT '.' IDENT table_reference { $$ = new BitColumnExpression($1, $3, $4); }
-			   | IDENT '.' IDENT table_reference HASH expression 
+			   | IDENT '.' IDENT table_reference optional_hash
 				{
-					ASSERT("Shift operator must be constant" && (($6)->isConstant()));
-					bool missing = false;
-					$$ = new ShiftedBitColumnExpression($1, $3, $4, ($6)->eval(missing));
+					SQLExpression* pshift = $5;
+					if (! pshift->isConstant())
+						throw UserError("Value of shift operator must be constant");
+					else
+					{
+						bool missing = false;
+						int shift = pshift->eval(missing);
+				
+						if (shift > 0) throw UserError("Shift operator can only be negative");
+						$$ = shift == 0 ? new BitColumnExpression($1, $3, $4) 
+									    : new ShiftedBitColumnExpression($1, $3, $4, -shift);
+					} 
 				 }
 			   | column                   
 			   | VAR                          { $$ = SQLSession::current().currentDatabase().getVariable($1); } 
@@ -559,25 +566,8 @@ atom_or_number
 func : IDENT { $$ = $1;      }
 	 | COUNT { $$ = "count"; }
 	 ;
-			   /* | STRING                { $$ = new NumberExpression($1); } */
-
-/*
-expression_list : expression_two
-				| expression_list ',' atom_or_number { $$ = $1; $$.push_back($3); $1.clear(); }
-				;
-
-
-expression_two  : atom_or_number ',' atom_or_number { $$.clear(); $$.push_back($1); $$.push_back($3); }
-				;
-				*/
 
 /* note: a^b^c -> a^(b^c) as in fortran */
-
-/*
-power       : atom_or_number '^' power 
-            | atom_or_number_or_list
-            ;
-                    */
 
 power       : atom_or_number
 			;
