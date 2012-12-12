@@ -63,7 +63,7 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const strin
 
 	unsigned long long n = output->pass1(it, end);
 
-    Log::info( Here() ) << "ImportTool::importFile: = copied " << n << " rows." << endl;
+    Log::info() << "ImportTool::importFile: = copied " << n << " rows." << endl;
 }
 
 void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
@@ -79,7 +79,7 @@ void ImportTool::importText(const string& s, const PathName& out, const string& 
 
 	unsigned long long n = output->pass1(it, end);
 
-    Log::info( Here() ) << "ImportTool::importText: = copied " << n << " rows." << endl;
+    Log::info() << "ImportTool::importText: = copied " << n << " rows." << endl;
 }
 
 } // namespace tool 

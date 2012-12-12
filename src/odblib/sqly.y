@@ -16,34 +16,36 @@
 using namespace SQLYacc;
 
 
-class IndexedColumn {
-public:
-	IndexedColumn() : columnName_(), index_(), shift_() {}
-	IndexedColumn(const string& c, SQLExpression* i, SQLExpression* s)
-	: columnName_(c), index_(i), shift_(s)
-	{}
+string index(const string& columnName_, SQLExpression* index_)
+{
+	if (index_ == 0)
+		return columnName_;
 
-	string index()
-	{
-		if (index_ == NULL) return columnName_;
-		else
-		{
-			bool missing = false;
-			string idx = Translator<int,string>()(int(index_->eval(missing)));
-			ASSERT(! missing);
-			return columnName_ + "_" + idx;
-		}
-	}
+	bool missing = false;
+	string idx = Translator<int,string>()(int(index_->eval(missing)));
+	ASSERT(! missing);
+	return columnName_ + "_" + idx;
+}
 
-	SQLExpression* shift() { return shift_; }
+SQLExpression* columnFactory(
+	std::string columnName,
+	std::string bitfieldName,
+	SQLExpression* vectorIndex,
+	std::string table,
+	SQLExpression* pshift)
+{
+	if (! pshift->isConstant()) throw UserError("Value of shift operator must be constant");
+	bool missing = false;
+	int shift = pshift->eval(missing);
+	if (shift > 0) throw UserError("Shift operator can only be negative");
 
-private:
-	string columnName_;
-	SQLExpression* index_;
-	SQLExpression* shift_;
-};
-
-//typedef pair<string, odb::sql::expression::SQLExpression*> indexedColumn;
+	if (bitfieldName.size())
+		return shift == 0 ? new BitColumnExpression(columnName, bitfieldName, table) 
+						  : new ShiftedBitColumnExpression(columnName, bitfieldName, table, -shift);
+	else
+		return shift == 0 ? new ColumnExpression(index(columnName, vectorIndex) + table, table)
+						  : new ShiftedColumnExpression<ColumnExpression>(index(columnName, vectorIndex) + table, table, -shift);
+}
 
 typedef odb::sql::expression::SQLExpression* SQLExpressionPtr; // For casts.
 
@@ -180,6 +182,7 @@ Expressions emptyExpressionList;
 
 %type <r>vector_range_decl;
 %type <val>column_name;
+%type <val>bitfield_ref;
 %type <coldefs>column_def_list;
 %type <coldefs>column_def_list_;
 %type <coldef>column_def;
@@ -264,10 +267,7 @@ create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')' ';'
 	}
 	;
 
-create_type_statement: create_type IDENT as_or_eq IDENT ';'
-	{
-		type::SQLType::createAlias($4, $2);
-	}
+create_type_statement: create_type IDENT as_or_eq IDENT ';' { type::SQLType::createAlias($4, $2); }
 	;
 
 create_type: CREATE TYPE
@@ -374,10 +374,8 @@ from : FROM table_list { $$ = $2; }
 	 ;
 
 where : WHERE expression { $$ = $2; }
-	;
-
-where : empty { $$ = 0; }
-	;
+	  |                  { $$ = 0; } 
+	  ;
 
 vector	: '[' expression_list_ex ']' { $$ = new Expressions($2); }
 		;
@@ -396,18 +394,10 @@ association_list: association { Dictionary d; d[($1 .first)->title()] = $1 .seco
 				| empty { $$ = Dictionary(); }
 				;
 
-set_statement : SET DATABASE STRING ';'
-	{ 
-		SQLSession& s  = SQLSession::current();
-		s.openDatabase($3);
-	}
+set_statement : SET DATABASE STRING ';' { SQLSession::current().openDatabase($3); }
 	; 
 
-set_statement : SET DATABASE STRING AS IDENT ';'
-	{ 
-		SQLSession& s  = SQLSession::current();
-		s.openDatabase($3,$5);
-	}
+set_statement : SET DATABASE STRING AS IDENT ';' { SQLSession::current().openDatabase($3,$5); }
 	; 
 
 set_statement : SET VAR EQ assignment_rhs ';'
@@ -418,22 +408,29 @@ set_statement : SET VAR EQ assignment_rhs ';'
 	}
 	; 
 
-/* we can do better here .... */
+bitfield_ref: '.' IDENT  { $$ = $2; }
+			|            { $$ = string(); }
 
 column: IDENT vector_index table_reference optional_hash
 		  {
-			IndexedColumn ic($1, $2, $4);
-			int shift = 0;
-			SQLExpression* pshift = ic.shift();
-			if (pshift) {
-				if (! pshift->isConstant()) throw UserError("Shift operator must be constant");
-				bool missing = false;
-				shift = pshift->eval(missing);
-			}
-			if (shift > 0) throw UserError("Shift operator can only be negative");
-			$$ = shift == 0 ? new ColumnExpression(ic.index() + $3, $3)
-			                : new ShiftedColumnExpression<ColumnExpression>(ic.index() + $3, $3, -shift);
+			std::string columnName      ($1);
+			std::string bitfieldName    ;
+			SQLExpression* vectorIndex  ($2);
+			std::string table           ($3);
+			SQLExpression* pshift       ($4);
+
+			$$ = columnFactory(columnName, bitfieldName, vectorIndex, table, pshift);
 		  }
+	   | IDENT bitfield_ref table_reference optional_hash
+		{
+			std::string columnName      ($1);
+			std::string bitfieldName    ($2);
+			SQLExpression* vectorIndex  (0); //($3);
+			std::string table           ($3);
+			SQLExpression* pshift       ($4);
+
+			$$ = columnFactory(columnName, bitfieldName, vectorIndex, table, pshift);
+		 }
 	  ;
 
 vector_index : '[' expression ']'    { $$ = $2; }
@@ -528,25 +525,9 @@ optional_hash : HASH expression { $$ = $2; }
 			  ;
 
 
-atom_or_number  
-			   : '(' expression ')'           { $$ = $2; }
+atom_or_number : '(' expression ')'           { $$ = $2; }
 			   | '-' expression               { $$ = FunctionFactory::instance().build("-",$2); }
 			   | DOUBLE                       { $$ = new NumberExpression($1); }
-			   | IDENT '.' IDENT table_reference optional_hash
-				{
-					SQLExpression* pshift = $5;
-					if (! pshift->isConstant())
-						throw UserError("Value of shift operator must be constant");
-					else
-					{
-						bool missing = false;
-						int shift = pshift->eval(missing);
-				
-						if (shift > 0) throw UserError("Shift operator can only be negative");
-						$$ = shift == 0 ? new BitColumnExpression($1, $3, $4) 
-									    : new ShiftedBitColumnExpression($1, $3, $4, -shift);
-					} 
-				 }
 			   | column                   
 			   | VAR                          { $$ = SQLSession::current().currentDatabase().getVariable($1); } 
 			   | '?' DOUBLE                   { $$ = new ParameterExpression($2); }
