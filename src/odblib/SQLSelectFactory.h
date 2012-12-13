@@ -49,6 +49,13 @@ public:
 	SQLOutputConfig config() { return config_; }
 	void config(SQLOutputConfig cfg) { config_ = cfg; }
 
+	SQLExpression* createColumn(
+		const std::string& columnName,
+		const std::string& bitfieldName,
+		const SQLExpression* vectorIndex,
+		const std::string& table,
+		const SQLExpression* pshift);
+
 private:
 	SQLSelectFactory();
 
@@ -56,10 +63,13 @@ private:
 	SQLSelectFactory(const SQLSelectFactory&);
 	SQLSelectFactory& operator=(const SQLSelectFactory&);
 
+	string index(const string& columnName, const SQLExpression* index);
+
     DataHandle* implicitFromTableSource_;
     istream* implicitFromTableSourceStream_;
 	SQLDatabase* database_;
 	SQLOutputConfig config_;
+	int maxColumnShift_;
 
 friend class ThreadSingleton<SQLSelectFactory>;
 };

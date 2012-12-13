@@ -15,38 +15,6 @@
 
 using namespace SQLYacc;
 
-
-string index(const string& columnName_, SQLExpression* index_)
-{
-	if (index_ == 0)
-		return columnName_;
-
-	bool missing = false;
-	string idx = Translator<int,string>()(int(index_->eval(missing)));
-	ASSERT(! missing);
-	return columnName_ + "_" + idx;
-}
-
-SQLExpression* columnFactory(
-	std::string columnName,
-	std::string bitfieldName,
-	SQLExpression* vectorIndex,
-	std::string table,
-	SQLExpression* pshift)
-{
-	if (! pshift->isConstant()) throw UserError("Value of shift operator must be constant");
-	bool missing = false;
-	int shift = pshift->eval(missing);
-	if (shift > 0) throw UserError("Shift operator can only be negative");
-
-	if (bitfieldName.size())
-		return shift == 0 ? new BitColumnExpression(columnName, bitfieldName, table) 
-						  : new ShiftedBitColumnExpression(columnName, bitfieldName, table, -shift);
-	else
-		return shift == 0 ? new ColumnExpression(index(columnName, vectorIndex) + table, table)
-						  : new ShiftedColumnExpression<ColumnExpression>(index(columnName, vectorIndex) + table, table, -shift);
-}
-
 typedef odb::sql::expression::SQLExpression* SQLExpressionPtr; // For casts.
 
 struct YYSTYPE {
@@ -419,17 +387,17 @@ column: IDENT vector_index table_reference optional_hash
 			std::string table           ($3);
 			SQLExpression* pshift       ($4);
 
-			$$ = columnFactory(columnName, bitfieldName, vectorIndex, table, pshift);
+			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
 		  }
 	   | IDENT bitfield_ref table_reference optional_hash
 		{
 			std::string columnName      ($1);
 			std::string bitfieldName    ($2);
-			SQLExpression* vectorIndex  (0); //($3);
+			SQLExpression* vectorIndex  (0); 
 			std::string table           ($3);
 			SQLExpression* pshift       ($4);
 
-			$$ = columnFactory(columnName, bitfieldName, vectorIndex, table, pshift);
+			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
 		 }
 	  ;
 
@@ -464,8 +432,8 @@ select: select_ access_decl { $$ = $1; }
       ;
 
 select_: '*' table_reference                              { $$ = new ColumnExpression("*", $2);  } 
-	  | IDENT '.' '*'   table_reference                   { $$ = new BitColumnExpression($1, "*", $4); }
-	  | IDENT '[' expression ':' expression ']' table
+	   | IDENT '.' '*'   table_reference                   { $$ = new BitColumnExpression($1, "*", $4); }
+	   | IDENT '[' expression ':' expression ']' table
 		{
 			// TODO: Add simillar rule for BitColumnExpression.
 			bool missing = false;
@@ -473,9 +441,9 @@ select_: '*' table_reference                              { $$ = new ColumnExpre
 			int end = $5->eval(missing); //ASSERT(!missing);
 			$$ = new ColumnExpression($1, $7, begin, end);
 		}
-	  | expression AS IDENT table_reference { $$ = $1; $$->title($3 + $4); }
-	  | expression
-	  ;
+	   | expression AS IDENT table_reference { $$ = $1; $$->title($3 + $4); }
+	   | expression
+	   ;
 
 access_decl: UPDATED
            | READONLY

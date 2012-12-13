@@ -27,6 +27,7 @@
 #include "odblib/TemplateParameters.h"
 #include "odblib/Writer.h"
 #include "odblib/WriterDispatchingIterator.h"
+#include "odblib/ShiftedBitColumnExpression.h"
 
 template class ThreadSingleton<odb::sql::SQLSelectFactory>;
 static ThreadSingleton<odb::sql::SQLSelectFactory> instance_;
@@ -45,6 +46,40 @@ SQLSelectFactory& SQLSelectFactory::instance()
 {
 	ASSERT( &instance_.instance() != 0 );
 	return instance_.instance();
+}
+
+
+string SQLSelectFactory::index(const string& columnName, const SQLExpression* index)
+{
+	if (index == 0)
+		return columnName;
+
+	bool missing = false;
+	string idx = Translator<int,string>()(int(index->eval(missing)));
+	ASSERT(! missing);
+	return columnName + "_" + idx;
+}
+
+SQLExpression* SQLSelectFactory::createColumn(
+	const std::string& columnName,
+	const std::string& bitfieldName,
+	const SQLExpression* vectorIndex,
+	const std::string& table,
+	const SQLExpression* pshift)
+{
+	if (! pshift->isConstant()) throw UserError("Value of shift operator must be constant");
+	bool missing = false;
+	int shift = pshift->eval(missing);
+
+	maxColumnShift_ = shift > maxColumnShift_ ? shift : maxColumnShift_;
+	//if (shift > 0) throw UserError("Shift operator can only be negative");
+
+	if (bitfieldName.size())
+		return shift == 0 ? new BitColumnExpression(columnName, bitfieldName, table) 
+						  : new ShiftedBitColumnExpression(columnName, bitfieldName, table, -shift);
+	else
+		return shift == 0 ? new ColumnExpression(index(columnName, vectorIndex) + table, table)
+						  : new ShiftedColumnExpression<ColumnExpression>(index(columnName, vectorIndex) + table, table, -shift);
 }
 
 SQLSelect* SQLSelectFactory::create (bool distinct,
