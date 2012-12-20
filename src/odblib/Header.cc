@@ -136,9 +136,6 @@ void serializeHeader(DATAHANDLE &dh, size_t dataSize, size_t rowsNumber, const P
 {
 	DataStream<BYTEORDER, DATAHANDLE> ff(dh);
 
-	Column& reportype(*columns[6]); // TODO: REMOVE
-	Column& source(*columns[28]);  // TODO: REMOVE
-
 	// Header.
 	uint16_t c = ODA_MAGIC_NUMBER;
 	ff.writeUInt16(c);

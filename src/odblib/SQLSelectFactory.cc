@@ -39,7 +39,8 @@ SQLSelectFactory::SQLSelectFactory()
 : implicitFromTableSource_(0),
   implicitFromTableSourceStream_(0),
   database_(0),
-  config_(SQLOutputConfig::defaultConfig())
+  config_(SQLOutputConfig::defaultConfig()),
+  maxColumnShift_(0)
 {}
 
 SQLSelectFactory& SQLSelectFactory::instance()
@@ -71,15 +72,71 @@ SQLExpression* SQLSelectFactory::createColumn(
 	bool missing = false;
 	int shift = pshift->eval(missing);
 
-	maxColumnShift_ = shift > maxColumnShift_ ? shift : maxColumnShift_;
-	//if (shift > 0) throw UserError("Shift operator can only be negative");
+	if (shift > maxColumnShift_)
+	{
+		maxColumnShift_ = shift;
+		Log::info() << "SQLSelectFactory::createColumn: " << columnName << "#" << shift << endl;
+	}
+	if (shift > 0) Log::info() << "Shift operator positive" << endl;
 
-	if (bitfieldName.size())
-		return shift == 0 ? new BitColumnExpression(columnName, bitfieldName, table) 
-						  : new ShiftedBitColumnExpression(columnName, bitfieldName, table, -shift);
-	else
-		return shift == 0 ? new ColumnExpression(index(columnName, vectorIndex) + table, table)
-						  : new ShiftedColumnExpression<ColumnExpression>(index(columnName, vectorIndex) + table, table, -shift);
+	string expandedColumnName( index(columnName, vectorIndex) );
+	return bitfieldName.size()
+		? (shift == 0 ? new BitColumnExpression(expandedColumnName, bitfieldName, table) 
+					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table, -shift))
+		: (shift == 0 ? new ColumnExpression(expandedColumnName + table, table)
+					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table, table, -shift));
+}
+
+void SQLSelectFactory::reshift(Expressions& select)
+{
+	Log::info() << "reshift: maxColumnShift_ = " << maxColumnShift_ << endl;
+
+	for (size_t i = 0; i < select.size(); ++i)
+		Log::info() << "reshift: <- select[" << i << "]=" << *select[i] << endl;
+
+	for (size_t i = 0; i < select.size(); ++i)
+	{
+		SQLExpression* e = select[i];
+
+		ShiftedColumnExpression<BitColumnExpression>* c1 = dynamic_cast<ShiftedColumnExpression<BitColumnExpression>*>(e);
+		if (c1) {
+			int newShift = maxColumnShift_ + c1->shift();
+			ASSERT(newShift >= 0);
+			select[i] = newShift > 0
+				? new ShiftedColumnExpression<BitColumnExpression>(*c1, newShift)
+				: new BitColumnExpression(*c1);
+			delete c1;
+			continue;
+		} 
+
+		ShiftedColumnExpression<ColumnExpression>* c2 = dynamic_cast<ShiftedColumnExpression<ColumnExpression>*>(e);
+		if (c2) {
+			int newShift = maxColumnShift_ + c2->shift();
+			ASSERT(newShift >= 0);
+			select[i] = newShift > 0
+				? new ShiftedColumnExpression<ColumnExpression>(*c2, newShift)
+				: new ColumnExpression(*c2);
+			delete c2;
+			continue;
+		} 
+
+		BitColumnExpression* c3 = dynamic_cast<BitColumnExpression*>(e);
+		if(c3) {
+			select[i] = new ShiftedColumnExpression<BitColumnExpression>(*c3, maxColumnShift_);
+			delete c3;
+			continue;
+		}
+
+		ColumnExpression* c4 = dynamic_cast<ColumnExpression*>(e);
+		if(c4) {
+			select[i] = new ShiftedColumnExpression<ColumnExpression>(*c4, maxColumnShift_);
+			delete c4;
+			continue;
+		}
+	}
+
+	for (size_t i = 0; i < select.size(); ++i)
+		Log::info() << "reshift: -> select[" << i << "]=" << *select[i] << endl;
 }
 
 SQLSelect* SQLSelectFactory::create (bool distinct,
@@ -89,7 +146,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	odb::sql::expression::SQLExpression *where,
 	Expressions group_by,
 	pair<Expressions,vector<bool> > order_by)
-{   
+{
 	if (where) Log::info() << "SQLSelectFactory::create: where = " << *where << endl;
 
 	SQLSelect* r = 0;
@@ -101,24 +158,26 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 
 		SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
 			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_)
-			: database_ ? database_->table("defaultTable") : 0;
+			: database_ ? database_->table("defaultTable")
+			: 0;
 		if (table == 0)
 			throw UserError("No table specified");
 		from.push_back(table);
 	}
 
 	Expressions select;
-	for (ColumnDefs::size_type i = 0; i < select_list.size(); i++)
+	for (ColumnDefs::size_type i = 0; i < select_list.size(); ++i)
 	{
 		Log::debug() << "expandStars: " << *select_list[i] << endl;
 		select_list[i]->expandStars(from, select);
 	}
 
+	ASSERT(maxColumnShift_ >= 0);
+	if (maxColumnShift_ > 0) 
+		reshift(select);
+
 	if (group_by.size())
-	{
-		// TODO:
-		Log::info() << "ORDER BY clause seen and ignored. Non aggregated values on select list will be used instead." << endl;
-	}
+		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << endl;
 
 	TemplateParameters templateParameters;
     string outputFile = (config_.outputFormat == "odb") ? config_.outputFile : into;
@@ -142,6 +201,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 		if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
 		r = new SQLSelect(select, from, where, out, config_);
 	}
+	maxColumnShift_ = 0;
 	return r;
 }
 

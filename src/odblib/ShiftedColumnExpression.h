@@ -22,12 +22,13 @@ class SQLOutput;
 
 namespace expression {
 
-template <typename T = ColumnExpression>
+template <typename T>
 class ShiftedColumnExpression : public T {
 public:
 	ShiftedColumnExpression(const string&, SQLTable*, int shift, int begin = -1, int end = -1);
 	ShiftedColumnExpression(const string&, const string& tableReference, int shift, int begin = -1, int end = -1);
 	ShiftedColumnExpression(const ShiftedColumnExpression&);
+	ShiftedColumnExpression(const T& o, int n) : T(o), shift_(n) {}
 
 	// for bitfields columns
 	ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift);
@@ -42,6 +43,8 @@ public:
 
 	SQLExpression* clone() const;
 
+	int shift() { return shift_; }
+
 protected:
 	int	                   shift_; // For the HASH operator
 
@@ -54,6 +57,7 @@ protected:
 private:
 	ShiftedColumnExpression& operator=(const ShiftedColumnExpression&);
 
+	void allocateCircularBuffer();
 	list<pair<double,bool> > oldValues_;
 
 // -- Overridden methods

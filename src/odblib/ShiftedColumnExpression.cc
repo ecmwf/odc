@@ -26,58 +26,48 @@ namespace odb {
 namespace sql {
 namespace expression {
 
+template <typename T>
+void ShiftedColumnExpression<T>::allocateCircularBuffer()
+{
+	Log::info() << "allocateCircularBuffer:" << shift_ <<  endl;
+
+// FIXME: we need to retrieve actual value of missing value for this column
+	double const MISSING_VALUE_REAL = -2147483647.0;
+	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
+
+	ASSERT(shift_ > 0);
+
+	for (size_t i = 0; i < shift_; ++i)
+		oldValues_.push_front(missing_);
+}
 
 template <typename T>
 ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, SQLTable* table, int shift, int begin, int end)
 : T(name, table, begin, end),
   shift_(shift),
   oldValues_()
-{
-// FIXME: we need to retrieve actual value of missing value for this column
-	double const MISSING_VALUE_REAL = -2147483647.0;
-	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
-	for (size_t i = 0; i < shift_; ++i)
-		oldValues_.push_front(missing_);
-}
+{}
 
 template <typename T>
 ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& tableReference, int shift, int begin, int end)
 : T(name, tableReference, begin, end),
   shift_(shift),
   oldValues_()
-{
-// FIXME: we need to retrieve actual value of missing value for this column
-	double const MISSING_VALUE_REAL = -2147483647.0;
-	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
-	for (size_t i = 0; i < shift_; ++i)
-		oldValues_.push_front(missing_);
-}
+{}
 
 template <typename T>
 ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift)
 : T(name, field, table),
   shift_(shift),
   oldValues_()
-{
-// FIXME: we need to retrieve actual value of missing value for this column
-	double const MISSING_VALUE_REAL = -2147483647.0;
-	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
-	for (size_t i = 0; i < shift_; ++i)
-		oldValues_.push_front(missing_);
-}
+{}
 
 template <typename T>
 ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int shift)
 : T(name, field, tableReference),
   shift_(shift),
   oldValues_()
-{
-// FIXME: we need to retrieve actual value of missing value for this column
-	double const MISSING_VALUE_REAL = -2147483647.0;
-	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
-	for (size_t i = 0; i < shift_; ++i)
-		oldValues_.push_front(missing_);
-}
+{}
 
 template <typename T>
 ShiftedColumnExpression<T>::ShiftedColumnExpression(const ShiftedColumnExpression& e)
@@ -98,17 +88,22 @@ void ShiftedColumnExpression<T>::print(ostream& s) const { s << this->columnName
 template <typename T>
 double ShiftedColumnExpression<T>::eval(bool& missing) const
 {
+	ShiftedColumnExpression& self(*const_cast<ShiftedColumnExpression<T>*>(this));
 
-	pair<double,bool> const& v(oldValues_.back());
+	Log::info() << "ShiftedColumnExpression: " << self <<  endl;
+
+	if (shift_ > 0 && oldValues_.size() == 0)
+		self.allocateCircularBuffer();
+
+	pair<double,bool> const& v(self.oldValues_.back());
 	double value = v.first;
 	bool miss = v.second;
 
-	list<pair<double,bool> >&oldValues(*const_cast<list<pair<double,bool> >*>(&oldValues_));
-	oldValues.pop_back();
+	self.oldValues_.pop_back();
 
 	pair<double,bool> ev;
 	ev.first = T::eval(ev.second);
-	oldValues.push_front(ev);
+	self.oldValues_.push_front(ev);
 
 	if(miss) missing = true;
 	return value;

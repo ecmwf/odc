@@ -37,6 +37,13 @@ public:
 		Expressions group_by,
 		pair<Expressions,vector<bool> > order_by);
 
+	SQLExpression* createColumn(
+		const std::string& columnName,
+		const std::string& bitfieldName,
+		const SQLExpression* vectorIndex,
+		const std::string& table,
+		const SQLExpression* pshift);
+
     DataHandle* implicitFromTableSource() { return implicitFromTableSource_; }
     void implicitFromTableSource(DataHandle* h) { implicitFromTableSource_ = h; }
 
@@ -49,13 +56,6 @@ public:
 	SQLOutputConfig config() { return config_; }
 	void config(SQLOutputConfig cfg) { config_ = cfg; }
 
-	SQLExpression* createColumn(
-		const std::string& columnName,
-		const std::string& bitfieldName,
-		const SQLExpression* vectorIndex,
-		const std::string& table,
-		const SQLExpression* pshift);
-
 private:
 	SQLSelectFactory();
 
@@ -65,6 +65,7 @@ private:
 
 	string index(const string& columnName, const SQLExpression* index);
 
+	void reshift(Expressions&);
     DataHandle* implicitFromTableSource_;
     istream* implicitFromTableSourceStream_;
 	SQLDatabase* database_;

@@ -28,17 +28,14 @@ public:
 	ColumnExpression(const string&, SQLTable*, int begin = -1, int end = -1);
 	ColumnExpression(const string&, const string& tableReference, int begin = -1, int end = -1);
 	ColumnExpression(const ColumnExpression&);
-
 	~ColumnExpression(); // Change to virtual if base class
 
 	SQLTable* table() { return table_; }
-
 	double* current() { return &(value_->first); }
-
 	SQLExpression* clone() const;
 
-// -- Overridden methods
-	// None
+	// This is a hack for ShiftedColumnExpression and SQLSelectFactory
+	virtual void normalizeShift(int) { NOTIMP; }
 
 protected:
 	const type::SQLType*   type_;
@@ -50,7 +47,6 @@ protected:
 	int                    endIndex_;
 
 // -- Overridden methods
-
 	virtual void print(ostream& s) const;
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
@@ -67,6 +63,8 @@ private:
 	virtual void tables(set<SQLTable*>&);
 	virtual bool indexed();
 	virtual SQLIndex* getIndex(double*);
+
+	friend class SQLSelectFactory;
 
 	//friend ostream& operator<<(ostream& s,const ColumnExpression& p)
 	//	{ p.print(s); return s; }

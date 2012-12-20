@@ -24,10 +24,10 @@ class BitColumnExpression : public ColumnExpression {
 public:
 	BitColumnExpression(const string&, const string&, SQLTable*);
 	BitColumnExpression(const string&, const string&, const string&);
+	BitColumnExpression(const BitColumnExpression&);
 	~BitColumnExpression(); // Change to virtual if base class
 private:
 // No copy allowed
-	BitColumnExpression(const BitColumnExpression&);
 	BitColumnExpression& operator=(const BitColumnExpression&);
 
 protected:
@@ -45,7 +45,7 @@ protected:
 
 	//friend ostream& operator<<(ostream& s,const BitColumnExpression& p)
 	//	{ p.print(s); return s; }
-
+	friend class SQLSelectFactory;
 };
 
 } // namespace expression 
