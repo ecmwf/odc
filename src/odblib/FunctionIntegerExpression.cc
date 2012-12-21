@@ -61,18 +61,16 @@ public:
 	: FunctionIntegerExpression(name, args) { this->missingValue_ = MISSING_VALUE_INT; }
 };
 
-#define DEFINE_MATH_INT_FUNC_1F(FuncName, Name) \
-static FunctionMaker<MathFunctionIntegerExpression_1<FuncName> > make_1_##FuncName(#Name,1)
+#define DEFINE_MATH_INT_FUNC_1F(FuncName, Name, Help) \
+static FunctionMaker<MathFunctionIntegerExpression_1<FuncName> > make_1_##FuncName(#Name,1,Help)
 
 
 //--------------------------------------------------------------
 inline double year(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)((int)((x)/10000)) : (double)NMDI);}
-inline double month(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)((x)/100))%100) :
-(double)NMDI);}
+inline double month(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)((x)/100))%100) : (double)NMDI);}
 inline double day(double x)   { return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)(x))%100) : (double)NMDI);}
 inline double hour(double x)   {return ((fabs(x) != fabs((double) RMDI)) ? (double)((int)((x)/10000)) : (double)NMDI);}
-inline double minute(double x) {return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)((x)/100))%100) :
-(double)NMDI);}
+inline double minute(double x) {return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)((x)/100))%100) : (double)NMDI);}
 inline double minutes(double x) {return minute(x);}
 inline double second(double x) {return ((fabs(x) != fabs((double)RMDI)) ? (double)(((int)(x))%100) : (double)NMDI);}
 inline double seconds(double x) {return second(x);}
@@ -87,19 +85,19 @@ inline double Func_floor(double x) { return ((fabs(x) != fabs((double) RMDI)) ? 
 void FunctionIntegerExpression::registerIntegerFunctions()
 {
 
-	DEFINE_MATH_INT_FUNC_1F(year,year);
-	DEFINE_MATH_INT_FUNC_1F(month,month);
-	DEFINE_MATH_INT_FUNC_1F(day,day);
-	DEFINE_MATH_INT_FUNC_1F(hour,hour);
-	DEFINE_MATH_INT_FUNC_1F(minute,minute);
-	DEFINE_MATH_INT_FUNC_1F(minutes,minutes);
-	DEFINE_MATH_INT_FUNC_1F(second,second);
-	DEFINE_MATH_INT_FUNC_1F(seconds, seconds);
-	DEFINE_MATH_INT_FUNC_1F(Func_ceil,ceil);
-	DEFINE_MATH_INT_FUNC_1F(Func_floor,floor);
-	DEFINE_MATH_INT_FUNC_1F(Func_ftrunc,trunc);
-	DEFINE_MATH_INT_FUNC_1F(Func_dint,int);
-	DEFINE_MATH_INT_FUNC_1F(Func_dnint,nint);
+	DEFINE_MATH_INT_FUNC_1F(year,year,"");
+	DEFINE_MATH_INT_FUNC_1F(month,month,"");
+	DEFINE_MATH_INT_FUNC_1F(day,day,"");
+	DEFINE_MATH_INT_FUNC_1F(hour,hour,"");
+	DEFINE_MATH_INT_FUNC_1F(minute,minute,"");
+	DEFINE_MATH_INT_FUNC_1F(minutes,minutes,"");
+	DEFINE_MATH_INT_FUNC_1F(second,second,"");
+	DEFINE_MATH_INT_FUNC_1F(seconds, seconds,"");
+	DEFINE_MATH_INT_FUNC_1F(Func_ceil,ceil,"");
+	DEFINE_MATH_INT_FUNC_1F(Func_floor,floor,"");
+	DEFINE_MATH_INT_FUNC_1F(Func_ftrunc,trunc,"");
+	DEFINE_MATH_INT_FUNC_1F(Func_dint,int,"");
+	DEFINE_MATH_INT_FUNC_1F(Func_dnint,nint,"");
 }
 
 } // namespace function

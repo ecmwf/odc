@@ -21,6 +21,7 @@
 #include "odblib/TestRunnerApplication.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/ToolRunnerApplication.h"
+#include "odblib/FunctionFactory.h"
 
 using namespace std;
 using namespace odb::tool;
@@ -28,6 +29,7 @@ using namespace odb::tool;
 int executeCommand(int argc, char *argv[]);
 int gdb(int argc, char *argv[]);
 int valgrind(int argc, char *argv[]);
+int sqlhelp(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
@@ -77,6 +79,7 @@ int executeCommand(int argc, char *argv[])
 		// It never really gets here.
 		return 0;
 	}
+
 	if (firstArg == "help")
 	{
 		odb_start();
@@ -90,6 +93,9 @@ int executeCommand(int argc, char *argv[])
 		}
 		return 0;
 	}
+
+	if (firstArg == "sqlhelp") return sqlhelp(argc, argv);
+
 	if (firstArg == "-V" || firstArg == "-v" || firstArg == "--version")
 	{
 		cout << "ODBAPI Version: " << odb::ODBAPIVersion::version() << endl;
@@ -144,3 +150,17 @@ int valgrind(int argc, char *argv[])
 	return system(vg.c_str());
 }
 
+int sqlhelp(int argc, char *argv[])
+{
+	typedef odb::sql::expression::function::FunctionFactory::FunctionInfo FI;
+	FI& fi = odb::sql::expression::function::FunctionFactory::instance().functionsInfo();
+	for (FI::iterator i = fi.begin(); i != fi.end(); ++i)
+	{
+		if (i->first.first == "FunctionFactory")
+			continue;
+
+		cout << i->first.first << "/" << i->first.second << " " << i->second << endl;
+	}
+	
+	return 0;
+}

@@ -28,11 +28,12 @@ class FunctionFactoryBase {
 protected:
 	int    arity_;
 	string name_;
+	string help_;
 	virtual FunctionExpression* make(const string&,const expression::Expressions&) = 0;
 
 public:
 	//FunctionFactoryBase() : name_("FunctionFactory"), arity_(-1) {}
-	FunctionFactoryBase(const string& name, int arity = -1);
+	FunctionFactoryBase(const string& name, int arity, const string& help);
 	~FunctionFactoryBase();
 
 	FunctionExpression* build(const string&, SQLExpression*);
@@ -46,13 +47,16 @@ public:
 	static FunctionFactory& instance();
 	FunctionFactory(); // : FunctionFactoryBase("FunctionFactory", -1) {}
 
-	vector<pair<string, int> >& functionsInfo();
+	typedef vector<pair<pair<string, int>, string> > FunctionInfo;
+
+	FunctionInfo& functionsInfo();
 
 private:
 	FunctionExpression* make(const string&,const expression::Expressions&) { NOTIMP; return 0; }
 
+
 	map<pair<string,int>, FunctionFactoryBase*> map_;
-	vector<pair<string, int> > functionInfo_;
+	FunctionInfo functionInfo_;
 };
 
 template<class T>
@@ -60,7 +64,7 @@ class FunctionMaker : public FunctionFactoryBase {
 	FunctionExpression* make(const string& name, const expression::Expressions& args)
 	{ return new T(name, args); }
 public:
-	FunctionMaker(const string& name, int arity = -1) : FunctionFactoryBase(name, arity) {}
+	FunctionMaker(const string& name, int arity, const string& help) : FunctionFactoryBase(name, arity, help) {}
 };
 
 } // namespace function

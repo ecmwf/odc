@@ -740,7 +740,8 @@ void hash_operator()
 	ScratchFile f("hash_operator.odb");
 	ImportTool::importText(data, f);
 
-    odb::Select select("select x,x#-1 from \"" + f + "\"");
+	string sql("select x,x#-1,x#1 from \"" + f + "\"");
+    odb::Select select(sql);
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
     for (; it != end; ++it)
@@ -755,7 +756,7 @@ void bitfields_hash_operator()
 {
 	PathName f("2000010106.4.0.odb");
     //odb::Select select("select lat,lat#1 from \"" + f + "\"");
-    odb::Select select("select anflag.final@body,anflag.final@body#-1 from \"" + f + "\"");
+    odb::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\"");
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
     for (; it != end; ++it)
@@ -765,6 +766,8 @@ void bitfields_hash_operator()
 	
 }
 TESTCASE(bitfields_hash_operator);
+
+//TESTCASE();
 
 } // namespace test 
 } // namespace tool 

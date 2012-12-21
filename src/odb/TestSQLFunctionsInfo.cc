@@ -37,14 +37,14 @@ TestSQLFunctionsInfo::TestSQLFunctionsInfo(int argc, char **argv)
 
 void TestSQLFunctionsInfo::test()
 {
-	typedef vector<pair<string, int> > FI;
+	typedef odb::sql::expression::function::FunctionFactory::FunctionInfo FI;
 
 	FI& functionsInfo = odb::sql::expression::function::FunctionFactory::instance().functionsInfo();
 
 	Log::info() << "FunctionFactory::functionsInfo().size() == " << functionsInfo.size() << endl;
 	for (FI::iterator i = functionsInfo.begin(); i != functionsInfo.end(); ++i)
 	{
-		Log::info() << i->first << "/" << i->second;
+		Log::info() << i->first.first << "/" << i->first.second;
 		if (i + 1 != functionsInfo.end())
 			Log::info() << ", ";
 	}
