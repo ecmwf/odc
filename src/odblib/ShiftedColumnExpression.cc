@@ -29,7 +29,7 @@ namespace expression {
 template <typename T>
 void ShiftedColumnExpression<T>::allocateCircularBuffer()
 {
-	Log::info() << "allocateCircularBuffer:" << shift_ <<  endl;
+	//Log::info() << "allocateCircularBuffer:" << shift_ <<  endl;
 
 // FIXME: we need to retrieve actual value of missing value for this column
 	double const MISSING_VALUE_REAL = -2147483647.0;
@@ -89,8 +89,6 @@ template <typename T>
 double ShiftedColumnExpression<T>::eval(bool& missing) const
 {
 	ShiftedColumnExpression& self(*const_cast<ShiftedColumnExpression<T>*>(this));
-
-	Log::info() << "ShiftedColumnExpression: " << self <<  endl;
 
 	if (shift_ > 0 && oldValues_.size() == 0)
 		self.allocateCircularBuffer();
