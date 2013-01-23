@@ -89,8 +89,9 @@ template <typename T>
 double ShiftedColumnExpression<T>::eval(bool& missing) const
 {
 	ShiftedColumnExpression& self(*const_cast<ShiftedColumnExpression<T>*>(this));
+	ASSERT(shift_ > 0);
 
-	if (shift_ > 0 && oldValues_.size() == 0)
+	if (oldValues_.size() == 0)
 		self.allocateCircularBuffer();
 
 	pair<double,bool> const& v(self.oldValues_.back());

@@ -71,6 +71,7 @@ private:
 	SQLDatabase* database_;
 	SQLOutputConfig config_;
 	int maxColumnShift_;
+	int minColumnShift_;
 
 friend class ThreadSingleton<SQLSelectFactory>;
 };

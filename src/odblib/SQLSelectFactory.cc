@@ -40,7 +40,8 @@ SQLSelectFactory::SQLSelectFactory()
   implicitFromTableSourceStream_(0),
   database_(0),
   config_(SQLOutputConfig::defaultConfig()),
-  maxColumnShift_(0)
+  maxColumnShift_(0),
+  minColumnShift_(0)
 {}
 
 SQLSelectFactory& SQLSelectFactory::instance()
@@ -77,14 +78,19 @@ SQLExpression* SQLSelectFactory::createColumn(
 		maxColumnShift_ = shift;
 		Log::info() << "SQLSelectFactory::createColumn: " << columnName << "#" << shift << endl;
 	}
-	if (shift > 0) Log::info() << "Shift operator positive" << endl;
+
+	if (shift < minColumnShift_)
+	{
+		minColumnShift_ = shift;
+		Log::info() << "SQLSelectFactory::createColumn: " << columnName << "#" << shift << endl;
+	}
 
 	string expandedColumnName( index(columnName, vectorIndex) );
 	return bitfieldName.size()
 		? (shift == 0 ? new BitColumnExpression(expandedColumnName, bitfieldName, table) 
-					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table, -shift))
+					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table, shift))
 		: (shift == 0 ? new ColumnExpression(expandedColumnName + table, table)
-					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table, table, -shift));
+					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table, table, shift));
 }
 
 void SQLSelectFactory::reshift(Expressions& select)
@@ -100,7 +106,8 @@ void SQLSelectFactory::reshift(Expressions& select)
 
 		ShiftedColumnExpression<BitColumnExpression>* c1 = dynamic_cast<ShiftedColumnExpression<BitColumnExpression>*>(e);
 		if (c1) {
-			int newShift = maxColumnShift_ + c1->shift();
+			//int newShift = maxColumnShift_ - c1->shift();
+			int newShift = c1->shift() - minColumnShift_;
 			ASSERT(newShift >= 0);
 			select[i] = newShift > 0
 				? new ShiftedColumnExpression<BitColumnExpression>(*c1, newShift)
@@ -111,7 +118,8 @@ void SQLSelectFactory::reshift(Expressions& select)
 
 		ShiftedColumnExpression<ColumnExpression>* c2 = dynamic_cast<ShiftedColumnExpression<ColumnExpression>*>(e);
 		if (c2) {
-			int newShift = maxColumnShift_ + c2->shift();
+			//int newShift = maxColumnShift_ - c2->shift();
+			int newShift = c2->shift() - minColumnShift_ ;
 			ASSERT(newShift >= 0);
 			select[i] = newShift > 0
 				? new ShiftedColumnExpression<ColumnExpression>(*c2, newShift)
@@ -122,14 +130,14 @@ void SQLSelectFactory::reshift(Expressions& select)
 
 		BitColumnExpression* c3 = dynamic_cast<BitColumnExpression*>(e);
 		if(c3) {
-			select[i] = new ShiftedColumnExpression<BitColumnExpression>(*c3, maxColumnShift_);
+			select[i] = new ShiftedColumnExpression<BitColumnExpression>(*c3, -minColumnShift_);
 			delete c3;
 			continue;
 		}
 
 		ColumnExpression* c4 = dynamic_cast<ColumnExpression*>(e);
 		if(c4) {
-			select[i] = new ShiftedColumnExpression<ColumnExpression>(*c4, maxColumnShift_);
+			select[i] = new ShiftedColumnExpression<ColumnExpression>(*c4, -minColumnShift_);
 			delete c4;
 			continue;
 		}
@@ -137,6 +145,9 @@ void SQLSelectFactory::reshift(Expressions& select)
 
 	for (size_t i = 0; i < select.size(); ++i)
 		Log::info() << "reshift: -> select[" << i << "]=" << *select[i] << endl;
+
+	maxColumnShift_ = 0;
+	minColumnShift_ = 0;
 }
 
 SQLSelect* SQLSelectFactory::create (bool distinct,
@@ -173,7 +184,8 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	}
 
 	ASSERT(maxColumnShift_ >= 0);
-	if (maxColumnShift_ > 0) 
+	ASSERT(minColumnShift_ <= 0);
+	if (minColumnShift_ < 0) 
 		reshift(select);
 
 	if (group_by.size())
