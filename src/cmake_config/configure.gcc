@@ -19,7 +19,7 @@ $CMAKE ../.. $BUILD_TYPE $1 \
 	-DCMAKE_C_FLAGS=-fPIC \
 	-DECLIB_SOURCE=$SRC/eclib \
 	-DBUILD_SHARED_LIBS=OFF \
-	-DCMAKE_MODULE_PATH=$SRC/ecbuild.patch/cmake \
+	-DCMAKE_MODULE_PATH=$SRC/ecbuild.main/cmake \
 	-DODB_API_FORTRAN=ON \
 	-DPGI_PATH=/usr/local/apps/pgi/pgi\-10.8/linux86-64/current
 
