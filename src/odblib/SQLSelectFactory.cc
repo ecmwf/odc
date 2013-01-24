@@ -88,11 +88,11 @@ SQLExpression* SQLSelectFactory::createColumn(
 
 void SQLSelectFactory::reshift(Expressions& select)
 {
-	Log::info() << "reshift: maxColumnShift_ = " << maxColumnShift_ << endl;
-	Log::info() << "reshift: minColumnShift_ = " << minColumnShift_ << endl;
-
+	ostream& L(Log::debug());
+	L << "reshift: maxColumnShift_ = " << maxColumnShift_ << endl;
+	L << "reshift: minColumnShift_ = " << minColumnShift_ << endl;
 	for (size_t i = 0; i < select.size(); ++i)
-		Log::info() << "reshift: <- select[" << i << "]=" << *select[i] << endl;
+		L << "reshift: <- select[" << i << "]=" << *select[i] << endl;
 
 	for (size_t i = 0; i < select.size(); ++i)
 	{
@@ -135,9 +135,9 @@ void SQLSelectFactory::reshift(Expressions& select)
 		}
 	}
 
-	Log::info() << endl;
+	L << endl;
 	for (size_t i = 0; i < select.size(); ++i)
-		Log::info() << "reshift: -> select[" << i << "]=" << *select[i] << endl;
+		L << "reshift: -> select[" << i << "]=" << *select[i] << endl;
 
 	maxColumnShift_ = 0;
 	minColumnShift_ = 0;
