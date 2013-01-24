@@ -26,6 +26,7 @@ public:
 	BitColumnExpression(const string&, const string&, const string&);
 	BitColumnExpression(const BitColumnExpression&);
 	~BitColumnExpression(); // Change to virtual if base class
+
 private:
 // No copy allowed
 	BitColumnExpression& operator=(const BitColumnExpression&);

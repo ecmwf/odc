@@ -25,14 +25,14 @@ namespace expression {
 template <typename T>
 class ShiftedColumnExpression : public T {
 public:
-	ShiftedColumnExpression(const string&, SQLTable*, int shift, int begin = -1, int end = -1);
-	ShiftedColumnExpression(const string&, const string& tableReference, int shift, int begin = -1, int end = -1);
+	ShiftedColumnExpression(const string&, SQLTable*, int shift, int nominalShift, int begin = -1, int end = -1);
+	ShiftedColumnExpression(const string&, const string& tableReference, int shift, int nominalShift, int begin = -1, int end = -1);
 	ShiftedColumnExpression(const ShiftedColumnExpression&);
-	ShiftedColumnExpression(const T& o, int n) : T(o), shift_(n) {}
+	ShiftedColumnExpression(const T& o, int shift, int nominalShift);
 
 	// for bitfields columns
-	ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift);
-	ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int shift);
+	ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift, int nominalShift);
+	ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int shift, int nominalShift);
 
 
 	~ShiftedColumnExpression(); // Change to virtual if base class
@@ -44,9 +44,11 @@ public:
 	SQLExpression* clone() const;
 
 	int shift() { return shift_; }
+	int nominalShift() { return nominalShift_; }
 
 protected:
 	int	                   shift_; // For the HASH operator
+	int	                   nominalShift_; // For the HASH operator
 
 // -- Overridden methods
 	virtual void print(ostream& s) const;

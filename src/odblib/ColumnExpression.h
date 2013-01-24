@@ -34,8 +34,7 @@ public:
 	double* current() { return &(value_->first); }
 	SQLExpression* clone() const;
 
-	// This is a hack for ShiftedColumnExpression and SQLSelectFactory
-	virtual void normalizeShift(int) { NOTIMP; }
+	SQLExpression* nominalShift(int n) { nominalShift_ = n; return this; }
 
 protected:
 	const type::SQLType*   type_;
@@ -45,6 +44,7 @@ protected:
 	string                 tableReference_;
 	int                    beginIndex_;
 	int                    endIndex_;
+	int                    nominalShift_;
 
 // -- Overridden methods
 	virtual void print(ostream& s) const;

@@ -71,31 +71,25 @@ SQLExpression* SQLSelectFactory::createColumn(
 {
 	if (! pshift->isConstant()) throw UserError("Value of shift operator must be constant");
 	bool missing = false;
-	int shift = pshift->eval(missing);
+	
+	// Internally shift is an index in the cyclic buffer of old values, so the shift value is negative.
+	int shift = - pshift->eval(missing);
 
-	if (shift > maxColumnShift_)
-	{
-		maxColumnShift_ = shift;
-		Log::info() << "SQLSelectFactory::createColumn: " << columnName << "#" << shift << endl;
-	}
-
-	if (shift < minColumnShift_)
-	{
-		minColumnShift_ = shift;
-		Log::info() << "SQLSelectFactory::createColumn: " << columnName << "#" << shift << endl;
-	}
+	if (shift > maxColumnShift_) maxColumnShift_ = shift;
+	if (shift < minColumnShift_) minColumnShift_ = shift;
 
 	string expandedColumnName( index(columnName, vectorIndex) );
 	return bitfieldName.size()
-		? (shift == 0 ? new BitColumnExpression(expandedColumnName, bitfieldName, table) 
-					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table, shift))
+		? (shift == 0 ? new BitColumnExpression(expandedColumnName, bitfieldName, table)
+					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table, shift, -shift))
 		: (shift == 0 ? new ColumnExpression(expandedColumnName + table, table)
-					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table, table, shift));
+					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table, table, shift, -shift));
 }
 
 void SQLSelectFactory::reshift(Expressions& select)
 {
 	Log::info() << "reshift: maxColumnShift_ = " << maxColumnShift_ << endl;
+	Log::info() << "reshift: minColumnShift_ = " << minColumnShift_ << endl;
 
 	for (size_t i = 0; i < select.size(); ++i)
 		Log::info() << "reshift: <- select[" << i << "]=" << *select[i] << endl;
@@ -106,43 +100,42 @@ void SQLSelectFactory::reshift(Expressions& select)
 
 		ShiftedColumnExpression<BitColumnExpression>* c1 = dynamic_cast<ShiftedColumnExpression<BitColumnExpression>*>(e);
 		if (c1) {
-			//int newShift = maxColumnShift_ - c1->shift();
 			int newShift = c1->shift() - minColumnShift_;
 			ASSERT(newShift >= 0);
 			select[i] = newShift > 0
-				? new ShiftedColumnExpression<BitColumnExpression>(*c1, newShift)
-				: new BitColumnExpression(*c1);
+				? new ShiftedColumnExpression<BitColumnExpression>(*c1, newShift, c1->nominalShift())
+				: (new BitColumnExpression(*c1))->nominalShift(c1->nominalShift());
 			delete c1;
 			continue;
 		} 
 
 		ShiftedColumnExpression<ColumnExpression>* c2 = dynamic_cast<ShiftedColumnExpression<ColumnExpression>*>(e);
 		if (c2) {
-			//int newShift = maxColumnShift_ - c2->shift();
 			int newShift = c2->shift() - minColumnShift_ ;
 			ASSERT(newShift >= 0);
 			select[i] = newShift > 0
-				? new ShiftedColumnExpression<ColumnExpression>(*c2, newShift)
-				: new ColumnExpression(*c2);
+				? new ShiftedColumnExpression<ColumnExpression>(*c2, newShift, c2->nominalShift())
+				: (new ColumnExpression(*c2))->nominalShift(c2->nominalShift());
 			delete c2;
 			continue;
 		} 
 
 		BitColumnExpression* c3 = dynamic_cast<BitColumnExpression*>(e);
 		if(c3) {
-			select[i] = new ShiftedColumnExpression<BitColumnExpression>(*c3, -minColumnShift_);
+			select[i] = new ShiftedColumnExpression<BitColumnExpression>(*c3, -minColumnShift_, 0);
 			delete c3;
 			continue;
 		}
 
 		ColumnExpression* c4 = dynamic_cast<ColumnExpression*>(e);
 		if(c4) {
-			select[i] = new ShiftedColumnExpression<ColumnExpression>(*c4, -minColumnShift_);
+			select[i] = new ShiftedColumnExpression<ColumnExpression>(*c4, -minColumnShift_, 0);
 			delete c4;
 			continue;
 		}
 	}
 
+	Log::info() << endl;
 	for (size_t i = 0; i < select.size(); ++i)
 		Log::info() << "reshift: -> select[" << i << "]=" << *select[i] << endl;
 

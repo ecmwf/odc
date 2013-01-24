@@ -35,7 +35,8 @@ ColumnExpression::ColumnExpression(const string& name, SQLTable* table, int begi
   table_(table),
   tableReference_(),
   beginIndex_(begin),
-  endIndex_(end)
+  endIndex_(end),
+  nominalShift_(0)
 {}
 
 ColumnExpression::ColumnExpression(const string& name, const string& tableReference, int begin, int end)
@@ -45,7 +46,8 @@ ColumnExpression::ColumnExpression(const string& name, const string& tableRefere
   table_(0),
   tableReference_(tableReference),
   beginIndex_(begin),
-  endIndex_(end)
+  endIndex_(end),
+  nominalShift_(0)
 {}
 
 ColumnExpression::ColumnExpression(const ColumnExpression& e)
@@ -55,7 +57,8 @@ ColumnExpression::ColumnExpression(const ColumnExpression& e)
   table_(e.table_),
   tableReference_(e.tableReference_),
   beginIndex_(e.beginIndex_),
-  endIndex_(e.endIndex_)
+  endIndex_(e.endIndex_),
+  nominalShift_(e.nominalShift_)
 {}
 
 SQLExpression* ColumnExpression::clone() const { return new ColumnExpression(*this); }
@@ -108,6 +111,8 @@ void ColumnExpression::cleanup(SQLSelect& sql)
 void ColumnExpression::print(ostream& s) const 
 {
 	s << columnName_;
+	if (nominalShift_ != 0)
+		s << "#" << nominalShift_;
 	//if(table_) s << "@" << table_->fullName();
 }
 
