@@ -12,7 +12,7 @@
 #       -DCMAKE_PREFIX_PATH=/path/to/jasper:/path/to/any/package/out/of/place
 #       -DBUILD_SHARED_LIBS=ON
 
-cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
 
 project( odb_api CXX )
 
