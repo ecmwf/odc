@@ -24,7 +24,7 @@ $1 $cmake ../../ $2 \
 	-DCMAKE_CXX_COMPILER=xlC_r \
 	-DCMAKE_C_COMPILER=xlc_r \
 	-DODB_PATH=$ODB_ROOT \
-	-DCMAKE_MODULE_PATH=$(cd ../../ecbuild/cmake && pwd) \
+	-DCMAKE_MODULE_PATH=/usr/local/apps/ecbuild/1.0.10/cmake \
 	-DECLIB_SOURCE=$(cd ../../eclib && pwd) \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DODB_API_MIGRATOR=ON \
@@ -35,3 +35,4 @@ $1 $cmake ../../ $2 \
 	-DFLEX_EXECUTABLE='/usr/bin/flex' \
 	-DCMAKE_PREFIX_PATH=/usr/local/apps/python/2.7
 
+#-DCMAKE_MODULE_PATH=$(cd ../../ecbuild/cmake && pwd) \
