@@ -15,7 +15,7 @@ $CMAKE ../.. $BUILD_TYPE $1 \
 	-DODB_API_MIGRATOR=OFF \
 	-DECLIB_SOURCE=$SRC/eclib \
 	-DBUILD_SHARED_LIBS=OFF \
-	-DCMAKE_MODULE_PATH=$SRC/ecbuild/cmake \
+	-DCMAKE_MODULE_PATH=/usr/local/apps/ecbuild/1.0.10/cmake \
 	-DODB_API_FORTRAN=ON \
 	-DODB_API_PYTHON=ON \
 
