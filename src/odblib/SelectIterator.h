@@ -16,6 +16,9 @@
 #ifndef _SelectIterator_H
 #define _SelectIterator_H
 
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLIteratorSession.h"
+
 extern "C" {
 	typedef void oda_select_iterator;
 	int odb_select_iterator_get_next_row(oda_select_iterator*, int, double*, int*);
@@ -24,7 +27,9 @@ extern "C" {
 namespace odb {
 
 class Select;
-class Column;
+class MetaData;
+
+template <typename I, typename O, typename D> class IteratorProxy;
 
 namespace sql {
 	template <typename T> class SQLIteratorSession;

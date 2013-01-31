@@ -21,9 +21,9 @@
 #include "odblib/Array.h"
 #include "odblib/RowsIterator.h"
 #include "odblib/UnsafeInMemoryDataHandle.h"
-#include "odblib/Writer.h"
 #include "odblib/Header.h"
 #include "odblib/CodecOptimizer.h"
+#include "odblib/IteratorProxy.h"
 
 class PathName;
 class DataHandle;
@@ -32,7 +32,7 @@ namespace odb {
 
 class HashTable;
 class SQLIteratorSession;
-
+template <typename I> class Writer;
 
 class WriterBufferingIterator : public RowsWriterIterator
 {

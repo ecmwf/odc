@@ -12,14 +12,15 @@
 #define MetaData_H
 
 #include "eclib/machine.h"
+#include "odblib/Column.h"
 
 #ifdef SWIGPYTHON
 #include "odblib/IteratorProxy.h"
 #endif
 
-namespace odb {
+class PathName;
 
-class Column;
+namespace odb {
 
 typedef vector<Column*> MetaDataBase;
 

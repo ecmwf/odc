@@ -17,6 +17,7 @@
 #define ODAWRITER_H
 
 #include "odblib/IteratorProxy.h"
+#include "odblib/WriterBufferingIterator.h"
 
 class PathName;
 class DataHandle;
@@ -28,7 +29,6 @@ class HashTable;
 class SQLIteratorSession;
 class RowsReaderIterator;
 class ReaderIterator;
-class WriterBufferingIterator;
 
 typedef WriterBufferingIterator DefaultWritingIterator;
 

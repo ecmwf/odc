@@ -16,18 +16,17 @@
 #ifndef Reader_H
 #define Reader_H
 
-#include "odblib/IteratorProxy.h"
-
 #ifdef SWIGPYTHON
 #include <Python.h>
 #endif
+
+#include "odblib/IteratorProxy.h"
+#include "odblib/ReaderIterator.h"
 
 class PathName;
 class DataHandle;
 
 namespace odb {
-
-class ReaderIterator;
 
 class Reader
 {

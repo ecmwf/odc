@@ -13,49 +13,12 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include <errno.h>
-#include <math.h>
-#include <climits>
-#include <cfloat>
-
-using namespace std;
+#include "odblib/TextReader.h"
 
 #include "eclib/DataHandle.h"
-#include "eclib/Exceptions.h"
-#include "eclib/FileHandle.h"
 #include "eclib/PathName.h"
 
-#include "odblib/Codec.h"
-#include "odblib/Column.h"
-#include "odblib/MetaData.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/DataStream.h"
-#include "odblib/FixedSizeWriterIterator.h"
-#include "odblib/HashTable.h"
-#include "odblib/Header.h"
-#include "odblib/IteratorProxy.h"
-#include "odblib/MemoryBlock.h"
-#include "odblib/MetaData.h"
-#include "odblib/Reader.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/SQLParser.h"
-#include "odblib/SQLSelect.h"
-#include "odblib/SQLTable.h"
-#include "odblib/SQLType.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/TextReader.h"
 #include "odblib/TextReaderIterator.h"
-#include "odblib/Writer.h"
-#include "odblib/WriterBufferingIterator.h"
-
 
 using namespace std;
 

@@ -20,18 +20,13 @@
 #include <Python.h>
 #endif
 
+#include "odblib/IteratorProxy.h"
+
 class PathName;
 class DataHandle;
 
 namespace odb {
 
-class Reader;
-class HashTable;
-class SQLIteratorSession;
-class RowsReaderIterator;
-class ReaderIterator;
-class WriterBufferingIterator;
-//class Writer;
 class SelectIterator;
 
 class Select
@@ -58,10 +53,10 @@ public:
 	DataHandle* dataHandle() { return dataHandle_; };
 	std::istream* dataIStream() { return istream_; }
 
-	SelectIterator* createSelectIterator(string);
+        SelectIterator* createSelectIterator(string);
 
 private:
-	friend class IteratorProxy<SelectIterator,Select,const double>;
+	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 
 	DataHandle* dataHandle_;
 	bool deleteDataHandle_;

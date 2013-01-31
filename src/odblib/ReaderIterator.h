@@ -16,9 +16,8 @@
 #ifndef ReaderIterator_H
 #define ReaderIterator_H
 
-#include "odblib/SimpleFilterIterator.h"
+#include "odblib/RowsIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
-
 
 class PathName;
 class DataHandle;
@@ -37,6 +36,8 @@ namespace odb {
 		template <typename T> class SQLIteratorSession;
 		class ODATableIterator;
 	}
+	template <typename I> class SimpleFilterIterator;
+	template <typename O> class Header;
 }
 
 namespace odb {

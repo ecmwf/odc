@@ -13,6 +13,7 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
+#include "odblib/Reader.h"
 
 #include <algorithm>
 #include <iostream>
@@ -22,38 +23,10 @@
 #include <climits>
 #include <cfloat>
 
-using namespace std;
-
 #include "eclib/Exceptions.h"
 #include "eclib/PathName.h"
 #include "eclib/DataHandle.h"
 #include "eclib/FileHandle.h"
-
-#include "odblib/Codec.h"
-#include "odblib/Column.h"
-#include "odblib/MetaData.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/DataStream.h"
-#include "odblib/FixedSizeWriterIterator.h"
-#include "odblib/HashTable.h"
-#include "odblib/Header.h"
-#include "odblib/IteratorProxy.h"
-#include "odblib/MemoryBlock.h"
-#include "odblib/MetaData.h"
-#include "odblib/Reader.h"
-#include "odblib/ReaderIterator.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/SQLParser.h"
-#include "odblib/SQLSelect.h"
-#include "odblib/SQLTable.h"
-#include "odblib/SQLType.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/Writer.h"
-#include "odblib/WriterBufferingIterator.h"
 
 using namespace std;
 

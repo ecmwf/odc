@@ -20,6 +20,8 @@
 #include <Python.h>
 #endif
 
+#include "odblib/IteratorProxy.h"
+
 class PathName;
 
 namespace odb {
@@ -43,7 +45,7 @@ public:
 
 	istream& stream() { return *in_; }
 	// For C API
-	TextReaderIterator* createReadIterator(const PathName&);
+        TextReaderIterator* createReadIterator(const PathName&);
 
 #ifdef SWIGPYTHON
 	iterator __iter__() { return begin(); }
@@ -59,8 +61,8 @@ private:
 	//const PathName path_;
 	const string path_;
 
-	friend class IteratorProxy<TextReaderIterator,TextReader,const double>;
-	friend class TextReaderIterator;
+	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,const double>;
+	friend class odb::TextReaderIterator;
 };
 
 } // namespace odb

@@ -24,6 +24,7 @@
 #include "odblib/Writer.h"
 #include "odblib/WriterBufferingIterator.h"
 #include "odblib/Comparator.h"
+#include "odblib/Reader.h"
 #include "eclib/Timer.h"
 
 namespace odb {
