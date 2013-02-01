@@ -15,6 +15,8 @@ fi
 module load odb #/CY38R1.001
 
 CMAKE_INSTALL_PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/
+ECLIB_SOURCE=$(cd ../../eclib && pwd)
+ECLIB_SOURCE=/marsdev/c2a/data/p4/odb_api_dev/odb_api_release/eclib/
 
 $1 $cmake ../../ $2 \
 	-DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//') \
@@ -25,10 +27,11 @@ $1 $cmake ../../ $2 \
 	-DCMAKE_C_COMPILER=xlc_r \
 	-DODB_PATH=$ODB_ROOT \
 	-DCMAKE_MODULE_PATH=/usr/local/apps/ecbuild/1.0.10/cmake \
-	-DECLIB_SOURCE=$(cd ../../eclib && pwd) \
+	-DECLIB_SOURCE=$ECLIB_SOURCE \
 	-DBUILD_SHARED_LIBS=OFF \
 	-DODB_API_MIGRATOR=ON \
 	-DODB_API_FORTRAN=ON \
+	-DLINKER_LANGUAGE=CXX \
 	-DODB_API_PYTHON=OFF \
 	-DSWIG_EXECUTABLE=/usr/local/apps/swig/2.0.8/LP64/bin/swig \
 	-DBISON_EXECUTABLE='/usr/local/apps/bison/2.3/bin/bison' \
