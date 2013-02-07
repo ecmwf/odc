@@ -27,6 +27,14 @@ TestConstCodec.cc
 TestConstCodec.h
 TestConstIntegerCodec.cc
 TestConstIntegerCodec.h
+TestDataJoin.cc
+TestDataLink.cc
+TestDataLoader.cc
+TestDataPage.cc
+TestDataRow.cc
+TestDataSelect.cc
+TestDataSet.cc
+TestDataTable.cc
 TestDecoding.cc
 TestDecoding.h
 TestDispatchingWriter.cc

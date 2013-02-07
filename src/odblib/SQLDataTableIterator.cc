@@ -9,8 +9,8 @@ SQLDataTableIterator::SQLDataTableIterator(const DataTable& table, double* data,
   : table_(table),
     it_(table.begin()),
     end_(table.end()), 
-    data_(data),
     columns_(columns),
+    data_(data),
     firstRow_(true)
 {
     if (it_ != end_)

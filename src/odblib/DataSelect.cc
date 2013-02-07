@@ -37,7 +37,7 @@ DataSelect::DataSelect(const std::string& statement, const DataTable& table)
 
 sql::SQLDatabase* DataSelect::database() const
 {
-    SQLDataSet* db = new SQLDataSet(table_ ? table_->name() : dataset_->name());
+    sql::SQLDataSet* db = new sql::SQLDataSet(table_ ? table_->name() : dataset_->name());
 
     ASSERT(db);
 

@@ -256,6 +256,7 @@ SQLCreateTable.cc
 SQLCreateTable.h
 SQLDataColumn.cc
 SQLDataColumn.h
+SQLDataSet.cc
 SQLDataSet.h
 SQLDataTable.cc
 SQLDataTable.h

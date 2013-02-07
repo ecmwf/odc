@@ -9,25 +9,27 @@
 #include "odblib/SQLDatabase.h"
 
 namespace odb {
+namespace sql {
 
-class SQLDataSet : public odb::sql::SQLDatabase
+class SQLDataSet : public SQLDatabase
 {
 public:
-    SQLDataSet() : odb::sql::SQLDatabase("anonymous") {}
-    SQLDataSet(const std::string& name) : odb::sql::SQLDatabase(name) {}
-    ~SQLDataSet() {}
+    SQLDataSet();
+    SQLDataSet(const std::string& name);
+    ~SQLDataSet();
 
 private:
     SQLDataSet(const SQLDataSet&);
     SQLDataSet& operator=(const SQLDataSet&);
 
-    virtual void open() {}
-    virtual void close() { odb::sql::SQLDatabase::close(); }
+    virtual void open();
+    virtual void close();
 
-    virtual odb::sql::SQLTable* openDataHandle(DataHandle&, DataFormat) {}
-    virtual odb::sql::SQLTable* openDataStream(std::istream&, DataFormat) {}
+    virtual SQLTable* openDataHandle(DataHandle&, DataFormat = ODA);
+    virtual SQLTable* openDataStream(std::istream&, DataFormat = CSV);
 };    
 
+} // namespace sql
 } // namespace odb
 
 #endif // SQLDATASET_H_
