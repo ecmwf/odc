@@ -645,7 +645,7 @@ void map_reduce_mt()
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << endl;
 	ASSERT(*result == n);
 }
-TESTCASE(map_reduce_mt);
+//TESTCASE(map_reduce_mt);
 
 void map_reduce_st()
 {
@@ -656,7 +656,7 @@ void map_reduce_st()
 	ASSERT(*result == n);
 	//delete result;
 }
-TESTCASE(map_reduce_st);
+//TESTCASE(map_reduce_st);
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -692,7 +692,7 @@ void process_array_st()
 	llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
 }
-TESTCASE(process_array_st);
+//TESTCASE(process_array_st);
 
 
 void process_array_mt()
@@ -710,7 +710,7 @@ void producer_consumer()
 {
 	odb::tool::producer_consumer();
 }
-TESTCASE(producer_consumer);
+//TESTCASE(producer_consumer);
 
 
 class TemporaryPathName : public PathName {

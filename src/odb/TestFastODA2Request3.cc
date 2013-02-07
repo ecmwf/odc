@@ -32,7 +32,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFastODA2Request3> _TestFastODA2Request3("TestFastODA2Request3");
+//ToolFactory<TestFastODA2Request3> _TestFastODA2Request3("TestFastODA2Request3");
 
 TestFastODA2Request3::TestFastODA2Request3(int argc, char **argv)
 : TestCase(argc, argv)
