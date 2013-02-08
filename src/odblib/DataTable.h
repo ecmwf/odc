@@ -108,6 +108,7 @@ private:
  */
 class DataTable
 {
+public:
     typedef internal::DataTableIterator<DataRow> DataTableIterator;
     typedef internal::DataTableIterator<const DataRow> ConstDataTableIterator;
 
