@@ -703,7 +703,7 @@ void process_array_mt()
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
 }
-TESTCASE(process_array_mt);
+//TESTCASE(process_array_mt);
 
 
 void producer_consumer()
