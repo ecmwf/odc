@@ -556,14 +556,18 @@ void odbcapi()
 }
 TESTCASE(odbcapi);
 
-auto_ptr<odb::codec::HashTable> HashTable_clone()
+void HashTable_clone()
 {
 	using namespace odb::codec;
 	odb::codec::HashTable *h = new odb::codec::HashTable;
 	h->store("BUFRDATA");
 	h->store("OTHER_ST");
 
-	return auto_ptr<odb::codec::HashTable>(h->clone());
+	odb::codec::HashTable *c = h->clone();
+
+	//ASSERT(*h == *c);
+	delete h;
+	delete c;
 }
 
 TESTCASE(HashTable_clone);
