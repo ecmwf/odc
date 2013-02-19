@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/gawk -f
 
 function printConfig(C) {
 	print "/usr/local/apps/cmake/2.8.8/bin/cmake ../.. \\"
@@ -51,15 +51,19 @@ L["static"]="BUILD_SHARED_LIBS=OFF"
 L["shared"]="BUILD_SHARED_LIBS=ON"
 
 H["lxa"]="LINKER_LANGUAGE=Fortran"
+
 H["c2a"]="\
 LINKER_LANGUAGE=CXX\n\
 XLF_PATH=/usr/local/lpp/xlf13109/usr\n\
 CMAKE_Fortran_COMPILER=xlf90_r\n\
 CMAKE_CXX_COMPILER=xlC_r\n\
 CMAKE_C_COMPILER=xlc_r\n\
+CMAKE_CXX_FLAGS=-q64\n\
+CMAKE_C_FLAGS=-q64\n\
 SWIG_EXECUTABLE=/usr/local/apps/swig/2.0.8/LP64/bin/swig\n\
 BISON_EXECUTABLE=/usr/local/apps/bison/2.3/bin/bison\n\
 FLEX_EXECUTABLE=/usr/bin/flex"
+
 H["c2b"]=H["c2a"]
 H["ecgate"]="\
 BISON_EXECUTABLE=/usr/local/apps/bison/current/bin/bison\n\
