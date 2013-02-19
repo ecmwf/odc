@@ -23,6 +23,8 @@ BEGIN {
 if (! linking) linking="static"
 if (! host) host="opensuse113"
 
+print "# cmake config for host " host ", linking=" linking
+
 parse(r, "\
 SRC=/tmp/p4/source/main\n\
 CMAKE_BUILD_TYPE=production\n\
