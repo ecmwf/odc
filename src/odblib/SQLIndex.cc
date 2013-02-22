@@ -44,7 +44,7 @@ void SQLIndex::update()
 
 	if(create)
 	{
-		BerkeleyDB db(path,true);
+		BeDB db(path,true);
 
 		_data d;
 		Timer timer("Create index");
@@ -63,7 +63,7 @@ void SQLIndex::update()
 		}
 	}
 
-	auto_ptr<BerkeleyDB> db(new BerkeleyDB(path,false));
+	auto_ptr<BeDB> db(new BeDB(path,false));
 	db_ = db;
 #endif
 }

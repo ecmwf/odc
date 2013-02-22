@@ -20,7 +20,6 @@ namespace odb {
 namespace sql {
 // Forward declarations
 
-class BerkeleyDB;
 class SQLColumn;
 
 class SQLIndex {
@@ -88,7 +87,7 @@ private:
 
 	SQLColumn&           owner_;
 #if 0
-	auto_ptr<BerkeleyDB> db_;
+	auto_ptr<BeDB> db_;
 #endif
 	double*              value_;
 
