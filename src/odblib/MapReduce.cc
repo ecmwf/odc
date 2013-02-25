@@ -25,7 +25,6 @@ using namespace std;
 #include "eclib/PathName.h"
 #include "eclib/DataHandle.h"
 #include "eclib/Log.h"
-#include "eclib/DataHandle.h"
 #include "eclib/PartFileHandle.h"
 #include "eclib/ThreadPool.h"
 
@@ -72,11 +71,11 @@ namespace odb {
 namespace tool {
 
 template <typename CALLBACK>
-class PartFileProcessor : public ThreadPoolTask {
+class PartFileProcessor : public eclib::ThreadPoolTask {
 public:
-	PartFileProcessor(const PathName& fileName, const Offset& offset, const Length& length,
+	PartFileProcessor(const eclib::PathName& fileName, const eclib::Offset& offset, const eclib::Length& length,
 						void* userData, const string& sql, CALLBACK callBack) 
-	: dh_(new PartFileHandle(fileName, offset, length)),
+	: dh_(new eclib::PartFileHandle(fileName, offset, length)),
 	  userData_(userData),
 	  sql_(sql),
 	  callBack_(callBack), 
@@ -96,18 +95,18 @@ public:
 		dh_->close();
 	}
 private:
-	auto_ptr<DataHandle> dh_;
+	auto_ptr<eclib::DataHandle> dh_;
 	void* userData_;
 	const string sql_;
 	CALLBACK callBack_;
 	
-	PathName fileName_;
-	Offset offset_;
-	Length length_;
+	eclib::PathName fileName_;
+	eclib::Offset offset_;
+	eclib::Length length_;
 };
 
 
-void * SingleThreadMapReduce::process(void* userData, DataHandle& dh, const string& sql, CallBackProcessOneRow f)
+void * SingleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
 {
 	if (userData == 0) userData = f.create(); 
 	odb::Select o(sql, dh);
@@ -118,17 +117,17 @@ void * SingleThreadMapReduce::process(void* userData, DataHandle& dh, const stri
 	return userData;
 }
 
-void * SingleThreadMapReduce::process(void* userData, const PathName& fileName, const string& sql, CallBackProcessOneRow f)
+void * SingleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessOneRow f)
 {
-	FileHandle dh(fileName);
-	Length estimate = dh.openForRead();
+	eclib::FileHandle dh(fileName);
+	eclib::Length estimate = dh.openForRead();
 	return process(userData, dh, sql, f);
 }
 
 const size_t SingleThreadMapReduce::N = 64;
 const size_t MultipleThreadMapReduce::threadPoolSize_ = 5;
 
-void * SingleThreadMapReduce::process(void* userData, DataHandle& dh, const string& sql, CallBackProcessArray f)
+void * SingleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessArray f)
 {
 	odb::Select o(sql, dh);
 	odb::Select::iterator it(o.begin()), end(o.end());
@@ -160,21 +159,21 @@ void * SingleThreadMapReduce::process(void* userData, DataHandle& dh, const stri
 	return result;
 }
 
-void * SingleThreadMapReduce::process(void* userData, const PathName& fileName, const string& sql, CallBackProcessArray f)
+void * SingleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessArray f)
 {
-	FileHandle dh(fileName);
-	Length estimate = dh.openForRead();
+	eclib::FileHandle dh(fileName);
+	eclib::Length estimate = dh.openForRead();
 	return SingleThreadMapReduce::process(userData, dh, sql, f);
 }
 
-void * MultipleThreadMapReduce::process(void* userData, const PathName& fileName, const string& sql, CallBackProcessArray f)
+void * MultipleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessArray f)
 { 
-	ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
+	eclib::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
 	vector<void *> results;
-	vector<pair<Offset,Length> > chunks(SplitTool::getChunks(fileName));
+	vector<pair<eclib::Offset,eclib::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
 	{   
-		pair<Offset,Length>& chunk(chunks[i]);
+		pair<eclib::Offset,eclib::Length>& chunk(chunks[i]);
 		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << endl;
 
 		void *result = f.create();
@@ -197,18 +196,18 @@ void * MultipleThreadMapReduce::process(void* userData, const PathName& fileName
 	return r;
 } 
 
-void * MultipleThreadMapReduce::process(void* userData, DataHandle& dh, const string& sql, CallBackProcessOneRow f)
+void * MultipleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
 { NOTIMP; return 0; }
 
-void * MultipleThreadMapReduce::process(void* userData, const PathName& fileName, const string& sql, CallBackProcessOneRow f)
+void * MultipleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessOneRow f)
 {
-	ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
+	eclib::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
 
 	vector<void *> results;
-	vector<pair<Offset,Length> > chunks(SplitTool::getChunks(fileName));
+	vector<pair<eclib::Offset,eclib::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
     {   
-		pair<Offset,Length>& chunk(chunks[i]);
+		pair<eclib::Offset,eclib::Length>& chunk(chunks[i]);
 		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << endl;
 
 		void *result = f.create();
@@ -247,7 +246,7 @@ public:
 
 template<class PAYLOAD>
 struct OnePayload {
-    MutexCond cond_;
+    eclib::MutexCond cond_;
     bool      ready_;
     bool       done_;
     PAYLOAD   payload_;
@@ -258,7 +257,7 @@ template<class PAYLOAD>
 class ProducerConsumer;
 
 template<class PAYLOAD>
-class ProducerConsumerTask : public Thread {
+class ProducerConsumerTask : public eclib::Thread {
     ProducerConsumer<PAYLOAD>& owner_;
     Consumer<PAYLOAD>&         consumer_;
     OnePayload<PAYLOAD>*       payloads_;
@@ -283,7 +282,7 @@ private:
     ProducerConsumer(const ProducerConsumer&);
     ProducerConsumer& operator=(const ProducerConsumer&);
 
-    Mutex mutex_;
+    eclib::Mutex mutex_;
     long count_;
 
     bool error_;
@@ -305,6 +304,9 @@ ProducerConsumer<PAYLOAD>::~ProducerConsumer()
 template<class PAYLOAD>
 inline void ProducerConsumer<PAYLOAD>::error(const string& why)
 {
+    using eclib::AutoLock;
+    using eclib::Mutex;
+    
     AutoLock<Mutex> lock(mutex_);
     error_ = true;
     why_   = why;
@@ -313,6 +315,9 @@ inline void ProducerConsumer<PAYLOAD>::error(const string& why)
 template<class PAYLOAD>
 inline bool ProducerConsumer<PAYLOAD>::error()
 {
+    using eclib::AutoLock;
+    using eclib::Mutex;
+
     AutoLock<Mutex> lock(mutex_);
     return error_;
 }
@@ -321,13 +326,15 @@ inline bool ProducerConsumer<PAYLOAD>::error()
 template<class PAYLOAD>
 void ProducerConsumer<PAYLOAD>::execute(Producer<PAYLOAD>& producer,Consumer<PAYLOAD>& consumer)
 {
-    static const char *here = __FUNCTION__;
-
+    using eclib::Log;
+    using eclib::AutoLock;
+    using eclib::MutexCond;
+    
     OnePayload<PAYLOAD>* payloads = new OnePayload<PAYLOAD>[count_];
 
     error_  = false;
 
-    ThreadControler thread(new ProducerConsumerTask<PAYLOAD>(consumer, *this, payloads), false);
+    eclib::ThreadControler thread(new ProducerConsumerTask<PAYLOAD>(consumer, *this, payloads), false);
 
     thread.start();
 
@@ -357,7 +364,7 @@ void ProducerConsumer<PAYLOAD>::execute(Producer<PAYLOAD>& producer,Consumer<PAY
         }
         catch(exception& e)
         {
-            Log::error() << "** " << e.what() << " Caught in " << here <<  endl;
+            Log::error() << "** " << e.what() << " Caught in " << Here() <<  endl;
             Log::error() << "** Exception is handled" << endl;
             error(e.what());
         }
@@ -374,7 +381,7 @@ void ProducerConsumer<PAYLOAD>::execute(Producer<PAYLOAD>& producer,Consumer<PAY
     delete[] payloads;
 
     if(error_) {
-        throw SeriousBug(why_);
+        throw eclib::SeriousBug(why_);
     }
 
 
@@ -392,7 +399,10 @@ ProducerConsumerTask<PAYLOAD>::ProducerConsumerTask(Consumer<PAYLOAD>& consumer,
 template<class PAYLOAD>
 void ProducerConsumerTask<PAYLOAD>::run()
 {
-    static const char *here = __FUNCTION__;
+    using eclib::Log;
+    using eclib::AutoLock;
+    using eclib::MutexCond;
+    
     int i = 0;
 
     while(!owner_.error())
@@ -419,7 +429,7 @@ void ProducerConsumerTask<PAYLOAD>::run()
         catch(exception& e)
         {
             Log::error() << "** " << e.what() << " Caught in " <<
-                            here <<  endl;
+                            Here() <<  endl;
             Log::error() << "** Exception is handled" << endl;
             owner_.error(e.what());
             error = true;
@@ -489,7 +499,7 @@ struct P : public Producer<Data> {
 
 void producer_consumer()
 {
-	Timer timer("ALL");
+	eclib::Timer timer("ALL");
 	using namespace odb::tool;
 	string fileName = "/scratch/ma/mak/odb-16/all.odb";
 	odb::Select o(string("select lat,lon,obsvalue,sin(obsvalue) from \"") + fileName + "\"");

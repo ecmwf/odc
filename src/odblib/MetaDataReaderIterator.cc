@@ -22,6 +22,8 @@
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
 
+using namespace eclib;
+
 namespace odb {
 
 MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, bool skipData)

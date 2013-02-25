@@ -19,8 +19,6 @@
 
 #include <stdlib.h>
 
-using namespace std;
-
 #include "eclib/PathName.h"
 #include "eclib/Log.h"
 #include "eclib/DataHandle.h"
@@ -46,6 +44,8 @@ using namespace std;
 
 #include "odb/TestCodecOptimization.h"
 
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

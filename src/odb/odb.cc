@@ -23,7 +23,10 @@
 #include "odblib/ToolRunnerApplication.h"
 #include "odblib/FunctionFactory.h"
 
+
 using namespace std;
+using namespace eclib;
+
 using namespace odb::tool;
 
 int executeCommand(int argc, char *argv[]);

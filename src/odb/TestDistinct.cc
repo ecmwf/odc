@@ -17,9 +17,6 @@
 #include <map>
 #include <algorithm>
 
-using namespace std;
-
-
 #include "eclib/DataHandle.h"
 #include "eclib/StdFileHandle.h"
 #include "eclib/Log.h"
@@ -46,6 +43,9 @@ using namespace std;
 #include "odblib/ImportTool.h"
 
 #include "odb/TestDistinct.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

@@ -17,7 +17,7 @@
 #include "odblib/oda.h"
 #include "odblib/SQLSelectFactory.h"
 
-
+using namespace eclib;
 
 namespace odb {
 

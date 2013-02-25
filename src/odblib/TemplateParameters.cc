@@ -16,7 +16,7 @@
 #include "odblib/oda.h"
 #include "odblib/TemplateParameters.h"
 
-
+using namespace eclib;
 
 namespace odb {
 
@@ -48,7 +48,7 @@ TemplateParameters& TemplateParameters::parse(const string& fileNameTemplate, Te
 		start = l;
 		size_t r = t.find("}", start);
 		if (r == string::npos)
-			throw UserError(string("TemplateParameters::parse: missing '}' while parsing '") + fileNameTemplate + "'");
+			throw eclib::UserError(string("TemplateParameters::parse: missing '}' while parsing '") + fileNameTemplate + "'");
 		start = r;
 
 		string name = t.substr(l + 1, r - l - 1);

@@ -54,10 +54,12 @@ using namespace std;
 #include "odblib/Tracer.h"
 #include "odblib/SQLBitfield.h"
 
+using namespace std;
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 namespace test {
-
 
 ToolFactory<TestMissingValue> testMissingValue("TestMissingValue");
 

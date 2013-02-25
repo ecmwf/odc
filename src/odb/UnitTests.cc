@@ -20,8 +20,6 @@
 #include <stdlib.h>
 #include <memory> 
 
-using namespace std;
-
 #include "eclib/PathName.h"
 #include "eclib/DataHandle.h"
 #include "eclib/Log.h"
@@ -62,6 +60,10 @@ using namespace std;
 #include "odblib/ToolFactory.h"
 
 #include "odb/TestOdaCAPI.h"
+
+using namespace std;
+using namespace eclib;
+
 
 namespace odb { namespace tool { void producer_consumer(); }}
 

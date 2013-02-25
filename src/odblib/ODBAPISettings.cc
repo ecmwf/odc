@@ -29,6 +29,7 @@
 #include "odblib/Writer.h"
 #include "odblib/WriterDispatchingIterator.h"
 
+using namespace eclib;
 
 template class ThreadSingleton<odb::ODBAPISettings>;
 static ThreadSingleton<odb::ODBAPISettings> instance_;

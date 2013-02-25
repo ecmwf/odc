@@ -14,6 +14,8 @@
 
 #include "odblib/TemporaryFile.h"
 
+using namespace eclib;
+
 TemporaryFile::TemporaryFile()
 : PathName()
 {
@@ -34,7 +36,7 @@ TemporaryFile::TemporaryFile()
 
 	int fd = ::mkstemp(static_cast<char *>(tmpPath));
 	if (fd == -1)
-		throw SeriousBug("Could not create a unique temporary filename.");
+		throw eclib::SeriousBug("Could not create a unique temporary filename.");
 
 	*static_cast<PathName*>(this) = static_cast<char *>(tmpPath);
 }

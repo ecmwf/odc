@@ -168,7 +168,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 		}
 	}
 	if (! matched)
-		throw UserError(string("No columns matching ") + columnName_ + tableReference_ + " found.");
+		throw eclib::UserError(string("No columns matching ") + columnName_ + tableReference_ + " found.");
 
 	L << "ColumnExpression::expandStars: added " << ss.str() << endl;
 	delete this;

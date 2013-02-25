@@ -20,7 +20,10 @@ extern "C" {
 
 #include "odb/TestOdaCAPI.h"
 
+
 using namespace std;
+using namespace eclib;
+
 
 namespace odb {
 namespace tool {

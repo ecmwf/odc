@@ -15,6 +15,7 @@
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLType.h"
 
+using namespace eclib;
 
 namespace odb {
 namespace sql {

@@ -32,9 +32,11 @@ using namespace std;
 #include "odblib/ToolFactory.h"
 #include "odblib/piconst.h"
 
-
-
 #include "odblib/oda.h"
+
+using namespace std;
+using namespace eclib;
+
 
 namespace odb {
 namespace tool {

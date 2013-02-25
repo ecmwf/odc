@@ -17,12 +17,14 @@
 #include "eclib/Context.h"
 #include "eclib/StandardBehavior.h" 
 #include "eclib/StdLogger.h" 
+
 #include "odblib/oda.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/FastODA2Request.h"
 #include "odblib/ODBBehavior.h"
 
+using namespace eclib;
 using namespace odb;
 
 char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };

@@ -25,7 +25,8 @@ using namespace std;
 #include "odb/TestDecoding.h"
 #include "odblib/ToolFactory.h"
 
-
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

@@ -28,7 +28,7 @@ public:
 	void addColumn(const string& keyword, const string& columnName);
 
 	bool scanFile(const eclib::PathName&);
-	bool scanFile(const eclib::PathName&, OffsetList&, LengthList&, vector<ODAHandle*>&);
+	bool scanFile(const eclib::PathName&, eclib::OffsetList&, eclib::LengthList&, vector<ODAHandle*>&);
 
 	string genRequest() const;
 

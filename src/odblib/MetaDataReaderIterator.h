@@ -21,7 +21,7 @@
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 
 namespace eclib { class PathName; }
-class FileHandle;
+namespace eclib { class FileHandle; }
 
 extern "C" {
 	typedef void oda;

@@ -37,12 +37,12 @@ template <typename T>
 void FastODA2Request<T>::parseConfig(const string& s)
 {
     vector<string> lines;
-    Tokenizer("\n")(s, lines);
+    eclib::Tokenizer("\n")(s, lines);
 
-    Tokenizer tokenizer(": \t");
+    eclib::Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
 	{
-		Log::debug() << "FastODA2Request<T>::parseConfig: " << i<< ": '" << lines[i] << "'" << endl;
+		eclib::Log::debug() << "FastODA2Request<T>::parseConfig: " << i<< ": '" << lines[i] << "'" << endl;
 		vector<string> words;
 		tokenizer(lines[i], words);
 
@@ -62,10 +62,10 @@ void FastODA2Request<T>::addColumn(const string& keyword, const string& columnNa
 }
 
 template <typename T>
-bool FastODA2Request<T>::scanFile(const PathName& fileName)
+bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName)
 {
-	OffsetList offsets;
-	LengthList lengths;
+	eclib::OffsetList offsets;
+	eclib::LengthList lengths;
 	vector<ODAHandle*> handles;
 
 	bool r = scanFile(fileName, offsets, lengths, handles);
@@ -78,11 +78,13 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName)
 }
 
 template <typename T>
-bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets, LengthList& lengths, vector<ODAHandle*>& handles)
+bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::OffsetList& offsets, eclib::LengthList& lengths, vector<ODAHandle*>& handles)
 {
-	ostream& L(Log::debug());
-	L << "Iterating over headers of '" << fileName << "'" <<  endl;
-	inputFile_ = fileName;
+    using eclib::Log;
+        
+	Log::debug() << "Iterating over headers of '" << fileName << "'" <<  endl;
+	
+    inputFile_ = fileName;
 
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 
@@ -103,18 +105,18 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 		MetaData &md = it->columns();
 		++mds;
 
-		Offset startOffset = (**it).blockStartOffset(),
-				endOffset = (**it).blockEndOffset();
-		Length blockSize = endOffset - startOffset;
+		eclib::Offset startOffset = (**it).blockStartOffset(),
+				        endOffset = (**it).blockEndOffset();
+		eclib::Length blockSize = endOffset - startOffset;
 
 		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD->equalsIncludingConstants(md, columnNames_))
 		{
-			L << "FastODA2Request::scanFile: new handle for <" << startOffset << "," << endOffset << ">" << endl;
+			Log::debug() << "FastODA2Request::scanFile: new handle for <" << startOffset << "," << endOffset << ">" << endl;
 
 			ODAHandle* odaHandle = new ODAHandle(startOffset, endOffset);
 			if (! collectValues(md, *odaHandle))
 			{
-				L << "FastODA2Request<T>::scanFile: collectValues returned false" << endl;
+				Log::debug() << "FastODA2Request<T>::scanFile: collectValues returned false" << endl;
 				return false;
 			}
 			currentMD.reset(md.clone());
@@ -126,7 +128,7 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 		}
 		else
 		{
-			L << "FastODA2Request::scanFile: append <" << startOffset << "," << endOffset << "> to existing handle" << endl;
+			Log::debug() << "FastODA2Request::scanFile: append <" << startOffset << "," << endOffset << "> to existing handle" << endl;
 
 			ODAHandle& lastHandle = *(handles.back());
 			lastHandle.end(lastHandle.end() + blockSize);
@@ -135,28 +137,32 @@ bool FastODA2Request<T>::scanFile(const PathName& fileName, OffsetList& offsets,
 
 		rowsNumber_ += md.rowsNumber();
 	}
-	L << "FastODA2Request<T>::scanFile => offsets=" << offsets << endl;
-	L << "FastODA2Request<T>::scanFile => lengths=" << lengths << endl;
-	L << "FastODA2Request<T>::scanFile => handles=" << handles << endl;
-	L << "FastODA2Request<T>::scanFile => rowsNumber_=" << rowsNumber_ << endl;
+    
+	Log::debug() << "FastODA2Request<T>::scanFile => offsets=" << offsets << endl;
+	Log::debug() << "FastODA2Request<T>::scanFile => lengths=" << lengths << endl;
+//	Log::debug() << "FastODA2Request<T>::scanFile => handles=" << handles << endl;
+	Log::debug() << "FastODA2Request<T>::scanFile => rowsNumber_=" << rowsNumber_ << endl;
+    
 	return true;
 }
 
 template <typename T>
 bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 {
+    using eclib::Offset;
+    
 	vector<string> currentValues;
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
 		const string& columnName = columnNames_[i];
-		Log::debug() << "FastODA2Request::collectValues: columnName: " << columnName << endl;
+		eclib::Log::debug() << "FastODA2Request::collectValues: columnName: " << columnName << endl;
 
 		Column* column = md.hasColumn(columnName) ? md.columnByName(columnName) : 0;
 		string v = ! column ? columnNotFound(columnName)
 				: ! column->isConstant() ? columnIsNotConstant(*column)
 				: column->type() == odb::STRING ? StringTool::double_as_string(column->min())
 				: column->type() == odb::INTEGER ? StringTool::int_as_double2string(column->min())
-				: Translator<double, string>()(column->min());
+				: eclib::Translator<double, string>()(column->min());
 		values_[i].insert(v);
 		currentValues.push_back(v);
 		double dv = !column ? MISSING_VALUE_REAL : column->min();
@@ -168,7 +174,7 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 	if (columnNames_.size())
 	{
 		if (valuesSeen_.find(currentValues) == valuesSeen_.end())
-			valuesSeen_[currentValues] = make_pair<Offset, Offset>(odaHandle.start(), odaHandle.end());
+			valuesSeen_[currentValues] = make_pair<Offset,Offset>(odaHandle.start(), odaHandle.end());
 		else {
 			pair<Offset,Offset> p = valuesSeen_[currentValues];
 			vector<string> vs = columnNames_;
@@ -192,7 +198,7 @@ string FastODA2Request<T>::genRequest() const
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
 		const string& key = keywords_[i];
-		string k = StringTools::upper(key);
+		string k = eclib::StringTools::upper(key);
 		string valuesList;
 		const set<string>& vs = values_[i];
 		for (set<string>::const_iterator vi = vs.begin(); vi != vs.end(); ++vi)
@@ -202,7 +208,7 @@ string FastODA2Request<T>::genRequest() const
 		request << key << " = " << valuesList;
 	}
 
-	Log::debug() << "FastODA2Request<T>::genRequest() => " << endl << request.str() << endl;
+	eclib::Log::debug() << "FastODA2Request<T>::genRequest() => " << endl << request.str() << endl;
 	
 	return request.str();
 }
@@ -210,6 +216,9 @@ string FastODA2Request<T>::genRequest() const
 template <typename T>
 string FastODA2Request<T>::patchValue(const string& k, const string& value) const
 {
+    using eclib::Log;
+    using eclib::StringTools;
+    
 	string v = StringTools::trim(value);
 	Log::debug() << "FastODA2Request::patchValue: v = '" << v  << "', key = " << k << endl;
 	if (k == "TIME")
@@ -234,7 +243,7 @@ const set<string>& FastODA2Request<T>::getValues(const string& keyword)
 	for (size_t i = 0; i < keywords_.size(); ++i)
 		if (keywords_[i] == keyword)
 			return values_[i];
-	throw UserError(string("Keyword '") + keyword + "' not found");
+	throw eclib::UserError(string("Keyword '") + keyword + "' not found");
 	// This is to keep the compiler happy:
 	return values_[-1];
 }
@@ -268,7 +277,7 @@ map<string, double> FastODA2Request<T>::getUniqueValues()
 		{
 			stringstream s;
 			s << "Data contains more than one '" << kw << "' value.";
-			throw UserError(s.str());
+			throw eclib::UserError(s.str());
 		}
 		r[kw] = *doubleValues_[kw].begin();
 	}

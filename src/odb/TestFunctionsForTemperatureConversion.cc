@@ -23,16 +23,16 @@
 
 #define RMDI   -2147483647
 
-using namespace std;
-
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestFunctionsForTemperatureConversion.h"
 #include "odblib/ToolFactory.h"
 
-
-
 #include "odblib/oda.h"
+
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

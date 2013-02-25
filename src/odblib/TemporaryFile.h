@@ -14,19 +14,16 @@
 #ifndef TemporaryFile_H
 #define TemporaryFile_H
 
+#include "eclib/NonCopyable.h"
 #include "eclib/PathName.h"
 
-class TemporaryFile : public eclib::PathName {
+class TemporaryFile : public  eclib::PathName,
+                      private eclib::NonCopyable {
 public:
-	TemporaryFile();
-	~TemporaryFile(); // Change to virtual if base class
-private:
-// No copy allowed
-	TemporaryFile(const TemporaryFile&);
-	TemporaryFile& operator=(const TemporaryFile&);
 
-	//friend ostream& operator<<(ostream& s,const TemporaryFile& p)
-	//	{ p.print(s); return s; }
+    TemporaryFile();
+	~TemporaryFile(); // Change to virtual if base class
+
 };
 
 #endif

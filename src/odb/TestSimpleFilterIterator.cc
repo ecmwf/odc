@@ -14,7 +14,6 @@
 
 #include <iostream>
 
-using namespace std;
 
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
@@ -23,6 +22,10 @@ using namespace std;
 #include "odblib/ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/SimpleFilter.h"
+
+
+using namespace std;
+using namespace eclib;
 
 
 namespace odb {

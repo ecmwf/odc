@@ -19,7 +19,6 @@
 
 #include <stdlib.h>
 
-using namespace std;
 
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
@@ -50,6 +49,10 @@ using namespace std;
 #include "odblib/ReaderIterator.h"
 #include "odblib/oda.h"
 #include "odblib/ODBAPISettings.h"
+
+using namespace std;
+using namespace eclib;
+
 
 
 namespace odb {

@@ -16,6 +16,8 @@
 #include "SQLOutputConfig.h"
 #include "SQLSelectFactory.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

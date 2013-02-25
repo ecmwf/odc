@@ -19,7 +19,7 @@ SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const pair<Expressions,vector<
 : output_(output),
   by_(by)
 {
-	Log::info() << *this << endl;
+	eclib::Log::info() << *this << endl;
 }
 
 SQLOrderOutput::~SQLOrderOutput()

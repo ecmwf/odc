@@ -97,7 +97,7 @@ void DataLoader::fill(DataSet& dataset)
     else if (stream_)
         fillFromText(dataset);
     else
-        throw UserError("DataLoader: Unrecognized data source: " + path_);
+        throw eclib::UserError("DataLoader: Unrecognized data source: " + path_);
 }
 
 void DataLoader::fill(DataSet& dataset, const string& tableName)

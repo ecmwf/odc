@@ -15,7 +15,6 @@
 #include <iostream>
 #include <vector>
 #include <map>
-using namespace std;
 
 #include "eclib/Log.h"
 #include "odblib/Tool.h"
@@ -24,6 +23,9 @@ using namespace std;
 #include "odblib/FunctionFactory.h"
 #include "TestSQLFunctionsInfo.h"
 #include "odblib/ToolFactory.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

@@ -14,7 +14,7 @@
 #include "Comparator.h"
 #include "MergeTool.h"
 
-
+using namespace eclib;
 
 namespace odb {
 namespace tool {
@@ -72,7 +72,7 @@ void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& output
 
 		for (size_t i = 0; i < columns.size(); ++i)
 			if (out->columns().hasColumn(columns[i]->name()))
-				throw UserError(string("Column '") + columns[i]->name() + "' occurs in more than one input file of merge.");
+				throw eclib::UserError(string("Column '") + columns[i]->name() + "' occurs in more than one input file of merge.");
 
 		out->columns() += columns;
 	}

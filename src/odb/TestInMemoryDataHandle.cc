@@ -17,13 +17,15 @@
 #include <map>
 
 #include <strings.h>
-using namespace std;
 
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/TestCase.h"
 #include "odblib/InMemoryDataHandle.h"
 #include "TestInMemoryDataHandle.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

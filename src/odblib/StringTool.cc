@@ -18,8 +18,6 @@
 #include <iomanip>
 #include <ctype.h>
 
-using namespace std;
-
 #include "eclib/FileHandle.h"
 #include "eclib/PathName.h"
 #include "eclib/Regex.h"
@@ -28,6 +26,9 @@ using namespace std;
 #include "odblib/Endian.h"
 #include "odblib/MemoryBlock.h"
 #include "odblib/StringTool.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 
@@ -73,7 +74,7 @@ int StringTool::shell(std::string cmd, const CodeLocation& where, bool assertSuc
 
 	if (assertSuccess && rc != 0)
 	{
-		throw SeriousBug(string(" \"") + cmd + "\" failed. " + where.file() + " +" + Translator<int, string>()(where.line()));
+		throw eclib::SeriousBug(string(" \"") + cmd + "\" failed. " + where.file() + " +" + Translator<int, string>()(where.line()));
 		ASSERT(rc == 0);
 	}
 	return rc;

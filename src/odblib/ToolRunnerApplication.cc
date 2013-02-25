@@ -22,6 +22,8 @@
 #include "odblib/ODBBehavior.h"
 #include "odblib/ODBApplication.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

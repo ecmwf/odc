@@ -42,15 +42,15 @@ struct ODATranslator<string> {
 };
 
 template <>
-struct ODATranslator<Time> {
-	Time operator()(double n)
+struct ODATranslator<eclib::Time> {
+	eclib::Time operator()(double n)
 	{
 		static const char * zeroes = "000000";
 
-		string t = Translator<double, string>()(n);
+		string t = eclib::Translator<double, string>()(n);
 		if (t.size() < 6)
 			t = string(zeroes + t.size()) + t;
-		Time tm = t;
+		eclib::Time tm = t;
 
 		eclib::Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
 		return tm;
@@ -58,15 +58,15 @@ struct ODATranslator<Time> {
 };
 
 template <>
-struct ODATranslator<Date> {
-	Date operator()(double n)
+struct ODATranslator<eclib::Date> {
+	eclib::Date operator()(double n)
 	{
 		static const char * zeroes = "000000";
 
-		string t = Translator<long, string>()(n);
+		string t = eclib::Translator<long, string>()(n);
 		if (t.size() < 6)
 			t = string(zeroes + t.size()) + t;
-		Date d = t;
+		eclib::Date d = t;
 
 		eclib::Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
 		return d;

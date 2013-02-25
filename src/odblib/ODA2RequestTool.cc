@@ -11,8 +11,6 @@
 #include <iostream>
 #include <fstream>
 
-using namespace std;
-
 #include "eclib/Tokenizer.h"
 #include "eclib/Translator.h"
 
@@ -21,6 +19,9 @@ using namespace std;
 #include "odblib/ODA2RequestTool.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {
@@ -52,7 +53,7 @@ void ODA2RequestTool::usage(const string& name, ostream &o)
 
 void ODA2RequestTool::run()
 {
-	PathName inputFile;
+	eclib::PathName inputFile;
 	string outputFile;
 
 	switch (parameters().size())

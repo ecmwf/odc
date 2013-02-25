@@ -19,6 +19,8 @@
 
 #include "eclib/PartFileHandle.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

@@ -56,43 +56,42 @@ using namespace std;
 #include "odblib/WriterBufferingIterator.h"
 #include "odblib/ODBAPISettings.h"
 
-using namespace std;
-
 namespace odb {
+
 #define MEGA(x) (x*1024*1024)
 
 template <typename ITERATOR>
 Writer<ITERATOR>::Writer()
 : path_(""),
   dataHandle_(0),
-  rowsBufferSize_(Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
+  rowsBufferSize_(eclib::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
   openDataHandle_(true),
   deleteDataHandle_(true)
 {} 
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer(const PathName path)
+Writer<ITERATOR>::Writer(const eclib::PathName path)
 : path_(path),
   dataHandle_(0),
-  rowsBufferSize_(Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
+  rowsBufferSize_(eclib::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
   openDataHandle_(true),
   deleteDataHandle_(true)
 {} 
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer(DataHandle *dh, bool openDataHandle, bool deleteDataHandle)
+Writer<ITERATOR>::Writer(eclib::DataHandle *dh, bool openDataHandle, bool deleteDataHandle)
 : path_(""),
   dataHandle_(dh),
-  rowsBufferSize_(Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
+  rowsBufferSize_(eclib::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
   openDataHandle_(openDataHandle),
   deleteDataHandle_(deleteDataHandle)
 {}
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer(DataHandle &dh, bool openDataHandle)
+Writer<ITERATOR>::Writer(eclib::DataHandle &dh, bool openDataHandle)
 : path_(""),
   dataHandle_(&dh),
-  rowsBufferSize_(Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
+  rowsBufferSize_(eclib::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
   openDataHandle_(openDataHandle),
   deleteDataHandle_(false)
 {}
@@ -105,7 +104,7 @@ ITERATOR* Writer<ITERATOR>::writer(bool fixedSizeRows)
 {
 	if (string(path_).size())
 	{
-		DataHandle *fh = ODBAPISettings::instance().writeToFile(path_);
+		eclib::DataHandle *fh = ODBAPISettings::instance().writeToFile(path_);
 		return fixedSizeRows ?
 			new FixedSizeWriterIterator(*this, fh)
 			: new ITERATOR(*this, fh);
@@ -121,7 +120,7 @@ ITERATOR* Writer<ITERATOR>::writer(bool fixedSizeRows)
 template <typename ITERATOR>
 typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 {
-	DataHandle *dh = 0;
+	eclib::DataHandle *dh = 0;
 	if (string(path_).size())
 		dh = ODBAPISettings::instance().writeToFile(path_);
 	else
@@ -133,10 +132,10 @@ typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 }
 
 template <typename ITERATOR>
-ITERATOR* Writer<ITERATOR>::createWriteIterator(PathName pathName, bool append)
+ITERATOR* Writer<ITERATOR>::createWriteIterator(eclib::PathName pathName, bool append)
 {
-	Length estimatedLength = 10*1024*1024;
-	DataHandle *h = append
+	eclib::Length estimatedLength = 10*1024*1024;
+	eclib::DataHandle *h = append
 					? ODBAPISettings::instance().appendToFile(pathName, estimatedLength)
 					: ODBAPISettings::instance().writeToFile(pathName, estimatedLength);
 	return new ITERATOR(*this, h, false);
@@ -145,12 +144,12 @@ ITERATOR* Writer<ITERATOR>::createWriteIterator(PathName pathName, bool append)
 // Explicit templates' instantiations.
 
 template Writer<WriterBufferingIterator>::Writer();
-template Writer<WriterBufferingIterator>::Writer(PathName);
-template Writer<WriterBufferingIterator>::Writer(DataHandle&,bool);
-template Writer<WriterBufferingIterator>::Writer(DataHandle*,bool,bool);
+template Writer<WriterBufferingIterator>::Writer(eclib::PathName);
+template Writer<WriterBufferingIterator>::Writer(eclib::DataHandle&,bool);
+template Writer<WriterBufferingIterator>::Writer(eclib::DataHandle*,bool,bool);
 
 template Writer<WriterBufferingIterator>::~Writer();
 template Writer<WriterBufferingIterator>::iterator Writer<WriterBufferingIterator>::begin(bool);
-template WriterBufferingIterator * Writer<WriterBufferingIterator>::createWriteIterator(PathName,bool);
+template WriterBufferingIterator * Writer<WriterBufferingIterator>::createWriteIterator(eclib::PathName,bool);
 
 } // namespace odb

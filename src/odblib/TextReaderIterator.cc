@@ -15,6 +15,8 @@
 
 #include "odblib/oda.h"
 
+using namespace eclib;
+
 namespace odb {
 
 // TODO: allow user to specify the delimiter

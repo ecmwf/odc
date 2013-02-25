@@ -23,6 +23,8 @@
 #include "odblib/SQLTable.h"
 #include "odblib/SchemaAnalyzer.h"
 
+using namespace eclib;
+
 template class ThreadSingleton<odb::sql::SQLSession*>;
 static ThreadSingleton<odb::sql::SQLSession*> instance_;
 
@@ -102,7 +104,7 @@ double SQLSession::getParameter(int which) const
 {
 	map<int,double>::const_iterator j = params_.find(which);
 	if(j == params_.end())
-		throw UserError("Undefined parameter");
+		throw eclib::UserError("Undefined parameter");
 	return (*j).second;
 }
 
@@ -115,7 +117,7 @@ SQLDatabase* SQLSession::getDatabase(const string& name)
 {
 	map<string,SQLDatabase*>::iterator j = databases_.find(name);
 	if(j == databases_.end())
-		throw UserError("Cannot find database", name);
+		throw eclib::UserError("Cannot find database", name);
 	return (*j).second;
 }
 

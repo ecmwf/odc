@@ -12,6 +12,8 @@
 #include "odblib/SQLAST.h"
 #include "odblib/SchemaAnalyzer.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace sql {
 

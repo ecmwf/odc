@@ -74,7 +74,7 @@ string CommandLineParser::argv(int i)
 	{
 		stringstream ss;
 		ss << "Expected at least " << i << " command line parameters";
-		throw UserError(ss.str());
+		throw eclib::UserError(ss.str());
 	}
 	return argv_[i];
 }

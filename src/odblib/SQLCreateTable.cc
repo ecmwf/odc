@@ -22,6 +22,8 @@
 #include "odblib/SQLType.h"
 #include "odblib/SchemaAnalyzer.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace sql {
 

@@ -38,6 +38,8 @@
 #include "odb/MockReader.h"
 #include "odb/TestConstCodec.h"
 
+using namespace std;
+using namespace eclib;
 
 using namespace odb;
 using namespace odb::codec;

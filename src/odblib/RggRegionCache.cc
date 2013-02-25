@@ -19,6 +19,7 @@
 #include "odblib/RegionCache.h"
 #include "odblib/RggRegionCache.h"
 
+using namespace eclib;
 
 #undef MIN
 #define MIN(a,b) ( ((a) < (b)) ? (a) :  (b) )

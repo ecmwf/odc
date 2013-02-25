@@ -17,14 +17,15 @@
 #include <map>
 #include <vector>
 
-using namespace std;
-
 #include "eclib/Regex.h"
 #include "eclib/Exceptions.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

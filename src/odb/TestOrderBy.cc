@@ -17,8 +17,6 @@
 #include <map>
 #include <algorithm>
 
-using namespace std;
-
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
@@ -53,6 +51,9 @@ using namespace std;
 #include "odblib/oda.h"
 #include "odblib/ImportTool.h"
 #include "odblib/StringTool.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

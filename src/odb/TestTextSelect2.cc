@@ -14,8 +14,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
@@ -26,6 +24,10 @@ using namespace std;
 #include "eclib/TmpFile.h"
 
 #include "TestTextSelect2.h"
+
+using namespace std;
+using namespace eclib;
+
 
 namespace odb {
 namespace tool {

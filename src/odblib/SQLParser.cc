@@ -43,8 +43,10 @@
 #include "odblib/StringExpression.h"
 #include "odblib/TemporaryFile.h"
 
-static Mutex mutex;
-static string        yypath;
+using namespace eclib;
+
+static Mutex   mutex;
+static string  yypath;
 
 static string inputString;
 char* inputText;

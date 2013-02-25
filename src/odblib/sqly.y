@@ -504,7 +504,7 @@ atom_or_number : '(' expression ')'           { $$ = $2; }
 			   | func '(' '*' ')'             
 				{
 					if (string("count") != $1)
-						throw UserError(string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
+						throw eclib::UserError(string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
 
 					$$ = FunctionFactory::instance().build("count", new NumberExpression(1.0));
 				}
@@ -598,7 +598,7 @@ expression  : disjonction
 					{
 						stringstream ss;
 						ss << "Key '" << key << "' not found.";
-						throw UserError(ss.str());
+						throw eclib::UserError(ss.str());
 					}
 					
 					$$ = container->dictionary()[key];

@@ -22,7 +22,7 @@ namespace odb {
 namespace sql {
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, const PathName& path, const string& name):
+TODATable<T>::TODATable(SQLDatabase& owner, const eclib::PathName& path, const string& name):
 	SQLTable(owner, path, name),
 	data_(0),
 	oda_(path),
@@ -35,11 +35,11 @@ TODATable<T>::TODATable(SQLDatabase& owner, const PathName& path, const string& 
 template <typename T>
 TODATable<T>::~TODATable() { delete[] data_; }
 
-static const PathName nullPathName("<>");
+static const eclib::PathName nullPathName("<>");
 static const string inputTable("input");
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, DataHandle &dh):
+TODATable<T>::TODATable(SQLDatabase& owner, eclib::DataHandle &dh):
 	SQLTable(owner, nullPathName, inputTable),
 	data_(0),
 	oda_(dh),
@@ -63,6 +63,8 @@ TODATable<T>::TODATable(SQLDatabase& owner, istream &is):
 template <typename T>
 void TODATable<T>::populateMetaData()
 {
+    using eclib::Log;
+    
 	Log::debug() << "TODATable::populateMetaData:" << endl;
 	size_t count = reader_->columns().size();
 
@@ -106,7 +108,9 @@ void TODATable<T>::populateMetaData()
 template <typename T>
 void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
 {
-	Log::debug() << "ODATableIterator::updateMetaData: " << endl;
+    using eclib::Log;
+
+    Log::debug() << "ODATableIterator::updateMetaData: " << endl;
 	MetaData& newColumns(reader_->columns());
 	for(size_t i = 0; i < selected.size(); i++)
 	{
@@ -146,7 +150,9 @@ missingValue, bool isBitfield, const BitfieldDef& bitfieldDef)
 template <typename T>
 bool TODATable<T>::hasColumn(const string& name, string* fullName)
 {
-	if (SQLTable::hasColumn(name))
+    using eclib::Log;
+
+    if (SQLTable::hasColumn(name))
 	{
 		if (fullName)
 		{
@@ -177,7 +183,7 @@ bool TODATable<T>::hasColumn(const string& name, string* fullName)
 	if (n == 0) return false;
 	if (n == 1) return true;
 
-	throw UserError(string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+	throw eclib::UserError(string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
 
 	return false;
 }
@@ -195,7 +201,7 @@ SQLColumn* TODATable<T>::column(const string& name)
 		if (s.find(colName) == 0)
 		{
 			if (column)
-				throw UserError(string("TODATable::column: \"") + name + "\": ambiguous name.");
+				throw eclib::UserError(string("TODATable::column: \"") + name + "\": ambiguous name.");
 			else 
 				column = it->second;
 		}

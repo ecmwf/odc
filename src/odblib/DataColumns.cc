@@ -52,10 +52,10 @@ size_t DataColumns::indexOf(const string& name) const
                 indices.push_back(i);
 
     if (indices.size() > 1)
-        throw UserError(string("Ambiguous column name: '") + name + "'");
+        throw eclib::UserError(string("Ambiguous column name: '") + name + "'");
 
     if (indices.size() == 0)
-        throw UserError(string("Column '") + name + "' not found.");
+        throw eclib::UserError(string("Column '") + name + "' not found.");
 
     return indices[0];
 }
@@ -70,7 +70,7 @@ void DataColumns::add(const string& name, const string& typeName)
     else if (typeName == "STRING")   type = STRING;
     else if (typeName == "BITFIELD") type = BITFIELD;
     else
-        throw UserError("Unsupported column type: " + typeName);
+        throw eclib::UserError("Unsupported column type: " + typeName);
 
     push_back(DataColumn(name, type));
 }

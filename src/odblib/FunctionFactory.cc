@@ -125,7 +125,7 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, const express
 	}
 
 	if(j == FFMap::instance().end())
-		throw UserError(name + ": function not defined");
+		throw eclib::UserError(name + ": function not defined");
 
 	return (*j).second->make(name,args);
 

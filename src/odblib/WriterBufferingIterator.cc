@@ -26,8 +26,7 @@
 #include "odblib/MemoryBlock.h"
 #include "odblib/ODBAPISettings.h"
 
-
-
+using namespace eclib;
 
 namespace odb {
 

@@ -13,6 +13,8 @@
 #include "odblib/SQLColumn.h"
 #include "odblib/SQLTable.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace sql {
 

@@ -23,7 +23,7 @@
 #include "odblib/SQLType.h"
 #include "odblib/SchemaAnalyzer.h"
 
-
+using namespace eclib;
 
 namespace odb {
 namespace sql {
@@ -81,10 +81,10 @@ SQLTable* SQLSelect::findTable(const string& name,
 	}
 
 	if(names.size() == 0)
-		throw UserError("Can't find a table for", name);
+		throw eclib::UserError("Can't find a table for", name);
 
 	if(names.size() != 1)
-		throw UserError("Ambiguous column name", name);
+		throw eclib::UserError("Ambiguous column name", name);
 
 	Log::debug() << "SQLSelect::findTable: name='" << name << "', fullName=" << (fullName ? (string("'")+ *fullName+"'") : "") << endl;
 

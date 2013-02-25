@@ -73,7 +73,7 @@ TokenVector tokenize(const odb::MetaData& metaData)
             token.tableName = token.columnName.substr(pos + 1);
 
             if (token.tableName.empty())
-                throw UserError("Column " + token.columnName
+                throw eclib::UserError("Column " + token.columnName
                        + "does not belong to any table.");
         }
 

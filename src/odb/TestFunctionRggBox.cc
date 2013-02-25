@@ -24,17 +24,17 @@
 #define RMDI -2147483647
 #define EPS  7e-6
 
-using namespace std;
-
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestFunctionRggBox.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/piconst.h"
 
-
-
 #include "odblib/oda.h"
+
+using namespace std;
+using namespace eclib;
+
 
 namespace odb {
 namespace tool {

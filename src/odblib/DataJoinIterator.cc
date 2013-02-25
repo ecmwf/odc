@@ -93,7 +93,7 @@ void DataJoinIterator::populate()
                     stringstream message("DataJoinIterator: ");
                     message << "Mismatch of primary and foreign keys in linked tables.";
                     message << endl;
-                    throw UserError(message.str());
+                    throw eclib::UserError(message.str());
                 }
             }
             else if (cacheIt > cache_)

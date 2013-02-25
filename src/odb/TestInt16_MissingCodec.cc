@@ -20,6 +20,8 @@
 #include "odblib/ToolFactory.h"
 #include "MockReader.h"
 
+using namespace std;
+using namespace eclib;
 
 
 namespace odb {

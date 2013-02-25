@@ -14,7 +14,7 @@
 #include "eclib/StandardBehavior.h"
 #include "eclib/DHSBehaviorStdout.h"
 
-class ODBBehavior : public DHSBehaviorStdout
+class ODBBehavior : public eclib::DHSBehaviorStdout
 {
 public:
     ODBBehavior();

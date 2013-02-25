@@ -20,6 +20,8 @@
 #include "odblib/DataStream.h"
 #include "odblib/Header.h"
 
+using namespace eclib;
+
 namespace odb {
 
 ReaderIterator::ReaderIterator(Reader &owner)

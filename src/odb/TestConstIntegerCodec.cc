@@ -38,6 +38,9 @@
 #include "odb/MockReader.h"
 #include "odb/TestConstIntegerCodec.h"
 
+using namespace std;
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 namespace test {

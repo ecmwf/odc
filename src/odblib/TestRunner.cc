@@ -24,6 +24,8 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/TestRunner.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 namespace test {
@@ -101,7 +103,7 @@ void TestRunner::run()
 
 		stringstream ss;
 		ss << " " << failed_.size() << " test(s) failed";
-		throw SeriousBug(ss.str());
+		throw eclib::SeriousBug(ss.str());
 	}
 }
 

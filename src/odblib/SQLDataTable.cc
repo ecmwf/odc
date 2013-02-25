@@ -10,6 +10,8 @@ using namespace std;
 using namespace odb;
 using namespace odb::sql;
 
+using namespace eclib;
+
 namespace odb {
 
 SQLDataTable::SQLDataTable(odb::sql::SQLDatabase& db, const DataTable& table)
@@ -37,7 +39,7 @@ SQLColumn* SQLDataTable::column(const string& name)
         if (s.find(name + "@") == 0)
         {
             if (column)
-                throw UserError(string("SQLDataTable::column: name \"") + name + "\" is ambiguous");
+                throw eclib::UserError(string("SQLDataTable::column: name \"") + name + "\" is ambiguous");
             else 
                 column = it->second;
         }
@@ -76,7 +78,7 @@ bool SQLDataTable::hasColumn(const string& name, string* fullName)
     if (n == 0) return false;
     if (n == 1) return true;
 
-    throw UserError(string("SQLDataTable:hasColumn(\"") + name + "\"): ambiguous name");
+    throw eclib::UserError(string("SQLDataTable:hasColumn(\"") + name + "\"): ambiguous name");
     return false;
 }
 

@@ -22,6 +22,7 @@
 #include "odblib/SQLType.h"
 #include "odblib/SchemaAnalyzer.h"
 
+using namespace eclib;
 
 namespace odb {
 namespace sql {
@@ -289,7 +290,7 @@ SQLExpression* SQLDatabase::getVariable(const string& name) const
 {
 	Variables::const_iterator j = variables_.find(name);
 	if(j == variables_.end())
-		throw UserError("Undefined variable", name);
+		throw eclib::UserError("Undefined variable", name);
 	return (*j).second;
 }
 

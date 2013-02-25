@@ -21,6 +21,7 @@
 #include "odblib/TextReaderIterator.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 #define MEGA(x) (x*1024*1024)

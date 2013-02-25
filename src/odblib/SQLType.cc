@@ -18,6 +18,8 @@
 #include "odblib/SQLDouble.h"
 #include "odblib/SQLString.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace sql {
 namespace type {
@@ -114,7 +116,7 @@ const SQLType& SQLType::lookup(const string& name)
 			}
 		}
 #endif
-		throw SeriousBug(name + ": type not defined");
+		throw eclib::SeriousBug(name + ": type not defined");
 	}
 	return *(*j).second;
 }

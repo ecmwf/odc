@@ -24,8 +24,6 @@
 #include <sstream>
 #include <stdint.h>
 
-using namespace std;
-
 #include "eclib/DataHandle.h"
 #include "eclib/FileHandle.h"
 #include "eclib/PathName.h"
@@ -76,5 +74,7 @@ using namespace std;
 #ifndef MEGA
 #define MEGA(x) (x*1024*1024)
 #endif
+
+using namespace std;
 
 #endif

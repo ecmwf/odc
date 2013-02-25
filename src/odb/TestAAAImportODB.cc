@@ -44,6 +44,8 @@ using namespace std;
 
 #include "odb/TestAAAImportODB.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 namespace test {

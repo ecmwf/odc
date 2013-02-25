@@ -16,8 +16,6 @@
 #include <vector>
 #include <map>
 
-using namespace std;
-
 #include "eclib/Log.h"
 #include "eclib/Exceptions.h"
 
@@ -26,6 +24,9 @@ using namespace std;
 #include "odb/TestCommandLineParsing.h"
 #include "odblib/ToolFactory.h"
 
+using namespace std;
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 namespace test {
@@ -33,13 +34,14 @@ namespace test {
 ToolFactory<TestCommandLineParsing> testCommandLineParsing("TestCommandLineParsing");
 
 struct TestTool : public Tool {
-	TestTool(int argc, char **argv) : Tool(argc, argv)
+
+    TestTool(int argc, char **argv) : Tool(argc, argv)
 	{
 		registerOptionWithArgument("-foo");
 		registerOptionWithArgument("-intOpt");
-	};
+	}
 
-	static void help(ostream &o) { o << "No help available for this command yet." << endl; };
+	static void help(ostream &o) { o << "No help available for this command yet." << endl; }
 
 	void run() {
 		Log::info() << "TestCommandLineParsing::test: TestTool::run" << endl;

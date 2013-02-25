@@ -15,6 +15,7 @@
 
 #include "odblib/RegionCache.h"
 
+using namespace eclib;
 
 template class ThreadSingleton<VectorRegionCache>;
 static ThreadSingleton<VectorRegionCache> region_cache_;

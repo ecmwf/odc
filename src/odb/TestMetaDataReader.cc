@@ -18,8 +18,6 @@
 
 #include <strings.h>
 
-using namespace std;
-
 #include "odblib/oda.h"
 
 #include "odblib/Tool.h"
@@ -28,6 +26,10 @@ using namespace std;
 #include "odblib/ImportTool.h"
 
 #include "TestMetaDataReader.h"
+
+using namespace std;
+using namespace eclib;
+
 
 namespace odb {
 namespace tool {
