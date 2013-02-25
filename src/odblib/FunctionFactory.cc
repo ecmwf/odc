@@ -50,6 +50,7 @@
 #include "FunctionFactory.h"
 #include "FunctionIntegerExpression.h"
 
+using namespace eclib;
 
 namespace odb {
 namespace sql {

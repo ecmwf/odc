@@ -15,6 +15,8 @@
 #include "Comparator.h"
 #include "FixedSizeRowTool.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

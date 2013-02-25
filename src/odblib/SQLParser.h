@@ -22,9 +22,9 @@ namespace eclib { class DataHandle; }
 namespace odb {
 namespace sql {
 
-class SyntaxError : public SeriousBug {
+class SyntaxError : public eclib::SeriousBug {
 public:
-	SyntaxError(const string& s): SeriousBug(s) {}
+	SyntaxError(const string& s): eclib::SeriousBug(s) {}
 };
 
 class SQLParser {

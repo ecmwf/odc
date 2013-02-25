@@ -15,6 +15,9 @@
 #include "CompareTool.h"
 #include "StringTool.h"
 
+using namespace std;
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

@@ -7,6 +7,7 @@
 #include "odblib/MetaData.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 

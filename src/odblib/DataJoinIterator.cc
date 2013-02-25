@@ -7,6 +7,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace internal {

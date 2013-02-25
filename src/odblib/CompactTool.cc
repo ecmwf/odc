@@ -15,6 +15,9 @@
 #include "Comparator.h"
 #include "CompactTool.h"
 
+using namespace std;
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

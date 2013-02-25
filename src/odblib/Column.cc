@@ -28,6 +28,8 @@ using namespace std;
 #include "odblib/SQLDatabase.h"
 #include "odblib/SchemaAnalyzer.h"
 
+using namespace eclib;
+
 namespace odb {
 
 Column::Column(MetaData &owner)

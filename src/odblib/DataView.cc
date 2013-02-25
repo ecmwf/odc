@@ -6,6 +6,7 @@
 #include "eclib/Exceptions.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 

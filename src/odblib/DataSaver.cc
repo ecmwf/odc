@@ -6,6 +6,7 @@
 #include "odblib/DataView.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 

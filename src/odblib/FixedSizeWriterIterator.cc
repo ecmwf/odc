@@ -16,6 +16,8 @@
 #include "odblib/oda.h"
 #include "odblib/DataStream.h"
 
+using namespace eclib;
+
 namespace odb {
 
 FixedSizeWriterIterator::FixedSizeWriterIterator(Owner &owner, DataHandle *dh)

@@ -14,6 +14,8 @@
 #include "odblib/oda.h"
 #include "odblib/DataStream.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace codec {
 

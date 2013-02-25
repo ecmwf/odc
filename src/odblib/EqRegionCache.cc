@@ -16,6 +16,7 @@
 #include "odblib/EqRegionCache.h"
 #include "odblib/RegionCache.h"
 
+using namespace eclib;
 
 #define regions(i,j,k)   regs  [ ((k)-1)*dim*2     + ((j)-1)*dim     + (i) - 1 ]
 #define regions_1(i,j,k) regs_1[ ((k)-1)*(dim-1)*2 + ((j)-1)*(dim-1) + (i) - 1 ]

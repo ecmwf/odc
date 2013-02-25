@@ -17,6 +17,7 @@
 #include "odblib/ImportTool.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

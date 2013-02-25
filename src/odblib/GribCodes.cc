@@ -15,8 +15,6 @@
 #include <iostream>
 #include <strings.h>
 
-using namespace std;
-
 #include "eclib/Application.h"
 #include "eclib/FileHandle.h"
 #include "eclib/PathName.h"
@@ -27,6 +25,9 @@ using namespace std;
 #include "odblib/GribCodes.h"
 #include "odblib/MemoryBlock.h"
 #include "odblib/StringTool.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 

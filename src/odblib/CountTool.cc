@@ -7,6 +7,7 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
+
 #include "odblib/oda.h"
 
 #include "odblib/Tool.h"
@@ -14,6 +15,8 @@
 #include "CountTool.h"
 #include "MetaDataReaderIterator.h"
 #include "MetaDataReader.h"
+
+using namespace eclib;
 
 namespace odb {
 namespace tool {

@@ -52,7 +52,10 @@
 #include "odblib/Writer.h"
 #include "odblib/WriterDispatchingIterator.h"
 
+using namespace eclib;
+
 namespace odb {
+
 #define MEGA(x) (x*1024*1024)
 
 DispatchingWriter::DispatchingWriter(const string& outputFileTemplate, int maxOpenFiles, bool append)

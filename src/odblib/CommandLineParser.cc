@@ -13,12 +13,13 @@
 
 #include <iostream>
 
-using namespace std;
-
 #include "eclib/Context.h"
 #include "eclib/Translator.h"
 
 #include "odblib/CommandLineParser.h"
+
+using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace tool {

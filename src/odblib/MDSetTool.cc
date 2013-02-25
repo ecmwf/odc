@@ -17,6 +17,8 @@
 #include "odblib/MDSetTool.h"
 #include "odblib/DataStream.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

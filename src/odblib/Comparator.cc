@@ -19,7 +19,8 @@
 #include "odblib/Comparator.h"
 #include "odblib/Tracer.h"
 
-
+using namespace std;
+using namespace eclib;
 
 class ValuesDifferent : public Exception {
 public:

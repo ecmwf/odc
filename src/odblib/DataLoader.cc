@@ -16,6 +16,7 @@
 #include "odblib/DataTable.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 

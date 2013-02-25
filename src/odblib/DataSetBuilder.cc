@@ -15,6 +15,7 @@
 #include "odblib/DataColumn.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 

@@ -52,7 +52,6 @@ using namespace std;
 #include "odblib/Writer.h"
 #include "odblib/WriterBufferingIterator.h"
 
-
 using namespace std;
 
 namespace odb {
@@ -67,7 +66,7 @@ MetaDataReader<T>::MetaDataReader()
 {} 
 
 template <typename T>
-MetaDataReader<T>::MetaDataReader(const PathName& path, bool skipData)
+MetaDataReader<T>::MetaDataReader(const eclib::PathName& path, bool skipData)
 : dataHandle_(path.fileHandle()),
   deleteDataHandle_(true),
   path_(path),
@@ -87,7 +86,7 @@ MetaDataReader<T>::~MetaDataReader()
 }
 
 template <typename T>
-typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(const PathName& pathName)
+typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(const eclib::PathName& pathName)
 {
 	return new T(*this, pathName, skipData_);
 }

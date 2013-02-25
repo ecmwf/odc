@@ -94,8 +94,8 @@ void Header<OWNER>::load(DATASTREAM &ff)
 
 	if (! (headerDigest == actualHeaderDigest))
 	{
-		//Log::debug() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << endl;
-		//Log::debug() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << endl;
+		//eclib::Log::debug() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << endl;
+		//eclib::Log::debug() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << endl;
 		ASSERT(headerDigest == actualHeaderDigest);
 	}
 	
@@ -120,7 +120,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 	rowsNumber_ = numberOfRows;
 	owner_.columns().rowsNumber(rowsNumber_);
 
-	Log::debug() << "Header<OWNER>::load: numberOfRows = " << numberOfRows << endl;
+	eclib::Log::debug() << "Header<OWNER>::load: numberOfRows = " << numberOfRows << endl;
 
 	// Flags -> ODAFlags
 	Flags flags;
@@ -173,10 +173,10 @@ void serializeHeader(DATAHANDLE &dh, size_t dataSize, size_t rowsNumber, const P
 
 	columns.save(f);
 
-	Length len = memoryHandle.openForRead();
+	eclib::Length len = memoryHandle.openForRead();
 
 	MemoryBlock buffer(len);
-	Length readBytes = memoryHandle.read(buffer, len);
+	eclib::Length readBytes = memoryHandle.read(buffer, len);
 	ASSERT(len == readBytes);
 
 	MD5 md5;
