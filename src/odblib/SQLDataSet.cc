@@ -4,6 +4,7 @@
 #include "odblib/SQLDataSet.h"
 
 using namespace std;
+using namespace eclib;
 
 namespace odb {
 namespace sql {
