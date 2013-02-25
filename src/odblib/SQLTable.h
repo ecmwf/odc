@@ -93,7 +93,7 @@ public:
 	bool sameAs(const SQLTable& other) const;
 	bool sameDatabase(const SQLTable& other) const;
 
-	const PathName& path() const { return path_; }
+    const eclib::PathName& path() const { return path_; }
 
 	virtual void print(ostream& s) const;
 
@@ -112,7 +112,7 @@ protected:
 
 // -- Members
 	// None
-	::PathName path_;
+    eclib::PathName path_;
 	string   name_;
 
 	//map<int,SQLFile*> files_;

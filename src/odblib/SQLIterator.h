@@ -27,9 +27,9 @@ namespace sql {
 class SQLIterator {
 public:
 
-	void *operator new(size_t s)          { return MemoryPool::fastAllocate(s);}
+    void *operator new(size_t s)          { return eclib::MemoryPool::fastAllocate(s);}
 	//void *operator new(size_t s,void *p)  { return p;                          }
-	void operator delete(void* p)         { MemoryPool::fastDeallocate(p);     }
+    void operator delete(void* p)         { eclib::MemoryPool::fastDeallocate(p);     }
 
 
 // -- Exceptions
@@ -41,7 +41,7 @@ public:
 
 // -- Destructor
 
-	virtual ~SQLIterator() {}; // Change to virtual if base class
+    virtual ~SQLIterator() {} // Change to virtual if base class
 
 // -- Convertors
 	// None

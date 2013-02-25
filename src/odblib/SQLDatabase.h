@@ -66,7 +66,7 @@ public:
 protected:
 	Links links_;
 	map<string,SQLTable*> tablesByName_;
-	PathName path_;
+    eclib::PathName path_;
 
 	Variables variables_;
 	string name_;
