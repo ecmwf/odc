@@ -14,8 +14,8 @@
 #ifndef SQLSession_H
 #define SQLSession_H
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 #include "eclib/machine.h"
 
@@ -36,7 +36,7 @@ public:
 	virtual ~SQLSession(); // Change to virtual if base class
 
 
-	SQLDatabase& openDatabase(const PathName&,const string& name = "");
+	SQLDatabase& openDatabase(const eclib::PathName&,const string& name = "");
 	void closeDatabase(const string& name);
 
 	void createIndex(const string&,const string&);
@@ -50,7 +50,7 @@ public:
 	SQLTable* findTable(const string&,const string&);
 	SQLTable* findFile(const string&);
 
-	SQLTable* openDataHandle(DataHandle &);
+	SQLTable* openDataHandle(eclib::DataHandle &);
 	SQLTable* openDataStream(istream &);
 
 	virtual void statement(SQLStatement*) = 0;

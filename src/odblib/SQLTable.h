@@ -29,7 +29,7 @@ class SQLDatabase;
 
 class SQLTableIterator {
 public:
-	virtual ~SQLTableIterator() {};
+	virtual ~SQLTableIterator() {}
 	virtual void rewind() = 0;
 	virtual bool next()   = 0;
 };
@@ -44,7 +44,7 @@ public:
 
 // -- Contructors
 
-	SQLTable(SQLDatabase&,const PathName&,const string&);
+	SQLTable(SQLDatabase&,const eclib::PathName&,const string&);
 
 // -- Destructor
 

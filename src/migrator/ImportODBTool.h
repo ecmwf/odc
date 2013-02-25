@@ -32,24 +32,24 @@ public:
 protected:
 
 	template <typename OUT_ITERATOR>
-	unsigned long long saveData(OUT_ITERATOR w, PathName odb, std::string sql);
+	unsigned long long saveData(OUT_ITERATOR w, eclib::PathName odb, std::string sql);
 	
-	typedef pair<unsigned long long, const vector<PathName> > DispatchResult;
+	typedef pair<unsigned long long, const vector<eclib::PathName> > DispatchResult;
 
-	DispatchResult importDispatching(PathName db, const std::string& sql, const std::string& dumpFile);
+	DispatchResult importDispatching(eclib::PathName db, const std::string& sql, const std::string& dumpFile);
 
-	void validate(PathName db, const string& sql, const PathName& file);
-	void validateRowsNumber(unsigned long long, const vector<PathName>&);
+	void validate(eclib::PathName db, const string& sql, const eclib::PathName& file);
+	void validateRowsNumber(unsigned long long, const vector<eclib::PathName>&);
 
-	void archiveFiles(const vector<PathName>&);
+	void archiveFiles(const vector<eclib::PathName>&);
 private:
 
 // No copy allowed
     ImportODBTool(const ImportODBTool&);
     ImportODBTool& operator=(const ImportODBTool&);
 
-	bool isECFSPathName(const PathName fileName);
-	PathName readFromECFS(const PathName fileName);
+	bool isECFSPathName(const eclib::PathName fileName);
+	eclib::PathName readFromECFS(const eclib::PathName fileName);
 };
 
 } // namespace tool 

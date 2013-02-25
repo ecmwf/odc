@@ -23,8 +23,8 @@
 #include "odblib/IteratorProxy.h"
 #include "odblib/ReaderIterator.h"
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 namespace odb {
 
@@ -34,7 +34,7 @@ public:
 	typedef IteratorProxy<ReaderIterator,Reader,const double> iterator;
 	typedef iterator::Row row;
 
-	Reader(DataHandle &);
+	Reader(eclib::DataHandle &);
 	Reader(const std::string& path);
 	Reader();
 
@@ -43,9 +43,9 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	DataHandle* dataHandle() { return dataHandle_; }
+	eclib::DataHandle* dataHandle() { return dataHandle_; }
 	// For C API
-	ReaderIterator* createReadIterator(const PathName&);
+	ReaderIterator* createReadIterator(const eclib::PathName&);
 	ReaderIterator* createReadIterator();
 
 #ifdef SWIGPYTHON
@@ -58,9 +58,9 @@ private:
     Reader& operator=(const Reader&);
 
 
-	DataHandle* dataHandle_;
+	eclib::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
-	//const PathName path_;
+	//const eclib::PathName path_;
 	const string path_;
 
 	friend class IteratorProxy<ReaderIterator,Reader,const double>;

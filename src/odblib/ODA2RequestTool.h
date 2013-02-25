@@ -31,18 +31,18 @@ public:
 	virtual void run();
 
 	void readConfig();
-	void readConfig(const PathName&);
+	void readConfig(const eclib::PathName&);
 	void parseConfig(const string&);
 
-	string generateMarsRequest(const PathName& inputFile, bool fast = false);
+	string generateMarsRequest(const eclib::PathName& inputFile, bool fast = false);
 
 protected:
 	vector<Values>& values() { return values_; }
 
-	void gatherStats(const PathName& inputFile);
-	string gatherStatsFast(const PathName& inputFile);
+	void gatherStats(const eclib::PathName& inputFile);
+	string gatherStatsFast(const eclib::PathName& inputFile);
 
-	PathName config();
+	eclib::PathName config();
 
 private:
 	map<string, string> columnName2requestKey_;

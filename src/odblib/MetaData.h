@@ -18,7 +18,7 @@
 #include "odblib/IteratorProxy.h"
 #endif
 
-class PathName;
+namespace eclib { class PathName; }
 
 namespace odb {
 
@@ -31,7 +31,7 @@ public:
 	MetaData(const MetaData&);
 	MetaData* clone() const;
 
-	static MetaData scanFile(const PathName&);
+	static MetaData scanFile(const eclib::PathName&);
 
 	unsigned long long rowsNumber() { return rowsNumber_; }
 	void rowsNumber(unsigned long long n) { rowsNumber_ = n; }

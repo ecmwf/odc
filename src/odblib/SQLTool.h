@@ -44,8 +44,8 @@ private:
 	string inputFile_;           // -i
 	string outputFile_;          // -o
 	string outputFormat_;        // default is ascii
-	Offset offset_;              // -offset
-	Length length_;              // -length
+	eclib::Offset offset_;              // -offset
+	eclib::Length length_;              // -length
 };
 
 } // namespace tool 

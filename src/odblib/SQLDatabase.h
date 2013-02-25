@@ -19,7 +19,7 @@
 #include "odblib/SQLTable.h"
 #include "odblib/SchemaAnalyzer.h"
 
-class DataHandle;
+namespace eclib { class DataHandle; }
 
 namespace odb {
 namespace sql {
@@ -36,7 +36,7 @@ class SQLDatabase {
 public:
 	typedef enum { ODA, CSV } DataFormat;
 
-	SQLDatabase(const PathName&,const string&);
+	SQLDatabase(const eclib::PathName&,const string&);
 	SQLDatabase(const string& = "default");
 	virtual ~SQLDatabase(); // Change to virtual if base class
 
@@ -45,9 +45,9 @@ public:
 	virtual void close();
 
 	virtual SQLTable* table(const string&);
-	virtual SQLTable* openDataHandle(DataHandle&, DataFormat = ODA) = 0; 
+	virtual SQLTable* openDataHandle(eclib::DataHandle&, DataFormat = ODA) = 0; 
 	virtual SQLTable* openDataStream(istream&, DataFormat = CSV) = 0; 
-	virtual void addTable(SQLTable *table) { tablesByName_[table->name()] = table; };
+	virtual void addTable(SQLTable *table) { tablesByName_[table->name()] = table; }
 
 	void setLinks(const Links&);
 	void setLinks() { setLinks(links_); }

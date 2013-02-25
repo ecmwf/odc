@@ -27,7 +27,7 @@
 
 using namespace std;
 
-class PathName;
+namespace eclib { class PathName; }
 
 namespace odb {
 
@@ -37,8 +37,8 @@ class StringTool {
 
 public:
 
-    static std::string readFile(const PathName fileName, bool logging = false);
-	static vector<std::string> readLines(const PathName fileName, bool logging = false);
+    static std::string readFile(const eclib::PathName fileName, bool logging = false);
+	static vector<std::string> readLines(const eclib::PathName fileName, bool logging = false);
 
     static void trimInPlace(std::string &);
 
@@ -57,7 +57,7 @@ public:
 
 	static string int_as_double2string(double);
 
-	static int shell(std::string cmd, const CodeLocation &where, bool assertSuccess = true);
+	static int shell(std::string cmd, const eclib::CodeLocation &where, bool assertSuccess = true);
 
 	static double translate(const string& v);
 	static string valueAsString(double, ColumnType);

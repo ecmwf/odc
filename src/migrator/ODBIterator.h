@@ -11,7 +11,7 @@
 #ifndef ODBIterator_H
 #define ODBIterator_H
 
-class PathName;
+namespace eclib { class PathName; }
 
 namespace odb { namespace sql { class SchemaAnalyzer; class SQLInteractiveSession; } }
 
@@ -21,7 +21,7 @@ namespace tool {
 class ODBIterator : public odb::RowsReaderIterator {
 public:
 
-	ODBIterator(const PathName& db, const std::string& sql); 
+	ODBIterator(const eclib::PathName& db, const std::string& sql); 
 	~ODBIterator ();
 
 	void destroy();
@@ -37,7 +37,7 @@ public:
 	virtual bool isNewDataset();
 	virtual double* data();
 
-	static PathName schemaFile(const PathName db);
+	static eclib::PathName schemaFile(const eclib::PathName db);
 
 	virtual bool next();
 
@@ -48,7 +48,7 @@ protected:
 private:
 	void createColumns();
 
-	PathName db_;
+	eclib::PathName db_;
 
 	void *odbHandle_;
 	int noOfColumns_;
@@ -60,8 +60,8 @@ private:
 	unsigned long long count_;
 	bool hasNext_;
 
-	std::string defaultSQL(const PathName db);
-	const odb::sql::SchemaAnalyzer& getSchema(const PathName db);
+	std::string defaultSQL(const eclib::PathName db);
+	const odb::sql::SchemaAnalyzer& getSchema(const eclib::PathName db);
 	bool schemaParsed_;
 	odb::sql::SQLInteractiveSession session_;
 

@@ -25,7 +25,7 @@
 
 using namespace std;
 
-class PathName;
+namespace eclib { class PathName; }
 class Application;
 
 namespace odb {

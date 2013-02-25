@@ -16,7 +16,7 @@
 
 #include "eclib/PathName.h"
 
-class TemporaryFile : public PathName {
+class TemporaryFile : public eclib::PathName {
 public:
 	TemporaryFile();
 	~TemporaryFile(); // Change to virtual if base class

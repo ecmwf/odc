@@ -28,7 +28,7 @@ public:
 		o << name << " -o <output-file.odb> <input1.odb> <input2.odb> ...";
 	}
 
-	static void merge(const vector<PathName>& inputFiles, const PathName& outputFileName);
+	static void merge(const vector<eclib::PathName>& inputFiles, const eclib::PathName& outputFileName);
 
 private:
 // No copy allowed
@@ -38,8 +38,8 @@ private:
 
 	static char* dummyArgv_[];
 
-	vector<PathName> inputFiles_;
-	PathName outputFile_;
+	vector<eclib::PathName> inputFiles_;
+	eclib::PathName outputFile_;
 
 };
 

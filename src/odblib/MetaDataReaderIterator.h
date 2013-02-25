@@ -20,7 +20,7 @@
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 
-class PathName;
+namespace eclib { class PathName; }
 class FileHandle;
 
 extern "C" {
@@ -48,7 +48,7 @@ protected:
 	typedef MetaDataReader<MetaDataReaderIterator> Owner;
 public:
 	MetaDataReaderIterator (Owner &owner, bool skipData);
-	MetaDataReaderIterator (Owner &owner, const PathName&, bool skipData);
+	MetaDataReaderIterator (Owner &owner, const eclib::PathName&, bool skipData);
 	virtual ~MetaDataReaderIterator ();
 
 	virtual bool isNewDataset();
@@ -61,8 +61,8 @@ public:
 
 	virtual MetaData& columns() { return columns_; }
 
-	Offset blockStartOffset() { return blockStartOffset_; }
-	Offset blockEndOffset() { return blockEndOffset_; }
+	eclib::Offset blockStartOffset() { return blockStartOffset_; }
+	eclib::Offset blockEndOffset() { return blockEndOffset_; }
 
 	int32_t byteOrder() const { return byteOrder_; }
 
@@ -97,7 +97,7 @@ private:
 	odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 protected:
-	DataHandle *f;
+	eclib::DataHandle *f;
 	Properties properties_;
 	bool newDataset_;
 public:
@@ -109,8 +109,8 @@ private:
 
 	unsigned long headerCounter_;
 
-	Offset blockStartOffset_;
-	Offset blockEndOffset_;
+	eclib::Offset blockStartOffset_;
+	eclib::Offset blockEndOffset_;
 
 protected:
 	bool skipData_;

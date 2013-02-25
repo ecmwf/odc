@@ -35,8 +35,8 @@ public:
 		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2,
 					const vector<string>& excludedColumnsTypes);
 
-	void compare(const PathName&, const PathName&);
-	void compare(const PathName&, const PathName&, const vector<string>& excludedColumnsTypes);
+	void compare(const eclib::PathName&, const eclib::PathName&);
+	void compare(const eclib::PathName&, const eclib::PathName&, const vector<string>& excludedColumnsTypes);
 
 	void compare(const MetaData&, const MetaData&, const vector<string>&);
 	void compare(int nCols, const double *data1, const double *data2, const MetaData&, const MetaData&);
@@ -77,7 +77,7 @@ template<typename T1, typename T2>
 bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2,
 						const vector<string>& excludedColumnsTypes)
 {
-	Log::info() << "Comparator::compare: (1) " << desc1 << " to (2) " << desc2 << endl;
+	eclib::Log::info() << "Comparator::compare: (1) " << desc1 << " to (2) " << desc2 << endl;
 
 	nRow_ = 0;
 

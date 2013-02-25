@@ -24,7 +24,7 @@
 
 namespace odb {
 
-class InMemoryDataHandle : public DataHandle {
+class InMemoryDataHandle : public eclib::DataHandle {
 public:
     InMemoryDataHandle();
     InMemoryDataHandle(const MemoryBlock&);
@@ -37,17 +37,17 @@ public:
 	bool hasSomeData() { return readIterator_ != buf_.end(); }
 
 	/// Return estimated length.
-    virtual Length openForRead()
+    virtual eclib::Length openForRead()
 	{
 		readIterator_ = buf_.begin();
 		return buf_.size();
 	}
 
 	// Receive estimated length.
-    void openForWrite(const Length&) { buf_.clear(); ASSERT(buf_.size() == 0); }
+    void openForWrite(const eclib::Length&) { buf_.clear(); ASSERT(buf_.size() == 0); }
 
 	// Receive estimated length
-    void openForAppend(const Length&) {}
+    void openForAppend(const eclib::Length&) {}
 
     long read(void* p, long n)
 	{
@@ -68,8 +68,8 @@ public:
     void close() {}
 
     void rewind()                {}
-	Length estimate()            { return buf_.size(); }
-	Offset position()            { return buf_.size(); }
+	eclib::Length estimate()            { return buf_.size(); }
+	eclib::Offset position()            { return buf_.size(); }
 
 	void print(ostream& s) const { /*TODO*/ }
 private:

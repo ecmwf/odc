@@ -12,7 +12,7 @@
 #include "odblib/DataSetBuilder.h"
 #include "odblib/DataSetFiller.h"
 
-class DataHandle;
+namespace eclib { class DataHandle; }
 
 namespace odb {
 
@@ -44,7 +44,7 @@ public:
     DataLoader(const std::string& path);
 
     /// Creates a new loader given the handle to the source.
-    DataLoader(DataHandle& handle);
+    DataLoader(eclib::DataHandle& handle);
 
     /// Creates a new loader given the input stream to the source.
     DataLoader(std::istream& stream);
@@ -81,7 +81,7 @@ private:
 
     std::string query_;
     std::string path_;
-    DataHandle* handle_;
+    eclib::DataHandle* handle_;
     bool deleteHandle_;
     std::istream* stream_;
     bool deleteStream_;

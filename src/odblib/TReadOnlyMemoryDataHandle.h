@@ -26,7 +26,7 @@ namespace odb {
 
 class NonVirtualBase {};
 
-template <typename T = DataHandle>
+template <typename T = eclib::DataHandle>
 class TReadOnlyMemoryDataHandle : public T {
 public:
 
@@ -61,17 +61,17 @@ public:
 	bool hasSomeData() { return it_ != end_; }
 
 	/// Return estimated length.
-    virtual Length openForRead()
+    virtual eclib::Length openForRead()
 	{
 		it_ = buffer_;
 		return end_ - it_;
 	}
 
 	// Receive estimated length.
-    void openForWrite(const Length&) { NOTIMP; }
+    void openForWrite(const eclib::Length&) { NOTIMP; }
 
 	// Receive estimated length
-    void openForAppend(const Length&) {}
+    void openForAppend(const eclib::Length&) {}
 
     long read(void* p, long n)
 	{
@@ -87,8 +87,8 @@ public:
     void close() {}
 
     void rewind()                { it_ = buffer_; }
-	Length estimate()            { return end_ - it_; }
-	Offset position()            { return it_ - buffer_; }
+	eclib::Length estimate()            { return end_ - it_; }
+	eclib::Offset position()            { return it_ - buffer_; }
 
 private:
 // No copy allowed
@@ -101,7 +101,7 @@ private:
 	size_t bufferSize_;
 };
 
-typedef TReadOnlyMemoryDataHandle<DataHandle> ReadOnlyMemoryDataHandle;
+typedef TReadOnlyMemoryDataHandle<eclib::DataHandle> ReadOnlyMemoryDataHandle;
 
 } // namespace odb 
 

@@ -25,9 +25,9 @@ private:
     virtual void open();
     virtual void close();
 
-    virtual SQLTable* openDataHandle(DataHandle&, DataFormat = ODA);
-    virtual SQLTable* openDataStream(std::istream&, DataFormat = CSV);
-};    
+    virtual odb::sql::SQLTable* openDataHandle(eclib::DataHandle&, DataFormat = ODA) {}
+    virtual odb::sql::SQLTable* openDataStream(std::istream&, DataFormat = CSV) {}
+};
 
 } // namespace sql
 } // namespace odb

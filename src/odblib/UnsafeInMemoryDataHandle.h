@@ -26,7 +26,7 @@ namespace odb {
 
 class NonVirtual {};
 
-template <typename T = DataHandle>
+template <typename T = eclib::DataHandle>
 class UnsafeInMemoryDataHandle : public T {
 public:
     UnsafeInMemoryDataHandle(unsigned char *p) : buf_(p), p_(p) {}
@@ -39,7 +39,7 @@ public:
 	unsigned char* buffer() { return buf_; }
 
 	/// Return estimated length.
-    virtual Length openForRead()
+    virtual eclib::Length openForRead()
 	{
 		size_t size = p_ - buf_;
 		p_ = buf_;
@@ -47,10 +47,10 @@ public:
 	}
 
 	// Receive estimated length.
-    void openForWrite(const Length&) { p_ = buf_; }
+    void openForWrite(const eclib::Length&) { p_ = buf_; }
 
 	// Receive estimated length
-    void openForAppend(const Length&) { NOTIMP; }
+    void openForAppend(const eclib::Length&) { NOTIMP; }
 
     long read(void* p, long n)
 	{
@@ -73,8 +73,8 @@ public:
     void close() {}
 
     void rewind()                { /*?*/ p_ = buf_; }
-	Length estimate()            { /*?*/ return p_ - buf_; }
-	Offset position()            { return p_ - buf_; }
+	eclib::Length estimate()            { /*?*/ return p_ - buf_; }
+	eclib::Offset position()            { return p_ - buf_; }
 
 private:
     UnsafeInMemoryDataHandle();
@@ -92,7 +92,7 @@ private:
 };
 
 typedef UnsafeInMemoryDataHandle<NonVirtual> FastInMemoryDataHandle;
-typedef UnsafeInMemoryDataHandle<DataHandle> PrettyFastInMemoryDataHandle;
+typedef UnsafeInMemoryDataHandle<eclib::DataHandle> PrettyFastInMemoryDataHandle;
 
 } // namespace odb
 

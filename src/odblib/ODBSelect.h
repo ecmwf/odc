@@ -22,8 +22,8 @@
 
 #include "odblib/IteratorProxy.h"
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 namespace odb {
 
@@ -35,7 +35,7 @@ public:
 	typedef IteratorProxy<SelectIterator,Select,const double> iterator;
 	typedef iterator::Row row;
 
-	Select(const string& selectStatement, DataHandle &);
+	Select(const string& selectStatement, eclib::DataHandle &);
 	Select(const string& selectStatement, std::istream &);
 	Select(const string& selectStatement, const std::string& path);
 	Select(const string& selectStatement);
@@ -50,7 +50,7 @@ public:
 	iterator begin();
 	const iterator end();
 
-	DataHandle* dataHandle() { return dataHandle_; };
+	eclib::DataHandle* dataHandle() { return dataHandle_; };
 	std::istream* dataIStream() { return istream_; }
 
         SelectIterator* createSelectIterator(string);
@@ -58,7 +58,7 @@ public:
 private:
 	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 
-	DataHandle* dataHandle_;
+	eclib::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
 
 	std::istream* istream_;

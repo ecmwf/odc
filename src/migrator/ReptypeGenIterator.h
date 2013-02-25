@@ -13,7 +13,7 @@
 
 #include "ODBIterator.h"
 
-class PathName;
+namespace eclib { class PathName; }
 
 namespace odb {
 namespace tool {
@@ -31,7 +31,7 @@ class ReptypeTable : public ReptypeTableBase
 
 class ReptypeTableConfig {
 public:
-	static void load(const PathName&);
+	static void load(const eclib::PathName&);
 
 	template <typename I>
 	static void addColumns(I begin, I end) { columns_.insert(columns_.end(), begin, end); }
@@ -49,7 +49,7 @@ template<typename ITERATOR = ODBIterator, typename CONFIG = ReptypeTableConfig>
 class ReptypeGenIterator : public odb::RowsReaderIterator {
 public:
 
-	ReptypeGenIterator(const PathName& db, const std::string& sql); 
+	ReptypeGenIterator(const eclib::PathName& db, const std::string& sql); 
 	~ReptypeGenIterator ();
 
 	odb::MetaData& columns();

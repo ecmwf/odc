@@ -20,8 +20,8 @@
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 namespace odb {
 	namespace sql {
@@ -38,7 +38,7 @@ class TextReaderIterator : public RowsReaderIterator
 {
 public:
 	TextReaderIterator (TextReader &owner);
-	TextReaderIterator (TextReader &owner, const PathName&);
+	TextReaderIterator (TextReader &owner, const eclib::PathName&);
 	~TextReaderIterator ();
 
 	virtual bool isNewDataset();
@@ -72,7 +72,7 @@ private:
 	unsigned long long nrows_;
 
 	std::istream* in_;
-	//DataHandle *f;
+	//eclib::DataHandle *f;
 	//Properties properties_;
 
 	bool newDataset_;

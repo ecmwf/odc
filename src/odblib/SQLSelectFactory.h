@@ -44,8 +44,8 @@ public:
 		const std::string& table,
 		const SQLExpression* pshift);
 
-    DataHandle* implicitFromTableSource() { return implicitFromTableSource_; }
-    void implicitFromTableSource(DataHandle* h) { implicitFromTableSource_ = h; }
+    eclib::DataHandle* implicitFromTableSource() { return implicitFromTableSource_; }
+    void implicitFromTableSource(eclib::DataHandle* h) { implicitFromTableSource_ = h; }
 
     istream* implicitFromTableSourceStream() { return implicitFromTableSourceStream_; }
     void implicitFromTableSourceStream(istream* is) { implicitFromTableSourceStream_ = is; }
@@ -66,14 +66,14 @@ private:
 	string index(const string& columnName, const SQLExpression* index);
 
 	void reshift(Expressions&);
-    DataHandle* implicitFromTableSource_;
+    eclib::DataHandle* implicitFromTableSource_;
     istream* implicitFromTableSourceStream_;
 	SQLDatabase* database_;
 	SQLOutputConfig config_;
 	int maxColumnShift_;
 	int minColumnShift_;
 
-friend class ThreadSingleton<SQLSelectFactory>;
+friend class eclib::ThreadSingleton<SQLSelectFactory>;
 };
 
 } // namespace sql

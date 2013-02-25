@@ -16,8 +16,8 @@
 
 #include "odblib/SQLOutputConfig.h"
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 namespace odb {
 namespace sql {
@@ -31,18 +31,18 @@ class SQLParser {
 public:
 
 	static int line();
-	static void include(const PathName&);
+	static void include(const eclib::PathName&);
 
-	//static void parseFile(const PathName&, DataHandle*);
-	//static void parseFile(const PathName&, DataHandle*, SQLOutputConfig);
-	static void parseString(const string&, DataHandle*, SQLOutputConfig);
+	//static void parseFile(const eclib::PathName&, eclib::DataHandle*);
+	//static void parseFile(const eclib::PathName&, eclib::DataHandle*, SQLOutputConfig);
+	static void parseString(const string&, eclib::DataHandle*, SQLOutputConfig);
 
-	//static void parseFile(const PathName&, istream*);
-	//static void parseFile(const PathName&, istream*, SQLOutputConfig);
+	//static void parseFile(const eclib::PathName&, istream*);
+	//static void parseFile(const eclib::PathName&, istream*, SQLOutputConfig);
 	static void parseString(const string&, istream*, SQLOutputConfig);
 
 
-	//static void parseFile(const PathName&, SQLDatabase&, SQLOutputConfig);
+	//static void parseFile(const eclib::PathName&, SQLDatabase&, SQLOutputConfig);
 	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
 	static void lexRelease();
 };

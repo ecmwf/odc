@@ -19,8 +19,8 @@
 #include "odblib/IteratorProxy.h"
 #include "odblib/WriterBufferingIterator.h"
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 namespace odb {
 
@@ -40,17 +40,17 @@ public:
 	typedef ITERATOR iterator_class;
 	typedef IteratorProxy<ITERATOR, Writer> iterator;
 
-	Writer(const PathName path);
-	Writer(DataHandle &, bool openDataHandle=true);
-	Writer(DataHandle *, bool openDataHandle=true, bool deleteDataHandle=false);
+	Writer(const eclib::PathName path);
+	Writer(eclib::DataHandle &, bool openDataHandle=true);
+	Writer(eclib::DataHandle *, bool openDataHandle=true, bool deleteDataHandle=false);
 	Writer();
 	virtual ~Writer();
 
 	iterator begin(bool openDataHandle=true);
 
-	DataHandle& dataHandle() { return *dataHandle_; };
+	eclib::DataHandle& dataHandle() { return *dataHandle_; };
 
-	ITERATOR* createWriteIterator(PathName, bool append = false);
+	ITERATOR* createWriteIterator(eclib::PathName, bool append = false);
 
 	unsigned long rowsBufferSize() { return rowsBufferSize_; }
 	Writer& rowsBufferSize(unsigned long n) { rowsBufferSize_ = n; }
@@ -63,8 +63,8 @@ private:
     Writer(const Writer&);
     Writer& operator=(const Writer&);
 
-	const PathName path_;
-	DataHandle* dataHandle_;
+	const eclib::PathName path_;
+	eclib::DataHandle* dataHandle_;
 	unsigned long rowsBufferSize_;
 
 	bool openDataHandle_;

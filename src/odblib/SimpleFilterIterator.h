@@ -16,8 +16,8 @@
 #ifndef SimpleFilterIterator_H
 #define SimpleFilterIterator_H
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 namespace odb {
 

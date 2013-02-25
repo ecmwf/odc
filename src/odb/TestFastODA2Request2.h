@@ -29,10 +29,10 @@ public:
 	virtual void tearDown();
 
 private:
-	Length createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype);
+	eclib::Length createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype);
 
-	Length size1_;
-	Length size2_;
+	eclib::Length size1_;
+	eclib::Length size2_;
 };
 
 } // namespace test 

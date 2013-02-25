@@ -36,7 +36,7 @@ template <>
 struct ODATranslator<string> {
 	string operator()(double n) {
 		string r = odb::StringTool::double_as_string(n);
-		Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << endl;
+		eclib::Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << endl;
 		return r;
 	}
 };
@@ -52,7 +52,7 @@ struct ODATranslator<Time> {
 			t = string(zeroes + t.size()) + t;
 		Time tm = t;
 
-		Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
+		eclib::Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
 		return tm;
 	}
 };
@@ -68,7 +68,7 @@ struct ODATranslator<Date> {
 			t = string(zeroes + t.size()) + t;
 		Date d = t;
 
-		Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
+		eclib::Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
 		return d;
 	}
 };

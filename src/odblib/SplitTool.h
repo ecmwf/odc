@@ -31,10 +31,10 @@ public:
 		//o << name << " [-sort] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 	}
 
-	static void split(const PathName&, const string&, size_t);
-	static void presortAndSplit(const PathName&, const string&);
+	static void split(const eclib::PathName&, const string&, size_t);
+	static void presortAndSplit(const eclib::PathName&, const string&);
 
-	static vector<pair<Offset,Length> > getChunks(const PathName&, size_t maxExpandedSize = 100*1024*1024);
+	static vector<pair<eclib::Offset,eclib::Length> > getChunks(const eclib::PathName&, size_t maxExpandedSize = 100*1024*1024);
 private:
 // No copy allowed
     SplitTool(const SplitTool&);

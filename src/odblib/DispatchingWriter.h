@@ -19,7 +19,7 @@
 #include "odblib/WriterDispatchingIterator.h"
 #include "odblib/WriterBufferingIterator.h"
 
-class PathName;
+namespace eclib { class PathName; }
 
 namespace odb {
 

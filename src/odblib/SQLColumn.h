@@ -14,7 +14,7 @@
 #ifndef SQLColumn_H
 #define SQLColumn_H
 
-class PathName;
+namespace eclib { class PathName; }
 
 #include "odblib/SQLIterator.h"
 #include "odblib/SQLTable.h"
@@ -61,7 +61,7 @@ public:
 	void loadIndex();
 	SQLIndex* getIndex(double*);
 
-	PathName indexPath();
+	eclib::PathName indexPath();
 protected:
 	unsigned long long noRows_;
 

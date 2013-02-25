@@ -28,8 +28,8 @@ public:
 	static void usage(const string& name, ostream &o)
 	{ o << name << " [-d delimiter] <input.file> <output.file>"; }
 
-	static void importFile(const PathName& in, const PathName& out, const string& delimiter = defaultDelimiter);
-	static void importText(const string& s, const PathName& out, const string& delimiter = defaultDelimiter);
+	static void importFile(const eclib::PathName& in, const eclib::PathName& out, const string& delimiter = defaultDelimiter);
+	static void importText(const string& s, const eclib::PathName& out, const string& delimiter = defaultDelimiter);
 private:
 // No copy allowed
     ImportTool(const ImportTool&);

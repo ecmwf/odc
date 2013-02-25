@@ -22,8 +22,8 @@
 
 #include "eclib/FileHandle.h"
 
-class PathName;
-class DataHandle;
+namespace eclib { class PathName; }
+namespace eclib { class DataHandle; }
 
 namespace odb {
 
@@ -36,7 +36,7 @@ public:
 	typedef IteratorProxy<T,MetaDataReader,const double> iterator;
 	//typedef typename iterator::Row row;
 
-	MetaDataReader(const PathName &path, bool skipData = true);
+	MetaDataReader(const eclib::PathName &path, bool skipData = true);
 	MetaDataReader();
 
 	virtual ~MetaDataReader();
@@ -44,10 +44,10 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	DataHandle* dataHandle() { return dataHandle_; }
+	eclib::DataHandle* dataHandle() { return dataHandle_; }
     
 	// For C API
-	iterator* createReadIterator(const PathName&);
+	iterator* createReadIterator(const eclib::PathName&);
 
 #ifdef SWIGPYTHON
 	iterator __iter__() { return begin(); }
@@ -58,9 +58,9 @@ private:
     MetaDataReader(const MetaDataReader&);
     MetaDataReader& operator=(const MetaDataReader&);
 
-	DataHandle* dataHandle_;
+	eclib::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
-	//const PathName path_;
+	//const eclib::PathName path_;
 	const string path_;
 	bool skipData_;
 

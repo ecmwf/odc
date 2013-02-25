@@ -21,8 +21,8 @@ public:
     
 	CountTool (int argc, char *argv[]); 
 
-	static unsigned long long rowCount(const PathName &);
-	static unsigned long long fastRowCount(const PathName &);
+	static unsigned long long rowCount(const eclib::PathName &);
+	static unsigned long long fastRowCount(const eclib::PathName &);
 
 	void run(); 
 
