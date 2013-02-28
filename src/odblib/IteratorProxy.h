@@ -70,7 +70,7 @@ public:
 
 	DATA& operator[](size_t i) { return (*it_)->data()[i]; }
 	DATA* data() { return ((*it_).iter_)->data(); }
-	int integer(size_t i) { return (*it_)->integer(i); }
+	int integer(size_t i) { return int((*it_)->data()[i]); }
 	std::string string(int i)
 	{
 		const char *s = reinterpret_cast<const char *>(&data()[i]);
