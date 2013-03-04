@@ -27,8 +27,7 @@ Expressions& Expressions::operator=(const Expressions& e)
 	return *this;
 }
 
-//Expressions * Expressions::clone() const
-SQLExpression * Expressions::clone() const
+Expressions * Expressions::clone() const
 {
 	Expressions *r = new Expressions(this->size());
 	for (size_t i = 0; i < this->size(); ++i)

@@ -55,10 +55,17 @@ class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {
 		double v = args_[0]->eval(m);
 		return m ? this->missingValue_ : T(v);
 	}
-	SQLExpression* clone() const { return new MathFunctionIntegerExpression_1<T>(this->name_,this->args_); }
+	SQLExpression* clone() const { return new MathFunctionIntegerExpression_1<T>(this->name_,this->args_.clone()); }
 public:
 	MathFunctionIntegerExpression_1(const string& name,const expression::Expressions& args)
-	: FunctionIntegerExpression(name, args) { this->missingValue_ = MISSING_VALUE_INT; }
+	: FunctionIntegerExpression(name, args), myArgs_(0) { this->missingValue_ = MISSING_VALUE_INT; }
+
+	MathFunctionIntegerExpression_1(const string& name,expression::Expressions* args)
+	: FunctionIntegerExpression(name, *args), myArgs_(args) { this->missingValue_ = MISSING_VALUE_INT; }
+
+	~MathFunctionIntegerExpression_1() { delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 #define DEFINE_MATH_INT_FUNC_1F(FuncName, Name, Help) \

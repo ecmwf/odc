@@ -162,10 +162,14 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression
 template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {
 	double eval(bool& m) const { double v = args_[0]->eval(m); return m ? this->missingValue_ : T(v); }
-	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(*this); }
+	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(name_, args_.clone()); }
 public:
-	MathFunctionExpression_1(const string& name, const expression::Expressions& args) : FunctionExpression(name, args) {}
-	MathFunctionExpression_1(const MathFunctionExpression_1& o) : FunctionExpression(o) {}
+	MathFunctionExpression_1(const string& name, const expression::Expressions& args) : FunctionExpression(name, args), myArgs_(0) {}
+	MathFunctionExpression_1(const string& name, expression::Expressions* args) : FunctionExpression(name, *args), myArgs_(args) {}
+	MathFunctionExpression_1(const MathFunctionExpression_1& o) : FunctionExpression(o), myArgs_(0) {}
+	~MathFunctionExpression_1() { if (myArgs_) delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 template<double (*T)(double, double)> 
@@ -177,10 +181,14 @@ class MathFunctionExpression_2 : public FunctionExpression {
 		if (m) return this->missingValue_;
 		return T(left, right);
 	}
-	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(*this); }
+	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(name_, args_.clone()); }
 public:
-	MathFunctionExpression_2(const string& name, const expression::Expressions& args) : FunctionExpression(name,args) {}
-	MathFunctionExpression_2(const MathFunctionExpression_2& o) : FunctionExpression(o) {}
+	MathFunctionExpression_2(const string& name, const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
+	MathFunctionExpression_2(const string& name, expression::Expressions* args) : FunctionExpression(name, *args), myArgs_(args) {}
+	MathFunctionExpression_2(const MathFunctionExpression_2& o) : FunctionExpression(o), myArgs_(0) {}
+	~MathFunctionExpression_2() { if (myArgs_) delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 template<double (*T)(double,double,double)> 
@@ -196,8 +204,12 @@ class MathFunctionExpression_3 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(*this); }
 public:
-	MathFunctionExpression_3(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
-	MathFunctionExpression_3(const MathFunctionExpression_3& o) : FunctionExpression(o) {}
+	MathFunctionExpression_3(const string& name,const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
+	MathFunctionExpression_3(const string& name,expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
+	MathFunctionExpression_3(const MathFunctionExpression_3& o) : FunctionExpression(o), myArgs_(0) {}
+	~MathFunctionExpression_3() { if (myArgs_) delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 template<double (*T)(double,double,double,double)> 
@@ -215,8 +227,12 @@ class MathFunctionExpression_4 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(*this); }
 public:
-	MathFunctionExpression_4(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
-	MathFunctionExpression_4(const MathFunctionExpression_4& o) : FunctionExpression(o) {}
+	MathFunctionExpression_4(const string& name,const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
+	MathFunctionExpression_4(const string& name,expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
+	MathFunctionExpression_4(const MathFunctionExpression_4& o) : FunctionExpression(o), myArgs_(0) {}
+	~MathFunctionExpression_4() { if (myArgs_) delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 template<double (*T)(double,double,double,double,double)> 
@@ -236,8 +252,12 @@ class MathFunctionExpression_5 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(*this); }
 public:
-	MathFunctionExpression_5(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
-	MathFunctionExpression_5(const MathFunctionExpression_5& o) : FunctionExpression(o) {}
+	MathFunctionExpression_5(const string& name,const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
+	MathFunctionExpression_5(const string& name,const expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
+	MathFunctionExpression_5(const MathFunctionExpression_5& o) : FunctionExpression(o), myArgs_(0) {}
+	~MathFunctionExpression_5() { if (myArgs_) delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 #define DEFINE_MATH_FUNC_1(F,Help) \
@@ -476,10 +496,13 @@ class MultiplyExpression : public FunctionExpression {
 				? this->missingValue_ 
 				: left * right;
 	}
-	SQLExpression* clone() const { return new MultiplyExpression(name_, 2); }
+	SQLExpression* clone() const { return new MultiplyExpression(name_, args_.clone()); }
 public:
-	MultiplyExpression(const string& name, const expression::Expressions& args)
-	: FunctionExpression(name,args) {}
+	MultiplyExpression(const string& name, const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
+	MultiplyExpression(const string& name, expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
+	~MultiplyExpression() { delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 double multiplies_double(double l, double r) { return l * r; }
