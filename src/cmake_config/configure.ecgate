@@ -9,6 +9,7 @@ export ODB_VERSION=CY37R3.001
 SRC=$(cd ../.. && pwd)
 PREFIX=/usr/local/apps/odb_api/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/  
 echo Install prefix is $PREFIX
+ECLIB=/vol/marsdev/data/p4/rs6000/odb_api_dev/odb_api_release/eclib/
 
 /usr/local/apps/cmake/2.8.8/bin/cmake ../.. \
     -DCMAKE_BUILD_TYPE=$(basename $(pwd) | sed 's/\W[a-zA-Z0-9]*//') \
@@ -19,10 +20,11 @@ echo Install prefix is $PREFIX
 	-DCMAKE_CXX_FLAGS=-q64 \
 	-DCMAKE_C_FLAGS=-q64 \
     -DCMAKE_Fortran_COMPILER=xlf90_r \
+    -DLINKER_LANGUAGE=CXX \
     -DCMAKE_INSTALL_PREFIX=$PREFIX \
     -DODB_PATH=$ODB_ROOT \
-    -DCMAKE_MODULE_PATH=$SRC/ecbuild/cmake \
-    -DECLIB_SOURCE=$SRC/eclib \
+    -DCMAKE_MODULE_PATH=/usr/local/apps/ecbuild/1.0.10/cmake \
+    -DECLIB_SOURCE=$ECLIB \
     -DBUILD_SHARED_LIBS=OFF \
     -DODB_API_MIGRATOR=ON \
     -DODB_API_FORTRAN=ON \
