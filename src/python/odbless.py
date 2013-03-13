@@ -23,7 +23,7 @@ def getColumns(dataFile):
 
 def printStats(dataFile, fs = statsFunctions):
 	columns = getColumns(dataFile)
-	maxColumn = reduce(max, [len(c[0]) for c in columns])
+	maxColumn = max([len(c[0]) for c in columns])
 	columnFormat = '%-' + str(maxColumn) + 's'
 	valueFormat = '%20s'
 	sql = genStatSQL([c[0] for c in columns], fs) + ' from ' + quote(dataFile)
