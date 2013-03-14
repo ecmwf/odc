@@ -85,11 +85,11 @@ int gdb(int argc, char *argv[])
 	for (int i = 2; i < argc; i++)
 		args += str(" ") + argv[i];
 
-	PathName scriptFile = str(".gdb_") + str(argv[2]);
+	eclib::PathName scriptFile = str(".gdb_") + str(argv[2]);
 	if (! scriptFile.exists())
 	{
 		str s = str("file ") + cmd + "\nbreak main\nrun " + args + "\n";
-		FileHandle f(scriptFile);
+		eclib::FileHandle f(scriptFile);
 		f.openForWrite(1024);
 		f.write(s.c_str(), s.size());
 		f.close();

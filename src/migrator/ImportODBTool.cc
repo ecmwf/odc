@@ -35,6 +35,8 @@ extern "C" {
 #include "ODBIterator.h"
 #include "FakeODBIterator.h"
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 

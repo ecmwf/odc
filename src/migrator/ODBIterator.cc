@@ -29,6 +29,8 @@ extern "C" {
 #include "odbdump.h"
 }
 
+using namespace eclib;
+
 namespace odb {
 namespace tool {
 
