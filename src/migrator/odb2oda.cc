@@ -9,8 +9,8 @@
  */
 
 #include "eclib/Application.h"
-#include "eclib/PathName.h"
-#include "eclib/FileHandle.h"
+#include "eclib/filesystem/PathName.h"
+#include "eclib/filesystem/FileHandle.h"
 
 #include "odblib/oda.h"
 
@@ -85,11 +85,11 @@ int gdb(int argc, char *argv[])
 	for (int i = 2; i < argc; i++)
 		args += str(" ") + argv[i];
 
-	eclib::PathName scriptFile = str(".gdb_") + str(argv[2]);
+	PathName scriptFile = str(".gdb_") + str(argv[2]);
 	if (! scriptFile.exists())
 	{
 		str s = str("file ") + cmd + "\nbreak main\nrun " + args + "\n";
-		eclib::FileHandle f(scriptFile);
+		FileHandle f(scriptFile);
 		f.openForWrite(1024);
 		f.write(s.c_str(), s.size());
 		f.close();

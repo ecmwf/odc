@@ -22,7 +22,7 @@
 #include "odblib/SQLType.h"
 #include "odblib/SQLTable.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace sql {
@@ -168,7 +168,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 		}
 	}
 	if (! matched)
-		throw eclib::UserError(string("No columns matching ") + columnName_ + tableReference_ + " found.");
+		throw eckit::UserError(string("No columns matching ") + columnName_ + tableReference_ + " found.");
 
 	L << "ColumnExpression::expandStars: added " << ss.str() << endl;
 	delete this;

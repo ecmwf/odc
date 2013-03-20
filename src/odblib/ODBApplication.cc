@@ -23,7 +23,7 @@
 #include "odblib/TestRunner.h"
 #include "odblib/ODBBehavior.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

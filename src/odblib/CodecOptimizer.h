@@ -16,8 +16,8 @@
 #ifndef CodecOptimizer_H
 #define CodecOptimizer_H
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 #include "odblib/ColumnType.h"
 
@@ -44,7 +44,7 @@ private:
 template <typename DATASTREAM>
 int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 {
-	//ostream &LOG = eclib::Log::debug();
+	//ostream &LOG = eckit::Log::debug();
 	for (size_t i = 0; i < columns.size(); i++) {
 		Column& col = *columns[i];
 		long long n;
@@ -133,11 +133,11 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				//	<< endl;
 				break;
 
-			default: eclib::Log::error() << "Unsupported type: [" << col.type() << "]" << endl;
+			default: eckit::Log::error() << "Unsupported type: [" << col.type() << "]" << endl;
 				break;
 		}
 
-		//if (odb::ODBAPISettings::debug && i == 28) eclib::Log::info() << ": AFTER " << col << " -> " << col.coder() << endl;
+		//if (odb::ODBAPISettings::debug && i == 28) eckit::Log::info() << ": AFTER " << col << " -> " << col.coder() << endl;
 	}
 	return 0;
 }

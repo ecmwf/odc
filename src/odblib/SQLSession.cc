@@ -10,7 +10,7 @@
 
 #include "eclib/Exceptions.h"
 #include "eclib/Log.h"
-#include "eclib/ThreadSingleton.h"
+#include "eclib/thread/ThreadSingleton.h"
 #include "eclib/Timer.h"
 
 #include "odblib/ODADatabase.h"
@@ -23,7 +23,7 @@
 #include "odblib/SQLTable.h"
 #include "odblib/SchemaAnalyzer.h"
 
-using namespace eclib;
+using namespace eckit;
 
 template class ThreadSingleton<odb::sql::SQLSession*>;
 static ThreadSingleton<odb::sql::SQLSession*> instance_;
@@ -104,7 +104,7 @@ double SQLSession::getParameter(int which) const
 {
 	map<int,double>::const_iterator j = params_.find(which);
 	if(j == params_.end())
-		throw eclib::UserError("Undefined parameter");
+		throw eckit::UserError("Undefined parameter");
 	return (*j).second;
 }
 
@@ -117,7 +117,7 @@ SQLDatabase* SQLSession::getDatabase(const string& name)
 {
 	map<string,SQLDatabase*>::iterator j = databases_.find(name);
 	if(j == databases_.end())
-		throw eclib::UserError("Cannot find database", name);
+		throw eckit::UserError("Cannot find database", name);
 	return (*j).second;
 }
 

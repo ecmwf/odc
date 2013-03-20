@@ -19,8 +19,8 @@
 #include "odblib/RowsIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 extern "C" {
 	typedef void oda;
@@ -48,7 +48,7 @@ class ReaderIterator : public RowsReaderIterator
 {
 public:
 	ReaderIterator (Reader &owner);
-	ReaderIterator (Reader &owner, const eclib::PathName&);
+	ReaderIterator (Reader &owner, const eckit::PathName&);
 	~ReaderIterator ();
 
 	virtual bool isNewDataset();
@@ -97,7 +97,7 @@ private:
 	odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 
-	eclib::DataHandle *f;
+	eckit::DataHandle *f;
 	Properties properties_;
 
 	bool newDataset_;

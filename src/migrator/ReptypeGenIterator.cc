@@ -30,8 +30,6 @@ extern "C" {
 #include "migrator/FakeODBIterator.h"
 #include "migrator/ReptypeGenIterator.h"
 
-using namespace eclib;
-
 namespace odb {
 namespace tool {
 

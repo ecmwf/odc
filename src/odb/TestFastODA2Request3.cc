@@ -27,7 +27,7 @@
 #include "TestFastODA2Request3.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 
 namespace odb {

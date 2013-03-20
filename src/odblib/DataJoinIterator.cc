@@ -7,7 +7,7 @@
 #include <sstream>
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace internal {
@@ -93,7 +93,7 @@ void DataJoinIterator::populate()
                     stringstream message("DataJoinIterator: ");
                     message << "Mismatch of primary and foreign keys in linked tables.";
                     message << endl;
-                    throw eclib::UserError(message.str());
+                    throw eckit::UserError(message.str());
                 }
             }
             else if (cacheIt > cache_)

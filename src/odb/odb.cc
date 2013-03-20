@@ -10,9 +10,9 @@
 
 #include <sstream>
 
-#include "eclib/Application.h"
-#include "eclib/PathName.h"
-#include "eclib/FileHandle.h"
+#include "eclib/runtime/Application.h"
+#include "eclib/filesystem/PathName.h"
+#include "eclib/filesystem/FileHandle.h"
 
 #include "odb/TestOdaCAPI.h"
 
@@ -25,7 +25,7 @@
 
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 using namespace odb::tool;
 

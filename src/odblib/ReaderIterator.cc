@@ -20,7 +20,7 @@
 #include "odblib/DataStream.h"
 #include "odblib/Header.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 

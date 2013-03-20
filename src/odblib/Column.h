@@ -15,7 +15,7 @@
 #include "odblib/Codec.h"
 #include "odblib/ColumnType.h"
 
-namespace eclib { class DataHandle; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 

@@ -15,7 +15,7 @@
 #include "odblib/DataColumn.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 
@@ -73,7 +73,7 @@ TokenVector tokenize(const odb::MetaData& metaData)
             token.tableName = token.columnName.substr(pos + 1);
 
             if (token.tableName.empty())
-                throw eclib::UserError("Column " + token.columnName
+                throw eckit::UserError("Column " + token.columnName
                        + "does not belong to any table.");
         }
 

@@ -11,7 +11,7 @@
 #ifndef MergeTool_H
 #define MergeTool_H
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
 namespace odb {
 namespace tool {
@@ -28,7 +28,7 @@ public:
 		o << name << " -o <output-file.odb> <input1.odb> <input2.odb> ...";
 	}
 
-	static void merge(const vector<eclib::PathName>& inputFiles, const eclib::PathName& outputFileName);
+	static void merge(const vector<eckit::PathName>& inputFiles, const eckit::PathName& outputFileName);
 
 private:
 // No copy allowed
@@ -38,8 +38,8 @@ private:
 
 	static char* dummyArgv_[];
 
-	vector<eclib::PathName> inputFiles_;
-	eclib::PathName outputFile_;
+	vector<eckit::PathName> inputFiles_;
+	eckit::PathName outputFile_;
 
 };
 

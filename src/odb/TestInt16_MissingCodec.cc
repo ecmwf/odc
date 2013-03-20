@@ -21,7 +21,7 @@
 #include "MockReader.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 
 namespace odb {

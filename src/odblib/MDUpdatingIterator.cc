@@ -38,7 +38,7 @@ MDUpdatingIterator<T>::MDUpdatingIterator (T& ii, const T& end, const vector<str
 	ASSERT(columns.size() == types.size());
 	for (size_t i = 0; i < types.size(); ++i)
 	{
-		eclib::Log::info() << columns[i] << " : " << types[i] << endl;
+		eckit::Log::info() << columns[i] << " : " << types[i] << endl;
 
 		// Only bitfoelds now:
 		// [active:1;passive:1;rejected:1;blacklisted:1;use_emiskf_only:1;monthly:1;constant:1;experimental:1;whitelist:]
@@ -47,15 +47,15 @@ MDUpdatingIterator<T>::MDUpdatingIterator (T& ii, const T& end, const vector<str
 		ASSERT(types[i][types[i].size() - 1] == ']');
 
 		BitfieldDef bf;
-		vector<string> parts(eclib::StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
+		vector<string> parts(eckit::StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
 		for (size_t p = 0; p < parts.size(); ++p)
 		{
-			vector<string> field = eclib::StringTools::split(":", parts[p]);
+			vector<string> field = eckit::StringTools::split(":", parts[p]);
 			bf.first.push_back(field[0]);
 			bf.second.push_back(atoi(field[1].c_str()));
 		}
 		bitfieldDefs_.push_back(bf);
-		eclib::Log::info() << "" << i << ": " << columns[i] << " - " << bf.first << endl; // "[" << bf.second << "]" << endl;
+		eckit::Log::info() << "" << i << ": " << columns[i] << " - " << bf.first << endl; // "[" << bf.second << "]" << endl;
 	}
 
 	update();

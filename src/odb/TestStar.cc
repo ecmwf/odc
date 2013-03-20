@@ -25,7 +25,7 @@ using namespace std;
 #include "eclib/DataHandle.h"
 #include "eclib/DataHandle.h"
 #include "eclib/Log.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"

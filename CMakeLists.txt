@@ -23,7 +23,7 @@ include( ecbuild_system )
 ###############################################################################
 # local project
 
-ecbuild_use_package( PROJECT eclib NAME EcLib REQUIRED )
+ecbuild_use_package( PROJECT eckit REQUIRED )
 
 ecbuild_declare_project()
 

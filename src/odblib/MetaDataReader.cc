@@ -25,8 +25,8 @@ using namespace std;
 
 #include "eclib/DataHandle.h"
 #include "eclib/Exceptions.h"
-#include "eclib/FileHandle.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/FileHandle.h"
+#include "eclib/filesystem/PathName.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
@@ -66,7 +66,7 @@ MetaDataReader<T>::MetaDataReader()
 {} 
 
 template <typename T>
-MetaDataReader<T>::MetaDataReader(const eclib::PathName& path, bool skipData)
+MetaDataReader<T>::MetaDataReader(const eckit::PathName& path, bool skipData)
 : dataHandle_(path.fileHandle()),
   deleteDataHandle_(true),
   path_(path),
@@ -86,7 +86,7 @@ MetaDataReader<T>::~MetaDataReader()
 }
 
 template <typename T>
-typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(const eclib::PathName& pathName)
+typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(const eckit::PathName& pathName)
 {
 	return new T(*this, pathName, skipData_);
 }

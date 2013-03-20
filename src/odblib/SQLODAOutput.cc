@@ -68,7 +68,7 @@ bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results)
 template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql)
 {
-    using eclib::Log;
+    using eckit::Log;
     
 	const expression::Expressions& columns (sql.output());
 	size_t n = columns.size();

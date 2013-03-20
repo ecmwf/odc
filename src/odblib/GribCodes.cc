@@ -15,9 +15,9 @@
 #include <iostream>
 #include <strings.h>
 
-#include "eclib/Application.h"
-#include "eclib/FileHandle.h"
-#include "eclib/PathName.h"
+#include "eclib/runtime/Application.h"
+#include "eclib/filesystem/FileHandle.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Regex.h"
 #include "eclib/Resource.h"
 #include "eclib/Translator.h"
@@ -27,7 +27,7 @@
 #include "odblib/StringTool.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 
@@ -61,7 +61,7 @@ string GribCodes::numeric(const string& keyword, const string& alphanumeric)
 	if (kw == "STREAM") return streamCodes_->numeric(alphanumeric);
 	if (kw == "OBSGROUP") return obsgroupCodes_->numeric(alphanumeric);
 
-	throw eclib::UserError(string("'") + keyword + "' is not a known GRIB keyword");
+	throw eckit::UserError(string("'") + keyword + "' is not a known GRIB keyword");
 	return "Don't want the compiler to warn me about non-void function not returning anything";
 }
 
@@ -81,7 +81,7 @@ string GribCodes::alphanumeric(const string& keyword, const string& numeric)
 	if (kw == "STREAM") return streamCodes_->alphanumeric(numeric);
 	if (kw == "OBSGROUP") return obsgroupCodes_->alphanumeric(numeric);
 
-	throw eclib::UserError(string("'") + keyword + "' is not a known GRIB keyword");
+	throw eckit::UserError(string("'") + keyword + "' is not a known GRIB keyword");
 	return "Don't want the compiler to warn me about non-void function not returning anything";
 }
 
@@ -136,7 +136,7 @@ string GribCodesBase::numeric(const string& alphanumeric)
 {
 	//if (!mapsLoaded_) readConfig(configFileName_);
 	if (alpha2numeric_.find(alphanumeric) == alpha2numeric_.end())
-		throw eclib::UserError(string("Alphanumeric code '") + alphanumeric + "' not found in '" + configFileName_ + "'");
+		throw eckit::UserError(string("Alphanumeric code '") + alphanumeric + "' not found in '" + configFileName_ + "'");
 	return alpha2numeric_[alphanumeric];
 }
 
@@ -146,7 +146,7 @@ string GribCodesBase::numeric(const string& alphanumeric)
 string GribCodesBase::alphanumeric(const string& numeric) {
 	//if (!mapsLoaded_) readConfig(configFileName_);
 	if (numeric2alpha_.find(numeric) == numeric2alpha_.end())
-		throw eclib::UserError(string("Numeric code ") + numeric + " not found in '" + configFileName_ + "'");
+		throw eckit::UserError(string("Numeric code ") + numeric + " not found in '" + configFileName_ + "'");
 	return numeric2alpha_[numeric];
 }
 

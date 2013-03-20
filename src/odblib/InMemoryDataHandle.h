@@ -17,14 +17,14 @@
 #include "eclib/DataHandle.h"
 #include "eclib/Length.h"
 #include "eclib/Offset.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/TransferWatcher.h"
 
 #include "odblib/MemoryBlock.h"
 
 namespace odb {
 
-class InMemoryDataHandle : public eclib::DataHandle {
+class InMemoryDataHandle : public eckit::DataHandle {
 public:
     InMemoryDataHandle();
     InMemoryDataHandle(const MemoryBlock&);
@@ -37,17 +37,17 @@ public:
 	bool hasSomeData() { return readIterator_ != buf_.end(); }
 
 	/// Return estimated length.
-    virtual eclib::Length openForRead()
+    virtual eckit::Length openForRead()
 	{
 		readIterator_ = buf_.begin();
 		return buf_.size();
 	}
 
 	// Receive estimated length.
-    void openForWrite(const eclib::Length&) { buf_.clear(); ASSERT(buf_.size() == 0); }
+    void openForWrite(const eckit::Length&) { buf_.clear(); ASSERT(buf_.size() == 0); }
 
 	// Receive estimated length
-    void openForAppend(const eclib::Length&) {}
+    void openForAppend(const eckit::Length&) {}
 
     long read(void* p, long n)
 	{
@@ -68,8 +68,8 @@ public:
     void close() {}
 
     void rewind()                {}
-	eclib::Length estimate()            { return buf_.size(); }
-	eclib::Offset position()            { return buf_.size(); }
+	eckit::Length estimate()            { return buf_.size(); }
+	eckit::Offset position()            { return buf_.size(); }
 
 	void print(ostream& s) const { /*TODO*/ }
 private:

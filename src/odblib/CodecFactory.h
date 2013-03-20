@@ -36,7 +36,7 @@ public:
 		{
 			stringstream ss;
 			ss << "Unknown codec '" << name << "'. You may need to use a newer version of ODB API.";
-			throw eclib::UserError(ss.str());
+			throw eckit::UserError(ss.str());
 		}
 		Codec *codec = factory->load(dh, differentByteOrder);
 		return codec;
@@ -48,10 +48,10 @@ public:
 
 	virtual Codec* create(bool sourceHasDifferentByteOrder) = 0;
 
-	virtual Codec* load(eclib::DataHandle *, bool sourceHasDifferentByteOrder) = 0;
+	virtual Codec* load(eckit::DataHandle *, bool sourceHasDifferentByteOrder) = 0;
 	virtual Codec* load(FastInMemoryDataHandle*, bool sourceHasDifferentByteOrder) { NOTIMP; return 0; } //= 0;
 
-	virtual void save(Codec *, eclib::DataHandle *, bool sourceHasDifferentByteOrder) = 0;
+	virtual void save(Codec *, eckit::DataHandle *, bool sourceHasDifferentByteOrder) = 0;
 	
 protected:
 	AbstractCodecFactory(const string& name) { codecFactories[name] = this; }
@@ -74,7 +74,7 @@ public:
 			return new CODEC<SameByteOrder>;
 	}
 
-	virtual Codec* load(eclib::DataHandle *dh, bool sourceHasDifferentByteOrder)
+	virtual Codec* load(eckit::DataHandle *dh, bool sourceHasDifferentByteOrder)
 	{
 		if(sourceHasDifferentByteOrder)
 		{
@@ -90,7 +90,7 @@ public:
 		}
 	}
 
-	virtual void save(Codec *codec, eclib::DataHandle *dh, bool sourceHasDifferentByteOrder)
+	virtual void save(Codec *codec, eckit::DataHandle *dh, bool sourceHasDifferentByteOrder)
 	{
 		if(sourceHasDifferentByteOrder)
 		{

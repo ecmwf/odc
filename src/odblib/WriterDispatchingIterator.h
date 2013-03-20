@@ -23,8 +23,8 @@
 #include "odblib/TemplateParameters.h"
 #include "odblib/Writer.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 
@@ -70,7 +70,7 @@ public:
 	void property(string key, string value);
 	string property(string);
 
-	vector<eclib::PathName> getFiles();
+	vector<eckit::PathName> getFiles();
 	TemplateParameters& templateParameters() { return templateParameters_; }
 
 //protected:
@@ -118,7 +118,7 @@ private:
 	int refCount_;
 
 	Iterators iterators_;
-	vector<eclib::PathName> files_;
+	vector<eckit::PathName> files_;
 
 	TemplateParameters templateParameters_;
 	int maxOpenFiles_;

@@ -12,7 +12,7 @@
 #define ODBAPISettings_H
 
 #include "eclib/DataHandle.h"
-#include "eclib/ThreadSingleton.h"
+#include "eclib/thread/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
 #include "odblib/SQLOutputConfig.h"
@@ -32,8 +32,8 @@ public:
 	size_t setvbufferSize();
 	void setvbufferSize(size_t);
 
-	eclib::DataHandle* writeToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0));
-	eclib::DataHandle* appendToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0));
+	eckit::DataHandle* writeToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0));
+	eckit::DataHandle* appendToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0));
 
 	static bool debug;
 
@@ -49,7 +49,7 @@ private:
 
 	bool useAIO_;
 
-    friend class eclib::ThreadSingleton<ODBAPISettings>;
+    friend class eckit::ThreadSingleton<ODBAPISettings>;
 };
 
 } // namespace odb

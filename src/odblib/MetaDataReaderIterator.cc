@@ -22,7 +22,7 @@
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 

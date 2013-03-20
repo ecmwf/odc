@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Log.h"
 #include "eclib/DataHandle.h"
 
@@ -39,7 +39,7 @@
 #include "odb/TestConstIntegerCodec.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

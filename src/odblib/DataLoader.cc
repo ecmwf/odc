@@ -6,7 +6,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "eclib/FileHandle.h"
+#include "eclib/filesystem/FileHandle.h"
 
 #include "odblib/MetaData.h"
 #include "odblib/Reader.h"
@@ -16,7 +16,7 @@
 #include "odblib/DataTable.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 
@@ -97,7 +97,7 @@ void DataLoader::fill(DataSet& dataset)
     else if (stream_)
         fillFromText(dataset);
     else
-        throw eclib::UserError("DataLoader: Unrecognized data source: " + path_);
+        throw eckit::UserError("DataLoader: Unrecognized data source: " + path_);
 }
 
 void DataLoader::fill(DataSet& dataset, const string& tableName)

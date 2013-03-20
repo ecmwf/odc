@@ -17,9 +17,9 @@
 #include <map>
 #include <algorithm>
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Log.h"
-#include "eclib/StdFileHandle.h"
+#include "eclib/filesystem/StdFileHandle.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"
@@ -44,7 +44,7 @@
 #include "odb/TestAggregateFunctions2.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

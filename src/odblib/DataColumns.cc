@@ -7,7 +7,7 @@
 #include "odblib/MetaData.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 
@@ -52,10 +52,10 @@ size_t DataColumns::indexOf(const string& name) const
                 indices.push_back(i);
 
     if (indices.size() > 1)
-        throw eclib::UserError(string("Ambiguous column name: '") + name + "'");
+        throw eckit::UserError(string("Ambiguous column name: '") + name + "'");
 
     if (indices.size() == 0)
-        throw eclib::UserError(string("Column '") + name + "' not found.");
+        throw eckit::UserError(string("Column '") + name + "' not found.");
 
     return indices[0];
 }
@@ -70,7 +70,7 @@ void DataColumns::add(const string& name, const string& typeName)
     else if (typeName == "STRING")   type = STRING;
     else if (typeName == "BITFIELD") type = BITFIELD;
     else
-        throw eclib::UserError("Unsupported column type: " + typeName);
+        throw eckit::UserError("Unsupported column type: " + typeName);
 
     push_back(DataColumn(name, type));
 }

@@ -34,8 +34,6 @@ namespace tool {
 
 FakeODBIterator::ConstParameters FakeODBIterator::ConstParameters::instance_ = FakeODBIterator::ConstParameters();
 
-using namespace eclib;
-
 Assignments::Assignments(const std::string& s)
 {
     Tokenizer splitAssignments(",");

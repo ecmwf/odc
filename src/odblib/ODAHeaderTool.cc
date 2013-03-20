@@ -18,7 +18,7 @@
 #include "eclib/Offset.h"
 #include "eclib/Length.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

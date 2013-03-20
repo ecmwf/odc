@@ -11,11 +11,11 @@
 #include <math.h>
 
 #include "eclib/Log.h"
-#include "eclib/ThreadSingleton.h"
+#include "eclib/thread/ThreadSingleton.h"
 
 #include "odblib/RegionCache.h"
 
-using namespace eclib;
+using namespace eckit;
 
 template class ThreadSingleton<VectorRegionCache>;
 static ThreadSingleton<VectorRegionCache> region_cache_;

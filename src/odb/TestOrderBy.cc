@@ -26,7 +26,7 @@
 
 
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/DataHandle.h"
 #include "odblib/DataStream.h"
 #include "odblib/HashTable.h"
@@ -45,7 +45,7 @@
 #include "odblib/Header.h"
 #include "odblib/Reader.h"
 #include "eclib/DataHandle.h"
-#include "eclib/StdFileHandle.h"
+#include "eclib/filesystem/StdFileHandle.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
 #include "odblib/oda.h"
@@ -53,7 +53,7 @@
 #include "odblib/StringTool.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

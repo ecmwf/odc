@@ -10,7 +10,6 @@
 
 #include "odblib/ODBBehavior.h"
 
-ODBBehavior::ODBBehavior():
-    DHSBehaviorStdout( std::cerr)
+ODBBehavior::ODBBehavior(): StandardBehavior()
 {
 }

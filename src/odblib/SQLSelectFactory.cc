@@ -29,7 +29,7 @@
 #include "odblib/WriterDispatchingIterator.h"
 #include "odblib/ShiftedBitColumnExpression.h"
 
-using namespace eclib;
+using namespace eckit;
 
 template class ThreadSingleton<odb::sql::SQLSelectFactory>;
 static ThreadSingleton<odb::sql::SQLSelectFactory> instance_;
@@ -71,7 +71,7 @@ SQLExpression* SQLSelectFactory::createColumn(
 	const std::string& table,
 	const SQLExpression* pshift)
 {
-	if (! pshift->isConstant()) throw eclib::UserError("Value of shift operator must be constant");
+	if (! pshift->isConstant()) throw eckit::UserError("Value of shift operator must be constant");
 	bool missing = false;
 	
 	// Internally shift is an index in the cyclic buffer of old values, so the shift value is negative.
@@ -167,7 +167,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 			: database_ ? database_->table("defaultTable")
 			: 0;
 		if (table == 0)
-			throw eclib::UserError("No table specified");
+			throw eckit::UserError("No table specified");
 		from.push_back(table);
 	}
 

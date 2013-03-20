@@ -25,8 +25,8 @@
 #include <stdint.h>
 
 #include "eclib/DataHandle.h"
-#include "eclib/FileHandle.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/FileHandle.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Resource.h"
 #include "eclib/Timer.h"
 

@@ -1,8 +1,6 @@
 /// @file   DataTableIterator.cc
 /// @author Tomas Kral
 
-#include <cstddef>
-
 #include "odblib/DataTableIterator.h"
 #include "odblib/DataPage.h"
 #include "odblib/DataRow.h"

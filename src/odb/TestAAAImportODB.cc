@@ -19,7 +19,7 @@
 
 using namespace std;
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Log.h"
 #include "eclib/DataHandle.h"
 
@@ -44,7 +44,7 @@ using namespace std;
 
 #include "odb/TestAAAImportODB.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

@@ -1,8 +1,6 @@
 /// @file   DataLinks.cc
 /// @author Tomas Kral
 
-#include <stdlib.h>
-
 #include "odblib/DataLinks.h"
 #include "odblib/DataLink.h"
 #include "eclib/Exceptions.h"

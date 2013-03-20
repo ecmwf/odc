@@ -21,7 +21,7 @@
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 
@@ -110,10 +110,10 @@ size_t MetaData::columnIndex(const string& name) const
 			indices.push_back(i);
 
 	if (indices.size() > 1)
-		throw eclib::UserError(string("Ambiguous column name: '") + name + "'");
+		throw eckit::UserError(string("Ambiguous column name: '") + name + "'");
 
 	if (indices.size() == 0)
-		throw eclib::UserError(string("Column '") + name + "' not found.");
+		throw eckit::UserError(string("Column '") + name + "' not found.");
 
 	return indices[0];
 }

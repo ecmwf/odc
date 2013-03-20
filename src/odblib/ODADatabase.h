@@ -14,7 +14,7 @@
 #ifndef ODADatabase_H
 #define ODADatabase_H
 
-namespace eclib { class PathName; }
+namespace eckit { class PathName; }
 
 #include "odblib/SQLDatabase.h"
 
@@ -23,7 +23,7 @@ namespace sql {
 
 class ODADatabase : public SQLDatabase {
 public:
-	ODADatabase(const eclib::PathName&,const string&);
+	ODADatabase(const eckit::PathName&,const string&);
 	~ODADatabase(); // Change to virtual if base class
 
 private:
@@ -40,7 +40,7 @@ private:
 	virtual void open();
 	virtual void close();
 	virtual SQLTable* table(const string&);
-	virtual SQLTable* openDataHandle(eclib::DataHandle&, DataFormat = ODA);
+	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA);
 	virtual SQLTable* openDataStream(istream&, DataFormat = CSV); 
 
 // -- Friends

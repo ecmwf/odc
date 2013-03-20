@@ -14,7 +14,7 @@
 #ifndef FunctionExpression_H
 #define FunctionExpression_H
 
-#include "eclib/ThreadSingleton.h"
+#include "eclib/thread/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
 

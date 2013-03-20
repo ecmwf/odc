@@ -16,12 +16,14 @@
 #ifndef Header_H
 #define Header_H
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+#include <stdint.h>
 
 #include "odb_api_config.h"
 
 #include "odblib/UnsafeInMemoryDataHandle.h"
+
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 

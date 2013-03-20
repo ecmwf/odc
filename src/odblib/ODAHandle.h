@@ -26,7 +26,7 @@
 
 class ODAHandle {
 public:
-	ODAHandle(eclib::Offset, eclib::Offset);
+	ODAHandle(eckit::Offset, eckit::Offset);
 	~ODAHandle(); // Change to virtual if base class
 
 	void addValue(const string& columnName, double v);
@@ -35,24 +35,24 @@ public:
 		void getValue(const string& name, T& value)
 	{
 		value = ODATranslator<T>()(values_[name]);
-		eclib::Log::debug() << "ODAHandle::getValue('" << name << "',=>" << value << ")" << endl;
+		eckit::Log::debug() << "ODAHandle::getValue('" << name << "',=>" << value << ")" << endl;
 	}
 
 	void print(ostream&) const;
 
-	eclib::Offset start() { return start_; }
-	void start(const eclib::Offset& n) { start_ = n; }
+	eckit::Offset start() { return start_; }
+	void start(const eckit::Offset& n) { start_ = n; }
 
-	eclib::Offset end() { return end_; }
-	void end(const eclib::Offset& n) { end_ = n; }
+	eckit::Offset end() { return end_; }
+	void end(const eckit::Offset& n) { end_ = n; }
 
 private:
 // No copy allowed
 	ODAHandle(const ODAHandle&);
 	ODAHandle& operator=(const ODAHandle&);
 
-	eclib::Offset start_;
-	eclib::Offset end_;
+	eckit::Offset start_;
+	eckit::Offset end_;
 	map<string, double> values_;
 
 	friend ostream& operator<<(ostream& s, const ODAHandle& p)

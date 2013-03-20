@@ -24,10 +24,10 @@
 using namespace std;
 
 #include "eclib/Exceptions.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "odblib/MemoryBlock.h"
 #include "eclib/DataHandle.h"
-#include "eclib/FileHandle.h"
+#include "eclib/filesystem/FileHandle.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/DataStream.h"

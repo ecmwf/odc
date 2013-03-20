@@ -28,7 +28,7 @@ using namespace std;
 #include "odblib/SQLDatabase.h"
 #include "odblib/SchemaAnalyzer.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 

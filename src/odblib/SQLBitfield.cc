@@ -18,7 +18,7 @@
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLOutput.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace sql {
@@ -49,7 +49,7 @@ unsigned long SQLBitfield::mask(const string& n) const
 	map<string,unsigned long>::const_iterator j = mask_.find(n);
 	
 	if(j == mask_.end())
-		throw eclib::UserError("SQLBitfield no field", n);
+		throw eckit::UserError("SQLBitfield no field", n);
 
 	return (*j).second;
 }
@@ -59,7 +59,7 @@ unsigned long SQLBitfield::shift(const string& n) const
 	map<string,unsigned long>::const_iterator j = shift_.find(n);
 
 	if(j == shift_.end())
-		throw eclib::UserError("SQLBitfield no field", n);
+		throw eckit::UserError("SQLBitfield no field", n);
 
 	return (*j).second;
 }

@@ -22,7 +22,7 @@
 
 using namespace std;
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/DataHandle.h"
 #include "eclib/Log.h"
 
@@ -95,21 +95,21 @@ struct CallBackProcessArray {
 class SingleThreadMapReduce {
 	static const size_t N;
 public:
-	static void * process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessOneRow);
-	static void * process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessOneRow);
 
-	static void * process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessArray);
-	static void * process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessArray);
+	static void * process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessArray);
+	static void * process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessArray);
 };
 
 class MultipleThreadMapReduce {
 	static const size_t threadPoolSize_;
 public:
-	static void * process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessOneRow);
-	static void * process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessOneRow);
+	static void * process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessOneRow);
 
-	static void * process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessArray);
-	static void * process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessArray);
+	static void * process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessArray);
+	static void * process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessArray);
 };
 
 } // namespace tool 

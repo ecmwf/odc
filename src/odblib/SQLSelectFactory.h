@@ -12,7 +12,7 @@
 #define SQLSelectFactory_H
 
 #include "eclib/DataHandle.h"
-#include "eclib/ThreadSingleton.h"
+#include "eclib/thread/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
 #include "odblib/SQLOutputConfig.h"
@@ -44,8 +44,8 @@ public:
 		const std::string& table,
 		const SQLExpression* pshift);
 
-    eclib::DataHandle* implicitFromTableSource() { return implicitFromTableSource_; }
-    void implicitFromTableSource(eclib::DataHandle* h) { implicitFromTableSource_ = h; }
+    eckit::DataHandle* implicitFromTableSource() { return implicitFromTableSource_; }
+    void implicitFromTableSource(eckit::DataHandle* h) { implicitFromTableSource_ = h; }
 
     istream* implicitFromTableSourceStream() { return implicitFromTableSourceStream_; }
     void implicitFromTableSourceStream(istream* is) { implicitFromTableSourceStream_ = is; }
@@ -66,14 +66,14 @@ private:
 	string index(const string& columnName, const SQLExpression* index);
 
 	void reshift(Expressions&);
-    eclib::DataHandle* implicitFromTableSource_;
+    eckit::DataHandle* implicitFromTableSource_;
     istream* implicitFromTableSourceStream_;
 	SQLDatabase* database_;
 	SQLOutputConfig config_;
 	int maxColumnShift_;
 	int minColumnShift_;
 
-friend class eclib::ThreadSingleton<SQLSelectFactory>;
+friend class eckit::ThreadSingleton<SQLSelectFactory>;
 };
 
 } // namespace sql

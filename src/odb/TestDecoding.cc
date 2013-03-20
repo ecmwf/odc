@@ -26,7 +26,7 @@ using namespace std;
 #include "odblib/ToolFactory.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

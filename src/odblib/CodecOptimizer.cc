@@ -36,8 +36,8 @@ CodecOptimizer::CodecOptimizer()
 	defaultCodec_[INTEGER] = "int32";
 	defaultCodec_[BITFIELD] = "int32";
 
-	typedef eclib::StringTools S;
-	vector<std::string> mappings (S::split(",", eclib::Resource<string>("$ODB_DEFAULT_CODEC", "")));
+	typedef eckit::StringTools S;
+	vector<std::string> mappings (S::split(",", eckit::Resource<string>("$ODB_DEFAULT_CODEC", "")));
 
 	for (size_t i = 0; i < mappings.size(); ++i)
 	{

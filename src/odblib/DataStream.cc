@@ -107,7 +107,7 @@ template <typename T, typename D>
 void DataStream<T,D>::writeBuffer(const MemoryBlock &buffer)
 {
 	writeInt32(buffer.size());
-	eclib::Length writtenBytes = f->write(buffer, buffer.size());
+	eckit::Length writtenBytes = f->write(buffer, buffer.size());
 	ASSERT(long (writtenBytes) == long (buffer.size()));
 }
 

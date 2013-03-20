@@ -10,7 +10,6 @@
 
 
 %exception {
-	using namespace ::eclib;
 	using namespace ::odb;
 	using namespace ::odb::sql;
     try {

@@ -15,10 +15,10 @@
 #define TemporaryFile_H
 
 #include "eclib/NonCopyable.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
-class TemporaryFile : public  eclib::PathName,
-                      private eclib::NonCopyable {
+class TemporaryFile : public  eckit::PathName,
+                      private eckit::NonCopyable {
 public:
 
     TemporaryFile();

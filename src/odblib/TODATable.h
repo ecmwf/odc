@@ -27,8 +27,8 @@ public:
 	typedef T TReader;
 	typedef TODATableIterator<TODATable> TableIterator;
 
-	TODATable(SQLDatabase&, const eclib::PathName&, const string&);
-	TODATable(SQLDatabase&, eclib::DataHandle&);
+	TODATable(SQLDatabase&, const eckit::PathName&, const string&);
+	TODATable(SQLDatabase&, eckit::DataHandle&);
 	TODATable(SQLDatabase&, istream&);
 
 	~TODATable(); 

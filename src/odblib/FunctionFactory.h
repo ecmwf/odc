@@ -14,7 +14,7 @@
 #ifndef FunctionFactory_H
 #define FunctionFactory_H
 
-#include "eclib/ThreadSingleton.h"
+#include "eclib/thread/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
 #include "odblib/FunctionExpression.h"

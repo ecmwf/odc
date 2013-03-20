@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/PathName.h"
-#include "eclib/FileHandle.h"
+#include "eclib/filesystem/PathName.h"
+#include "eclib/filesystem/FileHandle.h"
 #include "eclib/Timer.h"
 
 #include "odblib/oda.h"
@@ -22,7 +22,7 @@ extern "C" {
 
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 
 namespace odb {

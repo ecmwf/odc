@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/LocalPathName.h"
+#include "eclib/filesystem/LocalPathName.h"
 #include "eclib/BigNum.h"
 
 #include "odblib/oda.h"
@@ -34,8 +34,6 @@ extern "C" {
 
 #include "ODBIterator.h"
 #include "FakeODBIterator.h"
-
-using namespace eclib;
 
 namespace odb {
 namespace tool {

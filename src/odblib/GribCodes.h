@@ -25,22 +25,22 @@
 
 using namespace std;
 
-namespace eclib { class PathName; }
+namespace eckit { class PathName; }
 
 
 namespace odb {
 
 class GribCodesBase {
 public:
-	GribCodesBase(const eclib::PathName&);
-	GribCodesBase(const eclib::PathName&, const string& fieldDelimiter);
+	GribCodesBase(const eckit::PathName&);
+	GribCodesBase(const eckit::PathName&, const string& fieldDelimiter);
 
-	virtual void readConfig(const eclib::PathName& fileName);
+	virtual void readConfig(const eckit::PathName& fileName);
 
 	virtual string numeric(const string& alphanumeric);
 	virtual string alphanumeric(const string& numeric);
 private:
-	eclib::PathName configFileName_;
+	eckit::PathName configFileName_;
 	string fieldDelimiter_;
 	bool mapsLoaded_;
 	map<string,string> numeric2alpha_;

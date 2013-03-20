@@ -12,9 +12,12 @@
 #define ODBBehavior_H
 
 #include "eclib/StandardBehavior.h"
-#include "eclib/DHSBehaviorStdout.h"
+//#include "eclib/DHSBehaviorStdout.h"
 
-class ODBBehavior : public eclib::DHSBehaviorStdout
+/// @todo eckit fixme
+
+class ODBBehavior : // public eckit::DHSBehaviorStdout
+                    public eckit::StandardBehavior
 {
 public:
     ODBBehavior();

@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
-#include "eclib/Application.h"
+#include "eclib/runtime/Application.h"
 #include "eclib/Context.h"
 #include "eclib/StandardBehavior.h" 
 #include "eclib/StdLogger.h" 
@@ -24,7 +24,7 @@
 #include "odblib/FastODA2Request.h"
 #include "odblib/ODBBehavior.h"
 
-using namespace eclib;
+using namespace eckit;
 using namespace odb;
 
 char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };

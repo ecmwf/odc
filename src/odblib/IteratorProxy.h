@@ -19,8 +19,8 @@
 #include "odblib/ColumnType.h"
 #include "odblib/Types.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 #ifdef SWIGPYTHON
 

@@ -27,9 +27,9 @@ namespace sql {
 class SQLIterator {
 public:
 
-    void *operator new(size_t s)          { return eclib::MemoryPool::fastAllocate(s);}
+    void *operator new(size_t s)          { return eckit::MemoryPool::fastAllocate(s);}
 	//void *operator new(size_t s,void *p)  { return p;                          }
-    void operator delete(void* p)         { eclib::MemoryPool::fastDeallocate(p);     }
+    void operator delete(void* p)         { eckit::MemoryPool::fastDeallocate(p);     }
 
 
 // -- Exceptions

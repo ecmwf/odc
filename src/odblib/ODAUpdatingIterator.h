@@ -16,8 +16,8 @@
 #ifndef ODAUpdatingIterator_H
 #define ODAUpdatingIterator_H
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 

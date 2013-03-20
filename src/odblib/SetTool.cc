@@ -15,7 +15,7 @@
 #include "ConstantSetter.h"
 #include "SetTool.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

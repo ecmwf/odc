@@ -24,7 +24,7 @@
 #include "odblib/SQLIteratorSession.h"
 #include "odblib/UnsafeInMemoryDataHandle.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace codec {

@@ -14,7 +14,7 @@
 #ifndef SQLColumn_H
 #define SQLColumn_H
 
-namespace eclib { class PathName; }
+namespace eckit { class PathName; }
 
 #include "odblib/SQLIterator.h"
 #include "odblib/SQLTable.h"
@@ -61,7 +61,7 @@ public:
 	void loadIndex();
 	SQLIndex* getIndex(double*);
 
-	eclib::PathName indexPath();
+	eckit::PathName indexPath();
 protected:
 	unsigned long long noRows_;
 

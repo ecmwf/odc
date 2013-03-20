@@ -20,7 +20,7 @@
 #include "odblib/SQLType.h"
 #include "odblib/SchemaAnalyzer.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace sql {
@@ -78,8 +78,8 @@ FieldNames SQLTable::bitColumnNames(const string& name) const
 			++counter;
 		}
 	}
-	if (counter == 0) throw eclib::UserError(string("Column '") + name + "' not found.");
-	if (counter != 1) throw eclib::UserError(string("Ambiguous column name: '") + name + "'");
+	if (counter == 0) throw eckit::UserError(string("Column '") + name + "' not found.");
+	if (counter != 1) throw eckit::UserError(string("Ambiguous column name: '") + name + "'");
 
 	return fieldNames;
 }
@@ -154,7 +154,7 @@ SQLColumn* SQLTable::column(const string& name)
 		return columnsByName_[name];
 	}
 
-	throw eclib::UserError("Column not found",name);
+	throw eckit::UserError("Column not found",name);
 
 }
 

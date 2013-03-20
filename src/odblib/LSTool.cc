@@ -17,7 +17,7 @@
 #include "odblib/Column.h"
 #include "odblib/SQLSelectFactory.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

@@ -14,7 +14,7 @@
 #include "odblib/SQLDataTable.h"
 
 using namespace odb;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 

@@ -18,9 +18,9 @@
 #include <algorithm>
 
 #include "eclib/DataHandle.h"
-#include "eclib/StdFileHandle.h"
+#include "eclib/filesystem/StdFileHandle.h"
 #include "eclib/Log.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"
@@ -45,7 +45,7 @@
 #include "odb/TestDistinct.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

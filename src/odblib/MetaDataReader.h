@@ -20,10 +20,10 @@
 #include <Python.h>
 #endif
 
-#include "eclib/FileHandle.h"
+#include "eclib/filesystem/FileHandle.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 
@@ -36,7 +36,7 @@ public:
 	typedef IteratorProxy<T,MetaDataReader,const double> iterator;
 	//typedef typename iterator::Row row;
 
-	MetaDataReader(const eclib::PathName &path, bool skipData = true);
+	MetaDataReader(const eckit::PathName &path, bool skipData = true);
 	MetaDataReader();
 
 	virtual ~MetaDataReader();
@@ -44,10 +44,10 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	eclib::DataHandle* dataHandle() { return dataHandle_; }
+	eckit::DataHandle* dataHandle() { return dataHandle_; }
     
 	// For C API
-	iterator* createReadIterator(const eclib::PathName&);
+	iterator* createReadIterator(const eckit::PathName&);
 
 #ifdef SWIGPYTHON
 	iterator __iter__() { return begin(); }
@@ -58,9 +58,9 @@ private:
     MetaDataReader(const MetaDataReader&);
     MetaDataReader& operator=(const MetaDataReader&);
 
-	eclib::DataHandle* dataHandle_;
+	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
-	//const eclib::PathName path_;
+	//const eckit::PathName path_;
 	const string path_;
 	bool skipData_;
 

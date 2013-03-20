@@ -18,8 +18,8 @@
 
 #include "odblib/WriterBufferingIterator.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 
@@ -32,7 +32,7 @@ class FixedSizeWriterIterator : public WriterBufferingIterator
 public:
 	typedef Writer<WriterBufferingIterator> Owner;
 
-	FixedSizeWriterIterator (Owner& owner, eclib::DataHandle *);
+	FixedSizeWriterIterator (Owner& owner, eckit::DataHandle *);
 
 	int writeRow(const double* values, unsigned long count);
 

@@ -21,7 +21,7 @@
 #include "odblib/ToolFactory.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {
@@ -53,7 +53,7 @@ void ODA2RequestTool::usage(const string& name, ostream &o)
 
 void ODA2RequestTool::run()
 {
-	eclib::PathName inputFile;
+	eckit::PathName inputFile;
 	string outputFile;
 
 	switch (parameters().size())

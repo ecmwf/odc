@@ -15,7 +15,7 @@
 
 #include "odblib/oda.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 

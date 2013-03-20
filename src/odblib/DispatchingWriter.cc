@@ -23,9 +23,9 @@
 #include <cfloat>
 
 #include "eclib/Exceptions.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/DataHandle.h"
-#include "eclib/FileHandle.h"
+#include "eclib/filesystem/FileHandle.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
@@ -52,7 +52,7 @@
 #include "odblib/Writer.h"
 #include "odblib/WriterDispatchingIterator.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 

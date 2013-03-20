@@ -16,7 +16,7 @@
 #include "MetaDataReaderIterator.h"
 #include "MetaDataReader.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

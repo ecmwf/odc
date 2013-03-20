@@ -22,7 +22,7 @@
 
 #include "odblib/IteratorProxy.h"
 
-namespace eclib { class PathName; }
+namespace eckit { class PathName; }
 
 namespace odb {
 
@@ -45,7 +45,7 @@ public:
 
 	istream& stream() { return *in_; }
 	// For C API
-        TextReaderIterator* createReadIterator(const eclib::PathName&);
+        TextReaderIterator* createReadIterator(const eckit::PathName&);
 
 #ifdef SWIGPYTHON
 	iterator __iter__() { return begin(); }
@@ -58,7 +58,7 @@ private:
 
 	istream* in_;
 	bool deleteDataHandle_;
-	//const eclib::PathName path_;
+	//const eckit::PathName path_;
 	const string path_;
 
 	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,const double>;

@@ -15,7 +15,7 @@
 #include "odblib/SQLType.h"
 #include "odblib/SQLOutput.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace sql {

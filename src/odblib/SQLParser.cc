@@ -12,7 +12,7 @@
 #include "eclib/DataHandle.h"
 #include "eclib/Exceptions.h"
 #include "eclib/Mutex.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Resource.h"
 #include "eclib/Translator.h"
 
@@ -43,7 +43,7 @@
 #include "odblib/StringExpression.h"
 #include "odblib/TemporaryFile.h"
 
-using namespace eclib;
+using namespace eckit;
 
 static Mutex   mutex;
 static string  yypath;

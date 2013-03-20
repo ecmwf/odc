@@ -63,7 +63,7 @@ public:
 
 	virtual SQLExpression* simplify(bool&) { return this; }
 
-	virtual Expressions* clone() const;
+	virtual SQLExpression* clone() const;
 	
 	virtual bool isAggregate() const { return false; }
 	// For select expression

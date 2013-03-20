@@ -19,7 +19,7 @@
 #include "odblib/CommandLineParser.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {
@@ -74,7 +74,7 @@ string CommandLineParser::argv(int i)
 	{
 		stringstream ss;
 		ss << "Expected at least " << i << " command line parameters";
-		throw eclib::UserError(ss.str());
+		throw eckit::UserError(ss.str());
 	}
 	return argv_[i];
 }

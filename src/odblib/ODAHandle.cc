@@ -11,7 +11,7 @@
 #include "odblib/ODAHandle.h"
 #include "odblib/ODATranslator.h"
 
-using namespace eclib;
+using namespace eckit;
 
 ODAHandle::ODAHandle(Offset start, Offset end)
 : start_(start),

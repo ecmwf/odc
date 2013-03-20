@@ -16,33 +16,33 @@
 
 #include "odblib/SQLOutputConfig.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 namespace sql {
 
-class SyntaxError : public eclib::SeriousBug {
+class SyntaxError : public eckit::SeriousBug {
 public:
-	SyntaxError(const string& s): eclib::SeriousBug(s) {}
+	SyntaxError(const string& s): eckit::SeriousBug(s) {}
 };
 
 class SQLParser {
 public:
 
 	static int line();
-	static void include(const eclib::PathName&);
+	static void include(const eckit::PathName&);
 
-	//static void parseFile(const eclib::PathName&, eclib::DataHandle*);
-	//static void parseFile(const eclib::PathName&, eclib::DataHandle*, SQLOutputConfig);
-	static void parseString(const string&, eclib::DataHandle*, SQLOutputConfig);
+	//static void parseFile(const eckit::PathName&, eckit::DataHandle*);
+	//static void parseFile(const eckit::PathName&, eckit::DataHandle*, SQLOutputConfig);
+	static void parseString(const string&, eckit::DataHandle*, SQLOutputConfig);
 
-	//static void parseFile(const eclib::PathName&, istream*);
-	//static void parseFile(const eclib::PathName&, istream*, SQLOutputConfig);
+	//static void parseFile(const eckit::PathName&, istream*);
+	//static void parseFile(const eckit::PathName&, istream*, SQLOutputConfig);
 	static void parseString(const string&, istream*, SQLOutputConfig);
 
 
-	//static void parseFile(const eclib::PathName&, SQLDatabase&, SQLOutputConfig);
+	//static void parseFile(const eckit::PathName&, SQLDatabase&, SQLOutputConfig);
 	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
 	static void lexRelease();
 };

@@ -17,7 +17,7 @@
 #include "eclib/DataHandle.h"
 #include "eclib/Length.h"
 #include "eclib/Offset.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/TransferWatcher.h"
 
 #include "odblib/MemoryBlock.h"
@@ -26,7 +26,7 @@ namespace odb {
 
 class NonVirtualBase {};
 
-template <typename T = eclib::DataHandle>
+template <typename T = eckit::DataHandle>
 class TReadOnlyMemoryDataHandle : public T {
 public:
 
@@ -61,17 +61,17 @@ public:
 	bool hasSomeData() { return it_ != end_; }
 
 	/// Return estimated length.
-    virtual eclib::Length openForRead()
+    virtual eckit::Length openForRead()
 	{
 		it_ = buffer_;
 		return end_ - it_;
 	}
 
 	// Receive estimated length.
-    void openForWrite(const eclib::Length&) { NOTIMP; }
+    void openForWrite(const eckit::Length&) { NOTIMP; }
 
 	// Receive estimated length
-    void openForAppend(const eclib::Length&) {}
+    void openForAppend(const eckit::Length&) {}
 
     long read(void* p, long n)
 	{
@@ -87,8 +87,8 @@ public:
     void close() {}
 
     void rewind()                { it_ = buffer_; }
-	eclib::Length estimate()            { return end_ - it_; }
-	eclib::Offset position()            { return it_ - buffer_; }
+	eckit::Length estimate()            { return end_ - it_; }
+	eckit::Offset position()            { return it_ - buffer_; }
 
 private:
 // No copy allowed
@@ -101,7 +101,7 @@ private:
 	size_t bufferSize_;
 };
 
-typedef TReadOnlyMemoryDataHandle<eclib::DataHandle> ReadOnlyMemoryDataHandle;
+typedef TReadOnlyMemoryDataHandle<eckit::DataHandle> ReadOnlyMemoryDataHandle;
 
 } // namespace odb 
 

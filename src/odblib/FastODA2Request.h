@@ -27,8 +27,8 @@ public:
 	void parseConfig(const string& s);
 	void addColumn(const string& keyword, const string& columnName);
 
-	bool scanFile(const eclib::PathName&);
-	bool scanFile(const eclib::PathName&, eclib::OffsetList&, eclib::LengthList&, vector<ODAHandle*>&);
+	bool scanFile(const eckit::PathName&);
+	bool scanFile(const eckit::PathName&, eckit::OffsetList&, eckit::LengthList&, vector<ODAHandle*>&);
 
 	string genRequest() const;
 
@@ -51,13 +51,13 @@ protected:
 
 private:
 	MetaData firstMD_;
-	eclib::PathName inputFile_;
+	eckit::PathName inputFile_;
 	vector<string> keywords_;
 	vector<string> columnNames_;
 	vector<set<string> > values_;
 	map<string, set<double> > doubleValues_;
 
-	map<vector<string>, pair<eclib::Offset, eclib::Offset> > valuesSeen_;
+	map<vector<string>, pair<eckit::Offset, eckit::Offset> > valuesSeen_;
 	unsigned long long rowsNumber_;
 	bool mergeSimilarBlocks_;
 };
@@ -69,21 +69,21 @@ struct ODA2RequestServerTraits {
 		stringstream ss;
 		ss << "Column '" << column.name() << "' is not constant"
 			<< " (min=" << column.min() << ", max=" << column.max() << ")";
-		throw eclib::UserError(ss.str());
+		throw eckit::UserError(ss.str());
 	}
 
 	static string columnNotFound(const string& columnName)
-	{ throw eclib::UserError(string("Column '") + columnName + "' not found."); }
+	{ throw eckit::UserError(string("Column '") + columnName + "' not found."); }
 
 	static bool duplicateCombination(const string& errorMessage)
-	{ throw eclib::UserError(errorMessage); return false; }
+	{ throw eckit::UserError(errorMessage); return false; }
 };
 
 struct ODA2RequestClientTraits {
 	static string columnIsNotConstant(const Column& column) { return string("MULTIPLE"); }
 	static string columnNotFound(const string& columnName) { return string("MISSING"); }
 	static bool duplicateCombination(const string& errorMessage)
-	{ eclib::Log::error() << errorMessage << endl; return false; }
+	{ eckit::Log::error() << errorMessage << endl; return false; }
 };
 
 } // namespace odb

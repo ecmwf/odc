@@ -20,7 +20,7 @@
 #include "eclib/machine.h"
 
 #include "eclib/Date.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Time.h"
 #include "eclib/Translator.h"
 #include "eclib/Types.h"
@@ -36,39 +36,39 @@ template <>
 struct ODATranslator<string> {
 	string operator()(double n) {
 		string r = odb::StringTool::double_as_string(n);
-		eclib::Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << endl;
+		eckit::Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << endl;
 		return r;
 	}
 };
 
 template <>
-struct ODATranslator<eclib::Time> {
-	eclib::Time operator()(double n)
+struct ODATranslator<eckit::Time> {
+	eckit::Time operator()(double n)
 	{
 		static const char * zeroes = "000000";
 
-		string t = eclib::Translator<double, string>()(n);
+		string t = eckit::Translator<double, string>()(n);
 		if (t.size() < 6)
 			t = string(zeroes + t.size()) + t;
-		eclib::Time tm = t;
+		eckit::Time tm = t;
 
-		eclib::Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
+		eckit::Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
 		return tm;
 	}
 };
 
 template <>
-struct ODATranslator<eclib::Date> {
-	eclib::Date operator()(double n)
+struct ODATranslator<eckit::Date> {
+	eckit::Date operator()(double n)
 	{
 		static const char * zeroes = "000000";
 
-		string t = eclib::Translator<long, string>()(n);
+		string t = eckit::Translator<long, string>()(n);
 		if (t.size() < 6)
 			t = string(zeroes + t.size()) + t;
-		eclib::Date d = t;
+		eckit::Date d = t;
 
-		eclib::Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
+		eckit::Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
 		return d;
 	}
 };

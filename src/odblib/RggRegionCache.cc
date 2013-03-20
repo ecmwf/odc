@@ -12,14 +12,14 @@
 #include <math.h>
 
 #include "eclib/Log.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Resource.h"
-#include "eclib/ThreadSingleton.h"
+#include "eclib/thread/ThreadSingleton.h"
 
 #include "odblib/RegionCache.h"
 #include "odblib/RggRegionCache.h"
 
-using namespace eclib;
+using namespace eckit;
 
 #undef MIN
 #define MIN(a,b) ( ((a) < (b)) ? (a) :  (b) )

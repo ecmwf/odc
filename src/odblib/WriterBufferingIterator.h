@@ -25,8 +25,8 @@
 #include "odblib/CodecOptimizer.h"
 #include "odblib/IteratorProxy.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class DataHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 
@@ -39,7 +39,7 @@ class WriterBufferingIterator : public RowsWriterIterator
 public:
 	typedef Writer<WriterBufferingIterator> Owner;
 
-	WriterBufferingIterator (Owner &owner, eclib::DataHandle *, bool openDataHandle=true);
+	WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle=true);
 	~WriterBufferingIterator();
 
 	int open();
@@ -60,7 +60,7 @@ public:
 
 	Owner& owner() { return owner_; }
 
-	eclib::DataHandle& dataHandle() { return *f; }
+	eckit::DataHandle& dataHandle() { return *f; }
 
 	void property(string key, string value) { properties_[key] = value; }
 
@@ -84,7 +84,7 @@ protected:
 	double* nextRow_;
 	unsigned long nrows_;
 
-	eclib::DataHandle *f;
+	eckit::DataHandle *f;
 	Array<unsigned char> buffer_;
 
 private:
@@ -124,7 +124,7 @@ private:
 template<typename T>
 void WriterBufferingIterator::pass1init(T& it, const T& end)
 {
-	eclib::Log::info() << "WriterBufferingIterator::pass1init" << endl;
+	eckit::Log::info() << "WriterBufferingIterator::pass1init" << endl;
 
 	// Copy columns from the input iterator.
 	columns() = columnsBuffer_ = it->columns();
@@ -141,7 +141,7 @@ void WriterBufferingIterator::pass1init(T& it, const T& end)
 template<typename T>
 unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 {
-	eclib::Log::info() << "WriterBufferingIterator::pass1" << endl;
+	eckit::Log::info() << "WriterBufferingIterator::pass1" << endl;
 
 	pass1init(it, end);
 
@@ -150,7 +150,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	{
 		if (it->isNewDataset() && it->columns() != columnsBuffer_)
 		{
-			eclib::Log::info() << "WriterBufferingIterator::pass1: Change of input metadata." << endl;
+			eckit::Log::info() << "WriterBufferingIterator::pass1: Change of input metadata." << endl;
 			flush();
 			pass1init(it, end);
 			writeHeader();
@@ -169,10 +169,10 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 			flush();
 	} 
 
-	eclib::Log::debug() << "Flushing rest of the buffer..." << endl;
+	eckit::Log::debug() << "Flushing rest of the buffer..." << endl;
 	flush();
 
-	eclib::Log::info() << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << endl;
+	eckit::Log::info() << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << endl;
 	ASSERT(close() == 0);
 	return nrows;
 }

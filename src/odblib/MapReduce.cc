@@ -22,11 +22,11 @@
 
 using namespace std;
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/DataHandle.h"
 #include "eclib/Log.h"
-#include "eclib/PartFileHandle.h"
-#include "eclib/ThreadPool.h"
+#include "eclib/filesystem/PartFileHandle.h"
+#include "eclib/thread/ThreadPool.h"
 
 #include "odblib/DataStream.h"
 #include "odblib/HashTable.h"
@@ -61,8 +61,8 @@ using namespace std;
 #include "odblib/MapReduce.h"
 
 
-#include "eclib/ThreadControler.h"
-#include "eclib/Thread.h"
+#include "eclib/thread/ThreadControler.h"
+#include "eclib/thread/Thread.h"
 #include "eclib/Mutex.h"
 #include "eclib/MutexCond.h"
 #include "eclib/AutoLock.h"
@@ -71,11 +71,11 @@ namespace odb {
 namespace tool {
 
 template <typename CALLBACK>
-class PartFileProcessor : public eclib::ThreadPoolTask {
+class PartFileProcessor : public eckit::ThreadPoolTask {
 public:
-	PartFileProcessor(const eclib::PathName& fileName, const eclib::Offset& offset, const eclib::Length& length,
+	PartFileProcessor(const eckit::PathName& fileName, const eckit::Offset& offset, const eckit::Length& length,
 						void* userData, const string& sql, CALLBACK callBack) 
-	: dh_(new eclib::PartFileHandle(fileName, offset, length)),
+	: dh_(new eckit::PartFileHandle(fileName, offset, length)),
 	  userData_(userData),
 	  sql_(sql),
 	  callBack_(callBack), 
@@ -95,18 +95,18 @@ public:
 		dh_->close();
 	}
 private:
-	auto_ptr<eclib::DataHandle> dh_;
+	auto_ptr<eckit::DataHandle> dh_;
 	void* userData_;
 	const string sql_;
 	CALLBACK callBack_;
 	
-	eclib::PathName fileName_;
-	eclib::Offset offset_;
-	eclib::Length length_;
+	eckit::PathName fileName_;
+	eckit::Offset offset_;
+	eckit::Length length_;
 };
 
 
-void * SingleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
+void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
 {
 	if (userData == 0) userData = f.create(); 
 	odb::Select o(sql, dh);
@@ -117,17 +117,17 @@ void * SingleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, con
 	return userData;
 }
 
-void * SingleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessOneRow f)
+void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessOneRow f)
 {
-	eclib::FileHandle dh(fileName);
-	eclib::Length estimate = dh.openForRead();
+	eckit::FileHandle dh(fileName);
+	eckit::Length estimate = dh.openForRead();
 	return process(userData, dh, sql, f);
 }
 
 const size_t SingleThreadMapReduce::N = 64;
 const size_t MultipleThreadMapReduce::threadPoolSize_ = 5;
 
-void * SingleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessArray f)
+void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessArray f)
 {
 	odb::Select o(sql, dh);
 	odb::Select::iterator it(o.begin()), end(o.end());
@@ -159,21 +159,21 @@ void * SingleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, con
 	return result;
 }
 
-void * SingleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessArray f)
+void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessArray f)
 {
-	eclib::FileHandle dh(fileName);
-	eclib::Length estimate = dh.openForRead();
+	eckit::FileHandle dh(fileName);
+	eckit::Length estimate = dh.openForRead();
 	return SingleThreadMapReduce::process(userData, dh, sql, f);
 }
 
-void * MultipleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessArray f)
+void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessArray f)
 { 
-	eclib::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
+	eckit::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
 	vector<void *> results;
-	vector<pair<eclib::Offset,eclib::Length> > chunks(SplitTool::getChunks(fileName));
+	vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
 	{   
-		pair<eclib::Offset,eclib::Length>& chunk(chunks[i]);
+		pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
 		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << endl;
 
 		void *result = f.create();
@@ -196,18 +196,18 @@ void * MultipleThreadMapReduce::process(void* userData, const eclib::PathName& f
 	return r;
 } 
 
-void * MultipleThreadMapReduce::process(void* userData, eclib::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
+void * MultipleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
 { NOTIMP; return 0; }
 
-void * MultipleThreadMapReduce::process(void* userData, const eclib::PathName& fileName, const string& sql, CallBackProcessOneRow f)
+void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessOneRow f)
 {
-	eclib::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
+	eckit::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
 
 	vector<void *> results;
-	vector<pair<eclib::Offset,eclib::Length> > chunks(SplitTool::getChunks(fileName));
+	vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
     {   
-		pair<eclib::Offset,eclib::Length>& chunk(chunks[i]);
+		pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
 		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << endl;
 
 		void *result = f.create();
@@ -246,7 +246,7 @@ public:
 
 template<class PAYLOAD>
 struct OnePayload {
-    eclib::MutexCond cond_;
+    eckit::MutexCond cond_;
     bool      ready_;
     bool       done_;
     PAYLOAD   payload_;
@@ -257,7 +257,7 @@ template<class PAYLOAD>
 class ProducerConsumer;
 
 template<class PAYLOAD>
-class ProducerConsumerTask : public eclib::Thread {
+class ProducerConsumerTask : public eckit::Thread {
     ProducerConsumer<PAYLOAD>& owner_;
     Consumer<PAYLOAD>&         consumer_;
     OnePayload<PAYLOAD>*       payloads_;
@@ -282,7 +282,7 @@ private:
     ProducerConsumer(const ProducerConsumer&);
     ProducerConsumer& operator=(const ProducerConsumer&);
 
-    eclib::Mutex mutex_;
+    eckit::Mutex mutex_;
     long count_;
 
     bool error_;
@@ -304,8 +304,8 @@ ProducerConsumer<PAYLOAD>::~ProducerConsumer()
 template<class PAYLOAD>
 inline void ProducerConsumer<PAYLOAD>::error(const string& why)
 {
-    using eclib::AutoLock;
-    using eclib::Mutex;
+    using eckit::AutoLock;
+    using eckit::Mutex;
     
     AutoLock<Mutex> lock(mutex_);
     error_ = true;
@@ -315,8 +315,8 @@ inline void ProducerConsumer<PAYLOAD>::error(const string& why)
 template<class PAYLOAD>
 inline bool ProducerConsumer<PAYLOAD>::error()
 {
-    using eclib::AutoLock;
-    using eclib::Mutex;
+    using eckit::AutoLock;
+    using eckit::Mutex;
 
     AutoLock<Mutex> lock(mutex_);
     return error_;
@@ -326,15 +326,15 @@ inline bool ProducerConsumer<PAYLOAD>::error()
 template<class PAYLOAD>
 void ProducerConsumer<PAYLOAD>::execute(Producer<PAYLOAD>& producer,Consumer<PAYLOAD>& consumer)
 {
-    using eclib::Log;
-    using eclib::AutoLock;
-    using eclib::MutexCond;
+    using eckit::Log;
+    using eckit::AutoLock;
+    using eckit::MutexCond;
     
     OnePayload<PAYLOAD>* payloads = new OnePayload<PAYLOAD>[count_];
 
     error_  = false;
 
-    eclib::ThreadControler thread(new ProducerConsumerTask<PAYLOAD>(consumer, *this, payloads), false);
+    eckit::ThreadControler thread(new ProducerConsumerTask<PAYLOAD>(consumer, *this, payloads), false);
 
     thread.start();
 
@@ -381,7 +381,7 @@ void ProducerConsumer<PAYLOAD>::execute(Producer<PAYLOAD>& producer,Consumer<PAY
     delete[] payloads;
 
     if(error_) {
-        throw eclib::SeriousBug(why_);
+        throw eckit::SeriousBug(why_);
     }
 
 
@@ -399,9 +399,9 @@ ProducerConsumerTask<PAYLOAD>::ProducerConsumerTask(Consumer<PAYLOAD>& consumer,
 template<class PAYLOAD>
 void ProducerConsumerTask<PAYLOAD>::run()
 {
-    using eclib::Log;
-    using eclib::AutoLock;
-    using eclib::MutexCond;
+    using eckit::Log;
+    using eckit::AutoLock;
+    using eckit::MutexCond;
     
     int i = 0;
 
@@ -499,7 +499,7 @@ struct P : public Producer<Data> {
 
 void producer_consumer()
 {
-	eclib::Timer timer("ALL");
+	eckit::Timer timer("ALL");
 	using namespace odb::tool;
 	string fileName = "/scratch/ma/mak/odb-16/all.odb";
 	odb::Select o(string("select lat,lon,obsvalue,sin(obsvalue) from \"") + fileName + "\"");

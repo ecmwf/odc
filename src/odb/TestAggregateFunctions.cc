@@ -21,7 +21,7 @@
 #include "eclib/DataHandle.h"
 #include "eclib/DataHandle.h"
 #include "eclib/Log.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"
@@ -47,7 +47,7 @@
 #include "odb/TestAggregateFunctions.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

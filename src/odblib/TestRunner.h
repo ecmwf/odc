@@ -34,7 +34,7 @@ private:
 	typedef pair<string, string> FailedTest;
 	typedef map<string, vector<string> > Suites;
 
-	void readConfig(const eclib::PathName fileName);
+	void readConfig(const eckit::PathName fileName);
 	void runTests(const TestCases &tests);
 
 	void smslabel(const string &);

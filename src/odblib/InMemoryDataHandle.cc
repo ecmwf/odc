@@ -10,7 +10,7 @@
 
 #include "eclib/machine.h"
 #include "eclib/Bytes.h"
-#include "eclib/FileHandle.h"
+#include "eclib/filesystem/FileHandle.h"
 #include "eclib/Timer.h"
 
 #include "odblib/InMemoryDataHandle.h"

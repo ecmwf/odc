@@ -410,7 +410,7 @@ ecbuild_add_library( TARGET     Odb
                      COMPONENT  server
                      SOURCES    ${odblib_src_files}
                      TEMPLATES  ${odblib_templates}
-                     LIBS       Ec )
+                     LIBS       ${ECKIT_LIBRARIES} )
 
 ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly

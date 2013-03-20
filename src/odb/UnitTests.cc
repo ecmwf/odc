@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <memory> 
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/DataHandle.h"
 #include "eclib/Log.h"
 
@@ -62,7 +62,7 @@
 #include "odb/TestOdaCAPI.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 
 namespace odb { namespace tool { void producer_consumer(); }}

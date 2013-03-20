@@ -14,7 +14,7 @@
 
 #include <sstream>
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Timer.h"
 #include "eclib/StringTools.h"
 
@@ -24,7 +24,7 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/TestRunner.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {
@@ -103,7 +103,7 @@ void TestRunner::run()
 
 		stringstream ss;
 		ss << " " << failed_.size() << " test(s) failed";
-		throw eclib::SeriousBug(ss.str());
+		throw eckit::SeriousBug(ss.str());
 	}
 }
 

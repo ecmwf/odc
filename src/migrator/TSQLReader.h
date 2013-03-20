@@ -11,7 +11,7 @@
 #ifndef TSQLReader_H
 #define TSQLReader_H
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "odblib/IteratorProxy.h"
 
 namespace odb {

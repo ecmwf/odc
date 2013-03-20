@@ -20,7 +20,7 @@
 
 #include "odblib/SQLBitfield.h"
 
-namespace eclib { class DataHandle; }
+namespace eckit { class DataHandle; }
 class MemoryBlock;
 
 namespace odb {
@@ -49,7 +49,7 @@ public:
 	}
 };
 
-template <typename T = SameByteOrder, typename D = eclib::DataHandle>
+template <typename T = SameByteOrder, typename D = eckit::DataHandle>
 class DataStream {
 public:
 	typedef T ByteOrderType;

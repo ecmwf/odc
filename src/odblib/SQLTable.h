@@ -14,7 +14,7 @@
 #ifndef SQLTable_H
 #define SQLTable_H
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLType.h"
@@ -44,7 +44,7 @@ public:
 
 // -- Contructors
 
-	SQLTable(SQLDatabase&,const eclib::PathName&,const string&);
+	SQLTable(SQLDatabase&,const eckit::PathName&,const string&);
 
 // -- Destructor
 
@@ -93,7 +93,7 @@ public:
 	bool sameAs(const SQLTable& other) const;
 	bool sameDatabase(const SQLTable& other) const;
 
-    const eclib::PathName& path() const { return path_; }
+    const eckit::PathName& path() const { return path_; }
 
 	virtual void print(ostream& s) const;
 
@@ -112,7 +112,7 @@ protected:
 
 // -- Members
 	// None
-    eclib::PathName path_;
+    eckit::PathName path_;
 	string   name_;
 
 	//map<int,SQLFile*> files_;

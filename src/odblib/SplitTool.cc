@@ -17,9 +17,9 @@
 #include "odblib/SplitTool.h"
 #include "odblib/TemplateParameters.h"
 
-#include "eclib/PartFileHandle.h"
+#include "eclib/filesystem/PartFileHandle.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

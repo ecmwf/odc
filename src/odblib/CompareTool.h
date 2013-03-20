@@ -41,8 +41,8 @@ private:
 
 	static char* dummyArgv_[];
 
-	eclib::PathName* file1;
-	eclib::PathName* file2;
+	eckit::PathName* file1;
+	eckit::PathName* file2;
 
 	odb::RowsReaderIterator* reader1_;
 	odb::RowsReaderIterator* reader2_;

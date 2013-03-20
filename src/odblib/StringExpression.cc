@@ -16,7 +16,7 @@
 #include "odblib/StringExpression.h"
 #include "odblib/StringTool.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace sql {
@@ -77,7 +77,7 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 		}
 	}
 	if (! matched)
-		throw eclib::UserError(string("No columns matching regex '") + name_ + "' found.");
+		throw eckit::UserError(string("No columns matching regex '") + name_ + "' found.");
 	delete this;
 }
 

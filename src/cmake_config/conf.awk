@@ -1,8 +1,6 @@
-#!/usr/bin/env gawk -f
+#!/usr/bin/gawk -f
 
 function printConfig(C) {
-	print "#!/usr/bin/ksh"
-	print "SRC=${SRC:-$(cd ../.. && pwd)}"
 	print "/usr/local/apps/cmake/2.8.8/bin/cmake ../.. \\"
 	for (k in C) print "  -D" k "=\"" C[k] "\" \\"
 	print ""
@@ -43,7 +41,7 @@ CMAKE_CXX_FLAGS=-fPIC\n\
 CMAKE_C_FLAGS=-fPIC\n\
 ECLIB_SOURCE=$SRC/eclib\n\
 BUILD_SHARED_LIBS=OFF\n\
-CMAKE_MODULE_PATH=$SRC/ecbuild/cmake\n\
+CMAKE_MODULE_PATH=/usr/local/apps/ecbuild/1.0.10/cmake\n\
 ODB_API_FORTRAN=ON\n\
 LINKER_LANGUAGE=Fortran\n\
 PGI_PATH=/usr/local/apps/pgi/pgi-10.8/linux86-64/current\n\

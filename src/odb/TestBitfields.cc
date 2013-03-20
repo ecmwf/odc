@@ -17,7 +17,7 @@
 #include <map>
 #include <algorithm>
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 #include "eclib/Log.h"
 #include "eclib/DataHandle.h"
 
@@ -43,7 +43,7 @@
 #include "odb/TestBitfields.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

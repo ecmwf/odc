@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eclib/Context.h"
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
@@ -22,7 +22,7 @@
 #include "odblib/ODBBehavior.h"
 #include "odblib/ODBApplication.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

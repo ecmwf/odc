@@ -35,7 +35,7 @@ using namespace std;
 #include "odblib/oda.h"
 
 using namespace std;
-using namespace eclib;
+using namespace eckit;
 
 
 namespace odb {

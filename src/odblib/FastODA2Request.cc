@@ -37,12 +37,12 @@ template <typename T>
 void FastODA2Request<T>::parseConfig(const string& s)
 {
     vector<string> lines;
-    eclib::Tokenizer("\n")(s, lines);
+    eckit::Tokenizer("\n")(s, lines);
 
-    eclib::Tokenizer tokenizer(": \t");
+    eckit::Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
 	{
-		eclib::Log::debug() << "FastODA2Request<T>::parseConfig: " << i<< ": '" << lines[i] << "'" << endl;
+		eckit::Log::debug() << "FastODA2Request<T>::parseConfig: " << i<< ": '" << lines[i] << "'" << endl;
 		vector<string> words;
 		tokenizer(lines[i], words);
 
@@ -62,10 +62,10 @@ void FastODA2Request<T>::addColumn(const string& keyword, const string& columnNa
 }
 
 template <typename T>
-bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName)
+bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName)
 {
-	eclib::OffsetList offsets;
-	eclib::LengthList lengths;
+	eckit::OffsetList offsets;
+	eckit::LengthList lengths;
 	vector<ODAHandle*> handles;
 
 	bool r = scanFile(fileName, offsets, lengths, handles);
@@ -78,9 +78,9 @@ bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName)
 }
 
 template <typename T>
-bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::OffsetList& offsets, eclib::LengthList& lengths, vector<ODAHandle*>& handles)
+bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::OffsetList& offsets, eckit::LengthList& lengths, vector<ODAHandle*>& handles)
 {
-    using eclib::Log;
+    using eckit::Log;
         
 	Log::debug() << "Iterating over headers of '" << fileName << "'" <<  endl;
 	
@@ -105,9 +105,9 @@ bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::Offset
 		MetaData &md = it->columns();
 		++mds;
 
-		eclib::Offset startOffset = (**it).blockStartOffset(),
+		eckit::Offset startOffset = (**it).blockStartOffset(),
 				        endOffset = (**it).blockEndOffset();
-		eclib::Length blockSize = endOffset - startOffset;
+		eckit::Length blockSize = endOffset - startOffset;
 
 		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD->equalsIncludingConstants(md, columnNames_))
 		{
@@ -149,20 +149,20 @@ bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::Offset
 template <typename T>
 bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 {
-    using eclib::Offset;
+    using eckit::Offset;
     
 	vector<string> currentValues;
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
 		const string& columnName = columnNames_[i];
-		eclib::Log::debug() << "FastODA2Request::collectValues: columnName: " << columnName << endl;
+		eckit::Log::debug() << "FastODA2Request::collectValues: columnName: " << columnName << endl;
 
 		Column* column = md.hasColumn(columnName) ? md.columnByName(columnName) : 0;
 		string v = ! column ? columnNotFound(columnName)
 				: ! column->isConstant() ? columnIsNotConstant(*column)
 				: column->type() == odb::STRING ? StringTool::double_as_string(column->min())
 				: column->type() == odb::INTEGER ? StringTool::int_as_double2string(column->min())
-				: eclib::Translator<double, string>()(column->min());
+				: eckit::Translator<double, string>()(column->min());
 		values_[i].insert(v);
 		currentValues.push_back(v);
 		double dv = !column ? MISSING_VALUE_REAL : column->min();
@@ -198,7 +198,7 @@ string FastODA2Request<T>::genRequest() const
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
 		const string& key = keywords_[i];
-		string k = eclib::StringTools::upper(key);
+		string k = eckit::StringTools::upper(key);
 		string valuesList;
 		const set<string>& vs = values_[i];
 		for (set<string>::const_iterator vi = vs.begin(); vi != vs.end(); ++vi)
@@ -208,7 +208,7 @@ string FastODA2Request<T>::genRequest() const
 		request << key << " = " << valuesList;
 	}
 
-	eclib::Log::debug() << "FastODA2Request<T>::genRequest() => " << endl << request.str() << endl;
+	eckit::Log::debug() << "FastODA2Request<T>::genRequest() => " << endl << request.str() << endl;
 	
 	return request.str();
 }
@@ -216,8 +216,8 @@ string FastODA2Request<T>::genRequest() const
 template <typename T>
 string FastODA2Request<T>::patchValue(const string& k, const string& value) const
 {
-    using eclib::Log;
-    using eclib::StringTools;
+    using eckit::Log;
+    using eckit::StringTools;
     
 	string v = StringTools::trim(value);
 	Log::debug() << "FastODA2Request::patchValue: v = '" << v  << "', key = " << k << endl;
@@ -243,7 +243,7 @@ const set<string>& FastODA2Request<T>::getValues(const string& keyword)
 	for (size_t i = 0; i < keywords_.size(); ++i)
 		if (keywords_[i] == keyword)
 			return values_[i];
-	throw eclib::UserError(string("Keyword '") + keyword + "' not found");
+	throw eckit::UserError(string("Keyword '") + keyword + "' not found");
 	// This is to keep the compiler happy:
 	return values_[-1];
 }
@@ -277,7 +277,7 @@ map<string, double> FastODA2Request<T>::getUniqueValues()
 		{
 			stringstream s;
 			s << "Data contains more than one '" << kw << "' value.";
-			throw eclib::UserError(s.str());
+			throw eckit::UserError(s.str());
 		}
 		r[kw] = *doubleValues_[kw].begin();
 	}

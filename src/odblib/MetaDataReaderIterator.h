@@ -20,8 +20,8 @@
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 
-namespace eclib { class PathName; }
-namespace eclib { class FileHandle; }
+namespace eckit { class PathName; }
+namespace eckit { class FileHandle; }
 
 extern "C" {
 	typedef void oda;
@@ -48,7 +48,7 @@ protected:
 	typedef MetaDataReader<MetaDataReaderIterator> Owner;
 public:
 	MetaDataReaderIterator (Owner &owner, bool skipData);
-	MetaDataReaderIterator (Owner &owner, const eclib::PathName&, bool skipData);
+	MetaDataReaderIterator (Owner &owner, const eckit::PathName&, bool skipData);
 	virtual ~MetaDataReaderIterator ();
 
 	virtual bool isNewDataset();
@@ -61,8 +61,8 @@ public:
 
 	virtual MetaData& columns() { return columns_; }
 
-	eclib::Offset blockStartOffset() { return blockStartOffset_; }
-	eclib::Offset blockEndOffset() { return blockEndOffset_; }
+	eckit::Offset blockStartOffset() { return blockStartOffset_; }
+	eckit::Offset blockEndOffset() { return blockEndOffset_; }
 
 	int32_t byteOrder() const { return byteOrder_; }
 
@@ -97,7 +97,7 @@ private:
 	odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 protected:
-	eclib::DataHandle *f;
+	eckit::DataHandle *f;
 	Properties properties_;
 	bool newDataset_;
 public:
@@ -109,8 +109,8 @@ private:
 
 	unsigned long headerCounter_;
 
-	eclib::Offset blockStartOffset_;
-	eclib::Offset blockEndOffset_;
+	eckit::Offset blockStartOffset_;
+	eckit::Offset blockEndOffset_;
 
 protected:
 	bool skipData_;

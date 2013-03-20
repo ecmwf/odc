@@ -19,7 +19,7 @@
 #include "odblib/ODBAPISettings.h"
 
 
-namespace eclib { class DataHandle; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 
@@ -90,7 +90,7 @@ public:
 protected:
 
 	template<typename BYTEORDER>
-		void loadBasics(eclib::DataHandle *dh)
+		void loadBasics(eckit::DataHandle *dh)
 	{
 		DataStream<BYTEORDER> f(dh);
 		f.readInt32(hasMissing_);
@@ -100,7 +100,7 @@ protected:
 	}
 
 	template<typename BYTEORDER>
-		void saveBasics(eclib::DataHandle *dh)
+		void saveBasics(eckit::DataHandle *dh)
 	{
 		DataStream<BYTEORDER> f(dh);
 		f.writeInt32(hasMissing_);
@@ -144,12 +144,12 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
 	virtual void print(ostream& s) const;
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
@@ -162,18 +162,18 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
 	virtual void print(ostream& s) const;
 
-	void load(eclib::DataHandle *dh)
+	void load(eckit::DataHandle *dh)
 	{
 		Codec::loadBasics<BYTEORDER>(dh);
 		BYTEORDER::swap(this->min_);
 		BYTEORDER::swap(this->max_);
 	}
 
-	void save(eclib::DataHandle *dh)
+	void save(eckit::DataHandle *dh)
 	{
 		BYTEORDER::swap(this->min_);
 		BYTEORDER::swap(this->max_);
@@ -191,10 +191,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d); 
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 	DataStream<BYTEORDER>& ds() { return ds_; }
 private:
 	DataStream<BYTEORDER> ds_;
@@ -207,10 +207,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
@@ -224,12 +224,12 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { CodecInt8Missing<BYTEORDER>::dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { CodecInt8Missing<BYTEORDER>::dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
 	virtual void print(ostream& s) const;
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
@@ -244,8 +244,8 @@ public:
 		this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_REAL; 
 	}
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 //private:
 //	DataStream<BYTEORDER>& ds() { return ds_; }
 //	DataStream<BYTEORDER> ds_;
@@ -261,7 +261,7 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
 	virtual void print(ostream& s) const;
 
@@ -270,8 +270,8 @@ public:
 	virtual HashTable* giveHashTable();
 
 	void gatherStats(double v);
-	void load(eclib::DataHandle *dh);
-	void save(eclib::DataHandle *dh);
+	void load(eckit::DataHandle *dh);
+	void save(eckit::DataHandle *dh);
 
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
@@ -287,7 +287,7 @@ Codec* CodecChars<BYTEORDER>::clone()
 	*(c->hashTable_) = *hashTable_;
 	ASSERT(c->min() == this->min());
 	ASSERT(c->max() == this->max());
-	//hashTable_->dumpTable(eclib::Log::info());
+	//hashTable_->dumpTable(eckit::Log::info());
 	return c;
 }
 
@@ -298,10 +298,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
@@ -315,10 +315,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
@@ -331,10 +331,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
@@ -347,10 +347,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
@@ -363,10 +363,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 	DataStream<BYTEORDER>& ds() { return ds_; }
 private:
 	DataStream<BYTEORDER> ds_;
@@ -379,10 +379,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
@@ -404,11 +404,11 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	virtual void dataHandle(void *p) { intCodec.ds().dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	virtual void dataHandle(void *p) { intCodec.ds().dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
 	void gatherStats(double v) { CodecChars<BYTEORDER>::gatherStats(v); }
-	void load(eclib::DataHandle *dh) { CodecChars<BYTEORDER>::load(dh); }
-	void save(eclib::DataHandle *dh) { CodecChars<BYTEORDER>::save(dh); }
+	void load(eckit::DataHandle *dh) { CodecChars<BYTEORDER>::load(dh); }
+	void save(eckit::DataHandle *dh) { CodecChars<BYTEORDER>::save(dh); }
 
 private:
 	DataStream<BYTEORDER>& ds() { return intCodec.ds(); }
@@ -442,11 +442,11 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { intCodec.ds().dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { intCodec.ds().dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
 	void gatherStats(double v) { CodecChars<BYTEORDER>::gatherStats(v); }
-	void load(eclib::DataHandle *dh) { CodecChars<BYTEORDER>::load(dh); }
-	void save(eclib::DataHandle *dh) { CodecChars<BYTEORDER>::save(dh); }
+	void load(eckit::DataHandle *dh) { CodecChars<BYTEORDER>::load(dh); }
+	void save(eckit::DataHandle *dh) { CodecChars<BYTEORDER>::save(dh); }
 
 private:
 	DataStream<BYTEORDER>& ds() { return intCodec.ds(); }
@@ -499,7 +499,7 @@ HashTable* CodecChars<BYTEORDER>::giveHashTable()
 }
 
 template<typename BYTEORDER>
-void CodecChars<BYTEORDER>::load(eclib::DataHandle *dh)
+void CodecChars<BYTEORDER>::load(eckit::DataHandle *dh)
 {
 	Codec::loadBasics<BYTEORDER>(dh);
 	DataStream<BYTEORDER> ds(dh);
@@ -507,7 +507,7 @@ void CodecChars<BYTEORDER>::load(eclib::DataHandle *dh)
 }
 
 template<typename BYTEORDER>
-void CodecChars<BYTEORDER>::save(eclib::DataHandle *dh)
+void CodecChars<BYTEORDER>::save(eckit::DataHandle *dh)
 {
 	Codec::saveBasics<BYTEORDER>(dh);
 	DataStream<BYTEORDER> ds(dh);

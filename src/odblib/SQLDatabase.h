@@ -14,12 +14,12 @@
 #ifndef SQLDatabase_H
 #define SQLDatabase_H
 
-#include "eclib/PathName.h"
+#include "eclib/filesystem/PathName.h"
 
 #include "odblib/SQLTable.h"
 #include "odblib/SchemaAnalyzer.h"
 
-namespace eclib { class DataHandle; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
 namespace sql {
@@ -36,7 +36,7 @@ class SQLDatabase {
 public:
 	typedef enum { ODA, CSV } DataFormat;
 
-	SQLDatabase(const eclib::PathName&,const string&);
+	SQLDatabase(const eckit::PathName&,const string&);
 	SQLDatabase(const string& = "default");
 	virtual ~SQLDatabase(); // Change to virtual if base class
 
@@ -45,7 +45,7 @@ public:
 	virtual void close();
 
 	virtual SQLTable* table(const string&);
-	virtual SQLTable* openDataHandle(eclib::DataHandle&, DataFormat = ODA) = 0; 
+	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA) = 0; 
 	virtual SQLTable* openDataStream(istream&, DataFormat = CSV) = 0; 
 	virtual void addTable(SQLTable *table) { tablesByName_[table->name()] = table; }
 
@@ -66,7 +66,7 @@ public:
 protected:
 	Links links_;
 	map<string,SQLTable*> tablesByName_;
-    eclib::PathName path_;
+    eckit::PathName path_;
 
 	Variables variables_;
 	string name_;

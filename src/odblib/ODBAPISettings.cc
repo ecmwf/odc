@@ -9,7 +9,7 @@
  */
 
 #include "eclib/machine.h"
-#include "eclib/AIOHandle.h"
+#include "eclib/filesystem/AIOHandle.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
@@ -29,7 +29,7 @@
 #include "odblib/Writer.h"
 #include "odblib/WriterDispatchingIterator.h"
 
-using namespace eclib;
+using namespace eckit;
 
 template class ThreadSingleton<odb::ODBAPISettings>;
 static ThreadSingleton<odb::ODBAPISettings> instance_;

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/PartFileHandle.h"
+#include "eclib/filesystem/PartFileHandle.h"
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
@@ -16,7 +16,7 @@
 #include "SQLOutputConfig.h"
 #include "SQLSelectFactory.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace tool {

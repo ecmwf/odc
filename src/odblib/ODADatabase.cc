@@ -15,7 +15,7 @@
 #include "odblib/StringTool.h"
 #include "odblib/TODATable.h"
 
-using namespace eclib;
+using namespace eckit;
 
 namespace odb {
 namespace sql {

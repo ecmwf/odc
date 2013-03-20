@@ -94,8 +94,8 @@ void Header<OWNER>::load(DATASTREAM &ff)
 
 	if (! (headerDigest == actualHeaderDigest))
 	{
-		//eclib::Log::debug() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << endl;
-		//eclib::Log::debug() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << endl;
+		//eckit::Log::debug() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << endl;
+		//eckit::Log::debug() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << endl;
 		ASSERT(headerDigest == actualHeaderDigest);
 	}
 	
@@ -120,7 +120,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 	rowsNumber_ = numberOfRows;
 	owner_.columns().rowsNumber(rowsNumber_);
 
-	eclib::Log::debug() << "Header<OWNER>::load: numberOfRows = " << numberOfRows << endl;
+	eckit::Log::debug() << "Header<OWNER>::load: numberOfRows = " << numberOfRows << endl;
 
 	// Flags -> ODAFlags
 	Flags flags;
@@ -173,10 +173,10 @@ void serializeHeader(DATAHANDLE &dh, size_t dataSize, size_t rowsNumber, const P
 
 	columns.save(f);
 
-	eclib::Length len = memoryHandle.openForRead();
+	eckit::Length len = memoryHandle.openForRead();
 
 	MemoryBlock buffer(len);
-	eclib::Length readBytes = memoryHandle.read(buffer, len);
+	eckit::Length readBytes = memoryHandle.read(buffer, len);
 	ASSERT(len == readBytes);
 
 	MD5 md5;
