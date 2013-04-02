@@ -17,6 +17,8 @@
 
 using namespace eclib;
 
+typedef StringTools S;
+
 namespace odb {
 
 // TODO: allow user to specify the delimiter
@@ -60,20 +62,49 @@ void TextReaderIterator::parseHeader()
 {
 	string header;
 	std::getline(*in_, header);
-	vector<string> columns = StringTools::split(defaultDelimiter, header);
+	vector<string> columns = S::split(defaultDelimiter, header);
 
 	Log::debug() << "TextReaderIterator::parseHeader: defaultDelimiter: '" << defaultDelimiter << "'" << endl;
 	Log::debug() << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
-		vector<string> column = StringTools::split(":", columns[i]);
+		vector<string> column = S::split(":", columns[i]);
 		const string& columnName = column[0];
 		const string& columnType = column[1];
-		// FIXME: add parameter: missingValue
-		// TODO: the addColumn API needs to be cleaned up (every column can always have a missing value)
-		columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType, true);
-		Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " << columnType <<  endl;
+
+		if (! S::startsWith(S::upper(columnType), "BITFIELD"))
+		{
+			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType, true);
+			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
+						<< columnType <<  endl;
+		}
+		else
+		{
+			const string& c(columns[i]);
+			size_t leftBracket = c.find('[');
+			size_t rightBracket = c.find(']');
+			ASSERT(leftBracket != string::npos && rightBracket != string::npos);
+			string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
+			//Log::debug() << "BITFIELD definition: '" << s << "'" << endl;
+
+			odb::FieldNames names;
+			odb::Sizes      sizes;
+			vector<string> bs(S::split(";", s));
+			for (size_t i = 0; i < bs.size(); ++i)
+			{
+				vector<string> v(S::split(":", bs[i]));
+				ASSERT(v.size() == 2);
+				names.push_back(v[0]);
+				size_t size = atoi(v[1].c_str());
+				ASSERT(size);
+				sizes.push_back(size);
+			}
+			odb::BitfieldDef bd(make_pair(names, sizes));
+			columns_.addBitfield<DataStream<SameByteOrder, DataHandle> >(columnName, bd);
+			Log::debug() << "TextReaderIterator::parseHeader: adding BITFIELD " << columns_.size() << " '" << columnName << "' : " 
+						<< /*bd <<*/ endl;
+		}
 	}
 	initRowBuffer();
 }
@@ -107,7 +138,7 @@ bool TextReaderIterator::next()
 
 	string line;
 	std::getline(*in_, line);
-	vector<string> values = StringTools::split(defaultDelimiter, line);
+	vector<string> values = S::split(defaultDelimiter, line);
 
 	size_t nCols = values.size();
 	if (nCols == 0)

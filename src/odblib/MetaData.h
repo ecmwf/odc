@@ -60,6 +60,8 @@ public:
 	template<typename DATASTREAM>
 	MetaData& addColumn(const string& name, const string& type, bool hasMissing = true, double missingValue = 0.0 /*FIXME*/);
 
+	template<typename DATASTREAM> MetaData& addBitfield(const string& name, const BitfieldDef&);
+
 	bool hasColumn(const string&) const;
 	Column* columnByName(const string&) const;
 	size_t columnIndex(const string&) const;
@@ -132,6 +134,18 @@ MetaData& MetaData::addColumn(const string& name, const string& type, bool hasMi
 	//TODO:
 	//c->missingValue(missingValue);
 	
+	push_back(c);
+	return *this;
+}
+
+template<typename DATASTREAM> 
+MetaData& MetaData::addBitfield(const string& name, const BitfieldDef& bd)
+{
+	Column* c = new Column(*this);
+	ASSERT(c);
+	c->name(name);
+	c->type<DATASTREAM>(BITFIELD, false);
+	c->bitfieldDef(bd);
 	push_back(c);
 	return *this;
 }
