@@ -110,6 +110,9 @@ void SQLSimpleOutput::outputString(double x, bool missing) const
 
 void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 {
+	outputUnsignedInt(x, missing);
+	return;
+	// TODO: decimal, optionally binary
 	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL)
 		out_ << "NULL";
