@@ -141,11 +141,15 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 		if(i) out_ << config_.fieldDelimiter;
 
 		format(out_, i);
-		//stringstream ss;
-		//ss << name;
-		//ss << ":" << type->name();
-		//out_ << ss.str();
-		out_ << name;
+
+		if (config_.outputFormat != "wide")
+			out_ << name;
+		else 
+		{
+			stringstream ss;
+			ss << name << ":" << type->name();
+			out_ << ss.str();
+		}
 		
 	}
     out_ << endl;
