@@ -63,6 +63,8 @@ void SQLTool::run()
 		Log::error() << endl;
 		return;// 1;
 	}
+	vector<string> params(parameters());
+	params.erase(params.begin());
 
 	auto_ptr<ofstream> foutPtr(optionIsSet("-o")
 								? new ofstream(optionArgument("-o", string("")).c_str())
@@ -71,10 +73,9 @@ void SQLTool::run()
 	SQLInteractiveSession session(out);
 	SQLParser parser;
 	SQLOutputConfig config(SQLSelectFactory::instance().config());
-
-	string sql (StringTool::match("select", parameters(1))
-				? StringTools::join(" ", parameters()) + ";"
-				: StringTool::readFile(parameters(1) == "-" ? "/dev/tty" : parameters(1)));
+	string sql(StringTool::match("select", params[0])
+				? StringTools::join(" ",  params) + ";"
+				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
 	runSQL(sql, session, parser, config);
 }
 
