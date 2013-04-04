@@ -126,9 +126,6 @@ void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 
 void SQLSimpleOutput::prepare(SQLSelect& sql)
 {
-	if (config_.doNotWriteColumnNames)
-		return;
-
 	const expression::Expressions& columns(sql.output());
 	for (size_t i = 0; i < columns.size(); i++)
 	{
@@ -138,21 +135,25 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 		columnWidths_.push_back(max(type->width(), name.size()));
 		columnAlignments_.push_back(type->format());
 
-		if(i) out_ << config_.fieldDelimiter;
-
-		format(out_, i);
-
-		if (config_.outputFormat != "wide")
-			out_ << name;
-		else 
+		if (! config_.doNotWriteColumnNames)
 		{
-			stringstream ss;
-			ss << name << ":" << type->name();
-			out_ << ss.str();
+			if(i) out_ << config_.fieldDelimiter;
+
+			format(out_, i);
+
+			if (config_.outputFormat != "wide")
+				out_ << name;
+			else 
+			{
+				stringstream ss;
+				ss << name << ":" << type->name();
+				out_ << ss.str();
+			}
 		}
 		
 	}
-    out_ << endl;
+    if (! config_.doNotWriteColumnNames)
+		out_ << endl;
 }
 
 void SQLSimpleOutput::cleanup(SQLSelect& sql) {}
