@@ -29,10 +29,12 @@ extern "C" {
 #include "odbdump.h"
 }
 
+using namespace eckit;
+
 namespace odb {
 namespace tool {
 
-ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
+ODBIterator::ODBIterator(const eckit::PathName& db, const std::string& sql)
 : db_(db),
   odbHandle_(0),
   ci_(0),

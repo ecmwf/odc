@@ -24,7 +24,7 @@ public:
 	typedef T iterator_class;
 	typedef typename odb::IteratorProxy<iterator_class, TSQLReader, const double> iterator;
 
-	TSQLReader(const eclib::PathName& pathName, std::string sql)
+	TSQLReader(const eckit::PathName& pathName, std::string sql)
 	: pathName_(pathName), sql_(sql)
 	{}
 
@@ -34,7 +34,7 @@ public:
 	const iterator end() { return iterator(0); }
 
 private:
-	const eclib::PathName pathName_;
+	const eckit::PathName pathName_;
 	const std::string sql_;
 };
 

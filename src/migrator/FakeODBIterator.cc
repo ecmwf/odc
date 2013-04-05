@@ -29,6 +29,8 @@ extern "C" {
 #include "ODBIterator.h"
 #include "FakeODBIterator.h"
 
+using namespace eckit;
+
 namespace odb {
 namespace tool {
 

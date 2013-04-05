@@ -53,9 +53,11 @@ ImportODBTool<IN>::ImportODBTool (const CommandLineParser& clp)
 //ToolFactory<ImportODBTool> importODB("importodb");
 
 template <typename IN>
-pair<unsigned long long, const vector<PathName> > ImportODBTool<IN>::importDispatching(PathName db, const std::string& sql, const std::string& dumpFile)
-{
-	Timer importingAndDipatching("Importing and dipatching");
+pair<unsigned long long, const vector<eckit::PathName> > ImportODBTool<IN>::importDispatching(eckit::PathName db, const std::string& sql, const std::string& dumpFile)
+{    
+    using namespace eckit;
+
+    Timer importingAndDipatching("Importing and dipatching");
 
 	Log::info() << "Importing data from '" << db
 		<< "', query is '" << sql << "', into '"
@@ -66,14 +68,14 @@ pair<unsigned long long, const vector<PathName> > ImportODBTool<IN>::importDispa
 
 	unsigned long long inRowsNumber = saveData<>(w, db, sql);
 
-	vector<PathName> files = (**w).getFiles();
+	vector<eckit::PathName> files = (**w).getFiles();
 	return make_pair(inRowsNumber, files);
 }
 
 template <typename IN>
-void ImportODBTool<IN>::validate(PathName db, const std::string& sql, const PathName& file)
+void ImportODBTool<IN>::validate(eckit::PathName db, const std::string& sql, const eckit::PathName& file)
 {
-	Timer verification("Validating dispatched output");
+	eckit::Timer verification("Validating dispatched output");
 
 	odb::Reader odaReader(file);
 	odb::Reader::iterator r(odaReader.begin());
@@ -90,8 +92,10 @@ void ImportODBTool<IN>::validate(PathName db, const std::string& sql, const Path
 
 
 template <typename IN>
-void ImportODBTool<IN>::validateRowsNumber(unsigned long long inRowsNumber, const vector<PathName>& files)
+void ImportODBTool<IN>::validateRowsNumber(unsigned long long inRowsNumber, const vector<eckit::PathName>& files)
 {
+    using namespace eckit;
+    
 	Timer verification("Validating dispatched output");
 
 	Log::info() << "ImportODBTool::validateRowsNumber: Validating output. " << endl;
@@ -116,8 +120,10 @@ void ImportODBTool<IN>::validateRowsNumber(unsigned long long inRowsNumber, cons
 
 
 template <typename IN>
-void ImportODBTool<IN>::archiveFiles(const vector<PathName>& files)
+void ImportODBTool<IN>::archiveFiles(const vector<eckit::PathName>& files)
 {
+    using namespace eckit;
+    
 	for (size_t i = 0; i < files.size(); ++i)
 	{
 		PathName fn = files[i];
@@ -140,6 +146,8 @@ void ImportODBTool<IN>::archiveFiles(const vector<PathName>& files)
 template <typename IN>
 void ImportODBTool<IN>::run()
 {
+    using namespace eckit;
+    
 	ASSERT("Wrong number of parameters. odb2oda.cc:main should check this."
 		&& !(parameters().size() < 2 || parameters().size() > 4));
 
@@ -169,7 +177,7 @@ void ImportODBTool<IN>::run()
 		DispatchResult r = importDispatching(db, sql, dumpFile);
 
 		unsigned long long importedRowsNumber = r.first;
-		const vector<PathName>& outFiles = r.second;
+		const vector<eckit::PathName>& outFiles = r.second;
 
 		Timer verification("Verification");
 		validateRowsNumber(importedRowsNumber, outFiles);
@@ -196,8 +204,10 @@ void ImportODBTool<IN>::run()
 
 template <typename IN>
 template <typename OUT_ITERATOR>
-unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, PathName odb, str sql) //, const SchemaAnalyzer &schema)
+unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, eckit::PathName odb, str sql) //, const SchemaAnalyzer &schema)
 {
+    using namespace eckit;
+    
 	Log::info() << "ImportODBTool<IN>::saveData: odb='" << odb << "', sql='" << sql << "'" << endl;
 	unsigned long long n = 0;
 	try {
@@ -227,7 +237,7 @@ unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, PathName odb, str
 }
 
 template <typename IN>
-bool ImportODBTool<IN>::isECFSPathName(const PathName fileName)
+bool ImportODBTool<IN>::isECFSPathName(const eckit::PathName fileName)
 {
 	return str(fileName).find("era40:") == 0;
 }
@@ -240,9 +250,11 @@ bool ImportODBTool<IN>::isECFSPathName(const PathName fileName)
 /// @param fileName  e.g. "era40:2002080100"
 ///
 template <typename IN>
-PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
+eckit::PathName ImportODBTool<IN>::readFromECFS(const eckit::PathName fileName)
 {
-	ASSERT(isECFSPathName(fileName));
+    using namespace eckit;
+
+    ASSERT(isECFSPathName(fileName));
 
 	str fn = fileName;
 
@@ -285,6 +297,6 @@ PathName ImportODBTool<IN>::readFromECFS(const PathName fileName)
 }
 
 } // namespace tool 
-} //namespace odb 
+} // namespace odb 
 
 

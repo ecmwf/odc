@@ -32,24 +32,24 @@ public:
 protected:
 
 	template <typename OUT_ITERATOR>
-	unsigned long long saveData(OUT_ITERATOR w, eclib::PathName odb, std::string sql);
+	unsigned long long saveData(OUT_ITERATOR w, eckit::PathName odb, std::string sql);
 	
-	typedef pair<unsigned long long, const vector<eclib::PathName> > DispatchResult;
+	typedef pair<unsigned long long, const vector<eckit::PathName> > DispatchResult;
 
-	DispatchResult importDispatching(eclib::PathName db, const std::string& sql, const std::string& dumpFile);
+	DispatchResult importDispatching(eckit::PathName db, const std::string& sql, const std::string& dumpFile);
 
-	void validate(eclib::PathName db, const string& sql, const eclib::PathName& file);
-	void validateRowsNumber(unsigned long long, const vector<eclib::PathName>&);
+	void validate(eckit::PathName db, const string& sql, const eckit::PathName& file);
+	void validateRowsNumber(unsigned long long, const vector<eckit::PathName>&);
 
-	void archiveFiles(const vector<eclib::PathName>&);
+	void archiveFiles(const vector<eckit::PathName>&);
 private:
 
 // No copy allowed
     ImportODBTool(const ImportODBTool&);
     ImportODBTool& operator=(const ImportODBTool&);
 
-	bool isECFSPathName(const eclib::PathName fileName);
-	eclib::PathName readFromECFS(const eclib::PathName fileName);
+	bool isECFSPathName(const eckit::PathName fileName);
+	eckit::PathName readFromECFS(const eckit::PathName fileName);
 };
 
 } // namespace tool 

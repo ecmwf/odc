@@ -29,6 +29,8 @@
 #include "migrator/ODB2ODATool.h"
 #include "migrator/OldODBReader.h"
 
+using namespace eckit;
+
 namespace odb {
 namespace tool {
 

@@ -30,6 +30,8 @@ extern "C" {
 #include "migrator/FakeODBIterator.h"
 #include "migrator/ReptypeGenIterator.h"
 
+using namespace eckit;
+
 namespace odb {
 namespace tool {
 

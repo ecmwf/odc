@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Application.h"
 #include "eclib/filesystem/PathName.h"
 #include "eclib/filesystem/FileHandle.h"
 
@@ -85,11 +84,11 @@ int gdb(int argc, char *argv[])
 	for (int i = 2; i < argc; i++)
 		args += str(" ") + argv[i];
 
-	PathName scriptFile = str(".gdb_") + str(argv[2]);
+	eckit::PathName scriptFile = str(".gdb_") + str(argv[2]);
 	if (! scriptFile.exists())
 	{
 		str s = str("file ") + cmd + "\nbreak main\nrun " + args + "\n";
-		FileHandle f(scriptFile);
+		eckit::FileHandle f(scriptFile);
 		f.openForWrite(1024);
 		f.write(s.c_str(), s.size());
 		f.close();

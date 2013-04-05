@@ -13,7 +13,7 @@
 
 #ifndef FakeODBIterator_H
 #define FakeODBIterator_H
-namespace eclib { class PathName; }
+namespace eckit { class PathName; }
 
 namespace odb {
 namespace tool {
@@ -55,7 +55,7 @@ public:
 	};
 
 
-	FakeODBIterator(const eclib::PathName& db, const std::string& sql); 
+	FakeODBIterator(const eckit::PathName& db, const std::string& sql); 
 	~FakeODBIterator ();
 
 	const FakeODBIterator& end() { return *reinterpret_cast<FakeODBIterator*>(0); }
