@@ -21,9 +21,6 @@ typedef StringTools S;
 
 namespace odb {
 
-// TODO: allow user to specify the delimiter
-string TextReaderIterator::defaultDelimiter = ",";
-
 TextReaderIterator::TextReaderIterator(TextReader &owner)
 : owner_(owner),
   columns_(0),
@@ -62,18 +59,18 @@ void TextReaderIterator::parseHeader()
 {
 	string header;
 	std::getline(*in_, header);
-	vector<string> columns = S::split(defaultDelimiter, header);
+	vector<string> columns = S::split(owner_.delimiter(), header);
 
-	Log::debug() << "TextReaderIterator::parseHeader: defaultDelimiter: '" << defaultDelimiter << "'" << endl;
+	Log::debug() << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << endl;
 	Log::debug() << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
-		vector<string> column = S::split(":", columns[i]);
-		const string& columnName = column[0];
-		const string& columnType = column[1];
+		vector<string> column (S::split(":", columns[i]));
+		const string& columnName (column[0]);
+		const string& columnType (S::upper(column[1]));
 
-		if (! S::startsWith(S::upper(columnType), "BITFIELD"))
+		if (! S::startsWith(columnType, "BITFIELD"))
 		{
 			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType, true);
 			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
@@ -82,8 +79,8 @@ void TextReaderIterator::parseHeader()
 		else
 		{
 			const string& c(columns[i]);
-			size_t leftBracket = c.find('[');
-			size_t rightBracket = c.find(']');
+			size_t leftBracket (c.find('['));
+			size_t rightBracket (c.find(']'));
 			ASSERT(leftBracket != string::npos && rightBracket != string::npos);
 			string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
 			//Log::debug() << "BITFIELD definition: '" << s << "'" << endl;
@@ -138,7 +135,7 @@ bool TextReaderIterator::next()
 
 	string line;
 	std::getline(*in_, line);
-	vector<string> values = S::split(defaultDelimiter, line);
+	vector<string> values(S::split(owner_.delimiter(), line));
 
 	size_t nCols = values.size();
 	if (nCols == 0)

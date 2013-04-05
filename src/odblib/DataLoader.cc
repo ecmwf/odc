@@ -113,7 +113,7 @@ void DataLoader::fillFromText(DataSet& dataset)
     ASSERT(stream_);
     ASSERT(query_.empty());
 
-    TextReader reader(*stream_);
+    TextReader reader(*stream_, ","); // FIXME: delimiter is hardcoded now
     TextReader::iterator source = reader.begin();
     MetaData& metadata = source->columns();
 

@@ -41,7 +41,7 @@ private:
 	virtual void close();
 	virtual SQLTable* table(const string&);
 	virtual SQLTable* openDataHandle(eclib::DataHandle&, DataFormat = ODA);
-	virtual SQLTable* openDataStream(istream&, DataFormat = CSV); 
+	virtual SQLTable* openDataStream(istream&, const string& delimiter, DataFormat = CSV); 
 
 // -- Friends
 	//friend ostream& operator<<(ostream& s,const ODADatabase& p)

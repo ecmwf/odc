@@ -366,7 +366,7 @@ void vector_syntax2()
 }
 TESTCASE(vector_syntax2);
 
-
+/*
 void filterInPlace()
 {
 	create_stringInWhere_file();
@@ -410,6 +410,7 @@ void filterInPlace2()
 	ASSERT(rc == 1);
 }
 TESTCASE(filterInPlace2);
+*/
 
 void blocksSizes()
 {

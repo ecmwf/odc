@@ -51,7 +51,7 @@ public:
 	SQLTable* findFile(const string&);
 
 	SQLTable* openDataHandle(eclib::DataHandle &);
-	SQLTable* openDataStream(istream &);
+	SQLTable* openDataStream(istream &, const string &);
 
 	virtual void statement(SQLStatement*) = 0;
 	virtual SQLOutput* defaultOutput() = 0;

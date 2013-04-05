@@ -50,10 +50,10 @@ TODATable<T>::TODATable(SQLDatabase& owner, eclib::DataHandle &dh):
 }
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, istream &is):
+TODATable<T>::TODATable(SQLDatabase& owner, istream &is, const string &delimiter):
 	SQLTable(owner, nullPathName, inputTable),
 	data_(0),
-	oda_(is),
+	oda_(is, delimiter),
 	reader_(oda_.begin()),
     end_(oda_.end())
 {

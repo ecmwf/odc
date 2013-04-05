@@ -26,46 +26,48 @@ using namespace eclib;
 namespace odb {
 #define MEGA(x) (x*1024*1024)
 
-TextReader::TextReader(std::istream& input)
+TextReader::TextReader(std::istream& input, const string& delimiter)
 : in_(&input),
-  deleteDataHandle_(false)
+  deleteDataHandle_(false),
+  delimiter_(delimiter)
 {}
 
-TextReader::TextReader()
-: in_(0),
-  deleteDataHandle_(true),
-  path_("")
-{}
+//TextReader::TextReader()
+//: in_(0),
+//  deleteDataHandle_(true),
+//  path_("")
+//{}
 
-TextReader::TextReader(const string& path)
+TextReader::TextReader(const string& path, const string& delimiter)
 : in_(new std::ifstream(path.c_str())),
   deleteDataHandle_(true),
-  path_(path)
+  path_(path),
+  delimiter_(delimiter)
 {
-        //dataHandle_->openForRead();
+	//dataHandle_->openForRead();
 }
 
 TextReader::~TextReader()
 {
-        ///if (dataHandle_ && deleteDataHandle_)
-        if (in_ && deleteDataHandle_)
-        {
-                //dataHandle_->close();
-                //delete dataHandle_;
-                delete in_;
-        }
+	///if (dataHandle_ && deleteDataHandle_)
+	if (in_ && deleteDataHandle_)
+	{
+		//dataHandle_->close();
+		//delete dataHandle_;
+		delete in_;
+	}
 }
 
 TextReaderIterator* TextReader::createReadIterator(const PathName& pathName)
 {
-        return new TextReaderIterator(*this, pathName);
+	return new TextReaderIterator(*this, pathName);
 }
 
 TextReader::iterator TextReader::begin()
 {
-        TextReaderIterator * it = new TextReaderIterator(*this);
-        it->next();
-        return iterator(it);
+	TextReaderIterator * it = new TextReaderIterator(*this);
+	it->next();
+	return iterator(it);
 }
 
 const TextReader::iterator TextReader::end() { return iterator(0); }

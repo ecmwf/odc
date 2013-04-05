@@ -54,7 +54,7 @@ void ImportTool::run()
 void ImportTool::importFile(const PathName& in, const PathName& out, const string& delimiter)
 {
 	ifstream fs( in.asString().c_str() );
-	odb::Select input("select *", fs);
+	odb::Select input("select *", fs, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
@@ -70,7 +70,7 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const strin
 void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
 {
 	stringstream fs(s);
-	odb::Select input("select *", fs);
+	odb::Select input("select *", fs, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());

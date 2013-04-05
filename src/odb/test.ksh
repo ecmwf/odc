@@ -46,12 +46,15 @@ log +++ odb set Completed OK
 log +++ Test: odb import
 
 cat >test_odb_text_input.csv <<@@
-stream:STRING,expver:INTEGER,value:REAL
-'001',1,0.1
-'001',2,0.2
+stream:STRING,expver:INTEGER,value:REAL,report_status@hdr:BITFIELD[active:1;passive:1;rejected:1;blacklisted:1]
+'001',1,0.1,0000
+'001',2,0.2,0001
+'001',3,0.3,5
+'001',4,0.4,15
 @@
 ./odb import test_odb_text_input.csv test_import.odb
-./odb sql select \* from \"test_import.odb\"
+./odb sql select \* from \"test_import.odb\" >test_odb_text_input.out
+diff test_odb_text_input.csv test_odb_text_input.out 
 
 
 #grep "VARCHAR(30)\|INT" ../obsdb/obsdb.ddl|xargs|sed 's/ VARCHAR(30)/:STRING/g'|sed 's/ INT/:INTEGER/g'|sed 's/ //g'|sed 's/,/\&/g' >rtt.csv
@@ -98,5 +101,9 @@ ls -l split.*.*.odb
 
 log +++ odb Completed OK
 
+#log +++ Test import tool
+#og +++ odb Completed OK
 
 log +++ All tests completed OK
+
+

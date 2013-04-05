@@ -34,8 +34,8 @@ public:
 	typedef IteratorProxy<TextReaderIterator,TextReader,const double> iterator;
 	typedef iterator::Row row;
 
-	TextReader(istream &);
-	TextReader(const std::string& path);
+	TextReader(istream &, const string& delimiter);
+	TextReader(const std::string& path, const string& delimiter);
 	TextReader();
 
 	virtual ~TextReader();
@@ -45,12 +45,13 @@ public:
 
 	istream& stream() { return *in_; }
 	// For C API
-        TextReaderIterator* createReadIterator(const eclib::PathName&);
+	TextReaderIterator* createReadIterator(const eclib::PathName&);
 
 #ifdef SWIGPYTHON
 	iterator __iter__() { return begin(); }
 #endif
 
+	const string& delimiter() { return delimiter_; }
 private:
 // No copy allowed
     TextReader(const TextReader&);
@@ -60,6 +61,7 @@ private:
 	bool deleteDataHandle_;
 	//const eclib::PathName path_;
 	const string path_;
+	const string delimiter_;
 
 	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,const double>;
 	friend class odb::TextReaderIterator;

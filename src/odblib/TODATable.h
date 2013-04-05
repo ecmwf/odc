@@ -29,7 +29,7 @@ public:
 
 	TODATable(SQLDatabase&, const eclib::PathName&, const string&);
 	TODATable(SQLDatabase&, eclib::DataHandle&);
-	TODATable(SQLDatabase&, istream&);
+	TODATable(SQLDatabase&, istream&, const string& delimiter);
 
 	~TODATable(); 
 
