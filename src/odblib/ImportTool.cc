@@ -24,7 +24,7 @@ using namespace eclib;
 namespace odb {
 namespace tool {
 
-string ImportTool::defaultDelimiter = "TAB";
+string ImportTool::defaultDelimiter = ",";
 
 ImportTool::ImportTool(int argc, char *parameters[])
 : Tool(argc, parameters)
