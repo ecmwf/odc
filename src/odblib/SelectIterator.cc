@@ -77,7 +77,8 @@ void SelectIterator::parse(typename DATASTREAM::DataHandleType *dh)
 void SelectIterator::parse(std::istream *is)
 {
 	sql::SQLParser p;
-	p.parseString(select_, is, odb::sql::SQLSelectFactory::instance().config());
+	odb::sql::SQLSelectFactory& factory(odb::sql::SQLSelectFactory::instance());
+	p.parseString(select_, is, factory.config(), factory.csvDelimiter());
 	sql::SQLStatement *stmt = session_.statement();
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
 	ASSERT(selectStmt_);

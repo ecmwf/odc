@@ -32,11 +32,13 @@ TextReader::TextReader(std::istream& input, const string& delimiter)
   delimiter_(delimiter)
 {}
 
-//TextReader::TextReader()
-//: in_(0),
-//  deleteDataHandle_(true),
-//  path_("")
-//{}
+/*
+TextReader::TextReader()
+: in_(0),
+  deleteDataHandle_(true),
+  path_("")
+{}
+*/
 
 TextReader::TextReader(const string& path, const string& delimiter)
 : in_(new std::ifstream(path.c_str())),

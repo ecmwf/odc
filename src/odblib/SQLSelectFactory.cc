@@ -163,7 +163,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 		Log::debug() << "No <from> clause" << endl;
 
 		SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
-			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, ",") //FIXME: delimiter
+			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
 			: database_ ? database_->table("defaultTable")
 			: 0;
 		if (table == 0)

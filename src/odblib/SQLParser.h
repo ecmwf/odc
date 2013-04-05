@@ -33,17 +33,10 @@ public:
 	static int line();
 	static void include(const eclib::PathName&);
 
-	//static void parseFile(const eclib::PathName&, eclib::DataHandle*);
-	//static void parseFile(const eclib::PathName&, eclib::DataHandle*, SQLOutputConfig);
 	static void parseString(const string&, eclib::DataHandle*, SQLOutputConfig);
-
-	//static void parseFile(const eclib::PathName&, istream*);
-	//static void parseFile(const eclib::PathName&, istream*, SQLOutputConfig);
-	static void parseString(const string&, istream*, SQLOutputConfig);
-
-
-	//static void parseFile(const eclib::PathName&, SQLDatabase&, SQLOutputConfig);
+	static void parseString(const string&, istream*, SQLOutputConfig, const string& cvsDelimiter);
 	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
+
 	static void lexRelease();
 };
 

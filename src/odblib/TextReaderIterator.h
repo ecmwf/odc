@@ -49,6 +49,7 @@ public:
 
 	virtual MetaData& columns() { return columns_; }
 
+	static odb::BitfieldDef parseBitfields(const string&);
 //protected:
 
 	virtual int close();

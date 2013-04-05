@@ -36,7 +36,6 @@ public:
 
 	TextReader(istream &, const string& delimiter);
 	TextReader(const std::string& path, const string& delimiter);
-	TextReader();
 
 	virtual ~TextReader();
 
@@ -56,6 +55,7 @@ private:
 // No copy allowed
     TextReader(const TextReader&);
     TextReader& operator=(const TextReader&);
+	TextReader();
 
 	istream* in_;
 	bool deleteDataHandle_;
