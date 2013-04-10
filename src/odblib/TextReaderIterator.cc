@@ -153,16 +153,8 @@ bool TextReaderIterator::next()
 
 	for(size_t i = 0; i < nCols; ++i)
 	{
-		const string& v (S::upper(S::trim(values[i])));
-		//cout << "TextReaderIterator::next: " << *columns_[i] << " v='" << v << "'" << endl;
-
-		if (v == "NULL")
-		{
-			//cout << "TextReaderIterator::next: " << *columns_[i] << " is NULL " << columns_[i]->missingValue() << endl;
-			lastValues_[i] = columns_[i]->missingValue();
-		}
-		else
-			lastValues_[i] = StringTool::translate(v);
+		const string& v (S::trim(values[i]));
+		lastValues_[i] = S::upper(v) == "NULL" ? columns_[i]->missingValue() : StringTool::translate(v);
 	}
 
 	return nCols;
