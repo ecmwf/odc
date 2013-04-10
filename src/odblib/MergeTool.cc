@@ -51,11 +51,12 @@ void MergeTool::run()
 
 void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& outputFile)
 {
+	typedef odb::Reader::iterator I;
 	struct R : public vector<odb::Reader*> {
 		~R() { for (size_t i = 0; i < size(); ++i) delete at(i); }
 	} readers;
 
-	vector<pair<odb::Reader::iterator, odb::Reader::iterator> > iterators;
+	vector<pair<I, I> > iterators;
 
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
@@ -72,25 +73,33 @@ void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& output
 
 		for (size_t i = 0; i < columns.size(); ++i)
 			if (out->columns().hasColumn(columns[i]->name()))
-				throw eclib::UserError(string("Column '") + columns[i]->name() + "' occurs in more than one input file of merge.");
-
+				throw eclib::UserError(string("Column '") + columns[i]->name()
+					+ "' occurs in more than one input file of merge.");
 		out->columns() += columns;
 	}
+
 	out->writeHeader();
-
-	odb::Reader::iterator it = iterators[0].first,
-						  end = iterators[0].second;
-	for (; it != end; ++out)
+	Log::info() << "MergeTool::merge: output metadata: " << out->columns() << endl;
+	for (I& it (iterators[0].first), end (iterators[0].second);
+		it != end;
+		++out)
 	{
-		double* buff = out->data();
-		size_t i = 0;
-
-		for (size_t ii = 0; ii < iterators.size(); ++ii)
+		for (size_t i = 0, ii = 0; ii < iterators.size(); ++ii)
 		{
-			for (size_t cn = 0; cn < iterators[ii].first->columns().size(); ++cn)
-				buff[i++] = (*iterators[ii].first)[cn];
-			++iterators[ii].first;
+			I& in(iterators[ii].first), inEnd(iterators[ii].second);
+			ASSERT(in != inEnd);
+
+			for (size_t cn = 0; cn < in->columns().size(); ++cn)
+			{
+				ASSERT(i < out->columns().size());
+				out->data()[i++] = (*in)[cn];
+			}
+			++in;
 		}
+		//ostream_iterator<double> out_it (Log::info(), ", ");
+		//Log::info() << "::merge: values=[";
+		//copy (out->data(), out->data() + out->columns().size(), out_it);
+		//Log::info() << "]" << endl;
 	}
 }
 
