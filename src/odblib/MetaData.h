@@ -18,6 +18,8 @@
 #include "odblib/IteratorProxy.h"
 #endif
 
+#include "eclib/StringTools.h"
+
 namespace eclib { class PathName; }
 
 namespace odb {
@@ -58,7 +60,7 @@ public:
 	void setSize(size_t);
 
 	template<typename DATASTREAM>
-	MetaData& addColumn(const string& name, const string& type, bool hasMissing = true, double missingValue = 0.0 /*FIXME*/);
+	MetaData& addColumn(const string& name, const string& type);
 
 	template<typename DATASTREAM> MetaData& addBitfield(const string& name, const BitfieldDef&);
 
@@ -124,16 +126,14 @@ void MetaData::load(DATASTREAM &f)
 }
 
 template <typename DATASTREAM>
-MetaData& MetaData::addColumn(const string& name, const string& type, bool hasMissing, double missingValue)
+MetaData& MetaData::addColumn(const string& name, const string& type)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);
+
 	c->name(name);
 	c->type<DATASTREAM>(odb::Column::type(type), false);
-	c->hasMissing(hasMissing);
-	//TODO:
-	//c->missingValue(missingValue);
-	
+
 	push_back(c);
 	return *this;
 }
@@ -147,6 +147,7 @@ MetaData& MetaData::addBitfield(const string& name, const BitfieldDef& bd)
 	c->type<DATASTREAM>(BITFIELD, false);
 	c->bitfieldDef(bd);
 	push_back(c);
+
 	return *this;
 }
 

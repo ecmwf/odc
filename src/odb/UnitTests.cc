@@ -141,9 +141,9 @@ void createDataForMixedAggregated2()
 	MetaData& md(o->columns());
 
 	typedef DataStream<SameByteOrder, DataHandle> DS;
-	md.addColumn<DS>("x", "INTEGER", true, .0);
-	md.addColumn<DS>("y", "INTEGER", true, .0);
-	md.addColumn<DS>("v", "DOUBLE", true, .0);
+	md.addColumn<DS>("x", "INTEGER");//, true, .0);
+	md.addColumn<DS>("y", "INTEGER");//, true, .0);
+	md.addColumn<DS>("v", "DOUBLE");//, true, .0);
 	o->writeHeader();
 
 	for (size_t row = 0; row < 1000; ++row)

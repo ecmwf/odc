@@ -81,27 +81,30 @@ void TextReaderIterator::parseHeader()
 {
 	string header;
 	std::getline(*in_, header);
-	vector<string> columns = S::split(owner_.delimiter(), header);
+	vector<string> columns (S::split(owner_.delimiter(), header));
+	//c->missingValue(missingValue);
 
-	Log::info() << "TextReaderIterator::parseHeader: columns: " << columns << endl;
-	Log::info() << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << endl;
-	Log::info() << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
+	ostream& L(Log::debug());
+
+	L << "TextReaderIterator::parseHeader: columns: " << columns << endl;
+	L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << endl;
+	L << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
 		Log::debug() << "TextReaderIterator::parseHeader: column " << i << " '" << columns[i] << "'" << endl;
 		vector<string> column (S::split(":", columns[i]));
-		if (column.size() != 2)
+		if (column.size() < 2)
 			throw UserError(string("Column '") + columns[i] + "': format should be NAME \":\" TYPE");
 
-		const string columnName (column[0]);
-		const string columnType (S::upper(column[1]));
+		const string columnName (S::trim(column[0]));
+		const string columnType (S::upper(S::join(":", vector<string>(column.begin() + 1, column.end()))));
 
 		if (! S::startsWith(columnType, "BITFIELD"))
 		{
 			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
 						<< columnType <<  endl;
-			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType, true);
+			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType);
 		}
 		else
 		{
@@ -150,9 +153,14 @@ bool TextReaderIterator::next()
 
 	for(size_t i = 0; i < nCols; ++i)
 	{
-		const string& v = values[i];
+		const string& v (S::upper(S::trim(values[i])));
+		//cout << "TextReaderIterator::next: " << *columns_[i] << " v='" << v << "'" << endl;
+
 		if (v == "NULL")
+		{
+			//cout << "TextReaderIterator::next: " << *columns_[i] << " is NULL " << columns_[i]->missingValue() << endl;
 			lastValues_[i] = columns_[i]->missingValue();
+		}
 		else
 			lastValues_[i] = StringTool::translate(v);
 	}
