@@ -28,7 +28,7 @@
 #include "TestFunctionsForTemperatureConversion.h"
 #include "odblib/ToolFactory.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 
 using namespace std;

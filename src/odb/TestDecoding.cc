@@ -16,7 +16,7 @@
 
 using namespace std;
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/SimpleFilter.h"
 

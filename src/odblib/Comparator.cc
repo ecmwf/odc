@@ -13,7 +13,7 @@
 #include "eclib/Resource.h"
 #include "eclib/Exceptions.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Column.h"
 #include "odblib/ColumnType.h"
 #include "odblib/Comparator.h"

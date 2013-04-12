@@ -10,7 +10,7 @@
 
 #include <cctype>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/ODADatabase.h"
 #include "odblib/StringTool.h"
 #include "odblib/TODATable.h"

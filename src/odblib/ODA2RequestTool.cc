@@ -14,7 +14,7 @@
 #include "eclib/Tokenizer.h"
 #include "eclib/Translator.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/FastODA2Request.h"
 #include "odblib/ODA2RequestTool.h"
 #include "odblib/Tool.h"

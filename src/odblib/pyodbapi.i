@@ -4,7 +4,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 %}
 

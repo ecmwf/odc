@@ -17,7 +17,7 @@ using namespace std;
 #include "eclib/DataHandle.h"
 #include "eclib/Exceptions.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/DataStream.h"
 
 #include "odblib/HashTable.h"

@@ -12,7 +12,7 @@
 #include <sstream>
 #include <omp.h>
 
-#include "oda.h"
+#include "odblib/odb_api.h"
 
 #include "odbcapi.h"
 

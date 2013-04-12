@@ -17,7 +17,7 @@
 #include <map>
 #include <algorithm>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestOrderBy.h"
@@ -48,7 +48,7 @@
 #include "eclib/StdFileHandle.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/ImportTool.h"
 #include "odblib/StringTool.h"
 

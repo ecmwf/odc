@@ -26,7 +26,7 @@ using namespace std;
 #include "odblib/TestCase.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "migrator/ImportODBTool.h"
 #include "migrator/ODBIterator.h"

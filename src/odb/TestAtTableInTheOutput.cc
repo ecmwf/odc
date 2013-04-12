@@ -25,7 +25,7 @@ using namespace std;
 #include "eclib/Log.h"
 #include "eclib/DataHandle.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Comparator.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"

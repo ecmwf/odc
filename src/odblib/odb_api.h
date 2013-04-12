@@ -9,12 +9,12 @@
  */
 
 ///
-/// \file oda.h
+/// \file odb_api.h
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#ifndef PUBLIC_ODA_H
-#define PUBLIC_ODA_H
+#ifndef PUBLIC_ODB_API_H
+#define PUBLIC_ODB_API_H
 
 #include <cfloat>
 #include <climits>

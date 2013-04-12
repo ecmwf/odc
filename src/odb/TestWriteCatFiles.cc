@@ -21,7 +21,7 @@
 
 using namespace std;
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestWriteCatFiles.h"
@@ -50,7 +50,7 @@ using namespace std;
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
 #include "odblib/Comparator.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 namespace odb {
 namespace tool {

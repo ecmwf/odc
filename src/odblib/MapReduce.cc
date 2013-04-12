@@ -50,7 +50,7 @@ using namespace std;
 #include "odblib/FastODA2Request.h"
 #include "odblib/MemoryBlock.h"
 #include "odblib/InMemoryDataHandle.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/odbcapi.h"
 #include "odblib/ImportTool.h"
 #include "odblib/Tool.h"

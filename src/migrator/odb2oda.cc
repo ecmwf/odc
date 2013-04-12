@@ -12,7 +12,7 @@
 #include "eclib/PathName.h"
 #include "eclib/FileHandle.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"

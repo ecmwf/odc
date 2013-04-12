@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "eclib/Exceptions.h"
 #include "eclib/DataHandle.h"
 #include "odblib/DataStream.h"

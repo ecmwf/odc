@@ -22,7 +22,7 @@
 #include "eclib/Log.h"
 #include "eclib/PathName.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
 #include "odblib/DataStream.h"

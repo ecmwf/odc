@@ -7,7 +7,7 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"

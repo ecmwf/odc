@@ -16,7 +16,7 @@
 #include "eclib/Resource.h"
 #include "eclib/Translator.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/BitColumnExpression.h"
 #include "odblib/ShiftedBitColumnExpression.h"
 #include "odblib/ColumnExpression.h"

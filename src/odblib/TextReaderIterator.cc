@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 using namespace eclib;
 

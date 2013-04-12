@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, March 2012
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "DataStream.h"
 #include "Header.h"
 #include "MDUpdatingIterator.h"

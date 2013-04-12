@@ -14,7 +14,7 @@
 /// @author Piotr Kuchta, Jan 2010
 
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/DataStream.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"

@@ -19,7 +19,7 @@
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/StringTool.h"
 #include "odblib/Tool.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "migrator/ODBIterator.h"
 

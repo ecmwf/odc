@@ -11,7 +11,7 @@
 #include "eclib/DataHandle.h"
 #include "eclib/Exceptions.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Codec.h"
 #include "odblib/CodecOptimizer.h"
 #include "odblib/Column.h"

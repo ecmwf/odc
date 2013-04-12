@@ -18,7 +18,7 @@
 #include "eclib/StandardBehavior.h" 
 #include "eclib/StdLogger.h" 
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/FastODA2Request.h"

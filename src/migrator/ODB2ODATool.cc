@@ -18,7 +18,7 @@
 
 #include "eclib/StringTools.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Tool.h"
 
