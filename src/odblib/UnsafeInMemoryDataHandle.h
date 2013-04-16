@@ -15,7 +15,7 @@
 #define UnsafeInMemoryDataHandle_H
 
 #include "eclib/filesystem/PathName.h"
-#include "eclib/Length.h"
+#include "eckit/io/Length.h"
 #include "eclib/Offset.h"
 #include "eclib/TransferWatcher.h"
 #include "eclib/DataHandle.h"

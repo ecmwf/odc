@@ -15,7 +15,7 @@
 #define InMemoryDataHandle_H
 
 #include "eclib/DataHandle.h"
-#include "eclib/Length.h"
+#include "eckit/io/Length.h"
 #include "eclib/Offset.h"
 #include "eclib/filesystem/PathName.h"
 #include "eclib/TransferWatcher.h"

@@ -16,7 +16,7 @@
 #include "MetaDataReaderIterator.h"
 #include "MetaDataReader.h"
 #include "eclib/Offset.h"
-#include "eclib/Length.h"
+#include "eckit/io/Length.h"
 
 using namespace eckit;
 

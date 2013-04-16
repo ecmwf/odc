@@ -15,7 +15,7 @@
 
 #include <stdint.h>
 
-#include "eclib/Length.h"
+#include "eckit/io/Length.h"
 
 #include "odblib/DataStream.h"
 #include "odblib/MemoryBlock.h"
