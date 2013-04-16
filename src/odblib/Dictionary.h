@@ -14,9 +14,9 @@
 #ifndef Dictionary_H
 #define Dictionary_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/SQLExpression.h"
 

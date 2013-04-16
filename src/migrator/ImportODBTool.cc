@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/filesystem/LocalPathName.h"
-#include "eclib/BigNum.h"
+#include "eckit/filesystem/LocalPathName.h"
+#include "eckit/log/BigNum.h"
 
 #include "odblib/oda.h"
 #include "odblib/Tool.h"

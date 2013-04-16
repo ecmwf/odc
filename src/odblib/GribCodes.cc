@@ -15,12 +15,12 @@
 #include <iostream>
 #include <strings.h>
 
-#include "eclib/runtime/Application.h"
-#include "eclib/filesystem/FileHandle.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Regex.h"
-#include "eclib/Resource.h"
-#include "eclib/Translator.h"
+#include "eckit/runtime/Application.h"
+#include "eckit/filesystem/FileHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/utils/Regex.h"
+#include "eckit/config/Resource.h"
+#include "eckit/parser/Translator.h"
 
 #include "odblib/GribCodes.h"
 #include "odblib/MemoryBlock.h"

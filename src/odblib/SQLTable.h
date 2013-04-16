@@ -14,7 +14,7 @@
 #ifndef SQLTable_H
 #define SQLTable_H
 
-#include "eclib/filesystem/PathName.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLType.h"

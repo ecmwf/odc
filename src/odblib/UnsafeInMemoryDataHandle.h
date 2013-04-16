@@ -14,11 +14,11 @@
 #ifndef UnsafeInMemoryDataHandle_H
 #define UnsafeInMemoryDataHandle_H
 
-#include "eclib/filesystem/PathName.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/io/Length.h"
-#include "eclib/Offset.h"
-#include "eclib/TransferWatcher.h"
-#include "eclib/DataHandle.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/TransferWatcher.h"
+#include "eckit/io/DataHandle.h"
 
 #include "odblib/MemoryBlock.h"
 

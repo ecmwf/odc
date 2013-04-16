@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/DataHandle.h"
-#include "eclib/Exceptions.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"

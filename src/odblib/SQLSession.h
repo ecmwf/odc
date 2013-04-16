@@ -17,7 +17,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
 #include "odblib/SQLAST.h"
 #include "odblib/SchemaAnalyzer.h"

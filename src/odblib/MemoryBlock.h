@@ -11,8 +11,8 @@
 #ifndef MemoryBlock_H
 #define MemoryBlock_H
 
-#include "eclib/machine.h"
-#include "eclib/Exceptions.h"
+#include "eckit/machine.h"
+#include "eckit/exception/Exceptions.h"
 
 // A simple class to implement buffers
 

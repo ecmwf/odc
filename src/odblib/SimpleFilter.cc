@@ -23,11 +23,11 @@
 
 using namespace std;
 
-#include "eclib/Exceptions.h"
-#include "eclib/filesystem/PathName.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
 #include "odblib/MemoryBlock.h"
-#include "eclib/DataHandle.h"
-#include "eclib/filesystem/FileHandle.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/filesystem/FileHandle.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/DataStream.h"

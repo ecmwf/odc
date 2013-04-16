@@ -20,7 +20,7 @@
 #include <Python.h>
 #endif
 
-#include "eclib/filesystem/FileHandle.h"
+#include "eckit/filesystem/FileHandle.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

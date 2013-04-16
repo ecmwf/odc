@@ -22,11 +22,11 @@
 
 using namespace std;
 
-#include "eclib/filesystem/PathName.h"
-#include "eclib/DataHandle.h"
-#include "eclib/Log.h"
-#include "eclib/filesystem/PartFileHandle.h"
-#include "eclib/thread/ThreadPool.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/log/Log.h"
+#include "eckit/filesystem/PartFileHandle.h"
+#include "eckit/thread/ThreadPool.h"
 
 #include "odblib/DataStream.h"
 #include "odblib/HashTable.h"
@@ -61,11 +61,11 @@ using namespace std;
 #include "odblib/MapReduce.h"
 
 
-#include "eclib/thread/ThreadControler.h"
-#include "eclib/thread/Thread.h"
-#include "eclib/Mutex.h"
-#include "eclib/MutexCond.h"
-#include "eclib/AutoLock.h"
+#include "eckit/thread/ThreadControler.h"
+#include "eckit/thread/Thread.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/thread/MutexCond.h"
+#include "eckit/thread/AutoLock.h"
 
 namespace odb {
 namespace tool {

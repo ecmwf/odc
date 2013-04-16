@@ -10,9 +10,9 @@
 
 #include <sstream>
 
-#include "eclib/runtime/Application.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/filesystem/FileHandle.h"
+#include "eckit/runtime/Application.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/filesystem/FileHandle.h"
 
 #include "odb/TestOdaCAPI.h"
 

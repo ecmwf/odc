@@ -14,9 +14,9 @@
 
 #include <sstream>
 
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Timer.h"
-#include "eclib/StringTools.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/utils/Timer.h"
+#include "eckit/utils/StringTools.h"
 
 #include "odblib/CommandLineParser.h"
 #include "odblib/Tool.h"

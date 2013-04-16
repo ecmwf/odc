@@ -14,8 +14,8 @@
 #include <limits>
 #include <strings.h>
 
-#include "eclib/Exceptions.h"
-#include "eclib/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/io/DataHandle.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Comparator.h"

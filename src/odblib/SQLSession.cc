@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Exceptions.h"
-#include "eclib/Log.h"
-#include "eclib/thread/ThreadSingleton.h"
-#include "eclib/Timer.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/thread/ThreadSingleton.h"
+#include "eckit/utils/Timer.h"
 
 #include "odblib/ODADatabase.h"
 #include "odblib/SQLAST.h"

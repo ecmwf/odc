@@ -19,8 +19,8 @@
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
 #include "odblib/CodecOptimizer.h"
-#include "eclib/Resource.h"
-#include "eclib/StringTools.h"
+#include "eckit/config/Resource.h"
+#include "eckit/utils/StringTools.h"
 
 //
 

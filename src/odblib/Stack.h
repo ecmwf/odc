@@ -13,7 +13,7 @@
 
 #include <stack>
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
 #include "odblib/SQLStatement.h"
 #include "odblib/SQLColumn.h"

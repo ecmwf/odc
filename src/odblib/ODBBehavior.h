@@ -11,7 +11,7 @@
 #ifndef ODBBehavior_H
 #define ODBBehavior_H
 
-#include "eclib/StandardBehavior.h"
+#include "eckit/runtime/StandardBehavior.h"
 //#include "eclib/DHSBehaviorStdout.h"
 
 /// @todo eckit fixme

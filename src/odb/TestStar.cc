@@ -21,11 +21,11 @@ using namespace std;
 
 
 
-#include "eclib/DataHandle.h"
-#include "eclib/DataHandle.h"
-#include "eclib/DataHandle.h"
-#include "eclib/Log.h"
-#include "eclib/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/log/Log.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"

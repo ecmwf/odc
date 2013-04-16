@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/AutoLock.h"
-#include "eclib/DataHandle.h"
-#include "eclib/Exceptions.h"
-#include "eclib/Mutex.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Resource.h"
-#include "eclib/Translator.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/thread/Mutex.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/config/Resource.h"
+#include "eckit/parser/Translator.h"
 
 #include "odblib/oda.h"
 #include "odblib/BitColumnExpression.h"

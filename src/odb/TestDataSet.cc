@@ -1,7 +1,7 @@
 /// @file   TestDataSet.cc
 /// @author Tomas Kral
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"

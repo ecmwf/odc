@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Exceptions.h"
-#include "eclib/Log.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 
 #include "odblib/Decoder.h"
 #include "odblib/Endian.h"

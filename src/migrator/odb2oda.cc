@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/filesystem/PathName.h"
-#include "eclib/filesystem/FileHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/filesystem/FileHandle.h"
 
 #include "odblib/oda.h"
 

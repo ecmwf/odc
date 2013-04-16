@@ -16,7 +16,7 @@
 #include <vector>
 #include <map>
 
-#include "eclib/Log.h"
+#include "eckit/log/Log.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "odblib/FunctionExpression.h"

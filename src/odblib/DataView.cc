@@ -3,7 +3,7 @@
 
 #include "odblib/DataView.h"
 #include "odblib/DataSet.h"
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 using namespace std;
 using namespace eckit;

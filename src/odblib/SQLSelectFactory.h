@@ -11,8 +11,8 @@
 #ifndef SQLSelectFactory_H
 #define SQLSelectFactory_H
 
-#include "eclib/DataHandle.h"
-#include "eclib/thread/ThreadSingleton.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/thread/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
 #include "odblib/SQLOutputConfig.h"

@@ -14,8 +14,8 @@
 #ifndef TemporaryFile_H
 #define TemporaryFile_H
 
-#include "eclib/NonCopyable.h"
-#include "eclib/filesystem/PathName.h"
+#include "eckit/memory/NonCopyable.h"
+#include "eckit/filesystem/PathName.h"
 
 class TemporaryFile : public  eckit::PathName,
                       private eckit::NonCopyable {

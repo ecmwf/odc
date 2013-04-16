@@ -14,7 +14,7 @@
 #ifndef SQLOutput_H
 #define SQLOutput_H
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/SQLExpression.h"
 #include "odblib/SQLOutputConfig.h"

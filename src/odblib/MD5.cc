@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/MD5.h"
 

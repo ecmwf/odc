@@ -10,8 +10,8 @@
 
 #include <sstream>
 
-#include "eclib/Log.h"
-#include "eclib/Translator.h"
+#include "eckit/log/Log.h"
+#include "eckit/parser/Translator.h"
 
 #include "odblib/SQLAST.h"
 #include "odblib/SQLBitfield.h"

@@ -10,7 +10,7 @@
 
 #include "odblib/OrderByExpressions.h"
 #include "odblib/NumberExpression.h"
-#include "eclib/StrStream.h"
+#include "eckit/compat/StrStream.h"
 #include "odblib/SQLType.h"
 #include "odblib/SQLOutput.h"
 #include "odblib/StringTool.h"

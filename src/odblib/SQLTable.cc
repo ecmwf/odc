@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/StrStream.h"
-#include "eclib/Tokenizer.h"
+#include "eckit/compat/StrStream.h"
+#include "eckit/utils/Tokenizer.h"
 
 #include "odblib/SQLAST.h"
 #include "odblib/SQLBitColumn.h"

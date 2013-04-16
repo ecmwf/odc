@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/machine.h"
-#include "eclib/Bytes.h"
-#include "eclib/filesystem/FileHandle.h"
-#include "eclib/Timer.h"
+#include "eckit/machine.h"
+#include "eckit/log/Bytes.h"
+#include "eckit/filesystem/FileHandle.h"
+#include "eckit/utils/Timer.h"
 
 #include "odblib/InMemoryDataHandle.h"
 

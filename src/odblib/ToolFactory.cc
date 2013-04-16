@@ -17,8 +17,8 @@
 #include <map>
 #include <vector>
 
-#include "eclib/Regex.h"
-#include "eclib/Exceptions.h"
+#include "eckit/utils/Regex.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"

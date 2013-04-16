@@ -10,8 +10,8 @@
 
 #include <math.h>
 
-#include "eclib/Log.h"
-#include "eclib/thread/ThreadSingleton.h"
+#include "eckit/log/Log.h"
+#include "eckit/thread/ThreadSingleton.h"
 
 #include "odblib/EqRegionCache.h"
 #include "odblib/RegionCache.h"

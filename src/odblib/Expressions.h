@@ -14,9 +14,9 @@
 #ifndef Expressions_H
 #define Expressions_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/SQLExpression.h"
 

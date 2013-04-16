@@ -17,7 +17,7 @@
 
 #include <iostream>
 
-#include "eclib/DataHandle.h"
+#include "eckit/io/DataHandle.h"
 #include "odblib/DataStream.h"
 #include "odblib/SelectIterator.h"
 

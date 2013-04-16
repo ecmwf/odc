@@ -18,10 +18,10 @@
 #include <iomanip>
 #include <ctype.h>
 
-#include "eclib/filesystem/FileHandle.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Regex.h"
-#include "eclib/Translator.h"
+#include "eckit/filesystem/FileHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/utils/Regex.h"
+#include "eckit/parser/Translator.h"
 
 #include "odblib/Endian.h"
 #include "odblib/MemoryBlock.h"

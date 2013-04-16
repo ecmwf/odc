@@ -14,9 +14,9 @@
 #ifndef Endian_H
 #define Endian_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 

@@ -10,7 +10,7 @@
 
 #include <set>
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/SQLType.h"
 #include "odblib/SQLInt.h"

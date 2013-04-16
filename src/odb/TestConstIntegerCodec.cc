@@ -12,9 +12,9 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Log.h"
-#include "eclib/DataHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
+#include "eckit/io/DataHandle.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"

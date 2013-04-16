@@ -13,7 +13,7 @@
 
 #include <stdint.h>
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
 namespace odb {
 

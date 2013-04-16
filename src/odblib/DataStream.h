@@ -16,7 +16,7 @@
 #ifndef DataStream_H
 #define DataStream_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
 #include "odblib/SQLBitfield.h"
 

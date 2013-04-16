@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 
 #include "odblib/oda.h"
 #include "odblib/Tool.h"

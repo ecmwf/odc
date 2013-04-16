@@ -30,8 +30,8 @@ using namespace std;
 
 
 
-#include "eclib/filesystem/PathName.h"
-#include "eclib/DataHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
 #include "odblib/DataStream.h"
 #include "odblib/HashTable.h"
 #include "odblib/Codec.h"
@@ -40,7 +40,7 @@ using namespace std;
 #include "odblib/MetaData.h"
 #include "odblib/RowsIterator.h"
 #include "odblib/HashTable.h"
-#include "eclib/Log.h"
+#include "eckit/log/Log.h"
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLAST.h"
 #include "odblib/SchemaAnalyzer.h"

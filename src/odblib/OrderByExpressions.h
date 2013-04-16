@@ -14,7 +14,7 @@
 #ifndef OrderByExpressions_H
 #define OrderByExpressions_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 #include <vector>
 
 #include "odblib/Expressions.h"

@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Log.h"
-#include "eclib/Translator.h"
+#include "eckit/log/Log.h"
+#include "eckit/parser/Translator.h"
 
 #include "odblib/Codec.h"
 #include "odblib/DataStream.h"

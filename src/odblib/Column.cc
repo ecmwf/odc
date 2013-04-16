@@ -14,8 +14,8 @@
 
 using namespace std;
 
-#include "eclib/DataHandle.h"
-#include "eclib/Exceptions.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/oda.h"
 #include "odblib/DataStream.h"

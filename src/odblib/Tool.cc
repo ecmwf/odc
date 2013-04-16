@@ -17,7 +17,7 @@
 
 using namespace std;
 
-#include "eclib/runtime/Application.h"
+#include "eckit/runtime/Application.h"
 
 #include "odblib/CommandLineParser.h"
 #include "odblib/Tool.h"

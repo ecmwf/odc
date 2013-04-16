@@ -9,8 +9,8 @@
  */
 
 #include "odblib/oda.h"
-#include "eclib/Exceptions.h"
-#include "eclib/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/io/DataHandle.h"
 #include "odblib/DataStream.h"
 #include "odblib/HashTable.h"
 #include "odblib/FastODA2Request.h"

@@ -15,7 +15,7 @@
 #include "ODAHeaderTool.h"
 #include "MetaDataReaderIterator.h"
 #include "MetaDataReader.h"
-#include "eclib/Offset.h"
+#include "eckit/io/Offset.h"
 #include "eckit/io/Length.h"
 
 using namespace eckit;

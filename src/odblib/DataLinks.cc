@@ -3,7 +3,7 @@
 
 #include "odblib/DataLinks.h"
 #include "odblib/DataLink.h"
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 

@@ -14,7 +14,7 @@
 #ifndef SQLExpression_H
 #define SQLExpression_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
 #include "odblib/SQLType.h"
 #include "odblib/SQLBitfield.h"

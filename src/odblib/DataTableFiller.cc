@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 #include "odblib/DataTable.h"
 
 using namespace std;

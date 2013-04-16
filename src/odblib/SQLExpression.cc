@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/StrStream.h"
+#include "eckit/compat/StrStream.h"
 
 #include "odblib/SQLExpression.h"
 #include "odblib/NumberExpression.h"

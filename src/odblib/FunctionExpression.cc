@@ -11,7 +11,7 @@
 #include <math.h>
 #include <limits.h>
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/FunctionExpression.h"
 #include "odblib/SQLSelect.h"

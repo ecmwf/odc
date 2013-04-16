@@ -10,8 +10,8 @@
 
 #include <cmath>
 
-#include "eclib/Resource.h"
-#include "eclib/Exceptions.h"
+#include "eckit/config/Resource.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/oda.h"
 #include "odblib/Column.h"

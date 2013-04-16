@@ -17,7 +17,7 @@
 #include "odblib/SplitTool.h"
 #include "odblib/TemplateParameters.h"
 
-#include "eclib/filesystem/PartFileHandle.h"
+#include "eckit/filesystem/PartFileHandle.h"
 
 using namespace eckit;
 

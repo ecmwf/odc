@@ -11,7 +11,7 @@
 /// \file SelectOneTable.cc
 /// Piotr Kuchta - ECMWF Jul 11
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 #include <stack>
 
 #include "odblib/SQLStatement.h"

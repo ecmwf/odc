@@ -23,10 +23,10 @@
 #include <climits>
 #include <cfloat>
 
-#include "eclib/Exceptions.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/DataHandle.h"
-#include "eclib/filesystem/FileHandle.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/filesystem/FileHandle.h"
 
 using namespace std;
 using namespace eckit;

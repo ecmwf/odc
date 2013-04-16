@@ -17,10 +17,10 @@
 #include <map>
 #include <algorithm>
 
-#include "eclib/DataHandle.h"
-#include "eclib/filesystem/StdFileHandle.h"
-#include "eclib/Log.h"
-#include "eclib/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/filesystem/StdFileHandle.h"
+#include "eckit/log/Log.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"

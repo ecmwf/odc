@@ -14,9 +14,9 @@
 #ifndef SQLIterator_H
 #define SQLIterator_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
-#include "eclib/MemoryPool.h"
+#include "eckit/memory/MemoryPool.h"
 
 #include "odblib/SQLType.h"
 

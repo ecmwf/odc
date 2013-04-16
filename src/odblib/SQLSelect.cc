@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/BigNum.h"
-#include "eclib/Exceptions.h"
-#include "eclib/Types.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/types/Types.h"
 
 #include "odblib/ConstantExpression.h"
 #include "odblib/SQLAST.h"

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Log.h"
+#include "eckit/log/Log.h"
 #include "odblib/ColumnExpression.h"
 #include "odblib/FunctionEQ.h"
 #include "odblib/SQLType.h"

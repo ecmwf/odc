@@ -23,10 +23,10 @@
 
 using namespace std;
 
-#include "eclib/DataHandle.h"
-#include "eclib/Exceptions.h"
-#include "eclib/filesystem/FileHandle.h"
-#include "eclib/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/FileHandle.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"

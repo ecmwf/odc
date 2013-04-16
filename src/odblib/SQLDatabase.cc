@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/Exceptions.h"
-#include "eclib/Log.h"
-#include "eclib/Timer.h"
-#include "eclib/Tokenizer.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/utils/Timer.h"
+#include "eckit/utils/Tokenizer.h"
 
 #include "odblib/SQLAST.h"
 #include "odblib/SQLBitfield.h"

@@ -21,7 +21,7 @@
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/ImportTool.h"
 
-#include "eclib/TmpFile.h"
+#include "eckit/filesystem/TmpFile.h"
 
 #include "TestTextSelect2.h"
 

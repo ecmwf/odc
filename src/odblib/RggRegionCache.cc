@@ -11,10 +11,10 @@
 #include <sstream>
 #include <math.h>
 
-#include "eclib/Log.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Resource.h"
-#include "eclib/thread/ThreadSingleton.h"
+#include "eckit/log/Log.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/config/Resource.h"
+#include "eckit/thread/ThreadSingleton.h"
 
 #include "odblib/RegionCache.h"
 #include "odblib/RggRegionCache.h"

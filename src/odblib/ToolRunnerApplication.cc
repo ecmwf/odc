@@ -12,8 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "eclib/Context.h"
-#include "eclib/filesystem/PathName.h"
+#include "eckit/runtime/Context.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"

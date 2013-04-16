@@ -20,7 +20,7 @@
 #include <strings.h>
 
 #include "odblib/Tool.h"
-#include "eclib/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 
 extern "C" {
 #include "odbdump.h"

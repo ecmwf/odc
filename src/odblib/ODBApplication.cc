@@ -14,7 +14,7 @@
 
 #include <sstream>
 
-#include "eclib/Context.h"
+#include "eckit/runtime/Context.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"

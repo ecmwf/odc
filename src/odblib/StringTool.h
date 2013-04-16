@@ -19,9 +19,9 @@
 #include <set>
 #include <vector>
 
-#include "eclib/CodeLocation.h"
-#include "eclib/StringTools.h"
-#include "eclib/Tokenizer.h"
+#include "eckit/log/CodeLocation.h"
+#include "eckit/utils/StringTools.h"
+#include "eckit/utils/Tokenizer.h"
 
 #include "odblib/ColumnType.h"
 

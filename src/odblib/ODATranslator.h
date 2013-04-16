@@ -17,13 +17,13 @@
 #include <strings.h>
 #include <sstream>
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
-#include "eclib/Date.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Time.h"
-#include "eclib/Translator.h"
-#include "eclib/Types.h"
+#include "eckit/types/Date.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/types/Time.h"
+#include "eckit/parser/Translator.h"
+#include "eckit/types/Types.h"
 
 #include "odblib/StringTool.h"
 

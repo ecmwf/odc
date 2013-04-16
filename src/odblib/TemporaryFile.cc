@@ -10,7 +10,7 @@
 
 #include <sstream>
 
-#include "eclib/Buffer.h"
+#include "eckit/io/Buffer.h"
 
 #include "odblib/TemporaryFile.h"
 

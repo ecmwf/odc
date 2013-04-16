@@ -16,7 +16,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "eclib/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 #include "odblib/oda.h"
 #include "odblib/ToolFactory.h"

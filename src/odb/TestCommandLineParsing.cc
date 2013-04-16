@@ -16,8 +16,8 @@
 #include <vector>
 #include <map>
 
-#include "eclib/Log.h"
-#include "eclib/Exceptions.h"
+#include "eckit/log/Log.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"

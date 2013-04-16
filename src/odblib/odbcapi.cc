@@ -13,10 +13,10 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
-#include "eclib/runtime/Application.h"
-#include "eclib/Context.h"
-#include "eclib/StandardBehavior.h" 
-#include "eclib/StdLogger.h" 
+#include "eckit/runtime/Application.h"
+#include "eckit/runtime/Context.h"
+#include "eckit/runtime/StandardBehavior.h" 
+#include "eckit/log/StdLogger.h" 
 
 #include "odblib/oda.h"
 #include "odblib/MetaDataReaderIterator.h"

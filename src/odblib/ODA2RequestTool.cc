@@ -11,8 +11,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "eclib/Tokenizer.h"
-#include "eclib/Translator.h"
+#include "eckit/utils/Tokenizer.h"
+#include "eckit/parser/Translator.h"
 
 #include "odblib/oda.h"
 #include "odblib/FastODA2Request.h"

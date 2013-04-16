@@ -2,7 +2,7 @@
 /// @author Tomas Kral
 
 #include "odblib/DataColumns.h"
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 #include "odblib/Column.h"
 #include "odblib/MetaData.h"
 

@@ -17,9 +17,9 @@
 #include <map>
 #include <algorithm>
 
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Log.h"
-#include "eclib/filesystem/StdFileHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
+#include "eckit/filesystem/StdFileHandle.h"
 
 #include "odblib/oda.h"
 #include "odblib/Codec.h"

@@ -17,7 +17,7 @@
 #include <stdint.h>
 #include <limits>
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/DateTime.h"
 #include "odblib/Duration.h"

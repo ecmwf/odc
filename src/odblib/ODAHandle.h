@@ -14,12 +14,12 @@
 #ifndef ODAHandle_H
 #define ODAHandle_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 
-#include "eclib/Buffer.h"
-#include "eclib/Date.h"
-#include "eclib/Time.h"
-#include "eclib/Offset.h"
+#include "eckit/io/Buffer.h"
+#include "eckit/types/Date.h"
+#include "eckit/types/Time.h"
+#include "eckit/io/Offset.h"
 
 #include "odblib/ODATranslator.h"
 

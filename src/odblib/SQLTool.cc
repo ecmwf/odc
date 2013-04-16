@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/filesystem/PartFileHandle.h"
+#include "eckit/filesystem/PartFileHandle.h"
 #include "odblib/oda.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"

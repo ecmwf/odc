@@ -19,7 +19,7 @@
 
 using namespace std;
 
-#include "eclib/filesystem/PathName.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/SQLInteractiveSession.h"
 #include "odblib/SchemaAnalyzer.h"

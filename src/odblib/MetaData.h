@@ -11,7 +11,7 @@
 #ifndef MetaData_H
 #define MetaData_H
 
-#include "eclib/machine.h"
+#include "eckit/machine.h"
 #include "odblib/Column.h"
 
 #ifdef SWIGPYTHON

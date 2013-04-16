@@ -11,7 +11,7 @@
 #ifndef MergeTool_H
 #define MergeTool_H
 
-#include "eclib/filesystem/PathName.h"
+#include "eckit/filesystem/PathName.h"
 
 namespace odb {
 namespace tool {

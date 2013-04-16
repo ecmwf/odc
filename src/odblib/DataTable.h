@@ -7,7 +7,7 @@
 #include <iosfwd>
 #include <string>
 
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/DataRow.h"
 #include "odblib/DataColumn.h"

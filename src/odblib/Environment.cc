@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/BigNum.h"
-#include "eclib/Exceptions.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odblib/SQLAST.h"
 #include "odblib/SQLColumn.h"

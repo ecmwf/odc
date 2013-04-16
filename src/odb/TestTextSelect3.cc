@@ -20,7 +20,7 @@
 #include "TestTextSelect3.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
-#include "eclib/TmpFile.h"
+#include "eckit/filesystem/TmpFile.h"
 
 
 using namespace std;

@@ -15,9 +15,9 @@
 
 #include <strings.h>
 
-#include "eclib/Tokenizer.h"
-#include "eclib/Translator.h"
-#include "eclib/Types.h"
+#include "eckit/utils/Tokenizer.h"
+#include "eckit/parser/Translator.h"
+#include "eckit/types/Types.h"
 
 #include "odblib/oda.h"
 #include "odblib/Tool.h"

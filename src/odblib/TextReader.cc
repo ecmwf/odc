@@ -15,8 +15,8 @@
 
 #include "odblib/TextReader.h"
 
-#include "eclib/DataHandle.h"
-#include "eclib/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/TextReaderIterator.h"
 

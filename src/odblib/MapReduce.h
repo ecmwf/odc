@@ -22,9 +22,9 @@
 
 using namespace std;
 
-#include "eclib/filesystem/PathName.h"
-#include "eclib/DataHandle.h"
-#include "eclib/Log.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/log/Log.h"
 
 #include "odblib/DataStream.h"
 #include "odblib/HashTable.h"

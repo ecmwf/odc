@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-#include "eclib/Log.h"
+#include "eckit/log/Log.h"
 
 #include "odblib/FunctionTHIN.h"
 #include "odblib/SQLSelect.h"

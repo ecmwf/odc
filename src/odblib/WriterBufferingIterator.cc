@@ -15,7 +15,7 @@
 
 #include <arpa/inet.h>
 
-#include "eclib/Resource.h"
+#include "eckit/config/Resource.h"
 
 #include "odblib/oda.h"
 

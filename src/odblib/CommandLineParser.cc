@@ -13,8 +13,8 @@
 
 #include <iostream>
 
-#include "eclib/Context.h"
-#include "eclib/Translator.h"
+#include "eckit/runtime/Context.h"
+#include "eckit/parser/Translator.h"
 
 #include "odblib/CommandLineParser.h"
 

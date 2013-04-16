@@ -24,11 +24,11 @@
 #include <sstream>
 #include <stdint.h>
 
-#include "eclib/DataHandle.h"
-#include "eclib/filesystem/FileHandle.h"
-#include "eclib/filesystem/PathName.h"
-#include "eclib/Resource.h"
-#include "eclib/Timer.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/filesystem/FileHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/config/Resource.h"
+#include "eckit/utils/Timer.h"
 
 #include "odblib/ODBAPIVersion.h"
 #include "odblib/ODBAPISettings.h"

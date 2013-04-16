@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eclib/machine.h"
-#include "eclib/filesystem/AIOHandle.h"
+#include "eckit/machine.h"
+#include "eckit/filesystem/AIOHandle.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
