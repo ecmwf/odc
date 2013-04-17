@@ -33,17 +33,10 @@ public:
 	static int line();
 	static void include(const eckit::PathName&);
 
-	//static void parseFile(const eckit::PathName&, eckit::DataHandle*);
-	//static void parseFile(const eckit::PathName&, eckit::DataHandle*, SQLOutputConfig);
 	static void parseString(const string&, eckit::DataHandle*, SQLOutputConfig);
-
-	//static void parseFile(const eckit::PathName&, istream*);
-	//static void parseFile(const eckit::PathName&, istream*, SQLOutputConfig);
-	static void parseString(const string&, istream*, SQLOutputConfig);
-
-
-	//static void parseFile(const eckit::PathName&, SQLDatabase&, SQLOutputConfig);
+	static void parseString(const string&, istream*, SQLOutputConfig, const string& cvsDelimiter);
 	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
+
 	static void lexRelease();
 };
 

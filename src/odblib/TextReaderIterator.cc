@@ -13,14 +13,13 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 using namespace eckit;
 
-namespace odb {
+typedef StringTools S;
 
-// TODO: allow user to specify the delimiter
-string TextReaderIterator::defaultDelimiter = ",";
+namespace odb {
 
 TextReaderIterator::TextReaderIterator(TextReader &owner)
 : owner_(owner),
@@ -56,24 +55,62 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 	parseHeader();
 }
 
+odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
+{
+	size_t leftBracket (c.find('['));
+	size_t rightBracket (c.find(']'));
+	ASSERT(leftBracket != string::npos && rightBracket != string::npos);
+	string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
+
+	odb::FieldNames names;
+	odb::Sizes      sizes;
+	vector<string> bs(S::split(";", s));
+	for (size_t i = 0; i < bs.size(); ++i)
+	{
+		vector<string> v(S::split(":", bs[i]));
+		ASSERT(v.size() == 2);
+		names.push_back(v[0]);
+		size_t size = atoi(v[1].c_str());
+		ASSERT(size);
+		sizes.push_back(size);
+	}
+	return odb::BitfieldDef(make_pair(names, sizes));
+}
+
 void TextReaderIterator::parseHeader()
 {
 	string header;
 	std::getline(*in_, header);
-	vector<string> columns = StringTools::split(defaultDelimiter, header);
+	vector<string> columns (S::split(owner_.delimiter(), header));
+	//c->missingValue(missingValue);
 
-	Log::debug() << "TextReaderIterator::parseHeader: defaultDelimiter: '" << defaultDelimiter << "'" << endl;
-	Log::debug() << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
+	ostream& L(Log::debug());
+
+	L << "TextReaderIterator::parseHeader: columns: " << columns << endl;
+	L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << endl;
+	L << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
-		vector<string> column = StringTools::split(":", columns[i]);
-		const string& columnName = column[0];
-		const string& columnType = column[1];
-		// FIXME: add parameter: missingValue
-		// TODO: the addColumn API needs to be cleaned up (every column can always have a missing value)
-		columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType, true);
-		Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " << columnType <<  endl;
+		Log::debug() << "TextReaderIterator::parseHeader: column " << i << " '" << columns[i] << "'" << endl;
+		vector<string> column (S::split(":", columns[i]));
+		if (column.size() < 2)
+			throw UserError(string("Column '") + columns[i] + "': format should be NAME \":\" TYPE");
+
+		const string columnName (S::trim(column[0]));
+		const string columnType (S::upper(S::join(":", vector<string>(column.begin() + 1, column.end()))));
+
+		if (! S::startsWith(columnType, "BITFIELD"))
+		{
+			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
+						<< columnType <<  endl;
+			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType);
+		}
+		else
+		{
+			Log::debug() << "TextReaderIterator::parseHeader: adding BITFIELD " << columns_.size() << " '" << columns[i] << endl;
+			columns_.addBitfield<DataStream<SameByteOrder, DataHandle> >(columnName, parseBitfields(columns[i]));
+		}
 	}
 	initRowBuffer();
 }
@@ -107,7 +144,7 @@ bool TextReaderIterator::next()
 
 	string line;
 	std::getline(*in_, line);
-	vector<string> values = StringTools::split(defaultDelimiter, line);
+	vector<string> values(S::split(owner_.delimiter(), line));
 
 	size_t nCols = values.size();
 	if (nCols == 0)
@@ -116,11 +153,8 @@ bool TextReaderIterator::next()
 
 	for(size_t i = 0; i < nCols; ++i)
 	{
-		const string& v = values[i];
-		if (v == "NULL")
-			lastValues_[i] = columns_[i]->missingValue();
-		else
-			lastValues_[i] = StringTool::translate(v);
+		const string& v (S::trim(values[i]));
+		lastValues_[i] = S::upper(v) == "NULL" ? columns_[i]->missingValue() : StringTool::translate(v);
 	}
 
 	return nCols;

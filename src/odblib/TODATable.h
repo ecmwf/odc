@@ -29,7 +29,7 @@ public:
 
 	TODATable(SQLDatabase&, const eckit::PathName&, const string&);
 	TODATable(SQLDatabase&, eckit::DataHandle&);
-	TODATable(SQLDatabase&, istream&);
+	TODATable(SQLDatabase&, istream&, const string& delimiter);
 
 	~TODATable(); 
 

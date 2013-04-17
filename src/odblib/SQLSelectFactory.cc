@@ -16,6 +16,7 @@
 #include "odblib/DispatchingWriter.h"
 #include "odblib/IteratorProxy.h"
 #include "odblib/RowsIterator.h"
+#include "odblib/FunctionExpression.h"
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLDistinctOutput.h"
@@ -135,6 +136,14 @@ void SQLSelectFactory::reshift(Expressions& select)
 			delete c4;
 			continue;
 		}
+		
+		odb::sql::expression::function::FunctionExpression* f = dynamic_cast<odb::sql::expression::function::FunctionExpression*>(e);
+		if (f) {
+			reshift(f->args());
+			continue;
+		}
+
+		Log::info() << "SQLSelectFactory::reshift: SKIP " << *e << endl;
 	}
 
 	L << endl;
@@ -163,7 +172,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 		Log::debug() << "No <from> clause" << endl;
 
 		SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
-			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_)
+			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
 			: database_ ? database_->table("defaultTable")
 			: 0;
 		if (table == 0)

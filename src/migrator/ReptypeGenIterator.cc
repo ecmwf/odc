@@ -19,7 +19,7 @@
 #include "eckit/parser/Translator.h"
 #include "eckit/types/Types.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 
 extern "C" {

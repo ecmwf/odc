@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
@@ -72,7 +72,7 @@ void TestTextSelect2::selectStarOneColumn()
 	const string fileName = "TestTextSelect2.txt";
 	ifstream fs(fileName.c_str());
 	
-	odb::Select oda(sql, fs);
+	odb::Select oda(sql, fs, ",");
 	
 	Log::info(Here()) << "TestTextSelect2::selectStarOneColumn: Execute '" << sql << "'" << endl;
 	odb::Select::iterator it = oda.begin();
@@ -97,7 +97,7 @@ void TestTextSelect2::selectSumOneColumn()
 	const string fileName = "TestTextSelect2.txt";
 	ifstream fs(fileName.c_str());
 	
-	odb::Select oda(sql, fs);
+	odb::Select oda(sql, fs, ",");
 	
 	Log::info(Here()) << "TestTextSelect2::selectSumOneColumn: Execute '" << sql << "'" << endl;
 	odb::Select::iterator it = oda.begin();

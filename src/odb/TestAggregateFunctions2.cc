@@ -21,7 +21,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/filesystem/StdFileHandle.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
 #include "odblib/DataStream.h"

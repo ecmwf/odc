@@ -26,7 +26,7 @@ private:
     virtual void close();
 
     virtual odb::sql::SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA);
-    virtual odb::sql::SQLTable* openDataStream(std::istream&, DataFormat = CSV);
+    virtual odb::sql::SQLTable* openDataStream(std::istream&, const string& delimiter, DataFormat = CSV);
 };
 
 } // namespace sql

@@ -12,7 +12,7 @@
 #include "eckit/filesystem/FileHandle.h"
 #include "eckit/utils/Timer.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"

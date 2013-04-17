@@ -14,7 +14,7 @@
 
 #include <iostream>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestTextSelect3.h"
@@ -56,7 +56,7 @@ void TestTextSelect3::selectStarOneColumn()
 	const string fileName = "2000010106.4.0.oda.csv";//"TestTextSelect3.txt";
 	ifstream fs(fileName.c_str());
 	
-	odb::Select oda(sql, fs);
+	odb::Select oda(sql, fs, ",");
 	
 	Log::info(Here()) << "TestTextSelect3::selectStarOneColumn: Execute '" << sql << "'" << endl;
 	odb::Select::iterator it = oda.begin();

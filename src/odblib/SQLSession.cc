@@ -133,10 +133,10 @@ SQLTable* SQLSession::findTable(const string& name)
 	return current_->table(name);
 }
 
-SQLTable* SQLSession::openDataStream(istream &is)
+SQLTable* SQLSession::openDataStream(istream &is, const string& delimiter)
 {
 	ASSERT(current_);
-	return current_->openDataStream(is);
+	return current_->openDataStream(is, delimiter);
 }
 
 SQLTable* SQLSession::openDataHandle(DataHandle &dh)

@@ -12,6 +12,9 @@
 #define _SQLTool_H
 
 namespace odb {
+
+namespace sql { class SQLSession; class SQLParser; class SQLOutputConfig; }
+
 namespace tool {
 
 class SQLTool : public Tool {
@@ -32,12 +35,15 @@ public:
         o << "             [-N]                  Do not write NULLs, but proper missing data values" << endl;
         o << "             [-i <inputfile>]      ODB input file" << endl;
         o << "             [-o <outputfile>]     ODB output file" << endl;
-        o << "             [-f default|odb]      ODB output format (default is ascii; odb is ODB-2)" << endl;
+        o << "             [-f default|wide|odb] ODB output format (default is ascii; odb is binary ODB, wide is ascii with"
+												<< " bitfields definitions in header)" << endl;
         o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << endl; 
         o << "                                   delim can be any character or string" << endl;
 	}
 
 private:
+	void runSQL(const string&, odb::sql::SQLSession&, odb::sql::SQLParser&, const odb::sql::SQLOutputConfig&);
+
 	bool doNotWriteColumnNames_; // -T
 	bool doNotWriteNULL_;        // -N
 	string delimiter_;           // -delimiter

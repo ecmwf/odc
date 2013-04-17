@@ -26,7 +26,10 @@ public:
 	{ o << "Imports data from a text file"; }
 
 	static void usage(const string& name, ostream &o)
-	{ o << name << " [-d delimiter] <input.file> <output.file>"; }
+	{
+		o << name << " [-d delimiter] <input.file> <output.file>" << endl;
+		o << " delimiter can be a single character (e.g.: ',') or TAB";
+	}
 
 	static void importFile(const eckit::PathName& in, const eckit::PathName& out, const string& delimiter = defaultDelimiter);
 	static void importText(const string& s, const eckit::PathName& out, const string& delimiter = defaultDelimiter);

@@ -18,7 +18,7 @@
 #include "eckit/runtime/StandardBehavior.h" 
 #include "eckit/log/StdLogger.h" 
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/FastODA2Request.h"
@@ -367,8 +367,7 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
 		}
 	}
 
-    odb::BitfieldDef bitfieldType;
-    bitfieldType = make_pair(bitfield_names,bitfield_sizes);
+    odb::BitfieldDef bitfieldType(make_pair(bitfield_names,bitfield_sizes));
 
 	Writer<>::iterator_class * w = reinterpret_cast<Writer<>::iterator_class *>(wi);
 	std::string columnName(name);
@@ -376,7 +375,6 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
 	int rc = w->setBitfieldColumn(index, columnName, ColumnType(type), bitfieldType);
 
 	return rc;
-
 }
 
 int odb_write_iterator_set_missing_value(oda_write_iterator_ptr wi, int index, double value)

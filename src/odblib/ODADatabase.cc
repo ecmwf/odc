@@ -10,7 +10,7 @@
 
 #include <cctype>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/ODADatabase.h"
 #include "odblib/StringTool.h"
 #include "odblib/TODATable.h"
@@ -57,18 +57,19 @@ SQLTable* ODADatabase::openDataHandle(DataHandle& dh, DataFormat dataFormat)
 	return 0;
 }
 
-SQLTable* ODADatabase::openDataStream(istream& is, DataFormat dataFormat) 
+SQLTable* ODADatabase::openDataStream(istream& is, const string& delimiter, DataFormat dataFormat) 
 {
 	string name = "dataHandle@";
 	//name += string(&dh);
 
-	if (dataFormat == CSV) return tablesByName_[name] = new TODATable<TextReader>(*this, is);
+	if (dataFormat == CSV) return tablesByName_[name] = new TODATable<TextReader>(*this, is, delimiter);
 	// TODO
 	//if (dataFormat == CSV) return tablesByName_[name] = new TODATable<TextReader>(*this, dh);
 
 	ASSERT(0 && "Format not supported");
 	return 0;
 }
+
 
 } // namespace sql
 } // namespace odb

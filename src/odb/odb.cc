@@ -16,7 +16,7 @@
 
 #include "odb/TestOdaCAPI.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/odbcapi.h"
 #include "odblib/TestRunnerApplication.h"
 #include "odblib/ToolFactory.h"

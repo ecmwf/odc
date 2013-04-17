@@ -11,7 +11,7 @@
 #include <climits>
 #include <cfloat>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "odblib/SQLIteratorSession.h"
 #include "odblib/SQLSelect.h"

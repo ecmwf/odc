@@ -12,6 +12,8 @@
 #define MetaData_H
 
 #include "eckit/machine.h"
+#include "eckit/utils/StringTools.h"
+
 #include "odblib/Column.h"
 
 #ifdef SWIGPYTHON
@@ -58,7 +60,9 @@ public:
 	void setSize(size_t);
 
 	template<typename DATASTREAM>
-	MetaData& addColumn(const string& name, const string& type, bool hasMissing = true, double missingValue = 0.0 /*FIXME*/);
+	MetaData& addColumn(const string& name, const string& type);
+
+	template<typename DATASTREAM> MetaData& addBitfield(const string& name, const BitfieldDef&);
 
 	bool hasColumn(const string&) const;
 	Column* columnByName(const string&) const;
@@ -122,17 +126,28 @@ void MetaData::load(DATASTREAM &f)
 }
 
 template <typename DATASTREAM>
-MetaData& MetaData::addColumn(const string& name, const string& type, bool hasMissing, double missingValue)
+MetaData& MetaData::addColumn(const string& name, const string& type)
+{
+	Column* c = new Column(*this);
+	ASSERT(c);
+
+	c->name(name);
+	c->type<DATASTREAM>(odb::Column::type(type), false);
+
+	push_back(c);
+	return *this;
+}
+
+template<typename DATASTREAM> 
+MetaData& MetaData::addBitfield(const string& name, const BitfieldDef& bd)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);
 	c->name(name);
-	c->type<DATASTREAM>(odb::Column::type(type), false);
-	c->hasMissing(hasMissing);
-	//TODO:
-	//c->missingValue(missingValue);
-	
+	c->type<DATASTREAM>(BITFIELD, false);
+	c->bitfieldDef(bd);
 	push_back(c);
+
 	return *this;
 }
 

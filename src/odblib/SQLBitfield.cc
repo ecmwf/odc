@@ -67,21 +67,20 @@ unsigned long SQLBitfield::shift(const string& n) const
 string SQLBitfield::make(const string& name, const FieldNames& fields, const Sizes& sizes, const char *ddlName)
 {
 
-	string s = name;
-	for(size_t i = 0; i < fields.size(); i++)
-	{
-		s += ":";
-		s += fields[i];
-		s += ":";
-		s += Translator<int,string>()(sizes[i]);
-	}
+	stringstream s;
+	s << name << "[";
+	for(size_t i = 0; i < fields.size(); ++i)
+		s << fields[i] << ":" << Translator<int,string>()(sizes[i])
+		  << ((i + 1 != fields.size()) ? ";" : "");
+	s << "]";
+	string typeName = s.str();
 
-	if(!exists(s))
-		DynamicallyCreatedTypesDestroyer::registerType(new SQLBitfield(s, fields, sizes, ddlName));
+	if(! exists(typeName))
+		DynamicallyCreatedTypesDestroyer::registerType(new SQLBitfield(typeName, fields, sizes, ddlName));
 	else
-		SQLType::createAlias(s, ddlName);
+		SQLType::createAlias(typeName, ddlName);
 
-	return s;
+	return typeName;
 }
 
 size_t SQLBitfield::width() const { return width_; }

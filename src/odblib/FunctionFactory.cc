@@ -301,7 +301,6 @@ inline double rad2deg(double x) { return x * R2D; }
 
 inline double speed(double u, double v) { return sqrt(u*u + v*v); }
 inline double ff(double u, double v) { return speed(u,v); }
-
 inline double direction(double u, double v) { return fmod(Func_atan2(-u,-v)+360.,360.); }
 inline double dir(double u, double v) { return direction(u,v); }
 inline double dd(double u, double v) { return direction(u,v); }
@@ -529,8 +528,8 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	DEFINE_MATH_FUNC_2(fmod, "");
 	DEFINE_MATH_FUNC_2(ff, "");
 	DEFINE_MATH_FUNC_2(speed, "");
-	DEFINE_MATH_FUNC_2(dd, "");
-	DEFINE_MATH_FUNC_2(dir, "");
+	DEFINE_MATH_FUNC_2(dd, "direction");
+	DEFINE_MATH_FUNC_2(dir, "direction");
 
 	DEFINE_MATH_FUNC_2F(Func_pow, pow, "");
 

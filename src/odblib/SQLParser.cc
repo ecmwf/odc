@@ -16,7 +16,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/parser/Translator.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/BitColumnExpression.h"
 #include "odblib/ShiftedBitColumnExpression.h"
 #include "odblib/ColumnExpression.h"
@@ -102,44 +102,13 @@ void SQLParser::lexRelease()
 #endif
 }
 
-/*
-void SQLParser::parseFile(const PathName& path, DataHandle* dh) { parseFile(path, dh, odb::sql::SQLSelectFactory::instance().config()); }
-
-void SQLParser::parseFile(const PathName& path, istream* is) { parseFile(path, is, odb::sql::SQLSelectFactory::instance().config()); }
-
-void SQLParser::parseFile(const PathName& path, istream* is, SQLOutputConfig cfg)
-{
-    INIT_MUTEX();
-	AutoLock<Mutex> lock(mutex);
-
-	SQLSelectFactory::instance().implicitFromTableSourceStream(is);
-	SQLSelectFactory::instance().config(cfg);
-
-	yypath = path;
-
-	FILE* in = fopen64(yypath.c_str(),"r");
-	if(!in) throw CantOpenFile(path);
-
-	SQLYacc::odblib_lineno = 0;
-	SQLYacc::yyin     = in;
-	SQLYacc::yydebug  = Resource<long>("$YYDEBUG;-yydebug;yydebug", 0);
-
-	SQLYacc::yyparse();
-
-	lexRelease();
-
-	fclose(in);
-
-	SQLSelectFactory::instance().implicitFromTableSourceStream(0);
-}
-*/
-
-void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg)
+void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg, const string& csvDelimiter)
 {
 	AutoLock<Mutex> lock(mutex);
 
 	SQLSelectFactory::instance().implicitFromTableSourceStream(is);
 	SQLSelectFactory::instance().config(cfg);
+	SQLSelectFactory::instance().csvDelimiter(csvDelimiter);
 
 	inputString = s;
 	inputText = const_cast<char *>(inputString.c_str());
@@ -150,33 +119,6 @@ void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg)
 	lexRelease();
 	SQLSelectFactory::instance().implicitFromTableSourceStream(0);
 }
-/*
-void SQLParser::parseFile(const PathName& path, DataHandle* dh, SQLOutputConfig cfg)
-{
-    INIT_MUTEX();
-	AutoLock<Mutex> lock(mutex);
-
-	SQLSelectFactory::instance().implicitFromTableSource(dh);
-	SQLSelectFactory::instance().config(cfg);
-
-	yypath = path;
-
-	FILE* in = fopen64(yypath.c_str(),"r");
-	if(!in) throw CantOpenFile(path);
-
-	SQLYacc::odblib_lineno = 0;
-	SQLYacc::yyin     = in;
-	SQLYacc::yydebug  = Resource<long>("$YYDEBUG;-yydebug;yydebug", 0);
-
-	SQLYacc::yyparse();
-
-	lexRelease();
-
-	fclose(in);
-
-	SQLSelectFactory::instance().implicitFromTableSource(0);
-}
-*/
 
 void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg)
 {
@@ -193,32 +135,7 @@ void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg
 
 	SQLSelectFactory::instance().implicitFromTableSource(0);
 }
-/*
-void SQLParser::parseFile(const PathName& path, SQLDatabase& db, SQLOutputConfig cfg)
-{
-    AutoLock<Mutex> lock(mutex);
 
-	SQLSelectFactory::instance().database(&db);
-	SQLSelectFactory::instance().config(cfg);
-
-	yypath = path;
-
-	FILE* in = fopen64(yypath.c_str(),"r");
-	if(!in) throw CantOpenFile(path);
-
-	SQLYacc::odblib_lineno = 0;
-	SQLYacc::yyin     = in;
-	SQLYacc::yydebug  = Resource<long>("$YYDEBUG;-yydebug;yydebug", 0);
-
-	SQLYacc::yyparse();
-
-	lexRelease();
-
-	fclose(in);
-
-	SQLSelectFactory::instance().database(0);
-}
-*/
 void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(mutex);

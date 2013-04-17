@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/SQLAST.h"
 #include "odblib/SchemaAnalyzer.h"
 

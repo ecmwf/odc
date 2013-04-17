@@ -1,3 +1,8 @@
+An up to date version of this document can be found at following address:
+
+   https://software.ecmwf.int/wiki/display/ODB/Installation+Guide
+
+
 Following software packages are required to build ODB API library and command line tool:
 
  - cmake 2.8.1 or newer,

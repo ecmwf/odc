@@ -17,7 +17,7 @@
 
 #include "eckit/config/Resource.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "odblib/Codec.h"
 #include "odblib/CodecOptimizer.h"
@@ -163,18 +163,26 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 	return 0;
 }
 
+inline bool equal(const double v1, const double v2)
+{
+	for (size_t i=0; i < sizeof(double); ++i)
+		if (reinterpret_cast<unsigned const char*>(&v1)[i] != reinterpret_cast<unsigned const char*>(&v2)[i])
+			return false;
+	return true;
+}
+
 int WriterBufferingIterator::doWriteRow(const double* values, unsigned long count)
 {
 	if (lastValues_ == 0)
 		allocBuffers();
 
-	uint16_t k = 0;
-	while(k < count && values[k] == lastValues_[k])
+	uint16_t k (0);
+	while(k < count && equal(values[k], lastValues_[k]))
 		++k;
 
-	unsigned char *p = buffer_;
-	uint16_t nk = htons(k);
-	unsigned char *pk = reinterpret_cast<unsigned char *>(&nk);
+	unsigned char *p (buffer_);
+	uint16_t nk (htons(k));
+	unsigned char *pk (reinterpret_cast<unsigned char *>(&nk));
 	*p++ =  *pk++;
 	*p++ =  *pk;
 
@@ -191,7 +199,6 @@ int WriterBufferingIterator::doWriteRow(const double* values, unsigned long coun
 	f.writeBytes(buffer_.cast<char>(), len);
 
 	nrows_++;
-
 	return 0;
 } 
 

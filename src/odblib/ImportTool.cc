@@ -10,6 +10,7 @@
 
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/types/Types.h"
+#include "eckit/utils/StringTools.h"
 
 #include "odblib/oda.h"
 #include "odblib/Tool.h"

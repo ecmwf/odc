@@ -9,14 +9,15 @@
  */
 
 #include "eckit/filesystem/PartFileHandle.h"
-#include "odblib/oda.h"
-#include "odblib/Tool.h"
+
+#include "odblib/odb_api.h"
 #include "odblib/ToolFactory.h"
-#include "SQLTool.h"
-#include "SQLOutputConfig.h"
-#include "SQLSelectFactory.h"
+#include "odblib/SQLSelectFactory.h"
+#include "odblib/SQLTool.h"
+#include "odblib/Tool.h"
 
 using namespace eckit;
+using namespace odb::sql;
 
 namespace odb {
 namespace tool {
@@ -29,7 +30,7 @@ SQLTool::SQLTool(int argc,char **argv)
 	registerOptionWithArgument("-o");
 	registerOptionWithArgument("-i");
 	registerOptionWithArgument("-delimiter");
-	registerOptionWithArgument("-f"); // output format ( -f odb  for binary ODB format); default is ascii
+	registerOptionWithArgument("-f"); // output format 
 	registerOptionWithArgument("-offset"); 
 	registerOptionWithArgument("-length");
 
@@ -37,12 +38,10 @@ SQLTool::SQLTool(int argc,char **argv)
 	doNotWriteNULL_ = optionIsSet("-N");
 	delimiter_ = optionArgument("-delimiter", string("\t"));
 
-	inputFile_ = optionArgument("-i", string(""));
-	if (inputFile_ == "-")
+	if ((inputFile_ = optionArgument("-i", string(""))) == "-")
 		inputFile_ = "/dev/tty";
 
-	outputFile_ = optionArgument("-o", string(""));
-	if (outputFile_ == "-")
+	if ((outputFile_ = optionArgument("-o", string(""))) == "-")
 		outputFile_ = "/dev/tty";
 
 	outputFormat_ = optionArgument("-f", string("default"));
@@ -50,8 +49,8 @@ SQLTool::SQLTool(int argc,char **argv)
 	offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
 	length_ = optionArgument("-length", (long) 0);
 
-	odb::sql::SQLSelectFactory::instance()
-		.config(odb::sql::SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_));
+	SQLSelectFactory::instance()
+		.config(SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_));
 }
 
 SQLTool::~SQLTool() {}
@@ -65,58 +64,40 @@ void SQLTool::run()
 		Log::error() << endl;
 		return;// 1;
 	}
+	vector<string> params(parameters());
+	params.erase(params.begin());
 
-	auto_ptr<ofstream> foutPtr;
-	if (optionIsSet("-o") && outputFormat_ == "default") {
-		foutPtr.reset(new ofstream(optionArgument("-o", string("")).c_str()));
-    } 
-	ostream& out = (optionIsSet("-o") && outputFormat_ == "default") ? *foutPtr : cout;
+	auto_ptr<ofstream> foutPtr(optionIsSet("-o")
+								? new ofstream(optionArgument("-o", string("")).c_str())
+								: 0);
+	ostream& out(foutPtr.get() ? *foutPtr : cout);
+	SQLInteractiveSession session(out);
+	SQLParser parser;
+	SQLOutputConfig config(SQLSelectFactory::instance().config());
+	string sql(StringTool::match("select", params[0])
+				? StringTools::join(" ",  params) + ";"
+				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
+	runSQL(sql, session, parser, config);
+}
 
-	if (string(parameters(1)) == "select" || StringTool::match("select", parameters(1)))
+void SQLTool::runSQL(const string& sql, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config)
+{
+	Log::info() << "Executing '" << sql << "'" << endl;
+
+	if (inputFile_.size() == 0)
+		parser.parseString(sql, static_cast<DataHandle*>(0), config);
+	else if (offset_ != Offset(0) || length_ != Length(0))
 	{
-		string sql;
-		for (size_t i = 1; i < parameters().size(); i++)
-			sql += parameters(i) + " ";
-		sql += ";";
-		Log::info() << "Executing '" << sql << "'" << endl;
-
-		odb::sql::SQLInteractiveSession session(out);
-		odb::sql::SQLParser p;
-		if (inputFile_.size() == 0)
-			p.parseString(sql, static_cast<DataHandle*>(0), odb::sql::SQLSelectFactory::instance().config());
-		else if (offset_ != Offset(0) || length_ != Length(0))
-		{
-			// FIXME: PartFileHandle doesn't think length 0 means to the enfd of the file - get correct length
-			Log::info() << "Selecting " << length_ << " bytes from offset " << offset_ 
-					<< " of " << inputFile_ << endl;
-			PartFileHandle fh(inputFile_, offset_, length_); 
-			fh.openForRead();
-			p.parseString(sql, &fh, odb::sql::SQLSelectFactory::instance().config());
-		} else {
-			FileHandle fh(inputFile_);
-			fh.openForRead();
-			p.parseString(sql, &fh, odb::sql::SQLSelectFactory::instance().config());
-		}
-	}
-	else
-	{
-		string fileName = parameters(1); //Resource<string>("-i", "test.sql");
-		if (fileName == "-")
-			fileName = "/dev/tty";
-
-		Log::info() << "Executing SQL from " << fileName << endl;
-
-		odb::sql::SQLInteractiveSession session(out);
-		odb::sql::SQLParser p;
-        
-		if (inputFile_.size() == 0)
-			p.parseString(StringTool::readFile(fileName), static_cast<DataHandle*>(0), odb::sql::SQLSelectFactory::instance().config());
-		else
-		{
-			FileHandle fh(inputFile_);
-			fh.openForRead();
-			p.parseString(StringTool::readFile(fileName), &fh, odb::sql::SQLSelectFactory::instance().config());
-		}
+		// FIXME: PartFileHandle doesn't think length 0 means to the end of the file - get correct length
+		Log::info() << "Selecting " << length_ << " bytes from offset " << offset_ 
+				<< " of " << inputFile_ << endl;
+		PartFileHandle fh(inputFile_, offset_, length_); 
+		fh.openForRead();
+		parser.parseString(sql, &fh, config);
+	} else {
+		FileHandle fh(inputFile_);
+		fh.openForRead();
+		parser.parseString(sql, &fh, config);
 	}
 }
 

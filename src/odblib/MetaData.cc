@@ -11,7 +11,7 @@
 #include "eckit/io/DataHandle.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Codec.h"
 #include "odblib/CodecOptimizer.h"
 #include "odblib/Column.h"

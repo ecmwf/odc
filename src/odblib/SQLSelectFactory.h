@@ -56,6 +56,9 @@ public:
 	SQLOutputConfig config() { return config_; }
 	void config(SQLOutputConfig cfg) { config_ = cfg; }
 
+	string csvDelimiter() { return csvDelimiter_; }
+	void csvDelimiter(const string& d) { csvDelimiter_ = d; }
+
 private:
 	SQLSelectFactory();
 
@@ -72,6 +75,7 @@ private:
 	SQLOutputConfig config_;
 	int maxColumnShift_;
 	int minColumnShift_;
+	string csvDelimiter_;
 
 friend class eckit::ThreadSingleton<SQLSelectFactory>;
 };

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "odblib/ODAColumn.h"
 #include "odblib/SQLDatabase.h"
@@ -50,10 +50,10 @@ TODATable<T>::TODATable(SQLDatabase& owner, eckit::DataHandle &dh):
 }
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, istream &is):
+TODATable<T>::TODATable(SQLDatabase& owner, istream &is, const string &delimiter):
 	SQLTable(owner, nullPathName, inputTable),
 	data_(0),
-	oda_(is),
+	oda_(is, delimiter),
 	reader_(oda_.begin()),
     end_(oda_.end())
 {

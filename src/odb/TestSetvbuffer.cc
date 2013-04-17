@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestSetvbuffer.h"
@@ -47,7 +47,7 @@
 #include "odblib/Reader.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/ODBAPISettings.h"
 
 using namespace std;

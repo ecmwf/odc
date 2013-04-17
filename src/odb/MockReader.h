@@ -11,7 +11,7 @@
 #ifndef MockReader_H
 #define MockReader_H
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 namespace odb {
 namespace tool {

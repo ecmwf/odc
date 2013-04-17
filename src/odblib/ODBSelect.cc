@@ -35,12 +35,13 @@ Select::Select(const string& selectStatement, DataHandle &dh)
   selectStatement_(selectStatement)
 {}
 
-Select::Select(const string& selectStatement, std::istream &is)
+Select::Select(const string& selectStatement, std::istream &is, const string& delimiter)
 : dataHandle_(0),
   deleteDataHandle_(true),
   istream_(&is),
   deleteIStream_(false),
-  selectStatement_(selectStatement)
+  selectStatement_(selectStatement),
+  delimiter_(delimiter)
 {}
 
 Select::Select(const string& selectStatement)

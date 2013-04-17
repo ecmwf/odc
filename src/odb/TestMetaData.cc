@@ -18,7 +18,7 @@
 
 #include <strings.h>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
@@ -50,13 +50,13 @@ void TestMetaData::test()
 	typedef DataStream<SameByteOrder, DataHandle> DS;
 
 	MetaData md1(0);
-	md1.addColumn<DS>("A", "REAL", false, 0.);
-	md1.addColumn<DS>("B", "INTEGER", false, 0.);
+	md1.addColumn<DS>("A", "REAL");//, false, 0.);
+	md1.addColumn<DS>("B", "INTEGER");//, false, 0.);
 
 	Log::info() << "md1: " << endl << md1 << endl;
 
 	MetaData md2(0);
-	md2.addColumn<DS>("C", "STRING", false, 0.);
+	md2.addColumn<DS>("C", "STRING");//, false, 0.);
 
 	Log::info() << "md2:" << endl << md2 << endl;
 

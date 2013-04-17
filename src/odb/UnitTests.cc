@@ -46,7 +46,7 @@
 #include "odblib/FastODA2Request.h"
 #include "odblib/MemoryBlock.h"
 #include "odblib/InMemoryDataHandle.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/odbcapi.h"
 #include "odblib/ImportTool.h"
 #include "odblib/Tool.h"
@@ -141,9 +141,9 @@ void createDataForMixedAggregated2()
 	MetaData& md(o->columns());
 
 	typedef DataStream<SameByteOrder, DataHandle> DS;
-	md.addColumn<DS>("x", "INTEGER", true, .0);
-	md.addColumn<DS>("y", "INTEGER", true, .0);
-	md.addColumn<DS>("v", "DOUBLE", true, .0);
+	md.addColumn<DS>("x", "INTEGER");//, true, .0);
+	md.addColumn<DS>("y", "INTEGER");//, true, .0);
+	md.addColumn<DS>("v", "DOUBLE");//, true, .0);
 	o->writeHeader();
 
 	for (size_t row = 0; row < 1000; ++row)
@@ -366,7 +366,7 @@ void vector_syntax2()
 }
 TESTCASE(vector_syntax2);
 
-
+/*
 void filterInPlace()
 {
 	create_stringInWhere_file();
@@ -410,6 +410,7 @@ void filterInPlace2()
 	ASSERT(rc == 1);
 }
 TESTCASE(filterInPlace2);
+*/
 
 void blocksSizes()
 {

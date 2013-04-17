@@ -40,6 +40,9 @@ public:
 
 	virtual const odb::sql::type::SQLType* type() const;
 
+	// For SQLSelectFactory (maybe it should just friend SQLSelectFactory).
+	expression::Expressions& args() { return args_; }
+
 protected:
 	string name_;
 	expression::Expressions args_;

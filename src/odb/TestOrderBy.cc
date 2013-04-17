@@ -17,7 +17,7 @@
 #include <map>
 #include <algorithm>
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestOrderBy.h"
@@ -48,7 +48,7 @@
 #include "eckit/filesystem/StdFileHandle.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/ImportTool.h"
 #include "odblib/StringTool.h"
 
@@ -83,10 +83,10 @@ void TestOrderBy::test()
 		for (; it != end; ++it)
 		{
 			int v = (*it)[0];
-			Log::debug()  << "TestOrderBy::test:" <<  v  << endl;
+			Log::info()  << "TestOrderBy::test:" <<  v  << endl;
 			ASSERT(v == ++i);
 		}
-		Log::debug()  << "TestOrderBy::test: i = " <<  i  << endl;
+		Log::info()  << "TestOrderBy::test: i = " <<  i  << endl;
 		ASSERT(i == 10);
 	}
 
@@ -103,7 +103,7 @@ void TestOrderBy::test()
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::debug()  << "TestOrderBy::test:" <<  v  << endl;
+			Log::info()  << "TestOrderBy::test:" <<  v  << endl;
 			ASSERT(i <= v);
 			i = v;
 		}
@@ -125,10 +125,10 @@ void TestOrderBy::test()
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::debug()  << "TestOrderBy::test:" <<  v  << endl;
+			Log::info()  << "TestOrderBy::test:" <<  v  << endl;
 			ASSERT(i-- == v);
 		}
-		Log::debug()  << "TestOrderBy::test: i = " <<  i  << endl;
+		Log::info()  << "TestOrderBy::test: i = " <<  i  << endl;
 		ASSERT(i == 0);
 		ASSERT(j == 10);
 	}
@@ -157,9 +157,9 @@ void TestOrderBy::test()
 			v1 = (*it)[0];
 			v2 = (*it)[1];
 			s = (*it).string(2);
-			Log::debug() << "TestOrderBy::test:" <<  v1  << ", " << v2 << ", '" << s << "'" << endl;
+			Log::info() << "TestOrderBy::test:" <<  v1  << ", " << v2 << ", '" << s << "'" << endl;
 		}
-		Log::debug()  << "TestOrderBy::test: i = " <<  i  << endl;
+		Log::info()  << "TestOrderBy::test: i = " <<  i  << endl;
 		ASSERT(i == 4);
 		ASSERT(v1 == 1 && v2 == 20 && StringTools::trim(s) == "two");
 	}

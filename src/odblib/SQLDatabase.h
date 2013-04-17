@@ -46,7 +46,7 @@ public:
 
 	virtual SQLTable* table(const string&);
 	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA) = 0; 
-	virtual SQLTable* openDataStream(istream&, DataFormat = CSV) = 0; 
+	virtual SQLTable* openDataStream(istream&, const string& delimiter, DataFormat = CSV) = 0; 
 	virtual void addTable(SQLTable *table) { tablesByName_[table->name()] = table; }
 
 	void setLinks(const Links&);

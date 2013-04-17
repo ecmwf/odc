@@ -49,14 +49,13 @@ public:
 
 	virtual MetaData& columns() { return columns_; }
 
+	static odb::BitfieldDef parseBitfields(const string&);
 //protected:
 
 	virtual int close();
 
 // next() is public cause it needs to be used by the C API functions - normally client code should not use it
 	virtual bool next();
-protected:
-	static string defaultDelimiter;
 
 private:
 // No copy allowed.

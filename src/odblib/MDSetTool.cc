@@ -10,7 +10,7 @@
 
 #include "eckit/utils/Tokenizer.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/MetaDataReader.h"

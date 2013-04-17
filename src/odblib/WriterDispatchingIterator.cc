@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Codec.h"
 #include "odblib/CodecOptimizer.h"
 #include "odblib/DataStream.h"
