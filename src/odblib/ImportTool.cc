@@ -8,14 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/utils/Tokenizer.h"
 #include "eckit/types/Types.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/utils/StringTools.h"
 
-#include "odblib/oda.h"
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/ImportTool.h"
+#include "odblib/SQLSelectFactory.h"
 
 using namespace std;
 using namespace eckit;
@@ -49,13 +50,19 @@ void ImportTool::run()
 
 	Log::info() << "ImportTool::run: inFile: " << inFile << ", outFile: " << outFile << endl;
 
-	importFile(inFile, outFile, optionArgument("-d", defaultDelimiter));
+	string delimiter = StringTools::upper(optionArgument("-d", defaultDelimiter));
+	if (delimiter == "TAB")
+		delimiter = "\t";
+	
+	importFile(inFile, outFile, delimiter);
 }
 
 void ImportTool::importFile(const PathName& in, const PathName& out, const string& delimiter)
 {
+	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
+
 	ifstream fs( in.asString().c_str() );
-	odb::Select input("select *", fs);
+	odb::Select input("select *", fs, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
@@ -70,8 +77,10 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const strin
 
 void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
 {
+	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
+
 	stringstream fs(s);
-	odb::Select input("select *", fs);
+	odb::Select input("select *", fs, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
