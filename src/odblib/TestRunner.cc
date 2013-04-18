@@ -61,7 +61,9 @@ void TestRunner::run()
 	}
 	else
 	{
-		readConfig("../../../odb_api/src/odb/TestRunnerApplication.cfg");
+		// TODO: keep the config in the ODB_API_TEST_DATA_PATH
+		//readConfig("../../../odb_api/src/odb/TestRunnerApplication.cfg");
+		readConfig("/tmp/Dropbox/work/odb_api/src/odb/TestRunnerApplication.cfg");
 		tests.reset(new TestCases());
 		for (size_t i = 1; i < clp_.parameters().size(); ++i)
 		{

@@ -37,36 +37,20 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   nextRow_(0),
   nrows_(0),
   f(dh),
-  buffer_(0),
+  encodedDataBuffer_(0),
   refCount_(0),
   properties_(),
   blockBuffer_(),
   rowsBuffer_(),
-  p_(0),
+  nextRowInBuffer_(0),
   memoryDataHandle_(0),
   columnsBuffer_(0),
   rowsBufferSize_(owner.rowsBufferSize()),
   setvBuffer_(0),
-  maxAnticipatedHeaderSize_(ODBAPISettings::instance().headerBufferSize() )
+  maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() )
 {
-	//Log::debug() << "WriterBufferingIterator::WriterBufferingIterator: @" << this << endl;
-
 	if (openDataHandle)	
 		open();
-//FIXME: Move the code inside FileHandle
-#if 0
-	FileHandle* fh = dynamic_cast<FileHandle*>(dh);
-	if (fh)
-	{
-		FILE* cFile = fh->file();
-		long size = ODBAPISettings::instance().setvbufferSize();
-
-		//Log::debug(Here()) << "WriterBufferingIterator::WriterBufferingIterator: setvbuf = " << size << endl;
-
-		setvBuffer_.size(size);
-		::setvbuf(cFile, setvBuffer_, _IOFBF, size);
-	}
-#endif
 }
 
 WriterBufferingIterator::~WriterBufferingIterator()
@@ -83,10 +67,7 @@ unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigne
 	ASSERT(count == columns().size());
 
 	for(size_t i = 0; i < count; i++)
-	{
-		codec::Codec& codec = columns_[i]->coder();
-		codec.gatherStats(values[i]);
-	}
+		columns_[i]->coder().gatherStats(values[i]);
 
 	return 0;
 } 
@@ -100,7 +81,6 @@ int WriterBufferingIterator::setOptimalCodecs()
 		columnsBuffer_.resetStats();
 	}
 
-	//return codec::CodecOptimizer::setOptimalCodecs<DATASTREAM>(columns());
 	return codecOptimizer_.setOptimalCodecs<DATASTREAM>(columns());
 }
 
@@ -114,22 +94,23 @@ void WriterBufferingIterator::allocBuffers()
 	nextRow_ = new double [colSize];
 	ASSERT(last);
 
-	for (int i = 0; i < colSize; i++)
+	for (int i = 0; i < colSize; ++i)
 		nextRow_[i] = last[i] = columns_[i]->missingValue();
 
 	nrows_ = 0;
 
-	buffer_.size(colSize * sizeof(double));
+	encodedDataBuffer_.size(sizeof(uint16_t) + colSize * sizeof(double));
 }
 
 void WriterBufferingIterator::allocRowsBuffer()
 {
 	size_t nCols = columns().size();
-	blockBuffer_.size(maxAnticipatedHeaderSize_ + rowsBufferSize_ * nCols * sizeof(double));
-	rowsBuffer_.share(static_cast<unsigned char*>(blockBuffer_) + maxAnticipatedHeaderSize_, rowsBufferSize_ * nCols);
+	const size_t maxEncodedRowSize (sizeof(uint16_t) + nCols * sizeof(double));
+	blockBuffer_.size(maxAnticipatedHeaderSize_ + rowsBufferSize_ * maxEncodedRowSize);
+	rowsBuffer_.share(blockBuffer_ + maxAnticipatedHeaderSize_, rowsBufferSize_ * maxEncodedRowSize);
 
-	memoryDataHandle_.buffer(rowsBuffer_.cast<unsigned char>());
-	p_ = rowsBuffer_;
+	memoryDataHandle_.buffer(rowsBuffer_);
+	nextRowInBuffer_ = rowsBuffer_;
 }
 
 void WriterBufferingIterator::writeHeader()
@@ -142,7 +123,11 @@ void WriterBufferingIterator::writeHeader()
 bool WriterBufferingIterator::next() { return writeRow(nextRow_, columns().size()) == 0; }
 
 double* WriterBufferingIterator::data() { return nextRow_; }
-//double& WriterBufferingIterator::data(int i) { ASSERT(i >= 0 && i < columns().size()); return nextRow_[i]; }
+double& WriterBufferingIterator::data(size_t i)
+{
+	ASSERT(i >= 0 && i < columns().size());
+	return nextRow_[i];
+}
 
 int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 {
@@ -153,50 +138,54 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 
 	gatherStats(data, nCols);
 
-	copy(data, data + nCols, p_);
-	p_ += nCols;
+	copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
+	nextRowInBuffer_ += sizeof(uint16_t) + nCols * sizeof(double);
 
-	ASSERT(p_ <= rowsBuffer_ + rowsBuffer_.size());
-	if (p_ == rowsBuffer_ + rowsBuffer_.size())
+	ASSERT(nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
+
+	if (nextRowInBuffer_ == rowsBuffer_ + rowsBuffer_.size())
 		flush();
 
 	return 0;
 }
 
-inline bool equal(const double v1, const double v2)
+inline bool equal(const double* const v1, const double* const v2)
 {
 	for (size_t i=0; i < sizeof(double); ++i)
-		if (reinterpret_cast<unsigned const char*>(&v1)[i] != reinterpret_cast<unsigned const char*>(&v2)[i])
+		if (reinterpret_cast<unsigned const char*>(v1)[i] != reinterpret_cast<unsigned const char*>(v2)[i])
 			return false;
 	return true;
 }
 
-int WriterBufferingIterator::doWriteRow(const double* values, unsigned long count)
+inline unsigned char* WriterBufferingIterator::writeNumberOfRepeatedValues(unsigned char *p, uint16_t k)
 {
-	if (lastValues_ == 0)
-		allocBuffers();
-
-	uint16_t k (0);
-	while(k < count && equal(values[k], lastValues_[k]))
-		++k;
-
-	unsigned char *p (buffer_);
 	uint16_t nk (htons(k));
 	unsigned char *pk (reinterpret_cast<unsigned char *>(&nk));
-	*p++ =  *pk++;
-	*p++ =  *pk;
+	*p++ = *pk++;
+	*p++ = *pk;
+	return p;
+}
 
-	for ( ; k < count; k++) 
+int WriterBufferingIterator::doWriteRow(const double* values, unsigned long count)
+{
+	if (lastValues_ == 0) allocBuffers();
+
+	uint16_t k (0);
+	for (; k < count && equal(&values[k], &lastValues_[k]); ++k)
+		;
+
+	unsigned char *p (encodedDataBuffer_);
+	p = writeNumberOfRepeatedValues(p, k);
+
+	for (size_t i = k; i < count; ++i) 
 	{
-		Column *col = columns_[k];
-		p = col->coder().encode(p, values[k]);
-		lastValues_[k] = values[k];
+		Column *col (columns_[i]);
+		p = col->coder().encode(p, values[i]);
+		lastValues_[i] = values[i];
 	}
 
-	size_t len = p - buffer_;
-
 	DataStream<SameByteOrder, FastInMemoryDataHandle> f(memoryDataHandle_);
-	f.writeBytes(buffer_.cast<char>(), len);
+	f.writeBytes(encodedDataBuffer_.cast<char>(), p - encodedDataBuffer_);
 
 	nrows_++;
 	return 0;
@@ -205,7 +194,6 @@ int WriterBufferingIterator::doWriteRow(const double* values, unsigned long coun
 int WriterBufferingIterator::open()
 {
 	//Log::debug() << "WriterBufferingIterator::open@" << this << ": Opening data handle " << f << endl;
-
 	ASSERT(f);
 
 	Length estimatedLen = MEGA(20);
@@ -225,8 +213,6 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnTyp
 
 	col->name(name); 
 	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
-	//col->hasMissing(hasMissing);
-	//col->missingValue(missingValue);
 	return 0;
 }
 
@@ -240,8 +226,6 @@ int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, C
 
 	col->name(name); 
 	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
-	//col->hasMissing(hasMissing);
-	//col->missingValue(missingValue);
     col->bitfieldDef(b);
 	col->missingValue(0);
 	return 0;
@@ -258,21 +242,20 @@ void WriterBufferingIterator::missingValue(size_t i, double missingValue)
 
 void WriterBufferingIterator::flush()
 {
-	if (p_ == rowsBuffer_)
+	if (nextRowInBuffer_ == rowsBuffer_)
 		return;
 	
 	setOptimalCodecs<DataStream<SameByteOrder, FastInMemoryDataHandle> >();
 
 	unsigned long rowsWritten = 0;
 	const size_t nCols = columns().size();
-	double *pr = rowsBuffer_;
-	for (; pr < p_; pr += nCols, ++rowsWritten)
-		doWriteRow(pr, nCols);
+	for (unsigned char *pr = rowsBuffer_; pr < nextRowInBuffer_; pr += sizeof(uint16_t) + nCols * sizeof(double), ++rowsWritten)
+		doWriteRow(reinterpret_cast<double *>(pr + sizeof(uint16_t)), nCols);
 
 	InMemoryDataHandle bufferForHeader;
 	doWriteHeader(bufferForHeader, memoryDataHandle_.position(), rowsWritten);
 
-	//Log::debug(Here()) << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << endl;
+	Log::debug() << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << endl;
 
 	MemoryBlock buff(bufferForHeader.position());
 	bufferForHeader.openForRead();
@@ -280,26 +263,27 @@ void WriterBufferingIterator::flush()
 
 	if (buff.size() < maxAnticipatedHeaderSize_)
 	{
-		//Log::debug(Here()) << "WriterBufferingIterator::flush: writing header and data in one go. "
-		//	"Block size: " << buff.size() + memoryDataHandle_.position() << endl;
+		Log::debug() << "WriterBufferingIterator::flush: writing header and data in one go. "
+			"Block size: " << buff.size() + memoryDataHandle_.position() << endl;
+
 		copy(static_cast<unsigned char*>(buff), static_cast<unsigned char*>(buff) + buff.size(),
 			memoryDataHandle_.buffer() - buff.size());
 		this->f->write(memoryDataHandle_.buffer() - buff.size(),
-			static_cast<size_t>(memoryDataHandle_.position()) + buff.size()); // Write encodedd data
+			static_cast<size_t>(memoryDataHandle_.position()) + buff.size()); // Write encoded data
 	}
 	else
 	{
-		Log::debug(Here()) << "WriterBufferingIterator::flush: writing header and data separately." << endl;
+		Log::info() << "WriterBufferingIterator::flush: writing header and data separately." << endl;
 
 		this->f->write(buff, buff.size()); // Write header
-		this->f->write(memoryDataHandle_.buffer(), memoryDataHandle_.position()); // Write encodedd data
+		this->f->write(memoryDataHandle_.buffer(), memoryDataHandle_.position()); // Write encoded data
 	}
 
-	//Log::debug(Here()) << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << endl;
+	Log::debug() << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << endl;
 
 	memoryDataHandle_.buffer(rowsBuffer_.cast<unsigned char>());
 
-	p_ = rowsBuffer_;
+	nextRowInBuffer_ = rowsBuffer_;
 
 	columns() = columnsBuffer_;
 	columns().resetStats();

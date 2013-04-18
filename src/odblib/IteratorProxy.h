@@ -70,6 +70,7 @@ public:
 
 	DATA& operator[](size_t i) { return (*it_)->data()[i]; }
 	DATA* data() { return ((*it_).iter_)->data(); }
+	DATA& data(size_t i) { return ((*it_).iter_)->data(i); }
 	int integer(size_t i) { return int((*it_)->data()[i]); }
 	std::string string(int i)
 	{
