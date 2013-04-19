@@ -20,13 +20,13 @@
     } catch (const ODBIndexError& e) {
 		PyErr_SetString(PyExc_IndexError, "column index out of range");
 		return NULL;
-	} catch (const FileError& e) {
+	} catch (const eckit::FileError& e) {
 		PyErr_SetString(PyExc_IOError, e.what());
 		return NULL;
 	} catch (const ::odb::sql::SyntaxError& e) {
 		PyErr_SetString(PyExc_SyntaxError, e.what());
 		return NULL;
-	}  catch (const Exception& e) {
+	}  catch (const eckit::Exception& e) {
 		PyErr_SetString(PyExc_RuntimeError, e.what());
 		return NULL;
 	}
