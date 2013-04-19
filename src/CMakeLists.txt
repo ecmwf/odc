@@ -13,8 +13,7 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/odb_api_config.h DESTINATION include/
 
 ### include directories
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
-include_directories( ${ECKIT_INCLUDE_DIRS} )
+include_directories( ${ODB_API_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
 
 ### libs
 

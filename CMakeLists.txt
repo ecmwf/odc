@@ -9,7 +9,7 @@
 #       -DCMAKE_C_COMPILER=gcc
 #       -DCMAKE_C_COMPILER=g++
 #
-#       -DCMAKE_PREFIX_PATH=/path/to/jasper:/path/to/any/package/out/of/place
+#       -DCMAKE_PREFIX_PATH=/path/to/any/package/out/of/place
 #       -DBUILD_SHARED_LIBS=ON
 
 cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
@@ -20,10 +20,14 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system )
 
+if( ECBUILD_MACRO_VERSION VERSION_LESS 1.1 )
+    message( FATAL_ERROR "${PROJECT_NAME} needs ecbuild >= 1.1" )
+endif()
+
 ###############################################################################
 # local project
 
-ecbuild_use_package( PROJECT eckit REQUIRED )
+ecbuild_use_package( PROJECT eckit VERSION 0.1 REQUIRED )
 
 ecbuild_declare_project()
 
@@ -54,11 +58,9 @@ endif()
 ###############################################################################
 # contents
 
-if( NOT ${PROJECT_NAME} STREQUAL ${CMAKE_PROJECT_NAME} )
-    set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src PARENT_SCOPE )
-    set( ODB_API_LIBRARIES      Odb PARENT_SCOPE )
-    set( ODB_API_FOUND          TRUE PARENT_SCOPE )
-endif()
+set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
+set( ODB_API_LIBRARIES      Odb )
+set( ODB_API_TPLS           eckit )
 
 # source files
 add_subdirectory( src )
