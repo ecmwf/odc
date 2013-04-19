@@ -125,7 +125,7 @@ public:
         {
             table_.resize(table_.size() + 1);
             row_ = &table_.back();
-            row_->set<T>(index_++, value);
+            row_->DataRow::set<T>(index_++, value);
         }
 
         ~CommaInserter()
@@ -143,7 +143,7 @@ public:
                 index_ = 0;
             }
 
-            row_->set<std::string>(index_++, std::string(value));
+            row_->DataRow::set<std::string>(index_++, std::string(value));
 
             return *this;
         }
@@ -158,7 +158,7 @@ public:
                 index_ = 0;
             }
 
-            row_->set<T>(index_++, value);
+            row_->DataRow::set<T>(index_++, value);
 
             return *this;
         }
