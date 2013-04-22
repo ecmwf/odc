@@ -157,7 +157,7 @@ inline bool equal(const double* const v1, const double* const v2)
 	return true;
 }
 
-inline unsigned char* WriterBufferingIterator::writeNumberOfRepeatedValues(unsigned char *p, uint16_t k)
+unsigned char* WriterBufferingIterator::writeNumberOfRepeatedValues(unsigned char *p, uint16_t k)
 {
 	uint16_t nk (htons(k));
 	unsigned char *pk (reinterpret_cast<unsigned char *>(&nk));
