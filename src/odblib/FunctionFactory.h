@@ -67,6 +67,11 @@ public:
 	FunctionMaker(const string& name, int arity, const string& help) : FunctionFactoryBase(name, arity, help) {}
 };
 
+FunctionExpression* ast(const string& s, SQLExpression* e);
+FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2);
+FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3);
+FunctionExpression* ast(const string& s, const expression::Expressions& e);
+
 } // namespace function
 } // namespace expression 
 } // namespace sql

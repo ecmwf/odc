@@ -147,6 +147,7 @@ Expressions emptyExpressionList;
 %type <bol>distinct;
 %type <val>into;
 %type <val>func;
+%type <val>relational_operator;
 
 %type <r>vector_range_decl;
 %type <val>column_name;
@@ -533,13 +534,16 @@ term        : term '+' factor           { $$ = FunctionFactory::instance().build
             | factor
             ;
 
-condition   : condition '>' term        { $$ = FunctionFactory::instance().build(">",$1,$3);   }
-            | condition EQ term         { $$ = FunctionFactory::instance().build("=",$1,$3);   }
-            | condition '<' term        { $$ = FunctionFactory::instance().build("<",$1,$3);   }
-            | condition  GE term        { $$ = FunctionFactory::instance().build(">=",$1,$3);   }
-            | condition  LE term        { $$ = FunctionFactory::instance().build("<=",$1,$3);   }
-            | condition  NE term        { $$ = FunctionFactory::instance().build("<>",$1,$3);   }
-            | condition  IN '(' expression_list ')'      { $4.push_back($1); $$ = FunctionFactory::instance().build("in",$4);   }
+relational_operator: '>' { $$ = ">"; }
+                   | EQ  { $$ = "="; }
+                   | '<' { $$ = "<"; }
+                   | GE  { $$ = "="; }
+                   | LE  { $$ = "<="; }
+                   | NE  { $$ = "<>"; }
+                   ;
+condition   : term relational_operator term relational_operator term { $$ = ast("and", ast($2,$1,$3), ast($4,$3,$5)); }
+            | term relational_operator term                          { $$ = ast($2, $1, $3); }
+            | condition  IN '(' expression_list ')'                  { $4.push_back($1); $$ = ast("in",$4);   }
             | condition  IN VAR         
 			{ 
 				SQLExpression* v = SQLSession::current().currentDatabase().getVariable($3);
