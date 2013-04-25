@@ -16,7 +16,7 @@
 #ifndef SQLCreateTable_H
 #define SQLCreateTable_H
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 #include "odblib/SQLAST.h"
 #include "odblib/SQLExpression.h"

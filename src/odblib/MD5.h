@@ -18,7 +18,7 @@ extern "C" {
 #include "md5_hash.h"
 } // extern "C"
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 // Forward declarations
 

@@ -11,7 +11,7 @@
 #ifndef MetaData_H
 #define MetaData_H
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 #include "eckit/utils/StringTools.h"
 
 #include "odblib/Column.h"

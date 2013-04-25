@@ -16,7 +16,7 @@
 
 #include <stack>
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 #include "odblib/Environment.h"
 #include "odblib/FunctionROWNUMBER.h"

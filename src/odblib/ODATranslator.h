@@ -17,7 +17,7 @@
 #include <strings.h>
 #include <sstream>
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 #include "eckit/types/Date.h"
 #include "eckit/filesystem/PathName.h"

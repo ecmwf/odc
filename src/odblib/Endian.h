@@ -14,7 +14,7 @@
 #ifndef Endian_H
 #define Endian_H
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 #include "eckit/exception/Exceptions.h"
 

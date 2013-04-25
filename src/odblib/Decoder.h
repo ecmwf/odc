@@ -14,7 +14,7 @@
 #ifndef Decoder_H
 #define Decoder_H
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 namespace odb {
 

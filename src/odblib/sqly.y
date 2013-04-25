@@ -11,7 +11,7 @@
  */
 
 #define YYMAXDEPTH 500
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 using namespace SQLYacc;
 

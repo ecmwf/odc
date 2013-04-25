@@ -14,7 +14,7 @@
 #ifndef ODAHandle_H
 #define ODAHandle_H
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 #include "eckit/io/Buffer.h"
 #include "eckit/types/Date.h"

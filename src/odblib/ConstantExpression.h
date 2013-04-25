@@ -14,7 +14,7 @@
 #ifndef ConstantExpression_H
 #define ConstantExpression_H
 
-#include "eckit/machine.h"
+#include "eckit/eckit.h"
 
 #include "eckit/exception/Exceptions.h"
 
