@@ -141,10 +141,17 @@ subroutine test_fortran_api1
  character(kind=C_CHAR, len=max_varlen)        :: config = C_NULL_CHAR
  character(kind=C_CHAR, len=max_varlen)        :: inputfile = "test.odb"//achar(0)
  type(C_PTR)                                   :: ptr_colname
+ type(C_PTR)                                   :: ptr_bitfield_names
+ type(C_PTR)                                   :: ptr_bitfield_sizes
  character(kind=C_CHAR,len=1), dimension(:), pointer :: f_ptr_colname
+ character(kind=C_CHAR,len=1), dimension(:), pointer :: f_ptr_bitfield_names
+ character(kind=C_CHAR,len=1), dimension(:), pointer :: f_ptr_bitfield_sizes
  character(len=max_varlen)                     :: colname
+ character(len=max_varlen)                     :: bitfield_names
+ character(len=max_varlen)                     :: bitfield_sizes
  integer(kind=4)                               :: i
  integer(kind=C_INT)                           :: itype, newdataset, c_ncolumns=2, size_name 
+ integer(kind=C_INT)                           :: bitfield_names_size, bitfield_sizes_size
  real(kind=C_DOUBLE), dimension(:), allocatable:: one_row
  character(len=8)                              :: tmp_str
 
@@ -169,6 +176,25 @@ subroutine test_fortran_api1
  cerr = odb_read_get_column_type(odb_it, 2, itype)
  if (cerr /=0) STOP 8
  if (itype /= ODB_BITFIELD) STOP 9
+
+ cerr = odb_read_get_bitfield(odb_it, 2, ptr_bitfield_names, ptr_bitfield_sizes, bitfield_names_size, bitfield_sizes_size)
+ write(0,*) 'odb_read_get_bitfield column 2 => ', cerr
+ if (cerr /=0) STOP 91
+ write(0,*) 'column 2 bitfield_names_size: ', bitfield_names_size
+ call C_F_POINTER(CPTR=ptr_bitfield_names, FPTR=f_ptr_bitfield_names, shape=(/bitfield_names_size/));
+ do i=1, bitfield_names_size
+    bitfield_names(i:i) = f_ptr_bitfield_names(i)
+ end do
+ write(0,*) 'column 2 bitfield_names: ', bitfield_names(1:bitfield_names_size)
+ if (bitfield_names(1:bitfield_names_size) /= 'active:passive:blacklisted:') STOP 92
+
+ write(0,*) 'column 2 bitfield_sizes_size: ', bitfield_sizes_size
+ call C_F_POINTER(CPTR=ptr_bitfield_sizes, FPTR=f_ptr_bitfield_sizes, shape=(/bitfield_sizes_size/));
+ do i=1, bitfield_sizes_size
+    bitfield_sizes(i:i) = f_ptr_bitfield_sizes(i)
+ end do
+ write(0,*) 'column 2 bitfield_sizes: ', bitfield_sizes(1:bitfield_sizes_size)
+ if (bitfield_sizes(1:bitfield_sizes_size) /= '1:1:4:') STOP 93
 
  cerr = odb_read_get_column_type(odb_it, 3, itype)
  if (cerr /=0) STOP 10
@@ -207,8 +233,6 @@ subroutine test_fortran_api1
  end do
  write(0,*) 'column name 4 : ', colname(1:i)
 
-
-
  allocate(one_row(c_ncolumns))
  cerr = 0
  i = 1
@@ -232,11 +256,18 @@ subroutine test_fortran_api2
  integer(kind=C_INT)                           :: cerr
  character(kind=C_CHAR, len=64)                :: config = C_NULL_CHAR
  type(C_PTR)                                   :: ptr_colname
+ type(C_PTR)                                   :: ptr_bitfield_names
+ type(C_PTR)                                   :: ptr_bitfield_sizes
  character(kind=C_CHAR), dimension(:), pointer :: f_ptr_colname
+ character(kind=C_CHAR,len=1), dimension(:), pointer :: f_ptr_bitfield_names
+ character(kind=C_CHAR,len=1), dimension(:), pointer :: f_ptr_bitfield_sizes
  character(len=max_varlen)                     :: colname
+ character(len=max_varlen)                     :: bitfield_names
+ character(len=max_varlen)                     :: bitfield_sizes
  integer(kind=4)                               :: i
  character(kind=C_CHAR, len=128)               :: sql='select * from "test.odb";'//achar(0)
  integer(kind=C_INT)                           :: itype, newdataset, c_ncolumns=3, size_name 
+ integer(kind=C_INT)                           :: bitfield_names_size, bitfield_sizes_size
  real(kind=C_DOUBLE), dimension(:), allocatable:: one_row
  character(len=8)                 :: tmp_str
 
@@ -247,7 +278,6 @@ subroutine test_fortran_api2
 
  odb_it =  odb_select_iterator_new(odb_handle, sql, cerr);
  if (cerr /=0) STOP 1
-
  
  cerr = odb_select_get_no_of_columns(odb_it, c_ncolumns)
  if (cerr /=0) STOP 1
@@ -284,6 +314,26 @@ subroutine test_fortran_api2
     colname(i:i)  = f_ptr_colname(i)
  end do
  write(0,*) 'column name 2 : ', colname(1:i)
+
+
+ cerr = odb_select_get_bitfield(odb_it, 2, ptr_bitfield_names, ptr_bitfield_sizes, bitfield_names_size, bitfield_sizes_size)
+ write(0,*) 'odb_select_get_bitfield column 2 => ', cerr
+ if (cerr /=0) STOP 191
+ write(0,*) 'column 2 bitfield_names_size: ', bitfield_names_size
+ call C_F_POINTER(CPTR=ptr_bitfield_names, FPTR=f_ptr_bitfield_names, shape=(/bitfield_names_size/));
+ do i=1, bitfield_names_size
+    bitfield_names(i:i) = f_ptr_bitfield_names(i)
+ end do
+ write(0,*) 'column 2 bitfield_names: ', bitfield_names(1:bitfield_names_size)
+ if (bitfield_names(1:bitfield_names_size) /= 'active:passive:blacklisted:') STOP 192
+
+ write(0,*) 'column 2 bitfield_sizes_size: ', bitfield_sizes_size
+ call C_F_POINTER(CPTR=ptr_bitfield_sizes, FPTR=f_ptr_bitfield_sizes, shape=(/bitfield_sizes_size/));
+ do i=1, bitfield_sizes_size
+    bitfield_sizes(i:i) = f_ptr_bitfield_sizes(i)
+ end do
+ write(0,*) 'column 2 bitfield_sizes: ', bitfield_sizes(1:bitfield_sizes_size)
+ if (bitfield_sizes(1:bitfield_sizes_size) /= '1:1:4:') STOP 193
 
  cerr = odb_select_get_column_name(odb_it, 2, ptr_colname, size_name)
  if (cerr /=0) STOP 1

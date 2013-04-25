@@ -31,6 +31,38 @@ char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };
 
 #include "odbcapi.h"
 
+template <typename T, typename I> 
+int get_bitfield(T it,
+	int index,
+	char** bitfield_names,
+	char** bitfield_sizes,
+	int* nSize,
+	int* sSize)
+{
+	I* iter = reinterpret_cast<I*>(it);
+	const BitfieldDef& bitfieldDef(iter->columns()[index]->bitfieldDef());
+	FieldNames fieldNames(bitfieldDef.first);
+	Sizes sizes(bitfieldDef.second);
+
+	stringstream ns, ss;
+	for (size_t i = 0; i < fieldNames.size(); ++i)
+	{
+		ns << fieldNames[i] << ":";
+		ss << sizes[i] << ":";
+	}
+
+	string names(ns.str());
+	string ssizes(ss.str());
+
+	//FIXME: the memory allocated by strdup should be freed on Fortran side
+	*bitfield_names = strdup(names.c_str());
+	*bitfield_sizes = strdup(ssizes.c_str());
+
+	*nSize = names.size();
+	*sSize = ssizes.size();
+	return 0;
+}
+
 extern "C" {
 
 void odb_start()
@@ -52,9 +84,7 @@ double odb_count(const char * filename)
 	PathName path = filename;
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 	MDR mdReader(path);
-	MDR::iterator it = mdReader.begin();
-	MDR::iterator end = mdReader.end();
-	for (; it != end; ++it)
+	for (MDR::iterator it(mdReader.begin()), end(mdReader.end()); it != end; ++it)
 	{
 		MetaData &md = it->columns();
 		n += md.rowsNumber();
@@ -94,30 +124,6 @@ int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks,  off64_t** 
 
 int release_blocks_offsets(off64_t** offsets) { delete [] *offsets; *offsets = 0; return 0; }
 int release_blocks_sizes(size_t** sizes) { delete [] *sizes; *sizes = 0; return 0; }
-
-int filter_in_place(char *buffer, size_t bufferLength, size_t* filteredLength, const char *sql)
-{
-	MemoryBlock mbIn(buffer, bufferLength);
-	InMemoryDataHandle dhIn(mbIn);
-	odb::Select oda(sql, dhIn);
-
-	InMemoryDataHandle dhOut;
-	odb::Writer<> writer(dhOut);
-	odb::Writer<>::iterator outit = writer.begin();
-	outit->pass1(oda.begin(), oda.end());
-
-	*filteredLength = dhOut.position();
-	Length len = dhOut.openForRead();
-	if(*filteredLength != len)
-		return 99; // should not happen
-
-	if (bufferLength < *filteredLength)
-		return 1;
-
-	dhOut.read(buffer, *filteredLength);
-
-	return 0;
-}
 
 unsigned int odb_get_headerBufferSize() { return ODBAPISettings::instance().headerBufferSize(); } 
 void odb_set_headerBufferSize(unsigned int n) { ODBAPISettings::instance().headerBufferSize(n); }
@@ -392,9 +398,23 @@ int odb_write_iterator_write_header(oda_write_iterator_ptr wi)
 }
 
 int odb_write_iterator_set_next_row(oda_write_iterator_ptr wi, double *data, int count)
-{
-	return reinterpret_cast<Writer<>::iterator_class *>(wi)->writeRow(data, count);
-}
+{ return reinterpret_cast<Writer<>::iterator_class *>(wi)->writeRow(data, count); }
+
+int odb_read_iterator_get_bitfield(oda_read_iterator_ptr it,
+	int index,
+	char** bitfield_names,
+	char** bitfield_sizes,
+	int* nSize,
+	int* sSize)
+{ return get_bitfield<oda_read_iterator_ptr,ReaderIterator>(it, index, bitfield_names, bitfield_sizes, nSize, sSize); }
+
+int odb_select_iterator_get_bitfield(oda_select_iterator_ptr it,
+	int index,
+	char** bitfield_names,
+	char** bitfield_sizes,
+	int* nSize,
+	int* sSize)
+{ return get_bitfield<oda_select_iterator_ptr,SelectIterator>(it, index, bitfield_names, bitfield_sizes, nSize, sSize); }
 
 } // extern "C" 
 

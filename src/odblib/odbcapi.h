@@ -55,27 +55,29 @@ int odb_destroy(oda_ptr);
 oda_read_iterator_ptr odb_create_read_iterator(oda_ptr, const char *, int *);
 int odb_read_iterator_destroy(oda_read_iterator_ptr);
 int odb_read_iterator_get_no_of_columns(oda_read_iterator_ptr, int*);
-int odb_read_iterator_get_column_type(oda_read_iterator_ptr, int , int *);
-int odb_read_iterator_get_column_name(oda_read_iterator_ptr, int , char **, int*);
-int odb_read_iterator_get_next_row(oda_read_iterator_ptr, int , double* , int *);
+int odb_read_iterator_get_column_type(oda_read_iterator_ptr, int, int*);
+int odb_read_iterator_get_column_name(oda_read_iterator_ptr, int, char**, int*);
+int odb_read_iterator_get_bitfield(oda_read_iterator_ptr, int, char**, char**, int*, int*);
+int odb_read_iterator_get_next_row(oda_read_iterator_ptr, int, double*, int*);
 
 oda_select_iterator_ptr odb_create_select_iterator(oda_ptr, const char *, int *);
 oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr, const char *, const char *, int *);
 int odb_select_iterator_destroy(oda_select_iterator_ptr);
 int odb_select_iterator_get_no_of_columns(oda_select_iterator_ptr, int*);
-int odb_select_iterator_get_column_type(oda_select_iterator_ptr, int , int *);
-int odb_select_iterator_get_column_name(oda_select_iterator_ptr, int , char **, int*);
-int odb_select_iterator_get_next_row(oda_select_iterator_ptr, int , double* , int* );
+int odb_select_iterator_get_column_type(oda_select_iterator_ptr, int, int *);
+int odb_select_iterator_get_column_name(oda_select_iterator_ptr, int, char **, int*);
+int odb_select_iterator_get_bitfield(oda_select_iterator_ptr, int, char**, char**, int*, int*);
+int odb_select_iterator_get_next_row(oda_select_iterator_ptr, int, double*, int*);
 
 oda_writer_ptr odb_writer_create(const char *, int *);
 int odb_writer_destroy(oda_writer_ptr);
-
-oda_write_iterator_ptr odb_create_write_iterator(oda_writer_ptr, const char* , int * );
-oda_write_iterator_ptr odb_create_append_iterator(oda_writer_ptr, const char* , int * );
 int odb_write_iterator_destroy(oda_write_iterator_ptr);
+
+oda_write_iterator_ptr odb_create_write_iterator(oda_writer_ptr, const char* , int *);
+oda_write_iterator_ptr odb_create_append_iterator(oda_writer_ptr, const char* , int *);
 int odb_write_iterator_set_no_of_columns(oda_write_iterator_ptr, int);
 
-int odb_write_iterator_set_column(oda_write_iterator_ptr, int , int , const char *);
+int odb_write_iterator_set_column(oda_write_iterator_ptr, int, int, const char *);
 int odb_write_iterator_set_bitfield(oda_write_iterator_ptr, int, int, const char *, const char*, const char *);
 
 int odb_write_iterator_set_missing_value(oda_write_iterator_ptr, int, double);
@@ -89,8 +91,6 @@ double odb_count(const char *);
 int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks, off64_t** offsets, size_t** sizes);
 int release_blocks_offsets(off64_t**);
 int release_blocks_sizes(size_t**);
-
-int filter_in_place(char *buffer, size_t bufferLength, size_t* filteredLength, const char *sql);
 
 #if defined(__cplusplus) || defined(c_plusplus) || defined(SWIGPYTHON)
 }
