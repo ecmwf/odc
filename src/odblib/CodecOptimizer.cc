@@ -30,7 +30,7 @@ namespace codec {
 CodecOptimizer::CodecOptimizer()
 : defaultCodec_()
 {
-	defaultCodec_[REAL] = "short_real2";
+	defaultCodec_[REAL] = "short_real"; // in the future: short_real2
 	defaultCodec_[DOUBLE] = "long_real";
 	defaultCodec_[STRING] = "chars";
 	defaultCodec_[INTEGER] = "int32";

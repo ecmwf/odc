@@ -340,6 +340,27 @@ private:
 	DataStream<BYTEORDER> ds_;
 };
 
+/*
+template<typename BYTEORDER>
+class CodecShortRealScaled : public Codec {
+public:
+	CodecShortRealScaled() : Codec("short_real_scaled") {}
+	virtual unsigned char* encode(unsigned char* p, double d);
+	virtual double decode();
+
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+
+	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+private:
+	DataStream<BYTEORDER>& ds() { return ds_; }
+	DataStream<BYTEORDER> ds_;
+
+	// TODO
+
+};
+*/
+
 template<typename BYTEORDER>
 class CodecInt32 : public Codec {
 public:
