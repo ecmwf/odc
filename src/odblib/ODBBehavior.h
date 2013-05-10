@@ -11,13 +11,9 @@
 #ifndef ODBBehavior_H
 #define ODBBehavior_H
 
-#include "eckit/runtime/StandardBehavior.h"
-//#include "eclib/DHSBehaviorStdout.h"
+#include "eckit/runtime/ContextBehavior.h"
 
-/// @todo eckit fixme
-
-class ODBBehavior : // public eckit::DHSBehaviorStdout
-                    public eckit::StandardBehavior
+class ODBBehavior : public eckit::ContextBehavior
 {
 public:
     ODBBehavior();

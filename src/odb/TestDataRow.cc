@@ -140,7 +140,7 @@ TEST_FIXTURE(Ordinals, CopiedDataRowHasExpectedValues)
 TEST(DataRowCanSetIntegers)
 {
     DataRow row(1);
-    row.DataRow::set<int>(0, 3.14);
+    row.DataRow::set<int>(0, static_cast<int>(3.14) ); // this conversion to int is intentional
     CHECK(row.modified());
     CHECK_EQUAL(3, row[0]);
 }

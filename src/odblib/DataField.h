@@ -49,7 +49,7 @@ public:
     /// Sets the field's value to the @em value.
     template <typename T>
     DataField& operator=(const T& value)
-    { row_->set<T>(index_, value); return *this; }
+    { row_->DataRow::set<T>(index_, value); return *this; }
 
 private:
     /// Creates new DataField instance.
