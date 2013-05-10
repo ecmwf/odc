@@ -101,6 +101,18 @@ interface
      integer(kind=C_INT)                  :: odb_read_get_column_name
    end function odb_read_get_column_name
 
+   function odb_read_get_bitfield(odb_iterator, n, bitfield_names, bitfield_sizes, bitfield_names_size, bitfield_sizes_size) &
+   bind(C, name="odb_read_iterator_get_bitfield")
+     use, intrinsic                       :: iso_c_binding
+     type(C_PTR), VALUE                   :: odb_iterator
+     integer(kind=C_INT), VALUE           :: n
+     type(C_PTR)                          :: bitfield_names
+     type(C_PTR)                          :: bitfield_sizes
+     integer(kind=C_INT)                  :: bitfield_names_size
+     integer(kind=C_INT)                  :: bitfield_sizes_size
+     integer(kind=C_INT)                  :: odb_read_get_bitfield
+   end function odb_read_get_bitfield
+
    function odb_read_get_next_row(odb_iterator, count, data, new_dataset) bind(C, name="odb_read_iterator_get_next_row")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: odb_iterator
@@ -157,6 +169,18 @@ interface
      integer(kind=C_INT)                  :: nchar
      integer(kind=C_INT)                  :: odb_select_get_column_name
    end function odb_select_get_column_name
+
+   function odb_select_get_bitfield(odb_iterator, n, bitfield_names, bitfield_sizes, bitfield_names_size, bitfield_sizes_size) &
+   bind(C, name="odb_select_iterator_get_bitfield")
+     use, intrinsic                       :: iso_c_binding
+     type(C_PTR), VALUE                   :: odb_iterator
+     integer(kind=C_INT), VALUE           :: n
+     type(C_PTR)                          :: bitfield_names
+     type(C_PTR)                          :: bitfield_sizes
+     integer(kind=C_INT)                  :: bitfield_names_size
+     integer(kind=C_INT)                  :: bitfield_sizes_size
+     integer(kind=C_INT)                  :: odb_select_get_bitfield
+   end function odb_select_get_bitfield
 
    function odb_select_get_next_row(odb_iterator, count, data, new_dataset) bind(C, name="odb_select_iterator_get_next_row")
      use, intrinsic                       :: iso_c_binding

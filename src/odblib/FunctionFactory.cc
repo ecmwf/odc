@@ -611,6 +611,16 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 }
 
 
+FunctionExpression* ast(const string& s, SQLExpression* e) { return FunctionFactory::instance().build(s, e); }
+
+FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2)
+{ return FunctionFactory::instance().build(s, e1, e2); }
+
+FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3)
+{ return FunctionFactory::instance().build(s, e1, e2, e3); }
+
+FunctionExpression* ast(const string& s, const expression::Expressions& e) { return FunctionFactory::instance().build(s, e); }
+
 } // namespace function
 } // namespace expression
 } // namespace sql

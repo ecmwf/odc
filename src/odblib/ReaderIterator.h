@@ -115,11 +115,9 @@ private:
 
 public:
 	int refCount_;
+	double& data(size_t);
 
 protected:
-	// FIXME:
-    //ReaderIterator(): owner_(*((Reader *) 0)), columns_(0) {}
-
 
 	friend ::oda_write_iterator* ::odb_create_write_iterator(::oda*, const char *,int *); // for next()
 	friend int ::odb_read_iterator_get_next_row(::oda_read_iterator*, int, double*, int*);

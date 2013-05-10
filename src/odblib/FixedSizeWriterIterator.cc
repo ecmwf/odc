@@ -31,24 +31,20 @@ int FixedSizeWriterIterator::writeRow(const double* values, unsigned long count)
 	ASSERT(count == columns().size());
 
 	unsigned int k = 0;
-
-	unsigned char* p = buffer_;
-	*p++ = (unsigned char) k;
-	*p++ = (unsigned char) k;
+	unsigned char* p (encodedDataBuffer_);
+	p = writeNumberOfRepeatedValues(p, k);
 
 	for ( ; k < count; k++) 
 	{
 		Column* col = columns_[k];
-
 		p = col->coder().encode(p, values[k]); //, *this->f);
-
 		last[k] = values[k];
 	}
 
-	size_t len = p - buffer_;
+	size_t len = p - encodedDataBuffer_;
 
 	DataStream<SameByteOrder> f(this->f);
-	f.writeBytes(buffer_.cast<char>(), len);
+	f.writeBytes(encodedDataBuffer_.cast<char>(), len);
 
 	nrows_++;
 

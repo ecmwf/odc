@@ -45,6 +45,7 @@ public:
 	int open();
 
 	double* data();
+	double& data(size_t i);
 
 	virtual int setColumn(size_t index, std::string name, ColumnType type);
 	virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
@@ -85,7 +86,9 @@ protected:
 	unsigned long nrows_;
 
 	eckit::DataHandle *f;
-	Array<unsigned char> buffer_;
+	Array<unsigned char> encodedDataBuffer_;
+
+	unsigned char* writeNumberOfRepeatedValues(unsigned char *, uint16_t);
 
 private:
 // No copy allowed.
@@ -95,6 +98,7 @@ private:
 	template <typename T> void pass1init(T&, const T&);
 
 	template <typename T> void doWriteHeader(T&, size_t, size_t);
+
 
 	void allocBuffers();
 	void allocRowsBuffer();
@@ -106,8 +110,8 @@ private:
 	Properties properties_;
 
 	Array<unsigned char> blockBuffer_;
-	Array<double> rowsBuffer_;
-	double* p_;
+	Array<unsigned char> rowsBuffer_;
+	unsigned char* nextRowInBuffer_;
 	FastInMemoryDataHandle memoryDataHandle_;
 	MetaData columnsBuffer_;
 
@@ -161,11 +165,11 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 
 		gatherStats(data, nCols);
 
-		copy(data, data + nCols, p_);
-		p_ += nCols;
+		copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
+		nextRowInBuffer_ += sizeof(uint16_t) + nCols * sizeof(double);
 
-		ASSERT(p_ <= rowsBuffer_ + rowsBuffer_.size());
-		if (p_ == rowsBuffer_ + rowsBuffer_.size())
+		ASSERT(nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
+		if (nextRowInBuffer_ == rowsBuffer_ + rowsBuffer_.size())
 			flush();
 	} 
 

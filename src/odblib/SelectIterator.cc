@@ -163,6 +163,12 @@ bool SelectIterator::isNewDataset() { return newDataset_; }
 
 const double* SelectIterator::data() { return data_; }
 
+double& SelectIterator::data(size_t i)
+{
+	ASSERT(i >= 0 && i < columns().size());
+	return data_[i];
+}
+
 MetaData& SelectIterator::columns()
 {
 	ASSERT(metaData_);

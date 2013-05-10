@@ -55,6 +55,7 @@ public:
 	
 	bool isCachingRows() { return isCachingRows_; }
 	void cacheRow(const Expressions& results);
+	double& data(size_t i);
 
 protected:
 	virtual bool next();

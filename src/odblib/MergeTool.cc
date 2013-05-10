@@ -80,26 +80,25 @@ void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& output
 
 	out->writeHeader();
 	Log::info() << "MergeTool::merge: output metadata: " << out->columns() << endl;
-	for (I& it (iterators[0].first), end (iterators[0].second);
-		it != end;
-		++out)
+
+	for(;;)
 	{
 		for (size_t i = 0, ii = 0; ii < iterators.size(); ++ii)
 		{
-			I& in(iterators[ii].first), inEnd(iterators[ii].second);
-			ASSERT(in != inEnd);
+			I& in(iterators[ii].first);
+			I& inEnd(iterators[ii].second);
+			if(! (in != inEnd))
+				return (void) (Log::info() << "Input file number " << ii << " ended." << endl);
 
 			for (size_t cn = 0; cn < in->columns().size(); ++cn)
 			{
 				ASSERT(i < out->columns().size());
-				out->data()[i++] = (*in)[cn];
+				out->data(i++) = (*in)[cn];
 			}
 			++in;
 		}
-		//ostream_iterator<double> out_it (Log::info(), ", ");
-		//Log::info() << "::merge: values=[";
-		//copy (out->data(), out->data() + out->columns().size(), out_it);
-		//Log::info() << "]" << endl;
+
+		++out;
 	}
 }
 
