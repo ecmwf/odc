@@ -13,11 +13,42 @@
 
 #include "eckit/runtime/ContextBehavior.h"
 
-class ODBBehavior : public eckit::ContextBehavior
-{
+//-----------------------------------------------------------------------------
+
+namespace odb {
+
+class ODBBehavior : public eckit::ContextBehavior {
 public:
+
+    /// Contructors
+
     ODBBehavior();
+
+    /// Destructor
+
+    ~ODBBehavior();
+
+public: // methods
+
+    virtual string runName() const;
+    virtual void runName( const string& name );
+
+    virtual long taskId() const;
+
+    virtual eckit::LogStream& infoStream();
+    virtual eckit::LogStream& warnStream();
+    virtual eckit::LogStream& errorStream();
+    virtual eckit::LogStream& debugStream();
+
+private: // members
+
+    std::string name_;
+
 };
+
+} // namespace odb
+
+//-----------------------------------------------------------------------------
 
 #endif
 

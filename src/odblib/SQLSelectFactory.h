@@ -12,6 +12,7 @@
 #define SQLSelectFactory_H
 
 #include "eckit/io/DataHandle.h"
+#include "eckit/memory/NonCopyable.h"
 #include "eckit/thread/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
@@ -24,7 +25,7 @@ namespace odb { namespace sql { class SQLSelectFactory; } }
 namespace odb {
 namespace sql {
 
-class SQLSelectFactory {
+class SQLSelectFactory : public eckit::NonCopyable {
 public:
 
 	static SQLSelectFactory& instance();
@@ -60,11 +61,8 @@ public:
 	void csvDelimiter(const string& d) { csvDelimiter_ = d; }
 
 private:
-	SQLSelectFactory();
 
-// No copy allowed
-	SQLSelectFactory(const SQLSelectFactory&);
-	SQLSelectFactory& operator=(const SQLSelectFactory&);
+    SQLSelectFactory();
 
 	string index(const string& columnName, const SQLExpression* index);
 
@@ -77,7 +75,7 @@ private:
 	int minColumnShift_;
 	string csvDelimiter_;
 
-friend class eckit::ThreadSingleton<SQLSelectFactory>;
+    friend class eckit::NewAlloc0<SQLSelectFactory>;
 };
 
 } // namespace sql

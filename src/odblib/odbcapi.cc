@@ -35,12 +35,11 @@ extern "C" {
 
 void odb_start()
 {
-	static ContextBehavior* contextBehavior = 0;
-	if (contextBehavior == 0)
+    static ContextBehavior* behavior = 0;
+    if (behavior == 0)
 	{
-		contextBehavior = new ODBBehavior();
-		Context::instance().setup(1, dummyCommandLineArgs, contextBehavior);
-        //Context::instance().behavior()->initialize();
+        behavior = new ODBBehavior();
+        Context::instance().behavior( behavior );
 	}
 
 }

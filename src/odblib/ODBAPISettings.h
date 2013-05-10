@@ -12,6 +12,7 @@
 #define ODBAPISettings_H
 
 #include "eckit/io/DataHandle.h"
+#include "eckit/memory/NonCopyable.h"
 #include "eckit/thread/ThreadSingleton.h"
 
 #include "odblib/SQLExpression.h"
@@ -21,7 +22,7 @@
 
 namespace odb {
 
-class ODBAPISettings {
+class ODBAPISettings : eckit::NonCopyable {
 public:
     
 	static ODBAPISettings& instance();
@@ -38,18 +39,15 @@ public:
 	static bool debug;
 
 private:
-	ODBAPISettings();
 
-// No copy allowed
-	ODBAPISettings(const ODBAPISettings&);
-	ODBAPISettings& operator=(const ODBAPISettings&);
+    ODBAPISettings();
 
 	size_t headerBufferSize_;
 	size_t setvbufferSize_;
 
 	bool useAIO_;
 
-    friend class eckit::ThreadSingleton<ODBAPISettings>;
+    friend class eckit::NewAlloc0<ODBAPISettings>;
 };
 
 } // namespace odb
