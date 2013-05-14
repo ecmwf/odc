@@ -58,11 +58,13 @@ endif()
 ###############################################################################
 # contents
 
+set_directory_properties( PROPERTIES COMPILE_DEFINITIONS ${ECKIT_DEFINITIONS} )
+
+get_directory_property( ODB_API_DEFINITIONS COMPILE_DEFINITIONS )
+
 set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( ODB_API_LIBRARIES      Odb )
 set( ODB_API_TPLS           eckit )
-
-set_directory_properties( PROPERTIES COMPILE_DEFINITIONS ${ECKIT_DEFINITIONS} )
 
 # source files
 add_subdirectory( src )
