@@ -62,6 +62,8 @@ set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINA
 set( ODB_API_LIBRARIES      Odb )
 set( ODB_API_TPLS           eckit )
 
+set_directory_properties( PROPERTIES COMPILE_DEFINITIONS ${ECKIT_DEFINITIONS} )
+
 # source files
 add_subdirectory( src )
 
