@@ -415,7 +415,7 @@ TESTCASE(filterInPlace2);
 void blocksSizes()
 {
 	size_t numberOfBlocks = 0;
-	off64_t* offsets = 0;
+	off_t* offsets = 0;
 	size_t* sizes = 0;
 
 	int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);

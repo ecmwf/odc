@@ -279,7 +279,7 @@ main(int argc, char **argv)
     if(argc>1) {
         char buffer[10240];
         long len = 0;
-        FILE* f = fopen64(argv[1],"r");
+        FILE* f = ::fopen(argv[1],"r");
         if(!f) {
             perror(argv[1]);
             exit(1);

@@ -91,7 +91,7 @@ double odb_count(const char * filename)
 	return n;
 }
 
-int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks,  off64_t** offsets, size_t** sizes)
+int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks,  off_t** offsets, size_t** sizes)
 {
 	FastODA2Request<ODA2RequestClientTraits> o;
 	o.mergeSimilarBlocks(false);
@@ -108,7 +108,7 @@ int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks,  off64_t** 
 	size_t n = offs.size();
 
 	*numberOfBlocks = n;
-	*offsets = new off64_t[n];
+	*offsets = new off_t[n];
 	*sizes = new size_t[n];
 	
 	for (size_t i = 0; i < n; ++i)
@@ -121,7 +121,7 @@ int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks,  off64_t** 
 	return 0;
 }
 
-int release_blocks_offsets(off64_t** offsets) { delete [] *offsets; *offsets = 0; return 0; }
+int release_blocks_offsets(off_t** offsets) { delete [] *offsets; *offsets = 0; return 0; }
 int release_blocks_sizes(size_t** sizes) { delete [] *sizes; *sizes = 0; return 0; }
 
 unsigned int odb_get_headerBufferSize() { return ODBAPISettings::instance().headerBufferSize(); } 

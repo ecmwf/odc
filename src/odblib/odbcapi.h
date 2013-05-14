@@ -88,8 +88,8 @@ int odb_write_iterator_set_next_row(oda_write_iterator_ptr, double *, int);
 // FIXME: This needs to be changed: return error code like all the rest of the functions
 double odb_count(const char *);
 
-int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks, off64_t** offsets, size_t** sizes);
-int release_blocks_offsets(off64_t**);
+int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks, off_t** offsets, size_t** sizes);
+int release_blocks_offsets(off_t**);
 int release_blocks_sizes(size_t**);
 
 #if defined(__cplusplus) || defined(c_plusplus) || defined(SWIGPYTHON)
