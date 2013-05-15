@@ -55,7 +55,7 @@ public:
 
 class TypeCodes : public GribCodesBase {
 public:
-	TypeCodes() : GribCodesBase("type.table") {}
+	TypeCodes() : GribCodesBase("odb_api_type.table") {}
 };
 
 class StreamCodes : public GribCodesBase {

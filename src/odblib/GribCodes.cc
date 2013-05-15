@@ -49,14 +49,7 @@ string GribCodes::numeric(const string& keyword, const string& alphanumeric)
 {
 	load();
 	const string kw = StringTools::upper(keyword);
-	if (kw == "TYPE")
-	{
-		// HACK:
-		if (alphanumeric == "OFB") return "263";
-		if (alphanumeric == "MFB") return "262";
-
-		return typeCodes_->numeric(alphanumeric);
-	}
+	if (kw == "TYPE") return typeCodes_->numeric(alphanumeric);
 	if (kw == "CLASS") return classCodes_->numeric(alphanumeric);
 	if (kw == "STREAM") return streamCodes_->numeric(alphanumeric);
 	if (kw == "OBSGROUP") return obsgroupCodes_->numeric(alphanumeric);
@@ -69,14 +62,7 @@ string GribCodes::alphanumeric(const string& keyword, const string& numeric)
 {
 	load();
 	const string kw = StringTools::upper(keyword);
-	if (kw == "TYPE") 
-	{
-		// HACK:
-		if (numeric == "262") return "MFB";
-		if (numeric == "263") return "OFB";
-
-		return typeCodes_->alphanumeric(numeric);
-	}
+	if (kw == "TYPE") return typeCodes_->alphanumeric(numeric);
 	if (kw == "CLASS") return classCodes_->alphanumeric(numeric);
 	if (kw == "STREAM") return streamCodes_->alphanumeric(numeric);
 	if (kw == "OBSGROUP") return obsgroupCodes_->alphanumeric(numeric);
@@ -87,7 +73,7 @@ string GribCodes::alphanumeric(const string& keyword, const string& numeric)
 
 GribCodesBase::GribCodesBase(const PathName& fileName)
 : configFileName_(
-	string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
+	string(Resource<string>("$MARS_HOME", "/usr/local/apps/mars/current"))
 	+ string("/etc/")
 	+ fileName),
   fieldDelimiter_(" \t"),
@@ -99,7 +85,7 @@ GribCodesBase::GribCodesBase(const PathName& fileName)
 
 GribCodesBase::GribCodesBase(const PathName& fileName, const string& fieldDelimiter)
 : configFileName_(
-	string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
+	string(Resource<string>("$MARS_HOME", "/usr/local/apps/mars/current"))
 	+ string("/etc/")
 	+ fileName),
   fieldDelimiter_(fieldDelimiter),
