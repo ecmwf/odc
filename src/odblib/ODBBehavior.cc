@@ -25,28 +25,12 @@ namespace odb {
 
 //-----------------------------------------------------------------------------
 
-ODBBehavior::ODBBehavior() : name_("odb")
+ODBBehavior::ODBBehavior()
 {
-    home_ = getenv( "HOME" );
 }
 
 ODBBehavior::~ODBBehavior()
 {
-}
-
-string ODBBehavior::runName() const
-{
-    return name_;
-}
-
-void ODBBehavior::runName(const string& name)
-{
-    name_ = name;
-}
-
-long ODBBehavior::taskId() const
-{
-    return 0;
 }
 
 //-----------------------------------------------------------------------------

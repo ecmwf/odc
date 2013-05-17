@@ -30,19 +30,10 @@ public:
 
 public: // methods
 
-    virtual string runName() const;
-    virtual void runName( const string& name );
-
-    virtual long taskId() const;
-
     virtual eckit::LogStream& infoStream();
     virtual eckit::LogStream& warnStream();
     virtual eckit::LogStream& errorStream();
     virtual eckit::LogStream& debugStream();
-
-private: // members
-
-    std::string name_;
 
 };
 
