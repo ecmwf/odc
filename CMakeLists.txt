@@ -33,9 +33,9 @@ ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
 ###############################################################################
 # some variables/options of this project
 
-option( ODB_API_MIGRATOR "whether or not to build the migrator"         OFF )
-option( ODB_API_FORTRAN  "whether or not to build the fortan interface" OFF )
-option( ODB_API_PYTHON   "whether or not to build the python interface" OFF )
+option( ODB_API_MIGRATOR "whether or not to build the migrator"          OFF )
+option( ODB_API_FORTRAN  "whether or not to build the Fortran interface" OFF )
+option( ODB_API_PYTHON   "whether or not to build the Python interface"  OFF )
 
 ###############################################################################
 # find extra packages

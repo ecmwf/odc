@@ -139,8 +139,7 @@ void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg
 void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(mutex);
-    SQLSession& session = SQLSession::current();
-    session.currentDatabase(&db);
+    SQLSession::current().currentDatabase(&db);
 	SQLSelectFactory::instance().database(&db);
 	SQLSelectFactory::instance().config(cfg);
 
@@ -151,7 +150,9 @@ void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cf
 	SQLYacc::odblib_parse();
 	lexRelease();
 
+    //SQLSession::current().currentDatabase(0);
 	SQLSelectFactory::instance().implicitFromTableSource(0);
+	SQLSelectFactory::instance().database(0);
 }
 
 } // namespace sql

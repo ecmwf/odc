@@ -111,6 +111,7 @@ private:
 
 	eclib::Offset blockStartOffset_;
 	eclib::Offset blockEndOffset_;
+	eclib::Length fileSize_; // This will be positive if we read data from a file, not a socket.
 
 protected:
 	bool skipData_;

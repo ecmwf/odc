@@ -80,8 +80,7 @@ bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName)
 template <typename T>
 bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::OffsetList& offsets, eclib::LengthList& lengths, vector<ODAHandle*>& handles)
 {
-    using eclib::Log;
-        
+    using namespace eclib;
 	Log::debug() << "Iterating over headers of '" << fileName << "'" <<  endl;
 	
     inputFile_ = fileName;
@@ -89,25 +88,21 @@ bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::Offset
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 
 	MDR mdReader(fileName);
-	MDR::iterator it = mdReader.begin();
-	MDR::iterator end = mdReader.end();
+	MDR::iterator it = mdReader.begin(), end = mdReader.end();
 
 	auto_ptr<MetaData> currentMD(it->columns().clone());
 	rowsNumber_ = currentMD->rowsNumber();
 
 	values_ = vector<set<string> >(currentMD->size(), set<string>());
-
 	unsigned long int mds = 0;	
 	for ( ; it != end; ++it)
 	{
 		ASSERT(it->isNewDataset());
-
 		MetaData &md = it->columns();
 		++mds;
 
-		eclib::Offset startOffset = (**it).blockStartOffset(),
-				        endOffset = (**it).blockEndOffset();
-		eclib::Length blockSize = endOffset - startOffset;
+		Offset startOffset = (**it).blockStartOffset(), endOffset = (**it).blockEndOffset();
+		Length blockSize = endOffset - startOffset;
 
 		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD->equalsIncludingConstants(md, columnNames_))
 		{
@@ -134,15 +129,11 @@ bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::Offset
 			lastHandle.end(lastHandle.end() + blockSize);
 			lengths.back() += blockSize;
 		}
-
 		rowsNumber_ += md.rowsNumber();
 	}
-    
 	Log::debug() << "FastODA2Request<T>::scanFile => offsets=" << offsets << endl;
 	Log::debug() << "FastODA2Request<T>::scanFile => lengths=" << lengths << endl;
-//	Log::debug() << "FastODA2Request<T>::scanFile => handles=" << handles << endl;
 	Log::debug() << "FastODA2Request<T>::scanFile => rowsNumber_=" << rowsNumber_ << endl;
-    
 	return true;
 }
 

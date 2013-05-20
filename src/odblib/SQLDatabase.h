@@ -59,6 +59,7 @@ public:
 
 	SQLExpression* getVariable(const string&) const;
 	void   setVariable(const string&, SQLExpression*);
+	Variables& variables() { return variables_; }
 
 	virtual bool sameAs(const SQLDatabase& other) const;
 	SchemaAnalyzer& schemaAnalyzer() { return schemaAnalyzer_; }
@@ -80,6 +81,8 @@ private:
 	void loadIOMAP();
 	void loadDD();
 	void loadFLAGS();
+
+	void setUpVariablesTable();
 
 // -- Friends
 	//friend ostream& operator<<(ostream& s,const SQLDatabase& p)
