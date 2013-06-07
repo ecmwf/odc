@@ -30,10 +30,10 @@ public:
 
 public: // methods
 
-    virtual eckit::LogStream& infoStream();
-    virtual eckit::LogStream& warnStream();
-    virtual eckit::LogStream& errorStream();
-    virtual eckit::LogStream& debugStream();
+    virtual eckit::LogStream& infoChannel();
+    virtual eckit::LogStream& warnChannel();
+    virtual eckit::LogStream& errorChannel();
+    virtual eckit::LogStream& debugChannel();
 
 };
 

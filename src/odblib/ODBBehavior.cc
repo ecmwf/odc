@@ -35,26 +35,26 @@ ODBBehavior::~ODBBehavior()
 
 //-----------------------------------------------------------------------------
 
-LogStream& ODBBehavior::infoStream()
+LogStream& ODBBehavior::infoChannel()
 {
-    return errorStream();
+    return errorChannel();
 }
 
-LogStream& ODBBehavior::warnStream()
+LogStream& ODBBehavior::warnChannel()
 {
-    return errorStream();
+    return errorChannel();
 }
 
-LogStream& ODBBehavior::errorStream()
+LogStream& ODBBehavior::errorChannel()
 {
     typedef NewAlloc1<ErrorStream,Logger*> Alloc;
     static ThreadSingleton<ErrorStream,Alloc> x( Alloc( new StdLogger( std::cerr ) ) );
     return x.instance();
 }
 
-LogStream& ODBBehavior::debugStream()
+LogStream& ODBBehavior::debugChannel()
 {
-    return errorStream();
+    return errorChannel();
 }
 
 //-----------------------------------------------------------------------------
