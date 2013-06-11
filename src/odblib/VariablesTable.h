@@ -14,7 +14,7 @@
 #ifndef VariablesTable_H
 #define VariablesTable_H
 
-#include "eclib/PathName.h"
+#include "eckit/filesystem/PathName.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLType.h"
@@ -50,10 +50,7 @@ public:
 	SQLTableIterator* iterator(const vector<SQLColumn*>&) const;
 
 private:
-// No copy allowed
-	VariablesTable(const VariablesTable&);
-	VariablesTable& operator=(const VariablesTable&);
-
+    
 	friend ostream& operator<<(ostream& s,const VariablesTable& p)
 		{ p.print(s); return s; }
 };

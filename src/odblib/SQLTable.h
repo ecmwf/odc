@@ -15,6 +15,7 @@
 #define SQLTable_H
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/memory/NonCopyable.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLType.h"
@@ -36,7 +37,7 @@ public:
 
 typedef vector<string> ColumnNames;
 
-class SQLTable {
+class SQLTable : private eckit::NonCopyable {
 public:
 	SQLTable(SQLDatabase&,const eckit::PathName&,const string&);
 	virtual ~SQLTable(); // Change to virtual if base class
@@ -103,10 +104,8 @@ protected:
 
 	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double
 missingValue, bool isBitfield, const BitfieldDef&) = 0;
+
 private:
-// No copy allowed
-	SQLTable(const SQLTable&);
-	SQLTable& operator=(const SQLTable&);
 
 	SQLDatabase& owner_;
 	SQLTable* master_;
