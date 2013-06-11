@@ -16,7 +16,6 @@
 #include "eckit/runtime/Application.h"
 #include "eckit/runtime/Context.h"
 #include "eckit/runtime/StandardBehavior.h" 
-#include "eckit/log/StdLogger.h" 
 
 #include "odblib/odb_api.h"
 #include "odblib/MetaDataReaderIterator.h"

@@ -10,8 +10,8 @@
 
 #include <stdlib.h>
 
-#include "eckit/log/LogBuffer.h"
-#include "eckit/log/StdLogger.h"
+#include "eckit/log/ChannelBuffer.h"
+
 #include "eckit/thread/ThreadSingleton.h"
 
 #include "odblib/ODBBehavior.h"
@@ -35,24 +35,30 @@ ODBBehavior::~ODBBehavior()
 
 //-----------------------------------------------------------------------------
 
-LogStream& ODBBehavior::infoChannel()
+struct CreateErrChannel 
+{
+    Channel* operator()() { return  new Channel(  new ChannelBuffer(std::cerr) ); }
+};
+
+//-----------------------------------------------------------------------------
+
+Channel& ODBBehavior::infoChannel()
 {
     return errorChannel();
 }
 
-LogStream& ODBBehavior::warnChannel()
+Channel& ODBBehavior::warnChannel()
 {
     return errorChannel();
 }
 
-LogStream& ODBBehavior::errorChannel()
+Channel& ODBBehavior::errorChannel()
 {
-    typedef NewAlloc1<ErrorStream,Logger*> Alloc;
-    static ThreadSingleton<ErrorStream,Alloc> x( Alloc( new StdLogger( std::cerr ) ) );
+    static ThreadSingleton<Channel,CreateErrChannel> x;
     return x.instance();
 }
 
-LogStream& ODBBehavior::debugChannel()
+Channel& ODBBehavior::debugChannel()
 {
     return errorChannel();
 }
