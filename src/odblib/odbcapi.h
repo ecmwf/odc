@@ -46,6 +46,7 @@ unsigned int odb_get_setvbufferSize();
 void odb_set_setvbufferSize(unsigned int);
 
 const char* odb_api_version();
+const char* odb_api_git_sha1();
 unsigned int odb_api_format_version_major();
 unsigned int odb_api_format_version_minor();
 

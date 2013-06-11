@@ -130,6 +130,8 @@ unsigned int odb_get_setvbufferSize() { return ODBAPISettings::instance().setvbu
 void odb_set_setvbufferSize(unsigned int n) { ODBAPISettings::instance().setvbufferSize(n); }
 
 const char* odb_api_version() { return odb::ODBAPIVersion::version(); }
+const char* odb_api_git_sha1() { return odb::ODBAPIVersion::gitsha1(); }
+
 unsigned int odb_api_format_version_major() { return odb::ODBAPIVersion::formatVersionMajor(); }
 unsigned int odb_api_format_version_minor() { return odb::ODBAPIVersion::formatVersionMinor(); }
 

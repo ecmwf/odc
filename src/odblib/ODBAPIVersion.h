@@ -16,7 +16,8 @@ namespace odb {
 
 class ODBAPIVersion {
 public:
-	static const char *version();
+    static const char *version();
+    static const char *gitsha1();
 	static unsigned int formatVersionMajor();
 	static unsigned int formatVersionMinor();
 };

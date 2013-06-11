@@ -1,4 +1,7 @@
+configure_file( ODBAPIVersionSHA1.cc.in ODBAPIVersionSHA1.cc @ONLY )
+
 list( APPEND odblib_src_files
+ODBAPIVersionSHA1.cc
 Array.h
 BitColumnExpression.cc
 BitColumnExpression.h
@@ -411,6 +414,7 @@ ecbuild_add_library( TARGET     Odb
                      INSTALL_HEADERS LISTED
                      COMPONENT  server
                      SOURCES    ${odblib_src_files}
+                     GENERATED  ODBAPIVersionSHA1.cc
                      TEMPLATES  ${odblib_templates}
                      LIBS       ${ECKIT_LIBRARIES} )
 
