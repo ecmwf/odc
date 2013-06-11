@@ -375,6 +375,8 @@ MapReduce.cc
 MapReduce.h
 XYVTool.cc
 XYVTool.h
+VariablesTable.cc
+VariablesTable.h
 md5_hash.h
 md5_hash.c
 odb_api.h

@@ -32,10 +32,10 @@ SQLExpression::~SQLExpression() {}
 
 bool SQLExpression::isVector() const { return false; }
 
-Vector& SQLExpression::vector()
+Expressions& SQLExpression::vector()
 {
 	NOTIMP;
-	return *((Vector*) 0);
+	return *((Expressions*) 0);
 }
 
 Dictionary& SQLExpression::dictionary()

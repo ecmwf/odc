@@ -30,7 +30,7 @@ class Expressions : public SQLExpression, public ExpressionsVector
 {
 public:
 	Expressions() : ExpressionsVector() {}
-	Expressions(size_t i) : ExpressionsVector(i) {}
+	Expressions(size_t i) : ExpressionsVector(i, 0) {}
 	Expressions(size_t i, SQLExpression* e) : ExpressionsVector(i, e) {}
 
 	Expressions(const Expressions& e)
@@ -59,7 +59,7 @@ public:
 	virtual bool isConstant() const  { NOTIMP; }
 	virtual bool isNumber() const { return false; }
 	virtual bool isVector() const { return true; }
-	virtual Vector& vector() { return *this; }
+	virtual Expressions& vector() { return *this; }
 
 	virtual SQLExpression* simplify(bool&) { return this; }
 

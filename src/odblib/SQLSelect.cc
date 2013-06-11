@@ -527,11 +527,15 @@ bool SQLSelect::processOneRow() {
 	do
 	{
 		recursiveCall = false;
-		if(env.tablesIterator() == sortedTables_.end())
+		if(sortedTables_.size() == 0 || env.tablesIterator() == sortedTables_.end())
 		{
 			bool rowProduced = output(simplifiedWhere_);
 			env.popFrame();
 			if (rowProduced)
+				//// FIXME: Instead of true we return sortedTables_.size() so we get a row when selecting an expression
+				//// not referencing any column (e.g value of a $constant_). The problem is, it will return 2 rows.
+				//// It does not affect normal case (selecting rows from a file).
+				//return sortedTables_.size();
 				return true;
 		}
 

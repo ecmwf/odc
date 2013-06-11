@@ -31,7 +31,7 @@ class SQLOutput;
 namespace expression {
 
 class Expressions;
-typedef Expressions Vector;
+class SQLExpression;
 class Dictionary;
 
 class SQLExpression {
@@ -51,7 +51,7 @@ public:
 	virtual bool isConstant() const = 0;
 	virtual bool isNumber() const { return false; }
 	virtual bool isVector() const;
-	virtual Vector& vector(); 
+	virtual Expressions& vector(); 
 	virtual bool isDictionary() const { return false; }
 	virtual Dictionary& dictionary();
 

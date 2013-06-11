@@ -175,9 +175,10 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
 			: database_ ? database_->table("defaultTable")
 			: 0;
-		if (table == 0)
-			throw eckit::UserError("No table specified");
-		from.push_back(table);
+		if (table != 0)
+			from.push_back(table);
+		//else
+		//	throw eckit::UserError("No table specified");
 	}
 
 	Expressions select;

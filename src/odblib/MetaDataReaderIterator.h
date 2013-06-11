@@ -111,6 +111,7 @@ private:
 
 	eckit::Offset blockStartOffset_;
 	eckit::Offset blockEndOffset_;
+	eckit::Length fileSize_; // This will be positive if we read data from a file, not a socket.
 
 protected:
 	bool skipData_;

@@ -32,7 +32,7 @@ MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, bool skipData)
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(0),
+  f(owner.dataHandle()),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -41,10 +41,11 @@ MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, bool skipData)
   encodedData_(0),
   sizeOfEncodedData_(0),
   byteOrder_(BYTE_ORDER_INDICATOR),
-  refCount_(0)
+  refCount_(0),
+  fileSize_(0)
 {
-	f = owner.dataHandle();
 	ASSERT(f);
+	fileSize_ = f->estimate();
 }
 
 MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, const PathName& pathName, bool skipData)
@@ -53,7 +54,7 @@ MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, const PathName& pat
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(0),
+  f(pathName.fileHandle()),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -62,12 +63,13 @@ MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, const PathName& pat
   encodedData_(0),
   sizeOfEncodedData_(0),
   byteOrder_(BYTE_ORDER_INDICATOR),
-  refCount_(0)
+  refCount_(0),
+  fileSize_(0)
 {
-    f = pathName.fileHandle();
 	ASSERT(f);
 	ownsF_ = true;
 	f->openForRead();
+	fileSize_ = f->estimate();
 }
 
 
@@ -126,12 +128,11 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 
 	if (skipData_)
 	{
-		Log::debug() << "MetaDataReaderIterator::readBuffer: fseeko64(" << dataSize << ")" << endl;
-
-        // TODO: check this code and refactor dur to changes in return condition 
-        
-        f->skip(dataSize); // will throw if fails
-        
+		Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << endl;
+		if (fileSize_ && f->position() + Offset(dataSize) > fileSize_)
+			throw ShortFile(owner_.path_);
+	
+        f->skip(dataSize);
         return true;
 	}
 

@@ -38,32 +38,14 @@ typedef vector<string> ColumnNames;
 
 class SQLTable {
 public:
-
-// -- Exceptions
-	// None
-
-// -- Contructors
-
 	SQLTable(SQLDatabase&,const eckit::PathName&,const string&);
-
-// -- Destructor
-
 	virtual ~SQLTable(); // Change to virtual if base class
-
-// -- Convertors
-	// None
-
-// -- Operators
-	// None
-
-// -- Methods
 
 	void loadIOMAP(istream&);
 	void addColumn(const string&, int, const type::SQLType&, bool, double, bool, const BitfieldDef&);
 
 	void addLinkFrom(const SQLTable*);
 	bool hasLinkFrom(const SQLTable&) const;
-
 
 	void addLinkTo(const SQLTable*);
 	bool hasLinkTo(const SQLTable&) const;
@@ -99,19 +81,7 @@ public:
 
 	virtual SQLTableIterator* iterator(const vector<SQLColumn*>&) const = 0;
 
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
 protected:
-
-// -- Members
-	// None
     eckit::PathName path_;
 	string   name_;
 
@@ -126,7 +96,6 @@ protected:
 	set<const SQLTable*> linksTo_;
 
 // -- Methods
-
 	void clearColumns();
 	
 	// void print(ostream&) const; // Change to virtual if base class	
@@ -134,42 +103,13 @@ protected:
 
 	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double
 missingValue, bool isBitfield, const BitfieldDef&) = 0;
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
 private:
-
 // No copy allowed
-
 	SQLTable(const SQLTable&);
 	SQLTable& operator=(const SQLTable&);
 
-// -- Members
-
 	SQLDatabase& owner_;
-
-
 	SQLTable* master_;
-
-// -- Methods
-	// None
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
-// -- Friends
 
 	friend ostream& operator<<(ostream& s,const SQLTable& p)
 		{ p.print(s); return s; }

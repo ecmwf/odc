@@ -31,25 +31,9 @@ public:
 	//void *operator new(size_t s,void *p)  { return p;                          }
     void operator delete(void* p)         { eckit::MemoryPool::fastDeallocate(p);     }
 
-
-// -- Exceptions
-	// None
-
-// -- Contructors
-
 	SQLIterator(const type::SQLType& type): type_(type) {}
 
-// -- Destructor
-
     virtual ~SQLIterator() {} // Change to virtual if base class
-
-// -- Convertors
-	// None
-
-// -- Operators
-	// None
-
-// -- Methods
 
 	const type::SQLType& type() const { return type_; }
 
@@ -60,61 +44,19 @@ public:
 	virtual void load()   {}
 	virtual void unload() {}
 
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
 protected:
-
-// -- Members
-
 	const type::SQLType& type_;
-
-// -- Methods
 	
 	virtual void print(ostream&) const = 0; // Change to virtual if base class	
 
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
 private:
-
 // No copy allowed
 
 	SQLIterator(const SQLIterator&);
 	SQLIterator& operator=(const SQLIterator&);
 
-// -- Members
-
-
-// -- Methods
-	// None
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
-// -- Friends
-
 	friend ostream& operator<<(ostream& s,const SQLIterator& p)
 		{ p.print(s); return s; }
-
 };
 
 } // namespace sql

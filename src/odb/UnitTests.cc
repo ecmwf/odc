@@ -101,7 +101,7 @@ void createDataForMixedAggregated()
 	ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
 }
 
-void selectAggregatedAndNonAggregated()
+TEST(selectAggregatedAndNonAggregated)
 {
 	createDataForMixedAggregated();
 
@@ -131,7 +131,6 @@ void selectAggregatedAndNonAggregated()
 	++it;
 	ASSERT( ! (it != oda.end() ));
 }
-TESTCASE(selectAggregatedAndNonAggregated);
 
 
 void createDataForMixedAggregated2()
@@ -153,7 +152,7 @@ void createDataForMixedAggregated2()
 					++o;
 }
 
-void selectAggregatedAndNonAggregated2()
+TEST(selectAggregatedAndNonAggregated2)
 {
 	createDataForMixedAggregated2();
 	odb::Select oda("select x,min(v),y,max(v) from \"selectAggregatedAndNonAggregated2.odb\"");
@@ -167,7 +166,6 @@ void selectAggregatedAndNonAggregated2()
 	Log::info(Here()) << "selectAggregatedAndNonAggregated2: counter= " << counter << endl;
 	ASSERT(counter == 110);
 }
-TESTCASE(selectAggregatedAndNonAggregated2);
 
 void createDataForMixedAggregated3()
 {
@@ -183,7 +181,7 @@ void createDataForMixedAggregated3()
 	ImportTool::importText(data, "selectAggregatedAndNonAggregated3.odb");
 }
 
-void selectAggregatedAndNonAggregated3()
+TEST(selectAggregatedAndNonAggregated3)
 {
 	createDataForMixedAggregated3();
 	
@@ -198,8 +196,6 @@ void selectAggregatedAndNonAggregated3()
 	Log::info(Here()) << "selectAggregatedAndNonAggregated3: counter= " << counter << endl;
 	ASSERT(counter == 2);
 }
-TESTCASE(selectAggregatedAndNonAggregated3);
-
 
 
 void createDataForMixedAggregatedNULL()
@@ -219,7 +215,7 @@ void createDataForMixedAggregatedNULL()
 	ImportTool::importText(data, "selectAggregatedAndNonAggregatedNULL.odb");
 }
 
-void selectAggregatedAndNonAggregatedNULL()
+TEST(selectAggregatedAndNonAggregatedNULL)
 {
 	createDataForMixedAggregatedNULL();
 	
@@ -234,7 +230,6 @@ void selectAggregatedAndNonAggregatedNULL()
 	Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: counter= " << counter << endl;
 	ASSERT(counter == 3);
 }
-TESTCASE(selectAggregatedAndNonAggregatedNULL);
 
 
 /////////////////////////////////////////
@@ -266,7 +261,7 @@ void regex1()
 }
 //TESTCASE(regex1);
 
-void vector_syntax()
+TEST(vector_syntax)
 {
 
 	const char *data = 
@@ -298,10 +293,9 @@ void vector_syntax()
 		;
 	ASSERT(counter == 5);
 }
-TESTCASE(vector_syntax);
 
 
-void bitfieldsLength()
+TEST(bitfieldsLength)
 {
 	Log::info() << "Test_bitfieldsLength: sizeof(Decoder::W)" << sizeof(Decoder::W) << endl;
 	Log::info() << "Test_bitfieldsLength: sizeof(double)" << sizeof(double) << endl;
@@ -330,7 +324,6 @@ void bitfieldsLength()
 		ASSERT(r == "0");
 	}
 }
-TESTCASE(bitfieldsLength);
 
 void create_stringInWhere_file()
 {
@@ -344,7 +337,7 @@ void create_stringInWhere_file()
 	ImportTool::importText(data, "stringInWhere.odb");
 }
 
-void stringInWhere()
+TEST(stringInWhere)
 {
 	create_stringInWhere_file();
 	odb::Select oda("select * from 'stringInWhere.odb' where a = 'aaa'");
@@ -354,9 +347,8 @@ void stringInWhere()
 		;
 	ASSERT(counter == 1);
 }
-TESTCASE(stringInWhere);
 
-void vector_syntax2()
+TEST(vector_syntax2)
 {
 	const char* sql = "set $y = 100; set $x = [$y, 'a', 'b', [1, 2]];";
 	odb::sql::SQLInteractiveSession session;
@@ -364,55 +356,8 @@ void vector_syntax2()
 	p.parseString(sql, static_cast<DataHandle*>(0), odb::sql::SQLSelectFactory::instance().config());
 
 }
-TESTCASE(vector_syntax2);
 
-/*
-void filterInPlace()
-{
-	create_stringInWhere_file();
-	PathName fn("stringInWhere.odb");
-	size_t dataSize = fn.size();
-	MemoryBlock mbIn(dataSize);
-    ifstream file (fn.asString().c_str(), ios::in | ios::binary);
-	file.read( static_cast<char *>(mbIn), mbIn.size());
-	file.close();
-
-	size_t filteredLength = 0;
-	int rc = filter_in_place(static_cast<char *>(mbIn), mbIn.size(), &filteredLength, "select * where a = 'aaa'");
-	ASSERT(rc == 0);
-
-	ofstream fout("filterInPlaceOut.odb", ios::out | ios::binary);
-	fout.write(static_cast<char *>(mbIn), filteredLength);
-	fout.close();
-
-	ASSERT(280 == PathName("filterInPlaceOut.odb").size());
-	
-	odb::Select oda("select * from 'filterInPlaceOut.odb'");
-	unsigned long counter = 0;
-	for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++counter)
-		;
-	ASSERT(counter == 1);
-}
-TESTCASE(filterInPlace);
-
-void filterInPlace2()
-{
-	create_stringInWhere_file();
-	PathName fn("stringInWhere.odb");
-	size_t dataSize = fn.size();
-	MemoryBlock mbIn(dataSize);
-    ifstream file (fn.asString().c_str(), ios::in | ios::binary);
-	file.read(static_cast<char *>(mbIn), mbIn.size());
-	file.close();
-
-	size_t filteredLength = 0;
-	int rc = filter_in_place(static_cast<char *>(mbIn), mbIn.size(), &filteredLength, "select a,b,a,b,a,b,a,b,a,b");
-	ASSERT(rc == 1);
-}
-TESTCASE(filterInPlace2);
-*/
-
-void blocksSizes()
+TEST(blocksSizes)
 {
 	size_t numberOfBlocks = 0;
 	off_t* offsets = 0;
@@ -432,10 +377,9 @@ void blocksSizes()
 	release_blocks_offsets(&offsets);
 	release_blocks_sizes(&sizes);
 }
-TESTCASE(blocksSizes)
 
 
-void rownumber1()
+TEST(rownumber1)
 {
 	createDataForMixedAggregated2();
     string path("selectAggregatedAndNonAggregated2.odb");
@@ -452,9 +396,8 @@ void rownumber1()
     }
 	ASSERT(i == 1000000);
 }
-TESTCASE(rownumber1)
 
-void sqlOutputFormatting()
+TEST(sqlOutputFormatting)
 {
 	// See TestAggregateFunctions.sql as well
 	const char *data = 
@@ -492,7 +435,6 @@ void sqlOutputFormatting()
 	p.parseString("select x,y,v", &fh, odb::sql::SQLSelectFactory::instance().config());
 
 }
-TESTCASE(sqlOutputFormatting);
 
 double julian(double d, double t)
 {
@@ -511,13 +453,12 @@ double julian(double d, double t)
     return d1.dateToJulian();
 }
 
-void dateTime()
+TEST(dateTime)
 {
 	int j1 = julian(20120714, 120000);
 	int j2 = julian(20120714, 0);
 	//ASSERT(j1 > j2);
 }
-TESTCASE(dateTime);
 
 void createDataForWindSpeedWindDirection()
 {
@@ -531,7 +472,8 @@ void createDataForWindSpeedWindDirection()
 
 	ImportTool::importText(data, "uv.odb");
 }
-void windSpeedWindDirection()
+
+TEST(windSpeedWindDirection)
 {
 	createDataForWindSpeedWindDirection();
     string path("uv.odb");
@@ -550,16 +492,14 @@ void windSpeedWindDirection()
         ASSERT((*it)[1] == (*it)[5]);
     }
 }
-TESTCASE(windSpeedWindDirection);
 
-void odbcapi()
+TEST(odbcapi)
 {
 	odb::tool::test::test_odacapi_setup_in_C(0,0);
 	odb::tool::test::test_odacapi3(0,0);
 }
-TESTCASE(odbcapi);
 
-void HashTable_clone()
+TEST(HashTable_clone)
 {
 	using namespace odb::codec;
 	odb::codec::HashTable *h = new odb::codec::HashTable;
@@ -572,8 +512,6 @@ void HashTable_clone()
 	delete h;
 	delete c;
 }
-
-TESTCASE(HashTable_clone);
 
 void SplitTool_chunks()
 {
@@ -728,7 +666,7 @@ public:
 
 typedef TemporaryPathName ScratchFile;
 
-void hash_operator()
+TEST(hash_operator)
 {
 	const char *data = 
 	"x:INTEGER,y:INTEGER\n"
@@ -757,9 +695,8 @@ void hash_operator()
 	}
 
 }
-TESTCASE(hash_operator);
 
-void bitfields_hash_operator()
+TEST(bitfields_hash_operator)
 {
 	PathName f("2000010106.4.0.odb");
     //odb::Select select("select lat,lat#1 from \"" + f + "\"");
@@ -772,9 +709,72 @@ void bitfields_hash_operator()
 	}
 	
 }
-TESTCASE(bitfields_hash_operator);
 
-//TESTCASE();
+/*
+TEST(select_constant_value)
+{
+	const char *sql =
+	"set $foo = 27;"
+	"select $foo;"
+	;
+
+	odb::Select o(sql);
+
+	odb::Select::iterator it = o.begin();
+	odb::Select::iterator end = o.end();
+	unsigned long counter = 0;
+	for ( ; it != o.end(); ++it, ++counter)
+	{
+		Log::info() << it << endl;
+		CHECK_EQUAL(it->data(0), 27);
+	}
+	CHECK_EQUAL(counter, 1);
+}
+
+TEST(select_variables)
+{
+	const char *sql =
+	"select * from variables;"
+	;
+	
+	unsigned long counter = 0;
+	odb::Select o(sql);
+	for (odb::Select::iterator it(o.begin()), end(o.end());
+		it != o.end();
+		++it, ++counter)
+	{
+		Log::info() << it << endl;
+	}
+}
+*/
+
+typedef MetaDataReader<MetaDataReaderIterator> MDR;
+
+TEST(meta_data_reader_checks_if_file_truncated)
+{
+	ASSERT(0 == system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=1914000 count=1"));
+	MDR mdr("disp.7.1.odb.truncated");
+	try {
+		for(MDR::iterator it(mdr.begin()), end(mdr.end()); it != end; ++it)
+			;
+		ASSERT(0 && "Scanning of truncated file did not fail");
+	} catch (ShortFile ex) {
+		Log::info() << "Scanning of truncated file disp.7.1.odb.truncated failed as expected." << endl;
+	}
+}
+
+TEST(meta_data_reader_fails_scanning_corrupted_file)
+{
+	ASSERT(0 == system("cat disp.7.1.odb disp.7.1.odb.truncated >corrupted.odb"));
+	MDR mdr("corrupted.odb");
+	try {
+		for(MDR::iterator it(mdr.begin()), end(mdr.end()); it != end; ++it)
+			;
+		ASSERT(0 && "Scanning of corrupted.odb did not fail");
+	} catch (ShortFile ex) {
+		Log::info() << "Scanning of corrupted.odb failed as expected." << endl;
+	}
+}
 
 } // namespace test 
 } // namespace tool 

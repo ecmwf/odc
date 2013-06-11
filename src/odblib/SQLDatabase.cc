@@ -21,27 +21,52 @@
 #include "odblib/SQLTable.h"
 #include "odblib/SQLType.h"
 #include "odblib/SchemaAnalyzer.h"
+#include "odblib/VariablesTable.h"
 
 using namespace eckit;
 
 namespace odb {
 namespace sql {
 
+void SQLDatabase::setUpVariablesTable()
+{
+	tablesByName_["variables"] = new VariablesTable(*this, "variables");
+}
+
 SQLDatabase::SQLDatabase(const PathName& path,const string& name):
 	path_(path),
 	name_(name)
-{} 
+{
+	//setUpVariablesTable();
+} 
 
 SQLDatabase::SQLDatabase(const string& name):
 	path_("."), 
 	name_(name)
-{} 
+{
+	//setUpVariablesTable();
+} 
 
 SQLDatabase::~SQLDatabase()
 {
 	close();
 	for (Variables::iterator it = variables_.begin(); it != variables_.end(); ++it)
+	{
+	
+		//string var(it->first);
+		//cout << "SQLDatabase::~SQLDatabase: " <<  var << endl;
+		//SQLExpression* e (it->second);
+		//if (e->isVector())
+		//	cout << var << " = " << *e << endl;
+		//else
+		//{
+		//	bool missing = false;
+		//	double value(it->second->eval(missing));
+		//	cout << var << " = " << value << endl;
+		//}
+		//FIXME:
 		delete it->second;
+	}
 	variables_.clear();
 }
 

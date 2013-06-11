@@ -318,7 +318,7 @@ select_statement: SELECT distinct select_list into from where group_by order_by 
 						Expressions            select_list($3);
 						string                 into($4);
 						vector<SQLTable*>      from($5);
-						odb::sql::expression::SQLExpression *where($6);
+						SQLExpression          *where($6);
 						Expressions            group_by($7);
 						pair<Expressions,vector<bool> >      order_by($8);
 
