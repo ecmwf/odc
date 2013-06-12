@@ -22,7 +22,7 @@
 
 namespace odb {
 
-class ODBAPISettings : eckit::NonCopyable {
+class ODBAPISettings : private eckit::NonCopyable {
 public:
     
 	static ODBAPISettings& instance();

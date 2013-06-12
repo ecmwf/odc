@@ -37,7 +37,6 @@
 #include <sstream>
 #include <errno.h>
 #include <math.h>
-#include <values.h>
 #include <stdint.h>
 
 using namespace std;
@@ -45,13 +44,14 @@ using namespace std;
 %include "ODBAPIVersion.h"
 %include "ODBAPISettings.h"
 
-#include "eclib/PathName.h"
+#include "eckit/filesystem/PathName.h"
 #include "odblib/MemoryBlock.h"
-#include "eclib/DataHandle.h"
-#include "eclib/FileHandle.h"
-#include "eclib/Timer.h"
-#include "eclib/Resource.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/filesystem/FileHandle.h"
+#include "eckit/utils/Timer.h"
+#include "eckit/config/Resource.h"
 
+using namespace eckit;
 
 %include "odblib/ODBSelect.h"
 %include "odblib/SQLType.h"

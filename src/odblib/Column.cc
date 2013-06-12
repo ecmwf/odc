@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <values.h>
 #include <iostream>
 #include <map>
 

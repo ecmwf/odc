@@ -8,8 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <values.h>
-
 #include "odblib/odb_api.h"
 
 #include "odblib/SQLIteratorSession.h"
