@@ -41,6 +41,7 @@ private:
 	typedef map<OrderByExpressions, VectorOfExpressions> SortedResults;
 
 	SortedResults sortedResults_;
+    vector<size_t> byIndices_;
 
 // -- Overridden methods
 	virtual void size(int);

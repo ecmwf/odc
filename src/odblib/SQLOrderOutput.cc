@@ -11,6 +11,8 @@
 #include "odblib/SQLOrderOutput.h"
 #include "odblib/SQLExpressionEvaluated.h"
 #include "odblib/OrderByExpressions.h"
+#include "odblib/SQLSelect.h"
+#include "eclib/Exceptions.h"
 
 namespace odb {
 namespace sql {
@@ -66,14 +68,10 @@ bool SQLOrderOutput::output(const Expressions& results)
 	OrderByExpressions byValues(by_.second);
     Expressions& byExpressions(by_.first);
 	for (size_t i = 0; i < byExpressions.size(); ++i)
-    {
-        bool missing(false);
 		byValues.push_back(new SQLExpressionEvaluated(
-            byExpressions[i]->isConstant()
-            ? *results[byExpressions[i]->eval(missing) - 1]
+            byIndices_[i]
+            ? *results[byIndices_[i]]
             : *byExpressions[i]));
-        ASSERT(!missing);
-    }
 
 	Expressions resultValues;
 	for (size_t i = 0; i < results.size(); ++i)
@@ -88,7 +86,21 @@ void SQLOrderOutput::prepare(SQLSelect& sql)
 	output_->prepare(sql);
     Expressions& ex(by_.first);
     for(size_t i(0); i < ex.size(); ++i)
-        ex[i]->prepare(sql);
+    {
+        if (! ex[i]->isConstant())
+        {
+            ex[i]->prepare(sql);
+            byIndices_.push_back(0);
+        }
+        else
+        {
+            bool missing(false);
+            size_t index(ex[i]->eval(missing));
+            ASSERT(! missing);
+            if (index < 1) throw eclib::UserError("ORDER BY: indices of columns must be positive");
+            byIndices_.push_back(index - 1);
+        } 
+    }
 }
 
 void SQLOrderOutput::cleanup(SQLSelect& sql)
