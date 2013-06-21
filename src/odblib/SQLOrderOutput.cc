@@ -64,8 +64,16 @@ void SQLOrderOutput::flush()
 bool SQLOrderOutput::output(const Expressions& results)
 {
 	OrderByExpressions byValues(by_.second);
-	for (size_t i = 0; i < by_.first.size(); ++i)
-		byValues.push_back(new SQLExpressionEvaluated(*by_.first[i]));
+    Expressions& byExpressions(by_.first);
+	for (size_t i = 0; i < byExpressions.size(); ++i)
+    {
+        bool missing(false);
+		byValues.push_back(new SQLExpressionEvaluated(
+            byExpressions[i]->isConstant()
+            ? *results[byExpressions[i]->eval(missing) - 1]
+            : *byExpressions[i]));
+        ASSERT(!missing);
+    }
 
 	Expressions resultValues;
 	for (size_t i = 0; i < results.size(); ++i)
@@ -78,8 +86,9 @@ bool SQLOrderOutput::output(const Expressions& results)
 void SQLOrderOutput::prepare(SQLSelect& sql)
 {
 	output_->prepare(sql);
-	for(Expressions::iterator j = by_.first.begin(); j != by_.first.end() ; ++j)
-		(*j)->prepare(sql);
+    Expressions& ex(by_.first);
+    for(size_t i(0); i < ex.size(); ++i)
+        ex[i]->prepare(sql);
 }
 
 void SQLOrderOutput::cleanup(SQLSelect& sql)
