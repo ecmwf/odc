@@ -262,16 +262,17 @@ bitfield_def: column_def
 	}
 	;
 
-create_table_statement: CREATE TABLE IDENT AS '(' column_def_list ')' ';'
+create_table_statement: CREATE TABLE expression_ex AS '(' column_def_list ')' ';'
 	{
-		string tableName = $3;
-		ColumnDefs cols = $6;
+        SQLExpression* e($3);
+		string tableName (e->title());
+		ColumnDefs cols ($6);
 
 		TableDef tableDef(tableName, cols);
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
 
-		//cout << "CREATE TABLE " << tableName << endl;
+		//cout << " *** CREATE TABLE " << tableName << endl;
 
 		//SQLCreateTable ct(tableName, cols);
 		//ct.execute();
@@ -371,8 +372,7 @@ set_statement : SET DATABASE STRING AS IDENT ';' { SQLSession::current().openDat
 
 set_statement : SET VAR EQ assignment_rhs ';'
 	{ 
-		//cout << "== set variable " << $2 << " to ";
-		//if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
+		//cout << "== set variable " << $2 << " to "; if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
 		SQLSession::current().currentDatabase().setVariable($2, $4);
 	}
 	; 
@@ -537,7 +537,7 @@ term        : term '+' factor           { $$ = ast("+",$1,$3);   }
 relational_operator: '>' { $$ = ">"; }
                    | EQ  { $$ = "="; }
                    | '<' { $$ = "<"; }
-                   | GE  { $$ = "="; }
+                   | GE  { $$ = ">="; }
                    | LE  { $$ = "<="; }
                    | NE  { $$ = "<>"; }
                    ;
