@@ -29,6 +29,9 @@
 #include "odblib/Writer.h"
 #include "odblib/WriterDispatchingIterator.h"
 #include "odblib/ShiftedBitColumnExpression.h"
+#include "odblib/ImportTool.h"
+#include "odblib/DataTable.h"
+#include "odblib/SQLDataTable.h"
 
 using namespace eclib;
 
@@ -44,7 +47,8 @@ SQLSelectFactory::SQLSelectFactory()
   database_(0),
   config_(SQLOutputConfig::defaultConfig()),
   maxColumnShift_(0),
-  minColumnShift_(0)
+  minColumnShift_(0),
+  csvDelimiter_(odb::tool::ImportTool::defaultDelimiter())
 {}
 
 SQLSelectFactory& SQLSelectFactory::instance()
@@ -154,6 +158,17 @@ void SQLSelectFactory::reshift(Expressions& select)
 	minColumnShift_ = 0;
 }
 
+void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vector<SQLTable*>& from)
+{
+    Log::debug() << "No <from> clause" << endl;
+
+    SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
+        : implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
+        : database_ ? database_->table("defaultTable")
+        : session.currentDatabase().dualTable();
+    from.push_back(table);
+}
+
 SQLSelect* SQLSelectFactory::create (bool distinct,
 	Expressions select_list,
 	string into,
@@ -167,19 +182,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	SQLSelect* r = 0;
 	SQLSession& session = SQLSession::current();
 
-	if (from.size() == 0)
-	{
-		Log::debug() << "No <from> clause" << endl;
-
-		SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
-			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
-			: database_ ? database_->table("defaultTable")
-			: 0;
-		if (table != 0)
-			from.push_back(table);
-		//else
-		//	throw eclib::UserError("No table specified");
-	}
+	if (from.size() == 0) resolveImplicitFrom(session, from);
 
 	Expressions select;
 	for (ColumnDefs::size_type i = 0; i < select_list.size(); ++i)
@@ -221,6 +224,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	maxColumnShift_ = 0;
 	return r;
 }
+
 
 } // namespace sql
 } // namespace odb

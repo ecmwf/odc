@@ -140,6 +140,8 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 
 	if(columnName_ != "*")
 	{
+        // replace ColumnExpressions referring to aliases created with AS with references to appropriate expressions 
+        // If it's not an alias then:
 		e.push_back(this);
 		return;
 	}

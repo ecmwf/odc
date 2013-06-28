@@ -46,11 +46,9 @@
 using namespace eclib;
 
 static Mutex   mutex;
-static string  yypath;
 
-static string inputString;
-char* inputText;
-char* inputEnd;
+//char* inputText;
+//char* inputEnd;
 
 /* #define _CPP_IOSTREAMS 1 */
 #define  YYDEBUG      1
@@ -75,32 +73,21 @@ using namespace odb::sql::expression::function;
 void odblib_error(const char* msg)
 {
 	stringstream os;
-	os << msg << " line " << odblib_lineno << " of " << yypath;
+	os << msg << " line " << odblib_lineno; // TODO: << " of " << yypath;
 	throw SyntaxError(os.str()); 
 }
 
-}
+} // namespace SQLYacc
 
-extern "C" int odblib_wrap() { return 1; }
+extern "C" int odblib_wrap() { return SQLYacc::wrap(); }
 
 namespace odb {
 namespace sql {
 
 //int SQLParser::line() { using namespace SQLYacc; return SQLYacc::odblib_lineno; }
 
-//=========================================================================
-
-void SQLParser::lexRelease()
-{
-#if YY_FLEX_MAJOR_VERSION >= 2
-#if YY_FLEX_MINOR_VERSION >= 5
-#if YY_FLEX_SUBMINOR_VERSION >=33
-    // TODO: come back here and fix this
-    //	SQLYacc::yylex_destroy(); 
-#endif
-#endif
-#endif
-}
+void SQLParser::pushInclude(const string& sql, const string& yypath) { SQLYacc::pushInclude(sql, yypath); }
+void SQLParser::popInclude() { SQLYacc::popInclude(); }
 
 void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg, const string& csvDelimiter)
 {
@@ -110,13 +97,11 @@ void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg, c
 	SQLSelectFactory::instance().config(cfg);
 	SQLSelectFactory::instance().csvDelimiter(csvDelimiter);
 
-	inputString = s;
-	inputText = const_cast<char *>(inputString.c_str());
-	inputEnd = inputText + inputString.size();
+	pushInclude(s, "");
 
     SQLYacc::odblib_parse();
-
 	lexRelease();
+
 	SQLSelectFactory::instance().implicitFromTableSourceStream(0);
 }
 
@@ -126,9 +111,7 @@ void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg
 	SQLSelectFactory::instance().implicitFromTableSource(dh);
 	SQLSelectFactory::instance().config(cfg);
 
-	inputString = s;
-	inputText = const_cast<char *>(inputString.c_str());
-	inputEnd = inputText + inputString.size();
+	pushInclude(s, "");
 
 	SQLYacc::odblib_parse();
 	lexRelease();
@@ -143,9 +126,7 @@ void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cf
 	SQLSelectFactory::instance().database(&db);
 	SQLSelectFactory::instance().config(cfg);
 
-	inputString = s;
-	inputText = const_cast<char *>(inputString.c_str());
-	inputEnd = inputText + inputString.size();
+	pushInclude(s, "");
 
 	SQLYacc::odblib_parse();
 	lexRelease();
@@ -153,6 +134,19 @@ void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cf
     //SQLSession::current().currentDatabase(0);
 	SQLSelectFactory::instance().implicitFromTableSource(0);
 	SQLSelectFactory::instance().database(0);
+}
+
+
+void SQLParser::lexRelease()
+{
+#if YY_FLEX_MAJOR_VERSION >= 2
+#if YY_FLEX_MINOR_VERSION >= 5
+#if YY_FLEX_SUBMINOR_VERSION >=33
+    // TODO: come back here and fix this
+    //	SQLYacc::yylex_destroy(); 
+#endif
+#endif
+#endif
 }
 
 } // namespace sql

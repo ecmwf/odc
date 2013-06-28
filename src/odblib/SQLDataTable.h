@@ -33,7 +33,11 @@ public:
 protected:
 	virtual odb::sql::SQLColumn* createSQLColumn(const odb::sql::type::SQLType& type,
             const std::string& name, int index, bool hasMissingValue,
-            double missingValue, bool isBitfield, const odb::BitfieldDef&);
+            double missingValue, const odb::BitfieldDef&);
+
+	virtual odb::sql::SQLColumn* createSQLColumn(const odb::sql::type::SQLType& type,
+            const std::string& name, int index, bool hasMissingValue,
+            double missingValue);
 
 private:
     SQLDataTable(const SQLDataTable&);

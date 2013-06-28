@@ -22,6 +22,9 @@
 namespace eclib { class DataHandle; }
 
 namespace odb {
+
+class DataTable;
+
 namespace sql {
 // Forward declarations
 
@@ -64,6 +67,8 @@ public:
 	virtual bool sameAs(const SQLDatabase& other) const;
 	SchemaAnalyzer& schemaAnalyzer() { return schemaAnalyzer_; }
 
+    SQLTable* dualTable();
+
 protected:
 	Links links_;
 	map<string,SQLTable*> tablesByName_;
@@ -72,6 +77,9 @@ protected:
 	Variables variables_;
 	string name_;
 	SchemaAnalyzer schemaAnalyzer_;
+
+    DataTable* dualTable_;
+    SQLTable* dual_;
 
 private:
 // No copy allowed

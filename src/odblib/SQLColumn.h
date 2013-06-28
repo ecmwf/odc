@@ -28,8 +28,8 @@ class SQLBitColumn;
 
 class SQLColumn : public SQLIterator {
 public:
-	SQLColumn(const type::SQLType&, SQLTable&, const string&, int,
-				bool hasMissingValue, double missingValue, bool isBitfield, const BitfieldDef& bitfieldDef);
+	SQLColumn(const type::SQLType&, SQLTable&, const string&, int, bool hasMissingValue, double missingValue, const BitfieldDef&);
+	SQLColumn(const type::SQLType&, SQLTable&, const string&, int, bool hasMissingValue, double missingValue);
 	virtual ~SQLColumn();
 
 

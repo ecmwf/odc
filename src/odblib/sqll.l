@@ -14,8 +14,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+// http://flex.sourceforge.net/manual/Multiple-Input-Buffers.html#Multiple-Input-Buffers
+#if 0
+	#undef YY_INPUT
+	#define YY_INPUT(buf,result,max_size) \
+	{ \
+		if (inputEnd - inputText) \
+		{ \
+			memcpy(buf, inputText++, 1); \
+			result = 1; \
+		} else result = YY_NULL; \
+	}
+#endif
+
 #ifdef YYBISON
 /* FLEX */
+/*
 	#undef YY_INPUT
 	#define YY_INPUT(buf,result,max_size) \
 	{ \
@@ -26,6 +40,7 @@
 		} \
 		result = (n == 0) ? YY_NULL : n; \
 	}
+*/
 /* LEX */
 #else
 	extern char* inputText;
@@ -35,16 +50,61 @@
 	#define unput(c) (*--inputText = c)
 #endif
 
+const size_t maxIncludeDepth = 20;
+YY_BUFFER_STATE includeStack[maxIncludeDepth];
+int includeStackPtr = 0;
+
+void pushInclude(const string& sql, const string& yypath)
+{
+    //cerr << "pushInclude:" << yypath << endl;
+    //cerr << "<INCLUDE>" << endl;
+    //cerr << sql << endl;
+    //cerr << "</INCLUDE>" << endl;
+
+    if (includeStackPtr > maxIncludeDepth)
+        throw eclib::UserError("Includes nested too deeply");
+    includeStack[includeStackPtr++] = YY_CURRENT_BUFFER;
+    odblib__switch_to_buffer(odblib__scan_bytes(sql.c_str(), sql.size()));
+}
+
+int popInclude()
+{
+    if ( --includeStackPtr == 0 )
+    {
+        //cerr << "** lex terminate **" << endl;
+        return 1;
+    }
+    else
+    {
+        odblib__delete_buffer(YY_CURRENT_BUFFER);
+        odblib__switch_to_buffer(includeStack[includeStackPtr]);
+        return 0;
+    }
+}
+
+int wrap() {
+    //Log::info() << "** wrap **" << endl;
+    return popInclude();
+}
+
+/*
+%option noyywrap
+*/
+
 %}
 IDENT   [_A-Za-z]+[_0-9A-Za-z]*
 VAR     [$][_0-9A-Za-z]+
 NUMB    [-]?[0-9]+(\.[0-9]*)?
 SEMICOLON [;]
 
+
 %s LEX_ORDERBY
 %s LEX_CREATE
+%x incl
 
 %%
+#include                          BEGIN(incl);
+
 @[lL][iI][nN][kK]                 return LINK;
 [sS][eE][tT]                      return SET;
 [dD][aA][tT][aA][bB][aA][sS][eE]  return DATABASE;
@@ -83,6 +143,23 @@ SEMICOLON [;]
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
 \#                                return HASH; 
+<incl>[ \t]*                      /* eat the whitespace */
+<incl>[^ \t\n]+ {                 /* name of the file to be included */
+    //cerr << "include " << yytext << endl;
+
+    const string fileName(StringTool::unQuote(yytext));
+    string text(StringTool::readFile(fileName));
+
+    //cerr << "Opening " << fileName << endl;
+
+    pushInclude(text, fileName);
+    BEGIN(INITIAL);
+}
+
+<<EOF>> { 
+    //cerr << "** EOF **" << endl;
+    odblib_terminate();
+}
 
 \"|\'  {
 			int c,q = yytext[0];

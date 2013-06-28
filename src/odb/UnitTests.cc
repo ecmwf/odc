@@ -710,7 +710,6 @@ TEST(bitfields_hash_operator)
 	
 }
 
-/*
 TEST(select_constant_value)
 {
 	const char *sql =
@@ -731,10 +730,62 @@ TEST(select_constant_value)
 	CHECK_EQUAL(counter, 1);
 }
 
+/* TODO:
 TEST(select_variables)
 {
 	const char *sql =
-	"select * from variables;"
+	"set $x=1; set $v=[1,2,3]; select * from variables;"
+	;
+	
+	unsigned long counter = 0;
+	odb::Select o(sql);
+	for (odb::Select::iterator it(o.begin()), end(o.end());
+		it != o.end();
+		++it, ++counter)
+	{
+		Log::info() << (*it)[0] << ", " << (*it)[1] << endl;
+	}
+}
+*/
+
+TEST(include)
+{
+	ofstream f("stuff.sql");
+	f 
+		//<< "select * from \"file1.odb\";" << endl
+		<< "set $foo = 10;" << endl
+		<< "set $bar = 20;" << endl;
+	f.close();
+
+	const char *sql =
+	"#include \"stuff.sql\"\n"
+	"set $baz = $bar;"
+	"select $foo * $bar;"
+	;
+	
+	unsigned long counter = 0;
+	odb::Select o(sql);
+	for (odb::Select::iterator it(o.begin()), end(o.end());
+		it != o.end();
+		++it, ++counter)
+	{
+		Log::info() << it << endl;
+	}
+}
+
+TEST(log_error)
+{
+    Log::error() << "Just a logger test" << endl;
+}
+
+/*
+TEST(create_table_using_variable)
+{
+
+	const char *sql =
+    "SET $c = { 2 : \"foo\" };\n"
+    "SET $s = 2;\n"
+    "CREATE TABLE t AS (c[$s]);"
 	;
 	
 	unsigned long counter = 0;

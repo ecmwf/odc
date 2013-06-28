@@ -62,10 +62,11 @@ void SelectIterator::parse(typename DATASTREAM::DataHandleType *dh)
 	sql::SQLParser p;
 	p.parseString(select_, dh, odb::sql::SQLSelectFactory::instance().config());
 	sql::SQLStatement *stmt = session_.statement();
+
+
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
 	ASSERT(selectStmt_);
-
-	//Log::info() << "SelectIterator::parse: " << *selectStmt_ << endl;
+	Log::info() << "SelectIterator::parse: " << *selectStmt_ << endl;
 
 	selectStmt_->prepareExecute();
 	

@@ -99,8 +99,9 @@ void TODATable<T>::populateMetaData()
 				ASSERT("Unknown type" && 1==0);
 				break;
 		}
-		SQLColumn *c = new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i,
-							hasMissing, missing, column.type() == BITFIELD, bitfieldDef, &data_[i]);
+		SQLColumn *c = column.type() == BITFIELD
+                        ? new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, bitfieldDef, &data_[i])
+                        : new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, &data_[i]);
 		addColumn(c, name, i);
 	}
 }
@@ -138,12 +139,18 @@ void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
 	}
 }
 
+template <typename T>
+SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double
+missingValue)
+{
+	return new ODAColumn(type, *this, name, index, hasMissingValue, missingValue, &data_[index]);
+}
 
 template <typename T>
 SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double
-missingValue, bool isBitfield, const BitfieldDef& bitfieldDef)
+missingValue, const BitfieldDef& bitfieldDef)
 {
-	return new ODAColumn(type, *this, name, index, hasMissingValue, missingValue, isBitfield, bitfieldDef, &data_[index]);
+	return new ODAColumn(type, *this, name, index, hasMissingValue, missingValue, bitfieldDef, &data_[index]);
 }
 
 

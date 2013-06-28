@@ -19,10 +19,13 @@
 #include "odblib/SQLSelect.h"
 #include "odblib/SQLTable.h"
 
-namespace odb { namespace sql { class SQLSelectFactory; } }
-
 namespace odb {
+
+    class DataTable;
+
 namespace sql {
+
+class SQLSession;
 
 class SQLSelectFactory {
 public:
@@ -69,13 +72,18 @@ private:
 	string index(const string& columnName, const SQLExpression* index);
 
 	void reshift(Expressions&);
+
+    void resolveImplicitFrom(SQLSession&, vector<SQLTable*>& from);
+
     eclib::DataHandle* implicitFromTableSource_;
     istream* implicitFromTableSourceStream_;
+
 	SQLDatabase* database_;
 	SQLOutputConfig config_;
 	int maxColumnShift_;
 	int minColumnShift_;
 	string csvDelimiter_;
+
 
 friend class eclib::ThreadSingleton<SQLSelectFactory>;
 };

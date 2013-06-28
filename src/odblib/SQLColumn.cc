@@ -18,7 +18,7 @@ using namespace eclib;
 namespace odb {
 namespace sql {
 
-SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double missingValue, bool isBitfield, const BitfieldDef& bitfieldDef):
+SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double missingValue): 
 	SQLIterator(type),
 	noRows_(0),
 	owner_(owner),
@@ -30,7 +30,26 @@ SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& n
 	iterator_(0),
 	hasMissingValue_(hasMissingValue),
 	missingValue_(missingValue),
-	isBitfield_(isBitfield),
+	isBitfield_(false),
+	bitfieldDef_()
+{
+	Log::debug() << "SQLColumn@" << this << endl; //" [name=" << name << ",type=" << type << "]" << endl;
+}
+
+SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double missingValue, 
+                     const BitfieldDef& bitfieldDef):
+	SQLIterator(type),
+	noRows_(0),
+	owner_(owner),
+	name_(name),
+	index_(index),
+	current_(0),
+	last_(0),
+	position_(0),
+	iterator_(0),
+	hasMissingValue_(hasMissingValue),
+	missingValue_(missingValue),
+	isBitfield_(true),
 	bitfieldDef_(bitfieldDef)
 {
 	Log::debug() << "SQLColumn@" << this << endl; //" [name=" << name << ",type=" << type << "]" << endl;

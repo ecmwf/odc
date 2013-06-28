@@ -36,6 +36,9 @@ public:
 	bool next();
 private:
 	Variables& variables_;
+	Variables::iterator it_;
+    double data_[2];
+    bool missing_[2];
 };
 
 typedef vector<string> ColumnNames;
@@ -45,7 +48,8 @@ public:
 	VariablesTable(SQLDatabase&,const string&);
 	~VariablesTable(); 
 
-    SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, bool isBitfield, const BitfieldDef&);
+    SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
+    SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue);
 
 	SQLTableIterator* iterator(const vector<SQLColumn*>&) const;
 

@@ -22,6 +22,9 @@
 #include "odblib/SQLType.h"
 #include "odblib/SchemaAnalyzer.h"
 #include "odblib/VariablesTable.h"
+#include "odblib/DataTable.h"
+#include "odblib/SQLDataTable.h"
+#include "odblib/SQLSession.h"
 
 using namespace eclib;
 
@@ -33,18 +36,22 @@ void SQLDatabase::setUpVariablesTable()
 	tablesByName_["variables"] = new VariablesTable(*this, "variables");
 }
 
-SQLDatabase::SQLDatabase(const PathName& path,const string& name):
-	path_(path),
-	name_(name)
+SQLDatabase::SQLDatabase(const PathName& path,const string& name)
+: path_(path),
+  name_(name),
+  dualTable_(0),
+  dual_(0)
 {
-	//setUpVariablesTable();
+	setUpVariablesTable();
 } 
 
-SQLDatabase::SQLDatabase(const string& name):
-	path_("."), 
-	name_(name)
+SQLDatabase::SQLDatabase(const string& name)
+: path_("."), 
+  name_(name),
+  dualTable_(0),
+  dual_(0)
 {
-	//setUpVariablesTable();
+	setUpVariablesTable();
 } 
 
 SQLDatabase::~SQLDatabase()
@@ -65,9 +72,11 @@ SQLDatabase::~SQLDatabase()
 		//	cout << var << " = " << value << endl;
 		//}
 		//FIXME:
-		delete it->second;
+		//delete it->second;
 	}
 	variables_.clear();
+    delete dual_;
+    delete dualTable_;
 }
 
 void SQLDatabase::open()
@@ -90,6 +99,22 @@ void SQLDatabase::close()
 	}
 
 	tablesByName_.clear();
+}
+
+SQLTable* SQLDatabase::dualTable()
+{
+    if (dualTable_ == 0)
+    {
+        DataColumns columns;
+        columns.add("dummy", "INTEGER");
+        DataTableProperties properties;
+        properties.blockSizeInNumberOfRows(10); // ?
+        dualTable_ = new DataTable("dual", columns, properties);
+        double row = 0;
+        dualTable_->push_back(&row);
+        dual_ = new SQLDataTable(SQLSession::current().currentDatabase(), *dualTable_);
+    }
+    return dual_;
 }
 
 #if 0

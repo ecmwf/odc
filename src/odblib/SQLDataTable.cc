@@ -88,11 +88,18 @@ SQLTableIterator* SQLDataTable::iterator(const vector<SQLColumn*>& columns) cons
 }
 
 SQLColumn* SQLDataTable::createSQLColumn(const type::SQLType& type, const string& name,
-    int index, bool hasMissingValue, double missingValue, bool isBitfield,
+    int index, bool hasMissingValue, double missingValue, 
     const BitfieldDef& bitfieldDef)
 {
     return new SQLDataColumn(type, *this, name, index, hasMissingValue, missingValue,
-        isBitfield, bitfieldDef, &data_[index]);
+        bitfieldDef, &data_[index]);
+}
+
+SQLColumn* SQLDataTable::createSQLColumn(const type::SQLType& type, const string& name,
+    int index, bool hasMissingValue, double missingValue)
+{
+    return new SQLDataColumn(type, *this, name, index, hasMissingValue, missingValue,
+        &data_[index]);
 }
 
 void SQLDataTable::populateColumns()
@@ -133,9 +140,9 @@ void SQLDataTable::populateColumns()
                 break;
         }
 
-        SQLColumn *c = new SQLDataColumn(type::SQLType::lookup(sqlType), *this,
-            name, index, hasMissingValue, missingValue, column.type() == BITFIELD,
-            bitfieldDef, &data_[index]);
+        SQLColumn *c = column.type() == BITFIELD 
+                    ? new SQLDataColumn(type::SQLType::lookup(sqlType), *this, name, index, hasMissingValue, missingValue, bitfieldDef, &data_[index])
+                    : new SQLDataColumn(type::SQLType::lookup(sqlType), *this, name, index, hasMissingValue, missingValue, &data_[index]);
 
         addColumn(c, name, index);
     }
