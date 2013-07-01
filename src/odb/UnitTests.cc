@@ -827,6 +827,33 @@ TEST(meta_data_reader_fails_scanning_corrupted_file)
 	}
 }
 
+TEST(operator_ge)
+{
+	const char *data = 
+	"a:INTEGER,b:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ImportTool::importText(data, "1to10.odb");
+
+	odb::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
+	unsigned long counter = 0;
+	for (odb::Select::iterator it = odb.begin(), end = odb.end();
+        it != odb.end();
+        ++it, ++counter) 
+        ;
+	ASSERT(counter == 8);
+}
+
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
