@@ -70,7 +70,7 @@ bool SQLOrderOutput::output(const Expressions& results)
 	for (size_t i = 0; i < byExpressions.size(); ++i)
 		byValues.push_back(new SQLExpressionEvaluated(
             byIndices_[i]
-            ? *results[byIndices_[i]]
+            ? *results[byIndices_[i] - 1]
             : *byExpressions[i]));
 
 	Expressions resultValues;
@@ -98,7 +98,7 @@ void SQLOrderOutput::prepare(SQLSelect& sql)
             size_t index(ex[i]->eval(missing));
             ASSERT(! missing);
             if (index < 1) throw eclib::UserError("ORDER BY: indices of columns must be positive");
-            byIndices_.push_back(index - 1);
+            byIndices_.push_back(index);
         } 
     }
 }
