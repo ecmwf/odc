@@ -72,6 +72,7 @@ private:
 	string index(const string& columnName, const SQLExpression* index);
 
 	void reshift(Expressions&);
+	SQLExpression* reshift(SQLExpression*);
 
     void resolveImplicitFrom(SQLSession&, vector<SQLTable*>& from);
 

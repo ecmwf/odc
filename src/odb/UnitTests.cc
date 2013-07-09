@@ -666,7 +666,7 @@ public:
 
 typedef TemporaryPathName ScratchFile;
 
-TEST(hash_operator)
+TEST(hash_operator_on_select_list)
 {
 	const char *data = 
 	"x:INTEGER,y:INTEGER\n"
@@ -694,6 +694,36 @@ TEST(hash_operator)
 		Log::info() << it << endl;
 	}
 
+}
+
+
+TEST(hash_operator_in_where)
+{
+	const char *data = 
+	"x:INTEGER,y:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ScratchFile f("hash_operator.odb");
+	ImportTool::importText(data, f);
+
+	string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3");
+    odb::Select select(sql);
+    odb::Select::iterator it = select.begin();
+    odb::Select::iterator end = select.end();
+    for (; it != end; ++it)
+    {
+		Log::info() << it << endl;
+	}
 }
 
 TEST(bitfields_hash_operator)

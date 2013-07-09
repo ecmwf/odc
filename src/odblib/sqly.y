@@ -159,6 +159,7 @@ Expressions emptyExpressionList;
 %type <coldefs>bitfield_def_list_;
 %type <coldef>bitfield_def;
 %type <val>data_type;
+
 %%
 
 start : statements { SQLSession::current().currentDatabase().setLinks(); }
@@ -344,7 +345,7 @@ from : FROM table_list { $$ = $2; }
 	 ;
 
 where : WHERE expression { $$ = $2; }
-	  |                  { $$ = 0; } 
+	  |                  { $$ = 0;  } 
 	  ;
 
 vector	: '[' expression_list_ex ']' { $$ = new Expressions($2); }
@@ -382,22 +383,26 @@ bitfield_ref: '.' IDENT  { $$ = $2; }
 
 column: IDENT vector_index table_reference optional_hash
 		  {
+
 			std::string columnName      ($1);
 			std::string bitfieldName    ;
 			SQLExpression* vectorIndex  ($2);
 			std::string table           ($3);
 			SQLExpression* pshift       ($4);
 
+            bool missing;
 			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
 		  }
 	   | IDENT bitfield_ref table_reference optional_hash
 		{
+
 			std::string columnName      ($1);
 			std::string bitfieldName    ($2);
 			SQLExpression* vectorIndex  (0); 
 			std::string table           ($3);
 			SQLExpression* pshift       ($4);
 
+            bool missing;
 			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
 		 }
 	  ;
@@ -489,8 +494,8 @@ expression_list : expression         {  $$ = Expressions(1, $1); }
 				| expression_list ',' expression { $$ = $1; $$.push_back($3); }
 				;
 
-optional_hash : HASH expression { $$ = $2; }
-			  |                 { $$ = new NumberExpression(0); }
+optional_hash : HASH DOUBLE { $$ = new NumberExpression($2); }
+			  |             { $$ = new NumberExpression(0); }
 			  ;
 
 
