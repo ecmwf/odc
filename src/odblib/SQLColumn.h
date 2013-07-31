@@ -65,7 +65,7 @@ public:
 protected:
 	unsigned long long noRows_;
 
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 //private:
 protected:
 	SQLColumn(const SQLColumn&);

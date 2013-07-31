@@ -25,7 +25,7 @@ class FunctionEQ_BOXLON : public FunctionExpression {
 public:
 	FunctionEQ_BOXLON(const string&,const expression::Expressions&);
 	FunctionEQ_BOXLON(const FunctionEQ_BOXLON&);
-	~FunctionEQ_BOXLON(); // Change to virtual if base class
+	~FunctionEQ_BOXLON(); 
 
 	SQLExpression* clone() const;
 

@@ -26,13 +26,13 @@ class SQLDatabase;
 class SQLStatement {
 public:
 	SQLStatement();
-	virtual ~SQLStatement(); // Change to virtual if base class
+	virtual ~SQLStatement(); 
 
 	virtual unsigned long long execute() = 0;
 	virtual expression::Expressions output() const = 0;
 
 protected:
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 
 private:
 // No copy allowed

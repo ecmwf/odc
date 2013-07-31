@@ -33,7 +33,7 @@ class SQLTable;
 class SQLSession {
 public:
 	SQLSession();
-	virtual ~SQLSession(); // Change to virtual if base class
+	virtual ~SQLSession(); 
 
 
 	SQLDatabase& openDatabase(const eckit::PathName&,const string& name = "");
@@ -68,7 +68,7 @@ protected:
 
 	unsigned long long execute(SQLStatement&);
 	
-	// void print(ostream&) const; // Change to virtual if base class	
+	// void print(ostream&) const; 	
 
 private:
 // No copy allowed

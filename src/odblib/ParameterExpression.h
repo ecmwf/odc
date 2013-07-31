@@ -24,7 +24,7 @@ class ParameterExpression : public SQLExpression {
 public:
 	ParameterExpression(int);
 	ParameterExpression(const ParameterExpression&);
-	~ParameterExpression(); // Change to virtual if base class
+	~ParameterExpression(); 
 
 	SQLExpression* clone() const;
 

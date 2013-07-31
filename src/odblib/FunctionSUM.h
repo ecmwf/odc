@@ -25,7 +25,7 @@ class FunctionSUM : public FunctionExpression {
 public:
 	FunctionSUM(const string&,const expression::Expressions&);
 	FunctionSUM(const FunctionSUM&);
-	~FunctionSUM(); // Change to virtual if base class
+	~FunctionSUM(); 
 
 	SQLExpression* clone() const;
 

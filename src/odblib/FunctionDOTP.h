@@ -25,7 +25,7 @@ class FunctionDOTP : public FunctionExpression {
 public:
 	FunctionDOTP(const string&,const expression::Expressions&);
 	FunctionDOTP(const FunctionDOTP&);
-	~FunctionDOTP(); // Change to virtual if base class
+	~FunctionDOTP(); 
 
 	SQLExpression* clone() const;
 

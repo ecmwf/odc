@@ -24,7 +24,7 @@ class StringExpression : public SQLExpression {
 public:
 	StringExpression(const string&);
 	StringExpression(const StringExpression&);
-	~StringExpression(); // Change to virtual if base class
+	~StringExpression(); 
 
 	SQLExpression* clone() const;
 

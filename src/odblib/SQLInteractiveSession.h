@@ -22,7 +22,7 @@ namespace sql {
 class SQLInteractiveSession : public SQLSession {
 public:
 	SQLInteractiveSession(ostream & = cout);
-	~SQLInteractiveSession(); // Change to virtual if base class
+	~SQLInteractiveSession(); 
 
 private:
 // No copy allowed

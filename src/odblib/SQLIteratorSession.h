@@ -29,7 +29,7 @@ template <typename T = SelectIterator>
 class SQLIteratorSession : public SQLSession {
 public:
 	SQLIteratorSession(T &);
-	~SQLIteratorSession(); // Change to virtual if base class
+	~SQLIteratorSession(); 
 
 	SQLStatement* statement();
 

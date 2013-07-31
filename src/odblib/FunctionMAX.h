@@ -25,7 +25,7 @@ class FunctionMAX : public FunctionExpression {
 public:
 	FunctionMAX(const string&,const expression::Expressions&);
 	FunctionMAX(const FunctionMAX&);
-	~FunctionMAX(); // Change to virtual if base class
+	~FunctionMAX(); 
 
 	SQLExpression* clone() const;
 

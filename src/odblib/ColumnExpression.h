@@ -28,7 +28,7 @@ public:
 	ColumnExpression(const string&, SQLTable*, int begin = -1, int end = -1);
 	ColumnExpression(const string&, const string& tableReference, int begin = -1, int end = -1);
 	ColumnExpression(const ColumnExpression&);
-	~ColumnExpression(); // Change to virtual if base class
+	~ColumnExpression(); 
 
 	SQLTable* table() { return table_; }
 	double* current() { return &(value_->first); }

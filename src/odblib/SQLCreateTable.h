@@ -37,7 +37,7 @@ public:
 
 // -- Destructor
 
-	virtual ~SQLCreateTable(); // Change to virtual if base class
+	virtual ~SQLCreateTable(); 
 
 // -- Convertors
 	// None
@@ -66,7 +66,7 @@ public:
 // -- Class methods
 	// None
 
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 protected:
 
 // -- Members
@@ -74,7 +74,7 @@ protected:
 
 // -- Methods
 	
-	//virtual void print(ostream&) const; // Change to virtual if base class	
+	//virtual void print(ostream&) const; 	
 
 // -- Overridden methods
 	// None

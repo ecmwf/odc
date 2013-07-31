@@ -26,7 +26,7 @@ public:
 	static void registerIntegerFunctions();
 
 	FunctionIntegerExpression(const string&,const expression::Expressions&);
-	~FunctionIntegerExpression(); // Change to virtual if base class
+	~FunctionIntegerExpression(); 
 
 // -- Overridden methods
 	virtual const odb::sql::type::SQLType* type() const;

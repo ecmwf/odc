@@ -36,7 +36,7 @@ namespace expression {
 class ConstantExpression : public SQLExpression {
 public:
 	ConstantExpression(double, bool, const odb::sql::type::SQLType*);
-	virtual ~ConstantExpression(); // Change to virtual if base class
+	virtual ~ConstantExpression(); 
 
 	virtual void prepare(SQLSelect&) { NOTIMP; }
 	virtual void cleanup(SQLSelect&) { NOTIMP; }

@@ -31,7 +31,7 @@ public:
 
 // -- Destructor
 
-	~RggRegionCache(); // Change to virtual if base class
+	~RggRegionCache(); 
 
 // -- Convertors
 	// None
@@ -58,7 +58,7 @@ protected:
 
 // -- Methods
 	
-	// void print(ostream&) const; // Change to virtual if base class	
+	// void print(ostream&) const; 	
 
 // -- Overridden methods
 	// None

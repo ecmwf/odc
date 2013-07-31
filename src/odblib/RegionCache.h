@@ -65,7 +65,7 @@ public:
 
 // -- Destructor
 
-	~RegionCache(); // Change to virtual if base class
+	~RegionCache(); 
 
 // -- Convertors
 	// None
@@ -95,7 +95,7 @@ protected:
 	// None
 
 // -- Methods
-	// void print(ostream&) const; // Change to virtual if base class	
+	// void print(ostream&) const; 	
 
 // -- Overridden methods
 	// None

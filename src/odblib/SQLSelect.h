@@ -43,7 +43,7 @@ class SQLSelect : public SQLStatement {
 
 public:
 	SQLSelect(const Expressions&, const vector<SQLTable*>&, odb::sql::expression::SQLExpression*, SQLOutput*, SQLOutputConfig);
-	~SQLSelect(); // Change to virtual if base class
+	~SQLSelect(); 
 
 // -- Methods
 	void prepareExecute(); //SQLExpression*& where);
@@ -68,7 +68,7 @@ public:
 	virtual unsigned long long execute();
 
 protected:
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 
 private:
 // No copy allowed

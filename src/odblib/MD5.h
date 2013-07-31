@@ -25,7 +25,7 @@ extern "C" {
 class MD5 {
 public:
 	MD5();
-	~MD5(); // Change to virtual if base class
+	~MD5(); 
 
 	void add(const void*, long);
 	string digest();

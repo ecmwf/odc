@@ -25,7 +25,7 @@ public:
 	BitColumnExpression(const string&, const string&, SQLTable*);
 	BitColumnExpression(const string&, const string&, const string&);
 	BitColumnExpression(const BitColumnExpression&);
-	~BitColumnExpression(); // Change to virtual if base class
+	~BitColumnExpression(); 
 
 private:
 // No copy allowed

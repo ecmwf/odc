@@ -27,7 +27,7 @@
 class ODAHandle {
 public:
 	ODAHandle(eckit::Offset, eckit::Offset);
-	~ODAHandle(); // Change to virtual if base class
+	~ODAHandle(); 
 
 	void addValue(const string& columnName, double v);
 

@@ -25,7 +25,7 @@ class FunctionTIMESTAMP : public FunctionExpression {
 public:
 	FunctionTIMESTAMP(const string&,const expression::Expressions&);
 	FunctionTIMESTAMP(const FunctionTIMESTAMP&);
-	~FunctionTIMESTAMP(); // Change to virtual if base class
+	~FunctionTIMESTAMP(); 
 
 	SQLExpression* clone() const;
 

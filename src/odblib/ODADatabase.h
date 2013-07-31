@@ -24,7 +24,7 @@ namespace sql {
 class ODADatabase : public SQLDatabase {
 public:
 	ODADatabase(const eckit::PathName&,const string&);
-	~ODADatabase(); // Change to virtual if base class
+	~ODADatabase(); 
 
 private:
 // No copy allowed

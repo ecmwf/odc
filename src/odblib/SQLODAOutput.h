@@ -26,10 +26,10 @@ template<typename ITERATOR>
 class SQLODAOutput : public SQLOutput {
 public:
 	SQLODAOutput(ITERATOR);
-	virtual ~SQLODAOutput(); // Change to virtual if base class
+	virtual ~SQLODAOutput(); 
 
 protected:
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 
 private:
 	SQLODAOutput(const SQLODAOutput&);

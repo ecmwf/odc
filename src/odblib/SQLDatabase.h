@@ -38,7 +38,7 @@ public:
 
 	SQLDatabase(const eckit::PathName&,const string&);
 	SQLDatabase(const string& = "default");
-	virtual ~SQLDatabase(); // Change to virtual if base class
+	virtual ~SQLDatabase(); 
 
 // -- Methods
 	virtual void open();

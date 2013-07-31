@@ -25,7 +25,7 @@ class FunctionMIN : public FunctionExpression {
 public:
 	FunctionMIN(const string&,const expression::Expressions&);
 	FunctionMIN(const FunctionMIN&);
-	~FunctionMIN(); // Change to virtual if base class
+	~FunctionMIN(); 
 
 	SQLExpression* clone() const;
 

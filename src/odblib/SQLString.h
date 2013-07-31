@@ -26,7 +26,7 @@ namespace type {
 class SQLString : public SQLType {
 public:
 	SQLString(const string& );
-	~SQLString(); // Change to virtual if base class
+	~SQLString(); 
 
 private:
 // No copy allowed

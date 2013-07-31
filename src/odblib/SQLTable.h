@@ -40,7 +40,7 @@ typedef vector<string> ColumnNames;
 class SQLTable : private eckit::NonCopyable {
 public:
 	SQLTable(SQLDatabase&,const eckit::PathName&,const string&);
-	virtual ~SQLTable(); // Change to virtual if base class
+	virtual ~SQLTable(); 
 
 	void loadIOMAP(istream&);
 	void addColumn(const string&, int, const type::SQLType&, bool, double, bool, const BitfieldDef&);
@@ -99,7 +99,7 @@ protected:
 // -- Methods
 	void clearColumns();
 	
-	// void print(ostream&) const; // Change to virtual if base class	
+	// void print(ostream&) const; 	
 	void addColumn(SQLColumn*, const string&, int);
 
 	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double

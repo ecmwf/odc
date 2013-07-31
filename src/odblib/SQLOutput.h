@@ -25,7 +25,7 @@ namespace sql {
 class SQLOutput {
 public:
 	SQLOutput();
-	virtual ~SQLOutput(); // Change to virtual if base class
+	virtual ~SQLOutput(); 
 
 	virtual void size(int) = 0;
 
@@ -52,7 +52,7 @@ public:
 protected:
 	SQLOutputConfig config_;
 
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 
 private:
 // No copy allowed

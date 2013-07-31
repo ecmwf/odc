@@ -25,7 +25,7 @@ class FunctionNOT_NULL : public FunctionExpression {
 public:
 	FunctionNOT_NULL(const string&,const expression::Expressions&);
 	FunctionNOT_NULL(const FunctionNOT_NULL&);
-	~FunctionNOT_NULL(); // Change to virtual if base class
+	~FunctionNOT_NULL(); 
 
 	SQLExpression* clone() const;
 private:

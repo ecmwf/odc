@@ -25,7 +25,7 @@ class FunctionTDIFF : public FunctionExpression {
 public:
 	FunctionTDIFF(const string&,const expression::Expressions&);
 	FunctionTDIFF(const FunctionTDIFF&);
-	~FunctionTDIFF(); // Change to virtual if base class
+	~FunctionTDIFF(); 
 
 // -- Overridden methods
 	virtual void output(ostream& s) const;

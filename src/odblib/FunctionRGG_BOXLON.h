@@ -25,7 +25,7 @@ class FunctionRGG_BOXLON : public FunctionExpression {
 public:
 	FunctionRGG_BOXLON(const string&,const expression::Expressions&);
 	FunctionRGG_BOXLON(const FunctionRGG_BOXLON&);
-	~FunctionRGG_BOXLON(); // Change to virtual if base class
+	~FunctionRGG_BOXLON(); 
 
 	SQLExpression* clone() const;
 

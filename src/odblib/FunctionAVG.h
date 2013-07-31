@@ -25,7 +25,7 @@ class FunctionAVG : public FunctionExpression {
 public:
 	FunctionAVG(const string&,const expression::Expressions&);
 	FunctionAVG(const FunctionAVG&);
-	~FunctionAVG(); // Change to virtual if base class
+	~FunctionAVG(); 
 
 	SQLExpression* clone() const;
 private:

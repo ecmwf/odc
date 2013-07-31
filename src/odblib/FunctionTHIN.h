@@ -25,7 +25,7 @@ class FunctionTHIN : public FunctionExpression {
 public:
 	FunctionTHIN(const string&, const expression::Expressions&);
 	FunctionTHIN(const FunctionTHIN&);
-	~FunctionTHIN(); // Change to virtual if base class
+	~FunctionTHIN(); 
 
 	SQLExpression* clone() const;
 

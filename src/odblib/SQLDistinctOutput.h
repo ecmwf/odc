@@ -23,10 +23,10 @@ namespace expression {
 class SQLDistinctOutput : public SQLOutput {
 public:
 	SQLDistinctOutput(SQLOutput* output);
-	virtual ~SQLDistinctOutput(); // Change to virtual if base class
+	virtual ~SQLDistinctOutput(); 
 
 protected:
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 private:
 // No copy allowed
 	SQLDistinctOutput(const SQLDistinctOutput&);

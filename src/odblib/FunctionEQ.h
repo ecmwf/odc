@@ -25,7 +25,7 @@ class FunctionEQ : public FunctionExpression {
 public:
 	FunctionEQ(const string&,const expression::Expressions&);
 	FunctionEQ(const FunctionEQ&);
-	~FunctionEQ(); // Change to virtual if base class
+	~FunctionEQ(); 
 
 	static bool equal(const SQLExpression& l, const SQLExpression& r, bool& missing);
 	static void trimStringInDouble(char* &p, size_t& len);

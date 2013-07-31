@@ -22,7 +22,7 @@ class TemporaryFile : public  eckit::PathName,
 public:
 
     TemporaryFile();
-	~TemporaryFile(); // Change to virtual if base class
+	~TemporaryFile(); 
 
 };
 

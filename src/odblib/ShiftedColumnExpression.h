@@ -35,7 +35,7 @@ public:
 	ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int shift, int nominalShift);
 
 
-	~ShiftedColumnExpression(); // Change to virtual if base class
+	~ShiftedColumnExpression(); 
 
 	SQLTable* table() { return this->table_; }
 

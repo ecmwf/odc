@@ -25,7 +25,7 @@ class FunctionRMS : public FunctionExpression {
 public:
 	FunctionRMS(const string&,const expression::Expressions&);
 	FunctionRMS(const FunctionRMS&);
-	~FunctionRMS(); // Change to virtual if base class
+	~FunctionRMS(); 
 
 // -- Overridden methods
 	virtual double eval(bool& missing) const;

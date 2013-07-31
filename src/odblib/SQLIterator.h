@@ -33,7 +33,7 @@ public:
 
 	SQLIterator(const type::SQLType& type): type_(type) {}
 
-    virtual ~SQLIterator() {} // Change to virtual if base class
+    virtual ~SQLIterator() {} 
 
 	const type::SQLType& type() const { return type_; }
 
@@ -47,7 +47,7 @@ public:
 protected:
 	const type::SQLType& type_;
 	
-	virtual void print(ostream&) const = 0; // Change to virtual if base class	
+	virtual void print(ostream&) const = 0; 	
 
 private:
 // No copy allowed

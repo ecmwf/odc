@@ -24,7 +24,7 @@ class VariableExpression : public SQLExpression {
 public:
 	VariableExpression(const string&);
 	VariableExpression(const VariableExpression&);
-	~VariableExpression(); // Change to virtual if base class
+	~VariableExpression(); 
 
 	SQLExpression* clone() const;
 

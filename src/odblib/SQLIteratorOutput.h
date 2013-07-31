@@ -28,11 +28,11 @@ template <typename T = odb::SelectIterator>
 class SQLIteratorOutput : public SQLOutput {
 public:
 	SQLIteratorOutput(T &);
-	virtual ~SQLIteratorOutput(); // Change to virtual if base class
+	virtual ~SQLIteratorOutput(); 
 
 protected:
 
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 
 private:
 // No copy allowed

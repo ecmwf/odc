@@ -25,7 +25,7 @@ class FunctionJULIAN : public FunctionExpression {
 public:
 	FunctionJULIAN(const string&, const expression::Expressions&);
 	FunctionJULIAN(const FunctionJULIAN&);
-	~FunctionJULIAN(); // Change to virtual if base class
+	~FunctionJULIAN(); 
 
 	SQLExpression* clone() const;
 private:

@@ -25,7 +25,7 @@ class FunctionNVL : public FunctionExpression {
 public:
 	FunctionNVL(const string&,const expression::Expressions&);
 	FunctionNVL(const FunctionNVL&);
-	~FunctionNVL(); // Change to virtual if base class
+	~FunctionNVL(); 
 
 	SQLExpression* clone() const;
 

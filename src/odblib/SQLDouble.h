@@ -26,7 +26,7 @@ namespace type {
 class SQLDouble : public SQLType {
 public:
 	SQLDouble(const string& );
-	~SQLDouble(); // Change to virtual if base class
+	~SQLDouble(); 
 
 // -- Overridden methods
 	virtual void output(SQLOutput&, double, bool) const;

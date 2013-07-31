@@ -37,7 +37,7 @@ class Dictionary;
 class SQLExpression {
 public:
 	SQLExpression();
-	virtual ~SQLExpression(); // Change to virtual if base class
+	virtual ~SQLExpression(); 
 
 	virtual void prepare(SQLSelect&) = 0;
 	virtual void cleanup(SQLSelect&) = 0;

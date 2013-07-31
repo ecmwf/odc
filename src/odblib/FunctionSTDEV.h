@@ -25,7 +25,7 @@ class FunctionSTDEV : public FunctionVAR {
 public:
 	FunctionSTDEV(const string&, const expression::Expressions&);
 	FunctionSTDEV(const FunctionSTDEV&);
-	~FunctionSTDEV(); // Change to virtual if base class
+	~FunctionSTDEV(); 
 
 	SQLExpression* clone() const;
 

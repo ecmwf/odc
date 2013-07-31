@@ -40,7 +40,7 @@ public:
 	/// Constructor used when defining a bitfield.
 	SQLType(const string&, const string&);
 
-	virtual ~SQLType(); // Change to virtual if base class
+	virtual ~SQLType(); 
 
 	const string& name() const { return name_; }
 
@@ -60,7 +60,7 @@ public:
 	static void createAlias(const string&, const string&);
 
 protected:
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 	static bool exists(const string&);
 
 private:

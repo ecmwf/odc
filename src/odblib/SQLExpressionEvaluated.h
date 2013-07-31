@@ -28,7 +28,7 @@ namespace expression {
 class SQLExpressionEvaluated : public SQLExpression {
 public:
 	SQLExpressionEvaluated(SQLExpression&);
-	~SQLExpressionEvaluated(); // Change to virtual if base class
+	~SQLExpressionEvaluated(); 
 
 	// Overriden
 

@@ -22,7 +22,7 @@ namespace sql {
 class SQLBitColumn : public SQLColumn {
 public:
 	SQLBitColumn(SQLColumn&,const string&);
-	~SQLBitColumn(); // Change to virtual if base class
+	~SQLBitColumn(); 
 private:
 // No copy allowed
 	SQLBitColumn(const SQLBitColumn&);
@@ -38,7 +38,7 @@ private:
 	virtual void rewind();
 	virtual double next(bool& missing);
 	virtual void advance(unsigned long);
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 
 	//friend ostream& operator<<(ostream& s,const SQLBitColumn& p)
 	//	{ p.print(s); return s; }

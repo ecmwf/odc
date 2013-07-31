@@ -23,7 +23,7 @@ namespace type {
 class SQLBit : public SQLType {
 public:
 	SQLBit(const string& ,unsigned long ,unsigned long );
-	~SQLBit(); // Change to virtual if base class
+	~SQLBit(); 
 
 	unsigned long mask()  const { return mask_; }
 	unsigned long shift() const { return shift_; }

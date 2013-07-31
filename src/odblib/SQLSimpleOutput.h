@@ -22,10 +22,10 @@ namespace sql {
 class SQLSimpleOutput : public SQLOutput {
 public:
 	SQLSimpleOutput(ostream& = cout);
-	virtual ~SQLSimpleOutput(); // Change to virtual if base class
+	virtual ~SQLSimpleOutput(); 
 
 protected:
-	virtual void print(ostream&) const; // Change to virtual if base class	
+	virtual void print(ostream&) const; 	
 
 private:
 	SQLSimpleOutput(const SQLSimpleOutput&);

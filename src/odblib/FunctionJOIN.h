@@ -25,7 +25,7 @@ class FunctionJOIN : public FunctionExpression {
 public:
 	FunctionJOIN(const string&, const expression::Expressions&);
 	FunctionJOIN(const FunctionJOIN&);
-	~FunctionJOIN(); // Change to virtual if base class
+	~FunctionJOIN(); 
 
 	SQLExpression* clone() const;
 
