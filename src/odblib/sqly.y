@@ -11,6 +11,9 @@
  */
 
 #define YYMAXDEPTH 500
+
+#include <unistd.h>
+
 #include "eckit/eckit.h"
 
 using namespace SQLYacc;
@@ -42,8 +45,6 @@ int yylex();
 //int yylex ( YYSTYPE * lvalp, YYLTYPE * llocp, yyscan_t scanner );
 //int yydebug;
 #endif
-
-extern "C" int isatty(int);
 
 Expressions emptyExpressionList;
 

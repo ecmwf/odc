@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+#include <sys/types.h>
+#include <unistd.h>
 #include <sstream>
 
 #include "eckit/io/Buffer.h"

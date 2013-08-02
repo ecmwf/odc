@@ -4,6 +4,7 @@
 #ifndef DATALINKS_H_
 #define DATALINKS_H_
 
+#include <cstddef>
 #include <set>
 
 namespace odb {

@@ -4,6 +4,7 @@
 #ifndef DATATABLE_H_
 #define DATATABLE_H_
 
+#include <cstddef>
 #include <iosfwd>
 #include <string>
 
