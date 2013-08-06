@@ -252,8 +252,8 @@ class MathFunctionExpression_5 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(*this); }
 public:
-	MathFunctionExpression_5(const string& name,const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
-	MathFunctionExpression_5(const string& name,const expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
+	MathFunctionExpression_5(const string& name, const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
+	MathFunctionExpression_5(const string& name, expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
 	MathFunctionExpression_5(const MathFunctionExpression_5& o) : FunctionExpression(o), myArgs_(0) {}
 	~MathFunctionExpression_5() { if (myArgs_) delete myArgs_; }
 private:
