@@ -122,7 +122,9 @@ typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 {
 	eclib::DataHandle *dh = 0;
 	if (string(path_).size())
-		dh = ODBAPISettings::instance().writeToFile(path_);
+    {
+		dh = ODBAPISettings::instance().writeToFile(path_, eclib::Length(0), false);
+    }
 	else
 	{
 		ASSERT(dataHandle_);

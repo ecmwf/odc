@@ -80,6 +80,8 @@ void ReaderIterator::loadHeaderAndBufferData()
 	unsigned long bytesRead = f->read(reinterpret_cast<char*>(memDataHandle_.buffer()), dataSize);
 
 	ASSERT(bytesRead == dataSize && "Could not read the amount of data indicated by file's header");
+
+    newDataset_ = true;
 }
 
 ReaderIterator::~ReaderIterator ()

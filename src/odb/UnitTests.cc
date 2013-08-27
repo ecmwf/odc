@@ -580,11 +580,11 @@ CallBackProcessOneRow create_counter_callback()
 	return cb;
 }
 
-const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-const string sql = "select lat,lon";
 
 void map_reduce_mt()
 {
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	llong n = CountTool::fastRowCount(fileName);
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << endl;
@@ -594,6 +594,8 @@ void map_reduce_mt()
 
 void map_reduce_st()
 {
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	llong n = CountTool::fastRowCount(fileName);
 	llong r = 0;
 	llong* result = (llong*) SingleThreadMapReduce::process(&r, fileName, sql, create_counter_callback());
@@ -633,6 +635,8 @@ void process_array_st()
 {
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	
 	llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
@@ -645,6 +649,8 @@ void process_array_mt()
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
 	
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
 }
@@ -878,11 +884,106 @@ TEST(operator_ge)
 	odb::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
 	unsigned long counter = 0;
 	for (odb::Select::iterator it = odb.begin(), end = odb.end();
-        it != odb.end();
+        it != end;
         ++it, ++counter) 
         ;
 	ASSERT(counter == 8);
 }
+
+void create_1to10()
+{
+	const char *data = 
+	"a:INTEGER,b:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ImportTool::importText(data, "1to10.odb");
+}
+
+TEST(Select_isNewDataset)
+{
+    create_1to10();
+    size_t blocks (0);
+
+	odb::Select odb("select * from \"1to10.odb\";");
+	for (odb::Select::iterator it = odb.begin(), end = odb.end();
+        it != end;
+        ++it)
+        if (it->isNewDataset())
+            ++blocks;
+    ASSERT(blocks == 1);
+}
+
+template<typename T> 
+void test_isNewDataset()
+{
+    create_1to10();
+    size_t blocks (0);
+
+    blocks = 0;
+    T odb("1to10.odb");
+    for (typename T::iterator it = odb.begin(), end = odb.end();
+        it != end;
+        ++it)
+        if (it->isNewDataset())
+            ++blocks;
+    ASSERT(blocks == 1);
+}
+
+
+TEST(Gabor)
+{
+    const char * cfg = 
+    "CLASS: class\n"
+    "DATE: andate\n"
+    "TIME: antime\n"
+    "TYPE: type\n"
+    "OBSGROUP: groupid\n"
+    "REPORTYPE: reportype\n"
+    "STREAM: stream\n"
+    "EXPVER: expver\n"
+    ;
+    const string fileName("/tmp/gabor/massaged.odb");
+
+    odb::FastODA2Request<odb::ODA2RequestClientTraits> o2r;
+    o2r.parseConfig(cfg);
+
+    eclib::OffsetList offsets;
+    eclib::LengthList lengths;
+    vector<ODAHandle*> handles;
+    bool rc = o2r.scanFile(fileName, offsets, lengths, handles);
+    for (size_t i = 0; i < handles.size(); ++i)
+        delete handles[i];
+    handles.clear();
+    ASSERT(rc);
+
+    ASSERT(lengths.size());
+    ASSERT(lengths.size() == offsets.size());
+    for(size_t i = 1; i < offsets.size(); i++)
+        ASSERT(offsets[i] > offsets[i-1]);
+    size_t last = offsets.size()-1;
+    ASSERT(PathName(fileName).size() == offsets[last] + lengths[last]);
+
+    unsigned long long cnt = o2r.rowsNumber();
+
+    string filesRequest = "ARCHIVE,\n";
+    filesRequest += o2r.genRequest();
+}
+
+TEST(Reader_isNewDataset) { test_isNewDataset<Reader>(); }
+TEST(MetaDataReader_isNewDataset) { test_isNewDataset<odb::MetaDataReader<MetaDataReaderIterator> >(); }
+
+
+
 
 } // namespace test 
 } // namespace tool 

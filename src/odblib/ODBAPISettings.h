@@ -32,8 +32,8 @@ public:
 	size_t setvbufferSize();
 	void setvbufferSize(size_t);
 
-	eclib::DataHandle* writeToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0));
-	eclib::DataHandle* appendToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0));
+	eclib::DataHandle* writeToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0), bool openDataHandle = true);
+	eclib::DataHandle* appendToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0), bool openDataHandle = true);
 
 	static bool debug;
 

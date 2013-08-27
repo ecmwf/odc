@@ -61,19 +61,19 @@ void ODBAPISettings::headerBufferSize(size_t n) { headerBufferSize_ = n; }
 size_t ODBAPISettings::setvbufferSize() { return setvbufferSize_; }
 void ODBAPISettings::setvbufferSize(size_t n) { setvbufferSize_ = n; }
 
-DataHandle* ODBAPISettings::writeToFile(const PathName& fn, const Length& length)
+DataHandle* ODBAPISettings::writeToFile(const PathName& fn, const Length& length, bool openDataHandle)
 {
 	DataHandle* h = 0;
 	h = useAIO_ ? static_cast<DataHandle*>(new AIOHandle(fn)) : static_cast<DataHandle*>(new FileHandle(fn));
-	h->openForWrite(length);
+	if (openDataHandle) h->openForWrite(length);
 	return h;
 }
 
-DataHandle* ODBAPISettings::appendToFile(const PathName& fn, const Length& length)
+DataHandle* ODBAPISettings::appendToFile(const PathName& fn, const Length& length, bool openDataHandle)
 {
 	DataHandle *h = 0;
 	h = useAIO_ ? static_cast<DataHandle*>(new AIOHandle(fn)) : static_cast<DataHandle*>(new FileHandle(fn));
-	h->openForAppend(length);
+	if (openDataHandle) h->openForAppend(length);
 	return h;
 }
 
