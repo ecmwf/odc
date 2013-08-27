@@ -1,0 +1,71 @@
+/*
+ * (C) Copyright 1996-2012 ECMWF.
+ * 
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
+ * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+// File FileDescHandle.h
+// Baudouin Raoult - ECMWF May 96
+
+#ifndef eclib_FileDescHandle_h
+#define eclib_FileDescHandle_h
+
+#include "eclib/DataHandle.h"
+
+//-----------------------------------------------------------------------------
+
+namespace eclib {
+
+//-----------------------------------------------------------------------------
+
+class FileDescHandle : public DataHandle {
+public:
+
+// -- Contructors
+
+	FileDescHandle(int);
+
+// -- Destructor
+
+	~FileDescHandle();
+
+// -- Overridden methods
+
+	// From DataHandle
+
+    virtual Length openForRead();
+    virtual void openForWrite(const Length&);
+    virtual void openForAppend(const Length&);
+
+	virtual long   read(void*,long);
+	virtual long   write(const void*,long);
+	virtual void   close();
+	virtual void   print(ostream&) const;
+
+	// From Streamable
+
+	virtual void encode(Stream&) const;
+
+// -- Class methods
+
+
+private:
+
+// -- Members
+
+	int fd_;
+
+// -- Class members
+
+};
+
+
+//-----------------------------------------------------------------------------
+
+} // namespace eclib
+
+#endif

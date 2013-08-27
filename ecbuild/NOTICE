@@ -1,0 +1,5 @@
+Notice
+
+1. The files FindLex and FindYacc are based on the FindBison and FindFlex macros from the original CMake code base.
+   As requested, the License text has been preserved. The modifications are governed by the Apache License as described in COPYING.
+ 

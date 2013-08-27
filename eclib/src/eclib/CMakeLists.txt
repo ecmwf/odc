@@ -1,0 +1,427 @@
+list( APPEND eclib_config_src_files 
+    config/Assignment.cc
+    config/Assignment.h
+    config/Block.cc
+    config/Block.h
+    config/Branch.cc
+    config/Branch.h
+    config/Compiler.cc
+    config/Compiler.h
+    config/Condition.cc
+    config/Condition.h
+    config/Function.cc
+    config/Function.h
+    config/Scope.cc
+    config/Scope.h
+    config/Script.cc
+    config/Script.h
+    config/Statement.cc
+    config/Statement.h
+)
+
+list( APPEND eclib_src_files
+Application.cc
+Application.h
+Area.h
+AutoAlarm.cc
+AutoAlarm.h
+AutoLock.h
+AutoLocker.h
+AutoLocker.cc
+BackTrace.h
+BackTrace.cc
+BadValue.h
+BasePathName.h
+BasePathNameT.cc
+BasePathNameT.h
+BigNum.cc
+BigNum.h
+BoolContent.h
+BoolContent.cc
+BTree.cc
+BTree.h
+Cache.h
+JSONParser.cc
+JSONParser.h
+FixedString.cc
+FixedString.h
+Port.cc
+Port.h
+ETA.cc
+ETA.h
+AIOHandle.cc
+AIOHandle.h
+CallbackLogger.cc
+CallbackLogger.h
+Colour.cc
+Colour.h
+CodeLocation.h
+CodeLocation.cc
+Buffer.cc
+Buffer.h
+BufferCache.cc
+BufferCache.h
+BufferedHandle.cc
+BufferedHandle.h
+Bytes.cc
+Bytes.h
+Loader.cc
+Loader.h
+ClassExtent.h
+ClimateDate.cc
+ClimateDate.h
+ClusterDisks.cc
+ClusterDisks.h
+ClusterNode.cc
+ClusterNode.h
+ClusterNodes.cc
+ClusterNodes.h
+CommandStream.cc
+CommandStream.h
+Configurable.cc
+Configurable.h
+Connector.cc
+Connector.h
+Content.cc
+Content.h
+Context.cc
+Context.h
+ContextBehavior.cc
+ContextBehavior.h
+Coord.cc
+Coord.h
+Counted.cc
+Counted.h
+DataHandle.cc
+DataHandle.h
+Date.cc
+Date.h
+DateContent.cc
+DateContent.h
+DateTime.cc
+DateTime.h
+DayOfYear.cc
+DayOfYear.h
+DblBuffer.cc
+DblBuffer.h
+DHSBehavior.cc
+DHSBehavior.h
+DHSBehaviorLogFile.cc
+DHSBehaviorLogFile.h
+DHSBehaviorStdout.cc
+DHSBehaviorStdout.h
+DHSLogger.cc
+DHSLogger.h
+DHSStdLogger.cc
+DHSStdLogger.h
+Dispatcher.cc
+Dispatcher.h
+Double.cc
+Double.h
+DumpLoad.cc
+DumpLoad.h
+EmptyHandle.cc
+EmptyHandle.h
+EtcTable.cc
+EtcTable.h
+Exceptions.cc
+Exceptions.h
+Exporter.cc
+Exporter.h
+StdFileHandle.cc
+StdFileHandle.h
+FileName.cc
+FileName.h
+FTPHandle.cc
+FTPHandle.h
+FileBase.cc
+FileBase.h
+FileDescHandle.cc
+FileDescHandle.h
+FileHandle.cc
+FileHandle.h
+FileLocker.cc
+FileLocker.h
+Recycler.cc
+Recycler.h
+FileSpace.cc
+FileSpace.h
+FileStream.cc
+FileStream.h
+FileSystem.cc
+FileSystem.h
+FileManager.cc
+FileManager.h
+FileSystemSize.h
+Grid.cc
+Grid.h
+HandleBuf.cc
+HandleBuf.h
+HandleStream.h
+HyperCube.cc
+HyperCube.h
+Inited.h
+Isa.cc
+JSON.cc
+JSON.h
+Length.cc
+Length.h
+LibBehavior.h
+LibBehavior.cc
+ListContent.cc
+ListContent.h
+LocalPathName.cc
+LocalPathName.h
+Log.cc
+Log.h
+Logger.cc
+Logger.h
+LogBuffer.cc
+LogBuffer.h
+MapAllocator.cc
+MapAllocator.h
+MappedArray.cc
+MappedArray.h
+MarsFSClient.cc
+MarsFSClient.h
+MarsFSFile.cc
+MarsFSFile.h
+MarsFSHandle.cc
+MarsFSHandle.h
+MarsFSPartHandle.cc
+MarsFSPartHandle.h
+MarsFSPath.cc
+MarsFSPath.h
+MemoryPool.cc
+MemoryPool.h
+Monitor.cc
+Monitor.h
+Monitorable.cc
+Monitorable.h
+Month.cc
+Month.h
+MoverHandle.cc
+MoverHandle.h
+MoverTransfer.cc
+MoverTransfer.h
+MultiHandle.cc
+MultiHandle.h
+Mutex.cc
+Mutex.h
+MutexCond.cc
+MutexCond.h
+NetAddress.h
+NetAddress.cc
+NetService.cc
+NetService.h
+NetUser.cc
+NetUser.h
+NilContent.cc
+NilContent.h
+NodeInfo.cc
+NodeInfo.h
+NonCopyable.h
+NonCopyable.cc
+NumberContent.cc
+NumberContent.h
+DoubleContent.cc
+DoubleContent.h
+MapContent.cc
+MapContent.h
+Offset.cc
+Offset.h
+Padded.h
+PartFileHandle.cc
+PartFileHandle.h
+Password.cc
+Password.h
+PathName.cc
+PathName.h
+PipeApplication.cc
+PipeApplication.h
+PipeHandle.cc
+PipeHandle.h
+PipeHandler.cc
+PipeHandler.h
+PipeStream.cc
+PipeStream.h
+Plural.h
+ProcessControler.cc
+ProcessControler.h
+ProducerConsumer.cc
+ProducerConsumer.h
+Pipe.cc
+Pipe.h
+Progress.cc
+Progress.h
+RLE.cc
+RLE.h
+Reanimator.cc
+Reanimator.h
+ReanimatorBase.cc
+Regex.cc
+Regex.h
+ResizableBuffer.cc
+ResizableBuffer.h
+Resource.h
+ResourceBase.cc
+ResourceMgr.cc
+ResourceMgr.h
+RotLogger.cc
+RotLogger.h
+ScopedPtr.h
+Seconds.cc
+Seconds.h
+Select.cc
+Select.h
+Semaphore.cc
+Semaphore.h
+SharedInt.cc
+SharedInt.h
+SignalHandler.cc
+SignalHandler.h
+SockBuf.cc
+SockBuf.h
+Statistics.cc
+Statistics.h
+StandardBehavior.h
+StandardBehavior.cc
+StdLogger.cc
+StdLogger.h
+StdFile.cc
+StdFile.h
+StdPipe.cc
+StdPipe.h
+StdioBuf.cc
+StdioBuf.h
+StrStream.h
+StringTools.cc
+StringTools.h
+Stream.cc
+Stream.h
+StreamParser.cc
+StreamParser.h
+Streamable.cc
+Streamable.h
+StringContent.cc
+StringContent.h
+TCPClient.cc
+TCPClient.h
+TCPHandle.cc
+TCPHandle.h
+TCPServer.cc
+TCPServer.h
+TCPSocket.cc
+TCPSocket.h
+TCPSocketHandle.cc
+TCPSocketHandle.h
+TCPStream.cc
+TCPStream.h
+Task.cc
+Task.h
+TaskInfo.cc
+TaskInfo.h
+TeeHandle.cc
+TeeHandle.h
+Telnet.cc
+Telnet.h
+TelnetUser.h
+Telnetable.cc
+Telnetable.h
+TempFile.cc
+TempFile.h
+Thread.cc
+Thread.h
+ThreadControler.cc
+ThreadControler.h
+ThreadPool.cc
+ThreadPool.h
+ThreadSingleton.cc
+ThreadSingleton.h
+Once.cc
+Once.h
+Time.cc
+Time.h
+TimeInterval.cc
+TimeInterval.h
+TimeStamp.cc
+TimeStamp.h
+Timer.cc
+Timer.h
+TmpFile.cc
+TmpFile.h
+Tokenizer.cc
+Tokenizer.h
+ToolBehavior.h
+ToolBehavior.cc
+TransferWatcher.cc
+TransferWatcher.h
+Translator.cc
+Translator.h
+Tool.h
+Tool.cc
+TxnEvent.cc
+TxnEvent.h
+TxnLog.cc
+TxnLog.h
+Types.cc
+Types.h
+Value.cc
+Value.h
+VerifyingDate.cc
+VerifyingDate.h
+Watcher.cc
+Watcher.h
+# architecture dependent headers - to be removed
+aix.h
+hpux.h
+linux.h
+machine.h
+macosx.h
+sgi.h
+)
+
+list( APPEND eclib_templates 
+                    BasePathNameT.cc
+                    Dispatcher.cc
+                    BTree.cc
+					FixedString.cc
+                    FileBase.cc
+                    MappedArray.cc
+                    PipeHandler.cc
+                    RLE.cc
+                    Reanimator.cc
+                    ThreadSingleton.cc
+                    TxnLog.cc
+                    Types.cc
+					ProducerConsumer.cc
+					Pipe.cc
+					Recycler.cc
+					Once.cc
+)
+
+list( APPEND eclib_persistent 
+                     ClimateDate
+                     Date
+                     DayOfYear
+                     DateTime
+                     Double
+                     Grid
+                     Length
+                     Month
+                     Offset
+                     Seconds
+                     Time
+                     VerifyingDate
+)
+
+ecbuild_add_library( TARGET Ec
+                  COMPONENT server
+                  INSTALL_HEADERS LISTED
+                  SOURCES    
+                        ${eclib_src_files}
+                        ${eclib_config_src_files}
+                  TEMPLATES  ${eclib_templates}
+                  PERSISTENT ${eclib_persistent}
+                  LIBS ${CMAKE_THREAD_LIBS_INIT} ${RT_LIB} )
+

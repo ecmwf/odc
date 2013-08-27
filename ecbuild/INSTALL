@@ -1,0 +1,21 @@
+===================================================
+EcBuild - ECMWF build system
+===================================================
+
+For detailed installation and usage instructions see the Manual.pdf document packaged with these sources.
+
+An updated version of those instructions can also be found at 
+http://software.ecmwf.int/wiki/display/SUPINF/ECMWF+Build+System
+
+=============
+QUICK INSTALL
+=============
+
+1. Extract the source files
+
+ tar zxvf ecbuild-1.0.4-Source.tar.gz -C /path/to/install
+
+2. Use cmake and point the module path to the installed source.
+
+ cmake -DCMAKE_MODULE_PATH=/path/to/install [...]
+
