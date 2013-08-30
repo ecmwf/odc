@@ -73,7 +73,7 @@ void SQLTool::run()
 	SQLInteractiveSession session(out);
 	SQLParser parser;
 	SQLOutputConfig config(SQLSelectFactory::instance().config());
-	string sql(StringTool::match("select", params[0])
+	string sql(StringTool::isSelectStatement(params[0])
 				? StringTools::join(" ",  params) + ";"
 				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
 	runSQL(sql, session, parser, config);
