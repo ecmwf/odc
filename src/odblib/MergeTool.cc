@@ -27,7 +27,6 @@ MergeTool::MergeTool (int ac, char *av[])
   sqlFiltering_(false)
 {
 	registerOptionWithArgument("-o");
-    cout << "****** " << parameters().size() << endl;
 	if (parameters().size() < 3)
 	{
 		Log::error() << "Usage:";
