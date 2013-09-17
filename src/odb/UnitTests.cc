@@ -54,6 +54,7 @@
 #include "odblib/DateTime.h"
 #include "odblib/SplitTool.h"
 #include "odblib/CountTool.h"
+#include "odblib/SQLTool.h"
 #include "odblib/MapReduce.h"
 
 #include "odb/TestWriteCatFiles.h"
@@ -982,7 +983,26 @@ TEST(Gabor)
 TEST(Reader_isNewDataset) { test_isNewDataset<Reader>(); }
 TEST(MetaDataReader_isNewDataset) { test_isNewDataset<odb::MetaDataReader<MetaDataReaderIterator> >(); }
 
+TEST(create_temporary_table)
+{
+    const char* sql = "CREATE "
+                      " TEMPORARY " 
+                      " TABLE foo AS (col1 pk9real, col2 pk9real,) INHERITS (bar,baz)";
 
+    cout << "Trying to execute: '" << sql << "'" << endl;
+
+	odb::Select o(sql);
+    odb::tool::SQLTool::execute(sql);
+
+    /*   
+	for (odb::Select::iterator it(o.begin()), end(o.end());
+		it != o.end();
+		++it)
+	{
+		Log::info() << it << endl;
+	}
+    */
+}
 
 
 } // namespace test 

@@ -122,7 +122,7 @@ SEMICOLON [;]
 [vV][iI][eE][wW]                  { BEGIN 0; return VIEW; }
 [cC][rR][eE][aA][tT][eE]          { BEGIN LEX_CREATE; return CREATE; }
 <LEX_CREATE>[iI][nN][dD][eE][xX]  { BEGIN 0; return INDEX; }
-[tT][aA][bB][lL][eE]              { BEGIN 0; return TABLE; }
+<LEX_CREATE>[tT][aA][bB][lL][eE]  { BEGIN 0; return TABLE; }
 <LEX_CREATE>[tT][yY][pP][eE]      { BEGIN 0; return TYPE; }
 [tT][yY][pP][eE][dD][eE][fF]      { BEGIN 0; return TYPEDEF; }
 [tT][yY][pP][eE][oO][fF]          return TYPEOF;
@@ -138,11 +138,13 @@ SEMICOLON [;]
 [uU][pP][dD][aA][tT][eE][dD]      return UPDATED;
 [nN][oO][rR][eE][oO][rR][dD][eE][rR] return NOREORDER;
 [sS][aA][fF][eE][gG][uU][aA][rR][dD] return SAFEGUARD;
+[tT][eE][mM][pP][oO][rR][aA][rR][yY] return TEMPORARY;
 <LEX_ORDERBY>[aA][sS][cC]         return ASC;
 <LEX_ORDERBY>[dD][eE][sS][cC]     return DESC;
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
 \#                                return HASH; 
+[iI][nN][hH][eE][rR][iI][tT][sS] return INHERITS;
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << endl;

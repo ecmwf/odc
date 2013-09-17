@@ -59,6 +59,7 @@ SelectIterator::SelectIterator(Select &owner, std::string select)
 template <typename DATASTREAM> 
 void SelectIterator::parse(typename DATASTREAM::DataHandleType *dh)
 {
+    Log::info() << "SelectIterator::parse: '" << select_ << "'" << endl;
 	sql::SQLParser p;
 	p.parseString(select_, dh, odb::sql::SQLSelectFactory::instance().config());
 	sql::SQLStatement *stmt = session_.statement();

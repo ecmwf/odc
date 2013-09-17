@@ -82,6 +82,8 @@ Expressions emptyExpressionList;
 %token TABLE
 %token TYPE
 %token TYPEDEF
+%token TEMPORARY
+%token INHERITS
 
 %token EQ
 %token GE
@@ -159,6 +161,9 @@ Expressions emptyExpressionList;
 %type <coldefs>bitfield_def_list_;
 %type <coldef>bitfield_def;
 %type <val>data_type;
+%type <bol>temporary;
+%type <list>inherits;
+%type <list>inheritance_list;
 
 %%
 
@@ -263,17 +268,31 @@ bitfield_def: column_def
 	}
 	;
 
-create_table_statement: CREATE TABLE expression_ex AS '(' column_def_list ')' ';'
+temporary: TEMPORARY  { $$ = true; }
+         | empty      { $$ = false; }
+         ;
+
+inheritance_list: IDENT                      { $$ = vector<string>(); $$.insert($$.begin(), $1); }
+                | IDENT ',' inheritance_list { $$ = $3; $$.insert($$.begin(), $1); }
+                ;
+
+inherits: INHERITS '(' inheritance_list ')'   { $$ = $3;               }
+        | empty                               { $$ = vector<string>(); }
+
+create_table_statement: CREATE temporary TABLE expression_ex AS '(' column_def_list ')' inherits  ';'
 	{
-        SQLExpression* e($3);
+        bool temporary ($2);
+        SQLExpression* e($4);
 		string tableName (e->title());
-		ColumnDefs cols ($6);
+		ColumnDefs cols ($7);
+        vector<string> inheritance($9);
 
 		TableDef tableDef(tableName, cols);
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
 
-		//cout << " *** CREATE TABLE " << tableName << endl;
+		cout << " *** CREATE " << (temporary ? "TEMPORARY" : "") << " TABLE " << tableName << endl;
+		if (inheritance.size()) cout << " *** INHERITANCE LIST: " << inheritance << endl;
 
 		//SQLCreateTable ct(tableName, cols);
 		//ct.execute();
