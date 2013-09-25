@@ -241,6 +241,7 @@ RegionCache.h
 RggRegionCache.cc
 RggRegionCache.h
 RowsIterator.h
+SQLAST.cc
 SQLAST.h
 SQLBit.cc
 SQLBit.h

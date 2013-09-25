@@ -31,6 +31,8 @@ struct YYSTYPE {
 	vector<SQLTable*>      tablist;
 	ColumnDefs             coldefs;
 	ColumnDef              coldef;
+        ConstraintDefs         condefs;
+        ConstraintDef          condef;
 	Range                  r;
 	bool                   bol;
 };
@@ -84,6 +86,13 @@ Expressions emptyExpressionList;
 %token TYPEDEF
 %token TEMPORARY
 %token INHERITS
+
+%token CONSTRAINT
+%token UNIQUE
+%token PRIMARY
+%token FOREIGN
+%token KEY
+%token REFERENCES
 
 %token EQ
 %token GE
@@ -164,6 +173,15 @@ Expressions emptyExpressionList;
 %type <bol>temporary;
 %type <list>inherits;
 %type <list>inheritance_list;
+
+%type <condefs>constraint_list;
+%type <condefs>constraint_list_;
+%type <condef>constraint;
+%type <val>constraint_name;
+%type <condef>primary_key;
+%type <condef>foreign_key;
+%type <list>column_reference_list;
+%type <val>column_reference;
 
 %%
 
@@ -278,16 +296,51 @@ inheritance_list: IDENT                      { $$ = vector<string>(); $$.insert(
 
 inherits: INHERITS '(' inheritance_list ')'   { $$ = $3;               }
         | empty                               { $$ = vector<string>(); }
+        ;
 
-create_table_statement: CREATE temporary TABLE expression_ex AS '(' column_def_list ')' inherits  ';'
+constraint_list: constraint_list_ { $$ = $1; }
+               | constraint_list_ ',' { $$ = $1; }
+               ;
+
+constraint_list_: constraint { $$ = ConstraintDefs(1, $1); }
+                | constraint_list_ ',' constraint { $$ = $1; $$.push_back($3); }
+                | empty { $$ = ConstraintDefs(0); }
+                ;
+
+constraint: primary_key { $$ = $1; }
+          | foreign_key { $$ = $1; }
+          ;
+
+primary_key: constraint_name UNIQUE '(' column_reference_list ')' { $$ = ConstraintDef($1, $4); }
+           | constraint_name PRIMARY KEY '(' column_reference_list ')' { $$ = ConstraintDef($1, $5); }
+           ;
+
+foreign_key: constraint_name FOREIGN KEY '(' column_reference_list ')' REFERENCES IDENT '(' column_reference_list ')'
+           {
+                $$ = ConstraintDef($1, $5, $8, $10);
+           }
+           ;
+
+constraint_name: CONSTRAINT IDENT { $$ = $2; }
+               | empty { $$ = string(); }
+               ;
+
+column_reference_list: column_reference { $$ = vector<string>(1, $1); }
+                | column_reference_list ',' column_reference { $$ = $1; $$.push_back($3); }
+                ;
+
+column_reference: IDENT table_reference { $$ = $1 + $2; }
+           ;
+
+create_table_statement: CREATE temporary TABLE expression_ex optional_as '(' column_def_list constraint_list ')' inherits  ';'
 	{
-        bool temporary ($2);
-        SQLExpression* e($4);
+        	bool temporary ($2);
+        	SQLExpression* e($4);
 		string tableName (e->title());
 		ColumnDefs cols ($7);
-        vector<string> inheritance($9);
+		vector<string> inheritance($10);
 
-		TableDef tableDef(tableName, cols);
+		TableDef tableDef(tableName, cols, $8, inheritance);
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
 
@@ -299,8 +352,11 @@ create_table_statement: CREATE temporary TABLE expression_ex AS '(' column_def_l
 	}
 	;
 
+optional_as: AS | empty;
+
 column_def_list: column_def_list_     { $$ = $1; }
                | column_def_list_ ',' { $$ = $1; }
+               | empty                { $$ = ColumnDefs(); }
                ;
 	 
 column_def_list_: column_def                      { $$ = ColumnDefs(1, $1); }
@@ -310,7 +366,7 @@ column_def_list_: column_def                      { $$ = ColumnDefs(1, $1); }
 column_def: column_name vector_range_decl data_type
 	{
 		//cout << "ColumnDef: " << $1 << "," << $3 << "," << $2.first << "-" << $2.second << endl;
-		$$ = ColumnDef($1, $3, $2);
+		$$ = ColumnDef($1, $3, $2, "");
 	}
 	;
 

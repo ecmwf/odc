@@ -48,17 +48,22 @@ SchemaAnalyzer::SchemaAnalyzer()
 
 SchemaAnalyzer::~SchemaAnalyzer() {}
 
-void SchemaAnalyzer::addTable(TableDef tableDef)
+void SchemaAnalyzer::addTable(const TableDef& table)
 {
-	tableDefs_.push_back(tableDef);
+	pair<TableDefs::iterator, bool> result;
+        result = tableDefs_.insert(pair<string, TableDef>(table.name(), table));
 
-	string tableName = tableDef.first;
+        if (result.second == false)
+        {
+            string message = "Table '" + table.name() + "' already exits";
+            throw eclib::UserError(message);
+        }
 
-	ColumnDefs columnDefs = tableDef.second;
-	for (ColumnDefs::const_iterator i = columnDefs.begin(); i != columnDefs.end(); i++)
+	const ColumnDefs& columns = table.columns();
+	for (ColumnDefs::const_iterator i = columns.begin(); i != columns.end(); ++i)
 	{
 		const string columnName = i->name();
-		const string fullName = columnName + "@" + tableName;
+		const string fullName = columnName + "@" + table.name();
 		const string typeName = i->type();
 
 		columnTypes_[fullName] = typeName;
@@ -80,14 +85,14 @@ string SchemaAnalyzer::generateSELECT() const
 
 	for (TableDefs::const_iterator t = tableDefs_.begin(); t != tableDefs_.end(); ++t)
 	{
-		TableDef tableDef = *t;
-		string tableName = tableDef.first;
+		TableDef tableDef = t->second;
+		string tableName = tableDef.name();
 
 		if (tablesToSkip_.find(tableName) != tablesToSkip_.end())
 			continue;
 
 		from += tableName + ", ";
-		ColumnDefs columnDefs = tableDef.second;
+		ColumnDefs columnDefs = tableDef.columns();
 		
 		for (ColumnDefs::const_iterator i = columnDefs.begin(); i != columnDefs.end(); i++)
 		{
@@ -103,6 +108,44 @@ string SchemaAnalyzer::generateSELECT() const
 		selectList += "\n";
 	}
 	return "\nSELECT\n" + selectList + "\n FROM\n" + from;
+}
+
+SchemaDef SchemaAnalyzer::generateSchema()
+{
+    for (TableDefs::iterator t = tableDefs_.begin(); t != tableDefs_.end(); ++t)
+    {
+        TableDef& table = t->second;
+        ColumnDefs& columns = table.columns();
+        string tableName = table.name();
+            
+        for (ColumnDefs::iterator c = columns.begin(); c != columns.end(); c++)
+        {
+            ColumnDef& col = *c;
+            col = ColumnDef(col.name() + "@" + tableName, col.type(), col.range(), col.defaultValue());
+        }
+    }
+
+    // NOTE: This algorithm only supports 1-level inheritance.
+
+    for (TableDefs::iterator t = tableDefs_.begin();
+            t != tableDefs_.end(); ++t)
+    {
+        TableDef& table = t->second;
+
+        for (int i = 0, n = table.parents().size(); i < n; i++)
+        {
+            const string& parentName = table.parents()[i];
+            const TableDef& parent = tableDefs_.at(parentName);
+
+            ASSERT(parent.parents().empty() && "2-level inheritance not supported");
+
+            for (ColumnDefs::const_iterator c = parent.columns().begin();
+                    c != parent.columns().end(); ++c)
+                table.columns().push_back(*c);
+        }
+    }
+                
+    return SchemaDef(tableDefs_);
 }
 
 void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature)

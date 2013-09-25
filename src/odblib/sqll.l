@@ -100,6 +100,8 @@ SEMICOLON [;]
 
 %s LEX_ORDERBY
 %s LEX_CREATE
+%s LEX_PRIMARY_KEY
+%s LEX_FOREIGN_KEY
 %x incl
 
 %%
@@ -144,7 +146,13 @@ SEMICOLON [;]
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
 \#                                return HASH; 
-[iI][nN][hH][eE][rR][iI][tT][sS] return INHERITS;
+[iI][nN][hH][eE][rR][iI][tT][sS]  return INHERITS;
+[cC][oO][nN][sS][tT][rR][aA][iI][nN][tT] return CONSTRAINT;
+[uU][nN][iI][qQ][uU][eE]          return UNIQUE;
+[pP][rR][iI][mM][aA][rR][yY]      { BEGIN LEX_PRIMARY_KEY; return PRIMARY; }
+[fF][oO][rR][eE][iI][gG][nN]      { BEGIN LEX_FOREIGN_KEY; return FOREIGN; }
+[kK][eE][yY]                      return KEY;
+[rR][eE][fF][eE][rR][eE][nN][cC][eE][sS] return REFERENCES;
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << endl;
