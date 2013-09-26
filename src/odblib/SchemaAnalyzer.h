@@ -32,6 +32,7 @@ public:
 	SchemaAnalyzer();
 	~SchemaAnalyzer();
 
+        void addSchema(const string& name);
 	void addTable(const TableDef& table);
 	void addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature);
 	bool isBitfield(const string columnName) const; 
@@ -41,9 +42,10 @@ public:
         const TableDef* findTable(const string& name) const;
 	void skipTable(string tableName);
 	string generateSELECT() const;
-        SchemaDef generateSchema();
+        Definitions generateDefinitions();
 
 private:
+        set<string> schemaSet_;
 	TableDefs tableDefs_;
 	BitfieldDefs bitfieldTypes_;
 

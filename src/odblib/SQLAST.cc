@@ -62,8 +62,19 @@ TableDef::TableDef(const string& name, const ColumnDefs& columns,
     parents_(parents)
 {}
 
+SchemaDef::SchemaDef()
+{}
+
 SchemaDef::SchemaDef(const TableDefs& tables)
   : tables_(tables)
+{}
+
+Definitions::Definitions()
+{}
+
+Definitions::Definitions(const SchemaDefs& schemas, const TableDefs& tables)
+  : schemas_(schemas),
+    tables_(tables)
 {}
 
 } // namespace sql

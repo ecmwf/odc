@@ -79,6 +79,7 @@ Expressions emptyExpressionList;
 %token BY
 
 %token CREATE
+%token SCHEMA
 %token VIEW
 %token INDEX
 %token TABLE
@@ -141,6 +142,7 @@ Expressions emptyExpressionList;
 
 %type <tablist>table_list;
 %type <table>table
+%type <val>table_name;
 %type <val>table_reference;
 %type <tablist>from;
 
@@ -194,10 +196,11 @@ statements : statement
 
 statement: select_statement 
 		 | set_statement
+		 | create_schema_statement
 		 | create_view_statement
 		 | create_index_statement 
 		 | create_type_statement
-		 | create_table_statement
+                 | create_table_statement
 		 | readonly_statement
 		 | updated_statement
 		 | noreorder_statement
@@ -220,6 +223,14 @@ noreorder_statement: NOREORDER ';'
 
 safeguard_statement: SAFEGUARD ';'
 	;
+
+create_schema_statement: CREATE SCHEMA IDENT ';'
+        {
+            SQLSession& s = SQLSession::current();            
+            SQLDatabase& db = s.currentDatabase();
+            db.schemaAnalyzer().addSchema($3);
+        }
+        ;
 
 create_index_statement: CREATE INDEX IDENT TABLE IDENT ';'
 	{
@@ -332,25 +343,22 @@ column_reference_list: column_reference { $$ = vector<string>(1, $1); }
 column_reference: IDENT table_reference { $$ = $1 + $2; }
            ;
 
-create_table_statement: CREATE temporary TABLE expression_ex optional_as '(' column_def_list constraint_list ')' inherits  ';'
+create_table_statement: CREATE temporary TABLE table_name optional_as '(' column_def_list constraint_list ')' inherits  ';'
 	{
-        	bool temporary ($2);
-        	SQLExpression* e($4);
-		string tableName (e->title());
+        	bool temporary($2);
+                string name($4);
 		ColumnDefs cols ($7);
 		vector<string> inheritance($10);
-
-		TableDef tableDef(tableName, cols, $8, inheritance);
+		TableDef tableDef(name, cols, $8, inheritance);
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
-
-		cout << " *** CREATE " << (temporary ? "TEMPORARY" : "") << " TABLE " << tableName << endl;
-		if (inheritance.size()) cout << " *** INHERITANCE LIST: " << inheritance << endl;
-
-		//SQLCreateTable ct(tableName, cols);
-		//ct.execute();
 	}
 	;
+
+table_name: IDENT { $$ = $1; }
+          | IDENT '.' IDENT { $$ = $1 + string(".") + $3; }
+          | expression_ex { SQLExpression* e($1); $$ = e->title(); }
+          ;
 
 optional_as: AS | empty;
 

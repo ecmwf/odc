@@ -82,6 +82,7 @@ public:
             const ConstraintDefs& constraints, const std::vector<std::string>& parents);
 
 	const std::string& name() const { return name_; }
+	void name(const std::string& name) { name_ = name; }
 	ColumnDefs& columns() { return columns_; }
 	const ColumnDefs& columns() const { return columns_; }
         const ConstraintDefs& constraints() const { return constraints_; }
@@ -98,10 +99,26 @@ typedef std::map<std::string, TableDef> TableDefs;
 class SchemaDef
 {
 public:
+	SchemaDef();
 	SchemaDef(const TableDefs& tables);
+	TableDefs& tables() { return tables_; }
 	const TableDefs& tables() const { return tables_; }
 private:
 	TableDefs tables_;
+};
+
+typedef std::map<std::string, SchemaDef> SchemaDefs;
+
+class Definitions
+{
+public:
+    Definitions();
+    Definitions(const SchemaDefs& schemas, const TableDefs& tables);
+    const SchemaDefs& schemas() const { return schemas_; }
+    const TableDefs& tables() const { return tables_; }
+private:
+    SchemaDefs schemas_;
+    TableDefs tables_;
 };
 
 } // namespace sql

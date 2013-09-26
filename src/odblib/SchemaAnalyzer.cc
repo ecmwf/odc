@@ -48,6 +48,17 @@ SchemaAnalyzer::SchemaAnalyzer()
 
 SchemaAnalyzer::~SchemaAnalyzer() {}
 
+void SchemaAnalyzer::addSchema(const string& name)
+{
+	pair<set<string>::iterator, bool> result;
+        result = schemaSet_.insert(name);
+
+        if (!result.second)
+        {
+            string message = "Schema '" + name + "' already exits";
+            throw eclib::UserError(message);
+        }
+}
 void SchemaAnalyzer::addTable(const TableDef& table)
 {
 	pair<TableDefs::iterator, bool> result;
@@ -110,23 +121,33 @@ string SchemaAnalyzer::generateSELECT() const
 	return "\nSELECT\n" + selectList + "\n FROM\n" + from;
 }
 
-SchemaDef SchemaAnalyzer::generateSchema()
+Definitions SchemaAnalyzer::generateDefinitions()
 {
     for (TableDefs::iterator t = tableDefs_.begin(); t != tableDefs_.end(); ++t)
     {
         TableDef& table = t->second;
         ColumnDefs& columns = table.columns();
         string tableName = table.name();
-            
+
         for (ColumnDefs::iterator c = columns.begin(); c != columns.end(); c++)
         {
+            // Remove schema qualifier from the table name before
+            // we add it as a suffix of collumn.
+
+            string suffix = tableName;
+            unsigned pos = suffix.find(".");
+            if (pos != string::npos)
+                suffix = suffix.substr(pos+1);
+            
             ColumnDef& col = *c;
-            col = ColumnDef(col.name() + "@" + tableName, col.type(), col.range(), col.defaultValue());
+            col = ColumnDef(col.name() + "@" + suffix, col.type(), col.range(),
+                    col.defaultValue());
         }
     }
 
     // NOTE: This algorithm only supports 1-level inheritance.
 
+    SchemaDefs schemas;
     for (TableDefs::iterator t = tableDefs_.begin();
             t != tableDefs_.end(); ++t)
     {
@@ -143,9 +164,19 @@ SchemaDef SchemaAnalyzer::generateSchema()
                     c != parent.columns().end(); ++c)
                 table.columns().push_back(*c);
         }
+
+        string tableName = table.name();
+        unsigned pos = tableName.find(".");
+        if (pos != string::npos)
+        {
+            string schemaName = tableName.substr(0, pos);
+            tableName = tableName.substr(pos+1);
+            table.name(tableName);
+            schemas[schemaName].tables().insert(make_pair(tableName, table));
+        }
     }
-                
-    return SchemaDef(tableDefs_);
+
+    return Definitions(schemas, tableDefs_);
 }
 
 void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature)

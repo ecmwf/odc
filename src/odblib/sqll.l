@@ -123,6 +123,7 @@ SEMICOLON [;]
 [eE][xX][iI][tT]                  return EXIT;
 [vV][iI][eE][wW]                  { BEGIN 0; return VIEW; }
 [cC][rR][eE][aA][tT][eE]          { BEGIN LEX_CREATE; return CREATE; }
+<LEX_CREATE>[sS][cC][hH][eE][mM][aA] { BEGIN 0; return SCHEMA; }
 <LEX_CREATE>[iI][nN][dD][eE][xX]  { BEGIN 0; return INDEX; }
 <LEX_CREATE>[tT][aA][bB][lL][eE]  { BEGIN 0; return TABLE; }
 <LEX_CREATE>[tT][yY][pP][eE]      { BEGIN 0; return TYPE; }
