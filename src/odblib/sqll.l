@@ -154,6 +154,7 @@ SEMICOLON [;]
 [fF][oO][rR][eE][iI][gG][nN]      { BEGIN LEX_FOREIGN_KEY; return FOREIGN; }
 [kK][eE][yY]                      return KEY;
 [rR][eE][fF][eE][rR][eE][nN][cC][eE][sS] return REFERENCES;
+[dD][eE][fF][aA][uU][lL][tT]      return DEFAULT;
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << endl;

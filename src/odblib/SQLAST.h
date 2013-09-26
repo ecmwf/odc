@@ -33,13 +33,15 @@ public:
 
 	const std::string& name() const { return name_; }
 	const std::string& type() const { return type_; }
-	const std::string& defaultValue() const { return defaultValue_; }
 	const Range& range() const { return range_; }
+	const std::string& defaultValue() const { return defaultValue_; }
+        bool hasDefaultValue() const { return hasDefaultValue_; }
 private:
         std::string name_;
         std::string type_;
-        std::string defaultValue_;
 	Range range_;
+        std::string defaultValue_;
+        bool hasDefaultValue_;
 };
 
 typedef std::vector<ColumnDef> ColumnDefs; 

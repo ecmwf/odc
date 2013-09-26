@@ -22,8 +22,9 @@ ColumnDef::ColumnDef(const string& name, const string& type, const Range& range,
         const string& defaultValue)
   : name_(name),
     type_(type),
+    range_(range),
     defaultValue_(defaultValue),
-    range_(range)
+    hasDefaultValue_(!defaultValue.empty())
 {}
 
 ConstraintDef::ConstraintDef()

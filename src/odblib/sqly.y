@@ -87,6 +87,7 @@ Expressions emptyExpressionList;
 %token TYPEDEF
 %token TEMPORARY
 %token INHERITS
+%token DEFAULT
 
 %token CONSTRAINT
 %token UNIQUE
@@ -172,6 +173,7 @@ Expressions emptyExpressionList;
 %type <coldefs>bitfield_def_list_;
 %type <coldef>bitfield_def;
 %type <val>data_type;
+%type <val>default_value;
 %type <bol>temporary;
 %type <list>inherits;
 %type <list>inheritance_list;
@@ -371,10 +373,9 @@ column_def_list_: column_def                      { $$ = ColumnDefs(1, $1); }
                 | column_def_list_ ',' column_def { $$ = $1; $$.push_back($3); }
                 ;
 
-column_def: column_name vector_range_decl data_type
+column_def: column_name vector_range_decl data_type default_value
 	{
-		//cout << "ColumnDef: " << $1 << "," << $3 << "," << $2.first << "-" << $2.second << endl;
-		$$ = ColumnDef($1, $3, $2, "");
+		$$ = ColumnDef($1, $3, $2, $4);
 	}
 	;
 
@@ -390,6 +391,10 @@ data_type: IDENT                 { $$ = $1; }
          | LINK                  { $$ = "@LINK"; } 
          | TYPEOF '(' column ')' { $$ = ($3)->type()->name(); }
          ;
+
+default_value: DEFAULT expression_ex { SQLExpression* e($2); $$ = e->title(); }
+             | empty { $$ = string(); }
+             ;
 
 create_view_statement: CREATE VIEW IDENT AS select_statement
 	;
