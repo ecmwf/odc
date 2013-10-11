@@ -144,7 +144,7 @@ SEMICOLON [;]
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
 \#                                return HASH; 
-[iI][nN][hH][eE][rR][iI][tT][sS] return INHERITS;
+[iI][nN][hH][eE][rR][iI][tT][sS]  { BEGIN 0; return INHERITS; }
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << endl;

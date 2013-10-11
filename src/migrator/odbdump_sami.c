@@ -11,11 +11,20 @@
 
 /* odbdump.c */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "odb.h"
 #include "info.h"
 #include "result.h"
-#include "odbdump.h"
 #include "pcma_extern.h"
+
+#ifdef __cplusplus
+} // closing brace for extern "C"
+#endif
+
+#include "odbdump.h"
 
 PUBLIC Bool odbdump_on = false;
 
