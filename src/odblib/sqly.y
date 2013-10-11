@@ -295,7 +295,7 @@ create_table_statement: CREATE temporary TABLE expression_ex AS '(' column_def_l
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
 
-		cout << " *** CREATE " << (temporary ? "TEMPORARY" : "") << " TABLE " << tableName << endl;
+		//cout << " *** CREATE " << (temporary ? "TEMPORARY" : "") << " TABLE " << tableName << endl;
 		if (inheritance.size()) cout << " *** INHERITANCE LIST: " << inheritance << endl;
 
 		//SQLCreateTable ct(tableName, cols);
