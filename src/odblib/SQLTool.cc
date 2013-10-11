@@ -92,7 +92,7 @@ void SQLTool::runSQL(const string& sql, const eclib::PathName& inputFile, SQLSes
 {
 	Log::info() << "Executing '" << sql << "'" << endl;
 
-	if (inputFile.size() == eclib::Length(0))
+	if (inputFile.path().size() == eclib::Length(0))
 		parser.parseString(sql, static_cast<DataHandle*>(0), config);
 	else if (offset != Offset(0) || length != Length(0))
 	{

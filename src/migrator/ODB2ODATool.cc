@@ -47,6 +47,10 @@ void ODB2ODATool::run()
 	ASSERT ("Wrong number of parameters. Should be checked in odb2oda:main"
 		&& !(parameters().size() < 2 || parameters().size() > 4));
 
+    std::string nonDefaultMDIS(optionArgument<std::string>("-mdi", ""));
+    if (nonDefaultMDIS.size())
+        Log::info() << "Using non default missing data indicators: " << nonDefaultMDIS << endl;
+
 	// TODO: the parameters -addcolumns and -genreptype should take arguments - list of columns to, respectively, be added or used to gen. reptype
 	bool addColumns = optionIsSet("-addcolumns");
 	if (addColumns)

@@ -145,7 +145,6 @@ SEMICOLON [;]
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
 \#                                return HASH; 
-[iI][nN][hH][eE][rR][iI][tT][sS]  return INHERITS;
 [cC][oO][nN][sS][tT][rR][aA][iI][nN][tT] return CONSTRAINT;
 [uU][nN][iI][qQ][uU][eE]          return UNIQUE;
 [pP][rR][iI][mM][aA][rR][yY]      return PRIMARY;
@@ -153,6 +152,7 @@ SEMICOLON [;]
 [kK][eE][yY]                      return KEY;
 [rR][eE][fF][eE][rR][eE][nN][cC][eE][sS] return REFERENCES;
 [dD][eE][fF][aA][uU][lL][tT]      return DEFAULT;
+[iI][nN][hH][eE][rR][iI][tT][sS]  { BEGIN 0; return INHERITS; }
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << endl;

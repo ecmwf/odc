@@ -177,6 +177,7 @@ Expressions emptyExpressionList;
 %type <bol>temporary;
 %type <list>inherits;
 %type <list>inheritance_list;
+%type <list>inheritance_list_;
 
 %type <condefs>constraint_list;
 %type <condefs>constraint_list_;
@@ -319,9 +320,12 @@ temporary: TEMPORARY  { $$ = true; }
          | empty      { $$ = false; }
          ;
 
-inheritance_list: IDENT                      { $$ = vector<string>(); $$.insert($$.begin(), $1); }
-                | IDENT ',' inheritance_list { $$ = $3; $$.insert($$.begin(), $1); }
-                ;
+inheritance_list: inheritance_list_       { $$ = $1; }
+                 | inheritance_list_ ','  { $$ = $1; }
+                 ;
+
+inheritance_list_: IDENT                         { $$ = vector<string>(); $$.insert($$.begin(), $1); }
+                 | inheritance_list_ ',' IDENT   { $$ = $1; $$.push_back($3); }
 
 inherits: INHERITS '(' inheritance_list ')'   { $$ = $3;               }
         | empty                               { $$ = vector<string>(); }
