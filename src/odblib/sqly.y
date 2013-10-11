@@ -31,8 +31,8 @@ struct YYSTYPE {
 	vector<SQLTable*>      tablist;
 	ColumnDefs             coldefs;
 	ColumnDef              coldef;
-        ConstraintDefs         condefs;
-        ConstraintDef          condef;
+	ConstraintDefs         condefs;
+	ConstraintDef          condef;
 	Range                  r;
 	bool                   bol;
 };
@@ -192,61 +192,77 @@ Expressions emptyExpressionList;
 start : statements { SQLSession::current().currentDatabase().setLinks(); }
 	;
 
-statements : statement 
-		   | statements statement
+statements : statement ';'
+		   | statements statement ';'
 		   ;
 
-statement: select_statement 
+statement: select_statement
 		 | set_statement
 		 | create_schema_statement
 		 | create_view_statement
 		 | create_index_statement 
 		 | create_type_statement
-                 | create_table_statement
+		 | create_table_statement
 		 | readonly_statement
 		 | updated_statement
 		 | noreorder_statement
 		 | safeguard_statement
 		 | exit_statement
-	     | error
+		 | error
+		 | empty
 	;
 
-exit_statement: EXIT ';' { /*delete &SQLSession::current();*/ return 0; }
+exit_statement: EXIT { /*delete &SQLSession::current();*/ return 0; }
 	;
 
-readonly_statement: READONLY ';'
+readonly_statement: READONLY
 	;
 
-updated_statement: UPDATED ';'
+updated_statement: UPDATED
 	;
 
-noreorder_statement: NOREORDER ';'
+noreorder_statement: NOREORDER
 	;
 
-safeguard_statement: SAFEGUARD ';'
+safeguard_statement: SAFEGUARD
 	;
 
-create_schema_statement: CREATE SCHEMA IDENT ';'
+create_schema_statement: CREATE SCHEMA schema_name schema_element_list
         {
-            SQLSession& s = SQLSession::current();            
-            SQLDatabase& db = s.currentDatabase();
-            db.schemaAnalyzer().addSchema($3);
+            SQLDatabase& db = SQLSession::current().currentDatabase();
+            db.schemaAnalyzer().endSchema();
         }
         ;
 
-create_index_statement: CREATE INDEX IDENT TABLE IDENT ';'
+schema_name: IDENT
+           {
+               SQLDatabase& db = SQLSession::current().currentDatabase();
+               db.schemaAnalyzer().beginSchema($1);
+           }
+           ;
+
+schema_element_list: schema_element
+                   | schema_element_list schema_element
+                   ;
+
+schema_element: create_table_statement
+              | create_view_statement
+              | empty
+              ;
+
+create_index_statement: CREATE INDEX IDENT TABLE IDENT
 	{
 		SQLSession& s  = SQLSession::current();
 		s.createIndex($3,$5);
 	}
-	| CREATE INDEX IDENT '@' IDENT ';'
+	| CREATE INDEX IDENT '@' IDENT
 	{
 		SQLSession& s  = SQLSession::current();
 		s.createIndex($3,$5);
 	}
 	;
 
-create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')' ';'
+create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')'
 	{
 		string		typeName = $2;
 		ColumnDefs	colDefs = $5;
@@ -273,7 +289,7 @@ create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')' ';'
 	}
 	;
 
-create_type_statement: create_type IDENT as_or_eq IDENT ';' { type::SQLType::createAlias($4, $2); }
+create_type_statement: create_type IDENT as_or_eq IDENT { type::SQLType::createAlias($4, $2); }
 	;
 
 create_type: CREATE TYPE
@@ -345,9 +361,9 @@ column_reference_list: column_reference { $$ = vector<string>(1, $1); }
 column_reference: IDENT table_reference { $$ = $1 + $2; }
            ;
 
-create_table_statement: CREATE temporary TABLE table_name optional_as '(' column_def_list constraint_list ')' inherits  ';'
+create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list constraint_list ')' inherits
 	{
-        	bool temporary($2);
+		bool temporary($2);
                 string name($4);
 		ColumnDefs cols ($7);
 		vector<string> inheritance($10);
@@ -362,7 +378,7 @@ table_name: IDENT { $$ = $1; }
           | expression_ex { SQLExpression* e($1); $$ = e->title(); }
           ;
 
-optional_as: AS | empty;
+/* TODO: optional_as: AS | empty; BREAKS PARSING */
 
 column_def_list: column_def_list_     { $$ = $1; }
                | column_def_list_ ',' { $$ = $1; }
@@ -399,10 +415,7 @@ default_value: DEFAULT expression_ex { SQLExpression* e($2); $$ = e->title(); }
 create_view_statement: CREATE VIEW IDENT AS select_statement
 	;
 
-opt_semicolon: ';' | empty
-	;
-
-select_statement: SELECT distinct select_list into from where group_by order_by opt_semicolon
+select_statement: SELECT distinct select_list into from where group_by order_by
 					{   
 						bool                   distinct($2);
 						Expressions            select_list($3);
@@ -453,13 +466,13 @@ association_list: association { Dictionary d; d[($1 .first)->title()] = $1 .seco
 				| empty { $$ = Dictionary(); }
 				;
 
-set_statement : SET DATABASE STRING ';' { SQLSession::current().openDatabase($3); }
+set_statement : SET DATABASE STRING { SQLSession::current().openDatabase($3); }
 	; 
 
-set_statement : SET DATABASE STRING AS IDENT ';' { SQLSession::current().openDatabase($3,$5); }
+set_statement : SET DATABASE STRING AS IDENT { SQLSession::current().openDatabase($3,$5); }
 	; 
 
-set_statement : SET VAR EQ assignment_rhs ';'
+set_statement : SET VAR EQ assignment_rhs
 	{ 
 		//cout << "== set variable " << $2 << " to "; if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
 		SQLSession::current().currentDatabase().setVariable($2, $4);

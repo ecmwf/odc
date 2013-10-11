@@ -19,6 +19,8 @@
 #include <utility>
 #include <vector>
 
+#include "odblib/Types.h"
+
 namespace odb {
 namespace sql {
 
@@ -32,16 +34,20 @@ public:
 		const std::string& defaultValue);
 
 	const std::string& name() const { return name_; }
+        void name(const std::string& name) { name_ = name; }
 	const std::string& type() const { return type_; }
 	const Range& range() const { return range_; }
 	const std::string& defaultValue() const { return defaultValue_; }
         bool hasDefaultValue() const { return hasDefaultValue_; }
+        const BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
+        void bitfieldDef(const BitfieldDef& b) { bitfieldDef_ = b; }
 private:
         std::string name_;
         std::string type_;
 	Range range_;
         std::string defaultValue_;
         bool hasDefaultValue_;
+        BitfieldDef bitfieldDef_;
 };
 
 typedef std::vector<ColumnDef> ColumnDefs; 
@@ -127,4 +133,3 @@ private:
 } // namespace odb
 
 #endif
-

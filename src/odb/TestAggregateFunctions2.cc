@@ -61,7 +61,7 @@ TestAggregateFunctions2::~TestAggregateFunctions2() { }
 ///
 void TestAggregateFunctions2::test()
 {
-	string sql = "select count(*) from \"TestAggregateFunctions2.odb\"";
+	string sql = "select count(*) from \"TestAggregateFunctions2.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << endl;
 

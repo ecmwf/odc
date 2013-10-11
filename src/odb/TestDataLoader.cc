@@ -62,9 +62,9 @@ TEST_FIXTURE(Fixture, LoadDataSetFromSqlQueries)
     DataLoader loader(input);
     DataSet dataset("test");
 
-    loader.select("SELECT DISTINCT parent_id");
+    loader.select("SELECT DISTINCT parent_id;");
     loader.fill(dataset, "parent");
-    loader.select("SELECT child_id");
+    loader.select("SELECT child_id;");
     loader.fill(dataset, "child");
 
     DataTable* parent = *dataset.tables().find("parent");

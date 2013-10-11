@@ -48,38 +48,112 @@ SchemaAnalyzer::SchemaAnalyzer()
 
 SchemaAnalyzer::~SchemaAnalyzer() {}
 
-void SchemaAnalyzer::addSchema(const string& name)
+void SchemaAnalyzer::beginSchema(const string& name)
 {
-	pair<set<string>::iterator, bool> result;
-        result = schemaSet_.insert(name);
+    if (!currentSchema_.empty())
+    {
+        string message = "Cannot create new schema '" + name
+            + "' - current schema '" + currentSchema_ + "' not finalized";
+        throw eclib::UserError(message);
+    }
 
-        if (!result.second)
-        {
-            string message = "Schema '" + name + "' already exits";
-            throw eclib::UserError(message);
-        }
+    pair<SchemaDefs::iterator, bool> result;
+    result = schemas_.insert(make_pair(name, SchemaDef()));
+
+    if (result.second == false)
+    {
+        string message = "Schema '" + name + "' already defined";
+        throw eclib::UserError(message);
+    }
+
+    currentSchema_ = name;
 }
-void SchemaAnalyzer::addTable(const TableDef& table)
-{
-	pair<TableDefs::iterator, bool> result;
-        result = tableDefs_.insert(pair<string, TableDef>(table.name(), table));
 
-        if (result.second == false)
+void SchemaAnalyzer::endSchema()
+{
+    currentSchema_.clear();
+}
+
+void SchemaAnalyzer::addTable(TableDef& table)
+{
+        string schemaName = "";
+
+        size_t pos = table.name().find(".");
+        if (pos != string::npos)
         {
-            string message = "Table '" + table.name() + "' already exits";
-            throw eclib::UserError(message);
+            schemaName = table.name().substr(0, pos);
+            table.name(table.name().substr(pos+1));
         }
 
-	const ColumnDefs& columns = table.columns();
-	for (ColumnDefs::const_iterator i = columns.begin(); i != columns.end(); ++i)
-	{
-		const string columnName = i->name();
-		const string fullName = columnName + "@" + table.name();
-		const string typeName = i->type();
+	ColumnDefs& columns = table.columns();
 
-		columnTypes_[fullName] = typeName;
-		//Log::debug() << "SchemaAnalyzer::addTable: columnTypes_[" << fullName << "] = " << typeName << endl;
+	for (ColumnDefs::iterator it = columns.begin(); it != columns.end(); ++it)
+	{
+            ColumnDef& column = *it;
+            column.name(column.name() + "@" + table.name());
+            columnTypes_[column.name()] = column.type();
+
+            if (isBitfield(column.name()))
+                column.bitfieldDef(getBitfieldTypeDefinition(column.name()));
 	}
+
+        for (int i = 0, n = table.parents().size(); i < n; i++)
+        {
+            TableDefs::const_iterator it = tableDefs_.find(table.parents()[i]);
+
+            if (it == tableDefs_.end())
+            {
+                string message = "Could not find definition of parent table '"
+                    + table.parents()[i] + "' inherited by table '" + table.name() + "'";
+                throw eclib::UserError(message);
+            }
+
+            const TableDef& parent = it->second;
+
+            ASSERT(parent.parents().empty() && "More than 1-level inheritance not supported");
+
+            for (ColumnDefs::const_iterator c = parent.columns().begin();
+                    c != parent.columns().end(); ++c)
+                table.columns().push_back(*c);
+        }
+
+        if (currentSchema_.empty() && schemaName.empty())
+        {
+            pair<TableDefs::iterator, bool> result;
+            result = tableDefs_.insert(pair<string, TableDef>(table.name(), table));
+
+            if (result.second == false)
+            {
+                string message = "Table '" + table.name() + "' already defined";
+                throw eclib::UserError(message);
+            }
+        }
+        else
+        {
+            if (schemaName.empty())
+                schemaName = currentSchema_;
+
+            SchemaDefs::iterator it = schemas_.find(schemaName);
+
+            if (it == schemas_.end())
+            {
+                string message = "Referenced schema '" + schemaName + "' not defined '";
+                throw eclib::UserError(message);
+            }
+
+            SchemaDef& schema = it->second;
+            TableDefs& tables = schema.tables();
+
+            pair<TableDefs::iterator, bool> result;
+            result = tables.insert(pair<string, TableDef>(table.name(), table));
+
+            if (result.second == false)
+            {
+                string message = "Table '" + table.name() + "' already defined in '"
+                    + schemaName + "' schema";
+                throw eclib::UserError(message);
+            }
+        }
 }
 
 void SchemaAnalyzer::skipTable(string tableName)
@@ -107,14 +181,12 @@ string SchemaAnalyzer::generateSELECT() const
 		
 		for (ColumnDefs::const_iterator i = columnDefs.begin(); i != columnDefs.end(); i++)
 		{
-			const string columnName = i->name();
-			const string fullName = columnName + "@" + tableName;
 			const string typeName = i->type();
 			if (typeName == "@LINK") {
-				Log::info() << "SchemaAnalyzer::generateSELECT: Skipping " << fullName << endl;
+				Log::info() << "SchemaAnalyzer::generateSELECT: Skipping " << i->name() << endl;
 				continue;
 			}
-			selectList += fullName + ", ";
+			selectList += i->name() + ", ";
 		}
 		selectList += "\n";
 	}
@@ -123,60 +195,7 @@ string SchemaAnalyzer::generateSELECT() const
 
 Definitions SchemaAnalyzer::generateDefinitions()
 {
-    for (TableDefs::iterator t = tableDefs_.begin(); t != tableDefs_.end(); ++t)
-    {
-        TableDef& table = t->second;
-        ColumnDefs& columns = table.columns();
-        string tableName = table.name();
-
-        for (ColumnDefs::iterator c = columns.begin(); c != columns.end(); c++)
-        {
-            // Remove schema qualifier from the table name before
-            // we add it as a suffix of collumn.
-
-            string suffix = tableName;
-            unsigned pos = suffix.find(".");
-            if (pos != string::npos)
-                suffix = suffix.substr(pos+1);
-            
-            ColumnDef& col = *c;
-            col = ColumnDef(col.name() + "@" + suffix, col.type(), col.range(),
-                    col.defaultValue());
-        }
-    }
-
-    // NOTE: This algorithm only supports 1-level inheritance.
-
-    SchemaDefs schemas;
-    for (TableDefs::iterator t = tableDefs_.begin();
-            t != tableDefs_.end(); ++t)
-    {
-        TableDef& table = t->second;
-
-        for (int i = 0, n = table.parents().size(); i < n; i++)
-        {
-            const string& parentName = table.parents()[i];
-            const TableDef& parent = tableDefs_.at(parentName);
-
-            ASSERT(parent.parents().empty() && "2-level inheritance not supported");
-
-            for (ColumnDefs::const_iterator c = parent.columns().begin();
-                    c != parent.columns().end(); ++c)
-                table.columns().push_back(*c);
-        }
-
-        string tableName = table.name();
-        unsigned pos = tableName.find(".");
-        if (pos != string::npos)
-        {
-            string schemaName = tableName.substr(0, pos);
-            tableName = tableName.substr(pos+1);
-            table.name(tableName);
-            schemas[schemaName].tables().insert(make_pair(tableName, table));
-        }
-    }
-
-    return Definitions(schemas, tableDefs_);
+    return Definitions(schemas_, tableDefs_);
 }
 
 void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature)
@@ -187,7 +206,9 @@ void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields
 
 bool SchemaAnalyzer::isBitfield(const string columnName) const
 {
-	ASSERT(columnTypes_.find(columnName) != columnTypes_.end());
+        ASSERT(columnTypes_.find(columnName) != columnTypes_.end());
+	if (columnTypes_.find(columnName) == columnTypes_.end())
+            return false;
 	string columnType = columnTypes_.find(columnName)->second;
 	return bitfieldTypes_.find(columnType) != bitfieldTypes_.end();
 }

@@ -100,8 +100,6 @@ SEMICOLON [;]
 
 %s LEX_ORDERBY
 %s LEX_CREATE
-%s LEX_PRIMARY_KEY
-%s LEX_FOREIGN_KEY
 %x incl
 
 %%
@@ -123,7 +121,7 @@ SEMICOLON [;]
 [eE][xX][iI][tT]                  return EXIT;
 [vV][iI][eE][wW]                  { BEGIN 0; return VIEW; }
 [cC][rR][eE][aA][tT][eE]          { BEGIN LEX_CREATE; return CREATE; }
-<LEX_CREATE>[sS][cC][hH][eE][mM][aA] { BEGIN 0; return SCHEMA; }
+[sS][cC][hH][eE][mM][aA]          { BEGIN 0; return SCHEMA; }
 <LEX_CREATE>[iI][nN][dD][eE][xX]  { BEGIN 0; return INDEX; }
 <LEX_CREATE>[tT][aA][bB][lL][eE]  { BEGIN 0; return TABLE; }
 <LEX_CREATE>[tT][yY][pP][eE]      { BEGIN 0; return TYPE; }
@@ -150,8 +148,8 @@ SEMICOLON [;]
 [iI][nN][hH][eE][rR][iI][tT][sS]  return INHERITS;
 [cC][oO][nN][sS][tT][rR][aA][iI][nN][tT] return CONSTRAINT;
 [uU][nN][iI][qQ][uU][eE]          return UNIQUE;
-[pP][rR][iI][mM][aA][rR][yY]      { BEGIN LEX_PRIMARY_KEY; return PRIMARY; }
-[fF][oO][rR][eE][iI][gG][nN]      { BEGIN LEX_FOREIGN_KEY; return FOREIGN; }
+[pP][rR][iI][mM][aA][rR][yY]      return PRIMARY;
+[fF][oO][rR][eE][iI][gG][nN]      return FOREIGN;
 [kK][eE][yY]                      return KEY;
 [rR][eE][fF][eE][rR][eE][nN][cC][eE][sS] return REFERENCES;
 [dD][eE][fF][aA][uU][lL][tT]      return DEFAULT;
