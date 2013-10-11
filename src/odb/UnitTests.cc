@@ -106,7 +106,7 @@ TEST(selectAggregatedAndNonAggregated)
 {
 	createDataForMixedAggregated();
 
-	odb::Select oda("select x,min(v),max(v) from \"selectAggregatedAndNonAggregated.odb\"");
+	odb::Select oda("select x,min(v),max(v) from \"selectAggregatedAndNonAggregated.odb\";");
 	odb::Select::iterator it = oda.begin();
 
 	double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2];
@@ -156,7 +156,7 @@ void createDataForMixedAggregated2()
 TEST(selectAggregatedAndNonAggregated2)
 {
 	createDataForMixedAggregated2();
-	odb::Select oda("select x,min(v),y,max(v) from \"selectAggregatedAndNonAggregated2.odb\"");
+	odb::Select oda("select x,min(v),y,max(v) from \"selectAggregatedAndNonAggregated2.odb\";");
 	odb::Select::iterator it = oda.begin();
 	unsigned long counter = 0;
 	for ( ; it != oda.end(); ++it, ++counter)
@@ -186,7 +186,7 @@ TEST(selectAggregatedAndNonAggregated3)
 {
 	createDataForMixedAggregated3();
 	
-	odb::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregated3.odb\"");
+	odb::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregated3.odb\";");
 	odb::Select::iterator it = oda.begin();
 	unsigned long counter = 0;
 	for ( ; it != oda.end(); ++it, ++counter)
@@ -220,7 +220,7 @@ TEST(selectAggregatedAndNonAggregatedNULL)
 {
 	createDataForMixedAggregatedNULL();
 	
-	odb::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregatedNULL.odb\"");
+	odb::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregatedNULL.odb\";");
 	odb::Select::iterator it = oda.begin();
 	unsigned long counter = 0;
 	for ( ; it != oda.end(); ++it, ++counter)
@@ -252,7 +252,7 @@ void createDataForRegex1()
 void regex1()
 {
 	//createDataForRegex1();
-	odb::Select oda("select \"/a.*/\" from \"regex1.odb\"");
+	odb::Select oda("select \"/a.*/\" from \"regex1.odb\";");
 	odb::Select::iterator it = oda.begin();
 	MetaData& md(it->columns());
 
@@ -341,7 +341,7 @@ void create_stringInWhere_file()
 TEST(stringInWhere)
 {
 	create_stringInWhere_file();
-	odb::Select oda("select * from 'stringInWhere.odb' where a = 'aaa'");
+	odb::Select oda("select * from 'stringInWhere.odb' where a = 'aaa';");
 	
 	unsigned long counter = 0;
 	for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++counter)
@@ -433,7 +433,7 @@ TEST(sqlOutputFormatting)
 	FileHandle fh(inputFile);
 	fh.openForRead();
 	//p.parseString(StringTool::readFile(fileName), &fh, odb::sql::SQLSelectFactory::instance().config());
-	p.parseString("select x,y,v", &fh, odb::sql::SQLSelectFactory::instance().config());
+	p.parseString("select x,y,v;", &fh, odb::sql::SQLSelectFactory::instance().config());
 
 }
 
@@ -585,7 +585,7 @@ CallBackProcessOneRow create_counter_callback()
 void map_reduce_mt()
 {
     const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-    const string sql = "select lat,lon";
+    const string sql = "select lat,lon;";
 	llong n = CountTool::fastRowCount(fileName);
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << endl;
@@ -596,7 +596,7 @@ void map_reduce_mt()
 void map_reduce_st()
 {
     const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-    const string sql = "select lat,lon";
+    const string sql = "select lat,lon;";
 	llong n = CountTool::fastRowCount(fileName);
 	llong r = 0;
 	llong* result = (llong*) SingleThreadMapReduce::process(&r, fileName, sql, create_counter_callback());
@@ -637,7 +637,7 @@ void process_array_st()
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
     const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-    const string sql = "select lat,lon";
+    const string sql = "select lat,lon;";
 	
 	llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
@@ -692,7 +692,7 @@ TEST(hash_operator_on_select_list)
 	ScratchFile f("hash_operator.odb");
 	ImportTool::importText(data, f);
 
-	string sql("select x,x#-1,x#1 from \"" + f + "\"");
+	string sql("select x,x#-1,x#1 from \"" + f + "\";");
     odb::Select select(sql);
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
@@ -723,7 +723,7 @@ TEST(hash_operator_in_where)
 	ScratchFile f("hash_operator.odb");
 	ImportTool::importText(data, f);
 
-	string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3");
+	string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
     odb::Select select(sql);
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
@@ -737,7 +737,7 @@ TEST(bitfields_hash_operator)
 {
 	PathName f("2000010106.4.0.odb");
     //odb::Select select("select lat,lat#1 from \"" + f + "\"");
-    odb::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\"");
+    odb::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\";");
     odb::Select::iterator it = select.begin();
     odb::Select::iterator end = select.end();
     for (; it != end; ++it)
@@ -990,7 +990,7 @@ TEST(create_temporary_table)
 {
     const char* sql = "CREATE "
                       " TEMPORARY " 
-                      " TABLE foo AS (col1 pk9real, col2 pk9real,) INHERITS (bar,baz)";
+                      " TABLE foo AS (col1 pk9real, col2 pk9real,) INHERITS (bar,baz);";
 
     cout << "Trying to execute: '" << sql << "'" << endl;
 

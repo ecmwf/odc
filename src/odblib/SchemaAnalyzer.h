@@ -32,19 +32,24 @@ public:
 	SchemaAnalyzer();
 	~SchemaAnalyzer();
 
-	void addTable(sql::TableDef);
+        void beginSchema(const string& name);
+        void endSchema();
+	void addTable(TableDef& table);
 	void addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature);
 	bool isBitfield(const string columnName) const; 
 	const BitfieldDef& getBitfieldTypeDefinition(const string columnName); 
 	void updateBitfieldsDefs(MetaData &, map<string, string> &) const;
 
+        const TableDef* findTable(const string& name) const;
 	void skipTable(string tableName);
 	string generateSELECT() const;
+        Definitions generateDefinitions();
 
 private:
-	sql::TableDefs tableDefs_;
+        string currentSchema_;
+        SchemaDefs schemas_;
+	TableDefs tableDefs_;
 	BitfieldDefs bitfieldTypes_;
-
 	set<string> tablesToSkip_;
 	map<string,string> columnTypes_;
 };

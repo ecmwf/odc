@@ -62,7 +62,7 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const strin
 	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
 
 	ifstream fs( in.asString().c_str() );
-	odb::Select input("select *", fs, delimiter);
+	odb::Select input("select * ;", fs, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
@@ -80,7 +80,7 @@ void ImportTool::importText(const string& s, const PathName& out, const string& 
 	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
 
 	stringstream fs(s);
-	odb::Select input("select *", fs, delimiter);
+	odb::Select input("select *;", fs, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
