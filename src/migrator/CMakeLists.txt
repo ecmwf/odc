@@ -14,6 +14,8 @@ TSQLReader.cc
 TSQLReader.h
 TestImportODB.cc
 TestImportODB.h
+migrator_api.cc
+migrator_api.h
 )
 
 debug_var( ODB_API_MIGRATOR )
@@ -38,7 +40,7 @@ if( ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
 
     if( ODB_API_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
         set(CMAKE_SWIG_FLAGS "")
-        include_directories( ${PYTHON_INCLUDE_PATH} )
+        include_directories( "." ${PYTHON_INCLUDE_PATH} )
         set_source_files_properties( pyodbdump.i PROPERTIES CPLUSPLUS ON )
 #    set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
         swig_add_module( pyodbdump python pyodbdump.i )
