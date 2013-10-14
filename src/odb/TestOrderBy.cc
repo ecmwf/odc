@@ -71,7 +71,7 @@ TestOrderBy::~TestOrderBy() {}
 void TestOrderBy::test()
 {
 	{
-		string sql = "select distinct a from \"a1to10twice.odb\" order by a";
+		string sql = "select distinct a from \"a1to10twice.odb\" order by a;";
 		Log::info() << "Executing: '" << sql << "'" << endl;
 
 		odb::Select sel(sql);
@@ -91,7 +91,7 @@ void TestOrderBy::test()
 	}
 
 	{
-		string sql = "select a from \"a1to10twice.odb\" order by a";
+		string sql = "select a from \"a1to10twice.odb\" order by a;";
 		Log::info() << "Executing: '" << sql << "'" << endl;
 
 		odb::Select sel(sql);
@@ -113,7 +113,7 @@ void TestOrderBy::test()
 	}
 
 	{
-		string sql = "select distinct a from \"a1to10twice.odb\" order by a desc";
+		string sql = "select distinct a from \"a1to10twice.odb\" order by a desc;";
 		Log::info() << "Executing: '" << sql << "'" << endl;
 
 		odb::Select sel(sql);
@@ -142,7 +142,7 @@ void TestOrderBy::test()
 		"2,40,'four'\n";
 		ImportTool::importText(in, "TestOrderBy4.odb");
 
-		string sql = "select distinct a,b,c from \"TestOrderBy4.odb\" order by a desc, b asc";
+		string sql = "select distinct a,b,c from \"TestOrderBy4.odb\" order by a desc, b asc;";
 		Log::info() << "Executing: '" << sql << "'" << endl;
 
 		odb::Select sel(sql);

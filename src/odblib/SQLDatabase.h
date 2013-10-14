@@ -67,12 +67,16 @@ public:
 	virtual bool sameAs(const SQLDatabase& other) const;
 	SchemaAnalyzer& schemaAnalyzer() { return schemaAnalyzer_; }
 
+        void setIncludePath(const std::string& includePath);
+        const std::vector<eclib::PathName>& includePath() const { return includePath_; }
+
     SQLTable* dualTable();
 
 protected:
 	Links links_;
 	map<string,SQLTable*> tablesByName_;
     eclib::PathName path_;
+    std::vector<eclib::PathName> includePath_;
 
 	Variables variables_;
 	string name_;

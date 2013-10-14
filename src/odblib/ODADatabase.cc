@@ -10,6 +10,7 @@
 
 #include <cctype>
 
+#include "eclib/Resource.h"
 #include "odblib/odb_api.h"
 #include "odblib/ODADatabase.h"
 #include "odblib/StringTool.h"
@@ -22,7 +23,9 @@ namespace sql {
 
 ODADatabase::ODADatabase(const PathName& path,const string& name)
 : SQLDatabase(path,name)
-{}
+{
+    setIncludePath(Resource<string>("$ODB_INCLUDE_PATH", ""));
+}
 
 ODADatabase::~ODADatabase() {}
 

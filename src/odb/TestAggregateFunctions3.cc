@@ -61,7 +61,7 @@ TestAggregateFunctions3::~TestAggregateFunctions3() { }
 ///
 void TestAggregateFunctions3::test()
 {
-	string sql = "select sum(a) from \"TestAggregateFunctions3.odb\"";
+	string sql = "select sum(a) from \"TestAggregateFunctions3.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << endl;
 
