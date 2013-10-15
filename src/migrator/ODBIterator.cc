@@ -34,7 +34,8 @@ using namespace eclib;
 namespace odb {
 namespace tool {
 
-ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
+//ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
+ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 : db_(db),
   odbHandle_(0),
   ci_(0),
@@ -45,17 +46,15 @@ ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
 {
 	Log::info() << "ODBIterator::ODBIterator: @" << this << " db=" << db << endl;
 
-	const std::string odbDirectory = db.asString();
+	const std::string odbDirectory = db; //.asString();
 	Log::info() << "Opening ODB in '" << odbDirectory << "'" << endl;
 	ASSERT(PathName(odbDirectory).exists());
-
-
 	
 	std::string select = sql.size() ? sql : defaultSQL(db);
 
 	ASSERT(select.size() != 0 && select != "");
 
-	const std::string dbPath = db.asString();
+	const std::string dbPath = db; //.asString();
 	const char *db_path = dbPath.c_str();
 	const char *sql_select = select.c_str();
 
@@ -67,11 +66,8 @@ ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
 
 	data_ = new double[noOfColumns_];
 
-	next();
-	if (noMore_)
-	{
-		Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
-	}
+	//next();
+	//if (noMore_) Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
 }
 
 bool ODBIterator::next()
@@ -91,6 +87,7 @@ bool ODBIterator::next()
 	}
 
 	ASSERT(nd == noOfColumns_);
+    // FIXME: read the missing values for a given constant from somewhere
 	// This is because sometime ODB has MISSING_VALUE_REAL in INTEGER columns...
 	// for example station_type@hdr in ECMA.conv
 	for (int i = 0; i < noOfColumns_; ++i)
@@ -120,17 +117,20 @@ void ODBIterator::createColumns()
 		std::string name = pci->nickname ? pci->nickname : pci->name;
         truenames[name] = pci->name;
 		odb::ColumnType type = odb::REAL;
+        // FIXME: read the missing values for a given constant from somewhere
 		double missing = odb::MISSING_VALUE_INT; 
 
 		switch(pci->dtnum)
 		{
 			case DATATYPE_REAL4:
 				type = odb::REAL;
+                // FIXME: read the missing values for a given constant from somewhere
 				missing = odb::MISSING_VALUE_REAL; 
 				break;
 
 			case DATATYPE_REAL8:
 				type = preservePrecision ? odb::DOUBLE : odb::REAL;
+                // FIXME: read the missing values for a given constant from somewhere
 				missing = odb::MISSING_VALUE_REAL; 
 				break;
 

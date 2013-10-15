@@ -21,7 +21,8 @@ namespace tool {
 class ODBIterator : public odb::RowsReaderIterator {
 public:
 
-	ODBIterator(const eclib::PathName& db, const std::string& sql); 
+	//ODBIterator(const eclib::PathName& db, const std::string& sql); 
+	ODBIterator(const std::string& db, const std::string& sql); 
 	~ODBIterator ();
 
 	void destroy();
