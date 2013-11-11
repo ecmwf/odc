@@ -41,7 +41,6 @@ ODB2ODATool::ODB2ODATool (const CommandLineParser &clp)
 : Tool(clp)
 {}
 
-//ToolFactory<ODB2ODATool> odb2oda("odb2oda");
 
 /// -mdi <type1:MDI1,type2:MDI2,...>
 void ODB2ODATool::resetMDI(const std::string& s)
@@ -71,9 +70,6 @@ void ODB2ODATool::resetMDI(const std::string& s)
 
 void ODB2ODATool::run()
 {
-    //for (size_t i(0); i < argc(); ++i) cout << " ODB2ODATool::run: param " << i << " ** "  << argv()[i] << endl;
-    cout << "ODB2ODATool::run(): parameters: " << parameters() << endl;
-
 	if (parameters().size() < 2 || parameters().size() > 4)
 	{
 		cerr << "Usage:" << endl
@@ -91,13 +87,11 @@ void ODB2ODATool::run()
 			<< endl;
 		return;
 	}
-	//ASSERT ("Wrong number of parameters. Should be checked in odb2oda:main" && !(parameters().size() < 2 || parameters().size() > 4));
 
     std::string nonDefaultMDIS(optionArgument<std::string>("-mdi", ""));
     if (nonDefaultMDIS.size())
         Log::info() << "Using non default missing data indicators: " << nonDefaultMDIS << endl;
 
-	// TODO: the parameters -addcolumns and -genreptype should take arguments - list of columns to, respectively, be added or used to gen. reptype
 	bool addColumns = optionIsSet("-addcolumns");
 	if (addColumns)
 		FakeODBIterator::ConstParameters::instance().add(Assignments(optionArgument<std::string>("-addcolumns", "")));
@@ -119,17 +113,17 @@ void ODB2ODATool::run()
 	if (addColumns && (genReptype || reptypeCfg)) {
 		typedef odb::tool::TSQLReader<ReptypeGenIterator<FakeODBIterator> > R;
 		ImportODBTool<R>(*this).run();
-		return; // 0;
+		return;
 	}
 
 	if (addColumns) {
 		ImportODBTool<odb::tool::TSQLReader<FakeODBIterator> >(*this).run();
-		return; //0;
+		return;
 	}
 
 	if (genReptype || reptypeCfg) {
 		ImportODBTool<odb::tool::TSQLReader<ReptypeGenIterator<ODBIterator> > >(*this).run();
-		return; // 0;
+		return;
 	}
 
 	{	

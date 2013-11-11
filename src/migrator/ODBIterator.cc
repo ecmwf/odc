@@ -99,7 +99,7 @@ bool ODBIterator::next()
 
 void ODBIterator::createColumns()
 {
-	Log::info() << " => ODBIterator::createColumns: " << endl;
+	Log::debug() << " => ODBIterator::createColumns: " << endl;
 
 	delete columns_;
 	columns_ = new odb::MetaData(noOfColumns_, (odb::Column *) 0);
@@ -116,21 +116,19 @@ void ODBIterator::createColumns()
 		colinfo_t *pci = &((colinfo_t *) ci_)[i];
 		std::string name = pci->nickname ? pci->nickname : pci->name;
         truenames[name] = pci->name;
+
 		odb::ColumnType type = odb::REAL;
-        // FIXME: read the missing values for a given constant from somewhere
 		double missing = odb::MDI::integerMDI(); 
 
 		switch(pci->dtnum)
 		{
 			case DATATYPE_REAL4:
 				type = odb::REAL;
-                // FIXME: read the missing values for a given constant from somewhere
 				missing = odb::MDI::realMDI(); 
 				break;
 
 			case DATATYPE_REAL8:
 				type = preservePrecision ? odb::DOUBLE : odb::REAL;
-                // FIXME: read the missing values for a given constant from somewhere
 				missing = odb::MDI::realMDI(); 
 				break;
 
@@ -156,12 +154,12 @@ void ODBIterator::createColumns()
 		setColumn(i, name, type, missing);
 	}
 	getSchema(db_).updateBitfieldsDefs(columns(), truenames);
-	Log::info() << " <= ODBIterator::createColumns: " << endl;
+	Log::debug() << " <= ODBIterator::createColumns: " << endl;
 }
 
 void ODBIterator::destroy()
 {
-	Log::info() << "ODBIterator::destroy: @" << this << endl;
+	Log::debug() << "ODBIterator::destroy: @" << this << endl;
 	odbdump_destroy_colinfo( (colinfo_t *) ci_, noOfColumns_); 
 	odbdump_close(odbHandle_);
 	delete columns_;
