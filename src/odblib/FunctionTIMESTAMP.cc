@@ -12,8 +12,8 @@
 #include <limits.h>
 
 #include "odblib/FunctionTIMESTAMP.h"
+#include "odblib/MDI.h"
 
-#define RMDI   -2147483647
 #define trunc(x) ((x) -fmod((x), 1))
 
 namespace odb {
@@ -38,7 +38,7 @@ double FunctionTIMESTAMP::eval(bool& missing) const
     double indate = args_[0]->eval(missing);
     double intime = args_[1]->eval(missing);
 // Merge "YYYYMMDD" and "HHMMSS" into "YYYYMMDDHHMMSS"
-    double outstamp = RMDI; // initialized to missing data indicator; indicates error
+    double outstamp = odb::MDI::realMDI(); // initialized to missing data indicator; indicates error
     if (indate >=0 && indate <= INT_MAX &&
         intime >= 0 && intime <= 240000) {
       long long int lldate = (long long int) indate;

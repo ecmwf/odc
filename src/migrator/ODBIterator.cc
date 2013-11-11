@@ -91,8 +91,8 @@ bool ODBIterator::next()
 	// This is because sometime ODB has MISSING_VALUE_REAL in INTEGER columns...
 	// for example station_type@hdr in ECMA.conv
 	for (int i = 0; i < noOfColumns_; ++i)
-		if ((*columns_)[i]->type() == odb::INTEGER && data_[i] == odb::MISSING_VALUE_REAL)
-			data_[i] = odb::MISSING_VALUE_INT;
+		if ((*columns_)[i]->type() == odb::INTEGER && data_[i] == odb::MDI::realMDI())
+			data_[i] = odb::MDI::integerMDI();
 
 	return !(noMore_ = false);
 }
@@ -118,20 +118,20 @@ void ODBIterator::createColumns()
         truenames[name] = pci->name;
 		odb::ColumnType type = odb::REAL;
         // FIXME: read the missing values for a given constant from somewhere
-		double missing = odb::MISSING_VALUE_INT; 
+		double missing = odb::MDI::integerMDI(); 
 
 		switch(pci->dtnum)
 		{
 			case DATATYPE_REAL4:
 				type = odb::REAL;
                 // FIXME: read the missing values for a given constant from somewhere
-				missing = odb::MISSING_VALUE_REAL; 
+				missing = odb::MDI::realMDI(); 
 				break;
 
 			case DATATYPE_REAL8:
 				type = preservePrecision ? odb::DOUBLE : odb::REAL;
                 // FIXME: read the missing values for a given constant from somewhere
-				missing = odb::MISSING_VALUE_REAL; 
+				missing = odb::MDI::realMDI(); 
 				break;
 
 			case DATATYPE_STRING:

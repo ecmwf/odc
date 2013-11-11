@@ -128,6 +128,8 @@ FunctionExpression.cc
 FunctionExpression.h
 FunctionFactory.cc
 FunctionFactory.h
+MDI.cc
+MDI.h
 FunctionIN.cc
 FunctionIN.h
 FunctionIntegerExpression.cc

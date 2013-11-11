@@ -5,6 +5,8 @@ ImportODBTool.cc
 ImportODBTool.h
 ODB2ODATool.cc
 ODB2ODATool.h
+MigratorTool.h
+MigratorTool.cc
 ODBIterator.cc
 ODBIterator.h
 OldODBReader.h

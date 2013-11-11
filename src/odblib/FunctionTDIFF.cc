@@ -10,6 +10,7 @@
 
 #include "odblib/FunctionTDIFF.h"
 #include "odblib/DateTime.h"
+#include "odblib/MDI.h"
 
 #define RMDI   -2147483647
 #define trunc(x) ((x) -fmod((x), 1))
@@ -52,7 +53,7 @@ double FunctionTDIFF::eval(bool& missing) const
     int min_anal = (antime%10000)/100;
     int sec_anal = antime%100;
 
-    int seconds=RMDI;
+    int seconds = odb::MDI::realMDI();
 
     utils::DateTime d1(year_target, month_target, day_target,
                    hour_target, min_target, sec_target);

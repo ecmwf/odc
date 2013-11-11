@@ -138,6 +138,8 @@ void Column::print(ostream& s) const
 	s << "codec: ";
 	if (coder_) s << *coder_;
 	else s << "NONE";
+    
+    s << " MDI: " << missingValue();
 }
 
 } // namespace odb 
