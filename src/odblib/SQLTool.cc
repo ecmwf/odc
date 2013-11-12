@@ -67,6 +67,9 @@ void SQLTool::run()
 	vector<string> params(parameters());
 	params.erase(params.begin());
 
+	string sql(StringTool::isSelectStatement(params[0])
+				? StringTools::join(" ",  params) + ";"
+				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
 	auto_ptr<ofstream> foutPtr(optionIsSet("-o")
 								? new ofstream(optionArgument("-o", string("")).c_str())
 								: 0);
@@ -74,32 +77,39 @@ void SQLTool::run()
 	SQLInteractiveSession session(out);
 	SQLParser parser;
 	SQLOutputConfig config(SQLSelectFactory::instance().config());
-	string sql(StringTool::match("select", params[0])
-				? StringTools::join(" ",  params) + ";"
-				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
-	runSQL(sql, session, parser, config);
+    PathName inputFile(inputFile_);
+	runSQL(sql, inputFile, session, parser, config, offset_, length_);
 }
 
-void SQLTool::runSQL(const string& sql, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config)
+void SQLTool::execute(const string& sql, ostream& out)
+{
+	SQLInteractiveSession session(out);
+	SQLParser parser;
+	SQLOutputConfig config(SQLSelectFactory::instance().config());
+	runSQL(sql, "", session, parser, config);
+}
+
+void SQLTool::runSQL(const string& sql, const eclib::PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
 {
 	Log::info() << "Executing '" << sql << "'" << endl;
 
-	if (inputFile_.size() == 0)
+	if (inputFile.path().size() == eclib::Length(0))
 		parser.parseString(sql, static_cast<DataHandle*>(0), config);
-	else if (offset_ != Offset(0) || length_ != Length(0))
+	else if (offset != Offset(0) || length != Length(0))
 	{
 		// FIXME: PartFileHandle doesn't think length 0 means to the end of the file - get correct length
-		Log::info() << "Selecting " << length_ << " bytes from offset " << offset_ 
-				<< " of " << inputFile_ << endl;
-		PartFileHandle fh(inputFile_, offset_, length_); 
+		Log::info() << "Selecting " << length << " bytes from offset " << offset
+				<< " of " << inputFile << endl;
+		PartFileHandle fh(inputFile, offset, length); 
 		fh.openForRead();
 		parser.parseString(sql, &fh, config);
 	} else {
-		FileHandle fh(inputFile_);
+		FileHandle fh(inputFile);
 		fh.openForRead();
 		parser.parseString(sql, &fh, config);
 	}
 }
+
 
 } // namespace tool 
 } // namespace odb 

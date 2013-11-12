@@ -54,6 +54,7 @@
 #include "odblib/DateTime.h"
 #include "odblib/SplitTool.h"
 #include "odblib/CountTool.h"
+#include "odblib/SQLTool.h"
 #include "odblib/MapReduce.h"
 
 #include "odb/TestWriteCatFiles.h"
@@ -580,11 +581,11 @@ CallBackProcessOneRow create_counter_callback()
 	return cb;
 }
 
-const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-const string sql = "select lat,lon";
 
 void map_reduce_mt()
 {
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	llong n = CountTool::fastRowCount(fileName);
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << endl;
@@ -594,6 +595,8 @@ void map_reduce_mt()
 
 void map_reduce_st()
 {
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	llong n = CountTool::fastRowCount(fileName);
 	llong r = 0;
 	llong* result = (llong*) SingleThreadMapReduce::process(&r, fileName, sql, create_counter_callback());
@@ -633,6 +636,8 @@ void process_array_st()
 {
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	
 	llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
@@ -645,6 +650,8 @@ void process_array_mt()
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
 	
+    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
+    const string sql = "select lat,lon";
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
 }
@@ -666,7 +673,7 @@ public:
 
 typedef TemporaryPathName ScratchFile;
 
-TEST(hash_operator)
+TEST(hash_operator_on_select_list)
 {
 	const char *data = 
 	"x:INTEGER,y:INTEGER\n"
@@ -696,6 +703,36 @@ TEST(hash_operator)
 
 }
 
+
+TEST(hash_operator_in_where)
+{
+	const char *data = 
+	"x:INTEGER,y:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ScratchFile f("hash_operator.odb");
+	ImportTool::importText(data, f);
+
+	string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3");
+    odb::Select select(sql);
+    odb::Select::iterator it = select.begin();
+    odb::Select::iterator end = select.end();
+    for (; it != end; ++it)
+    {
+		Log::info() << it << endl;
+	}
+}
+
 TEST(bitfields_hash_operator)
 {
 	PathName f("2000010106.4.0.odb");
@@ -710,7 +747,6 @@ TEST(bitfields_hash_operator)
 	
 }
 
-/*
 TEST(select_constant_value)
 {
 	const char *sql =
@@ -731,10 +767,62 @@ TEST(select_constant_value)
 	CHECK_EQUAL(counter, 1);
 }
 
+/* TODO:
 TEST(select_variables)
 {
 	const char *sql =
-	"select * from variables;"
+	"set $x=1; set $v=[1,2,3]; select * from variables;"
+	;
+	
+	unsigned long counter = 0;
+	odb::Select o(sql);
+	for (odb::Select::iterator it(o.begin()), end(o.end());
+		it != o.end();
+		++it, ++counter)
+	{
+		Log::info() << (*it)[0] << ", " << (*it)[1] << endl;
+	}
+}
+*/
+
+TEST(include)
+{
+	ofstream f("stuff.sql");
+	f 
+		//<< "select * from \"file1.odb\";" << endl
+		<< "set $foo = 10;" << endl
+		<< "set $bar = 20;" << endl;
+	f.close();
+
+	const char *sql =
+	"#include \"stuff.sql\"\n"
+	"set $baz = $bar;"
+	"select $foo * $bar;"
+	;
+	
+	unsigned long counter = 0;
+	odb::Select o(sql);
+	for (odb::Select::iterator it(o.begin()), end(o.end());
+		it != o.end();
+		++it, ++counter)
+	{
+		Log::info() << it << endl;
+	}
+}
+
+TEST(log_error)
+{
+    Log::error() << "Just a logger test" << endl;
+}
+
+/*
+TEST(create_table_using_variable)
+{
+
+	const char *sql =
+    "SET $c = { 2 : \"foo\" };\n"
+    "SET $s = 2;\n"
+    "CREATE TABLE t AS (c[$s]);"
 	;
 	
 	unsigned long counter = 0;
@@ -775,6 +863,143 @@ TEST(meta_data_reader_fails_scanning_corrupted_file)
 		Log::info() << "Scanning of corrupted.odb failed as expected." << endl;
 	}
 }
+
+TEST(operator_ge)
+{
+	const char *data = 
+	"a:INTEGER,b:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ImportTool::importText(data, "1to10.odb");
+
+	odb::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
+	unsigned long counter = 0;
+	for (odb::Select::iterator it = odb.begin(), end = odb.end();
+        it != end;
+        ++it, ++counter) 
+        ;
+	ASSERT(counter == 8);
+}
+
+void create_1to10()
+{
+	const char *data = 
+	"a:INTEGER,b:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ImportTool::importText(data, "1to10.odb");
+}
+
+/* FIXME
+TEST(Select_isNewDataset)
+{
+    create_1to10();
+    size_t blocks (0);
+
+	odb::Select odb("select * from \"1to10.odb\";");
+	for (odb::Select::iterator it = odb.begin(), end = odb.end();
+        it != end;
+        ++it)
+        if (it->isNewDataset())
+            ++blocks;
+    ASSERT(blocks == 1);
+}
+*/
+
+template<typename T> 
+void test_isNewDataset()
+{
+    create_1to10();
+    size_t blocks (0);
+
+    blocks = 0;
+    T odb("1to10.odb");
+    for (typename T::iterator it = odb.begin(), end = odb.end();
+        it != end;
+        ++it)
+        if (it->isNewDataset())
+            ++blocks;
+    ASSERT(blocks == 1);
+}
+
+/*
+TEST(Gabor)
+{
+    const char * cfg = 
+    "CLASS: class\n"
+    "DATE: andate\n"
+    "TIME: antime\n"
+    "TYPE: type\n"
+    "OBSGROUP: groupid\n"
+    "REPORTYPE: reportype\n"
+    "STREAM: stream\n"
+    "EXPVER: expver\n"
+    ;
+    const string fileName("/tmp/gabor/massaged.odb");
+
+    odb::FastODA2Request<odb::ODA2RequestClientTraits> o2r;
+    o2r.parseConfig(cfg);
+
+    eclib::OffsetList offsets;
+    eclib::LengthList lengths;
+    vector<ODAHandle*> handles;
+    bool rc = o2r.scanFile(fileName, offsets, lengths, handles);
+    for (size_t i = 0; i < handles.size(); ++i)
+        delete handles[i];
+    handles.clear();
+    ASSERT(rc);
+
+    ASSERT(lengths.size());
+    ASSERT(lengths.size() == offsets.size());
+    for(size_t i = 1; i < offsets.size(); i++)
+        ASSERT(offsets[i] > offsets[i-1]);
+    size_t last = offsets.size()-1;
+    ASSERT(PathName(fileName).size() == offsets[last] + lengths[last]);
+
+    unsigned long long cnt = o2r.rowsNumber();
+
+    string filesRequest = "ARCHIVE,\n";
+    filesRequest += o2r.genRequest();
+}
+// FIXME
+TEST(Reader_isNewDataset) { test_isNewDataset<Reader>(); }
+// FIXME
+TEST(MetaDataReader_isNewDataset) { test_isNewDataset<odb::MetaDataReader<MetaDataReaderIterator> >(); }
+
+TEST(create_temporary_table)
+{
+    const char* sql = "CREATE "
+                      " TEMPORARY " 
+                      " TABLE foo AS (col1 pk9real, col2 pk9real,) INHERITS (bar,baz)";
+
+    cout << "Trying to execute: '" << sql << "'" << endl;
+
+	odb::Select o(sql);
+    odb::tool::SQLTool::execute(sql);
+
+}
+*/
+
 
 } // namespace test 
 } // namespace tool 

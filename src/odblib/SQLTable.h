@@ -102,8 +102,8 @@ protected:
 	// void print(ostream&) const; 	
 	void addColumn(SQLColumn*, const string&, int);
 
-	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double
-missingValue, bool isBitfield, const BitfieldDef&) = 0;
+	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&) = 0;
+	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue) = 0;
 
 private:
 

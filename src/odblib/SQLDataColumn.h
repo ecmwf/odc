@@ -12,8 +12,12 @@ class SQLDataColumn : public odb::sql::SQLColumn
 public:
 	SQLDataColumn(const odb::sql::type::SQLType& type, odb::sql::SQLTable& table,
             const std::string& name, int index, bool hasMissingValue,
-            double missingValue, bool isBitfield, const odb::BitfieldDef& bitfieldDef,
+            double missingValue, const odb::BitfieldDef& bitfieldDef,
             double* value);
+
+	SQLDataColumn(const odb::sql::type::SQLType& type, odb::sql::SQLTable& table,
+            const std::string& name, int index, bool hasMissingValue,
+            double missingValue, double* value);
 
     ~SQLDataColumn();
 

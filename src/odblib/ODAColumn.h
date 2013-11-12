@@ -20,8 +20,8 @@ namespace sql {
 
 class ODAColumn : public SQLColumn {
 public:
-	ODAColumn(const type::SQLType&, SQLTable&, const string&, int, bool hasMissingValue, double missingValue, bool isBitfield,
-const BitfieldDef& bitfieldDef, double*);
+	ODAColumn(const type::SQLType&, SQLTable&, const string&, int, bool hasMissingValue, double missingValue, const BitfieldDef&, double*);
+	ODAColumn(const type::SQLType&, SQLTable&, const string&, int, bool hasMissingValue, double missingValue, double*);
 	~ODAColumn();
 
 	void value(double* p) { value_ = p; }

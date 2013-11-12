@@ -25,10 +25,17 @@ public:
 	static void help(ostream &o) { o << "Merges rows from files"; }
 	static void usage(const string& name, ostream &o)
 	{
-		o << name << " -o <output-file.odb> <input1.odb> <input2.odb> ...";
+		o << endl
+          << name << " -o <output-file.odb> <input1.odb> <input2.odb> ..." << endl
+                  << ""                                                    << endl
+                  << " or "                                                << endl
+                  << ""                                                    << endl
+          << name << " -S -o <output-file.odb> <input1.odb> <sql-select1> <input2.odb> <sql-select2> ..." << endl
+                  ;
 	}
 
 	static void merge(const vector<eckit::PathName>& inputFiles, const eckit::PathName& outputFileName);
+	static void merge(const vector<eckit::PathName>& inputFiles, const vector<string>& sqls, const eckit::PathName& outputFileName);
 
 private:
 // No copy allowed
@@ -39,7 +46,9 @@ private:
 	static char* dummyArgv_[];
 
 	vector<eckit::PathName> inputFiles_;
+    vector<string> sql_;
 	eckit::PathName outputFile_;
+    bool sqlFiltering_;
 
 };
 

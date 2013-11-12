@@ -112,6 +112,7 @@ private:
 	void reset();
 	bool resultsOut();
 	bool output(odb::sql::expression::SQLExpression*);
+    SQLExpression* findAliasedExpression(const string& alias);
 
 	friend class odb::sql::expression::function::FunctionROWNUMBER; // needs access to count_
 	friend class odb::sql::expression::function::FunctionTHIN; // needs access to count_

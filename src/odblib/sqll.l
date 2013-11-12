@@ -14,8 +14,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+// http://flex.sourceforge.net/manual/Multiple-Input-Buffers.html#Multiple-Input-Buffers
+#if 0
+	#undef YY_INPUT
+	#define YY_INPUT(buf,result,max_size) \
+	{ \
+		if (inputEnd - inputText) \
+		{ \
+			memcpy(buf, inputText++, 1); \
+			result = 1; \
+		} else result = YY_NULL; \
+	}
+#endif
+
 #ifdef YYBISON
 /* FLEX */
+/*
 	#undef YY_INPUT
 	#define YY_INPUT(buf,result,max_size) \
 	{ \
@@ -26,6 +40,7 @@
 		} \
 		result = (n == 0) ? YY_NULL : n; \
 	}
+*/
 /* LEX */
 #else
 	extern char* inputText;
@@ -35,16 +50,61 @@
 	#define unput(c) (*--inputText = c)
 #endif
 
+const size_t maxIncludeDepth = 20;
+YY_BUFFER_STATE includeStack[maxIncludeDepth];
+int includeStackPtr = 0;
+
+void pushInclude(const string& sql, const string& yypath)
+{
+    //cerr << "pushInclude:" << yypath << endl;
+    //cerr << "<INCLUDE>" << endl;
+    //cerr << sql << endl;
+    //cerr << "</INCLUDE>" << endl;
+
+    if (includeStackPtr > maxIncludeDepth)
+        throw eclib::UserError("Includes nested too deeply");
+    includeStack[includeStackPtr++] = YY_CURRENT_BUFFER;
+    odblib__switch_to_buffer(odblib__scan_bytes(sql.c_str(), sql.size()));
+}
+
+int popInclude()
+{
+    if ( --includeStackPtr == 0 )
+    {
+        //cerr << "** lex terminate **" << endl;
+        return 1;
+    }
+    else
+    {
+        odblib__delete_buffer(YY_CURRENT_BUFFER);
+        odblib__switch_to_buffer(includeStack[includeStackPtr]);
+        return 0;
+    }
+}
+
+int wrap() {
+    //Log::info() << "** wrap **" << endl;
+    return popInclude();
+}
+
+/*
+%option noyywrap
+*/
+
 %}
 IDENT   [_A-Za-z]+[_0-9A-Za-z]*
 VAR     [$][_0-9A-Za-z]+
 NUMB    [-]?[0-9]+(\.[0-9]*)?
 SEMICOLON [;]
 
+
 %s LEX_ORDERBY
 %s LEX_CREATE
+%x incl
 
 %%
+#include                          BEGIN(incl);
+
 @[lL][iI][nN][kK]                 return LINK;
 [sS][eE][tT]                      return SET;
 [dD][aA][tT][aA][bB][aA][sS][eE]  return DATABASE;
@@ -62,7 +122,7 @@ SEMICOLON [;]
 [vV][iI][eE][wW]                  { BEGIN 0; return VIEW; }
 [cC][rR][eE][aA][tT][eE]          { BEGIN LEX_CREATE; return CREATE; }
 <LEX_CREATE>[iI][nN][dD][eE][xX]  { BEGIN 0; return INDEX; }
-[tT][aA][bB][lL][eE]              { BEGIN 0; return TABLE; }
+<LEX_CREATE>[tT][aA][bB][lL][eE]  { BEGIN 0; return TABLE; }
 <LEX_CREATE>[tT][yY][pP][eE]      { BEGIN 0; return TYPE; }
 [tT][yY][pP][eE][dD][eE][fF]      { BEGIN 0; return TYPEDEF; }
 [tT][yY][pP][eE][oO][fF]          return TYPEOF;
@@ -78,11 +138,30 @@ SEMICOLON [;]
 [uU][pP][dD][aA][tT][eE][dD]      return UPDATED;
 [nN][oO][rR][eE][oO][rR][dD][eE][rR] return NOREORDER;
 [sS][aA][fF][eE][gG][uU][aA][rR][dD] return SAFEGUARD;
+[tT][eE][mM][pP][oO][rR][aA][rR][yY] return TEMPORARY;
 <LEX_ORDERBY>[aA][sS][cC]         return ASC;
 <LEX_ORDERBY>[dD][eE][sS][cC]     return DESC;
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
 \#                                return HASH; 
+[iI][nN][hH][eE][rR][iI][tT][sS]  { BEGIN 0; return INHERITS; }
+<incl>[ \t]*                      /* eat the whitespace */
+<incl>[^ \t\n]+ {                 /* name of the file to be included */
+    //cerr << "include " << yytext << endl;
+
+    const string fileName(StringTool::unQuote(yytext));
+    string text(StringTool::readFile(fileName));
+
+    //cerr << "Opening " << fileName << endl;
+
+    pushInclude(text, fileName);
+    BEGIN(INITIAL);
+}
+
+<<EOF>> { 
+    //cerr << "** EOF **" << endl;
+    odblib_terminate();
+}
 
 \"|\'  {
 			int c,q = yytext[0];

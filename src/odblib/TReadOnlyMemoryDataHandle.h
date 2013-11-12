@@ -41,7 +41,7 @@ public:
 
 	unsigned char * buffer() { return buffer_; }
 
-	void size() const { return bufferSize_; }
+	size_t size() const { return bufferSize_; }
 
 	void size(size_t n)
 	{

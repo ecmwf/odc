@@ -118,7 +118,7 @@ void CommandLineParser::parseCommandLine()
 	for (int i = 0; i < argc(); ++i)
 	{
 		string s = argv(i);
-		if (s[0] != '-')
+		if (s[0] != '-' || s.size() == 1)
 		{
 			parameters_.push_back(s);
 			Log::debug() << "CommandLineParser::parseCommandLine: parameter: " << s << endl;

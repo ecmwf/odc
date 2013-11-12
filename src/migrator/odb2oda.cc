@@ -42,16 +42,22 @@ int main(int argc, char *argv[])
 	clp.registerOptionWithArgument("-genreptype");
 	clp.registerOptionWithArgument("-reptypecfg");
 	clp.registerOptionWithArgument("-addcolumns");
+	clp.registerOptionWithArgument("-mdi");
 
 	if (clp.parameters().size() < 2 || clp.parameters().size() > 4)
 	{
 		cerr << "Usage:" << endl
 			<< "	" << clp.parameters(0)
-			<< " [-genreptype <list-of-columns>]"
-			<< " [-reptypecfg <reptype-generation-config-file>]"
-			<< " [-addcolumns <list-of-assignments>]"
 
-			<< " <odb_database> [<file-with-select-statement-defining-dump> [<output.odb>]]"
+            << " [<options>] <odb_database> [<file-with-select-statement-defining-dump> [<output.odb>]]" << endl
+
+            << "Options: " << endl << endl
+
+			<< "\t[-genreptype <list-of-columns>]" << endl
+			<< "\t[-reptypecfg <reptype-generation-config-file>]" << endl
+			<< "\t[-addcolumns <list-of-assignments>]" << endl
+            << "\t[-mdi <type1:MDI1,type2:MDI2,...>]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << endl
+
 			<< endl;
 		return 1;
 	}

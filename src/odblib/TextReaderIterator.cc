@@ -57,6 +57,7 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 
 odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
 {
+    Log::info() << "TextReaderIterator::parseBitfields: " << c << endl;
 	size_t leftBracket (c.find('['));
 	size_t rightBracket (c.find(']'));
 	ASSERT(leftBracket != string::npos && rightBracket != string::npos);
@@ -65,6 +66,7 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
 	odb::FieldNames names;
 	odb::Sizes      sizes;
 	vector<string> bs(S::split(";", s));
+    size_t numberOfBits = 0;
 	for (size_t i = 0; i < bs.size(); ++i)
 	{
 		vector<string> v(S::split(":", bs[i]));
@@ -72,8 +74,10 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
 		names.push_back(v[0]);
 		size_t size = atoi(v[1].c_str());
 		ASSERT(size);
+        numberOfBits += size;
 		sizes.push_back(size);
 	}
+    Log::info() << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << endl;
 	return odb::BitfieldDef(make_pair(names, sizes));
 }
 

@@ -27,17 +27,31 @@ public:
 	SyntaxError(const string& s): eckit::SeriousBug(s) {}
 };
 
+struct ParseFrame {
+	ParseFrame(const string& sql, const string& yypath);
+
+	string inputString_;
+	string yypath_;
+	char* inputText_;
+	char* inputEnd_;
+};
+
 class SQLParser {
 public:
-
 	static int line();
-	static void include(const eckit::PathName&);
 
 	static void parseString(const string&, eckit::DataHandle*, SQLOutputConfig);
 	static void parseString(const string&, istream*, SQLOutputConfig, const string& cvsDelimiter);
 	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
 
+	//static void include(const eclib::PathName&);
+
+	static void pushInclude(const string&, const string&);
+	static void popInclude();
+
 	static void lexRelease();
+
+	static std::stack<ParseFrame> frames_;
 };
 
 } // namespace sql

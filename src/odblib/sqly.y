@@ -83,6 +83,8 @@ Expressions emptyExpressionList;
 %token TABLE
 %token TYPE
 %token TYPEDEF
+%token TEMPORARY
+%token INHERITS
 
 %token EQ
 %token GE
@@ -160,6 +162,11 @@ Expressions emptyExpressionList;
 %type <coldefs>bitfield_def_list_;
 %type <coldef>bitfield_def;
 %type <val>data_type;
+%type <bol>temporary;
+%type <list>inherits;
+%type <list>inheritance_list;
+%type <list>inheritance_list_;
+
 %%
 
 start : statements { SQLSession::current().currentDatabase().setLinks(); }
@@ -263,16 +270,34 @@ bitfield_def: column_def
 	}
 	;
 
-create_table_statement: CREATE TABLE IDENT AS '(' column_def_list ')' ';'
+temporary: TEMPORARY  { $$ = true; }
+         | empty      { $$ = false; }
+         ;
+
+inheritance_list: inheritance_list_       { $$ = $1; }
+                 | inheritance_list_ ','  { $$ = $1; }
+                 ;
+
+inheritance_list_: IDENT                         { $$ = vector<string>(); $$.insert($$.begin(), $1); }
+                 | inheritance_list_ ',' IDENT   { $$ = $1; $$.push_back($3); }
+
+inherits: INHERITS '(' inheritance_list ')'   { $$ = $3;               }
+        | empty                               { $$ = vector<string>(); }
+
+create_table_statement: CREATE temporary TABLE expression_ex AS '(' column_def_list ')' inherits  ';'
 	{
-		string tableName = $3;
-		ColumnDefs cols = $6;
+        bool temporary ($2);
+        SQLExpression* e($4);
+		string tableName (e->title());
+		ColumnDefs cols ($7);
+        vector<string> inheritance($9);
 
 		TableDef tableDef(tableName, cols);
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
 
-		//cout << "CREATE TABLE " << tableName << endl;
+		cout << " *** CREATE " << (temporary ? "TEMPORARY" : "") << " TABLE " << tableName << endl;
+		if (inheritance.size()) cout << " *** INHERITANCE LIST: " << inheritance << endl;
 
 		//SQLCreateTable ct(tableName, cols);
 		//ct.execute();
@@ -344,7 +369,7 @@ from : FROM table_list { $$ = $2; }
 	 ;
 
 where : WHERE expression { $$ = $2; }
-	  |                  { $$ = 0; } 
+	  |                  { $$ = 0;  } 
 	  ;
 
 vector	: '[' expression_list_ex ']' { $$ = new Expressions($2); }
@@ -372,8 +397,7 @@ set_statement : SET DATABASE STRING AS IDENT ';' { SQLSession::current().openDat
 
 set_statement : SET VAR EQ assignment_rhs ';'
 	{ 
-		//cout << "== set variable " << $2 << " to ";
-		//if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
+		//cout << "== set variable " << $2 << " to "; if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
 		SQLSession::current().currentDatabase().setVariable($2, $4);
 	}
 	; 
@@ -383,22 +407,26 @@ bitfield_ref: '.' IDENT  { $$ = $2; }
 
 column: IDENT vector_index table_reference optional_hash
 		  {
+
 			std::string columnName      ($1);
 			std::string bitfieldName    ;
 			SQLExpression* vectorIndex  ($2);
 			std::string table           ($3);
 			SQLExpression* pshift       ($4);
 
+            bool missing;
 			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
 		  }
 	   | IDENT bitfield_ref table_reference optional_hash
 		{
+
 			std::string columnName      ($1);
 			std::string bitfieldName    ($2);
 			SQLExpression* vectorIndex  (0); 
 			std::string table           ($3);
 			SQLExpression* pshift       ($4);
 
+            bool missing;
 			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
 		 }
 	  ;
@@ -490,8 +518,8 @@ expression_list : expression         {  $$ = Expressions(1, $1); }
 				| expression_list ',' expression { $$ = $1; $$.push_back($3); }
 				;
 
-optional_hash : HASH expression { $$ = $2; }
-			  |                 { $$ = new NumberExpression(0); }
+optional_hash : HASH DOUBLE { $$ = new NumberExpression($2); }
+			  |             { $$ = new NumberExpression(0); }
 			  ;
 
 
@@ -538,7 +566,7 @@ term        : term '+' factor           { $$ = ast("+",$1,$3);   }
 relational_operator: '>' { $$ = ">"; }
                    | EQ  { $$ = "="; }
                    | '<' { $$ = "<"; }
-                   | GE  { $$ = "="; }
+                   | GE  { $$ = ">="; }
                    | LE  { $$ = "<="; }
                    | NE  { $$ = "<>"; }
                    ;

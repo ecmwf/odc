@@ -39,28 +39,21 @@ void SQLCreateTable::print(ostream& s) const
 
 unsigned long long SQLCreateTable::execute()
 {
-	SQLDatabase &db = SQLSession::current().currentDatabase();
-	// SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const string& name,int no_rows,int index)
-	// TODO:
-	SQLTable *table = NULL; //new SQLTable(db, tableName_ /*?*/, tableName_, /*no_rows (columns, really..)*/ 0, /*index*/ 0);
+    SQLDatabase &db = SQLSession::current().currentDatabase();
+    // SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const string& name,int no_rows,int index)
+    // TODO:
+    SQLTable *table = NULL; //new SQLTable(db, tableName_ /*?*/, tableName_, /*no_rows (columns, really..)*/ 0, /*index*/ 0);
 
-	int index = 1;
-	for (ColumnDefs::const_iterator i = cols_.begin(); i != cols_.end(); i++)
-	{
-		const string columnName = i->name();
-		const string typeName = i->type();
+    int index = 1;
+    for (ColumnDefs::const_iterator i = cols_.begin(); i != cols_.end(); i++)
+    {
+        const string columnName (i->name()),
+                     typeName (i->type());
 
-		const long start = i->range().first;
-		const long end = i->range().second;
+		const long start (i->range().first),
+                   end (i->range().second);
 		bool isVector = ! (start == 0 && end == 0); // e.g: colname[1:3] pk1real
-
-		//cout << " ==== columnName: " << columnName << ", typeName: " << typeName;
-		//if (isVector) cout << "[" << start << ":" << end << "]";
-		//cout << endl;
-
-		//vector<string> bitmap;
 		BitfieldDef bitfieldDef;
-
 		if (typeName == "@LINK")
 		{
 			ASSERT(! isVector);

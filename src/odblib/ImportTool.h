@@ -31,14 +31,16 @@ public:
 		o << " delimiter can be a single character (e.g.: ',') or TAB";
 	}
 
-	static void importFile(const eckit::PathName& in, const eckit::PathName& out, const string& delimiter = defaultDelimiter);
-	static void importText(const string& s, const eckit::PathName& out, const string& delimiter = defaultDelimiter);
+	static void importFile(const eckit::PathName& in, const eckit::PathName& out, const string& delimiter = defaultDelimiter());
+	static void importText(const string& s, const eckit::PathName& out, const string& delimiter = defaultDelimiter());
+
+	static string defaultDelimiter() { return defaultDelimiter_; };
 private:
 // No copy allowed
     ImportTool(const ImportTool&);
     ImportTool& operator=(const ImportTool&);
 
-	static string defaultDelimiter;
+	static string defaultDelimiter_;
 };
 
 } // namespace tool 

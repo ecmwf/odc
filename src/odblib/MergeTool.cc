@@ -20,7 +20,11 @@ namespace odb {
 namespace tool {
 
 MergeTool::MergeTool (int ac, char *av[])
-: Tool(ac, av) 
+: Tool(ac, av),
+  inputFiles_(),
+  sql_(),
+  outputFile_(),
+  sqlFiltering_(false)
 {
 	registerOptionWithArgument("-o");
 	if (parameters().size() < 3)
@@ -30,40 +34,40 @@ MergeTool::MergeTool (int ac, char *av[])
 		Log::error() << endl;
 		return;
 	}
-	string o = optionArgument("-o", string("<no-default>"));
+    sqlFiltering_ = optionIsSet("-S");
+	string o(optionArgument("-o", string("<no-default>")));
 	if (o == "<no-default>")
 		UserError("Output file is obligatory (option -o)");
 	outputFile_ = o;
 
 	for (size_t i = 1; i < parameters().size(); ++i) 
+    {
 		inputFiles_.push_back(PathName(parameters()[i]));
+        if (sqlFiltering_) {
+            string s(parameters()[++i]);
+            sql_.push_back(StringTool::isSelectStatement(s) ? s : StringTool::readFile(s));
+        }
+    }
 }
 
 
 void MergeTool::run()
 {
+    if (inputFiles_.size() == 0)
+        return;
 	stringstream s;
 	for (size_t i = 0; i < inputFiles_.size(); ++i)
 		s << inputFiles_[i] << ",";
 	Timer t(string("Merging files '") + s.str() + "' into '" + outputFile_ + "'");
-	merge(inputFiles_, outputFile_);
+    if(! sqlFiltering_)
+        merge(inputFiles_, outputFile_);
+    else
+        merge(inputFiles_, sql_, outputFile_);
 }
 
-void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& outputFile)
+template <typename T, typename I>
+void doMerge(vector<pair<I, I> >& iterators, const PathName& outputFile)
 {
-	typedef odb::Reader::iterator I;
-	struct R : public vector<odb::Reader*> {
-		~R() { for (size_t i = 0; i < size(); ++i) delete at(i); }
-	} readers;
-
-	vector<pair<I, I> > iterators;
-
-	for (size_t i = 0; i < inputFiles.size(); ++i)
-	{
-		readers.push_back(new odb::Reader(inputFiles[i]));
-		iterators.push_back(make_pair(readers[i]->begin(), readers[i]->end()));
-	}
-
 	odb::Writer<> writer(outputFile);
 	odb::Writer<>::iterator out(writer.begin());
 
@@ -100,6 +104,42 @@ void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& output
 
 		++out;
 	}
+}
+
+template <typename T>
+struct AutoR : public vector<T*> { ~AutoR() { for (size_t i = 0; i < this->size(); ++i) delete this->at(i); } }; 
+
+void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& outputFile)
+{
+	typedef odb::Reader R;
+	typedef R::iterator I;
+
+    AutoR<R>  readers;
+	vector<pair<I, I> > iterators;
+
+	for (size_t i = 0; i < inputFiles.size(); ++i)
+	{
+		readers.push_back(new odb::Reader(inputFiles[i]));
+		iterators.push_back(make_pair(readers[i]->begin(), readers[i]->end()));
+	}
+    doMerge<R, I>(iterators, outputFile);
+}
+
+void MergeTool::merge(const vector<PathName>& inputFiles, const vector<string>& sqls, const PathName& outputFile)
+{
+    typedef odb::Select S;
+    AutoR<S> readers;
+    AutoR<eclib::FileHandle> fhs;
+    vector<pair<S::iterator, S::iterator> > iterators;
+	for (size_t i = 0; i < inputFiles.size(); ++i)
+	{
+        FileHandle* fh = new FileHandle(inputFiles[i]);
+        fh->openForRead();
+        fhs.push_back(fh);
+		readers.push_back(new S(sqls[i], *fhs[i]));
+		iterators.push_back(make_pair(readers[i]->begin(), readers[i]->end()));
+	}
+    doMerge<S, S::iterator>(iterators, outputFile);
 }
 
 } // namespace tool 

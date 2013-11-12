@@ -20,12 +20,15 @@
 #include "odblib/SQLSelect.h"
 #include "odblib/SQLTable.h"
 
-namespace odb { namespace sql { class SQLSelectFactory; } }
-
 namespace odb {
+
+    class DataTable;
+
 namespace sql {
 
-class SQLSelectFactory : public eckit::NonCopyable {
+class SQLSession;
+
+class SQLSelectFactory {
 public:
 
 	static SQLSelectFactory& instance();
@@ -67,15 +70,22 @@ private:
 	string index(const string& columnName, const SQLExpression* index);
 
 	void reshift(Expressions&);
+
+	SQLExpression* reshift(SQLExpression*);
+
+    void resolveImplicitFrom(SQLSession&, vector<SQLTable*>& from);
+
     eckit::DataHandle* implicitFromTableSource_;
+
     istream* implicitFromTableSourceStream_;
+
 	SQLDatabase* database_;
 	SQLOutputConfig config_;
 	int maxColumnShift_;
 	int minColumnShift_;
 	string csvDelimiter_;
 
-    friend class eckit::NewAlloc0<SQLSelectFactory>;
+	friend class eckit::ThreadSingleton<SQLSelectFactory>;
 };
 
 } // namespace sql

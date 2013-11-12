@@ -59,13 +59,15 @@ SelectIterator::SelectIterator(Select &owner, std::string select)
 template <typename DATASTREAM> 
 void SelectIterator::parse(typename DATASTREAM::DataHandleType *dh)
 {
+    Log::info() << "SelectIterator::parse: '" << select_ << "'" << endl;
 	sql::SQLParser p;
 	p.parseString(select_, dh, odb::sql::SQLSelectFactory::instance().config());
 	sql::SQLStatement *stmt = session_.statement();
+
+
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
 	ASSERT(selectStmt_);
-
-	//Log::info() << "SelectIterator::parse: " << *selectStmt_ << endl;
+	Log::info() << "SelectIterator::parse: " << *selectStmt_ << endl;
 
 	selectStmt_->prepareExecute();
 	
@@ -178,7 +180,6 @@ MetaData& SelectIterator::columns()
 template <typename DATASTREAM>
 void SelectIterator::populateMetaData()
 {
-	newDataset_ = true;
 	Expressions &results_ = selectStmt_->results_;
 	delete metaData_;
 	metaData_ = new MetaData(results_.size());
@@ -225,6 +226,7 @@ void SelectIterator::populateMetaData()
 	data_ = new double[metaData_->size()];
 	for (size_t i = 0; i < metaData_->size(); ++i)
 		data_[i] = (*metaData_)[i]->missingValue();
+	newDataset_ = true;
 }
 
 } // namespace odb 

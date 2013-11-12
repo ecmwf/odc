@@ -230,7 +230,7 @@ unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, eckit::PathName o
 		n = w->pass1(begin, end);
 		//w->close();
 	} catch (...) {
-		shell("cat odbdump.stderr && cp odbdump.stderr " + odb + ".odb.log", Here());
+		shell("[ -f odbdump.stderr ] && cat odbdump.stderr && cp odbdump.stderr " + odb + ".odb.log || echo odbdump.stderr not found", Here()); 
 		throw;
 	}
 	return n;

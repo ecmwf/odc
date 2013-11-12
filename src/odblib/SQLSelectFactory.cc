@@ -29,6 +29,9 @@
 #include "odblib/Writer.h"
 #include "odblib/WriterDispatchingIterator.h"
 #include "odblib/ShiftedBitColumnExpression.h"
+#include "odblib/ImportTool.h"
+#include "odblib/DataTable.h"
+#include "odblib/SQLDataTable.h"
 
 using namespace eckit;
 
@@ -44,7 +47,8 @@ SQLSelectFactory::SQLSelectFactory()
   database_(0),
   config_(SQLOutputConfig::defaultConfig()),
   maxColumnShift_(0),
-  minColumnShift_(0)
+  minColumnShift_(0),
+  csvDelimiter_(odb::tool::ImportTool::defaultDelimiter())
 {}
 
 SQLSelectFactory& SQLSelectFactory::instance()
@@ -89,6 +93,56 @@ SQLExpression* SQLSelectFactory::createColumn(
 					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table, table, shift, -shift));
 }
 
+SQLExpression* SQLSelectFactory::reshift(SQLExpression* e)
+{
+    if (e == 0) return 0;
+    SQLExpression* r = e;
+    ShiftedColumnExpression<BitColumnExpression>* c1 = dynamic_cast<ShiftedColumnExpression<BitColumnExpression>*>(e);
+    if (c1) {
+        int newShift = c1->shift() - minColumnShift_;
+        ASSERT(newShift >= 0);
+        r = newShift > 0
+            ? new ShiftedColumnExpression<BitColumnExpression>(*c1, newShift, c1->nominalShift())
+            : (new BitColumnExpression(*c1))->nominalShift(c1->nominalShift());
+        delete c1;
+        return r;
+    } 
+
+    ShiftedColumnExpression<ColumnExpression>* c2 = dynamic_cast<ShiftedColumnExpression<ColumnExpression>*>(e);
+    if (c2) {
+        int newShift = c2->shift() - minColumnShift_ ;
+        ASSERT(newShift >= 0);
+        r = newShift > 0
+            ? new ShiftedColumnExpression<ColumnExpression>(*c2, newShift, c2->nominalShift())
+            : (new ColumnExpression(*c2))->nominalShift(c2->nominalShift());
+        delete c2;
+        return r;
+    } 
+
+    BitColumnExpression* c3 = dynamic_cast<BitColumnExpression*>(e);
+    if(c3) {
+        r = new ShiftedColumnExpression<BitColumnExpression>(*c3, -minColumnShift_, 0);
+        delete c3;
+        return r;
+    }
+
+    ColumnExpression* c4 = dynamic_cast<ColumnExpression*>(e);
+    if(c4) {
+        r = new ShiftedColumnExpression<ColumnExpression>(*c4, -minColumnShift_, 0);
+        delete c4;
+        return r;
+    }
+    
+    odb::sql::expression::function::FunctionExpression* f = dynamic_cast<odb::sql::expression::function::FunctionExpression*>(e);
+    if (f) {
+        reshift(f->args());
+        return r;
+    }
+
+    Log::info() << "SQLSelectFactory::reshift: SKIP " << *e << endl;
+    return r;
+}
+
 void SQLSelectFactory::reshift(Expressions& select)
 {
 	ostream& L(Log::debug());
@@ -98,100 +152,68 @@ void SQLSelectFactory::reshift(Expressions& select)
 		L << "reshift: <- select[" << i << "]=" << *select[i] << endl;
 
 	for (size_t i = 0; i < select.size(); ++i)
-	{
-		SQLExpression* e = select[i];
-
-		ShiftedColumnExpression<BitColumnExpression>* c1 = dynamic_cast<ShiftedColumnExpression<BitColumnExpression>*>(e);
-		if (c1) {
-			int newShift = c1->shift() - minColumnShift_;
-			ASSERT(newShift >= 0);
-			select[i] = newShift > 0
-				? new ShiftedColumnExpression<BitColumnExpression>(*c1, newShift, c1->nominalShift())
-				: (new BitColumnExpression(*c1))->nominalShift(c1->nominalShift());
-			delete c1;
-			continue;
-		} 
-
-		ShiftedColumnExpression<ColumnExpression>* c2 = dynamic_cast<ShiftedColumnExpression<ColumnExpression>*>(e);
-		if (c2) {
-			int newShift = c2->shift() - minColumnShift_ ;
-			ASSERT(newShift >= 0);
-			select[i] = newShift > 0
-				? new ShiftedColumnExpression<ColumnExpression>(*c2, newShift, c2->nominalShift())
-				: (new ColumnExpression(*c2))->nominalShift(c2->nominalShift());
-			delete c2;
-			continue;
-		} 
-
-		BitColumnExpression* c3 = dynamic_cast<BitColumnExpression*>(e);
-		if(c3) {
-			select[i] = new ShiftedColumnExpression<BitColumnExpression>(*c3, -minColumnShift_, 0);
-			delete c3;
-			continue;
-		}
-
-		ColumnExpression* c4 = dynamic_cast<ColumnExpression*>(e);
-		if(c4) {
-			select[i] = new ShiftedColumnExpression<ColumnExpression>(*c4, -minColumnShift_, 0);
-			delete c4;
-			continue;
-		}
-		
-		odb::sql::expression::function::FunctionExpression* f = dynamic_cast<odb::sql::expression::function::FunctionExpression*>(e);
-		if (f) {
-			reshift(f->args());
-			continue;
-		}
-
-		Log::info() << "SQLSelectFactory::reshift: SKIP " << *e << endl;
-	}
+        select[i] = reshift(select[i]);
 
 	L << endl;
 	for (size_t i = 0; i < select.size(); ++i)
 		L << "reshift: -> select[" << i << "]=" << *select[i] << endl;
+}
 
-	maxColumnShift_ = 0;
-	minColumnShift_ = 0;
+void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vector<SQLTable*>& from)
+{
+    Log::debug() << "No <from> clause" << endl;
+
+    SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
+        : implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
+        : database_ ? database_->table("defaultTable")
+        : session.currentDatabase().dualTable();
+    from.push_back(table);
 }
 
 SQLSelect* SQLSelectFactory::create (bool distinct,
 	Expressions select_list,
 	string into,
 	vector<SQLTable*> from,
-	odb::sql::expression::SQLExpression *where,
+	SQLExpression *where,
 	Expressions group_by,
 	pair<Expressions,vector<bool> > order_by)
 {
-	if (where) Log::info() << "SQLSelectFactory::create: where = " << *where << endl;
+    ostream& L(Log::info());
+
+	if (where) L << "SQLSelectFactory::create: where = " << *where << endl;
 
 	SQLSelect* r = 0;
 	SQLSession& session = SQLSession::current();
 
-	if (from.size() == 0)
-	{
-		Log::debug() << "No <from> clause" << endl;
-
-		SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
-			: implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
-			: database_ ? database_->table("defaultTable")
-			: 0;
-		if (table != 0)
-			from.push_back(table);
-		//else
-		//	throw eckit::UserError("No table specified");
-	}
+	if (from.size() == 0) resolveImplicitFrom(session, from);
 
 	Expressions select;
 	for (ColumnDefs::size_type i = 0; i < select_list.size(); ++i)
 	{
-		Log::debug() << "expandStars: " << *select_list[i] << endl;
+		L << "expandStars: " << *select_list[i] << endl;
 		select_list[i]->expandStars(from, select);
 	}
 
 	ASSERT(maxColumnShift_ >= 0);
 	ASSERT(minColumnShift_ <= 0);
 	if (minColumnShift_ < 0) 
+    {
+        L << endl << "SELECT_LIST before reshifting:" << select << endl;
 		reshift(select);
+        L << "SELECT_LIST after reshifting:" << select << endl << endl;
+
+        if (where)
+        {
+            L << endl << "WHERE before reshifting:" << *where << endl;
+            where = reshift(where);
+            L << "WHERE after reshifting:" << *where << endl << endl;
+        }
+
+        reshift(order_by.first);
+    }
+
+	maxColumnShift_ = 0;
+	minColumnShift_ = 0;
 
 	if (group_by.size())
 		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << endl;
@@ -221,6 +243,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	maxColumnShift_ = 0;
 	return r;
 }
+
 
 } // namespace sql
 } // namespace odb

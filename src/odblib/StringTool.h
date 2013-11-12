@@ -64,6 +64,8 @@ public:
 
 	static string patchTimeForMars(const string& v);
 
+    static bool isSelectStatement(const string&);
+
 
 };
 

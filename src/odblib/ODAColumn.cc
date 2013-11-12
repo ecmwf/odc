@@ -16,8 +16,14 @@ namespace odb {
 namespace sql {
 
 ODAColumn::ODAColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double
-missingValue, bool isBitfield, const BitfieldDef& bitfieldDef, double* value)
-: SQLColumn(type, owner, name, index, hasMissingValue, missingValue, isBitfield, bitfieldDef),
+missingValue, const BitfieldDef& bitfieldDef, double* value)
+: SQLColumn(type, owner, name, index, hasMissingValue, missingValue, bitfieldDef),
+   value_(value)
+{}
+
+ODAColumn::ODAColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double
+missingValue, double* value)
+: SQLColumn(type, owner, name, index, hasMissingValue, missingValue),
    value_(value)
 {}
 
@@ -27,7 +33,6 @@ void ODAColumn::rewind() { *value_ = missingValue_; }
 
 double ODAColumn::next(bool& missing)
 {
-	// FIXME: what if the column hasn't got a missing value????
 	missing = (*value_ == missingValue_);
 	return *value_;
 }

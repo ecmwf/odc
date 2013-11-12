@@ -39,7 +39,7 @@ public:
 protected:
     union Meta
     {
-        struct { uint32_t size, flag; };
+        struct { uint32_t size, flag; } meta;
         uint64_t data;
     };
 
@@ -66,7 +66,7 @@ public:
     const double* const data() const { return data_ + 1; }
 
     /// Returns the number of row's elements.
-    const uint32_t& size() const { return meta().size; }
+    const uint32_t& size() const { return meta().meta.size; }
 
     /// Returns true if the row has been initialized.
     bool initialized() const { return flag() & INITIALIZED; }
@@ -87,9 +87,9 @@ protected:
     double* const data() { return data_ + 1; }
     void initialize(const DataColumns& columns);
     Meta& meta() const { return reinterpret_cast<Meta&>(data_[0]); }
-    uint32_t& flag() const { return meta().flag; }
-    void flag(uint32_t flag) { meta().flag = flag; }
-    void size(uint32_t n) { meta().size = n; }
+    uint32_t& flag() const { return meta().meta.flag; }
+    void flag(uint32_t flag) { meta().meta.flag = flag; }
+    void size(uint32_t n) { meta().meta.size = n; }
     void initialized(bool b) { b ? flag() |= INITIALIZED : flag() &= (~INITIALIZED); }
     void used(bool b) { b ? flag() |= USED : flag() &= (~USED); }
     void modified(bool b) { b ? flag() |= MODIFIED : flag() &= (~MODIFIED); }

@@ -145,6 +145,14 @@ inline bool SQLSelect::resultsOut()
 	return output_->output(results_);
 }
 
+SQLExpression* SQLSelect::findAliasedExpression(const string& alias)
+{
+    for (size_t i(0); i < select_.size(); ++i)
+        if (select_[i]->title() == alias)
+            return select_[i];
+    return 0;
+}
+
 void SQLSelect::prepareExecute() {
 	reset();
 
@@ -355,9 +363,8 @@ void SQLSelect::prepareExecute() {
 	// Add what's left to last table
 
 		for(size_t i = 0 ; i < e.size() ; ++i)
-		if(e[i]) {
-			sortedTables_.back()->check_.push_back(e[i]);
-		}
+            if(e[i]) 
+                sortedTables_.back()->check_.push_back(e[i]);
 		where = 0;
 	}
 
@@ -532,10 +539,6 @@ bool SQLSelect::processOneRow() {
 			bool rowProduced = output(simplifiedWhere_);
 			env.popFrame();
 			if (rowProduced)
-				//// FIXME: Instead of true we return sortedTables_.size() so we get a row when selecting an expression
-				//// not referencing any column (e.g value of a $constant_). The problem is, it will return 2 rows.
-				//// It does not affect normal case (selecting rows from a file).
-				//return sortedTables_.size();
 				return true;
 		}
 

@@ -90,7 +90,8 @@ void SQLTable::addColumn(const string& name, int index, const type::SQLType& typ
 isBitfield, const BitfieldDef& bitfieldDef)
 {
 	const FieldNames& bitmap = bitfieldDef.first;
-	SQLColumn *col = createSQLColumn(type, name, index, hasMissingValue, missingValue, isBitfield, bitfieldDef);
+	SQLColumn *col = isBitfield ? createSQLColumn(type, name, index, hasMissingValue, missingValue, bitfieldDef)
+                                : createSQLColumn(type, name, index, hasMissingValue, missingValue);
 
 	columnsByName_[name]   = col;
 	columnsByIndex_[index] = col;

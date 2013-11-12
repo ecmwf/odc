@@ -21,6 +21,8 @@
 #include "odblib/SQLType.h"
 #include "odblib/SQLColumn.h"
 #include "odblib/SchemaAnalyzer.h"
+#include "odblib/StringTool.h"
+#include "odblib/SQLExpression.h"
 
 using namespace eckit;
 
@@ -30,15 +32,27 @@ namespace sql {
 class VariablesColumn : public SQLColumn {
 public:
 	VariablesColumn(const string& name, int i, const string sqlType, SQLTable& owner)  
-	: SQLColumn(type::SQLType::lookup(sqlType), owner, name, i, false, 0 /*FIXME*/, false, *((const BitfieldDef*) 0))
-	{}
+	: SQLColumn(type::SQLType::lookup(sqlType), owner, name, i, false, 0 /*FIXME*/)
+	{
+        missing_ = false;
+        //value_ = MISSING_VALUE_REAL;
+    }
+     
+
+    double next(bool& missing) 
+    {
+        NOTIMP;
+    }
+
+    double* value_;
+    bool  missing_;
 };
 
 VariablesTable::VariablesTable(SQLDatabase& owner, const string& name)
 : SQLTable(owner, "", name)
 {
-	addColumn(new VariablesColumn("name", 0, "STRING", *this), "name", 0);
-	addColumn(new VariablesColumn("value", 1, "REAL", *this), "value", 1);
+	addColumn(new VariablesColumn("name", 0, "string", *this), "name", 0);
+	addColumn(new VariablesColumn("value", 1, "real", *this), "value", 1);
 }
 
 VariablesTable::~VariablesTable() {}
@@ -48,21 +62,29 @@ SQLTableIterator* VariablesTable::iterator(const vector<SQLColumn*>&) const
 	return new VariablesTableIterator(SQLSession::current().currentDatabase().variables());
 }
 
-SQLColumn* VariablesTable::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, bool isBitfield, const BitfieldDef&)
-{ 
-	NOTIMP;
-}
+SQLColumn* VariablesTable::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue)
+{ NOTIMP; }
+
+SQLColumn* VariablesTable::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&)
+{ NOTIMP; }
 
 VariablesTableIterator::~VariablesTableIterator() {}
 
 void VariablesTableIterator::rewind()
 {
-	NOTIMP;
+    it_ = variables_.begin();
 }
 
 bool VariablesTableIterator::next()
 {
-	NOTIMP;
+    // TODO: populate values
+    if (it_ == variables_.end())
+        return false;
+    ++it_;
+    data_[0] = StringTool::cast_as_double(it_->first);
+    bool missing;
+    data_[1] = it_->second->eval(missing);
+    return true;
 }
 
 VariablesTableIterator::VariablesTableIterator(map<string,SQLExpression*>& vs)
