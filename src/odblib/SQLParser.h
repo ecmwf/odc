@@ -44,7 +44,7 @@ public:
 	static void parseString(const string&, istream*, SQLOutputConfig, const string& cvsDelimiter);
 	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
 
-	//static void include(const eclib::PathName&);
+	//static void include(const eckit::PathName&);
 
 	static void pushInclude(const string&, const string&);
 	static void popInclude();

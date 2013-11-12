@@ -960,8 +960,8 @@ TEST(Gabor)
     odb::FastODA2Request<odb::ODA2RequestClientTraits> o2r;
     o2r.parseConfig(cfg);
 
-    eclib::OffsetList offsets;
-    eclib::LengthList lengths;
+    eckit::OffsetList offsets;
+    eckit::LengthList lengths;
     vector<ODAHandle*> handles;
     bool rc = o2r.scanFile(fileName, offsets, lengths, handles);
     for (size_t i = 0; i < handles.size(); ++i)

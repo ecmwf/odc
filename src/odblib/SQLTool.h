@@ -43,12 +43,12 @@ public:
 
 private:
 	static void runSQL(const string&,
-                const eclib::PathName&,
+                const eckit::PathName&,
                 odb::sql::SQLSession&,
                 odb::sql::SQLParser&,
                 const odb::sql::SQLOutputConfig&,
-                const eclib::Offset& offset = eclib::Offset(0),
-                const eclib::Length& length = eclib::Length(0));
+                const eckit::Offset& offset = eckit::Offset(0),
+                const eckit::Length& length = eckit::Length(0));
 
 	bool doNotWriteColumnNames_; // -T
 	bool doNotWriteNULL_;        // -N

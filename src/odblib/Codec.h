@@ -348,10 +348,10 @@ public:
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
-	void dataHandle(void *p) { ds_.dataHandle(static_cast<eclib::DataHandle*>(p)); }
+	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
-	void save(eclib::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
+	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
+	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;

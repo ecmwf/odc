@@ -67,7 +67,7 @@ public:
   //! Get the date and time as integers
   void get(int &, int &, int &, int &, int &, int &) const;
 
-  // Functions from eclib
+  // Functions from eckit
   void addDays(const int &);
   void addHours(const int &);
   void addMinutes(const int &);

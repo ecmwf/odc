@@ -12,7 +12,7 @@
 #include "odblib/SQLExpressionEvaluated.h"
 #include "odblib/OrderByExpressions.h"
 #include "odblib/SQLSelect.h"
-#include "eclib/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 namespace sql {
@@ -97,7 +97,7 @@ void SQLOrderOutput::prepare(SQLSelect& sql)
             bool missing(false);
             size_t index(ex[i]->eval(missing));
             ASSERT(! missing);
-            if (index < 1) throw eclib::UserError("ORDER BY: indices of columns must be positive");
+            if (index < 1) throw eckit::UserError("ORDER BY: indices of columns must be positive");
             byIndices_.push_back(index);
         } 
     }

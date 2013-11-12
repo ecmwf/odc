@@ -62,7 +62,7 @@ void pushInclude(const string& sql, const string& yypath)
     //cerr << "</INCLUDE>" << endl;
 
     if (includeStackPtr > maxIncludeDepth)
-        throw eclib::UserError("Includes nested too deeply");
+        throw eckit::UserError("Includes nested too deeply");
     includeStack[includeStackPtr++] = YY_CURRENT_BUFFER;
     odblib__switch_to_buffer(odblib__scan_bytes(sql.c_str(), sql.size()));
 }

@@ -215,7 +215,7 @@ string StringTool::patchTimeForMars(const string& ss)
 	return v;
 }
 
-bool StringTool::isSelectStatement(const string& s) { return StringTool::match("select", eclib::StringTools::lower(eclib::StringTools::trim(s))); }
+bool StringTool::isSelectStatement(const string& s) { return StringTool::match("select", eckit::StringTools::lower(eckit::StringTools::trim(s))); }
 
 } // namespace odb 
 

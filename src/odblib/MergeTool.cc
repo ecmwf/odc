@@ -129,7 +129,7 @@ void MergeTool::merge(const vector<PathName>& inputFiles, const vector<string>& 
 {
     typedef odb::Select S;
     AutoR<S> readers;
-    AutoR<eclib::FileHandle> fhs;
+    AutoR<eckit::FileHandle> fhs;
     vector<pair<S::iterator, S::iterator> > iterators;
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{

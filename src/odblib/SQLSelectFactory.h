@@ -67,6 +67,10 @@ private:
 
     SQLSelectFactory();
 
+     // No copy allowed
+     SQLSelectFactory(const SQLSelectFactory&);
+     SQLSelectFactory& operator=(const SQLSelectFactory&);
+
 	string index(const string& columnName, const SQLExpression* index);
 
 	void reshift(Expressions&);
@@ -85,7 +89,7 @@ private:
 	int minColumnShift_;
 	string csvDelimiter_;
 
-	friend class eckit::ThreadSingleton<SQLSelectFactory>;
+    friend class eckit::NewAlloc0<SQLSelectFactory>;
 };
 
 } // namespace sql

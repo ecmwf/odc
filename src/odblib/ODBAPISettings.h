@@ -33,8 +33,8 @@ public:
 	size_t setvbufferSize();
 	void setvbufferSize(size_t);
 
-	eckit::DataHandle* writeToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0), bool openDataHandle = true);
-	eckit::DataHandle* appendToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0), bool openDataHandle = true);
+    eckit::DataHandle* writeToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0), bool openDataHandle = true);
+    eckit::DataHandle* appendToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0), bool openDataHandle = true);
 
 	static bool debug;
 

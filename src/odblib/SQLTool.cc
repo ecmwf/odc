@@ -89,11 +89,11 @@ void SQLTool::execute(const string& sql, ostream& out)
 	runSQL(sql, "", session, parser, config);
 }
 
-void SQLTool::runSQL(const string& sql, const eclib::PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
+void SQLTool::runSQL(const string& sql, const eckit::PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
 {
 	Log::info() << "Executing '" << sql << "'" << endl;
 
-	if (inputFile.path().size() == eclib::Length(0))
+	if (inputFile.path().size() == eckit::Length(0))
 		parser.parseString(sql, static_cast<DataHandle*>(0), config);
 	else if (offset != Offset(0) || length != Length(0))
 	{
