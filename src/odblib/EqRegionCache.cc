@@ -18,6 +18,11 @@
 
 using namespace eclib;
 
+namespace odb {
+namespace sql {
+namespace expression {
+namespace function {
+
 #define regions(i,j,k)   regs  [ ((k)-1)*dim*2     + ((j)-1)*dim     + (i) - 1 ]
 #define regions_1(i,j,k) regs_1[ ((k)-1)*(dim-1)*2 + ((j)-1)*(dim-1) + (i) - 1 ]
 #define region(i,j) reg[((j)-1)*dim + (i) - 1]
@@ -944,4 +949,8 @@ void EqRegionCache::create_cache(const double & resol, const int & n)
 
 }
 
+} // namespace function
+} // namespace expression
+} // namespace sql
+} // namespace odb
 

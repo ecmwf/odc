@@ -17,6 +17,7 @@
 #include "odblib/HashTable.h"
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/ODBAPISettings.h"
+#include "odblib/MDI.h"
 
 
 namespace eclib { class DataHandle; }
@@ -26,9 +27,6 @@ namespace odb {
 class Reader;
 class SameByteOrder;
 class OtherByteOrder;
-
-double const MISSING_VALUE_REAL = -2147483647.0;
-long const MISSING_VALUE_INT =  2147483647;
 
 namespace codec {
 
@@ -187,7 +185,7 @@ private:
 template<typename BYTEORDER>
 class CodecInt8 : public Codec {
 public:
-	CodecInt8() : Codec("int8") { this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT; }
+	CodecInt8() : Codec("int8") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d); 
 	virtual double decode();
 
@@ -203,7 +201,7 @@ private:
 template<typename BYTEORDER>
 class CodecInt8Missing : public Codec {
 public:
-	CodecInt8Missing() : Codec("int8_missing") { this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT; }
+	CodecInt8Missing() : Codec("int8_missing") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
@@ -241,7 +239,7 @@ public:
 	CodecRealConstantOrMissing() : CodecConstantOrMissing<BYTEORDER>()
 	{
 		this->name_ = "real_constant_or_missing";
-		this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_REAL; 
+		this->missingValue_ = this->min_ = this->max_ = odb::MDI::realMDI(); 
 	}
 
 	void load(eclib::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
@@ -364,7 +362,7 @@ private:
 template<typename BYTEORDER>
 class CodecInt32 : public Codec {
 public:
-	CodecInt32() : Codec("int32") { this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT; }
+	CodecInt32() : Codec("int32") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
@@ -380,7 +378,7 @@ private:
 template<typename BYTEORDER>
 class CodecInt16 : public Codec {
 public:
-	CodecInt16() : Codec("int16") { this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT; }
+	CodecInt16() : Codec("int16") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
@@ -396,7 +394,7 @@ private:
 template<typename BYTEORDER>
 class CodecInt16Missing : public Codec {
 public:
-	CodecInt16Missing() : Codec("int16_missing") { this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT; }
+	CodecInt16Missing() : Codec("int16_missing") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
 
@@ -416,7 +414,7 @@ public:
 	CodecInt16String() : CodecChars<BYTEORDER>(), intCodec()
 	{
 		this->name_ = "int16_string";
-		this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT;
+		this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI();
 		intCodec.min(0);
 	}
 	~CodecInt16String() {}
@@ -454,7 +452,7 @@ public:
 	CodecInt8String() : CodecChars<BYTEORDER>(), intCodec() 
 	{
 		this->name_ = "int8_string";
-		this->missingValue_ = this->min_ = this->max_ = MISSING_VALUE_INT;
+		this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI();
 		intCodec.min(0);
 	}
 	~CodecInt8String() {}

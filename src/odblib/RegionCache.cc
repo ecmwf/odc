@@ -14,10 +14,15 @@
 #include "eclib/ThreadSingleton.h"
 
 #include "odblib/RegionCache.h"
+#include "odblib/MDI.h"
 
 using namespace eclib;
 
-template class ThreadSingleton<VectorRegionCache>;
+namespace odb {
+namespace sql {
+namespace expression {
+namespace function {
+
 static ThreadSingleton<VectorRegionCache> region_cache_;
 
 double mfmod(double x,double y) { double a; return ((a=x/y)-(int)a)*y; }
@@ -101,9 +106,9 @@ int RegionCache::find_lonbox(const int & jb, const double & lon,
 //==============================================================================
 {
   const double three_sixty = 360;
-  double mid   = RMDI;
-  double left  = RMDI;
-  double right = RMDI;
+  double mid = odb::MDI::realMDI();
+  double left = odb::MDI::realMDI();
+  double right = odb::MDI::realMDI();
   int boxid = -1;
   if (jb >= 0 && jb < *nbands_) {
     double Lon = mfmod(lon + three_sixty, three_sixty);
@@ -184,7 +189,7 @@ int RegionCache::find_latband(const double & lat) {
 double RegionCache::get_midlat(const double & resol, const double & lat)
 //==============================================================================
 {
-   double res=RMDI; // should be initialised to missing
+   double res = odb::MDI::realMDI(); // should be initialised to missing
    get_cache(resol);
    int jb = find_latband(lat);
     if (jb >= 0 && jb < *nbands_) {
@@ -197,7 +202,7 @@ double RegionCache::get_midlat(const double & resol, const double & lat)
 double RegionCache::get_midlon(const double & resol, const double & lat, const double & lon)
 //==============================================================================
 {
-   double res=RMDI; // should be initialised to missing
+   double res = odb::MDI::realMDI(); // should be initialised to missing
    get_cache(resol);
    int jb = find_latband(lat);
    int boxid = find_lonbox(jb, lon, &res, NULL, NULL);
@@ -295,4 +300,9 @@ VectorRegionCache *p = &(region_cache_.instance());
   last_ = p->at(nelm)->last_;
 
 }
+
+} // namespace function
+} // namespace expression
+} // namespace sql
+} // namespace odb
 

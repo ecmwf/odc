@@ -80,7 +80,7 @@ void TestFastODA2Request::test()
 	ASSERT(*o.getValues("TYPE").begin() == "MISSING");
 
 	map<string, double> m = o.getUniqueValues();
-	ASSERT(m["TYPE"] == MISSING_VALUE_REAL);
+	ASSERT(m["TYPE"] == odb::MDI::realMDI());
 	ASSERT(m["DATE"] == 20000101);
 	ASSERT(m["TIME"] == 60000);
 }

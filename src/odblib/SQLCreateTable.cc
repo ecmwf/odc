@@ -61,8 +61,8 @@ unsigned long long SQLCreateTable::execute()
 			db.links()[tableName_].insert(columnName);
 
 			const type::SQLType& intType = type::SQLType::lookup("pk5int");
-			table->addColumn(columnName + ".offset", index++, intType, false, MISSING_VALUE_INT, false, bitfieldDef);
-			table->addColumn(columnName + ".length", index++, intType, false, MISSING_VALUE_INT, false, bitfieldDef);
+			table->addColumn(columnName + ".offset", index++, intType, false, odb::MDI::integerMDI(), false, bitfieldDef);
+			table->addColumn(columnName + ".length", index++, intType, false, odb::MDI::integerMDI(), false, bitfieldDef);
 		}
 		else
 		{
@@ -75,7 +75,7 @@ unsigned long long SQLCreateTable::execute()
 			if (!isVector)
 				// FIXME: no information about missing value in the CREATE TABLE syntax
 				// TODO: choose a sensible default based upon type
-				table->addColumn(columnName, index++, typ, true, MISSING_VALUE_REAL, isBitmap, bitfieldDef);
+				table->addColumn(columnName, index++, typ, true, odb::MDI::realMDI(), isBitmap, bitfieldDef);
 			else
 			{
 				for (int i = start; i <= end; i++)
@@ -83,7 +83,7 @@ unsigned long long SQLCreateTable::execute()
 					string expandedName = columnName + "_" + Translator<int,string>()(i);
 					Log::debug() << "  === expandedName: " << expandedName << endl;
 					// TODO: choose a sensible default based upon type
-					table->addColumn(expandedName, index++, typ, true, MISSING_VALUE_REAL, isBitmap, bitfieldDef);
+					table->addColumn(expandedName, index++, typ, true, odb::MDI::realMDI(), isBitmap, bitfieldDef);
 				}
 			}
 		}

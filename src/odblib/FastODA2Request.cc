@@ -156,7 +156,7 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 				: eclib::Translator<double, string>()(column->min());
 		values_[i].insert(v);
 		currentValues.push_back(v);
-		double dv = !column ? MISSING_VALUE_REAL : column->min();
+		double dv = !column ? odb::MDI::realMDI() : column->min();
 
 		odaHandle.addValue(columnNames_[i], dv);
 		doubleValues_[keywords_[i]].insert(dv);

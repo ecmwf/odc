@@ -32,6 +32,7 @@ module odb_c_binding
   integer, parameter :: ODB_REAL=2
   integer, parameter :: ODB_STRING=3
   integer, parameter :: ODB_BITFIELD=4
+  integer, parameter :: ODB_DOUBLE=5
 interface 
 
 !> Initialize ODB API. This function must be called before any other function from the ODB API.

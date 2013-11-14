@@ -21,6 +21,8 @@ public:
 	ODB2ODATool (int argc, char *argv[]); 
     ODB2ODATool (const CommandLineParser &);
 
+    void resetMDI(const std::string&);
+
 	void run(); 
 
 private:

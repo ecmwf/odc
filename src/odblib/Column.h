@@ -137,8 +137,10 @@ void Column::type(ColumnType t, bool differentByteOrder)
 	string codecName;
 	switch (type_)
 	{
-		case INTEGER:
-		case BITFIELD: codecName = "int32"; break;
+		case INTEGER:  codecName = "int32"; break;
+		case BITFIELD:
+                       // TODO: 'unsigned_int64'
+                       codecName = "int32"; break;
 		case REAL:     codecName = "long_real"; break;
 		case DOUBLE:   codecName = "long_real"; break;
 		case STRING:   codecName = "chars"; break;
@@ -147,6 +149,9 @@ void Column::type(ColumnType t, bool differentByteOrder)
 			break;
 	}
 	coder(codec::Codec::findCodec<DATASTREAM>(codecName, differentByteOrder));
+
+    // TODO: when we have codec unsigned_int64 it will have 0 as 
+    if (type_ == BITFIELD) missingValue(MDI::bitfieldMDI());
 }
 
 } // namespace odb {
