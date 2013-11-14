@@ -30,13 +30,11 @@ ImportTool::ImportTool(int argc, char *parameters[])
 : Tool(argc, parameters)
 {
 	registerOptionWithArgument("-d"); // Delimiter
+	registerOptionWithArgument("-sql"); // SQL to filter input CSV with
 }
 
 void ImportTool::run()
 {
-	Log::info() << "parameters().size(): " << parameters().size() << endl;
-	Log::info() << "ImportTool::run: parameters(): " << *static_cast<CommandLineParser*>(this) << endl;
-
 	if (parameters().size() != 3)
 	{
 		Log::error() << "Usage: ";
@@ -53,26 +51,29 @@ void ImportTool::run()
 	string delimiter = StringTools::upper(optionArgument("-d", defaultDelimiter()));
 	if (delimiter == "TAB")
 		delimiter = "\t";
+
+    std::string sql(optionArgument("-sql", std::string("select *;")));
 	
-	importFile(inFile, outFile, delimiter);
+	filterAndImportFile(inFile, outFile, sql, delimiter);
 }
 
 void ImportTool::importFile(const PathName& in, const PathName& out, const string& delimiter)
 {
+    filterAndImportFile(in, out, "select *;", delimiter);
+}
+
+void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, const string& sql, const string& delimiter)
+{
 	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
 
 	ifstream fs( in.asString().c_str() );
-	odb::Select input("select * ;", fs, delimiter);
+	odb::Select input(sql, fs, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
+	unsigned long long n = output->pass1(input.begin(), input.end());
 
-	odb::Select::iterator it = input.begin();
-	odb::Select::iterator end = input.end();
-
-	unsigned long long n = output->pass1(it, end);
-
-    Log::info() << "ImportTool::importFile: = copied " << n << " rows." << endl;
+    Log::info() << "ImportTool::importFile: Copied " << n << " rows." << endl;
 }
 
 void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
@@ -85,12 +86,9 @@ void ImportTool::importText(const string& s, const PathName& out, const string& 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
 
-	odb::Select::iterator it = input.begin();
-	odb::Select::iterator end = input.end();
+	unsigned long long n = output->pass1(input.begin(), input.end());
 
-	unsigned long long n = output->pass1(it, end);
-
-    Log::info() << "ImportTool::importText: = copied " << n << " rows." << endl;
+    Log::info() << "ImportTool::importText: Copied " << n << " rows." << endl;
 }
 
 } // namespace tool 

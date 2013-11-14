@@ -21,6 +21,9 @@ public:
     static double realMDI() { return realMDI_; }
     static double integerMDI() { return integerMDI_; }
 
+    /// We always use 0 as MDI of Bitfield columns.
+    static double bitfieldMDI() { return 0; }
+
     static void realMDI(double v) { realMDI_ = v; }
     static void integerMDI(double v) { integerMDI_ = v; }
 
