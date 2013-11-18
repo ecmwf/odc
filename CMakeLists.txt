@@ -25,7 +25,7 @@ ecbuild_requires_macro_version( 1.2 )
 ###############################################################################
 # local project
 
-ecbuild_use_package( PROJECT eckit VERSION 0.5.3 REQUIRED )
+ecbuild_use_package( PROJECT eckit VERSION 0.5.2 REQUIRED )
 
 ecbuild_declare_project()
 
