@@ -19,7 +19,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "eckit/filesystem/StdFileHandle.h"
+#include "eckit/io/StdFileHandle.h"
 
 #include "odblib/odb_api.h"
 #include "odblib/Codec.h"
