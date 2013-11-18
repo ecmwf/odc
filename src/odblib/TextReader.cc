@@ -24,7 +24,7 @@ using namespace std;
 using namespace eckit;
 
 namespace odb {
-#define MEGA(x) (x*1024*1024)
+#define MEGA(x) ((x)*1024*1024)
 
 TextReader::TextReader(std::istream& input, const string& delimiter)
 : in_(&input),

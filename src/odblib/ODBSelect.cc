@@ -25,7 +25,7 @@ using namespace std;
 using namespace eckit;
 
 namespace odb {
-#define MEGA(x) (x*1024*1024)
+#define MEGA(x) ((x)*1024*1024)
 
 Select::Select(const string& selectStatement, DataHandle &dh)
 : dataHandle_(&dh),
