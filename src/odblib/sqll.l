@@ -157,14 +157,14 @@ SEMICOLON [;]
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << endl;
 
-    eclib::PathName fileName(StringTool::unQuote(yytext));
+    eckit::PathName fileName(StringTool::unQuote(yytext));
     if (!fileName.exists())
     {
         SQLSession& session = SQLSession::current();
         SQLDatabase& db = session.currentDatabase();
         for (unsigned i = 0; i < db.includePath().size(); i++)
         {
-            eclib::PathName path(db.includePath()[i] + "/" + fileName);
+            eckit::PathName path(db.includePath()[i] + "/" + fileName);
             if (path.exists())
             {
                 fileName = path;

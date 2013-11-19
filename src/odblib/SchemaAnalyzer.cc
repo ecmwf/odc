@@ -54,7 +54,7 @@ void SchemaAnalyzer::beginSchema(const string& name)
     {
         string message = "Cannot create new schema '" + name
             + "' - current schema '" + currentSchema_ + "' not finalized";
-        throw eclib::UserError(message);
+        throw eckit::UserError(message);
     }
 
     pair<SchemaDefs::iterator, bool> result;
@@ -63,7 +63,7 @@ void SchemaAnalyzer::beginSchema(const string& name)
     if (result.second == false)
     {
         string message = "Schema '" + name + "' already defined";
-        throw eclib::UserError(message);
+        throw eckit::UserError(message);
     }
 
     currentSchema_ = name;
@@ -105,7 +105,7 @@ void SchemaAnalyzer::addTable(TableDef& table)
             {
                 string message = "Could not find definition of parent table '"
                     + table.parents()[i] + "' inherited by table '" + table.name() + "'";
-                throw eclib::UserError(message);
+                throw eckit::UserError(message);
             }
 
             const TableDef& parent = it->second;
@@ -125,7 +125,7 @@ void SchemaAnalyzer::addTable(TableDef& table)
             if (result.second == false)
             {
                 string message = "Table '" + table.name() + "' already defined";
-                throw eclib::UserError(message);
+                throw eckit::UserError(message);
             }
         }
         else
@@ -138,7 +138,7 @@ void SchemaAnalyzer::addTable(TableDef& table)
             if (it == schemas_.end())
             {
                 string message = "Referenced schema '" + schemaName + "' not defined '";
-                throw eclib::UserError(message);
+                throw eckit::UserError(message);
             }
 
             SchemaDef& schema = it->second;
@@ -151,7 +151,7 @@ void SchemaAnalyzer::addTable(TableDef& table)
             {
                 string message = "Table '" + table.name() + "' already defined in '"
                     + schemaName + "' schema";
-                throw eclib::UserError(message);
+                throw eckit::UserError(message);
             }
         }
 }

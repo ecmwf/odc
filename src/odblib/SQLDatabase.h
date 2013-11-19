@@ -68,7 +68,7 @@ public:
 	SchemaAnalyzer& schemaAnalyzer() { return schemaAnalyzer_; }
 
         void setIncludePath(const std::string& includePath);
-        const std::vector<eclib::PathName>& includePath() const { return includePath_; }
+        const std::vector<eckit::PathName>& includePath() const { return includePath_; }
 
     SQLTable* dualTable();
 

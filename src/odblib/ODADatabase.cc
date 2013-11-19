@@ -10,7 +10,8 @@
 
 #include <cctype>
 
-#include "eclib/Resource.h"
+#include "eckit/config/Resource.h"
+
 #include "odblib/odb_api.h"
 #include "odblib/ODADatabase.h"
 #include "odblib/StringTool.h"
