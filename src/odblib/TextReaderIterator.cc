@@ -57,27 +57,51 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 
 odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
 {
-    Log::info() << "TextReaderIterator::parseBitfields: " << c << endl;
+    ostream& L( Log::debug() );
+
+    L << "TextReaderIterator::parseBitfields: " << c << endl;
 	size_t leftBracket (c.find('['));
 	size_t rightBracket (c.find(']'));
 	ASSERT(leftBracket != string::npos && rightBracket != string::npos);
 	string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
 
+    L << "TextReaderIterator::parseBitfields: s='" << s << "'" << endl;
+
 	odb::FieldNames names;
 	odb::Sizes      sizes;
-	vector<string> bs(S::split(";", s));
+
     size_t numberOfBits = 0;
+	vector<string> bs(S::split(";", s));
+
+    L << "TextReaderIterator::parseBitfields: bs=" << bs << endl;
+
 	for (size_t i = 0; i < bs.size(); ++i)
 	{
 		vector<string> v(S::split(":", bs[i]));
-		ASSERT(v.size() == 2);
+
+        L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << endl;
+
+		if (v.size() != 2)
+            throw UserError("Bitfields definition parse error");
+
+        if (std::find(names.begin(), names.end(), v[0]) != names.end())
+            throw UserError("Names of fields must be unique within one bitfield");
+
 		names.push_back(v[0]);
-		size_t size = atoi(v[1].c_str());
-		ASSERT(size);
+
+		int size = atoi(v[1].c_str());
+		
+		if (! v.size() > 0)
+            throw UserError("Size of a bitfield must be positive");
+
         numberOfBits += size;
 		sizes.push_back(size);
 	}
-    Log::info() << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << endl;
+    L << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << endl;
+
+    if (numberOfBits > 31)
+        throw UserError("Bitfields can have up to 31 bits only currently");
+
 	return odb::BitfieldDef(make_pair(names, sizes));
 }
 
@@ -107,7 +131,7 @@ void TextReaderIterator::parseHeader()
 		if (! S::startsWith(columnType, "BITFIELD"))
 		{
 			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
-						<< columnType <<  endl;
+						<< columnType << endl;
 			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType);
 		}
 		else

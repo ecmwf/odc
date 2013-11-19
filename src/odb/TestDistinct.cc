@@ -62,7 +62,7 @@ TestDistinct::~TestDistinct() { }
 ///
 void TestDistinct::test()
 {
-	string sql = "select distinct a from \"a1to10twice.odb\"";
+	string sql = "select distinct a from \"a1to10twice.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << endl;
 

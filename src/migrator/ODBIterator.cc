@@ -34,7 +34,8 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
-ODBIterator::ODBIterator(const eckit::PathName& db, const std::string& sql)
+//ODBIterator::ODBIterator(const PathName& db, const std::string& sql)
+ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 : db_(db),
   odbHandle_(0),
   ci_(0),
@@ -45,17 +46,15 @@ ODBIterator::ODBIterator(const eckit::PathName& db, const std::string& sql)
 {
 	Log::info() << "ODBIterator::ODBIterator: @" << this << " db=" << db << endl;
 
-	const std::string odbDirectory = db.asString();
+	const std::string odbDirectory = db; //.asString();
 	Log::info() << "Opening ODB in '" << odbDirectory << "'" << endl;
 	ASSERT(PathName(odbDirectory).exists());
-
-
 	
 	std::string select = sql.size() ? sql : defaultSQL(db);
 
 	ASSERT(select.size() != 0 && select != "");
 
-	const std::string dbPath = db.asString();
+	const std::string dbPath = db; //.asString();
 	const char *db_path = dbPath.c_str();
 	const char *sql_select = select.c_str();
 
@@ -67,11 +66,8 @@ ODBIterator::ODBIterator(const eckit::PathName& db, const std::string& sql)
 
 	data_ = new double[noOfColumns_];
 
-	next();
-	if (noMore_)
-	{
-		Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
-	}
+	//next();
+	//if (noMore_) Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
 }
 
 bool ODBIterator::next()
@@ -91,18 +87,19 @@ bool ODBIterator::next()
 	}
 
 	ASSERT(nd == noOfColumns_);
+    // FIXME: read the missing values for a given constant from somewhere
 	// This is because sometime ODB has MISSING_VALUE_REAL in INTEGER columns...
 	// for example station_type@hdr in ECMA.conv
 	for (int i = 0; i < noOfColumns_; ++i)
-		if ((*columns_)[i]->type() == odb::INTEGER && data_[i] == odb::MISSING_VALUE_REAL)
-			data_[i] = odb::MISSING_VALUE_INT;
+		if ((*columns_)[i]->type() == odb::INTEGER && data_[i] == odb::MDI::realMDI())
+			data_[i] = odb::MDI::integerMDI();
 
 	return !(noMore_ = false);
 }
 
 void ODBIterator::createColumns()
 {
-	Log::info() << " => ODBIterator::createColumns: " << endl;
+	Log::debug() << " => ODBIterator::createColumns: " << endl;
 
 	delete columns_;
 	columns_ = new odb::MetaData(noOfColumns_, (odb::Column *) 0);
@@ -119,19 +116,20 @@ void ODBIterator::createColumns()
 		colinfo_t *pci = &((colinfo_t *) ci_)[i];
 		std::string name = pci->nickname ? pci->nickname : pci->name;
         truenames[name] = pci->name;
+
 		odb::ColumnType type = odb::REAL;
-		double missing = odb::MISSING_VALUE_INT; 
+		double missing = odb::MDI::integerMDI(); 
 
 		switch(pci->dtnum)
 		{
 			case DATATYPE_REAL4:
 				type = odb::REAL;
-				missing = odb::MISSING_VALUE_REAL; 
+				missing = odb::MDI::realMDI(); 
 				break;
 
 			case DATATYPE_REAL8:
 				type = preservePrecision ? odb::DOUBLE : odb::REAL;
-				missing = odb::MISSING_VALUE_REAL; 
+				missing = odb::MDI::realMDI(); 
 				break;
 
 			case DATATYPE_STRING:
@@ -156,12 +154,12 @@ void ODBIterator::createColumns()
 		setColumn(i, name, type, missing);
 	}
 	getSchema(db_).updateBitfieldsDefs(columns(), truenames);
-	Log::info() << " <= ODBIterator::createColumns: " << endl;
+	Log::debug() << " <= ODBIterator::createColumns: " << endl;
 }
 
 void ODBIterator::destroy()
 {
-	Log::info() << "ODBIterator::destroy: @" << this << endl;
+	Log::debug() << "ODBIterator::destroy: @" << this << endl;
 	odbdump_destroy_colinfo( (colinfo_t *) ci_, noOfColumns_); 
 	odbdump_close(odbHandle_);
 	delete columns_;

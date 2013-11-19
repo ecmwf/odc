@@ -59,8 +59,6 @@ namespace function {
 
 //--------------------------------------------------------------
 
-#define RMDI   -2147483647
-#define NMDI    2147483647
 const double R_Earth_km   = 180*60 / piconst::pi * 1.852;
 const double R_Earth      = 180*60 / piconst::pi * 1.852*100.0;
 const double EPS          = 1e-7;

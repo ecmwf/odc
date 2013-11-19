@@ -22,6 +22,7 @@
 #include "migrator/ODBIterator.h"
 #include "migrator/FakeODBIterator.h"
 #include "migrator/ODB2ODATool.h"
+#include "migrator/MigratorTool.h"
 
 using namespace std;
 using namespace odb::tool;
@@ -36,91 +37,21 @@ int valgrind(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
-	//test_schemaFile();
-
-	CommandLineParser clp(argc, argv);
+    CommandLineParser clp(argc, argv);
 	clp.registerOptionWithArgument("-genreptype");
-	clp.registerOptionWithArgument("-reptypecfg");
-	clp.registerOptionWithArgument("-addcolumns");
-	clp.registerOptionWithArgument("-mdi");
+    clp.registerOptionWithArgument("-reptypecfg");
+    clp.registerOptionWithArgument("-addcolumns");
+    clp.registerOptionWithArgument("-mdi");
+    clp.parameters();
 
-	if (clp.parameters().size() < 2 || clp.parameters().size() > 4)
-	{
-		cerr << "Usage:" << endl
-			<< "	" << clp.parameters(0)
-
-            << " [<options>] <odb_database> [<file-with-select-statement-defining-dump> [<output.odb>]]" << endl
-
-            << "Options: " << endl << endl
-
-			<< "\t[-genreptype <list-of-columns>]" << endl
-			<< "\t[-reptypecfg <reptype-generation-config-file>]" << endl
-			<< "\t[-addcolumns <list-of-assignments>]" << endl
-            << "\t[-mdi <type1:MDI1,type2:MDI2,...>]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << endl
-
-			<< endl;
-		return 1;
-	}
-
-	cout << clp << endl;
-
-	if (clp.parameters(1) == "g")    return gdb(argc, argv);
-	if (clp.parameters(1) == "vg")   return valgrind(argc, argv);
-	if (clp.parameters(1) == "test")
-	{
-		odb::tool::test::TestRunnerApplication(argc, argv).start();
-		return 0; // TODO: Retrieve a status from the test runner
-	}
-
-	if (clp.parameters(1) == "help") return ToolRunnerApplication(argc, argv).printHelp(cout);
+    cout << clp << endl;
 
 	ToolRunnerApplication runner(argc, argv, false, false);
-	//ODB2ODATool odb2oda(&runner);
-	ODB2ODATool odb2oda(clp);
-	runner.tool(&odb2oda);
+	//ToolRunnerApplication runner(clp, false, false);
+	MigratorTool migrator(clp);
+	runner.tool(&migrator);
 	runner.start();
 	return 0;
-}
-
-int gdb(int argc, char *argv[])
-{
-	str cmd = argv[0];
-	str args;
-	str gdbScript = argv[1];
-	for (int i = 2; i < argc; i++)
-		args += str(" ") + argv[i];
-
-	eckit::PathName scriptFile = str(".gdb_") + str(argv[2]);
-	if (! scriptFile.exists())
-	{
-		str s = str("file ") + cmd + "\nbreak main\nrun " + args + "\n";
-		eckit::FileHandle f(scriptFile);
-		f.openForWrite(1024);
-		f.write(s.c_str(), s.size());
-		f.close();
-	}
-	str vi = str("vi ") + scriptFile;
-	str gdb = str("gdb -x ") + scriptFile;
-	cout << "Executing '" << vi << "'" << endl;
-	system(vi.c_str());
-	cout << "Executing '" << gdb << "'" << endl;
-	return system(gdb.c_str());
-}
-
-// valgrind --log-file=v.log --show-reachable=yes --leak-check=full ./oda test 
-int valgrind(int argc, char *argv[])
-{
-	str cmd = argv[0];
-	str args;
-	for (int i = 2; i < argc; i++)
-		args += str(" ") + argv[i];
-
-
-	//str logFile = str("vg.") + argv[2] + ".log";
-	str logFile = str("vg.log");
-	str vg = str("valgrind --log-file=") + logFile + " --show-reachable=yes --leak-check=full " + cmd + " " + args;
-	cout << "Executing '" << vg << "'" << endl;
-	return system(vg.c_str());
 }
 
 #if 0

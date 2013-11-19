@@ -93,7 +93,7 @@ void TestTextSelect2::selectStarOneColumn()
 
 void TestTextSelect2::selectSumOneColumn()
 {
-	string sql = "select sum(a), sum(b)";
+	string sql = "select sum(a), sum(b);";
 	const string fileName = "TestTextSelect2.txt";
 	ifstream fs(fileName.c_str());
 	

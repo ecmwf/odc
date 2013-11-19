@@ -21,6 +21,11 @@
 
 using namespace eckit;
 
+namespace odb {
+namespace sql {
+namespace expression {
+namespace function {
+
 #undef MIN
 #define MIN(a,b) ( ((a) < (b)) ? (a) :  (b) )
 
@@ -337,4 +342,9 @@ void RggRegionCache::create_cache(const double & resol, const int & n)
                      stlon, deltalon,
                      loncnt);
 }
+
+} // namespace function
+} // namespace expression
+} // namespace sql
+} // namespace odb
 

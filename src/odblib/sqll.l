@@ -121,6 +121,7 @@ SEMICOLON [;]
 [eE][xX][iI][tT]                  return EXIT;
 [vV][iI][eE][wW]                  { BEGIN 0; return VIEW; }
 [cC][rR][eE][aA][tT][eE]          { BEGIN LEX_CREATE; return CREATE; }
+[sS][cC][hH][eE][mM][aA]          { BEGIN 0; return SCHEMA; }
 <LEX_CREATE>[iI][nN][dD][eE][xX]  { BEGIN 0; return INDEX; }
 <LEX_CREATE>[tT][aA][bB][lL][eE]  { BEGIN 0; return TABLE; }
 <LEX_CREATE>[tT][yY][pP][eE]      { BEGIN 0; return TYPE; }
@@ -144,12 +145,33 @@ SEMICOLON [;]
 {SEMICOLON}	                      { BEGIN 0; return ';'; }
 [aA][sS]                          return AS;
 \#                                return HASH; 
+[cC][oO][nN][sS][tT][rR][aA][iI][nN][tT] return CONSTRAINT;
+[uU][nN][iI][qQ][uU][eE]          return UNIQUE;
+[pP][rR][iI][mM][aA][rR][yY]      return PRIMARY;
+[fF][oO][rR][eE][iI][gG][nN]      return FOREIGN;
+[kK][eE][yY]                      return KEY;
+[rR][eE][fF][eE][rR][eE][nN][cC][eE][sS] return REFERENCES;
+[dD][eE][fF][aA][uU][lL][tT]      return DEFAULT;
 [iI][nN][hH][eE][rR][iI][tT][sS]  { BEGIN 0; return INHERITS; }
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << endl;
 
-    const string fileName(StringTool::unQuote(yytext));
+    eclib::PathName fileName(StringTool::unQuote(yytext));
+    if (!fileName.exists())
+    {
+        SQLSession& session = SQLSession::current();
+        SQLDatabase& db = session.currentDatabase();
+        for (unsigned i = 0; i < db.includePath().size(); i++)
+        {
+            eclib::PathName path(db.includePath()[i] + "/" + fileName);
+            if (path.exists())
+            {
+                fileName = path;
+                break;
+            }
+        }
+    }
     string text(StringTool::readFile(fileName));
 
     //cerr << "Opening " << fileName << endl;

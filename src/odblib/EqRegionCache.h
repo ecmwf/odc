@@ -23,105 +23,57 @@
 #include "odblib/piconst.h"
 #include "odblib/RegionCache.h"
 
+namespace odb {
+namespace sql {
+namespace expression {
+namespace function {
+
 class EqRegionCache : public RegionCache {
 public:
 
-// -- Exceptions
-	// None
-
-// -- Contructors
-
 	EqRegionCache();
 
-// -- Destructor
-
-	~EqRegionCache(); 
-
-// -- Convertors
-	// None
-
-// -- Operators
-	// None
-
-// -- Methods
-	// None
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
-protected:
-
-// -- Members
-	// None
-
-// -- Methods
-	
-	// void print(ostream&) const; 	
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
+	~EqRegionCache();
 
 private:
-
 // No copy allowed
+    EqRegionCache(const EqRegionCache&);
+    EqRegionCache& operator=(const EqRegionCache&);
 
-	EqRegionCache(const EqRegionCache&);
-	EqRegionCache& operator=(const EqRegionCache&);
+    virtual double get_resol(const double & val);
+    virtual void create_cache(const double &, const int &);
 
-// -- Members
-	// None
+    int gcd(int, int&);
+    void eq_caps(int &, int &, double [], int [], int*);
+    void bot_cap_region(int &, double &, double []);
+    double circle_offset(int &, int &);
+    void cap_colats(int &, int &, int &, double &,const int [], double []);
+    void round_to_naturals(int &, int &, const double [], int []);
+    double area_of_cap(int &, double &);
+    double area_of_collar(int &, double, double);
+    void ideal_region_list(int &, int &, double &,int &, double []);
+    double area_of_ideal_region(int &, int &);
+    int num_collars(int &, double &, double);
+    double ideal_collar_angle(int &, int &);
+    double sradius_of_cap(int &, double&);
+    double my_gamma(double &);
+    double area_of_sphere(int &);
+    double polar_colat(int &, int &);
+    double eq_area(const double &);
+    double eq_resol(const double&); 
+    double eq_n(const double&); 
+    void eq_regions(int, int, double []);
+    void sphere_region(int &, double []);
+    void top_cap_region(int &, double & ,double []);
 
-// -- Methods
-	// None
-
-// -- Overridden methods
-     virtual double get_resol(const double & val);
-     virtual void create_cache(const double &, const int &);
-
-// -- Class members
-     int gcd(int, int&);
-     void eq_caps(int &, int &, double [], int [], int*);
-     void bot_cap_region(int &, double &, double []);
-     double circle_offset(int &, int &);
-     void cap_colats(int &, int &, int &, double &,const int [], double []);
-     void round_to_naturals(int &, int &, const double [], int []);
-     double area_of_cap(int &, double &);
-     double area_of_collar(int &, double, double);
-     void ideal_region_list(int &, int &, double &,int &, double []);
-     double area_of_ideal_region(int &, int &);
-     int num_collars(int &, double &, double);
-     double ideal_collar_angle(int &, int &);
-     double sradius_of_cap(int &, double&);
-     double my_gamma(double &);
-     double area_of_sphere(int &);
-     double polar_colat(int &, int &);
-     double eq_area(const double &);
-     double eq_resol(const double&); 
-     double eq_n(const double&); 
-     void eq_regions(int, int, double []);
-     void sphere_region(int &, double []);
-     void top_cap_region(int &, double & ,double []);
-
-// -- Class methods
-	// None
-
-// -- Friends
-
-	//friend ostream& operator<<(ostream& s,const EqRegionCache& p)
-	//	{ p.print(s); return s; }
-
+    // -- Friends
+    //friend ostream& operator<<(ostream& s,const EqRegionCache& p)
+    //	{ p.print(s); return s; }
 };
+
+} // namespace function
+} // namespace expression
+} // namespace sql
+} // namespace odb
 
 #endif

@@ -96,7 +96,7 @@ void TestSelectTwoFiles::test()
 {
 	Tracer t(Log::debug(), "TestSelectTwoFiles::test");
 
-	odb::Select s("select * from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\"");
+	odb::Select s("select * from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\";");
 	//odb::Select s("select a,b from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\"");
 	odb::Select::iterator it = s.begin();
 	odb::Select::iterator end = s.end();

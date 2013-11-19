@@ -13,12 +13,9 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odblib/odb_api.h"
-
-
-
 #include <strings.h>
 
+#include "odblib/odb_api.h"
 #include "odblib/Tool.h"
 #include "eckit/utils/Tokenizer.h"
 

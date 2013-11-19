@@ -48,7 +48,7 @@ struct SelectAll : public FilledDataSet
 
     SelectAll()
      : FilledDataSet(),
-       select("SELECT * FROM ordinals", dataset)
+       select("SELECT * FROM ordinals;", dataset)
     {}
 };
 
@@ -58,7 +58,7 @@ struct SelectWhere : public FilledDataSet
 
     SelectWhere()
      : FilledDataSet(),
-       select("SELECT digit, flag FROM ordinals WHERE digit IN (0, 2, 4)", dataset)
+       select("SELECT digit, flag FROM ordinals WHERE digit IN (0, 2, 4);", dataset)
     {}
 };
 
@@ -68,7 +68,7 @@ struct SelectAggregate : public FilledDataSet
 
     SelectAggregate()
      : FilledDataSet(),
-       select("SELECT SUM(digit) FROM ordinals", dataset)
+       select("SELECT SUM(digit) FROM ordinals;", dataset)
     {}
 };
 
@@ -78,7 +78,7 @@ struct SelectFirst : public FilledDataSet
 
     SelectFirst()
      : FilledDataSet(),
-       select("SELECT digit FROM ordinals", dataset)
+       select("SELECT digit FROM ordinals;", dataset)
     {}
 };
 

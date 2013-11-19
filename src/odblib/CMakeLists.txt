@@ -131,6 +131,8 @@ FunctionExpression.cc
 FunctionExpression.h
 FunctionFactory.cc
 FunctionFactory.h
+MDI.cc
+MDI.h
 FunctionIN.cc
 FunctionIN.h
 FunctionIntegerExpression.cc
@@ -244,6 +246,7 @@ RegionCache.h
 RggRegionCache.cc
 RggRegionCache.h
 RowsIterator.h
+SQLAST.cc
 SQLAST.h
 SQLBit.cc
 SQLBit.h

@@ -32,6 +32,7 @@ public:
 	}
 
 	static void importFile(const eckit::PathName& in, const eckit::PathName& out, const string& delimiter = defaultDelimiter());
+	static void filterAndImportFile(const eckit::PathName& in, const eckit::PathName& out, const string& sql, const string& delimiter = defaultDelimiter());
 	static void importText(const string& s, const eckit::PathName& out, const string& delimiter = defaultDelimiter());
 
 	static string defaultDelimiter() { return defaultDelimiter_; };

@@ -18,12 +18,14 @@
 
 #include "odblib/piconst.h"
 
+namespace odb {
+namespace sql {
+namespace expression {
+namespace function {
+
 static const int dim=2;
 static const double min_resol = 0.1e0;
 static const double sphere_area = piconst::four_pi; /* Actually: 4 * pi * R^2 */
-
-// should not be defined here...
-#define RMDI   -2147483647
 
 #define NINT(x) F90nint(x)
 
@@ -33,16 +35,12 @@ static const double sphere_area = piconst::four_pi; /* Actually: 4 * pi * R^2 */
 #undef ABS
 #define ABS(x)   ( ((x) >= 0)  ? (x) : -(x) )
 
-
-
 #define R2D(x) ( (180/piconst::pi) * ( ((x) >  piconst::pi) ? ((x) - 2*piconst::pi) : (x) ) )
 
 typedef enum { eq_cache_kind = 1, rgg_cache_kind = 2 } RegionCacheKind;
 
-
 class RegionCache;
 typedef std::vector<RegionCache *> VectorRegionCache;
-
 
 // To store results from the last find_latband, find_lonbox
    class Last {
@@ -56,56 +54,16 @@ typedef std::vector<RegionCache *> VectorRegionCache;
 class RegionCache {
 public:
 
-// -- Exceptions
-	// None
-
-// -- Contructors
-
 	RegionCache();
+	~RegionCache();
 
-// -- Destructor
-
-	~RegionCache(); 
-
-// -- Convertors
-	// None
-
-// -- Operators
-	// None
-
-// -- Methods
  	static VectorRegionCache &  instance();
+
     double get_midlat(const double &, const double &);
     double get_midlon(const double &, const double &, const double &);
 
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
-
-protected:
-
-// -- Members
-	// None
-
-// -- Methods
-	// void print(ostream&) const; 	
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
 private:
 // No copy allowed
-
 	RegionCache(const RegionCache&);
 	RegionCache& operator=(const RegionCache&);
 
@@ -122,13 +80,6 @@ private:
     double *deltalon_;  // longitudinal delta for each latitude band : size nb 
     Last *last_;
 
-// -- Methods
-	// None
-	
-
-// -- Overridden methods
-	// None
-
 // -- Class members
      virtual double get_resol(const double & val);
      virtual void create_cache(const double &, const int &);
@@ -139,19 +90,16 @@ private:
      int find_lonbox(const int &, const double &, double *, double *, double *);
      int interval_bsearch(const double &, const int &, const double [], const double *, const double &, const double &);
 
-// -- Class methods
-	// None
-
-// -- Class methods
-	// None
-
-// -- Friends
-
      friend class EqRegionCache;
      friend class RggRegionCache;
 	//friend ostream& operator<<(ostream& s,const RegionCache& p)
 	//	{ p.print(s); return s; }
 
 };
+
+} // namespace function
+} // namespace expression
+} // namespace sql
+} // namespace odb
 
 #endif

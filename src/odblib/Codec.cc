@@ -36,7 +36,7 @@ template<> map<string, AbstractCodecFactory<PrettyFastInMemoryDataHandle>* > Abs
 Codec::Codec(const string& name)
 : name_(name),
   hasMissing_(false),
-  missingValue_(MISSING_VALUE_REAL),
+  missingValue_(odb::MDI::realMDI()),
   min_(missingValue_),
   max_(missingValue_)
 {}

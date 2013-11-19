@@ -110,7 +110,7 @@ void TestMissingValue::test()
 		odb::Reader::iterator fbegin(f.begin());
 		odb::Reader::iterator fend(f.end());
 
-		odb::Select s("select * from \"TestMissingValue2.odb\"");
+		odb::Select s("select * from \"TestMissingValue2.odb\";");
 		odb::Select::iterator sbegin(s.begin());
 		odb::Select::iterator send(s.end());
 
@@ -145,7 +145,7 @@ void TestMissingValue::test()
 
 	{
 		// Check the isMissing and missingValue API of SelectIterator
-		odb::Select s("select * from \"TestMissingValue.odb\""); //, fileName);
+		odb::Select s("select * from \"TestMissingValue.odb\";"); //, fileName);
 		odb::Select::iterator i = s.begin();
 		odb::Select::iterator e = s.end();
 		for (; i != e; ++i)

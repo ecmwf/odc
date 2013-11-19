@@ -8,28 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef ODB2ODATool_H
-#define ODB2ODATool_H
-
-
+#ifndef migrator_api_H
+#define migrator_api_H
 
 namespace odb {
 namespace tool {
 
-class ODB2ODATool : public Tool {
-public:
-	ODB2ODATool (int argc, char *argv[]); 
-    ODB2ODATool (const CommandLineParser &);
-
-    void resetMDI(const std::string&);
-
-	void run(); 
-
-private:
-// No copy allowed
-    ODB2ODATool(const ODB2ODATool&);
-    ODB2ODATool& operator=(const ODB2ODATool&);
-};
+int import_odb_with_sql_in_file(const char* odb_database, const char* sql_file, const char* output_file);
 
 } // namespace tool 
 } //namespace odb 

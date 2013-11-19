@@ -48,6 +48,7 @@ subroutine test_fortran_api_append
                                      "active:passive:blacklisted:"//achar(0), &
                                      "1:1:4:"//achar(0))
  cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "expver"//achar(0))
+ ! TODO: Test ODB_DOUBLE
 
  cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
  cerr = odb_write_header(odb_it)

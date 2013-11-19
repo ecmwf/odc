@@ -13,9 +13,8 @@
 #include "odblib/FunctionFactory.h"
 #include "odblib/FunctionIntegerExpression.h"
 #include "odblib/Codec.h"
+#include "odblib/MDI.h"
 
-#define RMDI   -2147483647
-#define NMDI    2147483647
 #define ftrunc(x) ((x) -fmod((x), 1))
 #define F90nint(x) ( ((x) > 0) ? (int)((x) + 0.5) : (int)((x) - 0.5) )
 
@@ -58,7 +57,14 @@ class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {
 	SQLExpression* clone() const { return new MathFunctionIntegerExpression_1<T>(this->name_,this->args_); }
 public:
 	MathFunctionIntegerExpression_1(const string& name,const expression::Expressions& args)
-	: FunctionIntegerExpression(name, args) { this->missingValue_ = MISSING_VALUE_INT; }
+	: FunctionIntegerExpression(name, args), myArgs_(0) { this->missingValue_ = odb::MDI::integerMDI(); }
+
+	MathFunctionIntegerExpression_1(const string& name,expression::Expressions* args)
+	: FunctionIntegerExpression(name, *args), myArgs_(args) { this->missingValue_ = odb::MDI::integerMDI(); }
+
+	~MathFunctionIntegerExpression_1() { delete myArgs_; }
+private:
+	Expressions* myArgs_;
 };
 
 #define DEFINE_MATH_INT_FUNC_1F(FuncName, Name, Help) \
@@ -66,21 +72,21 @@ static FunctionMaker<MathFunctionIntegerExpression_1<FuncName> > make_1_##FuncNa
 
 
 //--------------------------------------------------------------
-inline double year(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)((int)((x)/10000)) : (double)NMDI);}
-inline double month(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)((x)/100))%100) : (double)NMDI);}
-inline double day(double x)   { return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)(x))%100) : (double)NMDI);}
-inline double hour(double x)   {return ((fabs(x) != fabs((double) RMDI)) ? (double)((int)((x)/10000)) : (double)NMDI);}
-inline double minute(double x) {return ((fabs(x) != fabs((double) RMDI)) ? (double)(((int)((x)/100))%100) : (double)NMDI);}
+inline double year(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)((int)((x)/10000)) : (double)MDI::integerMDI());}
+inline double month(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(((int)((x)/100))%100) : (double)MDI::integerMDI());}
+inline double day(double x)   { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(((int)(x))%100) : (double)MDI::integerMDI());}
+inline double hour(double x)   {return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)((int)((x)/10000)) : (double)MDI::integerMDI());}
+inline double minute(double x) {return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(((int)((x)/100))%100) : (double)MDI::integerMDI());}
 inline double minutes(double x) {return minute(x);}
-inline double second(double x) {return ((fabs(x) != fabs((double)RMDI)) ? (double)(((int)(x))%100) : (double)NMDI);}
+inline double second(double x) {return ((fabs(x) != fabs((double)MDI::realMDI())) ? (double)(((int)(x))%100) : (double)MDI::integerMDI());}
 inline double seconds(double x) {return second(x);}
 
 
-inline double Func_ftrunc(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(ftrunc(x)) : (double) NMDI); }
-inline double Func_dnint(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(F90nint(x)) : (double)NMDI); }
-inline double Func_dint(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(ftrunc(x)) : (double) NMDI);}
-inline double Func_ceil(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(ceil(x)) : (double) NMDI);}
-inline double Func_floor(double x) { return ((fabs(x) != fabs((double) RMDI)) ? (double)(floor(x)) : (double) NMDI);}
+inline double Func_ftrunc(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(ftrunc(x)) : (double) MDI::integerMDI()); }
+inline double Func_dnint(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(F90nint(x)) : (double)MDI::integerMDI()); }
+inline double Func_dint(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(ftrunc(x)) : (double) MDI::integerMDI());}
+inline double Func_ceil(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(ceil(x)) : (double) MDI::integerMDI());}
+inline double Func_floor(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(floor(x)) : (double) MDI::integerMDI());}
 
 void FunctionIntegerExpression::registerIntegerFunctions()
 {

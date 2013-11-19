@@ -8,18 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef ODB2ODATool_H
-#define ODB2ODATool_H
+#ifndef MigratorTool_H
+#define MigratorTool_H
 
 
 
 namespace odb {
 namespace tool {
 
-class ODB2ODATool : public Tool {
+class MigratorTool : public Tool {
 public:
-	ODB2ODATool (int argc, char *argv[]); 
-    ODB2ODATool (const CommandLineParser &);
+	MigratorTool (int argc, char *argv[]); 
+    MigratorTool (const CommandLineParser &);
 
     void resetMDI(const std::string&);
 
@@ -27,8 +27,8 @@ public:
 
 private:
 // No copy allowed
-    ODB2ODATool(const ODB2ODATool&);
-    ODB2ODATool& operator=(const ODB2ODATool&);
+    MigratorTool(const MigratorTool&);
+    MigratorTool& operator=(const MigratorTool&);
 };
 
 } // namespace tool 

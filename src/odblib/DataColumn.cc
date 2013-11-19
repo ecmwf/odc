@@ -45,9 +45,9 @@ double DataColumn::defaultMissingValue(ColumnType type)
 {
     switch (type)
     {
-        case INTEGER:  return odb::MISSING_VALUE_INT;
-        case REAL:     return odb::MISSING_VALUE_REAL;
-        case DOUBLE:   return odb::MISSING_VALUE_REAL;
+        case INTEGER:  return odb::MDI::integerMDI();
+        case REAL:     return odb::MDI::realMDI();
+        case DOUBLE:   return odb::MDI::realMDI();
         case STRING:   return *reinterpret_cast<const double*>("        ");
         case BITFIELD: return 0;
         default: ASSERT(!"Unexpected odb::ColumnType.");

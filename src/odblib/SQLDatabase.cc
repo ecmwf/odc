@@ -344,6 +344,14 @@ SQLExpression* SQLDatabase::getVariable(const string& name) const
 	return (*j).second;
 }
 
+void SQLDatabase::setIncludePath(const string& includePath)
+{
+    Tokenizer tokenize(":");
+    vector<string> tokens;
+    tokenize(includePath, tokens);
+    copy(tokens.begin(), tokens.end(), back_inserter(includePath_));
+}
+
 bool SQLDatabase::sameAs(const SQLDatabase& other) const
 {
 	return path_ == other.path_;

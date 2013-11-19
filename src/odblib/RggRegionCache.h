@@ -19,87 +19,34 @@
 #include "odblib/piconst.h"
 #include "odblib/RegionCache.h"
 
+namespace odb {
+namespace sql {
+namespace expression {
+namespace function {
+
 class RggRegionCache : public RegionCache {
 public:
-
-// -- Exceptions
-	// None
-
-// -- Contructors
-
 	RggRegionCache();
-
-// -- Destructor
-
-	~RggRegionCache(); 
-
-// -- Convertors
-	// None
-
-// -- Operators
-	// None
-
-// -- Methods
-	// None
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
-
-protected:
-
-// -- Members
-	// None
-
-// -- Methods
-	
-	// void print(ostream&) const; 	
-
-// -- Overridden methods
-	// None
-
-// -- Class members
-	// None
-
-// -- Class methods
-	// None
+	~RggRegionCache();
 
 private:
-
 // No copy allowed
-
-	RggRegionCache(const RggRegionCache&);
-	RggRegionCache& operator=(const RggRegionCache&);
-
-// -- Members
-	// None
-
-// -- Methods
-	// None
+    RggRegionCache(const RggRegionCache&);
+    RggRegionCache& operator=(const RggRegionCache&);
 
 // -- Overridden methods
-     virtual double get_resol(const double & val);
-     virtual void create_cache(const double &, const int &);
-
-// -- Class members
-	// None
-
+    virtual double get_resol(const double & val);
+    virtual void create_cache(const double &, const int &);
 
 // -- Class methods
-     int * read_rtablel_2_file(const int &, int *, int *);
-     int gauaw(double [], double [], const int &);
-     void bsslzr(double [], const int &); 
-
-// -- Friends
-
-	//friend ostream& operator<<(ostream& s,const RggRegionCache& p)
-	//	{ p.print(s); return s; }
-
+    int * read_rtablel_2_file(const int &, int *, int *);
+    int gauaw(double [], double [], const int &);
+    void bsslzr(double [], const int &); 
 };
+
+} // namespace function
+} // namespace expression
+} // namespace sql
+} // namespace odb
 
 #endif

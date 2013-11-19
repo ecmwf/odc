@@ -34,6 +34,8 @@ struct YYSTYPE {
 	vector<SQLTable*>      tablist;
 	ColumnDefs             coldefs;
 	ColumnDef              coldef;
+	ConstraintDefs         condefs;
+	ConstraintDef          condef;
 	Range                  r;
 	bool                   bol;
 };
@@ -78,6 +80,7 @@ Expressions emptyExpressionList;
 %token BY
 
 %token CREATE
+%token SCHEMA
 %token VIEW
 %token INDEX
 %token TABLE
@@ -85,6 +88,14 @@ Expressions emptyExpressionList;
 %token TYPEDEF
 %token TEMPORARY
 %token INHERITS
+%token DEFAULT
+
+%token CONSTRAINT
+%token UNIQUE
+%token PRIMARY
+%token FOREIGN
+%token KEY
+%token REFERENCES
 
 %token EQ
 %token GE
@@ -133,6 +144,7 @@ Expressions emptyExpressionList;
 
 %type <tablist>table_list;
 %type <table>table
+%type <val>table_name;
 %type <val>table_reference;
 %type <tablist>from;
 
@@ -162,22 +174,33 @@ Expressions emptyExpressionList;
 %type <coldefs>bitfield_def_list_;
 %type <coldef>bitfield_def;
 %type <val>data_type;
+%type <val>default_value;
 %type <bol>temporary;
 %type <list>inherits;
 %type <list>inheritance_list;
 %type <list>inheritance_list_;
+
+%type <condefs>constraint_list;
+%type <condefs>constraint_list_;
+%type <condef>constraint;
+%type <val>constraint_name;
+%type <condef>primary_key;
+%type <condef>foreign_key;
+%type <list>column_reference_list;
+%type <val>column_reference;
 
 %%
 
 start : statements { SQLSession::current().currentDatabase().setLinks(); }
 	;
 
-statements : statement 
-		   | statements statement
+statements : statement ';'
+		   | statements statement ';'
 		   ;
 
-statement: select_statement 
+statement: select_statement
 		 | set_statement
+		 | create_schema_statement
 		 | create_view_statement
 		 | create_index_statement 
 		 | create_type_statement
@@ -187,37 +210,61 @@ statement: select_statement
 		 | noreorder_statement
 		 | safeguard_statement
 		 | exit_statement
-	     | error
+		 | error
+		 | empty
 	;
 
-exit_statement: EXIT ';' { /*delete &SQLSession::current();*/ return 0; }
+exit_statement: EXIT { /*delete &SQLSession::current();*/ return 0; }
 	;
 
-readonly_statement: READONLY ';'
+readonly_statement: READONLY
 	;
 
-updated_statement: UPDATED ';'
+updated_statement: UPDATED
 	;
 
-noreorder_statement: NOREORDER ';'
+noreorder_statement: NOREORDER
 	;
 
-safeguard_statement: SAFEGUARD ';'
+safeguard_statement: SAFEGUARD
 	;
 
-create_index_statement: CREATE INDEX IDENT TABLE IDENT ';'
+create_schema_statement: CREATE SCHEMA schema_name schema_element_list
+        {
+            SQLDatabase& db = SQLSession::current().currentDatabase();
+            db.schemaAnalyzer().endSchema();
+        }
+        ;
+
+schema_name: IDENT
+           {
+               SQLDatabase& db = SQLSession::current().currentDatabase();
+               db.schemaAnalyzer().beginSchema($1);
+           }
+           ;
+
+schema_element_list: schema_element
+                   | schema_element_list schema_element
+                   ;
+
+schema_element: create_table_statement
+              | create_view_statement
+              | empty
+              ;
+
+create_index_statement: CREATE INDEX IDENT TABLE IDENT
 	{
 		SQLSession& s  = SQLSession::current();
 		s.createIndex($3,$5);
 	}
-	| CREATE INDEX IDENT '@' IDENT ';'
+	| CREATE INDEX IDENT '@' IDENT
 	{
 		SQLSession& s  = SQLSession::current();
 		s.createIndex($3,$5);
 	}
 	;
 
-create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')' ';'
+create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')'
 	{
 		string		typeName = $2;
 		ColumnDefs	colDefs = $5;
@@ -244,7 +291,7 @@ create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')' ';'
 	}
 	;
 
-create_type_statement: create_type IDENT as_or_eq IDENT ';' { type::SQLType::createAlias($4, $2); }
+create_type_statement: create_type IDENT as_or_eq IDENT { type::SQLType::createAlias($4, $2); }
 	;
 
 create_type: CREATE TYPE
@@ -283,39 +330,73 @@ inheritance_list_: IDENT                         { $$ = vector<string>(); $$.ins
 
 inherits: INHERITS '(' inheritance_list ')'   { $$ = $3;               }
         | empty                               { $$ = vector<string>(); }
+        ;
 
-create_table_statement: CREATE temporary TABLE expression_ex AS '(' column_def_list ')' inherits  ';'
+constraint_list: constraint_list_ { $$ = $1; }
+               | constraint_list_ ',' { $$ = $1; }
+               ;
+
+constraint_list_: constraint { $$ = ConstraintDefs(1, $1); }
+                | constraint_list_ ',' constraint { $$ = $1; $$.push_back($3); }
+                | empty { $$ = ConstraintDefs(0); }
+                ;
+
+constraint: primary_key { $$ = $1; }
+          | foreign_key { $$ = $1; }
+          ;
+
+primary_key: constraint_name UNIQUE '(' column_reference_list ')' { $$ = ConstraintDef($1, $4); }
+           | constraint_name PRIMARY KEY '(' column_reference_list ')' { $$ = ConstraintDef($1, $5); }
+           ;
+
+foreign_key: constraint_name FOREIGN KEY '(' column_reference_list ')' REFERENCES IDENT '(' column_reference_list ')'
+           {
+                $$ = ConstraintDef($1, $5, $8, $10);
+           }
+           ;
+
+constraint_name: CONSTRAINT IDENT { $$ = $2; }
+               | empty { $$ = string(); }
+               ;
+
+column_reference_list: column_reference { $$ = vector<string>(1, $1); }
+                | column_reference_list ',' column_reference { $$ = $1; $$.push_back($3); }
+                ;
+
+column_reference: IDENT table_reference { $$ = $1 + $2; }
+           ;
+
+create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list constraint_list ')' inherits
 	{
-        bool temporary ($2);
-        SQLExpression* e($4);
-		string tableName (e->title());
+		bool temporary($2);
+                string name($4);
 		ColumnDefs cols ($7);
-        vector<string> inheritance($9);
-
-		TableDef tableDef(tableName, cols);
+		vector<string> inheritance($10);
+		TableDef tableDef(name, cols, $8, inheritance);
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
-
-		cout << " *** CREATE " << (temporary ? "TEMPORARY" : "") << " TABLE " << tableName << endl;
-		if (inheritance.size()) cout << " *** INHERITANCE LIST: " << inheritance << endl;
-
-		//SQLCreateTable ct(tableName, cols);
-		//ct.execute();
 	}
 	;
 
+table_name: IDENT { $$ = $1; }
+          | IDENT '.' IDENT { $$ = $1 + string(".") + $3; }
+          | expression_ex { SQLExpression* e($1); $$ = e->title(); }
+          ;
+
+/* TODO: optional_as: AS | empty; BREAKS PARSING */
+
 column_def_list: column_def_list_     { $$ = $1; }
                | column_def_list_ ',' { $$ = $1; }
+               | empty                { $$ = ColumnDefs(); }
                ;
 	 
 column_def_list_: column_def                      { $$ = ColumnDefs(1, $1); }
                 | column_def_list_ ',' column_def { $$ = $1; $$.push_back($3); }
                 ;
 
-column_def: column_name vector_range_decl data_type
+column_def: column_name vector_range_decl data_type default_value
 	{
-		//cout << "ColumnDef: " << $1 << "," << $3 << "," << $2.first << "-" << $2.second << endl;
-		$$ = ColumnDef($1, $3, $2);
+		$$ = ColumnDef($1, $3, $2, $4);
 	}
 	;
 
@@ -332,13 +413,14 @@ data_type: IDENT                 { $$ = $1; }
          | TYPEOF '(' column ')' { $$ = ($3)->type()->name(); }
          ;
 
+default_value: DEFAULT expression_ex { SQLExpression* e($2); $$ = e->title(); }
+             | empty { $$ = string(); }
+             ;
+
 create_view_statement: CREATE VIEW IDENT AS select_statement
 	;
 
-opt_semicolon: ';' | empty
-	;
-
-select_statement: SELECT distinct select_list into from where group_by order_by opt_semicolon
+select_statement: SELECT distinct select_list into from where group_by order_by
 					{   
 						bool                   distinct($2);
 						Expressions            select_list($3);
@@ -389,13 +471,13 @@ association_list: association { Dictionary d; d[($1 .first)->title()] = $1 .seco
 				| empty { $$ = Dictionary(); }
 				;
 
-set_statement : SET DATABASE STRING ';' { SQLSession::current().openDatabase($3); }
+set_statement : SET DATABASE STRING { SQLSession::current().openDatabase($3); }
 	; 
 
-set_statement : SET DATABASE STRING AS IDENT ';' { SQLSession::current().openDatabase($3,$5); }
+set_statement : SET DATABASE STRING AS IDENT { SQLSession::current().openDatabase($3,$5); }
 	; 
 
-set_statement : SET VAR EQ assignment_rhs ';'
+set_statement : SET VAR EQ assignment_rhs
 	{ 
 		//cout << "== set variable " << $2 << " to "; if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
 		SQLSession::current().currentDatabase().setVariable($2, $4);

@@ -24,14 +24,27 @@ public:
 	typedef T iterator_class;
 	typedef typename odb::IteratorProxy<iterator_class, TSQLReader, const double> iterator;
 
-	TSQLReader(const eckit::PathName& pathName, std::string sql)
+	TSQLReader(const std::string& pathName, const std::string& sql)
 	: pathName_(pathName), sql_(sql)
 	{}
 
 	~TSQLReader() {}
 
-	iterator begin() { return iterator(new iterator_class(pathName_, sql_)); }
+	iterator begin()
+    { 
+        iterator_class* it = new iterator_class(pathName_, sql_);
+        it->next();
+        if (it->noMore_)
+            eclib::Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
+        return iterator(it);
+    }
+
 	const iterator end() { return iterator(0); }
+
+#ifdef SWIGPYTHON
+    // FIXME: add createReadIterator as in odb::Reader
+    iterator __iter__() { return iterator(new iterator_class(pathName_, sql_)); }
+#endif
 
 private:
 	const eckit::PathName pathName_;

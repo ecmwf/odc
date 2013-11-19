@@ -48,12 +48,14 @@ public:
 	///         present on command line.
 	template <typename T> T optionArgument(const std::string&, T defaultValue);
 
+	int argc();
+	string argv(int i);
+	char **argv() { return argv_; }
+
 private:
     
 	void parseCommandLine();
 
-	int argc();
-	string argv(int i);
 
 	bool commandLineParsed_;
 	int argc_;

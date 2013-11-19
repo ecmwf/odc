@@ -87,7 +87,7 @@ void TestCodec::test()
 
 		unsigned char *s = dh.buffer();
 		
-		double v = odb::MISSING_VALUE_REAL;
+		double v = odb::MDI::realMDI();
 		Log::info() << "Encode: " << v << endl;
 
 		s = codec().encode(s, v);

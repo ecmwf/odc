@@ -105,8 +105,8 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				}
 				break;
 
-			case INTEGER:
 			case BITFIELD:
+			case INTEGER:
 				n = max - min;
 				//LOG << " { min=" << min << ", max=" << max << ", n=" << n << "} ";
 				if(col.hasMissing())
