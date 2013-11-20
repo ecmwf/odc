@@ -56,8 +56,6 @@ using namespace eckit;
 
 namespace odb {
 
-#define MEGA(x) (x*1024*1024)
-
 DispatchingWriter::DispatchingWriter(const string& outputFileTemplate, int maxOpenFiles, bool append)
 : outputFileTemplate_(outputFileTemplate),
   maxOpenFiles_(maxOpenFiles ? maxOpenFiles : Resource<long>("$ODBAPI_MAX_OPEN_FILES;-maxOpenFiles;maxOpenFiles", 250)),

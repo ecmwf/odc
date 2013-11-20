@@ -47,7 +47,7 @@ ODB2ODATool::ODB2ODATool (const CommandLineParser &clp)
 /// -mdi <type1:MDI1,type2:MDI2,...>
 void ODB2ODATool::resetMDI(const std::string& s)
 {
-    typedef eclib::StringTools S;
+    typedef eckit::StringTools S;
     vector<std::string> columns(S::split(",", s));
     for (size_t i = 0; i < columns.size(); ++i)
     {

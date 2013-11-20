@@ -35,7 +35,7 @@ public:
         iterator_class* it = new iterator_class(pathName_, sql_);
         it->next();
         if (it->noMore_)
-            eclib::Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
+            eckit::Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
         return iterator(it);
     }
 

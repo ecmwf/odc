@@ -16,7 +16,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "eclib/StringTools.h"
+#include "eckit/StringTools.h"
 
 #include "odblib/odb_api.h"
 #include "odblib/ToolFactory.h"
@@ -45,12 +45,12 @@ int gdb(const vector<std::string>& params)
 	for (size_t i = 1; i < params.size(); ++i)
 		args += str(" ") + params[i];
 
-	eclib::PathName scriptFile = str(".gdb_") + params[2];
+    eckit::PathName scriptFile = str(".gdb_") + params[2];
 	if (! scriptFile.exists())
 	{
 		str s = str("file ") + cmd + "\nbreak main\nrun " + args + "\n";
         s += "catch throw\n";
-		eclib::FileHandle f(scriptFile);
+        eckit::FileHandle f(scriptFile);
 		f.openForWrite(1024);
 		f.write(s.c_str(), s.size());
 		f.close();
