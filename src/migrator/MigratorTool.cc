@@ -13,10 +13,11 @@
 /// @author Piotr Kuchta, ECMWF, July 2009
 ///
 
+#include <unistd.h>
 #include <iostream>
 #include <fstream>
 
-#include "eckit/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 #include "odblib/odb_api.h"
 #include "odblib/ToolFactory.h"
@@ -31,7 +32,6 @@
 #include "migrator/ODB2ODATool.h"
 #include "migrator/MigratorTool.h"
 #include "migrator/OldODBReader.h"
-#include <unistd.h>
 
 namespace odb {
 namespace tool {

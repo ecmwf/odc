@@ -29,6 +29,7 @@ if( ODB_API_MIGRATOR )
 endif()
 
   ecbuild_add_library ( TARGET Odbmigrator
+						TYPE STATIC
                         COMPONENT  odb_api
                         SOURCES    ${migrator_srcs}
   		             	CONDITION
