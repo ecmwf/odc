@@ -43,7 +43,7 @@ using namespace odb::tool;
 
 
 %exception {
-	using namespace ::eclib;
+	using namespace ::eckit;
 	using namespace ::odb;
 	using namespace ::odb::sql;
     try {
