@@ -107,7 +107,7 @@ void TestSelectTwoFiles::test()
 	unsigned long i = 0;
 	for (; it != end; ++it)
 	{
-		Log::debug() << "TestSelectTwoFiles::test:    " << (*it)[0] << "    " << (*it)[0] << endl;
+		Log::debug() << "TestSelectTwoFiles::test:    " << (*it)[0] << "    " << (*it)[0] << std::endl;
 
 		ASSERT( ((*it)[0] == 1) && ((*it)[1] == 2) );
 		++i;

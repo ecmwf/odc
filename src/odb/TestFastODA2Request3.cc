@@ -74,13 +74,13 @@ void TestFastODA2Request3::test()
 	ASSERT(rc == true);
 
 	for (size_t i = 0; i < handles.size(); ++i)
-		Log::info() << "TestFastODA2Request3::test: handles[" << i << "]=" << *handles[i] << endl;
+		Log::info() << "TestFastODA2Request3::test: handles[" << i << "]=" << *handles[i] << std::endl;
 
 	string r = o.genRequest();
-	Log::info() << "TestFastODA2Request3::test: o.genRequest() => " << endl << r << endl;
+	Log::info() << "TestFastODA2Request3::test: o.genRequest() => " << endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
-	Log::info() << "TestFastODA2Request3::test: rowsNumber == " << n <<  endl;
+	Log::info() << "TestFastODA2Request3::test: rowsNumber == " << n <<  std::endl;
 }
 
 

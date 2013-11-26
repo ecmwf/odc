@@ -63,10 +63,10 @@ void TestIntegerValues::test()
 	odb::Reader::iterator it = odb.begin();
 
 	for (unsigned int i=0; i < it->columns().size(); ++i) {
-		cout << "Name = " << it->columns()[i]->name() << " " ;
+		std::cout << "Name = " << it->columns()[i]->name() << " " ;
 	}
 
-	cout << endl;
+	std::cout << std::endl;
 	int nrows=0;
 	for(; it != odb.end(); ++it)
 	{
@@ -79,11 +79,11 @@ void TestIntegerValues::test()
 			{
 			case odb::INTEGER:
 			case odb::BITFIELD:
-				cout <<  static_cast<int>(nr) << " ";
+				std::cout <<  static_cast<int>(nr) << " ";
 				//cout <<  "* should be: " << it->integer(i) << " ";
 				break;
 			case odb::REAL:
-				cout <<  nr << " ";
+				std::cout <<  nr << " ";
 				break;
 			case odb::IGNORE:
 			default:
@@ -91,7 +91,7 @@ void TestIntegerValues::test()
 				break;
 			}
  		}
- 		cout << endl;
+ 		std::cout << std::endl;
 	}
 }
 

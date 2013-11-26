@@ -80,7 +80,7 @@ void TestFunctionTypeConversion::testReaderIterator()
 {
     const string sql = "select ceil(obsvalue),floor(obsvalue), trunc(obsvalue),int(obsvalue),nint(obsvalue) from \"test_type_conversion.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();

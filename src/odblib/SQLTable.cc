@@ -31,7 +31,7 @@ SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const string& name):
 	owner_(owner),
 	master_(0)
 {
-	//Log::info() << "SQLTable[path=" << path_ << ",name=" << name << ",no_rows=" << no_rows_ << ",index=" << index_ << "]" << endl;
+	//Log::info() << "SQLTable[path=" << path_ << ",name=" << name << ",no_rows=" << no_rows_ << ",index=" << index_ << "]" << std::endl;
 }
 
 SQLTable::~SQLTable() { clearColumns(); }
@@ -113,7 +113,7 @@ isBitfield, const BitfieldDef& bitfieldDef)
 		string n = columnName + "." + fieldName + "@" + tableName;
 		columnsByName_[n] = col;
 
-		//Log::info() << "SQLTable::addColumn: columnsByName_[" << n << "] = " << *col << endl;
+		//Log::info() << "SQLTable::addColumn: columnsByName_[" << n << "] = " << *col << std::endl;
 	}
 }
 
@@ -193,7 +193,7 @@ bool SQLTable::isParentOf(const SQLTable& other) const
 	if(hasLinkTo(other))
 		return true;
 
-	for(set<const SQLTable*>::const_iterator j = linksTo_.begin();
+	for(std::set<const SQLTable*>::const_iterator j = linksTo_.begin();
 		j != linksTo_.end(); ++j)
 			if((*j)->isParentOf(other))
 				return true;
@@ -208,7 +208,7 @@ SQLTable* SQLTable::master() const
 
 void SQLTable::master(SQLTable* master) 
 { 
-//	cout << "MASTER of " << name() << " " << master->name() << endl;
+//	std::cout << "MASTER of " << name() << " " << master->name() << std::endl;
 	master_ = master;            
 }
 
@@ -227,15 +227,15 @@ bool SQLTable::sameDatabase(const SQLTable& other) const
 	return &owner_ == &other.owner_;
 }
 
-void SQLTable::print(ostream& s) const
+void SQLTable::print(std::ostream& s) const
 {
-	s << "CREATE TABLE " << fullName() << " AS (" << endl;
+	s << "CREATE TABLE " << fullName() << " AS (" << std::endl;
 	for(map<int,SQLColumn*>::const_iterator j = columnsByIndex_.begin(); j != columnsByIndex_.end(); ++j)
 	{
 		SQLColumn *c = j->second;
-		s << "	" << c->name() << " " << c->type() << "," << endl;
+		s << "	" << c->name() << " " << c->type() << "," << std::endl;
 	}
-	s << ")" << endl;
+	s << ")" << std::endl;
 }
 
 } // namespace sql 

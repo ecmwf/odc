@@ -22,7 +22,7 @@
 namespace odb {
 namespace sql {
 
-SQLInteractiveSession::SQLInteractiveSession(ostream &out)
+SQLInteractiveSession::SQLInteractiveSession(std::ostream &out)
 : out_(out)
 {}
 

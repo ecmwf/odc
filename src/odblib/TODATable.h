@@ -40,7 +40,7 @@ public:
 	SQLColumn* column(const string&);
 
 protected:
-	// void print(ostream&) const;
+	// void print(std::ostream&) const;
 	SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
 	SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue);
 

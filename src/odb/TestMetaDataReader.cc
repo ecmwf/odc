@@ -57,7 +57,7 @@ void TestMetaDataReader::test()
 
 	ASSERT(wholeFileMD[0]->min() == 1 && wholeFileMD[0]->max() == 3);
 
-	Log::info() << "TestMetaDataReader::test wholeFileMD==" << wholeFileMD << endl;
+	Log::info() << "TestMetaDataReader::test wholeFileMD==" << wholeFileMD << std::endl;
 }
 
 void TestMetaDataReader::tearDown() { }

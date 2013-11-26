@@ -46,13 +46,13 @@ public:
 	virtual void output(SQLOutput& o) const { type_->output(o, value_, missing_); }
 
 protected:
-	virtual void print(ostream&) const;
+	virtual void print(std::ostream&) const;
 
 private:
 	SQLExpressionEvaluated(const SQLExpressionEvaluated&);
 	SQLExpressionEvaluated& operator=(const SQLExpressionEvaluated&);
 
-	friend ostream& operator<<(ostream& s, const SQLExpressionEvaluated& p) { p.print(s); return s; }
+	friend std::ostream& operator<<(std::ostream& s, const SQLExpressionEvaluated& p) { p.print(s); return s; }
 
 	const odb::sql::type::SQLType* type_;
 	bool missing_;

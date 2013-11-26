@@ -41,9 +41,9 @@ public:
 
 	virtual void release();
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
-	friend ostream& operator<<(ostream& o, const Expressions& e)
+	friend std::ostream& operator<<(std::ostream& o, const Expressions& e)
 		{ e.print(o); return o; }
 
 //////////////////////////////////////////////////////////////////////////////////////

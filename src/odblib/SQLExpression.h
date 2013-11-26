@@ -46,7 +46,7 @@ public:
 	virtual double eval(bool& missing) const = 0;
 
 	virtual bool andSplit(expression::Expressions&) { return false; }
-	virtual void tables(set<SQLTable*>&) {}
+    virtual void tables(std::set<SQLTable*>&) {}
 
 	virtual bool isConstant() const = 0;
 	virtual bool isNumber() const { return false; }
@@ -84,7 +84,7 @@ public:
 
 	static SQLExpression* number(double);
 
-	virtual void print(ostream&) const = 0; 
+    virtual void print(std::ostream&) const = 0;
 
 protected:
 	SQLExpression(Expressions*);
@@ -102,7 +102,7 @@ private:
 
 	string title_;
 
-	friend ostream& operator<<(ostream& s,const SQLExpression& p) { p.print(s); return s; }
+    friend std::ostream& operator<<(std::ostream& s,const SQLExpression& p) { p.print(s); return s; }
 };
 
 } // namespace expression

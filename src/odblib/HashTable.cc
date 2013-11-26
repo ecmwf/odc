@@ -24,7 +24,7 @@ HashTable::HashTable()
   strings_(),
   cloned_(false)
 {
-	//Log::info() << "HashTable@" << this << "::HashTable()" << endl;
+	//Log::info() << "HashTable@" << this << "::HashTable()" << std::endl;
 	for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
 		table[i] = 0;
 }
@@ -62,7 +62,7 @@ HashTable* HashTable::clone() {
 
 HashTable::~HashTable()
 {
-	//Log::info() << "HashTable@" << this << "::~HashTable()" << endl;
+	//Log::info() << "HashTable@" << this << "::~HashTable()" << std::endl;
 
 	for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
 		delete table[i];
@@ -118,7 +118,7 @@ void HashTable::store(const char *name)
 
 	strings_.push_back(name);
 	//ASSERT(strings_.size() == nextIndex_);
-	//Log::info() << "HashTable@" << this << "::store(" << name << "): n = " << n << ", nextIndex = " << nextIndex_  << endl;
+	//Log::info() << "HashTable@" << this << "::store(" << name << "): n = " << n << ", nextIndex = " << nextIndex_  << std::endl;
 }
 
 int32_t HashTable::findIndex(const char *name)
@@ -136,13 +136,13 @@ int32_t HashTable::findIndex(const char *name)
 		h = h->next;
 	}
 
-	Log::error() << "[" << name << "] not in hash" << endl;
+	Log::error() << "[" << name << "] not in hash" << std::endl;
 	return -1;
 }
 
-void HashTable::dumpTable(ostream &out) const
+void HashTable::dumpTable(std::ostream &out) const
 {
-	out << "HashTable@" << this << "::dumpTable: begin" << endl;
+	out << "HashTable@" << this << "::dumpTable: begin" << std::endl;
 
 	for(int32_t i = 0; i < SIZE; i++)
 	{
@@ -150,18 +150,18 @@ void HashTable::dumpTable(ostream &out) const
 
 		while(h)
 		{
-			out << "[" << h->name << "] -> " << h->cnt << " " << h->index << endl;
+			out << "[" << h->name << "] -> " << h->cnt << " " << h->index << std::endl;
 			h = h->next;
 		}
 	}
 
-	out << "HashTable@" << this << "::dumpTable: end" << endl;
+	out << "HashTable@" << this << "::dumpTable: end" << std::endl;
 }
 
 template<typename BYTEORDER> 
 void HashTable::save(DataStream<BYTEORDER> &f)
 {
-	//Log::info() << "HashTable@" << this << "::save BEGIN" << endl;
+	//Log::info() << "HashTable@" << this << "::save BEGIN" << std::endl;
 
 	int32_t n = 0;
 
@@ -173,7 +173,7 @@ void HashTable::save(DataStream<BYTEORDER> &f)
 
 		while(h)
 		{
-			//Log::info() << "HashTable::save: '" << h->name << "'" << endl;
+			//Log::info() << "HashTable::save: '" << h->name << "'" << std::endl;
 
 			f.writeString(h->name);
 			f.writeInt32(h->cnt);
@@ -185,13 +185,13 @@ void HashTable::save(DataStream<BYTEORDER> &f)
 
 	ASSERT(n == nextIndex_);
 
-	//Log::info() << "HashTable@" << this << "::save END" << endl;
+	//Log::info() << "HashTable@" << this << "::save END" << std::endl;
 }
 
 template<typename BYTEORDER> 
 void HashTable::load(DataStream<BYTEORDER> &f)
 {
-	//Log::info() << "HashTable@" << this << "::load BEGIN" << endl;
+	//Log::info() << "HashTable@" << this << "::load BEGIN" << std::endl;
 
 	f.readInt32(nextIndex_);
 
@@ -208,13 +208,13 @@ void HashTable::load(DataStream<BYTEORDER> &f)
 		int32_t index;
 		f.readInt32(index);
 
-		//Log::info() << "HashTable::load: " << index << " : '" << s << "'" << endl;
+		//Log::info() << "HashTable::load: " << index << " : '" << s << "'" << std::endl;
 
 		ASSERT(index < nextIndex_);
 		strings_[index] = std::string(s);
 
 	}
-	//Log::info() << "HashTable@" << this << "::load END" << endl;
+	//Log::info() << "HashTable@" << this << "::load END" << std::endl;
 }
 
 template void HashTable::save<SameByteOrder>(DataStream<SameByteOrder>&);

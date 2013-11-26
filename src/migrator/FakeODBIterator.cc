@@ -52,7 +52,7 @@ Assignments::Assignments(const std::string& s)
 
 void FakeODBIterator::ConstParameters::add(const Assignments& ass)
 {
-	Log::debug() << "FakeODBIterator::ConstParameters::add(const Assignments& ass)" << endl;
+	Log::debug() << "FakeODBIterator::ConstParameters::add(const Assignments& ass)" << std::endl;
 	for (size_t i = 0; i < ass.size(); ++i)
 	{
 		const Assignment &as = ass[i];
@@ -72,19 +72,19 @@ void FakeODBIterator::ConstParameters::add(const Assignments& ass)
 
 void FakeODBIterator::ConstParameters::addInteger(const std::string& name, long v)
 {
-	Log::info() << "FakeODBIterator::ConstParameters::addInteger: " << name << " = " << v << endl;
+	Log::info() << "FakeODBIterator::ConstParameters::addInteger: " << name << " = " << v << std::endl;
 	push_back(ConstParameter(name, v, odb::INTEGER));
 }
 
 void FakeODBIterator::ConstParameters::addReal(const std::string& name, double v)
 {
-	Log::info() << "FakeODBIterator::ConstParameters::addReal: " << name << " = " << v << endl;
+	Log::info() << "FakeODBIterator::ConstParameters::addReal: " << name << " = " << v << std::endl;
 	push_back(ConstParameter(name, v, odb::REAL));
 }
 
 void FakeODBIterator::ConstParameters::addString(const std::string& name, std::string v)
 {
-	Log::info() << "FakeODBIterator::ConstParameters::addString: " << name << " = '" << v << "'" << endl;
+	Log::info() << "FakeODBIterator::ConstParameters::addString: " << name << " = '" << v << "'" << std::endl;
 	push_back(ConstParameter(name, Tool::cast_as_double(v), odb::STRING));
 }
 
@@ -111,7 +111,7 @@ odb::MetaData& FakeODBIterator::columns() {
 			std::string name = constParameters_[i].name;
 			odb::ColumnType type = constParameters_[i].type;
 
-			Log::debug() << "FakeODBIterator::columns: i = " << i << ", name=" << name << endl;
+			Log::debug() << "FakeODBIterator::columns: i = " << i << ", name=" << name << std::endl;
 
 			odb::Column* col = new odb::Column(columns_);
 			col->name(name);

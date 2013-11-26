@@ -42,8 +42,8 @@ struct SelectOneTable {
 	Expressions index_;
 
 	// For links
-	pair<double,bool>*   offset_;
-	pair<double,bool>*   length_;
+	std::pair<double,bool>*   offset_;
+	std::pair<double,bool>*   length_;
 	SQLColumn*           column_; // Reference column
 
 	// For checking/debugging

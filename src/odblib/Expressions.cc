@@ -43,7 +43,7 @@ void Expressions::release()
 		delete at(i);
 }
 
-void Expressions::print(ostream& o) const
+void Expressions::print(std::ostream& o) const
 {
 	o << "[";
 	for (size_t i = 0; i < size(); ++i)

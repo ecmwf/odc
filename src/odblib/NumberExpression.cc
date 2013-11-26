@@ -34,7 +34,7 @@ void NumberExpression::prepare(SQLSelect& sql) {}
 
 void NumberExpression::cleanup(SQLSelect& sql) {}
 
-void NumberExpression::print(ostream& s) const { s << value_; }
+void NumberExpression::print(std::ostream& s) const { s << value_; }
 
 } // namespace expression
 } // namespace sql

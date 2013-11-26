@@ -45,7 +45,7 @@ SQLExpression* FunctionOR::simplify(bool& changed)
 		if(args_[i]->isConstant())
 			if(args_[i]->eval(missing))
 			{
-				cout << "SYMPLIFY " << *this << " to 1" << endl;;
+                std::cout << "SYMPLIFY " << *this << " to 1" << std::endl;;
 				changed = true;
 				return SQLExpression::number(1);
 			}

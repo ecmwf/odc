@@ -79,7 +79,7 @@ void TestSetvbuffer::test()
 	for (size_t i = 0; i < 10; ++i)
 	{
 		stringstream s;
-		s << "TestSetvbuffer::setUp(): createFile(" << cols << ", " << rows << ", " << buffSize << ")" << endl;
+		s << "TestSetvbuffer::setUp(): createFile(" << cols << ", " << rows << ", " << buffSize << ")" << std::endl;
 		Timer t(s.str());
 		createFile(cols, rows, buffSize);
 	}

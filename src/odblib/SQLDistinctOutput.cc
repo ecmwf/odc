@@ -22,7 +22,7 @@ SQLDistinctOutput::~SQLDistinctOutput() {}
 const SQLOutputConfig& SQLDistinctOutput::config() { return output_->config(); }
 void SQLDistinctOutput::config(SQLOutputConfig& cfg) { output_->config(cfg); }
 
-void SQLDistinctOutput::print(ostream& s) const
+void SQLDistinctOutput::print(std::ostream& s) const
 {
 	s << "SQLDistinctOutput[" << *output_ << "]";
 }

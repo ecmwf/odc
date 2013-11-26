@@ -61,7 +61,7 @@ void TestDispatchingWriter::test()
 	for (size_t i = 0; i < files.size(); ++i)
 	{
 		unsigned long long n = CountTool::rowCount(files[i]);
-		Log::info() << i << ". " << files[i] << ": " << n << endl;
+		Log::info() << i << ". " << files[i] << ": " << n << std::endl;
 		sum += n;
 	}
 

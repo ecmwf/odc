@@ -34,8 +34,8 @@ double FunctionNOT_NULL::eval(bool&) const
 {
 	bool missing = false;
 #if 0
-	cout << "FunctionNOT_NULL " << (*args_[0])  << " " << args_[0]->eval(missing);
-	cout << " missing = " << missing << endl;
+	std::cout << "FunctionNOT_NULL " << (*args_[0])  << " " << args_[0]->eval(missing);
+	std::cout << " missing = " << missing << std::endl;
 #else
 	args_[0]->eval(missing);
 #endif

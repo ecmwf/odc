@@ -56,7 +56,7 @@ void TestDecoding::test()
 	for (; it != end; ++it)
 		++n;
 
-	Log::info() << "TestDecoding::test decoded " << n << " lines." << endl;
+	Log::info() << "TestDecoding::test decoded " << n << " lines." << std::endl;
 }
 
 void TestDecoding::setUp() {}

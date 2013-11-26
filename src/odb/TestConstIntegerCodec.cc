@@ -110,12 +110,12 @@ void TestConstIntegerCodec::test()
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 
-	Log::info() << it->columns() << endl;
+	Log::info() << it->columns() << std::endl;
 	
 	for ( ; it != end; ++it)
 		ASSERT((*it)[0] == the_const_value);
 
-	Log::debug() << "TestConstIntegerCodec::test: codec name is '" << it->columns()[0]->coder().name() << "'" << endl;
+	Log::debug() << "TestConstIntegerCodec::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
 	ASSERT(it->columns()[0]->coder().name() == "constant");
 }
 

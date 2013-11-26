@@ -37,7 +37,7 @@ static ThreadSingleton<odb::ODBAPISettings> instance_;
 bool odb::ODBAPISettings::debug = false;
 
 void debugMeNow() {
-	Log::info() << "Debug me now" << endl;
+	Log::info() << "Debug me now" << std::endl;
 	odb::ODBAPISettings::debug = true;
 }
 

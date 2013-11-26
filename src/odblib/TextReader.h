@@ -34,7 +34,7 @@ public:
 	typedef IteratorProxy<TextReaderIterator,TextReader,const double> iterator;
 	typedef iterator::Row row;
 
-	TextReader(istream &, const string& delimiter);
+	TextReader(std::istream &, const string& delimiter);
 	TextReader(const std::string& path, const string& delimiter);
 
 	virtual ~TextReader();
@@ -42,7 +42,7 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	istream& stream() { return *in_; }
+    std::istream& stream() { return *in_; }
 	// For C API
 	TextReaderIterator* createReadIterator(const eckit::PathName&);
 
@@ -57,7 +57,7 @@ private:
     TextReader& operator=(const TextReader&);
 	TextReader();
 
-	istream* in_;
+    std::istream* in_;
 	bool deleteDataHandle_;
 	//const eckit::PathName path_;
 	const string path_;

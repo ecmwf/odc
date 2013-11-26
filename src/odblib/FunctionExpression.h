@@ -29,7 +29,7 @@ public:
 	FunctionExpression(const FunctionExpression&);
 	~FunctionExpression();
 
-	virtual void print(ostream& s) const;
+    virtual void print(std::ostream& s) const;
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
 	virtual bool isConstant() const;
@@ -46,11 +46,11 @@ public:
 protected:
 	string name_;
 	expression::Expressions args_;
-	// void print(ostream&) const;
+    // void print(std::ostream&) const;
 
 // -- Overridden methods
 
-	void tables(set<SQLTable*>&);
+    void tables(std::set<SQLTable*>&);
 private:
 // No copy allowed
 	//FunctionExpression(const FunctionExpression&);

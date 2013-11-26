@@ -52,7 +52,7 @@ SQLExpression* SQLExpression::simplify(bool& changed)
 	{
 		changed = true;
 		bool missing = false;
-		Log::info() << "SIMPLIFY " << *this << " to " << eval(missing) << endl;
+		Log::info() << "SIMPLIFY " << *this << " to " << eval(missing) << std::endl;
 		return new NumberExpression(eval(missing));
 	}
 	return 0;

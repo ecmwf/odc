@@ -29,7 +29,7 @@ CompareTool::CompareTool (int argc, char *argv[])
 	{
 		Log::error() << "Usage:";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		throw Exception("Wrong number of parameters.");
 	}
 
@@ -62,7 +62,7 @@ void CompareTool::run()
 	vector<string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", string("")));
 
 	if (excludedColumnsTypes.size())
-		Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << endl;
+		Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << std::endl;
 	
 	bool checkMissing = ! optionIsSet("-dontCheckMissing");
 	odb::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1, *file2, excludedColumnsTypes);

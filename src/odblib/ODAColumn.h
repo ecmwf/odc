@@ -39,7 +39,7 @@ private:
 	virtual void advance(unsigned long);
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const ODAColumn& p)
+	//friend std::ostream& operator<<(std::ostream& s,const ODAColumn& p)
 	//	{ p.print(s); return s; }
 };
 

@@ -41,10 +41,10 @@ private:
 	virtual void close();
 	virtual SQLTable* table(const string&);
 	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA);
-	virtual SQLTable* openDataStream(istream&, const string& delimiter, DataFormat = CSV); 
+	virtual SQLTable* openDataStream(std::istream&, const string& delimiter, DataFormat = CSV); 
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const ODADatabase& p)
+	//friend std::ostream& operator<<(std::ostream& s,const ODADatabase& p)
 	//	{ p.print(s); return s; }
 };
 

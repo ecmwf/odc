@@ -20,12 +20,12 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o)
+	static void help(std::ostream &o)
 	{
 		o << "Splits file according to given template";
 	}
 
-	static void usage(const string& name, ostream &o)
+	static void usage(const string& name, std::ostream &o)
 	{
 		o << name << " [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 		//o << name << " [-sort] [-maxopenfiles <N>] <input.odb> <output_template.odb>";

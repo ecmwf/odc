@@ -183,7 +183,7 @@ string SchemaAnalyzer::generateSELECT() const
 		{
 			const string typeName = i->type();
 			if (typeName == "@LINK") {
-				Log::info() << "SchemaAnalyzer::generateSELECT: Skipping " << i->name() << endl;
+				Log::info() << "SchemaAnalyzer::generateSELECT: Skipping " << i->name() << std::endl;
 				continue;
 			}
 			selectList += i->name() + ", ";
@@ -200,7 +200,7 @@ Definitions SchemaAnalyzer::generateDefinitions()
 
 void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature)
 {
-	//Log::debug() << "SchemaAnalyzer::addBitfieldType: " << name << "(" << typeSignature << ")" << endl;
+	//Log::debug() << "SchemaAnalyzer::addBitfieldType: " << name << "(" << typeSignature << ")" << std::endl;
 	bitfieldTypes_[name] = make_pair(fields, sizes);
 }
 
@@ -226,7 +226,7 @@ void SchemaAnalyzer::updateBitfieldsDefs(MetaData &md, map<string,string> & true
 	{
 		Column &c = *md[i];
 		if (c.type() == BITFIELD) {
-            //Log::info() << "colname = " << c.name() << " truename = " << truenames[c.name()] << endl;
+            //Log::info() << "colname = " << c.name() << " truename = " << truenames[c.name()] << std::endl;
 			c.bitfieldDef(const_cast<SchemaAnalyzer*>(this)->getBitfieldTypeDefinition(truenames[c.name()]));
         }
 	}

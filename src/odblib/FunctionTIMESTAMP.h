@@ -31,7 +31,7 @@ public:
 
 // -- Overridden methods
 	virtual const odb::sql::type::SQLType* type() const;
-	virtual void output(ostream& s) const;
+	virtual void output(std::ostream& s) const;
 
 private:
 	FunctionTIMESTAMP& operator=(const FunctionTIMESTAMP&);
@@ -40,7 +40,7 @@ private:
 	virtual double eval(bool& missing) const;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionTIMESTAMP& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionTIMESTAMP& p)
 	//	{ p.print(s); return s; }
 };
 

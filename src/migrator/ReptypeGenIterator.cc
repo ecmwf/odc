@@ -35,7 +35,7 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
-ostream& operator<<(ostream& s, const ReptypeTable& m)
+ostream& operator<<(std::ostream& s, const ReptypeTable& m)
 {
 	s << "{";
 	for (ReptypeTable::const_iterator it = m.begin(); it != m.end(); ++it)
@@ -46,7 +46,7 @@ ostream& operator<<(ostream& s, const ReptypeTable& m)
 			s << *i;
 		s << "]";
 
-		s << " : " << it->second << "," << endl;
+		s << " : " << it->second << "," << std::endl;
 	}
 	s << "}";
 	return s;
@@ -78,8 +78,8 @@ ReptypeTable ReptypeTableConfig::reptypeTable_ = ReptypeTable();
 void ReptypeTableConfig::load(const PathName& fileName)
 {
 	std::string s = Tool::readFile(fileName, false);
-	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << endl;
-	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << "'" << s << "'" << endl;
+	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << std::endl;
+	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << "'" << s << "'" << std::endl;
 
     vector<std::string> lines = StringTools::split("\n", s);
 
@@ -109,7 +109,7 @@ void ReptypeTableConfig::load(const PathName& fileName)
 		int reptype_value = Translator<std::string, int>()(lr[0]);
 
 		vector<std::string> rvalues = StringTools::split(",", lr[1]);
-		//Log::debug() << "ReptypeTableConfig::load: rvalues = " << rvalues << endl;
+		//Log::debug() << "ReptypeTableConfig::load: rvalues = " << rvalues << std::endl;
 
 		ASSERT("Number of values must be equal to number of column names (first line)"
 			&& columnNames.size() == rvalues.size());
@@ -126,15 +126,15 @@ void ReptypeTableConfig::load(const PathName& fileName)
 				? Tool::cast_as_double(Tool::unQuote(vs))
 				: Translator<std::string, double>()(vs);
 			vals.push_back(v);
-			Log::debug() << "[" << rvalues[j] << "] '" << Tool::double_as_string(v) << "', " << endl;
+			Log::debug() << "[" << rvalues[j] << "] '" << Tool::double_as_string(v) << "', " << std::endl;
 		}
-		Log::debug() << endl;
+		Log::debug() << std::endl;
 		//at(vals) = reptype_value;
 		reptypeTable_[vals] = reptype_value;
 	}
 
-	//Log::debug() << "ReptypeTableConfig::load: columns_ = " << columns_ << endl; 
-	//Log::debug() << "ReptypeTableConfig::load: reptypeTable_ = " << reptypeTable_ << endl;
+	//Log::debug() << "ReptypeTableConfig::load: columns_ = " << columns_ << std::endl; 
+	//Log::debug() << "ReptypeTableConfig::load: reptypeTable_ = " << reptypeTable_ << std::endl;
 }
 
 template<typename ITERATOR, typename CONFIG>
@@ -152,21 +152,21 @@ ReptypeGenIterator<ITERATOR, CONFIG>::ReptypeGenIterator(const PathName& db, con
 	{
 		std::string name = *i;
 
-		Log::debug() << "ReptypeGenIterator<ITERATOR>::ctor: " << name << endl;
+		Log::debug() << "ReptypeGenIterator<ITERATOR>::ctor: " << name << std::endl;
 
 		indices_.push_back(iterator_.columns().columnIndex(name));
 		values_.push_back(0);
 	}
-	Log::debug() << "ReptypeGenIterator::ReptypeGenIterator: Reptype table:" << endl;
-	Log::debug() << "reptypeTable_ = " << reptypeTable_ << endl;
+	Log::debug() << "ReptypeGenIterator::ReptypeGenIterator: Reptype table:" << std::endl;
+	Log::debug() << "reptypeTable_ = " << reptypeTable_ << std::endl;
 }
 
 template<typename ITERATOR, typename CONFIG>
 ReptypeGenIterator<ITERATOR, CONFIG>::~ReptypeGenIterator()
 {
-	Log::debug() << "ReptypeGenIterator::~ReptypeGenIterator: Reptype table:" << endl;
-	Log::debug() << "reptypeTable_.size() = " << reptypeTable_.size() << endl;
-	Log::debug() << "reptypeTable_ =" << reptypeTable_ << endl;
+	Log::debug() << "ReptypeGenIterator::~ReptypeGenIterator: Reptype table:" << std::endl;
+	Log::debug() << "reptypeTable_.size() = " << reptypeTable_.size() << std::endl;
+	Log::debug() << "reptypeTable_ =" << reptypeTable_ << std::endl;
 	delete [] data_;
 }
 
@@ -207,7 +207,7 @@ bool ReptypeGenIterator<ITERATOR, CONFIG>::next()
 		else
 		{
 			// TODO: rethink!
-			Log::info() << "ReptypeGenIterator::next(): No matching report type, creating new one." << endl;
+			Log::info() << "ReptypeGenIterator::next(): No matching report type, creating new one." << std::endl;
 
 			size_t newRT = reptypeTable_.size();
 			for (ReptypeTable::const_iterator i = reptypeTable_.begin(); i != reptypeTable_.end(); ++i)
@@ -217,7 +217,7 @@ bool ReptypeGenIterator<ITERATOR, CONFIG>::next()
 					newRT = rt + 1;
 			}
 
-			Log::info() << "ReptypeGenIterator::next(): New report type: " << newRT << endl;
+			Log::info() << "ReptypeGenIterator::next(): New report type: " << newRT << std::endl;
 
 			data_[reptypeIndex_] = reptypeTable_[values_] = newRT;
 		}

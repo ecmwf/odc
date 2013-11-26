@@ -34,7 +34,7 @@ size_t SQLBit::size() const
 
 void SQLBit::output(SQLOutput& o, double x, bool missing) const
 {
-	//Log::info() << "SQLBit::output: x=" << x << ", missing=" << missing << endl;
+	//Log::info() << "SQLBit::output: x=" << x << ", missing=" << missing << std::endl;
 	//s << ((m & mask_) >> shift_);
 	// TODO: does it work like this? test!
 	o.outputUnsignedInt(x, missing);

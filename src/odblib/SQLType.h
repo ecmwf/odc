@@ -60,7 +60,7 @@ public:
 	static void createAlias(const string&, const string&);
 
 protected:
-	virtual void print(ostream&) const; 	
+    virtual void print(std::ostream&) const;
 	static bool exists(const string&);
 
 private:
@@ -72,7 +72,7 @@ private:
 
 	static void registerStaticTypes();
 
-	friend ostream& operator<<(ostream& s,const SQLType& p)
+    friend std::ostream& operator<<(std::ostream& s,const SQLType& p)
 		{ p.print(s); return s; }
 };
 

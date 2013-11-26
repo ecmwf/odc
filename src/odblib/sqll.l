@@ -56,10 +56,10 @@ int includeStackPtr = 0;
 
 void pushInclude(const string& sql, const string& yypath)
 {
-    //cerr << "pushInclude:" << yypath << endl;
-    //cerr << "<INCLUDE>" << endl;
-    //cerr << sql << endl;
-    //cerr << "</INCLUDE>" << endl;
+    //cerr << "pushInclude:" << yypath << std::endl;
+    //cerr << "<INCLUDE>" << std::endl;
+    //cerr << sql << std::endl;
+    //cerr << "</INCLUDE>" << std::endl;
 
     if (includeStackPtr > maxIncludeDepth)
         throw eckit::UserError("Includes nested too deeply");
@@ -71,7 +71,7 @@ int popInclude()
 {
     if ( --includeStackPtr == 0 )
     {
-        //cerr << "** lex terminate **" << endl;
+        //cerr << "** lex terminate **" << std::endl;
         return 1;
     }
     else
@@ -83,7 +83,7 @@ int popInclude()
 }
 
 int wrap() {
-    //Log::info() << "** wrap **" << endl;
+    //Log::info() << "** wrap **" << std::endl;
     return popInclude();
 }
 
@@ -155,7 +155,7 @@ SEMICOLON [;]
 [iI][nN][hH][eE][rR][iI][tT][sS]  { BEGIN 0; return INHERITS; }
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
-    //cerr << "include " << yytext << endl;
+    //cerr << "include " << yytext << std::endl;
 
     eckit::PathName fileName(StringTool::unQuote(yytext));
     if (!fileName.exists())
@@ -174,14 +174,14 @@ SEMICOLON [;]
     }
     string text(StringTool::readFile(fileName));
 
-    //cerr << "Opening " << fileName << endl;
+    //cerr << "Opening " << fileName << std::endl;
 
     pushInclude(text, fileName);
     BEGIN(INITIAL);
 }
 
 <<EOF>> { 
-    //cerr << "** EOF **" << endl;
+    //cerr << "** EOF **" << std::endl;
     odblib_terminate();
 }
 
@@ -198,26 +198,26 @@ SEMICOLON [;]
 
             yytext[yyleng++] = 0;
             yylval.val = yytext;
-			//cerr << "**** lex: STRING='" << yytext << "'" << endl;
+			//cerr << "**** lex: STRING='" << yytext << "'" << std::endl;
             return STRING;
         }
 
 {IDENT}	{ 
 			char *p = yytext; while(*p) { *p = tolower(*p); p++; }
 			yylval.val = yytext; 
-			//cerr << "****I " << yylval.val << " ****" << endl; 
+			//cerr << "****I " << yylval.val << " ****" << std::endl; 
 			return IDENT; 
 		}
 {VAR}   { 
 			char *p = yytext; while(*p) { *p = tolower(*p); p++; }
 			yylval.val = yytext; 
-			//cerr << "****V " << yylval.val << " ****" << endl; 
+			//cerr << "****V " << yylval.val << " ****" << std::endl; 
 			return VAR; 
 		}
 
 {NUMB}	{
 			yylval.num = atof(yytext);
-			//cerr << "****N " << yylval.num << " ****" << endl; 
+			//cerr << "****N " << yylval.num << " ****" << std::endl; 
 			return DOUBLE;
 		}
 

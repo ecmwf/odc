@@ -193,7 +193,7 @@ int WriterBufferingIterator::doWriteRow(const double* values, unsigned long coun
 
 int WriterBufferingIterator::open()
 {
-	//Log::debug() << "WriterBufferingIterator::open@" << this << ": Opening data handle " << f << endl;
+	//Log::debug() << "WriterBufferingIterator::open@" << this << ": Opening data handle " << f << std::endl;
 	ASSERT(f);
 
 	Length estimatedLen = MEGA(20);
@@ -205,7 +205,7 @@ int WriterBufferingIterator::open()
 
 int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnType type)
 {
-	//Log::debug() << "WriterBufferingIterator::setColumn: " << endl;
+	//Log::debug() << "WriterBufferingIterator::setColumn: " << std::endl;
 
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
@@ -218,7 +218,7 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnTyp
 
 int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
 {
-	//Log::debug() << "WriterBufferingIterator::setBitfieldColumn: " << endl;
+	//Log::debug() << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
 
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
@@ -255,7 +255,7 @@ void WriterBufferingIterator::flush()
 	InMemoryDataHandle bufferForHeader;
 	doWriteHeader(bufferForHeader, memoryDataHandle_.position(), rowsWritten);
 
-	Log::debug() << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << endl;
+	Log::debug() << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << std::endl;
 
 	MemoryBlock buff(bufferForHeader.position());
 	bufferForHeader.openForRead();
@@ -264,7 +264,7 @@ void WriterBufferingIterator::flush()
 	if (buff.size() < maxAnticipatedHeaderSize_)
 	{
 		Log::debug() << "WriterBufferingIterator::flush: writing header and data in one go. "
-			"Block size: " << buff.size() + memoryDataHandle_.position() << endl;
+			"Block size: " << buff.size() + memoryDataHandle_.position() << std::endl;
 
 		copy(static_cast<unsigned char*>(buff), static_cast<unsigned char*>(buff) + buff.size(),
 			memoryDataHandle_.buffer() - buff.size());
@@ -273,13 +273,13 @@ void WriterBufferingIterator::flush()
 	}
 	else
 	{
-		Log::info() << "WriterBufferingIterator::flush: writing header and data separately." << endl;
+		Log::info() << "WriterBufferingIterator::flush: writing header and data separately." << std::endl;
 
 		this->f->write(buff, buff.size()); // Write header
 		this->f->write(memoryDataHandle_.buffer(), memoryDataHandle_.position()); // Write encoded data
 	}
 
-	Log::debug() << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << endl;
+	Log::debug() << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << std::endl;
 
 	memoryDataHandle_.buffer(rowsBuffer_.cast<unsigned char>());
 
@@ -293,7 +293,7 @@ void WriterBufferingIterator::flush()
 template <typename T>
 void WriterBufferingIterator::doWriteHeader(T& dataHandle, size_t dataSize, size_t rowsNumber)
 {
-	//Log::debug() << "WriterBufferingIterator::doWriteHeader: dataSize=" << dataSize << ", rowsNumber=" << rowsNumber << endl;
+	//Log::debug() << "WriterBufferingIterator::doWriteHeader: dataSize=" << dataSize << ", rowsNumber=" << rowsNumber << std::endl;
 
 	allocBuffers();
 

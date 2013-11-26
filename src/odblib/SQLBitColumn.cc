@@ -30,7 +30,7 @@ SQLBitColumn::SQLBitColumn(SQLColumn& column,const string& field):
 	mask_  = t.mask(field);
 	shift_ = t.shift(field);
 	
-	Log::info() << "here " << field << " mask=" << hex << mask_ << dec << " shift=" << shift_ << endl;
+    Log::info() << "here " << field << " mask=" << std::hex << mask_ << std::dec << " shift=" << shift_ << std::endl;
 }
 
 SQLBitColumn::~SQLBitColumn() {}
@@ -39,7 +39,7 @@ void SQLBitColumn::rewind() { SQLColumn::rewind(); }
 
 double SQLBitColumn::next(bool& missing)
 {
-	Log::info() << "SQLBitColumn::next: " << endl;
+	Log::info() << "SQLBitColumn::next: " << std::endl;
 
 	unsigned long value = static_cast<unsigned long>(SQLColumn::next(missing));
 	return (value >> shift_) & mask_;
@@ -47,7 +47,7 @@ double SQLBitColumn::next(bool& missing)
 
 void SQLBitColumn::advance(unsigned long n) { SQLColumn::advance(n); }
 
-void SQLBitColumn::print(ostream& s) const
+void SQLBitColumn::print(std::ostream& s) const
 {
 }
 

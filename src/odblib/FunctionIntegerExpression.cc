@@ -34,12 +34,12 @@ const odb::sql::type::SQLType* FunctionIntegerExpression::type() const
 	return &odb::sql::type::SQLType::lookup("integer");
 }
 
-void FunctionIntegerExpression::output(ostream& s) const
+void FunctionIntegerExpression::output(std::ostream& s) const
 {
 	bool missing;
     double v = eval(missing);
 
-	//Log::info() << "FunctionIntegerExpression::output: v=" << v << ", missing=" << missing << endl;
+	//Log::info() << "FunctionIntegerExpression::output: v=" << v << ", missing=" << missing << std::endl;
 
     s << static_cast<long long int>(v);
 }

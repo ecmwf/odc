@@ -27,7 +27,7 @@ SQLExpressionEvaluated::SQLExpressionEvaluated(SQLExpression& e)
 
 SQLExpressionEvaluated::~SQLExpressionEvaluated() {}
 
-void SQLExpressionEvaluated::print(ostream& o) const
+void SQLExpressionEvaluated::print(std::ostream& o) const
 {
 	if (missing_)
 		o << "NULL";

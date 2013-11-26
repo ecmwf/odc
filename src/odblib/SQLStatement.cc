@@ -17,7 +17,7 @@ SQLStatement::SQLStatement() {}
 
 SQLStatement::~SQLStatement() {}
 
-void SQLStatement::print(ostream& s) const {}
+void SQLStatement::print(std::ostream& s) const {}
 
 } // namespace sql
 } // namespace odb

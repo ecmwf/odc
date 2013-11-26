@@ -93,7 +93,7 @@ GribCodesBase::GribCodesBase(const PathName& fileName)
   fieldDelimiter_(" \t"),
   mapsLoaded_(false)
 {
-	Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << endl;
+	Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
 	readConfig(configFileName_);
 }
 
@@ -105,13 +105,13 @@ GribCodesBase::GribCodesBase(const PathName& fileName, const string& fieldDelimi
   fieldDelimiter_(fieldDelimiter),
   mapsLoaded_(false)
 {
-	Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << endl;
+	Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
 	readConfig(configFileName_);
 }
 
 void GribCodesBase::readConfig(const PathName& fileName)
 {
-	Log::debug() << "GribCodesBase::readConfig(" << fileName << ")" << endl;
+	Log::debug() << "GribCodesBase::readConfig(" << fileName << ")" << std::endl;
 	numeric2alpha_.clear();
 	alpha2numeric_.clear();
 
@@ -125,7 +125,7 @@ void GribCodesBase::readConfig(const PathName& fileName)
 			string alpha = StringTools::trim(words[1]);
 			numeric2alpha_[num] = alpha;
 			alpha2numeric_[alpha] = num;
-			Log::debug() << "GribCodesBase::readConfig: num='" << num << "' alpha='" << alpha << "'" << endl;
+			Log::debug() << "GribCodesBase::readConfig: num='" << num << "' alpha='" << alpha << "'" << std::endl;
 		}
 	}
 

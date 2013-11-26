@@ -49,9 +49,9 @@ int * RggRegionCache::read_rtablel_2_file(const int & Txxxx, int *NRGRI_len, int
   int nexp = Txxxx + 1; /* Expect this many latitude bands */
 
   string rtable_file;
-  stringstream sr;
+  std::stringstream sr;
   sr.width(3);
-  sr.setf(ios_base::right, ios_base::adjustfield);
+  sr.setf(std::ios_base::right, std::ios_base::adjustfield);
   sr.fill('0');
 
 // I use an environment variable; changing DHSHOME does not work...
@@ -59,8 +59,8 @@ int * RggRegionCache::read_rtablel_2_file(const int & Txxxx, int *NRGRI_len, int
   sr << Txxxx;
   rtable_file = fpath + "/rtablel_2" + sr.str();
 
-  Log::info() << " gaussian grid table = " << rtable_file << endl;
-  ifstream input(rtable_file.c_str());
+  Log::info() << " gaussian grid table = " << rtable_file << std::endl;
+  std::ifstream input(rtable_file.c_str());
   if (input) {
     NRGRI = new int [nexp];
     char line[1024];
@@ -91,7 +91,7 @@ int * RggRegionCache::read_rtablel_2_file(const int & Txxxx, int *NRGRI_len, int
     }
    nb = nexp;
   } else {
-    Log::info()  << "read_rtablel_2_file(): Unsupported resolution Txxxx = " << Txxxx << " or $ODB_RTABLE_PATH not defined" << endl;
+    Log::info()  << "read_rtablel_2_file(): Unsupported resolution Txxxx = " << Txxxx << " or $ODB_RTABLE_PATH not defined" << std::endl;
   }
 
   if (NRGRI_len) *NRGRI_len = nb;
@@ -174,7 +174,7 @@ void RggRegionCache::bsslzr(double pbes[], const int & knum)
 // 1. Extract values from look up table.
 //
   zapi = 2.0e0*asin(1.0e0);
-  inum=min(knum,50);
+  inum=std::min(knum,50);
 
   for (int j=0; j<inum; j++)
     pbes[j] = zbes[j];

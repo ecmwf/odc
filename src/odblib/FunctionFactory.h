@@ -47,7 +47,7 @@ public:
 	static FunctionFactory& instance();
 	FunctionFactory(); // : FunctionFactoryBase("FunctionFactory", -1) {}
 
-	typedef vector<pair<pair<string, int>, string> > FunctionInfo;
+    typedef vector<std::pair<std::pair<string, int>, string> > FunctionInfo;
 
 	FunctionInfo& functionsInfo();
 
@@ -55,7 +55,7 @@ private:
 	FunctionExpression* make(const string&,const expression::Expressions&) { NOTIMP; return 0; }
 
 
-	map<pair<string,int>, FunctionFactoryBase*> map_;
+    map<std::pair<string,int>, FunctionFactoryBase*> map_;
 	FunctionInfo functionInfo_;
 };
 

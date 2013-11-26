@@ -24,7 +24,7 @@ ParameterExpression::ParameterExpression(int which)
   which_(which)
 {
 // don't use any Log::* here
-//	cout << "new ParameterExpression " << name << endl;
+//	std::cout << "new ParameterExpression " << name << std::endl;
 }
 
 ParameterExpression::ParameterExpression(const ParameterExpression& other)
@@ -45,12 +45,12 @@ double ParameterExpression::eval(bool& missing) const { return value_; }
 void ParameterExpression::prepare(SQLSelect& sql)
 {
 	value_ = SQLSession::current().getParameter(which_);
-//	cout << "ParameterExpression " << name_ << " " << value_ << endl;
+//	std::cout << "ParameterExpression " << name_ << " " << value_ << std::endl;
 }
 
 void ParameterExpression::cleanup(SQLSelect& sql) { value_ = 0; }
 
-void ParameterExpression::print(ostream& s) const
+void ParameterExpression::print(std::ostream& s) const
 {
 	s << '?' << which_ << '=' << value_;
 }

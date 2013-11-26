@@ -55,7 +55,7 @@ public:
 
 	bool isAggregate() { return aggregate_; }
 
-	pair<double,bool>* column(const string& name, SQLTable*);
+	std::pair<double,bool>* column(const string& name, SQLTable*);
 	const type::SQLType* typeOf(const string& name, SQLTable*) const;
 	// FIXME: do we really need all these optional parameters?
 	SQLTable* findTable(const string& name, string *fullName = 0, bool *hasMissingValue=0, double *missingValue=0, bool* isBitfield=0, BitfieldDef* =0) const;
@@ -68,7 +68,7 @@ public:
 	virtual unsigned long long execute();
 
 protected:
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 
 private:
 // No copy allowed
@@ -92,7 +92,7 @@ private:
 	AggregatedResults aggregatedResults_;
 
 	map<string,pair<double,bool> > values_;
-	set<SQLTable*>     allTables_;
+	std::set<SQLTable*>     allTables_;
 
 	typedef map<SQLTable*,SelectOneTable> TableMap;
 	TableMap tablesToFetch_;
@@ -117,7 +117,7 @@ private:
 	friend class odb::sql::expression::function::FunctionROWNUMBER; // needs access to count_
 	friend class odb::sql::expression::function::FunctionTHIN; // needs access to count_
 
-	friend ostream& operator<<(ostream& s,const SQLSelect& p)
+	friend std::ostream& operator<<(std::ostream& s,const SQLSelect& p)
 		{ p.print(s); return s; }
 };
 

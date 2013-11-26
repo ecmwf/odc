@@ -46,7 +46,7 @@ private:
 	bool isAggregate() const { return true; }
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionAVG& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionAVG& p)
 	//	{ p.print(s); return s; }
 
 };

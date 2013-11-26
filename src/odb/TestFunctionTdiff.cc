@@ -84,7 +84,7 @@ void TestFunctionTdiff::testReaderIterator()
 {
     const string sql = "select tdiff(date,time,20090707.0,0.0) from \"test_tdiff.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();

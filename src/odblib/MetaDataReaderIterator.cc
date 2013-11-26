@@ -90,7 +90,7 @@ void MetaDataReaderIterator::loadHeaderAndBufferData()
 
 MetaDataReaderIterator::~MetaDataReaderIterator ()
 {
-	Log::debug() << "MetaDataReaderIterator::~MetaDataReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << endl;
+	Log::debug() << "MetaDataReaderIterator::~MetaDataReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << std::endl;
 
 	close();
 	delete [] lastValues_;
@@ -124,11 +124,11 @@ void MetaDataReaderIterator::initRowBuffer()
 
 bool MetaDataReaderIterator::skip(size_t dataSize)
 {
-	Log::debug() << "MetaDataReaderIterator::skip: skipData_=" << skipData_ << endl;
+	Log::debug() << "MetaDataReaderIterator::skip: skipData_=" << skipData_ << std::endl;
 
 	if (skipData_)
 	{
-		Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << endl;
+		Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << std::endl;
 		if (fileSize_ && f->position() + Offset(dataSize) > fileSize_)
 			throw ShortFile(owner_.path_);
 	
@@ -136,10 +136,10 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
         return true;
 	}
 
-	Log::debug() << "MetaDataReaderIterator::skip: sizeOfEncodedData_=" << sizeOfEncodedData_ << endl;
+	Log::debug() << "MetaDataReaderIterator::skip: sizeOfEncodedData_=" << sizeOfEncodedData_ << std::endl;
 	if (sizeOfEncodedData_ < dataSize)
 	{
-		Log::debug() << "MetaDataReaderIterator::skip: allocating " << dataSize << " bytes." << endl;
+		Log::debug() << "MetaDataReaderIterator::skip: allocating " << dataSize << " bytes." << std::endl;
 		delete [] encodedData_;
 		encodedData_ = new char[dataSize];
 	}
@@ -148,7 +148,7 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 	if ((actualNumberOfBytes = f->read(encodedData_, dataSize)) != dataSize)
 	{
 		Log::warning() << "MetaDataReaderIteratorReadingData::skip: expected " << dataSize 
-						<< " could read only " << actualNumberOfBytes << endl;
+						<< " could read only " << actualNumberOfBytes << std::endl;
 		return false;
 	}
 

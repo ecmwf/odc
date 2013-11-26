@@ -44,7 +44,7 @@ void Dictionary::release()
 		delete it->second;
 }
 
-void Dictionary::print(ostream& o) const
+void Dictionary::print(std::ostream& o) const
 {
 	o << "{";
 	for (Dictionary::const_iterator it = begin(); it != end(); ++it)

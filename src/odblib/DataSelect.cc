@@ -108,7 +108,7 @@ void DataSelect::populateColumns()
             case SQLType::bitmapType:  dataType = BITFIELD; break;
             case SQLType::blobType: NOTIMP; break;
             default:
-                Log::error() << "Unknown type: " << *sqlType << ", kind: " << kind << endl;
+                Log::error() << "Unknown type: " << *sqlType << ", kind: " << kind << std::endl;
                 ASSERT(!"UnknownType");
                 break;
         }

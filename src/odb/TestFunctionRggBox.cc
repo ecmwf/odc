@@ -83,12 +83,12 @@ void TestFunctionRggBox::testReaderIterator()
 	ASSERT(getenv("ODB_RTABLE_PATH") && "environment variable must be set for rgg_boxlat and rgg_boxlon to work properly");
     const string sql = "select rgg_boxlat(lat,lon,31), rgg_boxlon(lat,lon,31) from \"test_rgg_box.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();
 
-	Log::info() << "TestFunctionRggBox: '" << sql << "' => [" << (*it)[0] << ", " << (*it)[1] << "]" << endl;
+	Log::info() << "TestFunctionRggBox: '" << sql << "' => [" << (*it)[0] << ", " << (*it)[1] << "]" << std::endl;
 
 	ASSERT(fabs((*it)[0] - 47.069642059688e0)<EPS); // 
 	ASSERT(fabs((*it)[1] - 6)<EPS); // 

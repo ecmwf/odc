@@ -119,11 +119,11 @@ void TestInt16_MissingCodec::test()
 	M::iterator originalIt = reader.begin();
 	const M::iterator originalItEnd = reader.end();
 
-	Log::info() << it->columns() << endl;
+	Log::info() << it->columns() << std::endl;
 	
 	for ( ; it != end; ++it, ++originalIt)
 	{
-		Log::info() << "it[0] = " << (*it)[0] << ", originalIt.data()[0]=" << (*originalIt)[0] << endl;
+		Log::info() << "it[0] = " << (*it)[0] << ", originalIt.data()[0]=" << (*originalIt)[0] << std::endl;
 		ASSERT((*it)[0] == (*originalIt)[0]);
 	}
 
@@ -131,11 +131,11 @@ void TestInt16_MissingCodec::test()
 
 	string name = coder.name();
 
-	Log::debug() << "TestInt16_MissingCodec::test: codec name is '" << name << "'" << endl;
+	Log::debug() << "TestInt16_MissingCodec::test: codec name is '" << name << "'" << std::endl;
 
 	ASSERT(name == "int16_missing");
 
-	Log::debug() << "TestInt16_MissingCodec::test: OK" << endl;
+	Log::debug() << "TestInt16_MissingCodec::test: OK" << std::endl;
 }
 
 void TestInt16_MissingCodec::tearDown() {}

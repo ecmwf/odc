@@ -103,7 +103,7 @@ void TestFastODA2Request2::test()
 	o.scanFile("TestFastODA2Request2BIG.odb", offsets, lengths, handles);
 
 	for (size_t i = 0; i < handles.size(); ++i)
-		Log::info() << "TestFastODA2Request2::test: handles[" << i << "]=" << *handles[i] << endl;
+		Log::info() << "TestFastODA2Request2::test: handles[" << i << "]=" << *handles[i] << std::endl;
 
 	ASSERT(handles.size() == 2);
 	ASSERT(0 == handles[0]->start());
@@ -112,10 +112,10 @@ void TestFastODA2Request2::test()
 	ASSERT(size1_ * 3 + size2_ * 2 == handles[1]->end());
 
 	string r = o.genRequest();
-	Log::info() << "TestFastODA2Request2::test: o.genRequest() => " << endl << r << endl;
+	Log::info() << "TestFastODA2Request2::test: o.genRequest() => " << endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
-	Log::info() << "TestFastODA2Request2::test: rowsNumber == " << n <<  endl;
+	Log::info() << "TestFastODA2Request2::test: rowsNumber == " << n <<  std::endl;
 	ASSERT(n == 2 * (2 + 3));
 
 	

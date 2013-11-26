@@ -91,7 +91,7 @@ void ColumnExpression::prepare(SQLSelect& sql)
 	<< ", fullName =" << fullName
 	<< " type=" << *type_ 
 	<< " bitfieldDef.first.size =" << bitfieldDef_.first.size()
-	<< endl;
+	<< std::endl;
 
 	if (columnName_ == title() && columnName_ != fullName)
 	{
@@ -99,7 +99,7 @@ void ColumnExpression::prepare(SQLSelect& sql)
 
 		Log::debug() << "ColumnExpression::prepare: columnName_=" << columnName_ 
 		<< ", title[PATCHED]=" << title()
-		<< endl;
+		<< std::endl;
 	}
 }
 
@@ -110,7 +110,7 @@ void ColumnExpression::cleanup(SQLSelect& sql)
 }
 
 
-void ColumnExpression::print(ostream& s) const 
+void ColumnExpression::print(std::ostream& s) const 
 {
 	s << columnName_;
 	if (nominalShift_ != 0)
@@ -128,7 +128,7 @@ void ColumnExpression::output(SQLOutput& o) const
 void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
 {
 	ostream& L(Log::debug());
-	L << "ColumnExpression::expandStars: expanding '" << columnName_ << "' (" << tableReference_ << ")" << endl;
+	L << "ColumnExpression::expandStars: expanding '" << columnName_ << "' (" << tableReference_ << ")" << std::endl;
 
 	if(beginIndex_ != -1 && endIndex_ != -1)
 	{
@@ -160,7 +160,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 				&& ((names[i].rfind(tableReference_) == string::npos)
 					|| (names[i].rfind(tableReference_) + tableReference_.size() < names[i].size())))
 			{
-				L << "ColumnExpression::expandStars: skip '" << names[i] << "'" << endl;
+				L << "ColumnExpression::expandStars: skip '" << names[i] << "'" << std::endl;
 				continue;
 			}
 			
@@ -172,7 +172,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 	if (! matched)
 		throw eckit::UserError(string("No columns matching ") + columnName_ + tableReference_ + " found.");
 
-	L << "ColumnExpression::expandStars: added " << ss.str() << endl;
+	L << "ColumnExpression::expandStars: added " << ss.str() << std::endl;
 	delete this;
 }
 
@@ -190,7 +190,7 @@ SQLIndex* ColumnExpression::getIndex(double* value)
 	return col->getIndex(value);
 }
 
-void ColumnExpression::tables(set<SQLTable*>& t) 
+void ColumnExpression::tables(std::set<SQLTable*>& t) 
 { 
 	ASSERT(table_);
 	t.insert(table_); 

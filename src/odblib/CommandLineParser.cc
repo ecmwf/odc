@@ -121,7 +121,7 @@ void CommandLineParser::parseCommandLine()
 		if (s[0] != '-' || s.size() == 1)
 		{
 			parameters_.push_back(s);
-			Log::debug() << "CommandLineParser::parseCommandLine: parameter: " << s << endl;
+			Log::debug() << "CommandLineParser::parseCommandLine: parameter: " << s << std::endl;
 		}
 		else
 		{
@@ -129,21 +129,21 @@ void CommandLineParser::parseCommandLine()
 			{	
 				optionsWithArguments_[s] = argv(++i);
 				Log::debug() << "CommandLineParser::parseCommandLine: option with argument: "
-					<< s << " = " << optionsWithArguments_[s] << endl;
+					<< s << " = " << optionsWithArguments_[s] << std::endl;
 			}
 			else
 			{
 				optionsNoArguments_.insert(s);
-				Log::debug() << "CommandLineParser::parseCommandLine: option with no argument: " << s << endl;
+				Log::debug() << "CommandLineParser::parseCommandLine: option with no argument: " << s << std::endl;
 			}
 		}
 	}
 	commandLineParsed_ = true;
 }
 
-void CommandLineParser::print(ostream& s) const
+void CommandLineParser::print(std::ostream& s) const
 {
-	for (set<std::string>::const_iterator i = optionsNoArguments_.begin(); i != optionsNoArguments_.end(); ++i)
+	for (std::set<std::string>::const_iterator i = optionsNoArguments_.begin(); i != optionsNoArguments_.end(); ++i)
 		s << *i << "  ";
 
 	for (map<std::string, std::string>::const_iterator i = optionsWithArguments_.begin(); i != optionsWithArguments_.end(); ++i)

@@ -31,7 +31,7 @@ public:
 	void tool(Tool *);
 
 	void run();
-	int printHelp(ostream &out);
+	int printHelp(std::ostream &out);
 private:
 	Tool* tool_;
 	bool deleteTool_;

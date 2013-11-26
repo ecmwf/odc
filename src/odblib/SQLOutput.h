@@ -52,14 +52,14 @@ public:
 protected:
 	SQLOutputConfig config_;
 
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 
 private:
 // No copy allowed
 	SQLOutput(const SQLOutput&);
 	SQLOutput& operator=(const SQLOutput&);
 // -- Friends
-	friend ostream& operator<<(ostream& s,const SQLOutput& p)
+	friend std::ostream& operator<<(std::ostream& s,const SQLOutput& p)
 		{ p.print(s); return s; }
 
 };

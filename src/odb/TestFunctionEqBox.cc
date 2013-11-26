@@ -82,7 +82,7 @@ void TestFunctionEqBox::testReaderIterator()
 {
     const string sql = "select eq_boxlat(lat,lon,10.5), eq_boxlon(lat,lon,10.5) from \"test_eq_box.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();

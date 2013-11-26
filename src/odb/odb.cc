@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 {
 	try { return executeCommand(argc, argv);
 	} catch (std::exception& e) {
-		cerr << argv[0] << ": " << e.what() << endl;
+		cerr << argv[0] << ": " << e.what() << std::endl;
 		return 1;
 	}
 }
@@ -52,7 +52,7 @@ int executeCommand(int argc, char *argv[])
 		cerr << "Usage:" << endl
 			<< "        " << argv[0] << " <command> [<command's-parameters>]" << endl 
 			<< "        " << argv[0] << " help <command>" << endl << endl
-			<< "Available commands:" << endl;
+			<< "Available commands:" << std::endl;
 
 		AbstractToolFactory::listTools(cout);
 		return 1;
@@ -67,15 +67,15 @@ int executeCommand(int argc, char *argv[])
 	{
 		if (argc == 2) //no args => test all
 		{
-			cout << "Testing C API" << endl;
+			std::cout << "Testing C API" << std::endl;
 
 			string testCapi = string(argv[0]) + " testodbcapi";
-			cerr << "Executing '" << testCapi << "'" << endl;
+			cerr << "Executing '" << testCapi << "'" << std::endl;
 			int rc = system(testCapi.c_str());
 			if (rc) return rc;
 		}
 
-		cout << endl << "Running tests." << endl;
+		std::cout << endl << "Running tests." << std::endl;
 
 		odb::tool::test::TestRunnerApplication testRunner(argc - 1, argv + 1);
 		testRunner.start();
@@ -91,7 +91,7 @@ int executeCommand(int argc, char *argv[])
 		else
 		{
 			AbstractToolFactory::printToolHelp(argv[2], cout);
-			cout << endl << "Usage:" << endl << endl << "\t";
+			std::cout << endl << "Usage:" << endl << endl << "\t";
 			AbstractToolFactory::printToolUsage(argv[2], cout);
 		}
 		return 0;
@@ -101,8 +101,8 @@ int executeCommand(int argc, char *argv[])
 
 	if (firstArg == "-V" || firstArg == "-v" || firstArg == "--version")
 	{
-		cout << "ODBAPI Version: " << odb::ODBAPIVersion::version() << endl;
-		cout << "File format version: " << odb::ODBAPIVersion::formatVersionMajor() << "." << odb::ODBAPIVersion::formatVersionMinor() <<  endl;
+		std::cout << "ODBAPI Version: " << odb::ODBAPIVersion::version() << std::endl;
+		std::cout << "File format version: " << odb::ODBAPIVersion::formatVersionMajor() << "." << odb::ODBAPIVersion::formatVersionMinor() <<  std::endl;
 		return 0;
 	}
 
@@ -130,9 +130,9 @@ int gdb(int argc, char *argv[])
 	}
 	string vi = string("vi ") + scriptFile;
 	string gdb = string("gdb -x ") + scriptFile;
-	cout << "Executing '" << vi << "'" << endl;
+	std::cout << "Executing '" << vi << "'" << std::endl;
     system(vi.c_str());
-	cout << "Executing '" << gdb << "'" << endl;
+	std::cout << "Executing '" << gdb << "'" << std::endl;
 	return system(gdb.c_str());
 }
 
@@ -149,7 +149,7 @@ int valgrind(int argc, char *argv[])
 	string vg = string("valgrind --log-file=") + logFile + " --show-reachable=yes --leak-check=full "
          + " --db-attach=yes " // --suppressions=eckit.supp "
 		 + cmd + " " + args;
-	cout << "Executing '" << vg << "'" << endl;
+	std::cout << "Executing '" << vg << "'" << std::endl;
 	return system(vg.c_str());
 }
 
@@ -162,7 +162,7 @@ int sqlhelp(int argc, char *argv[])
 		if (i->first.first == "FunctionFactory")
 			continue;
 
-		cout << i->first.first << "/" << i->first.second << " " << i->second << endl;
+		std::cout << i->first.first << "/" << i->first.second << " " << i->second << std::endl;
 	}
 	
 	return 0;

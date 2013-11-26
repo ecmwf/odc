@@ -94,8 +94,8 @@ void Header<OWNER>::load(DATASTREAM &ff)
 
 	if (! (headerDigest == actualHeaderDigest))
 	{
-		//eckit::Log::debug() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << endl;
-		//eckit::Log::debug() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << endl;
+		//eckit::Log::debug() << "headerDigest(" << headerDigest.size() << "):       '" << headerDigest << "'" << std::endl;
+		//eckit::Log::debug() << "actualHeaderDigest(" << actualHeaderDigest.size() << "): '" << actualHeaderDigest << "'" << std::endl;
 		ASSERT(headerDigest == actualHeaderDigest);
 	}
 	
@@ -120,7 +120,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 	rowsNumber_ = numberOfRows;
 	owner_.columns().rowsNumber(rowsNumber_);
 
-	eckit::Log::debug() << "Header<OWNER>::load: numberOfRows = " << numberOfRows << endl;
+	eckit::Log::debug() << "Header<OWNER>::load: numberOfRows = " << numberOfRows << std::endl;
 
 	// Flags -> ODAFlags
 	Flags flags;

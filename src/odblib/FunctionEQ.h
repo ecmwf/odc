@@ -45,7 +45,7 @@ private:
 	virtual SQLIndex* getIndex(double*);
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionEQ& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionEQ& p)
 	//	{ p.print(s); return s; }
 };
 

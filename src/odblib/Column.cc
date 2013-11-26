@@ -51,7 +51,7 @@ Column::Column(const Column& o)
 
 Column::~Column()
 {
-	//cerr << "Column::~Column():@" << this  << ", name= " << name_ << endl << endl;
+	//cerr << "Column::~Column():@" << this  << ", name= " << name_ << endl << std::endl;
 	delete coder_; 
 }
 
@@ -92,7 +92,7 @@ ColumnType Column::type(const string& t)
 	if (t == "STRING") return STRING;
 	if (t == "BITFIELD") return BITFIELD;
 
-	Log::error() << "Unknown type: '" << t << "'" << endl;
+	Log::error() << "Unknown type: '" << t << "'" << std::endl;
 	ASSERT(0 && "Unknown type");
 	return IGNORE;
 }
@@ -115,7 +115,7 @@ bool Column::operator==(const Column& other) const
 	return false;
 }
 
-void Column::print(ostream& s) const
+void Column::print(std::ostream& s) const
 {
 	s << "name: " << name_ << ", ";
 	s << "type: " << columnTypeName(odb::ColumnType(type_));

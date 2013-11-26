@@ -51,7 +51,7 @@ protected:
 	int	                   nominalShift_; // For the HASH operator
 
 // -- Overridden methods
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 	virtual void cleanup(SQLSelect& sql);
 	virtual double eval(bool& missing) const;
 	virtual void output(SQLOutput& s) const;
@@ -60,10 +60,10 @@ private:
 	ShiftedColumnExpression& operator=(const ShiftedColumnExpression&);
 
 	void allocateCircularBuffer();
-	list<pair<double,bool> > oldValues_;
+    std::list<std::pair<double,bool> > oldValues_;
 
 // -- Overridden methods
-	//friend ostream& operator<<(ostream& s,const ShiftedColumnExpression& p)
+	//friend std::ostream& operator<<(std::ostream& s,const ShiftedColumnExpression& p)
 	//	{ p.print(s); return s; }
 };
 

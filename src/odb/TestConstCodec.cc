@@ -127,15 +127,15 @@ void TestConstCodec::test()
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 
-	Log::info() << it->columns() << endl;
+	Log::info() << it->columns() << std::endl;
 	
 	for ( ; it != end; ++it)
 	{
-		//Log::debug() << "TestConstCodec::test: '" << it.string(0) << "' (" << (*it)[0] << ")" << endl;
+		//Log::debug() << "TestConstCodec::test: '" << it.string(0) << "' (" << (*it)[0] << ")" << std::endl;
 		ASSERT((*it)[0] == * ((double *) pies));
 	}
 
-	Log::debug() << "TestConstCodec::test: codec name is '" << it->columns()[0]->coder().name() << "'" << endl;
+	Log::debug() << "TestConstCodec::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
 	ASSERT(it->columns()[0]->coder().name() == "constant_string");
 }
 

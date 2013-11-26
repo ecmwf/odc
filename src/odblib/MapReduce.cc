@@ -88,10 +88,10 @@ public:
 
 	void execute()
 	{
-		//Log::info() << "Opening [" << fileName_ << "] <" << offset_ << "," << length_ << ">" << endl;
+		//Log::info() << "Opening [" << fileName_ << "] <" << offset_ << "," << length_ << ">" << std::endl;
 		dh_->openForRead();
 		SingleThreadMapReduce::process(userData_, *dh_, sql_, callBack_);
-		//Log::info() << "Closing [" << fileName_ << "] <" << offset_ << "," << length_ << ">" << endl;
+		//Log::info() << "Closing [" << fileName_ << "] <" << offset_ << "," << length_ << ">" << std::endl;
 		dh_->close();
 	}
 private:
@@ -173,8 +173,8 @@ void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& f
 	vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
 	{   
-		pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
-		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << endl;
+		std::pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
+		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << std::endl;
 
 		void *result = f.create();
 		pool.push(new PartFileProcessor<CallBackProcessArray>(fileName, chunk.first, chunk.second, result, sql, f));
@@ -207,8 +207,8 @@ void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& f
 	vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
     {   
-		pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
-		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << endl;
+		std::pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
+		//Log::info() << "MultipleThreadMapReduce::process: process chunk " << chunk.first << "," << chunk.second << std::endl;
 
 		void *result = f.create();
 		pool.push(new PartFileProcessor<CallBackProcessOneRow>(fileName, chunk.first, chunk.second, result, sql, f));
@@ -353,7 +353,7 @@ void ProducerConsumer<PAYLOAD>::execute(Producer<PAYLOAD>& producer,Consumer<PAY
         if(producer.done())
         {
             payloads[i].done_ = true;
-            Log::info() << "Producer done" << endl;
+            Log::info() << "Producer done" << std::endl;
             payloads[i].ready_ = true;
             payloads[i].cond_.signal();
             break;
@@ -364,8 +364,8 @@ void ProducerConsumer<PAYLOAD>::execute(Producer<PAYLOAD>& producer,Consumer<PAY
         }
         catch(exception& e)
         {
-            Log::error() << "** " << e.what() << " Caught in " << Here() <<  endl;
-            Log::error() << "** Exception is handled" << endl;
+            Log::error() << "** " << e.what() << " Caught in " << Here() <<  std::endl;
+            Log::error() << "** Exception is handled" << std::endl;
             error(e.what());
         }
 
@@ -429,8 +429,8 @@ void ProducerConsumerTask<PAYLOAD>::run()
         catch(exception& e)
         {
             Log::error() << "** " << e.what() << " Caught in " <<
-                            Here() <<  endl;
-            Log::error() << "** Exception is handled" << endl;
+                            Here() <<  std::endl;
+            Log::error() << "** Exception is handled" << std::endl;
             owner_.error(e.what());
             error = true;
         }
@@ -451,7 +451,7 @@ void ProducerConsumerTask<PAYLOAD>::run()
         i %= owner_.count_;
     }
 
-    Log::info() << "End producer" << endl;
+    Log::info() << "End producer" << std::endl;
 }
 
 struct Data {

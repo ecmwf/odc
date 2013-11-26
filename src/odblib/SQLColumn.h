@@ -65,7 +65,7 @@ public:
 protected:
 	unsigned long long noRows_;
 
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 //private:
 protected:
 	SQLColumn(const SQLColumn&);
@@ -86,7 +86,7 @@ protected:
 	long long position_;
 	SQLIterator* iterator_;
 
-	auto_ptr<SQLIndex> indexing_;
+    std::auto_ptr<SQLIndex> indexing_;
 
 	bool hasMissingValue_;
 	double missingValue_;

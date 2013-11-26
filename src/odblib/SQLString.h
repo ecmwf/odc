@@ -41,7 +41,7 @@ private:
 
 	size_t width() const;
 
-	//friend ostream& operator<<(ostream& s,const SQLString& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLString& p)
 	//	{ p.print(s); return s; }
 };
 

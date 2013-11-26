@@ -50,7 +50,7 @@ private:
         SchemaDefs schemas_;
 	TableDefs tableDefs_;
 	BitfieldDefs bitfieldTypes_;
-	set<string> tablesToSkip_;
+	std::set<string> tablesToSkip_;
 	map<string,string> columnTypes_;
 };
 

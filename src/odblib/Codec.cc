@@ -76,7 +76,7 @@ void Codec::gatherStats(double v)
     }
 }
 
-void Codec::print(ostream& s) const
+void Codec::print(std::ostream& s) const
 {
     s << name()
     //<< ", min=" << fixed << min_

@@ -28,7 +28,7 @@ public:
 	~FunctionTDIFF(); 
 
 // -- Overridden methods
-	virtual void output(ostream& s) const;
+	virtual void output(std::ostream& s) const;
 
 	SQLExpression* clone() const;
 
@@ -41,7 +41,7 @@ private:
 	virtual double eval(bool& missing) const;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionTDIFF& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionTDIFF& p)
 	//	{ p.print(s); return s; }
 };
 

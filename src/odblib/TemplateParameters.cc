@@ -56,7 +56,7 @@ TemplateParameters& TemplateParameters::parse(const string& fileNameTemplate, Te
 
 		params.push_back(new TemplateParameter(l, r, index, name));	
 
-		Log::debug() << "TemplateParameters::parse: new param: " << l << ", " << r << ", " << index << ", " << name << endl;
+		Log::debug() << "TemplateParameters::parse: new param: " << l << ", " << r << ", " << index << ", " << name << std::endl;
 	}
 	return params;
 }

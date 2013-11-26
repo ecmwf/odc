@@ -111,7 +111,7 @@ void TestAtTableInTheOutput::selectIntoSecondFile()
 
 	++it; // this is needed to push the second row to the INTO file 
 
-	//Log::info()  << "c0=" << c0 << ", c1=" << c1 << ", c2=" << c2 << endl;
+	//Log::info()  << "c0=" << c0 << ", c1=" << c1 << ", c2=" << c2 << std::endl;
 	///ASSERT("");
 }
 

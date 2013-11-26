@@ -31,7 +31,7 @@ MergeTool::MergeTool (int ac, char *av[])
 	{
 		Log::error() << "Usage:";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
     sqlFiltering_ = optionIsSet("-S");
@@ -83,7 +83,7 @@ void doMerge(vector<pair<I, I> >& iterators, const PathName& outputFile)
 	}
 
 	out->writeHeader();
-	Log::info() << "MergeTool::merge: output metadata: " << out->columns() << endl;
+	Log::info() << "MergeTool::merge: output metadata: " << out->columns() << std::endl;
 
 	for(;;)
 	{

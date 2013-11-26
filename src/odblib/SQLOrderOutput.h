@@ -27,7 +27,7 @@ public:
 	virtual ~SQLOrderOutput();
 
 protected:
-	virtual void print(ostream&) const;
+	virtual void print(std::ostream&) const;
 
 private:
 // No copy allowed
@@ -36,7 +36,7 @@ private:
 
 // -- Members
 	auto_ptr<SQLOutput> output_;
-	pair<Expressions,vector<bool> > by_;
+	std::pair<Expressions,vector<bool> > by_;
 	
 	typedef map<OrderByExpressions, VectorOfExpressions> SortedResults;
 
@@ -62,7 +62,7 @@ private:
 	virtual const SQLOutputConfig& config();
 	virtual void config(SQLOutputConfig&);
 
-	friend ostream& operator<<(ostream& s, const SQLOrderOutput& o)
+	friend std::ostream& operator<<(std::ostream& s, const SQLOrderOutput& o)
 		{ o.print(s); return s; }
 };
 

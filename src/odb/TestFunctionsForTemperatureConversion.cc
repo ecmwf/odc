@@ -80,7 +80,7 @@ void TestFunctionsForTemperatureConversion::testReaderIterator()
 {
     const string sql = "select celsius(kelvin_col), fahrenheit(kelvin_col), c2k(celsius_col),c2f(celsius_col),f2c(fahrenheit_col), f2k(fahrenheit_col), k2f(kelvin_col) from \"test_tempconv.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();

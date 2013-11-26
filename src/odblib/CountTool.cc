@@ -58,14 +58,14 @@ void CountTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 
 	//unsigned long long n = rowCount(parameters(1));
 	unsigned long long n = fastRowCount(parameters(1));
 	
-	cout << n << endl;
+	std::cout << n << std::endl;
 }
 
 } // namespace tool 

@@ -31,7 +31,7 @@ template <typename T>
 SQLIteratorOutput<T>::~SQLIteratorOutput() {}
 
 template <typename T>
-void SQLIteratorOutput<T>::print(ostream& s) const
+void SQLIteratorOutput<T>::print(std::ostream& s) const
 {
 	s << "SQLIteratorOutput";
 }

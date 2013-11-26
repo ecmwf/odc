@@ -15,7 +15,7 @@
 namespace odb {
 namespace sql {
 
-SQLSimpleOutput::SQLSimpleOutput(ostream& out):
+SQLSimpleOutput::SQLSimpleOutput(std::ostream& out):
 	out_(out),
 	count_(0)
 {
@@ -24,12 +24,12 @@ SQLSimpleOutput::SQLSimpleOutput(ostream& out):
 
 SQLSimpleOutput::~SQLSimpleOutput() {}
 
-void SQLSimpleOutput::print(ostream& s) const
+void SQLSimpleOutput::print(std::ostream& s) const
 {
 	s << "SQLSimpleOutput";
 }
 
-ostream& SQLSimpleOutput::format(ostream& o, size_t i) const
+ostream& SQLSimpleOutput::format(std::ostream& o, size_t i) const
 {
 	o.width(columnWidths_[i]);
 	return o << *columnAlignments_[i];
@@ -48,7 +48,7 @@ bool SQLSimpleOutput::output(const expression::Expressions& results)
 		currentColumn_ = i;
         results[i]->output(*this);
     }
-    out_ << endl;
+    out_ << std::endl;
 	count_++;
 	return true;
 }
@@ -153,7 +153,7 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 		
 	}
     if (! config_.doNotWriteColumnNames)
-		out_ << endl;
+		out_ << std::endl;
 }
 
 void SQLSimpleOutput::cleanup(SQLSelect& sql) {}

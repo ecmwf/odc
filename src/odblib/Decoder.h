@@ -23,7 +23,7 @@ public:
 	typedef long long W;
 
 	static W makeMask(W);
-	static void printBinary(ostream&, W);
+	static void printBinary(std::ostream&, W);
 };
 
 } // namespace odb 

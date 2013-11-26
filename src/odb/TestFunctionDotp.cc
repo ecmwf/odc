@@ -88,7 +88,7 @@ void TestFunctionDotp::testReaderIterator()
 {
     const string sql = "select dotp(x,y) from \"test_dotp.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();

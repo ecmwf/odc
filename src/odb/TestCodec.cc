@@ -49,7 +49,7 @@ class MockDataHandle : public DataHandle
 public:
 	MockDataHandle() : offset_(0) { bzero(buf_, sizeof(buf_)); }
 
-	virtual void print(ostream& s) const { }
+	virtual void print(std::ostream& s) const { }
     virtual Length openForRead() { offset_ = 0; return sizeof(buf_); }
     virtual void openForWrite(const Length&) { offset_ = 0; }
     virtual void openForAppend(const Length&) {}
@@ -80,7 +80,7 @@ void TestCodec::test()
 	string codecNames[] = {"short_real", "long_real"};
 	for (size_t i = 0; i < sizeof(codecNames) / sizeof(string); i++)
 	{
-		Log::info() << "Testing codec " << codecNames[i] << endl;
+		Log::info() << "Testing codec " << codecNames[i] << std::endl;
 
 		MockDataHandle dh;
 		codec(odb::codec::Codec::findCodec<DataStream<SameByteOrder, DataHandle> >(codecNames[i], false));
@@ -88,13 +88,13 @@ void TestCodec::test()
 		unsigned char *s = dh.buffer();
 		
 		double v = odb::MDI::realMDI();
-		Log::info() << "Encode: " << v << endl;
+		Log::info() << "Encode: " << v << std::endl;
 
 		s = codec().encode(s, v);
 
 		codec().dataHandle(&dh);
 		double d = codec().decode();
-		Log::info() << "Decoded: " << d << endl;
+		Log::info() << "Decoded: " << d << std::endl;
 
 		ASSERT(v == d);
 	}

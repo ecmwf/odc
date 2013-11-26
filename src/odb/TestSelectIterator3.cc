@@ -70,7 +70,7 @@ const double VALUE[] = { 1, 2, 3 };
 
 void TestSelectIterator3::setUp()
 {
-	Log::debug() << "TestSelectIterator3::setUp" << endl;
+	Log::debug() << "TestSelectIterator3::setUp" << std::endl;
 
 	Timer t("Writing " + testFile );
 	odb::Writer<> oda(testFile);
@@ -100,7 +100,7 @@ void TestSelectIterator3::test()
 		it != oda.end() && i < sizeof(VALUE) / sizeof(double);
 		++it, ++i) 
 	{
-		Log::info() << "TestSelectIterator3::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << endl;
+		Log::info() << "TestSelectIterator3::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << std::endl;
 		ASSERT((*it)[0] == VALUE[i]);
 	}
 }

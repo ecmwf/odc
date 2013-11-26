@@ -34,7 +34,7 @@ FunctionCOUNT::~FunctionCOUNT() {}
 
 double FunctionCOUNT::eval(bool& missing) const
 {
-//cout << "FunctionCOUNT " << count_ << endl;
+//cout << "FunctionCOUNT " << count_ << std::endl;
 	return count_;
 }
 
@@ -56,7 +56,7 @@ void FunctionCOUNT::partialResult()
 	args_[0]->eval(missing);
 	if(!missing)
 		count_++;
-//cout << "FunctionCOUNT::partialResult " << count_ << endl;
+//cout << "FunctionCOUNT::partialResult " << count_ << std::endl;
 }
 
 } // namespace function

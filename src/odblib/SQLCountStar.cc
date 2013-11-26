@@ -26,7 +26,7 @@ SQLCountStar::SQLCountStar(const string& table):
 
 SQLCountStar::~SQLCountStar() {}
 
-void SQLCountStar::print(ostream& s) const
+void SQLCountStar::print(std::ostream& s) const
 {
 	s << "SELECT COUNT(*) FROM " << table_;
 }
@@ -34,7 +34,7 @@ void SQLCountStar::print(ostream& s) const
 unsigned long long SQLCountStar::execute(SQLDatabase& db)
 {
 	unsigned long long n = db.table(table_)->noRows();	
-	cout << n << endl;	
+	std::cout << n << std::endl;	
 	return n;
 }
 

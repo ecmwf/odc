@@ -22,13 +22,13 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o)
+	static void help(std::ostream &o)
 	{ o << "Shows file's contents"; }
 
-	static void usage(const string& name, ostream &o)
-	{ o << name << " [-o <output-file>] <file-name>" << endl << endl; }
+	static void usage(const string& name, std::ostream &o)
+	{ o << name << " [-o <output-file>] <file-name>" << endl << std::endl; }
 
-	unsigned long long printData(const string &db, ostream &out);
+	unsigned long long printData(const string &db, std::ostream &out);
 
 private:
 // No copy allowed

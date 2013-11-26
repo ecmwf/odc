@@ -46,7 +46,7 @@ private:
 	bool resultNULL_;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionSUM& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionSUM& p)
 	//	{ p.print(s); return s; }
 };
 

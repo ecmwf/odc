@@ -76,7 +76,7 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 						stringstream ss;
 						ss << "Values different: " 
 						<< " data1[" << i << "]==" << StringTool::valueAsString(data1[i], type)
-						<< " data2[" << i << "]==" << StringTool::valueAsString(data2[i], type)  << endl;
+						<< " data2[" << i << "]==" << StringTool::valueAsString(data2[i], type)  << std::endl;
 						throw ValuesDifferent(ss.str());
 					}
 					break;
@@ -90,14 +90,14 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 			}
 		} catch (Exception &e) {
 			Log::info() << "While comparing rows number " << nRow_ << ", columns " << i
-				<< " found different." << endl;
-			Log::info() << " " << e.what() << endl;
+				<< " found different." << std::endl;
+			Log::info() << " " << e.what() << std::endl;
 
-			Log::info() << " data1[" << i << "] = " << std::scientific << data1[i] << endl;
-			Log::info() << " data2[" << i << "] = " << std::scientific << data2[i] << endl;
+			Log::info() << " data1[" << i << "] = " << std::scientific << data1[i] << std::endl;
+			Log::info() << " data2[" << i << "] = " << std::scientific << data2[i] << std::endl;
 
-			Log::info() << " md1[" << i << "] = " << *md1[i] << endl;
-			Log::info() << " md2[" << i << "] = " << *md2[i] << endl;
+			Log::info() << " md1[" << i << "] = " << *md1[i] << std::endl;
+			Log::info() << " md2[" << i << "] = " << *md2[i] << std::endl;
 
 			//TODO: make it an option to stop when an error found
 			//throw;
@@ -128,7 +128,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 					if (! (column1.bitfieldDef() == column2.bitfieldDef()))
 					{
 						Log::error() << "Comparator::compare: bitfield definitions for column "
-							<< i << " '" << column1.name() << "' differ." << endl;
+							<< i << " '" << column1.name() << "' differ." << std::endl;
 						ASSERT(column1.bitfieldDef() == column2.bitfieldDef());
 					}
 			}
@@ -140,7 +140,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 					Log::warning() << column1.name() << " : " 
 						<< "column1.hasMissing()=" << column1.hasMissing() << ", " 
 						<< "column2.hasMissing()=" << column2.hasMissing() << ", " 
-						<< endl;
+						<< std::endl;
 					ASSERT(column1.hasMissing() == column2.hasMissing());
 				}
 
@@ -149,7 +149,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 					Log::warning() << column1.name() << " : " 
 						<< "column1.missingValue()=" << column1.missingValue() << ", " 
 						<< "column2.missingValue()=" << column2.missingValue() << ", " 
-						<< endl;
+						<< std::endl;
 					ASSERT(column1.missingValue() == column2.missingValue());
 				}
 			}
@@ -160,14 +160,14 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 					Log::warning() << column1.name() << " : " 
 						<< "column1.hasMissing()=" << column1.hasMissing() << ", " 
 						<< "column2.hasMissing()=" << column2.hasMissing() << ", " 
-						<< endl;
+						<< std::endl;
 				}
 				if (column1.missingValue() != column2.missingValue())
 				{
 					Log::warning() << column1.name() << " : " 
 						<< "column1.missingValue()=" << column1.missingValue() << ", " 
 						<< "column2.missingValue()=" << column2.missingValue() << ", " 
-						<< endl;
+						<< std::endl;
 				}
 			}
 
@@ -175,7 +175,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 				ASSERT(column1.missingValue() == column2.missingValue());
 		} catch (...) {
 			Log::info( Here() ) << "While comparing column " << i << ": "
-				<< column1.name() << endl;
+				<< column1.name() << std::endl;
 			throw;
 		}
 	}

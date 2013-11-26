@@ -20,18 +20,18 @@ class AbstractToolFactory {
 public:
 	static Tool* createTool(const string& name, int argc, char **argv);
 
-	static void printToolHelp(const string&, ostream &);
-	static void printToolUsage(const string& name, ostream &);
-	static void printToolsHelp(ostream &);
+	static void printToolHelp(const string&, std::ostream &);
+	static void printToolUsage(const string& name, std::ostream &);
+	static void printToolsHelp(std::ostream &);
 
-	static void listTools(ostream&);
+	static void listTools(std::ostream&);
 
 	static odb::tool::test::TestCases *testCases(const vector<string> & = matchAll);
 
 	virtual Tool* create(int argc, char **argv) = 0;
 
-	virtual void help(ostream &) = 0;
-	virtual void usage(const string&, ostream &) = 0;
+	virtual void help(std::ostream &) = 0;
+	virtual void usage(const string&, std::ostream &) = 0;
 	virtual bool experimental() = 0;
 	
 protected:
@@ -52,8 +52,8 @@ public:
 
 	Tool* create(int argc, char **argv) { return new T(argc, argv); }
 
-	void help(ostream &o) { T::help(o); }
-	void usage(const string &name, ostream &o) { T::usage(name, o); }
+	void help(std::ostream &o) { T::help(o); }
+	void usage(const string &name, std::ostream &o) { T::usage(name, o); }
 	bool experimental() { return ExperimentalTool<T>::experimental; }
 };
 

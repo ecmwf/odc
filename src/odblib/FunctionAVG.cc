@@ -54,7 +54,7 @@ void FunctionAVG::prepare(SQLSelect& sql)
 
 void FunctionAVG::cleanup(SQLSelect& sql)
 {
-//cout << "Cleanup  FunctionAVG " << count_ << " " << value_ << endl;
+//cout << "Cleanup  FunctionAVG " << count_ << " " << value_ << std::endl;
 	FunctionExpression::cleanup(sql);
 	value_ = 0;
 	count_ = 0;
@@ -69,7 +69,7 @@ void FunctionAVG::partialResult()
 		value_ += value;
 		count_++;
 	}
-//	else cout << "missing" << endl;
+//	else cout << "missing" << std::endl;
 }
 
 } // namespace function

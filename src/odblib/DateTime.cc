@@ -120,14 +120,14 @@ void DateTime::set(const string & str) {
 
 // -----------------------------------------------------------------------------
 
-ostream& operator<<(ostream& output, const DateTime& t) {
+ostream& operator<<(std::ostream& output, const DateTime& t) {
     output << t.toString();
     return output;
 }
 
 // -----------------------------------------------------------------------------
 
-istream& operator>>(istream& input, DateTime& t) {
+istream& operator>>(std::istream& input, DateTime& t) {
     string time;
     input >> time;
     t.set(time);
@@ -136,7 +136,7 @@ istream& operator>>(istream& input, DateTime& t) {
 
 // -----------------------------------------------------------------------------
 
-int DateTime::eatChars (istream & is, int nchars) {
+int DateTime::eatChars (std::istream & is, int nchars) {
   // consume nchars characters from the stream and interpret as an integer
   string str;
   for (int i=0; i<nchars; ++i) {

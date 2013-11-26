@@ -22,12 +22,12 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o)
+	static void help(std::ostream &o)
 	{ o << "Imports data from a text file"; }
 
-	static void usage(const string& name, ostream &o)
+	static void usage(const string& name, std::ostream &o)
 	{
-		o << name << " [-d delimiter] <input.file> <output.file>" << endl;
+		o << name << " [-d delimiter] <input.file> <output.file>" << std::endl;
 		o << " delimiter can be a single character (e.g.: ',') or TAB";
 	}
 

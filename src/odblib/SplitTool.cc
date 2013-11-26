@@ -40,13 +40,13 @@ void SplitTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 
 	if (optionIsSet("-sort")) sort_ = true;
 	maxOpenFiles_ = optionArgument("-maxopenfiles", maxOpenFiles_);
-	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
+	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << std::endl;
 
 	PathName inFile = parameters(1);
 	string outFileTemplate = parameters(2);
@@ -63,7 +63,7 @@ void SplitTool::run()
 vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
 {
 	ostream &L(Log::debug());
-	L << "SplitTool::getChunks: " << endl;
+	L << "SplitTool::getChunks: " << std::endl;
 
 	vector<pair<Offset,Length> > r;
 
@@ -82,12 +82,12 @@ vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t
 		size_t numberOfRows = it->columns().rowsNumber();
 		size_t numberOfColumns = it->columns().size();
 
-		L << "SplitTool::getChunks: " << offset << " " << length << endl;
+		L << "SplitTool::getChunks: " << offset << " " << length << std::endl;
 
 		size_t size = numberOfRows * numberOfColumns * sizeof(double);
 		if (currentSize + size > maxExpandedSize)
 		{
-			L << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << endl;
+			L << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << std::endl;
 			r.push_back(make_pair(currentOffset, currentLength));
 			currentOffset = offset;
 			currentLength = length;
@@ -115,7 +115,7 @@ string SplitTool::genOrderBySelect(const string& inFile, const string& outFileTe
 		ss << templateParameters[i]->name;
 	}
 	string sql = ss.str();
-	Log::info() << "SplitTool::genOrderBySelect: sql: '" << sql << "'" << endl;
+	Log::info() << "SplitTool::genOrderBySelect: sql: '" << sql << "'" << std::endl;
 	return sql;
 }
 

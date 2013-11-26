@@ -52,7 +52,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 		double max = col.max();
 		bool hasMissing = col.hasMissing();
 		double missing = col.missingValue();
-		//LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << endl;
+		//LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << std::endl;
 		string codec(defaultCodec_[col.type()]);
 		switch(col.type())
 		{
@@ -66,7 +66,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				col.max(max);
 				//LOG << " REAL has values in range <" << col.min() << ", " << col.max()
 				//	<< ">. Codec: "  << col.coder()
-				//	<< endl;
+				//	<< std::endl;
 				break;
 
 			case DOUBLE:
@@ -79,7 +79,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				col.max(max);
 				//LOG << " DOUBLE has values in range <" << col.min() << ", " << col.max()
 				//	<< ">. Codec: "  << col.coder()
-				//	<< endl;
+				//	<< std::endl;
 				break;
 
 			case STRING:
@@ -101,7 +101,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 					col.min(min);
 					col.max(max);
 					//LOG << " STRING has " << n << " different value(s). Codec: " << codec
-					//	<< endl;
+					//	<< std::endl;
 				}
 				break;
 
@@ -130,14 +130,14 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				//	<< " has " << n + 1 << " different value(s)"
 				//	<< (col.hasMissing() ? " and has missing value. " : ". ")
 				//	<< "Codec: " << col.coder() << "."
-				//	<< endl;
+				//	<< std::endl;
 				break;
 
-			default: eckit::Log::error() << "Unsupported type: [" << col.type() << "]" << endl;
+			default: eckit::Log::error() << "Unsupported type: [" << col.type() << "]" << std::endl;
 				break;
 		}
 
-		//if (odb::ODBAPISettings::debug && i == 28) eckit::Log::info() << ": AFTER " << col << " -> " << col.coder() << endl;
+		//if (odb::ODBAPISettings::debug && i == 28) eckit::Log::info() << ": AFTER " << col << " -> " << col.coder() << std::endl;
 	}
 	return 0;
 }

@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     clp.registerOptionWithArgument("-mdi");
     clp.parameters();
 
-    cout << clp << endl;
+    cout << clp << std::endl;
 
 	ToolRunnerApplication runner(argc, argv, false, false);
 	//ToolRunnerApplication runner(clp, false, false);

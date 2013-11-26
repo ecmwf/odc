@@ -36,7 +36,7 @@ private:
 	string name_;
 
 // -- Overridden methods
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
 

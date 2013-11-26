@@ -104,7 +104,7 @@ void TestSelectIterator::testBug01()
 	{
 		for (int j = 0; j < 4; j++)
 			swap(REF_DATA[i * 8 + j], REF_DATA[(i + 1) * 8 - 1 - j]);
-		//cout << *(reinterpret_cast<double *>(&REF_DATA[i * 8])) << endl;
+		//cout << *(reinterpret_cast<double *>(&REF_DATA[i * 8])) << std::endl;
 	}
 #endif
 
@@ -118,7 +118,7 @@ void TestSelectIterator::testBug01()
 		it != oda.end() && i < (sizeof(REF_DATA) / sizeof(double));
 		++it, ++i) 
 	{
-		Log::info() << "TestSelectIterator::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << OBSVALUE[i] << endl;
+		Log::info() << "TestSelectIterator::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << OBSVALUE[i] << std::endl;
 		ASSERT( (*it)[0] == OBSVALUE[i] );
 	}
 }
@@ -144,13 +144,13 @@ template<class T> struct Count: public unary_function<T, void>
 		//long long i = row.integer(0);
 		long long i = row[0];
 
-		cerr << "Count::operator() counter=" << counter << ", i=" << i << endl; 
+		cerr << "Count::operator() counter=" << counter << ", i=" << i << std::endl; 
 		ASSERT(i == counter);
 		//cout << "col[0] (" << row.columns()[0]->name() << "): " << i << ", " ; 
 
 		double n = row[1];
 		n = n;
-		//cout << "col[1] (" << row.columns()[1]->name() << "): " << n << " "  << endl;
+		//cout << "col[1] (" << row.columns()[1]->name() << "): " << n << " "  << std::endl;
 	}
 	long counter;
 };
@@ -158,7 +158,7 @@ template<class T> struct Count: public unary_function<T, void>
 
 void TestSelectIterator::setUp()
 {
-	Log::debug() << "TestSelectIterator::setUp" << endl;
+	Log::debug() << "TestSelectIterator::setUp" << std::endl;
 
 	Timer t("Writing test.odb");
 	odb::Writer<> oda("test.odb");
@@ -184,21 +184,21 @@ void TestSelectIterator::tearDown() { }
 
 void TestSelectIterator::testReaderIteratorForEach()
 {
-	Log::debug() << "TestSelectIterator::testReaderIteratorForEach" << endl;
+	Log::debug() << "TestSelectIterator::testReaderIteratorForEach" << std::endl;
 
 	odb::Reader oda("test.odb");
 	Timer t("for_each oda.reader Reading test.odb");
 	Count<odb::Reader::row> counter1;
 	counter1 = for_each(oda.begin(), oda.end(), counter1);
 
-	//Log::info(Here()) << "for_each ReaderIterator: Read " << counter1.counter << " row(s)." << endl;
+	//Log::info(Here()) << "for_each ReaderIterator: Read " << counter1.counter << " row(s)." << std::endl;
 
 	ASSERT(counter1.counter == 10);
 }
 
 void TestSelectIterator::testReaderIteratorLoop()
 {
-	Log::debug() << "TestSelectIterator::testReaderIteratorLoop" << endl;
+	Log::debug() << "TestSelectIterator::testReaderIteratorLoop" << std::endl;
 
 	odb::Reader oda("test.odb");
 	int j = 0;
@@ -215,7 +215,7 @@ void TestSelectIterator::testReaderIteratorLoop()
 		int i = (*it)[0];
 		double d = (*it)[1];
 
-		//cout << i << "	" << d << endl;
+		//cout << i << "	" << d << std::endl;
 
 		ASSERT( i == j );
 		d = d;
@@ -234,7 +234,7 @@ void TestSelectIterator::testSelectIteratorLoop()
 		++i;
 		//long v0 = it->integer(0);
 		//double v1 = it->data(1);
-		//cout << "v0 = " << v0 << ", v1 = " << v1 << endl;
+		//cout << "v0 = " << v0 << ", v1 = " << v1 << std::endl;
 
 		//ASSERT(it->integer(0) == i);
 		ASSERT((*it)[0] == i);

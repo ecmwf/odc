@@ -29,7 +29,7 @@ void CompactTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 
@@ -46,7 +46,7 @@ void CompactTool::run()
 	writer->pass1(it, end);
 	
 	odb::Reader outReader(outFile);
-	Log::info() << "Verifying." << endl;	
+	Log::info() << "Verifying." << std::endl;	
 	odb::Reader::iterator it1 = in.begin();
 	odb::Reader::iterator end1 = in.end();
 

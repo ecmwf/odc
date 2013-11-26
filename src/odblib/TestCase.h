@@ -24,8 +24,8 @@ namespace test {
 class TestCase : public Tool {
 public:
 
-	static void help(ostream &o) { o << "No help available for this command yet"; }
-	static void usage(const string& name, ostream &o) { o << name << ": Not implemented yet"; }
+	static void help(std::ostream &o) { o << "No help available for this command yet"; }
+	static void usage(const string& name, std::ostream &o) { o << name << ": Not implemented yet"; }
 	virtual void run();
 
 	virtual void setUp();

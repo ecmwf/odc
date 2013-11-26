@@ -77,7 +77,7 @@ template<typename T1, typename T2>
 bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2,
 						const vector<string>& excludedColumnsTypes)
 {
-	eckit::Log::info() << "Comparator::compare: (1) " << desc1 << " to (2) " << desc2 << endl;
+	eckit::Log::info() << "Comparator::compare: (1) " << desc1 << " to (2) " << desc2 << std::endl;
 
 	nRow_ = 0;
 

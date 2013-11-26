@@ -30,7 +30,7 @@ template <typename T = eckit::DataHandle>
 class TReadOnlyMemoryDataHandle : public T {
 public:
 
-	friend ostream& operator<<(ostream& s, const TReadOnlyMemoryDataHandle& handle) 
+	friend std::ostream& operator<<(std::ostream& s, const TReadOnlyMemoryDataHandle& handle) 
 		{ handle.print(s); return s;}
 
     TReadOnlyMemoryDataHandle() : buffer_(0), it_(0), end_(0), bufferSize_(0) {}
@@ -56,7 +56,7 @@ public:
 		end_ = buffer_ + n;
 	}
 
-	void print(ostream& s) const { /*TODO*/ }
+	void print(std::ostream& s) const { /*TODO*/ }
 
 	bool hasSomeData() { return it_ != end_; }
 

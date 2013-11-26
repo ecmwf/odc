@@ -272,7 +272,7 @@ DataPage* DataTable::extend()
 std::ostream& operator<<(std::ostream& os, DataTable& table)
 {
     os << "DataTable(name=\"" << table.name() << "\", ";
-    os << "size=" << table.size() << ")" << endl;
+    os << "size=" << table.size() << ")" << std::endl;
 
     return os;
 }

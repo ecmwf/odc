@@ -23,22 +23,22 @@ public:
 	SQLTool(int argc, char **argv);
 	~SQLTool();
 	virtual void run();
-    static void execute(const string&, ostream& = std::cout);
-	static void help(ostream &o) { o << "Executes SQL statement"; }
+    static void execute(const string&, std::ostream& = std::cout);
+	static void help(std::ostream &o) { o << "Executes SQL statement"; }
 
-	static void usage(const string& name, ostream &o)
+	static void usage(const string& name, std::ostream &o)
 	{
-		o << name << " <select-statement> | <script-filename>" << endl;
-        o << "             [-T]                  Disables printing of column names" << endl;
-        o << "             [-offset <offset>]    Start processing file at a given offset" << endl;
-        o << "             [-length <length>]    Process only given bytes of data" << endl;
-        o << "             [-N]                  Do not write NULLs, but proper missing data values" << endl;
-        o << "             [-i <inputfile>]      ODB input file" << endl;
-        o << "             [-o <outputfile>]     ODB output file" << endl;
+		o << name << " <select-statement> | <script-filename>" << std::endl;
+        o << "             [-T]                  Disables printing of column names" << std::endl;
+        o << "             [-offset <offset>]    Start processing file at a given offset" << std::endl;
+        o << "             [-length <length>]    Process only given bytes of data" << std::endl;
+        o << "             [-N]                  Do not write NULLs, but proper missing data values" << std::endl;
+        o << "             [-i <inputfile>]      ODB input file" << std::endl;
+        o << "             [-o <outputfile>]     ODB output file" << std::endl;
         o << "             [-f default|wide|odb] ODB output format (default is ascii; odb is binary ODB, wide is ascii with"
-												<< " bitfields definitions in header)" << endl;
-        o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << endl; 
-        o << "                                   delim can be any character or string" << endl;
+												<< " bitfields definitions in header)" << std::endl;
+        o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << std::endl; 
+        o << "                                   delim can be any character or string" << std::endl;
 	}
 
 private:

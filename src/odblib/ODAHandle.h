@@ -35,10 +35,10 @@ public:
 		void getValue(const string& name, T& value)
 	{
 		value = ODATranslator<T>()(values_[name]);
-		eckit::Log::debug() << "ODAHandle::getValue('" << name << "',=>" << value << ")" << endl;
+		eckit::Log::debug() << "ODAHandle::getValue('" << name << "',=>" << value << ")" << std::endl;
 	}
 
-	void print(ostream&) const;
+	void print(std::ostream&) const;
 
 	eckit::Offset start() { return start_; }
 	void start(const eckit::Offset& n) { start_ = n; }
@@ -55,7 +55,7 @@ private:
 	eckit::Offset end_;
 	map<string, double> values_;
 
-	friend ostream& operator<<(ostream& s, const ODAHandle& p)
+	friend std::ostream& operator<<(std::ostream& s, const ODAHandle& p)
 		{ p.print(s); return s; }
 
 };

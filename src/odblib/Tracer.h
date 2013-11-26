@@ -17,7 +17,7 @@ using namespace std;
 
 class Tracer {
 public:
-	Tracer(ostream&, const string&);
+	Tracer(std::ostream&, const string&);
 	~Tracer();
 private:
 	ostream& out_;

@@ -30,7 +30,7 @@ void MDSetTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 
@@ -48,7 +48,7 @@ void MDSetTool::run()
 	vector<BitfieldDef> bitfieldDefs;
     for (size_t i = 0; i < types.size(); ++i)
     {   
-        Log::info() << columns[i] << " : " << types[i] << endl;
+        Log::info() << columns[i] << " : " << types[i] << std::endl;
 
         // Only bitfoelds now:
         // [active:1;passive:1;rejected:1;blacklisted:1;use_emiskf_only:1;monthly:1;constant:1;experimental:1;whitelist:]
@@ -65,7 +65,7 @@ void MDSetTool::run()
             bf.second.push_back(atoi(field[1].c_str()));
         }   
         bitfieldDefs.push_back(bf);
-        Log::info() << "" << i << ": " << columns[i] << " - " << bf.first << endl; // "[" << bf.second << "]" << endl;
+        Log::info() << "" << i << ": " << columns[i] << " - " << bf.first << std::endl; // "[" << bf.second << "]" << std::endl;
     } 
 
 
@@ -89,14 +89,14 @@ void MDSetTool::run()
 		Properties props;
 		if ((**it).byteOrder() == BYTE_ORDER_INDICATOR)
 		{
-			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << endl;
+			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << std::endl;
 
 			serializeHeader<SameByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
 			DataStream<SameByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
 		}
 		else
 		{
-			Log::info() << "MDSetTool::run: OTHER ORDER " << sizeOfEncodedData << endl;
+			Log::info() << "MDSetTool::run: OTHER ORDER " << sizeOfEncodedData << std::endl;
 			
 			serializeHeader<OtherByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
 			DataStream<OtherByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
@@ -122,7 +122,7 @@ void MDSetTool::parseUpdateList(string s, vector<string>& columns, vector<string
 		string colName = assignment[0];
 		string value = assignment[1];
 		
-		Log::info() << "MDSetTool::parseUpdateList: " << colName << "='" << value << "'" << endl;
+		Log::info() << "MDSetTool::parseUpdateList: " << colName << "='" << value << "'" << std::endl;
 
 		columns.push_back(colName);
 		values.push_back(value);

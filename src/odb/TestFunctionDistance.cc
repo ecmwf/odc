@@ -81,17 +81,17 @@ void TestFunctionDistance::testReaderIterator()
 {
     const string sql = "select rad(45.0,0.0,1.0,lat,lon), rad(10.0,0.0,0.0,lat,lon),distance(46.0,0.0,lat,lon),km(46.0,0.0,lat,lon),dist(100.,46.0,1.0,lat,lon), dist(40.0,5.0,1000.0,lat,lon) from \"test_distance.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();
 
-    cout << "rad(lat,lon,1.0,45.0,0.0) = " << (*it)[0] << endl;
-    cout << "rad(lat,lon,0.0,10.0,0.0) = " << (*it)[1] << endl;
-    cout << "distance(lat,lon,46.0,0.0) = " << (*it)[2] << endl;
-    cout << "km(lat,lon,46.0,0.0) = " << (*it)[3] << endl;
-    cout << "dist(lat,lon,100.,46.0,0.0) = " << (*it)[4] << endl;
-    cout << "dist(lat,lon,120.,46.0,0.0) = " << (*it)[5] << endl;
+    cout << "rad(lat,lon,1.0,45.0,0.0) = " << (*it)[0] << std::endl;
+    cout << "rad(lat,lon,0.0,10.0,0.0) = " << (*it)[1] << std::endl;
+    cout << "distance(lat,lon,46.0,0.0) = " << (*it)[2] << std::endl;
+    cout << "km(lat,lon,46.0,0.0) = " << (*it)[3] << std::endl;
+    cout << "dist(lat,lon,100.,46.0,0.0) = " << (*it)[4] << std::endl;
+    cout << "dist(lat,lon,120.,46.0,0.0) = " << (*it)[5] << std::endl;
 	ASSERT((*it)[0] == 1); // 
 	ASSERT((*it)[1] == 0); // 
 	ASSERT(fabs((*it)[2] - 11112)<EPS); // 

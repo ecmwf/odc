@@ -27,7 +27,7 @@ FunctionExpression::FunctionExpression(const string& name, const expression::Exp
   args_(args)
 {
 //  never use any logging here (Log::*)
-//	cout << "new FunctionExpression " << name << endl;
+//	std::cout << "new FunctionExpression " << name << std::endl;
 }
 
 FunctionExpression::FunctionExpression(const FunctionExpression& other)
@@ -70,7 +70,7 @@ SQLExpression* FunctionExpression::simplify(bool& changed)
 		{
 			delete x;
 			*j = y;
-			cout << "SIMPLIFY " << *this << endl;
+			std::cout << "SIMPLIFY " << *this << std::endl;
 			changed = true;
 		}
 	}
@@ -95,7 +95,7 @@ bool FunctionExpression::isAggregate() const
 	return false;
 }
 
-void FunctionExpression::print(ostream& s) const 
+void FunctionExpression::print(std::ostream& s) const 
 {
 	s << name_;
 	s << '(';
@@ -108,7 +108,7 @@ void FunctionExpression::print(ostream& s) const
 		
 }
 
-void FunctionExpression::tables(set<SQLTable*>& t)
+void FunctionExpression::tables(std::set<SQLTable*>& t)
 {
 	for(expression::Expressions::iterator j = args_.begin(); j != args_.end(); ++j)
 		(*j)->tables(t);

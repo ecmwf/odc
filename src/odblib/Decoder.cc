@@ -23,7 +23,7 @@ Decoder::W Decoder::makeMask(W size)
 	return mask;
 }
 
-void Decoder::printBinary(ostream& ss, W n)
+void Decoder::printBinary(std::ostream& ss, W n)
 {
 	unsigned char *s = reinterpret_cast<unsigned char *>(&n);
 

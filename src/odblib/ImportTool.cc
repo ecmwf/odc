@@ -39,14 +39,14 @@ void ImportTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 
 	PathName inFile = parameters(1);
 	PathName outFile = parameters(2);
 
-	Log::info() << "ImportTool::run: inFile: " << inFile << ", outFile: " << outFile << endl;
+	Log::info() << "ImportTool::run: inFile: " << inFile << ", outFile: " << outFile << std::endl;
 
 	string delimiter = StringTools::upper(optionArgument("-d", defaultDelimiter()));
 	if (delimiter == "TAB")
@@ -73,7 +73,7 @@ void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, co
 	odb::Writer<>::iterator output(writer.begin());
 	unsigned long long n = output->pass1(input.begin(), input.end());
 
-    Log::info() << "ImportTool::importFile: Copied " << n << " rows." << endl;
+    Log::info() << "ImportTool::importFile: Copied " << n << " rows." << std::endl;
 }
 
 void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
@@ -88,7 +88,7 @@ void ImportTool::importText(const string& s, const PathName& out, const string& 
 
 	unsigned long long n = output->pass1(input.begin(), input.end());
 
-    Log::info() << "ImportTool::importText: Copied " << n << " rows." << endl;
+    Log::info() << "ImportTool::importText: Copied " << n << " rows." << std::endl;
 }
 
 } // namespace tool 

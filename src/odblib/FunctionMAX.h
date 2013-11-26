@@ -46,7 +46,7 @@ private:
 	virtual void output(SQLOutput&) const;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionMAX& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionMAX& p)
 	//	{ p.print(s); return s; }
 };
 

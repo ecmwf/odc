@@ -44,10 +44,10 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
   schemaParsed_(false),
   noMore_(true)
 {
-	Log::info() << "ODBIterator::ODBIterator: @" << this << " db=" << db << endl;
+	Log::info() << "ODBIterator::ODBIterator: @" << this << " db=" << db << std::endl;
 
 	const std::string odbDirectory = db; //.asString();
-	Log::info() << "Opening ODB in '" << odbDirectory << "'" << endl;
+	Log::info() << "Opening ODB in '" << odbDirectory << "'" << std::endl;
 	ASSERT(PathName(odbDirectory).exists());
 	
 	std::string select = sql.size() ? sql : defaultSQL(db);
@@ -58,7 +58,7 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 	const char *db_path = dbPath.c_str();
 	const char *sql_select = select.c_str();
 
-	Log::info() << "ODBIterator::ODBIterator: Calling odbdump_open(\"" << db_path << "\",\"" << sql_select << "\", NULL, NULL, NULL, &" << noOfColumns_ << ")" << endl;
+	Log::info() << "ODBIterator::ODBIterator: Calling odbdump_open(\"" << db_path << "\",\"" << sql_select << "\", NULL, NULL, NULL, &" << noOfColumns_ << ")" << std::endl;
 
 	odbHandle_ = odbdump_open(db_path, sql_select, NULL, NULL, NULL, &noOfColumns_);
 	ASSERT("odbdump_open returned NULL" && odbHandle_);
@@ -67,7 +67,7 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 	data_ = new double[noOfColumns_];
 
 	//next();
-	//if (noMore_) Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << endl;
+	//if (noMore_) Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << std::endl;
 }
 
 bool ODBIterator::next()
@@ -82,7 +82,7 @@ bool ODBIterator::next()
 
 	if (newDataset_)
 	{
-		Log::info() << "ODBIterator::readRow: new data set" << endl;
+		Log::info() << "ODBIterator::readRow: new data set" << std::endl;
 		createColumns();
 	}
 
@@ -99,7 +99,7 @@ bool ODBIterator::next()
 
 void ODBIterator::createColumns()
 {
-	Log::debug() << " => ODBIterator::createColumns: " << endl;
+	Log::debug() << " => ODBIterator::createColumns: " << std::endl;
 
 	delete columns_;
 	columns_ = new odb::MetaData(noOfColumns_, (odb::Column *) 0);
@@ -148,18 +148,18 @@ void ODBIterator::createColumns()
 
 			default:
 				Log::error() << "Unsupported type: [" << pci->type_name << "] " << name
-							<< endl;
+							<< std::endl;
 				break;
 		}
 		setColumn(i, name, type, missing);
 	}
 	getSchema(db_).updateBitfieldsDefs(columns(), truenames);
-	Log::debug() << " <= ODBIterator::createColumns: " << endl;
+	Log::debug() << " <= ODBIterator::createColumns: " << std::endl;
 }
 
 void ODBIterator::destroy()
 {
-	Log::debug() << "ODBIterator::destroy: @" << this << endl;
+	Log::debug() << "ODBIterator::destroy: @" << this << std::endl;
 	odbdump_destroy_colinfo( (colinfo_t *) ci_, noOfColumns_); 
 	odbdump_close(odbHandle_);
 	delete columns_;
@@ -168,7 +168,7 @@ void ODBIterator::destroy()
 
 ODBIterator::~ODBIterator ()
 {
-	Log::info() << "ODBIterator::~ODBIterator: @" << this << endl;
+	Log::info() << "ODBIterator::~ODBIterator: @" << this << std::endl;
 	destroy();
 }
 
@@ -180,7 +180,7 @@ bool ODBIterator::isNewDataset() { return newDataset_; }
 
 int ODBIterator::setColumn(unsigned long index, std::string& name, odb::ColumnType type, double missingValue)
 {
-	//Log::debug() << "ODBIterator::setColumn: " << index << ", " << name << ", " << columnTypeName(type) << ", " << missingValue << endl;
+	//Log::debug() << "ODBIterator::setColumn: " << index << ", " << name << ", " << columnTypeName(type) << ", " << missingValue << std::endl;
 
 	ASSERT(int(index) < noOfColumns_);
 	ASSERT(columns_);
@@ -219,7 +219,7 @@ const odb::sql::SchemaAnalyzer& ODBIterator::getSchema(const PathName db)
 	if (!schemaParsed_)
 	{
 		PathName schemaFile = this->schemaFile(db);
-		Log::info() << "ImportODBTool::getSchema: parsing '" << schemaFile << "'" << endl;
+		Log::info() << "ImportODBTool::getSchema: parsing '" << schemaFile << "'" << std::endl;
 	
 		odb::sql::SQLParser p;
 		p.parseString(StringTool::readFile(schemaFile),

@@ -37,7 +37,7 @@ private:
 // -- Overridden methods
 	virtual double eval(bool& missing) const;
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionNULL& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionNULL& p)
 	//	{ p.print(s); return s; }
 };
 

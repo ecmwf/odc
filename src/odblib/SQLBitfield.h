@@ -50,7 +50,7 @@ private:
 
 	size_t width_;
 	virtual size_t width() const;
-	//friend ostream& operator<<(ostream& s,const SQLBitfield& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLBitfield& p)
 	//	{ p.print(s); return s; }
 };
 

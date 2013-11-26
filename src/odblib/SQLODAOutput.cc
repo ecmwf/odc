@@ -31,7 +31,7 @@ template<typename ITERATOR>
 SQLODAOutput<ITERATOR>::~SQLODAOutput() {}
 
 template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::print(ostream& s) const { s << "SQLODAOutput"; }
+void SQLODAOutput<ITERATOR>::print(std::ostream& s) const { s << "SQLODAOutput"; }
 
 template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::size(int) {}
@@ -90,7 +90,7 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql)
 
 		Log::debug(Here()) << "SQLODAOutput::output: " << i << " " << name
 			<< " hasMissingValue: " << (c.hasMissingValue() ? "true" : "false")
-			<< ", missingValue: " << c.missingValue() << endl;
+			<< ", missingValue: " << c.missingValue() << std::endl;
 
 		if (! (typ == BITFIELD))
 			(**writer_).setColumn(i, name, typ);
@@ -99,7 +99,7 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql)
 
 		(**writer_).missingValue(i, c.missingValue());
 	}
-	Log::debug(Here()) << "SQLODAOutput::output: write header" << endl;
+	Log::debug(Here()) << "SQLODAOutput::output: write header" << std::endl;
 	(**writer_).writeHeader();
 }
 

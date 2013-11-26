@@ -51,10 +51,10 @@ SQLSelect::SQLSelect(const Expressions& columns,
 
 SQLSelect::~SQLSelect()
 {
-	//Log::info() << "SQLSelect::~SQLSelect: " << *this << endl;
+	//Log::info() << "SQLSelect::~SQLSelect: " << *this << std::endl;
 	for (size_t i = 0; i < select_.size(); ++i)
 	{
-		//Log::info() << "SQLSelect::~SQLSelect: deleting " << *select_[i] << endl;
+		//Log::info() << "SQLSelect::~SQLSelect: deleting " << *select_[i] << std::endl;
 		delete select_[i];
 	}
 }
@@ -62,7 +62,7 @@ SQLSelect::~SQLSelect()
 SQLTable* SQLSelect::findTable(const string& name,
 	string *fullName, bool *hasMissingValue, double *missingValue, bool* isBitfield, BitfieldDef* bitfieldDef) const
 {
-	set<SQLTable*> names;
+	std::set<SQLTable*> names;
 
 	for(vector<SQLTable*>::const_iterator t = tables_.begin(); 
 		t != tables_.end() ; ++t)
@@ -86,7 +86,7 @@ SQLTable* SQLSelect::findTable(const string& name,
 	if(names.size() != 1)
 		throw eckit::UserError("Ambiguous column name", name);
 
-	Log::debug() << "SQLSelect::findTable: name='" << name << "', fullName=" << (fullName ? (string("'")+ *fullName+"'") : "") << endl;
+	Log::debug() << "SQLSelect::findTable: name='" << name << "', fullName=" << (fullName ? (string("'")+ *fullName+"'") : "") << std::endl;
 
 	return *names.begin();
 		
@@ -114,7 +114,7 @@ pair<double,bool>* SQLSelect::column(const string& name, SQLTable* table)
 	tablesToFetch_[master].fetch_.push_back(column);
 	tablesToFetch_[master].values_.push_back(&values_[full]);
 
-	Log::debug() << "Accessing column " << full << endl;
+	Log::debug() << "Accessing column " << full << std::endl;
 
 	return &values_[full];
 
@@ -171,7 +171,7 @@ void SQLSelect::prepareExecute() {
 
 		(*c)->prepare(*this);
 
-		Log::debug(Here()) << "SQLSelect::prepareExecute: '" << *(*c) << "'" << endl;
+		Log::debug(Here()) << "SQLSelect::prepareExecute: '" << *(*c) << "'" << std::endl;
 	}
 	ASSERT(select_.size() == mixedResultColumnIsAggregated_.size());
 	ASSERT(select_.size() == aggregated_.size() + nonAggregated_.size());
@@ -182,12 +182,12 @@ void SQLSelect::prepareExecute() {
 
 	if(aggregated_.size()) {
 		aggregate_ = true;
-		Log::debug() << "SELECT is aggregated" << endl;
+		Log::debug() << "SELECT is aggregated" << std::endl;
 
 		if(aggregated_.size() != results_.size())
 		{
 			mixedAggregatedAndScalar_ = true;
-			Log::info() << "SELECT has aggregated and non-aggregated results" << endl;
+			Log::info() << "SELECT has aggregated and non-aggregated results" << std::endl;
 		}
 	}
 
@@ -204,24 +204,24 @@ void SQLSelect::prepareExecute() {
 			simplifiedWhere_ = where;
 		}
 		
-		Log::debug() << "Simplified WHERE " << *where << endl;
+		Log::debug() << "Simplified WHERE " << *where << std::endl;
 		if(where->isConstant()) {
 			bool missing = false;
 			if(where->eval(missing)) {
-				Log::debug() << "WHERE condition always true, ignoring" << endl;
+				Log::debug() << "WHERE condition always true, ignoring" << std::endl;
 				where = 0;
 			} else {
-				Log::debug() << "WHERE condition always false" << endl;
+				Log::debug() << "WHERE condition always false" << std::endl;
 				return;
 			}
 		}
 	}
 	// Check for links
-	for(set<SQLTable*>::iterator j = allTables_.begin(); j != allTables_.end() ; ++j) {
+	for(std::set<SQLTable*>::iterator j = allTables_.begin(); j != allTables_.end() ; ++j) {
 		SQLTable* table1 = *j;
 		const string& name1    = table1->name();
 
-		for(set<SQLTable*>::iterator k = allTables_.begin(); k != allTables_.end() ; ++k) {
+		for(std::set<SQLTable*>::iterator k = allTables_.begin(); k != allTables_.end() ; ++k) {
 			SQLTable* table2 = *k;
 			SelectOneTable& x      = tablesToFetch_[table2->master()];
 
@@ -233,18 +233,18 @@ void SQLSelect::prepareExecute() {
 					ASSERT(table2->master() == x.table2_->master());
 					Log::warning() << "Ignoring link " << name1             << "->" << name2             << 
 					", using "         << x.table1_->fullName() 
-						<< "->" << x.table2_->fullName() << endl;
+						<< "->" << x.table2_->fullName() << std::endl;
 					continue;
 				}
 				Log::info() << "Using link " << table1->fullName() 
-					<< "->" << table2->fullName() << endl;
+					<< "->" << table2->fullName() << std::endl;
 
 					//
 				string o                  = name2 + ".offset";
-				pair<double,bool>* offset = column(o,table1);
+				std::pair<double,bool>* offset = column(o,table1);
 
 				string l                  = name2 + ".length";
-				pair<double,bool>* length = column(l,table1);
+				std::pair<double,bool>* length = column(l,table1);
 
 				// There should not be 2 tables with a link on the same table
 				
@@ -274,14 +274,14 @@ void SQLSelect::prepareExecute() {
 			e.push_back(where);
 
 		for(size_t i = 0 ; i < e.size() ; ++i) {
-			Log::debug() << "WHERE AND split " << *(e[i]) << endl;
+			Log::debug() << "WHERE AND split " << *(e[i]) << std::endl;
 
 			// Get tables accessed
-			set<SQLTable*> t;
+			std::set<SQLTable*> t;
 			e[i]->tables(t);
 
-			for(set<SQLTable*>::iterator j = t.begin(); j != t.end(); ++j)
-				Log::debug() << "  tables -> " << (*j)->fullName() << endl;
+			for(std::set<SQLTable*>::iterator j = t.begin(); j != t.end(); ++j)
+				Log::debug() << "  tables -> " << (*j)->fullName() << std::endl;
 
 				
 			if(t.size() == 1) {
@@ -289,12 +289,12 @@ void SQLSelect::prepareExecute() {
 
 				if(e[i]->useIndex()) {
 					tablesToFetch_[table].index_.push_back(e[i]);
-					Log::debug() << "INDEX on " << (*e[i]) << endl;
+					Log::debug() << "INDEX on " << (*e[i]) << std::endl;
 				}
 				//else
 				{
 					tablesToFetch_[table].check_.push_back(e[i]);
-					Log::debug() << "WHERE quick check for " << table->fullName() << " " << (*e[i]) << endl;
+					Log::debug() << "WHERE quick check for " << table->fullName() << " " << (*e[i]) << std::endl;
 				}
 			}
 		}
@@ -306,15 +306,15 @@ void SQLSelect::prepareExecute() {
 			sortedTables_.push_back(new SelectOneTable(*i)); // TODO: release the objects!
 
 	std::sort(sortedTables_.begin(), sortedTables_.end(), compareTables);
-	Log::debug() << "TABLE order " << endl;
+	Log::debug() << "TABLE order " << std::endl;
 	for(SortedTables::iterator k = sortedTables_.begin(); k != sortedTables_.end(); ++k) {
-		Log::debug() << (*k)->table_->fullName() << " " << (*k)->order_ << endl;
+		Log::debug() << (*k)->table_->fullName() << " " << (*k)->order_ << std::endl;
 
 		for(size_t i = 0; i < (*k)->check_.size(); i++)
-			Log::debug() << "    QUICK CHECK " << *((*k)->check_[i]) << endl;
+			Log::debug() << "    QUICK CHECK " << *((*k)->check_[i]) << std::endl;
 
 		for(size_t i = 0; i < (*k)->index_.size(); i++)
-			Log::debug() << "    INDEX CHECK " << *((*k)->index_[i]) << endl;
+			Log::debug() << "    INDEX CHECK " << *((*k)->index_[i]) << std::endl;
 	}
 
 
@@ -324,7 +324,7 @@ void SQLSelect::prepareExecute() {
 		if(!where->andSplit(e))
 			e.push_back(where);
 
-		set<const SQLTable*> ordered;
+		std::set<const SQLTable*> ordered;
 		for(SortedTables::iterator k = sortedTables_.begin(); k != sortedTables_.end(); ++k) {
 			const SQLTable* table = (*k)->table_;
 			ordered.insert(table);
@@ -332,25 +332,25 @@ void SQLSelect::prepareExecute() {
 			for(size_t i = 0; i < e.size(); ++i)
 				if(e[i]) {
 					// Get tables accessed
-					set<SQLTable*> t;
+					std::set<SQLTable*> t;
 					e[i]->tables(t);
 
 					if(t.size() != 1) {
 						bool ok = true;
-						for(set<SQLTable*>::iterator j = t.begin() ; j != t.end(); ++j)
+						for(std::set<SQLTable*>::iterator j = t.begin() ; j != t.end(); ++j)
 							if(ordered.find(*j) == ordered.end())
 								ok = false;
 
 						if(ok) {
 							(*k)->check_.push_back(e[i]);
 							Log::info() << "WHERE multi-table quick check for " << table->fullName() << " " 
-								<< (*e[i]) << endl;
+								<< (*e[i]) << std::endl;
 
 							if(e[i]->useIndex())
 							{
 								(*k)->index_.push_back(e[i]);
 								Log::info() << "WHERE multi-table INDEX" << table->fullName() << " " 
-									<< (*e[i]) << endl;
+									<< (*e[i]) << std::endl;
 							}
 
 							e[i] = 0;
@@ -368,14 +368,14 @@ void SQLSelect::prepareExecute() {
 		where = 0;
 	}
 
-	Log::debug() << "SQLSelect:prepareExecute: TABLE order:" << endl;
+	Log::debug() << "SQLSelect:prepareExecute: TABLE order:" << std::endl;
 	for(SortedTables::iterator k = sortedTables_.begin(); k != sortedTables_.end(); ++k)
 	{
 		Log::debug() << "SQLSelect:prepareExecute: TABLE order " <<  (*k)->table_->fullName() << " " <<
-			(*k)->order_ << endl;
+			(*k)->order_ << std::endl;
 
 		for(size_t i = 0; i < (*k)->check_.size(); i++)
-			Log::debug() << "    QUICK CHECK " << *((*k)->check_[i]) << endl;
+			Log::debug() << "    QUICK CHECK " << *((*k)->check_[i]) << std::endl;
 	}
 }
 
@@ -435,8 +435,8 @@ void SQLSelect::postExecute()
 	for(expression::Expressions::iterator c = results_.begin(); c != results_.end() ; ++c)
 		(*c)->cleanup(*this);
 
-	Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << endl;
-	Log::info() << "Skips : " << BigNum(skips_) << endl;
+	Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << std::endl;
+	Log::info() << "Skips : " << BigNum(skips_) << std::endl;
 
 	reset();
 }
@@ -478,7 +478,7 @@ void SQLSelect::reset()
 
 bool SQLSelect::output(SQLExpression* where)
 {
-	//if (where) Log::info() << "SQLSelect::output: where: " << *where << endl;
+	//if (where) Log::info() << "SQLSelect::output: where: " << *where << std::endl;
 
 	bool newRow = false;
 	bool missing = false;
@@ -529,7 +529,7 @@ unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterat
 
 bool SQLSelect::processOneRow() { 
 	++count_;
-	//Log::info() << "SQLSelect::processOneRow: count = " << count_ << endl;
+	//Log::info() << "SQLSelect::processOneRow: count = " << count_ << std::endl;
 	bool recursiveCall;
 	do
 	{
@@ -561,8 +561,8 @@ bool SQLSelect::processOneRow() {
 			for(size_t i = 0; i < n; i++)
 			{
 				SQLColumn &fetchColumn = *env.table().fetch_[i];
-				//Log::info() << "SQLSelect::processOneRow: fetchColumn.name() => " << fetchColumn.name() << endl;
-				//Log::info() << "SQLSelect::processOneRow: fetchColumn.type() => " << fetchColumn.type() << endl;
+				//Log::info() << "SQLSelect::processOneRow: fetchColumn.name() => " << fetchColumn.name() << std::endl;
+				//Log::info() << "SQLSelect::processOneRow: fetchColumn.type() => " << fetchColumn.type() << std::endl;
 				bool &missing = env.table().values_[i]->second;
 				env.table().values_[i]->first = fetchColumn.next(missing);
 			}
@@ -590,7 +590,7 @@ bool SQLSelect::processOneRow() {
 	return false;
 }
 
-void SQLSelect::print(ostream& s) const
+void SQLSelect::print(std::ostream& s) const
 {
 	s << "SELECT"; char sep = ' ';
 

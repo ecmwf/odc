@@ -183,7 +183,7 @@ public:
 		case INTEGER: return PyLong_FromDouble(d);
 		case BITFIELD:
 		{
-			//cerr << "BITFIELD" << endl;
+			//cerr << "BITFIELD" << std::endl;
 			typedef unsigned long B;
 			char buf[sizeof(B) + 1];
 			char *s = buf;
@@ -204,7 +204,7 @@ public:
 
 	PyObject* __getitem__(PyObject* i)
 	{
-		//cerr << "__getitem__: start: " << PyString_AsString(PyObject_Repr(i)) << endl;
+		//cerr << "__getitem__: start: " << PyString_AsString(PyObject_Repr(i)) << std::endl;
 		if (PyTuple_Check(i))
 		{
 			Py_ssize_t n = PyTuple_Size(i);
@@ -229,7 +229,7 @@ public:
 		}
 		if (PyString_Check(i))
 		{
-			//cerr << "__getitem__: start: PyString " << PyString_AsString(PyObject_Repr(i)) << endl;
+			//cerr << "__getitem__: start: PyString " << PyString_AsString(PyObject_Repr(i)) << std::endl;
 			return getitem(PyString_AsString(i));
 		}
 		if (PySlice_Check(i))
@@ -244,7 +244,7 @@ public:
 
 	PyObject* getslice(PySliceObject* slice)
 	{
-		//cerr << "__getslice__(PySliceObject*):" << endl;
+		//cerr << "__getslice__(PySliceObject*):" << std::endl;
 		Py_ssize_t start = 0, stop = 0, step = 0, slicelength = 0;
 		PySlice_GetIndicesEx(slice, __len__(), &start, &stop, &step, &slicelength);
 		
@@ -257,7 +257,7 @@ public:
 		if (start < 0 || start > maxIndex) throw ODBIndexError();
 		if (stop < 0 || stop > maxIndex) throw ODBIndexError();
 
-		//cerr << "__getslice__: start=" << start << ", stop=" << stop << ", step=" << step << ", slicelength=" << slicelength << endl; 
+		//cerr << "__getslice__: start=" << start << ", stop=" << stop << ", step=" << step << ", slicelength=" << slicelength << std::endl; 
 
 		size_t outputSize = 0;
 		for (int index = start; (step > 0) ? (index < stop) : (index > stop); index += step)
@@ -289,7 +289,7 @@ public:
 
 	friend class ReaderIterator;
 	friend class MetaDataReaderIterator;
-	friend ostream& operator<<(ostream &o, const IteratorProxy& it) {
+    friend std::ostream& operator<<(std::ostream &o, const IteratorProxy& it) {
 		for (size_t i = 0; i < it.iter_->columns().size(); ++i)
 			o << it.iter_->data()[i] << "\t";
 		return o;

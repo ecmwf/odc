@@ -32,7 +32,7 @@ void XYVTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;// 1;
 	}
 
@@ -43,21 +43,21 @@ void XYVTool::run()
 	ofstream out;
 	out.open(outputFile.asString().c_str());
 
-	out << "#GEO" << endl << endl;
-	out << "#FORMAT XYV" << endl << endl;
-	out << "PARAMETER = 12004" << endl << endl; 
-	out << "x/long	y/lat	value" << endl;
-	out << "#DATA" << endl << endl;
+	out << "#GEO" << endl << std::endl;
+	out << "#FORMAT XYV" << endl << std::endl;
+	out << "PARAMETER = 12004" << endl << std::endl; 
+	out << "x/long	y/lat	value" << std::endl;
+	out << "#DATA" << endl << std::endl;
 
 	string select = string("select lat, lon, ") + valueColumn + " from \"" + inputFile + "\";";
-	Log::info() << select << endl;
+	Log::info() << select << std::endl;
 
 	odb::Select oda(select);
 	for (odb::Select::iterator it = oda.begin();
 		it != oda.end();
 		++it) 
 	{
-		out << (*it)[0] << "\t" << (*it)[1] << "\t" << (*it)[2] << endl;
+		out << (*it)[0] << "\t" << (*it)[1] << "\t" << (*it)[2] << std::endl;
 	}
 	out.close();
 }

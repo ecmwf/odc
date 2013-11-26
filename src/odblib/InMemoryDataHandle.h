@@ -71,13 +71,13 @@ public:
 	eckit::Length estimate()            { return buf_.size(); }
 	eckit::Offset position()            { return buf_.size(); }
 
-	void print(ostream& s) const { /*TODO*/ }
+	void print(std::ostream& s) const { /*TODO*/ }
 private:
 
 	vector<unsigned char> buf_;
 	vector<unsigned char>::iterator readIterator_;
 
-	friend ostream& operator<<(ostream& s, const InMemoryDataHandle& handle) 
+	friend std::ostream& operator<<(std::ostream& s, const InMemoryDataHandle& handle) 
 		{ handle.print(s); return s;}
 };
 

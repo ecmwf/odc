@@ -32,7 +32,7 @@ class SQLStatement;
 namespace expression { class SQLExpression; }
 using namespace expression;
 
-typedef map<string, set<string> > Links;
+typedef map<string, std::set<string> > Links;
 typedef map<string, SQLExpression*> Variables;
 
 class SQLDatabase {
@@ -49,7 +49,7 @@ public:
 
 	virtual SQLTable* table(const string&);
 	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA) = 0; 
-	virtual SQLTable* openDataStream(istream&, const string& delimiter, DataFormat = CSV) = 0; 
+    virtual SQLTable* openDataStream(std::istream&, const string& delimiter, DataFormat = CSV) = 0;
 	virtual void addTable(SQLTable *table) { tablesByName_[table->name()] = table; }
 
 	void setLinks(const Links&);
@@ -98,7 +98,7 @@ private:
 	void setUpVariablesTable();
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const SQLDatabase& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLDatabase& p)
 	//	{ p.print(s); return s; }
 };
 

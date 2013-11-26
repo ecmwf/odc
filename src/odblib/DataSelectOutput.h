@@ -20,7 +20,7 @@ public:
    ~DataSelectOutput();
 
 protected:
-	virtual void print(ostream&) const {}
+	virtual void print(std::ostream&) const {}
 
 private:
 	DataSelectOutput(const DataSelectOutput&);

@@ -58,18 +58,18 @@ void TestTextSelect3::selectStarOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "TestTextSelect3::selectStarOneColumn: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestTextSelect3::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
-	Log::info() << "TestTextSelect3::selectStarOneColumn: columns().size():  " << it->columns().size() << endl;
+	Log::info() << "TestTextSelect3::selectStarOneColumn: columns().size():  " << it->columns().size() << std::endl;
 
 	unsigned long n = 0;
 	for( ; it != end; ++it, ++n)
 	{
 	}
 
-	Log::info() << "TestTextSelect3::selectStarOneColumn: number of rows:  " << n << endl;
+	Log::info() << "TestTextSelect3::selectStarOneColumn: number of rows:  " << n << std::endl;
 }
 
 void TestTextSelect3::selectSumOneColumn()
@@ -81,7 +81,7 @@ void TestTextSelect3::selectSumOneColumn()
 	
 	odb::Select oda(sql, fs);
 	
-	Log::info(Here()) << "TestTextSelect3::selectSumOneColumn: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestTextSelect3::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 

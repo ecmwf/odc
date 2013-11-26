@@ -65,7 +65,7 @@ protected:
 
 // -- Methods
 	
-	// void print(ostream&) const; 	
+	// void print(std::ostream&) const; 	
 
 // -- Overridden methods
 	// None
@@ -105,7 +105,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const SQLIndex& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLIndex& p)
 	//	{ p.print(s); return s; }
 
 };

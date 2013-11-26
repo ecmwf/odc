@@ -81,7 +81,7 @@ private:
 	bool noMore_;
 	bool aggregateResultRead_;
 	bool isCachingRows_;
-	list<vector<double> > rowCache_;
+	std::list<vector<double> > rowCache_;
 
 protected:
 	SelectIterator (Select &owner);

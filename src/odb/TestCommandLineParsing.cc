@@ -41,10 +41,10 @@ struct TestTool : public Tool {
 		registerOptionWithArgument("-intOpt");
 	}
 
-	static void help(ostream &o) { o << "No help available for this command yet." << endl; }
+	static void help(std::ostream &o) { o << "No help available for this command yet." << std::endl; }
 
 	void run() {
-		Log::info() << "TestCommandLineParsing::test: TestTool::run" << endl;
+		Log::info() << "TestCommandLineParsing::test: TestTool::run" << std::endl;
 
 		ASSERT(optionArgument("-foo", std::string("NONE")) == "bar");
 		ASSERT(optionArgument("-intOpt", 0) == 69);

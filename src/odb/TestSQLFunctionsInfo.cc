@@ -43,14 +43,14 @@ void TestSQLFunctionsInfo::test()
 
 	FI& functionsInfo = odb::sql::expression::function::FunctionFactory::instance().functionsInfo();
 
-	Log::info() << "FunctionFactory::functionsInfo().size() == " << functionsInfo.size() << endl;
+	Log::info() << "FunctionFactory::functionsInfo().size() == " << functionsInfo.size() << std::endl;
 	for (FI::iterator i = functionsInfo.begin(); i != functionsInfo.end(); ++i)
 	{
 		Log::info() << i->first.first << "/" << i->first.second;
 		if (i + 1 != functionsInfo.end())
 			Log::info() << ", ";
 	}
-	Log::info() << endl;
+	Log::info() << std::endl;
 }
 
 } // namespace test

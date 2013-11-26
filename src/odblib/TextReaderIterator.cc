@@ -57,15 +57,15 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 
 odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
 {
-    ostream& L( Log::debug() );
+    std::ostream& L( Log::debug() );
 
-    L << "TextReaderIterator::parseBitfields: " << c << endl;
+    L << "TextReaderIterator::parseBitfields: " << c << std::endl;
 	size_t leftBracket (c.find('['));
 	size_t rightBracket (c.find(']'));
 	ASSERT(leftBracket != string::npos && rightBracket != string::npos);
 	string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
 
-    L << "TextReaderIterator::parseBitfields: s='" << s << "'" << endl;
+    L << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
 
 	odb::FieldNames names;
 	odb::Sizes      sizes;
@@ -73,13 +73,13 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
     size_t numberOfBits = 0;
 	vector<string> bs(S::split(";", s));
 
-    L << "TextReaderIterator::parseBitfields: bs=" << bs << endl;
+    L << "TextReaderIterator::parseBitfields: bs=" << bs << std::endl;
 
 	for (size_t i = 0; i < bs.size(); ++i)
 	{
 		vector<string> v(S::split(":", bs[i]));
 
-        L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << endl;
+        L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << std::endl;
 
 		if (v.size() != 2)
             throw UserError("Bitfields definition parse error");
@@ -97,7 +97,7 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
         numberOfBits += size;
 		sizes.push_back(size);
 	}
-    L << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << endl;
+    L << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << std::endl;
 
     if (numberOfBits > 31)
         throw UserError("Bitfields can have up to 31 bits only currently");
@@ -114,13 +114,13 @@ void TextReaderIterator::parseHeader()
 
 	ostream& L(Log::debug());
 
-	L << "TextReaderIterator::parseHeader: columns: " << columns << endl;
-	L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << endl;
-	L << "TextReaderIterator::parseHeader: header: '" << header << "'" << endl;
+	L << "TextReaderIterator::parseHeader: columns: " << columns << std::endl;
+	L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << std::endl;
+	L << "TextReaderIterator::parseHeader: header: '" << header << "'" << std::endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
-		Log::debug() << "TextReaderIterator::parseHeader: column " << i << " '" << columns[i] << "'" << endl;
+		Log::debug() << "TextReaderIterator::parseHeader: column " << i << " '" << columns[i] << "'" << std::endl;
 		vector<string> column (S::split(":", columns[i]));
 		if (column.size() < 2)
 			throw UserError(string("Column '") + columns[i] + "': format should be NAME \":\" TYPE");
@@ -131,12 +131,12 @@ void TextReaderIterator::parseHeader()
 		if (! S::startsWith(columnType, "BITFIELD"))
 		{
 			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
-						<< columnType << endl;
+						<< columnType << std::endl;
 			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType);
 		}
 		else
 		{
-			Log::debug() << "TextReaderIterator::parseHeader: adding BITFIELD " << columns_.size() << " '" << columns[i] << endl;
+			Log::debug() << "TextReaderIterator::parseHeader: adding BITFIELD " << columns_.size() << " '" << columns[i] << std::endl;
 			columns_.addBitfield<DataStream<SameByteOrder, DataHandle> >(columnName, parseBitfields(columns[i]));
 		}
 	}

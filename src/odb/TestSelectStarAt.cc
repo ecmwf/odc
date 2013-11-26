@@ -77,10 +77,10 @@ void TestSelectStarAt::test()
 
 	odb::Select oda(SELECT);
 
-	Log::info() << "Executing: '" << SELECT << "'" << endl;
+	Log::info() << "Executing: '" << SELECT << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 
-	Log::info() << "it->columns().size() => " << it->columns().size() << endl;
+	Log::info() << "it->columns().size() => " << it->columns().size() << std::endl;
 	ASSERT(it->columns().size() == 27);
 
 #if 0
@@ -88,7 +88,7 @@ void TestSelectStarAt::test()
 	for ( ; it != oda.end(); ++it) 
 		++i;
 
-	Log::info() << "i == " << i << endl;
+	Log::info() << "i == " << i << std::endl;
 	ASSERT(i == 3321753);
 #endif
 }

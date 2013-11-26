@@ -31,10 +31,10 @@ public:
 
 // -- Overridden methods
 	virtual const odb::sql::type::SQLType* type() const;
-	virtual void output(ostream& s) const;
+	virtual void output(std::ostream& s) const;
 protected:
 // -- Overridden methods
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 	virtual bool isConstant() const;
@@ -48,7 +48,7 @@ private:
 
 	unsigned long long* count_;
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionTHIN& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionTHIN& p)
 	//	{ p.print(s); return s; }
 };
 

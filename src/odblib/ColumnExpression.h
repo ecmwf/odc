@@ -38,7 +38,7 @@ public:
 
 protected:
 	const type::SQLType*   type_;
-	pair<double,bool>*     value_;
+    std::pair<double,bool>*     value_;
 	string                 columnName_;
 	SQLTable*              table_;
 	string                 tableReference_;
@@ -47,7 +47,7 @@ protected:
 	int                    nominalShift_;
 
 // -- Overridden methods
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
 	virtual double eval(bool& missing) const;
@@ -60,13 +60,13 @@ private:
 // -- Overridden methods
 	virtual const type::SQLType* type() const { return type_; }
 	virtual void expandStars(const std::vector<SQLTable*>&, Expressions&);
-	virtual void tables(set<SQLTable*>&);
+	virtual void tables(std::set<SQLTable*>&);
 	virtual bool indexed();
 	virtual SQLIndex* getIndex(double*);
 
 	friend class SQLSelectFactory;
 
-	//friend ostream& operator<<(ostream& s,const ColumnExpression& p)
+	//friend std::ostream& operator<<(std::ostream& s,const ColumnExpression& p)
 	//	{ p.print(s); return s; }
 };
 

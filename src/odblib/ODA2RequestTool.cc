@@ -44,9 +44,9 @@ ODA2RequestTool::ODA2RequestTool()
 
 ODA2RequestTool::~ODA2RequestTool() {}
 
-void ODA2RequestTool::help(ostream &o) { o << "Creates MARS ARCHIVE request for a given file"; }
+void ODA2RequestTool::help(std::ostream &o) { o << "Creates MARS ARCHIVE request for a given file"; }
 
-void ODA2RequestTool::usage(const string& name, ostream &o)
+void ODA2RequestTool::usage(const string& name, std::ostream &o)
 {
 	o << name << " [-c configFile] [-q] <input-file.odb> [<output-file>]";
 }
@@ -66,7 +66,7 @@ void ODA2RequestTool::run()
 		default:
 			Log::error() << "Usage: ";
 			usage(parameters(0), Log::error());
-			Log::error() << endl;
+			Log::error() << std::endl;
 			return;// 1;
 			break;
 	}
@@ -76,11 +76,11 @@ void ODA2RequestTool::run()
 	string request = generateMarsRequest(inputFile, optionIsSet("-q"));
 
 	if (outputFile.size() == 0)
-		cout << request << endl;
+		std::cout << request << std::endl;
 	else
 	{
 		ofstream out(outputFile.c_str());
-		out << request << endl;
+		out << request << std::endl;
 		out.close();
 	}
 	
@@ -97,19 +97,19 @@ void ODA2RequestTool::readConfig() { readConfig(config()); }
 
 void ODA2RequestTool::readConfig(const PathName& fileName)
 {
-	Log::debug() << "ODA2RequestTool::readConfig: reading file '" << fileName << "'" << endl;
+	Log::debug() << "ODA2RequestTool::readConfig: reading file '" << fileName << "'" << std::endl;
 	columnName2requestKey_.clear();
 
 	string s = readFile(fileName);
 	
-	Log::debug() << "ODA2RequestTool::readConfig: parsing '" << s << "'" << endl;
+	Log::debug() << "ODA2RequestTool::readConfig: parsing '" << s << "'" << std::endl;
 
 	parseConfig(s);
 }
 
 void ODA2RequestTool::parseConfig(const string& s)
 {
-	Log::debug() << "ODA2RequestTool::parseConfig: '" << s << "'" << endl;
+	Log::debug() << "ODA2RequestTool::parseConfig: '" << s << "'" << std::endl;
 
     vector<string> lines;
     Tokenizer("\n")(s, lines);
@@ -117,7 +117,7 @@ void ODA2RequestTool::parseConfig(const string& s)
     Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
 	{
-		//Log::debug() << "ODA2RequestTool::readConfig: '" << lines[i] << "'" << endl;
+		//Log::debug() << "ODA2RequestTool::readConfig: '" << lines[i] << "'" << std::endl;
 		vector<string> words;
 		tokenizer(lines[i], words);
 
@@ -125,7 +125,7 @@ void ODA2RequestTool::parseConfig(const string& s)
 			continue;
 
 		ASSERT("Each line of config file should be like: 'MARS_KEYWORD : oda_column_name'" && words.size() == 2);
-		//for (size_t j = 0; j < words.size(); ++j) Log::debug() << "ODA2RequestTool::readConfig: " << j << ": '" << words[j] << "'" << endl;
+		//for (size_t j = 0; j < words.size(); ++j) Log::debug() << "ODA2RequestTool::readConfig: " << j << ": '" << words[j] << "'" << std::endl;
 		columnName2requestKey_[words[1]] = words[0];
 	}
 }
@@ -162,7 +162,7 @@ void ODA2RequestTool::gatherStats(const PathName& inputFile)
 	}
 	
 	const string select = string("select ") + columnList + " from \"" + inputFile + "\";";
-	Log::info() << "Executing '" << select << "'" << endl;
+	Log::info() << "Executing '" << select << "'" << std::endl;
 
 	Translator<double, string> double2string;
 	odb::Select oda(select, inputFile);
@@ -202,19 +202,19 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 			for (Values::iterator vi = vs.begin(); vi != vs.end(); ++vi)
 			{
 				string v = *vi;
-				Log::debug() << "ODA2RequestTool::genRequest: v = '" << v  << "', key = " << key << endl;
+				Log::debug() << "ODA2RequestTool::genRequest: v = '" << v  << "', key = " << key << std::endl;
 				if (k == "TIME")
 					v = StringTool::patchTimeForMars(v);
 				else
 				if (k == "CLASS" || k == "TYPE" || k == "STREAM")
 				{
-					Log::debug() << "ODA2RequestTool::genRequest: checking if '" << v << "' is numeric" << endl;
+					Log::debug() << "ODA2RequestTool::genRequest: checking if '" << v << "' is numeric" << std::endl;
 					if (StringTool::check(v, isdigit))
 					{
 						v = StringTools::trim(v);
 						Log::debug() << "ODA2RequestTool::genRequest: replacing " << v << " with ";
 						v = GribCodes::alphanumeric(StringTools::lower(key), v);
-						Log::debug() << v << endl;
+						Log::debug() << v << std::endl;
 					}
 					v = StringTools::upper(v);
 				}
@@ -229,7 +229,7 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 	}
 
 	stringstream str;
-	str << "ODB," << endl;
+	str << "ODB," << std::endl;
 	str << request.str();
 	return str.str();
 }

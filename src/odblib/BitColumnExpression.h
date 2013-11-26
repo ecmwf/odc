@@ -44,7 +44,7 @@ protected:
 	virtual void expandStars(const std::vector<SQLTable*>&,expression::Expressions&);
 	virtual const odb::sql::type::SQLType* type() const;
 
-	//friend ostream& operator<<(ostream& s,const BitColumnExpression& p)
+	//friend std::ostream& operator<<(std::ostream& s,const BitColumnExpression& p)
 	//	{ p.print(s); return s; }
 	friend class SQLSelectFactory;
 };

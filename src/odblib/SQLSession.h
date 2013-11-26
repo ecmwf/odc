@@ -51,7 +51,7 @@ public:
 	SQLTable* findFile(const string&);
 
 	SQLTable* openDataHandle(eckit::DataHandle &);
-	SQLTable* openDataStream(istream &, const string &);
+    SQLTable* openDataStream(std::istream &, const string &);
 
 	virtual void statement(SQLStatement*) = 0;
 	virtual SQLOutput* defaultOutput() = 0;
@@ -68,7 +68,7 @@ protected:
 
 	unsigned long long execute(SQLStatement&);
 	
-	// void print(ostream&) const; 	
+	// void print(std::ostream&) const; 	
 
 private:
 // No copy allowed
@@ -85,7 +85,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const SQLSession& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLSession& p)
 	//	{ p.print(s); return s; }
 };
 

@@ -33,7 +33,7 @@ SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& n
 	isBitfield_(false),
 	bitfieldDef_()
 {
-	Log::debug() << "SQLColumn@" << this << endl; //" [name=" << name << ",type=" << type << "]" << endl;
+	Log::debug() << "SQLColumn@" << this << std::endl; //" [name=" << name << ",type=" << type << "]" << std::endl;
 }
 
 SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double missingValue, 
@@ -52,7 +52,7 @@ SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& n
 	isBitfield_(true),
 	bitfieldDef_(bitfieldDef)
 {
-	Log::debug() << "SQLColumn@" << this << endl; //" [name=" << name << ",type=" << type << "]" << endl;
+	Log::debug() << "SQLColumn@" << this << std::endl; //" [name=" << name << ",type=" << type << "]" << std::endl;
 }
 
 SQLColumn::SQLColumn(const SQLColumn& other):
@@ -70,12 +70,12 @@ SQLColumn::SQLColumn(const SQLColumn& other):
 	isBitfield_(other.isBitfield_),
 	bitfieldDef_(other.bitfieldDef_)
 {
-	Log::debug() << "SQLColumn@" << this << endl; // "[name=" << name << ",type=" << type << "]" << endl;
+	Log::debug() << "SQLColumn@" << this << std::endl; // "[name=" << name << ",type=" << type << "]" << std::endl;
 }
 
 SQLColumn::~SQLColumn()
 {
-	Log::debug() << "~SQLColumn@" << this << endl;;
+	Log::debug() << "~SQLColumn@" << this << std::endl;;
 }
 
 void SQLColumn::rewind()
@@ -102,8 +102,8 @@ void SQLColumn::setPool(int n)
 
 	iterator_->rewind();
 
-	//cout << "pool " << n << endl;
-	// cout << "pool " << n << " " << last_ << endl;
+	//cout << "pool " << n << std::endl;
+	// cout << "pool " << n << " " << last_ << std::endl;
 }
 
 PathName SQLColumn::indexPath()
@@ -135,7 +135,7 @@ unsigned long long SQLColumn::noRows() const
 	return noRows_;
 } 
 
-void SQLColumn::print(ostream& s) const
+void SQLColumn::print(std::ostream& s) const
 {
 }
 
@@ -152,7 +152,7 @@ SQLTable* SQLColumn::table() const
 
 void SQLColumn::createIndex()
 {
-	auto_ptr<SQLIndex> index(new SQLIndex(*this));
+    std::auto_ptr<SQLIndex> index(new SQLIndex(*this));
 	indexing_ = index;
 	indexing_->update();
 }

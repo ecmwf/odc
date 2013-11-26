@@ -29,7 +29,7 @@ namespace expression {
 template <typename T>
 void ShiftedColumnExpression<T>::allocateCircularBuffer()
 {
-	//Log::info() << "allocateCircularBuffer:" << shift_ <<  endl;
+	//Log::info() << "allocateCircularBuffer:" << shift_ <<  std::endl;
 
 // FIXME: we need to retrieve actual value of missing value for this column
 	double const MISSING_VALUE_REAL = -2147483647.0;
@@ -97,7 +97,7 @@ template <typename T>
 ShiftedColumnExpression<T>::~ShiftedColumnExpression() {}
 
 template <typename T>
-void ShiftedColumnExpression<T>::print(ostream& s) const
+void ShiftedColumnExpression<T>::print(std::ostream& s) const
 {
 	s << this->columnName_; 
 	if (nominalShift_ != 0)
@@ -113,13 +113,13 @@ double ShiftedColumnExpression<T>::eval(bool& missing) const
 	if (oldValues_.size() == 0)
 		self.allocateCircularBuffer();
 
-	pair<double,bool> const& v(self.oldValues_.back());
+	std::pair<double,bool> const& v(self.oldValues_.back());
 	double value = v.first;
 	bool miss = v.second;
 
 	self.oldValues_.pop_back();
 
-	pair<double,bool> ev;
+	std::pair<double,bool> ev;
 	ev.first = T::eval(ev.second);
 	self.oldValues_.push_front(ev);
 
@@ -139,7 +139,7 @@ void ShiftedColumnExpression<T>::cleanup(SQLSelect& sql)
 template <typename T>
 void ShiftedColumnExpression<T>::output(SQLOutput& o) const 
 { 
-	//Log::info() << "ShiftedColumnExpression::output:" << endl;
+	//Log::info() << "ShiftedColumnExpression::output:" << std::endl;
 
 	bool missing = false;
 	double v = eval(missing);

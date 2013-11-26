@@ -43,12 +43,12 @@ void VariableExpression::prepare(SQLSelect& sql)
 {
 	SQLSession& s = SQLSession::current();
 	value_ = s.currentDatabase().getVariable(name_);
-//	cout << "VariableExpression " << name_ << " " << value_ << endl;
+//	std::cout << "VariableExpression " << name_ << " " << value_ << std::endl;
 }
 
 void VariableExpression::cleanup(SQLSelect& sql) { value_ = 0; }
 
-void VariableExpression::print(ostream& s) const
+void VariableExpression::print(std::ostream& s) const
 {
 	s << name_ << " => " << *value_;
 }

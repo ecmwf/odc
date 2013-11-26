@@ -75,7 +75,7 @@ public:
 	void bitfieldDef(const BitfieldDef& b) { bitfieldDef_ = b; }
 	const BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
 #ifdef SWIGPYTHON
 	const string __repr__()
@@ -88,7 +88,7 @@ public:
 	const string __str__() { return name_; }
 #endif
 
-	friend ostream& operator<<(ostream& s, const Column& p)
+	friend std::ostream& operator<<(std::ostream& s, const Column& p)
 		{ p.print(s); return s; }
 
 private:

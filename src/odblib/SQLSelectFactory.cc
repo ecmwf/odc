@@ -139,29 +139,29 @@ SQLExpression* SQLSelectFactory::reshift(SQLExpression* e)
         return r;
     }
 
-    Log::info() << "SQLSelectFactory::reshift: SKIP " << *e << endl;
+    Log::info() << "SQLSelectFactory::reshift: SKIP " << *e << std::endl;
     return r;
 }
 
 void SQLSelectFactory::reshift(Expressions& select)
 {
 	ostream& L(Log::debug());
-	L << "reshift: maxColumnShift_ = " << maxColumnShift_ << endl;
-	L << "reshift: minColumnShift_ = " << minColumnShift_ << endl;
+	L << "reshift: maxColumnShift_ = " << maxColumnShift_ << std::endl;
+	L << "reshift: minColumnShift_ = " << minColumnShift_ << std::endl;
 	for (size_t i = 0; i < select.size(); ++i)
-		L << "reshift: <- select[" << i << "]=" << *select[i] << endl;
+		L << "reshift: <- select[" << i << "]=" << *select[i] << std::endl;
 
 	for (size_t i = 0; i < select.size(); ++i)
         select[i] = reshift(select[i]);
 
-	L << endl;
+	L << std::endl;
 	for (size_t i = 0; i < select.size(); ++i)
-		L << "reshift: -> select[" << i << "]=" << *select[i] << endl;
+		L << "reshift: -> select[" << i << "]=" << *select[i] << std::endl;
 }
 
 void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vector<SQLTable*>& from)
 {
-    Log::debug() << "No <from> clause" << endl;
+    Log::debug() << "No <from> clause" << std::endl;
 
     SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
         : implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
@@ -176,11 +176,11 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	vector<SQLTable*> from,
 	SQLExpression *where,
 	Expressions group_by,
-	pair<Expressions,vector<bool> > order_by)
+	std::pair<Expressions,vector<bool> > order_by)
 {
-    ostream& L(Log::info());
+    std::ostream& L(Log::info());
 
-	if (where) L << "SQLSelectFactory::create: where = " << *where << endl;
+	if (where) L << "SQLSelectFactory::create: where = " << *where << std::endl;
 
 	SQLSelect* r = 0;
 	SQLSession& session = SQLSession::current();
@@ -190,7 +190,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	Expressions select;
 	for (ColumnDefs::size_type i = 0; i < select_list.size(); ++i)
 	{
-		L << "expandStars: " << *select_list[i] << endl;
+		L << "expandStars: " << *select_list[i] << std::endl;
 		select_list[i]->expandStars(from, select);
 	}
 
@@ -198,15 +198,15 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	ASSERT(minColumnShift_ <= 0);
 	if (minColumnShift_ < 0) 
     {
-        L << endl << "SELECT_LIST before reshifting:" << select << endl;
+        L << endl << "SELECT_LIST before reshifting:" << select << std::endl;
 		reshift(select);
-        L << "SELECT_LIST after reshifting:" << select << endl << endl;
+        L << "SELECT_LIST after reshifting:" << select << endl << std::endl;
 
         if (where)
         {
-            L << endl << "WHERE before reshifting:" << *where << endl;
+            L << endl << "WHERE before reshifting:" << *where << std::endl;
             where = reshift(where);
-            L << "WHERE after reshifting:" << *where << endl << endl;
+            L << "WHERE after reshifting:" << *where << endl << std::endl;
         }
 
         reshift(order_by.first);
@@ -216,7 +216,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	minColumnShift_ = 0;
 
 	if (group_by.size())
-		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << endl;
+		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << std::endl;
 
 	TemplateParameters templateParameters;
     string outputFile = (config_.outputFormat == "odb") ? config_.outputFile : into;

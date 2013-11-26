@@ -31,9 +31,9 @@ namespace test {
 
 int test_odacapi(int argc, char *argv[])
 {
-	cout << "Calling odb_init..." << endl;
+	std::cout << "Calling odb_init..." << std::endl;
 	odb_start();
-	Log::info() << "Log::info initialised properly." << endl;
+	Log::info() << "Log::info initialised properly." << std::endl;
 
 	//return test_odacapi_setup(argc, argv)
 	return test_odacapi_setup_in_C(argc, argv)
@@ -98,11 +98,11 @@ int test_odacapi_setup(int argc, char *argv[])
 
 int test_odacapi1(int argc, char *argv[])
 {
-	cout << "Testing odacapi..." << endl;
+	std::cout << "Testing odacapi..." << std::endl;
 
 	int err;
 
-	cout << "Calling oda_create..." << endl;
+	std::cout << "Calling oda_create..." << std::endl;
 
 	oda* oh = odb_create("", &err);
 	
@@ -139,31 +139,31 @@ int test_odacapi1(int argc, char *argv[])
 		++nRows;
 		int v0 = int(data[0]);
 
-		cout << "Read row " << nRows << endl;
+		std::cout << "Read row " << nRows << std::endl;
 
 		ASSERT(v0 == nRows);
 	}
 
 	ASSERT(0 == odb_read_iterator_destroy(it));
 	ASSERT(0 == odb_destroy(oh));
-	cout << "OK" << endl;
+	std::cout << "OK" << std::endl;
 	return 0;
 }
 
 int test_odacapi2(int argc, char *argv[])
 {
-	cout << "Testing odacapi 2..." << endl;
+	std::cout << "Testing odacapi 2..." << std::endl;
 
 	int err;
 
-	cout << "Calling odb_start..." << endl;
+	std::cout << "Calling odb_start..." << std::endl;
 	odb_start();
 
-	cout << "Calling odb_create..." << endl;
+	std::cout << "Calling odb_create..." << std::endl;
 
 	oda* oh = odb_create("", &err);
 	
-	Log::info() << "Log::info initialised properly." << endl;
+	Log::info() << "Log::info initialised properly." << std::endl;
 	
 	oda_select_iterator* it = odb_create_select_iterator(oh, "select * from \"test.odb\";", &err);
 	ASSERT(0 == err);
@@ -198,26 +198,26 @@ int test_odacapi2(int argc, char *argv[])
 		++nRows;
 		int v0 = int(data[0]);
 
-		cout << "Read row " << nRows << endl;
+		std::cout << "Read row " << nRows << std::endl;
 
 		ASSERT(v0 == nRows);
 	}
 
 	ASSERT(0 == odb_select_iterator_destroy(it));
 	ASSERT(0 == odb_destroy(oh));
-	cout << "OK" << endl;
+	std::cout << "OK" << std::endl;
 	return 0;
 }
 
 int test_odacapi3(int argc, char *argv[])
 {
-	cout << "Testing ODB C API append to file functionality..." << endl;
+	std::cout << "Testing ODB C API append to file functionality..." << std::endl;
 
 	const char *filename = "test.odb";
 	int err = 0;
 
 	double n = odb_count(filename);
-	cout << "test_odacapi3: number of rows = " << n << endl;
+	std::cout << "test_odacapi3: number of rows = " << n << std::endl;
 	ASSERT(n == 10);
 
 	oda_writer* writer = odb_writer_create("", &err);
@@ -248,7 +248,7 @@ int test_odacapi3(int argc, char *argv[])
 
 
 	n = odb_count(filename);
-	cout << "test_odacapi3: number of rows = " << n << endl;
+	std::cout << "test_odacapi3: number of rows = " << n << std::endl;
 	ASSERT(n == 20);
 
 	return 0;

@@ -63,7 +63,7 @@ public:
 	template<typename BYTEORDER> void save(DataStream<BYTEORDER> &);
 	template<typename BYTEORDER> void load(DataStream<BYTEORDER> &);
 
-	void dumpTable(ostream &out) const;
+    void dumpTable(std::ostream &out) const;
 	void store(const char *name);
 	int32_t findIndex(const char *name);
 	const vector<std::string>& strings() const { return strings_; }

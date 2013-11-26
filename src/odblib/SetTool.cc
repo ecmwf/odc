@@ -28,7 +28,7 @@ void SetTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 
@@ -72,7 +72,7 @@ void SetTool::parseUpdateList(string s, vector<string>& columns, vector<double>&
 		string colName = assignment[0];
 		string value = assignment[1];
 		
-		Log::info() << "SetTool::parseUpdateList: " << colName << "='" << value << "'" << endl;
+		Log::info() << "SetTool::parseUpdateList: " << colName << "='" << value << "'" << std::endl;
 
 		double v = 0;
 
@@ -91,7 +91,7 @@ void SetTool::parseUpdateList(string s, vector<string>& columns, vector<double>&
 				char *p = 0;
 				unsigned char x;
 				reinterpret_cast<unsigned char*>(&v)[i] = x = static_cast<unsigned char>(strtoul(byteInHex.c_str(), &p, 16));
-				Log::debug() << "SetTool::parseUpdateList: '" << byteInHex << "' => " << x << endl;
+				Log::debug() << "SetTool::parseUpdateList: '" << byteInHex << "' => " << x << std::endl;
 			}
 		}
 

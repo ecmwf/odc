@@ -32,7 +32,7 @@ public:
 	virtual expression::Expressions output() const = 0;
 
 protected:
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 
 private:
 // No copy allowed
@@ -40,7 +40,7 @@ private:
 	SQLStatement& operator=(const SQLStatement&);
 
 
-	friend ostream& operator<<(ostream& s,const SQLStatement& p)
+	friend std::ostream& operator<<(std::ostream& s,const SQLStatement& p)
 		{ p.print(s); return s; }
 };
 

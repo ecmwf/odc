@@ -65,7 +65,7 @@ void TODATable<T>::populateMetaData()
 {
     using eckit::Log;
     
-	Log::debug() << "TODATable::populateMetaData:" << endl;
+	Log::debug() << "TODATable::populateMetaData:" << std::endl;
 	size_t count = reader_->columns().size();
 
 	delete[] data_;
@@ -111,7 +111,7 @@ void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
 {
     using eckit::Log;
 
-    Log::debug() << "ODATableIterator::updateMetaData: " << endl;
+    Log::debug() << "ODATableIterator::updateMetaData: " << std::endl;
 	MetaData& newColumns(reader_->columns());
 	for(size_t i = 0; i < selected.size(); i++)
 	{
@@ -119,8 +119,8 @@ void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
 		ASSERT(c);
 		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name()) 
 		{
-			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl;
-			Log::warning() << "Was: " << c->index() << "." << endl;
+			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << std::endl;
+			Log::warning() << "Was: " << c->index() << "." << std::endl;
 			bool newIndexFound = false;
 			for (size_t j = 0; j < newColumns.size(); ++j)
 			{
@@ -128,7 +128,7 @@ void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
 				if (other.name() == c->name() || other.name() == c->fullName())
 				{
 					newIndexFound = true;
-					Log::warning() << "New index: " << j << endl;
+					Log::warning() << "New index: " << j << std::endl;
 					c->index(j);
 					break;
 				}
@@ -164,7 +164,7 @@ bool TODATable<T>::hasColumn(const string& name, string* fullName)
 		if (fullName)
 		{
 			*fullName = name;
-			Log::debug() << "TODATable<T>::hasColumn: name='" << name << "', fullName='" << *fullName << "'" << endl;
+			Log::debug() << "TODATable<T>::hasColumn: name='" << name << "', fullName='" << *fullName << "'" << std::endl;
 		}
 		return true;
 	}
@@ -182,7 +182,7 @@ bool TODATable<T>::hasColumn(const string& name, string* fullName)
 			if (fullName)
 			{
 				*fullName = s;
-				Log::debug() << "TODATable<T>::hasColumn: colName='" << colName << "', fullName='" << *fullName << "'" << endl;
+				Log::debug() << "TODATable<T>::hasColumn: colName='" << colName << "', fullName='" << *fullName << "'" << std::endl;
 			}
 		}
 	}

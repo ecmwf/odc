@@ -111,7 +111,7 @@ TEST(selectAggregatedAndNonAggregated)
 
 	double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2];
 
-	Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << std::endl;
 
 	ASSERT(Comparator::same(r0, 1));
 	ASSERT(Comparator::same(r1, 0.2));
@@ -123,7 +123,7 @@ TEST(selectAggregatedAndNonAggregated)
 	r1 = (*it)[1];
 	r2 = (*it)[2];
 
-	Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << std::endl;
 
 	//ASSERT((*it)[0] == 2 && (*it)[1] == 0.1);
 	ASSERT(r0 == 2);
@@ -162,9 +162,9 @@ TEST(selectAggregatedAndNonAggregated2)
 	for ( ; it != oda.end(); ++it, ++counter)
 	{
 		//double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2], r3 = (*it)[3];
-		//Log::info(Here()) << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 << endl;
+		//Log::info(Here()) << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 << std::endl;
 	}
-	Log::info(Here()) << "selectAggregatedAndNonAggregated2: counter= " << counter << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated2: counter= " << counter << std::endl;
 	ASSERT(counter == 110);
 }
 
@@ -192,9 +192,9 @@ TEST(selectAggregatedAndNonAggregated3)
 	for ( ; it != oda.end(); ++it, ++counter)
 	{
 		double r0 = (*it)[0], r1 = (*it)[1];
-		Log::info(Here()) << "selectAggregatedAndNonAggregated3: " << r0 << ", " << r1 << endl;
+		Log::info(Here()) << "selectAggregatedAndNonAggregated3: " << r0 << ", " << r1 << std::endl;
 	}
-	Log::info(Here()) << "selectAggregatedAndNonAggregated3: counter= " << counter << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregated3: counter= " << counter << std::endl;
 	ASSERT(counter == 2);
 }
 
@@ -226,9 +226,9 @@ TEST(selectAggregatedAndNonAggregatedNULL)
 	for ( ; it != oda.end(); ++it, ++counter)
 	{
 		double r0 = (*it)[0], r1 = (*it)[1];
-		Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: " << r0 << ", " << r1 << endl;
+		Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: " << r0 << ", " << r1 << std::endl;
 	}
-	Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: counter= " << counter << endl;
+	Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: counter= " << counter << std::endl;
 	ASSERT(counter == 3);
 }
 
@@ -256,7 +256,7 @@ void regex1()
 	odb::Select::iterator it = oda.begin();
 	MetaData& md(it->columns());
 
-	Log::info() << "regex1: " << md << endl;
+	Log::info() << "regex1: " << md << std::endl;
 	
 	ASSERT(md.size() == 2);
 }
@@ -298,8 +298,8 @@ TEST(vector_syntax)
 
 TEST(bitfieldsLength)
 {
-	Log::info() << "Test_bitfieldsLength: sizeof(Decoder::W)" << sizeof(Decoder::W) << endl;
-	Log::info() << "Test_bitfieldsLength: sizeof(double)" << sizeof(double) << endl;
+	Log::info() << "Test_bitfieldsLength: sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
+	Log::info() << "Test_bitfieldsLength: sizeof(double)" << sizeof(double) << std::endl;
 
 //>>> int('0b11100110011',2)
 //1843
@@ -310,7 +310,7 @@ TEST(bitfieldsLength)
 		stringstream s;
 		Decoder::printBinary(s, 1843);
 		string r = s.str();
-		Log::info() << "Test_bitfieldsLength: " << r << endl;
+		Log::info() << "Test_bitfieldsLength: " << r << std::endl;
 
 		ASSERT(r.size() == 11);
 		ASSERT(r == "11100110011");
@@ -319,7 +319,7 @@ TEST(bitfieldsLength)
 		stringstream s;
 		Decoder::printBinary(s, 0);
 		string r = s.str();
-		Log::info() << "Test_bitfieldsLength: " << r << endl;
+		Log::info() << "Test_bitfieldsLength: " << r << std::endl;
 
 		ASSERT(r.size() == 1);
 		ASSERT(r == "0");
@@ -367,12 +367,12 @@ TEST(blocksSizes)
 	int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);
 	ASSERT(r == 0);
 
-	Log::info() << "Test_blocksSizes: num of blocks: " << numberOfBlocks << endl;
+	Log::info() << "Test_blocksSizes: num of blocks: " << numberOfBlocks << std::endl;
 	for (size_t i = 0; i < numberOfBlocks; ++i)
 	{
-		Log::info() << "Test_blocksSizes: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << endl;
+		Log::info() << "Test_blocksSizes: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
 	}
-	Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << endl;
+	Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << std::endl;
 	ASSERT(numberOfBlocks == 5);
 	
 	release_blocks_offsets(&offsets);
@@ -487,8 +487,8 @@ TEST(windSpeedWindDirection)
 	llong i = 0;
     for (; it != end; ++it)
     {
-        Log::info() << " ff = " << (*it)[0] << " speed sqrt= " << (*it)[4] << endl;
-        Log::info() << " dd = " << (*it)[1] << " direction atan= " << (*it)[5] << endl;
+        Log::info() << " ff = " << (*it)[0] << " speed sqrt= " << (*it)[4] << std::endl;
+        Log::info() << " dd = " << (*it)[1] << " direction atan= " << (*it)[5] << std::endl;
         ASSERT((*it)[0] == (*it)[4]);
         ASSERT((*it)[1] == (*it)[5]);
     }
@@ -520,7 +520,7 @@ void SplitTool_chunks()
 	unsigned long long n = CountTool::fastRowCount(fn);
 	vector<pair<Offset,Length> > chunks = SplitTool::getChunks(fn);
 
-	Log::info() << "chunks.size():" << chunks.size() << endl;
+	Log::info() << "chunks.size():" << chunks.size() << std::endl;
 	ASSERT(chunks.size() == 1 && chunks[0].first == Offset(0) && chunks[0].second == Length(357));
 }
 //TESTCASE(SplitTool_chunks);
@@ -588,7 +588,7 @@ void map_reduce_mt()
     const string sql = "select lat,lon;";
 	llong n = CountTool::fastRowCount(fileName);
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_counter_callback());
-	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << endl;
+	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << std::endl;
 	ASSERT(*result == n);
 }
 //TESTCASE(map_reduce_mt);
@@ -600,7 +600,7 @@ void map_reduce_st()
 	llong n = CountTool::fastRowCount(fileName);
 	llong r = 0;
 	llong* result = (llong*) SingleThreadMapReduce::process(&r, fileName, sql, create_counter_callback());
-	Log::info() << "map_reduce: SingleThreadMapReduce::process => " << *result << endl;
+	Log::info() << "map_reduce: SingleThreadMapReduce::process => " << *result << std::endl;
 	ASSERT(*result == n);
 	//delete result;
 }
@@ -635,12 +635,12 @@ CallBackProcessArray create_array_counter_callback()
 void process_array_st()
 {
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
+	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << std::endl;
     const string fileName = "/scratch/ma/mak/odb-16/all.odb";
     const string sql = "select lat,lon;";
 	
 	llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
+	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << std::endl;
 }
 //TESTCASE(process_array_st);
 
@@ -648,12 +648,12 @@ void process_array_st()
 void process_array_mt()
 {
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << endl;
+	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << std::endl;
 	
     const string fileName = "/scratch/ma/mak/odb-16/all.odb";
     const string sql = "select lat,lon";
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << endl;
+	Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << std::endl;
 }
 //TESTCASE(process_array_mt);
 
@@ -698,7 +698,7 @@ TEST(hash_operator_on_select_list)
     odb::Select::iterator end = select.end();
     for (; it != end; ++it)
     {
-		Log::info() << it << endl;
+		Log::info() << it << std::endl;
 	}
 
 }
@@ -729,7 +729,7 @@ TEST(hash_operator_in_where)
     odb::Select::iterator end = select.end();
     for (; it != end; ++it)
     {
-		Log::info() << it << endl;
+		Log::info() << it << std::endl;
 	}
 }
 
@@ -742,7 +742,7 @@ TEST(bitfields_hash_operator)
     odb::Select::iterator end = select.end();
     for (; it != end; ++it)
     {
-		Log::info() << it << endl;
+		Log::info() << it << std::endl;
 	}
 	
 }
@@ -761,7 +761,7 @@ TEST(select_constant_value)
 	unsigned long counter = 0;
 	for ( ; it != o.end(); ++it, ++counter)
 	{
-		Log::info() << it << endl;
+		Log::info() << it << std::endl;
 		CHECK_EQUAL(it->data(0), 27);
 	}
 	CHECK_EQUAL(counter, 1);
@@ -780,7 +780,7 @@ TEST(select_variables)
 		it != o.end();
 		++it, ++counter)
 	{
-		Log::info() << (*it)[0] << ", " << (*it)[1] << endl;
+		Log::info() << (*it)[0] << ", " << (*it)[1] << std::endl;
 	}
 }
 */
@@ -791,7 +791,7 @@ TEST(include)
 	f 
 		//<< "select * from \"file1.odb\";" << endl
 		<< "set $foo = 10;" << endl
-		<< "set $bar = 20;" << endl;
+		<< "set $bar = 20;" << std::endl;
 	f.close();
 
 	const char *sql =
@@ -806,13 +806,13 @@ TEST(include)
 		it != o.end();
 		++it, ++counter)
 	{
-		Log::info() << it << endl;
+		Log::info() << it << std::endl;
 	}
 }
 
 TEST(log_error)
 {
-    Log::error() << "Just a logger test" << endl;
+    Log::error() << "Just a logger test" << std::endl;
 }
 
 /*
@@ -831,7 +831,7 @@ TEST(create_table_using_variable)
 		it != o.end();
 		++it, ++counter)
 	{
-		Log::info() << it << endl;
+		Log::info() << it << std::endl;
 	}
 }
 */
@@ -847,7 +847,7 @@ TEST(meta_data_reader_checks_if_file_truncated)
 			;
 		ASSERT(0 && "Scanning of truncated file did not fail");
 	} catch (ShortFile ex) {
-		Log::info() << "Scanning of truncated file disp.7.1.odb.truncated failed as expected." << endl;
+		Log::info() << "Scanning of truncated file disp.7.1.odb.truncated failed as expected." << std::endl;
 	}
 }
 
@@ -860,7 +860,7 @@ TEST(meta_data_reader_fails_scanning_corrupted_file)
 			;
 		ASSERT(0 && "Scanning of corrupted.odb did not fail");
 	} catch (ShortFile ex) {
-		Log::info() << "Scanning of corrupted.odb failed as expected." << endl;
+		Log::info() << "Scanning of corrupted.odb failed as expected." << std::endl;
 	}
 }
 
@@ -992,7 +992,7 @@ TEST(create_temporary_table)
                       " TEMPORARY " 
                       " TABLE foo AS (col1 pk9real, col2 pk9real,) INHERITS (bar,baz);";
 
-    cout << "Trying to execute: '" << sql << "'" << endl;
+    cout << "Trying to execute: '" << sql << "'" << std::endl;
 
 	odb::Select o(sql);
     odb::tool::SQLTool::execute(sql);
@@ -1024,14 +1024,14 @@ TEST(TextReaderIterator_parseBitfields)
     FieldNames names(def.first);
     Sizes sizes(def.second);
 
-    Log::info() << "TextReaderIterator_parseBitfields: sizeof names:" << names.size() << endl;
-    Log::info() << "TextReaderIterator_parseBitfields: sizeof sizes:" << sizes.size() << endl;
+    Log::info() << "TextReaderIterator_parseBitfields: sizeof names:" << names.size() << std::endl;
+    Log::info() << "TextReaderIterator_parseBitfields: sizeof sizes:" << sizes.size() << std::endl;
     ASSERT(names.size() == 31);
     ASSERT(sizes.size() == 31);
 
-    Log::info() << "TextReaderIterator_parseBitfields: FieldNames: " << names << endl;
+    Log::info() << "TextReaderIterator_parseBitfields: FieldNames: " << names << std::endl;
     for (size_t i = 0; i < sizes.size(); ++i)
-        Log::info() << "TextReaderIterator_parseBitfields: size: " << i << " " << sizes[i] << endl;
+        Log::info() << "TextReaderIterator_parseBitfields: size: " << i << " " << sizes[i] << std::endl;
 }
 
 } // namespace test 

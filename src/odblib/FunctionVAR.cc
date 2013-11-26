@@ -60,7 +60,7 @@ void FunctionVAR::prepare(SQLSelect& sql)
 
 void FunctionVAR::cleanup(SQLSelect& sql)
 {
-//cout << "Cleanup  FunctionVAR " << count_ << " " << value_ << endl;
+//cout << "Cleanup  FunctionVAR " << count_ << " " << value_ << std::endl;
 	FunctionExpression::cleanup(sql);
 	squares_ = 0;
 	value_ = 0;
@@ -77,7 +77,7 @@ void FunctionVAR::partialResult()
 		squares_ += value * value;
 		count_++;
 	}
-//	else cout << "missing" << endl;
+//	else cout << "missing" << std::endl;
 }
 
 } // namespace function

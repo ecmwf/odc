@@ -33,7 +33,7 @@ public:
 
     virtual ~UnsafeInMemoryDataHandle() {}
 
-	void print(ostream& s) const { /*TODO*/ }
+	void print(std::ostream& s) const { /*TODO*/ }
 
 	void buffer(unsigned char *p) { buf_ = p_ = p; }
 	unsigned char* buffer() { return buf_; }
@@ -87,7 +87,7 @@ private:
 	unsigned char* buf_;
 	unsigned char* p_;
 
-	friend ostream& operator<<(ostream& s, const UnsafeInMemoryDataHandle& handle) 
+	friend std::ostream& operator<<(std::ostream& s, const UnsafeInMemoryDataHandle& handle) 
 		{ handle.print(s); return s;}
 };
 

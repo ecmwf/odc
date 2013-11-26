@@ -19,10 +19,10 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o)
+	static void help(std::ostream &o)
 	{ o << "Tries to compress a file"; }
 
-	static void usage(const string& name, ostream &o)
+	static void usage(const string& name, std::ostream &o)
 	{ o << name << " <input.odb> <output.odb>"; }
 
 private:

@@ -38,7 +38,7 @@ struct Environment {
 	SelectOneTable*& table();
 	SQLTableIterator*& cursor();
 
-	void print(ostream& s) const;
+	void print(std::ostream& s) const;
 
 	const SortedTables::iterator tablesIterator_;
 private:

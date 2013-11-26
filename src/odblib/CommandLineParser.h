@@ -61,14 +61,14 @@ private:
 	int argc_;
 	char **argv_;
 
-	set<std::string> registeredOptionsWithArguments_;
+	std::set<std::string> registeredOptionsWithArguments_;
 
 	map<std::string, std::string> optionsWithArguments_;
-	set<std::string> optionsNoArguments_;
+	std::set<std::string> optionsNoArguments_;
 	vector<std::string> parameters_;
 
-	void print(ostream& s) const;
-	friend ostream& operator<<(ostream& s, const CommandLineParser& o) { o.print(s);  return s; }
+	void print(std::ostream& s) const;
+	friend std::ostream& operator<<(std::ostream& s, const CommandLineParser& o) { o.print(s);  return s; }
 };
 
 } // namespace tool 

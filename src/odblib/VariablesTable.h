@@ -55,7 +55,7 @@ public:
 
 private:
     
-	friend ostream& operator<<(ostream& s,const VariablesTable& p)
+	friend std::ostream& operator<<(std::ostream& s,const VariablesTable& p)
 		{ p.print(s); return s; }
 };
 

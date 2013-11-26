@@ -42,7 +42,7 @@ public:
 	SQLTable(SQLDatabase&,const eckit::PathName&,const string&);
 	virtual ~SQLTable(); 
 
-	void loadIOMAP(istream&);
+    void loadIOMAP(std::istream&);
 	void addColumn(const string&, int, const type::SQLType&, bool, double, bool, const BitfieldDef&);
 
 	void addLinkFrom(const SQLTable*);
@@ -78,7 +78,7 @@ public:
 
     const eckit::PathName& path() const { return path_; }
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
 	virtual SQLTableIterator* iterator(const vector<SQLColumn*>&) const = 0;
 
@@ -93,13 +93,13 @@ protected:
 	map<string, SQLColumn*>  columnsByName_;
 	map<int, SQLColumn*>     columnsByIndex_;
 
-	set<const SQLTable*> linksFrom_;
-	set<const SQLTable*> linksTo_;
+    std::set<const SQLTable*> linksFrom_;
+    std::set<const SQLTable*> linksTo_;
 
 // -- Methods
 	void clearColumns();
 	
-	// void print(ostream&) const; 	
+	// void print(std::ostream&) const; 	
 	void addColumn(SQLColumn*, const string&, int);
 
 	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&) = 0;
@@ -110,7 +110,7 @@ private:
 	SQLDatabase& owner_;
 	SQLTable* master_;
 
-	friend ostream& operator<<(ostream& s,const SQLTable& p)
+	friend std::ostream& operator<<(std::ostream& s,const SQLTable& p)
 		{ p.print(s); return s; }
 
 };

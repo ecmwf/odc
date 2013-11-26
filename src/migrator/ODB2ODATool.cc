@@ -59,7 +59,7 @@ void ODB2ODATool::resetMDI(const std::string& s)
         const std::string typeName(S::upper(ass[0]));
         double value(StringTool::translate(ass[1]));
 
-        Log::info() << "  typeName: " << typeName << " value: " << value << endl;
+        Log::info() << "  typeName: " << typeName << " value: " << value << std::endl;
 
         if (typeName == "REAL")
             odb::MDI::realMDI(value);
@@ -86,13 +86,13 @@ void ODB2ODATool::run()
 			<< "\t[-addcolumns <list-of-assignments>]" << endl
             << "\t[-mdi <type1:MDI1,type2:MDI2,...>]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << endl
 
-			<< endl;
+			<< std::endl;
 		return;
 	}
 
     std::string nonDefaultMDIS(optionArgument<std::string>("-mdi", ""));
     if (nonDefaultMDIS.size())
-        Log::info() << "Using non default missing data indicators: " << nonDefaultMDIS << endl;
+        Log::info() << "Using non default missing data indicators: " << nonDefaultMDIS << std::endl;
 
 	bool addColumns = optionIsSet("-addcolumns");
 	if (addColumns)
@@ -130,7 +130,7 @@ void ODB2ODATool::run()
 
 	{	
 		ImportODBTool<odb::tool::OldODBReader>(*this).run();
-		Log::info() << "ImportODBTool<ODBIterator> finished OK" << endl;
+		Log::info() << "ImportODBTool<ODBIterator> finished OK" << std::endl;
 	}
 }
 

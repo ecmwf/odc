@@ -39,7 +39,7 @@ public:
 		vector<SQLTable*> from,
 		odb::sql::expression::SQLExpression *where,
 		Expressions group_by,
-		pair<Expressions,vector<bool> > order_by);
+		std::pair<Expressions,vector<bool> > order_by);
 
 	SQLExpression* createColumn(
 		const std::string& columnName,
@@ -52,7 +52,7 @@ public:
     void implicitFromTableSource(eckit::DataHandle* h) { implicitFromTableSource_ = h; }
 
     istream* implicitFromTableSourceStream() { return implicitFromTableSourceStream_; }
-    void implicitFromTableSourceStream(istream* is) { implicitFromTableSourceStream_ = is; }
+    void implicitFromTableSourceStream(std::istream* is) { implicitFromTableSourceStream_ = is; }
 
 	SQLDatabase* database() { return database_; }
 	void database(SQLDatabase* db) { database_ = db; }

@@ -56,7 +56,7 @@ std::string StringTool::readFile(const PathName fileName, bool logging)
 	}
 
 	if (logging)
-		Log::info()  << "Read " << totalRead << " bytes from file " << fileName << "[" << ret << "]" << endl;
+		Log::info()  << "Read " << totalRead << " bytes from file " << fileName << "[" << ret << "]" << std::endl;
 
 	f.close();
 	return ret;
@@ -68,7 +68,7 @@ int StringTool::shell(std::string cmd, const CodeLocation& where, bool assertSuc
 
 	Log::info() << "Executing '" + c + "' ";
     Log::info() << " " << where.file() << " +" << where.line();
-	Log::info() << endl;
+	Log::info() << std::endl;
 
 	int rc = system(c.c_str());
 
@@ -125,7 +125,7 @@ double StringTool::cast_as_double(const std::string& value)
 
 string StringTool::int_as_double2string(double v)
 {
-    stringstream s;
+    std::stringstream s;
     s.precision(0);
     s << fixed << v;
     return s.str();
@@ -173,7 +173,7 @@ bool StringTool::matchAny(const vector<string>& regs, const string& s)
 	return false;
 }
 
-ostream& operator<<(ostream& s, const vector<string>& st) 
+ostream& operator<<(std::ostream& s, const vector<string>& st) 
 {
     s << '[';
     for (vector<string>::const_iterator it = st.begin(); it != st.end(); ++it)
@@ -210,7 +210,7 @@ string StringTool::patchTimeForMars(const string& ss)
 		string s = v;
 		v = v.substr(0, 4);
 		Log::debug() << "StringTool::patchTimeForMars: stripping seconds from TIME: '"
-				<< s << "' => '" << v << "'" << endl;
+				<< s << "' => '" << v << "'" << std::endl;
 	}
 	return v;
 }

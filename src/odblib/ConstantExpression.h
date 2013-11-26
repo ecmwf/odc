@@ -45,7 +45,7 @@ public:
 	virtual double eval(bool& missing) const { missing = missing_; return value_; }
 
 	virtual bool andSplit(expression::Expressions&) { return false; }
-	virtual void tables(set<SQLTable*>&) {}
+	virtual void tables(std::set<SQLTable*>&) {}
 
 	virtual bool isConstant() const { return true; }
 	virtual bool isNumber() const { NOTIMP; return false; }
@@ -76,7 +76,7 @@ public:
 	virtual SQLIndex* getIndex(double* = 0) { return 0; }
 
 protected:
-	virtual void print(ostream&) const { NOTIMP; }; 
+	virtual void print(std::ostream&) const { NOTIMP; }; 
 
 	bool isBitfield_;
 	BitfieldDef bitfieldDef_;

@@ -42,13 +42,13 @@ SQLExpression* FunctionTHIN::clone() const { return new FunctionTHIN(*this); }
 
 const odb::sql::type::SQLType* FunctionTHIN::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
-void FunctionTHIN::output(ostream& s) const
+void FunctionTHIN::output(std::ostream& s) const
 {
     bool missing;
     s << static_cast<unsigned long>(eval(missing));
 }
 
-void FunctionTHIN::print(ostream& s) const
+void FunctionTHIN::print(std::ostream& s) const
 {
     s << "THIN()";
 }

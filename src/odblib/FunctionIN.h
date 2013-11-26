@@ -39,7 +39,7 @@ private:
 	virtual double eval(bool& missing) const;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionIN& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionIN& p)
 	//	{ p.print(s); return s; }
 };
 

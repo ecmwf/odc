@@ -67,8 +67,8 @@ void TestFastODA2Request::test()
 	string r = o.genRequest();
 	unsigned long long n = o.rowsNumber();
 
-	Log::info() << "TestFastODA2Request::test: request is:" << endl << r << endl;
-	Log::info() << "TestFastODA2Request::test: file has " << n << " rows(s)." << endl;
+	Log::info() << "TestFastODA2Request::test: request is:" << endl << r << std::endl;
+	Log::info() << "TestFastODA2Request::test: file has " << n << " rows(s)." << std::endl;
 
 	ASSERT(o.getValues("DATE").size() == 1);
 	ASSERT(*o.getValues("DATE").begin() == "20000101");

@@ -18,15 +18,15 @@ namespace tool {
 
 class ODA2RequestTool : public Tool {
 	typedef string Value;
-	typedef set<Value> Values;
+	typedef std::set<Value> Values;
 
 public:
 	ODA2RequestTool();
 	ODA2RequestTool(int argc, char **argv);
 	~ODA2RequestTool();
 
-	static void help(ostream &o);
-	static void usage(const string& name, ostream &o);
+	static void help(std::ostream &o);
+	static void usage(const string& name, std::ostream &o);
 
 	virtual void run();
 

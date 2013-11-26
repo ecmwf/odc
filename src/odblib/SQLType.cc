@@ -26,13 +26,13 @@ namespace type {
 
 static map<string,SQLType*>* map_ = 0;
 
-static set<SQLType*>* dynamicallyCreatedTypes_ = 0;
+static std::set<SQLType*>* dynamicallyCreatedTypes_ = 0;
 
 SQLType* DynamicallyCreatedTypesDestroyer::registerType(SQLType* t)
 {
-	Log::debug() << "DynamicallyCreatedTypesDestroyer::registerType: " << *t << endl;
+	Log::debug() << "DynamicallyCreatedTypesDestroyer::registerType: " << *t << std::endl;
 
-	if (! dynamicallyCreatedTypes_) dynamicallyCreatedTypes_ = new set<SQLType*>();
+	if (! dynamicallyCreatedTypes_) dynamicallyCreatedTypes_ = new std::set<SQLType*>();
 
 	ASSERT(dynamicallyCreatedTypes_->find(t) == dynamicallyCreatedTypes_->end());
 	dynamicallyCreatedTypes_->insert(t);
@@ -43,7 +43,7 @@ DynamicallyCreatedTypesDestroyer::~DynamicallyCreatedTypesDestroyer ()
 {
 	if (dynamicallyCreatedTypes_)
 	{
-		for (set<SQLType*>::iterator it = dynamicallyCreatedTypes_->begin(); it != dynamicallyCreatedTypes_->end(); ++it)
+		for (std::set<SQLType*>::iterator it = dynamicallyCreatedTypes_->begin(); it != dynamicallyCreatedTypes_->end(); ++it)
 			delete *it;
 		delete dynamicallyCreatedTypes_;
 		dynamicallyCreatedTypes_ = 0;
@@ -68,7 +68,7 @@ SQLType::SQLType(const string& name):
 SQLType::SQLType(const string& name, const string& shortName):
 	name_(name)
 {
-	//cout << "********** SQLType::SQLType(name=" << name << ", shortName=" << shortName << ")" << endl;
+	//cout << "********** SQLType::SQLType(name=" << name << ", shortName=" << shortName << ")" << std::endl;
 
 	if(!map_) map_ = new map<string,SQLType*>;
 
@@ -102,17 +102,17 @@ const SQLType& SQLType::lookup(const string& name)
 	if(j == map_->end())
 	{
 #if 0
-		cout << " ====== THROW!!! =========== SeriousBug(name + \": type not defined\"); (name = '" << name << "')" << endl;
+		std::cout << " ====== THROW!!! =========== SeriousBug(name + \": type not defined\"); (name = '" << name << "')" << std::endl;
 		static int help = 0;
 		if (help == 0)
 		{
 			help = 1;
-			cout << "Known types:" << endl;
+			std::cout << "Known types:" << std::endl;
 			for (map<string,SQLType*>::iterator i = map_->begin(); i != map_->end(); i++)
 			{
 				string k = i->first;
 				SQLType* typ = i->second;
-				cout << "  >>> " << k << ": " << typ->name() << " (" << typeid(*typ).name() << ")" << endl;
+				std::cout << "  >>> " << k << ": " << typ->name() << " (" << typeid(*typ).name() << ")" << std::endl;
 			}
 		}
 #endif
@@ -131,9 +131,9 @@ void SQLType::createAlias(const string& name, const string& alias)
 	(*map_)[alias] = (*map_)[name];
 }
 
-void SQLType::print(ostream& s) const { s << name_; }
+void SQLType::print(std::ostream& s) const { s << name_; }
 
-//void SQLType::output(ostream& s,double x) const { s << x; }
+//void SQLType::output(std::ostream& s,double x) const { s << x; }
 
 const SQLType* SQLType::subType(const string&) const { return this; }
 

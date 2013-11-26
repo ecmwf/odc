@@ -36,7 +36,7 @@ struct Stack : private stack<Environment*> {
 	void pushFrame(const SortedTables::iterator);
 	void popFrame();
 
-	void print(ostream& s) const;
+	void print(std::ostream& s) const;
 
 	const SortedTables::iterator& tablesIterator(); 
 

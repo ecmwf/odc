@@ -88,7 +88,7 @@ void TestFunctionsForAngleConversion::testReaderIterator()
 {
     const string sql = "select degrees(radian_col),radians(degrees_col), rad2deg(radian_col), deg2rad(degrees_col), radians(degrees(radian_col)), degrees(radians(degrees_col)) from \"test_angleconv.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();

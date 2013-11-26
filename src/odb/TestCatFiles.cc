@@ -138,7 +138,7 @@ void TestCatFiles::testSelectIterator()
 	const string sql = "select X,Y from \"concatenated.odb\";";
 	const string fileName = "concatenated.odb";
 	odb::Select oda(sql, fileName);
-	Log::info() << "Iterating " << sql << endl;
+	Log::info() << "Iterating " << sql << std::endl;
 
 	//for (Reader::iterator it = oda.begin();
 	//	it != oda.end();
@@ -148,21 +148,21 @@ void TestCatFiles::testSelectIterator()
 	odb::Select::iterator it = oda.begin();
 	int j = 1;
 
-	Log::info(Here()) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << std::endl;
 	const double * data = it->data();
 	ASSERT(data);
-	Log::info(Here()) << "data[0] = " << data[0] << endl;
-	Log::info(Here()) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << std::endl;
+	Log::info(Here()) << "data[1] = " << data[1] << std::endl;
 	ASSERT(data[0] == j);
 	ASSERT(data[1] == j);
 	++j;
 
 	++it;
-	Log::info(Here()) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << std::endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(Here()) << "data[0] = " << data[0] << endl;
-	Log::info(Here()) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << std::endl;
+	Log::info(Here()) << "data[1] = " << data[1] << std::endl;
 	ASSERT(data[0] == j);
 	ASSERT(data[1] == j);
 	++j;
@@ -170,21 +170,21 @@ void TestCatFiles::testSelectIterator()
 	j = 1; // data from file2.oda
 
 	++it;
-	Log::info(Here()) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << std::endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(Here()) << "data[0] = " << data[0] << endl;
-	Log::info(Here()) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << std::endl;
+	Log::info(Here()) << "data[1] = " << data[1] << std::endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 	++j;
 
 	++it;
-	Log::info(Here()) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << std::endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(Here()) << "data[0] = " << data[0] << endl;
-	Log::info(Here()) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << std::endl;
+	Log::info(Here()) << "data[1] = " << data[1] << std::endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 
@@ -192,21 +192,21 @@ void TestCatFiles::testSelectIterator()
 	j = 1; // data from file3.oda
 
 	++it;
-	Log::info(Here()) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << std::endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(Here()) << "data[0] = " << data[0] << endl;
-	Log::info(Here()) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << std::endl;
+	Log::info(Here()) << "data[1] = " << data[1] << std::endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 	++j;
 
 	++it;
-	Log::info(Here()) << "j = " << j << endl;
+	Log::info(Here()) << "j = " << j << std::endl;
 	data = it->data();
 	ASSERT(data);
-	Log::info(Here()) << "data[0] = " << data[0] << endl;
-	Log::info(Here()) << "data[1] = " << data[1] << endl;
+	Log::info(Here()) << "data[0] = " << data[0] << std::endl;
+	Log::info(Here()) << "data[1] = " << data[1] << std::endl;
 	ASSERT(data[0] == j * 10);
 	ASSERT(data[1] == j * 100);
 }

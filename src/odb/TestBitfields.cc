@@ -67,14 +67,14 @@ void TestBitfields::test()
 	statusFields = "status.*@body";
 	const string SELECT = string("select status@body, ") + statusFields + " from \"2000010106.odb\";";
 
-	Log::info() << "Executing '" << SELECT << "'" << endl;
+	Log::info() << "Executing '" << SELECT << "'" << std::endl;
 
 	odb::Select oda(SELECT);
 	long int i=0;
 
 	odb::Select::iterator it = oda.begin();
 
-	Log::debug() << "TestBitfields::test: it->columns().size() == " << it->columns().size() << endl;
+	Log::debug() << "TestBitfields::test: it->columns().size() == " << it->columns().size() << std::endl;
 
 	ASSERT(it->columns().size() == 9);
 
@@ -89,7 +89,7 @@ void TestBitfields::test()
 			| int ((*it)[6]) << 5
 			| int ((*it)[7]) << 6
 			| int ((*it)[8]) << 7;
-		//Log::info() << i << ": " << (*it)[0] << " " << sum << endl;
+		//Log::info() << i << ": " << (*it)[0] << " " << sum << std::endl;
 		ASSERT((*it)[0] == sum);
 	}
 }

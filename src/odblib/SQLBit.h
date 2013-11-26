@@ -43,7 +43,7 @@ private:
 	void output(SQLOutput&, double, bool) const;
 	virtual int getKind() const { return integerType; }
 
-	//friend ostream& operator<<(ostream& s,const SQLBit& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLBit& p)
 	//	{ p.print(s); return s; }
 };
 

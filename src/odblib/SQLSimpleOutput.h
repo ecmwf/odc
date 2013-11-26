@@ -21,11 +21,11 @@ namespace sql {
 
 class SQLSimpleOutput : public SQLOutput {
 public:
-	SQLSimpleOutput(ostream& = cout);
+	SQLSimpleOutput(std::ostream& = cout);
 	virtual ~SQLSimpleOutput(); 
 
 protected:
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 
 private:
 	SQLSimpleOutput(const SQLSimpleOutput&);
@@ -38,7 +38,7 @@ private:
 	vector<manipulator> columnAlignments_;
 	size_t currentColumn_;
 
-	ostream& format(ostream&, size_t) const;
+	ostream& format(std::ostream&, size_t) const;
 
 // -- Overridden methods
 	virtual void size(int);

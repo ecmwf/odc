@@ -27,13 +27,13 @@ typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
 
 class MDPrinter {
 public:
-	virtual void print(ostream&, MDReader::iterator &) = 0;
+	virtual void print(std::ostream&, MDReader::iterator &) = 0;
 };
 
 class VerbosePrinter : public MDPrinter {
 public:
 	VerbosePrinter() : headerCount_() {}
-	void print(ostream& o, MDReader::iterator &r)
+	void print(std::ostream& o, MDReader::iterator &r)
 	{
 		o << endl << "Header " << ++headerCount_ << ". "
 			<< "Begin offset: " << (**r).blockStartOffset() << ", end offset: " << (**r).blockEndOffset()
@@ -49,11 +49,11 @@ private:
 class OffsetsPrinter : public MDPrinter {
 public:
 	OffsetsPrinter() {}
-	void print(ostream& o, MDReader::iterator &r)
+	void print(std::ostream& o, MDReader::iterator &r)
 	{
 		Offset offset ((**r).blockStartOffset());
 		Length length ((**r).blockEndOffset() - (**r).blockStartOffset());
-		o << offset << " " << length << " " << r->columns().rowsNumber() << " " << r->columns().size() << endl;
+		o << offset << " " << length << " " << r->columns().rowsNumber() << " " << r->columns().size() << std::endl;
 	}
 private:
 	unsigned long headerCount_;
@@ -68,7 +68,7 @@ void HeaderTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 

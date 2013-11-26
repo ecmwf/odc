@@ -86,9 +86,9 @@ public:
 
 	virtual ~MetaData();
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
-	friend ostream& operator<<(ostream& s, const MetaData& p)
+	friend std::ostream& operator<<(std::ostream& s, const MetaData& p)
 		{ p.print(s); return s; }
 
 private:

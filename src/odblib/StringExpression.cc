@@ -37,7 +37,7 @@ StringExpression::StringExpression(const string& name)
 		buf[off+i] = name[i];
 
 	string s(buf, sizeof(double));
-	//Log::info() << "StringExpression::StringExpression: '" << s << "'" << endl;
+	//Log::info() << "StringExpression::StringExpression: '" << s << "'" << std::endl;
 }
 
 StringExpression::StringExpression(const StringExpression& o)
@@ -48,7 +48,7 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 {
 	ostream& L(Log::info());
 
-	Log::info() << "StringExpression::expandStars: name_: '"  << name_ << "', value_: '" << value_ << "'" << endl;
+	Log::info() << "StringExpression::expandStars: name_: '"  << name_ << "', value_: '" << value_ << "'" << std::endl;
 
 	if (! StringTool::isColumnRegex(name_))
 	{
@@ -67,11 +67,11 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 			const string& name = names[i];
 			if (! StringTool::matchEx(name_, name))
 			{
-				L << "StringExpression::expandStars: skip '" << name << "'" << endl;
+				L << "StringExpression::expandStars: skip '" << name << "'" << std::endl;
 				continue;
 			}
 			
-			L << "StringExpression::expandStars: adding '" << name << "'" << endl;
+			L << "StringExpression::expandStars: adding '" << name << "'" << std::endl;
 			++matched;
 			e.push_back(new ColumnExpression(name, table));
 		}
@@ -91,9 +91,9 @@ void StringExpression::prepare(SQLSelect& sql) {}
 
 void StringExpression::cleanup(SQLSelect& sql) {}
 
-void StringExpression::output(ostream& s) const { s << name_; }
+void StringExpression::output(std::ostream& s) const { s << name_; }
 
-void StringExpression::print(ostream& s) const { s << "'" << name_ << "'"; }
+void StringExpression::print(std::ostream& s) const { s << "'" << name_ << "'"; }
 
 } // namespace expression
 } // namespace sql

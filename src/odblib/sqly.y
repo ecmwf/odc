@@ -27,10 +27,10 @@ struct YYSTYPE {
 	string                 val;
 	vector<string>         list;
 	Expressions            explist;
-	pair<SQLExpression*,SQLExpression*> ass;
+	std::pair<SQLExpression*,SQLExpression*> ass;
 	Dictionary				dic;
-	pair<SQLExpression*,bool> orderexp;
-	pair<Expressions,vector<bool> > orderlist;
+	std::pair<SQLExpression*,bool> orderexp;
+	std::pair<Expressions,vector<bool> > orderlist;
 	vector<SQLTable*>      tablist;
 	ColumnDefs             coldefs;
 	ColumnDef              coldef;
@@ -287,7 +287,7 @@ create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')'
 		.currentDatabase()
 		.schemaAnalyzer().addBitfieldType(typeName, fields, sizes, typeSignature);
 		
-		//cout << "CREATE TYPE " << typeName << " AS " << typeSignature << ";" << endl;		
+		//cout << "CREATE TYPE " << typeName << " AS " << typeSignature << ";" << std::endl;		
 	}
 	;
 
@@ -428,7 +428,7 @@ select_statement: SELECT distinct select_list into from where group_by order_by
 						vector<SQLTable*>      from($5);
 						SQLExpression          *where($6);
 						Expressions            group_by($7);
-						pair<Expressions,vector<bool> >      order_by($8);
+						std::pair<Expressions,vector<bool> >      order_by($8);
 
 						SQLSelect* sqlSelect = SQLSelectFactory::instance()
 							.create(distinct, select_list, into, from, where, group_by, order_by);
@@ -479,7 +479,7 @@ set_statement : SET DATABASE STRING AS IDENT { SQLSession::current().openDatabas
 
 set_statement : SET VAR EQ assignment_rhs
 	{ 
-		//cout << "== set variable " << $2 << " to "; if ($4) cout << *($4) << endl; else cout << "NULL" << endl;
+		//cout << "== set variable " << $2 << " to "; if ($4) cout << *($4) << std::endl; else cout << "NULL" << std::endl;
 		SQLSession::current().currentDatabase().setVariable($2, $4);
 	}
 	; 
@@ -700,7 +700,7 @@ expression  : disjonction
 				ASSERT(! missing);
 				if (container->isVector())
 				{
-					//cerr << "==== index: '" << i << "'" << endl;
+					//cerr << "==== index: '" << i << "'" << std::endl;
 					$$ = container->vector()[i];
 				}
 				else
@@ -708,7 +708,7 @@ expression  : disjonction
 				{
 					// TODO: check title always returns string repr of it's value
 					string key = index->title();
-					//cerr << "==== key: '" << key << "'" << endl;
+					//cerr << "==== key: '" << key << "'" << std::endl;
 					if (container->dictionary().find(key) == container->dictionary().end())
 					{
 						stringstream ss;

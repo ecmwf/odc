@@ -40,7 +40,7 @@ private:
 	virtual bool andSplit(expression::Expressions&);
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionAND& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionAND& p)
 	//	{ p.print(s); return s; }
 };
 

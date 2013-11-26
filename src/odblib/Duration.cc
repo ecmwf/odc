@@ -44,14 +44,14 @@ Duration::Duration(const string & s) {
 
 // -----------------------------------------------------------------------------
 
-ostream& operator<<(ostream& output, const Duration& d) {
+ostream& operator<<(std::ostream& output, const Duration& d) {
     output << d.toString();
     return output;
 }
 
 // -----------------------------------------------------------------------------
 
-istream& operator>>(istream& input, Duration& d) {
+istream& operator>>(std::istream& input, Duration& d) {
     string duration;
     input >> duration;
     d.set(duration);
@@ -162,7 +162,7 @@ void Duration::set(const string & str) {
 
 // -----------------------------------------------------------------------------
 
-string Duration::eatDigits(istream & is) {
+string Duration::eatDigits(std::istream & is) {
   string str;
   char c;
   locale loc;

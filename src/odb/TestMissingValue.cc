@@ -126,7 +126,7 @@ void TestMissingValue::test()
 		Column& column = *md[0];
 		codec::Codec& codec = column.coder();
 
-		Log::info() << "TestMissingValue::test: codec: " << codec << endl;	
+		Log::info() << "TestMissingValue::test: codec: " << codec << std::endl;	
 
 		ASSERT(codec.hasMissing());
 		ASSERT(codec.missingValue() == 1);

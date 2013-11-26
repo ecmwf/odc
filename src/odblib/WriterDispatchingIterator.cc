@@ -83,7 +83,7 @@ string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const 
 				size_t pos = s.find("/");
 				s.replace(pos, pos+1, string("__SLASH__"));
 
-				//eckit::Log::info() << "WriterDispatchingIterator::generateFileName: '" << old << "' => '" << s << "'" << endl;
+				//eckit::Log::info() << "WriterDispatchingIterator::generateFileName: '" << old << "' => '" << s << "'" << std::endl;
 			}
         } else
 		{
@@ -95,7 +95,7 @@ string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const 
 		diff = outputFileTemplate_.size() - fileName.size();
 	}
 
-	//eckit::Log::debug() << "WriterDispatchingIterator::generateFileName: fileName = " << fileName <<  endl;
+	//eckit::Log::debug() << "WriterDispatchingIterator::generateFileName: fileName = " << fileName <<  std::endl;
 	return fileName;
 }
 
@@ -150,7 +150,7 @@ const double* values, unsigned long count)
 
 		L << "WriterDispatchingIterator::createIterator: evicted iterator " << iteratorIndex
 			<< "' " << iteratorIndex2fileName_[iteratorIndex] << "' "
-			<< " (oldest row: " << oldestRow << "), nrows_=" << nrows_ <<  endl;
+			<< " (oldest row: " << oldestRow << "), nrows_=" << nrows_ <<  std::endl;
 
 		delete iterators_[iteratorIndex];
 		iterators_[iteratorIndex] = 0;
@@ -182,7 +182,7 @@ const double* values, unsigned long count)
 		}
 	}
 
-	L << "WriterDispatchingIterator::dispatch: iterator " << iteratorIndex << ":" << operation << " '" << fileName << "'" << endl;
+	L << "WriterDispatchingIterator::dispatch: iterator " << iteratorIndex << ":" << operation << " '" << fileName << "'" << std::endl;
 
 	if (iteratorIndex == iterators_.size())
 	{
@@ -219,7 +219,7 @@ vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::getFil
 template <typename WRITE_ITERATOR, typename OWNER>
 WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::~WriterDispatchingIterator()
 {
-	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::~WriterDispatchingIterator()" << endl;
+	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::~WriterDispatchingIterator()" << std::endl;
 	delete [] lastValues_;
 	delete [] nextRow_;
 	delete [] buffer_;
@@ -236,7 +236,7 @@ unsigned long WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::gatherStats(cons
 template <typename WRITE_ITERATOR, typename OWNER>
 void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
 {
-	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::writeHeader" << endl;
+	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::writeHeader" << std::endl;
 
 	delete [] lastValues_;
 	delete [] nextRow_;
@@ -265,7 +265,7 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::parseTemplateParameters()
 	if (templateParameters_.size() == 0)
 	{
 		stringstream ss;
-		ss << "No parameters in output file template '" << outputFileTemplate_ << "'" << endl;
+		ss << "No parameters in output file template '" << outputFileTemplate_ << "'" << std::endl;
 		throw eckit::UserError(ss.str());
 	}
 	dispatchedIndexes_.clear();
@@ -320,7 +320,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
 {
-    //eckit::Log::info() << "WriterDispatchingIterator::setBitfieldColumn: " << endl;
+    //eckit::Log::info() << "WriterDispatchingIterator::setBitfieldColumn: " << std::endl;
 
     ASSERT(index < columns().size());
     Column* col = columns_[index];
@@ -357,11 +357,11 @@ template <>
 template <typename T>
 unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::pass1(T& it, const T& end)
 {
-	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1:" << endl;
+	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1:" << std::endl;
 
 	if (! (it != end))
 	{
-		eckit::Log::warning() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: No input data." << endl;
+		eckit::Log::warning() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: No input data." << std::endl;
 		return 0;
 	}
 
@@ -373,7 +373,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	size_t maxcols = columns().size();
 	ASSERT(maxcols > 0);
 
-	eckit::Log::debug() << "WriterDispatchingIterator::pass1<WriterBufferingIterator>: columns().size() => " << maxcols << endl;
+	eckit::Log::debug() << "WriterDispatchingIterator::pass1<WriterBufferingIterator>: columns().size() => " << maxcols << std::endl;
 
 	nrows_  = 0;
 	for (; it != end; ++it)
@@ -398,7 +398,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 		ASSERT(rc == 0);
 	} 
 
-	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: processed " << nrows_ << " row(s)." << endl;
+	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: processed " << nrows_ << " row(s)." << std::endl;
 	return nrows_;
 }
 
@@ -406,7 +406,7 @@ template <>
 template <typename T>
 void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verify(T& it, const T& end)
 {
-	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::verify: Verifying..." << endl;
+	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::verify: Verifying..." << std::endl;
 
 	eckit::Timer timer("Split verification");
 
@@ -414,7 +414,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 	vector<pair<Reader::iterator, Reader::iterator> > iterators;
 	for (size_t i = 0; i < files_.size(); ++i)
 	{
-		eckit::Log::info() << "Opening '" << files_[i] << "'" << endl;
+		eckit::Log::info() << "Opening '" << files_[i] << "'" << std::endl;
 		Reader* reader(new Reader(files_[i]));
 		readers.push_back(reader);
 		iterators.push_back(make_pair(reader->begin(), reader->end()));
@@ -432,7 +432,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 		size_t n(metaData.size());
 
 		typedef Reader::iterator I;
-		pair<I, I>& its(iterators[fileIndex]);
+		std::pair<I, I>& its(iterators[fileIndex]);
 		I& sIt(its.first),
 		sEnd(its.second);
 
@@ -453,13 +453,13 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 			++numberOfDifferences; 
 			eckit::Log::info() << "Row " << i << " of input (" << rowsRead[fileIndex] << " of " << outFileName << ") not correct." 
 			<< endl
-			<< endl;
+			<< std::endl;
 			//throw;
 		}
 		++it;
 		++sIt;
 	}
-	eckit::Log::info() << "Number of rows: " << i << ". Total number of differences: " << numberOfDifferences  << endl;
+	eckit::Log::info() << "Number of rows: " << i << ". Total number of differences: " << numberOfDifferences  << std::endl;
 	ASSERT(! (it != end));
 
 	for (size_t j = 0; j < readers.size(); ++j)
@@ -479,7 +479,7 @@ string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(string key) { 
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::close()
 {
-	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::close()" << endl;
+	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::close()" << std::endl;
 	int rc = 0;
 	for (typename Iterators::iterator it = iterators_.begin(); it != iterators_.end(); ++it)
 	{

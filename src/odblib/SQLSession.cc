@@ -56,7 +56,7 @@ SQLDatabase& SQLSession::currentDatabase(SQLDatabase *db)
 SQLSession::~SQLSession()
 {
 	//instance_.instance() = (SQLSession*)0;
-	//cerr << "SQLSession::~SQLSession" << endl;
+	//cerr << "SQLSession::~SQLSession" << std::endl;
 	for(map<string,SQLDatabase*>::iterator j = databases_.begin(); j != databases_.end(); ++j)
 		delete (*j).second;
 }
@@ -133,7 +133,7 @@ SQLTable* SQLSession::findTable(const string& name)
 	return current_->table(name);
 }
 
-SQLTable* SQLSession::openDataStream(istream &is, const string& delimiter)
+SQLTable* SQLSession::openDataStream(std::istream &is, const string& delimiter)
 {
 	ASSERT(current_);
 	return current_->openDataStream(is, delimiter);

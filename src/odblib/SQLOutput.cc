@@ -18,9 +18,9 @@ SQLOutput::SQLOutput() {}
 
 SQLOutput::~SQLOutput() {}
 
-void SQLOutput::print(ostream& s) const
+void SQLOutput::print(std::ostream& s) const
 {
-	s << "SQLOutput" << endl;
+	s << "SQLOutput" << std::endl;
 }
 
 const SQLOutputConfig& SQLOutput::config() { return config_; }

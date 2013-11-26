@@ -29,7 +29,7 @@ BitColumnExpression::BitColumnExpression(const string& name, const string& field
 	Log::info() << "BitColumnExpression::BitColumnExpression: name=" << name
 		<< ", field=" << field << ", table->name() =" << table->name()
 		<< ": name_=" << name_
-		<< endl;
+		<< std::endl;
 }
 
 BitColumnExpression::BitColumnExpression(const string& name, const string& field, const string& tableReference)
@@ -42,7 +42,7 @@ BitColumnExpression::BitColumnExpression(const string& name, const string& field
 	Log::info() << "BitColumnExpression::BitColumnExpression: name=" << name
 		<< ", field=" << field << ", tableReference=" << tableReference
 		<< ": name_=" << name_
-		<< endl;
+		<< std::endl;
 }
 
 BitColumnExpression::BitColumnExpression(const BitColumnExpression& o)

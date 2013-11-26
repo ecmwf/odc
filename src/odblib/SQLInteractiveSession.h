@@ -21,7 +21,7 @@ namespace sql {
 
 class SQLInteractiveSession : public SQLSession {
 public:
-	SQLInteractiveSession(ostream & = cout);
+    SQLInteractiveSession(std::ostream & = std::cout);
 	~SQLInteractiveSession(); 
 
 private:
@@ -29,13 +29,13 @@ private:
 	SQLInteractiveSession(const SQLInteractiveSession&);
 	SQLInteractiveSession& operator=(const SQLInteractiveSession&);
 
-	ostream &out_;
+    std::ostream &out_;
 
 // -- Overridden methods
 	void       statement(SQLStatement*);
 	SQLOutput* defaultOutput();
 
-	//friend ostream& operator<<(ostream& s,const SQLInteractiveSession& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLInteractiveSession& p)
 	//	{ p.print(s); return s; }
 
 };

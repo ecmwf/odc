@@ -67,7 +67,7 @@ double FunctionTDIFF::eval(bool& missing) const
 
 const odb::sql::type::SQLType* FunctionTDIFF::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
-void FunctionTDIFF::output(ostream& s) const
+void FunctionTDIFF::output(std::ostream& s) const
 {
 	bool missing;
     s << static_cast<long long int>(eval(missing));

@@ -84,7 +84,7 @@ void TestFunctionThin::testReaderIterator()
 {
     const string sql = "select thin(2.0,lat) from \"test_thin.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
     int i=0;
 	odb::Select oda(sql);

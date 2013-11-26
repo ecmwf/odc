@@ -61,15 +61,15 @@ SQLDatabase::~SQLDatabase()
 	{
 	
 		//string var(it->first);
-		//cout << "SQLDatabase::~SQLDatabase: " <<  var << endl;
+		//cout << "SQLDatabase::~SQLDatabase: " <<  var << std::endl;
 		//SQLExpression* e (it->second);
 		//if (e->isVector())
-		//	cout << var << " = " << *e << endl;
+		//	std::cout << var << " = " << *e << std::endl;
 		//else
 		//{
 		//	bool missing = false;
 		//	double value(it->second->eval(missing));
-		//	cout << var << " = " << value << endl;
+		//	std::cout << var << " = " << value << std::endl;
 		//}
 		//FIXME:
 		//delete it->second;
@@ -81,7 +81,7 @@ SQLDatabase::~SQLDatabase()
 
 void SQLDatabase::open()
 {
-	Log::info() << "Opening " << path_ << " as " << name_ << endl;
+	Log::info() << "Opening " << path_ << " as " << name_ << std::endl;
 #if 0
 	loadDD();
 	loadIOMAP();
@@ -137,7 +137,7 @@ void SQLDatabase::loadFLAGS()
 
 			if(tablesByName_.find(v[0]) == tablesByName_.end())
 			{
-				Log::warning() << path << ": Cannot find master table '" << v[0] << "'" << endl;
+				Log::warning() << path << ": Cannot find master table '" << v[0] << "'" << std::endl;
 			}
 			else
 			{
@@ -148,7 +148,7 @@ void SQLDatabase::loadFLAGS()
 					if(tablesByName_.find(v[i]) == tablesByName_.end())
 						Log::warning() << path << ": Cannot find slave table '" 
 							<< v[i] << "' of '" << master->name() 
-							<< "'" << endl;
+							<< "'" << std::endl;
 					else					
 						tablesByName_[v[i]]->master(master);
 				}
@@ -172,7 +172,7 @@ void SQLDatabase::loadDD()
 	string junk;
 	string s;
 
-	//cout << path << endl;
+	//cout << path << std::endl;
 
 	in >> junk >> junk >> junk; // version ?
 	in >> junk >> junk ; // dates ?
@@ -184,8 +184,8 @@ void SQLDatabase::loadDD()
 	in >> no_pools;
 	in >> no_tables;
 
-	//cout << "no_pools " << no_pools << endl;
-	//cout << "no_tbales " << no_tables << endl;
+	//cout << "no_pools " << no_pools << std::endl;
+	//cout << "no_tbales " << no_tables << std::endl;
 
 	for(int i = 0; i < no_tables; i++)
 	{
@@ -212,12 +212,12 @@ void SQLDatabase::loadDD()
 			string type; int no_fields;
 			in >> type >> no_fields;
 
-			//cout << type << " " << no_fields << endl;
+			//cout << type << " " << no_fields << std::endl;
 
 			vector<string> v;
 			parse(type,v);
 
-			//cout << name << " " << v[0] << " " << v[1] << endl;
+			//cout << name << " " << v[0] << " " << v[1] << std::endl;
 			vector<string> b;
 			braket(v[1],b);
 
@@ -243,7 +243,7 @@ void SQLDatabase::loadDD()
 
 					fields.push_back(name);
 					sizes.push_back(size);
-				//cout <<  name << " " << size << endl;
+				//cout <<  name << " " << size << std::endl;
 					// table->addBitColumn(...)
 					bitmap.push_back(name);
 				}
@@ -263,7 +263,7 @@ void SQLDatabase::loadDD()
 		in >> name >> value;
 		variables_[name] = value;
 
-		//Log::info() << "Variable " << name << " = " << value << endl;
+		//Log::info() << "Variable " << name << " = " << value << std::endl;
 	}
 	setLinks(links);
 }
@@ -274,12 +274,12 @@ void SQLDatabase::setLinks(const Links& links)
 	for(Links::const_iterator j = links.begin(); j != links.end() ; ++j)
 	{
 		const string&      from = (*j).first;
-		const set<string>& to   = (*j).second;
+		const std::set<string>& to   = (*j).second;
 
 		ASSERT(tablesByName_.find(from) != tablesByName_.end());
 		SQLTable *f = tablesByName_[from];
 
-		for(set<string>::const_iterator k = to.begin(); k != to.end() ; ++k)
+		for(std::set<string>::const_iterator k = to.begin(); k != to.end() ; ++k)
 		{
 			ASSERT(tablesByName_.find(*k) != tablesByName_.end());
 			SQLTable* t = tablesByName_[*k];

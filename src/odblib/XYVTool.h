@@ -20,10 +20,10 @@ public:
 	XYVTool(int argc, char **argv);
 	~XYVTool();
 
-	static void help(ostream &o)
+	static void help(std::ostream &o)
 	{ o << "Creates XYV representation of file for displaying in a grphics program"; }
 
-	static void usage(const string& name, ostream &o)
+	static void usage(const string& name, std::ostream &o)
 	{ o << name << " <input-file.odb> <value-column> <output-file.odb>"; }
 
 	virtual void run();

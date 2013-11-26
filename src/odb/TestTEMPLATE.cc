@@ -47,7 +47,7 @@ void TestTEMPLATE::setUp() {}
 
 void TestTEMPLATE::test()
 {
-	Log::info() << "I'm just a template, I don't test anything, really." << endl;
+	Log::info() << "I'm just a template, I don't test anything, really." << std::endl;
 }
 
 void TestTEMPLATE::tearDown() { }

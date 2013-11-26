@@ -32,7 +32,7 @@ public:
 
 	string genRequest() const;
 
-	const set<string>& getValues(const string& keyword);
+	const std::set<string>& getValues(const string& keyword);
 	map<string, double> getUniqueValues();
 	map<string, vector<double> > getValues();
 
@@ -55,7 +55,7 @@ private:
 	vector<string> keywords_;
 	vector<string> columnNames_;
 	vector<set<string> > values_;
-	map<string, set<double> > doubleValues_;
+	map<string, std::set<double> > doubleValues_;
 
 	map<vector<string>, pair<eckit::Offset, eckit::Offset> > valuesSeen_;
 	unsigned long long rowsNumber_;
@@ -83,7 +83,7 @@ struct ODA2RequestClientTraits {
 	static string columnIsNotConstant(const Column& column) { return string("MULTIPLE"); }
 	static string columnNotFound(const string& columnName) { return string("MISSING"); }
 	static bool duplicateCombination(const string& errorMessage)
-	{ eckit::Log::error() << errorMessage << endl; return false; }
+	{ eckit::Log::error() << errorMessage << std::endl; return false; }
 };
 
 } // namespace odb

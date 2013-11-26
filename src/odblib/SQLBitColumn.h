@@ -38,9 +38,9 @@ private:
 	virtual void rewind();
 	virtual double next(bool& missing);
 	virtual void advance(unsigned long);
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 
-	//friend ostream& operator<<(ostream& s,const SQLBitColumn& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLBitColumn& p)
 	//	{ p.print(s); return s; }
 };
 

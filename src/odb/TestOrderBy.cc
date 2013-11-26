@@ -72,63 +72,63 @@ void TestOrderBy::test()
 {
 	{
 		string sql = "select distinct a from \"a1to10twice.odb\" order by a;";
-		Log::info() << "Executing: '" << sql << "'" << endl;
+		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "TestOrderBy::test: entering the loop" << endl;
+		Log::info()  << "TestOrderBy::test: entering the loop" << std::endl;
 		int i = 0;
 		for (; it != end; ++it)
 		{
 			int v = (*it)[0];
-			Log::info()  << "TestOrderBy::test:" <<  v  << endl;
+			Log::info()  << "TestOrderBy::test:" <<  v  << std::endl;
 			ASSERT(v == ++i);
 		}
-		Log::info()  << "TestOrderBy::test: i = " <<  i  << endl;
+		Log::info()  << "TestOrderBy::test: i = " <<  i  << std::endl;
 		ASSERT(i == 10);
 	}
 
 	{
 		string sql = "select a from \"a1to10twice.odb\" order by a;";
-		Log::info() << "Executing: '" << sql << "'" << endl;
+		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "TestOrderBy::test: entering the loop" << endl;
+		Log::info()  << "TestOrderBy::test: entering the loop" << std::endl;
 		int i = 0, j = 0;
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::info()  << "TestOrderBy::test:" <<  v  << endl;
+			Log::info()  << "TestOrderBy::test:" <<  v  << std::endl;
 			ASSERT(i <= v);
 			i = v;
 		}
-		Log::info()  << "TestOrderBy::test: i=" <<  i  << ", j=" << j << endl;
+		Log::info()  << "TestOrderBy::test: i=" <<  i  << ", j=" << j << std::endl;
 		ASSERT(i == 10);
 		ASSERT(j == 20);
 	}
 
 	{
 		string sql = "select distinct a from \"a1to10twice.odb\" order by a desc;";
-		Log::info() << "Executing: '" << sql << "'" << endl;
+		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "TestOrderBy::test: entering the loop" << endl;
+		Log::info()  << "TestOrderBy::test: entering the loop" << std::endl;
 		int i = 10, j = 0;
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::info()  << "TestOrderBy::test:" <<  v  << endl;
+			Log::info()  << "TestOrderBy::test:" <<  v  << std::endl;
 			ASSERT(i-- == v);
 		}
-		Log::info()  << "TestOrderBy::test: i = " <<  i  << endl;
+		Log::info()  << "TestOrderBy::test: i = " <<  i  << std::endl;
 		ASSERT(i == 0);
 		ASSERT(j == 10);
 	}
@@ -143,13 +143,13 @@ void TestOrderBy::test()
 		ImportTool::importText(in, "TestOrderBy4.odb");
 
 		string sql = "select distinct a,b,c from \"TestOrderBy4.odb\" order by a desc, b asc;";
-		Log::info() << "Executing: '" << sql << "'" << endl;
+		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "TestOrderBy::test: entering the loop" << endl;
+		Log::info()  << "TestOrderBy::test: entering the loop" << std::endl;
         int i = 0, v1 = 0 , v2 = 0;
 		string s;
 		for (; it != end; ++it, ++i)
@@ -157,9 +157,9 @@ void TestOrderBy::test()
 			v1 = (*it)[0];
 			v2 = (*it)[1];
 			s = (*it).string(2);
-			Log::info() << "TestOrderBy::test:" <<  v1  << ", " << v2 << ", '" << s << "'" << endl;
+			Log::info() << "TestOrderBy::test:" <<  v1  << ", " << v2 << ", '" << s << "'" << std::endl;
 		}
-		Log::info()  << "TestOrderBy::test: i = " <<  i  << endl;
+		Log::info()  << "TestOrderBy::test: i = " <<  i  << std::endl;
 		ASSERT(i == 4);
 		ASSERT(v1 == 1 && v2 == 20 && StringTools::trim(s) == "two");
 	}

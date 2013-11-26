@@ -21,7 +21,7 @@ SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const pair<Expressions,vector<
 : output_(output),
   by_(by)
 {
-	eckit::Log::info() << *this << endl;
+	eckit::Log::info() << *this << std::endl;
 }
 
 SQLOrderOutput::~SQLOrderOutput()
@@ -38,7 +38,7 @@ SQLOrderOutput::~SQLOrderOutput()
 	}
 }
 
-void SQLOrderOutput::print(ostream& s) const
+void SQLOrderOutput::print(std::ostream& s) const
 {
 	s << "SQLOrderOutput[" << *output_ << " ORDER BY ";
 	for(size_t i = 0; i < by_.first.size(); i++)

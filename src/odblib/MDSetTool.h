@@ -19,10 +19,10 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o)
+	static void help(std::ostream &o)
 	{ o << "Creates a new file resetting types of columns"; }
 
-	static void usage(const string& name, ostream &o)
+	static void usage(const string& name, std::ostream &o)
 	{ o << name << " <update-list> <input.odb> <output.odb>"; }
 
 private:

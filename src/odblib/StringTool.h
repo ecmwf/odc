@@ -69,7 +69,7 @@ public:
 
 };
 
-ostream& operator<<(ostream&, const vector<string>&);
+ostream& operator<<(std::ostream&, const vector<string>&);
 
 } // namespace odb 
 

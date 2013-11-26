@@ -42,9 +42,9 @@ TestTextSelect::~TestTextSelect() { }
 void TestTextSelect::setUp()
 {
 	ofstream o("TestTextSelect.txt");
-	o << "a:REAL" << endl;
+	o << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
-		o << i << endl;
+		o << i << std::endl;
 }
 
 /// Tests syntax 'select lat, lon' (no file name)
@@ -63,7 +63,7 @@ void TestTextSelect::selectStarOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "TestTextSelect::selectStarOneColumn: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestTextSelect::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -83,7 +83,7 @@ void TestTextSelect::selectSumOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "TestTextSelect::selectSumOneColumn: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestTextSelect::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 

@@ -33,9 +33,9 @@ class DataRow;
  *  {
  *      const DataField& field = *it;
  *
- *      cout << "name=" << field.name() << endl;
- *      cout << "type=" << field.type() << endl;
- *      cout << "value=" << field.as<double>() << endl;
+ *      cout << "name=" << field.name() << std::endl;
+ *      cout << "type=" << field.type() << std::endl;
+ *      cout << "value=" << field.as<double>() << std::endl;
  *  }
  *  @endcode
  *

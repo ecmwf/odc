@@ -66,7 +66,7 @@ public:
 // -- Class methods
 	// None
 
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 protected:
 
 // -- Members
@@ -74,7 +74,7 @@ protected:
 
 // -- Methods
 	
-	//virtual void print(ostream&) const; 	
+	//virtual void print(std::ostream&) const; 	
 
 // -- Overridden methods
 	// None
@@ -110,7 +110,7 @@ private:
 
 // -- Friends
 
-	friend ostream& operator<<(ostream& s,const SQLCreateTable& p)
+	friend std::ostream& operator<<(std::ostream& s,const SQLCreateTable& p)
 		{ p.print(s); return s; }
 
 };

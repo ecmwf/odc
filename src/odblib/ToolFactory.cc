@@ -68,7 +68,7 @@ test::TestCases* AbstractToolFactory::testCases(const vector<string> &patterns)
 		else
 		{
 			Log::warning() << "AbstractToolFactory::testCases: " << testName
-				<< " is not a TestCase. Skipping" << endl;
+				<< " is not a TestCase. Skipping" << std::endl;
 			delete tool;
 		}
 	}
@@ -86,19 +86,19 @@ AbstractToolFactory& AbstractToolFactory::findTool(const string &name)
 	return *it->second;
 }
 
-void AbstractToolFactory::printToolHelp(const string& name, ostream &s)
+void AbstractToolFactory::printToolHelp(const string& name, std::ostream &s)
 {
 	findTool(name).help(s);
-	s << endl;
+	s << std::endl;
 }
 
-void AbstractToolFactory::printToolUsage(const string& name, ostream &s)
+void AbstractToolFactory::printToolUsage(const string& name, std::ostream &s)
 {
 	findTool(name).usage(name, s);
-	s << endl;
+	s << std::endl;
 }
 
-void AbstractToolFactory::printToolsHelp(ostream &s)
+void AbstractToolFactory::printToolsHelp(std::ostream &s)
 {
 	ASSERT(toolFactories);
 
@@ -115,12 +115,12 @@ void AbstractToolFactory::printToolsHelp(ostream &s)
 				toolFactory->help(s);
 				s << endl << "Usage:" << endl << "\t";
 				toolFactory->usage(toolName, s);
-				s << endl << endl;
+				s << endl << std::endl;
 		}
 	}
 }
 
-void AbstractToolFactory::listTools(ostream& s)
+void AbstractToolFactory::listTools(std::ostream& s)
 {
 	ASSERT(toolFactories);
 
@@ -135,7 +135,7 @@ void AbstractToolFactory::listTools(ostream& s)
 		{
 				s << "	" << toolName << "	";
 				toolFactory->help(s);
-				s << endl;
+				s << std::endl;
 		}
 	}
 }

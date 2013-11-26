@@ -23,12 +23,12 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o)
+	static void help(std::ostream &o)
 	{
 		o << "Compares two ODB files";
 	}
 
-	static void usage(const string& name, ostream &o)
+	static void usage(const string& name, std::ostream &o)
 	{
 		o << name << " [-excludeColumnsTypes <list-of-columns>] [-dontCheckMissing] <file1.odb> <file2.odb>";
 	}

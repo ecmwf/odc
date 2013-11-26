@@ -38,7 +38,7 @@ private:
 	virtual double eval(bool& missing) const;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionEQ_BOXLON& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionEQ_BOXLON& p)
 	//	{ p.print(s); return s; }
 
 };

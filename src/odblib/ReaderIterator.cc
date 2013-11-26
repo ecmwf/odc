@@ -86,7 +86,7 @@ void ReaderIterator::loadHeaderAndBufferData()
 
 ReaderIterator::~ReaderIterator ()
 {
-	Log::debug() << "ReaderIterator::~ReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << endl;
+	Log::debug() << "ReaderIterator::~ReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << std::endl;
 
 	close();
 	delete [] lastValues_;

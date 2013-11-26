@@ -92,7 +92,7 @@ private:
 
      friend class EqRegionCache;
      friend class RggRegionCache;
-	//friend ostream& operator<<(ostream& s,const RegionCache& p)
+	//friend std::ostream& operator<<(std::ostream& s,const RegionCache& p)
 	//	{ p.print(s); return s; }
 
 };

@@ -33,7 +33,7 @@ SQLCreateTable::SQLCreateTable(string tableName, ColumnDefs &cols)
 
 SQLCreateTable::~SQLCreateTable() {}
 
-void SQLCreateTable::print(ostream& s) const
+void SQLCreateTable::print(std::ostream& s) const
 {
 }
 
@@ -81,7 +81,7 @@ unsigned long long SQLCreateTable::execute()
 				for (int i = start; i <= end; i++)
 				{
 					string expandedName = columnName + "_" + Translator<int,string>()(i);
-					Log::debug() << "  === expandedName: " << expandedName << endl;
+					Log::debug() << "  === expandedName: " << expandedName << std::endl;
 					// TODO: choose a sensible default based upon type
 					table->addColumn(expandedName, index++, typ, true, odb::MDI::realMDI(), isBitmap, bitfieldDef);
 				}

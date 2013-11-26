@@ -79,9 +79,9 @@ public:
 	// Use it if you KNOW the codec encodes a string type column.
 	virtual void hashTable(HashTable *);
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
-	friend ostream& operator<<(ostream& s, const Codec& p)
+	friend std::ostream& operator<<(std::ostream& s, const Codec& p)
 		{ p.print(s); return s; }
 
 	static void loadCodecs();
@@ -144,7 +144,7 @@ public:
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
 	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
 	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
@@ -162,7 +162,7 @@ public:
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
 	void load(eckit::DataHandle *dh)
 	{
@@ -224,7 +224,7 @@ public:
 
 	void dataHandle(void *p) { CodecInt8Missing<BYTEORDER>::dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
 	void load(eckit::DataHandle *dh) { Codec::loadBasics<BYTEORDER>(dh); }
 	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
@@ -261,7 +261,7 @@ public:
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 
 	virtual HashTable& hashTable();
 	virtual void hashTable(HashTable *ht);
@@ -762,20 +762,20 @@ double CodecConstantOrMissing<BYTEORDER>::decode()
 }
 
 template<typename BYTEORDER>
-void CodecChars<BYTEORDER>::print(ostream& s) const
+void CodecChars<BYTEORDER>::print(std::ostream& s) const
 {
 	s << this->name()
 	<< ", #words=" << this->hashTable_->nextIndex();
 }
 
 template<typename BYTEORDER>
-void CodecConstant<BYTEORDER>::print(ostream& s) const
+void CodecConstant<BYTEORDER>::print(std::ostream& s) const
 {
 	s << this->name() << ", value=" << fixed << this->min_;
 }
 
 template<typename BYTEORDER>
-void CodecConstantString<BYTEORDER>::print(ostream& s) const
+void CodecConstantString<BYTEORDER>::print(std::ostream& s) const
 {
 	char buf[sizeof(double) + 1];
 	bzero(buf, sizeof(buf));
@@ -784,7 +784,7 @@ void CodecConstantString<BYTEORDER>::print(ostream& s) const
 }
 
 template<typename BYTEORDER>
-void CodecConstantOrMissing<BYTEORDER>::print(ostream& s) const
+void CodecConstantOrMissing<BYTEORDER>::print(std::ostream& s) const
 {
 	s << this->name() << ", value=";
 	if (this->min_ == this->missingValue_)

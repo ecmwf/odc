@@ -48,13 +48,13 @@ void TestInMemoryDataHandle::test()
 
 	h.write(data, sizeof(data));
 	Length len = h.openForRead();
-	Log::info() << "Len = " << len << endl;
+	Log::info() << "Len = " << len << std::endl;
 	ASSERT(len == Length(sizeof(data)));
 	h.read(data2, sizeof(data2));
 
 	for (size_t i = 0; i < sizeof(data); i++)
 	{
-		Log::info() << "data[i]=" << (int) data[i] << ", data2[i]=" << (int) data2[i] << endl;
+		Log::info() << "data[i]=" << (int) data[i] << ", data2[i]=" << (int) data2[i] << std::endl;
 		ASSERT(data[i] == data2[i]);
 	}
 }

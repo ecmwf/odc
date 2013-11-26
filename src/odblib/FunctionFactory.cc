@@ -82,7 +82,7 @@ FunctionFactoryBase::FunctionFactoryBase(const string& name, int arity, const st
   name_(name),
   help_(help)
 {
-	pair<string,int> p(name_,arity_);
+	std::pair<string,int> p(name_,arity_);
 	//if(!map_) map_ = new map<pair<string,int>,FunctionFactoryBase*>();
 
 	ASSERT(FFMap::instance().find(p) == FFMap::instance().end());
@@ -101,7 +101,7 @@ FunctionFactory::FunctionInfo& FunctionFactory::functionsInfo()
 FunctionFactoryBase::~FunctionFactoryBase()
 {
 
-//	pair<string,int> p(name_,arity_);
+//	std::pair<string,int> p(name_,arity_);
 //	mapa().erase(p);
 //	if (mapa().empty())
 //	{
@@ -112,7 +112,7 @@ FunctionFactoryBase::~FunctionFactoryBase()
 
 FunctionExpression* FunctionFactoryBase::build(const string& name, const expression::Expressions& args)
 {
-	pair<string,int> p(name,args.size());	
+	std::pair<string,int> p(name,args.size());	
 	map<pair<string,int>,FunctionFactoryBase*>::iterator j = FFMap::instance().find(p);
 
 	// Try -1

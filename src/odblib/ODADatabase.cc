@@ -61,7 +61,7 @@ SQLTable* ODADatabase::openDataHandle(DataHandle& dh, DataFormat dataFormat)
 	return 0;
 }
 
-SQLTable* ODADatabase::openDataStream(istream& is, const string& delimiter, DataFormat dataFormat) 
+SQLTable* ODADatabase::openDataStream(std::istream& is, const string& delimiter, DataFormat dataFormat) 
 {
 	string name = "dataHandle@";
 	//name += string(&dh);

@@ -50,7 +50,7 @@ private:
 	double squares_;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionVAR& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionVAR& p)
 	//	{ p.print(s); return s; }
 };
 

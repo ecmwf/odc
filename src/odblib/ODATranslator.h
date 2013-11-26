@@ -36,7 +36,7 @@ template <>
 struct ODATranslator<string> {
 	string operator()(double n) {
 		string r = odb::StringTool::double_as_string(n);
-		eckit::Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << endl;
+		eckit::Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << std::endl;
 		return r;
 	}
 };
@@ -52,7 +52,7 @@ struct ODATranslator<eckit::Time> {
 			t = string(zeroes + t.size()) + t;
 		eckit::Time tm = t;
 
-		eckit::Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << endl;
+		eckit::Log::info(Here()) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << std::endl;
 		return tm;
 	}
 };
@@ -68,7 +68,7 @@ struct ODATranslator<eckit::Date> {
 			t = string(zeroes + t.size()) + t;
 		eckit::Date d = t;
 
-		eckit::Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << endl;
+		eckit::Log::info(Here()) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << std::endl;
 		return d;
 	}
 };

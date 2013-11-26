@@ -41,7 +41,7 @@ MetaData* MetaData::clone() const {
 MetaData MetaData::scanFile(const PathName& fileName)
 {
 	ostream& L(Log::debug());
-	L << "Iterating over headers of '" << fileName << "'" <<  endl;
+	L << "Iterating over headers of '" << fileName << "'" <<  std::endl;
 
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 
@@ -59,11 +59,11 @@ MetaData MetaData::scanFile(const PathName& fileName)
 		if (it->isNewDataset())
 		{
 			++mds;
-			L << it->columns() << endl;
+			L << it->columns() << std::endl;
 			wholeFileMD |= it->columns();
 		}
 	}
-	L << "TestMetaDataReader::test i=" << i << ", mds=" << mds << endl;
+	L << "TestMetaDataReader::test i=" << i << ", mds=" << mds << std::endl;
 
 	codec::CodecOptimizer().setOptimalCodecs<DataStream<> >(wholeFileMD);
 
@@ -148,7 +148,7 @@ MetaData& MetaData::operator+=(const MetaData& rhs)
 	{
 		Column& rhsColumn = *rhs[i];
 
-		//Log::debug() << "MetaData::operator+=: adding " << rhsColumn << endl;
+		//Log::debug() << "MetaData::operator+=: adding " << rhsColumn << std::endl;
 
 		Column* c = new Column(rhsColumn);
 		ASSERT(c);
@@ -183,7 +183,7 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const vector<stri
 	for (size_t i = 0; i < constColumns.size(); ++i)
 	{
 		const string& columnName = constColumns[i];
-		L << "MetaData::equalsIncludingConstants: check " << columnName << endl;
+		L << "MetaData::equalsIncludingConstants: check " << columnName << std::endl;
 
 		if ( !self.hasColumn(columnName) && !other.hasColumn(columnName))
 			continue;
@@ -193,9 +193,9 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const vector<stri
 
 		if ( ! c1.isConstant() || ! c2.isConstant())
 		{
-			L << "MetaData::equalsIncludingConstants: c1 " << c1 << " " << c1.coder() << endl;
-			L << "MetaData::equalsIncludingConstants: c2 " << c2 << " " << c2.coder() << endl;
-			L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << endl;
+			L << "MetaData::equalsIncludingConstants: c1 " << c1 << " " << c1.coder() << std::endl;
+			L << "MetaData::equalsIncludingConstants: c2 " << c2 << " " << c2.coder() << std::endl;
+			L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
 			return false;
 		}
 		else
@@ -204,17 +204,17 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const vector<stri
 			odb::codec::Codec& codec2 = c2.coder();
 			if ( codec1.min() != codec2.min() )
 			{
-				L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << endl;
-				L << "MetaData::equalsIncludingConstants: min1=" << codec1.min() << ", max1=" << codec1.max() << endl;
-				L << "MetaData::equalsIncludingConstants: min2=" << codec2.min() << ", max2=" << codec2.max() << endl;
-				L << "MetaData::equalsIncludingConstants: c1.coder: " << codec1 << endl;
-				L << "MetaData::equalsIncludingConstants: c2.coder: " << codec2 << endl;
+				L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
+				L << "MetaData::equalsIncludingConstants: min1=" << codec1.min() << ", max1=" << codec1.max() << std::endl;
+				L << "MetaData::equalsIncludingConstants: min2=" << codec2.min() << ", max2=" << codec2.max() << std::endl;
+				L << "MetaData::equalsIncludingConstants: c1.coder: " << codec1 << std::endl;
+				L << "MetaData::equalsIncludingConstants: c2.coder: " << codec2 << std::endl;
 				return false;
 			}
 		}
 	}
 
-	L << "MetaData::equalsIncludingConstants: yes" << endl;
+	L << "MetaData::equalsIncludingConstants: yes" << std::endl;
 	return true;
 }
 
@@ -232,15 +232,15 @@ bool MetaData::operator==(const MetaData& other) const
 
 void MetaData::resetStats()
 {
-	//Log::debug() << "MetaData::resetStats" << endl;
+	//Log::debug() << "MetaData::resetStats" << std::endl;
 	for (size_t i = 0; i < size(); i++)
 		(*this)[i]->resetStats();
 }
 
-void MetaData::print(ostream& s) const
+void MetaData::print(std::ostream& s) const
 {
 	for (size_t i = 0; i < size(); i++)
-		s << i << ". " << *at(i) << endl;
+		s << i << ". " << *at(i) << std::endl;
 }
 
 } // namespace odb

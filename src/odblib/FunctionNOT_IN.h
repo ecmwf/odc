@@ -40,7 +40,7 @@ private:
 	virtual double eval(bool& missing) const;
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionNOT_IN& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionNOT_IN& p)
 	//	{ p.print(s); return s; }
 };
 

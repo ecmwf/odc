@@ -102,12 +102,12 @@ void TestCodecOptimization::testSelectIterator()
 	odb::Reader::iterator it = reader.begin();
 	odb::MetaData& md = it->columns();
 
-	Log::info() << "TestCodecOptimization::testSelectIterator: md = " << md << endl; 
+	Log::info() << "TestCodecOptimization::testSelectIterator: md = " << md << std::endl; 
 	ASSERT(md.size() == numberOfColumns);
 
 	string codecName = md[0]->coder().name();
 
-	Log::info() << "TestCodecOptimization::testSelectIterator: codecName = " << codecName << endl; 
+	Log::info() << "TestCodecOptimization::testSelectIterator: codecName = " << codecName << std::endl; 
 
 	ASSERT("All columns should be constant" && codecName == "constant");
 	return;

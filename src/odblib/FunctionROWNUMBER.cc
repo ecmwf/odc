@@ -41,7 +41,7 @@ SQLExpression* FunctionROWNUMBER::clone() const { return new FunctionROWNUMBER(*
 
 FunctionROWNUMBER::~FunctionROWNUMBER() {}
 
-void FunctionROWNUMBER::print(ostream& s) const { s << "rownumber()"; }
+void FunctionROWNUMBER::print(std::ostream& s) const { s << "rownumber()"; }
 
 double FunctionROWNUMBER::eval(bool& missing) const { return *count_; }
 
@@ -60,7 +60,7 @@ void FunctionROWNUMBER::partialResult() { /*NOTIMP;*/ }
 
 const odb::sql::type::SQLType* FunctionROWNUMBER::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
-void FunctionROWNUMBER::output(ostream& s) const
+void FunctionROWNUMBER::output(std::ostream& s) const
 {
     bool missing;
     s << static_cast<unsigned long>(eval(missing));

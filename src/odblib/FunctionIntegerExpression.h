@@ -30,7 +30,7 @@ public:
 
 // -- Overridden methods
 	virtual const odb::sql::type::SQLType* type() const;
-	virtual void output(ostream& s) const;
+	virtual void output(std::ostream& s) const;
 
 private:
 // No copy allowed
@@ -38,7 +38,7 @@ private:
 	FunctionIntegerExpression& operator=(const FunctionIntegerExpression&);
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const FunctionIntegerExpression& p)
+	//friend std::ostream& operator<<(std::ostream& s,const FunctionIntegerExpression& p)
 	//	{ p.print(s); return s; }
 };
 

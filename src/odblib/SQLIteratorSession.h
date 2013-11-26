@@ -48,7 +48,7 @@ private:
 
 // -- Friends
 
-	//friend ostream& operator<<(ostream& s,const SQLIteratorSession& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLIteratorSession& p)
 	//	{ p.print(s); return s; }
 
 };

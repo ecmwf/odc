@@ -64,7 +64,7 @@ void TestDistinct::test()
 {
 	string sql = "select distinct a from \"a1to10twice.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select sel(sql);
 	odb::Select::iterator it2 = sel.begin();
@@ -80,9 +80,9 @@ void TestDistinct::test()
 void TestDistinct::setUp()
 {
 	stringstream s;
-	s << "a:REAL" << endl;
-	for (size_t i = 1; i <= 10; ++i) s << i << endl;
-	for (size_t i = 1; i <= 10; ++i) s << i << endl;
+	s << "a:REAL" << std::endl;
+	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
+	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	ImportTool::importText(s.str().c_str(), "a1to10twice.odb");
 }
 

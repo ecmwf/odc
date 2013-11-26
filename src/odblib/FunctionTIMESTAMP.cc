@@ -53,7 +53,7 @@ double FunctionTIMESTAMP::eval(bool& missing) const
 
 const odb::sql::type::SQLType* FunctionTIMESTAMP::type() const { return &odb::sql::type::SQLType::lookup("integer"); }
 
-void FunctionTIMESTAMP::output(ostream& s) const
+void FunctionTIMESTAMP::output(std::ostream& s) const
 {
 	bool missing;
     s << static_cast<long long int>(eval(missing));

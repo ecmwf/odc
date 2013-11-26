@@ -26,7 +26,7 @@ public:
 	virtual ~SQLDistinctOutput(); 
 
 protected:
-	virtual void print(ostream&) const; 	
+	virtual void print(std::ostream&) const; 	
 private:
 // No copy allowed
 	SQLDistinctOutput(const SQLDistinctOutput&);
@@ -36,7 +36,7 @@ private:
 	virtual	void config(SQLOutputConfig&);
 // -- Members
 	auto_ptr<SQLOutput>   output_;
-	set<vector<double> >  seen_;
+	std::set<vector<double> >  seen_;
 	vector<double>        tmp_;
 // -- Overridden methods
 	virtual void size(int);

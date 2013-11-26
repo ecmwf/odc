@@ -89,7 +89,7 @@ void TestFunctionNorm::testReaderIterator()
 {
     const string sql = "select norm(x,y) from \"test_norm.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();

@@ -67,7 +67,7 @@ SQLExpression* FunctionAND::simplify(bool& changed)
 		{
 			if(args_[i]->eval(missing))
 			{
-				cout << "SYMPLIFY " << *this << " to ";
+                std::cout << "SYMPLIFY " << *this << " to ";
 				changed = true;
 
 				SQLExpression* x = args_[1-i];
@@ -76,13 +76,13 @@ SQLExpression* FunctionAND::simplify(bool& changed)
 				delete args_[i];
 				args_.clear();
 
-				cout << *x << endl;
+                std::cout << *x << std::endl;
 
 				return x;
 			}
 			else
 			{
-				cout << "SYMPLIFY " << *this << "to 0 " << endl;
+                std::cout << "SYMPLIFY " << *this << "to 0 " << std::endl;
 				changed = true;
 				return SQLExpression::number(0);
 			}

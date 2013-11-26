@@ -47,7 +47,7 @@ public:
 protected:
 	const type::SQLType& type_;
 	
-	virtual void print(ostream&) const = 0; 	
+	virtual void print(std::ostream&) const = 0; 	
 
 private:
 // No copy allowed
@@ -55,7 +55,7 @@ private:
 	SQLIterator(const SQLIterator&);
 	SQLIterator& operator=(const SQLIterator&);
 
-	friend ostream& operator<<(ostream& s,const SQLIterator& p)
+	friend std::ostream& operator<<(std::ostream& s,const SQLIterator& p)
 		{ p.print(s); return s; }
 };
 

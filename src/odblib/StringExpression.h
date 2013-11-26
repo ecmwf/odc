@@ -36,7 +36,7 @@ private:
 	double value_;
 
 // -- Overridden methods
-	virtual void print(ostream& s) const;
+	virtual void print(std::ostream& s) const;
 	virtual void expandStars(const std::vector<SQLTable*>&, expression::Expressions&);
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
@@ -45,7 +45,7 @@ private:
 	virtual double eval(bool& missing) const;
 	virtual bool isConstant() const { return true; }
 	virtual bool isNumber() const { return true; }
-	virtual void output(ostream& s) const;
+	virtual void output(std::ostream& s) const;
 };
 
 } // namespace expression

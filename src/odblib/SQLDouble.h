@@ -40,7 +40,7 @@ private:
 	virtual int getKind() const { return doubleType; }
 
 // -- Friends
-	//friend ostream& operator<<(ostream& s,const SQLDouble& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLDouble& p)
 	//	{ p.print(s); return s; }
 
 };

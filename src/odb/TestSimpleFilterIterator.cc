@@ -69,7 +69,7 @@ void TestSimpleFilterIterator::test()
 					cerr << "" << n0 << ": "; 
 					for (size_t i=30; i < 40; ++i)
 						cerr << it[i] << ", ";
-					cerr << endl;
+					cerr << std::endl;
 				}
 #endif
 			}
@@ -93,17 +93,17 @@ void TestSimpleFilterIterator::test()
 				cerr << "" << n1 << ": "; 
 				for (size_t i=30; i < 40; ++i)
 					cerr << sIt[i] << ", ";
-				cerr << endl;
+				cerr << std::endl;
 			}
 #endif
 		}
 
-		Log::info() << "TestSimpleFilterIterator::test: selected " << n1 << " rows." << endl;
+		Log::info() << "TestSimpleFilterIterator::test: selected " << n1 << " rows." << std::endl;
 	}
 
 	{
 		Timer t("TestSimpleFilterIterator::test: selecting rows using SQL where obstype == 7");
-		Log::info() << "TestSimpleFilterIterator::test: Execute '" << sql << "'" << endl;
+		Log::info() << "TestSimpleFilterIterator::test: Execute '" << sql << "'" << std::endl;
 
 		odb::Select odas(sql, fileName);
 		for(odb::Select::iterator it = odas.begin(); it != odas.end(); ++it)
@@ -116,15 +116,15 @@ void TestSimpleFilterIterator::test()
 				cerr << "" << n2 << ": ";
 				for (size_t i=30; i < 40; ++i)
 					cerr << it[i] << ", ";
-				cerr << endl;
+				cerr << std::endl;
 			}
 #endif
 		}
 
-		Log::info() << "TestSimpleFilterIterator::test: selected " << n2 << " rows." << endl;
+		Log::info() << "TestSimpleFilterIterator::test: selected " << n2 << " rows." << std::endl;
 	}
 
-	Log::info() << "TestSimpleFilterIterator::test: n0=" << n0 << ", n1=" << n1 << ", n2=" << n2 << endl;
+	Log::info() << "TestSimpleFilterIterator::test: n0=" << n0 << ", n1=" << n1 << ", n2=" << n2 << std::endl;
 	ASSERT(n0 == n1);
 	ASSERT(n1 == n2);
 }

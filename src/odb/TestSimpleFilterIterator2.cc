@@ -64,20 +64,20 @@ void TestSimpleFilterIterator2::test()
 		for (; it != end; ++it)
 			++n1;
 
-		Log::info() << "TestSimpleFilterIterator2::test: selected " << n1 << " rows." << endl;
+		Log::info() << "TestSimpleFilterIterator2::test: selected " << n1 << " rows." << std::endl;
 	}
 
 	{
 		Timer t("TestSimpleFilterIterator2::test: selecting rows using SQL where obstype == 7 and sensor = 1");
-		Log::info() << "TestSimpleFilterIterator2::test: Execute '" << sql << "'" << endl;
+		Log::info() << "TestSimpleFilterIterator2::test: Execute '" << sql << "'" << std::endl;
 		odb::Select::iterator end = odas.end();
 		for(odb::Select::iterator it = odas.begin();
 			it != end; ++it)
 			++n2;
-		Log::info() << "TestSimpleFilterIterator2::test: selected " << n2 << " rows." << endl;
+		Log::info() << "TestSimpleFilterIterator2::test: selected " << n2 << " rows." << std::endl;
 	}
 
-	Log::info() << "TestSimpleFilterIterator2::test: n1=" << n1 << ", n2=" << n2 << endl;
+	Log::info() << "TestSimpleFilterIterator2::test: n1=" << n1 << ", n2=" << n2 << std::endl;
 
 	ASSERT(n1 == n2);
 }

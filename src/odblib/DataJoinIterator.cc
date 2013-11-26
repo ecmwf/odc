@@ -90,9 +90,9 @@ void DataJoinIterator::populate()
 
                 if (foreignKey != primaryKey)
                 {
-                    stringstream message("DataJoinIterator: ");
+                    std::stringstream message("DataJoinIterator: ");
                     message << "Mismatch of primary and foreign keys in linked tables.";
-                    message << endl;
+                    message << std::endl;
                     throw eckit::UserError(message.str());
                 }
             }

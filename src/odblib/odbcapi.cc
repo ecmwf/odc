@@ -354,7 +354,7 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
     odb::FieldNames bitfield_names;
     odb::Sizes      bitfield_sizes;
  
-//	cout << " columnName = " << name << " " << bnames << " " << bsizes << endl;
+//	std::cout << " columnName = " << name << " " << bnames << " " << bsizes << std::endl;
 	size_t iprev = 0;
 	for (size_t i = 0; i < bnames.size(); i++) {
 		if (bnames[i] == ':') {

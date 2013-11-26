@@ -21,7 +21,7 @@ using namespace eckit;
 TemporaryFile::TemporaryFile()
 : PathName()
 {
-	stringstream t;
+    std::stringstream t;
 	t << (getenv("TMPDIR") ? getenv("TMPDIR") : "");
 	if (t.str() != "")
 		t << "/";
@@ -32,7 +32,7 @@ TemporaryFile::TemporaryFile()
 	// The last six characters of template must be "XXXXXX"
 	  << "XXXXXX";
 
-	Log::info() << "templatePath: " << t.str() << endl;
+	Log::info() << "templatePath: " << t.str() << std::endl;
 	PathName templatePath(t.str());
 	Buffer tmpPath(templatePath);
 

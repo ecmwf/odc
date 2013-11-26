@@ -61,7 +61,7 @@ void SQLTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;// 1;
 	}
 	vector<string> params(parameters());
@@ -81,7 +81,7 @@ void SQLTool::run()
 	runSQL(sql, inputFile, session, parser, config, offset_, length_);
 }
 
-void SQLTool::execute(const string& sql, ostream& out)
+void SQLTool::execute(const string& sql, std::ostream& out)
 {
 	SQLInteractiveSession session(out);
 	SQLParser parser;
@@ -91,7 +91,7 @@ void SQLTool::execute(const string& sql, ostream& out)
 
 void SQLTool::runSQL(const string& sql, const eckit::PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
 {
-	Log::info() << "Executing '" << sql << "'" << endl;
+	Log::info() << "Executing '" << sql << "'" << std::endl;
 
 	if (inputFile.path().size() == eckit::Length(0))
 		parser.parseString(sql, static_cast<DataHandle*>(0), config);
@@ -99,7 +99,7 @@ void SQLTool::runSQL(const string& sql, const eckit::PathName& inputFile, SQLSes
 	{
 		// FIXME: PartFileHandle doesn't think length 0 means to the end of the file - get correct length
 		Log::info() << "Selecting " << length << " bytes from offset " << offset
-				<< " of " << inputFile << endl;
+				<< " of " << inputFile << std::endl;
 		PartFileHandle fh(inputFile, offset, length); 
 		fh.openForRead();
 		parser.parseString(sql, &fh, config);

@@ -26,7 +26,7 @@ class DataTable;
  *          it != dataset.tables().end(); ++it)
  *  {
  *      DataTable* table = *it;
- *      cout << table->name() << endl;
+ *      cout << table->name() << std::endl;
  *  }
  *  @endcode
  *

@@ -22,8 +22,8 @@ public:
 
 	void run(); 
 
-	static void help(ostream &o) { o << "Merges rows from files"; }
-	static void usage(const string& name, ostream &o)
+	static void help(std::ostream &o) { o << "Merges rows from files"; }
+	static void usage(const string& name, std::ostream &o)
 	{
 		o << endl
           << name << " -o <output-file.odb> <input1.odb> <input2.odb> ..." << endl

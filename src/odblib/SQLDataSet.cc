@@ -34,7 +34,7 @@ SQLTable* SQLDataSet::openDataHandle(DataHandle&, DataFormat)
     return 0;
 }
 
-SQLTable* SQLDataSet::openDataStream(istream&, const string &, DataFormat)
+SQLTable* SQLDataSet::openDataStream(std::istream&, const string &, DataFormat)
 {
     NOTIMP;
     return 0;

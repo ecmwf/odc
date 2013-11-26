@@ -47,7 +47,7 @@ namespace internal { class DataLinkFillerIterator; }
  *              childRow != range->end(); ++childRow)
  *      {
  *          DataRecord record(*childRow, childTable.columns());
- *          cout << record << endl;
+ *          cout << record << std::endl;
  *      }
  *  }
  *  @endcode

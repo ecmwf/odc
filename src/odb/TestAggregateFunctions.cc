@@ -90,12 +90,12 @@ void TestAggregateFunctions::test()
 "	AND (obstype@hdr in (1,4,8,9) or (obstype@hdr == 7 and (obschar.codetype@hdr == 215 or obschar.codetype@hdr == 206)));"
 ;
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();
 
-	//Log::info() << "it->columns().size() => " << it->columns().size() << endl;
+	//Log::info() << "it->columns().size() => " << it->columns().size() << std::endl;
 	ASSERT(it->columns().size() == 14);
 	ASSERT((*it)[0] == 91119); // COUNT(*) == 91119
 	ASSERT((*it)[1] == 91119); // COUNT(lat) == 91119

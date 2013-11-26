@@ -51,7 +51,7 @@ void TestSelectDataHandle::test()
 	fh.openForRead();
 	odb::Select oda(sql, fh);
 	
-	Log::info(Here()) << "TestSelectDataHandle::test: Execute '" << sql << "'" << endl;
+	Log::info(Here()) << "TestSelectDataHandle::test: Execute '" << sql << "'" << std::endl;
 	long n = 0;
 	{
 		Timer t("TestSelectDataHandle::test: selecting rows using SQL" );
@@ -62,7 +62,7 @@ void TestSelectDataHandle::test()
 		for( ; it != end; ++it)
 			++n;
 	}
-	Log::info(Here()) << "TestSelectDataHandle::test: selected " << n << " rows." << endl;
+	Log::info(Here()) << "TestSelectDataHandle::test: selected " << n << " rows." << std::endl;
 	ASSERT(n == 3134386); 
 	fh.close();
 }

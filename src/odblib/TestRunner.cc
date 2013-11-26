@@ -79,29 +79,29 @@ void TestRunner::run()
 	allTestsTimer.reset();
 
 	ofstream xmlf("testresults.xml");
-	xmlf << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
-	xmlf << "<testsuite name=\"unittests\" time=\"" << StringTools::split(" ", totalRunningTime.str())[1] << "\">" << endl;
+	xmlf << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
+	xmlf << "<testsuite name=\"unittests\" time=\"" << StringTools::split(" ", totalRunningTime.str())[1] << "\">" << std::endl;
 	xmlf << xml_.str();
-	xmlf << "</testsuite>" << endl;
+	xmlf << "</testsuite>" << std::endl;
 
 	size_t nTests = tests->size();
 	for (size_t i = 0; i < nTests; ++i)
 		delete (*tests)[i];
 
 	if (failed_.size() == 0) {
-		Log::info() << endl << "+- Phew, made it! All " << nTests << " tests passed successfully. " << endl << endl;
-		Log::info() << runningTimes_.str() << endl;;
-		Log::info() << totalRunningTime.str() << endl;
+		Log::info() << endl << "+- Phew, made it! All " << nTests << " tests passed successfully. " << endl << std::endl;
+		Log::info() << runningTimes_.str() << std::endl;;
+		Log::info() << totalRunningTime.str() << std::endl;
 	}
 	else
 	{
-		Log::error() << endl << "+- Summary: " << failed_.size() << " test(s) failed." << endl;
+		Log::error() << endl << "+- Summary: " << failed_.size() << " test(s) failed." << std::endl;
 		for (vector<FailedTest>::iterator it = failed_.begin(); it != failed_.end(); ++it) {
 			const string& name = it->first;
 			const string& what = it->second;
 			Log::error() << "\t" << name << ": " << endl << what;
 		}
-		Log::error() << endl;
+		Log::error() << std::endl;
 
 		stringstream ss;
 		ss << " " << failed_.size() << " test(s) failed";
@@ -118,7 +118,7 @@ void TestRunner::runTests(const TestCases& tests)
 		TestCase *tst = *it;
 		const string& name = tst->name();
 
-		Log::info() << "+- Running " << name << " ..." << endl;
+		Log::info() << "+- Running " << name << " ..." << std::endl;
 		smslabel(name);
 
 		stringstream runningTime;
@@ -127,45 +127,45 @@ void TestRunner::runTests(const TestCases& tests)
 			tst->setUp();
 			tst->test();
 		} catch (std::exception &e) {
-			Log::warning() << "+- FAILED" << endl;
+			Log::warning() << "+- FAILED" << std::endl;
 			exceptionThrown = true;
 			what += string(e.what()) + '\n';
 		} catch (...) {
-			Log::warning() << "+- FAILED: unknown exception!" << endl;
+			Log::warning() << "+- FAILED: unknown exception!" << std::endl;
 			exceptionThrown = true;
 			what += string("Uknown exception") + '\n';
 		}
 		try {
 			tst->tearDown();
 		} catch (std::exception &e) {
-			Log::warning() << "+- Exception thrown from tearDown." << endl;
+			Log::warning() << "+- Exception thrown from tearDown." << std::endl;
 			exceptionThrown = true;
 			what += string("[In tearDown:]") + string(e.what()) + '\n';
 		} catch (...) {
-			Log::warning() << "+- FAILED: unknown exception!" << endl;
+			Log::warning() << "+- FAILED: unknown exception!" << std::endl;
 			exceptionThrown = true;
 			what += string("Uknown exception") + '\n';
 		}
 
 		if (exceptionThrown) {
 			failed_.push_back(make_pair(name, what));
-			xml_ << "<testcase classname=\"test\" name=\"" << name << "\">" << endl;
-			xml_ << "	<failure type=\"exception\"><![CDATA[" << what << "]]></failure>" << endl;
-			xml_ << "</testcase>" << endl;
+			xml_ << "<testcase classname=\"test\" name=\"" << name << "\">" << std::endl;
+			xml_ << "	<failure type=\"exception\"><![CDATA[" << what << "]]></failure>" << std::endl;
+			xml_ << "</testcase>" << std::endl;
 		}
 		else {
 			timer.reset();
 			runningTimes_ << runningTime.str();
-			Log::info() << "+- Passed." << endl << endl;
+			Log::info() << "+- Passed." << endl << std::endl;
 		 	xml_ << "<testcase classname=\"test\" name=\"" << name 
-				<< "\" time=\"" << StringTools::split(" ", runningTime.str())[1] << "\"/>" << endl;
+				<< "\" time=\"" << StringTools::split(" ", runningTime.str())[1] << "\"/>" << std::endl;
 		}
 	}
 }
 
 void TestRunner::readConfig(const PathName fileName)
 {
-	Log::debug() << "TestRunner::readConfig: reading file '" << fileName << "'" << endl;
+	Log::debug() << "TestRunner::readConfig: reading file '" << fileName << "'" << std::endl;
 	suites_.clear();
 
     vector<string> lines = StringTool::readLines(fileName);
@@ -179,7 +179,7 @@ void TestRunner::readConfig(const PathName fileName)
 		suites_[words[0]] = StringTools::split(" \t", words[1]);
 		Log::debug() << "TestRunner::readConfig(\"" << fileName << "\"): "
 			<< words[0] << ": "
-			<< suites_[words[0]].size() << " entries." << endl;
+			<< suites_[words[0]].size() << " entries." << std::endl;
 	}
 }
 

@@ -29,7 +29,7 @@ LSTool::LSTool (int argc, char *argv[]) : Tool(argc, argv)
 
 const string LSTool::nullString;
 
-unsigned long long LSTool::printData(const string &db, ostream &out)
+unsigned long long LSTool::printData(const string &db, std::ostream &out)
 {
 	odb::Reader f(db);
 	odb::Reader::iterator it = f.begin();
@@ -46,7 +46,7 @@ unsigned long long LSTool::printData(const string &db, ostream &out)
 			md = it->columns();
 			for (size_t i = 0; i < md.size(); ++i)
 				out << md[i]->name() << "\t";
-			out << endl;
+			out << std::endl;
 		}
 		for (size_t i = 0; i < md.size(); ++i)
 		{
@@ -70,7 +70,7 @@ unsigned long long LSTool::printData(const string &db, ostream &out)
 			}
 			out << "\t";
 		}
-		out << endl;
+		out << std::endl;
 	}
 	return n;
 }
@@ -81,7 +81,7 @@ void LSTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << endl;
+		Log::error() << std::endl;
 		return;
 	}
 
@@ -94,7 +94,7 @@ void LSTool::run()
 
 	unsigned long long n = 0;
 	n = printData(db, out);
-	Log::info() << "Selected " << n << " row(s)." << endl;
+	Log::info() << "Selected " << n << " row(s)." << std::endl;
 }
 
 } // namespace tool 

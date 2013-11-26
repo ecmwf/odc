@@ -67,7 +67,7 @@ private:
     void top_cap_region(int &, double & ,double []);
 
     // -- Friends
-    //friend ostream& operator<<(ostream& s,const EqRegionCache& p)
+    //friend std::ostream& operator<<(std::ostream& s,const EqRegionCache& p)
     //	{ p.print(s); return s; }
 };
 

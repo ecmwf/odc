@@ -195,7 +195,7 @@ void DataSetBuilder::buildLinks(DataSet& dataset) const
             {
                 Log::info() << "Ignoring link between aligned tables "
                     << token.parentTableName << " and " 
-                    << token.childTableName << endl;
+                    << token.childTableName << std::endl;
                 break;
             }
 
@@ -206,7 +206,7 @@ void DataSetBuilder::buildLinks(DataSet& dataset) const
             if (t == dataset.tables().end())
             {
                 Log::warning() << "No parent table found for the link "
-                    << token.columnName << endl;
+                    << token.columnName << std::endl;
                 break;
             }
             DataTable* parent = *t;
@@ -217,7 +217,7 @@ void DataSetBuilder::buildLinks(DataSet& dataset) const
             if (t == dataset.tables().end())
             {
                 Log::warning() << "No child table found for the link "
-                    << token.columnName << endl;
+                    << token.columnName << std::endl;
                 break;
             }
             DataTable* child = *t;

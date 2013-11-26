@@ -39,7 +39,7 @@ namespace tool {
 
 int gdb(const vector<std::string>& params)
 {
-    cout << "gdb: params: " << params << endl;
+    cout << "gdb: params: " << params << std::endl;
 	str cmd(params[0]);
 	str args;
 	for (size_t i = 1; i < params.size(); ++i)
@@ -56,18 +56,18 @@ int gdb(const vector<std::string>& params)
 		f.close();
 	}
 	str vi = str("vi ") + scriptFile;
-	cout << "Executing '" << vi << "'" << endl;
+	std::cout << "Executing '" << vi << "'" << std::endl;
 	system(vi.c_str());
 
 	str gdbCmd = str("gdb -x ") + scriptFile;
-	cout << "Executing '" << gdbCmd << "'" << endl;
+	std::cout << "Executing '" << gdbCmd << "'" << std::endl;
 	return system(gdbCmd.c_str());
 }
 
 // valgrind --log-file=v.log --show-reachable=yes --leak-check=full ./oda test 
 int valgrind(const vector<std::string>& params)
 {
-    cout << "valgrind: params: " << params << endl;
+    cout << "valgrind: params: " << params << std::endl;
 	str cmd(params[0]);
 	str args;
 	for (size_t i = 1; i < params.size(); ++i)
@@ -75,7 +75,7 @@ int valgrind(const vector<std::string>& params)
 
 	str logFile = str("vg.log");
 	str vg = str("valgrind --log-file=") + logFile + " --show-reachable=yes --leak-check=full " + cmd + " " + args;
-	cout << "Executing '" << vg << "'" << endl;
+	std::cout << "Executing '" << vg << "'" << std::endl;
 	return system(vg.c_str());
 }
 

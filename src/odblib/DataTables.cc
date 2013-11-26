@@ -26,7 +26,7 @@ void DataTables::insert(DataTable* table)
 
 DataTables::iterator DataTables::find(const string& name)
 {
-    set<DataTable*>::iterator it = tableSet_.begin();
+    std::set<DataTable*>::iterator it = tableSet_.begin();
 
     for (; it != tableSet_.end(); ++it)
     {

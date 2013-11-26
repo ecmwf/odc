@@ -63,7 +63,7 @@ void TestAggregateFunctions3::test()
 {
 	string sql = "select sum(a) from \"TestAggregateFunctions3.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << endl;
+	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 	odb::Select sel(sql);
 	odb::Select::iterator it2 = sel.begin();
@@ -75,9 +75,9 @@ void TestAggregateFunctions3::test()
 void TestAggregateFunctions3::setUp()
 {
 	stringstream s;
-	s << "a:REAL" << endl;
+	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
-		s << i << endl;
+		s << i << std::endl;
 	ImportTool::importText(s.str().c_str(), "TestAggregateFunctions3.odb");
 }
 
