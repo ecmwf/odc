@@ -9,7 +9,7 @@
  */
 
 #include "eckit/eckit.h"
-#include "eckit/io/AIOHandle.h"
+#include "eckit/filesystem/AIOHandle.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"

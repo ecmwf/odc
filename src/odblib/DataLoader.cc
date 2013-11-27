@@ -6,7 +6,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "eckit/io/FileHandle.h"
+#include "eckit/filesystem/FileHandle.h"
 
 #include "odblib/MetaData.h"
 #include "odblib/Reader.h"

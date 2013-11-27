@@ -12,7 +12,7 @@
 
 #include "eckit/runtime/Application.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/io/FileHandle.h"
+#include "eckit/filesystem/FileHandle.h"
 
 #include "odb/TestOdaCAPI.h"
 

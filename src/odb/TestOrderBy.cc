@@ -45,7 +45,7 @@
 #include "odblib/Header.h"
 #include "odblib/Reader.h"
 #include "eckit/io/DataHandle.h"
-#include "eckit/io/StdFileHandle.h"
+#include "eckit/filesystem/StdFileHandle.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
 #include "odblib/odb_api.h"

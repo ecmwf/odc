@@ -25,7 +25,7 @@ using namespace std;
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/log/Log.h"
-#include "eckit/io/PartFileHandle.h"
+#include "eckit/filesystem/PartFileHandle.h"
 #include "eckit/thread/ThreadPool.h"
 
 #include "odblib/DataStream.h"

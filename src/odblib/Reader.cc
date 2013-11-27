@@ -26,7 +26,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/DataHandle.h"
-#include "eckit/io/FileHandle.h"
+#include "eckit/filesystem/FileHandle.h"
 
 using namespace std;
 using namespace eckit;
