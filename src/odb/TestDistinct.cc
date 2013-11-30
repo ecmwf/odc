@@ -18,7 +18,7 @@
 #include <algorithm>
 
 #include "eckit/io/DataHandle.h"
-#include "eckit/filesystem/StdFileHandle.h"
+#include "eckit/io/StdFileHandle.h"
 #include "eckit/log/Log.h"
 #include "eckit/filesystem/PathName.h"
 

@@ -9,7 +9,7 @@
  */
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/utils/Timer.h"
 
 #include "odblib/odb_api.h"

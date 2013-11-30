@@ -26,7 +26,7 @@ using namespace std;
 #include "eckit/filesystem/PathName.h"
 #include "odblib/MemoryBlock.h"
 #include "eckit/io/DataHandle.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/DataStream.h"

@@ -18,7 +18,7 @@
 #include <iomanip>
 #include <ctype.h>
 
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/utils/Regex.h"
 #include "eckit/parser/Translator.h"
