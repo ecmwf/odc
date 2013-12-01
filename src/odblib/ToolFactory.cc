@@ -30,27 +30,27 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
-map<string, AbstractToolFactory *> *AbstractToolFactory::toolFactories = 0;
+std::map<std::string, AbstractToolFactory *> *AbstractToolFactory::toolFactories = 0;
 
-class MatchAll : public vector<string> {
+class MatchAll : public std::vector<std::string> {
 public:
 	MatchAll() { push_back(".*"); }
 };
 
-const vector<string> AbstractToolFactory::matchAll = MatchAll();
+const std::vector<std::string> AbstractToolFactory::matchAll = MatchAll();
 
-test::TestCases* AbstractToolFactory::testCases(const vector<string> &patterns)
+test::TestCases* AbstractToolFactory::testCases(const std::vector<std::string> &patterns)
 {
 	ASSERT(toolFactories != 0);
 
 	test::TestCases *v = new test::TestCases();
 
-	for (map<string,AbstractToolFactory*>::iterator it = toolFactories->begin();
+	for (std::map<std::string,AbstractToolFactory*>::iterator it = toolFactories->begin();
 		it != toolFactories->end();
 		it++)
 	{
-		string testName = it->first;
-		if (testName.find("Test") == string::npos 
+		std::string testName = it->first;
+		if (testName.find("Test") == std::string::npos 
 			|| !Tool::matchAny(patterns, testName))
 			continue;
 
@@ -75,24 +75,24 @@ test::TestCases* AbstractToolFactory::testCases(const vector<string> &patterns)
 	return v;
 }
 
-AbstractToolFactory& AbstractToolFactory::findTool(const string &name)
+AbstractToolFactory& AbstractToolFactory::findTool(const std::string &name)
 {
 	ASSERT(toolFactories);
 
-	map<string,AbstractToolFactory*>::const_iterator it = toolFactories->find(name);
+	std::map<std::string,AbstractToolFactory*>::const_iterator it = toolFactories->find(name);
 
 	ASSERT("Unknown tool" && it != toolFactories->end());
 
 	return *it->second;
 }
 
-void AbstractToolFactory::printToolHelp(const string& name, std::ostream &s)
+void AbstractToolFactory::printToolHelp(const std::string& name, std::ostream &s)
 {
 	findTool(name).help(s);
 	s << std::endl;
 }
 
-void AbstractToolFactory::printToolUsage(const string& name, std::ostream &s)
+void AbstractToolFactory::printToolUsage(const std::string& name, std::ostream &s)
 {
 	findTool(name).usage(name, s);
 	s << std::endl;
@@ -102,14 +102,14 @@ void AbstractToolFactory::printToolsHelp(std::ostream &s)
 {
 	ASSERT(toolFactories);
 
-	for (map<string,AbstractToolFactory*>::iterator it = toolFactories->begin();
+	for (std::map<std::string,AbstractToolFactory*>::iterator it = toolFactories->begin();
 		it != toolFactories->end();
 		it++)
 	{
-		string toolName = it->first;
+		std::string toolName = it->first;
 		AbstractToolFactory *toolFactory = it->second;
 		
-		if (toolName.find("Test") == string::npos && !toolFactory->experimental())
+		if (toolName.find("Test") == std::string::npos && !toolFactory->experimental())
 		{
 				s << toolName << ":\t";
 				toolFactory->help(s);
@@ -124,14 +124,14 @@ void AbstractToolFactory::listTools(std::ostream& s)
 {
 	ASSERT(toolFactories);
 
-	for (map<string,AbstractToolFactory*>::iterator it = toolFactories->begin();
+	for (std::map<std::string,AbstractToolFactory*>::iterator it = toolFactories->begin();
 		it != toolFactories->end();
 		it++)
 	{
-		string toolName = it->first;
+		std::string toolName = it->first;
 		AbstractToolFactory *toolFactory = it->second;
 		
-		if (toolName.find("Test") == string::npos && !toolFactory->experimental())
+		if (toolName.find("Test") == std::string::npos && !toolFactory->experimental())
 		{
 				s << "	" << toolName << "	";
 				toolFactory->help(s);
@@ -140,7 +140,7 @@ void AbstractToolFactory::listTools(std::ostream& s)
 	}
 }
 
-Tool* AbstractToolFactory::createTool(const string& name, int argc, char **argv)
+Tool* AbstractToolFactory::createTool(const std::string& name, int argc, char **argv)
 {
 	AbstractToolFactory *factory = (*toolFactories)[name];
 	if (factory == 0)
@@ -149,10 +149,10 @@ Tool* AbstractToolFactory::createTool(const string& name, int argc, char **argv)
 	return factory->create(argc, argv);
 };
 
-AbstractToolFactory::AbstractToolFactory(const string& name)
+AbstractToolFactory::AbstractToolFactory(const std::string& name)
 {
 	if (toolFactories == 0)
-		toolFactories = new map<string, AbstractToolFactory *>();
+		toolFactories = new std::map<std::string, AbstractToolFactory *>();
 
 	(*toolFactories)[name] = this;
 }

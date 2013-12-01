@@ -31,7 +31,7 @@ public:
 
 	static const char *columnTypeName(ColumnType type);
 
-	static ColumnType type(const string&);
+	static ColumnType type(const std::string&);
 
 	Column& operator=(const Column&);
 
@@ -46,8 +46,8 @@ public:
 	codec::Codec& coder() const { return *coder_; }
 	void coder(codec::Codec *c) { delete coder_; coder_ = c; }
 
-	void name(const string name) { name_ = name; }
-	const string &name() const { return name_; }
+	void name(const std::string name) { name_ = name; }
+	const std::string &name() const { return name_; }
 
 	template<typename DATASTREAM> void type(ColumnType t, bool differentByteOrder); 
 
@@ -78,14 +78,14 @@ public:
 	virtual void print(std::ostream& s) const;
 
 #ifdef SWIGPYTHON
-	const string __repr__()
+	const std::string __repr__()
 	{
-		return //string("<") + 
+		return //std::string("<") + 
 			name_ + ":" + columnTypeName(odb::ColumnType(type_))
 		 //+ ">" 
 			;
 	}
-	const string __str__() { return name_; }
+	const std::string __str__() { return name_; }
 #endif
 
 	friend std::ostream& operator<<(std::ostream& s, const Column& p)
@@ -94,13 +94,13 @@ public:
 private:
 
 	MetaData& owner_;
-	string name_;
+	std::string name_;
 	/// Note: type_ should be ColumnType, but it is saved on file so must be of a fixed size type.
 	int32_t type_;
 	codec::Codec* coder_;
 	/// bitfieldDef_ is not empty if type_ == BITFIELD.
 	BitfieldDef bitfieldDef_;
-	//string typeSignature_;
+	//std::string typeSignature_;
 
 };
 
@@ -134,7 +134,7 @@ template <typename DATASTREAM>
 void Column::type(ColumnType t, bool differentByteOrder)
 {
 	type_ = t;
-	string codecName;
+	std::string codecName;
 	switch (type_)
 	{
 		case INTEGER:  codecName = "int32"; break;

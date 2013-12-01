@@ -61,7 +61,7 @@ private:
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
 	//const eckit::PathName path_;
-	const string path_;
+	const std::string path_;
 	bool skipData_;
 
 	friend class IteratorProxy<MetaDataReaderIterator,MetaDataReader,const double>;

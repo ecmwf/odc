@@ -83,7 +83,7 @@ const char *Column::columnTypeName(ColumnType type)
 	}
 }
 
-ColumnType Column::type(const string& t)
+ColumnType Column::type(const std::string& t)
 {
 	if (t == "IGNORE") return IGNORE;
 	if (t == "INTEGER") return INTEGER;

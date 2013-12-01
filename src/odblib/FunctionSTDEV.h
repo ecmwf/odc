@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionSTDEV : public FunctionVAR {
 public:
-	FunctionSTDEV(const string&, const expression::Expressions&);
+	FunctionSTDEV(const std::string&, const expression::Expressions&);
 	FunctionSTDEV(const FunctionSTDEV&);
 	~FunctionSTDEV(); 
 

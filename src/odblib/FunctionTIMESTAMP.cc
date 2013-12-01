@@ -21,7 +21,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionTIMESTAMP::FunctionTIMESTAMP(const string& name,const expression::Expressions& args)
+FunctionTIMESTAMP::FunctionTIMESTAMP(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args)
 {}
 

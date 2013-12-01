@@ -28,7 +28,7 @@ struct hashrec {
 	~hashrec() { delete next; }
 
 	hashrec *next;
-	std::string name;
+    std::string name;
 	int32_t cnt;
 	int32_t index;
 
@@ -66,7 +66,7 @@ public:
     void dumpTable(std::ostream &out) const;
 	void store(const char *name);
 	int32_t findIndex(const char *name);
-	const vector<std::string>& strings() const { return strings_; }
+    const std::vector<std::string>& strings() const { return strings_; }
 	int32_t nextIndex() const { return nextIndex_; }
 
 //private:
@@ -76,7 +76,7 @@ public:
 protected:
 	int32_t nextIndex_;
 	hashrec* table[SIZE];
-	vector<std::string> strings_;
+    std::vector<std::string> strings_;
 	
 	int32_t hash(const char *);
 private:

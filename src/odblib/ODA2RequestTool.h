@@ -17,7 +17,7 @@ namespace odb {
 namespace tool {
 
 class ODA2RequestTool : public Tool {
-	typedef string Value;
+	typedef std::string Value;
 	typedef std::set<Value> Values;
 
 public:
@@ -26,27 +26,27 @@ public:
 	~ODA2RequestTool();
 
 	static void help(std::ostream &o);
-	static void usage(const string& name, std::ostream &o);
+	static void usage(const std::string& name, std::ostream &o);
 
 	virtual void run();
 
 	void readConfig();
 	void readConfig(const eckit::PathName&);
-	void parseConfig(const string&);
+	void parseConfig(const std::string&);
 
-	string generateMarsRequest(const eckit::PathName& inputFile, bool fast = false);
+	std::string generateMarsRequest(const eckit::PathName& inputFile, bool fast = false);
 
 protected:
-	vector<Values>& values() { return values_; }
+	std::vector<Values>& values() { return values_; }
 
 	void gatherStats(const eckit::PathName& inputFile);
-	string gatherStatsFast(const eckit::PathName& inputFile);
+	std::string gatherStatsFast(const eckit::PathName& inputFile);
 
 	eckit::PathName config();
 
 private:
-	map<string, string> columnName2requestKey_;
-	vector<Values> values_;
+	std::map<std::string, std::string> columnName2requestKey_;
+	std::vector<Values> values_;
 };
 
 } // namespace tool 

@@ -29,7 +29,7 @@ FunctionEQ::FunctionEQ(const FunctionEQ& other)
   tmp_(other.tmp_)
 {}
 
-FunctionEQ::FunctionEQ(const string& name, const expression::Expressions& args)
+FunctionEQ::FunctionEQ(const std::string& name, const expression::Expressions& args)
 : FunctionExpression(name, args),
   tmp_(0)
 {}

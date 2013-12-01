@@ -15,7 +15,7 @@ namespace odb {
 namespace sql {
 namespace type {
 
-SQLReal::SQLReal(const string& name): SQLType(name) {}
+SQLReal::SQLReal(const std::string& name): SQLType(name) {}
 
 SQLReal::~SQLReal() {}
 

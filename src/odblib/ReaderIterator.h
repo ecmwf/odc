@@ -56,21 +56,21 @@ public:
 
 	bool operator!=(const ReaderIterator& other);
 
-	void property(string, string);
-	string property(string);
+	void property(std::string, std::string);
+	std::string property(std::string);
 
 	virtual MetaData& columns() { return columns_; }
 
 #ifdef SWIGPYTHON
-	int setColumn(size_t, const std::string&, ColumnType) { NOTIMP; }
+    int setColumn(size_t, const std::string&, ColumnType) { NOTIMP; }
 	void writeHeader() { NOTIMP; }
-	int setBitfieldColumn(size_t, const std::string&, ColumnType, BitfieldDef) { NOTIMP; }
+    int setBitfieldColumn(size_t, const std::string&, ColumnType, BitfieldDef) { NOTIMP; }
 	void missingValue(size_t, double) { NOTIMP; }
 #endif
 
 	ColumnType columnType(unsigned long index);
-	const std::string& columnName(unsigned long index) const;
-	const std::string& codecName(unsigned long index) const;
+    const std::string& columnName(unsigned long index) const;
+    const std::string& codecName(unsigned long index) const;
 	double columnMissingValue(unsigned long index);
 	const BitfieldDef& bitfieldDef(unsigned long index);
 

@@ -21,14 +21,14 @@ namespace sql {
 
 class SQLBitColumn : public SQLColumn {
 public:
-	SQLBitColumn(SQLColumn&,const string&);
+	SQLBitColumn(SQLColumn&,const std::string&);
 	~SQLBitColumn(); 
 private:
 // No copy allowed
 	SQLBitColumn(const SQLBitColumn&);
 	SQLBitColumn& operator=(const SQLBitColumn&);
 	
-	string     field_;
+	std::string     field_;
 	unsigned long mask_;
 	unsigned long shift_;
 

@@ -20,7 +20,7 @@ DataLink::DataLink(DataTable& parent, DataTable& child)
 {}
 
 DataLink::DataLink(DataTable& parent, DataTable& child,
-        const string& primaryKey, const string& foreignKey)
+        const std::string& primaryKey, const std::string& foreignKey)
   : owner_(0),
     parentTable_(parent),
     childTable_(child),
@@ -74,7 +74,7 @@ DataTable::iterator DataLink::insert(DataLink::iterator& range,
     return it;
 }
 
-void DataLink::build(const string& primaryKey, const string& foreignKey)
+void DataLink::build(const std::string& primaryKey, const std::string& foreignKey)
 {
     entries_.reserve(parentTable_.size());
 

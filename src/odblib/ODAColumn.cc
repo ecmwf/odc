@@ -15,13 +15,13 @@
 namespace odb {
 namespace sql {
 
-ODAColumn::ODAColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double
+ODAColumn::ODAColumn(const type::SQLType& type, SQLTable& owner, const std::string& name, int index, bool hasMissingValue, double
 missingValue, const BitfieldDef& bitfieldDef, double* value)
 : SQLColumn(type, owner, name, index, hasMissingValue, missingValue, bitfieldDef),
    value_(value)
 {}
 
-ODAColumn::ODAColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double
+ODAColumn::ODAColumn(const type::SQLType& type, SQLTable& owner, const std::string& name, int index, bool hasMissingValue, double
 missingValue, double* value)
 : SQLColumn(type, owner, name, index, hasMissingValue, missingValue),
    value_(value)

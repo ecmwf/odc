@@ -27,7 +27,7 @@ public:
 
 // -- Contructors
 
-	SQLCountStar(const string& table);
+	SQLCountStar(const std::string& table);
 
 // -- Destructor
 
@@ -78,7 +78,7 @@ private:
 
 // -- Members
 
-	string table_;
+	std::string table_;
 
 // -- Methods
 	// None

@@ -16,7 +16,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionIN::FunctionIN(const string& name, const expression::Expressions& args)
+FunctionIN::FunctionIN(const std::string& name, const expression::Expressions& args)
 : FunctionExpression(name, args),
   size_(args.size() - 1)
 {}

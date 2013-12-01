@@ -30,7 +30,7 @@ namespace expression {
 
 static pair<double,bool> zero_(0,false);
 
-ColumnExpression::ColumnExpression(const string& name, SQLTable* table, int begin, int end)
+ColumnExpression::ColumnExpression(const std::string& name, SQLTable* table, int begin, int end)
 : type_(0),
   value_(&zero_),
   columnName_(name),
@@ -41,7 +41,7 @@ ColumnExpression::ColumnExpression(const string& name, SQLTable* table, int begi
   nominalShift_(0)
 {}
 
-ColumnExpression::ColumnExpression(const string& name, const string& tableReference, int begin, int end)
+ColumnExpression::ColumnExpression(const std::string& name, const std::string& tableReference, int begin, int end)
 : type_(0),
   value_(&zero_),
   columnName_(name),
@@ -76,7 +76,7 @@ double ColumnExpression::eval(bool& missing) const
 
 void ColumnExpression::prepare(SQLSelect& sql)
 {
-	string fullName;
+	std::string fullName;
 
 	SQLTable* table = sql.findTable(columnName_, &fullName, &hasMissingValue_, &missingValue_, &isBitfield_, &bitfieldDef_);
 
@@ -134,7 +134,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 	{
 		ASSERT(beginIndex_ <= endIndex_);
 		for(int i = beginIndex_; i <= endIndex_; i++)
-			e.push_back(new ColumnExpression(columnName_ + "_" + Translator<int,string>()(i), this->table()));
+			e.push_back(new ColumnExpression(columnName_ + "_" + Translator<int,std::string>()(i), this->table()));
 		return;
 	}
 
@@ -149,15 +149,15 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 	stringstream ss;
 	
 	unsigned int matched = 0;
-	for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)
+    for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)
 	{
 		SQLTable* table = (*j);
-		std::vector<string> names = table->columnNames();
+        std::vector<std::string> names = table->columnNames();
 
 		for(size_t i = 0; i < names.size(); i++)
 		{
 			if ((tableReference_.size())
-				&& ((names[i].rfind(tableReference_) == string::npos)
+				&& ((names[i].rfind(tableReference_) == std::string::npos)
 					|| (names[i].rfind(tableReference_) + tableReference_.size() < names[i].size())))
 			{
 				L << "ColumnExpression::expandStars: skip '" << names[i] << "'" << std::endl;
@@ -170,7 +170,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 		}
 	}
 	if (! matched)
-		throw eckit::UserError(string("No columns matching ") + columnName_ + tableReference_ + " found.");
+		throw eckit::UserError(std::string("No columns matching ") + columnName_ + tableReference_ + " found.");
 
 	L << "ColumnExpression::expandStars: added " << ss.str() << std::endl;
 	delete this;

@@ -35,7 +35,7 @@ MergeTool::MergeTool (int ac, char *av[])
 		return;
 	}
     sqlFiltering_ = optionIsSet("-S");
-	string o(optionArgument("-o", string("<no-default>")));
+	std::string o(optionArgument("-o", std::string("<no-default>")));
 	if (o == "<no-default>")
 		UserError("Output file is obligatory (option -o)");
 	outputFile_ = o;
@@ -44,7 +44,7 @@ MergeTool::MergeTool (int ac, char *av[])
     {
 		inputFiles_.push_back(PathName(parameters()[i]));
         if (sqlFiltering_) {
-            string s(parameters()[++i]);
+            std::string s(parameters()[++i]);
             sql_.push_back(StringTool::isSelectStatement(s) ? s : StringTool::readFile(s));
         }
     }
@@ -58,7 +58,7 @@ void MergeTool::run()
 	stringstream s;
 	for (size_t i = 0; i < inputFiles_.size(); ++i)
 		s << inputFiles_[i] << ",";
-	Timer t(string("Merging files '") + s.str() + "' into '" + outputFile_ + "'");
+	Timer t(std::string("Merging files '") + s.str() + "' into '" + outputFile_ + "'");
     if(! sqlFiltering_)
         merge(inputFiles_, outputFile_);
     else
@@ -66,7 +66,7 @@ void MergeTool::run()
 }
 
 template <typename T, typename I>
-void doMerge(vector<pair<I, I> >& iterators, const PathName& outputFile)
+void doMerge(std::vector<pair<I, I> >& iterators, const PathName& outputFile)
 {
 	odb::Writer<> writer(outputFile);
 	odb::Writer<>::iterator out(writer.begin());
@@ -77,7 +77,7 @@ void doMerge(vector<pair<I, I> >& iterators, const PathName& outputFile)
 
 		for (size_t i = 0; i < columns.size(); ++i)
 			if (out->columns().hasColumn(columns[i]->name()))
-				throw eckit::UserError(string("Column '") + columns[i]->name()
+				throw eckit::UserError(std::string("Column '") + columns[i]->name()
 					+ "' occurs in more than one input file of merge.");
 		out->columns() += columns;
 	}
@@ -107,15 +107,15 @@ void doMerge(vector<pair<I, I> >& iterators, const PathName& outputFile)
 }
 
 template <typename T>
-struct AutoR : public vector<T*> { ~AutoR() { for (size_t i = 0; i < this->size(); ++i) delete this->at(i); } }; 
+struct AutoR : public std::vector<T*> { ~AutoR() { for (size_t i = 0; i < this->size(); ++i) delete this->at(i); } }; 
 
-void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& outputFile)
+void MergeTool::merge(const std::vector<PathName>& inputFiles, const PathName& outputFile)
 {
 	typedef odb::Reader R;
 	typedef R::iterator I;
 
     AutoR<R>  readers;
-	vector<pair<I, I> > iterators;
+	std::vector<pair<I, I> > iterators;
 
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
@@ -125,12 +125,12 @@ void MergeTool::merge(const vector<PathName>& inputFiles, const PathName& output
     doMerge<R, I>(iterators, outputFile);
 }
 
-void MergeTool::merge(const vector<PathName>& inputFiles, const vector<string>& sqls, const PathName& outputFile)
+void MergeTool::merge(const std::vector<PathName>& inputFiles, const std::vector<std::string>& sqls, const PathName& outputFile)
 {
     typedef odb::Select S;
     AutoR<S> readers;
     AutoR<eckit::FileHandle> fhs;
-    vector<pair<S::iterator, S::iterator> > iterators;
+    std::vector<pair<S::iterator, S::iterator> > iterators;
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
         FileHandle* fh = new FileHandle(inputFiles[i]);

@@ -38,7 +38,7 @@ public:
 	template <typename DATASTREAM>
 		int setOptimalCodecs(MetaData& columns);
 private:
-	map<ColumnType, std::string> defaultCodec_;
+    std::map<ColumnType, std::string> defaultCodec_;
 };
 
 template <typename DATASTREAM>
@@ -53,7 +53,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 		bool hasMissing = col.hasMissing();
 		double missing = col.missingValue();
 		//LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << std::endl;
-		string codec(defaultCodec_[col.type()]);
+		std::string codec(defaultCodec_[col.type()]);
 		switch(col.type())
 		{
 			case REAL:

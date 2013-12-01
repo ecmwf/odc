@@ -57,9 +57,9 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
 {}
 
 template <typename WRITE_ITERATOR, typename OWNER>
-string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const double* values, unsigned long count)
+std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const double* values, unsigned long count)
 {
-	string fileName = outputFileTemplate_;
+	std::string fileName = outputFileTemplate_;
 	int diff = 0;
 	for (TemplateParameters::iterator it = templateParameters_.begin(); it != templateParameters_.end(); ++it)
 	{
@@ -67,28 +67,28 @@ string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const 
 
 		// TODO: if values collected can be of different type then integer,
 		// then below code must be updated:
-        // code updated for string [19/07/2011] AF
+        // code updated for std::string [19/07/2011] AF
 		double d = values[p.columnIndex];
-		string s;
+		std::string s;
         if ( columns_[p.columnIndex]->type() == odb::STRING)
 		{
 			char* sp = reinterpret_cast<char *>(&d);
 			size_t len = 0;
 			odb::sql::expression::function::FunctionEQ::trimStringInDouble(sp, len);
-			s = string(sp, len);
-			while (s.find("/") != string::npos)
+			s = std::string(sp, len);
+			while (s.find("/") != std::string::npos)
 			{
-				string old = s;
+				std::string old = s;
 
 				size_t pos = s.find("/");
-				s.replace(pos, pos+1, string("__SLASH__"));
+				s.replace(pos, pos+1, std::string("__SLASH__"));
 
 				//eckit::Log::info() << "WriterDispatchingIterator::generateFileName: '" << old << "' => '" << s << "'" << std::endl;
 			}
         } else
 		{
 			int v = int(d);
-			s = eckit::Translator<int, string>()(v);
+			s = eckit::Translator<int, std::string>()(v);
         }
 
 		fileName.replace(p.startPos - diff, p.endPos - p.startPos + 1, s);
@@ -162,7 +162,7 @@ const double* values, unsigned long count)
 		values2iteratorIndex_.erase(vit);
 	}
 
-	string operation;
+	std::string operation;
 	//bool append = false;
     if (append_ || !eckit::PathName(fileName).exists())
 	{
@@ -208,10 +208,10 @@ const double* values, unsigned long count)
 } 
 
 template <typename WRITE_ITERATOR, typename OWNER>
-vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::getFiles()
+std::vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::getFiles()
 {
-	vector<eckit::PathName> paths;
-	for (map<string,int>::iterator it = filesCreated_.begin(); it != filesCreated_.end(); ++it)
+	std::vector<eckit::PathName> paths;
+	for (std::map<std::string,int>::iterator it = filesCreated_.begin(); it != filesCreated_.end(); ++it)
 		paths.push_back(it->first);
 	return paths;
 }
@@ -410,8 +410,8 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 
 	eckit::Timer timer("Split verification");
 
-	vector<Reader*> readers;
-	vector<pair<Reader::iterator, Reader::iterator> > iterators;
+	std::vector<Reader*> readers;
+	std::vector<pair<Reader::iterator, Reader::iterator> > iterators;
 	for (size_t i = 0; i < files_.size(); ++i)
 	{
 		eckit::Log::info() << "Opening '" << files_[i] << "'" << std::endl;
@@ -420,14 +420,14 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 		iterators.push_back(make_pair(reader->begin(), reader->end()));
 	}
 
-	vector<size_t> rowsRead(files_.size());
+	std::vector<size_t> rowsRead(files_.size());
 	Comparator comparator;
 	unsigned long numberOfDifferences = 0;
 	size_t i = 0;
 	for (; i < rowsOutputFileIndex_.size(); ++i)
 	{
 		size_t fileIndex = rowsOutputFileIndex_[i];
-		const string& outFileName = files_[fileIndex];
+		const std::string& outFileName = files_[fileIndex];
 		MetaData& metaData(it->columns());
 		size_t n(metaData.size());
 
@@ -467,14 +467,14 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(string key, string value)
+void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(std::string key, std::string value)
 {
 	// TODO: save property, make sure they are propagated to iterators as they are created
     properties_[key] = value;
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(string key) { return properties_[key]; }
+std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(std::string key) { return properties_[key]; }
 
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::close()

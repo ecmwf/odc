@@ -32,9 +32,9 @@ using namespace eckit;
 
 namespace odb {
 
-vector<string> StringTool::readLines(const PathName fileName, bool logging)
+std::vector<std::string> StringTool::readLines(const PathName fileName, bool logging)
 {
-	string s = readFile(fileName, logging);
+	std::string s = readFile(fileName, logging);
 	return StringTools::split("\n", s);
 }
 
@@ -74,7 +74,7 @@ int StringTool::shell(std::string cmd, const CodeLocation& where, bool assertSuc
 
 	if (assertSuccess && rc != 0)
 	{
-		throw eckit::SeriousBug(string(" \"") + cmd + "\" failed. " + where.file() + " +" + Translator<int, string>()(where.line()));
+		throw eckit::SeriousBug(std::string(" \"") + cmd + "\" failed. " + where.file() + " +" + Translator<int, std::string>()(where.line()));
 		ASSERT(rc == 0);
 	}
 	return rc;
@@ -123,7 +123,7 @@ double StringTool::cast_as_double(const std::string& value)
 	return *reinterpret_cast<double *>(buf);
 }
 
-string StringTool::int_as_double2string(double v)
+std::string StringTool::int_as_double2string(double v)
 {
     std::stringstream s;
     s.precision(0);
@@ -131,22 +131,22 @@ string StringTool::int_as_double2string(double v)
     return s.str();
 }
 
-double StringTool::translate(const string& v)
+double StringTool::translate(const std::string& v)
 {
-	return isInQuotes(v) ? cast_as_double(unQuote(v)) : Translator<string, double>()(v);
+	return isInQuotes(v) ? cast_as_double(unQuote(v)) : Translator<std::string, double>()(v);
 }
 
 void StringTool::trimInPlace(std::string &str) { str = StringTools::trim(str); }
 
-bool StringTool::match(const string& regex, const string& s)
+bool StringTool::match(const std::string& regex, const std::string& s)
 {
 	return Regex(regex).match(s);
 }
 
-bool StringTool::matchEx(const string& regex, const string& s)
+bool StringTool::matchEx(const std::string& regex, const std::string& s)
 {
 	bool negated = false;	
-	string rx = regex;
+	std::string rx = regex;
 	if (rx[0] == '~')
 	{
 		rx.erase(0, 0);
@@ -159,13 +159,13 @@ bool StringTool::matchEx(const string& regex, const string& s)
 	return (negated && !matches) || (!negated && matches);
 }
 
-bool StringTool::isColumnRegex(const string& s)
+bool StringTool::isColumnRegex(const std::string& s)
 {
     return ( s[0] == '/' && s[s.size() - 1] == '/' )
         || ( s[0] == '~' && s[1] == '/' && s[s.size() - 1] == '/' );
 }
 
-bool StringTool::matchAny(const vector<string>& regs, const string& s)
+bool StringTool::matchAny(const std::vector<std::string>& regs, const std::string& s)
 {
 	for (size_t i = 0; i < regs.size(); ++i)
 		if (match(regs[i], s))
@@ -173,17 +173,17 @@ bool StringTool::matchAny(const vector<string>& regs, const string& s)
 	return false;
 }
 
-ostream& operator<<(std::ostream& s, const vector<string>& st) 
+ostream& operator<<(std::ostream& s, const std::vector<std::string>& st) 
 {
     s << '[';
-    for (vector<string>::const_iterator it = st.begin(); it != st.end(); ++it)
+    for (std::vector<std::string>::const_iterator it = st.begin(); it != st.end(); ++it)
         s << *it << ",";
     s << ']';
     return s;
 }
 
 
-string StringTool::valueAsString(double d, ColumnType t)
+std::string StringTool::valueAsString(double d, ColumnType t)
 {
 	stringstream s;
 	switch (t) {
@@ -201,13 +201,13 @@ string StringTool::valueAsString(double d, ColumnType t)
 	return s.str();
 }
 
-string StringTool::patchTimeForMars(const string& ss)
+std::string StringTool::patchTimeForMars(const std::string& ss)
 {
-	string v = ss;
-	if (v.size() == 5) v = string("0") + v;
+	std::string v = ss;
+	if (v.size() == 5) v = std::string("0") + v;
 	if (v.size() == 6)
 	{
-		string s = v;
+		std::string s = v;
 		v = v.substr(0, 4);
 		Log::debug() << "StringTool::patchTimeForMars: stripping seconds from TIME: '"
 				<< s << "' => '" << v << "'" << std::endl;
@@ -215,7 +215,7 @@ string StringTool::patchTimeForMars(const string& ss)
 	return v;
 }
 
-bool StringTool::isSelectStatement(const string& s) { return StringTool::match("select", eckit::StringTools::lower(eckit::StringTools::trim(s))); }
+bool StringTool::isSelectStatement(const std::string& s) { return StringTool::match("select", eckit::StringTools::lower(eckit::StringTools::trim(s))); }
 
 } // namespace odb 
 

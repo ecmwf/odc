@@ -22,7 +22,7 @@ namespace expression {
 
 class VariableExpression : public SQLExpression {
 public:
-	VariableExpression(const string&);
+	VariableExpression(const std::string&);
 	VariableExpression(const VariableExpression&);
 	~VariableExpression(); 
 
@@ -33,7 +33,7 @@ private:
 	VariableExpression& operator=(const VariableExpression&);
 
 	SQLExpression* value_;
-	string name_;
+	std::string name_;
 
 // -- Overridden methods
 	virtual void print(std::ostream& s) const;

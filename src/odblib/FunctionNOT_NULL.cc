@@ -15,7 +15,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionNOT_NULL::FunctionNOT_NULL(const string& name,const expression::Expressions& args)
+FunctionNOT_NULL::FunctionNOT_NULL(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name, args)
 {}
 

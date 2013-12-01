@@ -19,7 +19,7 @@ namespace function {
 
 const type::SQLType* FunctionEQ_BOXLAT::type() const { return &type::SQLType::lookup("real"); }
 
-FunctionEQ_BOXLAT::FunctionEQ_BOXLAT(const string& name, const expression::Expressions& args)
+FunctionEQ_BOXLAT::FunctionEQ_BOXLAT(const std::string& name, const expression::Expressions& args)
 : FunctionExpression(name, args)
 {}
 

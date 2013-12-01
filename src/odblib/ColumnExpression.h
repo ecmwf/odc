@@ -25,8 +25,8 @@ namespace expression {
 
 class ColumnExpression : public SQLExpression {
 public:
-	ColumnExpression(const string&, SQLTable*, int begin = -1, int end = -1);
-	ColumnExpression(const string&, const string& tableReference, int begin = -1, int end = -1);
+	ColumnExpression(const std::string&, SQLTable*, int begin = -1, int end = -1);
+	ColumnExpression(const std::string&, const std::string& tableReference, int begin = -1, int end = -1);
 	ColumnExpression(const ColumnExpression&);
 	~ColumnExpression(); 
 
@@ -39,9 +39,9 @@ public:
 protected:
 	const type::SQLType*   type_;
     std::pair<double,bool>*     value_;
-	string                 columnName_;
+	std::string                 columnName_;
 	SQLTable*              table_;
-	string                 tableReference_;
+	std::string                 tableReference_;
 	int                    beginIndex_;
 	int                    endIndex_;
 	int                    nominalShift_;
@@ -59,7 +59,7 @@ private:
 
 // -- Overridden methods
 	virtual const type::SQLType* type() const { return type_; }
-	virtual void expandStars(const std::vector<SQLTable*>&, Expressions&);
+    virtual void expandStars(const std::vector<SQLTable*>&, Expressions&);
 	virtual void tables(std::set<SQLTable*>&);
 	virtual bool indexed();
 	virtual SQLIndex* getIndex(double*);

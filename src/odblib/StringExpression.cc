@@ -22,9 +22,9 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-const odb::sql::type::SQLType* StringExpression::type() const { return &odb::sql::type::SQLType::lookup("string"); }
+const odb::sql::type::SQLType* StringExpression::type() const { return &odb::sql::type::SQLType::lookup("std::string"); }
 
-StringExpression::StringExpression(const string& name)
+StringExpression::StringExpression(const std::string& name)
 : name_(name)
 {
 	ASSERT(name.length() <= sizeof(value_));
@@ -36,7 +36,7 @@ StringExpression::StringExpression(const string& name)
 	for(size_t i = 0; i < name.length(); i++)
 		buf[off+i] = name[i];
 
-	string s(buf, sizeof(double));
+	std::string s(buf, sizeof(double));
 	//Log::info() << "StringExpression::StringExpression: '" << s << "'" << std::endl;
 }
 
@@ -60,11 +60,11 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 	for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)
 	{
 		SQLTable* table = (*j);
-		std::vector<string> names = table->columnNames();
+		std::vector<std::string> names = table->columnNames();
 
 		for(size_t i = 0; i < names.size(); i++)
 		{
-			const string& name = names[i];
+			const std::string& name = names[i];
 			if (! StringTool::matchEx(name_, name))
 			{
 				L << "StringExpression::expandStars: skip '" << name << "'" << std::endl;
@@ -77,7 +77,7 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 		}
 	}
 	if (! matched)
-		throw eckit::UserError(string("No columns matching regex '") + name_ + "' found.");
+		throw eckit::UserError(std::string("No columns matching regex '") + name_ + "' found.");
 	delete this;
 }
 

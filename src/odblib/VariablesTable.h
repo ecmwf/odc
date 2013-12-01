@@ -28,9 +28,9 @@ class SQLColumn;
 class SQLDatabase;
 
 class VariablesTableIterator : public SQLTableIterator {
-	typedef map<string,SQLExpression*> Variables;
+	typedef std::map<std::string,SQLExpression*> Variables;
 public:
-	VariablesTableIterator(map<string,SQLExpression*>&);
+	VariablesTableIterator(std::map<std::string,SQLExpression*>&);
 	~VariablesTableIterator();
 	void rewind();
 	bool next();
@@ -41,17 +41,17 @@ private:
     bool missing_[2];
 };
 
-typedef vector<string> ColumnNames;
+typedef std::vector<std::string> ColumnNames;
 
 class VariablesTable : public SQLTable {
 public:
-	VariablesTable(SQLDatabase&,const string&);
+	VariablesTable(SQLDatabase&,const std::string&);
 	~VariablesTable(); 
 
-    SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
-    SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue);
+    SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
+    SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue);
 
-	SQLTableIterator* iterator(const vector<SQLColumn*>&) const;
+	SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const;
 
 private:
     

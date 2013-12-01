@@ -15,7 +15,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionOR::FunctionOR(const string& name,const expression::Expressions& args)
+FunctionOR::FunctionOR(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args)
 {}
 

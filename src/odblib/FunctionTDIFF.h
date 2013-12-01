@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionTDIFF : public FunctionExpression {
 public:
-	FunctionTDIFF(const string&,const expression::Expressions&);
+	FunctionTDIFF(const std::string&,const expression::Expressions&);
 	FunctionTDIFF(const FunctionTDIFF&);
 	~FunctionTDIFF(); 
 

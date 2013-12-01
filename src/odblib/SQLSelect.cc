@@ -31,7 +31,7 @@ namespace sql {
 void SQLSelect::pushFirstFrame() { env.pushFrame(sortedTables_.begin()); }
 
 SQLSelect::SQLSelect(const Expressions& columns, 
-	const vector<SQLTable*>& tables,
+	const std::vector<SQLTable*>& tables,
 	SQLExpression* where,
 	SQLOutput* output,
 	SQLOutputConfig cfg)
@@ -59,12 +59,12 @@ SQLSelect::~SQLSelect()
 	}
 }
 
-SQLTable* SQLSelect::findTable(const string& name,
-	string *fullName, bool *hasMissingValue, double *missingValue, bool* isBitfield, BitfieldDef* bitfieldDef) const
+SQLTable* SQLSelect::findTable(const std::string& name,
+	std::string *fullName, bool *hasMissingValue, double *missingValue, bool* isBitfield, BitfieldDef* bitfieldDef) const
 {
 	std::set<SQLTable*> names;
 
-	for(vector<SQLTable*>::const_iterator t = tables_.begin(); 
+	for(std::vector<SQLTable*>::const_iterator t = tables_.begin(); 
 		t != tables_.end() ; ++t)
 	{
 		SQLTable* table = const_cast<SQLTable*>(*t);
@@ -86,20 +86,20 @@ SQLTable* SQLSelect::findTable(const string& name,
 	if(names.size() != 1)
 		throw eckit::UserError("Ambiguous column name", name);
 
-	Log::debug() << "SQLSelect::findTable: name='" << name << "', fullName=" << (fullName ? (string("'")+ *fullName+"'") : "") << std::endl;
+	Log::debug() << "SQLSelect::findTable: name='" << name << "', fullName=" << (fullName ? (std::string("'")+ *fullName+"'") : "") << std::endl;
 
 	return *names.begin();
 		
 }
 
 
-pair<double,bool>* SQLSelect::column(const string& name, SQLTable* table)
+pair<double,bool>* SQLSelect::column(const std::string& name, SQLTable* table)
 {
 
 	if(!table) table = findTable(name);
 	SQLColumn* column = table->column(name);
 
-	string full = column->fullName();
+	std::string full = column->fullName();
 	if(values_.find(full) != values_.end())
 		return &values_[full];
 
@@ -120,7 +120,7 @@ pair<double,bool>* SQLSelect::column(const string& name, SQLTable* table)
 
 }
 
-const type::SQLType* SQLSelect::typeOf(const string& name, SQLTable* table) const
+const type::SQLType* SQLSelect::typeOf(const std::string& name, SQLTable* table) const
 {
 	if(!table) table = findTable(name);
 	SQLColumn* column = table->column(name);
@@ -145,7 +145,7 @@ inline bool SQLSelect::resultsOut()
 	return output_->output(results_);
 }
 
-SQLExpression* SQLSelect::findAliasedExpression(const string& alias)
+SQLExpression* SQLSelect::findAliasedExpression(const std::string& alias)
 {
     for (size_t i(0); i < select_.size(); ++i)
         if (select_[i]->title() == alias)
@@ -219,14 +219,14 @@ void SQLSelect::prepareExecute() {
 	// Check for links
 	for(std::set<SQLTable*>::iterator j = allTables_.begin(); j != allTables_.end() ; ++j) {
 		SQLTable* table1 = *j;
-		const string& name1    = table1->name();
+		const std::string& name1    = table1->name();
 
 		for(std::set<SQLTable*>::iterator k = allTables_.begin(); k != allTables_.end() ; ++k) {
 			SQLTable* table2 = *k;
 			SelectOneTable& x      = tablesToFetch_[table2->master()];
 
 			if(table1->hasLinkTo(*table2)) {
-				const string& name2    = table2->name();
+				const std::string& name2    = table2->name();
 
 				// That can happen for 'aligned' tables
 				if(x.column_) {
@@ -240,10 +240,10 @@ void SQLSelect::prepareExecute() {
 					<< "->" << table2->fullName() << std::endl;
 
 					//
-				string o                  = name2 + ".offset";
+				std::string o                  = name2 + ".offset";
 				std::pair<double,bool>* offset = column(o,table1);
 
-				string l                  = name2 + ".length";
+				std::string l                  = name2 + ".length";
 				std::pair<double,bool>* length = column(l,table1);
 
 				// There should not be 2 tables with a link on the same table
@@ -302,7 +302,7 @@ void SQLSelect::prepareExecute() {
 
 	// Needed, for example, if we do: select count(*) from "file.oda"
 	if (sortedTables_.size() == 0)
-		for (vector<SQLTable*>::iterator i = tables_.begin(); i != tables_.end(); ++i)
+		for (std::vector<SQLTable*>::iterator i = tables_.begin(); i != tables_.end(); ++i)
 			sortedTables_.push_back(new SelectOneTable(*i)); // TODO: release the objects!
 
 	std::sort(sortedTables_.begin(), sortedTables_.end(), compareTables);
@@ -397,7 +397,7 @@ void SQLSelect::postExecute()
 	{
 		for (AggregatedResults::iterator it = aggregatedResults_.begin(); it != aggregatedResults_.end(); ++it)
 		{
-			const vector<pair<double,bool> >& nonAggregatedValues = it->first;
+			const std::vector<pair<double,bool> >& nonAggregatedValues = it->first;
 			const Expressions& aggregated = *(it->second); 
 
 			Expressions results;
@@ -494,7 +494,7 @@ bool SQLSelect::output(SQLExpression* where)
 				for(size_t i = 0; i < n; i++)
 					results_[i]->partialResult();
 			} else {
-				vector<pair<double,bool> > nonAggregatedValues;
+				std::vector<pair<double,bool> > nonAggregatedValues;
 				for (size_t i = 0; i < nonAggregated_.size(); ++i)
 				{
 					bool missing = false;
@@ -605,7 +605,7 @@ void SQLSelect::print(std::ostream& s) const
 
 	s << " FROM";
 	sep = ' ';
-	for(vector<SQLTable*>::const_iterator t = tables_.begin(); t != tables_.end() ; ++t)
+	for(std::vector<SQLTable*>::const_iterator t = tables_.begin(); t != tables_.end() ; ++t)
 	{
 		s << sep << (*t)->name();
 		sep = ',';

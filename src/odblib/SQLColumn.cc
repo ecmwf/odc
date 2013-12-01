@@ -18,7 +18,7 @@ using namespace eckit;
 namespace odb {
 namespace sql {
 
-SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double missingValue): 
+SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const std::string& name, int index, bool hasMissingValue, double missingValue): 
 	SQLIterator(type),
 	noRows_(0),
 	owner_(owner),
@@ -36,7 +36,7 @@ SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& n
 	Log::debug() << "SQLColumn@" << this << std::endl; //" [name=" << name << ",type=" << type << "]" << std::endl;
 }
 
-SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const string& name, int index, bool hasMissingValue, double missingValue, 
+SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const std::string& name, int index, bool hasMissingValue, double missingValue, 
                      const BitfieldDef& bitfieldDef):
 	SQLIterator(type),
 	noRows_(0),
@@ -139,7 +139,7 @@ void SQLColumn::print(std::ostream& s) const
 {
 }
 
-string SQLColumn::fullName() const
+std::string SQLColumn::fullName() const
 {
 	// FIXME:
 	return name(); // + "@" + owner_.fullName();

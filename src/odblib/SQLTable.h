@@ -35,15 +35,15 @@ public:
 	virtual bool next()   = 0;
 };
 
-typedef vector<string> ColumnNames;
+typedef std::vector<std::string> ColumnNames;
 
 class SQLTable : private eckit::NonCopyable {
 public:
-	SQLTable(SQLDatabase&,const eckit::PathName&,const string&);
+	SQLTable(SQLDatabase&,const eckit::PathName&,const std::string&);
 	virtual ~SQLTable(); 
 
     void loadIOMAP(std::istream&);
-	void addColumn(const string&, int, const type::SQLType&, bool, double, bool, const BitfieldDef&);
+	void addColumn(const std::string&, int, const type::SQLType&, bool, double, bool, const BitfieldDef&);
 
 	void addLinkFrom(const SQLTable*);
 	bool hasLinkFrom(const SQLTable&) const;
@@ -53,23 +53,23 @@ public:
 
 	bool isParentOf(const SQLTable&) const;
 
-	virtual SQLColumn* column(const string&);
+	virtual SQLColumn* column(const std::string&);
 	SQLPool*   pool(int);
 
 	SQLTable* master() const;
 	void master(SQLTable* master);
 
-	//virtual bool hasColumn(const string&, string* fullName = 0, bool *hasMissingValue=0, double *missingValue=0, BitfieldDef*=0);
-	virtual bool hasColumn(const string&, string* fullName = 0);//, string* fullName = 0, bool *hasMissingValue=0, double *missingValue=0, BitfieldDef*=0);
+	//virtual bool hasColumn(const std::string&, std::string* fullName = 0, bool *hasMissingValue=0, double *missingValue=0, BitfieldDef*=0);
+	virtual bool hasColumn(const std::string&, std::string* fullName = 0);//, std::string* fullName = 0, bool *hasMissingValue=0, double *missingValue=0, BitfieldDef*=0);
 
 	unsigned long long noRows() const;
 
 	ColumnNames columnNames() const;
-	FieldNames bitColumnNames(const string&) const;
+	FieldNames bitColumnNames(const std::string&) const;
 
-	const string& name()  const { return name_; }
+	const std::string& name()  const { return name_; }
 
-	string fullName() const;
+	std::string fullName() const;
 
 	SQLDatabase& owner() const { return owner_; }
 
@@ -80,18 +80,18 @@ public:
 
 	virtual void print(std::ostream& s) const;
 
-	virtual SQLTableIterator* iterator(const vector<SQLColumn*>&) const = 0;
+	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const = 0;
 
 protected:
     eckit::PathName path_;
-	string   name_;
+	std::string   name_;
 
-	//map<int,SQLFile*> files_;
-	map<int, SQLPool*> pools_;
+	//std::map<int,SQLFile*> files_;
+    std::map<int, SQLPool*> pools_;
 
-	map<string, FieldNames > bitColumnNames_;
-	map<string, SQLColumn*>  columnsByName_;
-	map<int, SQLColumn*>     columnsByIndex_;
+    std::map<std::string, FieldNames > bitColumnNames_;
+    std::map<std::string, SQLColumn*>  columnsByName_;
+    std::map<int, SQLColumn*>     columnsByIndex_;
 
     std::set<const SQLTable*> linksFrom_;
     std::set<const SQLTable*> linksTo_;
@@ -100,10 +100,10 @@ protected:
 	void clearColumns();
 	
 	// void print(std::ostream&) const; 	
-	void addColumn(SQLColumn*, const string&, int);
+	void addColumn(SQLColumn*, const std::string&, int);
 
-	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&) = 0;
-	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue) = 0;
+	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&) = 0;
+	virtual SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue) = 0;
 
 private:
 

@@ -82,7 +82,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 	ff.readInt32(formatVersionMinor);
 	ASSERT("File format version not supported" && formatVersionMinor <= FORMAT_VERSION_NUMBER_MINOR && formatVersionMinor > 3);
 
-	string headerDigest; 
+	std::string headerDigest; 
 	ff.readString(headerDigest);
 
 	MemoryBlock buffer(0);
@@ -90,7 +90,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 
 	MD5 md5;
 	md5.add(buffer, buffer.size());
-	string actualHeaderDigest = md5.digest();
+	std::string actualHeaderDigest = md5.digest();
 
 	if (! (headerDigest == actualHeaderDigest))
 	{
@@ -181,7 +181,7 @@ void serializeHeader(DATAHANDLE &dh, size_t dataSize, size_t rowsNumber, const P
 
 	MD5 md5;
 	md5.add(buffer, len);
-	string headerDigest = md5.digest();
+	std::string headerDigest = md5.digest();
 	ff.writeString(headerDigest);
 
 	ff.writeBuffer(buffer);

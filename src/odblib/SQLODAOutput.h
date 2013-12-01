@@ -38,11 +38,11 @@ private:
 // -- Members
 	ITERATOR writer_;
 
-	//vector<string> columnNames_;
-	//vector<bool> isBitfield_;
-	//vector<BitfieldDef> bitfieldDefs_;
-	//vector<bool> hasMissingValue_;
-	//vector<double> missingValue_;
+	//std::vector<std::string> columnNames_;
+	//std::vector<bool> isBitfield_;
+	//std::vector<BitfieldDef> bitfieldDefs_;
+	//std::vector<bool> hasMissingValue_;
+	//std::vector<double> missingValue_;
 
 	unsigned long long count_;
 

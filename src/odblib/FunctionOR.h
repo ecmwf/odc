@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionOR : public FunctionExpression {
 public:
-	FunctionOR(const string&,const expression::Expressions&);
+	FunctionOR(const std::string&,const expression::Expressions&);
 	FunctionOR(const FunctionOR&);
 	~FunctionOR();
 

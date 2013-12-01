@@ -24,7 +24,7 @@ namespace eckit { class PathName; }
 
 namespace odb {
 
-typedef vector<Column*> MetaDataBase;
+typedef std::vector<Column*> MetaDataBase;
 
 class MetaData : public MetaDataBase {
 public:
@@ -48,7 +48,7 @@ public:
 	/// Check if number of columns, column names and column types are equal. Values not checked.
 	bool operator==(const MetaData&) const;
 
-	bool equalsIncludingConstants(const MetaData&, const vector<string>& constColumns) const; 
+	bool equalsIncludingConstants(const MetaData&, const std::vector<std::string>& constColumns) const; 
 
 	bool operator!=(const MetaData& other) const { return ! (self == other); }
 
@@ -60,13 +60,13 @@ public:
 	void setSize(size_t);
 
 	template<typename DATASTREAM>
-	MetaData& addColumn(const string& name, const string& type);
+	MetaData& addColumn(const std::string& name, const std::string& type);
 
-	template<typename DATASTREAM> MetaData& addBitfield(const string& name, const BitfieldDef&);
+	template<typename DATASTREAM> MetaData& addBitfield(const std::string& name, const BitfieldDef&);
 
-	bool hasColumn(const string&) const;
-	Column* columnByName(const string&) const;
-	size_t columnIndex(const string&) const;
+	bool hasColumn(const std::string&) const;
+	Column* columnByName(const std::string&) const;
+	size_t columnIndex(const std::string&) const;
 
 #ifdef SWIGPYTHON
 	std::string __str__()
@@ -126,7 +126,7 @@ void MetaData::load(DATASTREAM &f)
 }
 
 template <typename DATASTREAM>
-MetaData& MetaData::addColumn(const string& name, const string& type)
+MetaData& MetaData::addColumn(const std::string& name, const std::string& type)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);
@@ -139,7 +139,7 @@ MetaData& MetaData::addColumn(const string& name, const string& type)
 }
 
 template<typename DATASTREAM> 
-MetaData& MetaData::addBitfield(const string& name, const BitfieldDef& bd)
+MetaData& MetaData::addBitfield(const std::string& name, const BitfieldDef& bd)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);

@@ -31,7 +31,7 @@ static ThreadSingleton<odb::sql::SQLSession*> instance_;
 namespace odb {
 namespace sql {
 
-string defaultDB = "default";
+std::string defaultDB = "default";
 
 SQLSession::SQLSession():
 	current_(0)
@@ -57,7 +57,7 @@ SQLSession::~SQLSession()
 {
 	//instance_.instance() = (SQLSession*)0;
 	//cerr << "SQLSession::~SQLSession" << std::endl;
-	for(map<string,SQLDatabase*>::iterator j = databases_.begin(); j != databases_.end(); ++j)
+	for(std::map<std::string,SQLDatabase*>::iterator j = databases_.begin(); j != databases_.end(); ++j)
 		delete (*j).second;
 }
 
@@ -68,9 +68,9 @@ SQLSession& SQLSession::current()
 	return *x;
 }
 
-SQLDatabase& SQLSession::openDatabase(const PathName& path,const string& name)
+SQLDatabase& SQLSession::openDatabase(const PathName& path,const std::string& name)
 {
-	map<string,SQLDatabase*>::iterator j = databases_.find(name);
+	std::map<std::string,SQLDatabase*>::iterator j = databases_.find(name);
 	if(j != databases_.end())
 	{
 		SQLDatabase* db = (*j).second;
@@ -102,7 +102,7 @@ SQLDatabase& SQLSession::currentDatabase() const
 
 double SQLSession::getParameter(int which) const
 {
-	map<int,double>::const_iterator j = params_.find(which);
+	std::map<int,double>::const_iterator j = params_.find(which);
 	if(j == params_.end())
 		throw eckit::UserError("Undefined parameter");
 	return (*j).second;
@@ -113,27 +113,27 @@ void SQLSession::setParameter(int which,double value)
 	params_[which] = value;
 }
 
-SQLDatabase* SQLSession::getDatabase(const string& name)
+SQLDatabase* SQLSession::getDatabase(const std::string& name)
 {
-	map<string,SQLDatabase*>::iterator j = databases_.find(name);
+	std::map<std::string,SQLDatabase*>::iterator j = databases_.find(name);
 	if(j == databases_.end())
 		throw eckit::UserError("Cannot find database", name);
 	return (*j).second;
 }
 
-SQLTable* SQLSession::findFile(const string& name)
+SQLTable* SQLSession::findFile(const std::string& name)
 {
 	ASSERT(current_);
 	return current_->table(name);
 }
 
-SQLTable* SQLSession::findTable(const string& name)
+SQLTable* SQLSession::findTable(const std::string& name)
 {
 	ASSERT(current_);
 	return current_->table(name);
 }
 
-SQLTable* SQLSession::openDataStream(std::istream &is, const string& delimiter)
+SQLTable* SQLSession::openDataStream(std::istream &is, const std::string& delimiter)
 {
 	ASSERT(current_);
 	return current_->openDataStream(is, delimiter);
@@ -145,12 +145,12 @@ SQLTable* SQLSession::openDataHandle(DataHandle &dh)
 	return current_->openDataHandle(dh);
 }
 
-SQLTable* SQLSession::findTable(const string& database,const string& name)
+SQLTable* SQLSession::findTable(const std::string& database,const std::string& name)
 {
 	return getDatabase(database)->table(name);
 }
 
-void SQLSession::createIndex(const string& column,const string& table)
+void SQLSession::createIndex(const std::string& column,const std::string& table)
 {
 	ASSERT(current_);
 #if 0

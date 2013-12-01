@@ -202,12 +202,12 @@ int ReaderIterator::close()
 }
 
 
-void ReaderIterator::property(string key, string value)
+void ReaderIterator::property(std::string key, std::string value)
 {
 	properties_[key] = value;
 }
 
-string ReaderIterator::property(string key)
+std::string ReaderIterator::property(std::string key)
 {
 	return properties_[key];
 }

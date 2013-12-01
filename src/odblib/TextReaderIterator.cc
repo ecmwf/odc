@@ -55,15 +55,15 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 	parseHeader();
 }
 
-odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
+odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 {
     std::ostream& L( Log::debug() );
 
     L << "TextReaderIterator::parseBitfields: " << c << std::endl;
 	size_t leftBracket (c.find('['));
 	size_t rightBracket (c.find(']'));
-	ASSERT(leftBracket != string::npos && rightBracket != string::npos);
-	string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
+	ASSERT(leftBracket != std::string::npos && rightBracket != std::string::npos);
+	std::string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
 
     L << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
 
@@ -71,13 +71,13 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
 	odb::Sizes      sizes;
 
     size_t numberOfBits = 0;
-	vector<string> bs(S::split(";", s));
+	std::vector<std::string> bs(S::split(";", s));
 
     L << "TextReaderIterator::parseBitfields: bs=" << bs << std::endl;
 
 	for (size_t i = 0; i < bs.size(); ++i)
 	{
-		vector<string> v(S::split(":", bs[i]));
+		std::vector<std::string> v(S::split(":", bs[i]));
 
         L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << std::endl;
 
@@ -107,9 +107,9 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const string& c)
 
 void TextReaderIterator::parseHeader()
 {
-	string header;
+	std::string header;
 	std::getline(*in_, header);
-	vector<string> columns (S::split(owner_.delimiter(), header));
+	std::vector<std::string> columns (S::split(owner_.delimiter(), header));
 	//c->missingValue(missingValue);
 
 	ostream& L(Log::debug());
@@ -121,12 +121,12 @@ void TextReaderIterator::parseHeader()
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
 		Log::debug() << "TextReaderIterator::parseHeader: column " << i << " '" << columns[i] << "'" << std::endl;
-		vector<string> column (S::split(":", columns[i]));
+		std::vector<std::string> column (S::split(":", columns[i]));
 		if (column.size() < 2)
-			throw UserError(string("Column '") + columns[i] + "': format should be NAME \":\" TYPE");
+			throw UserError(std::string("Column '") + columns[i] + "': format should be NAME \":\" TYPE");
 
-		const string columnName (S::trim(column[0]));
-		const string columnType (S::upper(S::join(":", vector<string>(column.begin() + 1, column.end()))));
+		const std::string columnName (S::trim(column[0]));
+		const std::string columnType (S::upper(S::join(":", std::vector<std::string>(column.begin() + 1, column.end()))));
 
 		if (! S::startsWith(columnType, "BITFIELD"))
 		{
@@ -170,9 +170,9 @@ bool TextReaderIterator::next()
 	if (noMore_)
 		return false; 
 
-	string line;
+	std::string line;
 	std::getline(*in_, line);
-	vector<string> values(S::split(owner_.delimiter(), line));
+	std::vector<std::string> values(S::split(owner_.delimiter(), line));
 
 	size_t nCols = values.size();
 	if (nCols == 0)
@@ -181,7 +181,7 @@ bool TextReaderIterator::next()
 
 	for(size_t i = 0; i < nCols; ++i)
 	{
-		const string& v (S::trim(values[i]));
+		const std::string& v (S::trim(values[i]));
 		lastValues_[i] = S::upper(v) == "NULL" ? columns_[i]->missingValue() : StringTool::translate(v);
 	}
 

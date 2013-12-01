@@ -19,7 +19,7 @@ DataTableProperties::DataTableProperties()
     blockFillMarkInNumberOfRows_(DEFAULT_BLOCK_FILL_MARK_IN_NUMBER_OF_ROWS)
 {}
 
-DataTable::DataTable(const string& name, const DataColumns& columns,
+DataTable::DataTable(const std::string& name, const DataColumns& columns,
         const DataTableProperties& properties)
   : owner_(0),
     name_(name),

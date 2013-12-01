@@ -56,8 +56,8 @@ public:
 
 	bool operator!=(const MetaDataReaderIterator& other);
 
-	void property(string, string);
-	string property(string);
+	void property(std::string, std::string);
+	std::string property(std::string);
 
 	virtual MetaData& columns() { return columns_; }
 

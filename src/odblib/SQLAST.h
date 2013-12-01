@@ -30,14 +30,14 @@ class ColumnDef
 {
 public:
 	ColumnDef();
-	ColumnDef(const std::string& name, const std::string& type, const Range& range,
-		const std::string& defaultValue);
+    ColumnDef(const std::string& name, const std::string& type, const Range& range,
+        const std::string& defaultValue);
 
-	const std::string& name() const { return name_; }
+    const std::string& name() const { return name_; }
         void name(const std::string& name) { name_ = name; }
-	const std::string& type() const { return type_; }
+    const std::string& type() const { return type_; }
 	const Range& range() const { return range_; }
-	const std::string& defaultValue() const { return defaultValue_; }
+    const std::string& defaultValue() const { return defaultValue_; }
         bool hasDefaultValue() const { return hasDefaultValue_; }
         const BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
         void bitfieldDef(const BitfieldDef& b) { bitfieldDef_ = b; }
@@ -50,7 +50,7 @@ private:
         BitfieldDef bitfieldDef_;
 };
 
-typedef std::vector<ColumnDef> ColumnDefs; 
+typedef std::vector<ColumnDef> ColumnDefs;
 
 class ConstraintDef
 {
@@ -59,11 +59,11 @@ public:
 	ConstraintDef();
 
         ConstraintDef(const std::string& name,
-            const std::vector<std::string>& primaryKey); 
+            const std::vector<std::string>& primaryKey);
 
         ConstraintDef(const std::string& name,
             const std::vector<std::string>& foreignKey, const std::string& relatedTable,
-            const std::vector<std::string>& relatedColumn); 
+            const std::vector<std::string>& relatedColumn);
 
         bool isPrimaryKey() const { return type_ == PRIMARY_KEY; }
         bool isForeignKey() const { return type_ == FOREIGN_KEY; }
@@ -80,17 +80,17 @@ private:
         std::vector<std::string> relatedColumns_;
 };
 
-typedef std::vector<ConstraintDef> ConstraintDefs; 
+typedef std::vector<ConstraintDef> ConstraintDefs;
 
 class TableDef
 {
 public:
 	TableDef();
-	TableDef(const std::string& name, const ColumnDefs& columns,
+    TableDef(const std::string& name, const ColumnDefs& columns,
             const ConstraintDefs& constraints, const std::vector<std::string>& parents);
 
-	const std::string& name() const { return name_; }
-	void name(const std::string& name) { name_ = name; }
+    const std::string& name() const { return name_; }
+    void name(const std::string& name) { name_ = name; }
 	ColumnDefs& columns() { return columns_; }
 	const ColumnDefs& columns() const { return columns_; }
         const ConstraintDefs& constraints() const { return constraints_; }
@@ -99,7 +99,7 @@ private:
         std::string name_;
 	ColumnDefs columns_;
         ConstraintDefs constraints_;
-	std::vector<std::string> parents_;
+    std::vector<std::string> parents_;
 };
 
 typedef std::map<std::string, TableDef> TableDefs;

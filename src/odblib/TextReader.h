@@ -34,8 +34,8 @@ public:
 	typedef IteratorProxy<TextReaderIterator,TextReader,const double> iterator;
 	typedef iterator::Row row;
 
-	TextReader(std::istream &, const string& delimiter);
-	TextReader(const std::string& path, const string& delimiter);
+	TextReader(std::istream &, const std::string& delimiter);
+    TextReader(const std::string& path, const std::string& delimiter);
 
 	virtual ~TextReader();
 
@@ -50,7 +50,7 @@ public:
 	iterator __iter__() { return begin(); }
 #endif
 
-	const string& delimiter() { return delimiter_; }
+	const std::string& delimiter() { return delimiter_; }
 private:
 // No copy allowed
     TextReader(const TextReader&);
@@ -60,8 +60,8 @@ private:
     std::istream* in_;
 	bool deleteDataHandle_;
 	//const eckit::PathName path_;
-	const string path_;
-	const string delimiter_;
+	const std::string path_;
+	const std::string delimiter_;
 
 	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,const double>;
 	friend class odb::TextReaderIterator;

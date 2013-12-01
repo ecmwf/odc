@@ -29,10 +29,10 @@ public:
 	ODAHandle(eckit::Offset, eckit::Offset);
 	~ODAHandle(); 
 
-	void addValue(const string& columnName, double v);
+	void addValue(const std::string& columnName, double v);
 
 	template <typename T>
-		void getValue(const string& name, T& value)
+		void getValue(const std::string& name, T& value)
 	{
 		value = ODATranslator<T>()(values_[name]);
 		eckit::Log::debug() << "ODAHandle::getValue('" << name << "',=>" << value << ")" << std::endl;
@@ -53,7 +53,7 @@ private:
 
 	eckit::Offset start_;
 	eckit::Offset end_;
-	map<string, double> values_;
+	std::map<std::string, double> values_;
 
 	friend std::ostream& operator<<(std::ostream& s, const ODAHandle& p)
 		{ p.print(s); return s; }

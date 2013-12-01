@@ -48,11 +48,11 @@ SchemaAnalyzer::SchemaAnalyzer()
 
 SchemaAnalyzer::~SchemaAnalyzer() {}
 
-void SchemaAnalyzer::beginSchema(const string& name)
+void SchemaAnalyzer::beginSchema(const std::string& name)
 {
     if (!currentSchema_.empty())
     {
-        string message = "Cannot create new schema '" + name
+        std::string message = "Cannot create new schema '" + name
             + "' - current schema '" + currentSchema_ + "' not finalized";
         throw eckit::UserError(message);
     }
@@ -62,7 +62,7 @@ void SchemaAnalyzer::beginSchema(const string& name)
 
     if (result.second == false)
     {
-        string message = "Schema '" + name + "' already defined";
+        std::string message = "Schema '" + name + "' already defined";
         throw eckit::UserError(message);
     }
 
@@ -76,10 +76,10 @@ void SchemaAnalyzer::endSchema()
 
 void SchemaAnalyzer::addTable(TableDef& table)
 {
-        string schemaName = "";
+        std::string schemaName = "";
 
         size_t pos = table.name().find(".");
-        if (pos != string::npos)
+        if (pos != std::string::npos)
         {
             schemaName = table.name().substr(0, pos);
             table.name(table.name().substr(pos+1));
@@ -103,7 +103,7 @@ void SchemaAnalyzer::addTable(TableDef& table)
 
             if (it == tableDefs_.end())
             {
-                string message = "Could not find definition of parent table '"
+                std::string message = "Could not find definition of parent table '"
                     + table.parents()[i] + "' inherited by table '" + table.name() + "'";
                 throw eckit::UserError(message);
             }
@@ -120,11 +120,11 @@ void SchemaAnalyzer::addTable(TableDef& table)
         if (currentSchema_.empty() && schemaName.empty())
         {
             pair<TableDefs::iterator, bool> result;
-            result = tableDefs_.insert(pair<string, TableDef>(table.name(), table));
+            result = tableDefs_.insert(pair<std::string, TableDef>(table.name(), table));
 
             if (result.second == false)
             {
-                string message = "Table '" + table.name() + "' already defined";
+                std::string message = "Table '" + table.name() + "' already defined";
                 throw eckit::UserError(message);
             }
         }
@@ -137,7 +137,7 @@ void SchemaAnalyzer::addTable(TableDef& table)
 
             if (it == schemas_.end())
             {
-                string message = "Referenced schema '" + schemaName + "' not defined '";
+                std::string message = "Referenced schema '" + schemaName + "' not defined '";
                 throw eckit::UserError(message);
             }
 
@@ -145,33 +145,33 @@ void SchemaAnalyzer::addTable(TableDef& table)
             TableDefs& tables = schema.tables();
 
             pair<TableDefs::iterator, bool> result;
-            result = tables.insert(pair<string, TableDef>(table.name(), table));
+            result = tables.insert(pair<std::string, TableDef>(table.name(), table));
 
             if (result.second == false)
             {
-                string message = "Table '" + table.name() + "' already defined in '"
+                std::string message = "Table '" + table.name() + "' already defined in '"
                     + schemaName + "' schema";
                 throw eckit::UserError(message);
             }
         }
 }
 
-void SchemaAnalyzer::skipTable(string tableName)
+void SchemaAnalyzer::skipTable(std::string tableName)
 {
 	tablesToSkip_.insert(tableName);
 }
 
-string SchemaAnalyzer::generateSELECT() const
+std::string SchemaAnalyzer::generateSELECT() const
 {
-	string from = "";
-	string selectList = "";
+	std::string from = "";
+	std::string selectList = "";
 	if (tableDefs_.size() == 0)
 		return "";
 
 	for (TableDefs::const_iterator t = tableDefs_.begin(); t != tableDefs_.end(); ++t)
 	{
 		TableDef tableDef = t->second;
-		string tableName = tableDef.name();
+		std::string tableName = tableDef.name();
 
 		if (tablesToSkip_.find(tableName) != tablesToSkip_.end())
 			continue;
@@ -181,7 +181,7 @@ string SchemaAnalyzer::generateSELECT() const
 		
 		for (ColumnDefs::const_iterator i = columnDefs.begin(); i != columnDefs.end(); i++)
 		{
-			const string typeName = i->type();
+			const std::string typeName = i->type();
 			if (typeName == "@LINK") {
 				Log::info() << "SchemaAnalyzer::generateSELECT: Skipping " << i->name() << std::endl;
 				continue;
@@ -198,29 +198,29 @@ Definitions SchemaAnalyzer::generateDefinitions()
     return Definitions(schemas_, tableDefs_);
 }
 
-void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature)
+void SchemaAnalyzer::addBitfieldType(const std::string name, const FieldNames& fields, const Sizes& sizes, const std::string typeSignature)
 {
 	//Log::debug() << "SchemaAnalyzer::addBitfieldType: " << name << "(" << typeSignature << ")" << std::endl;
 	bitfieldTypes_[name] = make_pair(fields, sizes);
 }
 
-bool SchemaAnalyzer::isBitfield(const string columnName) const
+bool SchemaAnalyzer::isBitfield(const std::string columnName) const
 {
         ASSERT(columnTypes_.find(columnName) != columnTypes_.end());
 	if (columnTypes_.find(columnName) == columnTypes_.end())
             return false;
-	string columnType = columnTypes_.find(columnName)->second;
+	std::string columnType = columnTypes_.find(columnName)->second;
 	return bitfieldTypes_.find(columnType) != bitfieldTypes_.end();
 }
 
-const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const string columnName) 
+const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const std::string columnName) 
 {
 	ASSERT(isBitfield(columnName));
-	string columnType = columnTypes_.find(columnName)->second;
+	std::string columnType = columnTypes_.find(columnName)->second;
 	return bitfieldTypes_[columnType];
 }
 
-void SchemaAnalyzer::updateBitfieldsDefs(MetaData &md, map<string,string> & truenames) const
+void SchemaAnalyzer::updateBitfieldsDefs(MetaData &md, std::map<std::string,std::string> & truenames) const
 {
 	for (size_t i = 0; i < md.size(); i++)
 	{

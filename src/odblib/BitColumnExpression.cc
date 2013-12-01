@@ -19,7 +19,7 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-BitColumnExpression::BitColumnExpression(const string& name, const string& field, SQLTable* table)
+BitColumnExpression::BitColumnExpression(const std::string& name, const std::string& field, SQLTable* table)
 : ColumnExpression(name + "." + field + "@" + table->name(), table),
   mask_(0),
   bitShift_(0),
@@ -32,7 +32,7 @@ BitColumnExpression::BitColumnExpression(const string& name, const string& field
 		<< std::endl;
 }
 
-BitColumnExpression::BitColumnExpression(const string& name, const string& field, const string& tableReference)
+BitColumnExpression::BitColumnExpression(const std::string& name, const std::string& field, const std::string& tableReference)
 : ColumnExpression(name + "." + field + tableReference, tableReference),
   mask_(0),
   bitShift_(0),
@@ -63,7 +63,7 @@ const odb::sql::type::SQLType* BitColumnExpression::type() const
 
 void BitColumnExpression::prepare(SQLSelect& sql)
 {
-	string name = name_ + "." + field_ + tableReference_;
+	std::string name = name_ + "." + field_ + tableReference_;
 	if(!table_)
 		table_ = sql.findTable(name);
 	value_ = sql.column(name, table_);
@@ -102,11 +102,11 @@ void BitColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expr
 		return;
 	}
 
-	for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)
+    for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)
 	{
 
 		SQLTable* table = (*j);
-		std::vector<string> names = table->bitColumnNames(name_ + tableReference_);
+        std::vector<std::string> names = table->bitColumnNames(name_ + tableReference_);
 
 		for(size_t i = 0; i < names.size(); i++)
 		{

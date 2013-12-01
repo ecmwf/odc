@@ -20,7 +20,7 @@ using namespace eckit;
 namespace odb {
 namespace sql {
 
-SQLBitColumn::SQLBitColumn(SQLColumn& column,const string& field):
+SQLBitColumn::SQLBitColumn(SQLColumn& column,const std::string& field):
 	SQLColumn(column),
 	field_(field),
 	mask_(0),

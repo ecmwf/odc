@@ -35,11 +35,11 @@ public:
 
 	SQLSelect* create(bool distinct,
 		Expressions select_list,
-		string into,
-		vector<SQLTable*> from,
+		std::string into,
+		std::vector<SQLTable*> from,
 		odb::sql::expression::SQLExpression *where,
 		Expressions group_by,
-		std::pair<Expressions,vector<bool> > order_by);
+		std::pair<Expressions,std::vector<bool> > order_by);
 
 	SQLExpression* createColumn(
 		const std::string& columnName,
@@ -60,8 +60,8 @@ public:
 	SQLOutputConfig config() { return config_; }
 	void config(SQLOutputConfig cfg) { config_ = cfg; }
 
-	string csvDelimiter() { return csvDelimiter_; }
-	void csvDelimiter(const string& d) { csvDelimiter_ = d; }
+	std::string csvDelimiter() { return csvDelimiter_; }
+	void csvDelimiter(const std::string& d) { csvDelimiter_ = d; }
 
 private:
 
@@ -71,13 +71,13 @@ private:
      SQLSelectFactory(const SQLSelectFactory&);
      SQLSelectFactory& operator=(const SQLSelectFactory&);
 
-	string index(const string& columnName, const SQLExpression* index);
+	std::string index(const std::string& columnName, const SQLExpression* index);
 
 	void reshift(Expressions&);
 
 	SQLExpression* reshift(SQLExpression*);
 
-    void resolveImplicitFrom(SQLSession&, vector<SQLTable*>& from);
+    void resolveImplicitFrom(SQLSession&, std::vector<SQLTable*>& from);
 
     eckit::DataHandle* implicitFromTableSource_;
 
@@ -87,7 +87,7 @@ private:
 	SQLOutputConfig config_;
 	int maxColumnShift_;
 	int minColumnShift_;
-	string csvDelimiter_;
+	std::string csvDelimiter_;
 
     friend class eckit::NewAlloc0<SQLSelectFactory>;
 };

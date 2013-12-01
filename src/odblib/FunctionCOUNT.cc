@@ -17,7 +17,7 @@ namespace function {
 
 const type::SQLType* FunctionCOUNT::type() const { const type::SQLType& x = type::SQLType::lookup("double"); return &x; }
 
-FunctionCOUNT::FunctionCOUNT(const string& name, const expression::Expressions& args)
+FunctionCOUNT::FunctionCOUNT(const std::string& name, const expression::Expressions& args)
 : FunctionExpression(name, args),
   count_(0)
 {}

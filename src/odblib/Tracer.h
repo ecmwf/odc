@@ -17,11 +17,11 @@ using namespace std;
 
 class Tracer {
 public:
-	Tracer(std::ostream&, const string&);
+	Tracer(std::ostream&, const std::string&);
 	~Tracer();
 private:
 	ostream& out_;
-	const string message_;
+	const std::string message_;
 };
 
 #endif

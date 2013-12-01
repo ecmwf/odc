@@ -22,7 +22,7 @@
 namespace odb {
 
 template <typename T>
-ODAUpdatingIterator<T>::ODAUpdatingIterator (T& ii, const T& end, const vector<std::string>& columns, const vector<double>& values)
+ODAUpdatingIterator<T>::ODAUpdatingIterator (T& ii, const T& end, const std::vector<std::string>& columns, const std::vector<double>& values)
 : ii_(ii),
   end_(end),
   columns_(columns),

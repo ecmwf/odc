@@ -50,7 +50,7 @@ ShiftedColumnExpression<T>::ShiftedColumnExpression(const T& o, int shift, int n
 {}
 
 template <typename T>
-ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, SQLTable* table, int shift, int nominalShift, int begin, int end)
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const std::string& name, SQLTable* table, int shift, int nominalShift, int begin, int end)
 : T(name, table, begin, end),
   shift_(shift),
   nominalShift_(nominalShift),
@@ -58,7 +58,7 @@ ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, SQLTable
 {}
 
 template <typename T>
-ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& tableReference, int shift, int nominalShift, int begin, int end)
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const std::string& name, const std::string& tableReference, int shift, int nominalShift, int begin, int end)
 : T(name, tableReference, begin, end),
   shift_(shift),
   nominalShift_(nominalShift),
@@ -66,7 +66,7 @@ ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const st
 {}
 
 template <typename T>
-ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift, int nominalShift)
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const std::string& name, const std::string& field, SQLTable* table, int shift, int nominalShift)
 : T(name, field, table),
   shift_(shift),
   nominalShift_(nominalShift),
@@ -74,7 +74,7 @@ ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const st
 {}
 
 template <typename T>
-ShiftedColumnExpression<T>::ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int
+ShiftedColumnExpression<T>::ShiftedColumnExpression(const std::string& name, const std::string& field, const std::string& tableReference, int
 shift, int nominalShift)
 : T(name, field, tableReference),
   shift_(shift),

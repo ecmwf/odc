@@ -74,8 +74,8 @@ public:
 	void print(std::ostream& s) const { /*TODO*/ }
 private:
 
-	vector<unsigned char> buf_;
-	vector<unsigned char>::iterator readIterator_;
+	std::vector<unsigned char> buf_;
+	std::vector<unsigned char>::iterator readIterator_;
 
 	friend std::ostream& operator<<(std::ostream& s, const InMemoryDataHandle& handle) 
 		{ handle.print(s); return s;}

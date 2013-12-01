@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionJULIAN : public FunctionExpression {
 public:
-	FunctionJULIAN(const string&, const expression::Expressions&);
+	FunctionJULIAN(const std::string&, const expression::Expressions&);
 	FunctionJULIAN(const FunctionJULIAN&);
 	~FunctionJULIAN(); 
 

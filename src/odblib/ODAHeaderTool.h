@@ -24,7 +24,7 @@ public:
 		o << "Shows header(s) and metadata(s) of file";
 	}
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{
 		o << name << " [-offsets] <file-name>";
 	}
@@ -34,7 +34,7 @@ private:
     HeaderTool(const HeaderTool&);
     HeaderTool& operator=(const HeaderTool&);
 
-	string readFile(const string &fileName);
+	std::string readFile(const std::string &fileName);
 };
 
 } // namespace tool 

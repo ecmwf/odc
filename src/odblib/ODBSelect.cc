@@ -27,7 +27,7 @@ using namespace eckit;
 namespace odb {
 #define MEGA(x) ((x)*1024*1024)
 
-Select::Select(const string& selectStatement, DataHandle &dh)
+Select::Select(const std::string& selectStatement, DataHandle &dh)
 : dataHandle_(&dh),
   deleteDataHandle_(false),
   istream_(0),
@@ -35,7 +35,7 @@ Select::Select(const string& selectStatement, DataHandle &dh)
   selectStatement_(selectStatement)
 {}
 
-Select::Select(const string& selectStatement, std::istream &is, const string& delimiter)
+Select::Select(const std::string& selectStatement, std::istream &is, const std::string& delimiter)
 : dataHandle_(0),
   deleteDataHandle_(true),
   istream_(&is),
@@ -44,7 +44,7 @@ Select::Select(const string& selectStatement, std::istream &is, const string& de
   delimiter_(delimiter)
 {}
 
-Select::Select(const string& selectStatement)
+Select::Select(const std::string& selectStatement)
 : dataHandle_(0),
   deleteDataHandle_(true),
   istream_(0),
@@ -60,7 +60,7 @@ Select::Select()
   selectStatement_()
 {}
 
-Select::Select(const string& selectStatement, const string& path)
+Select::Select(const std::string& selectStatement, const std::string& path)
 : dataHandle_(new FileHandle(path)),
   deleteDataHandle_(true),
   // TODO: depending on file extension?
@@ -75,7 +75,7 @@ Select::~Select()
         if (deleteIStream_) delete istream_;
 }
 
-SelectIterator* Select::createSelectIterator(string sql)
+SelectIterator* Select::createSelectIterator(std::string sql)
 {
         return new SelectIterator(*this, sql);
 }

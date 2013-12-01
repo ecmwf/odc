@@ -36,8 +36,8 @@ private:
 	virtual	void config(SQLOutputConfig&);
 // -- Members
 	auto_ptr<SQLOutput>   output_;
-	std::set<vector<double> >  seen_;
-	vector<double>        tmp_;
+	std::set<std::vector<double> >  seen_;
+	std::vector<double>        tmp_;
 // -- Overridden methods
 	virtual void size(int);
 	virtual void reset();

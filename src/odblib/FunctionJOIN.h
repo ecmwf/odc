@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionJOIN : public FunctionExpression {
 public:
-	FunctionJOIN(const string&, const expression::Expressions&);
+	FunctionJOIN(const std::string&, const expression::Expressions&);
 	FunctionJOIN(const FunctionJOIN&);
 	~FunctionJOIN(); 
 

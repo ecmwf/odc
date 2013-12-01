@@ -32,7 +32,7 @@ public:
 	typedef IteratorProxy<SimpleFilterIterator<I>,SimpleFilter,const double> iterator;
 	//typedef iterator::Row row;
 
-	SimpleFilter(I b, I e, const string& columnName, const double value);
+	SimpleFilter(I b, I e, const std::string& columnName, const double value);
 	SimpleFilter();
 
 	~SimpleFilter();
@@ -52,7 +52,7 @@ private:
 	I begin_;
 	I end_;
 
-	string columnName_;
+	std::string columnName_;
 	size_t columnIndex_;
 
 	const double value_;

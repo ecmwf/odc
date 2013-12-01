@@ -26,7 +26,7 @@ MemoryBlock::MemoryBlock(const char* p,size_t size):
 	::memcpy(buffer_,p,size);
 }
 
-MemoryBlock::MemoryBlock(const string& s):
+MemoryBlock::MemoryBlock(const std::string& s):
 	buffer_(0),
 	size_(s.length()+1)
 {

@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionIN : public FunctionExpression {
 public:
-	FunctionIN(const string&, const expression::Expressions&);
+	FunctionIN(const std::string&, const expression::Expressions&);
 	FunctionIN(const FunctionIN&);
 	~FunctionIN();
 

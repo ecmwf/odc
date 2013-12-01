@@ -30,7 +30,7 @@ class TODATableIterator : public SQLTableIterator {
 	typedef typename Table::TReader::iterator iterator;
 
 public:
-	TODATableIterator(Table&, iterator, iterator, double*, const vector<odb::sql::SQLColumn*>&);
+	TODATableIterator(Table&, iterator, iterator, double*, const std::vector<odb::sql::SQLColumn*>&);
 	virtual ~TODATableIterator();
 	virtual void rewind();
 	virtual bool next();
@@ -41,7 +41,7 @@ private:
 	iterator reader_;
 	iterator end_;
 	double* data_;
-	const vector<SQLColumn*>& columns_;
+	const std::vector<SQLColumn*>& columns_;
 
 	bool firstRow_;
 

@@ -37,7 +37,7 @@ public:
 	void registerOptionWithArgument(const std::string&);
 
 	/// @return command line parameters (without the options starting with '-')
-	const vector<std::string> parameters();
+	const std::vector<std::string> parameters();
 	std::string parameters(size_t i) { return parameters()[i]; }
 
 	/// @return true if argumentless option is set
@@ -49,7 +49,7 @@ public:
 	template <typename T> T optionArgument(const std::string&, T defaultValue);
 
 	int argc();
-	string argv(int i);
+	std::string argv(int i);
 	char **argv() { return argv_; }
 
 private:
@@ -61,11 +61,11 @@ private:
 	int argc_;
 	char **argv_;
 
-	std::set<std::string> registeredOptionsWithArguments_;
+	std::set<string> registeredOptionsWithArguments_;
 
-	map<std::string, std::string> optionsWithArguments_;
-	std::set<std::string> optionsNoArguments_;
-	vector<std::string> parameters_;
+	std::map<std::string, std::string> optionsWithArguments_;
+	std::set<string> optionsNoArguments_;
+	std::vector<std::string> parameters_;
 
 	void print(std::ostream& s) const;
 	friend std::ostream& operator<<(std::ostream& s, const CommandLineParser& o) { o.print(s);  return s; }

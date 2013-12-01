@@ -33,7 +33,7 @@ public:
 
 // -- Contructors
 
-	SQLCreateTable(string tableName, ColumnDefs &cols);
+	SQLCreateTable(std::string tableName, ColumnDefs &cols);
 
 // -- Destructor
 
@@ -93,7 +93,7 @@ private:
 	SQLCreateTable& operator=(const SQLCreateTable&);
 
 // -- Members
-	string tableName_;
+	std::string tableName_;
 	ColumnDefs cols_;
 
 // -- Methods

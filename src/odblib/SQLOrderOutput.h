@@ -23,7 +23,7 @@ namespace sql {
 
 class SQLOrderOutput : public SQLOutput {
 public:
-	SQLOrderOutput(SQLOutput* output, const pair<Expressions,vector<bool> >& by);
+	SQLOrderOutput(SQLOutput* output, const pair<Expressions,std::vector<bool> >& by);
 	virtual ~SQLOrderOutput();
 
 protected:
@@ -36,12 +36,12 @@ private:
 
 // -- Members
 	auto_ptr<SQLOutput> output_;
-	std::pair<Expressions,vector<bool> > by_;
+	std::pair<Expressions,std::vector<bool> > by_;
 	
-	typedef map<OrderByExpressions, VectorOfExpressions> SortedResults;
+	typedef std::map<OrderByExpressions, VectorOfExpressions> SortedResults;
 
 	SortedResults sortedResults_;
-    vector<size_t> byIndices_;
+    std::vector<size_t> byIndices_;
 
 // -- Overridden methods
 	virtual void size(int);

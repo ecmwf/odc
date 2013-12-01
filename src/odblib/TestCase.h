@@ -25,7 +25,7 @@ class TestCase : public Tool {
 public:
 
 	static void help(std::ostream &o) { o << "No help available for this command yet"; }
-	static void usage(const string& name, std::ostream &o) { o << name << ": Not implemented yet"; }
+	static void usage(const std::string& name, std::ostream &o) { o << name << ": Not implemented yet"; }
 	virtual void run();
 
 	virtual void setUp();
@@ -38,11 +38,11 @@ protected:
 	TestCase(int argc, char **argv);
 };
 
-typedef vector<TestCase*> TestCases;
+typedef std::vector<TestCase*> TestCases;
 
 #define TESTCASE(F) \
 struct Test_##F : public TestCase { Test_##F(int argc, char **argv) : TestCase(argc, argv) {} void test() { F(); } }; \
-ToolFactory<Test_##F> test_##F(string("Test_") + #F); 
+ToolFactory<Test_##F> test_##F(std::string("Test_") + #F); 
 
 #define TEST_FIXTURE(F, T) \
 struct Test_##F##_##T : public F, public odb::tool::test::TestCase \
@@ -50,7 +50,7 @@ struct Test_##F##_##T : public F, public odb::tool::test::TestCase \
     Test_##F##_##T(int argc, char **argv) : F(), odb::tool::test::TestCase(argc, argv) {} \
     void test(); \
 }; \
-odb::tool::ToolFactory<Test_##F##_##T> test_##F##_##T(string("Test_") + #F + string("_") + #T); \
+odb::tool::ToolFactory<Test_##F##_##T> test_##F##_##T(std::string("Test_") + #F + std::string("_") + #T); \
 void Test_##F##_##T::test()
 
 #define TEST(T) \
@@ -59,7 +59,7 @@ struct Test_##T : public odb::tool::test::TestCase \
     Test_##T(int argc, char **argv) : odb::tool::test::TestCase(argc, argv) {} \
     void test(); \
 }; \
-odb::tool::ToolFactory<Test_##T> test_##T(string("Test_") + #T); \
+odb::tool::ToolFactory<Test_##T> test_##T(std::string("Test_") + #T); \
 void Test_##T::test()
 
 #define CHECK(expected) ASSERT(expected)

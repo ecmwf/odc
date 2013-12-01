@@ -25,14 +25,14 @@ namespace expression {
 template <typename T>
 class ShiftedColumnExpression : public T {
 public:
-	ShiftedColumnExpression(const string&, SQLTable*, int shift, int nominalShift, int begin = -1, int end = -1);
-	ShiftedColumnExpression(const string&, const string& tableReference, int shift, int nominalShift, int begin = -1, int end = -1);
+	ShiftedColumnExpression(const std::string&, SQLTable*, int shift, int nominalShift, int begin = -1, int end = -1);
+	ShiftedColumnExpression(const std::string&, const std::string& tableReference, int shift, int nominalShift, int begin = -1, int end = -1);
 	ShiftedColumnExpression(const ShiftedColumnExpression&);
 	ShiftedColumnExpression(const T& o, int shift, int nominalShift);
 
 	// for bitfields columns
-	ShiftedColumnExpression(const string& name, const string& field, SQLTable* table, int shift, int nominalShift);
-	ShiftedColumnExpression(const string& name, const string& field, const string& tableReference, int shift, int nominalShift);
+	ShiftedColumnExpression(const std::string& name, const std::string& field, SQLTable* table, int shift, int nominalShift);
+	ShiftedColumnExpression(const std::string& name, const std::string& field, const std::string& tableReference, int shift, int nominalShift);
 
 
 	~ShiftedColumnExpression(); 

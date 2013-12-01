@@ -24,7 +24,7 @@ using namespace eckit;
 
 class ValuesDifferent : public Exception {
 public:
-	ValuesDifferent(const string& what) : Exception(what) {}
+	ValuesDifferent(const std::string& what) : Exception(what) {}
 };
 
 
@@ -39,13 +39,13 @@ Comparator::Comparator(bool checkMissingFlag)
 
 void Comparator::compare(const PathName& p1, const PathName& p2)
 {
-	vector<string> noExcludedColumnTypes;
+	std::vector<std::string> noExcludedColumnTypes;
 	compare(p1, p2, noExcludedColumnTypes);
 }
 
-void Comparator::compare(const PathName& p1, const PathName& p2, const vector<string>& excludedColumnsTypes)
+void Comparator::compare(const PathName& p1, const PathName& p2, const std::vector<std::string>& excludedColumnsTypes)
 {
-	Tracer t(Log::debug(), string() + "Comparator::compare: " + p1 + ", " + p2);
+	Tracer t(Log::debug(), std::string() + "Comparator::compare: " + p1 + ", " + p2);
 
 	odb::Reader oda1(p1);
 	odb::Reader oda2(p2);
@@ -105,7 +105,7 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 }
 
 
-void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, const vector<string>& exColumnsTypes)
+void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, const std::vector<std::string>& exColumnsTypes)
 {
 	ASSERT("Number of columns must be the same" && (metaData1.size() == metaData2.size()));
 

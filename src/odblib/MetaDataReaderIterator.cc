@@ -227,12 +227,12 @@ int MetaDataReaderIterator::close()
 }
 
 
-void MetaDataReaderIterator::property(string key, string value)
+void MetaDataReaderIterator::property(std::string key, std::string value)
 {
 	properties_[key] = value;
 }
 
-string MetaDataReaderIterator::property(string key)
+std::string MetaDataReaderIterator::property(std::string key)
 {
 	return properties_[key];
 }

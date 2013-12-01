@@ -49,7 +49,7 @@ void SplitTool::run()
 	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << std::endl;
 
 	PathName inFile = parameters(1);
-	string outFileTemplate = parameters(2);
+	std::string outFileTemplate = parameters(2);
 
 	if (sort_)
 		presortAndSplit(inFile, outFileTemplate);
@@ -60,12 +60,12 @@ void SplitTool::run()
 /**
  * @param maxExpandedSize maximum size of the data in chunks after decoding
 */
-vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
+std::vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
 {
 	ostream &L(Log::debug());
 	L << "SplitTool::getChunks: " << std::endl;
 
-	vector<pair<Offset,Length> > r;
+	std::vector<pair<Offset,Length> > r;
 
     MDReader mdr(inFile);
     MDReader::iterator it(mdr.begin()), end(mdr.end());
@@ -101,7 +101,7 @@ vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t
 	return r;
 }
 
-string SplitTool::genOrderBySelect(const string& inFile, const string& outFileTemplate)
+std::string SplitTool::genOrderBySelect(const std::string& inFile, const std::string& outFileTemplate)
 {
     MDReader mdr(inFile);
     MDReader::iterator it(mdr.begin());
@@ -114,19 +114,19 @@ string SplitTool::genOrderBySelect(const string& inFile, const string& outFileTe
 		if (i) ss << ",";
 		ss << templateParameters[i]->name;
 	}
-	string sql = ss.str();
+	std::string sql = ss.str();
 	Log::info() << "SplitTool::genOrderBySelect: sql: '" << sql << "'" << std::endl;
 	return sql;
 }
 
-void SplitTool::presortAndSplit(const PathName& inFile, const string& outFileTemplate)
+void SplitTool::presortAndSplit(const PathName& inFile, const std::string& outFileTemplate)
 {
 	odb::DispatchingWriter out(outFileTemplate, 1); 
 	odb::DispatchingWriter::iterator outIt = out.begin();
 
-	string sql(genOrderBySelect(inFile, outFileTemplate));
+	std::string sql(genOrderBySelect(inFile, outFileTemplate));
 	
-	vector<pair<Offset,Length> > chunks(getChunks(inFile));
+	std::vector<pair<Offset,Length> > chunks(getChunks(inFile));
     for(size_t i=0; i < chunks.size(); ++i)
     {   
 		PartFileHandle h(inFile, chunks[i].first, chunks[i].second);
@@ -136,7 +136,7 @@ void SplitTool::presortAndSplit(const PathName& inFile, const string& outFileTem
     } 
 }
 
-void SplitTool::split(const PathName& inFile, const string& outFileTemplate, size_t maxOpenFiles)
+void SplitTool::split(const PathName& inFile, const std::string& outFileTemplate, size_t maxOpenFiles)
 {
 	odb::Reader in(inFile);
 	odb::DispatchingWriter out(outFileTemplate, maxOpenFiles);

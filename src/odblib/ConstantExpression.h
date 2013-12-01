@@ -51,8 +51,8 @@ public:
 	virtual bool isNumber() const { NOTIMP; return false; }
 
 	//virtual SQLExpression* simplify(bool&);
-	//virtual void title(const string&);
-	//virtual string title() const;
+	//virtual void title(const std::string&);
+	//virtual std::string title() const;
 
 	virtual const odb::sql::type::SQLType* type() const;
 	// ----

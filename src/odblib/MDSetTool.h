@@ -22,7 +22,7 @@ public:
 	static void help(std::ostream &o)
 	{ o << "Creates a new file resetting types of columns"; }
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{ o << name << " <update-list> <input.odb> <output.odb>"; }
 
 private:
@@ -31,7 +31,7 @@ private:
     MDSetTool(const MDSetTool&);
     MDSetTool& operator=(const MDSetTool&);
 
-	void parseUpdateList(string s, vector<std::string>& columns, vector<std::string>& values);
+	void parseUpdateList(std::string s, std::vector<std::string>& columns, std::vector<std::string>& values);
 };
 
 } // namespace tool 

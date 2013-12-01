@@ -29,7 +29,7 @@ InMemoryDataHandle::InMemoryDataHandle(const MemoryBlock& buffer)
 
 void InMemoryDataHandle::buffer(const MemoryBlock& buffer)
 {
-	buf_ = vector<unsigned char>((const unsigned char *) buffer, (const unsigned char *) buffer + buffer.size());
+	buf_ = std::vector<unsigned char>((const unsigned char *) buffer, (const unsigned char *) buffer + buffer.size());
 	readIterator_ = buf_.begin();
 }
 

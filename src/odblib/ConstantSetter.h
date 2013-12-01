@@ -23,7 +23,7 @@ public:
 	typedef typename odb::ODAUpdatingIterator<T> iterator_class;
 	typedef typename odb::IteratorProxy<iterator_class, ConstantSetter, const double> iterator;
 
-	ConstantSetter(const T& b, const T& e, const vector<std::string>& columns, const vector<double>& values)
+	ConstantSetter(const T& b, const T& e, const std::vector<std::string>& columns, const std::vector<double>& values)
 	: ii_(b), end_(e), columns_(columns), values_(values)
 	{}
 
@@ -35,8 +35,8 @@ public:
 private:
 	T ii_;
 	const T& end_;
-	const vector<std::string> columns_;
-	const vector<double> values_;
+	const std::vector<std::string> columns_;
+	const std::vector<double> values_;
 };
 
 } // namespace odb

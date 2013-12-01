@@ -32,24 +32,24 @@ class SQLStatement;
 namespace expression { class SQLExpression; }
 using namespace expression;
 
-typedef map<string, std::set<string> > Links;
-typedef map<string, SQLExpression*> Variables;
+typedef std::map<std::string, std::set<std::string> > Links;
+typedef std::map<std::string, SQLExpression*> Variables;
 
 class SQLDatabase {
 public:
 	typedef enum { ODA, CSV } DataFormat;
 
-	SQLDatabase(const eckit::PathName&,const string&);
-	SQLDatabase(const string& = "default");
+	SQLDatabase(const eckit::PathName&,const std::string&);
+	SQLDatabase(const std::string& = "default");
 	virtual ~SQLDatabase(); 
 
 // -- Methods
 	virtual void open();
 	virtual void close();
 
-	virtual SQLTable* table(const string&);
+	virtual SQLTable* table(const std::string&);
 	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA) = 0; 
-    virtual SQLTable* openDataStream(std::istream&, const string& delimiter, DataFormat = CSV) = 0;
+    virtual SQLTable* openDataStream(std::istream&, const std::string& delimiter, DataFormat = CSV) = 0;
 	virtual void addTable(SQLTable *table) { tablesByName_[table->name()] = table; }
 
 	void setLinks(const Links&);
@@ -58,10 +58,10 @@ public:
 	void addLinks(const Links& ls) { links_.insert(ls.begin(), ls.end()); }
 	Links& links() { return links_; }
 
-	virtual const string& name() const { return name_; }
+	virtual const std::string& name() const { return name_; }
 
-	SQLExpression* getVariable(const string&) const;
-	void   setVariable(const string&, SQLExpression*);
+	SQLExpression* getVariable(const std::string&) const;
+	void   setVariable(const std::string&, SQLExpression*);
 	Variables& variables() { return variables_; }
 
 	virtual bool sameAs(const SQLDatabase& other) const;
@@ -74,13 +74,13 @@ public:
 
 protected:
 	Links links_;
-	map<string,SQLTable*> tablesByName_;
+    std::map<std::string,SQLTable*> tablesByName_;
 
     eckit::PathName path_;
     std::vector<eckit::PathName> includePath_;
 
 	Variables variables_;
-	string name_;
+	std::string name_;
 	SchemaAnalyzer schemaAnalyzer_;
 
     DataTable* dualTable_;

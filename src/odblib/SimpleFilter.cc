@@ -63,7 +63,7 @@ using namespace std;
 namespace odb {
 
 template<typename I>
-SimpleFilter<I>::SimpleFilter(I b, I e, const string& columnName, const double value)
+SimpleFilter<I>::SimpleFilter(I b, I e, const std::string& columnName, const double value)
 : begin_(b),
   end_(e),
   columnName_(columnName),

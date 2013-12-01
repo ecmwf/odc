@@ -23,7 +23,7 @@ public:
 	static void help(std::ostream &o)
 	{ o << "Converts file to a format with fixed size rows"; }
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{ o << name << " <input.odb> <output.odb>"; }
 
 private:

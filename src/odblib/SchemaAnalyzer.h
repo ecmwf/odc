@@ -32,26 +32,26 @@ public:
 	SchemaAnalyzer();
 	~SchemaAnalyzer();
 
-        void beginSchema(const string& name);
+        void beginSchema(const std::string& name);
         void endSchema();
 	void addTable(TableDef& table);
-	void addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature);
-	bool isBitfield(const string columnName) const; 
-	const BitfieldDef& getBitfieldTypeDefinition(const string columnName); 
-	void updateBitfieldsDefs(MetaData &, map<string, string> &) const;
+	void addBitfieldType(const std::string name, const FieldNames& fields, const Sizes& sizes, const std::string typeSignature);
+	bool isBitfield(const std::string columnName) const; 
+	const BitfieldDef& getBitfieldTypeDefinition(const std::string columnName); 
+    void updateBitfieldsDefs(MetaData &, std::map<std::string, std::string> &) const;
 
-        const TableDef* findTable(const string& name) const;
-	void skipTable(string tableName);
-	string generateSELECT() const;
+        const TableDef* findTable(const std::string& name) const;
+	void skipTable(std::string tableName);
+	std::string generateSELECT() const;
         Definitions generateDefinitions();
 
 private:
-        string currentSchema_;
+        std::string currentSchema_;
         SchemaDefs schemas_;
 	TableDefs tableDefs_;
 	BitfieldDefs bitfieldTypes_;
-	std::set<string> tablesToSkip_;
-	map<string,string> columnTypes_;
+    std::set<std::string> tablesToSkip_;
+    std::map<std::string,std::string> columnTypes_;
 };
 
 } // namespace sql

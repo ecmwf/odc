@@ -29,16 +29,16 @@ public:
 	void run(); 
 
 	template <typename T1, typename T2>
-		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2);
+		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2);
 
 	template <typename T1, typename T2>
-		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2,
-					const vector<string>& excludedColumnsTypes);
+		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2,
+					const std::vector<std::string>& excludedColumnsTypes);
 
 	void compare(const eckit::PathName&, const eckit::PathName&);
-	void compare(const eckit::PathName&, const eckit::PathName&, const vector<string>& excludedColumnsTypes);
+	void compare(const eckit::PathName&, const eckit::PathName&, const std::vector<std::string>& excludedColumnsTypes);
 
-	void compare(const MetaData&, const MetaData&, const vector<string>&);
+	void compare(const MetaData&, const MetaData&, const std::vector<std::string>&);
 	void compare(int nCols, const double *data1, const double *data2, const MetaData&, const MetaData&);
 	void compare(int nCols, const double *data1, const double *data2, const MetaData& md)
 	{ compare(nCols, data1, data2, md, md); } 
@@ -67,15 +67,15 @@ private:
 };
 
 template<typename T1, typename T2>
-bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2)
+bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2)
 {
-	vector<string> noExcludedColumns;
+	std::vector<std::string> noExcludedColumns;
 	return compare(it1, end1, it2, end2, desc1, desc2, noExcludedColumns);
 }
 
 template<typename T1, typename T2>
-bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const string& desc1, const string& desc2,
-						const vector<string>& excludedColumnsTypes)
+bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2,
+						const std::vector<std::string>& excludedColumnsTypes)
 {
 	eckit::Log::info() << "Comparator::compare: (1) " << desc1 << " to (2) " << desc2 << std::endl;
 

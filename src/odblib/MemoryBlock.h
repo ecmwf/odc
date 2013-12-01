@@ -19,7 +19,7 @@
 class MemoryBlock {
 public:
 	MemoryBlock(size_t size);
-	MemoryBlock(const string& s);
+	MemoryBlock(const std::string& s);
 	MemoryBlock(const char*,size_t size);
 
 	~MemoryBlock();

@@ -31,7 +31,7 @@ public:
 		o << "Counts number of rows";
 	}
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{
 		o << name << " <file.odb>";
 	}

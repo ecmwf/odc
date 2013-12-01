@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionSUM : public FunctionExpression {
 public:
-	FunctionSUM(const string&,const expression::Expressions&);
+	FunctionSUM(const std::string&,const expression::Expressions&);
 	FunctionSUM(const FunctionSUM&);
 	~FunctionSUM(); 
 

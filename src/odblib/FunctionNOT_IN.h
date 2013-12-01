@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionNOT_IN : public FunctionExpression {
 public:
-	FunctionNOT_IN(const string&, const expression::Expressions&);
+	FunctionNOT_IN(const std::string&, const expression::Expressions&);
 	FunctionNOT_IN(const FunctionNOT_IN&);
 	~FunctionNOT_IN();
 

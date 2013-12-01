@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionMAX : public FunctionExpression {
 public:
-	FunctionMAX(const string&,const expression::Expressions&);
+	FunctionMAX(const std::string&,const expression::Expressions&);
 	FunctionMAX(const FunctionMAX&);
 	~FunctionMAX(); 
 

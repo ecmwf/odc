@@ -11,9 +11,9 @@ DataTableMappings::DataTableMappings()
   : Map()
 {}
 
-void DataTableMappings::add(const string& source, const string& target)
+void DataTableMappings::add(const std::string& source, const std::string& target)
 {
-    insert(pair<string, string>(source, target));
+    insert(pair<std::string, std::string>(source, target));
 }
 
 } // namespace odb

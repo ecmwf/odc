@@ -74,7 +74,7 @@ template <typename CALLBACK>
 class PartFileProcessor : public eckit::ThreadPoolTask {
 public:
 	PartFileProcessor(const eckit::PathName& fileName, const eckit::Offset& offset, const eckit::Length& length,
-						void* userData, const string& sql, CALLBACK callBack) 
+						void* userData, const std::string& sql, CALLBACK callBack) 
 	: dh_(new eckit::PartFileHandle(fileName, offset, length)),
 	  userData_(userData),
 	  sql_(sql),
@@ -97,7 +97,7 @@ public:
 private:
 	auto_ptr<eckit::DataHandle> dh_;
 	void* userData_;
-	const string sql_;
+	const std::string sql_;
 	CALLBACK callBack_;
 	
 	eckit::PathName fileName_;
@@ -106,7 +106,7 @@ private:
 };
 
 
-void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
+void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const std::string& sql, CallBackProcessOneRow f)
 {
 	if (userData == 0) userData = f.create(); 
 	odb::Select o(sql, dh);
@@ -117,7 +117,7 @@ void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, con
 	return userData;
 }
 
-void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessOneRow f)
+void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const std::string& sql, CallBackProcessOneRow f)
 {
 	eckit::FileHandle dh(fileName);
 	eckit::Length estimate = dh.openForRead();
@@ -127,7 +127,7 @@ void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fil
 const size_t SingleThreadMapReduce::N = 64;
 const size_t MultipleThreadMapReduce::threadPoolSize_ = 5;
 
-void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessArray f)
+void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const std::string& sql, CallBackProcessArray f)
 {
 	odb::Select o(sql, dh);
 	odb::Select::iterator it(o.begin()), end(o.end());
@@ -159,18 +159,18 @@ void * SingleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, con
 	return result;
 }
 
-void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessArray f)
+void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const std::string& sql, CallBackProcessArray f)
 {
 	eckit::FileHandle dh(fileName);
 	eckit::Length estimate = dh.openForRead();
 	return SingleThreadMapReduce::process(userData, dh, sql, f);
 }
 
-void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessArray f)
+void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const std::string& sql, CallBackProcessArray f)
 { 
-	eckit::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
-	vector<void *> results;
-	vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
+	eckit::ThreadPool pool(std::string("[") + fileName + " processors]", threadPoolSize_);
+	std::vector<void *> results;
+	std::vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
 	{   
 		std::pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
@@ -196,15 +196,15 @@ void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& f
 	return r;
 } 
 
-void * MultipleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const string& sql, CallBackProcessOneRow f)
+void * MultipleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const std::string& sql, CallBackProcessOneRow f)
 { NOTIMP; return 0; }
 
-void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const string& sql, CallBackProcessOneRow f)
+void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const std::string& sql, CallBackProcessOneRow f)
 {
-	eckit::ThreadPool pool(string("[") + fileName + " processors]", threadPoolSize_);
+	eckit::ThreadPool pool(std::string("[") + fileName + " processors]", threadPoolSize_);
 
-	vector<void *> results;
-	vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
+	std::vector<void *> results;
+	std::vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
     {   
 		std::pair<eckit::Offset,eckit::Length>& chunk(chunks[i]);
@@ -276,7 +276,7 @@ public:
     void execute(Producer<PAYLOAD>&, Consumer<PAYLOAD>&);
 
     bool error();
-    void error(const string&);
+    void error(const std::string&);
 
 private:
     ProducerConsumer(const ProducerConsumer&);
@@ -286,7 +286,7 @@ private:
     long count_;
 
     bool error_;
-    string why_;
+    std::string why_;
 
     friend class ProducerConsumerTask<PAYLOAD>;
 };
@@ -302,7 +302,7 @@ ProducerConsumer<PAYLOAD>::~ProducerConsumer()
 {}
 
 template<class PAYLOAD>
-inline void ProducerConsumer<PAYLOAD>::error(const string& why)
+inline void ProducerConsumer<PAYLOAD>::error(const std::string& why)
 {
     using eckit::AutoLock;
     using eckit::Mutex;
@@ -501,8 +501,8 @@ void producer_consumer()
 {
 	eckit::Timer timer("ALL");
 	using namespace odb::tool;
-	string fileName = "/scratch/ma/mak/odb-16/all.odb";
-	odb::Select o(string("select lat,lon,obsvalue,sin(obsvalue) from \"") + fileName + "\"");
+	std::string fileName = "/scratch/ma/mak/odb-16/all.odb";
+	odb::Select o(std::string("select lat,lon,obsvalue,sin(obsvalue) from \"") + fileName + "\"");
 	P p(o); C c;
 	ProducerConsumer<Data> pc(1);
 	pc.execute(p, c);

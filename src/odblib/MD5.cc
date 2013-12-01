@@ -25,7 +25,7 @@ void MD5::add(const void* buffer, long length)
 	md5_add(&state_, static_cast<const unsigned char*>(buffer), length);
 }
 
-string MD5::digest()
+std::string MD5::digest()
 {
 	if(digest_.length() == 0)
 	{

@@ -28,7 +28,7 @@ public:
 	~MD5(); 
 
 	void add(const void*, long);
-	string digest();
+	std::string digest();
 
 private:
 // No copy allowed
@@ -36,7 +36,7 @@ private:
 	MD5& operator=(const MD5&);
 
 	md5_state state_;
-	string digest_;
+	std::string digest_;
 };
 
 #endif

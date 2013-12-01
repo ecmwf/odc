@@ -101,7 +101,7 @@ SelectIterator::~SelectIterator()
 void SelectIterator::cacheRow(const Expressions& results)
 {
 	size_t n = results.size();
-	vector<double> v(n);
+	std::vector<double> v(n);
 	bool missing = false;
 	for(size_t i = 0; i < n; i++)
 		v[i] = results[i]->eval(missing = false);
@@ -123,7 +123,7 @@ bool SelectIterator::next()
 		else
 		{
 			noMore_ = false;
-			vector<double>& r(rowCache_.front());
+			std::vector<double>& r(rowCache_.front());
 			//for (size_t i = 0; i < r.size(); ++i) data_[i] = r[i];
 			copy(r.begin(), r.end(), data_);
 	
@@ -150,7 +150,7 @@ bool SelectIterator::next()
 		if (rowCache_.size())
 		{
 			noMore_ = false;
-			vector<double>& r(rowCache_.front());
+			std::vector<double>& r(rowCache_.front());
 			//for (size_t i = 0; i < r.size(); ++i) data_[i] = r[i];
 			copy(r.begin(), r.end(), data_);
 			rowCache_.pop_front();

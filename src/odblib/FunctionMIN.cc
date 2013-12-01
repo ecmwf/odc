@@ -18,7 +18,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionMIN::FunctionMIN(const string& name,const expression::Expressions& args)
+FunctionMIN::FunctionMIN(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name, args),
   value_(DBL_MAX)
 {}

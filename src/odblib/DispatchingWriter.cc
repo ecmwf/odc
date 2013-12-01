@@ -56,7 +56,7 @@ using namespace eckit;
 
 namespace odb {
 
-DispatchingWriter::DispatchingWriter(const string& outputFileTemplate, int maxOpenFiles, bool append)
+DispatchingWriter::DispatchingWriter(const std::string& outputFileTemplate, int maxOpenFiles, bool append)
 : outputFileTemplate_(outputFileTemplate),
   maxOpenFiles_(maxOpenFiles ? maxOpenFiles : Resource<long>("$ODBAPI_MAX_OPEN_FILES;-maxOpenFiles;maxOpenFiles", 250)),
   append_(append)

@@ -23,10 +23,10 @@ public:
 	SQLTool(int argc, char **argv);
 	~SQLTool();
 	virtual void run();
-    static void execute(const string&, std::ostream& = std::cout);
+    static void execute(const std::string&, std::ostream& = std::cout);
 	static void help(std::ostream &o) { o << "Executes SQL statement"; }
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{
 		o << name << " <select-statement> | <script-filename>" << std::endl;
         o << "             [-T]                  Disables printing of column names" << std::endl;
@@ -38,11 +38,11 @@ public:
         o << "             [-f default|wide|odb] ODB output format (default is ascii; odb is binary ODB, wide is ascii with"
 												<< " bitfields definitions in header)" << std::endl;
         o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << std::endl; 
-        o << "                                   delim can be any character or string" << std::endl;
+        o << "                                   delim can be any character or std::string" << std::endl;
 	}
 
 private:
-	static void runSQL(const string&,
+	static void runSQL(const std::string&,
                 const eckit::PathName&,
                 odb::sql::SQLSession&,
                 odb::sql::SQLParser&,
@@ -52,10 +52,10 @@ private:
 
 	bool doNotWriteColumnNames_; // -T
 	bool doNotWriteNULL_;        // -N
-	string delimiter_;           // -delimiter
-	string inputFile_;           // -i
-	string outputFile_;          // -o
-	string outputFormat_;        // default is ascii
+	std::string delimiter_;           // -delimiter
+	std::string inputFile_;           // -i
+	std::string outputFile_;          // -o
+	std::string outputFormat_;        // default is ascii
 	eckit::Offset offset_;       // -offset
 	eckit::Length length_;       // -length
 };

@@ -24,14 +24,14 @@ namespace sql {
 
 class SyntaxError : public eckit::SeriousBug {
 public:
-	SyntaxError(const string& s): eckit::SeriousBug(s) {}
+	SyntaxError(const std::string& s): eckit::SeriousBug(s) {}
 };
 
 struct ParseFrame {
-	ParseFrame(const string& sql, const string& yypath);
+	ParseFrame(const std::string& sql, const std::string& yypath);
 
-	string inputString_;
-	string yypath_;
+	std::string inputString_;
+	std::string yypath_;
 	char* inputText_;
 	char* inputEnd_;
 };
@@ -40,13 +40,13 @@ class SQLParser {
 public:
 	static int line();
 
-	static void parseString(const string&, eckit::DataHandle*, SQLOutputConfig);
-	static void parseString(const string&, istream*, SQLOutputConfig, const string& cvsDelimiter);
-	static void parseString(const string&, SQLDatabase&, SQLOutputConfig);
+	static void parseString(const std::string&, eckit::DataHandle*, SQLOutputConfig);
+	static void parseString(const std::string&, istream*, SQLOutputConfig, const std::string& cvsDelimiter);
+	static void parseString(const std::string&, SQLDatabase&, SQLOutputConfig);
 
 	//static void include(const eckit::PathName&);
 
-	static void pushInclude(const string&, const string&);
+	static void pushInclude(const std::string&, const std::string&);
 	static void popInclude();
 
 	static void lexRelease();

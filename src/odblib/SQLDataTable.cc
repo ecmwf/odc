@@ -27,19 +27,19 @@ SQLDataTable::~SQLDataTable()
     delete [] data_;
 }
 
-SQLColumn* SQLDataTable::column(const string& name)
+SQLColumn* SQLDataTable::column(const std::string& name)
 {
     SQLColumn* column = 0;
-    map<string, SQLColumn*>::iterator it = columnsByName_.begin();
+    std::map<std::string, SQLColumn*>::iterator it = columnsByName_.begin();
 
     for (; it != columnsByName_.end(); ++it)
     {
-        string s = it->first;
+        std::string s = it->first;
 
         if (s.find(name + "@") == 0)
         {
             if (column)
-                throw eckit::UserError(string("SQLDataTable::column: name \"") + name + "\" is ambiguous");
+                throw eckit::UserError(std::string("SQLDataTable::column: name \"") + name + "\" is ambiguous");
             else 
                 column = it->second;
         }
@@ -51,7 +51,7 @@ SQLColumn* SQLDataTable::column(const string& name)
     return SQLTable::column(name);
 }
 
-bool SQLDataTable::hasColumn(const string& name, string* fullName)
+bool SQLDataTable::hasColumn(const std::string& name, std::string* fullName)
 {
     if (SQLTable::hasColumn(name))
     {
@@ -62,7 +62,7 @@ bool SQLDataTable::hasColumn(const string& name, string* fullName)
     }
 
     int n = 0;
-    map<string,SQLColumn*>::iterator it = columnsByName_.begin();
+    std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
 
     for (; it != columnsByName_.end(); ++it)
     {
@@ -78,16 +78,16 @@ bool SQLDataTable::hasColumn(const string& name, string* fullName)
     if (n == 0) return false;
     if (n == 1) return true;
 
-    throw eckit::UserError(string("SQLDataTable:hasColumn(\"") + name + "\"): ambiguous name");
+    throw eckit::UserError(std::string("SQLDataTable:hasColumn(\"") + name + "\"): ambiguous name");
     return false;
 }
 
-SQLTableIterator* SQLDataTable::iterator(const vector<SQLColumn*>& columns) const
+SQLTableIterator* SQLDataTable::iterator(const std::vector<SQLColumn*>& columns) const
 {
     return new SQLDataTableIterator(table_, const_cast<double*>(data_), columns);
 }
 
-SQLColumn* SQLDataTable::createSQLColumn(const type::SQLType& type, const string& name,
+SQLColumn* SQLDataTable::createSQLColumn(const type::SQLType& type, const std::string& name,
     int index, bool hasMissingValue, double missingValue, 
     const BitfieldDef& bitfieldDef)
 {
@@ -95,7 +95,7 @@ SQLColumn* SQLDataTable::createSQLColumn(const type::SQLType& type, const string
         bitfieldDef, &data_[index]);
 }
 
-SQLColumn* SQLDataTable::createSQLColumn(const type::SQLType& type, const string& name,
+SQLColumn* SQLDataTable::createSQLColumn(const type::SQLType& type, const std::string& name,
     int index, bool hasMissingValue, double missingValue)
 {
     return new SQLDataColumn(type, *this, name, index, hasMissingValue, missingValue,
@@ -112,23 +112,23 @@ void SQLDataTable::populateColumns()
     {
         const DataColumn& column = table_.columns()[index];
 
-        const string name = column.name();
+        const std::string name = column.name();
         bool hasMissingValue = true; // TODO: implement DataColumn::hasMissing() method
         double missingValue = column.missingValue();
         odb::BitfieldDef bitfieldDef = column.bitfieldDef();
     
-        string sqlType;
+        std::string sqlType;
 
         switch (column.type())
         {
             case INTEGER: sqlType = "integer"; break;
             case REAL:    sqlType = "real";    break;
             case DOUBLE:  sqlType = "double";  break;
-            case STRING:  sqlType = "string";  break;
+            case STRING:  sqlType = "std::string";  break;
 
             case BITFIELD:
             {
-                string signature = type::SQLBitfield::make("Bitfield",
+                std::string signature = type::SQLBitfield::make("Bitfield",
                     bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
                 addColumn(name, index, type::SQLType::lookup(signature),
                     hasMissingValue, missingValue, true, bitfieldDef);

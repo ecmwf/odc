@@ -26,14 +26,14 @@ class HashTable;
 class SQLIteratorSession;
 
 struct TemplateParameter {
-	TemplateParameter(size_t startPos, size_t endPos, size_t columnIndex, string name)
+	TemplateParameter(size_t startPos, size_t endPos, size_t columnIndex, std::string name)
 	: startPos(startPos), endPos(endPos), columnIndex(columnIndex), name(name)
 	{}
 
 	size_t startPos;
 	size_t endPos;
 	size_t columnIndex;
-	string name;
+	std::string name;
 
 private:
 // No copy allowed.
@@ -41,12 +41,12 @@ private:
 	TemplateParameter& operator=(const TemplateParameter&);
 };
 
-class TemplateParameters : public vector<TemplateParameter*> {
+class TemplateParameters : public std::vector<TemplateParameter*> {
 public:
 	TemplateParameters();
 	~TemplateParameters();
 	void release();
-	static TemplateParameters& parse(const string& fileNameTemplate, TemplateParameters&, const MetaData& = nullMD);
+	static TemplateParameters& parse(const std::string& fileNameTemplate, TemplateParameters&, const MetaData& = nullMD);
 
 private:
 // No copy allowed.

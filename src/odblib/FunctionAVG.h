@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionAVG : public FunctionExpression {
 public:
-	FunctionAVG(const string&,const expression::Expressions&);
+	FunctionAVG(const std::string&,const expression::Expressions&);
 	FunctionAVG(const FunctionAVG&);
 	~FunctionAVG(); 
 

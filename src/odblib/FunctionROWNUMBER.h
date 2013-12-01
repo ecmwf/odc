@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionROWNUMBER : public FunctionExpression {
 public:
-	FunctionROWNUMBER(const string&, const expression::Expressions&);
+	FunctionROWNUMBER(const std::string&, const expression::Expressions&);
 	FunctionROWNUMBER(const FunctionROWNUMBER&);
 	~FunctionROWNUMBER();
 

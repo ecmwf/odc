@@ -23,7 +23,7 @@ public:
 	typedef typename odb::MDUpdatingIterator<T> iterator_class;
 	typedef typename odb::IteratorProxy<iterator_class, MDSetter, const double> iterator;
 
-	MDSetter(const T& b, const T& e, const vector<std::string>& columns, const vector<string>& types)
+	MDSetter(const T& b, const T& e, const std::vector<std::string>& columns, const std::vector<std::string>& types)
 	: ii_(b), end_(e), columns_(columns), types_(types)
 	{}
 
@@ -35,8 +35,8 @@ public:
 private:
 	T ii_;
 	const T& end_;
-	const vector<std::string> columns_;
-	const vector<std::string> types_;
+	const std::vector<std::string> columns_;
+	const std::vector<std::string> types_;
 };
 
 } // namespace odb

@@ -77,8 +77,8 @@ public:
 	void readUInt16(uint16_t &);
 	void writeUInt16(uint16_t);
 
-	void readString(string &);
-	void writeString(const string &);
+	void readString(std::string &);
+	void writeString(const std::string &);
 
 	void readBuffer(MemoryBlock &);
 	void writeBuffer(const MemoryBlock &);

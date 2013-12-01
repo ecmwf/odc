@@ -29,10 +29,10 @@ public:
 	typedef WriterDispatchingIterator<WriterBufferingIterator, DispatchingWriter> iterator_class;
 	typedef IteratorProxy<iterator_class, DispatchingWriter>  iterator;
 
-	DispatchingWriter(const string &outputFileTemplate, int maxOpenFiles = 0, bool append = false);
+	DispatchingWriter(const std::string &outputFileTemplate, int maxOpenFiles = 0, bool append = false);
 	virtual ~DispatchingWriter();
 
-	const string outputFileTemplate() { return outputFileTemplate_; }
+	const std::string outputFileTemplate() { return outputFileTemplate_; }
 
 	iterator begin();
 
@@ -44,7 +44,7 @@ private:
     DispatchingWriter(const DispatchingWriter&);
     DispatchingWriter& operator=(const DispatchingWriter&);
 
-	const string outputFileTemplate_;
+	const std::string outputFileTemplate_;
 	int maxOpenFiles_; 
 	bool append_;
 };

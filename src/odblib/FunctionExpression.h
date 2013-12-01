@@ -25,7 +25,7 @@ namespace function {
 
 class FunctionExpression : public SQLExpression {
 public:
-	FunctionExpression(const string&,const expression::Expressions&);
+	FunctionExpression(const std::string&,const expression::Expressions&);
 	FunctionExpression(const FunctionExpression&);
 	~FunctionExpression();
 
@@ -44,7 +44,7 @@ public:
 	expression::Expressions& args() { return args_; }
 
 protected:
-	string name_;
+	std::string name_;
 	expression::Expressions args_;
     // void print(std::ostream&) const;
 

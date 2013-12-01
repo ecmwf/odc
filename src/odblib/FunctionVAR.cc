@@ -17,7 +17,7 @@ namespace function {
 
 const type::SQLType* FunctionVAR::type() const { return &type::SQLType::lookup("double"); }
 
-FunctionVAR::FunctionVAR(const string& name,const expression::Expressions& args)
+FunctionVAR::FunctionVAR(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args),
   count_(0),
   value_(0),

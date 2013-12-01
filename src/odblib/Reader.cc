@@ -45,7 +45,7 @@ Reader::Reader()
   path_("")
 {}
 
-Reader::Reader(const string& path)
+Reader::Reader(const std::string& path)
 : dataHandle_(new FileHandle(path)),
   deleteDataHandle_(true),
   path_(path)

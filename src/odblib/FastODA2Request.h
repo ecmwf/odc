@@ -24,17 +24,17 @@ class FastODA2Request {
 public:
 	FastODA2Request();
 
-	void parseConfig(const string& s);
-	void addColumn(const string& keyword, const string& columnName);
+	void parseConfig(const std::string& s);
+	void addColumn(const std::string& keyword, const std::string& columnName);
 
 	bool scanFile(const eckit::PathName&);
-	bool scanFile(const eckit::PathName&, eckit::OffsetList&, eckit::LengthList&, vector<ODAHandle*>&);
+	bool scanFile(const eckit::PathName&, eckit::OffsetList&, eckit::LengthList&, std::vector<ODAHandle*>&);
 
-	string genRequest() const;
+	std::string genRequest() const;
 
-	const std::set<string>& getValues(const string& keyword);
-	map<string, double> getUniqueValues();
-	map<string, vector<double> > getValues();
+	const std::set<string>& getValues(const std::string& keyword);
+	std::map<std::string, double> getUniqueValues();
+	std::map<std::string, std::vector<double> > getValues();
 
 	void mergeSimilarBlocks(bool m) { mergeSimilarBlocks_ = m; }
 	
@@ -43,28 +43,28 @@ public:
 protected:
 	bool collectValues(const MetaData&, ODAHandle&);
 
-	string columnIsNotConstant(const Column& column) { return T::columnIsNotConstant(column); }
-	string columnNotFound(const string& columnName) { return T::columnNotFound(columnName); }
-	bool duplicateCombination(const string& errorMessage) { return T::duplicateCombination(errorMessage); }
+	std::string columnIsNotConstant(const Column& column) { return T::columnIsNotConstant(column); }
+	std::string columnNotFound(const std::string& columnName) { return T::columnNotFound(columnName); }
+	bool duplicateCombination(const std::string& errorMessage) { return T::duplicateCombination(errorMessage); }
 
-	string patchValue(const string& k, const string& value) const;
+	std::string patchValue(const std::string& k, const std::string& value) const;
 
 private:
 	MetaData firstMD_;
 	eckit::PathName inputFile_;
-	vector<string> keywords_;
-	vector<string> columnNames_;
-	vector<set<string> > values_;
-	map<string, std::set<double> > doubleValues_;
+	std::vector<std::string> keywords_;
+	std::vector<std::string> columnNames_;
+	std::vector<set<string> > values_;
+	std::map<std::string, std::set<double> > doubleValues_;
 
-	map<vector<string>, pair<eckit::Offset, eckit::Offset> > valuesSeen_;
+	std::map<std::vector<std::string>, pair<eckit::Offset, eckit::Offset> > valuesSeen_;
 	unsigned long long rowsNumber_;
 	bool mergeSimilarBlocks_;
 };
 
 
 struct ODA2RequestServerTraits {
-	static string columnIsNotConstant(const Column& column)
+	static std::string columnIsNotConstant(const Column& column)
 	{
 		stringstream ss;
 		ss << "Column '" << column.name() << "' is not constant"
@@ -72,17 +72,17 @@ struct ODA2RequestServerTraits {
 		throw eckit::UserError(ss.str());
 	}
 
-	static string columnNotFound(const string& columnName)
-	{ throw eckit::UserError(string("Column '") + columnName + "' not found."); }
+	static std::string columnNotFound(const std::string& columnName)
+	{ throw eckit::UserError(std::string("Column '") + columnName + "' not found."); }
 
-	static bool duplicateCombination(const string& errorMessage)
+	static bool duplicateCombination(const std::string& errorMessage)
 	{ throw eckit::UserError(errorMessage); return false; }
 };
 
 struct ODA2RequestClientTraits {
-	static string columnIsNotConstant(const Column& column) { return string("MULTIPLE"); }
-	static string columnNotFound(const string& columnName) { return string("MISSING"); }
-	static bool duplicateCombination(const string& errorMessage)
+	static std::string columnIsNotConstant(const Column& column) { return std::string("MULTIPLE"); }
+	static std::string columnNotFound(const std::string& columnName) { return std::string("MISSING"); }
+	static bool duplicateCombination(const std::string& errorMessage)
 	{ eckit::Log::error() << errorMessage << std::endl; return false; }
 };
 

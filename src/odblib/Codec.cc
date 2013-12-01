@@ -29,11 +29,11 @@ using namespace eckit;
 namespace odb {
 namespace codec {
 
-template<> map<string, AbstractCodecFactory<DataHandle>* > AbstractCodecFactory<DataHandle>::codecFactories = map<string, AbstractCodecFactory<DataHandle>* >();
-template<> map<string, AbstractCodecFactory<FastInMemoryDataHandle>* > AbstractCodecFactory<FastInMemoryDataHandle>::codecFactories = map<string, AbstractCodecFactory<FastInMemoryDataHandle>* >();
-template<> map<string, AbstractCodecFactory<PrettyFastInMemoryDataHandle>* > AbstractCodecFactory<PrettyFastInMemoryDataHandle>::codecFactories = map<string, AbstractCodecFactory<PrettyFastInMemoryDataHandle>* >();
+template<> std::map<std::string, AbstractCodecFactory<DataHandle>* > AbstractCodecFactory<DataHandle>::codecFactories = std::map<std::string, AbstractCodecFactory<DataHandle>* >();
+template<> std::map<std::string, AbstractCodecFactory<FastInMemoryDataHandle>* > AbstractCodecFactory<FastInMemoryDataHandle>::codecFactories = std::map<std::string, AbstractCodecFactory<FastInMemoryDataHandle>* >();
+template<> std::map<std::string, AbstractCodecFactory<PrettyFastInMemoryDataHandle>* > AbstractCodecFactory<PrettyFastInMemoryDataHandle>::codecFactories = std::map<std::string, AbstractCodecFactory<PrettyFastInMemoryDataHandle>* >();
 
-Codec::Codec(const string& name)
+Codec::Codec(const std::string& name)
 : name_(name),
   hasMissing_(false),
   missingValue_(odb::MDI::realMDI()),

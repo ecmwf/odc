@@ -37,8 +37,8 @@ public:
 	virtual ~RowsWriterIterator() {}
 	virtual MetaData& columns() = 0;
 
-	virtual int setColumn(size_t index, std::string name, ColumnType type) = 0;
-	virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) = 0;
+    virtual int setColumn(size_t index, std::string name, ColumnType type) = 0;
+    virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) = 0;
 	virtual int writeRow(const double* values, unsigned long count) = 0;
 };
 

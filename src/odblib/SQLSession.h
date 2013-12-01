@@ -36,22 +36,22 @@ public:
 	virtual ~SQLSession(); 
 
 
-	SQLDatabase& openDatabase(const eckit::PathName&,const string& name = "");
-	void closeDatabase(const string& name);
+	SQLDatabase& openDatabase(const eckit::PathName&,const std::string& name = "");
+	void closeDatabase(const std::string& name);
 
-	void createIndex(const string&,const string&);
+	void createIndex(const std::string&,const std::string&);
 
-	SQLDatabase* getDatabase(const string& name);
+	SQLDatabase* getDatabase(const std::string& name);
 
 	double getParameter(int) const;
 	void   setParameter(int,double);
 
-	SQLTable* findTable(const string&);
-	SQLTable* findTable(const string&,const string&);
-	SQLTable* findFile(const string&);
+	SQLTable* findTable(const std::string&);
+	SQLTable* findTable(const std::string&,const std::string&);
+	SQLTable* findFile(const std::string&);
 
 	SQLTable* openDataHandle(eckit::DataHandle &);
-    SQLTable* openDataStream(std::istream &, const string &);
+    SQLTable* openDataStream(std::istream &, const std::string &);
 
 	virtual void statement(SQLStatement*) = 0;
 	virtual SQLOutput* defaultOutput() = 0;
@@ -79,9 +79,9 @@ private:
 // -- Members
 
 	SQLDatabase* current_;
-	map<int,double> params_;
+    std::map<int, double> params_;
 
-	map<string,SQLDatabase*> databases_;
+    std::map<std::string, SQLDatabase*> databases_;
 
 // -- Friends
 

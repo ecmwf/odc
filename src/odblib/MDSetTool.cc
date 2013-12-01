@@ -34,8 +34,8 @@ void MDSetTool::run()
 		return;
 	}
 
-	vector<string> columns;
-	vector<string> types;
+	std::vector<std::string> columns;
+	std::vector<std::string> types;
 
 	PathName inFile = parameters(2);
 
@@ -45,7 +45,7 @@ void MDSetTool::run()
 	parseUpdateList(parameters(1), columns, types);
     ASSERT(columns.size() == types.size());
 
-	vector<BitfieldDef> bitfieldDefs;
+	std::vector<BitfieldDef> bitfieldDefs;
     for (size_t i = 0; i < types.size(); ++i)
     {   
         Log::info() << columns[i] << " : " << types[i] << std::endl;
@@ -57,10 +57,10 @@ void MDSetTool::run()
         ASSERT(types[i][types[i].size() - 1] == ']');
 
         BitfieldDef bf; 
-        vector<string> parts(StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
+        std::vector<std::string> parts(StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
         for (size_t p = 0; p < parts.size(); ++p)
         {   
-            vector<string> field = StringTools::split(":", parts[p]);
+            std::vector<std::string> field = StringTools::split(":", parts[p]);
             bf.first.push_back(field[0]);
             bf.second.push_back(atoi(field[1].c_str()));
         }   
@@ -105,22 +105,22 @@ void MDSetTool::run()
 
 }
 
-void MDSetTool::parseUpdateList(string s, vector<string>& columns, vector<string>& values)
+void MDSetTool::parseUpdateList(std::string s, std::vector<std::string>& columns, std::vector<std::string>& values)
 {
     Tokenizer splitAssignments(",");
-    vector<string> assignments;
+    std::vector<std::string> assignments;
     splitAssignments(s, assignments);
 	
     Tokenizer splitEq("=");
 
 	for (size_t i = 0; i < assignments.size(); ++i)
 	{
-		vector<string> assignment;
+		std::vector<std::string> assignment;
 		splitEq(assignments[i], assignment);
 		ASSERT(assignment.size() == 2);
 
-		string colName = assignment[0];
-		string value = assignment[1];
+		std::string colName = assignment[0];
+		std::string value = assignment[1];
 		
 		Log::info() << "MDSetTool::parseUpdateList: " << colName << "='" << value << "'" << std::endl;
 

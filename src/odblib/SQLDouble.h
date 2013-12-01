@@ -25,7 +25,7 @@ namespace type {
 
 class SQLDouble : public SQLType {
 public:
-	SQLDouble(const string& );
+	SQLDouble(const std::string& );
 	~SQLDouble(); 
 
 // -- Overridden methods

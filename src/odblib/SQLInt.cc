@@ -18,7 +18,7 @@ namespace odb {
 namespace sql {
 namespace type {
 
-SQLInt::SQLInt(const string& name): SQLType(name) {} 
+SQLInt::SQLInt(const std::string& name): SQLType(name) {} 
 
 SQLInt::~SQLInt() {}
 

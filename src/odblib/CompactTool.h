@@ -22,7 +22,7 @@ public:
 	static void help(std::ostream &o)
 	{ o << "Tries to compress a file"; }
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{ o << name << " <input.odb> <output.odb>"; }
 
 private:

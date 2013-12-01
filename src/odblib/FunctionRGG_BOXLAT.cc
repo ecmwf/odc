@@ -18,7 +18,7 @@ namespace expression {
 namespace function {
 
 
-FunctionRGG_BOXLAT::FunctionRGG_BOXLAT(const string& name, const expression::Expressions& args)
+FunctionRGG_BOXLAT::FunctionRGG_BOXLAT(const std::string& name, const expression::Expressions& args)
 : FunctionExpression(name, args)
 {}
 

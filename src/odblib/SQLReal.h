@@ -31,7 +31,7 @@ public:
 
 // -- Contructors
 
-	SQLReal(const string& );
+	SQLReal(const std::string& );
 
 // -- Destructor
 

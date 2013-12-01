@@ -35,10 +35,10 @@ public:
 	typedef IteratorProxy<SelectIterator,Select,const double> iterator;
 	typedef iterator::Row row;
 
-	Select(const string& selectStatement, eckit::DataHandle &);
-	Select(const string& selectStatement, std::istream &, const string& delimiter);
-	Select(const string& selectStatement, const std::string& path);
-	Select(const string& selectStatement);
+	Select(const std::string& selectStatement, eckit::DataHandle &);
+	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter);
+    Select(const std::string& selectStatement, const std::string& path);
+	Select(const std::string& selectStatement);
 	Select();
 
 	virtual ~Select();
@@ -53,7 +53,7 @@ public:
 	eckit::DataHandle* dataHandle() { return dataHandle_; };
 	std::istream* dataIStream() { return istream_; }
 
-	SelectIterator* createSelectIterator(string);
+	SelectIterator* createSelectIterator(std::string);
 
 private:
 	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
@@ -64,8 +64,8 @@ private:
 	std::istream* istream_;
 	bool deleteIStream_;
 
-	string selectStatement_;
-	string delimiter_;
+	std::string selectStatement_;
+	std::string delimiter_;
 };
 
 } // namespace odb 

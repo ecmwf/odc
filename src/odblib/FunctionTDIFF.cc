@@ -20,7 +20,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionTDIFF::FunctionTDIFF(const string& name, const expression::Expressions& args)
+FunctionTDIFF::FunctionTDIFF(const std::string& name, const expression::Expressions& args)
 : FunctionExpression(name, args)
 {}
 

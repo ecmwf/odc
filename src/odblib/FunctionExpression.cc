@@ -22,7 +22,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionExpression::FunctionExpression(const string& name, const expression::Expressions& args)
+FunctionExpression::FunctionExpression(const std::string& name, const expression::Expressions& args)
 : name_(name),
   args_(args)
 {

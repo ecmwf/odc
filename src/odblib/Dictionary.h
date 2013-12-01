@@ -24,7 +24,7 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-typedef map<string,odb::sql::expression::SQLExpression*> Map;
+typedef std::map<std::string,odb::sql::expression::SQLExpression*> Map;
 
 class Dictionary : public SQLExpression, public Map
 {
@@ -56,7 +56,7 @@ public:
 	virtual bool isConstant() const  { NOTIMP; }
 	virtual bool isNumber() const { return false; }
 	virtual bool isVector() const { return false; }
-	//virtual const Vector& vector() const { return *this; }
+	//virtual const Vector& std::vector() const { return *this; }
 	virtual bool isDictionary() const { return true; }
 	virtual Dictionary& dictionary() { return *this; }
 

@@ -18,8 +18,8 @@ namespace sql {
 ColumnDef::ColumnDef()
 {}
 
-ColumnDef::ColumnDef(const string& name, const string& type, const Range& range,
-        const string& defaultValue)
+ColumnDef::ColumnDef(const std::string& name, const std::string& type, const Range& range,
+        const std::string& defaultValue)
   : name_(name),
     type_(type),
     range_(range),
@@ -35,7 +35,7 @@ ConstraintDef::ConstraintDef()
     relatedColumns_(0)
 {}
 
-ConstraintDef::ConstraintDef(const string& name, const vector<string>& primaryKey)
+ConstraintDef::ConstraintDef(const std::string& name, const std::vector<std::string>& primaryKey)
   : type_(PRIMARY_KEY),
     name_(name),
     columns_(primaryKey),
@@ -43,8 +43,8 @@ ConstraintDef::ConstraintDef(const string& name, const vector<string>& primaryKe
     relatedColumns_(0)
 {}
 
-ConstraintDef::ConstraintDef(const string& name, const vector<string>& foreignKey,
-        const string& relatedTable, const vector<string>& relatedColumns)
+ConstraintDef::ConstraintDef(const std::string& name, const std::vector<std::string>& foreignKey,
+        const std::string& relatedTable, const std::vector<std::string>& relatedColumns)
   : type_(FOREIGN_KEY),
     name_(name),
     columns_(foreignKey),
@@ -55,8 +55,8 @@ ConstraintDef::ConstraintDef(const string& name, const vector<string>& foreignKe
 TableDef::TableDef()
 {}
 
-TableDef::TableDef(const string& name, const ColumnDefs& columns,
-        const ConstraintDefs& constraints, const vector<string>& parents)
+TableDef::TableDef(const std::string& name, const ColumnDefs& columns,
+        const ConstraintDefs& constraints, const std::vector<std::string>& parents)
   : name_(name),
     columns_(columns),
     constraints_(constraints),

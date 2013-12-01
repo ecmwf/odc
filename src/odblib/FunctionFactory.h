@@ -27,19 +27,19 @@ namespace function {
 class FunctionFactoryBase {
 protected:
 	int    arity_;
-	string name_;
-	string help_;
-	virtual FunctionExpression* make(const string&,const expression::Expressions&) = 0;
+	std::string name_;
+	std::string help_;
+	virtual FunctionExpression* make(const std::string&,const expression::Expressions&) = 0;
 
 public:
 	//FunctionFactoryBase() : name_("FunctionFactory"), arity_(-1) {}
-	FunctionFactoryBase(const string& name, int arity, const string& help);
+	FunctionFactoryBase(const std::string& name, int arity, const std::string& help);
 	~FunctionFactoryBase();
 
-	FunctionExpression* build(const string&, SQLExpression*);
-	FunctionExpression* build(const string&, SQLExpression*, SQLExpression*);
-	FunctionExpression* build(const string&, SQLExpression*, SQLExpression*, SQLExpression*);
-	FunctionExpression* build(const string&, const expression::Expressions&);
+	FunctionExpression* build(const std::string&, SQLExpression*);
+	FunctionExpression* build(const std::string&, SQLExpression*, SQLExpression*);
+	FunctionExpression* build(const std::string&, SQLExpression*, SQLExpression*, SQLExpression*);
+	FunctionExpression* build(const std::string&, const expression::Expressions&);
 };
 
 class FunctionFactory : public FunctionFactoryBase {
@@ -47,30 +47,30 @@ public:
 	static FunctionFactory& instance();
 	FunctionFactory(); // : FunctionFactoryBase("FunctionFactory", -1) {}
 
-    typedef vector<std::pair<std::pair<string, int>, string> > FunctionInfo;
+    typedef std::vector<std::pair<std::pair<std::string, int>, std::string> > FunctionInfo;
 
 	FunctionInfo& functionsInfo();
 
 private:
-	FunctionExpression* make(const string&,const expression::Expressions&) { NOTIMP; return 0; }
+	FunctionExpression* make(const std::string&,const expression::Expressions&) { NOTIMP; return 0; }
 
 
-    map<std::pair<string,int>, FunctionFactoryBase*> map_;
+    std::map<std::pair<std::string,int>, FunctionFactoryBase*> map_;
 	FunctionInfo functionInfo_;
 };
 
 template<class T>
 class FunctionMaker : public FunctionFactoryBase {
-	FunctionExpression* make(const string& name, const expression::Expressions& args)
+	FunctionExpression* make(const std::string& name, const expression::Expressions& args)
 	{ return new T(name, args); }
 public:
-	FunctionMaker(const string& name, int arity, const string& help) : FunctionFactoryBase(name, arity, help) {}
+	FunctionMaker(const std::string& name, int arity, const std::string& help) : FunctionFactoryBase(name, arity, help) {}
 };
 
-FunctionExpression* ast(const string& s, SQLExpression* e);
-FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2);
-FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3);
-FunctionExpression* ast(const string& s, const expression::Expressions& e);
+FunctionExpression* ast(const std::string& s, SQLExpression* e);
+FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2);
+FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3);
+FunctionExpression* ast(const std::string& s, const expression::Expressions& e);
 
 } // namespace function
 } // namespace expression 

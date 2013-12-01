@@ -17,7 +17,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionRMS::FunctionRMS(const string& name, const expression::Expressions& args)
+FunctionRMS::FunctionRMS(const std::string& name, const expression::Expressions& args)
 : FunctionExpression(name, args),
   count_(0),
   squares_(0)

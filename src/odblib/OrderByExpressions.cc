@@ -43,8 +43,8 @@ bool OrderByExpressions::operator<(const OrderByExpressions& o) const
 
 		if (left.type()->getKind() == type::SQLType::stringType)
 		{
-			string lv = StringTool::double_as_string(leftValue);
-			string rv = StringTool::double_as_string(rightValue);
+			std::string lv = StringTool::double_as_string(leftValue);
+			std::string rv = StringTool::double_as_string(rightValue);
 			if (! (lv.compare(rv) < 0))
 				return false;
 		} else {

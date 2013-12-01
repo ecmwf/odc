@@ -54,13 +54,13 @@ TokenVector tokenize(const odb::MetaData& metaData)
         token.columnName = column.name();
         token.columnType = column.type();
 
-        if ((pos = token.columnName.find(".offset@")) != string::npos)
+        if ((pos = token.columnName.find(".offset@")) != std::string::npos)
         {
             token.type = LINK_OFFSET_COLUMN;
             token.childTableName = token.columnName.substr(0, pos);
             token.parentTableName = token.columnName.substr(pos + 8);
         }
-        else if ((pos = token.columnName.find(".len@")) != string::npos)
+        else if ((pos = token.columnName.find(".len@")) != std::string::npos)
         {
             token.type = LINK_LEN_COLUMN;
             token.childTableName = token.columnName.substr(0, pos);
@@ -123,7 +123,7 @@ void DataSetBuilder::build(DataSet& dataset) const
 
 void DataSetBuilder::buildTables(DataSet& dataset) const
 {
-    typedef map<string, DataColumns> ColumnsMap;
+    typedef std::map<std::string, DataColumns> ColumnsMap;
 
     ColumnsMap columnsMap;
     TokenVector tokens = tokenize(metadata_);
@@ -134,7 +134,7 @@ void DataSetBuilder::buildTables(DataSet& dataset) const
 
         if (token.type == TABLE_COLUMN)
         {
-            string name = token.tableName;
+            std::string name = token.tableName;
 
             DataTableMappings::const_iterator it = mapping_.find(name);
             if (it != mapping_.end())
@@ -177,8 +177,8 @@ void DataSetBuilder::buildLinks(DataSet& dataset) const
             ASSERT(previousToken.parentTableName == token.parentTableName);
             ASSERT(previousToken.childTableName == token.childTableName);
 
-            string parentName = token.parentTableName;
-            string childName = token.childTableName;
+            std::string parentName = token.parentTableName;
+            std::string childName = token.childTableName;
 
             // Look for table mappings.
             DataTableMappings::const_iterator it = mapping_.find(parentName);

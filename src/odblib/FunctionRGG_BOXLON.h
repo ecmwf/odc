@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionRGG_BOXLON : public FunctionExpression {
 public:
-	FunctionRGG_BOXLON(const string&,const expression::Expressions&);
+	FunctionRGG_BOXLON(const std::string&,const expression::Expressions&);
 	FunctionRGG_BOXLON(const FunctionRGG_BOXLON&);
 	~FunctionRGG_BOXLON(); 
 

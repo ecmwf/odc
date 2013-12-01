@@ -23,7 +23,7 @@ public:
 	static void help(std::ostream &o)
 	{ o << "Creates a new file setting columns to given values"; }
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{ o << name << " <update-list> <input.odb> <output.odb>"; }
 
 private:
@@ -32,7 +32,7 @@ private:
     SetTool(const SetTool&);
     SetTool& operator=(const SetTool&);
 
-	void parseUpdateList(string s, vector<std::string>& columns, vector<double>& values);
+	void parseUpdateList(std::string s, std::vector<std::string>& columns, std::vector<double>& values);
 };
 
 } // namespace tool 

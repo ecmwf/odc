@@ -17,7 +17,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionSTDEV::FunctionSTDEV(const string& name,const expression::Expressions& args)
+FunctionSTDEV::FunctionSTDEV(const std::string& name,const expression::Expressions& args)
 : FunctionVAR(name, args)
 {}
 

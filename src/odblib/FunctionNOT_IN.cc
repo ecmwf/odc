@@ -16,7 +16,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionNOT_IN::FunctionNOT_IN(const string& name,const expression::Expressions& args)
+FunctionNOT_IN::FunctionNOT_IN(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args),
   size_(args.size() - 1)
 {}
