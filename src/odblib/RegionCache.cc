@@ -25,7 +25,7 @@ namespace function {
 
 static ThreadSingleton<VectorRegionCache> region_cache_;
 
-double mfmod(double x,double y) { double a; return ((a=x/y)-(int)a)*y; }
+double mfmod(double x,double y) { double a = x/y; return (a-int(a))*y; }
 
 //==============================================================================
 RegionCache::RegionCache()
