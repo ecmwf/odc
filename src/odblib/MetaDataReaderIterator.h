@@ -44,11 +44,10 @@ namespace odb {
 
 class MetaDataReaderIterator : public RowsReaderIterator
 {
-protected:
-	typedef MetaDataReader<MetaDataReaderIterator> Owner;
 public:
-	MetaDataReaderIterator (Owner &owner, bool skipData);
-	MetaDataReaderIterator (Owner &owner, const eckit::PathName&, bool skipData);
+    MetaDataReaderIterator (eckit::DataHandle* handle, bool skipData);
+    MetaDataReaderIterator (eckit::DataHandle& handle, bool skipData);
+    MetaDataReaderIterator (const eckit::PathName&, bool skipData);
 	virtual ~MetaDataReaderIterator ();
 
 	virtual bool isNewDataset();
@@ -91,7 +90,6 @@ private:
 	void initRowBuffer();
 	void loadHeaderAndBufferData();
 
-	Owner& owner_;
 	MetaData columns_;
 	double* lastValues_;
 	odb::codec::Codec** codecs_;
@@ -123,8 +121,8 @@ public:
 	int refCount_;
 
 	friend class MetaDataReader<MetaDataReaderIterator>;
-	friend class odb::IteratorProxy<odb::MetaDataReaderIterator, Owner>;
-	friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::MetaDataReaderIterator, Owner, const double> >;
+    //friend class odb::IteratorProxy<odb::MetaDataReaderIterator, Owner>;
+    //friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::MetaDataReaderIterator, Owner, const double> >;
 	friend class odb::Header<odb::MetaDataReaderIterator>;
 	friend class odb::sql::ODATableIterator;
 };

@@ -21,6 +21,7 @@
 #endif
 
 #include "eckit/io/FileHandle.h"
+#include "odblib/IteratorProxy.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -44,7 +45,7 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	eckit::DataHandle* dataHandle() { return dataHandle_; }
+    eckit::DataHandle& dataHandle() { return *dataHandle_; }
     
 	// For C API
 	iterator* createReadIterator(const eckit::PathName&);
