@@ -148,10 +148,10 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 
 	if (skipData_)
 	{
-		Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << std::endl;
+        Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << std::endl;
 		if (fileSize_ && f->position() + Offset(dataSize) > fileSize_)
             throw Exception("MetaDataReaderIterator::readBuffer()");
-	
+
         f->skip(dataSize);
         return true;
 	}

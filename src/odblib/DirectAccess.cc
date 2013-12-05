@@ -69,9 +69,7 @@ DirectAccess::DirectAccess(const std::string& path)
 void DirectAccess::initBlocks()
 {
     eckit::Timer timer("DirectAccessIterator::initBlocks");
-    DataHandle* h = handle_->clone();
-    h->openForRead();
-    IteratorProxy<MetaDataReaderIterator, DirectAccessIterator, const double> it(new MetaDataReaderIterator(h, true));
+    IteratorProxy<MetaDataReaderIterator, DirectAccessIterator, const double> it(new MetaDataReaderIterator(*handle_, true));
     IteratorProxy<MetaDataReaderIterator, DirectAccessIterator, const double> end(0);
 
     unsigned long long n = 0;
