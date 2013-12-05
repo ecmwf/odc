@@ -62,7 +62,6 @@
 #include "odblib/RowsIterator.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/FixedSizeWriterIterator.h"
-#include "odblib/DirectAccess.h"
 
 #include "odblib/SQLType.h"
 #include "odblib/SQLInteractiveSession.h"
