@@ -32,23 +32,23 @@ namespace codec {
 
 class Codec {
 public:
-	Codec(const string& name);
+	Codec(const std::string& name);
 	virtual ~Codec();
 
 	/// Creates a clone of this codec. NOTE: the clone is not really usefull for coding/decoding, but has the same stats/missing
 	/// values as the original codec, which can be useful sometimes.
 	virtual Codec* clone();
 
-	const string& name() const { return name_; }
+	const std::string& name() const { return name_; }
 
 	virtual unsigned char* encode(unsigned char* p, double d) = 0;
 	virtual double decode() = 0;
 	virtual void dataHandle(void *) = 0;
 
-	template <typename DATASTREAM> static Codec* findCodec(const string& name, bool differentByteOrder);
-	//static Codec* findCodec(const string& name, bool differentByteOrder);
+	template <typename DATASTREAM> static Codec* findCodec(const std::string& name, bool differentByteOrder);
+	//static Codec* findCodec(const std::string& name, bool differentByteOrder);
 	
-	////template<typename BYTEORDER> static Codec* findCodec(const string& name);
+	////template<typename BYTEORDER> static Codec* findCodec(const std::string& name);
 
 	template<typename DATASTREAM> static Codec* loadCodec(DATASTREAM &);
 
@@ -70,13 +70,13 @@ public:
 	void missingValue(double v); 
 	double missingValue() const { return missingValue_; } 
 
-	// Use it if you KNOW the codec encodes a string type column.
+	// Use it if you KNOW the codec encodes a std::string type column.
 	virtual HashTable& hashTable();
 
-	// Use it if you KNOW the codec encodes a string type column.
+	// Use it if you KNOW the codec encodes a std::string type column.
 	virtual HashTable* giveHashTable();
 
-	// Use it if you KNOW the codec encodes a string type column.
+	// Use it if you KNOW the codec encodes a std::string type column.
 	virtual void hashTable(HashTable *);
 
 	virtual void print(std::ostream& s) const;
@@ -107,7 +107,7 @@ protected:
 		f.writeDouble(missingValue_);
 	}
 
-	string name_;
+	std::string name_;
 
 	int32_t hasMissing_;
 	double missingValue_;
@@ -129,7 +129,7 @@ void Codec::save(DATASTREAM &f)
 }
 
 template <typename DATASTREAM>
-Codec* Codec::findCodec(const string& name, bool differentByteOrder)
+Codec* Codec::findCodec(const std::string& name, bool differentByteOrder)
 {
 	Codec::loadCodecs();
 	return AbstractCodecFactory<typename DATASTREAM::DataHandleType>::getCodec(name, differentByteOrder);
@@ -533,8 +533,8 @@ void CodecChars<BYTEORDER>::save(eckit::DataHandle *dh)
 	hashTable_->save(ds);
 }
 
-//template<> Codec* Codec::findCodec<SameByteOrder>(const string& name) { findCodec(name, false); }
-//template<> Codec* Codec::findCodec<OtherByteOrder>(const string& name) { findCodec(name, true); }
+//template<> Codec* Codec::findCodec<SameByteOrder>(const std::string& name) { findCodec(name, false); }
+//template<> Codec* Codec::findCodec<OtherByteOrder>(const std::string& name) { findCodec(name, true); }
 
 //template<typename DATASTREAM> void Codec::save(DATASTREAM &f) { f.writeString(name_); AbstractCodecFactory::save(this, f); }
 
@@ -780,7 +780,7 @@ void CodecConstantString<BYTEORDER>::print(std::ostream& s) const
 	char buf[sizeof(double) + 1];
 	bzero(buf, sizeof(buf));
 	strncpy(buf, reinterpret_cast<const char *>(&this->min_), sizeof(double));
-	s << this->name() << ", value='" << string(buf) << "'";
+	s << this->name() << ", value='" << std::string(buf) << "'";
 }
 
 template<typename BYTEORDER>

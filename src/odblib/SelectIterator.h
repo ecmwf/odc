@@ -39,7 +39,7 @@ namespace sql {
 
 class SelectIterator : public RowsReaderIterator {
 public:
-	SelectIterator (Select &owner, std::string select);
+    SelectIterator (Select &owner, std::string select);
 	~SelectIterator();
 
 	virtual bool isNewDataset();
@@ -48,9 +48,9 @@ public:
 	virtual MetaData& columns();
 
 	int close() { NOTIMP; }
-	int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
+    int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
 	void writeHeader() { NOTIMP; }
-	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
+    int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
 	void missingValue(size_t, double) { NOTIMP; }
 	
 	bool isCachingRows() { return isCachingRows_; }
@@ -70,7 +70,7 @@ private:
 	void parse(std::istream *);
 
 	Select& owner_;
-	std::string select_;
+    std::string select_;
 	sql::SQLIteratorSession<SelectIterator> session_;
 	sql::SQLSelect *selectStmt_;
 	MetaData *metaData_;
@@ -81,7 +81,7 @@ private:
 	bool noMore_;
 	bool aggregateResultRead_;
 	bool isCachingRows_;
-	std::list<vector<double> > rowCache_;
+	std::list<std::vector<double> > rowCache_;
 
 protected:
 	SelectIterator (Select &owner);

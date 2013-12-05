@@ -27,7 +27,7 @@ using namespace eckit;
 namespace odb {
 namespace sql {
 
-SQLCreateTable::SQLCreateTable(string tableName, ColumnDefs &cols)
+SQLCreateTable::SQLCreateTable(std::string tableName, ColumnDefs &cols)
 : tableName_(tableName), cols_(cols)
 {}
 
@@ -40,14 +40,14 @@ void SQLCreateTable::print(std::ostream& s) const
 unsigned long long SQLCreateTable::execute()
 {
     SQLDatabase &db = SQLSession::current().currentDatabase();
-    // SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const string& name,int no_rows,int index)
+    // SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const std::string& name,int no_rows,int index)
     // TODO:
     SQLTable *table = NULL; //new SQLTable(db, tableName_ /*?*/, tableName_, /*no_rows (columns, really..)*/ 0, /*index*/ 0);
 
     int index = 1;
     for (ColumnDefs::const_iterator i = cols_.begin(); i != cols_.end(); i++)
     {
-        const string columnName (i->name()),
+        const std::string columnName (i->name()),
                      typeName (i->type());
 
 		const long start (i->range().first),
@@ -80,7 +80,7 @@ unsigned long long SQLCreateTable::execute()
 			{
 				for (int i = start; i <= end; i++)
 				{
-					string expandedName = columnName + "_" + Translator<int,string>()(i);
+					std::string expandedName = columnName + "_" + Translator<int,std::string>()(i);
 					Log::debug() << "  === expandedName: " << expandedName << std::endl;
 					// TODO: choose a sensible default based upon type
 					table->addColumn(expandedName, index++, typ, true, odb::MDI::realMDI(), isBitmap, bitfieldDef);

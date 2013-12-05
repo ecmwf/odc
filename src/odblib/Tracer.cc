@@ -10,7 +10,7 @@
 
 #include "odblib/Tracer.h"
 
-Tracer::Tracer(std::ostream& o, const string& m)
+Tracer::Tracer(std::ostream& o, const std::string& m)
 : out_(o), message_(m)
 {
 	//out_ << message_ << " BEGIN" <<  std::endl;

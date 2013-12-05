@@ -50,7 +50,7 @@ CompareTool::CompareTool (int argc, char *argv[])
 
 void CompareTool::run()
 {
-	Timer t(string("Comparing files ") + *file1 + " and " + *file2);
+	Timer t(std::string("Comparing files ") + *file1 + " and " + *file2);
 	odb::Reader oda1(*file1);
 	odb::Reader oda2(*file2);
 
@@ -59,7 +59,7 @@ void CompareTool::run()
 	odb::Reader::iterator it2(oda2.begin());
 	odb::Reader::iterator end2(oda2.end());
 
-	vector<string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", string("")));
+	std::vector<std::string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", std::string("")));
 
 	if (excludedColumnsTypes.size())
 		Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << std::endl;

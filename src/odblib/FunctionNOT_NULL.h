@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionNOT_NULL : public FunctionExpression {
 public:
-	FunctionNOT_NULL(const string&,const expression::Expressions&);
+	FunctionNOT_NULL(const std::string&,const expression::Expressions&);
 	FunctionNOT_NULL(const FunctionNOT_NULL&);
 	~FunctionNOT_NULL(); 
 

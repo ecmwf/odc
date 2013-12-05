@@ -44,7 +44,7 @@ public:
 // -- Constructors
   DateTime(); // sets the date to 0000-00-00T00:00:00Z
 
-  DateTime(const std::string &); // sets the date given an ISO 8601 string
+  DateTime(const std::string &); // sets the date given an ISO 8601 std::string
 
   DateTime(const int&,const int &,const int &,const int &,const int &,const int &); // sets the date given YYYY,MM,DD,hh,mm,ss
 
@@ -53,7 +53,7 @@ public:
 
 // -- Methods
 
-  //! Set the time from an ISO 8601 format string: ${date}T${time}Z
+  //! Set the time from an ISO 8601 format std::string: ${date}T${time}Z
   //! where date is YYYYMMDD or YYYY-MM-DD and time is hhmmss or hh:mm:ss
   void set(const std::string &);
 

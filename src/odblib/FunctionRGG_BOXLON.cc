@@ -16,7 +16,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionRGG_BOXLON::FunctionRGG_BOXLON(const string& name,const expression::Expressions& args)
+FunctionRGG_BOXLON::FunctionRGG_BOXLON(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args)
 {}
 

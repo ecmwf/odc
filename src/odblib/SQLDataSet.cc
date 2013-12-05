@@ -13,7 +13,7 @@ SQLDataSet::SQLDataSet()
   : SQLDatabase("anonymous")
 {}
 
-SQLDataSet::SQLDataSet(const string& name)
+SQLDataSet::SQLDataSet(const std::string& name)
   : SQLDatabase(name)
 {}
 
@@ -34,7 +34,7 @@ SQLTable* SQLDataSet::openDataHandle(DataHandle&, DataFormat)
     return 0;
 }
 
-SQLTable* SQLDataSet::openDataStream(std::istream&, const string &, DataFormat)
+SQLTable* SQLDataSet::openDataStream(std::istream&, const std::string &, DataFormat)
 {
     NOTIMP;
     return 0;

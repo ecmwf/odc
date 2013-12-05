@@ -33,18 +33,18 @@ namespace odb {
 class GribCodesBase {
 public:
 	GribCodesBase(const eckit::PathName&);
-	GribCodesBase(const eckit::PathName&, const string& fieldDelimiter);
+	GribCodesBase(const eckit::PathName&, const std::string& fieldDelimiter);
 
 	virtual void readConfig(const eckit::PathName& fileName);
 
-	virtual string numeric(const string& alphanumeric);
-	virtual string alphanumeric(const string& numeric);
+	virtual std::string numeric(const std::string& alphanumeric);
+	virtual std::string alphanumeric(const std::string& numeric);
 private:
 	eckit::PathName configFileName_;
-	string fieldDelimiter_;
+	std::string fieldDelimiter_;
 	bool mapsLoaded_;
-	map<string,string> numeric2alpha_;
-	map<string,string> alpha2numeric_;
+	std::map<std::string,std::string> numeric2alpha_;
+	std::map<std::string,std::string> alpha2numeric_;
 };
 
 
@@ -70,8 +70,8 @@ public:
 
 class GribCodes {
 public:
-	static string numeric(const string& keyword, const string& alphanumeric);
-	static string alphanumeric(const string& keyword, const string& numeric);
+	static std::string numeric(const std::string& keyword, const std::string& alphanumeric);
+	static std::string alphanumeric(const std::string& keyword, const std::string& numeric);
 
 private:
 	static void load();

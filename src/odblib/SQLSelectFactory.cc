@@ -58,13 +58,13 @@ SQLSelectFactory& SQLSelectFactory::instance()
 }
 
 
-string SQLSelectFactory::index(const string& columnName, const SQLExpression* index)
+std::string SQLSelectFactory::index(const std::string& columnName, const SQLExpression* index)
 {
 	if (index == 0)
 		return columnName;
 
 	bool missing = false;
-	string idx = Translator<int,string>()(int(index->eval(missing)));
+	std::string idx = Translator<int,std::string>()(int(index->eval(missing)));
 	ASSERT(! missing);
 	return columnName + "_" + idx;
 }
@@ -85,7 +85,7 @@ SQLExpression* SQLSelectFactory::createColumn(
 	if (shift > maxColumnShift_) maxColumnShift_ = shift;
 	if (shift < minColumnShift_) minColumnShift_ = shift;
 
-	string expandedColumnName( index(columnName, vectorIndex) );
+	std::string expandedColumnName( index(columnName, vectorIndex) );
 	return bitfieldName.size()
 		? (shift == 0 ? new BitColumnExpression(expandedColumnName, bitfieldName, table)
 					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table, shift, -shift))
@@ -159,7 +159,7 @@ void SQLSelectFactory::reshift(Expressions& select)
 		L << "reshift: -> select[" << i << "]=" << *select[i] << std::endl;
 }
 
-void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vector<SQLTable*>& from)
+void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, std::vector<SQLTable*>& from)
 {
     Log::debug() << "No <from> clause" << std::endl;
 
@@ -172,11 +172,11 @@ void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vector<SQLTable*
 
 SQLSelect* SQLSelectFactory::create (bool distinct,
 	Expressions select_list,
-	string into,
-	vector<SQLTable*> from,
+	std::string into,
+	std::vector<SQLTable*> from,
 	SQLExpression *where,
 	Expressions group_by,
-	std::pair<Expressions,vector<bool> > order_by)
+	std::pair<Expressions,std::vector<bool> > order_by)
 {
     std::ostream& L(Log::info());
 
@@ -219,7 +219,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << std::endl;
 
 	TemplateParameters templateParameters;
-    string outputFile = (config_.outputFormat == "odb") ? config_.outputFile : into;
+    std::string outputFile = (config_.outputFormat == "odb") ? config_.outputFile : into;
 	TemplateParameters::parse(outputFile, templateParameters);
 	if (templateParameters.size() == 0)
 	{

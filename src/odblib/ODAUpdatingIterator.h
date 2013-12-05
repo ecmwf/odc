@@ -30,8 +30,8 @@ template <typename T>
 class ODAUpdatingIterator : public RowsReaderIterator
 {
 public:
-	//ODAUpdatingIterator (T& inputIterator, const T& end, const vector<size_t>& columnIndices, const vector<double>& values);
-	ODAUpdatingIterator (T& inputIterator, const T& end, const vector<std::string>& columns, const vector<double>& values);
+	//ODAUpdatingIterator (T& inputIterator, const T& end, const std::vector<size_t>& columnIndices, const std::vector<double>& values);
+	ODAUpdatingIterator (T& inputIterator, const T& end, const std::vector<std::string>& columns, const std::vector<double>& values);
 	ODAUpdatingIterator (const T& end);
 	~ODAUpdatingIterator ();
 
@@ -59,9 +59,9 @@ private:
 	T ii_;
 	const T& end_;
 
-	vector<std::string> columns_;
-	vector<size_t> columnIndices_;
-	const vector<double> values_;
+	std::vector<std::string> columns_;
+	std::vector<size_t> columnIndices_;
+	const std::vector<double> values_;
 
 	double *data_;
 public:

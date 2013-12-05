@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionTHIN : public FunctionExpression {
 public:
-	FunctionTHIN(const string&, const expression::Expressions&);
+	FunctionTHIN(const std::string&, const expression::Expressions&);
 	FunctionTHIN(const FunctionTHIN&);
 	~FunctionTHIN(); 
 

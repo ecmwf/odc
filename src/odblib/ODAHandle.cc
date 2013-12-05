@@ -30,7 +30,7 @@ ODAHandle::~ODAHandle()
 	Log::debug() << "ODAHandle::~ODAHandle()" << std::endl;
 }
 
-void ODAHandle::addValue(const string& columnName, double v)
+void ODAHandle::addValue(const std::string& columnName, double v)
 {
 	Log::debug() << "ODAHandle::addValue('" << columnName << "', '" << v << "')" << std::endl;
 	ASSERT(values_.find(columnName) == values_.end());

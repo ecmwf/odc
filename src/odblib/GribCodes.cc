@@ -16,7 +16,7 @@
 #include <strings.h>
 
 #include "eckit/runtime/Application.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/utils/Regex.h"
 #include "eckit/config/Resource.h"
@@ -45,10 +45,10 @@ void GribCodes::load()
 	if (! obsgroupCodes_) obsgroupCodes_ =  new GroupCodes();
 }
 
-string GribCodes::numeric(const string& keyword, const string& alphanumeric)
+std::string GribCodes::numeric(const std::string& keyword, const std::string& alphanumeric)
 {
 	load();
-	const string kw = StringTools::upper(keyword);
+	const std::string kw = StringTools::upper(keyword);
 	if (kw == "TYPE")
 	{
 		// HACK:
@@ -61,14 +61,14 @@ string GribCodes::numeric(const string& keyword, const string& alphanumeric)
 	if (kw == "STREAM") return streamCodes_->numeric(alphanumeric);
 	if (kw == "OBSGROUP") return obsgroupCodes_->numeric(alphanumeric);
 
-	throw eckit::UserError(string("'") + keyword + "' is not a known GRIB keyword");
+	throw eckit::UserError(std::string("'") + keyword + "' is not a known GRIB keyword");
 	return "Don't want the compiler to warn me about non-void function not returning anything";
 }
 
-string GribCodes::alphanumeric(const string& keyword, const string& numeric)
+std::string GribCodes::alphanumeric(const std::string& keyword, const std::string& numeric)
 {
 	load();
-	const string kw = StringTools::upper(keyword);
+	const std::string kw = StringTools::upper(keyword);
 	if (kw == "TYPE") 
 	{
 		// HACK:
@@ -81,14 +81,14 @@ string GribCodes::alphanumeric(const string& keyword, const string& numeric)
 	if (kw == "STREAM") return streamCodes_->alphanumeric(numeric);
 	if (kw == "OBSGROUP") return obsgroupCodes_->alphanumeric(numeric);
 
-	throw eckit::UserError(string("'") + keyword + "' is not a known GRIB keyword");
+	throw eckit::UserError(std::string("'") + keyword + "' is not a known GRIB keyword");
 	return "Don't want the compiler to warn me about non-void function not returning anything";
 }
 
 GribCodesBase::GribCodesBase(const PathName& fileName)
 : configFileName_(
-	string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
-	+ string("/etc/")
+	std::string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
+	+ std::string("/etc/")
 	+ fileName),
   fieldDelimiter_(" \t"),
   mapsLoaded_(false)
@@ -97,10 +97,10 @@ GribCodesBase::GribCodesBase(const PathName& fileName)
 	readConfig(configFileName_);
 }
 
-GribCodesBase::GribCodesBase(const PathName& fileName, const string& fieldDelimiter)
+GribCodesBase::GribCodesBase(const PathName& fileName, const std::string& fieldDelimiter)
 : configFileName_(
-	string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
-	+ string("/etc/")
+	std::string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
+	+ std::string("/etc/")
 	+ fileName),
   fieldDelimiter_(fieldDelimiter),
   mapsLoaded_(false)
@@ -115,14 +115,14 @@ void GribCodesBase::readConfig(const PathName& fileName)
 	numeric2alpha_.clear();
 	alpha2numeric_.clear();
 
-	vector<string> lines = StringTool::readLines(fileName);
+	std::vector<std::string> lines = StringTool::readLines(fileName);
 	for (size_t i = 0; i < lines.size(); ++i)
 	{
-		vector<string> words = StringTools::split(fieldDelimiter_, lines[i]);
+		std::vector<std::string> words = StringTools::split(fieldDelimiter_, lines[i]);
 		if (words.size() >= 2)
 		{
-			string num = StringTools::trim(words[0]);
-			string alpha = StringTools::trim(words[1]);
+			std::string num = StringTools::trim(words[0]);
+			std::string alpha = StringTools::trim(words[1]);
 			numeric2alpha_[num] = alpha;
 			alpha2numeric_[alpha] = num;
 			Log::debug() << "GribCodesBase::readConfig: num='" << num << "' alpha='" << alpha << "'" << std::endl;
@@ -132,26 +132,26 @@ void GribCodesBase::readConfig(const PathName& fileName)
 	mapsLoaded_ = true;
 }
 
-string GribCodesBase::numeric(const string& alphanumeric)
+std::string GribCodesBase::numeric(const std::string& alphanumeric)
 {
 	//if (!mapsLoaded_) readConfig(configFileName_);
 	if (alpha2numeric_.find(alphanumeric) == alpha2numeric_.end())
-		throw eckit::UserError(string("Alphanumeric code '") + alphanumeric + "' not found in '" + configFileName_ + "'");
+		throw eckit::UserError(std::string("Alphanumeric code '") + alphanumeric + "' not found in '" + configFileName_ + "'");
 	return alpha2numeric_[alphanumeric];
 }
 
 //TODO:
-//int numericAsInt(const string& alphanumeric);
+//int numericAsInt(const std::string& alphanumeric);
 
-string GribCodesBase::alphanumeric(const string& numeric) {
+std::string GribCodesBase::alphanumeric(const std::string& numeric) {
 	//if (!mapsLoaded_) readConfig(configFileName_);
 	if (numeric2alpha_.find(numeric) == numeric2alpha_.end())
-		throw eckit::UserError(string("Numeric code ") + numeric + " not found in '" + configFileName_ + "'");
+		throw eckit::UserError(std::string("Numeric code ") + numeric + " not found in '" + configFileName_ + "'");
 	return numeric2alpha_[numeric];
 }
 
 // TODO:
-//string alphanumeric(int);
+//std::string alphanumeric(int);
 
 } // namespace odb 
 

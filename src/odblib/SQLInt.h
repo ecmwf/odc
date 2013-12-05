@@ -25,7 +25,7 @@ namespace type {
 
 class SQLInt : public SQLType {
 public:
-	SQLInt(const string& );
+	SQLInt(const std::string& );
 	~SQLInt(); 
 
 private:

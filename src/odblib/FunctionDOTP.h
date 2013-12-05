@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionDOTP : public FunctionExpression {
 public:
-	FunctionDOTP(const string&,const expression::Expressions&);
+	FunctionDOTP(const std::string&,const expression::Expressions&);
 	FunctionDOTP(const FunctionDOTP&);
 	~FunctionDOTP(); 
 

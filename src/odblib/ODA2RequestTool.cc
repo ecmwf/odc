@@ -152,7 +152,7 @@ void ODA2RequestTool::gatherStats(const PathName& inputFile)
 	values_ = vector<Values>(n);
 
 	string columnList;
-	for (map<string, string>::iterator it = columnName2requestKey_.begin();
+	for (std::map<string, string>::iterator it = columnName2requestKey_.begin();
 		 it != columnName2requestKey_.end();
 		 ++it)
 	{
@@ -189,8 +189,8 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 		gatherStats(inputFile);
 
 		size_t i = 0;
-		map<string, string>::iterator end = columnName2requestKey_.end();
-		for (map<string, string>::iterator it = columnName2requestKey_.begin(); it != end; ++it)
+		std::map<string, string>::iterator end = columnName2requestKey_.end();
+		for (std::map<string, string>::iterator it = columnName2requestKey_.begin(); it != end; ++it)
 		{
 			if (request.str().size()) request << ",\n";
 

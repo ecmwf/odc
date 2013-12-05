@@ -37,11 +37,11 @@ CodecOptimizer::CodecOptimizer()
 	defaultCodec_[BITFIELD] = "int32";
 
 	typedef eckit::StringTools S;
-	vector<std::string> mappings (S::split(",", eckit::Resource<string>("$ODB_DEFAULT_CODEC", "")));
+    std::vector<std::string> mappings (S::split(",", eckit::Resource<string>("$ODB_DEFAULT_CODEC", "")));
 
 	for (size_t i = 0; i < mappings.size(); ++i)
 	{
-		vector<string> a(S::split(":", mappings[i]));
+		std::vector<std::string> a(S::split(":", mappings[i]));
 		ASSERT("Wrong format of $ODB_DEFAULT_CODEC" && a.size() == 2);
 		defaultCodec_[Column::type(S::trim(a[0]))] = S::trim(a[1]);
 	}

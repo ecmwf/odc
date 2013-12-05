@@ -34,16 +34,16 @@ FastODA2Request<T>::FastODA2Request()
 {}
 
 template <typename T>
-void FastODA2Request<T>::parseConfig(const string& s)
+void FastODA2Request<T>::parseConfig(const std::string& s)
 {
-    vector<string> lines;
+    std::vector<std::string> lines;
     eckit::Tokenizer("\n")(s, lines);
 
     eckit::Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
 	{
 		eckit::Log::debug() << "FastODA2Request<T>::parseConfig: " << i<< ": '" << lines[i] << "'" << std::endl;
-		vector<string> words;
+		std::vector<std::string> words;
 		tokenizer(lines[i], words);
 
 		if (words.size() == 0) continue;
@@ -55,7 +55,7 @@ void FastODA2Request<T>::parseConfig(const string& s)
 }
 
 template <typename T>
-void FastODA2Request<T>::addColumn(const string& keyword, const string& columnName)
+void FastODA2Request<T>::addColumn(const std::string& keyword, const std::string& columnName)
 {
 	keywords_.push_back(keyword);
 	columnNames_.push_back(columnName);
@@ -66,7 +66,7 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName)
 {
 	eckit::OffsetList offsets;
 	eckit::LengthList lengths;
-	vector<ODAHandle*> handles;
+	std::vector<ODAHandle*> handles;
 
 	bool r = scanFile(fileName, offsets, lengths, handles);
 
@@ -78,7 +78,7 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName)
 }
 
 template <typename T>
-bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::OffsetList& offsets, eckit::LengthList& lengths, vector<ODAHandle*>& handles)
+bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::OffsetList& offsets, eckit::LengthList& lengths, std::vector<ODAHandle*>& handles)
 {
     using eckit::Log;
 
@@ -94,7 +94,7 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 	auto_ptr<MetaData> currentMD(it->columns().clone());
 	rowsNumber_ = currentMD->rowsNumber();
 
-	values_ = vector<set<string> >(currentMD->size(), std::set<string>());
+	values_ = std::vector<set<string> >(currentMD->size(), std::set<string>());
 	unsigned long int mds = 0;	
 	for ( ; it != end; ++it)
 	{
@@ -143,18 +143,18 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 {
     using eckit::Offset;
     
-	vector<string> currentValues;
+	std::vector<std::string> currentValues;
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
-		const string& columnName = columnNames_[i];
+		const std::string& columnName = columnNames_[i];
 		eckit::Log::debug() << "FastODA2Request::collectValues: columnName: " << columnName << std::endl;
 
 		Column* column = md.hasColumn(columnName) ? md.columnByName(columnName) : 0;
-		string v = ! column ? columnNotFound(columnName)
+		std::string v = ! column ? columnNotFound(columnName)
 				: ! column->isConstant() ? columnIsNotConstant(*column)
 				: column->type() == odb::STRING ? StringTool::double_as_string(column->min())
 				: column->type() == odb::INTEGER ? StringTool::int_as_double2string(column->min())
-				: eckit::Translator<double, string>()(column->min());
+				: eckit::Translator<double, std::string>()(column->min());
 		values_[i].insert(v);
 		currentValues.push_back(v);
 		double dv = !column ? odb::MDI::realMDI() : column->min();
@@ -169,9 +169,9 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 			valuesSeen_[currentValues] = make_pair<Offset,Offset>(odaHandle.start(), odaHandle.end());
 		else {
 			std::pair<Offset,Offset> p = valuesSeen_[currentValues];
-			vector<string> vs = columnNames_;
+			std::vector<std::string> vs = columnNames_;
 			for (size_t i = 0; i < vs.size(); ++i)
-				vs[i] += string("=") + currentValues[i];
+				vs[i] += std::string("=") + currentValues[i];
 			stringstream s;
 			s << "Values " << vs << " found in blocks <" << p.first << "," << p.second << ">"
 				<< " and <" << odaHandle.start() << "," << odaHandle.end() << ">";
@@ -183,18 +183,18 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 }
 
 template <typename T>
-string FastODA2Request<T>::genRequest() const
+std::string FastODA2Request<T>::genRequest() const
 {
 	stringstream request;
 
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
-		const string& key = keywords_[i];
-		string k = eckit::StringTools::upper(key);
-		string valuesList;
+		const std::string& key = keywords_[i];
+		std::string k = eckit::StringTools::upper(key);
+		std::string valuesList;
 		const std::set<string>& vs = values_[i];
 		for (std::set<string>::const_iterator vi = vs.begin(); vi != vs.end(); ++vi)
-			valuesList += string(vi != vs.begin() ? "/" : "") + patchValue(k, *vi);
+			valuesList += std::string(vi != vs.begin() ? "/" : "") + patchValue(k, *vi);
 		if (i > 0)
 			request << ",\n";
 		request << key << " = " << valuesList;
@@ -206,12 +206,12 @@ string FastODA2Request<T>::genRequest() const
 }
 
 template <typename T>
-string FastODA2Request<T>::patchValue(const string& k, const string& value) const
+std::string FastODA2Request<T>::patchValue(const std::string& k, const std::string& value) const
 {
     using eckit::Log;
     using eckit::StringTools;
     
-	string v = StringTools::trim(value);
+	std::string v = StringTools::trim(value);
 	Log::debug() << "FastODA2Request::patchValue: v = '" << v  << "', key = " << k << std::endl;
 	if (k == "TIME")
 		v = StringTool::patchTimeForMars(v);
@@ -230,27 +230,27 @@ string FastODA2Request<T>::patchValue(const string& k, const string& value) cons
 }
 
 template <typename T>
-const std::set<string>& FastODA2Request<T>::getValues(const string& keyword)
+const std::set<string>& FastODA2Request<T>::getValues(const std::string& keyword)
 {
 	for (size_t i = 0; i < keywords_.size(); ++i)
 		if (keywords_[i] == keyword)
 			return values_[i];
-	throw eckit::UserError(string("Keyword '") + keyword + "' not found");
+	throw eckit::UserError(std::string("Keyword '") + keyword + "' not found");
 	// This is to keep the compiler happy:
 	return values_[-1];
 }
 
 template <typename T>
-map<string, vector<double> > FastODA2Request<T>::getValues()
+std::map<std::string, std::vector<double> > FastODA2Request<T>::getValues()
 {
-	map<string, vector<double> > r;
+	std::map<std::string, std::vector<double> > r;
 
-	for (map<string, std::set<double> >::const_iterator it = doubleValues_.begin(); it != doubleValues_.end(); ++it)
+	for (std::map<std::string, std::set<double> >::const_iterator it = doubleValues_.begin(); it != doubleValues_.end(); ++it)
 	{
-		const string &k = it->first;
+		const std::string &k = it->first;
 		const std::set<double>& values = it->second;
 
-		vector<double>& vs = r[k] = vector<double>();
+		std::vector<double>& vs = r[k] = std::vector<double>();
 
 		for (std::set<double>::const_iterator vi = values.begin(); vi != values.end(); ++vi)
 			vs.push_back(*vi);
@@ -259,12 +259,12 @@ map<string, vector<double> > FastODA2Request<T>::getValues()
 }
 
 template <typename T>
-map<string, double> FastODA2Request<T>::getUniqueValues()
+std::map<std::string, double> FastODA2Request<T>::getUniqueValues()
 {
-	map<string, double> r;
+	std::map<std::string, double> r;
 	for (size_t i = 0; i < keywords_.size(); ++i)
 	{
-		string kw = keywords_[i];
+		std::string kw = keywords_[i];
 		if ( doubleValues_[kw].size() != 1)
 		{
 			stringstream s;

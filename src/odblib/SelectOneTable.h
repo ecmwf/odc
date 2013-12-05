@@ -35,8 +35,8 @@ struct SelectOneTable {
 	~SelectOneTable();
 
 	const SQLTable*               table_;
-	vector<SQLColumn*>            fetch_;
-	vector<pair<double,bool>*>    values_;
+	std::vector<SQLColumn*>            fetch_;
+	std::vector<pair<double,bool>*>    values_;
 
 	Expressions check_;
 	Expressions index_;
@@ -57,7 +57,7 @@ struct SelectOneTable {
 
 };
 
-typedef vector<SelectOneTable*> SortedTables;
+typedef std::vector<SelectOneTable*> SortedTables;
 
 } // namespace sql
 } // namespace odb

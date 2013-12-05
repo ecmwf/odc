@@ -25,22 +25,22 @@ public:
 		o << "Splits file according to given template";
 	}
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{
 		o << name << " [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 		//o << name << " [-sort] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 	}
 
-	static void split(const eckit::PathName&, const string&, size_t);
-	static void presortAndSplit(const eckit::PathName&, const string&);
+	static void split(const eckit::PathName&, const std::string&, size_t);
+	static void presortAndSplit(const eckit::PathName&, const std::string&);
 
-	static vector<pair<eckit::Offset,eckit::Length> > getChunks(const eckit::PathName&, size_t maxExpandedSize = 100*1024*1024);
+	static std::vector<pair<eckit::Offset,eckit::Length> > getChunks(const eckit::PathName&, size_t maxExpandedSize = 100*1024*1024);
 private:
 // No copy allowed
     SplitTool(const SplitTool&);
     SplitTool& operator=(const SplitTool&);
 
-	static string genOrderBySelect(const string&, const string&);
+	static std::string genOrderBySelect(const std::string&, const std::string&);
 
 	long maxOpenFiles_;
 	bool sort_;

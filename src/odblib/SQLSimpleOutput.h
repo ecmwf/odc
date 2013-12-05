@@ -33,9 +33,9 @@ private:
 
 	ostream& out_;
 	unsigned long long count_;
-	vector<size_t> columnWidths_;
+	std::vector<size_t> columnWidths_;
 	typedef std::ios_base& (*manipulator)(std::ios_base&);
-	vector<manipulator> columnAlignments_;
+	std::vector<manipulator> columnAlignments_;
 	size_t currentColumn_;
 
 	ostream& format(std::ostream&, size_t) const;

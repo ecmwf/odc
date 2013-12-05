@@ -144,7 +144,7 @@ public:
                 index_ = 0;
             }
 
-            row_->DataRow::set<std::string>(index_++, std::string(value));
+            row_->DataRow::set<string>(index_++, std::string(value));
 
             return *this;
         }

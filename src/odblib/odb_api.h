@@ -25,7 +25,7 @@
 #include <stdint.h>
 
 #include "eckit/io/DataHandle.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/config/Resource.h"
 #include "eckit/utils/Timer.h"
@@ -62,6 +62,7 @@
 #include "odblib/RowsIterator.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/FixedSizeWriterIterator.h"
+#include "odblib/DirectAccess.h"
 
 #include "odblib/SQLType.h"
 #include "odblib/SQLInteractiveSession.h"

@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionTIMESTAMP : public FunctionExpression {
 public:
-	FunctionTIMESTAMP(const string&,const expression::Expressions&);
+	FunctionTIMESTAMP(const std::string&,const expression::Expressions&);
 	FunctionTIMESTAMP(const FunctionTIMESTAMP&);
 	~FunctionTIMESTAMP(); 
 

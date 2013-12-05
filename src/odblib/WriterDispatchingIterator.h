@@ -36,9 +36,9 @@ class TemplateParameters;
 template <typename WRITE_ITERATOR, typename OWNER >
 class WriterDispatchingIterator : public RowsWriterIterator
 {
-	typedef vector<double> Values;
-	typedef map<Values,int> Values2IteratorIndex;
-	typedef vector<WRITE_ITERATOR *> Iterators;
+	typedef std::vector<double> Values;
+	typedef std::map<Values,int> Values2IteratorIndex;
+	typedef std::vector<WRITE_ITERATOR *> Iterators;
 public:
 	WriterDispatchingIterator (OWNER &owner, int maxOpenFiles, bool append = false);
 	~WriterDispatchingIterator();
@@ -47,8 +47,8 @@ public:
 
 	double* data();
 
-	virtual int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
-	virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
+    virtual int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
+    virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
 
 	void missingValue(size_t i, double); 
 
@@ -59,18 +59,18 @@ public:
 	virtual int close();
 
 	ColumnType columnType(size_t index);
-	const std::string& columnName(size_t index) const;
-	const std::string& codecName(size_t index) const;
+    const std::string& columnName(size_t index) const;
+    const std::string& codecName(size_t index) const;
 	double columnMissingValue(size_t index);
 
 	virtual MetaData& columns() { return columns_; }
 
 	OWNER& owner() { return owner_; }
 
-	void property(string key, string value);
-	string property(string);
+	void property(std::string key, std::string value);
+	std::string property(std::string);
 
-	vector<eckit::PathName> getFiles();
+	std::vector<eckit::PathName> getFiles();
 	TemplateParameters& templateParameters() { return templateParameters_; }
 
 //protected:
@@ -83,9 +83,9 @@ protected:
 
 	/// Find iterator data should be dispatched to.
 	WRITE_ITERATOR& dispatch(const double* values, unsigned long count);
-	int createIterator(const Values& dispatchedValues, const std::string& fileName, const double* values, unsigned long count);
+    int createIterator(const Values& dispatchedValues, const std::string& fileName, const double* values, unsigned long count);
 
-	string generateFileName(const double* values, unsigned long count);
+	std::string generateFileName(const double* values, unsigned long count);
 
 	unsigned char *buffer_;
 	OWNER& owner_;
@@ -94,14 +94,14 @@ protected:
 	double* lastValues_;
 	double* nextRow_;
 	unsigned long long nrows_;
-	string outputFileTemplate_;
+	std::string outputFileTemplate_;
 
 	Properties properties_;
 
-	vector<int> dispatchedIndexes_;
+	std::vector<int> dispatchedIndexes_;
 	Values2IteratorIndex values2iteratorIndex_;
-	vector<unsigned long long> lastDispatch_;
-	vector<string> iteratorIndex2fileName_;
+	std::vector<unsigned long long> lastDispatch_;
+	std::vector<std::string> iteratorIndex2fileName_;
 
 	Values lastDispatchedValues_;
 	int lastIndex_;
@@ -118,13 +118,13 @@ private:
 	int refCount_;
 
 	Iterators iterators_;
-	vector<eckit::PathName> files_;
+	std::vector<eckit::PathName> files_;
 
 	TemplateParameters templateParameters_;
 	int maxOpenFiles_;
 
-	map<string,int> filesCreated_;
-	vector<unsigned int> rowsOutputFileIndex_;
+	std::map<std::string,int> filesCreated_;
+	std::vector<unsigned int> rowsOutputFileIndex_;
 
 	friend class IteratorProxy<WriterDispatchingIterator<WRITE_ITERATOR,DispatchingWriter>, DispatchingWriter>;
 };

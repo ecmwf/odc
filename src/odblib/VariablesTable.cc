@@ -31,7 +31,7 @@ namespace sql {
 
 class VariablesColumn : public SQLColumn {
 public:
-	VariablesColumn(const string& name, int i, const string sqlType, SQLTable& owner)  
+	VariablesColumn(const std::string& name, int i, const std::string sqlType, SQLTable& owner)  
 	: SQLColumn(type::SQLType::lookup(sqlType), owner, name, i, false, 0 /*FIXME*/)
 	{
         missing_ = false;
@@ -48,24 +48,24 @@ public:
     bool  missing_;
 };
 
-VariablesTable::VariablesTable(SQLDatabase& owner, const string& name)
+VariablesTable::VariablesTable(SQLDatabase& owner, const std::string& name)
 : SQLTable(owner, "", name)
 {
-	addColumn(new VariablesColumn("name", 0, "string", *this), "name", 0);
+	addColumn(new VariablesColumn("name", 0, "std::string", *this), "name", 0);
 	addColumn(new VariablesColumn("value", 1, "real", *this), "value", 1);
 }
 
 VariablesTable::~VariablesTable() {}
 
-SQLTableIterator* VariablesTable::iterator(const vector<SQLColumn*>&) const
+SQLTableIterator* VariablesTable::iterator(const std::vector<SQLColumn*>&) const
 {
 	return new VariablesTableIterator(SQLSession::current().currentDatabase().variables());
 }
 
-SQLColumn* VariablesTable::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue)
+SQLColumn* VariablesTable::createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue)
 { NOTIMP; }
 
-SQLColumn* VariablesTable::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&)
+SQLColumn* VariablesTable::createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&)
 { NOTIMP; }
 
 VariablesTableIterator::~VariablesTableIterator() {}
@@ -87,7 +87,7 @@ bool VariablesTableIterator::next()
     return true;
 }
 
-VariablesTableIterator::VariablesTableIterator(map<string,SQLExpression*>& vs)
+VariablesTableIterator::VariablesTableIterator(std::map<std::string,SQLExpression*>& vs)
 : variables_(vs)
 {
 }

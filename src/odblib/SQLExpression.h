@@ -57,8 +57,8 @@ public:
 
 	virtual SQLExpression* simplify(bool&);
 
-	virtual void title(const string&);
-	virtual string title() const;
+    virtual void title(const std::string&);
+    virtual std::string title() const;
 
 	virtual const odb::sql::type::SQLType* type() const = 0;
 	// ----
@@ -100,7 +100,7 @@ private:
 	SQLExpression(const SQLExpression&);
 	SQLExpression& operator=(const SQLExpression&);
 
-	string title_;
+    std::string title_;
 
     friend std::ostream& operator<<(std::ostream& s,const SQLExpression& p) { p.print(s); return s; }
 };

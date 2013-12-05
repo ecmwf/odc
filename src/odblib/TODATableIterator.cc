@@ -22,7 +22,7 @@ namespace odb {
 namespace sql {
 
 template <typename T>
-TODATableIterator<T>::TODATableIterator(Table &p, iterator reader, iterator end, double* data, const vector<odb::sql::SQLColumn*>& columns)
+TODATableIterator<T>::TODATableIterator(Table &p, iterator reader, iterator end, double* data, const std::vector<odb::sql::SQLColumn*>& columns)
 : parent(p),
   reader_(reader),
   end_(end), 

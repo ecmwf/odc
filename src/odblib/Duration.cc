@@ -38,7 +38,7 @@ Duration::Duration(const int64_t s) : seconds_(s) {}
 
 // -----------------------------------------------------------------------------
 
-Duration::Duration(const string & s) {
+Duration::Duration(const std::string & s) {
   this->set(s);
 }
 
@@ -52,7 +52,7 @@ ostream& operator<<(std::ostream& output, const Duration& d) {
 // -----------------------------------------------------------------------------
 
 istream& operator>>(std::istream& input, Duration& d) {
-    string duration;
+    std::string duration;
     input >> duration;
     d.set(duration);
     return input;
@@ -60,7 +60,7 @@ istream& operator>>(std::istream& input, Duration& d) {
 
 // -----------------------------------------------------------------------------
 
-void Duration::set(const string & str) {
+void Duration::set(const std::string & str) {
   this ->seconds_ = 0;
 
   try {
@@ -87,7 +87,7 @@ void Duration::set(const string & str) {
 
     if (c != 'T') {
       is.unget();
-      string days = eatDigits(is);    
+      std::string days = eatDigits(is);    
       if (days.length()==0) throw str;
       c = is.get();
       if (!is.good() || c != 'D') throw str;
@@ -100,7 +100,7 @@ void Duration::set(const string & str) {
       is.unget();
     }
 
-    // Now, we can have the end of the string, or a 'T'
+    // Now, we can have the end of the std::string, or a 'T'
 
     c = is.get();
     if (!is.eof()) {
@@ -115,7 +115,7 @@ void Duration::set(const string & str) {
       for (int i=0; i<3; i++) {
         c = is.peek();
         if (is.eof()) break;
-        string num = eatDigits(is);
+        std::string num = eatDigits(is);
         c = is.get();
         if (!is.good()) throw str;
 
@@ -154,7 +154,7 @@ void Duration::set(const string & str) {
 
   }
   catch(...) {
-    string message="Badly formed duration string: ";
+    std::string message="Badly formed duration std::string: ";
     message.append(str);
     throw invalid_argument(message);
   }
@@ -162,8 +162,8 @@ void Duration::set(const string & str) {
 
 // -----------------------------------------------------------------------------
 
-string Duration::eatDigits(std::istream & is) {
-  string str;
+std::string Duration::eatDigits(std::istream & is) {
+  std::string str;
   char c;
   locale loc;
   while (isdigit(c = is.get(),loc)) {
@@ -180,7 +180,7 @@ int64_t Duration::toSeconds () const {return seconds_;}
 
 // -----------------------------------------------------------------------------
 
-string Duration::toString () const {
+std::string Duration::toString () const {
   ostringstream os;
   int64_t remainder = seconds_;
 

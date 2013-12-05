@@ -112,7 +112,7 @@ void DataStream<T,D>::writeBuffer(const MemoryBlock &buffer)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::readString(string &s)
+void DataStream<T,D>::readString(std::string &s)
 {
 	int32_t len;
 	readInt32(len);
@@ -125,13 +125,13 @@ void DataStream<T,D>::readString(string &s)
 #endif
 	ASSERT(f->read(&buff, len) == len);
 	
-	string r(buff, len);
+	std::string r(buff, len);
 
 	s = r;
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeString(const string &s)
+void DataStream<T,D>::writeString(const std::string &s)
 {
 	int32_t len = s.size();
 	writeInt32(len);
@@ -212,7 +212,7 @@ void DataStream<T,D>::readProperties(Properties &p)
 
 	for (int i = 0; i < size; i++)
 	{
-		string key, value;
+		std::string key, value;
 		readString(key);
 		readString(value);
 		p[key] = value;
@@ -269,7 +269,7 @@ void DataStream<T,D>::readBitfieldDef(BitfieldDef &v)
 
 	for (int32_t i = 0; i < namesSize; i++)
 	{
-		string s;
+		std::string s;
 		readString(s);
 		names.push_back(s);
 	}

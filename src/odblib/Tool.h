@@ -38,8 +38,8 @@ public:
 
 	virtual ~Tool();
 
-	string name() { return name_; }
-	void name(string s) { name_ = s; }
+	std::string name() { return name_; }
+	void name(std::string s) { name_ = s; }
 
 	static void registerTools();
 
@@ -49,7 +49,7 @@ protected:
 	Tool(const CommandLineParser&);
 
 private:
-	string name_;
+	std::string name_;
 };
 
 

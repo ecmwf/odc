@@ -20,7 +20,8 @@
 #include <Python.h>
 #endif
 
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
+#include "odblib/IteratorProxy.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -44,7 +45,7 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	eckit::DataHandle* dataHandle() { return dataHandle_; }
+    eckit::DataHandle& dataHandle() { return *dataHandle_; }
     
 	// For C API
 	iterator* createReadIterator(const eckit::PathName&);
@@ -61,7 +62,7 @@ private:
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
 	//const eckit::PathName path_;
-	const string path_;
+	const std::string path_;
 	bool skipData_;
 
 	friend class IteratorProxy<MetaDataReaderIterator,MetaDataReader,const double>;

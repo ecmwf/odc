@@ -42,8 +42,8 @@ public:
 	}
 
 
-	SQLOutputConfig(bool cn = false, bool n = false, const string& d = defaultDelimiter_, 
-                    const string& output = defaultOutputFile_, const string& format = defaultFormat_)
+	SQLOutputConfig(bool cn = false, bool n = false, const std::string& d = defaultDelimiter_, 
+                    const std::string& output = defaultOutputFile_, const std::string& format = defaultFormat_)
 	: doNotWriteColumnNames(cn),
 	  doNotWriteNULL(n),
 	  fieldDelimiter(d),
@@ -56,9 +56,9 @@ public:
 //private:
 	bool doNotWriteColumnNames;
 	bool doNotWriteNULL;
-	string fieldDelimiter;
-	string outputFile;          // -o
-	string outputFormat;        // -f
+	std::string fieldDelimiter;
+	std::string outputFile;          // -o
+	std::string outputFormat;        // -f
 
 	static const SQLOutputConfig defaultConfig_;
 	static const char* defaultDelimiter_;

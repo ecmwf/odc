@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionMIN : public FunctionExpression {
 public:
-	FunctionMIN(const string&,const expression::Expressions&);
+	FunctionMIN(const std::string&,const expression::Expressions&);
 	FunctionMIN(const FunctionMIN&);
 	~FunctionMIN(); 
 

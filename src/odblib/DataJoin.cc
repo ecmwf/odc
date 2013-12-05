@@ -9,7 +9,7 @@ using namespace std;
 namespace odb {
 
 DataJoin::DataJoin(const DataTable& left, const DataTable& right,
-        const string& primaryKey, const string& foreignKey, Type type)
+        const std::string& primaryKey, const std::string& foreignKey, Type type)
   : leftTable_(left),
     rightTable_(right),
     joinedColumns_(left.columns() + right.columns()),

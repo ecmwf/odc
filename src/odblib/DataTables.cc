@@ -24,7 +24,7 @@ void DataTables::insert(DataTable* table)
     tableSet_.insert(table);
 }
 
-DataTables::iterator DataTables::find(const string& name)
+DataTables::iterator DataTables::find(const std::string& name)
 {
     std::set<DataTable*>::iterator it = tableSet_.begin();
 
@@ -37,9 +37,9 @@ DataTables::iterator DataTables::find(const string& name)
     return it;
 }
 
-DataTable* const DataTables::operator[](const string& name)
+DataTable* const DataTables::operator[](const std::string& name)
 {
-    map<string, DataTable*>::iterator it = tableMap_.find(name);
+    std::map<std::string, DataTable*>::iterator it = tableMap_.find(name);
 
     if (it != tableMap_.end())
         return it->second;
@@ -47,7 +47,7 @@ DataTable* const DataTables::operator[](const string& name)
     return 0;
 }
 
-const DataTable* const DataTables::operator[](const string& name) const
+const DataTable* const DataTables::operator[](const std::string& name) const
 {
     return const_cast<const DataTables&>(*this)[name];
 }

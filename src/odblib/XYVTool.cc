@@ -37,7 +37,7 @@ void XYVTool::run()
 	}
 
 	PathName inputFile = parameters(1);
-	string valueColumn = parameters(2);
+	std::string valueColumn = parameters(2);
 	PathName outputFile = parameters(3);
 
 	ofstream out;
@@ -49,7 +49,7 @@ void XYVTool::run()
 	out << "x/long	y/lat	value" << std::endl;
 	out << "#DATA" << endl << std::endl;
 
-	string select = string("select lat, lon, ") + valueColumn + " from \"" + inputFile + "\";";
+	std::string select = std::string("select lat, lon, ") + valueColumn + " from \"" + inputFile + "\";";
 	Log::info() << select << std::endl;
 
 	odb::Select oda(select);

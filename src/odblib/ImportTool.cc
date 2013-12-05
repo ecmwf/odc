@@ -24,7 +24,7 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
-string ImportTool::defaultDelimiter_ = ",";
+std::string ImportTool::defaultDelimiter_ = ",";
 
 ImportTool::ImportTool(int argc, char *parameters[])
 : Tool(argc, parameters)
@@ -48,7 +48,7 @@ void ImportTool::run()
 
 	Log::info() << "ImportTool::run: inFile: " << inFile << ", outFile: " << outFile << std::endl;
 
-	string delimiter = StringTools::upper(optionArgument("-d", defaultDelimiter()));
+	std::string delimiter = StringTools::upper(optionArgument("-d", defaultDelimiter()));
 	if (delimiter == "TAB")
 		delimiter = "\t";
 
@@ -57,12 +57,12 @@ void ImportTool::run()
 	filterAndImportFile(inFile, outFile, sql, delimiter);
 }
 
-void ImportTool::importFile(const PathName& in, const PathName& out, const string& delimiter)
+void ImportTool::importFile(const PathName& in, const PathName& out, const std::string& delimiter)
 {
     filterAndImportFile(in, out, "select *;", delimiter);
 }
 
-void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, const string& sql, const string& delimiter)
+void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, const std::string& sql, const std::string& delimiter)
 {
 	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
 
@@ -76,7 +76,7 @@ void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, co
     Log::info() << "ImportTool::importFile: Copied " << n << " rows." << std::endl;
 }
 
-void ImportTool::importText(const string& s, const PathName& out, const string& delimiter)
+void ImportTool::importText(const std::string& s, const PathName& out, const std::string& delimiter)
 {
 	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
 

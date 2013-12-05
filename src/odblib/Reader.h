@@ -35,7 +35,7 @@ public:
 	typedef iterator::Row row;
 
 	Reader(eckit::DataHandle &);
-	Reader(const std::string& path);
+    Reader(const std::string& path);
 	Reader();
 
 	virtual ~Reader();
@@ -61,7 +61,7 @@ private:
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
 	//const eckit::PathName path_;
-	const string path_;
+	const std::string path_;
 
 	friend class IteratorProxy<ReaderIterator,Reader,const double>;
 	friend class ReaderIterator;

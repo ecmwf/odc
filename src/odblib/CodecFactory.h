@@ -14,13 +14,13 @@
 template <typename DATAHANDLE>
 class AbstractCodecFactory {
 public:
-	static Codec* getCodec(const string& name, bool differentByteOrder) {
+	static Codec* getCodec(const std::string& name, bool differentByteOrder) {
 		return codecFactories[name]->create(differentByteOrder);
 	}
 
 	static Codec* loadCodec(DATAHANDLE *dh, bool differentByteOrder) {
 		Codec::loadCodecs();
-		string name;
+		std::string name;
 		if (differentByteOrder)
 		{
 			DataStream<OtherByteOrder,DATAHANDLE> ds(dh);
@@ -54,17 +54,17 @@ public:
 	virtual void save(Codec *, eckit::DataHandle *, bool sourceHasDifferentByteOrder) = 0;
 	
 protected:
-	AbstractCodecFactory(const string& name) { codecFactories[name] = this; }
+	AbstractCodecFactory(const std::string& name) { codecFactories[name] = this; }
 
 private:
-	static map<string, AbstractCodecFactory<DATAHANDLE> *> codecFactories;
+	static std::map<std::string, AbstractCodecFactory<DATAHANDLE> *> codecFactories;
 };
 
 
 template <template <typename> class CODEC,typename DATAHANDLE>
 class CodecFactory : public AbstractCodecFactory<DATAHANDLE> {
 public:
-	CodecFactory (const string& name) : AbstractCodecFactory<DATAHANDLE>(name) { }
+	CodecFactory (const std::string& name) : AbstractCodecFactory<DATAHANDLE>(name) { }
 
 	virtual Codec* create(bool sourceHasDifferentByteOrder)
 	{

@@ -25,7 +25,7 @@ using namespace eckit;
 namespace odb {
 namespace sql {
 
-SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const string& name):
+SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const std::string& name):
 	path_(path),
 	name_(name),
 	owner_(owner),
@@ -39,7 +39,7 @@ SQLTable::~SQLTable() { clearColumns(); }
 void SQLTable::clearColumns()
 {
 	// Don't loop on names, as we have all bitmap entries pointing to the same
-	for(map<int,SQLColumn*>::iterator m = columnsByIndex_.begin(); m != columnsByIndex_.end(); ++m)
+	for(std::map<int,SQLColumn*>::iterator m = columnsByIndex_.begin(); m != columnsByIndex_.end(); ++m)
 	{
 		SQLColumn* p = (*m).second;
 		delete p;
@@ -48,25 +48,25 @@ void SQLTable::clearColumns()
 	columnsByIndex_.clear();
 }
 
-vector<string> SQLTable::columnNames() const
+std::vector<std::string> SQLTable::columnNames() const
 {
-	vector<string> results;
-	for(map<int,SQLColumn*>::const_iterator j = columnsByIndex_.begin(); j != columnsByIndex_.end(); ++j)
+	std::vector<std::string> results;
+	for(std::map<int,SQLColumn*>::const_iterator j = columnsByIndex_.begin(); j != columnsByIndex_.end(); ++j)
 		results.push_back((*j).second->name());
 	return results;
 }
 
-FieldNames SQLTable::bitColumnNames(const string& name) const
+FieldNames SQLTable::bitColumnNames(const std::string& name) const
 {
-	typedef map<string, FieldNames>::const_iterator I;
+	typedef std::map<std::string, FieldNames>::const_iterator I;
 	I i = bitColumnNames_.find(name);
 	if (i != bitColumnNames_.end())
 		return (*i).second;
 
-	ASSERT("name not found" && name.find("@") == string::npos);
+	ASSERT("name not found" && name.find("@") == std::string::npos);
 
 
-	string columnName;
+	std::string columnName;
 	FieldNames fieldNames;
 	size_t counter = 0;
 	for (I i = bitColumnNames_.begin(); i != bitColumnNames_.end(); ++i)
@@ -78,15 +78,15 @@ FieldNames SQLTable::bitColumnNames(const string& name) const
 			++counter;
 		}
 	}
-	if (counter == 0) throw eckit::UserError(string("Column '") + name + "' not found.");
-	if (counter != 1) throw eckit::UserError(string("Ambiguous column name: '") + name + "'");
+	if (counter == 0) throw eckit::UserError(std::string("Column '") + name + "' not found.");
+	if (counter != 1) throw eckit::UserError(std::string("Ambiguous column name: '") + name + "'");
 
 	return fieldNames;
 }
 
 
-//void SQLTable::addColumn(const string& name, int index, const type::SQLType& type, const FieldNames& bitmap)
-void SQLTable::addColumn(const string& name, int index, const type::SQLType& type, bool hasMissingValue, double missingValue, bool
+//void SQLTable::addColumn(const std::string& name, int index, const type::SQLType& type, const FieldNames& bitmap)
+void SQLTable::addColumn(const std::string& name, int index, const type::SQLType& type, bool hasMissingValue, double missingValue, bool
 isBitfield, const BitfieldDef& bitfieldDef)
 {
 	const FieldNames& bitmap = bitfieldDef.first;
@@ -98,54 +98,54 @@ isBitfield, const BitfieldDef& bitfieldDef)
 
 	bitColumnNames_[name] = bitmap;
 
-	vector<string> tokens;
+	std::vector<std::string> tokens;
 	Tokenizer("@")(name, tokens);
 
 	ASSERT(tokens.size() == 1 || tokens.size() == 2);
 
 	// TODO: clean up, probably no need to do this parsing as we have the whole bitfieldDef now
-	string tableName = (tokens.size() == 2) ? tokens[1] : "";
-	string columnName = tokens[0];
+	std::string tableName = (tokens.size() == 2) ? tokens[1] : "";
+	std::string columnName = tokens[0];
 
 	for(FieldNames::const_iterator j = bitmap.begin(); j != bitmap.end(); ++j)
 	{
-		string fieldName = *j;
-		string n = columnName + "." + fieldName + "@" + tableName;
+		std::string fieldName = *j;
+		std::string n = columnName + "." + fieldName + "@" + tableName;
 		columnsByName_[n] = col;
 
 		//Log::info() << "SQLTable::addColumn: columnsByName_[" << n << "] = " << *col << std::endl;
 	}
 }
 
-void SQLTable::addColumn(SQLColumn *col, const string& name, int index)
+void SQLTable::addColumn(SQLColumn *col, const std::string& name, int index)
 {
 	columnsByName_[name]   = col;	
 	columnsByIndex_[index] = col;	
 }
 
-//bool SQLTable::hasColumn(const string& name, string* fullName, bool *hasMissingValue, double *missingValue, BitfieldDef* bitfieldDef)
-bool SQLTable::hasColumn(const string& name, string* fullName)
+//bool SQLTable::hasColumn(const std::string& name, std::string* fullName, bool *hasMissingValue, double *missingValue, BitfieldDef* bitfieldDef)
+bool SQLTable::hasColumn(const std::string& name, std::string* fullName)
 {
-	map<string,SQLColumn*>::iterator j = columnsByName_.find(name);
+	std::map<std::string,SQLColumn*>::iterator j = columnsByName_.find(name);
 	return j != columnsByName_.end();
 }
 
 unsigned long long SQLTable::noRows() const
 {
-	map<string,SQLColumn*>::const_iterator j = columnsByName_.begin();
+	std::map<std::string,SQLColumn*>::const_iterator j = columnsByName_.begin();
 	if(j != columnsByName_.end())
 		return(*j).second->noRows();
 	return 0;
 }
 
 
-SQLColumn* SQLTable::column(const string& name)
+SQLColumn* SQLTable::column(const std::string& name)
 {
-	map<string,SQLColumn*>::iterator j = columnsByName_.find(name);
+	std::map<std::string,SQLColumn*>::iterator j = columnsByName_.find(name);
 	if(j != columnsByName_.end())
 		return (*j).second;
 
-	vector<string> v;
+	std::vector<std::string> v;
 	Tokenizer(".")(name, v);
 
 	if(v.size() > 1)
@@ -161,7 +161,7 @@ SQLColumn* SQLTable::column(const string& name)
 
 SQLPool* SQLTable::pool(int index)
 {
-	map<int,SQLPool*>::iterator j = pools_.find(index);
+	std::map<int,SQLPool*>::iterator j = pools_.find(index);
 	if(j == pools_.end())
 		return 0;
 	else
@@ -212,7 +212,7 @@ void SQLTable::master(SQLTable* master)
 	master_ = master;            
 }
 
-string SQLTable::fullName() const
+std::string SQLTable::fullName() const
 {
 	return owner_.name() + "." + name_;
 }
@@ -230,7 +230,7 @@ bool SQLTable::sameDatabase(const SQLTable& other) const
 void SQLTable::print(std::ostream& s) const
 {
 	s << "CREATE TABLE " << fullName() << " AS (" << std::endl;
-	for(map<int,SQLColumn*>::const_iterator j = columnsByIndex_.begin(); j != columnsByIndex_.end(); ++j)
+	for(std::map<int,SQLColumn*>::const_iterator j = columnsByIndex_.begin(); j != columnsByIndex_.end(); ++j)
 	{
 		SQLColumn *c = j->second;
 		s << "	" << c->name() << " " << c->type() << "," << std::endl;

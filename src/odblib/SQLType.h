@@ -35,18 +35,18 @@ public:
 		doubleType  = 5
 	};
 
-	SQLType(const string&);
+	SQLType(const std::string&);
 
 	/// Constructor used when defining a bitfield.
-	SQLType(const string&, const string&);
+	SQLType(const std::string&, const std::string&);
 
 	virtual ~SQLType(); 
 
-	const string& name() const { return name_; }
+	const std::string& name() const { return name_; }
 
 	virtual size_t size() const = 0;
 	virtual void output(SQLOutput&, double, bool) const = 0;
-	virtual const SQLType* subType(const string&) const;
+	virtual const SQLType* subType(const std::string&) const;
 
 	virtual int getKind() const = 0;
 
@@ -55,20 +55,20 @@ public:
 	typedef std::ios_base& (*manipulator)(std::ios_base&);
 	virtual manipulator format() const;
 
-	static const SQLType& lookup(const string&);
+	static const SQLType& lookup(const std::string&);
 
-	static void createAlias(const string&, const string&);
+	static void createAlias(const std::string&, const std::string&);
 
 protected:
     virtual void print(std::ostream&) const;
-	static bool exists(const string&);
+	static bool exists(const std::string&);
 
 private:
 // No copy allowed
 	SQLType(const SQLType&);
 	SQLType& operator=(const SQLType&);
 
-	string name_;
+	std::string name_;
 
 	static void registerStaticTypes();
 

@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionEQ_BOXLON : public FunctionExpression {
 public:
-	FunctionEQ_BOXLON(const string&,const expression::Expressions&);
+	FunctionEQ_BOXLON(const std::string&,const expression::Expressions&);
 	FunctionEQ_BOXLON(const FunctionEQ_BOXLON&);
 	~FunctionEQ_BOXLON(); 
 

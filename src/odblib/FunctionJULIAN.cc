@@ -18,7 +18,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionJULIAN::FunctionJULIAN(const string& name,const expression::Expressions& args)
+FunctionJULIAN::FunctionJULIAN(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args)
 {}
 

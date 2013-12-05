@@ -48,7 +48,7 @@ int * RggRegionCache::read_rtablel_2_file(const int & Txxxx, int *NRGRI_len, int
   int nlons = 0;
   int nexp = Txxxx + 1; /* Expect this many latitude bands */
 
-  string rtable_file;
+  std::string rtable_file;
   std::stringstream sr;
   sr.width(3);
   sr.setf(std::ios_base::right, std::ios_base::adjustfield);

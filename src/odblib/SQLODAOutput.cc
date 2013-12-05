@@ -77,12 +77,12 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql)
 		SQLExpression& c = *columns[i];
 		//results[i]->title(columnNames_[i]);
 
-		string name = c.title();
+		std::string name = c.title();
 		const type::SQLType& type = *c.type();
-		string t = type.name();
+		std::string t = type.name();
 		ColumnType typ =
 			t == "integer" ? INTEGER
-			: t == "string" ? STRING
+			: t == "std::string" ? STRING
 			: t == "real" ? REAL
 			: t == "double" ? DOUBLE
 			: t.find("Bitfield") == 0 ? BITFIELD

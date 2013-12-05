@@ -28,8 +28,8 @@ class SQLBitColumn;
 
 class SQLColumn : public SQLIterator {
 public:
-	SQLColumn(const type::SQLType&, SQLTable&, const string&, int, bool hasMissingValue, double missingValue, const BitfieldDef&);
-	SQLColumn(const type::SQLType&, SQLTable&, const string&, int, bool hasMissingValue, double missingValue);
+	SQLColumn(const type::SQLType&, SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue, const BitfieldDef&);
+	SQLColumn(const type::SQLType&, SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue);
 	virtual ~SQLColumn();
 
 
@@ -37,10 +37,10 @@ public:
 
 	unsigned long long noRows() const;
 
-	const string& name() const { return name_; }
+	const std::string& name() const { return name_; }
 	int index() { return index_; }
 	void index(int i) { index_ = i; }
-	string fullName()    const;
+	std::string fullName()    const;
 	SQLTable* table()    const;
 
 
@@ -75,11 +75,11 @@ protected:
 
 
 	SQLTable& owner_;
-	string    name_;
+	std::string    name_;
 	int       index_;
 
-	vector<int>          rows_;
-	vector<SQLIterator*> iterators_;
+	std::vector<int>          rows_;
+	std::vector<SQLIterator*> iterators_;
 
 	long long current_;
 	long long last_;

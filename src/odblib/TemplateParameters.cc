@@ -21,7 +21,7 @@ using namespace eckit;
 namespace odb {
 
 TemplateParameters::TemplateParameters()
-: vector<TemplateParameter*>()
+: std::vector<TemplateParameter*>()
 {}
 
 TemplateParameters::~TemplateParameters() { release(); }
@@ -35,23 +35,23 @@ void TemplateParameters::release()
 
 MetaData TemplateParameters::nullMD(0);
 
-TemplateParameters& TemplateParameters::parse(const string& fileNameTemplate, TemplateParameters& params, const MetaData& columns)
+TemplateParameters& TemplateParameters::parse(const std::string& fileNameTemplate, TemplateParameters& params, const MetaData& columns)
 {
-	const string &t = fileNameTemplate;
+	const std::string &t = fileNameTemplate;
 
 	int start = 0;	
 	for (;;)
 	{
 		size_t l = t.find("{", start);
-		if (l == string::npos)
+		if (l == std::string::npos)
 			break;
 		start = l;
 		size_t r = t.find("}", start);
-		if (r == string::npos)
-			throw eckit::UserError(string("TemplateParameters::parse: missing '}' while parsing '") + fileNameTemplate + "'");
+		if (r == std::string::npos)
+			throw eckit::UserError(std::string("TemplateParameters::parse: missing '}' while parsing '") + fileNameTemplate + "'");
 		start = r;
 
-		string name = t.substr(l + 1, r - l - 1);
+		std::string name = t.substr(l + 1, r - l - 1);
 		size_t index = &columns != &nullMD ? columns.columnIndex(name) : -1;
 
 		params.push_back(new TemplateParameter(l, r, index, name));	

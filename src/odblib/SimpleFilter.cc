@@ -26,7 +26,7 @@ using namespace std;
 #include "eckit/filesystem/PathName.h"
 #include "odblib/MemoryBlock.h"
 #include "eckit/io/DataHandle.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 
 #include "odblib/SQLBitfield.h"
 #include "odblib/DataStream.h"
@@ -63,7 +63,7 @@ using namespace std;
 namespace odb {
 
 template<typename I>
-SimpleFilter<I>::SimpleFilter(I b, I e, const string& columnName, const double value)
+SimpleFilter<I>::SimpleFilter(I b, I e, const std::string& columnName, const double value)
 : begin_(b),
   end_(e),
   columnName_(columnName),

@@ -17,7 +17,7 @@ namespace function {
 
 const type::SQLType* FunctionDOTP::type() const { return &type::SQLType::lookup("double"); }
 
-FunctionDOTP::FunctionDOTP(const string& name,const expression::Expressions& args)
+FunctionDOTP::FunctionDOTP(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args),
   value_(0),
   resultNULL_(true)

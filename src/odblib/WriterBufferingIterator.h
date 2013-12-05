@@ -47,8 +47,8 @@ public:
 	double* data();
 	double& data(size_t i);
 
-	virtual int setColumn(size_t index, std::string name, ColumnType type);
-	virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
+    virtual int setColumn(size_t index, std::string name, ColumnType type);
+    virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
 
 	void missingValue(size_t i, double); 
 
@@ -63,7 +63,7 @@ public:
 
 	eckit::DataHandle& dataHandle() { return *f; }
 
-	void property(string key, string value) { properties_[key] = value; }
+	void property(std::string key, std::string value) { properties_[key] = value; }
 
 //protected:
 

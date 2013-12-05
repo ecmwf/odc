@@ -36,7 +36,7 @@ void SQLDatabase::setUpVariablesTable()
 	tablesByName_["variables"] = new VariablesTable(*this, "variables");
 }
 
-SQLDatabase::SQLDatabase(const PathName& path,const string& name)
+SQLDatabase::SQLDatabase(const PathName& path,const std::string& name)
 : path_(path),
   name_(name),
   dualTable_(0),
@@ -45,7 +45,7 @@ SQLDatabase::SQLDatabase(const PathName& path,const string& name)
 	setUpVariablesTable();
 } 
 
-SQLDatabase::SQLDatabase(const string& name)
+SQLDatabase::SQLDatabase(const std::string& name)
 : path_("."), 
   name_(name),
   dualTable_(0),
@@ -60,7 +60,7 @@ SQLDatabase::~SQLDatabase()
 	for (Variables::iterator it = variables_.begin(); it != variables_.end(); ++it)
 	{
 	
-		//string var(it->first);
+		//std::string var(it->first);
 		//cout << "SQLDatabase::~SQLDatabase: " <<  var << std::endl;
 		//SQLExpression* e (it->second);
 		//if (e->isVector())
@@ -91,7 +91,7 @@ void SQLDatabase::open()
 
 void SQLDatabase::close()
 {
-	for(map<string,SQLTable*>::iterator j = tablesByName_.begin();
+	for(std::map<std::string,SQLTable*>::iterator j = tablesByName_.begin();
 		j != tablesByName_.end(); ++j)
 	{
 		SQLTable* table = (*j).second;
@@ -120,7 +120,7 @@ SQLTable* SQLDatabase::dualTable()
 #if 0
 void SQLDatabase::loadFLAGS()
 {
-	string name   = path_.baseName(false);
+	std::string name   = path_.baseName(false);
 	PathName path = path_ + "/" + name + ".flags";
 	ifstream in(path.c_str());
 	if(!in) throw CantOpenFile(path);
@@ -131,8 +131,8 @@ void SQLDatabase::loadFLAGS()
 	{
 		if(line[0] == '-' && line[1] == 'A')
 		{
-			string s(line+2);
-			vector<string> v;
+			std::string s(line+2);
+			std::vector<std::string> v;
 			parse(s,v);
 
 			if(tablesByName_.find(v[0]) == tablesByName_.end())
@@ -160,7 +160,7 @@ void SQLDatabase::loadFLAGS()
 
 void SQLDatabase::loadDD()
 {
-	string name   = path_.baseName(false);
+	std::string name   = path_.baseName(false);
 	PathName path = path_ + "/" + name + ".dd";
 
 	ifstream in(path.c_str());
@@ -169,8 +169,8 @@ void SQLDatabase::loadDD()
 	Tokenizer parse(":@");
 	Tokenizer braket("()");
 
-	string junk;
-	string s;
+	std::string junk;
+	std::string s;
 
 	//cout << path << std::endl;
 
@@ -189,17 +189,17 @@ void SQLDatabase::loadDD()
 
 	for(int i = 0; i < no_tables; i++)
 	{
-		int id; string name;
+		int id; std::string name;
 		int n;
 		in >> id >> name >> n;
 		while(n-->0) in >> junk;
 	}
 
-	map<string,set<string> > links;
+	std::map<std::string,set<string> > links;
 
 	for(int i = 0; i < no_tables; i++)
 	{
-		string name; int no_cols;
+		std::string name; int no_cols;
 		in >> name >> no_cols; name.erase(0,1);
 		ASSERT(tablesByName_.find(name) == tablesByName_.end());
 
@@ -209,16 +209,16 @@ void SQLDatabase::loadDD()
 
 		for(int j = 0; j < no_cols; j++)
 		{
-			string type; int no_fields;
+			std::string type; int no_fields;
 			in >> type >> no_fields;
 
 			//cout << type << " " << no_fields << std::endl;
 
-			vector<string> v;
+			std::vector<std::string> v;
 			parse(type,v);
 
 			//cout << name << " " << v[0] << " " << v[1] << std::endl;
-			vector<string> b;
+			std::vector<std::string> b;
 			braket(v[1],b);
 
 			if(b.size() > 1)
@@ -229,16 +229,16 @@ void SQLDatabase::loadDD()
 				links[name].insert(b[1]);
 			}
 
-			vector<string> bitmap;
+			std::vector<std::string> bitmap;
 
 			if(no_fields)
 			{
-				vector<string> fields;
-				vector<int>    sizes;
+				std::vector<std::string> fields;
+				std::vector<int>    sizes;
 		
 				for(int k = 0; k < no_fields; k++)
 				{
-					string name; int size;
+					std::string name; int size;
 					in >> name >> size;
 
 					fields.push_back(name);
@@ -259,7 +259,7 @@ void SQLDatabase::loadDD()
 
 	for(int i = 0; i < no_variables; i++)
 	{
-		string name; double value;
+		std::string name; double value;
 		in >> name >> value;
 		variables_[name] = value;
 
@@ -273,7 +273,7 @@ void SQLDatabase::setLinks(const Links& links)
 {
 	for(Links::const_iterator j = links.begin(); j != links.end() ; ++j)
 	{
-		const string&      from = (*j).first;
+		const std::string&      from = (*j).first;
 		const std::set<string>& to   = (*j).second;
 
 		ASSERT(tablesByName_.find(from) != tablesByName_.end());
@@ -293,15 +293,15 @@ void SQLDatabase::setLinks(const Links& links)
 #if 0
 void SQLDatabase::loadIOMAP()
 {
-	string name   = path_.baseName(false);
+	std::string name   = path_.baseName(false);
 	PathName path = path_ + "/" + name + ".iomap";
 
 	ifstream in(path.c_str());
 	if(!in) throw CantOpenFile(path);
 
 	int junk;
-	string s;
-	string table;
+	std::string s;
+	std::string table;
 
 	int no_tables,no_pools;
 
@@ -313,7 +313,7 @@ void SQLDatabase::loadIOMAP()
 
 	for(;;)
 	{
-		string name; int id, n_cols;
+		std::string name; int id, n_cols;
 
 		in >> id >> n_cols >> name; name.erase(0,1);
 		if(id == -1) break;
@@ -325,18 +325,18 @@ void SQLDatabase::loadIOMAP()
 }
 #endif
 
-SQLTable* SQLDatabase::table(const string& name)
+SQLTable* SQLDatabase::table(const std::string& name)
 {
-	map<string,SQLTable*>::iterator j = tablesByName_.find(name);
+	std::map<std::string,SQLTable*>::iterator j = tablesByName_.find(name);
 	ASSERT(j != tablesByName_.end());
 	return (*j).second;
 }
 
-void SQLDatabase::setVariable(const string& name, SQLExpression* value) {
+void SQLDatabase::setVariable(const std::string& name, SQLExpression* value) {
 	variables_[name] = value;
 }
 
-SQLExpression* SQLDatabase::getVariable(const string& name) const
+SQLExpression* SQLDatabase::getVariable(const std::string& name) const
 {
 	Variables::const_iterator j = variables_.find(name);
 	if(j == variables_.end())
@@ -344,10 +344,10 @@ SQLExpression* SQLDatabase::getVariable(const string& name) const
 	return (*j).second;
 }
 
-void SQLDatabase::setIncludePath(const string& includePath)
+void SQLDatabase::setIncludePath(const std::string& includePath)
 {
     Tokenizer tokenize(":");
-    vector<string> tokens;
+    std::vector<std::string> tokens;
     tokenize(includePath, tokens);
     copy(tokens.begin(), tokens.end(), back_inserter(includePath_));
 }

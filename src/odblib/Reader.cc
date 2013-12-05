@@ -26,7 +26,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/DataHandle.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 
 using namespace std;
 using namespace eckit;
@@ -45,7 +45,7 @@ Reader::Reader()
   path_("")
 {}
 
-Reader::Reader(const string& path)
+Reader::Reader(const std::string& path)
 : dataHandle_(new FileHandle(path)),
   deleteDataHandle_(true),
   path_(path)

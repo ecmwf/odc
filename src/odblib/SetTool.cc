@@ -32,8 +32,8 @@ void SetTool::run()
 		return;
 	}
 
-	vector<string> columns;
-	vector<double> values;
+	std::vector<std::string> columns;
+	std::vector<double> values;
 
 	PathName inFile = parameters(2);
 	PathName outFile = parameters(3);
@@ -55,22 +55,22 @@ void SetTool::run()
 	writer->pass1(begin, end);
 }
 
-void SetTool::parseUpdateList(string s, vector<string>& columns, vector<double>& values)
+void SetTool::parseUpdateList(std::string s, std::vector<std::string>& columns, std::vector<double>& values)
 {
     Tokenizer splitAssignments(",");
-    vector<string> assignments;
+    std::vector<std::string> assignments;
     splitAssignments(s, assignments);
 	
     Tokenizer splitEq("=");
 
 	for (size_t i = 0; i < assignments.size(); ++i)
 	{
-		vector<string> assignment;
+		std::vector<std::string> assignment;
 		splitEq(assignments[i], assignment);
 		ASSERT(assignment.size() == 2);
 
-		string colName = assignment[0];
-		string value = assignment[1];
+		std::string colName = assignment[0];
+		std::string value = assignment[1];
 		
 		Log::info() << "SetTool::parseUpdateList: " << colName << "='" << value << "'" << std::endl;
 
@@ -87,7 +87,7 @@ void SetTool::parseUpdateList(string s, vector<string>& columns, vector<double>&
 			bzero(&v, sizeof(double));
 			for (size_t i = 0; i < value.size() / 2; ++i)
 			{
-				string byteInHex = value.substr(i * 2, 2);
+				std::string byteInHex = value.substr(i * 2, 2);
 				char *p = 0;
 				unsigned char x;
 				reinterpret_cast<unsigned char*>(&v)[i] = x = static_cast<unsigned char>(strtoul(byteInHex.c_str(), &p, 16));

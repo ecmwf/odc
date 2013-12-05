@@ -15,7 +15,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionNVL::FunctionNVL(const string& name,const expression::Expressions& args)
+FunctionNVL::FunctionNVL(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name, args)
 {}
 

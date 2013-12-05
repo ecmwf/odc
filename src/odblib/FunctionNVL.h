@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionNVL : public FunctionExpression {
 public:
-	FunctionNVL(const string&,const expression::Expressions&);
+	FunctionNVL(const std::string&,const expression::Expressions&);
 	FunctionNVL(const FunctionNVL&);
 	~FunctionNVL(); 
 

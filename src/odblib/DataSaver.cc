@@ -10,7 +10,7 @@ using namespace eckit;
 
 namespace odb {
 
-DataSaver::DataSaver(const string& path)
+DataSaver::DataSaver(const std::string& path)
   : writer_(path),
     target_(writer_.begin())
 {}
@@ -27,7 +27,7 @@ void DataSaver::save(const DataSet& dataset, const DataTable& master)
     save(dataset, master.name());
 }
 
-void DataSaver::save(const DataSet& dataset, const string& master)
+void DataSaver::save(const DataSet& dataset, const std::string& master)
 {
     DataView view(dataset, master, true);
     odb::MetaData metadata(0);

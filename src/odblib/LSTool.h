@@ -25,17 +25,17 @@ public:
 	static void help(std::ostream &o)
 	{ o << "Shows file's contents"; }
 
-	static void usage(const string& name, std::ostream &o)
+	static void usage(const std::string& name, std::ostream &o)
 	{ o << name << " [-o <output-file>] <file-name>" << endl << std::endl; }
 
-	unsigned long long printData(const string &db, std::ostream &out);
+	unsigned long long printData(const std::string &db, std::ostream &out);
 
 private:
 // No copy allowed
     LSTool(const LSTool&);
     LSTool& operator=(const LSTool&);
 
-	static const string nullString;
+	static const std::string nullString;
 };
 
 } // namespace tool 

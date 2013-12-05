@@ -86,10 +86,10 @@ namespace sql {
 
 //int SQLParser::line() { using namespace SQLYacc; return SQLYacc::odblib_lineno; }
 
-void SQLParser::pushInclude(const string& sql, const string& yypath) { SQLYacc::pushInclude(sql, yypath); }
+void SQLParser::pushInclude(const std::string& sql, const std::string& yypath) { SQLYacc::pushInclude(sql, yypath); }
 void SQLParser::popInclude() { SQLYacc::popInclude(); }
 
-void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg, const string& csvDelimiter)
+void SQLParser::parseString(const std::string& s, istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
 {
     AutoLock<Mutex> lock(local_mutex);
 
@@ -105,7 +105,7 @@ void SQLParser::parseString(const string& s, istream* is, SQLOutputConfig cfg, c
 	SQLSelectFactory::instance().implicitFromTableSourceStream(0);
 }
 
-void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg)
+void SQLParser::parseString(const std::string& s, DataHandle* dh, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(local_mutex);
 	SQLSelectFactory::instance().implicitFromTableSource(dh);
@@ -119,7 +119,7 @@ void SQLParser::parseString(const string& s, DataHandle* dh, SQLOutputConfig cfg
 	SQLSelectFactory::instance().implicitFromTableSource(0);
 }
 
-void SQLParser::parseString(const string& s, SQLDatabase& db, SQLOutputConfig cfg)
+void SQLParser::parseString(const std::string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(local_mutex);
     SQLSession::current().currentDatabase(&db);

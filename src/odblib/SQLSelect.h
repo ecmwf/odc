@@ -42,7 +42,7 @@ class SQLSelect : public SQLStatement {
 	friend class odb::SelectIterator;
 
 public:
-	SQLSelect(const Expressions&, const vector<SQLTable*>&, odb::sql::expression::SQLExpression*, SQLOutput*, SQLOutputConfig);
+	SQLSelect(const Expressions&, const std::vector<SQLTable*>&, odb::sql::expression::SQLExpression*, SQLOutput*, SQLOutputConfig);
 	~SQLSelect(); 
 
 // -- Methods
@@ -55,10 +55,10 @@ public:
 
 	bool isAggregate() { return aggregate_; }
 
-	std::pair<double,bool>* column(const string& name, SQLTable*);
-	const type::SQLType* typeOf(const string& name, SQLTable*) const;
+	std::pair<double,bool>* column(const std::string& name, SQLTable*);
+	const type::SQLType* typeOf(const std::string& name, SQLTable*) const;
 	// FIXME: do we really need all these optional parameters?
-	SQLTable* findTable(const string& name, string *fullName = 0, bool *hasMissingValue=0, double *missingValue=0, bool* isBitfield=0, BitfieldDef* =0) const;
+	SQLTable* findTable(const std::string& name, std::string *fullName = 0, bool *hasMissingValue=0, double *missingValue=0, bool* isBitfield=0, BitfieldDef* =0) const;
 
 	virtual Expressions output() const; 
 
@@ -77,7 +77,7 @@ private:
 
 // -- Members
 	Expressions select_;
-	vector<SQLTable*> tables_;
+	std::vector<SQLTable*> tables_;
 	SortedTables sortedTables_;
 
 	auto_ptr<odb::sql::expression::SQLExpression> where_;
@@ -88,13 +88,13 @@ private:
 	auto_ptr<SQLOutput>     output_;
 	Expressions  results_;
 
-	typedef map<vector<pair<double,bool> >, expression::Expressions*> AggregatedResults;
+	typedef std::map<std::vector<pair<double,bool> >, expression::Expressions*> AggregatedResults;
 	AggregatedResults aggregatedResults_;
 
-	map<string,pair<double,bool> > values_;
+	std::map<std::string,pair<double,bool> > values_;
 	std::set<SQLTable*>     allTables_;
 
-	typedef map<SQLTable*,SelectOneTable> TableMap;
+	typedef std::map<SQLTable*,SelectOneTable> TableMap;
 	TableMap tablesToFetch_;
 
 	unsigned long long count_;
@@ -105,14 +105,14 @@ private:
 	bool mixedAggregatedAndScalar_;
 	Expressions aggregated_;
 	Expressions nonAggregated_;
-	vector<bool> mixedResultColumnIsAggregated_;
+	std::vector<bool> mixedResultColumnIsAggregated_;
 	SQLOutputConfig outputConfig_;
 // -- Methods
 
 	void reset();
 	bool resultsOut();
 	bool output(odb::sql::expression::SQLExpression*);
-    SQLExpression* findAliasedExpression(const string& alias);
+    SQLExpression* findAliasedExpression(const std::string& alias);
 
 	friend class odb::sql::expression::function::FunctionROWNUMBER; // needs access to count_
 	friend class odb::sql::expression::function::FunctionTHIN; // needs access to count_

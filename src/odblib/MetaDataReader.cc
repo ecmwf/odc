@@ -24,7 +24,7 @@ using namespace std;
 
 #include "eckit/io/DataHandle.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/filesystem/PathName.h"
 
 #include "odblib/Codec.h"
@@ -93,7 +93,7 @@ typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(cons
 template <typename T>
 typename MetaDataReader<T>::iterator MetaDataReader<T>::begin()
 {
-	T* it = new T(*this, skipData_);
+    T* it = new T(dataHandle(), skipData_);
 	it->next();
 	return iterator(it);
 }

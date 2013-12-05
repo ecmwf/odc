@@ -18,42 +18,42 @@ namespace tool {
 
 class AbstractToolFactory {
 public:
-	static Tool* createTool(const string& name, int argc, char **argv);
+	static Tool* createTool(const std::string& name, int argc, char **argv);
 
-	static void printToolHelp(const string&, std::ostream &);
-	static void printToolUsage(const string& name, std::ostream &);
+	static void printToolHelp(const std::string&, std::ostream &);
+	static void printToolUsage(const std::string& name, std::ostream &);
 	static void printToolsHelp(std::ostream &);
 
 	static void listTools(std::ostream&);
 
-	static odb::tool::test::TestCases *testCases(const vector<string> & = matchAll);
+	static odb::tool::test::TestCases *testCases(const std::vector<std::string> & = matchAll);
 
 	virtual Tool* create(int argc, char **argv) = 0;
 
 	virtual void help(std::ostream &) = 0;
-	virtual void usage(const string&, std::ostream &) = 0;
+	virtual void usage(const std::string&, std::ostream &) = 0;
 	virtual bool experimental() = 0;
 	
 protected:
-	AbstractToolFactory(const string& name); 
+	AbstractToolFactory(const std::string& name); 
 	virtual ~AbstractToolFactory ();
 
 private:
-	static AbstractToolFactory& findTool(const string &name);
-	static map<string, AbstractToolFactory *> *toolFactories;
-	static const vector<string> matchAll;
+	static AbstractToolFactory& findTool(const std::string &name);
+	static std::map<std::string, AbstractToolFactory *> *toolFactories;
+	static const std::vector<std::string> matchAll;
 };
 
 
 template <class T>
 class ToolFactory : public AbstractToolFactory {
 public:
-	ToolFactory (const string& name) : AbstractToolFactory(name) {}
+	ToolFactory (const std::string& name) : AbstractToolFactory(name) {}
 
 	Tool* create(int argc, char **argv) { return new T(argc, argv); }
 
 	void help(std::ostream &o) { T::help(o); }
-	void usage(const string &name, std::ostream &o) { T::usage(name, o); }
+	void usage(const std::string &name, std::ostream &o) { T::usage(name, o); }
 	bool experimental() { return ExperimentalTool<T>::experimental; }
 };
 

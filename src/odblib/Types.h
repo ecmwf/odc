@@ -13,6 +13,11 @@
 
 #include <stdint.h>
 
+#include <string>
+#include <vector>
+#include <map>
+
+
 #include "eckit/eckit.h"
 
 namespace odb {

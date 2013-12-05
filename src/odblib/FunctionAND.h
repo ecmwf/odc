@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionAND : public FunctionExpression {
 public:
-	FunctionAND(const string&, const expression::Expressions&);
+	FunctionAND(const std::string&, const expression::Expressions&);
 	FunctionAND(const FunctionAND&);
 	~FunctionAND();
 

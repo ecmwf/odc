@@ -17,7 +17,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionJOIN::FunctionJOIN(const string& name,const expression::Expressions& args)
+FunctionJOIN::FunctionJOIN(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name, args)
 {}
 

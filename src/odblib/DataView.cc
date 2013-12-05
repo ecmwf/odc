@@ -34,8 +34,8 @@ DataViewFiller::DataViewFiller(DataView& view, const DataLink& link)
 
     if (fillLinks_)
     {
-        string parentName = link.parent().name();
-        string childName = link.child().name();
+        std::string parentName = link.parent().name();
+        std::string childName = link.child().name();
         linkOffset_ = columnIndex(childName + ".offset@" + parentName);
     }
 }
@@ -78,9 +78,9 @@ bool DataViewFiller::done() const
     return (linkIt_ == linkEnd_) && (childIt_ == childEnd_);
 }
 
-size_t DataViewFiller::columnIndex(const string& name) const
+size_t DataViewFiller::columnIndex(const std::string& name) const
 {
-    vector<size_t> indices;
+    std::vector<size_t> indices;
 
     for (size_t i = 0; i < view_->columns().size(); i++)
         if (view_->columns().at(i).name() == name
@@ -88,15 +88,15 @@ size_t DataViewFiller::columnIndex(const string& name) const
             indices.push_back(i);
 
     if (indices.size() > 1)
-        throw eckit::UserError(string("Ambiguous column name: '") + name + "'");
+        throw eckit::UserError(std::string("Ambiguous column name: '") + name + "'");
 
     if (indices.size() == 0)
-        throw eckit::UserError(string("Column '") + name + "' not found.");
+        throw eckit::UserError(std::string("Column '") + name + "' not found.");
 
     return indices[0];
 }
 
-DataView::DataView(const DataSet& dataset, const string& masterName,
+DataView::DataView(const DataSet& dataset, const std::string& masterName,
         bool viewLinks)
   : columns_(),
     fillers_(),
@@ -104,7 +104,7 @@ DataView::DataView(const DataSet& dataset, const string& masterName,
     rowBufferSize_(0),
     viewLinks_(viewLinks)
 {
-    typedef vector<const DataLink*> Links;
+    typedef std::vector<const DataLink*> Links;
 
     Links links;
 

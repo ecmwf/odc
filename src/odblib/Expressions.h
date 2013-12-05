@@ -24,7 +24,7 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-typedef vector<odb::sql::expression::SQLExpression*> ExpressionsVector;
+typedef std::vector<odb::sql::expression::SQLExpression*> ExpressionsVector;
 
 class Expressions : public SQLExpression, public ExpressionsVector
 {
@@ -74,7 +74,7 @@ public:
 //////////////////////////////////////////////////////////////////////////////////////
 };
 
-typedef vector<Expressions> VectorOfExpressions;
+typedef std::vector<Expressions> VectorOfExpressions;
 //class VectorOfExpressions : public vector<Expressions> { public: ~VectorOfExpressions() { for (size_t i=0; i < size(); ++i) ; } };
 
 } // namespace expression

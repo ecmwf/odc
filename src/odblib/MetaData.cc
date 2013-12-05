@@ -25,9 +25,9 @@ using namespace eckit;
 
 namespace odb {
 
-MetaData::MetaData(int i) : vector<Column*>(i), rowsNumber_(0), self(*this) {}
-MetaData::MetaData(int i, Column *p) : vector<Column*>(i, p), rowsNumber_(0), self(*this) {}
-MetaData::MetaData(const MetaData& md) : vector<Column*>(0), rowsNumber_(0), self(*this)
+MetaData::MetaData(int i) : std::vector<Column*>(i), rowsNumber_(0), self(*this) {}
+MetaData::MetaData(int i, Column *p) : std::vector<Column*>(i, p), rowsNumber_(0), self(*this) {}
+MetaData::MetaData(const MetaData& md) : std::vector<Column*>(0), rowsNumber_(0), self(*this)
 { self += md; }
 
 MetaData* MetaData::clone() const {
@@ -77,7 +77,7 @@ void MetaData::setSize(size_t n)
 	for (size_t i = n; i < oldSize; ++i)
 		delete at(i);
 
-	vector<Column*>::resize(n, 0);
+	std::vector<Column*>::resize(n, 0);
 
 	for (size_t i = oldSize; i < n; ++i)
 		at(i) = new Column(*this);
@@ -90,10 +90,10 @@ MetaData::~MetaData()
 }
 
 //const
-Column* MetaData::columnByName(const string& name) const
+Column* MetaData::columnByName(const std::string& name) const
 { return at(columnIndex(name)); }
 
-bool MetaData::hasColumn(const string& name) const
+bool MetaData::hasColumn(const std::string& name) const
 { 
 	for (size_t i = 0; i < size(); i++)
 		if (at(i)->name() == name || at(i)->name().find(name + "@") == 0)
@@ -101,19 +101,19 @@ bool MetaData::hasColumn(const string& name) const
 	return false;
 }
 
-size_t MetaData::columnIndex(const string& name) const
+size_t MetaData::columnIndex(const std::string& name) const
 {
-	vector<size_t> indices;
+	std::vector<size_t> indices;
 
 	for (size_t i = 0; i < size(); i++)
 		if (at(i)->name() == name || at(i)->name().find(name + "@") == 0)
 			indices.push_back(i);
 
 	if (indices.size() > 1)
-		throw eckit::UserError(string("Ambiguous column name: '") + name + "'");
+		throw eckit::UserError(std::string("Ambiguous column name: '") + name + "'");
 
 	if (indices.size() == 0)
-		throw eckit::UserError(string("Column '") + name + "' not found.");
+		throw eckit::UserError(std::string("Column '") + name + "' not found.");
 
 	return indices[0];
 }
@@ -177,12 +177,12 @@ MetaData MetaData::operator+(const MetaData& rhs)
 	return r;
 }
 
-bool MetaData::equalsIncludingConstants(const MetaData& other, const vector<string>& constColumns) const 
+bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector<std::string>& constColumns) const 
 {
 	ostream& L = Log::debug();
 	for (size_t i = 0; i < constColumns.size(); ++i)
 	{
-		const string& columnName = constColumns[i];
+		const std::string& columnName = constColumns[i];
 		L << "MetaData::equalsIncludingConstants: check " << columnName << std::endl;
 
 		if ( !self.hasColumn(columnName) && !other.hasColumn(columnName))

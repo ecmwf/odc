@@ -15,7 +15,7 @@ namespace odb {
 namespace sql {
 namespace type {
 
-SQLDouble::SQLDouble(const string& name): SQLType(name) {}
+SQLDouble::SQLDouble(const std::string& name): SQLType(name) {}
 
 SQLDouble::~SQLDouble() {}
 

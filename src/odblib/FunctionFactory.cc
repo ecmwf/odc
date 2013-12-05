@@ -67,23 +67,23 @@ const double R2D          = 180.0/piconst::pi;
 
 static ThreadSingleton<FunctionFactory> functionFactory_;
 
-struct FFMap : public map<pair<string,int>, FunctionFactoryBase*> { static FFMap& instance(); };
+struct FFMap : public std::map<pair<std::string,int>, FunctionFactoryBase*> { static FFMap& instance(); };
 static ThreadSingleton<FFMap> map_;
 FFMap& FFMap::instance() { return map_.instance(); }
 
-struct SQLFunctionHelp : public map<pair<string,int>, string> { static SQLFunctionHelp& instance(); };
+struct SQLFunctionHelp : public std::map<pair<std::string,int>, std::string> { static SQLFunctionHelp& instance(); };
 static ThreadSingleton<SQLFunctionHelp> sqlFunctionsHelp_;
 SQLFunctionHelp& SQLFunctionHelp::instance() { return sqlFunctionsHelp_.instance(); }
 
 FunctionFactory& FunctionFactory::instance() { return functionFactory_.instance(); }
 
-FunctionFactoryBase::FunctionFactoryBase(const string& name, int arity, const string& help)
+FunctionFactoryBase::FunctionFactoryBase(const std::string& name, int arity, const std::string& help)
 : arity_(arity),
   name_(name),
   help_(help)
 {
-	std::pair<string,int> p(name_,arity_);
-	//if(!map_) map_ = new map<pair<string,int>,FunctionFactoryBase*>();
+	std::pair<std::string,int> p(name_,arity_);
+	//if(!map_) map_ = new std::map<pair<std::string,int>,FunctionFactoryBase*>();
 
 	ASSERT(FFMap::instance().find(p) == FFMap::instance().end());
 	FFMap::instance()[p] = this;
@@ -93,7 +93,7 @@ FunctionFactoryBase::FunctionFactoryBase(const string& name, int arity, const st
 FunctionFactory::FunctionInfo& FunctionFactory::functionsInfo()
 {
 	if (functionInfo_.size() == 0)
-		for (map<pair<string,int>,FunctionFactoryBase*>::iterator i = FFMap::instance().begin(); i != FFMap::instance().end(); ++i)
+		for (std::map<pair<std::string,int>,FunctionFactoryBase*>::iterator i = FFMap::instance().begin(); i != FFMap::instance().end(); ++i)
 			functionInfo_.push_back(make_pair(make_pair(i->first.first, i->first.second), SQLFunctionHelp::instance()[i->first]));
 	return functionInfo_;
 }
@@ -101,7 +101,7 @@ FunctionFactory::FunctionInfo& FunctionFactory::functionsInfo()
 FunctionFactoryBase::~FunctionFactoryBase()
 {
 
-//	std::pair<string,int> p(name_,arity_);
+//	std::pair<std::string,int> p(name_,arity_);
 //	mapa().erase(p);
 //	if (mapa().empty())
 //	{
@@ -110,15 +110,15 @@ FunctionFactoryBase::~FunctionFactoryBase()
 //	}
 }
 
-FunctionExpression* FunctionFactoryBase::build(const string& name, const expression::Expressions& args)
+FunctionExpression* FunctionFactoryBase::build(const std::string& name, const expression::Expressions& args)
 {
-	std::pair<string,int> p(name,args.size());	
-	map<pair<string,int>,FunctionFactoryBase*>::iterator j = FFMap::instance().find(p);
+	std::pair<std::string,int> p(name,args.size());	
+	std::map<pair<std::string,int>,FunctionFactoryBase*>::iterator j = FFMap::instance().find(p);
 
 	// Try -1
 	if(j == FFMap::instance().end())
 	{
-		p = pair<string,int>(name,-1);
+		p = pair<std::string,int>(name,-1);
 		j = FFMap::instance().find(p);
 	}
 
@@ -129,14 +129,14 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, const express
 
 }
 
-FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression* arg)
+FunctionExpression* FunctionFactoryBase::build(const std::string& name, SQLExpression* arg)
 {
 	expression::Expressions args;
 	args.push_back(arg);
 	return build(name,args);
 }
 
-FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression* arg1, SQLExpression* arg2)
+FunctionExpression* FunctionFactoryBase::build(const std::string& name, SQLExpression* arg1, SQLExpression* arg2)
 {
 	expression::Expressions args;
 	args.push_back(arg1);
@@ -144,7 +144,7 @@ FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression
 	return build(name,args);
 }
 
-FunctionExpression* FunctionFactoryBase::build(const string& name, SQLExpression* arg1, SQLExpression* arg2, SQLExpression *arg3)
+FunctionExpression* FunctionFactoryBase::build(const std::string& name, SQLExpression* arg1, SQLExpression* arg2, SQLExpression *arg3)
 {
 	expression::Expressions args;
 	args.push_back(arg1);
@@ -162,7 +162,7 @@ class MathFunctionExpression_1 : public FunctionExpression {
 	double eval(bool& m) const { double v = args_[0]->eval(m); return m ? this->missingValue_ : T(v); }
 	SQLExpression* clone() const { return new MathFunctionExpression_1<T>(*this); }
 public:
-	MathFunctionExpression_1(const string& name, const expression::Expressions& args) : FunctionExpression(name, args) {}
+	MathFunctionExpression_1(const std::string& name, const expression::Expressions& args) : FunctionExpression(name, args) {}
 	MathFunctionExpression_1(const MathFunctionExpression_1& o) : FunctionExpression(o) {}
 };
 
@@ -177,7 +177,7 @@ class MathFunctionExpression_2 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_2<T>(*this); }
 public:
-	MathFunctionExpression_2(const string& name, const expression::Expressions& args) : FunctionExpression(name,args) {}
+	MathFunctionExpression_2(const std::string& name, const expression::Expressions& args) : FunctionExpression(name,args) {}
 	MathFunctionExpression_2(const MathFunctionExpression_2& o) : FunctionExpression(o) {}
 };
 
@@ -194,7 +194,7 @@ class MathFunctionExpression_3 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_3<T>(*this); }
 public:
-	MathFunctionExpression_3(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
+	MathFunctionExpression_3(const std::string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
 	MathFunctionExpression_3(const MathFunctionExpression_3& o) : FunctionExpression(o) {}
 };
 
@@ -213,7 +213,7 @@ class MathFunctionExpression_4 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_4<T>(*this); }
 public:
-	MathFunctionExpression_4(const string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
+	MathFunctionExpression_4(const std::string& name,const expression::Expressions& args) : FunctionExpression(name,args) {}
 	MathFunctionExpression_4(const MathFunctionExpression_4& o) : FunctionExpression(o) {}
 };
 
@@ -234,8 +234,8 @@ class MathFunctionExpression_5 : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionExpression_5<T>(*this); }
 public:
-	MathFunctionExpression_5(const string& name, const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
-	MathFunctionExpression_5(const string& name, expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
+	MathFunctionExpression_5(const std::string& name, const expression::Expressions& args) : FunctionExpression(name,args), myArgs_(0) {}
+	MathFunctionExpression_5(const std::string& name, expression::Expressions* args) : FunctionExpression(name,*args), myArgs_(args) {}
 	MathFunctionExpression_5(const MathFunctionExpression_5& o) : FunctionExpression(o), myArgs_(0) {}
 	~MathFunctionExpression_5() { if (myArgs_) delete myArgs_; }
 private:
@@ -479,7 +479,7 @@ class MultiplyExpression : public FunctionExpression {
 	}
 	SQLExpression* clone() const { return new MultiplyExpression(name_, 2); }
 public:
-	MultiplyExpression(const string& name, const expression::Expressions& args)
+	MultiplyExpression(const std::string& name, const expression::Expressions& args)
 	: FunctionExpression(name,args) {}
 };
 
@@ -613,15 +613,15 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 }
 
 
-FunctionExpression* ast(const string& s, SQLExpression* e) { return FunctionFactory::instance().build(s, e); }
+FunctionExpression* ast(const std::string& s, SQLExpression* e) { return FunctionFactory::instance().build(s, e); }
 
-FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2)
+FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2)
 { return FunctionFactory::instance().build(s, e1, e2); }
 
-FunctionExpression* ast(const string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3)
+FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3)
 { return FunctionFactory::instance().build(s, e1, e2, e3); }
 
-FunctionExpression* ast(const string& s, const expression::Expressions& e) { return FunctionFactory::instance().build(s, e); }
+FunctionExpression* ast(const std::string& s, const expression::Expressions& e) { return FunctionFactory::instance().build(s, e); }
 
 } // namespace function
 } // namespace expression

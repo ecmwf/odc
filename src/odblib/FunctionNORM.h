@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionNORM : public FunctionExpression {
 public:
-	FunctionNORM(const string&,const expression::Expressions&);
+	FunctionNORM(const std::string&,const expression::Expressions&);
 	FunctionNORM(const FunctionNORM&);
 	~FunctionNORM();
 

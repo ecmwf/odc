@@ -50,7 +50,7 @@ DateTime::DateTime()
 
 // -----------------------------------------------------------------------------
 
-DateTime::DateTime(const string & str) {
+DateTime::DateTime(const std::string & str) {
   this->set(str);
 }
 
@@ -69,7 +69,7 @@ DateTime::DateTime(const int &YYYY,const int &MM,const int &DD,
 
 // -----------------------------------------------------------------------------
 
-void DateTime::set(const string & str) {
+void DateTime::set(const std::string & str) {
   try {
     istringstream datestream(str);
 
@@ -112,7 +112,7 @@ void DateTime::set(const string & str) {
 
   }
   catch(...) {
-    string message="Badly formatted date: ";
+    std::string message="Badly formatted date: ";
     message.append(str);
     throw invalid_argument(message);
   }
@@ -128,7 +128,7 @@ ostream& operator<<(std::ostream& output, const DateTime& t) {
 // -----------------------------------------------------------------------------
 
 istream& operator>>(std::istream& input, DateTime& t) {
-    string time;
+    std::string time;
     input >> time;
     t.set(time);
     return input;
@@ -138,7 +138,7 @@ istream& operator>>(std::istream& input, DateTime& t) {
 
 int DateTime::eatChars (std::istream & is, int nchars) {
   // consume nchars characters from the stream and interpret as an integer
-  string str;
+  std::string str;
   for (int i=0; i<nchars; ++i) {
     str.append(1, (char) is.get());
   }
@@ -192,7 +192,7 @@ void DateTime::set(const int & year, const int & month, const int & day,
   second_ = second;
 
   if (!valid()) {
-    string message = "Invalid DateTime: ";
+    std::string message = "Invalid DateTime: ";
     message.append(this->toString());
     year_ = 0;
     month_ = 0;
@@ -206,7 +206,7 @@ void DateTime::set(const int & year, const int & month, const int & day,
 
 // -----------------------------------------------------------------------------
 
-string DateTime::toString() const {
+std::string DateTime::toString() const {
   ostringstream os;
   os << setfill('0');
   os << setw(4) << year_;

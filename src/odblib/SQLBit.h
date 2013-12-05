@@ -22,7 +22,7 @@ namespace type {
 
 class SQLBit : public SQLType {
 public:
-	SQLBit(const string& ,unsigned long ,unsigned long );
+	SQLBit(const std::string& ,unsigned long ,unsigned long );
 	~SQLBit(); 
 
 	unsigned long mask()  const { return mask_; }

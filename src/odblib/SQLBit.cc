@@ -17,7 +17,7 @@ namespace odb {
 namespace sql {
 namespace type {
 
-SQLBit::SQLBit(const string& name, unsigned long mask, unsigned long shift):
+SQLBit::SQLBit(const std::string& name, unsigned long mask, unsigned long shift):
 	type::SQLType(name),
 	mask_(mask),
 	shift_(shift)

@@ -23,7 +23,7 @@
 namespace odb {
 
 template <typename T>
-MDUpdatingIterator<T>::MDUpdatingIterator (T& ii, const T& end, const vector<string>& columns, const vector<string>& types)
+MDUpdatingIterator<T>::MDUpdatingIterator (T& ii, const T& end, const std::vector<std::string>& columns, const std::vector<std::string>& types)
 : ii_(ii),
   end_(end),
   columns_(columns),
@@ -47,10 +47,10 @@ MDUpdatingIterator<T>::MDUpdatingIterator (T& ii, const T& end, const vector<str
 		ASSERT(types[i][types[i].size() - 1] == ']');
 
 		BitfieldDef bf;
-		vector<string> parts(eckit::StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
+		std::vector<std::string> parts(eckit::StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
 		for (size_t p = 0; p < parts.size(); ++p)
 		{
-			vector<string> field = eckit::StringTools::split(":", parts[p]);
+			std::vector<std::string> field = eckit::StringTools::split(":", parts[p]);
 			bf.first.push_back(field[0]);
 			bf.second.push_back(atoi(field[1].c_str()));
 		}

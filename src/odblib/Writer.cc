@@ -101,7 +101,7 @@ Writer<ITERATOR>::~Writer() { if (deleteDataHandle_) delete dataHandle_; }
 template <typename ITERATOR>
 ITERATOR* Writer<ITERATOR>::writer(bool fixedSizeRows)
 {
-	if (string(path_).size())
+	if (std::string(path_).size())
 	{
 		eckit::DataHandle *fh = ODBAPISettings::instance().writeToFile(path_);
 		return fixedSizeRows ?
@@ -120,7 +120,7 @@ template <typename ITERATOR>
 typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 {
 	eckit::DataHandle *dh = 0;
-	if (string(path_).size())
+	if (std::string(path_).size())
     {
 		dh = ODBAPISettings::instance().writeToFile(path_, eckit::Length(0), false);
     }

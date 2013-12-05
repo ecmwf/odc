@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionEQ : public FunctionExpression {
 public:
-	FunctionEQ(const string&,const expression::Expressions&);
+	FunctionEQ(const std::string&,const expression::Expressions&);
 	FunctionEQ(const FunctionEQ&);
 	~FunctionEQ(); 
 

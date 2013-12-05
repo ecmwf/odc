@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/filesystem/PartFileHandle.h"
+#include "eckit/io/PartFileHandle.h"
 
 #include "odblib/odb_api.h"
 #include "odblib/ToolFactory.h"
@@ -36,15 +36,15 @@ SQLTool::SQLTool(int argc,char **argv)
 
 	doNotWriteColumnNames_ = optionIsSet("-T");
 	doNotWriteNULL_ = optionIsSet("-N");
-	delimiter_ = optionArgument("-delimiter", string("\t"));
+	delimiter_ = optionArgument("-delimiter", std::string("\t"));
 
-	if ((inputFile_ = optionArgument("-i", string(""))) == "-")
+	if ((inputFile_ = optionArgument("-i", std::string(""))) == "-")
 		inputFile_ = "/dev/tty";
 
-	if ((outputFile_ = optionArgument("-o", string(""))) == "-")
+	if ((outputFile_ = optionArgument("-o", std::string(""))) == "-")
 		outputFile_ = "/dev/tty";
 
-	outputFormat_ = optionArgument("-f", string("default"));
+	outputFormat_ = optionArgument("-f", std::string("default"));
 
 	offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
 	length_ = optionArgument("-length", (long) 0);
@@ -64,14 +64,14 @@ void SQLTool::run()
 		Log::error() << std::endl;
 		return;// 1;
 	}
-	vector<string> params(parameters());
+	std::vector<std::string> params(parameters());
 	params.erase(params.begin());
 
-	string sql(StringTool::isSelectStatement(params[0])
+	std::string sql(StringTool::isSelectStatement(params[0])
 				? StringTools::join(" ",  params) + ";"
 				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
 	auto_ptr<ofstream> foutPtr(optionIsSet("-o")
-								? new ofstream(optionArgument("-o", string("")).c_str())
+								? new ofstream(optionArgument("-o", std::string("")).c_str())
 								: 0);
 	ostream& out(foutPtr.get() ? *foutPtr : cout);
 	SQLInteractiveSession session(out);
@@ -81,7 +81,7 @@ void SQLTool::run()
 	runSQL(sql, inputFile, session, parser, config, offset_, length_);
 }
 
-void SQLTool::execute(const string& sql, std::ostream& out)
+void SQLTool::execute(const std::string& sql, std::ostream& out)
 {
 	SQLInteractiveSession session(out);
 	SQLParser parser;
@@ -89,7 +89,7 @@ void SQLTool::execute(const string& sql, std::ostream& out)
 	runSQL(sql, "", session, parser, config);
 }
 
-void SQLTool::runSQL(const string& sql, const eckit::PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
+void SQLTool::runSQL(const std::string& sql, const eckit::PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
 {
 	Log::info() << "Executing '" << sql << "'" << std::endl;
 

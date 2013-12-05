@@ -22,7 +22,7 @@ namespace odb {
 namespace sql {
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, const eckit::PathName& path, const string& name):
+TODATable<T>::TODATable(SQLDatabase& owner, const eckit::PathName& path, const std::string& name):
 	SQLTable(owner, path, name),
 	data_(0),
 	oda_(path),
@@ -36,7 +36,7 @@ template <typename T>
 TODATable<T>::~TODATable() { delete[] data_; }
 
 static const eckit::PathName nullPathName("<>");
-static const string inputTable("input");
+static const std::string inputTable("input");
 
 template <typename T>
 TODATable<T>::TODATable(SQLDatabase& owner, eckit::DataHandle &dh):
@@ -50,7 +50,7 @@ TODATable<T>::TODATable(SQLDatabase& owner, eckit::DataHandle &dh):
 }
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, istream &is, const string &delimiter):
+TODATable<T>::TODATable(SQLDatabase& owner, istream &is, const std::string &delimiter):
 	SQLTable(owner, nullPathName, inputTable),
 	data_(0),
 	oda_(is, delimiter),
@@ -76,21 +76,21 @@ void TODATable<T>::populateMetaData()
 	{
 		Column& column = *reader_->columns()[i];
 
-		const string name = column.name();
+		const std::string name = column.name();
 		bool hasMissing = column.hasMissing();
 		double missing = column.missingValue();
 		BitfieldDef bitfieldDef = column.bitfieldDef();
 	
-		string sqlType;
+		std::string sqlType;
 		switch(column.type())
 		{
 			case INTEGER: sqlType = "integer"; break;
-			case STRING:  sqlType = "string"; break;
+			case STRING:  sqlType = "std::string"; break;
 			case REAL:    sqlType = "real"; break;
 			case DOUBLE:  sqlType = "double"; break;
 			case BITFIELD:
 				{
-					string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
+					std::string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
 					addColumn(name, i, type::SQLType::lookup(typeSignature), hasMissing, missing, true, bitfieldDef);
 					continue;
 				}
@@ -107,7 +107,7 @@ void TODATable<T>::populateMetaData()
 }
 
 template <typename T>
-void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
+void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
 {
     using eckit::Log;
 
@@ -140,14 +140,14 @@ void TODATable<T>::updateMetaData(const vector<SQLColumn*>& selected)
 }
 
 template <typename T>
-SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double
+SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double
 missingValue)
 {
 	return new ODAColumn(type, *this, name, index, hasMissingValue, missingValue, &data_[index]);
 }
 
 template <typename T>
-SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double
+SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double
 missingValue, const BitfieldDef& bitfieldDef)
 {
 	return new ODAColumn(type, *this, name, index, hasMissingValue, missingValue, bitfieldDef, &data_[index]);
@@ -155,7 +155,7 @@ missingValue, const BitfieldDef& bitfieldDef)
 
 
 template <typename T>
-bool TODATable<T>::hasColumn(const string& name, string* fullName)
+bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 {
     using eckit::Log;
 
@@ -169,13 +169,13 @@ bool TODATable<T>::hasColumn(const string& name, string* fullName)
 		return true;
 	}
 
-	string colName = name + "@";
+	std::string colName = name + "@";
 
 	int n = 0;
-	map<string,SQLColumn*>::iterator it = columnsByName_.begin();
+	std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
 	for ( ; it != columnsByName_.end(); ++it)
 	{
-		string s = it->first;
+		std::string s = it->first;
 		if (s.find(colName) == 0)
 		{
 			n++;
@@ -190,25 +190,25 @@ bool TODATable<T>::hasColumn(const string& name, string* fullName)
 	if (n == 0) return false;
 	if (n == 1) return true;
 
-	throw eckit::UserError(string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+	throw eckit::UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
 
 	return false;
 }
 
 template <typename T>
-SQLColumn* TODATable<T>::column(const string& name)
+SQLColumn* TODATable<T>::column(const std::string& name)
 {
-	string colName = name + "@";
+	std::string colName = name + "@";
 
 	SQLColumn * column = 0;
-	map<string,SQLColumn*>::iterator it = columnsByName_.begin();
+	std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
 	for ( ; it != columnsByName_.end(); ++it)
 	{
-		string s = it->first;
+		std::string s = it->first;
 		if (s.find(colName) == 0)
 		{
 			if (column)
-				throw eckit::UserError(string("TODATable::column: \"") + name + "\": ambiguous name.");
+				throw eckit::UserError(std::string("TODATable::column: \"") + name + "\": ambiguous name.");
 			else 
 				column = it->second;
 		}
@@ -219,7 +219,7 @@ SQLColumn* TODATable<T>::column(const string& name)
 }
 
 template <typename T>
-SQLTableIterator* TODATable<T>::iterator(const vector<SQLColumn*>& x) const
+SQLTableIterator* TODATable<T>::iterator(const std::vector<SQLColumn*>& x) const
 {
 	return new TableIterator(const_cast<TODATable&>(*this), reader_, end_, const_cast<double *>(data_), x);
 }

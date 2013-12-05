@@ -30,7 +30,7 @@ void SQLDistinctOutput::print(std::ostream& s) const
 void SQLDistinctOutput::size(int count)
 {
 	output_->size(count);
-	tmp_ = vector<double>(count);
+	tmp_ = std::vector<double>(count);
 }
 
 void SQLDistinctOutput::reset()

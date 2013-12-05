@@ -68,7 +68,7 @@ CommandLineParser& CommandLineParser::operator=(const CommandLineParser& other)
 
 int CommandLineParser::argc() { return argc_; }
 
-string CommandLineParser::argv(int i)
+std::string CommandLineParser::argv(int i)
 {
 	if (i >= argc_)
 	{
@@ -81,10 +81,10 @@ string CommandLineParser::argv(int i)
 
 void CommandLineParser::registerOptionWithArgument(const std::string& option)
 {
-	registeredOptionsWithArguments_.insert(string(option));
+	registeredOptionsWithArguments_.insert(std::string(option));
 }
 
-const vector<std::string> CommandLineParser::parameters()
+const std::vector<std::string> CommandLineParser::parameters()
 {
 	if (! commandLineParsed_) parseCommandLine();
 	return parameters_;
@@ -105,7 +105,7 @@ T CommandLineParser::optionArgument(const std::string& option, T defaultValue)
 {
 	if (! commandLineParsed_) parseCommandLine();
 
-	map<std::string, std::string>::iterator it = optionsWithArguments_.find(option);
+	std::map<std::string, std::string>::iterator it = optionsWithArguments_.find(option);
 	if (it == optionsWithArguments_.end())
 		return defaultValue;
 
@@ -117,7 +117,7 @@ void CommandLineParser::parseCommandLine()
 {
 	for (int i = 0; i < argc(); ++i)
 	{
-		string s = argv(i);
+		std::string s = argv(i);
 		if (s[0] != '-' || s.size() == 1)
 		{
 			parameters_.push_back(s);
@@ -143,10 +143,10 @@ void CommandLineParser::parseCommandLine()
 
 void CommandLineParser::print(std::ostream& s) const
 {
-	for (std::set<std::string>::const_iterator i = optionsNoArguments_.begin(); i != optionsNoArguments_.end(); ++i)
+	for (std::set<string>::const_iterator i = optionsNoArguments_.begin(); i != optionsNoArguments_.end(); ++i)
 		s << *i << "  ";
 
-	for (map<std::string, std::string>::const_iterator i = optionsWithArguments_.begin(); i != optionsWithArguments_.end(); ++i)
+	for (std::map<std::string, std::string>::const_iterator i = optionsWithArguments_.begin(); i != optionsWithArguments_.end(); ++i)
 		s << i->first << " " << i->second << "  ";
 
 	for (size_t i = 0; i < parameters_.size(); ++i)

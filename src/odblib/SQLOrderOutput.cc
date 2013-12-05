@@ -17,7 +17,7 @@
 namespace odb {
 namespace sql {
 
-SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const pair<Expressions,vector<bool> >& by)
+SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const pair<Expressions,std::vector<bool> >& by)
 : output_(output),
   by_(by)
 {
@@ -56,7 +56,7 @@ void SQLOrderOutput::flush()
 {
 	for (SortedResults::iterator it = sortedResults_.begin(); it != sortedResults_.end(); ++it)
 	{
-		vector<Expressions>& rows = it->second;
+		std::vector<Expressions>& rows = it->second;
 		for (size_t i = 0; i < rows.size(); ++i)
 			output_->output(rows[i]);
 	}

@@ -31,23 +31,23 @@ public:
 	void run();
 
 private:
-	typedef pair<string, string> FailedTest;
-	typedef map<string, vector<string> > Suites;
+	typedef pair<std::string, std::string> FailedTest;
+	typedef std::map<std::string, std::vector<std::string> > Suites;
 
 	void readConfig(const eckit::PathName fileName);
 	void runTests(const TestCases &tests);
 
-	void smslabel(const string &);
+	void smslabel(const std::string &);
 
 	CommandLineParser clp_;
 
 	Suites suites_;
-	vector<FailedTest> failed_;
+	std::vector<FailedTest> failed_;
 	stringstream runningTimes_;
 	stringstream xml_;
 
 	bool mars_sms_label_;
-	string label_;
+	std::string label_;
 };
 
 } // namespace test

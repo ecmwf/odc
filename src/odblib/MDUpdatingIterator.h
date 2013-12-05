@@ -34,7 +34,7 @@ template <typename T>
 class MDUpdatingIterator : public RowsReaderIterator
 {
 public:
-	MDUpdatingIterator (T& inputIterator, const T& end, const vector<string>& columns, const vector<string>& types);
+	MDUpdatingIterator (T& inputIterator, const T& end, const std::vector<std::string>& columns, const std::vector<std::string>& types);
 	MDUpdatingIterator (const T& end);
 	~MDUpdatingIterator ();
 
@@ -61,10 +61,10 @@ private:
 	T ii_;
 	const T& end_;
 
-	const vector<std::string> columns_;
-	vector<size_t> columnIndices_;
-	const vector<string> types_;
-	vector<BitfieldDef> bitfieldDefs_;
+	const std::vector<std::string> columns_;
+	std::vector<size_t> columnIndices_;
+	const std::vector<std::string> types_;
+	std::vector<BitfieldDef> bitfieldDefs_;
 
 	MetaData md_;
 

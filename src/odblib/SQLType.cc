@@ -24,7 +24,7 @@ namespace odb {
 namespace sql {
 namespace type {
 
-static map<string,SQLType*>* map_ = 0;
+static std::map<std::string,SQLType*>* map_ = 0;
 
 static std::set<SQLType*>* dynamicallyCreatedTypes_ = 0;
 
@@ -55,22 +55,22 @@ DynamicallyCreatedTypesDestroyer destroyer_; // TODO: make it a proper singleton
 size_t SQLType::width() const { return 14; }
 SQLType::manipulator SQLType::format() const { return &std::right; }
 
-SQLType::SQLType(const string& name):
+SQLType::SQLType(const std::string& name):
 	name_(name)
 {
-	if(!map_) map_ = new map<string,SQLType*>;
+	if(!map_) map_ = new std::map<std::string,SQLType*>;
 
 	ASSERT(map_->find(name) == map_->end());
 
 	(*map_)[name_] = this;
 }
 
-SQLType::SQLType(const string& name, const string& shortName):
+SQLType::SQLType(const std::string& name, const std::string& shortName):
 	name_(name)
 {
 	//cout << "********** SQLType::SQLType(name=" << name << ", shortName=" << shortName << ")" << std::endl;
 
-	if(!map_) map_ = new map<string,SQLType*>;
+	if(!map_) map_ = new std::map<std::string,SQLType*>;
 
 	ASSERT(map_->find(name) == map_->end());
 
@@ -87,18 +87,18 @@ SQLType::~SQLType()
 	}
 }
 
-bool SQLType::exists(const string& name)
+bool SQLType::exists(const std::string& name)
 {
 	registerStaticTypes();
 
 	return (map_->find(name) != map_->end());
 }
 
-const SQLType& SQLType::lookup(const string& name)
+const SQLType& SQLType::lookup(const std::string& name)
 {
 	registerStaticTypes();
 
-	map<string,SQLType*>::iterator j = map_->find(name);
+	std::map<std::string,SQLType*>::iterator j = map_->find(name);
 	if(j == map_->end())
 	{
 #if 0
@@ -108,9 +108,9 @@ const SQLType& SQLType::lookup(const string& name)
 		{
 			help = 1;
 			std::cout << "Known types:" << std::endl;
-			for (map<string,SQLType*>::iterator i = map_->begin(); i != map_->end(); i++)
+			for (std::map<std::string,SQLType*>::iterator i = map_->begin(); i != map_->end(); i++)
 			{
-				string k = i->first;
+				std::string k = i->first;
 				SQLType* typ = i->second;
 				std::cout << "  >>> " << k << ": " << typ->name() << " (" << typeid(*typ).name() << ")" << std::endl;
 			}
@@ -121,7 +121,7 @@ const SQLType& SQLType::lookup(const string& name)
 	return *(*j).second;
 }
 
-void SQLType::createAlias(const string& name, const string& alias)
+void SQLType::createAlias(const std::string& name, const std::string& alias)
 {
 	registerStaticTypes();
 
@@ -135,7 +135,7 @@ void SQLType::print(std::ostream& s) const { s << name_; }
 
 //void SQLType::output(std::ostream& s,double x) const { s << x; }
 
-const SQLType* SQLType::subType(const string&) const { return this; }
+const SQLType* SQLType::subType(const std::string&) const { return this; }
 
 void SQLType::registerStaticTypes()
 {
@@ -151,7 +151,7 @@ void SQLType::registerStaticTypes()
 	static SQLInt linklen_t("linklen_t");
 	*/
 	static SQLReal real("real");
-	static SQLString type("string");
+	static SQLString type("std::string");
 	static SQLDouble double_("double");
 }
 

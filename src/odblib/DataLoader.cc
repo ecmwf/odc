@@ -6,7 +6,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 
 #include "odblib/MetaData.h"
 #include "odblib/Reader.h"
@@ -20,7 +20,7 @@ using namespace eckit;
 
 namespace odb {
 
-DataLoader::DataLoader(const string& path)
+DataLoader::DataLoader(const std::string& path)
   : query_(""),
     path_(path),
     handle_(0),
@@ -60,9 +60,9 @@ DataLoader::~DataLoader()
     close();
 }
 
-void DataLoader::open(const string& path)
+void DataLoader::open(const std::string& path)
 {
-    string ext = path.substr(path.size()-4);
+    std::string ext = path.substr(path.size()-4);
 
     if (ext == ".csv" || ext == ".txt")
     {
@@ -78,7 +78,7 @@ void DataLoader::open(const string& path)
     open_ = true;
 }
 
-void DataLoader::select(const string& query)
+void DataLoader::select(const std::string& query)
 {
     query_ = query;
 
@@ -100,7 +100,7 @@ void DataLoader::fill(DataSet& dataset)
         throw eckit::UserError("DataLoader: Unrecognized data source: " + path_);
 }
 
-void DataLoader::fill(DataSet& dataset, const string& tableName)
+void DataLoader::fill(DataSet& dataset, const std::string& tableName)
 {
     ASSERT(!query_.empty());
     fillFromQuery(dataset, tableName);
@@ -148,7 +148,7 @@ void DataLoader::fillFromBinary(DataSet& dataset)
         *target = source->data();
 }
 
-void DataLoader::fillFromQuery(DataSet& dataset, const string& name) const
+void DataLoader::fillFromQuery(DataSet& dataset, const std::string& name) const
 {
     Select select(query_, *handle_);
     Select::iterator source = select.begin();

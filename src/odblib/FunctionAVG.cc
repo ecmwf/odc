@@ -15,7 +15,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionAVG::FunctionAVG(const string& name,const expression::Expressions& args)
+FunctionAVG::FunctionAVG(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args),
   count_(0),
   value_(0)

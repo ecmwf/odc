@@ -22,7 +22,7 @@ using namespace eckit;
 namespace odb {
 namespace sql {
 
-ODADatabase::ODADatabase(const PathName& path,const string& name)
+ODADatabase::ODADatabase(const PathName& path,const std::string& name)
 : SQLDatabase(path,name)
 {
     setIncludePath(Resource<string>("$ODB_INCLUDE_PATH", ""));
@@ -34,9 +34,9 @@ void ODADatabase::open() {}
 
 void ODADatabase::close() { SQLDatabase::close(); }
 
-SQLTable* ODADatabase::table(const string& name)
+SQLTable* ODADatabase::table(const std::string& name)
 {
-	map<string,SQLTable*>::iterator j = tablesByName_.find(name);
+	std::map<std::string,SQLTable*>::iterator j = tablesByName_.find(name);
 
 	if(j == tablesByName_.end())
 	{
@@ -50,8 +50,8 @@ SQLTable* ODADatabase::table(const string& name)
 
 SQLTable* ODADatabase::openDataHandle(DataHandle& dh, DataFormat dataFormat)
 {
-	string name = "dataHandle@";
-	//name += string(&dh);
+	std::string name = "dataHandle@";
+	//name += std::string(&dh);
 
 	if (dataFormat == ODA) return tablesByName_[name] = new TODATable<Reader>(*this, dh);
 	// TODO
@@ -61,10 +61,10 @@ SQLTable* ODADatabase::openDataHandle(DataHandle& dh, DataFormat dataFormat)
 	return 0;
 }
 
-SQLTable* ODADatabase::openDataStream(std::istream& is, const string& delimiter, DataFormat dataFormat) 
+SQLTable* ODADatabase::openDataStream(std::istream& is, const std::string& delimiter, DataFormat dataFormat) 
 {
-	string name = "dataHandle@";
-	//name += string(&dh);
+	std::string name = "dataHandle@";
+	//name += std::string(&dh);
 
 	if (dataFormat == CSV) return tablesByName_[name] = new TODATable<TextReader>(*this, is, delimiter);
 	// TODO

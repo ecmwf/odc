@@ -22,8 +22,8 @@ namespace expression {
 
 class BitColumnExpression : public ColumnExpression {
 public:
-	BitColumnExpression(const string&, const string&, SQLTable*);
-	BitColumnExpression(const string&, const string&, const string&);
+	BitColumnExpression(const std::string&, const std::string&, SQLTable*);
+	BitColumnExpression(const std::string&, const std::string&, const std::string&);
 	BitColumnExpression(const BitColumnExpression&);
 	~BitColumnExpression(); 
 
@@ -35,13 +35,13 @@ protected:
 	unsigned long mask_;
 	unsigned long bitShift_;
 
-	string field_;
-	string name_;
+	std::string field_;
+	std::string name_;
 
 // -- Overridden methods
 	virtual void prepare(SQLSelect& sql);
 	virtual double eval(bool& missing) const;
-	virtual void expandStars(const std::vector<SQLTable*>&,expression::Expressions&);
+    virtual void expandStars(const std::vector<SQLTable*>&,expression::Expressions&);
 	virtual const odb::sql::type::SQLType* type() const;
 
 	//friend std::ostream& operator<<(std::ostream& s,const BitColumnExpression& p)

@@ -25,7 +25,7 @@ class FunctionIntegerExpression : public FunctionExpression {
 public:
 	static void registerIntegerFunctions();
 
-	FunctionIntegerExpression(const string&,const expression::Expressions&);
+	FunctionIntegerExpression(const std::string&,const expression::Expressions&);
 	~FunctionIntegerExpression(); 
 
 // -- Overridden methods

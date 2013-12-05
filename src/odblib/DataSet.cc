@@ -13,7 +13,7 @@ using namespace std;
 
 namespace odb {
 
-DataSet::DataSet(const string& name)
+DataSet::DataSet(const std::string& name)
   : name_(name),
     tables_(*this),
     links_(*this)

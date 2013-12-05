@@ -10,7 +10,7 @@
 
 #include "eckit/eckit.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/utils/Timer.h"
 
 #include "odblib/InMemoryDataHandle.h"
@@ -29,7 +29,7 @@ InMemoryDataHandle::InMemoryDataHandle(const MemoryBlock& buffer)
 
 void InMemoryDataHandle::buffer(const MemoryBlock& buffer)
 {
-	buf_ = vector<unsigned char>((const unsigned char *) buffer, (const unsigned char *) buffer + buffer.size());
+	buf_ = std::vector<unsigned char>((const unsigned char *) buffer, (const unsigned char *) buffer + buffer.size());
 	readIterator_ = buf_.begin();
 }
 

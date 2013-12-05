@@ -23,7 +23,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionIntegerExpression::FunctionIntegerExpression(const string& name,const expression::Expressions& args)
+FunctionIntegerExpression::FunctionIntegerExpression(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name,args)
 {}
 
@@ -56,10 +56,10 @@ class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {
 	}
 	SQLExpression* clone() const { return new MathFunctionIntegerExpression_1<T>(this->name_,this->args_); }
 public:
-	MathFunctionIntegerExpression_1(const string& name,const expression::Expressions& args)
+	MathFunctionIntegerExpression_1(const std::string& name,const expression::Expressions& args)
 	: FunctionIntegerExpression(name, args), myArgs_(0) { this->missingValue_ = odb::MDI::integerMDI(); }
 
-	MathFunctionIntegerExpression_1(const string& name,expression::Expressions* args)
+	MathFunctionIntegerExpression_1(const std::string& name,expression::Expressions* args)
 	: FunctionIntegerExpression(name, *args), myArgs_(args) { this->missingValue_ = odb::MDI::integerMDI(); }
 
 	~MathFunctionIntegerExpression_1() { delete myArgs_; }

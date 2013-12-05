@@ -15,7 +15,7 @@ namespace sql {
 namespace expression {
 namespace function {
 
-FunctionAND::FunctionAND(const string& name,const expression::Expressions& args)
+FunctionAND::FunctionAND(const std::string& name,const expression::Expressions& args)
 : FunctionExpression(name, args)
 {}
 

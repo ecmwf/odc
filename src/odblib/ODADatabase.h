@@ -23,7 +23,7 @@ namespace sql {
 
 class ODADatabase : public SQLDatabase {
 public:
-	ODADatabase(const eckit::PathName&,const string&);
+	ODADatabase(const eckit::PathName&,const std::string&);
 	~ODADatabase(); 
 
 private:
@@ -39,9 +39,9 @@ private:
 
 	virtual void open();
 	virtual void close();
-	virtual SQLTable* table(const string&);
+	virtual SQLTable* table(const std::string&);
 	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA);
-	virtual SQLTable* openDataStream(std::istream&, const string& delimiter, DataFormat = CSV); 
+	virtual SQLTable* openDataStream(std::istream&, const std::string& delimiter, DataFormat = CSV); 
 
 // -- Friends
 	//friend std::ostream& operator<<(std::ostream& s,const ODADatabase& p)

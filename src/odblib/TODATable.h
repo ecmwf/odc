@@ -27,22 +27,22 @@ public:
 	typedef T TReader;
 	typedef TODATableIterator<TODATable> TableIterator;
 
-	TODATable(SQLDatabase&, const eckit::PathName&, const string&);
+	TODATable(SQLDatabase&, const eckit::PathName&, const std::string&);
 	TODATable(SQLDatabase&, eckit::DataHandle&);
-	TODATable(SQLDatabase&, istream&, const string& delimiter);
+	TODATable(SQLDatabase&, istream&, const std::string& delimiter);
 
 	~TODATable(); 
 
 	double value(long);
 
 // -- Overridden methods
-	bool hasColumn(const string&, string* fullName = 0);
-	SQLColumn* column(const string&);
+	bool hasColumn(const std::string&, std::string* fullName = 0);
+	SQLColumn* column(const std::string&);
 
 protected:
 	// void print(std::ostream&) const;
-	SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
-	SQLColumn* createSQLColumn(const type::SQLType& type, const string& name, int index, bool hasMissingValue, double missingValue);
+	SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
+	SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue);
 
 private:
 
@@ -62,9 +62,9 @@ public:
 // -- Methods
 
 	void populateMetaData();
-	void updateMetaData(const vector<SQLColumn*>&);
+	void updateMetaData(const std::vector<SQLColumn*>&);
 
-	virtual SQLTableIterator* iterator(const vector<SQLColumn*>&) const;
+	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const;
 };
 
 } // namespace sql 

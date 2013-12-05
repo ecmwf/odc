@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionRMS : public FunctionExpression {
 public:
-	FunctionRMS(const string&,const expression::Expressions&);
+	FunctionRMS(const std::string&,const expression::Expressions&);
 	FunctionRMS(const FunctionRMS&);
 	~FunctionRMS(); 
 

@@ -23,7 +23,7 @@ namespace function {
 
 class FunctionCOUNT : public FunctionExpression {
 public:
-	FunctionCOUNT(const string&,const expression::Expressions&);
+	FunctionCOUNT(const std::string&,const expression::Expressions&);
 	FunctionCOUNT(const FunctionCOUNT&);
 	~FunctionCOUNT();
 

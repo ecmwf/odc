@@ -20,7 +20,7 @@
 namespace odb {
 namespace sql {
 
-SQLCountStar::SQLCountStar(const string& table):
+SQLCountStar::SQLCountStar(const std::string& table):
 	table_(table)
 {} 
 

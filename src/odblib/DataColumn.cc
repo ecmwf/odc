@@ -8,7 +8,7 @@ using namespace std;
 
 namespace odb {
 
-DataColumn::DataColumn(const string& name, ColumnType type)
+DataColumn::DataColumn(const std::string& name, ColumnType type)
   : name_(name),
     type_(type),
     missingValue_(defaultMissingValue(type)),
@@ -16,7 +16,7 @@ DataColumn::DataColumn(const string& name, ColumnType type)
     bitfieldDef_()
 {}
 
-DataColumn::DataColumn(const string& name, ColumnType type, double missingValue)
+DataColumn::DataColumn(const std::string& name, ColumnType type, double missingValue)
   : name_(name),
     type_(type),
     missingValue_(missingValue),
@@ -24,7 +24,7 @@ DataColumn::DataColumn(const string& name, ColumnType type, double missingValue)
     bitfieldDef_()
 {}
 
-DataColumn::DataColumn(const string& name, ColumnType type, double missingValue,
+DataColumn::DataColumn(const std::string& name, ColumnType type, double missingValue,
         double defaultValue)
   : name_(name),
     type_(type),

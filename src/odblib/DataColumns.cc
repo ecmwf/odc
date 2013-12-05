@@ -12,11 +12,11 @@ using namespace eckit;
 namespace odb {
 
 DataColumns::DataColumns()
-  : vector<DataColumn>()
+  : std::vector<DataColumn>()
 {}
 
 DataColumns::DataColumns(const odb::MetaData& metadata)
-  : vector<DataColumn>()
+  : std::vector<DataColumn>()
 {
     reserve(metadata.size());
 
@@ -43,24 +43,24 @@ DataColumns& DataColumns::operator+=(const DataColumns& other)
     return *this;
 }
 
-size_t DataColumns::indexOf(const string& name) const
+size_t DataColumns::indexOf(const std::string& name) const
 {
-    vector<size_t> indices;
+    std::vector<size_t> indices;
 
     for (size_t i = 0; i < size(); i++)
         if (at(i).name() == name || at(i).name().find(name + "@") == 0)
                 indices.push_back(i);
 
     if (indices.size() > 1)
-        throw eckit::UserError(string("Ambiguous column name: '") + name + "'");
+        throw eckit::UserError(std::string("Ambiguous column name: '") + name + "'");
 
     if (indices.size() == 0)
-        throw eckit::UserError(string("Column '") + name + "' not found.");
+        throw eckit::UserError(std::string("Column '") + name + "' not found.");
 
     return indices[0];
 }
 
-void DataColumns::add(const string& name, const string& typeName)
+void DataColumns::add(const std::string& name, const std::string& typeName)
 {
     ColumnType type;
 

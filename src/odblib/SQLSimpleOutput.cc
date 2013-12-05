@@ -129,7 +129,7 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 	const expression::Expressions& columns(sql.output());
 	for (size_t i = 0; i < columns.size(); i++)
 	{
-		string name = columns[i]->title();
+		std::string name = columns[i]->title();
 		const type::SQLType* type = columns[i]->type();
 
 		columnWidths_.push_back(max(type->width(), name.size()));

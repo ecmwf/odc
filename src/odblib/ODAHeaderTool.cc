@@ -72,7 +72,7 @@ void HeaderTool::run()
 		return;
 	}
 
-	string db = parameters(1);
+	std::string db = parameters(1);
 
 	ostream& o = cout;
 	VerbosePrinter verbosePrinter;

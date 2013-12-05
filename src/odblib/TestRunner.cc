@@ -67,9 +67,9 @@ void TestRunner::run()
 		tests.reset(new TestCases());
 		for (size_t i = 1; i < clp_.parameters().size(); ++i)
 		{
-			string suiteName = clp_.parameters()[i];
+			std::string suiteName = clp_.parameters()[i];
 			ASSERT("Suite does not exist" && suites_.find(suiteName) != suites_.end());
-			vector<string>& suite = suites_[suiteName];
+			std::vector<std::string>& suite = suites_[suiteName];
 			auto_ptr<TestCases> tsts(AbstractToolFactory::testCases(suite));
 			runTests(*tsts);
 			tests->insert(tests->end(), tsts->begin(), tsts->end());
@@ -96,9 +96,9 @@ void TestRunner::run()
 	else
 	{
 		Log::error() << endl << "+- Summary: " << failed_.size() << " test(s) failed." << std::endl;
-		for (vector<FailedTest>::iterator it = failed_.begin(); it != failed_.end(); ++it) {
-			const string& name = it->first;
-			const string& what = it->second;
+		for (std::vector<FailedTest>::iterator it = failed_.begin(); it != failed_.end(); ++it) {
+			const std::string& name = it->first;
+			const std::string& what = it->second;
 			Log::error() << "\t" << name << ": " << endl << what;
 		}
 		Log::error() << std::endl;
@@ -114,9 +114,9 @@ void TestRunner::runTests(const TestCases& tests)
 	for (TestCases::const_iterator it = tests.begin(); it != tests.end(); ++it)
 	{
 		bool exceptionThrown = false;
-		string what;
+		std::string what;
 		TestCase *tst = *it;
-		const string& name = tst->name();
+		const std::string& name = tst->name();
 
 		Log::info() << "+- Running " << name << " ..." << std::endl;
 		smslabel(name);
@@ -129,22 +129,22 @@ void TestRunner::runTests(const TestCases& tests)
 		} catch (std::exception &e) {
 			Log::warning() << "+- FAILED" << std::endl;
 			exceptionThrown = true;
-			what += string(e.what()) + '\n';
+			what += std::string(e.what()) + '\n';
 		} catch (...) {
 			Log::warning() << "+- FAILED: unknown exception!" << std::endl;
 			exceptionThrown = true;
-			what += string("Uknown exception") + '\n';
+			what += std::string("Uknown exception") + '\n';
 		}
 		try {
 			tst->tearDown();
 		} catch (std::exception &e) {
 			Log::warning() << "+- Exception thrown from tearDown." << std::endl;
 			exceptionThrown = true;
-			what += string("[In tearDown:]") + string(e.what()) + '\n';
+			what += std::string("[In tearDown:]") + std::string(e.what()) + '\n';
 		} catch (...) {
 			Log::warning() << "+- FAILED: unknown exception!" << std::endl;
 			exceptionThrown = true;
-			what += string("Uknown exception") + '\n';
+			what += std::string("Uknown exception") + '\n';
 		}
 
 		if (exceptionThrown) {
@@ -168,10 +168,10 @@ void TestRunner::readConfig(const PathName fileName)
 	Log::debug() << "TestRunner::readConfig: reading file '" << fileName << "'" << std::endl;
 	suites_.clear();
 
-    vector<string> lines = StringTool::readLines(fileName);
+    std::vector<std::string> lines = StringTool::readLines(fileName);
     for (size_t i = 0; i < lines.size(); ++i)
 	{
-		vector<string> words = StringTools::split(":", lines[i]);
+		std::vector<std::string> words = StringTools::split(":", lines[i]);
 		if (words.size() == 0)
 			continue;
 		ASSERT("Each line of config file should be like: '<suite_name> : TestPattern1 TestPattern2 ...'" && words.size() == 2);
@@ -183,11 +183,11 @@ void TestRunner::readConfig(const PathName fileName)
 	}
 }
 
-void TestRunner::smslabel(const string &s)
+void TestRunner::smslabel(const std::string &s)
 {
 	if (! mars_sms_label_)
 		return;
-	string cmd = "smslabel ";
+	std::string cmd = "smslabel ";
 	cmd += label_ + " " + s;
     system(cmd.c_str());
 }

@@ -38,38 +38,38 @@ class StringTool {
 public:
 
     static std::string readFile(const eckit::PathName fileName, bool logging = false);
-	static vector<std::string> readLines(const eckit::PathName fileName, bool logging = false);
+    static std::vector<std::string> readLines(const eckit::PathName fileName, bool logging = false);
 
     static void trimInPlace(std::string &);
 
-    static bool isColumnRegex(const string&);
-	static bool match(const string& regex, const string&);
-	static bool matchEx(const string& regex, const string&);
-	static bool matchAny(const vector<string>& regs, const string&);
+    static bool isColumnRegex(const std::string&);
+	static bool match(const std::string& regex, const std::string&);
+	static bool matchEx(const std::string& regex, const std::string&);
+	static bool matchAny(const std::vector<std::string>& regs, const std::string&);
 
-	static bool check(const std::string&, ctypeFun);
-	static bool isInQuotes(const std::string &);
-	static std::string unQuote(const std::string &);
+    static bool check(const std::string&, ctypeFun);
+    static bool isInQuotes(const std::string &);
+    static std::string unQuote(const std::string &);
 
-	static double cast_as_double(const std::string &);
-	static std::string double_as_string(double);
-	//static string stringAsDouble(double v)
+    static double cast_as_double(const std::string &);
+    static std::string double_as_string(double);
+	//static std::string stringAsDouble(double v)
 
-	static string int_as_double2string(double);
+	static std::string int_as_double2string(double);
 
-	static int shell(std::string cmd, const eckit::CodeLocation &where, bool assertSuccess = true);
+    static int shell(std::string cmd, const eckit::CodeLocation &where, bool assertSuccess = true);
 
-	static double translate(const string& v);
-	static string valueAsString(double, ColumnType);
+	static double translate(const std::string& v);
+	static std::string valueAsString(double, ColumnType);
 
-	static string patchTimeForMars(const string& v);
+	static std::string patchTimeForMars(const std::string& v);
 
-    static bool isSelectStatement(const string&);
+    static bool isSelectStatement(const std::string&);
 
 
 };
 
-ostream& operator<<(std::ostream&, const vector<string>&);
+ostream& operator<<(std::ostream&, const std::vector<std::string>&);
 
 } // namespace odb 
 

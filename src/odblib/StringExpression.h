@@ -22,7 +22,7 @@ namespace expression {
 
 class StringExpression : public SQLExpression {
 public:
-	StringExpression(const string&);
+	StringExpression(const std::string&);
 	StringExpression(const StringExpression&);
 	~StringExpression(); 
 
@@ -32,7 +32,7 @@ private:
 // No copy allowed
 	StringExpression& operator=(const StringExpression&);
 
-	string name_;
+	std::string name_;
 	double value_;
 
 // -- Overridden methods

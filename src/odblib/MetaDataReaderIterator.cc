@@ -15,24 +15,23 @@
 
 #include <arpa/inet.h>
 
-#include "odblib/odb_api.h"
-#include "odblib/Codec.h"
-#include "odblib/DataStream.h"
-#include "odblib/Header.h"
-#include "odblib/MetaDataReader.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Codec.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/Header.h"
+//#include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
 
 using namespace eckit;
 
 namespace odb {
 
-MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, bool skipData)
-: owner_(owner),
+MetaDataReaderIterator::MetaDataReaderIterator(DataHandle &handle,bool skipData):
   columns_(0),
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(owner.dataHandle()),
+  f(&handle),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -48,13 +47,34 @@ MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, bool skipData)
 	fileSize_ = f->estimate();
 }
 
-MetaDataReaderIterator::MetaDataReaderIterator(Owner &owner, const PathName& pathName, bool skipData)
-: owner_(owner),
+
+MetaDataReaderIterator::MetaDataReaderIterator(DataHandle *handle,bool skipData):
   columns_(0),
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(pathName.fileHandle()),
+  f(handle),
+  newDataset_(false),
+  noMore_(false),
+  ownsF_(true),
+  headerCounter_(0),
+  skipData_(skipData),
+  encodedData_(0),
+  sizeOfEncodedData_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR),
+  refCount_(0),
+  fileSize_(0)
+{
+    ASSERT(f);
+    fileSize_ = f->estimate();
+}
+
+MetaDataReaderIterator::MetaDataReaderIterator(const eckit::PathName & path, bool skipData):
+  columns_(0),
+  lastValues_(0),
+  codecs_(0),
+  nrows_(0),
+  f(path.fileHandle()),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -128,10 +148,10 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 
 	if (skipData_)
 	{
-		Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << std::endl;
+        Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << std::endl;
 		if (fileSize_ && f->position() + Offset(dataSize) > fileSize_)
-			throw ShortFile(owner_.path_);
-	
+            throw Exception("MetaDataReaderIterator::readBuffer()");
+
         f->skip(dataSize);
         return true;
 	}
@@ -163,13 +183,14 @@ bool MetaDataReaderIterator::next()
 		return false; 
 
 	uint16_t c = 0;
-	unsigned long bytesRead = 0;
+    long bytesRead = 0;
 
 	blockStartOffset_ = f->position();
 
 	if ( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
 	{
-		if ( (bytesRead = f->read(&c, 2)) == 0)
+
+        if ( (bytesRead = f->read(&c, 2)) <= 0)
 			return ! (noMore_ = true);
 		ASSERT(bytesRead == 2);
 
@@ -227,12 +248,12 @@ int MetaDataReaderIterator::close()
 }
 
 
-void MetaDataReaderIterator::property(string key, string value)
+void MetaDataReaderIterator::property(std::string key, std::string value)
 {
 	properties_[key] = value;
 }
 
-string MetaDataReaderIterator::property(string key)
+std::string MetaDataReaderIterator::property(std::string key)
 {
 	return properties_[key];
 }

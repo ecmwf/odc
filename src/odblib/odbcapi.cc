@@ -50,8 +50,8 @@ int get_bitfield(T it,
 		ss << sizes[i] << ":";
 	}
 
-	string names(ns.str());
-	string ssizes(ss.str());
+	std::string names(ns.str());
+	std::string ssizes(ss.str());
 
 	//FIXME: the memory allocated by strdup should be freed on Fortran side
 	*bitfield_names = strdup(names.c_str());
@@ -97,7 +97,7 @@ int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks,  off_t** of
 
 	OffsetList offs;
 	LengthList lengths;
-	vector<ODAHandle*> handles;
+	std::vector<ODAHandle*> handles;
 
 	o.scanFile(fileName, offs, lengths, handles);
 
@@ -167,7 +167,7 @@ int odb_writer_destroy(oda_writer_ptr o)
 oda_read_iterator_ptr odb_create_read_iterator(oda_ptr co, const char *filename, int *err)
 {
 	Reader *o = reinterpret_cast<Reader*>(co);
-	string fileName = filename;
+	std::string fileName = filename;
 	PathName fn(fileName);
 	if (! fn.exists())
 	{
@@ -195,7 +195,7 @@ oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr co, const c
 {
     Select *o = reinterpret_cast<Select*>(co);
 
-    string full_sql = string(sql) + " from \"" + string(filename) + "\"";
+    std::string full_sql = std::string(sql) + " from \"" + std::string(filename) + "\"";
 
     SelectIterator* iter = o->createSelectIterator(full_sql);
     *err = !iter;
@@ -303,7 +303,7 @@ int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, doub
 oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filename, int *err)
 {
 	Writer<> *o = reinterpret_cast<Writer<> *>(co);
-	string fileName(filename);
+	std::string fileName(filename);
 	PathName fn(fileName);
 	DataHandle *fh = ODBAPISettings::instance().appendToFile(fn);
 
@@ -316,7 +316,7 @@ oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filena
 oda_write_iterator_ptr odb_create_write_iterator(oda_ptr co, const char *filename, int *err)
 {
 	Writer<> *o = reinterpret_cast<Writer<> *>(co);
-	string fileName(filename);
+	std::string fileName(filename);
 	PathName fn(fileName);
 	DataHandle *fh = ODBAPISettings::instance().appendToFile(fn);
 
@@ -349,8 +349,8 @@ int odb_write_iterator_set_column(oda_write_iterator_ptr wi, int index, int type
 
 int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int type, const char *name, const char* bitfieldNames, const char *bitfieldSizes)
 {
-	string bnames = bitfieldNames;
-    string bsizes = bitfieldSizes;
+	std::string bnames = bitfieldNames;
+    std::string bsizes = bitfieldSizes;
     odb::FieldNames bitfield_names;
     odb::Sizes      bitfield_sizes;
  
@@ -358,7 +358,7 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
 	size_t iprev = 0;
 	for (size_t i = 0; i < bnames.size(); i++) {
 		if (bnames[i] == ':') {
-			string name = bnames.substr(iprev,i-iprev);
+			std::string name = bnames.substr(iprev,i-iprev);
 			iprev = i+1;    
 			bitfield_names.push_back(name);
 		}
@@ -366,7 +366,7 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
     iprev = 0;
 	for (size_t i = 0; i < bsizes.size(); i++) {
 		if (bsizes[i] == ':') {
-			string name = bsizes.substr(iprev,i-iprev);
+			std::string name = bsizes.substr(iprev,i-iprev);
 			size_t size = atof(name.c_str()); // bit[0-9]+
 			iprev = i+1;    
 			bitfield_sizes.push_back(size);
