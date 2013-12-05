@@ -12,11 +12,12 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
-//#include "Comparator.h"
+#include "odblib/Comparator.h"
 #include "odblib/CompactTool.h"
 #include "eckit/log/Log.h"
 #include "eckit/filesystem/PathName.h"
 #include "odblib/Writer.h"
+#include "odblib/Reader.h"
 
 
 using namespace std;

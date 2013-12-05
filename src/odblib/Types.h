@@ -18,7 +18,7 @@
 //#include <map>
 
 
-//#include "eckit/eckit.h"
+#include "eckit/eckit.h"
 
 namespace odb {
 

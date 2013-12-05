@@ -16,10 +16,10 @@
 
 //#include "eckit/eckit.h"
 
-//#include "eckit/exception/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 //#include "odblib/SQLType.h"
-//#include "odblib/SQLExpression.h"
+#include "odblib/SQLExpression.h"
 //#include "odblib/SQLBitfield.h"
 
 namespace odb {

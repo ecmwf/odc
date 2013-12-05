@@ -1,10 +1,12 @@
 /// @file   DataColumns.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataColumns.h"
+#include <eckit/eckit.h>
+
+#include "odblib/DataColumns.h"
 //#include "eckit/exception/Exceptions.h"
 //#include "odblib/Column.h"
-//#include "odblib/MetaData.h"
+#include "odblib/MetaData.h"
 
 using namespace std;
 using namespace eckit;

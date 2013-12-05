@@ -11,6 +11,8 @@
 #ifndef CompareTool_H
 #define CompareTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 
 class RowsReaderIterator;

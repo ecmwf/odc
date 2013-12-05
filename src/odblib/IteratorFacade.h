@@ -4,7 +4,7 @@
 #ifndef ODBLIB_ITERATORFACADE_H_
 #define ODBLIB_ITERATORFACADE_H_
 
-//#include <iterator>
+#include <iterator>
 
 namespace odb {
 

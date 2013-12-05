@@ -5,7 +5,7 @@
 #define DATAROW_H_
 
 //#include <string>
-//#include <stdint.h>
+#include <stdint.h>
 
 namespace odb {
 

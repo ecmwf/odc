@@ -1,7 +1,7 @@
 /// @file   DataJoin.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataJoin.h"
+#include "odblib/DataJoin.h"
 //#include "odblib/DataLink.h"
 
 using namespace std;

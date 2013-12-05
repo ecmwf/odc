@@ -10,7 +10,7 @@
 
 //#include "eckit/compat/StrStream.h"
 
-//#include "odblib/ConstantExpression.h"
+#include "odblib/ConstantExpression.h"
 //#include "odblib/NumberExpression.h"
 //#include "odblib/SQLType.h"
 //#include "odblib/SQLOutput.h"

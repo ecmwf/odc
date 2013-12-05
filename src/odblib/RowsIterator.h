@@ -15,9 +15,11 @@ namespace odb {
 class Column;
 }
 
-//#include "odblib/MetaData.h"
+#include "odblib/Types.h"
 
 namespace odb {
+
+class MetaData;
 
 class RowsReaderIterator 
 {

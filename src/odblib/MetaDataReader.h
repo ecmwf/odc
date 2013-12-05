@@ -21,7 +21,7 @@
 #endif
 
 //#include "eckit/io/FileHandle.h"
-//#include "odblib/IteratorProxy.h"
+#include "odblib/IteratorProxy.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
