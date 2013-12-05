@@ -14,7 +14,7 @@
 #ifndef SQLParser_H
 #define SQLParser_H
 
-#include "odblib/SQLOutputConfig.h"
+//#include "odblib/SQLOutputConfig.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
-#include "eckit/log/Bytes.h"
-#include "eckit/io/FileHandle.h"
-#include "eckit/utils/Timer.h"
+//#include "eckit/eckit.h"
+//#include "eckit/log/Bytes.h"
+//#include "eckit/io/FileHandle.h"
+//#include "eckit/utils/Timer.h"
 
-#include "odblib/InMemoryDataHandle.h"
+//#include "odblib/InMemoryDataHandle.h"
 
 namespace odb {
 

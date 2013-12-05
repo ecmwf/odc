@@ -16,9 +16,11 @@
 #ifndef DataStream_H
 #define DataStream_H
 
+#include <stdint.h>
 #include "eckit/eckit.h"
+//#include "odblib/SQLBitfield.h"
 
-#include "odblib/SQLBitfield.h"
+#include "odblib/Types.h"
 
 namespace eckit { class DataHandle; }
 class MemoryBlock;
@@ -116,6 +118,6 @@ private:
 
 } // namespace odb {
 
-#include "DataStream.cc"
+//#include "DataStream.cc"
 
 #endif

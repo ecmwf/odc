@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
-#include "eckit/log/ChannelBuffer.h"
+//#include "eckit/log/ChannelBuffer.h"
 
-#include "eckit/thread/ThreadSingleton.h"
+//#include "eckit/thread/ThreadSingleton.h"
 
-#include "odblib/ODBBehavior.h"
+//#include "odblib/ODBBehavior.h"
 
 using namespace std;
 using namespace eckit;

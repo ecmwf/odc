@@ -1,10 +1,10 @@
 /// @file   DataTableIterator.cc
 /// @author Tomas Kral
 
-#include "odblib/DataTableIterator.h"
-#include "odblib/DataPage.h"
-#include "odblib/DataRow.h"
-#include "eckit/exception/Exceptions.h"
+//#include "odblib/DataTableIterator.h"
+//#include "odblib/DataPage.h"
+//#include "odblib/DataRow.h"
+//#include "eckit/exception/Exceptions.h"
 
 using namespace std;
 

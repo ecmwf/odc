@@ -14,27 +14,41 @@
 #ifndef SQLSelect_H
 #define SQLSelect_H
 
-#include <stack>
+//#include <stack>
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
-#include "odblib/Environment.h"
-#include "odblib/FunctionROWNUMBER.h"
-#include "odblib/FunctionTHIN.h"
-#include "odblib/SQLColumn.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLOutput.h"
-#include "odblib/SQLOutputConfig.h"
-#include "odblib/SQLOutputConfig.h"
+//#include "odblib/Environment.h"
+//#include "odblib/FunctionROWNUMBER.h"
+//#include "odblib/FunctionTHIN.h"
+//#include "odblib/SQLColumn.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLOutput.h"
+//#include "odblib/SQLOutputConfig.h"
+//#include "odblib/SQLOutputConfig.h"
+//#include "odblib/SQLStatement.h"
+//#include "odblib/SelectOneTable.h"
+//#include "odblib/Stack.h"
+
 #include "odblib/SQLStatement.h"
+#include "odblib/SQLOutputConfig.h"
 #include "odblib/SelectOneTable.h"
 #include "odblib/Stack.h"
+
+
 
 namespace odb {
 
 	class SelectIterator;
 
 namespace sql {
+
+namespace expression {
+    namespace function {
+        class FunctionROWNUMBER;
+        class FunctionTHIN;
+    }
+}
 
 class SQLTableIterator;
 

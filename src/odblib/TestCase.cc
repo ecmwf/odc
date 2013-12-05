@@ -12,14 +12,14 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <iostream>
-#include <vector>
-#include <map>
+//#include <iostream>
+//#include <vector>
+//#include <map>
 using namespace std;
 
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+//#include "odblib/ToolFactory.h"
 
 namespace odb {
 namespace tool {

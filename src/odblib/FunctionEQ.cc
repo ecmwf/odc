@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/log/Log.h"
-#include "odblib/ColumnExpression.h"
-#include "odblib/FunctionEQ.h"
-#include "odblib/SQLType.h"
-#include "odblib/StringTool.h"
-#include "odblib/FunctionFactory.h"
+//#include "eckit/log/Log.h"
+//#include "odblib/ColumnExpression.h"
+//#include "odblib/FunctionEQ.h"
+//#include "odblib/SQLType.h"
+//#include "odblib/StringTool.h"
+//#include "odblib/FunctionFactory.h"
 
 namespace odb {
 namespace sql {

@@ -1,10 +1,10 @@
 #ifndef SQLDATATABLE_H_
 #define SQLDATATABLE_H_
 
-#include <string>
-#include <vector>
+//#include <string>
+//#include <vector>
 
-#include "odblib/SQLTable.h"
+//#include "odblib/SQLTable.h"
 
 namespace odb {
 namespace sql {

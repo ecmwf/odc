@@ -12,15 +12,15 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "eckit/runtime/Context.h"
-#include "eckit/filesystem/PathName.h"
+//#include "eckit/runtime/Context.h"
+//#include "eckit/filesystem/PathName.h"
 
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/ToolRunnerApplication.h"
-#include "odblib/ODBBehavior.h"
-#include "odblib/ODBApplication.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+//#include "odblib/ToolFactory.h"
+//#include "odblib/ToolRunnerApplication.h"
+//#include "odblib/ODBBehavior.h"
+//#include "odblib/ODBApplication.h"
 
 using namespace eckit;
 

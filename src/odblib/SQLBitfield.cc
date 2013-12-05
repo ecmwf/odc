@@ -8,15 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/utils/Tokenizer.h"
-#include "eckit/parser/Translator.h"
-#include "eckit/types/Types.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/utils/Tokenizer.h"
+//#include "eckit/parser/Translator.h"
+//#include "eckit/types/Types.h"
 
-#include "odblib/Decoder.h"
-#include "odblib/SQLBit.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLOutput.h"
+//#include "odblib/Decoder.h"
+//#include "odblib/SQLBit.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLOutput.h"
 
 using namespace eckit;
 

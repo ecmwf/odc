@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "Comparator.h"
-#include "CompareTool.h"
-#include "StringTool.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+//#include "Comparator.h"
+#include "odblib/CompareTool.h"
+//#include "StringTool.h"
 
 using namespace std;
 using namespace eckit;

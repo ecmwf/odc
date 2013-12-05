@@ -14,8 +14,8 @@
 #ifndef SQLBitfield_H
 #define SQLBitfield_H
 
-#include "odblib/Types.h"
-#include "odblib/SQLType.h"
+//#include "odblib/Types.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

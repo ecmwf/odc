@@ -4,9 +4,9 @@
 #ifndef SQLDATASET_H_
 #define SQLDATASET_H_
 
-#include <iosfwd>
+//#include <iosfwd>
 
-#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLDatabase.h"
 
 namespace odb {
 namespace sql {

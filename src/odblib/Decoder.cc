@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/log/Log.h"
 
-#include "odblib/Decoder.h"
-#include "odblib/Endian.h"
+//#include "odblib/Decoder.h"
+//#include "odblib/Endian.h"
 
 namespace odb {
 

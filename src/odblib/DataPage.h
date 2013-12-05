@@ -4,10 +4,10 @@
 #ifndef DATAPAGE_H_
 #define DATAPAGE_H_
 
-#include <cstddef>
-#include <cassert>
+//#include <cstddef>
+//#include <cassert>
 
-#include "odblib/DataRow.h"
+//#include "odblib/DataRow.h"
 
 namespace odb {
 

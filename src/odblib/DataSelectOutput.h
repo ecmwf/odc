@@ -4,8 +4,8 @@
 #ifndef DataSelectOutput_H
 #define DataSelectOutput_H
 
-#include "odblib/SQLOutput.h"
-#include "odblib/SQLExpression.h"
+//#include "odblib/SQLOutput.h"
+//#include "odblib/SQLExpression.h"
 
 namespace odb {
 namespace internal {

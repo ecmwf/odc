@@ -12,31 +12,31 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <strings.h>
-#include <iostream>
+//#include <strings.h>
+//#include <iostream>
 
 using namespace std;
 
-#include "eckit/runtime/Application.h"
+//#include "eckit/runtime/Application.h"
 
-#include "odblib/CommandLineParser.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/CommandLineParser.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
 
-#include "odblib/CompactTool.h"
-#include "odblib/CompareTool.h"
-#include "odblib/CountTool.h"
-#include "odblib/FixedSizeRowTool.h"
-#include "odblib/ImportTool.h"
-#include "odblib/LSTool.h"
-#include "odblib/MDSetTool.h"
-#include "odblib/MergeTool.h"
-#include "odblib/ODA2RequestTool.h"
-#include "odblib/ODAHeaderTool.h"
-#include "odblib/SQLTool.h"
-#include "odblib/SetTool.h"
-#include "odblib/SplitTool.h"
-#include "odblib/XYVTool.h"
+//#include "odblib/CompactTool.h"
+//#include "odblib/CompareTool.h"
+//#include "odblib/CountTool.h"
+//#include "odblib/FixedSizeRowTool.h"
+//#include "odblib/ImportTool.h"
+//#include "odblib/LSTool.h"
+//#include "odblib/MDSetTool.h"
+//#include "odblib/MergeTool.h"
+//#include "odblib/ODA2RequestTool.h"
+//#include "odblib/ODAHeaderTool.h"
+//#include "odblib/SQLTool.h"
+//#include "odblib/SetTool.h"
+//#include "odblib/SplitTool.h"
+//#include "odblib/XYVTool.h"
 
 namespace odb {
 namespace tool {

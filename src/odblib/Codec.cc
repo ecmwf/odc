@@ -8,21 +8,26 @@
  * does it submit to any jurisdiction.
  */
 
-#include <stdint.h>
-#include <iostream>
-#include <sstream>
-#include <limits>
-#include <strings.h>
+#include <eckit/eckit.h>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/io/DataHandle.h"
+//#include <stdint.h>
+//#include <iostream>
+//#include <sstream>
+//#include <limits>
+//#include <strings.h>
+
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/io/DataHandle.h"
+
+//#include "odblib/Codec.h"
+//#include "odblib/Comparator.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/MemoryBlock.h"
+//#include "odblib/SQLIteratorSession.h"
+//#include "odblib/UnsafeInMemoryDataHandle.h"
 
 #include "odblib/Codec.h"
-#include "odblib/Comparator.h"
-#include "odblib/DataStream.h"
-#include "odblib/MemoryBlock.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/UnsafeInMemoryDataHandle.h"
+#include "odblib/CodecFactory.h"
 
 using namespace eckit;
 
@@ -81,7 +86,7 @@ void Codec::print(std::ostream& s) const
     s << name()
     //<< ", min=" << fixed << min_
     //<< ", max=" << max_
-        << ", range=<" << fixed << min_ << "," << max_ << ">";
+        << ", range=<" << std::fixed << min_ << "," << max_ << ">";
 
     if (hasMissing_)
     {

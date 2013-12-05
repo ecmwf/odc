@@ -14,12 +14,12 @@
 #ifndef SQLExpressionEvaluated_H
 #define SQLExpressionEvaluated_H
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

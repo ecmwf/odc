@@ -1,12 +1,12 @@
 /// @file   DataPage.cc
 /// @author Tomas Kral
 
-#include "odblib/DataPage.h"
+//#include "odblib/DataPage.h"
 
-#include <cmath>
-#include <vector>
+//#include <cmath>
+//#include <vector>
 
-#include "odblib/DataTable.h"
+//#include "odblib/DataTable.h"
 
 using namespace std;
 

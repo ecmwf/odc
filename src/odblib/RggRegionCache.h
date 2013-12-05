@@ -14,10 +14,10 @@
 #ifndef RggRegionCache_H
 #define RggRegionCache_H
 
-#include <vector>
+//#include <vector>
 
-#include "odblib/piconst.h"
-#include "odblib/RegionCache.h"
+//#include "odblib/piconst.h"
+//#include "odblib/RegionCache.h"
 
 namespace odb {
 namespace sql {

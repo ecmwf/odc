@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
-#include "odblib/ColumnExpression.h"
-#include "odblib/FunctionJOIN.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "odblib/ColumnExpression.h"
+//#include "odblib/FunctionJOIN.h"
 
 namespace odb {
 namespace sql {

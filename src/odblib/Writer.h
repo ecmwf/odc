@@ -16,7 +16,7 @@
 #ifndef ODAWRITER_H
 #define ODAWRITER_H
 
-#include "odblib/IteratorProxy.h"
+//#include "odblib/IteratorProxy.h"
 #include "odblib/WriterBufferingIterator.h"
 
 namespace eckit { class PathName; }

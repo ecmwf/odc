@@ -11,8 +11,8 @@
 #ifndef MDSetter_H
 #define MDSetter_H
 
-#include "odblib/IteratorProxy.h"
-#include "MDUpdatingIterator.h"
+//#include "odblib/IteratorProxy.h"
+//#include "MDUpdatingIterator.h"
 
 namespace odb {
 
@@ -41,7 +41,7 @@ private:
 
 } // namespace odb
 
-#include "MDSetter.cc"
+//#include "MDSetter.cc"
 
 #endif
 

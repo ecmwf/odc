@@ -12,9 +12,9 @@
 /// This file will be updated autmatically by the make.sms script
 ///
 
-#include "odblib/Header.h"
+//#include "odblib/Header.h"
 
-#include "odblib/ODBAPIVersion.h"
+//#include "odblib/ODBAPIVersion.h"
 
 namespace odb {
 

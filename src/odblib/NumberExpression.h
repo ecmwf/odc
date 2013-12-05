@@ -14,7 +14,7 @@
 #ifndef NumberExpression_H
 #define NumberExpression_H
 
-#include "odblib/SQLExpression.h"
+//#include "odblib/SQLExpression.h"
 
 namespace odb {
 namespace sql {

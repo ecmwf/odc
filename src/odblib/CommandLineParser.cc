@@ -11,15 +11,12 @@
 ///
 /// @author Piotr Kuchta, ECMWF, July 2009
 
-#include <iostream>
+//#include <iostream>
 
-#include "eckit/runtime/Context.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/parser/Translator.h"
-
 #include "odblib/CommandLineParser.h"
 
-using namespace std;
-using namespace eckit;
 
 namespace odb {
 namespace tool {
@@ -72,7 +69,7 @@ std::string CommandLineParser::argv(int i)
 {
 	if (i >= argc_)
 	{
-		stringstream ss;
+        std::stringstream ss;
 		ss << "Expected at least " << i << " command line parameters";
 		throw eckit::UserError(ss.str());
 	}
@@ -109,7 +106,7 @@ T CommandLineParser::optionArgument(const std::string& option, T defaultValue)
 	if (it == optionsWithArguments_.end())
 		return defaultValue;
 
-	Translator<std::string, T> translator;
+    eckit::Translator<std::string, T> translator;
 	return translator(it->second);
 }
 
@@ -121,20 +118,20 @@ void CommandLineParser::parseCommandLine()
 		if (s[0] != '-' || s.size() == 1)
 		{
 			parameters_.push_back(s);
-			Log::debug() << "CommandLineParser::parseCommandLine: parameter: " << s << std::endl;
+            eckit::Log::debug() << "CommandLineParser::parseCommandLine: parameter: " << s << std::endl;
 		}
 		else
 		{
 			if (registeredOptionsWithArguments_.find(s) != registeredOptionsWithArguments_.end())
 			{	
 				optionsWithArguments_[s] = argv(++i);
-				Log::debug() << "CommandLineParser::parseCommandLine: option with argument: "
+                eckit::Log::debug() << "CommandLineParser::parseCommandLine: option with argument: "
 					<< s << " = " << optionsWithArguments_[s] << std::endl;
 			}
 			else
 			{
 				optionsNoArguments_.insert(s);
-				Log::debug() << "CommandLineParser::parseCommandLine: option with no argument: " << s << std::endl;
+                eckit::Log::debug() << "CommandLineParser::parseCommandLine: option with no argument: " << s << std::endl;
 			}
 		}
 	}
@@ -143,7 +140,7 @@ void CommandLineParser::parseCommandLine()
 
 void CommandLineParser::print(std::ostream& s) const
 {
-	for (std::set<string>::const_iterator i = optionsNoArguments_.begin(); i != optionsNoArguments_.end(); ++i)
+    for (std::set<std::string>::const_iterator i = optionsNoArguments_.begin(); i != optionsNoArguments_.end(); ++i)
 		s << *i << "  ";
 
 	for (std::map<std::string, std::string>::const_iterator i = optionsWithArguments_.begin(); i != optionsWithArguments_.end(); ++i)

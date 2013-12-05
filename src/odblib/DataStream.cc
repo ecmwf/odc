@@ -13,12 +13,12 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#include "eckit/io/Length.h"
+//#include "eckit/io/Length.h"
 
-#include "odblib/DataStream.h"
-#include "odblib/MemoryBlock.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/MemoryBlock.h"
 
 namespace odb {
 

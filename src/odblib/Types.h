@@ -11,14 +11,14 @@
 #ifndef odblib_Types_h
 #define odblib_Types_h
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#include <string>
-#include <vector>
-#include <map>
+//#include <string>
+//#include <vector>
+//#include <map>
 
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
 namespace odb {
 

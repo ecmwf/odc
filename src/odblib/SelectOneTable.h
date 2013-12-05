@@ -14,18 +14,23 @@
 #ifndef SelectOneTable_H
 #define SelectOneTable_H
 
-#include <stack>
+//#include <stack>
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
-#include "odblib/SQLStatement.h"
-#include "odblib/SQLColumn.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLOutput.h"
-#include "odblib/FunctionROWNUMBER.h"
+//#include "odblib/SQLStatement.h"
+//#include "odblib/SQLColumn.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLOutput.h"
+//#include "odblib/FunctionROWNUMBER.h"
+
+#include "odblib/Expressions.h"
+
 
 namespace odb {
 namespace sql {
+
+class SQLColumn;
 
 // Forward declarations
 class SQLTableIterator;

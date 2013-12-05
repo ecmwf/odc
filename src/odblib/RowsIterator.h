@@ -15,7 +15,7 @@ namespace odb {
 class Column;
 }
 
-#include "odblib/MetaData.h"
+//#include "odblib/MetaData.h"
 
 namespace odb {
 

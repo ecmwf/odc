@@ -8,24 +8,26 @@
  * does it submit to any jurisdiction.
  */
 
-#include <iostream>
-#include <map>
+//#include <iostream>
+//#include <map>
 
 using namespace std;
 
-#include "eckit/io/DataHandle.h"
-#include "eckit/exception/Exceptions.h"
+#include <eckit/eckit.h>
 
-#include "odblib/odb_api.h"
-#include "odblib/DataStream.h"
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/HashTable.h"
-#include "odblib/Codec.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/DataStream.h"
+
+//#include "odblib/HashTable.h"
+//#include "odblib/Codec.h"
 #include "odblib/Column.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLSession.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLSession.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SchemaAnalyzer.h"
 
 using namespace eckit;
 

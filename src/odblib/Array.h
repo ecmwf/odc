@@ -11,7 +11,7 @@
 #ifndef Array_H
 #define Array_H
 
-#include <strings.h>
+//#include <strings.h>
 
 /// \file Array.h
 /// @author Piotr Kuchta, ECMWF August 2009

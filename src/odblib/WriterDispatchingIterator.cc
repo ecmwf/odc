@@ -13,19 +13,19 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odblib/odb_api.h"
-#include "odblib/Codec.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/DataStream.h"
-#include "odblib/DataStream.h"
-#include "odblib/FunctionEQ.h"
-#include "odblib/TemplateParameters.h"
-#include "odblib/UnsafeInMemoryDataHandle.h"
-#include "odblib/Writer.h"
-#include "odblib/WriterBufferingIterator.h"
-#include "odblib/Comparator.h"
-#include "odblib/Reader.h"
-#include "eckit/utils/Timer.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Codec.h"
+//#include "odblib/CodecOptimizer.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/FunctionEQ.h"
+//#include "odblib/TemplateParameters.h"
+//#include "odblib/UnsafeInMemoryDataHandle.h"
+//#include "odblib/Writer.h"
+//#include "odblib/WriterBufferingIterator.h"
+//#include "odblib/Comparator.h"
+//#include "odblib/Reader.h"
+//#include "eckit/utils/Timer.h"
 
 namespace odb {
 

@@ -13,12 +13,12 @@
 ///
 /// @author Piotr Kuchta, March 2012
 
-#include "odblib/odb_api.h"
-#include "DataStream.h"
-#include "Header.h"
-#include "MDUpdatingIterator.h"
-#include "SQLBitfield.h"
-#include "StringTool.h"
+//#include "odblib/odb_api.h"
+//#include "DataStream.h"
+//#include "Header.h"
+//#include "MDUpdatingIterator.h"
+//#include "SQLBitfield.h"
+//#include "StringTool.h"
 
 namespace odb {
 

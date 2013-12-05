@@ -57,6 +57,6 @@ public:
 
 } // namespace odb
 
-#include "SimpleFilterIterator.cc"
+//#include "SimpleFilterIterator.cc"
 
 #endif

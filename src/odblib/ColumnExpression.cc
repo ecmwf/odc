@@ -8,19 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include <sstream>
+//#include <sstream>
 
-#include "eckit/log/Log.h"
+#include <eckit/eckit.h>
 #include "eckit/parser/Translator.h"
 
-#include "odblib/SQLAST.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/ColumnExpression.h"
 #include "odblib/SQLSelect.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLType.h"
 #include "odblib/SQLTable.h"
+#include "odblib/SQLColumn.h"
 
 using namespace eckit;
 
@@ -28,7 +29,7 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-static pair<double,bool> zero_(0,false);
+static std::pair<double,bool> zero_(0,false);
 
 ColumnExpression::ColumnExpression(const std::string& name, SQLTable* table, int begin, int end)
 : type_(0),

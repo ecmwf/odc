@@ -11,12 +11,12 @@
 #ifndef TODATableIterator_H
 #define TODATableIterator_H
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/ODAColumn.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLType.h"
-#include "odblib/TODATable.h"
+//#include "odblib/ODAColumn.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLType.h"
+//#include "odblib/TODATable.h"
 
 
 
@@ -52,6 +52,6 @@ private:
 } // namespace sql
 } // namespace odb
 
-#include "TODATableIterator.cc"
+//#include "TODATableIterator.cc"
 
 #endif

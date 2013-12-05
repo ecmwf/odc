@@ -14,7 +14,7 @@
 #ifndef SQLOutputConfig_H
 #define SQLOutputConfig_H
 
-#include <string>
+//#include <string>
 
 using namespace std;
 

@@ -11,8 +11,8 @@
 #ifndef DURATION_HEADER_H
 #define DURATION_HEADER_H
 
-#include <iostream>
-#include <stdint.h>
+//#include <iostream>
+//#include <stdint.h>
 
 // Forward declarations
 

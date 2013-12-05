@@ -4,8 +4,8 @@
 #ifndef DATAROW_H_
 #define DATAROW_H_
 
-#include <string>
-#include <stdint.h>
+//#include <string>
+//#include <stdint.h>
 
 namespace odb {
 

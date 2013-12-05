@@ -14,10 +14,10 @@
 /// @author Piotr Kuchta, Jan 2010
 
 
-#include "odblib/odb_api.h"
-#include "odblib/DataStream.h"
-#include "odblib/Codec.h"
-#include "odblib/Column.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/Codec.h"
+//#include "odblib/Column.h"
 #include "odblib/CodecOptimizer.h"
 #include "eckit/config/Resource.h"
 #include "eckit/utils/StringTools.h"
@@ -36,8 +36,8 @@ CodecOptimizer::CodecOptimizer()
 	defaultCodec_[INTEGER] = "int32";
 	defaultCodec_[BITFIELD] = "int32";
 
-	typedef eckit::StringTools S;
-    std::vector<std::string> mappings (S::split(",", eckit::Resource<string>("$ODB_DEFAULT_CODEC", "")));
+    typedef eckit::StringTools S;
+    std::vector<std::string> mappings (S::split(",", eckit::Resource<std::string>("$ODB_DEFAULT_CODEC", "")));
 
 	for (size_t i = 0; i < mappings.size(); ++i)
 	{

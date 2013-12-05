@@ -14,10 +14,10 @@
 #ifndef VariablesTable_H
 #define VariablesTable_H
 
-#include "eckit/filesystem/PathName.h"
+//#include "eckit/filesystem/PathName.h"
 
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

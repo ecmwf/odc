@@ -16,9 +16,9 @@
 #ifndef MetaDataReaderIterator_H
 #define MetaDataReaderIterator_H
 
-#include "odblib/MetaDataReader.h"
-#include "odblib/SimpleFilterIterator.h"
-#include "odblib/TReadOnlyMemoryDataHandle.h"
+//#include "odblib/MetaDataReader.h"
+//#include "odblib/SimpleFilterIterator.h"
+//#include "odblib/TReadOnlyMemoryDataHandle.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class FileHandle; }

@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/compat/StrStream.h"
+//#include "eckit/compat/StrStream.h"
 
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLExpressionEvaluated.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLExpressionEvaluated.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

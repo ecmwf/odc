@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/utils/Tokenizer.h"
+//#include "eckit/utils/Tokenizer.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/MetaDataReader.h"
-#include "odblib/MDSetTool.h"
-#include "odblib/DataStream.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+//#include "odblib/MetaDataReader.h"
+//#include "odblib/MDSetTool.h"
+//#include "odblib/DataStream.h"
 
 using namespace eckit;
 

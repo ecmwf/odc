@@ -17,9 +17,9 @@
 namespace eckit { class PathName; }
 
 #include "odblib/SQLIterator.h"
-#include "odblib/SQLTable.h"
-#include "odblib/SQLIndex.h"
-#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLTable.h"
+//#include "odblib/SQLIndex.h"
+//#include "odblib/SQLBitfield.h"
 
 namespace odb {
 namespace sql {

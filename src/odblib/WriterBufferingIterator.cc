@@ -13,18 +13,18 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include <arpa/inet.h>
+//#include <arpa/inet.h>
 
-#include "eckit/config/Resource.h"
+//#include "eckit/config/Resource.h"
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Codec.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/DataStream.h"
-#include "odblib/InMemoryDataHandle.h"
-#include "odblib/MemoryBlock.h"
-#include "odblib/ODBAPISettings.h"
+//#include "odblib/Codec.h"
+//#include "odblib/CodecOptimizer.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/InMemoryDataHandle.h"
+//#include "odblib/MemoryBlock.h"
+//#include "odblib/ODBAPISettings.h"
 
 using namespace eckit;
 

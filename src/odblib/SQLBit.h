@@ -14,7 +14,7 @@
 #ifndef SQLBit_H
 #define SQLBit_H
 
-#include "odblib/SQLType.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

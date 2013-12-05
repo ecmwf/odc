@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/SQLBit.h"
-#include "odblib/SQLOutput.h"
+//#include "odblib/SQLBit.h"
+//#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {

@@ -8,16 +8,23 @@
  * does it submit to any jurisdiction.
  */
 
-#include <cmath>
+
+//#include <cmath>
 
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/Column.h"
-#include "odblib/ColumnType.h"
+#include "odblib/StringTool.h"
+
+
+//#include "odblib/odb_api.h"
+//#include "odblib/Column.h"
+//#include "odblib/ColumnType.h"
 #include "odblib/Comparator.h"
 #include "odblib/Tracer.h"
+#include "odblib/Reader.h"
+
 
 using namespace std;
 using namespace eckit;
@@ -45,7 +52,7 @@ void Comparator::compare(const PathName& p1, const PathName& p2)
 
 void Comparator::compare(const PathName& p1, const PathName& p2, const std::vector<std::string>& excludedColumnsTypes)
 {
-	Tracer t(Log::debug(), std::string() + "Comparator::compare: " + p1 + ", " + p2);
+    Tracer t(Log::debug(), std::string("Comparator::compare: ") + p1 + ", " + p2);
 
 	odb::Reader oda1(p1);
 	odb::Reader oda2(p2);

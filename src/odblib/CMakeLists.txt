@@ -10,6 +10,7 @@ ShiftedBitColumnExpression.h
 Codec.cc
 Codec.h
 CodecFactory.h
+CodecFactory.cc
 CodecOptimizer.cc
 CodecOptimizer.h
 Column.cc

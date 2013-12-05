@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include <string.h>
+//#include <string.h>
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/MD5.h"
+//#include "odblib/MD5.h"
 
 MD5::MD5() { md5_init(&state_); }
 

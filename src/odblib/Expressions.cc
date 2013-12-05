@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/compat/StrStream.h"
+//#include "eckit/compat/StrStream.h"
 
-#include "odblib/Expressions.h"
-#include "odblib/NumberExpression.h"
-#include "odblib/SQLOutput.h"
-#include "odblib/SQLType.h"
+//#include "odblib/Expressions.h"
+//#include "odblib/NumberExpression.h"
+//#include "odblib/SQLOutput.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

@@ -8,15 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include <set>
+//#include <set>
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/SQLType.h"
-#include "odblib/SQLInt.h"
-#include "odblib/SQLReal.h"
-#include "odblib/SQLDouble.h"
-#include "odblib/SQLString.h"
+//#include "odblib/SQLType.h"
+//#include "odblib/SQLInt.h"
+//#include "odblib/SQLReal.h"
+//#include "odblib/SQLDouble.h"
+//#include "odblib/SQLString.h"
 
 using namespace eckit;
 

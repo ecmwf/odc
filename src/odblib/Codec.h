@@ -11,14 +11,15 @@
 #ifndef Codec_H
 #define Codec_H
 
-#include <strings.h>
+//#include <strings.h>
 #include <limits>
 
 #include "odblib/HashTable.h"
-#include "odblib/UnsafeInMemoryDataHandle.h"
-#include "odblib/ODBAPISettings.h"
+//#include "odblib/UnsafeInMemoryDataHandle.h"
+//#include "odblib/ODBAPISettings.h"
 #include "odblib/MDI.h"
 
+#include "odblib/CodecFactory.h"
 
 namespace eckit { class DataHandle; }
 
@@ -27,6 +28,7 @@ namespace odb {
 class Reader;
 class SameByteOrder;
 class OtherByteOrder;
+class HashTable;
 
 namespace codec {
 
@@ -119,7 +121,7 @@ private:
 	Codec& operator=(const Codec&);
 };
 
-#include "odblib/CodecFactory.h"
+//#include "odblib/CodecFactory.h"
 
 template<typename DATASTREAM>
 void Codec::save(DATASTREAM &f)
@@ -771,7 +773,7 @@ void CodecChars<BYTEORDER>::print(std::ostream& s) const
 template<typename BYTEORDER>
 void CodecConstant<BYTEORDER>::print(std::ostream& s) const
 {
-	s << this->name() << ", value=" << fixed << this->min_;
+    s << this->name() << ", value=" << std::fixed << this->min_;
 }
 
 template<typename BYTEORDER>
@@ -790,7 +792,7 @@ void CodecConstantOrMissing<BYTEORDER>::print(std::ostream& s) const
 	if (this->min_ == this->missingValue_)
 		s << "NULL";
 	else
-		s << fixed << this->min_;
+        s << std::fixed << this->min_;
 
 	if (this->hasMissing_)
 		s << ", missingValue=" << this->missingValue_;

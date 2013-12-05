@@ -14,11 +14,11 @@
 #ifndef Expressions_H
 #define Expressions_H
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
 #include "eckit/exception/Exceptions.h"
 
-#include "odblib/SQLExpression.h"
+//#include "odblib/SQLExpression.h"
 
 namespace odb {
 namespace sql {

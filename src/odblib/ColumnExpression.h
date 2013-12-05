@@ -14,7 +14,7 @@
 #define ColumnExpression_H
 
 #include "odblib/SQLExpression.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

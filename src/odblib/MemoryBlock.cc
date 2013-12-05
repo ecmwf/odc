@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
-#include "odblib/MemoryBlock.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "odblib/MemoryBlock.h"
 
 MemoryBlock::MemoryBlock(size_t size):
 	buffer_(0),

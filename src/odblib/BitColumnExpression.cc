@@ -8,10 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
+//#include "odblib/BitColumnExpression.h"
+//#include "odblib/SQLSelect.h"
+//#include "odblib/SQLBit.h"
+//#include "odblib/SQLTable.h"
+
+#include "eckit/eckit.h"
+#include "eckit/filesystem/PathName.h"
+
 #include "odblib/BitColumnExpression.h"
+#include "odblib/SQLTable.h"
 #include "odblib/SQLSelect.h"
 #include "odblib/SQLBit.h"
-#include "odblib/SQLTable.h"
+
+
 
 using namespace eckit;
 

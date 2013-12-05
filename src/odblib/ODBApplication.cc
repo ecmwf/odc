@@ -12,16 +12,16 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <sstream>
+//#include <sstream>
 
-#include "eckit/runtime/Context.h"
+//#include "eckit/runtime/Context.h"
 
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/ODBApplication.h"
-#include "odblib/TestRunner.h"
-#include "odblib/ODBBehavior.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+//#include "odblib/ToolFactory.h"
+//#include "odblib/ODBApplication.h"
+//#include "odblib/TestRunner.h"
+//#include "odblib/ODBBehavior.h"
 
 using namespace eckit;
 

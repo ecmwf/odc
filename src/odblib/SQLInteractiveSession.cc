@@ -8,16 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/log/Log.h"
 
-#include "odblib/SQLAST.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "odblib/SQLSimpleOutput.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLStatement.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLInteractiveSession.h"
+//#include "odblib/SQLSimpleOutput.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLStatement.h"
 
 namespace odb {
 namespace sql {

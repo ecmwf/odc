@@ -14,8 +14,8 @@
 #ifndef ShiftedBitColumnExpression_H
 #define ShiftedBitColumnExpression_H
 
-#include "odblib/BitColumnExpression.h"
-#include "odblib/ShiftedColumnExpression.h"
+//#include "odblib/BitColumnExpression.h"
+//#include "odblib/ShiftedColumnExpression.h"
 
 namespace odb {
 namespace sql {

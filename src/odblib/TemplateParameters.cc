@@ -13,8 +13,8 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odblib/odb_api.h"
-#include "odblib/TemplateParameters.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/TemplateParameters.h"
 
 using namespace eckit;
 

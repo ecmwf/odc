@@ -14,7 +14,7 @@
 #ifndef SQLIteratorSession_H
 #define SQLIteratorSession_H
 
-#include "odblib/SQLSession.h"
+//#include "odblib/SQLSession.h"
 
 namespace odb {
 
@@ -56,6 +56,6 @@ private:
 } // namespace sql
 } // namespace odb
 
-#include "odblib/SQLIteratorSession.cc"
+//#include "odblib/SQLIteratorSession.cc"
 
 #endif

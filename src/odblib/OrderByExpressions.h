@@ -14,10 +14,10 @@
 #ifndef OrderByExpressions_H
 #define OrderByExpressions_H
 
-#include "eckit/eckit.h"
-#include <vector>
+//#include "eckit/eckit.h"
+//#include <vector>
 
-#include "odblib/Expressions.h"
+//#include "odblib/Expressions.h"
 
 namespace odb {
 namespace sql {

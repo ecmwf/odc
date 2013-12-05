@@ -13,20 +13,20 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odblib/Reader.h"
+//#include "odblib/Reader.h"
 
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include <errno.h>
-#include <math.h>
-#include <climits>
-#include <cfloat>
+//#include <algorithm>
+//#include <iostream>
+//#include <sstream>
+//#include <errno.h>
+//#include <math.h>
+//#include <climits>
+//#include <cfloat>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/DataHandle.h"
-#include "eckit/io/FileHandle.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/io/FileHandle.h"
 
 using namespace std;
 using namespace eckit;

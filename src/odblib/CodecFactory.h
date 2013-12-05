@@ -11,15 +11,36 @@
 #ifndef odblib_CodecFactory_H
 #define odblib_CodecFactory_H
 
+#include "eckit/exception/Exceptions.h"
+#include "odblib/UnsafeInMemoryDataHandle.h"
+#include "odblib/DataStream.h"
+
+
+namespace eckit {
+class DataHandle;
+}
+
+namespace odb {
+namespace codec {
+
+class Codec;
+//template<class A, class B> class DataStream;
+
+class CodecFactoryBase {
+protected:
+    static void loadCodecs();
+};
+
+
 template <typename DATAHANDLE>
-class AbstractCodecFactory {
+class AbstractCodecFactory : public CodecFactoryBase {
 public:
 	static Codec* getCodec(const std::string& name, bool differentByteOrder) {
 		return codecFactories[name]->create(differentByteOrder);
 	}
 
 	static Codec* loadCodec(DATAHANDLE *dh, bool differentByteOrder) {
-		Codec::loadCodecs();
+        loadCodecs();
 		std::string name;
 		if (differentByteOrder)
 		{
@@ -34,7 +55,7 @@ public:
 		AbstractCodecFactory *factory = codecFactories[name];
 		if (factory == 0)
 		{
-			stringstream ss;
+            std::stringstream ss;
 			ss << "Unknown codec '" << name << "'. You may need to use a newer version of ODB API.";
 			throw eckit::UserError(ss.str());
 		}
@@ -104,6 +125,9 @@ public:
 		}
 	}
 };
+
+}
+}
 
 
 #endif // odblib_CodecFactory_H

@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "Comparator.h"
-#include "MergeTool.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+//#include "Comparator.h"
+//#include "MergeTool.h"
 
 using namespace eckit;
 

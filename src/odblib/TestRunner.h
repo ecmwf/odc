@@ -15,7 +15,7 @@
 #ifndef TestRunner_H
 #define TestRunner_H
 
-#include "CommandLineParser.h"
+//#include "CommandLineParser.h"
 
 namespace odb {
 namespace tool {

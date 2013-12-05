@@ -11,7 +11,7 @@
 #ifndef ODBBehavior_h
 #define ODBBehavior_h
 
-#include "eckit/runtime/ContextBehavior.h"
+//#include "eckit/runtime/ContextBehavior.h"
 
 //-----------------------------------------------------------------------------
 

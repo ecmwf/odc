@@ -14,11 +14,11 @@
 #ifndef SQLIterator_H
 #define SQLIterator_H
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
 #include "eckit/memory/MemoryPool.h"
 
-#include "odblib/SQLType.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

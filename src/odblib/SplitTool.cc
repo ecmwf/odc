@@ -8,16 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/MetaDataReader.h"
-#include "odblib/Comparator.h"
-#include "odblib/SplitTool.h"
-#include "odblib/TemplateParameters.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+//#include "odblib/MetaDataReader.h"
+//#include "odblib/Comparator.h"
+//#include "odblib/SplitTool.h"
+//#include "odblib/TemplateParameters.h"
 
-#include "eckit/io/PartFileHandle.h"
+//#include "eckit/io/PartFileHandle.h"
 
 using namespace eckit;
 

@@ -8,21 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/io/DataHandle.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
-#include "odblib/FastODA2Request.h"
-#include "odblib/Codec.h"
-#include "odblib/Column.h"
-#include "odblib/MetaDataReaderIterator.h"
-#include "odblib/MetaDataReader.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/FastODA2Request.h"
-#include "odblib/GribCodes.h"
-#include "odblib/ODAHandle.h"
-#include "odblib/StringTool.h"
+//#include "odblib/odb_api.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/io/DataHandle.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/FastODA2Request.h"
+//#include "odblib/Codec.h"
+//#include "odblib/Column.h"
+//#include "odblib/MetaDataReaderIterator.h"
+//#include "odblib/MetaDataReader.h"
+//#include "odblib/CodecOptimizer.h"
+//#include "odblib/FastODA2Request.h"
+//#include "odblib/GribCodes.h"
+//#include "odblib/ODAHandle.h"
+//#include "odblib/StringTool.h"
 
 namespace odb {
 

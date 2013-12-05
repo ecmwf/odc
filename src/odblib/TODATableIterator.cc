@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/ODAColumn.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLType.h"
-#include "odblib/TODATable.h"
-#include "odblib/TODATableIterator.h"
+//#include "odblib/ODAColumn.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLType.h"
+//#include "odblib/TODATable.h"
+//#include "odblib/TODATableIterator.h"
 
 
 

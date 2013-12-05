@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
 using namespace eckit;
 

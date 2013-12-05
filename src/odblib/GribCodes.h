@@ -15,13 +15,13 @@
 #ifndef GribCodes_H
 #define GribCodes_H
 
-#include <map>
-#include <set>
-#include <vector>
+//#include <map>
+//#include <set>
+//#include <vector>
 
-#include "eckit/utils/Tokenizer.h"
+//#include "eckit/utils/Tokenizer.h"
 
-#include "odblib/StringTool.h"
+//#include "odblib/StringTool.h"
 
 using namespace std;
 

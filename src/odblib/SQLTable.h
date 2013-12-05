@@ -14,11 +14,12 @@
 #ifndef SQLTable_H
 #define SQLTable_H
 
-#include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/filesystem/PathName.h"
 
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLType.h"
+namespace eckit { class PathName; }
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

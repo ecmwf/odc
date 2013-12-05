@@ -16,11 +16,11 @@
 #ifndef Header_H
 #define Header_H
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#include "odb_api_config.h"
+//#include "odb_api_config.h"
 
-#include "odblib/UnsafeInMemoryDataHandle.h"
+//#include "odblib/UnsafeInMemoryDataHandle.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -74,6 +74,6 @@ private:
 
 } // namespace odb 
 
-#include "Header.cc"
+//#include "Header.cc"
 
 #endif

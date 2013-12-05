@@ -16,14 +16,15 @@
 #ifndef WriterBufferingIterator_H
 #define WriterBufferingIterator_H
 
-#include <memory>
+//#include <memory>
 
 #include "odblib/Array.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/UnsafeInMemoryDataHandle.h"
-#include "odblib/Header.h"
+#include "odblib/MemoryBlock.h"
+//#include "odblib/RowsIterator.h"
+//#include "odblib/UnsafeInMemoryDataHandle.h"
+//#include "odblib/Header.h"
 #include "odblib/CodecOptimizer.h"
-#include "odblib/IteratorProxy.h"
+//#include "odblib/IteratorProxy.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -165,7 +166,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 
 		gatherStats(data, nCols);
 
-		copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
+        std::copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
 		nextRowInBuffer_ += sizeof(uint16_t) + nCols * sizeof(double);
 
 		ASSERT(nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());

@@ -4,10 +4,10 @@
 #ifndef ODBLIB_DATAFIELD_H_
 #define ODBLIB_DATAFIELD_H_
 
-#include <iosfwd>
+//#include <iosfwd>
 
-#include "odblib/DataRow.h"
-#include "odblib/DataColumn.h"
+//#include "odblib/DataRow.h"
+//#include "odblib/DataColumn.h"
 
 namespace odb {
 

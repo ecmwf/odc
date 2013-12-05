@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include <math.h>
+//#include <math.h>
 
-#include "odblib/FunctionFactory.h"
-#include "odblib/FunctionIntegerExpression.h"
-#include "odblib/Codec.h"
-#include "odblib/MDI.h"
+//#include "odblib/FunctionFactory.h"
+//#include "odblib/FunctionIntegerExpression.h"
+//#include "odblib/Codec.h"
+//#include "odblib/MDI.h"
 
 #define ftrunc(x) ((x) -fmod((x), 1))
 #define F90nint(x) ( ((x) > 0) ? (int)((x) + 0.5) : (int)((x) - 0.5) )
@@ -46,7 +46,7 @@ void FunctionIntegerExpression::output(std::ostream& s) const
 
 //===============================
 
-#include <math.h>
+//#include <math.h>
 
 template<double (*T)(double)> 
 class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {

@@ -15,11 +15,7 @@
 #ifndef CommandLineParser_H
 #define CommandLineParser_H
 
-#include <map>
-#include <set>
-#include <vector>
-
-using namespace std;
+#include <eckit/eckit.h>
 
 namespace odb {
 namespace tool {
@@ -61,10 +57,10 @@ private:
 	int argc_;
 	char **argv_;
 
-	std::set<string> registeredOptionsWithArguments_;
+    std::set<std::string> registeredOptionsWithArguments_;
 
 	std::map<std::string, std::string> optionsWithArguments_;
-	std::set<string> optionsNoArguments_;
+    std::set<std::string> optionsNoArguments_;
 	std::vector<std::string> parameters_;
 
 	void print(std::ostream& s) const;

@@ -8,47 +8,47 @@
  * does it submit to any jurisdiction.
  */
 
-#include <math.h>
-#include <limits.h>
+//#include <math.h>
+//#include <limits.h>
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/FunctionExpression.h"
-#include "odblib/SQLSelect.h"
-#include "odblib/piconst.h"
+//#include "odblib/FunctionExpression.h"
+//#include "odblib/SQLSelect.h"
+//#include "odblib/piconst.h"
 
-#include "FunctionAND.h"
-#include "FunctionAVG.h"
-#include "FunctionCOUNT.h"
-#include "FunctionDOTP.h"
-#include "FunctionEQ.h"
-#include "FunctionEQ_BOXLAT.h"
-#include "FunctionEQ_BOXLON.h"
-#include "FunctionExpression.h"
-#include "FunctionIN.h"
-#include "FunctionIntegerExpression.h"
-#include "FunctionJOIN.h"
-#include "FunctionJULIAN.h"
-#include "FunctionMAX.h"
-#include "FunctionMIN.h"
-#include "FunctionNORM.h"
-#include "FunctionNOT_IN.h"
-#include "FunctionNOT_NULL.h"
-#include "FunctionNULL.h"
-#include "FunctionNVL.h"
-#include "FunctionOR.h"
-#include "FunctionRGG_BOXLAT.h"
-#include "FunctionRGG_BOXLON.h"
-#include "FunctionRMS.h"
-#include "FunctionROWNUMBER.h"
-#include "FunctionSTDEV.h"
-#include "FunctionSUM.h"
-#include "FunctionTDIFF.h"
-#include "FunctionTHIN.h"
-#include "FunctionTIMESTAMP.h"
-#include "FunctionVAR.h"
-#include "FunctionFactory.h"
-#include "FunctionIntegerExpression.h"
+//#include "FunctionAND.h"
+//#include "FunctionAVG.h"
+//#include "FunctionCOUNT.h"
+//#include "FunctionDOTP.h"
+//#include "FunctionEQ.h"
+//#include "FunctionEQ_BOXLAT.h"
+//#include "FunctionEQ_BOXLON.h"
+//#include "FunctionExpression.h"
+//#include "FunctionIN.h"
+//#include "FunctionIntegerExpression.h"
+//#include "FunctionJOIN.h"
+//#include "FunctionJULIAN.h"
+//#include "FunctionMAX.h"
+//#include "FunctionMIN.h"
+//#include "FunctionNORM.h"
+//#include "FunctionNOT_IN.h"
+//#include "FunctionNOT_NULL.h"
+//#include "FunctionNULL.h"
+//#include "FunctionNVL.h"
+//#include "FunctionOR.h"
+//#include "FunctionRGG_BOXLAT.h"
+//#include "FunctionRGG_BOXLON.h"
+//#include "FunctionRMS.h"
+//#include "FunctionROWNUMBER.h"
+//#include "FunctionSTDEV.h"
+//#include "FunctionSUM.h"
+//#include "FunctionTDIFF.h"
+//#include "FunctionTHIN.h"
+//#include "FunctionTIMESTAMP.h"
+//#include "FunctionVAR.h"
+//#include "FunctionFactory.h"
+//#include "FunctionIntegerExpression.h"
 
 using namespace eckit;
 
@@ -155,7 +155,7 @@ FunctionExpression* FunctionFactoryBase::build(const std::string& name, SQLExpre
 
 //===============================
 
-#include <math.h>
+//#include <math.h>
 
 template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {

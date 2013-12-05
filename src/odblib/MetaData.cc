@@ -8,18 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/io/DataHandle.h"
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/Codec.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/Column.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
-#include "odblib/MetaData.h"
-#include "odblib/MetaDataReader.h"
-#include "odblib/MetaDataReaderIterator.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Codec.h"
+//#include "odblib/CodecOptimizer.h"
+//#include "odblib/Column.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/MetaData.h"
+//#include "odblib/MetaDataReader.h"
+//#include "odblib/MetaDataReaderIterator.h"
 
 using namespace eckit;
 

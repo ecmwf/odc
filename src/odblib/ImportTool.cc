@@ -8,15 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/types/Types.h"
-#include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/StringTools.h"
+//#include "eckit/types/Types.h"
+//#include "eckit/utils/Tokenizer.h"
+//#include "eckit/utils/StringTools.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/ImportTool.h"
-#include "odblib/SQLSelectFactory.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+//#include "odblib/ImportTool.h"
+//#include "odblib/SQLSelectFactory.h"
 
 using namespace std;
 using namespace eckit;

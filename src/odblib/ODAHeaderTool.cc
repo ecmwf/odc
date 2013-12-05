@@ -8,15 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "ODAHeaderTool.h"
-#include "MetaDataReaderIterator.h"
-#include "MetaDataReader.h"
-#include "eckit/io/Offset.h"
-#include "eckit/io/Length.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+//#include "ODAHeaderTool.h"
+//#include "MetaDataReaderIterator.h"
+//#include "MetaDataReader.h"
+//#include "eckit/io/Offset.h"
+//#include "eckit/io/Length.h"
 
 using namespace eckit;
 

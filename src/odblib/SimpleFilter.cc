@@ -14,48 +14,48 @@
 /// @author Piotr Kuchta, Feb 2009
 
 
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include <errno.h>
-#include <math.h>
+//#include <algorithm>
+//#include <iostream>
+//#include <sstream>
+//#include <errno.h>
+//#include <math.h>
 
 using namespace std;
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
-#include "odblib/MemoryBlock.h"
-#include "eckit/io/DataHandle.h"
-#include "eckit/io/FileHandle.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "odblib/MemoryBlock.h"
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/io/FileHandle.h"
 
-#include "odblib/SQLBitfield.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
-#include "odblib/Codec.h"
-#include "odblib/Column.h"
-#include "odblib/HashTable.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/MetaData.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/Header.h"
-#include "odblib/IteratorProxy.h"
-#include "odblib/Writer.h"
-#include "odblib/SimpleFilter.h"
-#include "odblib/ReaderIterator.h"
-#include "odblib/WriterBufferingIterator.h"
-#include "odblib/FixedSizeWriterIterator.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/SelectIterator.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/Codec.h"
+//#include "odblib/Column.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLIteratorSession.h"
+//#include "odblib/MetaData.h"
+//#include "odblib/RowsIterator.h"
+//#include "odblib/Header.h"
+//#include "odblib/IteratorProxy.h"
+//#include "odblib/Writer.h"
+//#include "odblib/SimpleFilter.h"
+//#include "odblib/ReaderIterator.h"
+//#include "odblib/WriterBufferingIterator.h"
+//#include "odblib/FixedSizeWriterIterator.h"
+//#include "odblib/RowsIterator.h"
+//#include "odblib/SelectIterator.h"
 
 
-#include "odblib/SQLType.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/SQLTable.h"
-#include "odblib/SQLSelect.h"
-#include "odblib/SQLParser.h"
-#include "odblib/SQLExpression.h"
+//#include "odblib/SQLType.h"
+//#include "odblib/SQLInteractiveSession.h"
+//#include "odblib/SQLIteratorSession.h"
+//#include "odblib/SQLTable.h"
+//#include "odblib/SQLSelect.h"
+//#include "odblib/SQLParser.h"
+//#include "odblib/SQLExpression.h"
 
 
 using namespace std;

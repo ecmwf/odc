@@ -4,7 +4,7 @@
 #ifndef DATASELECTSESSION_H_
 #define DATASELECTSESSION_H_
 
-#include "odblib/SQLSession.h"
+//#include "odblib/SQLSession.h"
 
 namespace odb {
 namespace internal {

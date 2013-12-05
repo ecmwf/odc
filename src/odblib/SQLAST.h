@@ -14,12 +14,12 @@
 #ifndef SQLAST_H
 #define SQLAST_H
 
-#include <map>
-#include <string>
-#include <utility>
-#include <vector>
+//#include <map>
+//#include <string>
+//#include <utility>
+//#include <vector>
 
-#include "odblib/Types.h"
+//#include "odblib/Types.h"
 
 namespace odb {
 namespace sql {

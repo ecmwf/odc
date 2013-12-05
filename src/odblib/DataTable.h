@@ -4,16 +4,16 @@
 #ifndef DATATABLE_H_
 #define DATATABLE_H_
 
-#include <cstddef>
-#include <iosfwd>
-#include <string>
+//#include <cstddef>
+//#include <iosfwd>
+//#include <string>
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/DataRow.h"
-#include "odblib/DataColumn.h"
-#include "odblib/DataColumns.h"
-#include "odblib/DataTableIterator.h"
+//#include "odblib/DataRow.h"
+//#include "odblib/DataColumn.h"
+//#include "odblib/DataColumns.h"
+//#include "odblib/DataTableIterator.h"
 
 namespace odb {
 

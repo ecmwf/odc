@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/ColumnExpression.h"
-#include "odblib/SQLTable.h"
-#include "odblib/StringExpression.h"
-#include "odblib/StringExpression.h"
-#include "odblib/StringTool.h"
+//#include "odblib/ColumnExpression.h"
+//#include "odblib/SQLTable.h"
+//#include "odblib/StringExpression.h"
+//#include "odblib/StringExpression.h"
+//#include "odblib/StringTool.h"
 
 using namespace eckit;
 
