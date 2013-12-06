@@ -33,7 +33,7 @@ void ShiftedColumnExpression<T>::allocateCircularBuffer()
 
 // FIXME: we need to retrieve actual value of missing value for this column
 	double const MISSING_VALUE_REAL = -2147483647.0;
-	static pair<double,bool> missing_(MISSING_VALUE_REAL,true);
+    static std::pair<double,bool> missing_(MISSING_VALUE_REAL,true);
 
 	ASSERT(shift_ > 0);
 
@@ -130,7 +130,7 @@ double ShiftedColumnExpression<T>::eval(bool& missing) const
 template <typename T>
 void ShiftedColumnExpression<T>::cleanup(SQLSelect& sql)
 {
-	static pair<double,bool> zero_(0,false);
+    static std::pair<double,bool> zero_(0,false);
 	this->value_ = &zero_;
 	this->type_  = 0;
 	oldValues_.clear();

@@ -14,7 +14,8 @@
 #ifndef SQLIteratorOutput_H
 #define SQLIteratorOutput_H
 
-//#include "odblib/SQLOutput.h"
+#include "eckit/exception/Exceptions.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 

@@ -54,6 +54,7 @@ namespace odb {
 class MetaDataReaderIterator : public RowsReaderIterator
 {
 public:
+
     MetaDataReaderIterator (eckit::DataHandle* handle, bool skipData);
     MetaDataReaderIterator (eckit::DataHandle& handle, bool skipData);
     MetaDataReaderIterator (const eckit::PathName&, bool skipData);
@@ -89,7 +90,7 @@ public:
 // next() is public because it is used in C API functions
 	virtual bool next();
 protected:
-	virtual bool skip(size_t dataSize);
+    virtual bool skip(size_t dataSize);
 
 private:
 // No copy allowed.

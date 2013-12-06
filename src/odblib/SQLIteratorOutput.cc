@@ -17,6 +17,7 @@
 //#include "odblib/SQLSelect.h"
 //#include "odblib/SQLType.h"
 //#include "odblib/SQLIteratorOutput.h"
+#include "odblib/Expressions.h"
 
 namespace odb {
 namespace sql {

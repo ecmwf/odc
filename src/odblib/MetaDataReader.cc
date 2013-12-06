@@ -92,7 +92,7 @@ typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(cons
 template <typename T>
 typename MetaDataReader<T>::iterator MetaDataReader<T>::begin()
 {
-	T* it = new T(*this, skipData_);
+    T* it = new T(this->dataHandle(), skipData_);
 	it->next();
 	return iterator(it);
 }
