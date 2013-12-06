@@ -29,7 +29,7 @@ public:
 
 	TODATable(SQLDatabase&, const eckit::PathName&, const std::string&);
 	TODATable(SQLDatabase&, eckit::DataHandle&);
-	TODATable(SQLDatabase&, istream&, const std::string& delimiter);
+    TODATable(SQLDatabase&, std::istream&, const std::string& delimiter);
 
 	~TODATable(); 
 

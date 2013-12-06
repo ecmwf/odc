@@ -10,6 +10,7 @@
 
 //#include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
+#include "odblib/Expressions.h"
 //#include "eckit/types/Types.h"
 
 //#include "odblib/ConstantExpression.h"

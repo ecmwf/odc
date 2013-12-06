@@ -22,7 +22,7 @@
 //#include "odblib/MetaDataReader.h"
 //#include "odblib/FastODA2Request.h"
 //#include "odblib/ODBBehavior.h"
-
+#include "odblib/MetaData.h"
 #include "odblib/ODBAPISettings.h"
 
 using namespace eckit;

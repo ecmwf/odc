@@ -17,11 +17,11 @@
 //#include <strings.h>
 //#include <sstream>
 
-//#include "eckit/eckit.h"
+#include "eckit/eckit.h"
 
-//#include "eckit/types/Date.h"
+#include "eckit/types/Date.h"
 //#include "eckit/filesystem/PathName.h"
-//#include "eckit/types/Time.h"
+#include "eckit/types/Time.h"
 //#include "eckit/parser/Translator.h"
 //#include "eckit/types/Types.h"
 
@@ -33,7 +33,7 @@ struct ODATranslator {
 };
 
 template <>
-struct ODATranslator<string> {
+struct ODATranslator<std::string> {
 	std::string operator()(double n) {
 		std::string r = odb::StringTool::double_as_string(n);
 		eckit::Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << std::endl;

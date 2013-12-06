@@ -14,14 +14,14 @@
 #ifndef SQLSimpleOutput_H
 #define SQLSimpleOutput_H
 
-//#include "odblib/SQLOutput.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {
 
 class SQLSimpleOutput : public SQLOutput {
 public:
-	SQLSimpleOutput(std::ostream& = cout);
+    SQLSimpleOutput(std::ostream& = std::cout);
 	virtual ~SQLSimpleOutput(); 
 
 protected:

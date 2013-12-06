@@ -4,7 +4,7 @@
 //#include <cstddef>
 //#include <vector>
 
-//#include "odblib/SQLTable.h"
+#include "odblib/SQLTable.h"
 #include "odblib/DataTable.h"
 
 namespace odb { namespace sql { class SQLColumn; } }

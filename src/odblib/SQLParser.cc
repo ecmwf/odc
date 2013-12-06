@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/AutoLock.h"
 //#include "eckit/io/DataHandle.h"
 //#include "eckit/exception/Exceptions.h"
 //#include "eckit/thread/Mutex.h"

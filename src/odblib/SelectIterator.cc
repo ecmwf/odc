@@ -17,6 +17,8 @@
 //#include "odblib/odb_api.h"
 //#include "odblib/SQLSelectFactory.h"
 
+#include "odblib/SelectIterator.h"
+
 using namespace eckit;
 
 namespace odb {

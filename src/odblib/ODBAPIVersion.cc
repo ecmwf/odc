@@ -14,7 +14,7 @@
 
 //#include "odblib/Header.h"
 
-//#include "odblib/ODBAPIVersion.h"
+#include "odblib/ODBAPIVersion.h"
 
 namespace odb {
 

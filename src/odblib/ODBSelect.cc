@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, April 2010
 
-//#include "odblib/ODBSelect.h"
+#include "odblib/ODBSelect.h"
 
 //#include <iostream>
 

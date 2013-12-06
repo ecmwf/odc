@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include "odblib/VariablesTable.h"
 //#include "eckit/compat/StrStream.h"
 //#include "eckit/utils/Tokenizer.h"
 

@@ -12,7 +12,7 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
-//#include "ODAHeaderTool.h"
+#include "ODAHeaderTool.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/MetaDataReader.h"
 //#include "eckit/io/Offset.h"
@@ -35,11 +35,11 @@ public:
 	VerbosePrinter() : headerCount_() {}
 	void print(std::ostream& o, MDReader::iterator &r)
 	{
-		o << endl << "Header " << ++headerCount_ << ". "
+        o << std::endl << "Header " << ++headerCount_ << ". "
 			<< "Begin offset: " << (**r).blockStartOffset() << ", end offset: " << (**r).blockEndOffset()
 			<< ", number of rows in block: " << r->columns().rowsNumber() 
 			<< ", byteOrder: " << (((**r).byteOrder() == 1) ? "same" : "other")
-			<< endl
+            << std::endl
 			<< r->columns();
 	}
 private:

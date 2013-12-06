@@ -1,4 +1,4 @@
-//#include "odblib/SQLDataColumn.h"
+#include "odblib/SQLDataColumn.h"
 
 namespace odb {
 

@@ -17,7 +17,7 @@
 //#include "eckit/thread/ThreadSingleton.h"
 
 //#include "odblib/RegionCache.h"
-//#include "odblib/RggRegionCache.h"
+#include "odblib/RggRegionCache.h"
 
 using namespace eckit;
 

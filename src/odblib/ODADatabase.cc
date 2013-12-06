@@ -17,6 +17,7 @@
 #include "odblib/Reader.h"
 //#include "odblib/StringTool.h"
 #include "odblib/TODATable.h"
+#include "odblib/TextReader.h"
 
 using namespace eckit;
 

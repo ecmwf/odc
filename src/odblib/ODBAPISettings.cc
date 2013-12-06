@@ -8,8 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/thread/ThreadSingleton.h"
+#include "odblib/ODBAPISettings.h"
+
 //#include "eckit/eckit.h"
-//#include "eckit/io/AIOHandle.h"
+#include "eckit/io/AIOHandle.h"
 
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"

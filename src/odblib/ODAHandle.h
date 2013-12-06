@@ -19,9 +19,9 @@
 //#include "eckit/io/Buffer.h"
 //#include "eckit/types/Date.h"
 //#include "eckit/types/Time.h"
-//#include "eckit/io/Offset.h"
+#include "eckit/io/Offset.h"
 
-//#include "odblib/ODATranslator.h"
+#include "odblib/ODATranslator.h"
 
 
 class ODAHandle {

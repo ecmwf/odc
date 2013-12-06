@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include <eckit/eckit.h>
 //#include <math.h>
 
 //#include "eckit/log/Log.h"

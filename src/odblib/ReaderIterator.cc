@@ -20,6 +20,8 @@
 //#include "odblib/DataStream.h"
 //#include "odblib/Header.h"
 
+#include "odblib/ReaderIterator.h"
+
 using namespace eckit;
 
 namespace odb {

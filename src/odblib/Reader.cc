@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-//#include "odblib/Reader.h"
+#include "odblib/Reader.h"
 
 //#include <algorithm>
 //#include <iostream>
