@@ -12,6 +12,8 @@
 ///
 /// @author ECMWF, July 2010
 
+#include <cmath>
+
 //#include <iostream>
 //#include <vector>
 //#include <map>
@@ -22,9 +24,9 @@
 //#include <stdint.h>
 
 //#define RMDI   -2147483647
-//#define EPS    4e-5
+#define EPS    4e-5
 
-//#include "eckit/utils/Timer.h"
+#include "eckit/utils/Timer.h"
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
 #include "odb/TestFunctionDotp.h"
@@ -32,8 +34,8 @@
 //#include "odblib/piconst.h"
 
 //#include "odblib/odb_api.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 using namespace std;
 using namespace eckit;

@@ -17,21 +17,22 @@
 //#include <map>
 //#include <algorithm>
 
-#define __STDC_LIMIT_MACROS
+//#define __STDC_LIMIT_MACROS
+#include <cmath>
 
 //#include <stdint.h>
 
-#define RMDI   -2147483647
+//#define RMDI   -2147483647
 #define EPS    1e-6
 
-//#include "eckit/utils/Timer.h"
+#include "eckit/utils/Timer.h"
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
 #include "odb/TestFunctionDateAndTime.h"
 #include "odblib/ToolFactory.h"
 //#include "odblib/piconst.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 //#include "odblib/odb_api.h"
 

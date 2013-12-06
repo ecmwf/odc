@@ -12,6 +12,7 @@
 ///
 /// @author ECMWF, July 2010
 
+#include <cmath>
 //#include <iostream>
 //#include <vector>
 //#include <map>
@@ -28,12 +29,12 @@ using namespace std;
 
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestFunctionNorm.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestFunctionNorm.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/piconst.h"
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 using namespace std;
 using namespace eckit;
