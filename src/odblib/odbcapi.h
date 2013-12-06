@@ -18,6 +18,9 @@
  *
  */
 
+#include <stddef.h>
+#include <sys/types.h>
+
 #if defined(__cplusplus) || defined(c_plusplus) || defined(SWIGPYTHON)
 extern "C" {
 #endif

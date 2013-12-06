@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include <cmath>
+
 //#include <iostream>
 //#include <vector>
 //#include <map>
@@ -22,12 +24,16 @@
 
 using namespace std;
 
-//#include "eckit/filesystem/PathName.h"
+#include "eckit/filesystem/PathName.h"
 //#include "eckit/io/DataHandle.h"
 //#include "eckit/log/Log.h"
-//#include "eckit/io/PartFileHandle.h"
-//#include "eckit/thread/ThreadPool.h"
+#include "eckit/io/PartFileHandle.h"
+#include "eckit/thread/ThreadPool.h"
+#include "eckit/thread/AutoLock.h"
+#include "eckit/io/FileHandle.h"
+#include "eckit/utils/Timer.h"
 
+#include "odblib/ODBSelect.h"
 //#include "odblib/DataStream.h"
 //#include "odblib/HashTable.h"
 //#include "odblib/Codec.h"
@@ -58,11 +64,14 @@ using namespace std;
 //#include "odblib/DateTime.h"
 //#include "odblib/SplitTool.h"
 //#include "odblib/CountTool.h"
-//#include "odblib/MapReduce.h"
+
+#include "odblib/MetaData.h"
+#include "odblib/MapReduce.h"
+#include "odblib/SplitTool.h"
 
 
-//#include "eckit/thread/ThreadControler.h"
-//#include "eckit/thread/Thread.h"
+#include "eckit/thread/ThreadControler.h"
+#include "eckit/thread/Thread.h"
 //#include "eckit/thread/Mutex.h"
 //#include "eckit/thread/MutexCond.h"
 //#include "eckit/thread/AutoLock.h"

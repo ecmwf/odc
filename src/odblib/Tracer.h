@@ -10,8 +10,8 @@
 
 #ifndef TRACER_H
 
-//#include <ostream>
-//#include <string>
+#include <ostream>
+#include <string>
 
 using namespace std;
 
@@ -21,7 +21,7 @@ public:
 	~Tracer();
 private:
 	ostream& out_;
-	const std::string message_;
+    std::string message_;
 };
 
 #endif

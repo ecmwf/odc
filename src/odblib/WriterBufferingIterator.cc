@@ -13,7 +13,11 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-//#include <arpa/inet.h>
+#include "eckit/exception/Exceptions.h"
+#include "odblib/Writer.h"
+
+#include "odblib/WriterBufferingIterator.h"
+#include <arpa/inet.h>
 
 //#include "eckit/config/Resource.h"
 
@@ -24,7 +28,7 @@
 //#include "odblib/DataStream.h"
 //#include "odblib/InMemoryDataHandle.h"
 //#include "odblib/MemoryBlock.h"
-//#include "odblib/ODBAPISettings.h"
+#include "odblib/ODBAPISettings.h"
 
 inline size_t MEGA(size_t n) { return n*1024*1204; }
 
@@ -140,7 +144,7 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 
 	gatherStats(data, nCols);
 
-	copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
+    std::copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
 	nextRowInBuffer_ += sizeof(uint16_t) + nCols * sizeof(double);
 
 	ASSERT(nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
@@ -268,7 +272,7 @@ void WriterBufferingIterator::flush()
 		Log::debug() << "WriterBufferingIterator::flush: writing header and data in one go. "
 			"Block size: " << buff.size() + memoryDataHandle_.position() << std::endl;
 
-		copy(static_cast<unsigned char*>(buff), static_cast<unsigned char*>(buff) + buff.size(),
+        std::copy(static_cast<unsigned char*>(buff), static_cast<unsigned char*>(buff) + buff.size(),
 			memoryDataHandle_.buffer() - buff.size());
 		this->f->write(memoryDataHandle_.buffer() - buff.size(),
 			static_cast<size_t>(memoryDataHandle_.position()) + buff.size()); // Write encoded data

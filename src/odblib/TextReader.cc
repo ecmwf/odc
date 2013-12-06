@@ -18,7 +18,7 @@
 //#include "eckit/io/DataHandle.h"
 //#include "eckit/filesystem/PathName.h"
 
-//#include "odblib/TextReaderIterator.h"
+#include "odblib/TextReaderIterator.h"
 
 using namespace std;
 using namespace eckit;

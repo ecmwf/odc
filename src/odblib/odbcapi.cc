@@ -13,17 +13,24 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
+#include "odblib/odbcapi.h"
+
+
+#include "odblib/ODBAPIVersion.h"
 //#include "eckit/runtime/Application.h"
-//#include "eckit/runtime/Context.h"
-//#include "eckit/runtime/StandardBehavior.h" 
+#include "eckit/runtime/Context.h"
+#include "eckit/runtime/ContextBehavior.h"
 
 //#include "odblib/odb_api.h"
-//#include "odblib/MetaDataReaderIterator.h"
-//#include "odblib/MetaDataReader.h"
-//#include "odblib/FastODA2Request.h"
-//#include "odblib/ODBBehavior.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/FastODA2Request.h"
+#include "odblib/ODBBehavior.h"
 #include "odblib/MetaData.h"
 #include "odblib/ODBAPISettings.h"
+#include "odblib/Reader.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 using namespace eckit;
 using namespace odb;
@@ -45,7 +52,7 @@ int get_bitfield(T it,
 	FieldNames fieldNames(bitfieldDef.first);
 	Sizes sizes(bitfieldDef.second);
 
-	stringstream ns, ss;
+    std::stringstream ns, ss;
 	for (size_t i = 0; i < fieldNames.size(); ++i)
 	{
 		ns << fieldNames[i] << ":";

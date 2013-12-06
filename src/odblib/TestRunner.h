@@ -15,11 +15,15 @@
 #ifndef TestRunner_H
 #define TestRunner_H
 
-#include "CommandLineParser.h"
+
+#include "eckit/filesystem/PathName.h"
+#include "odblib/CommandLineParser.h"
+#include "odblib/TestCase.h"
 
 namespace odb {
 namespace tool {
 namespace test {
+
 
 class TestRunner {
 public:
@@ -31,7 +35,7 @@ public:
 	void run();
 
 private:
-	typedef pair<std::string, std::string> FailedTest;
+    typedef std::pair<std::string, std::string> FailedTest;
 	typedef std::map<std::string, std::vector<std::string> > Suites;
 
 	void readConfig(const eckit::PathName fileName);
@@ -43,8 +47,8 @@ private:
 
 	Suites suites_;
 	std::vector<FailedTest> failed_;
-	stringstream runningTimes_;
-	stringstream xml_;
+    std::stringstream runningTimes_;
+    std::stringstream xml_;
 
 	bool mars_sms_label_;
 	std::string label_;

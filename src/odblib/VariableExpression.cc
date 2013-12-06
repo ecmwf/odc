@@ -13,9 +13,9 @@
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLBitfield.h"
 //#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/VariableExpression.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLSession.h"
+#include "odblib/VariableExpression.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLSession.h"
 
 namespace odb {
 namespace sql {

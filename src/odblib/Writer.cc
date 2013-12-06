@@ -26,6 +26,7 @@ using namespace std;
 //#include "eckit/exception/Exceptions.h"
 //#include "eckit/filesystem/PathName.h"
 
+#include "eckit/config/Resource.h"
 
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"
@@ -53,7 +54,9 @@ using namespace std;
 #include "odblib/Writer.h"
 //#include "odblib/WriterBufferingIterator.h"
 //#include "odblib/WriterBufferingIterator.h"
-//#include "odblib/ODBAPISettings.h"
+#include "odblib/ODBAPISettings.h"
+#include "odblib/FixedSizeWriterIterator.h"
+#include "odblib/WriterBufferingIterator.h"
 
 namespace odb {
 

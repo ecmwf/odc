@@ -16,6 +16,11 @@
 #ifndef TemplateParameters_H
 #define TemplateParameters_H
 
+#include <string>
+#include <stdint.h>
+
+#include "odblib/MetaData.h"
+
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 

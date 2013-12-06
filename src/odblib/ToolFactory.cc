@@ -18,11 +18,11 @@
 //#include <vector>
 
 //#include "eckit/utils/Regex.h"
-//#include "eckit/exception/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "odblib/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 
 using namespace std;
 using namespace eckit;

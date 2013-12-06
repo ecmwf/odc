@@ -12,6 +12,9 @@
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
 #include "odblib/XYVTool.h"
+#include "eckit/log/Log.h"
+#include "odblib/ODBSelect.h"
+#include "eckit/filesystem/PathName.h"
 
 //#include <iostream>
 //#include <fstream>
@@ -40,7 +43,7 @@ void XYVTool::run()
 	std::string valueColumn = parameters(2);
 	PathName outputFile = parameters(3);
 
-	ofstream out;
+    std::ofstream out;
 	out.open(outputFile.asString().c_str());
 
 	out << "#GEO" << endl << std::endl;

@@ -16,14 +16,14 @@
 //#include "odblib/SQLBitColumn.h"
 //#include "odblib/SQLBitfield.h"
 //#include "odblib/SQLColumn.h"
-//#include "odblib/SQLSession.h"
-//#include "odblib/SQLDatabase.h"
+#include "odblib/SQLSession.h"
+#include "odblib/SQLDatabase.h"
 //#include "odblib/VariablesTable.h"
 //#include "odblib/SQLType.h"
-//#include "odblib/SQLColumn.h"
+#include "odblib/SQLColumn.h"
 //#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/StringTool.h"
-//#include "odblib/SQLExpression.h"
+#include "odblib/StringTool.h"
+#include "odblib/SQLExpression.h"
 
 using namespace eckit;
 

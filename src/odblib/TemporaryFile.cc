@@ -12,7 +12,7 @@
 //#include <unistd.h>
 //#include <sstream>
 
-//#include "eckit/io/Buffer.h"
+#include "eckit/io/Buffer.h"
 
 #include "odblib/TemporaryFile.h"
 

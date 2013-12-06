@@ -15,7 +15,7 @@
 #ifndef TestRunnerApplication_H
 #define TestRunnerApplication_H
 
-//#include "odblib/ODBApplication.h"
+#include "odblib/ODBApplication.h"
 
 namespace odb {
 namespace tool {
