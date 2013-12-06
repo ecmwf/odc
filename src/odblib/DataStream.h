@@ -118,6 +118,6 @@ private:
 
 } // namespace odb {
 
-//#include "DataStream.cc"
+#include "odblib/DataStream.cc"
 
 #endif

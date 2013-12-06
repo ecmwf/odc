@@ -135,6 +135,6 @@ private:
 
 } // namespace odb 
 
-//#include "odblib/WriterDispatchingIterator.cc"
+#include "odblib/WriterDispatchingIterator.cc"
 
 #endif

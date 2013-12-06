@@ -71,6 +71,6 @@ private:
 
 } // namespace odb
 
-//#include "MetaDataReader.cc"
+#include "odblib/MetaDataReader.cc"
 
 #endif

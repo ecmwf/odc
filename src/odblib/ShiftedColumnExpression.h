@@ -71,6 +71,6 @@ private:
 } // namespace sql
 } // namespace odb 
 
-//#include "ShiftedColumnExpression.cc"
+#include "odblib/ShiftedColumnExpression.cc"
 
 #endif

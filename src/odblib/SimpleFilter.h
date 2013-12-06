@@ -62,6 +62,6 @@ private:
 
 } // namespace odb
 
-//#include "SimpleFilter.cc"
+#include "odblib/SimpleFilter.cc"
 
 #endif

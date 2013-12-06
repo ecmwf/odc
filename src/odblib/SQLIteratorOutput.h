@@ -68,6 +68,6 @@ private:
 } // namespace sql
 } // namespace odb
 
-//#include "odblib/SQLIteratorOutput.cc"
+#include "odblib/SQLIteratorOutput.cc"
 
 #endif

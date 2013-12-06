@@ -93,7 +93,7 @@ struct ODA2RequestClientTraits {
 
 } // namespace odb
 
-//#include "odblib/FastODA2Request.cc"
+#include "odblib/FastODA2Request.cc"
 
 #endif
 

@@ -52,6 +52,6 @@ private:
 } // namespace sql
 } // namespace odb
 
-//#include "TODATableIterator.cc"
+#include "odblib/TODATableIterator.cc"
 
 #endif

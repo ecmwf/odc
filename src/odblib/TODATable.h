@@ -70,6 +70,6 @@ public:
 } // namespace sql 
 } // namespace odb 
 
-//#include "TODATable.cc"
+#include "odblib/TODATable.cc"
 
 #endif

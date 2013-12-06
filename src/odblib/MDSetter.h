@@ -41,7 +41,7 @@ private:
 
 } // namespace odb
 
-//#include "MDSetter.cc"
+#include "odblib/MDSetter.cc"
 
 #endif
 

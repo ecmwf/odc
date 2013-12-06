@@ -76,6 +76,6 @@ public:
 
 } // namespace odb 
 
-//#include "MDUpdatingIterator.cc"
+#include "odblib/MDUpdatingIterator.cc"
 
 #endif

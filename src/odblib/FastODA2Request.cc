@@ -8,6 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/utils/Tokenizer.h"
+#include "eckit/utils/StringTools.h"
+#include "eckit/types/Types.h"
+
 //#include "odblib/odb_api.h"
 //#include "eckit/exception/Exceptions.h"
 //#include "eckit/io/DataHandle.h"
@@ -16,12 +20,12 @@
 //#include "odblib/FastODA2Request.h"
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"
-//#include "odblib/MetaDataReaderIterator.h"
-//#include "odblib/MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/MetaDataReader.h"
 //#include "odblib/CodecOptimizer.h"
 //#include "odblib/FastODA2Request.h"
-//#include "odblib/GribCodes.h"
-//#include "odblib/ODAHandle.h"
+#include "odblib/GribCodes.h"
+#include "odblib/ODAHandle.h"
 //#include "odblib/StringTool.h"
 
 namespace odb {
@@ -91,10 +95,10 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 	MDR mdReader(fileName);
 	MDR::iterator it = mdReader.begin(), end = mdReader.end();
 
-	auto_ptr<MetaData> currentMD(it->columns().clone());
+    std::auto_ptr<MetaData> currentMD(it->columns().clone());
 	rowsNumber_ = currentMD->rowsNumber();
 
-	values_ = std::vector<set<string> >(currentMD->size(), std::set<string>());
+    values_ = std::vector<std::set<std::string> >(currentMD->size(), std::set<std::string>());
 	unsigned long int mds = 0;	
 	for ( ; it != end; ++it)
 	{
@@ -166,13 +170,13 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 	if (columnNames_.size())
 	{
 		if (valuesSeen_.find(currentValues) == valuesSeen_.end())
-			valuesSeen_[currentValues] = make_pair<Offset,Offset>(odaHandle.start(), odaHandle.end());
+            valuesSeen_[currentValues] = std::make_pair<Offset,Offset>(odaHandle.start(), odaHandle.end());
 		else {
 			std::pair<Offset,Offset> p = valuesSeen_[currentValues];
 			std::vector<std::string> vs = columnNames_;
 			for (size_t i = 0; i < vs.size(); ++i)
 				vs[i] += std::string("=") + currentValues[i];
-			stringstream s;
+            std::stringstream s;
 			s << "Values " << vs << " found in blocks <" << p.first << "," << p.second << ">"
 				<< " and <" << odaHandle.start() << "," << odaHandle.end() << ">";
 			if (! duplicateCombination(s.str()))
@@ -185,22 +189,22 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 template <typename T>
 std::string FastODA2Request<T>::genRequest() const
 {
-	stringstream request;
+    std::stringstream request;
 
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
 		const std::string& key = keywords_[i];
 		std::string k = eckit::StringTools::upper(key);
 		std::string valuesList;
-		const std::set<string>& vs = values_[i];
-		for (std::set<string>::const_iterator vi = vs.begin(); vi != vs.end(); ++vi)
+        const std::set<std::string>& vs = values_[i];
+        for (std::set<std::string>::const_iterator vi = vs.begin(); vi != vs.end(); ++vi)
 			valuesList += std::string(vi != vs.begin() ? "/" : "") + patchValue(k, *vi);
 		if (i > 0)
 			request << ",\n";
 		request << key << " = " << valuesList;
 	}
 
-	eckit::Log::debug() << "FastODA2Request<T>::genRequest() => " << endl << request.str() << std::endl;
+    eckit::Log::debug() << "FastODA2Request<T>::genRequest() => " << std::endl << request.str() << std::endl;
 	
 	return request.str();
 }
@@ -230,7 +234,7 @@ std::string FastODA2Request<T>::patchValue(const std::string& k, const std::stri
 }
 
 template <typename T>
-const std::set<string>& FastODA2Request<T>::getValues(const std::string& keyword)
+const std::set<std::string>& FastODA2Request<T>::getValues(const std::string& keyword)
 {
 	for (size_t i = 0; i < keywords_.size(); ++i)
 		if (keywords_[i] == keyword)
@@ -267,7 +271,7 @@ std::map<std::string, double> FastODA2Request<T>::getUniqueValues()
 		std::string kw = keywords_[i];
 		if ( doubleValues_[kw].size() != 1)
 		{
-			stringstream s;
+            std::stringstream s;
 			s << "Data contains more than one '" << kw << "' value.";
 			throw eckit::UserError(s.str());
 		}

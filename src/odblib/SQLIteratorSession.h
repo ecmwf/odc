@@ -56,6 +56,6 @@ private:
 } // namespace sql
 } // namespace odb
 
-//#include "odblib/SQLIteratorSession.cc"
+#include "odblib/SQLIteratorSession.cc"
 
 #endif
