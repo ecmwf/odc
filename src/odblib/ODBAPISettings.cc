@@ -13,6 +13,7 @@
 
 //#include "eckit/eckit.h"
 #include "eckit/io/AIOHandle.h"
+#include "eckit/io/FileHandle.h"
 
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"

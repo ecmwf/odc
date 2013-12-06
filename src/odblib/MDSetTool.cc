@@ -23,7 +23,7 @@
 #include "eckit/utils/StringTools.h"
 #include "odblib/MetaData.h"
 #include "odblib/MetaDataReaderIterator.h"
-//#include "odblib/Header.h"
+#include "odblib/Header.h"
 
 using namespace eckit;
 

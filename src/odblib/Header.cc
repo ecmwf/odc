@@ -13,12 +13,14 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-//#include "odblib/DataStream.h"
+#include "odblib/DataStream.h"
 //#include "odblib/Header.h"
-//#include "odblib/InMemoryDataHandle.h"
-//#include "odblib/MD5.h"
+#include "odblib/UnsafeInMemoryDataHandle.h"
+#include "odblib/InMemoryDataHandle.h"
+
+#include "odblib/MD5.h"
 //#include "odblib/Column.h"
-//#include "odblib/MetaData.h"
+#include "odblib/MetaData.h"
 
 namespace odb {
 

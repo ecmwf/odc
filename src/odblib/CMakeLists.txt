@@ -436,7 +436,7 @@ ecbuild_generate_yy( YYPREFIX odblib_
 ###############################################################################
 # swig python interface
 
-if( ODB_API_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
+if( ENABLE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
 
     set(CMAKE_SWIG_FLAGS "")
 

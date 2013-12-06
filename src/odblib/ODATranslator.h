@@ -22,10 +22,10 @@
 #include "eckit/types/Date.h"
 //#include "eckit/filesystem/PathName.h"
 #include "eckit/types/Time.h"
-//#include "eckit/parser/Translator.h"
+#include "eckit/parser/Translator.h"
 //#include "eckit/types/Types.h"
 
-//#include "odblib/StringTool.h"
+#include "odblib/StringTool.h"
 
 template <typename T>
 struct ODATranslator {
