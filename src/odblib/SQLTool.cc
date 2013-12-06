@@ -8,15 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/io/FileHandle.h"
 #include "eckit/io/PartFileHandle.h"
 
 //#include "odblib/odb_api.h"
 //#include "odblib/ToolFactory.h"
-//#include "odblib/SQLSelectFactory.h"
+#include "odblib/SQLSelectFactory.h"
 #include "odblib/SQLTool.h"
 #include "eckit/io/Length.h"
 #include "odblib/SQLParser.h"
+#include "eckit/utils/StringTools.h"
 //#include "odblib/Tool.h"
+#include "odblib/SQLInteractiveSession.h"
 
 using namespace eckit;
 using namespace odb::sql;

@@ -9,13 +9,13 @@
  */
 
 //#include "eckit/compat/StrStream.h"
-//#include "eckit/utils/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 
 //#include "odblib/SQLAST.h"
-//#include "odblib/SQLBitColumn.h"
+#include "odblib/SQLBitColumn.h"
 //#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLColumn.h"
-//#include "odblib/SQLDatabase.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLDatabase.h"
 //#include "odblib/SQLTable.h"
 //#include "odblib/SQLType.h"
 //#include "odblib/SchemaAnalyzer.h"

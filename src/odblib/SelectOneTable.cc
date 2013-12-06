@@ -19,7 +19,7 @@
 //#include "odblib/SQLExpression.h"
 //#include "odblib/SQLOutput.h"
 //#include "odblib/FunctionROWNUMBER.h"
-//#include "odblib/SelectOneTable.h"
+#include "odblib/SelectOneTable.h"
 
 namespace odb {
 namespace sql {

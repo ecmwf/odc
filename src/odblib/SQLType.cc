@@ -10,13 +10,14 @@
 
 //#include <set>
 
-//#include "eckit/exception/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 
 #include "odblib/SQLType.h"
-//#include "odblib/SQLInt.h"
-//#include "odblib/SQLReal.h"
-//#include "odblib/SQLDouble.h"
-//#include "odblib/SQLString.h"
+#include "odblib/SQLInt.h"
+#include "odblib/SQLReal.h"
+#include "odblib/SQLDouble.h"
+#include "odblib/SQLString.h"
 
 using namespace eckit;
 

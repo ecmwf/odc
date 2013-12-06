@@ -9,9 +9,10 @@
  */
 
 #include <eckit/eckit.h>
-//#include "odblib/SQLSelect.h"
+#include "odblib/SQLSelect.h"
 #include "odblib/SQLSimpleOutput.h"
-//#include "odblib/Decoder.h"
+#include "odblib/Decoder.h"
+#include "odblib/Expressions.h"
 
 namespace odb {
 namespace sql {

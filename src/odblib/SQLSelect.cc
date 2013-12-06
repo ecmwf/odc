@@ -8,19 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/log/BigNum.h"
+#include "eckit/log/BigNum.h"
 #include "eckit/log/Log.h"
 #include "odblib/Expressions.h"
 //#include "eckit/types/Types.h"
 
-//#include "odblib/ConstantExpression.h"
+#include "odblib/ConstantExpression.h"
 //#include "odblib/SQLAST.h"
-//#include "odblib/SQLColumn.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLSelect.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLSelect.h"
 //#include "odblib/SQLSession.h"
-//#include "odblib/SQLTable.h"
-//#include "odblib/SQLTable.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLOutput.h"
 //#include "odblib/SQLType.h"
 //#include "odblib/SchemaAnalyzer.h"
 
