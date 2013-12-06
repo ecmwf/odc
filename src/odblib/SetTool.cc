@@ -11,7 +11,7 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
-//#include "eckit/utils/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 #include "odblib/ConstantSetter.h"
 #include "odblib/SetTool.h"
 #include "eckit/log/Log.h"

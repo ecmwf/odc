@@ -11,6 +11,10 @@
 #ifndef SplitTool_H
 #define SplitTool_H
 
+#include "odblib/Tool.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/Length.h"
+
 namespace odb {
 namespace tool {
 

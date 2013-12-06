@@ -9,7 +9,7 @@
  */
 
 //#include "eckit/log/BigNum.h"
-//#include "eckit/exception/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLColumn.h"
@@ -18,7 +18,7 @@
 //#include "odblib/SQLSession.h"
 //#include "odblib/SQLTable.h"
 //#include "odblib/SQLTable.h"
-//#include "odblib/SQLType.h"
+#include "odblib/Stack.h"
 //#include "odblib/SchemaAnalyzer.h"
 
 namespace odb {

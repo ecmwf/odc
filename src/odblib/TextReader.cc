@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-//#include "odblib/TextReader.h"
+#include "odblib/TextReader.h"
 
 //#include "eckit/io/DataHandle.h"
 //#include "eckit/filesystem/PathName.h"

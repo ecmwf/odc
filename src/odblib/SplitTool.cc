@@ -12,13 +12,19 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
-//#include "odblib/MetaDataReader.h"
-//#include "odblib/Comparator.h"
-//#include "odblib/SplitTool.h"
-//#include "odblib/TemplateParameters.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
 
-//#include "eckit/io/PartFileHandle.h"
+//#include "odblib/Comparator.h"
+#include "odblib/SplitTool.h"
+#include "odblib/TemplateParameters.h"
+
+#include "eckit/io/PartFileHandle.h"
 #include "eckit/filesystem/PathName.h"
+#include "odblib/DispatchingWriter.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Reader.h"
+#include "odblib/Stack.h"
 
 using namespace eckit;
 

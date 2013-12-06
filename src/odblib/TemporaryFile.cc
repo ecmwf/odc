@@ -14,7 +14,7 @@
 
 //#include "eckit/io/Buffer.h"
 
-//#include "odblib/TemporaryFile.h"
+#include "odblib/TemporaryFile.h"
 
 using namespace eckit;
 

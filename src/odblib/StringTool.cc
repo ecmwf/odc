@@ -25,7 +25,7 @@
 
 //#include "odblib/Endian.h"
 //#include "odblib/MemoryBlock.h"
-//#include "odblib/StringTool.h"
+#include "odblib/StringTool.h"
 
 using namespace std;
 using namespace eckit;

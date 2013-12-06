@@ -50,7 +50,7 @@ using namespace std;
 //#include "odblib/SQLTable.h"
 //#include "odblib/SQLType.h"
 //#include "odblib/SelectIterator.h"
-//#include "odblib/Writer.h"
+#include "odblib/Writer.h"
 //#include "odblib/WriterBufferingIterator.h"
 //#include "odblib/WriterBufferingIterator.h"
 //#include "odblib/ODBAPISettings.h"
