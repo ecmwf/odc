@@ -4,11 +4,12 @@
 #ifndef ODBLIB_DATASELECT_H_
 #define ODBLIB_DATASELECT_H_
 
+#include <eckit/eckit.h>
 //#include <string>
 //#include <memory>
 
-//#include "odblib/DataColumns.h"
-//#include "odblib/SharedIterator.h"
+#include "odblib/DataColumns.h"
+#include "odblib/SharedIterator.h"
 
 namespace odb { namespace sql { class SQLDatabase; } }
 

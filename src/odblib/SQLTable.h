@@ -19,7 +19,7 @@
 
 namespace eckit { class PathName; }
 //#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLType.h"
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

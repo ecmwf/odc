@@ -8,13 +8,15 @@
 //#include <iosfwd>
 
 //#include "odblib/DataSet.h"
-//#include "odblib/DataTableMappings.h"
+#include "odblib/DataTableMappings.h"
 //#include "odblib/DataSetBuilder.h"
 //#include "odblib/DataSetFiller.h"
 
 namespace eckit { class DataHandle; }
 
 namespace odb {
+
+class DataSet;
 
 class Select;
 

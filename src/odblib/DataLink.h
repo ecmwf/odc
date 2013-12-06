@@ -6,7 +6,7 @@
 
 //#include <vector>
 
-//#include "odblib/DataLinkIterator.h"
+#include "odblib/DataLinkIterator.h"
 
 namespace odb {
 

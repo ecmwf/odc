@@ -4,6 +4,7 @@
 #ifndef DATATABLES_H_
 #define DATATABLES_H_
 
+#include <eckit/eckit.h>
 //#include <map>
 //#include <set>
 //#include <string>

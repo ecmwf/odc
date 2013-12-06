@@ -5,7 +5,7 @@
 #define DATAJOINITERATOR_H_
 
 #include "odblib/DataRow.h"
-//#include "odblib/DataTable.h"
+#include "odblib/DataTable.h"
 #include "odblib/IteratorFacade.h"
 
 namespace odb {

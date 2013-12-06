@@ -7,7 +7,9 @@
 //#include <cstddef>
 //#include <cassert>
 
-//#include "odblib/DataRow.h"
+#include "eckit/exception/Exceptions.h"
+
+#include "odblib/DataRow.h"
 
 namespace odb {
 
@@ -35,7 +37,7 @@ public:
     DataRowProxy& operator[](size_t n) const { return begin_[n]; }
 
     /// Returns reference to the given row of the page.
-    DataRowProxy& at(size_t n) const { assert(n < size_); return begin_[n]; }
+    DataRowProxy& at(size_t n) const { ASSERT(n < size_); return begin_[n]; }
 
     /// Returns pointer to the first row in the page.
     DataRowProxy* begin() const { return begin_; }

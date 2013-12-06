@@ -4,10 +4,10 @@
 #ifndef DATATABLEITERATOR_H_
 #define DATATABLEITERATOR_H_
 
-//#include <stddef.h>
+#include <stddef.h>
 
 //#include "odblib/DataPage.h"
-//#include "odblib/IteratorFacade.h"
+#include "odblib/IteratorFacade.h"
 
 namespace odb {
 

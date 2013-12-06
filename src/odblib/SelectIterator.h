@@ -17,7 +17,9 @@
 #define _SelectIterator_H
 
 //#include "odblib/RowsIterator.h"
-//#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLIteratorSession.h"
+
+#include "odblib/Expressions.h"
 
 extern "C" {
 	typedef void oda_select_iterator;

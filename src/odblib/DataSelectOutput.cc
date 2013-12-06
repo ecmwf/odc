@@ -1,8 +1,9 @@
 /// @file   DataSelectOutput.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataSelectOutput.h"
-//#include "odblib/DataSelectIterator.h"
+#include "odblib/DataSelectOutput.h"
+#include "odblib/DataSelectIterator.h"
+#include "odblib/Expressions.h"
 
 using namespace odb;
 

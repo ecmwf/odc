@@ -4,11 +4,12 @@
 #ifndef DATASAVER_H_
 #define DATASAVER_H_
 
+#include <eckit/eckit.h>
 //#include <string>
 
 //#include "odblib/Column.h"
 //#include "odblib/MetaData.h"
-//#include "odblib/Writer.h"
+#include "odblib/Writer.h"
 
 namespace odb {
 

@@ -14,13 +14,17 @@
 #ifndef SQLParser_H
 #define SQLParser_H
 
-//#include "odblib/SQLOutputConfig.h"
+#include "eckit/exception/Exceptions.h"
+
+#include "odblib/SQLOutputConfig.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
 namespace odb {
 namespace sql {
+
+class SQLDatabase;
 
 class SyntaxError : public eckit::SeriousBug {
 public:

@@ -4,9 +4,10 @@
 //#include <algorithm>
 //#include <functional>
 
-//#include "odblib/DataSet.h"
-//#include "odblib/DataTable.h"
-//#include "odblib/DataLink.h"
+#include "eckit/eckit.h"
+#include "odblib/DataSet.h"
+#include "odblib/DataTable.h"
+#include "odblib/DataLink.h"
 //#include "odblib/DataTables.h"
 
 using namespace std;

@@ -6,6 +6,7 @@
 
 //#include <string>
 #include <stdint.h>
+#include <eckit/eckit.h>
 
 namespace odb {
 

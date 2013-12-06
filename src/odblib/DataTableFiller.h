@@ -4,6 +4,8 @@
 #ifndef DATATABLEFILLER_H_
 #define DATATABLEFILLER_H_
 
+#include "eckit/eckit.h"
+
 //#include <vector>
 //#include <iterator>
 

@@ -4,8 +4,8 @@
 #ifndef DATASETBUILDER_H_
 #define DATASETBUILDER_H_
 
-//#include "odblib/MetaData.h"
-//#include "odblib/DataTableMappings.h"
+#include "odblib/MetaData.h"
+#include "odblib/DataTableMappings.h"
 
 namespace odb {
 

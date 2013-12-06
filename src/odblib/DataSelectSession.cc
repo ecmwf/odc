@@ -1,8 +1,9 @@
 /// @file   DataSelectSession.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataSelectSession.h"
-//#include "odblib/DataSelectOutput.h"
+#include "eckit/exception/Exceptions.h"
+#include "odblib/DataSelectSession.h"
+#include "odblib/DataSelectOutput.h"
 
 namespace odb {
 namespace internal {

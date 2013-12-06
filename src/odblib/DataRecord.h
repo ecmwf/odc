@@ -7,9 +7,10 @@
 //#include <assert.h>
 //#include <string>
 
-//#include "odblib/DataField.h"
-//#include "odblib/DataColumns.h"
-//#include "odblib/DataRecordIterator.h"
+#include "eckit/exception/Exceptions.h"
+#include "odblib/DataField.h"
+#include "odblib/DataColumns.h"
+#include "odblib/DataRecordIterator.h"
 
 namespace odb {
 
@@ -76,7 +77,7 @@ public:
 
     /// Returns the given field.
     DataField at(unsigned int n)
-    { assert(n < size()); return (*this)[n]; }
+    { ASSERT(n < size()); return (*this)[n]; }
 
     /// Returns the given field (const overload).
     const DataField at(unsigned int n) const

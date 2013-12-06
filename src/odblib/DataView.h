@@ -9,7 +9,7 @@
 //#include <iterator>
 
 //#include "odblib/DataTable.h"
-//#include "odblib/DataLink.h"
+#include "odblib/DataLink.h"
 
 namespace odb {
 

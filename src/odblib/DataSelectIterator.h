@@ -4,8 +4,8 @@
 #ifndef ODBLIB_DATASELECTITERATOR_H_
 #define ODBLIB_DATASELECTITERATOR_H_
 
-//#include "odblib/DataRow.h"
-//#include "odblib/IteratorFacade.h"
+#include "odblib/DataRow.h"
+#include "odblib/IteratorFacade.h"
 
 namespace odb
 {

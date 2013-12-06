@@ -14,10 +14,10 @@
 #ifndef SQLDatabase_H
 #define SQLDatabase_H
 
-//#include "eckit/filesystem/PathName.h"
+#include "eckit/filesystem/PathName.h"
 
-//#include "odblib/SQLTable.h"
-//#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SchemaAnalyzer.h"
 
 namespace eckit { class DataHandle; }
 

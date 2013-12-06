@@ -17,10 +17,16 @@
 //#include "eckit/exception/Exceptions.h"
 
 //#include "odblib/SQLExpression.h"
-//#include "odblib/SQLOutputConfig.h"
+#include "odblib/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {
+
+namespace expression {
+class Expressions;
+}
+
+class SQLSelect;
 
 class SQLOutput {
 public:

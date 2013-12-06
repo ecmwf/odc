@@ -14,7 +14,7 @@
 #ifndef SQLOutputConfig_H
 #define SQLOutputConfig_H
 
-//#include <string>
+#include <eckit/eckit.h>
 
 using namespace std;
 

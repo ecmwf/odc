@@ -8,12 +8,12 @@
 //#include <iosfwd>
 //#include <string>
 
-//#include "eckit/exception/Exceptions.h"
+#include "eckit/exception/Exceptions.h"
 
-//#include "odblib/DataRow.h"
-//#include "odblib/DataColumn.h"
-//#include "odblib/DataColumns.h"
-//#include "odblib/DataTableIterator.h"
+#include "odblib/DataRow.h"
+#include "odblib/DataPage.h"
+#include "odblib/DataColumns.h"
+#include "odblib/DataTableIterator.h"
 
 namespace odb {
 
@@ -144,7 +144,7 @@ public:
                 index_ = 0;
             }
 
-            row_->DataRow::set<string>(index_++, std::string(value));
+            row_->DataRow::set<std::string>(index_++, std::string(value));
 
             return *this;
         }

@@ -1,7 +1,11 @@
 /// @file   DataSetBuilder.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataSetBuilder.h"
+#include "eckit/eckit.h"
+#include "odblib/ColumnType.h"
+#include "odblib/MetaData.h"
+
+#include "odblib/DataSetBuilder.h"
 
 //#include <map>
 //#include <string>
@@ -9,10 +13,10 @@
 //#include "odblib/Column.h"
 //#include "odblib/MetaData.h"
 
-//#include "odblib/DataSet.h"
-//#include "odblib/DataTable.h"
-//#include "odblib/DataLink.h"
-//#include "odblib/DataColumn.h"
+#include "odblib/DataSet.h"
+#include "odblib/DataTable.h"
+#include "odblib/DataLink.h"
+#include "odblib/DataColumns.h"
 
 using namespace std;
 using namespace eckit;
