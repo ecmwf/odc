@@ -161,7 +161,7 @@ SEMICOLON [;]
     if (!fileName.exists())
     {
         SQLSession& session = SQLSession::current();
-        SQLDatabase& db = session.currentDatabase();
+        sql::SQLDatabase& db = session.currentDatabase();
         for (unsigned i = 0; i < db.includePath().size(); i++)
         {
             eckit::PathName path(db.includePath()[i] + "/" + fileName);

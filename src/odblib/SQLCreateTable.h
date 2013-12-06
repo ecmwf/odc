@@ -19,7 +19,7 @@
 //#include "eckit/eckit.h"
 
 //#include "odblib/SQLAST.h"
-//#include "odblib/SQLExpression.h"
+#include "odblib/Expressions.h"
 
 namespace odb {
 namespace sql {

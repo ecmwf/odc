@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/SQLOutputConfig.h"
+#include "odblib/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {

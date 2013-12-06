@@ -231,14 +231,14 @@ safeguard_statement: SAFEGUARD
 
 create_schema_statement: CREATE SCHEMA schema_name schema_element_list
         {
-            SQLDatabase& db = SQLSession::current().currentDatabase();
+            sql::SQLDatabase& db = SQLSession::current().currentDatabase();
             db.schemaAnalyzer().endSchema();
         }
         ;
 
 schema_name: IDENT
            {
-               SQLDatabase& db = SQLSession::current().currentDatabase();
+               sql::SQLDatabase& db = SQLSession::current().currentDatabase();
                db.schemaAnalyzer().beginSchema($1);
            }
            ;

@@ -2,9 +2,13 @@
 
 //#include <map>
 
-//#include "odblib/DataTable.h"
+#include "odblib/SQLDataTable.h"
+#include "odblib/DataTable.h"
+
 #include "odblib/SQLDataColumn.h"
-//#include "odblib/SQLDataTableIterator.h"
+#include "odblib/SQLDataTableIterator.h"
+#include "odblib/SQLBitfield.h"
+
 
 using namespace std;
 using namespace odb;

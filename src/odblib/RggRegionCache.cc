@@ -12,8 +12,8 @@
 #include <cmath>
 
 #include "eckit/log/Log.h"
-//#include "eckit/filesystem/PathName.h"
-//#include "eckit/config/Resource.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/config/Resource.h"
 //#include "eckit/thread/ThreadSingleton.h"
 
 //#include "odblib/RegionCache.h"

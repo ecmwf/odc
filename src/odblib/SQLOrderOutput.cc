@@ -8,11 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/SQLOrderOutput.h"
-//#include "odblib/SQLExpressionEvaluated.h"
+#include "odblib/SQLOrderOutput.h"
+#include "odblib/SQLExpressionEvaluated.h"
 //#include "odblib/OrderByExpressions.h"
 //#include "odblib/SQLSelect.h"
 //#include "eckit/exception/Exceptions.h"
+#include "odblib/Expressions.h"
+
 
 namespace odb {
 namespace sql {

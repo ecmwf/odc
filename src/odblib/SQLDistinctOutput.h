@@ -14,11 +14,11 @@
 #ifndef SQLDistinctOutput_H
 #define SQLDistinctOutput_H
 
-//#include "odblib/SQLOutput.h"
+#include "eckit/exception/Exceptions.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {
-namespace expression {
 
 class SQLDistinctOutput : public SQLOutput {
 public:
@@ -55,7 +55,6 @@ private:
 	virtual void outputBitfield(double, bool) const { NOTIMP; };
 };
 
-} // namespace expression 
 } // namespace sql 
 } // namespace odb 
 

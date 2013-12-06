@@ -12,6 +12,7 @@
 
 #include "odblib/SQLColumn.h"
 #include "odblib/SQLTable.h"
+#include "odblib/SQLIndex.h"
 
 using namespace eckit;
 

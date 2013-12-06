@@ -21,6 +21,10 @@
 //#include "odblib/SQLTable.h"
 #include "odblib/Expressions.h"
 
+namespace eckit {
+class DataHandle;
+
+}
 namespace odb {
 
     class DataTable;

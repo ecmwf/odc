@@ -9,11 +9,12 @@
  */
 
 //#include "eckit/compat/StrStream.h"
-
+#include "eckit/exception/Exceptions.h"
 #include "odblib/SQLExpression.h"
-//#include "odblib/NumberExpression.h"
+#include "odblib/NumberExpression.h"
 //#include "odblib/SQLType.h"
-//#include "odblib/SQLOutput.h"
+#include "odblib/SQLOutput.h"
+#include "odblib/Expressions.h"
 
 using namespace eckit;
 

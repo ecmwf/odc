@@ -16,6 +16,7 @@
 #ifndef ReaderIterator_H
 #define ReaderIterator_H
 
+#include "odblib/IteratorProxy.h"
 //#include "odblib/RowsIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
 

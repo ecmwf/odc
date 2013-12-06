@@ -57,7 +57,6 @@ using namespace std;
 
 namespace odb {
 
-#define MEGA(x) ((x)*1024*1024)
 
 template <typename ITERATOR>
 Writer<ITERATOR>::Writer()

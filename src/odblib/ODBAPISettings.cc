@@ -14,6 +14,7 @@
 //#include "eckit/eckit.h"
 #include "eckit/io/AIOHandle.h"
 #include "eckit/io/FileHandle.h"
+#include "eckit/config/Resource.h"
 
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"
@@ -34,6 +35,8 @@
 //#include "odblib/WriterDispatchingIterator.h"
 
 using namespace eckit;
+
+inline size_t MEGA(size_t n) { return n*1024*1204; }
 
 template class ThreadSingleton<odb::ODBAPISettings>;
 static ThreadSingleton<odb::ODBAPISettings> instance_;

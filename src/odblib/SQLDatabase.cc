@@ -13,7 +13,7 @@
 //#include "eckit/exception/Exceptions.h"
 //#include "eckit/log/Log.h"
 //#include "eckit/utils/Timer.h"
-//#include "eckit/utils/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLBitfield.h"
@@ -23,10 +23,11 @@
 //#include "odblib/SQLTable.h"
 //#include "odblib/SQLType.h"
 //#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/VariablesTable.h"
+#include "odblib/VariablesTable.h"
+#include "odblib/DataTable.h"
 //#include "odblib/DataTable.h"
-//#include "odblib/SQLDataTable.h"
-//#include "odblib/SQLSession.h"
+#include "odblib/SQLDataTable.h"
+#include "odblib/SQLSession.h"
 
 using namespace eckit;
 
@@ -276,12 +277,12 @@ void SQLDatabase::setLinks(const Links& links)
 	for(Links::const_iterator j = links.begin(); j != links.end() ; ++j)
 	{
 		const std::string&      from = (*j).first;
-		const std::set<string>& to   = (*j).second;
+        const std::set<std::string>& to   = (*j).second;
 
 		ASSERT(tablesByName_.find(from) != tablesByName_.end());
 		SQLTable *f = tablesByName_[from];
 
-		for(std::set<string>::const_iterator k = to.begin(); k != to.end() ; ++k)
+        for(std::set<std::string>::const_iterator k = to.begin(); k != to.end() ; ++k)
 		{
 			ASSERT(tablesByName_.find(*k) != tablesByName_.end());
 			SQLTable* t = tablesByName_[*k];

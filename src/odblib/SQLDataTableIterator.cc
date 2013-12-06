@@ -40,7 +40,7 @@ bool SQLDataTableIterator::next()
 
 void SQLDataTableIterator::copyRow()
 {
-    copy(it_->data(), it_->data() + table_.columns().size(), data_);
+    std::copy(it_->data(), it_->data() + table_.columns().size(), data_);
 }
 
 } // namespace odb

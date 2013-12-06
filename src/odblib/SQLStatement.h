@@ -14,6 +14,7 @@
 #ifndef SQLStatement_H
 #define SQLStatement_H
 
+#include "odblib/Expressions.h"
 //#include "eckit/eckit.h"
 //#include "odblib/SQLExpression.h"
 

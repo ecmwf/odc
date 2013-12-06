@@ -26,6 +26,8 @@
 //#include "odblib/MemoryBlock.h"
 //#include "odblib/ODBAPISettings.h"
 
+inline size_t MEGA(size_t n) { return n*1024*1204; }
+
 using namespace eckit;
 
 namespace odb {

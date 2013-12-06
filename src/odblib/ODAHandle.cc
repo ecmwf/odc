@@ -9,6 +9,8 @@
  */
 
 #include "odblib/ODAHandle.h"
+#include "eckit/types/Types.h"
+
 //#include "odblib/ODATranslator.h"
 
 using namespace eckit;

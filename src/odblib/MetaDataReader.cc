@@ -14,47 +14,46 @@
 /// @author Piotr Kuchta, Feb 2009
 
 
-//#include <algorithm>
-//#include <iostream>
-//#include <sstream>
-//#include <errno.h>
-//#include <math.h>
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <errno.h>
+#include <math.h>
 
 using namespace std;
 
-//#include "eckit/io/DataHandle.h"
-//#include "eckit/exception/Exceptions.h"
-//#include "eckit/io/FileHandle.h"
-//#include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/io/FileHandle.h"
+#include "eckit/filesystem/PathName.h"
 
-//#include "odblib/Codec.h"
-//#include "odblib/Column.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/FixedSizeWriterIterator.h"
-//#include "odblib/HashTable.h"
-//#include "odblib/Header.h"
-//#include "odblib/IteratorProxy.h"
-//#include "odblib/MemoryBlock.h"
-//#include "odblib/MetaData.h"
-//#include "odblib/MetaDataReader.h"
-//#include "odblib/MetaDataReaderIterator.h"
-//#include "odblib/RowsIterator.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLExpression.h"
-//#include "odblib/SQLInteractiveSession.h"
-//#include "odblib/SQLIteratorSession.h"
-//#include "odblib/SQLParser.h"
-//#include "odblib/SQLSelect.h"
-//#include "odblib/SQLTable.h"
-//#include "odblib/SQLType.h"
-//#include "odblib/SelectIterator.h"
-//#include "odblib/Writer.h"
-//#include "odblib/WriterBufferingIterator.h"
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/DataStream.h"
+#include "odblib/FixedSizeWriterIterator.h"
+#include "odblib/HashTable.h"
+#include "odblib/Header.h"
+#include "odblib/IteratorProxy.h"
+#include "odblib/MemoryBlock.h"
+#include "odblib/MetaData.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/SQLExpression.h"
+#include "odblib/SQLInteractiveSession.h"
+#include "odblib/SQLIteratorSession.h"
+#include "odblib/SQLParser.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLTable.h"
+#include "odblib/SQLType.h"
+#include "odblib/SelectIterator.h"
+#include "odblib/Writer.h"
+#include "odblib/WriterBufferingIterator.h"
 
 using namespace std;
 
 namespace odb {
-#define MEGA(x) ((x)*1024*1024)
 
 template <typename T>
 MetaDataReader<T>::MetaDataReader()
@@ -93,7 +92,7 @@ typename MetaDataReader<T>::iterator* MetaDataReader<T>::createReadIterator(cons
 template <typename T>
 typename MetaDataReader<T>::iterator MetaDataReader<T>::begin()
 {
-    T* it = new T(dataHandle(), skipData_);
+	T* it = new T(*this, skipData_);
 	it->next();
 	return iterator(it);
 }

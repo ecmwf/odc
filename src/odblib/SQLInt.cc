@@ -11,8 +11,8 @@
 
 //#include <iomanip>
 
-//#include "odblib/SQLInt.h"
-//#include "odblib/SQLOutput.h"
+#include "odblib/SQLInt.h"
+#include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {

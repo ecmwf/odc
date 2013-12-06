@@ -73,7 +73,6 @@ void TestSetvbuffer::test()
 {
 	size_t cols = 400;
 	long long rows = 1000;
-	//size_t buffSize = MEGA(8);
 	size_t buffSize = 8 * 1024 * 1024;
 
 	for (size_t i = 0; i < 10; ++i)

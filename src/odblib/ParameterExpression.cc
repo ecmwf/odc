@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/ParameterExpression.h"
+#include "odblib/ParameterExpression.h"
 //#include "odblib/SQLAST.h"
 //#include "eckit/log/Log.h"
 //#include "odblib/SQLBitfield.h"
 //#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/SQLSession.h"
+#include "odblib/SQLSession.h"
 
 namespace odb {
 namespace sql {

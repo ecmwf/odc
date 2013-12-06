@@ -17,7 +17,7 @@
 #define Header_H
 
 #include <stdint.h>
-
+#include "eckit/eckit.h"
 //#include "odb_api_config.h"
 
 //#include "odblib/UnsafeInMemoryDataHandle.h"
