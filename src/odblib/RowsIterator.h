@@ -16,6 +16,7 @@ class Column;
 }
 
 #include "odblib/Types.h"
+#include "odblib/ColumnType.h"
 
 namespace odb {
 

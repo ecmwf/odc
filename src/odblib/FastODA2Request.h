@@ -12,11 +12,16 @@
 #define FastODA2Request_H
 
 //#include "odblib/Column.h"
-//#include "odblib/MetaData.h"
+#include "odblib/MetaData.h"
 //#include "odblib/MetaDataReader.h"
 //#include "odblib/ODAHandle.h"
 
+#include "eckit/io/Offset.h"
+#include "eckit/io/Length.h"
+
 namespace odb {
+
+class ODAHandle;
 
 template <typename T>
 class FastODA2Request {
@@ -32,7 +37,7 @@ public:
 
 	std::string genRequest() const;
 
-	const std::set<string>& getValues(const std::string& keyword);
+    const std::set<std::string>& getValues(const std::string& keyword);
 	std::map<std::string, double> getUniqueValues();
 	std::map<std::string, std::vector<double> > getValues();
 
@@ -54,10 +59,10 @@ private:
 	eckit::PathName inputFile_;
 	std::vector<std::string> keywords_;
 	std::vector<std::string> columnNames_;
-	std::vector<set<string> > values_;
+    std::vector<std::set<std::string> > values_;
 	std::map<std::string, std::set<double> > doubleValues_;
 
-	std::map<std::vector<std::string>, pair<eckit::Offset, eckit::Offset> > valuesSeen_;
+    std::map<std::vector<std::string>, std::pair<eckit::Offset, eckit::Offset> > valuesSeen_;
 	unsigned long long rowsNumber_;
 	bool mergeSimilarBlocks_;
 };
@@ -66,7 +71,7 @@ private:
 struct ODA2RequestServerTraits {
 	static std::string columnIsNotConstant(const Column& column)
 	{
-		stringstream ss;
+        std::stringstream ss;
 		ss << "Column '" << column.name() << "' is not constant"
 			<< " (min=" << column.min() << ", max=" << column.max() << ")";
 		throw eckit::UserError(ss.str());

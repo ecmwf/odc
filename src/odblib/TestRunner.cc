@@ -22,7 +22,7 @@
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
 //#include "odblib/ToolFactory.h"
-//#include "odblib/TestRunner.h"
+#include "odblib/TestRunner.h"
 
 using namespace eckit;
 

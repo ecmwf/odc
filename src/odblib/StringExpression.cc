@@ -13,7 +13,7 @@
 //#include "odblib/ColumnExpression.h"
 //#include "odblib/SQLTable.h"
 //#include "odblib/StringExpression.h"
-//#include "odblib/StringExpression.h"
+#include "odblib/StringExpression.h"
 //#include "odblib/StringTool.h"
 
 using namespace eckit;

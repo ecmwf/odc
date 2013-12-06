@@ -9,7 +9,7 @@
  */
 
 //#include <sstream>
-//#include <math.h>
+#include <cmath>
 
 #include "eckit/log/Log.h"
 //#include "eckit/filesystem/PathName.h"

@@ -3,7 +3,7 @@
 //#include <map>
 
 //#include "odblib/DataTable.h"
-//#include "odblib/SQLDataColumn.h"
+#include "odblib/SQLDataColumn.h"
 //#include "odblib/SQLDataTableIterator.h"
 
 using namespace std;

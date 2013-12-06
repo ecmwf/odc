@@ -10,6 +10,8 @@
 
 //#include "eckit/eckit.h"
 
+#include "eckit/thread/ThreadSingleton.h"
+#include "odblib/ShiftedBitColumnExpression.h"
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"
 //#include "odblib/DataStream.h"
@@ -32,6 +34,8 @@
 //#include "odblib/ImportTool.h"
 //#include "odblib/DataTable.h"
 //#include "odblib/SQLDataTable.h"
+
+#include "odblib/SQLSelectFactory.h"
 
 using namespace eckit;
 

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/NumberExpression.h"
+#include "odblib/NumberExpression.h"
 
 namespace odb {
 namespace sql {

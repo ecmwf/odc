@@ -13,7 +13,7 @@
 //#include "eckit/log/Log.h"
 //#include "eckit/thread/ThreadSingleton.h"
 
-//#include "odblib/RegionCache.h"
+#include "odblib/RegionCache.h"
 //#include "odblib/MDI.h"
 
 using namespace eckit;

@@ -13,7 +13,7 @@
 //#include "odblib/odb_api.h"
 //#include "odblib/ToolFactory.h"
 //#include "odblib/SQLSelectFactory.h"
-//#include "odblib/SQLTool.h"
+#include "odblib/SQLTool.h"
 //#include "odblib/Tool.h"
 
 using namespace eckit;

@@ -16,6 +16,7 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/filesystem/PathName.h"
+#include "odblib/Types.h"
 
 namespace eckit { class PathName; }
 //#include "odblib/SQLBitfield.h"

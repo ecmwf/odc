@@ -10,7 +10,8 @@
 
 //#include "odblib/odb_api.h"
 
-//#include "odblib/ODAColumn.h"
+#include "odblib/ODAColumn.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 namespace sql {

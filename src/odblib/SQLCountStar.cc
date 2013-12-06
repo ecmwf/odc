@@ -9,8 +9,8 @@
  */
 
 //#include "eckit/log/Log.h"
-
-//#include "odblib/SQLCountStar.h"
+#include <eckit/eckit.h>
+#include "odblib/SQLCountStar.h"
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLBitfield.h"
 //#include "odblib/SchemaAnalyzer.h"

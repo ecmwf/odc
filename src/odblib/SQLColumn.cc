@@ -10,8 +10,8 @@
 
 //#include "eckit/utils/Timer.h"
 
-//#include "odblib/SQLColumn.h"
-//#include "odblib/SQLTable.h"
+#include "odblib/SQLColumn.h"
+#include "odblib/SQLTable.h"
 
 using namespace eckit;
 

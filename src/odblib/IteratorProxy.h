@@ -18,6 +18,7 @@
 
 #include "odblib/ColumnType.h"
 #include "odblib/Types.h"
+#include "odblib/SelectIterator.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

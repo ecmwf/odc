@@ -13,8 +13,8 @@
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
 //#include "ODAHeaderTool.h"
-//#include "MetaDataReaderIterator.h"
-//#include "MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/MetaDataReader.h"
 //#include "eckit/io/Offset.h"
 //#include "eckit/io/Length.h"
 

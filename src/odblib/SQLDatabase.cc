@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+#include "odblib/SQLDatabase.h"
+#include "odblib/DataColumns.h"
 //#include "eckit/exception/Exceptions.h"
 //#include "eckit/log/Log.h"
 //#include "eckit/utils/Timer.h"

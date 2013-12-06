@@ -10,15 +10,15 @@
 
 //#include "eckit/exception/Exceptions.h"
 //#include "eckit/log/Log.h"
-//#include "eckit/thread/ThreadSingleton.h"
+#include "eckit/thread/ThreadSingleton.h"
 //#include "eckit/utils/Timer.h"
 
 //#include "odblib/ODADatabase.h"
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLBitfield.h"
 //#include "odblib/SQLColumn.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLSession.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLSession.h"
 //#include "odblib/SQLStatement.h"
 //#include "odblib/SQLTable.h"
 //#include "odblib/SchemaAnalyzer.h"

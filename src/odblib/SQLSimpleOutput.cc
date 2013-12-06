@@ -8,8 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
+#include <eckit/eckit.h>
 //#include "odblib/SQLSelect.h"
-//#include "odblib/SQLSimpleOutput.h"
+#include "odblib/SQLSimpleOutput.h"
 //#include "odblib/Decoder.h"
 
 namespace odb {

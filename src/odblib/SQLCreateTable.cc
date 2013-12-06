@@ -22,6 +22,10 @@
 //#include "odblib/SQLType.h"
 //#include "odblib/SchemaAnalyzer.h"
 
+#include "odblib/Types.h"
+#include "eckit/exception/Exceptions.h"
+
+
 using namespace eckit;
 
 namespace odb {

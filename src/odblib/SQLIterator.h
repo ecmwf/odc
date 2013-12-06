@@ -18,7 +18,7 @@
 
 #include "eckit/memory/MemoryPool.h"
 
-//#include "odblib/SQLType.h"
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

@@ -18,7 +18,7 @@
 using namespace std;
 
 //#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
+#include "odblib/TestCase.h"
 //#include "odblib/ToolFactory.h"
 
 namespace odb {

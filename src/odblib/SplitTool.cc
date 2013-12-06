@@ -18,6 +18,7 @@
 //#include "odblib/TemplateParameters.h"
 
 //#include "eckit/io/PartFileHandle.h"
+#include "eckit/filesystem/PathName.h"
 
 using namespace eckit;
 

@@ -13,6 +13,11 @@
 //#include "odblib/ToolFactory.h"
 //#include "Comparator.h"
 #include "odblib/MergeTool.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/Reader.h"
+#include "odblib/ODBSelect.h"
+#include "eckit/io/FileHandle.h"
 
 using namespace eckit;
 
