@@ -18,7 +18,7 @@
 #include "odblib/SQLInteractiveSession.h"
 #include "odblib/SQLSimpleOutput.h"
 //#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLStatement.h"
+#include "odblib/SQLStatement.h"
 
 namespace odb {
 namespace sql {

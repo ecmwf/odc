@@ -31,6 +31,7 @@
 #include "odblib/Reader.h"
 #include "odblib/Writer.h"
 #include "odblib/ODBSelect.h"
+#include "odblib/ODAHandle.h"
 
 using namespace eckit;
 using namespace odb;

@@ -23,6 +23,8 @@
 //#include "odblib/SQLType.h"
 //#include "odblib/SchemaAnalyzer.h"
 
+#include "odblib/SQLTable.h"
+
 namespace odb {
 namespace sql {
 
