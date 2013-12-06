@@ -3,20 +3,12 @@
 
 #include "eckit/eckit.h"
 #include "odblib/ColumnType.h"
-#include "odblib/MetaData.h"
-
+#include "odblib/DataColumns.h"
+#include "odblib/DataLink.h"
 #include "odblib/DataSetBuilder.h"
-
-//#include <map>
-//#include <string>
-
-//#include "odblib/Column.h"
-//#include "odblib/MetaData.h"
-
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
-#include "odblib/DataLink.h"
-#include "odblib/DataColumns.h"
+#include "odblib/MetaData.h"
 
 using namespace std;
 using namespace eckit;

@@ -1,8 +1,8 @@
 /// @file   DataColumn.cc
 /// @author Tomas Kral
 
-#include "odblib/DataColumn.h"
 #include "odblib/Column.h"
+#include "odblib/DataColumn.h"
 
 using namespace std;
 

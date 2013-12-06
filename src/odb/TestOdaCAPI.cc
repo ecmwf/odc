@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <eckit/eckit.h>
+#include "eckit/eckit.h"
 //#include "eckit/filesystem/PathName.h"
 //#include "eckit/io/FileHandle.h"
 //#include "eckit/utils/Timer.h"

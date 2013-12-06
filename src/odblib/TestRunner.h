@@ -15,7 +15,6 @@
 #ifndef TestRunner_H
 #define TestRunner_H
 
-
 #include "eckit/filesystem/PathName.h"
 #include "odblib/CommandLineParser.h"
 #include "odblib/TestCase.h"

@@ -14,9 +14,6 @@
 #ifndef VariablesTable_H
 #define VariablesTable_H
 
-//#include "eckit/filesystem/PathName.h"
-
-//#include "odblib/SQLBitfield.h"
 #include "odblib/SQLTable.h"
 
 namespace odb {

@@ -4,12 +4,7 @@
 #ifndef DATATABLE_H_
 #define DATATABLE_H_
 
-//#include <cstddef>
-//#include <iosfwd>
-//#include <string>
-
 #include "eckit/exception/Exceptions.h"
-
 #include "odblib/DataRow.h"
 #include "odblib/DataPage.h"
 #include "odblib/DataColumns.h"

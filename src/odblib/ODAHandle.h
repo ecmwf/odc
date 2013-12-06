@@ -14,13 +14,7 @@
 #ifndef ODAHandle_H
 #define ODAHandle_H
 
-//#include "eckit/eckit.h"
-
-//#include "eckit/io/Buffer.h"
-//#include "eckit/types/Date.h"
-//#include "eckit/types/Time.h"
 #include "eckit/io/Offset.h"
-
 #include "odblib/ODATranslator.h"
 
 namespace odb {

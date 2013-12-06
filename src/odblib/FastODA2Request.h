@@ -11,13 +11,9 @@
 #ifndef FastODA2Request_H
 #define FastODA2Request_H
 
-//#include "odblib/Column.h"
-#include "odblib/MetaData.h"
-//#include "odblib/MetaDataReader.h"
-//#include "odblib/ODAHandle.h"
-
-#include "eckit/io/Offset.h"
 #include "eckit/io/Length.h"
+#include "eckit/io/Offset.h"
+#include "odblib/MetaData.h"
 
 namespace odb {
 

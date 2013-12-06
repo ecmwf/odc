@@ -16,10 +16,9 @@
 #ifndef CodecOptimizer_H
 #define CodecOptimizer_H
 
-#include <eckit/eckit.h>
+#include "eckit/eckit.h"
 #include "odblib/ColumnType.h"
 #include "odblib/MetaData.h"
-
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

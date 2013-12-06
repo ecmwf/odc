@@ -9,7 +9,6 @@
  */
 
 #include "eckit/exception/Exceptions.h"
-
 #include "odblib/SQLBit.h"
 #include "odblib/SQLOutput.h"
 

@@ -8,10 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/odb_api.h"
-
-#include "odblib/ODAColumn.h"
 #include "eckit/exception/Exceptions.h"
+#include "odblib/ODAColumn.h"
 
 namespace odb {
 namespace sql {

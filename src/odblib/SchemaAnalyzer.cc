@@ -8,11 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/odb_api.h"
-//#include "odblib/SQLAST.h"
 #include "eckit/exception/Exceptions.h"
-#include "odblib/SchemaAnalyzer.h"
 #include "odblib/MetaData.h"
+#include "odblib/SchemaAnalyzer.h"
 
 using namespace eckit;
 

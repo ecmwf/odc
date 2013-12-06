@@ -14,67 +14,20 @@
 
 #include <cmath>
 
-//#include <iostream>
-//#include <vector>
-//#include <map>
-//#include <algorithm>
-
-//#include <stdlib.h>
-//#include <memory> 
-
-using namespace std;
-
 #include "eckit/filesystem/PathName.h"
-//#include "eckit/io/DataHandle.h"
-//#include "eckit/log/Log.h"
-#include "eckit/io/PartFileHandle.h"
-#include "eckit/thread/ThreadPool.h"
-#include "eckit/thread/AutoLock.h"
 #include "eckit/io/FileHandle.h"
-#include "eckit/utils/Timer.h"
-
-#include "odblib/ODBSelect.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/HashTable.h"
-//#include "odblib/Codec.h"
-//#include "odblib/HashTable.h"
-//#include "odblib/Column.h"
-//#include "odblib/MetaData.h"
-//#include "odblib/RowsIterator.h"
-//#include "odblib/HashTable.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLAST.h"
-//#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/SQLIteratorSession.h"
-//#include "odblib/Header.h"
-//#include "odblib/Reader.h"
-//#include "odblib/SelectIterator.h"
-//#include "odblib/ReaderIterator.h"
-//#include "odblib/Comparator.h"
-//#include "odblib/Decoder.h"
-//#include "odblib/SQLSelectFactory.h"
-//#include "odblib/FastODA2Request.h"
-//#include "odblib/MemoryBlock.h"
-//#include "odblib/InMemoryDataHandle.h"
-//#include "odblib/odb_api.h"
-//#include "odblib/odbcapi.h"
-//#include "odblib/ImportTool.h"
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
-//#include "odblib/DateTime.h"
-//#include "odblib/SplitTool.h"
-//#include "odblib/CountTool.h"
-
-#include "odblib/MetaData.h"
-#include "odblib/MapReduce.h"
-#include "odblib/SplitTool.h"
-
-
+#include "eckit/io/PartFileHandle.h"
+#include "eckit/thread/AutoLock.h"
 #include "eckit/thread/ThreadControler.h"
 #include "eckit/thread/Thread.h"
-//#include "eckit/thread/Mutex.h"
-//#include "eckit/thread/MutexCond.h"
-//#include "eckit/thread/AutoLock.h"
+#include "eckit/thread/ThreadPool.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/MapReduce.h"
+#include "odblib/MetaData.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/SplitTool.h"
+
+using namespace std;
 
 namespace odb {
 namespace tool {

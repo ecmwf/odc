@@ -20,13 +20,10 @@
 #include <errno.h>
 #include <math.h>
 
-using namespace std;
-
-#include "eckit/io/DataHandle.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/io/FileHandle.h"
 #include "eckit/filesystem/PathName.h"
-
+#include "eckit/io/DataHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
 #include "odblib/DataStream.h"
@@ -39,6 +36,7 @@ using namespace std;
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/RowsIterator.h"
+#include "odblib/SelectIterator.h"
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLExpression.h"
 #include "odblib/SQLInteractiveSession.h"
@@ -47,9 +45,8 @@ using namespace std;
 #include "odblib/SQLSelect.h"
 #include "odblib/SQLTable.h"
 #include "odblib/SQLType.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/Writer.h"
 #include "odblib/WriterBufferingIterator.h"
+#include "odblib/Writer.h"
 
 using namespace std;
 

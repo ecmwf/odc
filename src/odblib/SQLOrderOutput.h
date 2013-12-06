@@ -14,10 +14,9 @@
 #ifndef SQLOrderOutput_H
 #define SQLOrderOutput_H
 
-#include "odblib/SQLOutput.h"
-//#include "odblib/SQLExpressionEvaluated.h"
-#include "odblib/OrderByExpressions.h"
 #include "odblib/Expressions.h"
+#include "odblib/OrderByExpressions.h"
+#include "odblib/SQLOutput.h"
 
 
 namespace odb {

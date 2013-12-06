@@ -2,8 +2,8 @@
 /// @author Tomas Kral
 
 #include "eckit/exception/Exceptions.h"
-#include "odblib/DataSelectSession.h"
 #include "odblib/DataSelectOutput.h"
+#include "odblib/DataSelectSession.h"
 
 namespace odb {
 namespace internal {

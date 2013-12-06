@@ -8,14 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/log/Log.h"
-#include <eckit/eckit.h>
+#include "eckit/eckit.h"
 #include "odblib/SQLCountStar.h"
-//#include "odblib/SQLAST.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/SQLDatabase.h"
-//#include "odblib/SQLTable.h"
 
 namespace odb {
 namespace sql {

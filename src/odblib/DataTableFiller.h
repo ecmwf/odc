@@ -6,9 +6,6 @@
 
 #include "eckit/eckit.h"
 
-//#include <vector>
-//#include <iterator>
-
 namespace odb {
 
 class DataTable;

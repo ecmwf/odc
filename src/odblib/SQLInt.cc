@@ -9,8 +9,6 @@
  */
 
 
-//#include <iomanip>
-
 #include "odblib/SQLInt.h"
 #include "odblib/SQLOutput.h"
 

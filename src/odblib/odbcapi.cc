@@ -13,25 +13,20 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
-#include "odblib/odbcapi.h"
-
-
-#include "odblib/ODBAPIVersion.h"
-//#include "eckit/runtime/Application.h"
-#include "eckit/runtime/Context.h"
 #include "eckit/runtime/ContextBehavior.h"
-
-//#include "odblib/odb_api.h"
-#include "odblib/MetaDataReaderIterator.h"
-#include "odblib/MetaDataReader.h"
+#include "eckit/runtime/Context.h"
 #include "odblib/FastODA2Request.h"
-#include "odblib/ODBBehavior.h"
 #include "odblib/MetaData.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/ODAHandle.h"
 #include "odblib/ODBAPISettings.h"
+#include "odblib/ODBAPIVersion.h"
+#include "odblib/ODBBehavior.h"
+#include "odblib/odbcapi.h"
+#include "odblib/ODBSelect.h"
 #include "odblib/Reader.h"
 #include "odblib/Writer.h"
-#include "odblib/ODBSelect.h"
-#include "odblib/ODAHandle.h"
 
 using namespace eckit;
 using namespace odb;

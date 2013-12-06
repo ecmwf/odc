@@ -16,16 +16,12 @@
 #ifndef WriterBufferingIterator_H
 #define WriterBufferingIterator_H
 
-//#include <memory>
-
 #include "odblib/Array.h"
+#include "odblib/CodecOptimizer.h"
+#include "odblib/Header.h"
+#include "odblib/IteratorProxy.h"
 #include "odblib/MemoryBlock.h"
 #include "odblib/RowsIterator.h"
-//#include "odblib/UnsafeInMemoryDataHandle.h"
-#include "odblib/Header.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/IteratorProxy.h"
-
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

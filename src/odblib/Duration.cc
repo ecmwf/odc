@@ -8,16 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include <eckit/eckit.h>
-
-//#include <string>
-//#include <sstream>
-//#include <istream>
-//#include <ostream>
-//#include <locale>
 #include <stdexcept>
-//#include <stdint.h>
 
+#include "eckit/eckit.h"
 #include "odblib/Duration.h"
 
 using std::string;

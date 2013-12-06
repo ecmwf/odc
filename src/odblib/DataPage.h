@@ -4,11 +4,7 @@
 #ifndef DATAPAGE_H_
 #define DATAPAGE_H_
 
-//#include <cstddef>
-//#include <cassert>
-
 #include "eckit/exception/Exceptions.h"
-
 #include "odblib/DataRow.h"
 
 namespace odb {

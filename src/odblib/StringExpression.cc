@@ -9,13 +9,11 @@
  */
 
 #include "eckit/exception/Exceptions.h"
-
 #include "odblib/ColumnExpression.h"
+#include "odblib/Expressions.h"
 #include "odblib/SQLTable.h"
-//#include "odblib/StringExpression.h"
 #include "odblib/StringExpression.h"
 #include "odblib/StringTool.h"
-#include "odblib/Expressions.h"
 
 using namespace eckit;
 

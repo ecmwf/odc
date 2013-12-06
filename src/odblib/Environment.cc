@@ -8,21 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/log/BigNum.h"
-//#include "eckit/exception/Exceptions.h"
-
 #include "odblib/Environment.h"
-
-//#include "odblib/SQLAST.h"
-//#include "odblib/SQLColumn.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLSelect.h"
-//#include "odblib/SQLSession.h"
-//#include "odblib/SQLTable.h"
-//#include "odblib/SQLTable.h"
-//#include "odblib/SQLType.h"
-//#include "odblib/SchemaAnalyzer.h"
-
 #include "odblib/SQLTable.h"
 
 namespace odb {

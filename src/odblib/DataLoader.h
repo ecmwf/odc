@@ -4,13 +4,7 @@
 #ifndef DATALOADER_H_
 #define DATALOADER_H_
 
-//#include <string>
-//#include <iosfwd>
-
-//#include "odblib/DataSet.h"
 #include "odblib/DataTableMappings.h"
-//#include "odblib/DataSetBuilder.h"
-//#include "odblib/DataSetFiller.h"
 
 namespace eckit { class DataHandle; }
 

@@ -11,7 +11,6 @@
 #include "odblib/FunctionRGG_BOXLAT.h"
 #include "odblib/RggRegionCache.h"
 
-
 namespace odb {
 namespace sql {
 namespace expression {

@@ -17,9 +17,8 @@
 #define DataStream_H
 
 #include <stdint.h>
-#include "eckit/eckit.h"
-//#include "odblib/SQLBitfield.h"
 
+#include "eckit/eckit.h"
 #include "odblib/Types.h"
 
 namespace eckit { class DataHandle; }

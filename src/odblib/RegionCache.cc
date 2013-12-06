@@ -8,14 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include <eckit/eckit.h>
-//#include <math.h>
-
-//#include "eckit/log/Log.h"
+#include "eckit/eckit.h"
 #include "eckit/thread/ThreadSingleton.h"
-
-#include "odblib/RegionCache.h"
 #include "odblib/MDI.h"
+#include "odblib/RegionCache.h"
 
 using namespace eckit;
 

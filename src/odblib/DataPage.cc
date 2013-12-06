@@ -2,10 +2,6 @@
 /// @author Tomas Kral
 
 #include "odblib/DataPage.h"
-
-//#include <cmath>
-//#include <vector>
-
 #include "odblib/DataTable.h"
 
 using namespace std;

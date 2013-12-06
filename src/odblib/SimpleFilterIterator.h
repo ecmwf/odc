@@ -19,7 +19,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-#include <eckit/eckit.h>
+#include "eckit/eckit.h"
 
 namespace odb {
 

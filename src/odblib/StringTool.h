@@ -15,16 +15,7 @@
 #ifndef StringTool_H
 #define StringTool_H
 
-#include <eckit/eckit.h>
-
-//#include <map>
-//#include <set>
-//#include <vector>
-
-//#include "eckit/log/CodeLocation.h"
-//#include "eckit/utils/StringTools.h"
-//#include "eckit/utils/Tokenizer.h"
-
+#include "eckit/eckit.h"
 #include "odblib/ColumnType.h"
 
 

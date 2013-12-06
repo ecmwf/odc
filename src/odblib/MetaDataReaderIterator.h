@@ -16,17 +16,13 @@
 #ifndef MetaDataReaderIterator_H
 #define MetaDataReaderIterator_H
 
-#include "odblib/RowsIterator.h"
-#include "eckit/io/Offset.h"
-#include "odblib/MetaData.h"
-
 #include "eckit/io/Length.h"
-
-//#include "odblib/SimpleFilterIterator.h"
-#include "odblib/TReadOnlyMemoryDataHandle.h"
-#include "odblib/MetaDataReader.h"
+#include "eckit/io/Offset.h"
 #include "odblib/Header.h"
-
+#include "odblib/MetaData.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/TReadOnlyMemoryDataHandle.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class FileHandle; }

@@ -13,11 +13,6 @@
 ///
 /// @author Piotr Kuchta, June 2009
 
-//#include "odblib/odb_api.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/Header.h"
-//#include "odblib/SimpleFilterIterator.h"
-
 namespace odb {
 
 template <typename I>

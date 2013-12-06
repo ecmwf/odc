@@ -1,29 +1,20 @@
 /// @file   DataLoader.cc
 /// @author Tomas Kral
 
-#include <eckit/eckit.h>
-
-#include "odblib/DataLoader.h"
+#include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
-
-//#include <cassert>
-//#include <iostream>
-
 #include "eckit/io/FileHandle.h"
-
-//#include "odblib/MetaData.h"
-#include "odblib/Reader.h"
-#include "odblib/TextReader.h"
+#include "odblib/DataColumns.h"
+#include "odblib/DataLoader.h"
 #include "odblib/DataSetBuilder.h"
 #include "odblib/DataSetFiller.h"
-#include "odblib/DataColumns.h"
 #include "odblib/DataSet.h"
-
-
-#include "odblib/TextReaderIterator.h"
-#include "odblib/ODBSelect.h"
 #include "odblib/DataTable.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Reader.h"
 #include "odblib/SelectIterator.h"
+#include "odblib/TextReader.h"
+#include "odblib/TextReaderIterator.h"
 
 using namespace std;
 using namespace eckit;

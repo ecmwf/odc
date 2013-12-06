@@ -4,9 +4,7 @@
 #ifndef DATALINKS_H_
 #define DATALINKS_H_
 
-#include <eckit/eckit.h>
-//#include <cstddef>
-//#include <set>
+#include "eckit/eckit.h"
 
 namespace odb {
 

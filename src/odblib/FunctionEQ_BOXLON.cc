@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/FunctionEQ_BOXLON.h"
 #include "odblib/EqRegionCache.h"
+#include "odblib/FunctionEQ_BOXLON.h"
 
 namespace odb {
 namespace sql {

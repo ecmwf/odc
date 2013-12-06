@@ -4,9 +4,7 @@
 #ifndef DATATABLEMAPPINGS_H_
 #define DATATABLEMAPPINGS_H_
 
-#include <eckit/eckit.h>
-//#include <map>
-//#include <string>
+#include "eckit/eckit.h"
 
 namespace odb {
 

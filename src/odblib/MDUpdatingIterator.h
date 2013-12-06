@@ -16,9 +16,6 @@
 #ifndef MDUpdatingIterator_H
 #define MDUpdatingIterator_H
 
-//#include "odblib/Column.h"
-//#include "odblib/RowsIterator.h"
-
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 

@@ -17,10 +17,6 @@
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
-//#include "eckit/filesystem/PathName.h"
-//#include "eckit/io/TransferWatcher.h"
-
-//#include "odblib/MemoryBlock.h"
 
 namespace odb {
 

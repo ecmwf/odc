@@ -8,20 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <sstream>
-
-//#include "eckit/log/Log.h"
-//#include "eckit/parser/Translator.h"
-
-//#include "odblib/SQLAST.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/ShiftedColumnExpression.h"
-//#include "odblib/SQLSelect.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLType.h"
-//#include "odblib/SQLTable.h"
-
 namespace odb {
 namespace sql {
 namespace expression {

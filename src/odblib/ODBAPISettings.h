@@ -11,15 +11,8 @@
 #ifndef ODBAPISettings_H
 #define ODBAPISettings_H
 
-//#include "eckit/io/DataHandle.h"
-//#include "eckit/memory/NonCopyable.h"
 #include "eckit/thread/ThreadSingleton.h"
 #include "eckit/io/Length.h"
-
-//#include "odblib/SQLExpression.h"
-//#include "odblib/SQLOutputConfig.h"
-//#include "odblib/SQLSelect.h"
-//#include "odblib/SQLTable.h"
 
 namespace eckit {
 class PathName;

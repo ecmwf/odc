@@ -1,11 +1,8 @@
 /// @file   DataField.cc
 /// @author Tomas Kral
 
-#include "odblib/DataField.h"
 #include "eckit/exception/Exceptions.h"
-
-//#include <ios>
-//#include <iostream>
+#include "odblib/DataField.h"
 
 using namespace std;
 

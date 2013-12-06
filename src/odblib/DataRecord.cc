@@ -3,8 +3,6 @@
 
 #include "odblib/DataRecord.h"
 
-//#include <iostream>
-
 namespace odb {
 
 DataRecord::DataRecord(DataRow& row, const DataColumns& columns)

@@ -11,9 +11,9 @@
 #ifndef Column_H
 #define Column_H
 
-#include "odblib/Types.h"
 #include "odblib/Codec.h"
 #include "odblib/ColumnType.h"
+#include "odblib/Types.h"
 
 namespace eckit { class DataHandle; }
 

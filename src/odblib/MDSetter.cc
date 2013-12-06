@@ -8,8 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "MDSetter.h"
-
 namespace odb {
 
 } // namespace odb

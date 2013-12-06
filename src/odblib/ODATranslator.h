@@ -14,17 +14,10 @@
 #ifndef ODATranslator_H
 #define ODATranslator_H
 
-//#include <strings.h>
-//#include <sstream>
-
 #include "eckit/eckit.h"
-
-#include "eckit/types/Date.h"
-//#include "eckit/filesystem/PathName.h"
-#include "eckit/types/Time.h"
 #include "eckit/parser/Translator.h"
-//#include "eckit/types/Types.h"
-
+#include "eckit/types/Date.h"
+#include "eckit/types/Time.h"
 #include "odblib/StringTool.h"
 
 template <typename T>

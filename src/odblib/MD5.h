@@ -19,7 +19,6 @@ extern "C" {
 } // extern "C"
 
 #include "eckit/eckit.h"
-
 // Forward declarations
 
 class MD5 {

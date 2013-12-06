@@ -11,9 +11,6 @@
 #ifndef MDSetter_H
 #define MDSetter_H
 
-//#include "odblib/IteratorProxy.h"
-//#include "MDUpdatingIterator.h"
-
 namespace odb {
 
 template <typename T>

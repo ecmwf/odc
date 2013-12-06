@@ -18,13 +18,13 @@
 #define DirectAccess_H
 
 #ifdef SWIGPYTHON
-//#include <Python.h>
+#include <Python.h>
 #endif
 
-#include "odblib/IteratorProxy.h"
-#include "odblib/DirectAccessIterator.h"
-#include "eckit/io/Offset.h"
 #include "eckit/io/Length.h"
+#include "eckit/io/Offset.h"
+#include "odblib/DirectAccessIterator.h"
+#include "odblib/IteratorProxy.h"
 
 
 namespace eckit { class PathName; }

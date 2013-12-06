@@ -15,13 +15,8 @@
 #ifndef Tool_H
 #define Tool_H
 
-//#include <map>
-//#include <set>
-//#include <vector>
-
-//#include "eckit/utils/Tokenizer.h"
-#include "odblib/StringTool.h"
 #include "odblib/CommandLineParser.h"
+#include "odblib/StringTool.h"
 
 
 namespace eckit { class PathName; }

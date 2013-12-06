@@ -2,8 +2,8 @@
 /// @author Tomas Kral
 
 #include "eckit/exception/Exceptions.h"
-#include "odblib/DataRow.h"
 #include "odblib/DataColumns.h"
+#include "odblib/DataRow.h"
 
 using namespace std;
 

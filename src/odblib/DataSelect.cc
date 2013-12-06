@@ -2,17 +2,12 @@
 /// @author Tomas Kral
 
 #include "odblib/DataSelect.h"
-
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLSelect.h"
-//#include "odblib/SQLExpression.h"
-
 #include "odblib/DataSelectIterator.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
+#include "odblib/Expressions.h"
 #include "odblib/SQLDataSet.h"
 #include "odblib/SQLDataTable.h"
-#include "odblib/Expressions.h"
 
 using namespace odb;
 using namespace eckit;

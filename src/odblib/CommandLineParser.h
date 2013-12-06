@@ -15,7 +15,7 @@
 #ifndef CommandLineParser_H
 #define CommandLineParser_H
 
-#include <eckit/eckit.h>
+#include "eckit/eckit.h"
 
 namespace odb {
 namespace tool {

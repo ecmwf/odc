@@ -1,13 +1,9 @@
 /// @file   DataJoinIterator.cc
 /// @author Tomas Kral
 
-#include <eckit/eckit.h>
-
-#include "odblib/DataJoinIterator.h"
+#include "eckit/eckit.h"
 #include "odblib/DataJoin.h"
-
-//#include <sstream>
-
+#include "odblib/DataJoinIterator.h"
 
 using namespace std;
 using namespace eckit;

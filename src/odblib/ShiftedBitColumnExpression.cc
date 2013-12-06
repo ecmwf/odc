@@ -8,11 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/ShiftedBitColumnExpression.h"
-//#include "odblib/SQLSelect.h"
-//#include "odblib/SQLBit.h"
-//#include "odblib/SQLTable.h"
-
 namespace odb {
 namespace sql {
 namespace expression {

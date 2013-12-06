@@ -8,31 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/thread/ThreadSingleton.h"
-#include "odblib/ODBAPISettings.h"
-
-//#include "eckit/eckit.h"
+#include "eckit/config/Resource.h"
 #include "eckit/io/AIOHandle.h"
 #include "eckit/io/FileHandle.h"
-#include "eckit/config/Resource.h"
-
-//#include "odblib/Codec.h"
-//#include "odblib/Column.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/DispatchingWriter.h"
-//#include "odblib/IteratorProxy.h"
-//#include "odblib/ODBAPISettings.h"
-//#include "odblib/RowsIterator.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLDistinctOutput.h"
-//#include "odblib/SQLODAOutput.h"
-//#include "odblib/SQLOrderOutput.h"
-//#include "odblib/SQLOutput.h"
-//#include "odblib/SQLSession.h"
-//#include "odblib/TemplateParameters.h"
-//#include "odblib/Writer.h"
-//#include "odblib/WriterDispatchingIterator.h"
+#include "eckit/thread/ThreadSingleton.h"
+#include "odblib/ODBAPISettings.h"
 
 using namespace eckit;
 

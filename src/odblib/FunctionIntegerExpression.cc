@@ -12,7 +12,6 @@
 
 #include "odblib/FunctionFactory.h"
 #include "odblib/FunctionIntegerExpression.h"
-//#include "odblib/Codec.h"
 #include "odblib/MDI.h"
 
 #define ftrunc(x) ((x) -fmod((x), 1))

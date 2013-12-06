@@ -17,15 +17,15 @@
 #define IteratorProxy_H
 
 #include "odblib/ColumnType.h"
-#include "odblib/Types.h"
 #include "odblib/SelectIterator.h"
+#include "odblib/Types.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
 #ifdef SWIGPYTHON
 
-//#include <Python.h>
+#include <Python.h>
 
 //#include "odblib/Column.h"
 //#include "odblib/odbcapi.h"

@@ -8,22 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <iostream>
-//#include <fstream>
-
-#include "eckit/utils/Tokenizer.h"
-//#include "eckit/parser/Translator.h"
-
-//#include "odblib/odb_api.h"
-#include "odblib/FastODA2Request.h"
-#include "odblib/ODA2RequestTool.h"
-//#include "odblib/Tool.h"
-//#include "odblib/ToolFactory.h"
-#include "eckit/log/Log.h"
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
+#include "eckit/utils/Tokenizer.h"
+#include "odblib/FastODA2Request.h"
 #include "odblib/GribCodes.h"
+#include "odblib/ODA2RequestTool.h"
 #include "odblib/ODBSelect.h"
 
 using namespace std;

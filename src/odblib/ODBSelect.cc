@@ -13,13 +13,8 @@
 ///
 /// @author Piotr Kuchta, April 2010
 
-#include "odblib/ODBSelect.h"
-
-//#include <iostream>
-
 #include "eckit/io/FileHandle.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/SelectIterator.h"
+#include "odblib/ODBSelect.h"
 
 using namespace std;
 using namespace eckit;

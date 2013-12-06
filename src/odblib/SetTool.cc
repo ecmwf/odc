@@ -7,16 +7,13 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-//#include "odblib/odb_api.h"
 
-//#include "odblib/Tool.h"
-//#include "odblib/ToolFactory.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/Tokenizer.h"
 #include "odblib/ConstantSetter.h"
-#include "odblib/SetTool.h"
-#include "eckit/log/Log.h"
-#include "eckit/filesystem/PathName.h"
 #include "odblib/Reader.h"
+#include "odblib/SetTool.h"
 #include "odblib/Writer.h"
 
 using namespace eckit;

@@ -18,9 +18,6 @@
 
 #include <stdint.h>
 #include "eckit/eckit.h"
-//#include "odb_api_config.h"
-
-//#include "odblib/UnsafeInMemoryDataHandle.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

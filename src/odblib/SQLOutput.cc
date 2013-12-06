@@ -9,7 +9,6 @@
  */
 
 #include "odblib/SQLOutput.h"
-//#include "odblib/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {

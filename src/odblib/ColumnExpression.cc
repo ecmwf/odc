@@ -10,18 +10,12 @@
 
 //#include <sstream>
 
-#include <eckit/eckit.h>
+#include "eckit/eckit.h"
 #include "eckit/parser/Translator.h"
-
-//#include "odblib/SQLAST.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/ColumnExpression.h"
-#include "odblib/SQLSelect.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SQLType.h"
-#include "odblib/SQLTable.h"
 #include "odblib/SQLColumn.h"
+#include "odblib/SQLSelect.h"
+#include "odblib/SQLTable.h"
 
 using namespace eckit;
 

@@ -8,24 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <eckit/eckit.h>
-
-//#include <stdint.h>
-//#include <iostream>
-//#include <sstream>
-//#include <limits>
-//#include <strings.h>
-
-//#include "eckit/exception/Exceptions.h"
-//#include "eckit/io/DataHandle.h"
-
-//#include "odblib/Codec.h"
-//#include "odblib/Comparator.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/MemoryBlock.h"
-//#include "odblib/SQLIteratorSession.h"
-//#include "odblib/UnsafeInMemoryDataHandle.h"
-
+#include "eckit/eckit.h"
 #include "odblib/Codec.h"
 #include "odblib/CodecFactory.h"
 

@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/exception/Exceptions.h"
 #include "odblib/ColumnExpression.h"
 #include "odblib/FunctionJOIN.h"
 

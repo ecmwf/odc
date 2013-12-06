@@ -13,8 +13,6 @@
 #ifndef ShiftedColumnExpression_H
 #define ShiftedColumnExpression_H
 
-//#include "odblib/ColumnExpression.h"
-
 namespace odb {
 namespace sql {
 

@@ -11,9 +11,6 @@
 #ifndef MemoryBlock_H
 #define MemoryBlock_H
 
-//#include "eckit/eckit.h"
-//#include "eckit/exception/Exceptions.h"
-
 // A simple class to implement buffers
 
 class MemoryBlock {

@@ -14,11 +14,8 @@
 #ifndef SQLExpression_H
 #define SQLExpression_H
 
-//#include "eckit/eckit.h"
-
-#include "odblib/Types.h"
 #include "odblib/SQLType.h"
-//#include "odblib/SQLBitfield.h"
+#include "odblib/Types.h"
 
 namespace odb {
 namespace sql {

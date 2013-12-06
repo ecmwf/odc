@@ -8,12 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <sys/types.h>
-//#include <unistd.h>
-//#include <sstream>
-
 #include "eckit/io/Buffer.h"
-
 #include "odblib/TemporaryFile.h"
 
 using namespace eckit;

@@ -19,10 +19,6 @@ namespace eckit { class DataHandle; }
 
 #include "eckit/eckit.h"
 
-
-//#include "odblib/SQLAST.h"
-//#include "odblib/SchemaAnalyzer.h"
-
 namespace odb {
 namespace sql {
 

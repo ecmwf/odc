@@ -4,7 +4,6 @@
 #ifndef ODBLIB_DATACOLUMNS_H_
 #define ODBLIB_DATACOLUMNS_H_
 
-//#include <vector>
 #include "odblib/DataColumn.h"
 
 namespace odb { class MetaData; }

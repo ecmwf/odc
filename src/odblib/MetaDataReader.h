@@ -17,10 +17,9 @@
 #define MetaDataReader_H
 
 #ifdef SWIGPYTHON
-//#include <Python.h>
+#include <Python.h>
 #endif
 
-//#include "eckit/io/FileHandle.h"
 #include "odblib/IteratorProxy.h"
 
 namespace eckit { class PathName; }

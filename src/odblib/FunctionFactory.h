@@ -14,9 +14,6 @@
 #ifndef FunctionFactory_H
 #define FunctionFactory_H
 
-//#include "eckit/thread/ThreadSingleton.h"
-
-//#include "odblib/SQLExpression.h"
 #include "odblib/FunctionExpression.h"
 
 namespace odb {

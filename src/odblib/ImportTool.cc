@@ -8,22 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include <eckit/eckit.h>
-//#include "eckit/types/Types.h"
-//#include "eckit/utils/Tokenizer.h"
-#include "eckit/utils/StringTools.h"
-
-//#include "odblib/odb_api.h"
-//#include "odblib/Tool.h"
-//#include "odblib/ToolFactory.h"
-#include "odblib/ImportTool.h"
-#include "eckit/log/Log.h"
+#include "eckit/eckit.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
+#include "eckit/utils/StringTools.h"
+#include "odblib/ImportTool.h"
 #include "odblib/ODBSelect.h"
-#include "odblib/Writer.h"
 #include "odblib/SelectIterator.h"
-
-
+#include "odblib/Writer.h"
 #include "odblib/SQLSelectFactory.h"
 
 using namespace std;

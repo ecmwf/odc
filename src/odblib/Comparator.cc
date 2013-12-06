@@ -8,23 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-
-//#include <cmath>
-
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
-
-#include "odblib/StringTool.h"
-
-
-//#include "odblib/odb_api.h"
-//#include "odblib/Column.h"
-//#include "odblib/ColumnType.h"
 #include "odblib/Comparator.h"
-#include "odblib/Tracer.h"
 #include "odblib/Reader.h"
-
+#include "odblib/StringTool.h"
+#include "odblib/Tracer.h"
 
 using namespace std;
 using namespace eckit;

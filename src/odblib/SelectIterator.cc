@@ -13,17 +13,13 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-
-//#include "odblib/odb_api.h"
-
+#include "odblib/DataStream.h"
+#include "odblib/MetaData.h"
 #include "odblib/ODBSelect.h"
 #include "odblib/SelectIterator.h"
-#include "odblib/DataStream.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/SQLSelect.h"
-
-#include "odblib/MetaData.h"
 
 using namespace eckit;
 

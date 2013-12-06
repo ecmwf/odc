@@ -14,13 +14,7 @@
 #ifndef SQLAST_H
 #define SQLAST_H
 
-#include <eckit/eckit.h>
-
-//#include <map>
-//#include <string>
-//#include <utility>
-//#include <vector>
-
+#include "eckit/eckit.h"
 #include "odblib/Types.h"
 
 namespace odb {

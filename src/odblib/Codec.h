@@ -11,15 +11,11 @@
 #ifndef Codec_H
 #define Codec_H
 
-//#include <strings.h>
 #include <limits>
 
-#include "odblib/HashTable.h"
-//#include "odblib/UnsafeInMemoryDataHandle.h"
-//#include "odblib/ODBAPISettings.h"
-#include "odblib/MDI.h"
-
 #include "odblib/CodecFactory.h"
+#include "odblib/HashTable.h"
+#include "odblib/MDI.h"
 
 namespace eckit { class DataHandle; }
 

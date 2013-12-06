@@ -15,7 +15,6 @@
 #define SQLDatabase_H
 
 #include "eckit/filesystem/PathName.h"
-
 #include "odblib/SQLTable.h"
 #include "odblib/SchemaAnalyzer.h"
 

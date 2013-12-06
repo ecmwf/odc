@@ -13,21 +13,8 @@
 
 using namespace std;
 
-#include <eckit/eckit.h>
-
-//#include "eckit/io/DataHandle.h"
-//#include "eckit/exception/Exceptions.h"
-
-//#include "odblib/odb_api.h"
-//#include "odblib/DataStream.h"
-
-//#include "odblib/HashTable.h"
-//#include "odblib/Codec.h"
+#include "eckit/eckit.h"
 #include "odblib/Column.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLSession.h"
-//#include "odblib/SQLDatabase.h"
-//#include "odblib/SchemaAnalyzer.h"
 
 using namespace eckit;
 

@@ -1,9 +1,9 @@
 /// @file   DataLinks.cc
 /// @author Tomas Kral
 
-#include "odblib/DataLinks.h"
-#include "odblib/DataLink.h"
 #include "eckit/exception/Exceptions.h"
+#include "odblib/DataLink.h"
+#include "odblib/DataLinks.h"
 
 namespace odb {
 

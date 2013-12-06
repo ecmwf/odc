@@ -11,12 +11,9 @@
 ///
 /// @author Piotr Kuchta, ECMWF, July 2009
 
-//#include <iostream>
-
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/Translator.h"
 #include "odblib/CommandLineParser.h"
-
 
 namespace odb {
 namespace tool {

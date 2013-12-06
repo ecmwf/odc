@@ -17,10 +17,7 @@
 #ifndef DirectAccessIterator_H
 #define DirectAccessIterator_H
 
-#include <eckit/eckit.h>
-
-//#include "odblib/MetaData.h"
-
+#include "eckit/eckit.h"
 
 namespace odb {
 

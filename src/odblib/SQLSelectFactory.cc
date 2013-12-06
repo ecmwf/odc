@@ -8,41 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/eckit.h"
-
 #include "eckit/parser/Translator.h"
-
 #include "eckit/thread/ThreadSingleton.h"
-#include "odblib/ShiftedBitColumnExpression.h"
-//#include "odblib/Codec.h"
-//#include "odblib/Column.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/DispatchingWriter.h"
-//#include "odblib/IteratorProxy.h"
-//#include "odblib/RowsIterator.h"
+#include "odblib/DispatchingWriter.h"
 #include "odblib/FunctionExpression.h"
-//#include "odblib/SQLBitfield.h"
+#include "odblib/ImportTool.h"
+#include "odblib/ShiftedBitColumnExpression.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLDistinctOutput.h"
 #include "odblib/SQLODAOutput.h"
 #include "odblib/SQLOrderOutput.h"
-//#include "odblib/SQLOutput.h"
-//#include "odblib/SQLSelectFactory.h"
+#include "odblib/SQLSelectFactory.h"
+#include "odblib/SQLSelect.h"
 #include "odblib/SQLSession.h"
 #include "odblib/TemplateParameters.h"
-//#include "odblib/Writer.h"
-//#include "odblib/WriterDispatchingIterator.h"
-//#include "odblib/ShiftedBitColumnExpression.h"
-#include "odblib/ImportTool.h"
-//#include "odblib/DataTable.h"
-//#include "odblib/SQLDataTable.h"
-
-#include "odblib/SQLSelectFactory.h"
 #include "odblib/Writer.h"
-#include "odblib/SQLSelect.h"
-#include "odblib/DispatchingWriter.h"
-
-
 
 using namespace eckit;
 

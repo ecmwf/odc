@@ -4,11 +4,9 @@
 #ifndef DATACOLUMN_H_
 #define DATACOLUMN_H_
 
-#include <eckit/eckit.h>
-
+#include "eckit/eckit.h"
 #include "odblib/ColumnType.h"
 #include "odblib/Types.h"
-
 
 namespace odb {
 

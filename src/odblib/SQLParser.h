@@ -15,7 +15,6 @@
 #define SQLParser_H
 
 #include "eckit/exception/Exceptions.h"
-
 #include "odblib/SQLOutputConfig.h"
 
 namespace eckit { class PathName; }

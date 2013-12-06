@@ -15,15 +15,7 @@
 #ifndef GribCodes_H
 #define GribCodes_H
 
-//#include <map>
-//#include <set>
-//#include <vector>
-
 #include "eckit/filesystem/PathName.h"
-//#include "eckit/utils/Tokenizer.h"
-
-//#include "odblib/StringTool.h"
-
 
 namespace eckit { class PathName; }
 

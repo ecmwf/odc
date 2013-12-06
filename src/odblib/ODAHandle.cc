@@ -8,10 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/ODAHandle.h"
 #include "eckit/types/Types.h"
-
-//#include "odblib/ODATranslator.h"
+#include "odblib/ODAHandle.h"
 
 using namespace eckit;
 

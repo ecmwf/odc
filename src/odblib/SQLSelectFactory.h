@@ -11,15 +11,9 @@
 #ifndef SQLSelectFactory_H
 #define SQLSelectFactory_H
 
-//#include "eckit/io/DataHandle.h"
-//#include "eckit/memory/NonCopyable.h"
 #include "eckit/thread/ThreadSingleton.h"
-
-//#include "odblib/SQLExpression.h"
-#include "odblib/SQLOutputConfig.h"
-//#include "odblib/SQLSelect.h"
-//#include "odblib/SQLTable.h"
 #include "odblib/Expressions.h"
+#include "odblib/SQLOutputConfig.h"
 
 namespace eckit {
 class DataHandle;

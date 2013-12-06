@@ -4,12 +4,9 @@
 #ifndef ODBLIB_DATARECORD_H_
 #define ODBLIB_DATARECORD_H_
 
-//#include <assert.h>
-//#include <string>
-
 #include "eckit/exception/Exceptions.h"
-#include "odblib/DataField.h"
 #include "odblib/DataColumns.h"
+#include "odblib/DataField.h"
 #include "odblib/DataRecordIterator.h"
 
 namespace odb {

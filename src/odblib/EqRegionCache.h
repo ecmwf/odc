@@ -18,9 +18,6 @@
 #ifndef EqRegionCache_H
 #define EqRegionCache_H
 
-//#include <vector>
-
-//#include "odblib/piconst.h"
 #include "odblib/RegionCache.h"
 
 namespace odb {

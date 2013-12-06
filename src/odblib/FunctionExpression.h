@@ -14,8 +14,6 @@
 #ifndef FunctionExpression_H
 #define FunctionExpression_H
 
-//#include "eckit/thread/ThreadSingleton.h"
-
 #include "odblib/Expressions.h"
 
 namespace odb {
