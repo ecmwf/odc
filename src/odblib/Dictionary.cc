@@ -9,9 +9,10 @@
  */
 
 
+#include <eckit/eckit.h>
 //#include "eckit/compat/StrStream.h"
 
-//#include "odblib/Dictionary.h"
+#include "odblib/Dictionary.h"
 //#include "odblib/NumberExpression.h"
 //#include "odblib/SQLType.h"
 //#include "odblib/SQLOutput.h"

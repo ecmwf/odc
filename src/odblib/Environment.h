@@ -21,7 +21,7 @@
 //#include "odblib/SQLOutput.h"
 //#include "odblib/FunctionROWNUMBER.h"
 
-//#include "odblib/SelectOneTable.h"
+#include "odblib/SelectOneTable.h"
 //#include "odblib/Stack.h"
 
 namespace odb {

@@ -16,7 +16,7 @@
 
 //#include <vector>
 
-//#include "odblib/piconst.h"
+#include "odblib/piconst.h"
 
 namespace odb {
 namespace sql {

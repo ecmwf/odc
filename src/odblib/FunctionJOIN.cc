@@ -9,8 +9,8 @@
  */
 
 //#include "eckit/exception/Exceptions.h"
-//#include "odblib/ColumnExpression.h"
-//#include "odblib/FunctionJOIN.h"
+#include "odblib/ColumnExpression.h"
+#include "odblib/FunctionJOIN.h"
 
 namespace odb {
 namespace sql {

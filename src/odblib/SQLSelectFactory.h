@@ -13,16 +13,18 @@
 
 //#include "eckit/io/DataHandle.h"
 //#include "eckit/memory/NonCopyable.h"
-//#include "eckit/thread/ThreadSingleton.h"
+#include "eckit/thread/ThreadSingleton.h"
 
 //#include "odblib/SQLExpression.h"
-//#include "odblib/SQLOutputConfig.h"
+#include "odblib/SQLOutputConfig.h"
 //#include "odblib/SQLSelect.h"
 //#include "odblib/SQLTable.h"
+#include "odblib/Expressions.h"
 
 namespace odb {
 
     class DataTable;
+    class SQLDatabase;
 
 namespace sql {
 

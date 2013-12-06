@@ -14,7 +14,7 @@
 #ifndef FunctionEQ_BOXLON_H
 #define FunctionEQ_BOXLON_H
 
-//#include "odblib/FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

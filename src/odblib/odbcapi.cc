@@ -23,6 +23,8 @@
 //#include "odblib/FastODA2Request.h"
 //#include "odblib/ODBBehavior.h"
 
+#include "odblib/ODBAPISettings.h"
+
 using namespace eckit;
 using namespace odb;
 

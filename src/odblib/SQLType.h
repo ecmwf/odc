@@ -14,7 +14,7 @@
 #ifndef SQLType_H
 #define SQLType_H
 
-//#include "eckit/eckit.h"
+#include "eckit/eckit.h"
 
 namespace odb {
 namespace sql {

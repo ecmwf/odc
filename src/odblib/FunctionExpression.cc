@@ -13,7 +13,7 @@
 
 //#include "eckit/exception/Exceptions.h"
 
-//#include "odblib/FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 //#include "odblib/SQLSelect.h"
 //#include "odblib/piconst.h"
 

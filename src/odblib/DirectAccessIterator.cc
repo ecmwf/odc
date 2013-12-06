@@ -13,9 +13,9 @@
 ///
 /// @author Baudouin Raoult, Dec 2013
 
-//#include "odblib/DirectAccessIterator.h"
+#include "odblib/DirectAccessIterator.h"
 
-//#include "odblib/DirectAccess.h"
+#include "odblib/DirectAccess.h"
 
 
 using namespace eckit;

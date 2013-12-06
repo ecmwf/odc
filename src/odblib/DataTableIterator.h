@@ -6,7 +6,7 @@
 
 #include <stddef.h>
 
-//#include "odblib/DataPage.h"
+#include "odblib/DataPage.h"
 #include "odblib/IteratorFacade.h"
 
 namespace odb {

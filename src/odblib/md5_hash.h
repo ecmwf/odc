@@ -15,8 +15,8 @@
 #ifndef md5_H
 #define md5_H
 
-//#include <stdlib.h>
-//#include <stdint.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 
 typedef struct md5_state {

@@ -13,7 +13,7 @@
 //#include "eckit/io/FileHandle.h"
 //#include "eckit/utils/Timer.h"
 
-//#include "odblib/InMemoryDataHandle.h"
+#include "odblib/InMemoryDataHandle.h"
 
 namespace odb {
 

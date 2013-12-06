@@ -27,6 +27,8 @@
 //#include "eckit/io/DataHandle.h"
 //#include "eckit/io/FileHandle.h"
 
+#include "eckit/config/Resource.h"
+
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"
 //#include "odblib/DataStream.h"
@@ -51,6 +53,8 @@
 //#include "odblib/TemplateParameters.h"
 //#include "odblib/Writer.h"
 //#include "odblib/WriterDispatchingIterator.h"
+
+#include "odblib/DispatchingWriter.h"
 
 using namespace eckit;
 

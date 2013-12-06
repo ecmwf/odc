@@ -16,8 +16,8 @@
 #ifndef DispatchingWriter_H
 #define DispatchingWriter_H
 
-//#include "odblib/WriterDispatchingIterator.h"
-//#include "odblib/WriterBufferingIterator.h"
+#include "odblib/WriterDispatchingIterator.h"
+#include "odblib/WriterBufferingIterator.h"
 
 namespace eckit { class PathName; }
 

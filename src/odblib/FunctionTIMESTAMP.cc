@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <math.h>
-//#include <limits.h>
+#include <cmath>
+#include <limits.h>
 
-//#include "odblib/FunctionTIMESTAMP.h"
-//#include "odblib/MDI.h"
+#include "odblib/FunctionTIMESTAMP.h"
+#include "odblib/MDI.h"
 
 #define trunc(x) ((x) -fmod((x), 1))
 

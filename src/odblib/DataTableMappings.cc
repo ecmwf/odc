@@ -1,7 +1,7 @@
 /// @file   DataTableMappings.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataTableMappings.h"
+#include "odblib/DataTableMappings.h"
 
 using namespace std;
 

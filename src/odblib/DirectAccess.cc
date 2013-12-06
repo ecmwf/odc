@@ -13,7 +13,8 @@
 ///
 /// @author Baudouin Raoult, Dec 2013
 
-//#include "odblib/DirectAccess.h"
+#include <eckit/eckit.h>
+#include "odblib/DirectAccess.h"
 
 ////#include <algorithm>
 ////#include <iostream>
@@ -25,13 +26,16 @@
 
 //#include "eckit/eckit.h"
 
-//#include "eckit/io/PartHandle.h"
-//#include "eckit/io/SharedHandle.h"
-//#include "eckit/log/Bytes.h"
-//#include "eckit/io/FileHandle.h"
-//#include "eckit/utils/Timer.h"
+#include "eckit/io/FileHandle.h"
+#include "eckit/io/PartHandle.h"
 
-//#include "odblib/MetaDataReaderIterator.h"
+#include "eckit/io/SharedHandle.h"
+#include "eckit/log/Bytes.h"
+//#include "eckit/io/FileHandle.h"
+#include "eckit/utils/Timer.h"
+
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/Reader.h"
 
 
 using namespace std;

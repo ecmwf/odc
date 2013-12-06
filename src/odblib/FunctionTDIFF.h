@@ -14,7 +14,7 @@
 #ifndef FunctionTDIFF_H
 #define FunctionTDIFF_H
 
-//#include "odblib/FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

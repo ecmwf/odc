@@ -10,6 +10,8 @@
 #ifndef MDSetTool_H
 #define MDSetTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 namespace tool {
 

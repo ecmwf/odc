@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <math.h>
+#include <cmath>
 
-//#include "odblib/FunctionSTDEV.h"
+#include "odblib/FunctionSTDEV.h"
 
 namespace odb {
 namespace sql {

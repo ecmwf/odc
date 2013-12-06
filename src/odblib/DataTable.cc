@@ -1,8 +1,8 @@
 /// @file   DataTable.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataTable.h"
-//#include "odblib/DataPage.h"
+#include "odblib/DataTable.h"
+#include "odblib/DataPage.h"
 
 //#include <iostream>
 

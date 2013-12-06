@@ -17,8 +17,8 @@
 
 //#include "eckit/log/Log.h"
 
-//#include "odblib/FunctionROWNUMBER.h"
-//#include "odblib/SQLSelect.h"
+#include "odblib/FunctionROWNUMBER.h"
+#include "odblib/SQLSelect.h"
 //#include "odblib/SQLSession.h"
 
 namespace odb {

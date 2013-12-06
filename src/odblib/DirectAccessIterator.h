@@ -17,13 +17,14 @@
 #ifndef DirectAccessIterator_H
 #define DirectAccessIterator_H
 
-//#include <eckit/eckit.h>
+#include <eckit/eckit.h>
 
 //#include "odblib/MetaData.h"
 
 
 namespace odb {
 
+class MetaData;
 
 class DirectAccess;
 

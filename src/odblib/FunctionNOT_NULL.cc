@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odblib/FunctionNOT_NULL.h"
+#include "odblib/FunctionNOT_NULL.h"
 
 namespace odb {
 namespace sql {

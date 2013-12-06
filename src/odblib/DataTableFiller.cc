@@ -1,12 +1,12 @@
 /// @file   DataTableFiller.cc
 /// @author Tomas Kral
 
-//#include "odblib/DataTableFiller.h"
+#include "odblib/DataTableFiller.h"
 
 //#include <cmath>
 
-//#include "eckit/exception/Exceptions.h"
-//#include "odblib/DataTable.h"
+#include "eckit/exception/Exceptions.h"
+#include "odblib/DataTable.h"
 
 using namespace std;
 

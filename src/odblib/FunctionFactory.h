@@ -17,7 +17,7 @@
 //#include "eckit/thread/ThreadSingleton.h"
 
 //#include "odblib/SQLExpression.h"
-//#include "odblib/FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

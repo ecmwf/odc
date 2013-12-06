@@ -15,10 +15,10 @@
 #define MD5_H
 
 extern "C" {
-//#include "md5_hash.h"
+#include "md5_hash.h"
 } // extern "C"
 
-//#include "eckit/eckit.h"
+#include "eckit/eckit.h"
 
 // Forward declarations
 

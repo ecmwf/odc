@@ -16,12 +16,16 @@
 #ifndef WriterDispatchingIterator_H
 #define WriterDispatchingIterator_H
 
+#include "eckit/eckit.h"
+#include "odblib/ColumnType.h"
+#include "odblib/Types.h"
+
 ////#include "odblib/DispatchingWriter.h"
 ////#include "odblib/WriterBufferingIterator.h"
 
-//#include "odblib/RowsIterator.h"
-//#include "odblib/TemplateParameters.h"
-//#include "odblib/Writer.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/TemplateParameters.h"
+#include "odblib/Writer.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

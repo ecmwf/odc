@@ -10,10 +10,10 @@
 
 //#include "eckit/compat/StrStream.h"
 
-//#include "odblib/Expressions.h"
+#include "odblib/Expressions.h"
 //#include "odblib/NumberExpression.h"
 //#include "odblib/SQLOutput.h"
-//#include "odblib/SQLType.h"
+#include "odblib/SQLType.h"
 
 namespace odb {
 namespace sql {

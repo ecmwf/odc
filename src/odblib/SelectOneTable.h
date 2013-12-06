@@ -41,7 +41,7 @@ struct SelectOneTable {
 
 	const SQLTable*               table_;
 	std::vector<SQLColumn*>            fetch_;
-	std::vector<pair<double,bool>*>    values_;
+    std::vector<std::pair<double,bool>*>    values_;
 
 	Expressions check_;
 	Expressions index_;

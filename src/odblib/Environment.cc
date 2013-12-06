@@ -11,6 +11,8 @@
 //#include "eckit/log/BigNum.h"
 //#include "eckit/exception/Exceptions.h"
 
+#include "odblib/Environment.h"
+
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLColumn.h"
 //#include "odblib/SQLDatabase.h"

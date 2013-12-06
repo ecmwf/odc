@@ -12,10 +12,11 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
-//#include "odblib/LSTool.h"
+#include "odblib/LSTool.h"
 //#include "odblib/MetaData.h"
 //#include "odblib/Column.h"
 //#include "odblib/SQLSelectFactory.h"
+#include "odblib/Reader.h"
 
 using namespace eckit;
 

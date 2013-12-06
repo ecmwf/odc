@@ -11,7 +11,7 @@
 //#include <sstream>
 //#include <math.h>
 
-//#include "eckit/log/Log.h"
+#include "eckit/log/Log.h"
 //#include "eckit/filesystem/PathName.h"
 //#include "eckit/config/Resource.h"
 //#include "eckit/thread/ThreadSingleton.h"

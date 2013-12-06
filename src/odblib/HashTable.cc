@@ -8,6 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
+#include <eckit/eckit.h>
+#include "odblib/HashTable.h"
+#include "eckit/log/Log.h"
+#include "eckit/exception/Exceptions.h"
 
 //#include <stdint.h>
 

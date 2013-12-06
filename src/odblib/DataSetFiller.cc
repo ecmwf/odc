@@ -3,11 +3,13 @@
 
 #include "odblib/DataSetFiller.h"
 
-//#include "odblib/MetaData.h"
+#include "odblib/MetaData.h"
 
-//#include "odblib/DataSet.h"
-//#include "odblib/DataTable.h"
-//#include "odblib/DataLink.h"
+#include "odblib/DataSet.h"
+#include "odblib/DataTables.h"
+#include "odblib/DataTable.h"
+
+#include "odblib/DataLink.h"
 
 using namespace std;
 

@@ -13,7 +13,7 @@
 
 //#include "eckit/io/DataHandle.h"
 //#include "eckit/memory/NonCopyable.h"
-//#include "eckit/thread/ThreadSingleton.h"
+#include "eckit/thread/ThreadSingleton.h"
 
 //#include "odblib/SQLExpression.h"
 //#include "odblib/SQLOutputConfig.h"

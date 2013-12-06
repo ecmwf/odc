@@ -19,6 +19,7 @@
 //#include <set>
 //#include <vector>
 
+#include "eckit/filesystem/PathName.h"
 //#include "eckit/utils/Tokenizer.h"
 
 //#include "odblib/StringTool.h"

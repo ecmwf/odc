@@ -12,7 +12,7 @@
 //#include "odblib/Tool.h"
 //#include "odblib/ToolFactory.h"
 //#include "Comparator.h"
-//#include "MergeTool.h"
+#include "odblib/MergeTool.h"
 
 using namespace eckit;
 

@@ -21,16 +21,18 @@
 //#include <Python.h>
 #endif
 
-//#include "odblib/IteratorProxy.h"
-//#include "odblib/DirectAccessIterator.h"
-//#include "eckit/io/Offset.h"
-//#include "eckit/io/Length.h"
+#include "odblib/IteratorProxy.h"
+#include "odblib/DirectAccessIterator.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/Length.h"
 
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
 namespace odb {
+
+class MetaData;
 
 
 class DirectAccessBlock {

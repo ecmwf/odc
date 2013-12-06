@@ -14,7 +14,7 @@
 #ifndef FunctionDOTP_H
 #define FunctionDOTP_H
 
-//#include "odblib/FunctionExpression.h"
+#include "odblib/FunctionExpression.h"
 
 namespace odb {
 namespace sql {

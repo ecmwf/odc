@@ -17,7 +17,7 @@
 //#include <vector>
 
 //#include "odblib/piconst.h"
-//#include "odblib/RegionCache.h"
+#include "odblib/RegionCache.h"
 
 namespace odb {
 namespace sql {

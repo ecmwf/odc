@@ -24,7 +24,7 @@
 //#include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Header.h"
 #include "odblib/CodecOptimizer.h"
-//#include "odblib/IteratorProxy.h"
+#include "odblib/IteratorProxy.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

@@ -16,6 +16,8 @@
 /// \file Array.h
 /// @author Piotr Kuchta, ECMWF August 2009
 
+#include <eckit/eckit.h>
+
 namespace odb {
 
 template <typename T>
