@@ -17,7 +17,7 @@
 #define ODBSELECT_H
 
 #ifdef SWIGPYTHON
-//#include <Python.h>
+#include <Python.h>
 #endif
 
 #include "odblib/IteratorProxy.h"

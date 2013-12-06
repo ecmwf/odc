@@ -1,15 +1,13 @@
 /// @file   TestDataSelect.cc
 /// @author Tomas Kral
 
-//#include <string>
-
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/DataSet.h"
-#include "odblib/DataTable.h"
+#include "odblib/DataColumns.h"
 #include "odblib/DataSelect.h"
 #include "odblib/DataSelectIterator.h"
-#include "odblib/DataColumns.h"
+#include "odblib/DataSet.h"
+#include "odblib/DataTable.h"
+#include "odblib/TestCase.h"
+#include "odblib/ToolFactory.h"
 
 using namespace std;
 using namespace odb;

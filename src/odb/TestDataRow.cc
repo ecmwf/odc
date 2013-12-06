@@ -1,14 +1,11 @@
 /// @file   TestDataRow.cc
 /// @author Tomas Kral
 
-//#include <cstdlib>
-//#include <string>
 #include "eckit/exception/Exceptions.h"
+#include "odblib/DataColumns.h"
+#include "odblib/DataRow.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/DataRow.h"
-//#include "odblib/DataTable.h"
-#include "odblib/DataColumns.h"
 
 using namespace std;
 using namespace odb;

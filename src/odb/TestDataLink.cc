@@ -2,14 +2,10 @@
 /// @author Tomas Kral
 
 #include "odblib/DataColumns.h"
-
-//#include <string>
-//#include <vector>
-
+#include "odblib/DataLink.h"
+#include "odblib/DataTable.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/DataTable.h"
-#include "odblib/DataLink.h"
 
 using namespace std;
 using namespace odb;

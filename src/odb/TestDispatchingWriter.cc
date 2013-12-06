@@ -12,20 +12,11 @@
 ///
 /// @author Piotr Kuchta, ECMWF, June 2009
 
-//#include <iostream>
-//#include <vector>
-//#include <map>
-//#include <algorithm>
-
-//#include "odblib/odb_api.h"
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
 #include "odblib/CountTool.h"
-#include "odblib/Reader.h"
-
-#include "odb/TestDispatchingWriter.h"
 #include "odblib/DispatchingWriter.h"
+#include "odblib/Reader.h"
+#include "odblib/ToolFactory.h"
+#include "odb/TestDispatchingWriter.h"
 
 using namespace std;
 using namespace eckit;

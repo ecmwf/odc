@@ -27,8 +27,8 @@ namespace eckit { class DataHandle; }
 
 #include <Python.h>
 
-//#include "odblib/Column.h"
-//#include "odblib/odbcapi.h"
+#include "odblib/Column.h"
+#include "odblib/odbcapi.h"
 
 struct ODBStopIteration : public std::exception {
 	const char* what() const throw() { return "end of data"; }

@@ -8,13 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <iostream>
-//#include <sstream>
-//#include <omp.h>
-
-//#include "odblib/odb_api.h"
-
-//#include "odbcapi.h"
 
 #define RMDI   -2147483647
 

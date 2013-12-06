@@ -12,31 +12,11 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-//#include "eckit/filesystem/PathName.h"
-//#include "eckit/log/Log.h"
-//#include "eckit/io/DataHandle.h"
 #include "eckit/utils/Timer.h"
-
-//#include "odblib/odb_api.h"
-//#include "odblib/Codec.h"
-//#include "odblib/Column.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/HashTable.h"
-//#include "odblib/Header.h"
 #include "odblib/MetaData.h"
 #include "odblib/Reader.h"
-//#include "odblib/ReaderIterator.h"
-//#include "odblib/RowsIterator.h"
-//#include "odblib/SQLAST.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLIteratorSession.h"
-//#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/SelectIterator.h"
-//#include "odblib/TestCase.h"
-//#include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-
 #include "odb/MockReader.h"
 #include "odb/TestConstIntegerCodec.h"
 

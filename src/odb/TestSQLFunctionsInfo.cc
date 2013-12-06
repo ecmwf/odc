@@ -12,21 +12,10 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-//#include <iostream>
-//#include <vector>
-//#include <map>
-
-//#include "eckit/log/Log.h"
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
-//#include "odblib/FunctionExpression.h"
 #include "odblib/FunctionFactory.h"
-#include "odb/TestSQLFunctionsInfo.h"
 #include "odblib/ToolFactory.h"
+#include "odb/TestSQLFunctionsInfo.h"
 
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
 using namespace std;
 using namespace eckit;
 

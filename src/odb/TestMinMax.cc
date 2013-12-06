@@ -12,16 +12,6 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-//#include <iostream>
-//#include <vector>
-//#include <map>
-//#include <algorithm>
-
-#define __STDC_LIMIT_MACROS
-
-//#include <stdint.h>
-
-
 #ifndef INT32_MAX
 # define INT32_MAX		(2147483647)
 #endif
@@ -30,17 +20,12 @@
 # define INT32_MIN		(-INT32_MAX-1)
 #endif
 
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
-#include "odb/TestMinMax.h"
-#include "odblib/ToolFactory.h"
-
-
 #include "eckit/utils/Timer.h"
-#include "odblib/Writer.h"
 #include "odblib/Reader.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/Writer.h"
+#include "odb/TestMinMax.h"
 
-//#include "odblib/ODBSelect.h"
 using namespace std;
 using namespace eckit;
 

@@ -12,23 +12,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, June 2009
 
-//#include <iostream>
-
-//#include "odblib/odb_api.h"
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
-#include "odb/TestSimpleFilterIterator2.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/SimpleFilter.h"
-//#include "odblib/SimpleFilterIterator.h"
-
 #include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
 #include "odblib/ODBSelect.h"
 #include "odblib/Reader.h"
+#include "odblib/SimpleFilter.h"
+#include "odblib/ToolFactory.h"
+#include "odb/TestSimpleFilterIterator2.h"
+
 using namespace std;
 using namespace eckit;
 

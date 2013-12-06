@@ -1,11 +1,9 @@
 /// @file   TestDataTable.cc
 /// @author Tomas Kral
 
-//#include <string>
-
+#include "odblib/DataTable.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/DataTable.h"
 
 using namespace std;
 using namespace odb;

@@ -9,25 +9,17 @@
  */
 
 #include "eckit/eckit.h"
-//#include "eckit/filesystem/PathName.h"
-//#include "eckit/io/FileHandle.h"
-//#include "eckit/utils/Timer.h"
-
-#include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
-#include "odblib/ColumnType.h"
-
-
+#include "eckit/log/Log.h"
 #include "eckit/utils/Timer.h"
+#include "odblib/ColumnType.h"
 #include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
-//#include "odblib/odb_api.h"
+#include "odb/TestOdaCAPI.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"
 }
 
-#include "odb/TestOdaCAPI.h"
 
 
 using namespace std;

@@ -12,50 +12,11 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-//#include <iostream>
-//#include <vector>
-//#include <map>
-//#include <algorithm>
-
-//#include <stdlib.h>
-
-using namespace std;
-
-//#include "odblib/odb_api.h"
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
-#include "odb/TestWriteCatFiles.h"
-#include "odblib/ToolFactory.h"
-
-
-
-
-//#include "eckit/filesystem/PathName.h"
-//#include "eckit/io/DataHandle.h"
-//#include "odblib/DataStream.h"
-//#include "odblib/HashTable.h"
-//#include "odblib/Codec.h"
-//#include "odblib/HashTable.h"
-//#include "odblib/Column.h"
-//#include "odblib/MetaData.h"
-//#include "odblib/RowsIterator.h"
-//#include "odblib/HashTable.h"
-//#include "eckit/log/Log.h"
-//#include "odblib/SQLBitfield.h"
-//#include "odblib/SQLAST.h"
-//#include "odblib/SchemaAnalyzer.h"
-//#include "odblib/SQLIteratorSession.h"
-//#include "odblib/Header.h"
-#include "odblib/Reader.h"
-//#include "odblib/SelectIterator.h"
-//#include "odblib/ReaderIterator.h"
 #include "odblib/Comparator.h"
-//#include "odblib/odb_api.h"
-//#include "eckit/utils/Timer.h"
+#include "odblib/Reader.h"
+#include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
-//#include "odblib/Decoder.h"
-
+#include "odb/TestWriteCatFiles.h"
 
 namespace odb {
 namespace tool {

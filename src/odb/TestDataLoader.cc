@@ -1,21 +1,17 @@
 /// @file   TestDataLoader.cc
 /// @author Tomas Kral
 
-//#include <string>
-
-#include "odblib/TemporaryFile.h"
-#include "odblib/Reader.h"
-
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
 #include "odblib/DataLoader.h"
 #include "odblib/DataSaver.h"
-#include "odblib/DataTable.h"
-//#include "odblib/DataTableMappings.h"
+#include "odblib/DataSet.h"
 #include "odblib/DataStream.h"
+#include "odblib/DataTable.h"
+#include "odblib/Reader.h"
+#include "odblib/TemporaryFile.h"
+#include "odblib/TestCase.h"
+#include "odblib/ToolFactory.h"
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Writer.h"
-#include "odblib/DataSet.h"
 
 using namespace std;
 using namespace odb;

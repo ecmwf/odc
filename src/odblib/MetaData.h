@@ -14,7 +14,7 @@
 #include "odblib/Column.h"
 
 #ifdef SWIGPYTHON
-//#include "odblib/IteratorProxy.h"
+#include "odblib/IteratorProxy.h"
 #endif
 
 namespace eckit { class PathName; }

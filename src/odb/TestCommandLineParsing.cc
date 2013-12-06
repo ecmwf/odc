@@ -12,17 +12,9 @@
 ///
 /// @author Piotr Kuchta, ECMWF, July 2009
 
-//#include <iostream>
-//#include <vector>
-//#include <map>
-
-//#include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
-
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
-#include "odb/TestCommandLineParsing.h"
 #include "odblib/ToolFactory.h"
+#include "odb/TestCommandLineParsing.h"
 
 using namespace std;
 using namespace eckit;
