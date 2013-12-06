@@ -20,20 +20,20 @@ migrator_api.cc
 migrator_api.h
 )
 
-debug_var( ODB_API_MIGRATOR )
+debug_var( ENABLE_MIGRATOR )
 debug_var( ODB_FOUND )
 debug_var( FORTRAN_LIBRARIES)
 
-if( ODB_API_MIGRATOR )
+if( ENABLE_MIGRATOR )
 	ecbuild_find_fortranlibs( REQUIRED )
 endif()
 
-  ecbuild_add_library ( TARGET Odbmigrator
+  ecbuild_add_library(  TARGET Odbmigrator
 						TYPE STATIC
                         COMPONENT  odb_api
                         SOURCES    ${migrator_srcs}
   		             	CONDITION
-				          ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES
+				          ENABLE_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES
                         TEMPLATES
                             ImportODBTool.cc TSQLReader.cc
                         INCLUDES   ${ODB_INCLUDE_DIRS}
@@ -42,12 +42,12 @@ endif()
 
   ecbuild_add_executable( TARGET     odb_migrator
 						CONDITION
-							ODB_API_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES
+							ENABLE_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES
                         SOURCES    odb2oda.cc
                         INCLUDES   ${ODB_INCLUDE_DIRS}
                         LIBS       Odbmigrator ) #${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
 
-    if( ODB_API_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
+	if( ENABLE_MIGRATOR AND ENABLE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
         set(CMAKE_SWIG_FLAGS "")
         include_directories( "." ${PYTHON_INCLUDE_PATH} )
         set_source_files_properties( pyodbdump.i PROPERTIES CPLUSPLUS ON )
