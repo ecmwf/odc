@@ -15,12 +15,11 @@
 #ifndef TEST_FUNCTION_TYPE_CONVERSION_H
 #define TEST_FUNCTION_TYPE_CONVERSION_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestFunctionTypeConversion : public TestCase {
 public:

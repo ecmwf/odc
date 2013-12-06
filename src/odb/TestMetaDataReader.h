@@ -15,12 +15,11 @@
 #ifndef TestMetaDataReader_H
 #define TestMetaDataReader_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestMetaDataReader : public TestCase {
 public:

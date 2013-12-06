@@ -15,12 +15,11 @@
 #ifndef TestSelectStarAt_H
 #define TestSelectStarAt_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestSelectStarAt : public TestCase {
 public:

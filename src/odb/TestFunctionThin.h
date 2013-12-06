@@ -15,12 +15,11 @@
 #ifndef TEST_THIN_H
 #define TEST_THIN_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestFunctionThin : public TestCase {
 public:

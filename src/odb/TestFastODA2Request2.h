@@ -16,13 +16,11 @@
 #define TestFastODA2Request2_H
 
 #include "eckit/io/Length.h"
+#include "odblib/TestCase.h"
 
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestFastODA2Request2 : public TestCase {
 public:

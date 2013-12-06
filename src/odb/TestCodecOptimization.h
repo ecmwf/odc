@@ -15,12 +15,11 @@
 #ifndef TestCodecOptimization_H
 #define TestCodecOptimization_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestCodecOptimization : public TestCase {
 public:

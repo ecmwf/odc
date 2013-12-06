@@ -15,12 +15,11 @@
 #ifndef TestInt16_MissingCodec_H
 #define TestInt16_MissingCodec_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestInt16_MissingCodec : public TestCase {
 public:

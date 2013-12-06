@@ -15,12 +15,11 @@
 #ifndef TestSelectTwoFiles_H
 #define TestSelectTwoFiles_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestSelectTwoFiles : public TestCase {
 public:

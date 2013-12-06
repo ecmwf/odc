@@ -15,11 +15,11 @@
 #ifndef TestAggregateFunctions3_H
 #define TestAggregateFunctions3_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
 
 class TestAggregateFunctions3 : public TestCase {
 public:

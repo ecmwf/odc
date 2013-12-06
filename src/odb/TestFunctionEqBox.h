@@ -15,12 +15,11 @@
 #ifndef TEST_EQ_BOX_H
 #define TEST_EQ_BOX_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestFunctionEqBox : public TestCase {
 public:

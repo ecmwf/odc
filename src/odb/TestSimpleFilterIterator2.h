@@ -15,12 +15,11 @@
 #ifndef TestSimpleFilterIterator2_H
 #define TestSimpleFilterIterator2_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestSimpleFilterIterator2 : public TestCase {
 public:

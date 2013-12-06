@@ -15,12 +15,11 @@
 #ifndef TEST_FUNCTION_DOTP_H
 #define TEST_FUNCTION_DOTP_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestFunctionDotp : public TestCase {
 public:

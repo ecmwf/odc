@@ -15,12 +15,11 @@
 #ifndef TEST_ANGLE_CONVERSION_H
 #define TEST_ANGLE_CONVERSION_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestFunctionsForAngleConversion : public TestCase {
 public:

@@ -15,11 +15,11 @@
 #ifndef TestAAAImportODB_H
 #define TestAAAImportODB_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
 
 class TestAAAImportODB : public TestCase {
 public:

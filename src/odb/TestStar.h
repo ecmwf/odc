@@ -15,12 +15,11 @@
 #ifndef TestStar_H
 #define TestStar_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestStar : public TestCase {
 public:

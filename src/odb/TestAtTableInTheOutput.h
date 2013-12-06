@@ -15,11 +15,11 @@
 #ifndef TestAtTableInTheOutput_H
 #define TestAtTableInTheOutput_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
 
 class TestAtTableInTheOutput : public TestCase {
 public:

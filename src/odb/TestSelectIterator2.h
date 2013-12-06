@@ -15,12 +15,11 @@
 #ifndef TestSelectIterator2_H
 #define TestSelectIterator2_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
-
-#include "odblib/TestCase.h"
-
 
 class TestSelectIterator2 : public TestCase {
 public:

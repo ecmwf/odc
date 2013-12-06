@@ -21,9 +21,6 @@ namespace odb {
 namespace tool {
 namespace test {
 
-#include "odblib/TestCase.h"
-
-
 class TestCommandLineParsing : public TestCase {
 public:
 	virtual void test();
