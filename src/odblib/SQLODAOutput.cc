@@ -8,13 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/SQLIteratorSession.h"
+//#include "odblib/SQLIteratorSession.h"
 #include "odblib/SQLSelect.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLType.h"
 #include "odblib/SQLODAOutput.h"
-
+#include "odblib/Expressions.h"
+#include "odblib/ColumnType.h"
+#include "odblib/Writer.h"
+#include "odblib/DispatchingWriter.h"
 
 
 

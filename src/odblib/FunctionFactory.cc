@@ -8,14 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-#include <math.h>
+#include <eckit/eckit.h>
+
+#include "eckit/thread/ThreadSingleton.h"
+
+//#include <math.h>
 #include <limits.h>
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/FunctionExpression.h"
-#include "odblib/SQLSelect.h"
+//#include "odblib/FunctionExpression.h"
+//#include "odblib/SQLSelect.h"
 #include "odblib/piconst.h"
+#include "odblib/FunctionFactory.h"
 
 #include "FunctionAND.h"
 #include "FunctionAVG.h"
@@ -24,9 +29,9 @@
 #include "FunctionEQ.h"
 #include "FunctionEQ_BOXLAT.h"
 #include "FunctionEQ_BOXLON.h"
-#include "FunctionExpression.h"
+//#include "FunctionExpression.h"
 #include "FunctionIN.h"
-#include "FunctionIntegerExpression.h"
+//#include "FunctionIntegerExpression.h"
 #include "FunctionJOIN.h"
 #include "FunctionJULIAN.h"
 #include "FunctionMAX.h"
@@ -47,7 +52,7 @@
 #include "FunctionTHIN.h"
 #include "FunctionTIMESTAMP.h"
 #include "FunctionVAR.h"
-#include "FunctionFactory.h"
+//#include "FunctionFactory.h"
 #include "FunctionIntegerExpression.h"
 
 using namespace eckit;
@@ -67,11 +72,11 @@ const double R2D          = 180.0/piconst::pi;
 
 static ThreadSingleton<FunctionFactory> functionFactory_;
 
-struct FFMap : public std::map<pair<std::string,int>, FunctionFactoryBase*> { static FFMap& instance(); };
+struct FFMap : public std::map<std::pair<std::string,int>, FunctionFactoryBase*> { static FFMap& instance(); };
 static ThreadSingleton<FFMap> map_;
 FFMap& FFMap::instance() { return map_.instance(); }
 
-struct SQLFunctionHelp : public std::map<pair<std::string,int>, std::string> { static SQLFunctionHelp& instance(); };
+struct SQLFunctionHelp : public std::map<std::pair<std::string,int>, std::string> { static SQLFunctionHelp& instance(); };
 static ThreadSingleton<SQLFunctionHelp> sqlFunctionsHelp_;
 SQLFunctionHelp& SQLFunctionHelp::instance() { return sqlFunctionsHelp_.instance(); }
 
@@ -93,7 +98,7 @@ FunctionFactoryBase::FunctionFactoryBase(const std::string& name, int arity, con
 FunctionFactory::FunctionInfo& FunctionFactory::functionsInfo()
 {
 	if (functionInfo_.size() == 0)
-		for (std::map<pair<std::string,int>,FunctionFactoryBase*>::iterator i = FFMap::instance().begin(); i != FFMap::instance().end(); ++i)
+        for (std::map<std::pair<std::string,int>,FunctionFactoryBase*>::iterator i = FFMap::instance().begin(); i != FFMap::instance().end(); ++i)
 			functionInfo_.push_back(make_pair(make_pair(i->first.first, i->first.second), SQLFunctionHelp::instance()[i->first]));
 	return functionInfo_;
 }
@@ -113,12 +118,12 @@ FunctionFactoryBase::~FunctionFactoryBase()
 FunctionExpression* FunctionFactoryBase::build(const std::string& name, const expression::Expressions& args)
 {
 	std::pair<std::string,int> p(name,args.size());	
-	std::map<pair<std::string,int>,FunctionFactoryBase*>::iterator j = FFMap::instance().find(p);
+    std::map<std::pair<std::string,int>,FunctionFactoryBase*>::iterator j = FFMap::instance().find(p);
 
 	// Try -1
 	if(j == FFMap::instance().end())
 	{
-		p = pair<std::string,int>(name,-1);
+        p = std::pair<std::string,int>(name,-1);
 		j = FFMap::instance().find(p);
 	}
 
@@ -155,7 +160,7 @@ FunctionExpression* FunctionFactoryBase::build(const std::string& name, SQLExpre
 
 //===============================
 
-#include <math.h>
+//#include <math.h>
 
 template<double (*T)(double)> 
 class MathFunctionExpression_1 : public FunctionExpression {

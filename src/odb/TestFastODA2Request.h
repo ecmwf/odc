@@ -15,6 +15,8 @@
 #ifndef TestFastODA2Request_H
 #define TestFastODA2Request_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

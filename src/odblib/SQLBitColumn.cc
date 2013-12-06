@@ -8,12 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
+#include <eckit/eckit.h>
+//#include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 
 #include "odblib/SQLBitColumn.h"
 #include "odblib/SQLBitfield.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLType.h"
 
 using namespace eckit;
 

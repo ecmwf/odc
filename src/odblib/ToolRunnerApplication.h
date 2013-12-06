@@ -17,10 +17,12 @@
 
 #include "odblib/ODBApplication.h"
 
-#include "odblib/Tool.h"
+//#include "odblib/Tool.h"
 
 namespace odb {
 namespace tool {
+
+class Tool;
 
 class ToolRunnerApplication : public ODBApplication {
 public:

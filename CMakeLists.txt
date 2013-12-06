@@ -49,7 +49,11 @@ if( SWIG_FOUND )
     include( ${SWIG_USE_FILE} )
 endif()
 
+<<<<<<< HEAD
 if( WITH_ODB OR DEFINED ODB_PATH OR ENABLE_MIGRATOR ) # old version of odb
+=======
+if( WITH_ODB OR DEFINED ODB_PATH OR ENABLE_ODBI_MIGRATOR ) # old version of odb
+>>>>>>> feature/tidy-includes
     find_package(ODB) 
 endif()
 

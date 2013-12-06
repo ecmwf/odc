@@ -8,13 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include <string>
-#include <sstream>
-#include <istream>
-#include <ostream>
-#include <locale>
+#include <eckit/eckit.h>
+
+//#include <string>
+//#include <sstream>
+//#include <istream>
+//#include <ostream>
+//#include <locale>
 #include <stdexcept>
-#include <stdint.h>
+//#include <stdint.h>
 
 #include "odblib/Duration.h"
 

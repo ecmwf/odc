@@ -11,15 +11,15 @@
 /// \file FunctionROWNUMBER.h
 /// Piotr Kuchta - (C) ECMWF July 2009
 
-#include <string>
-#include <utility>
-#include <vector>
+//#include <string>
+//#include <utility>
+//#include <vector>
 
-#include "eckit/log/Log.h"
+//#include "eckit/log/Log.h"
 
 #include "odblib/FunctionROWNUMBER.h"
 #include "odblib/SQLSelect.h"
-#include "odblib/SQLSession.h"
+//#include "odblib/SQLSession.h"
 
 namespace odb {
 namespace sql {

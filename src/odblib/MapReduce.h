@@ -12,50 +12,49 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <algorithm>
+//#include <iostream>
+//#include <vector>
+//#include <map>
+//#include <algorithm>
 
-#include <stdlib.h>
-#include <memory> 
+//#include <stdlib.h>
+//#include <memory> 
 
-using namespace std;
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/DataHandle.h"
-#include "eckit/log/Log.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/log/Log.h"
 
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
-#include "odblib/Codec.h"
-#include "odblib/HashTable.h"
-#include "odblib/Column.h"
-#include "odblib/MetaData.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/HashTable.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLAST.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/Header.h"
-#include "odblib/Reader.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/ReaderIterator.h"
-#include "odblib/Comparator.h"
-#include "odblib/Decoder.h"
-#include "odblib/SQLSelectFactory.h"
-#include "odblib/FastODA2Request.h"
-#include "odblib/MemoryBlock.h"
-#include "odblib/InMemoryDataHandle.h"
-#include "odblib/odb_api.h"
-#include "odblib/odbcapi.h"
-#include "odblib/ImportTool.h"
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "odblib/DateTime.h"
-#include "odblib/SplitTool.h"
-#include "odblib/CountTool.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/Codec.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/Column.h"
+//#include "odblib/MetaData.h"
+//#include "odblib/RowsIterator.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLIteratorSession.h"
+//#include "odblib/Header.h"
+//#include "odblib/Reader.h"
+//#include "odblib/SelectIterator.h"
+//#include "odblib/ReaderIterator.h"
+//#include "odblib/Comparator.h"
+//#include "odblib/Decoder.h"
+//#include "odblib/SQLSelectFactory.h"
+//#include "odblib/FastODA2Request.h"
+//#include "odblib/MemoryBlock.h"
+//#include "odblib/InMemoryDataHandle.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/odbcapi.h"
+//#include "odblib/ImportTool.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+//#include "odblib/DateTime.h"
+//#include "odblib/SplitTool.h"
+//#include "odblib/CountTool.h"
 
 #ifndef MapReduce_H
 #define MapReduce_H

@@ -9,24 +9,27 @@
  */
 
 #include "eckit/log/BigNum.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/types/Types.h"
+#include "eckit/log/Log.h"
+#include "odblib/Expressions.h"
+//#include "eckit/types/Types.h"
 
 #include "odblib/ConstantExpression.h"
-#include "odblib/SQLAST.h"
+//#include "odblib/SQLAST.h"
 #include "odblib/SQLColumn.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLSelect.h"
-#include "odblib/SQLSession.h"
+//#include "odblib/SQLSession.h"
 #include "odblib/SQLTable.h"
-#include "odblib/SQLTable.h"
-#include "odblib/SQLType.h"
-#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SQLOutput.h"
+//#include "odblib/SQLType.h"
+//#include "odblib/SchemaAnalyzer.h"
 
 using namespace eckit;
 
 namespace odb {
 namespace sql {
+
+using namespace expression;
 
 void SQLSelect::pushFirstFrame() { env.pushFrame(sortedTables_.begin()); }
 
@@ -93,7 +96,7 @@ SQLTable* SQLSelect::findTable(const std::string& name,
 }
 
 
-pair<double,bool>* SQLSelect::column(const std::string& name, SQLTable* table)
+std::pair<double,bool>* SQLSelect::column(const std::string& name, SQLTable* table)
 {
 
 	if(!table) table = findTable(name);
@@ -397,7 +400,7 @@ void SQLSelect::postExecute()
 	{
 		for (AggregatedResults::iterator it = aggregatedResults_.begin(); it != aggregatedResults_.end(); ++it)
 		{
-			const std::vector<pair<double,bool> >& nonAggregatedValues = it->first;
+            const std::vector<std::pair<double,bool> >& nonAggregatedValues = it->first;
 			const Expressions& aggregated = *(it->second); 
 
 			Expressions results;
@@ -494,12 +497,12 @@ bool SQLSelect::output(SQLExpression* where)
 				for(size_t i = 0; i < n; i++)
 					results_[i]->partialResult();
 			} else {
-				std::vector<pair<double,bool> > nonAggregatedValues;
+                std::vector<std::pair<double,bool> > nonAggregatedValues;
 				for (size_t i = 0; i < nonAggregated_.size(); ++i)
 				{
 					bool missing = false;
 					double v = nonAggregated_[i]->eval(missing);
-					nonAggregatedValues.push_back(make_pair(v, missing));
+                    nonAggregatedValues.push_back(std::make_pair(v, missing));
 				}
 	
 				AggregatedResults::iterator results = aggregatedResults_.find(nonAggregatedValues);

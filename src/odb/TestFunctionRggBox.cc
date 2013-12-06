@@ -12,25 +12,28 @@
 ///
 /// @author ECMWF, July 2010
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <algorithm>
+//#include <iostream>
+//#include <vector>
+//#include <map>
+//#include <algorithm>
 
-#define __STDC_LIMIT_MACROS
+//#define __STDC_LIMIT_MACROS
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#define RMDI -2147483647
+//#define RMDI -2147483647
 #define EPS  7e-6
 
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "TestFunctionRggBox.h"
+#include <cmath>
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+#include "odb/TestFunctionRggBox.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/piconst.h"
+//#include "odblib/piconst.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
-#include "odblib/odb_api.h"
 
 using namespace std;
 using namespace eckit;

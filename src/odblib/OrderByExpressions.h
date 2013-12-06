@@ -15,8 +15,7 @@
 #define OrderByExpressions_H
 
 #include "eckit/eckit.h"
-#include <vector>
-
+//#include <vector>
 #include "odblib/Expressions.h"
 
 namespace odb {

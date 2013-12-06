@@ -15,6 +15,8 @@
 #ifndef TestDistinct_H
 #define TestDistinct_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

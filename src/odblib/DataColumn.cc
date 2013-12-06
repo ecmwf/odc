@@ -2,7 +2,7 @@
 /// @author Tomas Kral
 
 #include "odblib/DataColumn.h"
-#include "odblib/DataTable.h"
+#include "odblib/Column.h"
 
 using namespace std;
 

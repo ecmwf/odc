@@ -8,16 +8,23 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
 #include "odblib/MetaDataReader.h"
-#include "odblib/Comparator.h"
+#include "odblib/MetaDataReaderIterator.h"
+
+//#include "odblib/Comparator.h"
 #include "odblib/SplitTool.h"
 #include "odblib/TemplateParameters.h"
 
 #include "eckit/io/PartFileHandle.h"
+#include "eckit/filesystem/PathName.h"
+#include "odblib/DispatchingWriter.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Reader.h"
+#include "odblib/Stack.h"
 
 using namespace eckit;
 
@@ -60,12 +67,12 @@ void SplitTool::run()
 /**
  * @param maxExpandedSize maximum size of the data in chunks after decoding
 */
-std::vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
+std::vector<std::pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
 {
-	ostream &L(Log::debug());
+    std::ostream &L(Log::debug());
 	L << "SplitTool::getChunks: " << std::endl;
 
-	std::vector<pair<Offset,Length> > r;
+    std::vector<std::pair<Offset,Length> > r;
 
     MDReader mdr(inFile);
     MDReader::iterator it(mdr.begin()), end(mdr.end());
@@ -88,7 +95,7 @@ std::vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, s
 		if (currentSize + size > maxExpandedSize)
 		{
 			L << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << std::endl;
-			r.push_back(make_pair(currentOffset, currentLength));
+            r.push_back(std::make_pair(currentOffset, currentLength));
 			currentOffset = offset;
 			currentLength = length;
 		} else {
@@ -97,7 +104,7 @@ std::vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, s
 		}
     } 
 	if (r.size() == 0 || r.back().first != currentOffset)
-		r.push_back(make_pair(currentOffset, currentLength));
+        r.push_back(std::make_pair(currentOffset, currentLength));
 	return r;
 }
 
@@ -107,7 +114,7 @@ std::string SplitTool::genOrderBySelect(const std::string& inFile, const std::st
     MDReader::iterator it(mdr.begin());
     TemplateParameters templateParameters;
     TemplateParameters::parse(outFileTemplate, templateParameters, it->columns());
-	stringstream ss;
+    std::stringstream ss;
 	ss << "select * order by ";
 	for (size_t i = 0; i < templateParameters.size(); ++i)
 	{
@@ -126,7 +133,7 @@ void SplitTool::presortAndSplit(const PathName& inFile, const std::string& outFi
 
 	std::string sql(genOrderBySelect(inFile, outFileTemplate));
 	
-	std::vector<pair<Offset,Length> > chunks(getChunks(inFile));
+    std::vector<std::pair<Offset,Length> > chunks(getChunks(inFile));
     for(size_t i=0; i < chunks.size(); ++i)
     {   
 		PartFileHandle h(inFile, chunks[i].first, chunks[i].second);

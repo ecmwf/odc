@@ -10,12 +10,20 @@
 
 #include "eckit/utils/Tokenizer.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/MDSetTool.h"
-#include "odblib/DataStream.h"
+//#include "odblib/DataStream.h"
+#include "eckit/log/Log.h"
+#include "eckit/filesystem/PathName.h"
+#include "odblib/ODBAPISettings.h"
+#include "odblib/Types.h"
+#include "eckit/utils/StringTools.h"
+#include "odblib/MetaData.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/Header.h"
 
 using namespace eckit;
 
@@ -40,7 +48,7 @@ void MDSetTool::run()
 	PathName inFile = parameters(2);
 
 	PathName outFile = parameters(3);
-	auto_ptr<DataHandle> outHandle(ODBAPISettings::instance().writeToFile(outFile));
+    std::auto_ptr<DataHandle> outHandle(ODBAPISettings::instance().writeToFile(outFile));
 
 	parseUpdateList(parameters(1), columns, types);
     ASSERT(columns.size() == types.size());

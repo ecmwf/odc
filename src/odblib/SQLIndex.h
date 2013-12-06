@@ -14,7 +14,7 @@
 #ifndef SQLIndex_H
 #define SQLIndex_H
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
 namespace odb {
 namespace sql {

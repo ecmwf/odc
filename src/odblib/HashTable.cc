@@ -8,11 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
+#include <eckit/eckit.h>
+#include "odblib/HashTable.h"
+#include "eckit/log/Log.h"
+#include "eckit/exception/Exceptions.h"
 
-#include <stdint.h>
+//#include <stdint.h>
 
-#include "odblib/odb_api.h"
-#include "odblib/DataStream.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/DataStream.h"
 
 using namespace eckit;
 

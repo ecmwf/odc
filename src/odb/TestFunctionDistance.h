@@ -15,6 +15,8 @@
 #ifndef TEST_DISTANCE_H
 #define TEST_DISTANCE_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

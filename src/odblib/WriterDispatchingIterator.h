@@ -16,8 +16,12 @@
 #ifndef WriterDispatchingIterator_H
 #define WriterDispatchingIterator_H
 
-//#include "odblib/DispatchingWriter.h"
-//#include "odblib/WriterBufferingIterator.h"
+#include "eckit/eckit.h"
+#include "odblib/ColumnType.h"
+#include "odblib/Types.h"
+
+////#include "odblib/DispatchingWriter.h"
+////#include "odblib/WriterBufferingIterator.h"
 
 #include "odblib/RowsIterator.h"
 #include "odblib/TemplateParameters.h"

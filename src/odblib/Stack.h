@@ -13,14 +13,15 @@
 
 #include <stack>
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
-#include "odblib/SQLStatement.h"
-#include "odblib/SQLColumn.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLOutput.h"
-#include "odblib/FunctionROWNUMBER.h"
+//#include "odblib/SQLStatement.h"
+//#include "odblib/SQLColumn.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLOutput.h"
+//#include "odblib/FunctionROWNUMBER.h"
 #include "odblib/SelectOneTable.h"
+#include "odblib/Environment.h"
 
 namespace odb {
 namespace sql {
@@ -29,7 +30,7 @@ namespace sql {
 
 class Environment;
 
-struct Stack : private stack<Environment*> {
+struct Stack : private std::stack<Environment*> {
 	Stack();
 	~Stack();
 

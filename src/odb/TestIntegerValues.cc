@@ -12,22 +12,24 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
-#include <iostream>
-#include <vector>
-#include <map>
+//#include <iostream>
+//#include <vector>
+//#include <map>
 
-#include <strings.h>
+//#include <strings.h>
 
 using namespace std;
 
-#include "odblib/odb_api.h"
+#include "eckit/filesystem/PathName.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
+//#include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/TestCase.h"
+//#include "odblib/TestCase.h"
 #include "odblib/ImportTool.h"
+#include "odblib/Reader.h"
 
-#include "TestIntegerValues.h"
+#include "odb/TestIntegerValues.h"
 
 namespace odb {
 namespace tool {

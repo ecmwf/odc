@@ -9,6 +9,7 @@
  */
 
 #include "odblib/SQLDistinctOutput.h"
+#include "odblib/Expressions.h"
 
 namespace odb {
 namespace sql {

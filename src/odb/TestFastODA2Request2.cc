@@ -12,19 +12,22 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
-#include <iostream>
-#include <vector>
-#include <map>
+//#include <iostream>
+//#include <vector>
+//#include <map>
 
-#include <strings.h>
+//#include <strings.h>
+//#include "odblib/ODAHandle.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/odb_api.h"
-
-#include "odblib/Tool.h"
+//#include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/TestCase.h"
+//#include "odblib/TestCase.h"
 #include "odblib/FastODA2Request.h"
-#include "TestFastODA2Request2.h"
+#include "odblib/Writer.h"
+#include "odblib/ODAHandle.h"
+
+#include "odb/TestFastODA2Request2.h"
 
 using namespace std;
 using namespace eckit;

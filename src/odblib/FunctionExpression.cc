@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include <math.h>
-#include <limits.h>
+//#include <math.h>
+//#include <limits.h>
 
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/exception/Exceptions.h"
 
 #include "odblib/FunctionExpression.h"
-#include "odblib/SQLSelect.h"
-#include "odblib/piconst.h"
+//#include "odblib/SQLSelect.h"
+//#include "odblib/piconst.h"
 
 namespace odb {
 namespace sql {

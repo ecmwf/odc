@@ -18,7 +18,7 @@
 #define DirectAccess_H
 
 #ifdef SWIGPYTHON
-#include <Python.h>
+//#include <Python.h>
 #endif
 
 #include "odblib/IteratorProxy.h"
@@ -31,6 +31,8 @@ namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
 namespace odb {
+
+class MetaData;
 
 
 class DirectAccessBlock {

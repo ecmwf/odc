@@ -13,7 +13,7 @@
 #ifndef ShiftedColumnExpression_H
 #define ShiftedColumnExpression_H
 
-#include "odblib/ColumnExpression.h"
+//#include "odblib/ColumnExpression.h"
 
 namespace odb {
 namespace sql {
@@ -71,6 +71,6 @@ private:
 } // namespace sql
 } // namespace odb 
 
-#include "ShiftedColumnExpression.cc"
+#include "odblib/ShiftedColumnExpression.cc"
 
 #endif

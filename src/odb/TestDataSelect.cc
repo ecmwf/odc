@@ -1,7 +1,7 @@
 /// @file   TestDataSelect.cc
 /// @author Tomas Kral
 
-#include <string>
+//#include <string>
 
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
@@ -9,6 +9,7 @@
 #include "odblib/DataTable.h"
 #include "odblib/DataSelect.h"
 #include "odblib/DataSelectIterator.h"
+#include "odblib/DataColumns.h"
 
 using namespace std;
 using namespace odb;

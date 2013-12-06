@@ -30,10 +30,10 @@ namespace sql {
 
 class SQLStatement;
 namespace expression { class SQLExpression; }
-using namespace expression;
+
 
 typedef std::map<std::string, std::set<std::string> > Links;
-typedef std::map<std::string, SQLExpression*> Variables;
+typedef std::map<std::string, expression::SQLExpression*> Variables;
 
 class SQLDatabase {
 public:
@@ -60,8 +60,8 @@ public:
 
 	virtual const std::string& name() const { return name_; }
 
-	SQLExpression* getVariable(const std::string&) const;
-	void   setVariable(const std::string&, SQLExpression*);
+    expression::SQLExpression* getVariable(const std::string&) const;
+    void   setVariable(const std::string&, expression::SQLExpression*);
 	Variables& variables() { return variables_; }
 
 	virtual bool sameAs(const SQLDatabase& other) const;

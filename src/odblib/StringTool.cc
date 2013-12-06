@@ -12,19 +12,19 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <iostream>
-#include <strings.h>
-#include <sstream>
-#include <iomanip>
-#include <ctype.h>
+//#include <iostream>
+//#include <strings.h>
+//#include <sstream>
+//#include <iomanip>
+//#include <ctype.h>
 
 #include "eckit/io/FileHandle.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/utils/Regex.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/parser/Translator.h"
-
-#include "odblib/Endian.h"
-#include "odblib/MemoryBlock.h"
+//#include "odblib/Endian.h"
+//#include "odblib/MemoryBlock.h"
 #include "odblib/StringTool.h"
 
 using namespace std;

@@ -19,6 +19,8 @@
 #include "odblib/RowsIterator.h"
 #include "odblib/SQLIteratorSession.h"
 
+#include "odblib/Expressions.h"
+
 extern "C" {
 	typedef void oda_select_iterator;
 	int odb_select_iterator_get_next_row(oda_select_iterator*, int, double*, int*);

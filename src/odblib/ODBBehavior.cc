@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <stdlib.h>
+//#include <stdlib.h>
 
 #include "eckit/log/ChannelBuffer.h"
 

@@ -4,11 +4,15 @@
 #ifndef DATACOLUMN_H_
 #define DATACOLUMN_H_
 
-#include <string>
+#include <eckit/eckit.h>
 
-#include "odblib/Column.h"
+#include "odblib/ColumnType.h"
+#include "odblib/Types.h"
+
 
 namespace odb {
+
+class Column;
 
 /*! Represents a single column of a table.
  *

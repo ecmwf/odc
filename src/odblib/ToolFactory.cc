@@ -12,16 +12,16 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 ///
 
-#include <iostream>
-#include <string>
-#include <map>
-#include <vector>
+//#include <iostream>
+//#include <string>
+//#include <map>
+//#include <vector>
 
-#include "eckit/utils/Regex.h"
+//#include "eckit/utils/Regex.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 
 using namespace std;

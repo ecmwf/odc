@@ -14,13 +14,13 @@
 #ifndef ConstantExpression_H
 #define ConstantExpression_H
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
 #include "eckit/exception/Exceptions.h"
 
-#include "odblib/SQLType.h"
+//#include "odblib/SQLType.h"
 #include "odblib/SQLExpression.h"
-#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLBitfield.h"
 
 namespace odb {
 namespace sql {
@@ -96,6 +96,5 @@ private:
 } // namespace sql
 } // namespace odb
 
-using namespace odb::sql::expression;
 
 #endif

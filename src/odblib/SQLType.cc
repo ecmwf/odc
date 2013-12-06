@@ -8,9 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#include <set>
+//#include <set>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 
 #include "odblib/SQLType.h"
 #include "odblib/SQLInt.h"

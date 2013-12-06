@@ -13,6 +13,13 @@
 
 #include <cmath>
 
+#include "eckit/log/Log.h"
+#include "eckit/exception/Exceptions.h"
+
+namespace eckit {
+    class PathName;
+}
+
 namespace odb {
 
 class MetaData;

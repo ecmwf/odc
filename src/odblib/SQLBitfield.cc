@@ -8,7 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
+#include <eckit/eckit.h>
+
+//#include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Tokenizer.h"
 #include "eckit/parser/Translator.h"
 #include "eckit/types/Types.h"
@@ -16,7 +18,9 @@
 #include "odblib/Decoder.h"
 #include "odblib/SQLBit.h"
 #include "odblib/SQLBitfield.h"
+#include "odblib/Types.h"
 #include "odblib/SQLOutput.h"
+#include "eckit/log/Log.h"
 
 using namespace eckit;
 
@@ -67,7 +71,7 @@ unsigned long SQLBitfield::shift(const std::string& n) const
 std::string SQLBitfield::make(const std::string& name, const FieldNames& fields, const Sizes& sizes, const char *ddlName)
 {
 
-	stringstream s;
+    std::stringstream s;
 	s << name << "[";
 	for(size_t i = 0; i < fields.size(); ++i)
 		s << fields[i] << ":" << Translator<int,std::string>()(sizes[i])

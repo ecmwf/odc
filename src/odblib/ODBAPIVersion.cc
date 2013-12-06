@@ -13,7 +13,7 @@
 ///
 
 #include "odblib/Header.h"
-
+#include "odb_api_config.h"
 #include "odblib/ODBAPIVersion.h"
 
 namespace odb {

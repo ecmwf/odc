@@ -15,6 +15,8 @@
 #ifndef TestOrderBy_H
 #define TestOrderBy_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

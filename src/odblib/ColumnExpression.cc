@@ -8,19 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include <sstream>
+//#include <sstream>
 
-#include "eckit/log/Log.h"
+#include <eckit/eckit.h>
 #include "eckit/parser/Translator.h"
 
-#include "odblib/SQLAST.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/ColumnExpression.h"
 #include "odblib/SQLSelect.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLType.h"
 #include "odblib/SQLTable.h"
+#include "odblib/SQLColumn.h"
 
 using namespace eckit;
 
@@ -28,7 +29,7 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-static pair<double,bool> zero_(0,false);
+static std::pair<double,bool> zero_(0,false);
 
 ColumnExpression::ColumnExpression(const std::string& name, SQLTable* table, int begin, int end)
 : type_(0),
@@ -127,7 +128,7 @@ void ColumnExpression::output(SQLOutput& o) const
 
 void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
 {
-	ostream& L(Log::debug());
+    std::ostream& L(Log::debug());
 	L << "ColumnExpression::expandStars: expanding '" << columnName_ << "' (" << tableReference_ << ")" << std::endl;
 
 	if(beginIndex_ != -1 && endIndex_ != -1)
@@ -146,7 +147,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 		return;
 	}
 
-	stringstream ss;
+    std::stringstream ss;
 	
 	unsigned int matched = 0;
     for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)

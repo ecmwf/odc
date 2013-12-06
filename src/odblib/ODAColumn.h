@@ -18,6 +18,8 @@
 namespace odb {
 namespace sql {
 
+class SQLTable;
+
 class ODAColumn : public SQLColumn {
 public:
 	ODAColumn(const type::SQLType&, SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue, const BitfieldDef&, double*);

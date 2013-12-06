@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/log/Log.h"
+//#include "eckit/log/Log.h"
 
-#include "odblib/SQLAST.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/VariableExpression.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLSession.h"

@@ -10,6 +10,8 @@
 #ifndef CompactTool_H
 #define CompactTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 namespace tool {
 

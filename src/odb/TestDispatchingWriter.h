@@ -15,6 +15,8 @@
 #ifndef TestDispatchingWriter_H
 #define TestDispatchingWriter_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

@@ -8,21 +8,24 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/log/Log.h"
-#include "eckit/utils/Timer.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/DataColumns.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/log/Log.h"
+//#include "eckit/utils/Timer.h"
 #include "eckit/utils/Tokenizer.h"
 
-#include "odblib/SQLAST.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLStatement.h"
-#include "odblib/SQLTable.h"
-#include "odblib/SQLType.h"
-#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLStatement.h"
+//#include "odblib/SQLTable.h"
+//#include "odblib/SQLType.h"
+//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/VariablesTable.h"
 #include "odblib/DataTable.h"
+//#include "odblib/DataTable.h"
 #include "odblib/SQLDataTable.h"
 #include "odblib/SQLSession.h"
 
@@ -274,12 +277,12 @@ void SQLDatabase::setLinks(const Links& links)
 	for(Links::const_iterator j = links.begin(); j != links.end() ; ++j)
 	{
 		const std::string&      from = (*j).first;
-		const std::set<string>& to   = (*j).second;
+        const std::set<std::string>& to   = (*j).second;
 
 		ASSERT(tablesByName_.find(from) != tablesByName_.end());
 		SQLTable *f = tablesByName_[from];
 
-		for(std::set<string>::const_iterator k = to.begin(); k != to.end() ; ++k)
+        for(std::set<std::string>::const_iterator k = to.begin(); k != to.end() ; ++k)
 		{
 			ASSERT(tablesByName_.find(*k) != tablesByName_.end());
 			SQLTable* t = tablesByName_[*k];
@@ -332,11 +335,11 @@ SQLTable* SQLDatabase::table(const std::string& name)
 	return (*j).second;
 }
 
-void SQLDatabase::setVariable(const std::string& name, SQLExpression* value) {
+void SQLDatabase::setVariable(const std::string& name, expression::SQLExpression* value) {
 	variables_[name] = value;
 }
 
-SQLExpression* SQLDatabase::getVariable(const std::string& name) const
+expression::SQLExpression* SQLDatabase::getVariable(const std::string& name) const
 {
 	Variables::const_iterator j = variables_.find(name);
 	if(j == variables_.end())

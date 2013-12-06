@@ -11,14 +11,14 @@
 /// \file SelectOneTable.cc
 /// Piotr Kuchta - ECMWF Jul 11
 
-#include "eckit/eckit.h"
-#include <stack>
+//#include "eckit/eckit.h"
+//#include <stack>
 
-#include "odblib/SQLStatement.h"
-#include "odblib/SQLColumn.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLOutput.h"
-#include "odblib/FunctionROWNUMBER.h"
+//#include "odblib/SQLStatement.h"
+//#include "odblib/SQLColumn.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLOutput.h"
+//#include "odblib/FunctionROWNUMBER.h"
 #include "odblib/SelectOneTable.h"
 
 namespace odb {

@@ -14,10 +14,10 @@
 #ifndef VariablesTable_H
 #define VariablesTable_H
 
-#include "eckit/filesystem/PathName.h"
+//#include "eckit/filesystem/PathName.h"
 
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLBitfield.h"
+#include "odblib/SQLTable.h"
 
 namespace odb {
 namespace sql {
@@ -26,11 +26,14 @@ namespace sql {
 class SQLPool;
 class SQLColumn;
 class SQLDatabase;
+namespace expression {
+class SQLExpression;
+}
 
 class VariablesTableIterator : public SQLTableIterator {
-	typedef std::map<std::string,SQLExpression*> Variables;
+    typedef std::map<std::string,expression::SQLExpression*> Variables;
 public:
-	VariablesTableIterator(std::map<std::string,SQLExpression*>&);
+    VariablesTableIterator(std::map<std::string,expression::SQLExpression*>&);
 	~VariablesTableIterator();
 	void rewind();
 	bool next();

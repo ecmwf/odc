@@ -8,11 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "Comparator.h"
-#include "MergeTool.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+//#include "Comparator.h"
+#include "odblib/MergeTool.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/Reader.h"
+#include "odblib/ODBSelect.h"
+#include "eckit/io/FileHandle.h"
 
 using namespace eckit;
 
@@ -55,7 +60,7 @@ void MergeTool::run()
 {
     if (inputFiles_.size() == 0)
         return;
-	stringstream s;
+    std::stringstream s;
 	for (size_t i = 0; i < inputFiles_.size(); ++i)
 		s << inputFiles_[i] << ",";
 	Timer t(std::string("Merging files '") + s.str() + "' into '" + outputFile_ + "'");
@@ -66,7 +71,7 @@ void MergeTool::run()
 }
 
 template <typename T, typename I>
-void doMerge(std::vector<pair<I, I> >& iterators, const PathName& outputFile)
+void doMerge(std::vector<std::pair<I, I> >& iterators, const PathName& outputFile)
 {
 	odb::Writer<> writer(outputFile);
 	odb::Writer<>::iterator out(writer.begin());
@@ -92,7 +97,7 @@ void doMerge(std::vector<pair<I, I> >& iterators, const PathName& outputFile)
 			I& in(iterators[ii].first);
 			I& inEnd(iterators[ii].second);
 			if(! (in != inEnd))
-				return (void) (Log::info() << "Input file number " << ii << " ended." << endl);
+                return (void) (Log::info() << "Input file number " << ii << " ended." << std::endl);
 
 			for (size_t cn = 0; cn < in->columns().size(); ++cn)
 			{
@@ -115,12 +120,12 @@ void MergeTool::merge(const std::vector<PathName>& inputFiles, const PathName& o
 	typedef R::iterator I;
 
     AutoR<R>  readers;
-	std::vector<pair<I, I> > iterators;
+    std::vector<std::pair<I, I> > iterators;
 
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
 		readers.push_back(new odb::Reader(inputFiles[i]));
-		iterators.push_back(make_pair(readers[i]->begin(), readers[i]->end()));
+        iterators.push_back(std::make_pair(readers[i]->begin(), readers[i]->end()));
 	}
     doMerge<R, I>(iterators, outputFile);
 }
@@ -130,14 +135,14 @@ void MergeTool::merge(const std::vector<PathName>& inputFiles, const std::vector
     typedef odb::Select S;
     AutoR<S> readers;
     AutoR<eckit::FileHandle> fhs;
-    std::vector<pair<S::iterator, S::iterator> > iterators;
+    std::vector<std::pair<S::iterator, S::iterator> > iterators;
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
         FileHandle* fh = new FileHandle(inputFiles[i]);
         fh->openForRead();
         fhs.push_back(fh);
 		readers.push_back(new S(sqls[i], *fhs[i]));
-		iterators.push_back(make_pair(readers[i]->begin(), readers[i]->end()));
+        iterators.push_back(std::make_pair(readers[i]->begin(), readers[i]->end()));
 	}
     doMerge<S, S::iterator>(iterators, outputFile);
 }

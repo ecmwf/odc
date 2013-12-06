@@ -2,6 +2,7 @@
 /// @author Tomas Kral
 
 #include "odblib/DataSaver.h"
+#include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
 #include "odblib/DataView.h"
 

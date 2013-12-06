@@ -3,8 +3,8 @@
 
 #include "odblib/DataPage.h"
 
-#include <cmath>
-#include <vector>
+//#include <cmath>
+//#include <vector>
 
 #include "odblib/DataTable.h"
 

@@ -14,6 +14,7 @@
 #ifndef SQLCountStar_H
 #define SQLCountStar_H
 
+#include <string>
 #include "odblib/SQLStatement.h"
 
 namespace odb {

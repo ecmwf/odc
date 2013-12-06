@@ -15,6 +15,8 @@
 #ifndef TestCatFiles_H
 #define TestCatFiles_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

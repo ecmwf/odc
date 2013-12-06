@@ -15,6 +15,8 @@
 #ifndef TestStar_H
 #define TestStar_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

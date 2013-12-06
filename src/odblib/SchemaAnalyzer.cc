@@ -8,9 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
-#include "odblib/SQLAST.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/SQLAST.h"
+#include "eckit/exception/Exceptions.h"
 #include "odblib/SchemaAnalyzer.h"
+#include "odblib/MetaData.h"
 
 using namespace eckit;
 
@@ -57,7 +59,7 @@ void SchemaAnalyzer::beginSchema(const std::string& name)
         throw eckit::UserError(message);
     }
 
-    pair<SchemaDefs::iterator, bool> result;
+    std::pair<SchemaDefs::iterator, bool> result;
     result = schemas_.insert(make_pair(name, SchemaDef()));
 
     if (result.second == false)
@@ -119,8 +121,8 @@ void SchemaAnalyzer::addTable(TableDef& table)
 
         if (currentSchema_.empty() && schemaName.empty())
         {
-            pair<TableDefs::iterator, bool> result;
-            result = tableDefs_.insert(pair<std::string, TableDef>(table.name(), table));
+            std::pair<TableDefs::iterator, bool> result;
+            result = tableDefs_.insert(std::pair<std::string, TableDef>(table.name(), table));
 
             if (result.second == false)
             {
@@ -144,8 +146,8 @@ void SchemaAnalyzer::addTable(TableDef& table)
             SchemaDef& schema = it->second;
             TableDefs& tables = schema.tables();
 
-            pair<TableDefs::iterator, bool> result;
-            result = tables.insert(pair<std::string, TableDef>(table.name(), table));
+            std::pair<TableDefs::iterator, bool> result;
+            result = tables.insert(std::pair<std::string, TableDef>(table.name(), table));
 
             if (result.second == false)
             {

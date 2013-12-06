@@ -8,13 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "XYVTool.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
+#include "odblib/XYVTool.h"
+#include "eckit/log/Log.h"
+#include "odblib/ODBSelect.h"
+#include "eckit/filesystem/PathName.h"
 
-#include <iostream>
-#include <fstream>
+//#include <iostream>
+//#include <fstream>
 
 using namespace std;
 using namespace eckit;
@@ -40,7 +43,7 @@ void XYVTool::run()
 	std::string valueColumn = parameters(2);
 	PathName outputFile = parameters(3);
 
-	ofstream out;
+    std::ofstream out;
 	out.open(outputFile.asString().c_str());
 
 	out << "#GEO" << endl << std::endl;

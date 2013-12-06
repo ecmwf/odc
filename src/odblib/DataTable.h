@@ -4,14 +4,14 @@
 #ifndef DATATABLE_H_
 #define DATATABLE_H_
 
-#include <cstddef>
-#include <iosfwd>
-#include <string>
+//#include <cstddef>
+//#include <iosfwd>
+//#include <string>
 
 #include "eckit/exception/Exceptions.h"
 
 #include "odblib/DataRow.h"
-#include "odblib/DataColumn.h"
+#include "odblib/DataPage.h"
 #include "odblib/DataColumns.h"
 #include "odblib/DataTableIterator.h"
 
@@ -144,7 +144,7 @@ public:
                 index_ = 0;
             }
 
-            row_->DataRow::set<string>(index_++, std::string(value));
+            row_->DataRow::set<std::string>(index_++, std::string(value));
 
             return *this;
         }

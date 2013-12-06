@@ -15,7 +15,8 @@
 #define SQLODAOutput_H
 
 #include "odblib/SQLOutput.h"
-#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLBitfield.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 namespace sql {

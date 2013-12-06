@@ -3,14 +3,14 @@
 
 #include "odblib/DataSelectIterator.h"
 
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLExpression.h"
+//#include "odblib/SQLDatabase.h"
+//#include "odblib/SQLExpression.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelect.h"
 
-#include "odblib/SQLDataSet.h"
+//#include "odblib/SQLDataSet.h"
 #include "odblib/DataSelect.h"
-#include "odblib/DataColumns.h"
+//#include "odblib/DataColumns.h"
 #include "odblib/DataSelectSession.h"
 
 using namespace odb;

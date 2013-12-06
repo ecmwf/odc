@@ -15,6 +15,8 @@
 #ifndef TEST_RGG_BOX_H
 #define TEST_RGG_BOX_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

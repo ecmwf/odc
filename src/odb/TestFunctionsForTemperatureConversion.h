@@ -15,6 +15,8 @@
 #ifndef TEST_TEMPERATURE_CONVERSION_H
 #define TEST_TEMPERATURE_CONVERSION_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

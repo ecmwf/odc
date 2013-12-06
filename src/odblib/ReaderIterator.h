@@ -16,8 +16,12 @@
 #ifndef ReaderIterator_H
 #define ReaderIterator_H
 
-#include "odblib/RowsIterator.h"
+#include "odblib/IteratorProxy.h"
+//#include "odblib/RowsIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
+
+#include "odblib/RowsIterator.h"
+#include "odblib/MetaData.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

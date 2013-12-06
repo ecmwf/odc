@@ -11,6 +11,8 @@
 #ifndef _SQLTool_H
 #define _SQLTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 
 namespace sql { class SQLSession; class SQLParser; class SQLOutputConfig; }

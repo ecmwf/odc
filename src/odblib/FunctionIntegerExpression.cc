@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include <math.h>
+#include <cmath>
 
 #include "odblib/FunctionFactory.h"
 #include "odblib/FunctionIntegerExpression.h"
-#include "odblib/Codec.h"
+//#include "odblib/Codec.h"
 #include "odblib/MDI.h"
 
 #define ftrunc(x) ((x) -fmod((x), 1))
@@ -46,7 +46,7 @@ void FunctionIntegerExpression::output(std::ostream& s) const
 
 //===============================
 
-#include <math.h>
+//#include <math.h>
 
 template<double (*T)(double)> 
 class MathFunctionIntegerExpression_1 : public FunctionIntegerExpression {

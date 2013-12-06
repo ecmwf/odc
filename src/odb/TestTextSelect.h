@@ -15,6 +15,8 @@
 #ifndef TestTextSelect_H
 #define TestTextSelect_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

@@ -4,8 +4,9 @@
 #ifndef DATAROW_H_
 #define DATAROW_H_
 
-#include <string>
+//#include <string>
 #include <stdint.h>
+#include <eckit/eckit.h>
 
 namespace odb {
 

@@ -11,15 +11,15 @@
 /// \file FunctionTHIN.h
 /// (C) ECMWF July 2010
 
-#include <string>
-#include <utility>
-#include <vector>
+//#include <string>
+//#include <utility>
+//#include <vector>
 
-#include "eckit/log/Log.h"
+//#include "eckit/log/Log.h"
 
 #include "odblib/FunctionTHIN.h"
 #include "odblib/SQLSelect.h"
-#include "odblib/SQLSession.h"
+//#include "odblib/SQLSession.h"
 
 namespace odb {
 namespace sql {

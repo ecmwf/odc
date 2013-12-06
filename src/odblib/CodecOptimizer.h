@@ -16,15 +16,19 @@
 #ifndef CodecOptimizer_H
 #define CodecOptimizer_H
 
+#include <eckit/eckit.h>
+#include "odblib/ColumnType.h"
+#include "odblib/MetaData.h"
+
+
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-#include "odblib/ColumnType.h"
 
 namespace odb {
 
 class HashTable;
-class MetaData;
+//class MetaData;
 class SQLIteratorSession;
 
 namespace codec {

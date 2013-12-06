@@ -13,9 +13,11 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odblib/odb_api.h"
-#include "odblib/DataStream.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/DataStream.h"
 
+#include "odblib/ColumnType.h"
+#include "odblib/FixedSizeWriterIterator.h"
 using namespace eckit;
 
 namespace odb {

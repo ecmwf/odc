@@ -12,18 +12,21 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <iostream>
-#include <strings.h>
+#include <eckit/eckit.h>
+//#include <iostream>
+//#include <strings.h>
 
-#include "eckit/runtime/Application.h"
-#include "eckit/io/FileHandle.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/utils/Regex.h"
+//#include "eckit/runtime/Application.h"
+//#include "eckit/io/FileHandle.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/utils/Regex.h"
 #include "eckit/config/Resource.h"
-#include "eckit/parser/Translator.h"
+//#include "eckit/parser/Translator.h"
 
 #include "odblib/GribCodes.h"
-#include "odblib/MemoryBlock.h"
+#include "eckit/utils/StringTools.h"
+
+//#include "odblib/MemoryBlock.h"
 #include "odblib/StringTool.h"
 
 using namespace std;

@@ -14,9 +14,9 @@
 #ifndef FunctionExpression_H
 #define FunctionExpression_H
 
-#include "eckit/thread/ThreadSingleton.h"
+//#include "eckit/thread/ThreadSingleton.h"
 
-#include "odblib/SQLExpression.h"
+#include "odblib/Expressions.h"
 
 namespace odb {
 namespace sql {

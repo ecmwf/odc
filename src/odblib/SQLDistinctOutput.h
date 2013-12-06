@@ -14,11 +14,11 @@
 #ifndef SQLDistinctOutput_H
 #define SQLDistinctOutput_H
 
+#include "eckit/exception/Exceptions.h"
 #include "odblib/SQLOutput.h"
 
 namespace odb {
 namespace sql {
-namespace expression {
 
 class SQLDistinctOutput : public SQLOutput {
 public:
@@ -35,7 +35,7 @@ private:
 	virtual const SQLOutputConfig& config();
 	virtual	void config(SQLOutputConfig&);
 // -- Members
-	auto_ptr<SQLOutput>   output_;
+    std::auto_ptr<SQLOutput>   output_;
 	std::set<std::vector<double> >  seen_;
 	std::vector<double>        tmp_;
 // -- Overridden methods
@@ -55,7 +55,6 @@ private:
 	virtual void outputBitfield(double, bool) const { NOTIMP; };
 };
 
-} // namespace expression 
 } // namespace sql 
 } // namespace odb 
 

@@ -11,8 +11,9 @@
 #ifndef TIME_HEADER_H
 #define TIME_HEADER_H
 
-#include <string>
-#include <iostream>
+#include <eckit/eckit.h>
+//#include <string>
+//#include <iostream>
 
 // Forward declarations
 namespace utils { 

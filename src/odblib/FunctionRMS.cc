@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <math.h>
+#include <cmath>
 
 #include "odblib/FunctionRMS.h"
 

@@ -1,8 +1,8 @@
 #ifndef SQLDATATABLEITERATOR_H_
 #define SQLDATATABLEITERATOR_H_
 
-#include <cstddef>
-#include <vector>
+//#include <cstddef>
+//#include <vector>
 
 #include "odblib/SQLTable.h"
 #include "odblib/DataTable.h"

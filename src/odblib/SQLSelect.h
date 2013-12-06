@@ -14,27 +14,41 @@
 #ifndef SQLSelect_H
 #define SQLSelect_H
 
-#include <stack>
+//#include <stack>
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
-#include "odblib/Environment.h"
-#include "odblib/FunctionROWNUMBER.h"
-#include "odblib/FunctionTHIN.h"
-#include "odblib/SQLColumn.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLOutput.h"
-#include "odblib/SQLOutputConfig.h"
-#include "odblib/SQLOutputConfig.h"
+//#include "odblib/Environment.h"
+//#include "odblib/FunctionROWNUMBER.h"
+//#include "odblib/FunctionTHIN.h"
+//#include "odblib/SQLColumn.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLOutput.h"
+//#include "odblib/SQLOutputConfig.h"
+//#include "odblib/SQLOutputConfig.h"
+//#include "odblib/SQLStatement.h"
+//#include "odblib/SelectOneTable.h"
+//#include "odblib/Stack.h"
+
 #include "odblib/SQLStatement.h"
+#include "odblib/SQLOutputConfig.h"
 #include "odblib/SelectOneTable.h"
 #include "odblib/Stack.h"
+
+
 
 namespace odb {
 
 	class SelectIterator;
 
 namespace sql {
+
+namespace expression {
+    namespace function {
+        class FunctionROWNUMBER;
+        class FunctionTHIN;
+    }
+}
 
 class SQLTableIterator;
 
@@ -80,18 +94,18 @@ private:
 	std::vector<SQLTable*> tables_;
 	SortedTables sortedTables_;
 
-	auto_ptr<odb::sql::expression::SQLExpression> where_;
+    std::auto_ptr<odb::sql::expression::SQLExpression> where_;
 	odb::sql::expression::SQLExpression* simplifiedWhere_;
 
 	Stack env;
 
-	auto_ptr<SQLOutput>     output_;
+    std::auto_ptr<SQLOutput>     output_;
 	Expressions  results_;
 
-	typedef std::map<std::vector<pair<double,bool> >, expression::Expressions*> AggregatedResults;
+    typedef std::map<std::vector<std::pair<double,bool> >, expression::Expressions*> AggregatedResults;
 	AggregatedResults aggregatedResults_;
 
-	std::map<std::string,pair<double,bool> > values_;
+    std::map<std::string, std::pair<double,bool> > values_;
 	std::set<SQLTable*>     allTables_;
 
 	typedef std::map<SQLTable*,SelectOneTable> TableMap;

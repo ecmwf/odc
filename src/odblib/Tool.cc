@@ -12,14 +12,14 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <strings.h>
-#include <iostream>
+//#include <strings.h>
+//#include <iostream>
 
 using namespace std;
 
-#include "eckit/runtime/Application.h"
+//#include "eckit/runtime/Application.h"
 
-#include "odblib/CommandLineParser.h"
+//#include "odblib/CommandLineParser.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 

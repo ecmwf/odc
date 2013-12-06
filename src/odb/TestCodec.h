@@ -16,6 +16,7 @@
 #define TestCodec_H
 
 #include "odblib/Codec.h"
+#include "odblib/TestCase.h"
 
 namespace odb {
 namespace tool {

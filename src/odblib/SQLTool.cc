@@ -8,13 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/io/FileHandle.h"
 #include "eckit/io/PartFileHandle.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/ToolFactory.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/SQLTool.h"
-#include "odblib/Tool.h"
+#include "eckit/io/Length.h"
+#include "odblib/SQLParser.h"
+#include "eckit/utils/StringTools.h"
+//#include "odblib/Tool.h"
+#include "odblib/SQLInteractiveSession.h"
 
 using namespace eckit;
 using namespace odb::sql;
@@ -70,10 +75,10 @@ void SQLTool::run()
 	std::string sql(StringTool::isSelectStatement(params[0])
 				? StringTools::join(" ",  params) + ";"
 				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
-	auto_ptr<ofstream> foutPtr(optionIsSet("-o")
-								? new ofstream(optionArgument("-o", std::string("")).c_str())
+    std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o")
+                                ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
 								: 0);
-	ostream& out(foutPtr.get() ? *foutPtr : cout);
+    std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
 	SQLInteractiveSession session(out);
 	SQLParser parser;
 	SQLOutputConfig config(SQLSelectFactory::instance().config());

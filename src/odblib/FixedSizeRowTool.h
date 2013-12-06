@@ -11,6 +11,8 @@
 #ifndef FixedSizeRowTool_H
 #define FixedSizeRowTool_H
 
+#include "odblib/Tool.h"
+
 namespace odb {
 namespace tool {
 

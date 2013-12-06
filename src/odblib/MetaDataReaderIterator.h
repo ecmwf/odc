@@ -16,12 +16,21 @@
 #ifndef MetaDataReaderIterator_H
 #define MetaDataReaderIterator_H
 
-#include "odblib/MetaDataReader.h"
-#include "odblib/SimpleFilterIterator.h"
+#include "odblib/RowsIterator.h"
+#include "eckit/io/Offset.h"
+#include "odblib/MetaData.h"
+
+#include "eckit/io/Length.h"
+
+//#include "odblib/SimpleFilterIterator.h"
 #include "odblib/TReadOnlyMemoryDataHandle.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/Header.h"
+
 
 namespace eckit { class PathName; }
 namespace eckit { class FileHandle; }
+namespace eckit { class DataHandle; }
 
 extern "C" {
 	typedef void oda;
@@ -45,6 +54,7 @@ namespace odb {
 class MetaDataReaderIterator : public RowsReaderIterator
 {
 public:
+
     MetaDataReaderIterator (eckit::DataHandle* handle, bool skipData);
     MetaDataReaderIterator (eckit::DataHandle& handle, bool skipData);
     MetaDataReaderIterator (const eckit::PathName&, bool skipData);
@@ -80,7 +90,7 @@ public:
 // next() is public because it is used in C API functions
 	virtual bool next();
 protected:
-	virtual bool skip(size_t dataSize);
+    virtual bool skip(size_t dataSize);
 
 private:
 // No copy allowed.

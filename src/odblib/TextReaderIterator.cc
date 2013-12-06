@@ -13,7 +13,11 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#include "odblib/odb_api.h"
+#include "odblib/TextReaderIterator.h"
+#include "eckit/utils/StringTools.h"
+#include "odblib/TextReader.h"
+#include "eckit/types/Types.h"
+#include "odblib/StringTool.h"
 
 using namespace eckit;
 
@@ -112,7 +116,7 @@ void TextReaderIterator::parseHeader()
 	std::vector<std::string> columns (S::split(owner_.delimiter(), header));
 	//c->missingValue(missingValue);
 
-	ostream& L(Log::debug());
+    std::ostream& L(Log::debug());
 
 	L << "TextReaderIterator::parseHeader: columns: " << columns << std::endl;
 	L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << std::endl;

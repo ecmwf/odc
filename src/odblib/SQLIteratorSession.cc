@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-
 #include "odblib/SQLIteratorOutput.h"
 
 namespace odb {

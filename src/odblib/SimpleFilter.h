@@ -17,7 +17,7 @@
 #define SimpleFilter_H
 
 #ifdef SWIGPYTHON
-#include <Python.h>
+//#include <Python.h>
 #endif
 
 #include "odblib/SimpleFilterIterator.h"
@@ -62,6 +62,6 @@ private:
 
 } // namespace odb
 
-#include "SimpleFilter.cc"
+#include "odblib/SimpleFilter.cc"
 
 #endif

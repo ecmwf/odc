@@ -8,14 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
 #include "odblib/LSTool.h"
-#include "odblib/MetaData.h"
-#include "odblib/Column.h"
-#include "odblib/SQLSelectFactory.h"
+//#include "odblib/MetaData.h"
+//#include "odblib/Column.h"
+//#include "odblib/SQLSelectFactory.h"
+#include "odblib/Reader.h"
 
 using namespace eckit;
 
@@ -27,9 +28,9 @@ LSTool::LSTool (int argc, char *argv[]) : Tool(argc, argv)
 	registerOptionWithArgument("-o"); // Text Output
 }
 
-const string LSTool::nullString;
+const std::string LSTool::nullString;
 
-unsigned long long LSTool::printData(const string &db, std::ostream &out)
+unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
 {
 	odb::Reader f(db);
 	odb::Reader::iterator it = f.begin();
@@ -37,7 +38,7 @@ unsigned long long LSTool::printData(const string &db, std::ostream &out)
 
 	odb::MetaData md(0);
 	// Formatting of real values:
-	out << fixed;
+    out << std::fixed;
 	unsigned long long n = 0;
 	for ( ; it != end; ++it, ++n)
 	{
@@ -85,12 +86,12 @@ void LSTool::run()
 		return;
 	}
 
-	string db = parameters(1);
+    std::string db = parameters(1);
 
-	auto_ptr<ofstream> foutPtr;
+    std::auto_ptr<std::ofstream> foutPtr;
 	if (optionIsSet("-o"))
-		foutPtr.reset(new ofstream(optionArgument("-o", string("")).c_str()));
-	ostream& out = optionIsSet("-o") ? *foutPtr : cout;
+        foutPtr.reset(new std::ofstream(optionArgument("-o", std::string("")).c_str()));
+    std::ostream& out = optionIsSet("-o") ? *foutPtr : std::cout;
 
 	unsigned long long n = 0;
 	n = printData(db, out);

@@ -3,6 +3,7 @@
 
 #include "odblib/DataSelectOutput.h"
 #include "odblib/DataSelectIterator.h"
+#include "odblib/Expressions.h"
 
 using namespace odb;
 

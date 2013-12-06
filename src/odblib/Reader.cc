@@ -15,24 +15,23 @@
 
 #include "odblib/Reader.h"
 
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include <errno.h>
-#include <math.h>
-#include <climits>
-#include <cfloat>
+//#include <algorithm>
+//#include <iostream>
+//#include <sstream>
+//#include <errno.h>
+//#include <math.h>
+//#include <climits>
+//#include <cfloat>
 
-#include "eckit/exception/Exceptions.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/DataHandle.h"
+//#include "eckit/exception/Exceptions.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/DataHandle.h"
 #include "eckit/io/FileHandle.h"
 
 using namespace std;
 using namespace eckit;
 
 namespace odb {
-#define MEGA(x) (x*1024*1024)
 
 Reader::Reader(DataHandle &dh)
 : dataHandle_(&dh),

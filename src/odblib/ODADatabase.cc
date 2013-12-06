@@ -8,14 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-#include <cctype>
+//#include <cctype>
 
 #include "eckit/config/Resource.h"
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 #include "odblib/ODADatabase.h"
-#include "odblib/StringTool.h"
+#include "odblib/Reader.h"
+//#include "odblib/StringTool.h"
 #include "odblib/TODATable.h"
+#include "odblib/TextReader.h"
+#include "odblib/TextReaderIterator.h"
 
 using namespace eckit;
 
@@ -25,7 +28,7 @@ namespace sql {
 ODADatabase::ODADatabase(const PathName& path,const std::string& name)
 : SQLDatabase(path,name)
 {
-    setIncludePath(Resource<string>("$ODB_INCLUDE_PATH", ""));
+    setIncludePath(Resource<std::string>("$ODB_INCLUDE_PATH", ""));
 }
 
 ODADatabase::~ODADatabase() {}

@@ -14,11 +14,11 @@
 #ifndef SchemaAnalyzer_H
 #define SchemaAnalyzer_H
 
-#include <set>
-#include <map>
+//#include <set>
+//#include <map>
 
 #include "odblib/SQLAST.h"
-#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLBitfield.h"
 
 namespace odb {
 

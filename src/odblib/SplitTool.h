@@ -11,6 +11,10 @@
 #ifndef SplitTool_H
 #define SplitTool_H
 
+#include "odblib/Tool.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/Length.h"
+
 namespace odb {
 namespace tool {
 
@@ -34,7 +38,7 @@ public:
 	static void split(const eckit::PathName&, const std::string&, size_t);
 	static void presortAndSplit(const eckit::PathName&, const std::string&);
 
-	static std::vector<pair<eckit::Offset,eckit::Length> > getChunks(const eckit::PathName&, size_t maxExpandedSize = 100*1024*1024);
+    static std::vector<std::pair<eckit::Offset,eckit::Length> > getChunks(const eckit::PathName&, size_t maxExpandedSize = 100*1024*1024);
 private:
 // No copy allowed
     SplitTool(const SplitTool&);

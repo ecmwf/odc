@@ -19,7 +19,11 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
+#include <eckit/eckit.h>
+
 namespace odb {
+
+class MetaData;
 
 template <typename I>
 class SimpleFilterIterator 
@@ -57,6 +61,6 @@ public:
 
 } // namespace odb
 
-#include "SimpleFilterIterator.cc"
+#include "odblib/SimpleFilterIterator.cc"
 
 #endif

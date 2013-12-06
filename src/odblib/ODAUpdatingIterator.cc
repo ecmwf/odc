@@ -13,11 +13,12 @@
 ///
 /// @author Piotr Kuchta, June 2009
 
-#include "odblib/odb_api.h"
-#include "odblib/DataStream.h"
-#include "odblib/Header.h"
-#include "odblib/ODAUpdatingIterator.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/Header.h"
+//#include "odblib/ODAUpdatingIterator.h"
 
+#include "odblib/MetaData.h"
 
 namespace odb {
 
@@ -35,7 +36,7 @@ ODAUpdatingIterator<T>::ODAUpdatingIterator (T& ii, const T& end, const std::vec
 	ASSERT(columns.size() == values.size());
 
 	updateIndices();
-	copy(ii_->data(), ii_->data() + ii_->columns().size(), data_);
+    std::copy(ii_->data(), ii_->data() + ii_->columns().size(), data_);
 	update();
 }
 
@@ -90,7 +91,7 @@ bool ODAUpdatingIterator<T>::next()
 		if (ii_->isNewDataset())
 			updateIndices();
 
-		copy(ii_->data(), ii_->data() + ii_->columns().size(), data_);
+        std::copy(ii_->data(), ii_->data() + ii_->columns().size(), data_);
 		update();
 	}
 	noMore_ = !r;

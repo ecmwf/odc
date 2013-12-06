@@ -1,6 +1,6 @@
 
 #include "odblib/SQLDataTableIterator.h"
-#include "odblib/SQLDataColumn.h"
+//#include "odblib/SQLDataColumn.h"
 
 namespace odb {
 
@@ -40,7 +40,7 @@ bool SQLDataTableIterator::next()
 
 void SQLDataTableIterator::copyRow()
 {
-    copy(it_->data(), it_->data() + table_.columns().size(), data_);
+    std::copy(it_->data(), it_->data() + table_.columns().size(), data_);
 }
 
 } // namespace odb

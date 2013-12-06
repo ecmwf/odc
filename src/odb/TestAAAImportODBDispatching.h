@@ -15,6 +15,8 @@
 #ifndef TestAAAImportODBDispatching_H
 #define TestAAAImportODBDispatching_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

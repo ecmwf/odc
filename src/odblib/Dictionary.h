@@ -14,7 +14,7 @@
 #ifndef Dictionary_H
 #define Dictionary_H
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
 #include "eckit/exception/Exceptions.h"
 

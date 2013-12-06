@@ -12,15 +12,15 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <sstream>
+//#include <sstream>
 
-#include "eckit/filesystem/PathName.h"
+//#include "eckit/filesystem/PathName.h"
 #include "eckit/utils/Timer.h"
 #include "eckit/utils/StringTools.h"
 
-#include "odblib/CommandLineParser.h"
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
+//#include "odblib/CommandLineParser.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/TestRunner.h"
 
@@ -35,10 +35,10 @@ TestRunner::TestRunner (CommandLineParser& clp)
   mars_sms_label_(false),
   label_()
 {
-	if (getenv("MARS_SMS_LABEL"))
+    if (::getenv("MARS_SMS_LABEL"))
 	{
 		mars_sms_label_ = true;
-		label_ = getenv("MARS_SMS_LABEL");
+        label_ = ::getenv("MARS_SMS_LABEL");
 	}
 }
 
@@ -48,9 +48,9 @@ void TestRunner::run()
 {
 	ASSERT(getenv("ODB_API_TEST_DATA_PATH") && "ODB_API_TEST_DATA_PATH must be set");
 
-	stringstream totalRunningTime;
-	auto_ptr<Timer> allTestsTimer(new Timer("Total", totalRunningTime));
-	auto_ptr<TestCases> tests(0);
+    std::stringstream totalRunningTime;
+    std::auto_ptr<Timer> allTestsTimer(new Timer("Total", totalRunningTime));
+    std::auto_ptr<TestCases> tests(0);
 	
 	failed_.clear();
 
@@ -70,7 +70,7 @@ void TestRunner::run()
 			std::string suiteName = clp_.parameters()[i];
 			ASSERT("Suite does not exist" && suites_.find(suiteName) != suites_.end());
 			std::vector<std::string>& suite = suites_[suiteName];
-			auto_ptr<TestCases> tsts(AbstractToolFactory::testCases(suite));
+            std::auto_ptr<TestCases> tsts(AbstractToolFactory::testCases(suite));
 			runTests(*tsts);
 			tests->insert(tests->end(), tsts->begin(), tsts->end());
 		}
@@ -78,7 +78,7 @@ void TestRunner::run()
 
 	allTestsTimer.reset();
 
-	ofstream xmlf("testresults.xml");
+    std::ofstream xmlf("testresults.xml");
 	xmlf << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
 	xmlf << "<testsuite name=\"unittests\" time=\"" << StringTools::split(" ", totalRunningTime.str())[1] << "\">" << std::endl;
 	xmlf << xml_.str();
@@ -89,21 +89,21 @@ void TestRunner::run()
 		delete (*tests)[i];
 
 	if (failed_.size() == 0) {
-		Log::info() << endl << "+- Phew, made it! All " << nTests << " tests passed successfully. " << endl << std::endl;
+        Log::info() << std::endl << "+- Phew, made it! All " << nTests << " tests passed successfully. " << std::endl << std::endl;
 		Log::info() << runningTimes_.str() << std::endl;;
 		Log::info() << totalRunningTime.str() << std::endl;
 	}
 	else
 	{
-		Log::error() << endl << "+- Summary: " << failed_.size() << " test(s) failed." << std::endl;
+        Log::error() << std::endl << "+- Summary: " << failed_.size() << " test(s) failed." << std::endl;
 		for (std::vector<FailedTest>::iterator it = failed_.begin(); it != failed_.end(); ++it) {
 			const std::string& name = it->first;
 			const std::string& what = it->second;
-			Log::error() << "\t" << name << ": " << endl << what;
+            Log::error() << "\t" << name << ": " << std::endl << what;
 		}
 		Log::error() << std::endl;
 
-		stringstream ss;
+        std::stringstream ss;
 		ss << " " << failed_.size() << " test(s) failed";
 		throw eckit::SeriousBug(ss.str());
 	}
@@ -121,8 +121,8 @@ void TestRunner::runTests(const TestCases& tests)
 		Log::info() << "+- Running " << name << " ..." << std::endl;
 		smslabel(name);
 
-		stringstream runningTime;
-		auto_ptr<Timer> timer(new Timer(name, runningTime));
+        std::stringstream runningTime;
+        std::auto_ptr<Timer> timer(new Timer(name, runningTime));
 		try {
 			tst->setUp();
 			tst->test();
@@ -156,7 +156,7 @@ void TestRunner::runTests(const TestCases& tests)
 		else {
 			timer.reset();
 			runningTimes_ << runningTime.str();
-			Log::info() << "+- Passed." << endl << std::endl;
+            Log::info() << "+- Passed." << std::endl << std::endl;
 		 	xml_ << "<testcase classname=\"test\" name=\"" << name 
 				<< "\" time=\"" << StringTools::split(" ", runningTime.str())[1] << "\"/>" << std::endl;
 		}

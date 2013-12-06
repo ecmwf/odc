@@ -41,7 +41,7 @@ private:
 
 } // namespace odb
 
-#include "ConstantSetter.cc"
+#include "odblib/ConstantSetter.cc"
 
 #endif
 

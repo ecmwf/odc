@@ -15,6 +15,8 @@
 #ifndef TestSetvbuffer_H
 #define TestSetvbuffer_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

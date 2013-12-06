@@ -4,6 +4,7 @@
 #ifndef ODBLIB_DATARECORDITERATOR_H_
 #define ODBLIB_DATARECORDITERATOR_H_
 
+#include <stddef.h>
 #include "odblib/IteratorFacade.h"
 
 namespace odb {

@@ -14,13 +14,14 @@
 #ifndef UnsafeInMemoryDataHandle_H
 #define UnsafeInMemoryDataHandle_H
 
-#include "eckit/filesystem/PathName.h"
+//#include "eckit/filesystem/PathName.h"
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
-#include "eckit/io/TransferWatcher.h"
+//#include "eckit/io/TransferWatcher.h"
 #include "eckit/io/DataHandle.h"
 
-#include "odblib/MemoryBlock.h"
+//#include "odblib/MemoryBlock.h"
+
 
 namespace odb {
 

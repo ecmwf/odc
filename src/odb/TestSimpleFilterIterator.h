@@ -15,6 +15,8 @@
 #ifndef TestSimpleFilterIterator_H
 #define TestSimpleFilterIterator_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

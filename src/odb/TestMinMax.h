@@ -15,6 +15,8 @@
 #ifndef TestMinMax_H
 #define TestMinMax_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

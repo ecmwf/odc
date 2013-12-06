@@ -25,6 +25,11 @@ debug_var( ODB_FOUND )
 debug_var( FORTRAN_LIBRARIES)
 
 if( ENABLE_MIGRATOR )
+debug_var( ENABLE_ODBI_MIGRATOR )
+debug_var( ODB_FOUND )
+debug_var( FORTRAN_LIBRARIES)
+
+if( ENABLE_ODBI_MIGRATOR )
 	ecbuild_find_fortranlibs( REQUIRED )
 endif()
 

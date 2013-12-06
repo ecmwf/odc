@@ -15,19 +15,20 @@
 #ifndef StringTool_H
 #define StringTool_H
 
-#include <map>
-#include <set>
-#include <vector>
+#include <eckit/eckit.h>
 
-#include "eckit/log/CodeLocation.h"
-#include "eckit/utils/StringTools.h"
-#include "eckit/utils/Tokenizer.h"
+//#include <map>
+//#include <set>
+//#include <vector>
+
+//#include "eckit/log/CodeLocation.h"
+//#include "eckit/utils/StringTools.h"
+//#include "eckit/utils/Tokenizer.h"
 
 #include "odblib/ColumnType.h"
 
-using namespace std;
 
-namespace eckit { class PathName; }
+namespace eckit { class PathName; class CodeLocation; }
 
 namespace odb {
 
@@ -69,7 +70,7 @@ public:
 
 };
 
-ostream& operator<<(std::ostream&, const std::vector<std::string>&);
+std::ostream& operator<<(std::ostream&, const std::vector<std::string>&);
 
 } // namespace odb 
 

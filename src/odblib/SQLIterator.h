@@ -14,7 +14,7 @@
 #ifndef SQLIterator_H
 #define SQLIterator_H
 
-#include "eckit/eckit.h"
+//#include "eckit/eckit.h"
 
 #include "eckit/memory/MemoryPool.h"
 

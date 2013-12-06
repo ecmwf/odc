@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include <math.h>
+#include <cmath>
 #include <limits.h>
 
 #include "odblib/FunctionTIMESTAMP.h"

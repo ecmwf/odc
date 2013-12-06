@@ -15,6 +15,8 @@
 #ifndef TestInMemoryDataHandle_H
 #define TestInMemoryDataHandle_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

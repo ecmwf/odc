@@ -15,6 +15,8 @@
 #ifndef TestSQLFunctionsInfo_H
 #define TestSQLFunctionsInfo_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

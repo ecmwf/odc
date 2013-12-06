@@ -1,6 +1,7 @@
 /// @file   DataSelectSession.cc
 /// @author Tomas Kral
 
+#include "eckit/exception/Exceptions.h"
 #include "odblib/DataSelectSession.h"
 #include "odblib/DataSelectOutput.h"
 

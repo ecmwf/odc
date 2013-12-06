@@ -14,6 +14,8 @@
 #ifndef SQLParser_H
 #define SQLParser_H
 
+#include "eckit/exception/Exceptions.h"
+
 #include "odblib/SQLOutputConfig.h"
 
 namespace eckit { class PathName; }
@@ -21,6 +23,8 @@ namespace eckit { class DataHandle; }
 
 namespace odb {
 namespace sql {
+
+class SQLDatabase;
 
 class SyntaxError : public eckit::SeriousBug {
 public:
@@ -41,7 +45,7 @@ public:
 	static int line();
 
 	static void parseString(const std::string&, eckit::DataHandle*, SQLOutputConfig);
-	static void parseString(const std::string&, istream*, SQLOutputConfig, const std::string& cvsDelimiter);
+    static void parseString(const std::string&, std::istream*, SQLOutputConfig, const std::string& cvsDelimiter);
 	static void parseString(const std::string&, SQLDatabase&, SQLOutputConfig);
 
 	//static void include(const eckit::PathName&);

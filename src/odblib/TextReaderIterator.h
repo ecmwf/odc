@@ -17,7 +17,11 @@
 #define TextReaderIterator_H
 
 #include "odblib/SimpleFilterIterator.h"
-#include "odblib/TReadOnlyMemoryDataHandle.h"
+//#include "odblib/TReadOnlyMemoryDataHandle.h"
+#include "odblib/MetaData.h"
+#include "odblib/Header.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/IteratorProxy.h"
 
 
 namespace eckit { class PathName; }

@@ -9,10 +9,10 @@
  */
 
 #include "odblib/ParameterExpression.h"
-#include "odblib/SQLAST.h"
-#include "eckit/log/Log.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLAST.h"
+//#include "eckit/log/Log.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/SQLSession.h"
 
 namespace odb {

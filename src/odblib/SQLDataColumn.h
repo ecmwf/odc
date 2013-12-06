@@ -1,7 +1,7 @@
 #ifndef SQLDATACOLUMN_H_
 #define SQLDATACOLUMN_H_
 
-#include <string>
+//#include <string>
 
 #include "odblib/SQLColumn.h"
 

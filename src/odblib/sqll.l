@@ -54,7 +54,7 @@ const size_t maxIncludeDepth = 20;
 YY_BUFFER_STATE includeStack[maxIncludeDepth];
 int includeStackPtr = 0;
 
-void pushInclude(const string& sql, const string& yypath)
+void pushInclude(const std::string& sql, const std::string& yypath)
 {
     //cerr << "pushInclude:" << yypath << std::endl;
     //cerr << "<INCLUDE>" << std::endl;
@@ -161,7 +161,7 @@ SEMICOLON [;]
     if (!fileName.exists())
     {
         SQLSession& session = SQLSession::current();
-        SQLDatabase& db = session.currentDatabase();
+        sql::SQLDatabase& db = session.currentDatabase();
         for (unsigned i = 0; i < db.includePath().size(); i++)
         {
             eckit::PathName path(db.includePath()[i] + "/" + fileName);
@@ -172,7 +172,7 @@ SEMICOLON [;]
             }
         }
     }
-    string text(StringTool::readFile(fileName));
+    std::string text(StringTool::readFile(fileName));
 
     //cerr << "Opening " << fileName << std::endl;
 

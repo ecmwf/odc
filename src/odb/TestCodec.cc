@@ -12,17 +12,19 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <iostream>
-#include <vector>
-#include <map>
+//#include <iostream>
+//#include <vector>
+//#include <map>
 
-#include <strings.h>
+//#include <strings.h>
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
+//#include "odblib/Tool.h"
+#include "eckit/io/DataHandle.h"
 #include "odblib/ToolFactory.h"
-#include "odblib/TestCase.h"
+//#include "odblib/TestCase.h"
+#include "odblib/DataStream.h"
 
 #include "odb/TestCodec.h"
 

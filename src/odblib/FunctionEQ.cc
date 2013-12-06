@@ -8,11 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/log/Log.h"
+//#include "eckit/log/Log.h"
 #include "odblib/ColumnExpression.h"
 #include "odblib/FunctionEQ.h"
 #include "odblib/SQLType.h"
-#include "odblib/StringTool.h"
+//#include "odblib/StringTool.h"
 #include "odblib/FunctionFactory.h"
 
 namespace odb {
@@ -101,7 +101,7 @@ SQLExpression* FunctionEQ::simplify(bool& changed)
 
 	//
 	if(args_[0]->isConstant() && !args_[1]->isConstant())
-		swap(args_[0],args_[1]);
+        std::swap(args_[0],args_[1]);
 
 	return 0;
 }

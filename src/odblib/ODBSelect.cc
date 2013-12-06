@@ -15,17 +15,16 @@
 
 #include "odblib/ODBSelect.h"
 
-#include <iostream>
+//#include <iostream>
 
-#include "eckit/io/DataHandle.h"
-#include "odblib/DataStream.h"
-#include "odblib/SelectIterator.h"
+#include "eckit/io/FileHandle.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/SelectIterator.h"
 
 using namespace std;
 using namespace eckit;
 
 namespace odb {
-#define MEGA(x) ((x)*1024*1024)
 
 Select::Select(const std::string& selectStatement, DataHandle &dh)
 : dataHandle_(&dh),

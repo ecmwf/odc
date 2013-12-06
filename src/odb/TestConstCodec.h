@@ -15,6 +15,8 @@
 #ifndef TestConstCodec_H
 #define TestConstCodec_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

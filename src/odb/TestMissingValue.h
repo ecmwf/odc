@@ -15,6 +15,8 @@
 #ifndef TestMissingValue_H
 #define TestMissingValue_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

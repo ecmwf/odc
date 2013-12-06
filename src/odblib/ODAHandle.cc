@@ -9,9 +9,15 @@
  */
 
 #include "odblib/ODAHandle.h"
-#include "odblib/ODATranslator.h"
+#include "eckit/types/Types.h"
+
+//#include "odblib/ODATranslator.h"
 
 using namespace eckit;
+
+namespace odb {
+
+
 
 ODAHandle::ODAHandle(Offset start, Offset end)
 : start_(start),
@@ -22,7 +28,7 @@ ODAHandle::ODAHandle(Offset start, Offset end)
 
 void ODAHandle::print(std::ostream& o) const
 {
-	o << "[start:" << start_<< ", end_:" << end_ << ", values_:" << values_ << "]";
+    o << "[start:" << start_<< ", end_:" << end_ << ", values_:" /*<< values_ <<*/ "]";
 }
 
 ODAHandle::~ODAHandle()
@@ -37,3 +43,4 @@ void ODAHandle::addValue(const std::string& columnName, double v)
 	values_[columnName] = v;
 }
 
+}

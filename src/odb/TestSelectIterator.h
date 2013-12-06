@@ -15,6 +15,8 @@
 #ifndef TestSelectIterator_H
 #define TestSelectIterator_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

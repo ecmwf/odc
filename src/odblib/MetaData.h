@@ -11,18 +11,21 @@
 #ifndef MetaData_H
 #define MetaData_H
 
-#include "eckit/eckit.h"
-#include "eckit/utils/StringTools.h"
+//#include "eckit/eckit.h"
+//#include "eckit/utils/StringTools.h"
 
 #include "odblib/Column.h"
 
 #ifdef SWIGPYTHON
-#include "odblib/IteratorProxy.h"
+//#include "odblib/IteratorProxy.h"
 #endif
 
 namespace eckit { class PathName; }
 
 namespace odb {
+
+//class Column;
+//class BitfieldDef;
 
 typedef std::vector<Column*> MetaDataBase;
 

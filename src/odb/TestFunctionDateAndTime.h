@@ -15,6 +15,8 @@
 #ifndef TEST_FUNCTION_DATE_AND_TIME_H
 #define TEST_FUNCTION_DATE_AND_TIME_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

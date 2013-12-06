@@ -15,6 +15,8 @@
 #ifndef TestDecoding_H
 #define TestDecoding_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

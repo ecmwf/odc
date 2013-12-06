@@ -9,39 +9,43 @@
  */
 
 #include "eckit/thread/AutoLock.h"
-#include "eckit/io/DataHandle.h"
-#include "eckit/exception/Exceptions.h"
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/exception/Exceptions.h"
 #include "eckit/thread/Mutex.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/config/Resource.h"
-#include "eckit/parser/Translator.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/config/Resource.h"
+//#include "eckit/parser/Translator.h"
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 #include "odblib/BitColumnExpression.h"
-#include "odblib/ShiftedBitColumnExpression.h"
+//#include "odblib/ShiftedBitColumnExpression.h"
 #include "odblib/ColumnExpression.h"
-#include "odblib/ShiftedColumnExpression.h"
+//#include "odblib/ShiftedColumnExpression.h"
 #include "odblib/Dictionary.h"
-#include "odblib/FunctionExpression.h"
+#include "odblib/SQLAST.h"
+
+//#include "odblib/FunctionExpression.h"
 #include "odblib/FunctionFactory.h"
 #include "odblib/NumberExpression.h"
 #include "odblib/ParameterExpression.h"
 #include "odblib/SQLBitfield.h"
-#include "odblib/SQLCreateTable.h"
+//#include "odblib/SQLCreateTable.h"
 #include "odblib/SQLDatabase.h"
-#include "odblib/SQLDistinctOutput.h"
-#include "odblib/SQLExpression.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/SQLODAOutput.h"
-#include "odblib/SQLOrderOutput.h"
+//#include "odblib/SQLDistinctOutput.h"
+//#include "odblib/SQLExpression.h"
+//#include "odblib/SQLIteratorSession.h"
+//#include "odblib/SQLODAOutput.h"
+//#include "odblib/SQLOrderOutput.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelect.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/SQLSession.h"
-#include "odblib/SQLSimpleOutput.h"
-#include "odblib/SQLType.h"
+//#include "odblib/SQLSimpleOutput.h"
+#include "odblib/StringTool.h"
 #include "odblib/StringExpression.h"
-#include "odblib/TemporaryFile.h"
+#include "odblib/SQLExpression.h"
+
+//#include "odblib/TemporaryFile.h"
 
 using namespace eckit;
 
@@ -72,7 +76,7 @@ using namespace odb::sql::expression::function;
 
 void odblib_error(const char* msg)
 {
-	stringstream os;
+    std::stringstream os;
 	os << msg << " line " << odblib_lineno; // TODO: << " of " << yypath;
 	throw SyntaxError(os.str()); 
 }
@@ -89,7 +93,7 @@ namespace sql {
 void SQLParser::pushInclude(const std::string& sql, const std::string& yypath) { SQLYacc::pushInclude(sql, yypath); }
 void SQLParser::popInclude() { SQLYacc::popInclude(); }
 
-void SQLParser::parseString(const std::string& s, istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
+void SQLParser::parseString(const std::string& s, std::istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
 {
     AutoLock<Mutex> lock(local_mutex);
 

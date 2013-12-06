@@ -19,11 +19,12 @@
 
 #include <eckit/eckit.h>
 
-#include "odblib/MetaData.h"
+//#include "odblib/MetaData.h"
 
 
 namespace odb {
 
+class MetaData;
 
 class DirectAccess;
 

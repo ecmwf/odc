@@ -15,12 +15,12 @@
 #include "eckit/runtime/Context.h"
 #include "eckit/filesystem/PathName.h"
 
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/ToolRunnerApplication.h"
-#include "odblib/ODBBehavior.h"
-#include "odblib/ODBApplication.h"
+//#include "odblib/ODBBehavior.h"
+//#include "odblib/ODBApplication.h"
 
 using namespace eckit;
 
@@ -53,7 +53,7 @@ void ToolRunnerApplication::run()
 {
 	if (tool_ == 0)
 	{
-		cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << std::endl;
+        std::cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << std::endl;
 		return;
 	}
 
@@ -71,7 +71,7 @@ int ToolRunnerApplication::printHelp(std::ostream &out)
 {
 	if (tool_ == 0)
 	{
-		cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << std::endl;
+        std::cerr << Context::instance().argv(0) << ": Unknown command '" << Context::instance().argv(1) << "'" << std::endl;
 		return 1;
 	}
 	//tool_->help(out);

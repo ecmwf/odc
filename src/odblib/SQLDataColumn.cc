@@ -1,4 +1,5 @@
 #include "odblib/SQLDataColumn.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 

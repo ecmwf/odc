@@ -4,7 +4,9 @@
 #ifndef DATALINKFILLER_H_
 #define DATALINKFILLER_H_
 
-#include <iterator>
+#include <eckit/eckit.h>
+
+//#include <iterator>
 
 namespace odb {
 

@@ -26,7 +26,7 @@ public:
 	{ o << "Shows file's contents"; }
 
 	static void usage(const std::string& name, std::ostream &o)
-	{ o << name << " [-o <output-file>] <file-name>" << endl << std::endl; }
+    { o << name << " [-o <output-file>] <file-name>" << std::endl << std::endl; }
 
 	unsigned long long printData(const std::string &db, std::ostream &out);
 

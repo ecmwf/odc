@@ -1,6 +1,7 @@
 /// @file   TestDataJoin.cc
 /// @author Tomas Kral
 
+#include "odblib/DataTable.h"
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/DataJoin.h"

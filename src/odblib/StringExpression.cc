@@ -12,9 +12,10 @@
 
 #include "odblib/ColumnExpression.h"
 #include "odblib/SQLTable.h"
-#include "odblib/StringExpression.h"
+//#include "odblib/StringExpression.h"
 #include "odblib/StringExpression.h"
 #include "odblib/StringTool.h"
+#include "odblib/Expressions.h"
 
 using namespace eckit;
 
@@ -46,7 +47,7 @@ StringExpression::StringExpression(const StringExpression& o)
 
 void StringExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
 {
-	ostream& L(Log::info());
+    std::ostream& L(Log::info());
 
 	Log::info() << "StringExpression::expandStars: name_: '"  << name_ << "', value_: '" << value_ << "'" << std::endl;
 

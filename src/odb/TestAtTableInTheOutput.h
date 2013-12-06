@@ -15,6 +15,8 @@
 #ifndef TestAtTableInTheOutput_H
 #define TestAtTableInTheOutput_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {

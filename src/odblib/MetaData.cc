@@ -8,15 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/io/DataHandle.h"
-#include "eckit/exception/Exceptions.h"
+#include <eckit/eckit.h>
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/exception/Exceptions.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/Codec.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Codec.h"
 #include "odblib/CodecOptimizer.h"
-#include "odblib/Column.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
+//#include "odblib/Column.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/HashTable.h"
 #include "odblib/MetaData.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
@@ -40,7 +41,7 @@ MetaData* MetaData::clone() const {
 
 MetaData MetaData::scanFile(const PathName& fileName)
 {
-	ostream& L(Log::debug());
+    std::ostream& L(Log::debug());
 	L << "Iterating over headers of '" << fileName << "'" <<  std::endl;
 
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
@@ -179,7 +180,7 @@ MetaData MetaData::operator+(const MetaData& rhs)
 
 bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector<std::string>& constColumns) const 
 {
-	ostream& L = Log::debug();
+    std::ostream& L = Log::debug();
 	for (size_t i = 0; i < constColumns.size(); ++i)
 	{
 		const std::string& columnName = constColumns[i];

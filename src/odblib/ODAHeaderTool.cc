@@ -8,15 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/Tool.h"
+//#include "odblib/ToolFactory.h"
 #include "ODAHeaderTool.h"
-#include "MetaDataReaderIterator.h"
-#include "MetaDataReader.h"
-#include "eckit/io/Offset.h"
-#include "eckit/io/Length.h"
+#include "odblib/MetaDataReaderIterator.h"
+#include "odblib/MetaDataReader.h"
+//#include "eckit/io/Offset.h"
+//#include "eckit/io/Length.h"
 
 using namespace eckit;
 
@@ -35,11 +35,11 @@ public:
 	VerbosePrinter() : headerCount_() {}
 	void print(std::ostream& o, MDReader::iterator &r)
 	{
-		o << endl << "Header " << ++headerCount_ << ". "
+        o << std::endl << "Header " << ++headerCount_ << ". "
 			<< "Begin offset: " << (**r).blockStartOffset() << ", end offset: " << (**r).blockEndOffset()
 			<< ", number of rows in block: " << r->columns().rowsNumber() 
 			<< ", byteOrder: " << (((**r).byteOrder() == 1) ? "same" : "other")
-			<< endl
+            << std::endl
 			<< r->columns();
 	}
 private:
@@ -74,7 +74,7 @@ void HeaderTool::run()
 
 	std::string db = parameters(1);
 
-	ostream& o = cout;
+    std::ostream& o = std::cout;
 	VerbosePrinter verbosePrinter;
 	OffsetsPrinter offsetsPrinter;
 	MDPrinter& printer(* (optionIsSet("-offsets")

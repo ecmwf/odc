@@ -13,19 +13,20 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odblib/odb_api.h"
-#include "odblib/Codec.h"
-#include "odblib/CodecOptimizer.h"
-#include "odblib/DataStream.h"
-#include "odblib/DataStream.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Codec.h"
+//#include "odblib/CodecOptimizer.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/DataStream.h"
 #include "odblib/FunctionEQ.h"
-#include "odblib/TemplateParameters.h"
-#include "odblib/UnsafeInMemoryDataHandle.h"
-#include "odblib/Writer.h"
-#include "odblib/WriterBufferingIterator.h"
+//#include "odblib/TemplateParameters.h"
+//#include "odblib/UnsafeInMemoryDataHandle.h"
+//#include "odblib/Writer.h"
+//#include "odblib/WriterBufferingIterator.h"
 #include "odblib/Comparator.h"
 #include "odblib/Reader.h"
 #include "eckit/utils/Timer.h"
+#include "eckit/parser/Translator.h"
 
 namespace odb {
 
@@ -130,7 +131,7 @@ template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName,
 const double* values, unsigned long count)
 {
-	ostream& L(eckit::Log::info());
+    std::ostream& L(eckit::Log::info());
 	int iteratorIndex = iterators_.size();
 	if (iterators_.size() >= maxOpenFiles_)
 	{
@@ -264,7 +265,7 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::parseTemplateParameters()
 	TemplateParameters::parse(outputFileTemplate_, templateParameters_, columns());
 	if (templateParameters_.size() == 0)
 	{
-		stringstream ss;
+        std::stringstream ss;
 		ss << "No parameters in output file template '" << outputFileTemplate_ << "'" << std::endl;
 		throw eckit::UserError(ss.str());
 	}
@@ -411,13 +412,13 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 	eckit::Timer timer("Split verification");
 
 	std::vector<Reader*> readers;
-	std::vector<pair<Reader::iterator, Reader::iterator> > iterators;
+    std::vector<std::pair<Reader::iterator, Reader::iterator> > iterators;
 	for (size_t i = 0; i < files_.size(); ++i)
 	{
 		eckit::Log::info() << "Opening '" << files_[i] << "'" << std::endl;
 		Reader* reader(new Reader(files_[i]));
 		readers.push_back(reader);
-		iterators.push_back(make_pair(reader->begin(), reader->end()));
+        iterators.push_back(std::make_pair(reader->begin(), reader->end()));
 	}
 
 	std::vector<size_t> rowsRead(files_.size());
@@ -452,7 +453,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 		{
 			++numberOfDifferences; 
 			eckit::Log::info() << "Row " << i << " of input (" << rowsRead[fileIndex] << " of " << outFileName << ") not correct." 
-			<< endl
+            << std::endl
 			<< std::endl;
 			//throw;
 		}

@@ -10,14 +10,16 @@
 
 #include "odblib/SQLOrderOutput.h"
 #include "odblib/SQLExpressionEvaluated.h"
-#include "odblib/OrderByExpressions.h"
-#include "odblib/SQLSelect.h"
-#include "eckit/exception/Exceptions.h"
+//#include "odblib/OrderByExpressions.h"
+//#include "odblib/SQLSelect.h"
+//#include "eckit/exception/Exceptions.h"
+#include "odblib/Expressions.h"
+
 
 namespace odb {
 namespace sql {
 
-SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const pair<Expressions,std::vector<bool> >& by)
+SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const std::pair<Expressions,std::vector<bool> >& by)
 : output_(output),
   by_(by)
 {

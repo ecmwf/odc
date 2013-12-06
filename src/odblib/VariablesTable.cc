@@ -8,19 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/compat/StrStream.h"
-#include "eckit/utils/Tokenizer.h"
+#include "odblib/VariablesTable.h"
+//#include "eckit/compat/StrStream.h"
+//#include "eckit/utils/Tokenizer.h"
 
-#include "odblib/SQLAST.h"
-#include "odblib/SQLBitColumn.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLColumn.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SQLBitColumn.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLColumn.h"
 #include "odblib/SQLSession.h"
 #include "odblib/SQLDatabase.h"
-#include "odblib/VariablesTable.h"
-#include "odblib/SQLType.h"
+//#include "odblib/VariablesTable.h"
+//#include "odblib/SQLType.h"
 #include "odblib/SQLColumn.h"
-#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SchemaAnalyzer.h"
 #include "odblib/StringTool.h"
 #include "odblib/SQLExpression.h"
 

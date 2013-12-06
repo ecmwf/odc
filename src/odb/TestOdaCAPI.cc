@@ -8,11 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/FileHandle.h"
-#include "eckit/utils/Timer.h"
+#include <eckit/eckit.h>
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/FileHandle.h"
+//#include "eckit/utils/Timer.h"
 
-#include "odblib/odb_api.h"
+#include "eckit/log/Log.h"
+#include "eckit/exception/Exceptions.h"
+#include "odblib/ColumnType.h"
+
+
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+//#include "odblib/ODBSelect.h"
+//#include "odblib/odb_api.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"
@@ -104,7 +113,7 @@ int test_odacapi1(int argc, char *argv[])
 
 	std::cout << "Calling oda_create..." << std::endl;
 
-	oda* oh = odb_create("", &err);
+    oda_ptr oh = odb_create("", &err);
 	
 	oda_read_iterator* it = odb_create_read_iterator(oh, "test.odb", &err);
 	ASSERT(0 == err);
@@ -161,7 +170,7 @@ int test_odacapi2(int argc, char *argv[])
 
 	std::cout << "Calling odb_create..." << std::endl;
 
-	oda* oh = odb_create("", &err);
+    oda_ptr oh = odb_create("", &err);
 	
 	Log::info() << "Log::info initialised properly." << std::endl;
 	
