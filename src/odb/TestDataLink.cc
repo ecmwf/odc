@@ -1,8 +1,10 @@
 /// @file   TestDataLink.cc
 /// @author Tomas Kral
 
-#include <string>
-#include <vector>
+#include "odblib/DataColumns.h"
+
+//#include <string>
+//#include <vector>
 
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
@@ -19,12 +21,12 @@ struct FilledTables
     FilledTables();
    ~FilledTables();
 
-    static DataColumns columns(const string& name);
+    static DataColumns columns(const std::string& name);
     static DataTableProperties properties();
     
     DataTable parent;
     DataTable child;
-    vector<DataTable*> result;
+    std::vector<DataTable*> result;
 };
 
 FilledTables::FilledTables()

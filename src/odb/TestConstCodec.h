@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestConstCodec : public TestCase {
 public:
 	TestConstCodec(int argc, char **argv);

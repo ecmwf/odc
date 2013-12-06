@@ -11,8 +11,8 @@
 #ifndef MockReader_H
 #define MockReader_H
 
-#include "odblib/odb_api.h"
-#include "odblib/IteratorProxy.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/IteratorProxy.h"
 
 namespace odb {
 namespace tool {
@@ -28,7 +28,7 @@ public:
 	const iterator end() { return iterator(0); }
 };
 
-#include "MockReader.cc"
+//#include "MockReader.cc"
 
 } // namespace tool 
 } // namespace odb 

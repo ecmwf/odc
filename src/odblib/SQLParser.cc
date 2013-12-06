@@ -43,6 +43,8 @@
 //#include "odblib/SQLSimpleOutput.h"
 #include "odblib/StringTool.h"
 #include "odblib/StringExpression.h"
+#include "odblib/SQLExpression.h"
+
 //#include "odblib/TemporaryFile.h"
 
 using namespace eckit;
@@ -74,7 +76,7 @@ using namespace odb::sql::expression::function;
 
 void odblib_error(const char* msg)
 {
-	stringstream os;
+    std::stringstream os;
 	os << msg << " line " << odblib_lineno; // TODO: << " of " << yypath;
 	throw SyntaxError(os.str()); 
 }
@@ -91,7 +93,7 @@ namespace sql {
 void SQLParser::pushInclude(const std::string& sql, const std::string& yypath) { SQLYacc::pushInclude(sql, yypath); }
 void SQLParser::popInclude() { SQLYacc::popInclude(); }
 
-void SQLParser::parseString(const std::string& s, istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
+void SQLParser::parseString(const std::string& s, std::istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
 {
     AutoLock<Mutex> lock(local_mutex);
 

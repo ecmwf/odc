@@ -94,18 +94,18 @@ private:
 	std::vector<SQLTable*> tables_;
 	SortedTables sortedTables_;
 
-	auto_ptr<odb::sql::expression::SQLExpression> where_;
+    std::auto_ptr<odb::sql::expression::SQLExpression> where_;
 	odb::sql::expression::SQLExpression* simplifiedWhere_;
 
 	Stack env;
 
-	auto_ptr<SQLOutput>     output_;
+    std::auto_ptr<SQLOutput>     output_;
 	Expressions  results_;
 
-	typedef std::map<std::vector<pair<double,bool> >, expression::Expressions*> AggregatedResults;
+    typedef std::map<std::vector<std::pair<double,bool> >, expression::Expressions*> AggregatedResults;
 	AggregatedResults aggregatedResults_;
 
-	std::map<std::string,pair<double,bool> > values_;
+    std::map<std::string, std::pair<double,bool> > values_;
 	std::set<SQLTable*>     allTables_;
 
 	typedef std::map<SQLTable*,SelectOneTable> TableMap;

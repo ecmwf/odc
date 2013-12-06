@@ -16,6 +16,7 @@
 #define TestCase_H
 
 #include "odblib/Tool.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 namespace tool {

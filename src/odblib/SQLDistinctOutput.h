@@ -35,7 +35,7 @@ private:
 	virtual const SQLOutputConfig& config();
 	virtual	void config(SQLOutputConfig&);
 // -- Members
-	auto_ptr<SQLOutput>   output_;
+    std::auto_ptr<SQLOutput>   output_;
 	std::set<std::vector<double> >  seen_;
 	std::vector<double>        tmp_;
 // -- Overridden methods

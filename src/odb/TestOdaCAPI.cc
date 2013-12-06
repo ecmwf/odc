@@ -8,20 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/FileHandle.h"
-#include "eckit/utils/Timer.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/FileHandle.h"
+//#include "eckit/utils/Timer.h"
 
-#include "eckit/utils/Timer.h"
-#include "odblib/Writer.h"
-#include "odblib/ODBSelect.h"
-#include "odblib/odb_api.h"
+//#include "eckit/utils/Timer.h"
+//#include "odblib/Writer.h"
+//#include "odblib/ODBSelect.h"
+//#include "odblib/odb_api.h"
 
 extern "C" {
-#include "odblib/odbcapi.h"
+//#include "odblib/odbcapi.h"
 }
 
-#include "odb/TestOdaCAPI.h"
+//#include "odb/TestOdaCAPI.h"
 
 
 using namespace std;

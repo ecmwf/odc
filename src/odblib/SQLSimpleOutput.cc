@@ -21,7 +21,7 @@ SQLSimpleOutput::SQLSimpleOutput(std::ostream& out):
 	out_(out),
 	count_(0)
 {
-	out_ << fixed;
+    out_ << std::fixed;
 }
 
 SQLSimpleOutput::~SQLSimpleOutput() {}
@@ -31,7 +31,7 @@ void SQLSimpleOutput::print(std::ostream& s) const
 	s << "SQLSimpleOutput";
 }
 
-ostream& SQLSimpleOutput::format(std::ostream& o, size_t i) const
+std::ostream& SQLSimpleOutput::format(std::ostream& o, size_t i) const
 {
 	o.width(columnWidths_[i]);
 	return o << *columnAlignments_[i];
@@ -98,7 +98,7 @@ void SQLSimpleOutput::outputString(double x, bool missing) const
 		out_ << "NULL";
 	else
 	{
-		stringstream ss;
+        std::stringstream ss;
 		ss << "'";
 		char *p = reinterpret_cast<char*>(&x);
 		for(size_t i = 0; i < sizeof(x); i++)
@@ -120,7 +120,7 @@ void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 		out_ << "NULL";
 	else
 	{
-		stringstream ss;
+        std::stringstream ss;
 		Decoder::printBinary(ss, static_cast<unsigned long>(x));
 		out_ << ss.str();
 	}
@@ -134,7 +134,7 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 		std::string name = columns[i]->title();
 		const type::SQLType* type = columns[i]->type();
 
-		columnWidths_.push_back(max(type->width(), name.size()));
+        columnWidths_.push_back(std::max(type->width(), name.size()));
 		columnAlignments_.push_back(type->format());
 
 		if (! config_.doNotWriteColumnNames)
@@ -147,7 +147,7 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 				out_ << name;
 			else 
 			{
-				stringstream ss;
+                std::stringstream ss;
 				ss << name << ":" << type->name();
 				out_ << ss.str();
 			}

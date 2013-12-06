@@ -335,11 +335,11 @@ SQLTable* SQLDatabase::table(const std::string& name)
 	return (*j).second;
 }
 
-void SQLDatabase::setVariable(const std::string& name, SQLExpression* value) {
+void SQLDatabase::setVariable(const std::string& name, expression::SQLExpression* value) {
 	variables_[name] = value;
 }
 
-SQLExpression* SQLDatabase::getVariable(const std::string& name) const
+expression::SQLExpression* SQLDatabase::getVariable(const std::string& name) const
 {
 	Variables::const_iterator j = variables_.find(name);
 	if(j == variables_.end())

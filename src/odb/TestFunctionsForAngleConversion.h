@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestFunctionsForAngleConversion : public TestCase {
 public:
 	TestFunctionsForAngleConversion(int argc, char **argv);

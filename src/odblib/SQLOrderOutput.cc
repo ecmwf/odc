@@ -19,7 +19,7 @@
 namespace odb {
 namespace sql {
 
-SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const pair<Expressions,std::vector<bool> >& by)
+SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const std::pair<Expressions,std::vector<bool> >& by)
 : output_(output),
   by_(by)
 {

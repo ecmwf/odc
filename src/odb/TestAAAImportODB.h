@@ -19,6 +19,8 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
 class TestAAAImportODB : public TestCase {
 public:
 	TestAAAImportODB(int argc, char **argv);

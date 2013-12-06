@@ -26,12 +26,12 @@ public:
 	static void help(std::ostream &o) { o << "Merges rows from files"; }
 	static void usage(const std::string& name, std::ostream &o)
 	{
-		o << endl
-          << name << " -o <output-file.odb> <input1.odb> <input2.odb> ..." << endl
-                  << ""                                                    << endl
-                  << " or "                                                << endl
-                  << ""                                                    << endl
-          << name << " -S -o <output-file.odb> <input1.odb> <sql-select1> <input2.odb> <sql-select2> ..." << endl
+        o << std::endl
+          << name << " -o <output-file.odb> <input1.odb> <input2.odb> ..." << std::endl
+                  << ""                                                    << std::endl
+                  << " or "                                                << std::endl
+                  << ""                                                    << std::endl
+          << name << " -S -o <output-file.odb> <input1.odb> <sql-select1> <input2.odb> <sql-select2> ..." << std::endl
                   ;
 	}
 

@@ -71,10 +71,5 @@
 //#include "odblib/SQLParser.h"
 //#include "odblib/SQLExpression.h"
 
-#ifndef MEGA
-#define MEGA(x) ((x)*1024*1024)
-#endif
-
-using namespace std;
 
 #endif

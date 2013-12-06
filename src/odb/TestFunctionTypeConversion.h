@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestFunctionTypeConversion : public TestCase {
 public:
 	TestFunctionTypeConversion(int argc, char **argv);

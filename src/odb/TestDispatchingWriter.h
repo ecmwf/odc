@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestDispatchingWriter : public TestCase {
 public:
 	TestDispatchingWriter(int argc, char **argv);

@@ -66,19 +66,19 @@ void SQLExpression::output(SQLOutput& s) const
 	s.outputReal(d, missing);
 }
 
-void SQLExpression::title(const string& t)
+void SQLExpression::title(const std::string& t)
 {
 	title_ = t;
 }
 
-string SQLExpression::title() const
+std::string SQLExpression::title() const
 {
 	if(title_.size())
 		return title_;
 
 	StrStream s;
 	s << *this << StrStream::ends;
-	return string(s);
+    return std::string(s);
 }
 
 

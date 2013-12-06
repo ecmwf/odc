@@ -74,7 +74,7 @@ void HeaderTool::run()
 
 	std::string db = parameters(1);
 
-	ostream& o = cout;
+    std::ostream& o = std::cout;
 	VerbosePrinter verbosePrinter;
 	OffsetsPrinter offsetsPrinter;
 	MDPrinter& printer(* (optionIsSet("-offsets")

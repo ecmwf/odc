@@ -24,7 +24,6 @@
 
 //#include "odblib/StringTool.h"
 
-using namespace std;
 
 namespace eckit { class PathName; }
 

@@ -12,74 +12,74 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <algorithm>
+//#include <iostream>
+//#include <vector>
+//#include <map>
+//#include <algorithm>
 
-#include <stdlib.h>
-#include <memory> 
+//#include <stdlib.h>
+//#include <memory> 
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/DataHandle.h"
-#include "eckit/io/FileHandle.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/DataHandle.h"
+//#include "eckit/io/FileHandle.h"
 
-#include "eckit/log/Log.h"
-#include "eckit/utils/Timer.h"
-#include "odblib/Writer.h"
-#include "odblib/ODBSelect.h"
-#include "odblib/TextReader.h"
-#include "odblib/TextReaderIterator.h"
+//#include "eckit/log/Log.h"
+//#include "eckit/utils/Timer.h"
+//#include "odblib/Writer.h"
+//#include "odblib/ODBSelect.h"
+//#include "odblib/TextReader.h"
+//#include "odblib/TextReaderIterator.h"
 
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
-#include "odblib/Codec.h"
-#include "odblib/HashTable.h"
-#include "odblib/Column.h"
-#include "odblib/MetaData.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/HashTable.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLAST.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/Header.h"
-#include "odblib/Reader.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/ReaderIterator.h"
-#include "odblib/Comparator.h"
-#include "odblib/MetaDataReader.h"
-#include "odblib/MetaDataReaderIterator.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/Codec.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/Column.h"
+//#include "odblib/MetaData.h"
+//#include "odblib/RowsIterator.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLIteratorSession.h"
+//#include "odblib/Header.h"
+//#include "odblib/Reader.h"
+//#include "odblib/SelectIterator.h"
+//#include "odblib/ReaderIterator.h"
+//#include "odblib/Comparator.h"
+//#include "odblib/MetaDataReader.h"
+//#include "odblib/MetaDataReaderIterator.h"
 
-#include "odblib/Decoder.h"
-#include "odblib/SQLSelectFactory.h"
-#include "odblib/FastODA2Request.h"
-#include "odblib/MemoryBlock.h"
-#include "odblib/InMemoryDataHandle.h"
-#include "odblib/odb_api.h"
-#include "odblib/odbcapi.h"
-#include "odblib/ImportTool.h"
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "odblib/DateTime.h"
-#include "odblib/SplitTool.h"
-#include "odblib/CountTool.h"
-#include "odblib/SQLTool.h"
-#include "odblib/MapReduce.h"
+//#include "odblib/Decoder.h"
+//#include "odblib/SQLSelectFactory.h"
+//#include "odblib/FastODA2Request.h"
+//#include "odblib/MemoryBlock.h"
+//#include "odblib/InMemoryDataHandle.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/odbcapi.h"
+//#include "odblib/ImportTool.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+//#include "odblib/DateTime.h"
+//#include "odblib/SplitTool.h"
+//#include "odblib/CountTool.h"
+//#include "odblib/SQLTool.h"
+//#include "odblib/MapReduce.h"
 
-#include "odb/TestWriteCatFiles.h"
-#include "odblib/ToolFactory.h"
-#include "eckit/utils/Timer.h"
-#include "odblib/Writer.h"
-#include "odblib/ODBSelect.h"
-#include "odblib/Reader.h"
-#include "odblib/SQLParser.h"
+//#include "odb/TestWriteCatFiles.h"
+//#include "odblib/ToolFactory.h"
+//#include "eckit/utils/Timer.h"
+//#include "odblib/Writer.h"
+//#include "odblib/ODBSelect.h"
+//#include "odblib/Reader.h"
+//#include "odblib/SQLParser.h"
 
-#include "eckit/utils/Timer.h"
-#include "odblib/Writer.h"
-#include "odblib/ODBSelect.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "odb/TestOdaCAPI.h"
+//#include "eckit/utils/Timer.h"
+//#include "odblib/Writer.h"
+//#include "odblib/ODBSelect.h"
+//#include "odblib/SQLInteractiveSession.h"
+//#include "odb/TestOdaCAPI.h"
 
 using namespace std;
 using namespace eckit;
@@ -814,7 +814,7 @@ TEST(include)
 	f.close();
 
 	const char *sql =
-	"#include \"stuff.sql\"\n"
+	"//#include \"stuff.sql\"\n"
 	"set $baz = $bar;"
 	"select $foo * $bar;"
 	;

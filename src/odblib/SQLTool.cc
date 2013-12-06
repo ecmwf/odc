@@ -75,10 +75,10 @@ void SQLTool::run()
 	std::string sql(StringTool::isSelectStatement(params[0])
 				? StringTools::join(" ",  params) + ";"
 				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
-	auto_ptr<ofstream> foutPtr(optionIsSet("-o")
-								? new ofstream(optionArgument("-o", std::string("")).c_str())
+    std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o")
+                                ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
 								: 0);
-	ostream& out(foutPtr.get() ? *foutPtr : cout);
+    std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
 	SQLInteractiveSession session(out);
 	SQLParser parser;
 	SQLOutputConfig config(SQLSelectFactory::instance().config());

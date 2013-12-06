@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestFunctionEqBox : public TestCase {
 public:
 	TestFunctionEqBox(int argc, char **argv);

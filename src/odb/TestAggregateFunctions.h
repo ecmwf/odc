@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+
+#include "odblib/TestCase.h"
+
 class TestAggregateFunctions : public TestCase {
 public:
 	TestAggregateFunctions(int argc, char **argv);

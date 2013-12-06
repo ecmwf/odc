@@ -64,6 +64,5 @@ private:
 } // namespace sql
 } // namespace odb
 
-using namespace odb::sql::expression;
 
 #endif

@@ -13,14 +13,13 @@
 #include <ostream>
 #include <string>
 
-using namespace std;
 
 class Tracer {
 public:
 	Tracer(std::ostream&, const std::string&);
 	~Tracer();
 private:
-	ostream& out_;
+    std::ostream& out_;
     std::string message_;
 };
 

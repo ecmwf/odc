@@ -57,7 +57,7 @@ public:
     eckit::DataHandle* implicitFromTableSource() { return implicitFromTableSource_; }
     void implicitFromTableSource(eckit::DataHandle* h) { implicitFromTableSource_ = h; }
 
-    istream* implicitFromTableSourceStream() { return implicitFromTableSourceStream_; }
+    std::istream* implicitFromTableSourceStream() { return implicitFromTableSourceStream_; }
     void implicitFromTableSourceStream(std::istream* is) { implicitFromTableSourceStream_ = is; }
 
 	SQLDatabase* database() { return database_; }
@@ -87,7 +87,7 @@ private:
 
     eckit::DataHandle* implicitFromTableSource_;
 
-    istream* implicitFromTableSourceStream_;
+    std::istream* implicitFromTableSourceStream_;
 
 	SQLDatabase* database_;
 	SQLOutputConfig config_;

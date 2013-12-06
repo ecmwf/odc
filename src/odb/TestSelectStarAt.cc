@@ -12,44 +12,44 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <algorithm>
+//#include <iostream>
+//#include <vector>
+//#include <map>
+//#include <algorithm>
 
-#include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "TestSelectStarAt.h"
-#include "odblib/ToolFactory.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+//#include "TestSelectStarAt.h"
+//#include "odblib/ToolFactory.h"
 
 
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/DataHandle.h"
-#include "odblib/DataStream.h"
-#include "odblib/HashTable.h"
-#include "odblib/Codec.h"
-#include "odblib/Column.h"
-#include "odblib/MetaData.h"
-#include "eckit/io/DataHandle.h"
-#include "odblib/DataStream.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/HashTable.h"
-#include "eckit/log/Log.h"
-#include "odblib/SQLBitfield.h"
-#include "odblib/SQLAST.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SQLIteratorSession.h"
-#include "odblib/Header.h"
-#include "odblib/Reader.h"
-#include "eckit/io/DataHandle.h"
-#include "odblib/SelectIterator.h"
-#include "odblib/ReaderIterator.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/DataHandle.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/HashTable.h"
+//#include "odblib/Codec.h"
+//#include "odblib/Column.h"
+//#include "odblib/MetaData.h"
+//#include "eckit/io/DataHandle.h"
+//#include "odblib/DataStream.h"
+//#include "odblib/RowsIterator.h"
+//#include "odblib/HashTable.h"
+//#include "eckit/log/Log.h"
+//#include "odblib/SQLBitfield.h"
+//#include "odblib/SQLAST.h"
+//#include "odblib/SchemaAnalyzer.h"
+//#include "odblib/SQLIteratorSession.h"
+//#include "odblib/Header.h"
+//#include "odblib/Reader.h"
+//#include "eckit/io/DataHandle.h"
+//#include "odblib/SelectIterator.h"
+//#include "odblib/ReaderIterator.h"
 
-#include "eckit/utils/Timer.h"
-#include "odblib/Writer.h"
-#include "odblib/ODBSelect.h"
+//#include "eckit/utils/Timer.h"
+//#include "odblib/Writer.h"
+//#include "odblib/ODBSelect.h"
 using namespace std;
 using namespace eckit;
 

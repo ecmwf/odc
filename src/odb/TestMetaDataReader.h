@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestMetaDataReader : public TestCase {
 public:
 	TestMetaDataReader(int argc, char **argv);

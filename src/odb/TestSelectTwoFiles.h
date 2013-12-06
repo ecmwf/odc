@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestSelectTwoFiles : public TestCase {
 public:
 	TestSelectTwoFiles(int argc, char **argv);

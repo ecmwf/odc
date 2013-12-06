@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestSetvbuffer : public TestCase {
 public:
 	TestSetvbuffer(int argc, char **argv);

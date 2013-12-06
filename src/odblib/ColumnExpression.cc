@@ -128,7 +128,7 @@ void ColumnExpression::output(SQLOutput& o) const
 
 void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
 {
-	ostream& L(Log::debug());
+    std::ostream& L(Log::debug());
 	L << "ColumnExpression::expandStars: expanding '" << columnName_ << "' (" << tableReference_ << ")" << std::endl;
 
 	if(beginIndex_ != -1 && endIndex_ != -1)
@@ -147,7 +147,7 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 		return;
 	}
 
-	stringstream ss;
+    std::stringstream ss;
 	
 	unsigned int matched = 0;
     for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)

@@ -8,21 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
-#include <sstream>
+//#include <sstream>
 
-#include "eckit/runtime/Application.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/io/FileHandle.h"
+//#include "eckit/runtime/Application.h"
+//#include "eckit/filesystem/PathName.h"
+//#include "eckit/io/FileHandle.h"
 
-#include "odb/TestOdaCAPI.h"
+//#include "odb/TestOdaCAPI.h"
 
-#include "odblib/odb_api.h"
-#include "odblib/odbcapi.h"
-#include "odblib/TestRunnerApplication.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/ToolRunnerApplication.h"
-#include "odblib/FunctionFactory.h"
-#include "odblib/ODBAPIVersion.h"
+//#include "odblib/odb_api.h"
+//#include "odblib/odbcapi.h"
+//#include "odblib/TestRunnerApplication.h"
+//#include "odblib/ToolFactory.h"
+//#include "odblib/ToolRunnerApplication.h"
+//#include "odblib/FunctionFactory.h"
+//#include "odblib/ODBAPIVersion.h"
 
 
 using namespace std;

@@ -70,7 +70,7 @@ void TestRunner::run()
 			std::string suiteName = clp_.parameters()[i];
 			ASSERT("Suite does not exist" && suites_.find(suiteName) != suites_.end());
 			std::vector<std::string>& suite = suites_[suiteName];
-			auto_ptr<TestCases> tsts(AbstractToolFactory::testCases(suite));
+            std::auto_ptr<TestCases> tsts(AbstractToolFactory::testCases(suite));
 			runTests(*tsts);
 			tests->insert(tests->end(), tsts->begin(), tsts->end());
 		}
@@ -89,17 +89,17 @@ void TestRunner::run()
 		delete (*tests)[i];
 
 	if (failed_.size() == 0) {
-		Log::info() << endl << "+- Phew, made it! All " << nTests << " tests passed successfully. " << endl << std::endl;
+        Log::info() << std::endl << "+- Phew, made it! All " << nTests << " tests passed successfully. " << std::endl << std::endl;
 		Log::info() << runningTimes_.str() << std::endl;;
 		Log::info() << totalRunningTime.str() << std::endl;
 	}
 	else
 	{
-		Log::error() << endl << "+- Summary: " << failed_.size() << " test(s) failed." << std::endl;
+        Log::error() << std::endl << "+- Summary: " << failed_.size() << " test(s) failed." << std::endl;
 		for (std::vector<FailedTest>::iterator it = failed_.begin(); it != failed_.end(); ++it) {
 			const std::string& name = it->first;
 			const std::string& what = it->second;
-			Log::error() << "\t" << name << ": " << endl << what;
+            Log::error() << "\t" << name << ": " << std::endl << what;
 		}
 		Log::error() << std::endl;
 
@@ -121,8 +121,8 @@ void TestRunner::runTests(const TestCases& tests)
 		Log::info() << "+- Running " << name << " ..." << std::endl;
 		smslabel(name);
 
-		stringstream runningTime;
-		auto_ptr<Timer> timer(new Timer(name, runningTime));
+        std::stringstream runningTime;
+        std::auto_ptr<Timer> timer(new Timer(name, runningTime));
 		try {
 			tst->setUp();
 			tst->test();
@@ -156,7 +156,7 @@ void TestRunner::runTests(const TestCases& tests)
 		else {
 			timer.reset();
 			runningTimes_ << runningTime.str();
-			Log::info() << "+- Passed." << endl << std::endl;
+            Log::info() << "+- Passed." << std::endl << std::endl;
 		 	xml_ << "<testcase classname=\"test\" name=\"" << name 
 				<< "\" time=\"" << StringTools::split(" ", runningTime.str())[1] << "\"/>" << std::endl;
 		}

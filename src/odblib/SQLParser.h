@@ -45,7 +45,7 @@ public:
 	static int line();
 
 	static void parseString(const std::string&, eckit::DataHandle*, SQLOutputConfig);
-	static void parseString(const std::string&, istream*, SQLOutputConfig, const std::string& cvsDelimiter);
+    static void parseString(const std::string&, std::istream*, SQLOutputConfig, const std::string& cvsDelimiter);
 	static void parseString(const std::string&, SQLDatabase&, SQLOutputConfig);
 
 	//static void include(const eckit::PathName&);

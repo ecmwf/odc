@@ -27,7 +27,6 @@
 
 #include "odblib/ColumnType.h"
 
-using namespace std;
 
 namespace eckit { class PathName; class CodeLocation; }
 
@@ -71,7 +70,7 @@ public:
 
 };
 
-ostream& operator<<(std::ostream&, const std::vector<std::string>&);
+std::ostream& operator<<(std::ostream&, const std::vector<std::string>&);
 
 } // namespace odb 
 

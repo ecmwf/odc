@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestBitfields : public TestCase {
 public:
 	TestBitfields(int argc, char **argv);

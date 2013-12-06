@@ -15,9 +15,14 @@
 #ifndef TestCommandLineParsing_H
 #define TestCommandLineParsing_H
 
+#include "odblib/TestCase.h"
+
 namespace odb {
 namespace tool {
 namespace test {
+
+#include "odblib/TestCase.h"
+
 
 class TestCommandLineParsing : public TestCase {
 public:

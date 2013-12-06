@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestFunctionRggBox : public TestCase {
 public:
 	TestFunctionRggBox(int argc, char **argv);

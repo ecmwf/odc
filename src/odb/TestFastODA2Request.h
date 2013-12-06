@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestFastODA2Request : public TestCase {
 public:
 	TestFastODA2Request(int argc, char **argv);

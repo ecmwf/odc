@@ -1,7 +1,7 @@
 /// @file   TestDataTable.cc
 /// @author Tomas Kral
 
-#include <string>
+//#include <string>
 
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"

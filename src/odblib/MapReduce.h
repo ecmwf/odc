@@ -20,7 +20,6 @@
 //#include <stdlib.h>
 //#include <memory> 
 
-using namespace std;
 
 //#include "eckit/filesystem/PathName.h"
 //#include "eckit/io/DataHandle.h"

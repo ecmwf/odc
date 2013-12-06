@@ -25,7 +25,7 @@ namespace sql {
 
 class SQLOrderOutput : public SQLOutput {
 public:
-	SQLOrderOutput(SQLOutput* output, const pair<Expressions,std::vector<bool> >& by);
+    SQLOrderOutput(SQLOutput* output, const std::pair<Expressions,std::vector<bool> >& by);
 	virtual ~SQLOrderOutput();
 
 protected:
@@ -37,7 +37,7 @@ private:
 	SQLOrderOutput& operator=(const SQLOrderOutput&);
 
 // -- Members
-	auto_ptr<SQLOutput> output_;
+    std::auto_ptr<SQLOutput> output_;
 	std::pair<Expressions,std::vector<bool> > by_;
 	
 	typedef std::map<OrderByExpressions, VectorOfExpressions> SortedResults;

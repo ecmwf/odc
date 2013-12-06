@@ -15,9 +15,14 @@
 #ifndef TestFastODA2Request2_H
 #define TestFastODA2Request2_H
 
+#include "eckit/io/Length.h"
+
 namespace odb {
 namespace tool {
 namespace test {
+
+#include "odblib/TestCase.h"
+
 
 class TestFastODA2Request2 : public TestCase {
 public:
@@ -29,7 +34,7 @@ public:
 	virtual void tearDown();
 
 private:
-	eckit::Length createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype);
+    eckit::Length createFile(const std::string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype);
 
 	eckit::Length size1_;
 	eckit::Length size2_;

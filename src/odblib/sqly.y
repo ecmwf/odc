@@ -18,20 +18,20 @@
 
 using namespace SQLYacc;
 
-typedef odb::sql::expression::SQLExpression* SQLExpressionPtr; // For casts.
+typedef SQLExpression* SQLExpressionPtr; // For casts.
 
 struct YYSTYPE {
 	SQLExpression         *exp;
 	SQLTable              *table;
 	double                 num;
-	string                 val;
-	vector<string>         list;
+        std::string                 val;
+        std::vector<std::string>         list;
 	Expressions            explist;
 	std::pair<SQLExpression*,SQLExpression*> ass;
 	Dictionary				dic;
 	std::pair<SQLExpression*,bool> orderexp;
-	std::pair<Expressions,vector<bool> > orderlist;
-	vector<SQLTable*>      tablist;
+        std::pair<Expressions,std::vector<bool> > orderlist;
+        std::vector<SQLTable*>      tablist;
 	ColumnDefs             coldefs;
 	ColumnDef              coldef;
 	ConstraintDefs         condefs;
@@ -266,22 +266,22 @@ create_index_statement: CREATE INDEX IDENT TABLE IDENT
 
 create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')'
 	{
-		string		typeName = $2;
+                std::string		typeName = $2;
 		ColumnDefs	colDefs = $5;
 		FieldNames	fields;
 		Sizes		sizes;
 		for (ColumnDefs::size_type i = 0; i < colDefs.size(); i++) {
-			string name = colDefs[i].name();
-			string memberType = colDefs[i].type();
+                        std::string name = colDefs[i].name();
+                        std::string memberType = colDefs[i].type();
 
 			fields.push_back(name);
 
-			int size = atof(memberType.c_str() + 3); // bit[0-9]+
+                        int size = ::atof(memberType.c_str() + 3); // bit[0-9]+
 			ASSERT(size > 0);
 
 			sizes.push_back(size);
 		}
-		string typeSignature = type::SQLBitfield::make("Bitfield", fields, sizes, typeName.c_str());
+                std::string typeSignature = type::SQLBitfield::make("Bitfield", fields, sizes, typeName.c_str());
 
 		SQLSession::current()
 		.currentDatabase()
@@ -325,11 +325,11 @@ inheritance_list: inheritance_list_       { $$ = $1; }
                  | inheritance_list_ ','  { $$ = $1; }
                  ;
 
-inheritance_list_: IDENT                         { $$ = vector<string>(); $$.insert($$.begin(), $1); }
+inheritance_list_: IDENT                         { $$ = std::vector<std::string>(); $$.insert($$.begin(), $1); }
                  | inheritance_list_ ',' IDENT   { $$ = $1; $$.push_back($3); }
 
 inherits: INHERITS '(' inheritance_list ')'   { $$ = $3;               }
-        | empty                               { $$ = vector<string>(); }
+        | empty                               { $$ = std::vector<std::string>(); }
         ;
 
 constraint_list: constraint_list_ { $$ = $1; }
@@ -356,10 +356,10 @@ foreign_key: constraint_name FOREIGN KEY '(' column_reference_list ')' REFERENCE
            ;
 
 constraint_name: CONSTRAINT IDENT { $$ = $2; }
-               | empty { $$ = string(); }
+               | empty { $$ = std::string(); }
                ;
 
-column_reference_list: column_reference { $$ = vector<string>(1, $1); }
+column_reference_list: column_reference { $$ =std:: vector<std::string>(1, $1); }
                 | column_reference_list ',' column_reference { $$ = $1; $$.push_back($3); }
                 ;
 
@@ -369,9 +369,9 @@ column_reference: IDENT table_reference { $$ = $1 + $2; }
 create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list constraint_list ')' inherits
 	{
 		bool temporary($2);
-                string name($4);
+                std::string name($4);
 		ColumnDefs cols ($7);
-		vector<string> inheritance($10);
+                std::vector<std::string> inheritance($10);
 		TableDef tableDef(name, cols, $8, inheritance);
 		SQLSession& s  = SQLSession::current();
 		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
@@ -379,7 +379,7 @@ create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list
 	;
 
 table_name: IDENT { $$ = $1; }
-          | IDENT '.' IDENT { $$ = $1 + string(".") + $3; }
+          | IDENT '.' IDENT { $$ = $1 + std::string(".") + $3; }
           | expression_ex { SQLExpression* e($1); $$ = e->title(); }
           ;
 
@@ -400,9 +400,9 @@ column_def: column_name vector_range_decl data_type default_value
 	}
 	;
 
-vector_range_decl: '[' DOUBLE ']'            { $$ = make_pair(1, $2); }
-                 | '[' DOUBLE ':' DOUBLE ']' { $$ = make_pair($2, $4); }
-                 | empty                     { $$ = make_pair(0, 0); }
+vector_range_decl: '[' DOUBLE ']'            { $$ = std::make_pair(1, $2); }
+                 | '[' DOUBLE ':' DOUBLE ']' { $$ = std::make_pair($2, $4); }
+                 | empty                     { $$ = std::make_pair(0, 0); }
                  ;
 
 column_name: IDENT { $$ = $1; }
@@ -414,7 +414,7 @@ data_type: IDENT                 { $$ = $1; }
          ;
 
 default_value: DEFAULT expression_ex { SQLExpression* e($2); $$ = e->title(); }
-             | empty { $$ = string(); }
+             | empty { $$ = std::string(); }
              ;
 
 create_view_statement: CREATE VIEW IDENT AS select_statement
@@ -424,11 +424,11 @@ select_statement: SELECT distinct select_list into from where group_by order_by
 					{   
 						bool                   distinct($2);
 						Expressions            select_list($3);
-						string                 into($4);
-						vector<SQLTable*>      from($5);
+                                                std::string                 into($4);
+                                                std::vector<SQLTable*>      from($5);
 						SQLExpression          *where($6);
 						Expressions            group_by($7);
-						std::pair<Expressions,vector<bool> >      order_by($8);
+                                                std::pair<Expressions,std::vector<bool> >      order_by($8);
 
 						SQLSelect* sqlSelect = SQLSelectFactory::instance()
 							.create(distinct, select_list, into, from, where, group_by, order_by);
@@ -447,7 +447,7 @@ into: INTO IDENT   { $$ = $2; }
     ;
 
 from : FROM table_list { $$ = $2; }
-	 | empty           { $$ = vector<SQLTable*>(); }
+         | empty           { $$ = std::vector<SQLTable*>(); }
 	 ;
 
 where : WHERE expression { $$ = $2; }
@@ -463,7 +463,7 @@ dictionary: '{' association_list '}' { $$ = new Dictionary($2); }
 assignment_rhs	: expression_ex
 		;
 
-association: expression ':' expression_ex  { $$ = make_pair($1, $3); }
+association: expression ':' expression_ex  { $$ = std::make_pair($1, $3); }
 		   ;
 
 association_list: association { Dictionary d; d[($1 .first)->title()] = $1 .second; $$ = d; }
@@ -485,7 +485,7 @@ set_statement : SET VAR EQ assignment_rhs
 	; 
 
 bitfield_ref: '.' IDENT  { $$ = $2; }
-			|            { $$ = string(); }
+                        |            { $$ = std::string(); }
 
 column: IDENT vector_index table_reference optional_hash
 		  {
@@ -517,8 +517,8 @@ vector_index : '[' expression ']'    { $$ = $2; }
              | empty                 { $$ = NULL; }
              ;
 
-table_reference: '@' IDENT   { $$ = string("@") + $2; }
-               | empty       { $$ = string(""); }
+table_reference: '@' IDENT   { $$ = std::string("@") + $2; }
+               | empty       { $$ = std::string(""); }
                ;
 
 table : IDENT '.' IDENT { SQLSession& s  = SQLSession::current(); $$ = s.findTable($1,$3); }
@@ -526,7 +526,7 @@ table : IDENT '.' IDENT { SQLSession& s  = SQLSession::current(); $$ = s.findTab
 	  | STRING			{ SQLSession& s  = SQLSession::current(); $$ = s.findFile($1); }
 	  ;
 
-table_list : table                  { $$ = vector<SQLTable*>(1,$1); }
+table_list : table                  { $$ = std::vector<SQLTable*>(1,$1); }
 	       | table_list  ',' table  { $$ = $1; $$.push_back($3); }
 	       ;
 
@@ -570,17 +570,17 @@ group_by: GROUP BY expression_list { $$ = $3;                       }
 /*================= ORDER =========================================*/
 
 order_by: ORDER BY order_list { $$ = $3;                       }
-        | empty               { $$ = make_pair(Expressions(),vector<bool>()); }
+        | empty               { $$ = std::make_pair(Expressions(),std::vector<bool>()); }
 	    ;
 
 
-order_list : order                  { $$ = make_pair(Expressions(1, $1 .first),vector<bool>(1, $1 .second)); }
+order_list : order                  { $$ = std::make_pair(Expressions(1, $1 .first),std::vector<bool>(1, $1 .second)); }
            | order_list ',' order   { $$ = $1; $$.first.push_back($3 .first); $$.second.push_back($3 .second); }
 		   ;
 
-order : expression DESC      { $$ = make_pair($1, false); }
-      | expression ASC       { $$ = make_pair($1, true); }
-	  | expression			 { $$ = make_pair($1, true); }
+order : expression DESC      { $$ = std::make_pair($1, false); }
+      | expression ASC       { $$ = std::make_pair($1, true); }
+          | expression			 { $$ = std::make_pair($1, true); }
 	  ;
 
 /*================= EXTENDED EXPRESSION =================================*/
@@ -615,8 +615,8 @@ atom_or_number : '(' expression ')'           { $$ = $2; }
 			   | func '(' empty ')'           { $$ = ast($1, emptyExpressionList); }
 			   | func '(' '*' ')'             
 				{
-					if (string("count") != $1)
-						throw eckit::UserError(string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
+                                        if (std::string("count") != $1)
+                                                throw eckit::UserError(std::string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
 
 					$$ = ast("count", new NumberExpression(1.0));
 				}
@@ -707,11 +707,11 @@ expression  : disjonction
 				if (container->isDictionary())
 				{
 					// TODO: check title always returns string repr of it's value
-					string key = index->title();
+                                        std::string key = index->title();
 					//cerr << "==== key: '" << key << "'" << std::endl;
 					if (container->dictionary().find(key) == container->dictionary().end())
 					{
-						stringstream ss;
+                                                std::stringstream ss;
 						ss << "Key '" << key << "' not found.";
 						throw eckit::UserError(ss.str());
 					}

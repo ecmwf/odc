@@ -156,7 +156,7 @@ SQLExpression* SQLSelectFactory::reshift(SQLExpression* e)
 
 void SQLSelectFactory::reshift(Expressions& select)
 {
-	ostream& L(Log::debug());
+    std::ostream& L(Log::debug());
 	L << "reshift: maxColumnShift_ = " << maxColumnShift_ << std::endl;
 	L << "reshift: minColumnShift_ = " << minColumnShift_ << std::endl;
 	for (size_t i = 0; i < select.size(); ++i)
@@ -209,15 +209,15 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	ASSERT(minColumnShift_ <= 0);
 	if (minColumnShift_ < 0) 
     {
-        L << endl << "SELECT_LIST before reshifting:" << select << std::endl;
+        L << std::endl << "SELECT_LIST before reshifting:" << select << std::endl;
 		reshift(select);
-        L << "SELECT_LIST after reshifting:" << select << endl << std::endl;
+        L << "SELECT_LIST after reshifting:" << select << std::endl << std::endl;
 
         if (where)
         {
-            L << endl << "WHERE before reshifting:" << *where << std::endl;
+            L << std::endl << "WHERE before reshifting:" << *where << std::endl;
             where = reshift(where);
-            L << "WHERE after reshifting:" << *where << endl << std::endl;
+            L << "WHERE after reshifting:" << *where << std::endl << std::endl;
         }
 
         reshift(order_by.first);

@@ -6,8 +6,9 @@
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/DataSet.h"
+#include "odblib/DataColumns.h"
 #include "odblib/DataTable.h"
-#include "odblib/DataLink.h"
+//#include "odblib/DataLink.h"
 
 using namespace std;
 using namespace odb;

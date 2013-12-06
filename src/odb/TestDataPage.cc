@@ -1,13 +1,15 @@
 /// @file   TestDataPage.cc
 /// @author Tomas Kral
 
-#include <string>
-#include <iostream>
+//#include <string>
+//#include <iostream>
 
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/DataTable.h"
-#include "odblib/DataPage.h"
+//#include "odblib/DataPage.h"
+
+#include "odblib/DataColumns.h"
 
 using namespace std;
 using namespace odb;

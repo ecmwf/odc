@@ -12,20 +12,20 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2010
 
-#include "odblib/odb_api.h"
+//#include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
-#include "odblib/TestCase.h"
-#include "TestInt16_MissingCodec.h"
-#include "odblib/ToolFactory.h"
-#include "MockReader.h"
-#include "odblib/MetaData.h"
+//#include "odblib/Tool.h"
+//#include "odblib/TestCase.h"
+//#include "TestInt16_MissingCodec.h"
+//#include "odblib/ToolFactory.h"
+//#include "MockReader.h"
+//#include "odblib/MetaData.h"
 
-#include "eckit/utils/Timer.h"
-#include "odblib/Writer.h"
-#include "odblib/ODBSelect.h"
+//#include "eckit/utils/Timer.h"
+//#include "odblib/Writer.h"
+//#include "odblib/ODBSelect.h"
 
-#include "odblib/Reader.h"
+//#include "odblib/Reader.h"
 
 using namespace std;
 using namespace eckit;

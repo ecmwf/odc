@@ -23,7 +23,6 @@
 #include "odblib/StringTool.h"
 #include "odblib/CommandLineParser.h"
 
-using namespace std;
 
 namespace eckit { class PathName; }
 class Application;

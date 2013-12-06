@@ -16,7 +16,6 @@
 
 #include <eckit/eckit.h>
 
-using namespace std;
 
 namespace odb {
 namespace sql {

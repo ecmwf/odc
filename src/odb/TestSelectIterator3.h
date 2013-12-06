@@ -19,6 +19,9 @@ namespace odb {
 namespace tool {
 namespace test {
 
+#include "odblib/TestCase.h"
+
+
 class TestSelectIterator3 : public TestCase {
 public:
 	TestSelectIterator3(int argc, char **argv);
