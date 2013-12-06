@@ -29,8 +29,10 @@
 #include "TestFunctionEqBox.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/piconst.h"
+#include "eckit/utils/Timer.h"
 
-#include "odblib/odb_api.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Writer.h"
 
 using namespace std;
 using namespace eckit;

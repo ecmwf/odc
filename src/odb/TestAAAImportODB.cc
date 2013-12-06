@@ -22,6 +22,7 @@ using namespace std;
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/io/DataHandle.h"
+#include "eckit/config/Resource.h"
 
 #include "odblib/odb_api.h"
 #include "odblib/Codec.h"

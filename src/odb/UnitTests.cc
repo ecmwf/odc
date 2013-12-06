@@ -22,7 +22,14 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/DataHandle.h"
+#include "eckit/io/FileHandle.h"
+
 #include "eckit/log/Log.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/TextReader.h"
+#include "odblib/TextReaderIterator.h"
 
 #include "odblib/DataStream.h"
 #include "odblib/HashTable.h"
@@ -41,6 +48,9 @@
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
 #include "odblib/Comparator.h"
+#include "odblib/MetaDataReader.h"
+#include "odblib/MetaDataReaderIterator.h"
+
 #include "odblib/Decoder.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/FastODA2Request.h"
@@ -59,7 +69,16 @@
 
 #include "odb/TestWriteCatFiles.h"
 #include "odblib/ToolFactory.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Reader.h"
+#include "odblib/SQLParser.h"
 
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/SQLInteractiveSession.h"
 #include "odb/TestOdaCAPI.h"
 
 using namespace std;

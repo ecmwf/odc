@@ -26,11 +26,14 @@
 
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
-#include "TestFunctionCircle.h"
+#include "odb/TestFunctionCircle.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/piconst.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 #include "odblib/odb_api.h"
+#include "eckit/utils/Timer.h"
 
 using namespace std;
 using namespace eckit;

@@ -24,13 +24,19 @@
 #define RMDI   -2147483647
 #define EPS    7e-6
 
+#include "eckit/utils/Timer.h"
+
 #include "odblib/Tool.h"
 #include "odblib/TestCase.h"
 #include "TestFunctionDistance.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/ODBSelect.h"
+
 #include "odblib/piconst.h"
 
 #include "odblib/odb_api.h"
+#include "odblib/Writer.h"
+
 
 using namespace std;
 using namespace eckit;

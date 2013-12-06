@@ -24,8 +24,16 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/TestCase.h"
 #include "odblib/ImportTool.h"
+#include "eckit/filesystem/PathName.h"
+#include "odblib/odb_api.h"
 
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
+#include "odblib/TestCase.h"
+#include "odblib/ImportTool.h"
+#include "odblib/Reader.h"
 #include "TestMetaDataReader.h"
+#include "odblib/MetaData.h"
 
 using namespace std;
 using namespace eckit;

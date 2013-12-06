@@ -20,6 +20,9 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/ImportTool.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 #include "eckit/filesystem/TmpFile.h"
 

@@ -22,8 +22,10 @@
 #include "odblib/TestCase.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/CountTool.h"
+#include "odblib/Reader.h"
 
 #include "odb/TestDispatchingWriter.h"
+#include "odblib/DispatchingWriter.h"
 
 using namespace std;
 using namespace eckit;

@@ -20,8 +20,8 @@
 //#include <Python.h>
 #endif
 
-//#include "odblib/SimpleFilterIterator.h"
-//#include "odblib/IteratorProxy.h"
+#include "odblib/SimpleFilterIterator.h"
+#include "odblib/IteratorProxy.h"
 
 namespace odb {
 

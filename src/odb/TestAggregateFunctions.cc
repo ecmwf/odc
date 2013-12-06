@@ -43,6 +43,9 @@
 #include "odblib/TestCase.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/ODBSelect.h"
+
+
 
 #include "odb/TestAggregateFunctions.h"
 

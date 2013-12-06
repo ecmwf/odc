@@ -51,6 +51,9 @@ using namespace std;
 #include "odblib/ReaderIterator.h"
 #include "odblib/Comparator.h"
 #include "odblib/odb_api.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 namespace odb {
 namespace tool {

@@ -15,6 +15,10 @@
 
 using namespace eckit;
 
+namespace odb {
+
+
+
 ODAHandle::ODAHandle(Offset start, Offset end)
 : start_(start),
   end_(end)
@@ -24,7 +28,7 @@ ODAHandle::ODAHandle(Offset start, Offset end)
 
 void ODAHandle::print(std::ostream& o) const
 {
-	o << "[start:" << start_<< ", end_:" << end_ << ", values_:" << values_ << "]";
+    o << "[start:" << start_<< ", end_:" << end_ << ", values_:" /*<< values_ <<*/ "]";
 }
 
 ODAHandle::~ODAHandle()
@@ -39,3 +43,4 @@ void ODAHandle::addValue(const std::string& columnName, double v)
 	values_[columnName] = v;
 }
 
+}

@@ -23,6 +23,8 @@
 
 #include "odblib/ODATranslator.h"
 
+namespace odb {
+
 
 class ODAHandle {
 public:
@@ -59,5 +61,7 @@ private:
 		{ p.print(s); return s; }
 
 };
+
+}
 
 #endif

@@ -22,6 +22,10 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/SimpleFilter.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Reader.h"
 
 
 using namespace std;

@@ -49,6 +49,9 @@ using namespace std;
 #include "odblib/SchemaAnalyzer.h"
 #include "odblib/SelectIterator.h"
 
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 namespace odb {
 namespace tool {
 namespace test {

@@ -54,6 +54,9 @@ using namespace std;
 #include "odblib/Tracer.h"
 #include "odblib/SQLBitfield.h"
 
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 using namespace std;
 using namespace eckit;
 

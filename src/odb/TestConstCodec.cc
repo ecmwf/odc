@@ -15,6 +15,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/io/DataHandle.h"
+#include "eckit/utils/Timer.h"
 
 #include "odblib/odb_api.h"
 #include "odblib/Codec.h"
@@ -34,6 +35,7 @@
 #include "odblib/TestCase.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/Writer.h"
 
 #include "odb/MockReader.h"
 #include "odb/TestConstCodec.h"

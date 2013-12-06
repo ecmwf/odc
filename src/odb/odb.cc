@@ -22,6 +22,7 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/ToolRunnerApplication.h"
 #include "odblib/FunctionFactory.h"
+#include "odblib/ODBAPIVersion.h"
 
 
 using namespace std;

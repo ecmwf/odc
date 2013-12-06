@@ -16,6 +16,7 @@
 
 using namespace std;
 
+#include "eckit/utils/Timer.h"
 #include "odblib/odb_api.h"
 #include "odblib/SimpleFilterIterator.h"
 #include "odblib/SimpleFilter.h"
@@ -24,6 +25,7 @@ using namespace std;
 #include "odblib/TestCase.h"
 #include "odb/TestDecoding.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/Reader.h"
 
 using namespace std;
 using namespace eckit;

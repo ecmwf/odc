@@ -44,6 +44,8 @@ using namespace std;
 #include "odblib/TestCase.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 #include "odb/TestAtTableInTheOutput.h"
 

@@ -40,6 +40,8 @@
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/ImportTool.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Writer.h"
 
 #include "odb/TestAggregateFunctions2.h"
 

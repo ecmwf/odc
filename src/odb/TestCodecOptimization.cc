@@ -41,6 +41,7 @@
 #include "odblib/TestCase.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
+#include "odblib/Writer.h"
 
 #include "odb/TestCodecOptimization.h"
 

@@ -16,6 +16,7 @@
 #include <vector>
 #include <map>
 
+#include "eckit/log/Log.h"
 #include <strings.h>
 
 #include "odblib/odb_api.h"

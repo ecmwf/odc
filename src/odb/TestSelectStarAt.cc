@@ -46,8 +46,10 @@
 #include "eckit/io/DataHandle.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/ReaderIterator.h"
-#include "odblib/odb_api.h"
 
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 using namespace std;
 using namespace eckit;
 

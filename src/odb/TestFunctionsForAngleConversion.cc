@@ -30,7 +30,9 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/piconst.h"
 
-#include "odblib/odb_api.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 using namespace std;
 using namespace eckit;

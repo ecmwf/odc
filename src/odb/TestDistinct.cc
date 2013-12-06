@@ -41,6 +41,7 @@
 #include "odblib/Tool.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/ImportTool.h"
+#include "odblib/ODBSelect.h"
 
 #include "odb/TestDistinct.h"
 

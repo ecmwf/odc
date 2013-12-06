@@ -30,8 +30,11 @@
 #include "TestFunctionTypeConversion.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/piconst.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
-#include "odblib/odb_api.h"
+#include "odblib/Writer.h"
 
 using namespace std;
 using namespace eckit;
