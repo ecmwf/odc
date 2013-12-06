@@ -19,10 +19,10 @@
 //#include <strings.h>
 
 //#include "odblib/Tool.h"
-//#include "odblib/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/TestCase.h"
-//#include "odblib/InMemoryDataHandle.h"
-//#include "TestInMemoryDataHandle.h"
+#include "odblib/InMemoryDataHandle.h"
+#include "odb/TestInMemoryDataHandle.h"
 
 using namespace std;
 using namespace eckit;

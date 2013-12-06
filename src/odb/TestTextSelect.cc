@@ -18,13 +18,13 @@
 //#include "odblib/odb_api.h"
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestTextSelect.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestTextSelect.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/SimpleFilterIterator.h"
 //#include "eckit/filesystem/TmpFile.h"
 //#include "eckit/utils/Timer.h"
 //#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "odblib/ODBSelect.h"
 
 using namespace std;
 using namespace eckit;

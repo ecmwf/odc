@@ -24,8 +24,8 @@ using namespace std;
 //#include "odblib/odb_api.h"
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestMissingValue.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestMissingValue.h"
+#include "odblib/ToolFactory.h"
 
 
 
@@ -46,17 +46,17 @@ using namespace std;
 //#include "odblib/SchemaAnalyzer.h"
 //#include "odblib/SQLIteratorSession.h"
 //#include "odblib/Header.h"
-//#include "odblib/Reader.h"
+#include "odblib/Reader.h"
 //#include "odblib/SelectIterator.h"
 //#include "odblib/ReaderIterator.h"
 //#include "odblib/odb_api.h"
-//#include "odblib/Comparator.h"
-//#include "odblib/Tracer.h"
+#include "odblib/Comparator.h"
+#include "odblib/Tracer.h"
 //#include "odblib/SQLBitfield.h"
 
 //#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 using namespace std;
 using namespace eckit;
 

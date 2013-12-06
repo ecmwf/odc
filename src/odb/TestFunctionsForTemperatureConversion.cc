@@ -25,12 +25,12 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestFunctionsForTemperatureConversion.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestFunctionsForTemperatureConversion.h"
+#include "odblib/ToolFactory.h"
 
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 
 using namespace std;

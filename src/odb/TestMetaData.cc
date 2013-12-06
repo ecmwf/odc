@@ -21,12 +21,12 @@
 //#include "odblib/odb_api.h"
 
 //#include "odblib/Tool.h"
-//#include "odblib/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/TestCase.h"
 
-//#include "odblib/MetaData.h"
-//#include "odblib/DataStream.h"
-//#include "TestMetaData.h"
+#include "odblib/MetaData.h"
+#include "odblib/DataStream.h"
+#include "odb/TestMetaData.h"
 
 using namespace std;
 using namespace eckit;

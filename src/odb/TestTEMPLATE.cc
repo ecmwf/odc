@@ -22,10 +22,10 @@
 //#include "odblib/odb_api.h"
 
 //#include "odblib/Tool.h"
-//#include "odblib/ToolFactory.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/TestCase.h"
 
-//#include "TestTEMPLATE.h"
+#include "odb/TestTEMPLATE.h"
 
 using namespace std;
 using namespace eckit;

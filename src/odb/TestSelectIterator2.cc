@@ -21,8 +21,8 @@
 //#include "odblib/odb_api.h"
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestSelectIterator2.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestSelectIterator2.h"
+#include "odblib/ToolFactory.h"
 
 
 
@@ -48,9 +48,9 @@
 //#include "odblib/SelectIterator.h"
 //#include "odblib/ReaderIterator.h"
 //#include "odblib/odb_api.h"
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 using namespace std;
 using namespace eckit;

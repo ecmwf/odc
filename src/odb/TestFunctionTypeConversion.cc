@@ -27,12 +27,12 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestFunctionTypeConversion.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestFunctionTypeConversion.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/piconst.h"
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 //#include "odblib/Writer.h"
 

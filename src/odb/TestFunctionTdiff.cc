@@ -21,20 +21,20 @@
 
 //#include <stdint.h>
 
-#define RMDI   -2147483647
+//#define RMDI   -2147483647
 #define EPS    7e-6
 
 using namespace std;
 
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestFunctionTdiff.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestFunctionTdiff.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/piconst.h"
 
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/ODBSelect.h"
 
 using namespace std;
 using namespace eckit;

@@ -29,8 +29,8 @@ using namespace std;
 
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "odb/TestStar.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestStar.h"
+#include "odblib/ToolFactory.h"
 
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"
@@ -39,7 +39,7 @@ using namespace std;
 //#include "odblib/HashTable.h"
 //#include "odblib/HashTable.h"
 //#include "odblib/Header.h"
-//#include "odblib/MetaData.h"
+#include "odblib/MetaData.h"
 //#include "odblib/Reader.h"
 //#include "odblib/ReaderIterator.h"
 //#include "odblib/RowsIterator.h"
@@ -51,7 +51,7 @@ using namespace std;
 
 //#include "eckit/utils/Timer.h"
 //#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "odblib/ODBSelect.h"
 namespace odb {
 namespace tool {
 namespace test {

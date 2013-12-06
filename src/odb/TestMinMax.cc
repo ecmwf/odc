@@ -32,13 +32,13 @@
 
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestMinMax.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestMinMax.h"
+#include "odblib/ToolFactory.h"
 
 
-//#include "eckit/utils/Timer.h"
-//#include "odblib/Writer.h"
-//#include "odblib/Reader.h"
+#include "eckit/utils/Timer.h"
+#include "odblib/Writer.h"
+#include "odblib/Reader.h"
 
 //#include "odblib/ODBSelect.h"
 using namespace std;

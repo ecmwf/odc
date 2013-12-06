@@ -20,8 +20,8 @@
 //#include "odblib/odb_api.h"
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestSelectStarAt.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestSelectStarAt.h"
+#include "odblib/ToolFactory.h"
 
 
 
@@ -31,7 +31,7 @@
 //#include "odblib/HashTable.h"
 //#include "odblib/Codec.h"
 //#include "odblib/Column.h"
-//#include "odblib/MetaData.h"
+#include "odblib/MetaData.h"
 //#include "eckit/io/DataHandle.h"
 //#include "odblib/DataStream.h"
 //#include "odblib/RowsIterator.h"
@@ -49,7 +49,7 @@
 
 //#include "eckit/utils/Timer.h"
 //#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
+#include "odblib/ODBSelect.h"
 using namespace std;
 using namespace eckit;
 

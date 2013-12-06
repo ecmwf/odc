@@ -20,9 +20,9 @@
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
 //#include "odblib/FunctionExpression.h"
-//#include "odblib/FunctionFactory.h"
-//#include "TestSQLFunctionsInfo.h"
-//#include "odblib/ToolFactory.h"
+#include "odblib/FunctionFactory.h"
+#include "odb/TestSQLFunctionsInfo.h"
+#include "odblib/ToolFactory.h"
 
 //#include "eckit/utils/Timer.h"
 //#include "odblib/Writer.h"

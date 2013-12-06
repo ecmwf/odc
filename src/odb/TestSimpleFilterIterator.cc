@@ -18,14 +18,14 @@
 //#include "odblib/odb_api.h"
 //#include "odblib/Tool.h"
 //#include "odblib/TestCase.h"
-//#include "TestSimpleFilterIterator.h"
-//#include "odblib/ToolFactory.h"
+#include "odb/TestSimpleFilterIterator.h"
+#include "odblib/ToolFactory.h"
 //#include "odblib/SimpleFilterIterator.h"
-//#include "odblib/SimpleFilter.h"
-//#include "eckit/utils/Timer.h"
+#include "odblib/SimpleFilter.h"
+#include "eckit/utils/Timer.h"
 //#include "odblib/Writer.h"
-//#include "odblib/ODBSelect.h"
-//#include "odblib/Reader.h"
+#include "odblib/ODBSelect.h"
+#include "odblib/Reader.h"
 
 
 using namespace std;
