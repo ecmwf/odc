@@ -1,4 +1,4 @@
-/// @file   TestDataLoader.cc
+/// @file   UnitTest.cc
 /// @author Tomas Kral
 
 #include "odblib/DataLoader.h"
@@ -8,7 +8,7 @@
 #include "odblib/DataTable.h"
 #include "odblib/Reader.h"
 #include "odblib/TemporaryFile.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Writer.h"
@@ -221,4 +221,4 @@ TEST_FIXTURE(FilledDataSet, DataSaverOutputContainsExpectedRows)
 
 } // namespace
 
-MAIN(TestDataLoader)
+

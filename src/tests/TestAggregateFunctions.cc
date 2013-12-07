@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestAggregateFunctions.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -17,7 +17,7 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "TestAggregateFunctions.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,15 +27,8 @@ namespace tool {
 namespace test {
 
 
-
-TestAggregateFunctions::TestAggregateFunctions(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestAggregateFunctions::~TestAggregateFunctions() { }
-
 ///
-void TestAggregateFunctions::test()
+void UnitTest::test()
 {
 	string sql = 
 "SELECT "
@@ -74,13 +67,13 @@ void TestAggregateFunctions::test()
 	ASSERT((*it)[1] == 91119); // COUNT(lat) == 91119
 }
 
-void TestAggregateFunctions::setUp() {}
+void UnitTest::setUp() {}
 
-void TestAggregateFunctions::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestAggregateFunctions)
+

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionDotp.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -20,7 +20,7 @@ const double EPS =     4e-5;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionDotp.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -33,19 +33,19 @@ namespace test {
 
 
 
-TestFunctionDotp::TestFunctionDotp(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionDotp::~TestFunctionDotp() { }
+() { }
 
 
-void TestFunctionDotp::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionDotp::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test Dotp function");
 	odb::Writer<> oda("test_dotp.odb");
@@ -69,12 +69,12 @@ void TestFunctionDotp::setUp()
     ++row;
 }
 
-void TestFunctionDotp::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_dotp.odb").unlink();
 }
 
-void TestFunctionDotp::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select dotp(x,y) from \"test_dotp.odb\";";
 
@@ -92,4 +92,4 @@ void TestFunctionDotp::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionDotp)
+

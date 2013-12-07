@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSelectTwoFiles.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -16,7 +16,7 @@
 
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
-#include "TestSelectTwoFiles.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -29,17 +29,17 @@ namespace test {
 
 
 
-TestSelectTwoFiles::TestSelectTwoFiles(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestSelectTwoFiles::~TestSelectTwoFiles() { }
+() { }
 
-void TestSelectTwoFiles::setUp()
+void UnitTest::setUp()
 {
-	Tracer t(Log::debug(), "TestSelectTwoFiles::setUp");
+	Tracer t(Log::debug(), "UnitTest::setUp");
 	{
-		odb::Writer<> f("TestSelectTwoFiles1.odb");
+		odb::Writer<> f("UnitTest.odb");
 		odb::Writer<>::iterator it = f.begin();
 		it->columns().setSize(1);
 		it->setColumn(0, "a", odb::REAL);
@@ -48,7 +48,7 @@ void TestSelectTwoFiles::setUp()
 		++it;
 	}
 	{
-		odb::Writer<> f("TestSelectTwoFiles2.odb");
+		odb::Writer<> f("UnitTest.odb");
 		odb::Writer<>::iterator it = f.begin();
 		it->columns().setSize(1);
 		it->setColumn(0, "b", odb::REAL);
@@ -58,12 +58,12 @@ void TestSelectTwoFiles::setUp()
 	}
 }
 
-void TestSelectTwoFiles::test()
+void UnitTest::test()
 {
-	Tracer t(Log::debug(), "TestSelectTwoFiles::test");
+	Tracer t(Log::debug(), "UnitTest::test");
 
-	odb::Select s("select * from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\";");
-	//odb::Select s("select a,b from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\"");
+	odb::Select s("select * from \"UnitTest.odb\", \"UnitTest.odb\";");
+	//odb::Select s("select a,b from \"UnitTest.odb\", \"UnitTest.odb\"");
 	odb::Select::iterator it = s.begin();
 	odb::Select::iterator end = s.end();
 
@@ -73,7 +73,7 @@ void TestSelectTwoFiles::test()
 	unsigned long i = 0;
 	for (; it != end; ++it)
 	{
-		Log::debug() << "TestSelectTwoFiles::test:    " << (*it)[0] << "    " << (*it)[0] << std::endl;
+		Log::debug() << "UnitTest::test:    " << (*it)[0] << "    " << (*it)[0] << std::endl;
 
 		ASSERT( ((*it)[0] == 1) && ((*it)[1] == 2) );
 		++i;
@@ -82,7 +82,7 @@ void TestSelectTwoFiles::test()
 	ASSERT(i == 1);
 }
 
-void TestSelectTwoFiles::tearDown() { }
+void UnitTest::tearDown() { }
 
 
 } // namespace test 
@@ -90,4 +90,4 @@ void TestSelectTwoFiles::tearDown() { }
 } // namespace odb 
 
 
-MAIN(TestSelectTwoFiles)
+

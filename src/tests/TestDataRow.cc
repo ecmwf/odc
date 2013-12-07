@@ -1,10 +1,10 @@
-/// @file   TestDataRow.cc
+/// @file   UnitTest.cc
 /// @author Tomas Kral
 
 #include "eckit/exception/Exceptions.h"
 #include "odblib/DataColumns.h"
 #include "odblib/DataRow.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 
 
 using namespace std;
@@ -160,4 +160,4 @@ TEST(DataRowCanSetStrings)
 
 } // namespace
 
-MAIN(TestDataRow)
+

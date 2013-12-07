@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSelectDataHandle.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2010
 
@@ -16,7 +16,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
 
-#include "TestSelectDataHandle.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,15 +27,9 @@ namespace test {
 
 
 
-TestSelectDataHandle::TestSelectDataHandle(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestSelectDataHandle::~TestSelectDataHandle() { }
-
-/// Tests syntax 'select lat, lon' (no file name)
+/// UnitTest syntax 'select lat, lon' (no file name)
 ///
-void TestSelectDataHandle::test()
+void UnitTest::test()
 {
 	string sql = "select * where obstype = 7;";
 	//string sql = "select * where obstype = 7;";
@@ -46,10 +40,10 @@ void TestSelectDataHandle::test()
 	fh.openForRead();
 	odb::Select oda(sql, fh);
 	
-	Log::info(Here()) << "TestSelectDataHandle::test: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "UnitTest::test: Execute '" << sql << "'" << std::endl;
 	long n = 0;
 	{
-		Timer t("TestSelectDataHandle::test: selecting rows using SQL" );
+		Timer t("UnitTest::test: selecting rows using SQL" );
 
 		odb::Select::iterator it = oda.begin();
 		odb::Select::iterator end = oda.end();
@@ -57,12 +51,12 @@ void TestSelectDataHandle::test()
 		for( ; it != end; ++it)
 			++n;
 	}
-	Log::info(Here()) << "TestSelectDataHandle::test: selected " << n << " rows." << std::endl;
+	Log::info(Here()) << "UnitTest::test: selected " << n << " rows." << std::endl;
 	ASSERT(n == 3134386); 
 	fh.close();
 }
 
-void TestSelectDataHandle::setUp()
+void UnitTest::setUp()
 {
 #if 0
 	string s = "Data to be saved";
@@ -83,11 +77,11 @@ void TestSelectDataHandle::setUp()
 #endif
 }
 
-void TestSelectDataHandle::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestSelectDataHandle)
+

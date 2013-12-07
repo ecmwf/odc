@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSelectStarAt.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "TestSelectStarAt.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -26,16 +26,9 @@ namespace tool {
 namespace test {
 
 
-
-TestSelectStarAt::TestSelectStarAt(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestSelectStarAt::~TestSelectStarAt() { }
-
-/// Tests expansion of '*@hdr' into a list of columns of the hdr ODB table.
+/// UnitTest expansion of '*@hdr' into a list of columns of the hdr ODB table.
 ///
-void TestSelectStarAt::test()
+void UnitTest::test()
 {
 	// TODO: make sure a 'select ... into ... from ...', e.g.:
 	//
@@ -62,13 +55,13 @@ void TestSelectStarAt::test()
 #endif
 }
 
-void TestSelectStarAt::setUp() {}
+void UnitTest::setUp() {}
 
-void TestSelectStarAt::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestSelectStarAt)
+

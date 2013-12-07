@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestCodec.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/io/DataHandle.h"
 #include "odblib/DataStream.h"
 
-#include "TestCodec.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -25,15 +25,7 @@ namespace tool {
 namespace test {
 
 
-
-TestCodec::TestCodec(int argc, char **argv)
-: TestCase(argc, argv),
-  codec_(0)
-{}
-
-TestCodec::~TestCodec() { delete codec_; }
-
-void TestCodec::setUp() {}
+void UnitTest::setUp() {}
 
 class MockDataHandle : public DataHandle
 {
@@ -64,14 +56,14 @@ private:
 	size_t offset_;
 };
 
-void TestCodec::test()
+void UnitTest::test()
 {
 	Log::info() << fixed;
 
 	string codecNames[] = {"short_real", "long_real"};
 	for (size_t i = 0; i < sizeof(codecNames) / sizeof(string); i++)
 	{
-		Log::info() << "Testing codec " << codecNames[i] << std::endl;
+		Log::info() << "UnitTest codec " << codecNames[i] << std::endl;
 
 		MockDataHandle dh;
 		codec(odb::codec::Codec::findCodec<DataStream<SameByteOrder, DataHandle> >(codecNames[i], false));
@@ -91,11 +83,11 @@ void TestCodec::test()
 	}
 }
 
-void TestCodec::tearDown() { delete codec_; codec_ = 0; }
+void UnitTest::tearDown() { delete codec_; codec_ = 0; }
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestCodec)
+

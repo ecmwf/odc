@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestIntegerValues.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
@@ -16,37 +16,30 @@
 #include "tools/ImportTool.h"
 #include "odblib/Reader.h"
 
-#include "TestIntegerValues.h"
+#include "UnitTest.h"
 
 namespace odb {
 namespace tool {
 namespace test {
 
 
-
-TestIntegerValues::TestIntegerValues(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestIntegerValues::~TestIntegerValues() { }
-
-void TestIntegerValues::setUp()
+void UnitTest::setUp()
 {
 	const char* data =
 	"date:REAL\n"
 	"20101130\n"
 	"20101201\n"
 	"20101202\n";
-	ImportTool::importText(data, "TestIntegerValues.odb");
+	ImportTool::importText(data, "UnitTest.odb");
 }
 
 
-void TestIntegerValues::test()
+void UnitTest::test()
 {
 	//Log::info() << fixed;
  //////////////////////////////           ODB from MARS             //////////////////////////////    
 
-    const std::string fileNameOdb="TestIntegerValues.odb";
+    const std::string fileNameOdb="UnitTest.odb";
 
 	odb::Reader odb(fileNameOdb);
 	odb::Reader::iterator it = odb.begin();
@@ -84,11 +77,11 @@ void TestIntegerValues::test()
 	}
 }
 
-void TestIntegerValues::tearDown() { }
+void UnitTest::tearDown() { }
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestIntegerValues)
+

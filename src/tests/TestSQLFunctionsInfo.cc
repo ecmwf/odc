@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSQLFunctionsInfo.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odblib/FunctionFactory.h"
 
-#include "TestSQLFunctionsInfo.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -25,11 +25,11 @@ namespace test {
 
 
 
-TestSQLFunctionsInfo::TestSQLFunctionsInfo(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-void TestSQLFunctionsInfo::test()
+void UnitTest::test()
 {
 	typedef odb::sql::expression::function::FunctionFactory::FunctionInfo FI;
 
@@ -50,4 +50,4 @@ void TestSQLFunctionsInfo::test()
 } // namespace odb 
 
 
-MAIN(TestSQLFunctionsInfo)
+

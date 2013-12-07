@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestMetaData.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odblib/DataStream.h"
 #include "odblib/MetaData.h"
 
-#include "TestMetaData.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -26,15 +26,15 @@ namespace test {
 
 
 
-TestMetaData::TestMetaData(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestMetaData::~TestMetaData() {}
 
-void TestMetaData::setUp() {}
 
-void TestMetaData::test()
+void UnitTest::setUp() {}
+
+void UnitTest::test()
 {
 	typedef DataStream<SameByteOrder, DataHandle> DS;
 
@@ -62,11 +62,11 @@ void TestMetaData::test()
 	ASSERT(sum == sum2);
 }
 
-void TestMetaData::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestMetaData)
+

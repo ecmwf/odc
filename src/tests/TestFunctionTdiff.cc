@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionTdiff.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -18,7 +18,7 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionTdiff.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -30,19 +30,12 @@ namespace test {
 
 
 
-TestFunctionTdiff::TestFunctionTdiff(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestFunctionTdiff::~TestFunctionTdiff() { }
-
-
-void TestFunctionTdiff::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionTdiff::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test tdiff function");
 	odb::Writer<> oda("test_tdiff.odb");
@@ -61,12 +54,12 @@ void TestFunctionTdiff::setUp()
     ++row;
 }
 
-void TestFunctionTdiff::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_tdiff.odb").unlink();
 }
 
-void TestFunctionTdiff::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select tdiff(date,time,20090707.0,0.0) from \"test_tdiff.odb\";";
 
@@ -84,4 +77,4 @@ void TestFunctionTdiff::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionTdiff)
+

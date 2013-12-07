@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSimpleFilterIterator.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, June 2009
 
@@ -17,7 +17,7 @@
 #include "odblib/Reader.h"
 #include "odblib/SimpleFilter.h"
 
-#include "TestSimpleFilterIterator.h"
+#include "UnitTest.h"
 
 
 using namespace std;
@@ -33,15 +33,15 @@ namespace test {
 
 
 
-TestSimpleFilterIterator::TestSimpleFilterIterator(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestSimpleFilterIterator::~TestSimpleFilterIterator() { }
+() { }
 
-/// Tests DispatchingWriter
+/// UnitTest DispatchingWriter
 ///
-void TestSimpleFilterIterator::test()
+void UnitTest::test()
 {
 	const string fileName = "2000010106.odb";
 	string sql = string("select * from \"") + fileName + "\" where obstype = 7;";
@@ -50,7 +50,7 @@ void TestSimpleFilterIterator::test()
 	long n2 = 0;
 
 	{
-		Timer t("TestSimpleFilterIterator::test: selecting rows where obstype == 7 the simple way");
+		Timer t("UnitTest::test: selecting rows where obstype == 7 the simple way");
 		odb::Reader oda(fileName);
 		odb::Reader::iterator it = oda.begin();
 		size_t obstype_index = it->columns().columnIndex("obstype");
@@ -73,7 +73,7 @@ void TestSimpleFilterIterator::test()
 	}
 
 	{
-		Timer t("TestSimpleFilterIterator::test: selecting rows where obstype == 7");
+		Timer t("UnitTest::test: selecting rows where obstype == 7");
 
 		odb::Reader oda(fileName);
 
@@ -94,12 +94,12 @@ void TestSimpleFilterIterator::test()
 #endif
 		}
 
-		Log::info() << "TestSimpleFilterIterator::test: selected " << n1 << " rows." << std::endl;
+		Log::info() << "UnitTest::test: selected " << n1 << " rows." << std::endl;
 	}
 
 	{
-		Timer t("TestSimpleFilterIterator::test: selecting rows using SQL where obstype == 7");
-		Log::info() << "TestSimpleFilterIterator::test: Execute '" << sql << "'" << std::endl;
+		Timer t("UnitTest::test: selecting rows using SQL where obstype == 7");
+		Log::info() << "UnitTest::test: Execute '" << sql << "'" << std::endl;
 
 		odb::Select odas(sql, fileName);
 		for(odb::Select::iterator it = odas.begin(); it != odas.end(); ++it)
@@ -117,20 +117,20 @@ void TestSimpleFilterIterator::test()
 #endif
 		}
 
-		Log::info() << "TestSimpleFilterIterator::test: selected " << n2 << " rows." << std::endl;
+		Log::info() << "UnitTest::test: selected " << n2 << " rows." << std::endl;
 	}
 
-	Log::info() << "TestSimpleFilterIterator::test: n0=" << n0 << ", n1=" << n1 << ", n2=" << n2 << std::endl;
+	Log::info() << "UnitTest::test: n0=" << n0 << ", n1=" << n1 << ", n2=" << n2 << std::endl;
 	ASSERT(n0 == n1);
 	ASSERT(n1 == n2);
 }
 
-void TestSimpleFilterIterator::setUp() {}
-void TestSimpleFilterIterator::tearDown() {}
+void UnitTest::setUp() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestSimpleFilterIterator)
+

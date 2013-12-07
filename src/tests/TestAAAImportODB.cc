@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestAAAImportODB.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/config/Resource.h"
 #include "odblib/StringTool.h"
-#include "TestAAAImportODB.h"
+#include "UnitTest.h"
 
 using namespace eckit;
 using namespace std;
@@ -24,11 +24,11 @@ namespace tool {
 namespace test {
 
 
-TestAAAImportODB::TestAAAImportODB(int argc, char **argv) : TestCase(argc, argv) {}
 
-TestAAAImportODB::~TestAAAImportODB() {}
 
-void TestAAAImportODB::test()
+
+
+void UnitTest::test()
 {
 	string e(Resource<string>("$ODB_API_TEST_DATA_PATH", string(""))); 
 	if (e.size())
@@ -42,7 +42,7 @@ void TestAAAImportODB::test()
 	}
 	else
 	{
-		Log::warning() << "TestAAAImportODB: ODB_ROOT not set, skipping testing of odb_migrator" << std::endl;
+		Log::warning() << "UnitTest: ODB_ROOT not set, skipping testing of odb_migrator" << std::endl;
 
 		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.odb.gz >2000010106.odb";
 	}
@@ -50,13 +50,13 @@ void TestAAAImportODB::test()
 }
 
 
-void TestAAAImportODB::setUp() {}
+void UnitTest::setUp() {}
 
-void TestAAAImportODB::tearDown() {}
+void UnitTest::tearDown() {}
 
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
-MAIN(TestAAAImportODB)
+

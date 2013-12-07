@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestCatFiles.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -16,7 +16,7 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestCatFiles.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,19 +27,12 @@ namespace test {
 
 
 
-
-TestCatFiles::TestCatFiles(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestCatFiles::~TestCatFiles() { }
-
-void TestCatFiles::test()
+void UnitTest::test()
 {
 	testSelectIterator();
 }
 
-void TestCatFiles::setUp()
+void UnitTest::setUp()
 {
  {
 	odb::Writer<> oda("file1.odb");
@@ -105,9 +98,9 @@ void TestCatFiles::setUp()
 
 }
 
-void TestCatFiles::tearDown() { }
+void UnitTest::tearDown() { }
 
-void TestCatFiles::testSelectIterator()
+void UnitTest::testSelectIterator()
 {
 	const string sql = "select X,Y from \"concatenated.odb\";";
 	const string fileName = "concatenated.odb";
@@ -190,4 +183,4 @@ void TestCatFiles::testSelectIterator()
 } // namespace odb 
 
 
-MAIN(TestCatFiles)
+

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFastODA2Request2.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
@@ -16,7 +16,7 @@
 #include "odblib/ODAHandle.h"
 
 #include "odblib/Writer.h"
-#include "TestFastODA2Request2.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -28,13 +28,13 @@ namespace test {
 
 
 
-TestFastODA2Request2::TestFastODA2Request2(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFastODA2Request2::~TestFastODA2Request2() { }
+() { }
 
-Length TestFastODA2Request2::createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
+Length UnitTest::createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
 {
 	{
 		odb::Writer<> oda(fileName);
@@ -57,25 +57,25 @@ Length TestFastODA2Request2::createFile(const string& fileName, unsigned int and
 	return p.size();
 } 
 
-void TestFastODA2Request2::setUp()
+void UnitTest::setUp()
 {
-	size1_ = createFile("TestFastODA2Request21.odb", 20110823, 0, 21);
-	size2_ = createFile("TestFastODA2Request22.odb", 20110823, 0, 22);
+	size1_ = createFile("UnitTest.odb", 20110823, 0, 21);
+	size2_ = createFile("UnitTest.odb", 20110823, 0, 22);
 
 	const char *cmd =
 	"cat "
-	"TestFastODA2Request21.odb TestFastODA2Request21.odb TestFastODA2Request21.odb "
-	"TestFastODA2Request22.odb TestFastODA2Request22.odb "
-	" >TestFastODA2Request2BIG.odb"
+	"UnitTest.odb UnitTest.odb UnitTest.odb "
+	"UnitTest.odb UnitTest.odb "
+	" >UnitTest.odb"
 	;
 
 	int catStatus = system(cmd);
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 
-	catStatus = system("cat TestFastODA2Request2BIG.odb TestFastODA2Request2BIG.odb >TestFastODA2Request2BAD.odb");
+	catStatus = system("cat UnitTest.odb UnitTest.odb >UnitTest.odb");
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 }
-void TestFastODA2Request2::test()
+void UnitTest::test()
 {
 	const char * configFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 	const char * config = 
@@ -92,10 +92,10 @@ void TestFastODA2Request2::test()
 	LengthList lengths;
 	vector<ODAHandle*> handles;
 
-	o.scanFile("TestFastODA2Request2BIG.odb", offsets, lengths, handles);
+	o.scanFile("UnitTest.odb", offsets, lengths, handles);
 
 	for (size_t i = 0; i < handles.size(); ++i)
-		Log::info() << "TestFastODA2Request2::test: handles[" << i << "]=" << *handles[i] << std::endl;
+		Log::info() << "UnitTest::test: handles[" << i << "]=" << *handles[i] << std::endl;
 
 	ASSERT(handles.size() == 2);
 	ASSERT(0 == handles[0]->start());
@@ -104,10 +104,10 @@ void TestFastODA2Request2::test()
 	ASSERT(size1_ * 3 + size2_ * 2 == handles[1]->end());
 
 	string r = o.genRequest();
-	Log::info() << "TestFastODA2Request2::test: o.genRequest() => " << endl << r << std::endl;
+	Log::info() << "UnitTest::test: o.genRequest() => " << endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
-	Log::info() << "TestFastODA2Request2::test: rowsNumber == " << n <<  std::endl;
+	Log::info() << "UnitTest::test: rowsNumber == " << n <<  std::endl;
 	ASSERT(n == 2 * (2 + 3));
 
 	
@@ -117,7 +117,7 @@ void TestFastODA2Request2::test()
 
 	FastODA2Request<ODA2RequestClientTraits> o2;
 	o2.parseConfig(config);
-	bool rc = o2.scanFile("TestFastODA2Request2BAD.odb", offsets2, lengths2, handles2);
+	bool rc = o2.scanFile("UnitTest.odb", offsets2, lengths2, handles2);
 	ASSERT(rc == false);
 
 	OffsetList offsets3;
@@ -128,7 +128,7 @@ void TestFastODA2Request2::test()
 	o3.parseConfig(config);
 	
 	bool exceptionThrown = false;
-	try { o3.scanFile("TestFastODA2Request2BAD.odb", offsets3, lengths3, handles3); }
+	try { o3.scanFile("UnitTest.odb", offsets3, lengths3, handles3); }
 	catch (UserError e)
 	{
 		exceptionThrown = true;
@@ -137,11 +137,11 @@ void TestFastODA2Request2::test()
 }
 
 
-void TestFastODA2Request2::tearDown() { }
+void UnitTest::tearDown() { }
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestFastODA2Request2)
+

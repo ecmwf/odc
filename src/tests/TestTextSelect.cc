@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestTextSelect.h
+/// \file UnitTest.h
 ///
 // @author Piotr Kuchta, ECMWF, Oct 2010
 
 #include "odblib/Select.h"
 
-#include "TestTextSelect.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -25,37 +25,31 @@ namespace test {
 
 
 
-TestTextSelect::TestTextSelect(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestTextSelect::~TestTextSelect() { }
-
-void TestTextSelect::setUp()
+void UnitTest::setUp()
 {
-	ofstream o("TestTextSelect.txt");
+	ofstream o("UnitTest.txt");
 	o << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
 		o << i << std::endl;
 }
 
-/// Tests syntax 'select lat, lon' (no file name)
+/// UnitTest syntax 'select lat, lon' (no file name)
 ///
-void TestTextSelect::test()
+void UnitTest::test()
 {
 	selectStarOneColumn();
 	selectSumOneColumn();
 }
 
-void TestTextSelect::selectStarOneColumn()
+void UnitTest::selectStarOneColumn()
 {
 	string sql = "select * where a > 4;";
-	const string fileName = "TestTextSelect.txt";
+	const string fileName = "UnitTest.txt";
 	ifstream fs(fileName.c_str());
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "TestTextSelect::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "UnitTest::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -67,15 +61,15 @@ void TestTextSelect::selectStarOneColumn()
 	ASSERT(n == 6);
 }
 
-void TestTextSelect::selectSumOneColumn()
+void UnitTest::selectSumOneColumn()
 {
 	string sql = "select sum(a);";
-	const string fileName = "TestTextSelect.txt";
+	const string fileName = "UnitTest.txt";
 	ifstream fs(fileName.c_str());
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "TestTextSelect::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "UnitTest::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -85,11 +79,11 @@ void TestTextSelect::selectSumOneColumn()
 }
 
 
-void TestTextSelect::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestTextSelect)
+

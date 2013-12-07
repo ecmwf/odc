@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestConstIntegerCodec.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -18,7 +18,7 @@
 
 #include "odblib/Writer.h"
 #include "MockReader.h"
-#include "TestConstIntegerCodec.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -65,13 +65,13 @@ public:
 };
 
 
-TestConstIntegerCodec::TestConstIntegerCodec(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestConstIntegerCodec::~TestConstIntegerCodec() { }
+() { }
 
-void TestConstIntegerCodec::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Writing test_integer_const.odb");
 	odb::Writer<> oda("test_integer_const.odb");
@@ -86,7 +86,7 @@ void TestConstIntegerCodec::setUp()
 	outit->pass1(b, e);
 }
 
-void TestConstIntegerCodec::test()
+void UnitTest::test()
 {
 	odb::Reader oda("test_integer_const.odb");
 	odb::Reader::iterator it = oda.begin();
@@ -97,15 +97,15 @@ void TestConstIntegerCodec::test()
 	for ( ; it != end; ++it)
 		ASSERT((*it)[0] == the_const_value);
 
-	Log::debug() << "TestConstIntegerCodec::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
+	Log::debug() << "UnitTest::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
 	ASSERT(it->columns()[0]->coder().name() == "constant");
 }
 
-void TestConstIntegerCodec::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestConstIntegerCodec)
+

@@ -1,4 +1,4 @@
-/// @file   TestDataSelect.cc
+/// @file   UnitTest.cc
 /// @author Tomas Kral
 
 #include "odblib/DataColumns.h"
@@ -6,7 +6,7 @@
 #include "odblib/DataSelectIterator.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 
 
 using namespace std;
@@ -22,7 +22,7 @@ struct FilledDataSet
 };
 
 FilledDataSet::FilledDataSet()
-  : dataset("TestDataSelect")
+  : dataset("UnitTest")
 {
     DataColumns columns;
     columns.add("digit", "INTEGER");
@@ -203,4 +203,4 @@ TEST_FIXTURE(SelectAll, CanUseCopyToAppendResults)
 
 } // namespace
 
-MAIN(TestDataSelect)
+

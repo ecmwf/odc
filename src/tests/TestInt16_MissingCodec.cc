@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestInt16_MissingCodec.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2010
 
@@ -18,7 +18,7 @@
 
 #include "odblib/Writer.h"
 #include "MockReader.h"
-#include "TestInt16_MissingCodec.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -88,13 +88,13 @@ private:
 };
 
 
-TestInt16_MissingCodec::TestInt16_MissingCodec(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestInt16_MissingCodec::~TestInt16_MissingCodec() { }
+() { }
 
-void TestInt16_MissingCodec::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Writing test_int16_missing.odb");
 	odb::Writer<> oda("test_int16_missing.odb");
@@ -108,7 +108,7 @@ void TestInt16_MissingCodec::setUp()
 	outit->pass1(b, e);
 }
 
-void TestInt16_MissingCodec::test()
+void UnitTest::test()
 {
 	odb::Reader oda("test_int16_missing.odb");
 	odb::Reader::iterator it = oda.begin();
@@ -131,18 +131,18 @@ void TestInt16_MissingCodec::test()
 
 	string name = coder.name();
 
-	Log::debug() << "TestInt16_MissingCodec::test: codec name is '" << name << "'" << std::endl;
+	Log::debug() << "UnitTest::test: codec name is '" << name << "'" << std::endl;
 
 	ASSERT(name == "int16_missing");
 
-	Log::debug() << "TestInt16_MissingCodec::test: OK" << std::endl;
+	Log::debug() << "UnitTest::test: OK" << std::endl;
 }
 
-void TestInt16_MissingCodec::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestInt16_MissingCodec)
+

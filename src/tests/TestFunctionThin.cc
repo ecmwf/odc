@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionThin.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -20,7 +20,7 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionThin.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -32,18 +32,18 @@ namespace test {
 
 
 
-TestFunctionThin::TestFunctionThin(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionThin::~TestFunctionThin() {}
 
-void TestFunctionThin::test()
+
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionThin::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test thin function");
 	odb::Writer<> oda("test_thin.odb");
@@ -63,12 +63,12 @@ void TestFunctionThin::setUp()
 	(*++row)[0] = 45.0;
 }
 
-void TestFunctionThin::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_thin.odb").unlink();
 }
 
-void TestFunctionThin::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select thin(2.0,lat) from \"test_thin.odb\";";
 
@@ -91,4 +91,4 @@ void TestFunctionThin::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionThin)
+

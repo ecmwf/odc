@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionRggBox.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -20,7 +20,7 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionRggBox.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -32,19 +32,12 @@ namespace test {
 
 
 
-TestFunctionRggBox::TestFunctionRggBox(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestFunctionRggBox::~TestFunctionRggBox() { }
-
-
-void TestFunctionRggBox::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionRggBox::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test rgg_boxlat and rgg_boxlon functions");
 	odb::Writer<> oda("test_rgg_box.odb");
@@ -63,12 +56,12 @@ void TestFunctionRggBox::setUp()
     ++row;
 }
 
-void TestFunctionRggBox::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_rgg_box.odb").unlink();
 }
 
-void TestFunctionRggBox::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
 	ASSERT(getenv("ODB_RTABLE_PATH") && "environment variable must be set for rgg_boxlat and rgg_boxlon to work properly");
     const string sql = "select rgg_boxlat(lat,lon,31), rgg_boxlon(lat,lon,31) from \"test_rgg_box.odb\";";
@@ -78,7 +71,7 @@ void TestFunctionRggBox::testReaderIterator()
 	odb::Select oda(sql);
 	odb::Select::iterator it = oda.begin();
 
-	Log::info() << "TestFunctionRggBox: '" << sql << "' => [" << (*it)[0] << ", " << (*it)[1] << "]" << std::endl;
+	Log::info() << "UnitTest: '" << sql << "' => [" << (*it)[0] << ", " << (*it)[1] << "]" << std::endl;
 
 	ASSERT(fabs((*it)[0] - 47.069642059688e0)<EPS); // 
 	ASSERT(fabs((*it)[1] - 6)<EPS); // 
@@ -90,4 +83,4 @@ void TestFunctionRggBox::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionRggBox)
+

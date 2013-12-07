@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestTEMPLATE.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 
-#include "TestTEMPLATE.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -25,25 +25,25 @@ namespace test {
 
 
 
-TestTEMPLATE::TestTEMPLATE(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestTEMPLATE::~TestTEMPLATE() { }
+() { }
 
-void TestTEMPLATE::setUp() {}
+void UnitTest::setUp() {}
 
 
-void TestTEMPLATE::test()
+void UnitTest::test()
 {
 	Log::info() << "I'm just a template, I don't test anything, really." << std::endl;
 }
 
-void TestTEMPLATE::tearDown() { }
+void UnitTest::tearDown() { }
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestTEMPLATE)
+

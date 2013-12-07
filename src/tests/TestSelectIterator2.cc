@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSelectIterator2.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -16,7 +16,7 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestSelectIterator2.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,20 +27,13 @@ namespace tool {
 namespace test {
 
 
-
-TestSelectIterator2::TestSelectIterator2(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestSelectIterator2::~TestSelectIterator2() { }
-
-const string testFile = "TestSelectIterator2.odb";
+const string testFile = "UnitTest.odb";
 
 const double VALUE[] = { 1, 2, 3 };
 
-void TestSelectIterator2::setUp()
+void UnitTest::setUp()
 {
-	Log::debug() << "TestSelectIterator2::setUp" << std::endl;
+	Log::debug() << "UnitTest::setUp" << std::endl;
 
 	Timer t("Writing " + testFile );
 	odb::Writer<> oda(testFile);
@@ -58,9 +51,9 @@ void TestSelectIterator2::setUp()
 }
 
 ///
-/// Tests problem fixed with p4 change 23687
+/// UnitTest problem fixed with p4 change 23687
 ///
-void TestSelectIterator2::test()
+void UnitTest::test()
 {
 	const string SELECT = "select * from \"" + testFile + "\";";
 
@@ -70,16 +63,16 @@ void TestSelectIterator2::test()
 		it != oda.end() && i < sizeof(VALUE) / sizeof(double);
 		++it, ++i) 
 	{
-		Log::info() << "TestSelectIterator2::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << std::endl;
+		Log::info() << "UnitTest::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << std::endl;
 		ASSERT((*it)[0] == VALUE[i]);
 	}
 }
 
-void TestSelectIterator2::tearDown() { }
+void UnitTest::tearDown() { }
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestSelectIterator2)
+

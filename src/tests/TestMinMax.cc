@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestMinMax.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -24,7 +24,7 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "TestMinMax.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -35,21 +35,21 @@ namespace test {
 
 
 
-TestMinMax::TestMinMax(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestMinMax::~TestMinMax() { }
+() { }
 
 
 const string SELECT  = "select * from \"test.odb\";";
 
-void TestMinMax::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestMinMax::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Writing testminmax.odb");
 	odb::Writer<> oda("testminmax.odb");
@@ -75,9 +75,9 @@ void TestMinMax::setUp()
 	++row;
 }
 
-void TestMinMax::tearDown() { }
+void UnitTest::tearDown() { }
 
-void TestMinMax::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
 	odb::Reader oda("testminmax.odb");
 	odb::Reader::iterator it = oda.begin();
@@ -102,4 +102,4 @@ void TestMinMax::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestMinMax)
+

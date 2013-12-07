@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionEqBox.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -20,7 +20,7 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionEqBox.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -32,19 +32,19 @@ namespace test {
 
 
 
-TestFunctionEqBox::TestFunctionEqBox(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionEqBox::~TestFunctionEqBox() { }
+() { }
 
 
-void TestFunctionEqBox::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionEqBox::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test eq_boxlat and eq_boxlon functions");
 	odb::Writer<> oda("test_eq_box.odb");
@@ -63,12 +63,12 @@ void TestFunctionEqBox::setUp()
     ++row;
 }
 
-void TestFunctionEqBox::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_eq_box.odb").unlink();
 }
 
-void TestFunctionEqBox::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select eq_boxlat(lat,lon,10.5), eq_boxlon(lat,lon,10.5) from \"test_eq_box.odb\";";
 
@@ -87,4 +87,4 @@ void TestFunctionEqBox::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionEqBox)
+

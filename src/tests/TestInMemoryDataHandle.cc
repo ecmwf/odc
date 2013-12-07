@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestInMemoryDataHandle.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odblib/InMemoryDataHandle.h"
 
-#include "TestInMemoryDataHandle.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -24,15 +24,8 @@ namespace tool {
 namespace test {
 
 
-
-TestInMemoryDataHandle::TestInMemoryDataHandle(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestInMemoryDataHandle::~TestInMemoryDataHandle() {}
-
-void TestInMemoryDataHandle::setUp() {}
-void TestInMemoryDataHandle::test()
+void UnitTest::setUp() {}
+void UnitTest::test()
 {
 	char data[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 	char data2[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
@@ -51,11 +44,11 @@ void TestInMemoryDataHandle::test()
 	}
 }
 
-void TestInMemoryDataHandle::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestInMemoryDataHandle)
+

@@ -28,12 +28,12 @@
 #include "odblib/SQLInteractiveSession.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelectFactory.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 #include "odblib/TextReader.h"
 #include "odblib/TextReaderIterator.h"
 
 #include "odblib/Writer.h"
-#include "TestOdaCAPI.h"
+#include "UnitTest.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"
@@ -67,7 +67,7 @@ void foobar()
 
 void createDataForMixedAggregated()
 {
-	// See TestAggregateFunctions.sql as well
+	// See UnitTest.sql as well
 	const char *data = 
 	"x:INTEGER,y:INTEGER,v:DOUBLE\n"
 	"1,1,0.3\n"
@@ -147,7 +147,7 @@ TEST(selectAggregatedAndNonAggregated2)
 
 void createDataForMixedAggregated3()
 {
-	// See TestAggregateFunctions.sql as well
+	// See UnitTest.sql as well
 	const char *data = 
 	"x:STRING,y:INTEGER,v:DOUBLE\n"
 	"'A',1,0.3\n"
@@ -178,7 +178,7 @@ TEST(selectAggregatedAndNonAggregated3)
 
 void createDataForMixedAggregatedNULL()
 {
-	// See TestAggregateFunctions.sql as well
+	// See UnitTest.sql as well
 	const char *data = 
 	"x:REAL,y:INTEGER,v:DOUBLE\n"
 	"100,1,0.3\n"
@@ -215,7 +215,7 @@ TEST(selectAggregatedAndNonAggregatedNULL)
 
 void createDataForRegex1()
 {
-	// See TestAggregateFunctions.sql as well
+	// See UnitTest.sql as well
 	const char *data = 
 	"aa:INTEGER,ab:INTEGER,ba:INTEGER,bb:INTEGER\n"
 	"1,2,3,4\n"
@@ -275,8 +275,8 @@ TEST(vector_syntax)
 
 TEST(bitfieldsLength)
 {
-	Log::info() << "Test_bitfieldsLength: sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
-	Log::info() << "Test_bitfieldsLength: sizeof(double)" << sizeof(double) << std::endl;
+	Log::info() << "UnitTest: sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
+	Log::info() << "UnitTest: sizeof(double)" << sizeof(double) << std::endl;
 
 //>>> int('0b11100110011',2)
 //1843
@@ -287,7 +287,7 @@ TEST(bitfieldsLength)
 		stringstream s;
 		Decoder::printBinary(s, 1843);
 		string r = s.str();
-		Log::info() << "Test_bitfieldsLength: " << r << std::endl;
+		Log::info() << "UnitTest: " << r << std::endl;
 
 		ASSERT(r.size() == 11);
 		ASSERT(r == "11100110011");
@@ -296,7 +296,7 @@ TEST(bitfieldsLength)
 		stringstream s;
 		Decoder::printBinary(s, 0);
 		string r = s.str();
-		Log::info() << "Test_bitfieldsLength: " << r << std::endl;
+		Log::info() << "UnitTest: " << r << std::endl;
 
 		ASSERT(r.size() == 1);
 		ASSERT(r == "0");
@@ -341,13 +341,13 @@ TEST(blocksSizes)
 	off_t* offsets = 0;
 	size_t* sizes = 0;
 
-	int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);
+	int r = get_blocks_offsets("UnitTest.odb", &numberOfBlocks, &offsets, &sizes);
 	ASSERT(r == 0);
 
-	Log::info() << "Test_blocksSizes: num of blocks: " << numberOfBlocks << std::endl;
+	Log::info() << "UnitTest: num of blocks: " << numberOfBlocks << std::endl;
 	for (size_t i = 0; i < numberOfBlocks; ++i)
 	{
-		Log::info() << "Test_blocksSizes: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
+		Log::info() << "UnitTest: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
 	}
 	Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << std::endl;
 	ASSERT(numberOfBlocks == 5);
@@ -377,7 +377,7 @@ TEST(rownumber1)
 
 TEST(sqlOutputFormatting)
 {
-	// See TestAggregateFunctions.sql as well
+	// See UnitTest.sql as well
 	const char *data = 
 	"x:REAL,y:INTEGER,v:DOUBLE\n"
 	"100,1,0.3\n"
@@ -1016,4 +1016,4 @@ TEST(TextReaderIterator_parseBitfields)
 } // namespace odb 
 
 
-//MAIN(UnitTests)
+//(UnitTests)

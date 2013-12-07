@@ -1,11 +1,11 @@
-/// @file   TestDataSet.cc
+/// @file   UnitTest.cc
 /// @author Tomas Kral
 
 #include "eckit/exception/Exceptions.h"
 #include "odblib/DataColumns.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 
 
 using namespace std;
@@ -39,4 +39,4 @@ TEST_FIXTURE(Fixture, InsertingTablesIncreasesSize)
 
 } // namespace
 
-MAIN(TestDataSet)
+

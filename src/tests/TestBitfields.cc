@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestBitfields.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -16,7 +16,7 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "TestBitfields.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,15 +27,9 @@ namespace test {
 
 
 
-TestBitfields::TestBitfields(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestBitfields::~TestBitfields() { }
-
-/// Tests problem fixed with p4 change 23687
+/// UnitTest problem fixed with p4 change 23687
 ///
-void TestBitfields::test()
+void UnitTest::test()
 {
 	string statusFields =
 "status.active@body,status.passive@body,status.rejected@body,status.blacklisted@body,status.monthly@body,status.constant@body,status.experimental@body,status.whitelist@body";
@@ -50,7 +44,7 @@ void TestBitfields::test()
 
 	odb::Select::iterator it = oda.begin();
 
-	Log::debug() << "TestBitfields::test: it->columns().size() == " << it->columns().size() << std::endl;
+	Log::debug() << "UnitTest::test: it->columns().size() == " << it->columns().size() << std::endl;
 
 	ASSERT(it->columns().size() == 9);
 
@@ -70,13 +64,13 @@ void TestBitfields::test()
 	}
 }
 
-void TestBitfields::setUp() {}
+void UnitTest::setUp() {}
 
-void TestBitfields::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestBitfields)
+

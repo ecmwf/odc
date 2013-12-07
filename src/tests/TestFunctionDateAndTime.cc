@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionDateAndTime.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -20,7 +20,7 @@ const double EPS =     1e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionDateAndTime.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -32,19 +32,19 @@ namespace test {
 
 
 
-TestFunctionDateAndTime::TestFunctionDateAndTime(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionDateAndTime::~TestFunctionDateAndTime() { }
+() { }
 
 
-void TestFunctionDateAndTime::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionDateAndTime::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test DateAndTime function");
 	odb::Writer<> oda("test_date_and_time.odb");
@@ -63,12 +63,12 @@ void TestFunctionDateAndTime::setUp()
     ++row;
 }
 
-void TestFunctionDateAndTime::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_date_and_time.odb").unlink();
 }
 
-void TestFunctionDateAndTime::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select julian(date,time), year(date),month(date),day(date),hour(time),minute(time),second(time), timestamp(date,time) from \"test_date_and_time.odb\";";
 
@@ -93,4 +93,4 @@ void TestFunctionDateAndTime::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionDateAndTime)
+

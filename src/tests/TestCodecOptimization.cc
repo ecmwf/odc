@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestCodecOptimization.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -17,7 +17,7 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "TestCodecOptimization.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -29,22 +29,15 @@ namespace test {
 const size_t numberOfColumns = 1;
 
 
-
-TestCodecOptimization::TestCodecOptimization(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestCodecOptimization::~TestCodecOptimization() { }
-
-void TestCodecOptimization::test()
+void UnitTest::test()
 {
 	testSelectIterator();
 }
 
-void TestCodecOptimization::setUp()
+void UnitTest::setUp()
 {
  {
-	odb::Writer<> oda("TestCodecOptimization1.odb");
+	odb::Writer<> oda("UnitTest.odb");
 	odb::Writer<>::iterator row = oda.begin();
 
 	MetaData& md = row->columns();
@@ -68,21 +61,21 @@ void TestCodecOptimization::setUp()
  }
 }
 
-void TestCodecOptimization::tearDown() { }
+void UnitTest::tearDown() { }
 
-void TestCodecOptimization::testSelectIterator()
+void UnitTest::testSelectIterator()
 {
 
-	odb::Reader reader("TestCodecOptimization1.odb");
+	odb::Reader reader("UnitTest.odb");
 	odb::Reader::iterator it = reader.begin();
 	odb::MetaData& md = it->columns();
 
-	Log::info() << "TestCodecOptimization::testSelectIterator: md = " << md << std::endl; 
+	Log::info() << "UnitTest::testSelectIterator: md = " << md << std::endl; 
 	ASSERT(md.size() == numberOfColumns);
 
 	string codecName = md[0]->coder().name();
 
-	Log::info() << "TestCodecOptimization::testSelectIterator: codecName = " << codecName << std::endl; 
+	Log::info() << "UnitTest::testSelectIterator: codecName = " << codecName << std::endl; 
 
 	ASSERT("All columns should be constant" && codecName == "constant");
 	return;
@@ -93,4 +86,4 @@ void TestCodecOptimization::testSelectIterator()
 } // namespace odb 
 
 
-MAIN(TestCodecOptimization)
+

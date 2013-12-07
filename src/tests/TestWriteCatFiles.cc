@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestWriteCatFiles.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -16,22 +16,14 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "TestWriteCatFiles.h"
+#include "UnitTest.h"
 
 namespace odb {
 namespace tool {
 namespace test {
 
 
-
-
-TestWriteCatFiles::TestWriteCatFiles(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestWriteCatFiles::~TestWriteCatFiles() { }
-
-void TestWriteCatFiles::test()
+void UnitTest::test()
 {
 	Reader in("concatenated.odb");
 	Reader::iterator it = in.begin();
@@ -44,7 +36,7 @@ void TestWriteCatFiles::test()
 	Comparator().compare("concatenated.odb", "copy_of_concatenated.odb");
 }
 
-void TestWriteCatFiles::setUp()
+void UnitTest::setUp()
 {
  {
 	odb::Writer<> oda("file1.odb");
@@ -110,7 +102,7 @@ void TestWriteCatFiles::setUp()
 
 }
 
-void TestWriteCatFiles::tearDown() { }
+void UnitTest::tearDown() { }
 
 
 } // namespace test 
@@ -118,4 +110,4 @@ void TestWriteCatFiles::tearDown() { }
 } // namespace odb 
 
 
-MAIN(TestWriteCatFiles)
+

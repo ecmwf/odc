@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestAtTableInTheOutput.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -18,7 +18,7 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "TestAtTableInTheOutput.h"
+#include "UnitTest.h"
 
 using namespace std;
 
@@ -27,23 +27,15 @@ namespace tool {
 namespace test {
 
 
-
-
-TestAtTableInTheOutput::TestAtTableInTheOutput(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestAtTableInTheOutput::~TestAtTableInTheOutput() { }
-
-void TestAtTableInTheOutput::test()
+void UnitTest::test()
 {
 	selectIntoSecondFile();
 	compareFiles();
 }
 
-void TestAtTableInTheOutput::setUp()
+void UnitTest::setUp()
 {
-	odb::Writer<> f("TestAtTableInTheOutput.odb");
+	odb::Writer<> f("UnitTest.odb");
 	odb::Writer<>::iterator it = f.begin();
 	MetaData& md = it->columns();
 
@@ -71,10 +63,10 @@ void TestAtTableInTheOutput::setUp()
 	}
 }
 
-void TestAtTableInTheOutput::selectIntoSecondFile()
+void UnitTest::selectIntoSecondFile()
 {
-	const string fileName = "TestAtTableInTheOutput.odb";
-	string sql = "select lat,lon,obsvalue,bf into \"TestAtTableInTheOutput2.odb\"";
+	const string fileName = "UnitTest.odb";
+	string sql = "select lat,lon,obsvalue,bf into \"UnitTest.odb\"";
 	sql += " from \"" + fileName + "\" ;";
 
 	odb::Select f(sql); //, fileName);
@@ -90,20 +82,20 @@ void TestAtTableInTheOutput::selectIntoSecondFile()
 	///ASSERT("");
 }
 
-void TestAtTableInTheOutput::compareFiles()
+void UnitTest::compareFiles()
 {
-	odb::Reader oda1("TestAtTableInTheOutput.odb");
-	odb::Reader oda2("TestAtTableInTheOutput2.odb");
+	odb::Reader oda1("UnitTest.odb");
+	odb::Reader oda2("UnitTest.odb");
 
 	odb::Reader::iterator it1(oda1.begin());
 	odb::Reader::iterator end1(oda1.end());
 	odb::Reader::iterator it2(oda2.begin());
 	odb::Reader::iterator end2(oda2.end());
 	
-	odb::Comparator().compare(it1, end1, it2, end2, "TestAtTableInTheOutput.odb", "TestAtTableInTheOutput2.odb");
+	odb::Comparator().compare(it1, end1, it2, end2, "UnitTest.odb", "UnitTest.odb");
 }
 
-void TestAtTableInTheOutput::tearDown() { }
+void UnitTest::tearDown() { }
 
 
 } // namespace test 
@@ -111,4 +103,4 @@ void TestAtTableInTheOutput::tearDown() { }
 } // namespace odb 
 
 
-MAIN(TestAtTableInTheOutput)
+

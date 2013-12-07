@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestAAAImportODBDispatching.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/log/Log.h"
 #include "odblib/StringTool.h"
-#include "TestAAAImportODBDispatching.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -24,30 +24,23 @@ namespace tool {
 namespace test {
 
 
-
-TestAAAImportODBDispatching::TestAAAImportODBDispatching(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestAAAImportODBDispatching::~TestAAAImportODBDispatching() {}
-
-void TestAAAImportODBDispatching::test()
+void UnitTest::test()
 {
 	if (getenv("ODB_ROOT"))
         StringTool::shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
 	else {
-		Log::warning() << "TestAAAImportODBDispatching: ODB_ROOT not set, skipping testing of odb_migrator" << std::endl;
+		Log::warning() << "UnitTest: ODB_ROOT not set, skipping testing of odb_migrator" << std::endl;
         StringTool::shell("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
 	}
 }
 
-void TestAAAImportODBDispatching::setUp() {}
+void UnitTest::setUp() {}
 
-void TestAAAImportODBDispatching::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestAAAImportODBDispatching)
+

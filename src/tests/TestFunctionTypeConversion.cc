@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionTypeConversion.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -16,7 +16,7 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionTypeConversion.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,19 +27,19 @@ namespace test {
 
 
 
-TestFunctionTypeConversion::TestFunctionTypeConversion(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionTypeConversion::~TestFunctionTypeConversion() { }
+() { }
 
 
-void TestFunctionTypeConversion::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionTypeConversion::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test TypeConversion function");
 	odb::Writer<> oda("test_type_conversion.odb");
@@ -56,12 +56,12 @@ void TestFunctionTypeConversion::setUp()
     ++row;
 }
 
-void TestFunctionTypeConversion::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_type_conversion.odb").unlink();
 }
 
-void TestFunctionTypeConversion::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select ceil(obsvalue),floor(obsvalue), trunc(obsvalue),int(obsvalue),nint(obsvalue) from \"test_type_conversion.odb\";";
 
@@ -83,4 +83,4 @@ void TestFunctionTypeConversion::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionTypeConversion)
+

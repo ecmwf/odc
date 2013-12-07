@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestConstCodec.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -31,12 +31,12 @@
 #include "odblib/SQLAST.h"
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLIteratorSession.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 
 #include "tools/Tool.h"
 #include "odblib/Writer.h"
 #include "MockReader.h"
-#include "TestConstCodec.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -99,16 +99,16 @@ public:
 };
 
 
-TestConstCodec::TestConstCodec(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestConstCodec::~TestConstCodec() { }
+() { }
 
-void TestConstCodec::setUp()
+void UnitTest::setUp()
 {
-	Timer t("Writing TestConstCodec.odb");
-	odb::Writer<> oda("TestConstCodec.odb");
+	Timer t("Writing UnitTest.odb");
+	odb::Writer<> oda("UnitTest.odb");
 
 	typedef MockReader<MockReaderIterator> M;
 
@@ -121,9 +121,9 @@ void TestConstCodec::setUp()
 	outit->pass1(b, e);
 }
 
-void TestConstCodec::test()
+void UnitTest::test()
 {
-	odb::Reader oda("TestConstCodec.odb");
+	odb::Reader oda("UnitTest.odb");
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 
@@ -131,19 +131,19 @@ void TestConstCodec::test()
 	
 	for ( ; it != end; ++it)
 	{
-		//Log::debug() << "TestConstCodec::test: '" << it.string(0) << "' (" << (*it)[0] << ")" << std::endl;
+		//Log::debug() << "UnitTest::test: '" << it.string(0) << "' (" << (*it)[0] << ")" << std::endl;
 		ASSERT((*it)[0] == * ((double *) pies));
 	}
 
-	Log::debug() << "TestConstCodec::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
+	Log::debug() << "UnitTest::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
 	ASSERT(it->columns()[0]->coder().name() == "constant_string");
 }
 
-void TestConstCodec::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestConstCodec)
+

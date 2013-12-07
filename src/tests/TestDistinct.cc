@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestDistinct.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, September 2010
 
@@ -16,7 +16,7 @@
 #include "tools/ImportTool.h"
 #include "odblib/Select.h"
 
-#include "TestDistinct.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,14 +27,14 @@ namespace test {
 
 
 
-TestDistinct::TestDistinct(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestDistinct::~TestDistinct() { }
+() { }
 
 ///
-void TestDistinct::test()
+void UnitTest::test()
 {
     std::string sql = "select distinct a from \"a1to10twice.odb\";";
 
@@ -51,7 +51,7 @@ void TestDistinct::test()
 	ASSERT((*it2)[0] == 10);
 }
 
-void TestDistinct::setUp()
+void UnitTest::setUp()
 {
 	stringstream s;
 	s << "a:REAL" << std::endl;
@@ -60,11 +60,11 @@ void TestDistinct::setUp()
 	ImportTool::importText(s.str().c_str(), "a1to10twice.odb");
 }
 
-void TestDistinct::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestDistinct)
+

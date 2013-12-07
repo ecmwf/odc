@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionsForAngleConversion.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -19,7 +19,7 @@ const double EPS = 7e-6;
 #include "odblib/piconst.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionsForAngleConversion.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -30,19 +30,19 @@ namespace test {
 
 
 
-TestFunctionsForAngleConversion::TestFunctionsForAngleConversion(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionsForAngleConversion::~TestFunctionsForAngleConversion() { }
+() { }
 
 
-void TestFunctionsForAngleConversion::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionsForAngleConversion::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test various functions to convert angles (radians to degrees, etc.)");
 	odb::Writer<> oda("test_angleconv.odb");
@@ -68,12 +68,12 @@ void TestFunctionsForAngleConversion::setUp()
 	++row;
 }
 
-void TestFunctionsForAngleConversion::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_angleconv.odb").unlink();
 }
 
-void TestFunctionsForAngleConversion::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select degrees(radian_col),radians(degrees_col), rad2deg(radian_col), deg2rad(degrees_col), radians(degrees(radian_col)), degrees(radians(degrees_col)) from \"test_angleconv.odb\";";
 
@@ -117,4 +117,4 @@ void TestFunctionsForAngleConversion::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionsForAngleConversion)
+

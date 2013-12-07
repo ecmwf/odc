@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestTextSelect3.h
+/// \file UnitTest.h
 ///
 // @author Piotr Kuchta, ECMWF, Oct 2010
 
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "TestTextSelect3.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -28,54 +28,48 @@ namespace test {
 // TODO: (test not finished yet)
 
 
-TestTextSelect3::TestTextSelect3(int argc, char **argv)
-: TestCase(argc, argv)
-{}
+void UnitTest::setUp() { }
 
-TestTextSelect3::~TestTextSelect3() { }
-
-void TestTextSelect3::setUp() { }
-
-/// Tests syntax 'select lat, lon' (no file name)
+/// UnitTest syntax 'select lat, lon' (no file name)
 ///
-void TestTextSelect3::test()
+void UnitTest::test()
 {
 	selectStarOneColumn();
 	selectSumOneColumn();
 }
 
-void TestTextSelect3::selectStarOneColumn()
+void UnitTest::selectStarOneColumn()
 {
 	string sql = "select *";
-	const string fileName = "2000010106.4.0.oda.csv";//"TestTextSelect3.txt";
+	const string fileName = "2000010106.4.0.oda.csv";//"UnitTest.txt";
 	ifstream fs(fileName.c_str());
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "TestTextSelect3::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "UnitTest::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
-	Log::info() << "TestTextSelect3::selectStarOneColumn: columns().size():  " << it->columns().size() << std::endl;
+	Log::info() << "UnitTest::selectStarOneColumn: columns().size():  " << it->columns().size() << std::endl;
 
 	unsigned long n = 0;
 	for( ; it != end; ++it, ++n)
 	{
 	}
 
-	Log::info() << "TestTextSelect3::selectStarOneColumn: number of rows:  " << n << std::endl;
+	Log::info() << "UnitTest::selectStarOneColumn: number of rows:  " << n << std::endl;
 }
 
-void TestTextSelect3::selectSumOneColumn()
+void UnitTest::selectSumOneColumn()
 {
 /*
 	string sql = "select sum(a), sum(b)";
-	const string fileName = "TestTextSelect3.txt";
+	const string fileName = "UnitTest.txt";
 	ifstream fs(fileName.c_str());
 	
 	odb::Select oda(sql, fs);
 	
-	Log::info(Here()) << "TestTextSelect3::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "UnitTest::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -89,11 +83,11 @@ void TestTextSelect3::selectSumOneColumn()
 }
 
 
-void TestTextSelect3::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestTextSelect3)
+

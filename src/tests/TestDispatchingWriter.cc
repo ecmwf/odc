@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestDispatchingWriter.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, June 2009
 
@@ -16,7 +16,7 @@
 #include "odblib/DispatchingWriter.h"
 #include "odblib/Reader.h"
 
-#include "TestDispatchingWriter.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,15 +27,15 @@ namespace test {
 
 
 
-TestDispatchingWriter::TestDispatchingWriter(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestDispatchingWriter::~TestDispatchingWriter() { }
+() { }
 
-/// Tests DispatchingWriter
+/// UnitTest DispatchingWriter
 ///
-void TestDispatchingWriter::test()
+void UnitTest::test()
 {
 	const string fileName = "2000010106.odb";
 
@@ -62,13 +62,13 @@ void TestDispatchingWriter::test()
 	shell("ls -l disp.*.*.odb", Here());
 }
 
-void TestDispatchingWriter::setUp() {}
+void UnitTest::setUp() {}
 
-void TestDispatchingWriter::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestDispatchingWriter)
+

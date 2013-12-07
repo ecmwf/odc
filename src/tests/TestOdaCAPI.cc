@@ -14,7 +14,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/ColumnType.h"
 #include "odblib/Writer.h"
-#include "TestOdaCAPI.h"
+#include "UnitTest.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"
@@ -99,7 +99,7 @@ int test_odacapi_setup(int argc, char *argv[])
 
 int test_odacapi1(int argc, char *argv[])
 {
-	std::cout << "Testing odacapi..." << std::endl;
+	std::cout << "UnitTest odacapi..." << std::endl;
 
 	int err;
 
@@ -153,7 +153,7 @@ int test_odacapi1(int argc, char *argv[])
 
 int test_odacapi2(int argc, char *argv[])
 {
-	std::cout << "Testing odacapi 2..." << std::endl;
+	std::cout << "UnitTest odacapi 2..." << std::endl;
 
 	int err;
 
@@ -212,7 +212,7 @@ int test_odacapi2(int argc, char *argv[])
 
 int test_odacapi3(int argc, char *argv[])
 {
-	std::cout << "Testing ODB C API append to file functionality..." << std::endl;
+	std::cout << "UnitTest ODB C API append to file functionality..." << std::endl;
 
 	const char *filename = "test.odb";
 	int err = 0;

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionNorm.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -20,7 +20,7 @@ const double EPS = 4e-5;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionNorm.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -31,20 +31,12 @@ namespace tool {
 namespace test {
 
 
-
-TestFunctionNorm::TestFunctionNorm(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestFunctionNorm::~TestFunctionNorm() { }
-
-
-void TestFunctionNorm::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionNorm::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test Norm function");
 	odb::Writer<> oda("test_norm.odb");
@@ -68,12 +60,12 @@ void TestFunctionNorm::setUp()
     ++row;
 }
 
-void TestFunctionNorm::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_norm.odb").unlink();
 }
 
-void TestFunctionNorm::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select norm(x,y) from \"test_norm.odb\";";
 
@@ -91,4 +83,4 @@ void TestFunctionNorm::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionNorm)
+

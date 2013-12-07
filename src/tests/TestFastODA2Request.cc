@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFastODA2Request.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 #include "odblib/FastODA2Request.h"
 
-#include "TestFastODA2Request.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -26,13 +26,13 @@ namespace test {
 
 
 
-TestFastODA2Request::TestFastODA2Request(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFastODA2Request::~TestFastODA2Request() { }
+() { }
 
-void TestFastODA2Request::setUp() {}
+void UnitTest::setUp() {}
 
 const char * cfg = 
 //"CLASS: class\n"
@@ -46,7 +46,7 @@ const char * cfg =
 
 const char * cfgFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 
-void TestFastODA2Request::test()
+void UnitTest::test()
 {
 	FastODA2Request<ODA2RequestClientTraits> o;
 	o.parseConfig(cfg);
@@ -57,8 +57,8 @@ void TestFastODA2Request::test()
 	string r = o.genRequest();
 	unsigned long long n = o.rowsNumber();
 
-	Log::info() << "TestFastODA2Request::test: request is:" << endl << r << std::endl;
-	Log::info() << "TestFastODA2Request::test: file has " << n << " rows(s)." << std::endl;
+	Log::info() << "UnitTest::test: request is:" << endl << r << std::endl;
+	Log::info() << "UnitTest::test: file has " << n << " rows(s)." << std::endl;
 
 	ASSERT(o.getValues("DATE").size() == 1);
 	ASSERT(*o.getValues("DATE").begin() == "20000101");
@@ -76,11 +76,11 @@ void TestFastODA2Request::test()
 }
 
 
-void TestFastODA2Request::tearDown() { }
+void UnitTest::tearDown() { }
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestFastODA2Request)
+

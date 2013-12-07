@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestCommandLineParsing.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, July 2009
 
 #include "eckit/exception/Exceptions.h"
 
-#include "TestCommandLineParsing.h"
+#include "UnitTest.h"
 #include "tools/Tool.h"
 
 using namespace std;
@@ -26,9 +26,9 @@ namespace test {
 
 
 
-struct TestTool : public Tool {
+struct UnitTest : public Tool {
 
-    TestTool(int argc, char **argv) : Tool(argc, argv)
+    UnitTest
 	{
 		registerOptionWithArgument("-foo");
 		registerOptionWithArgument("-intOpt");
@@ -37,7 +37,7 @@ struct TestTool : public Tool {
 	static void help(std::ostream &o) { o << "No help available for this command yet." << std::endl; }
 
 	void run() {
-		Log::info() << "TestCommandLineParsing::test: TestTool::run" << std::endl;
+		Log::info() << "UnitTest::test: UnitTest::run" << std::endl;
 
 		ASSERT(optionArgument("-foo", std::string("NONE")) == "bar");
 		ASSERT(optionArgument("-intOpt", 0) == 69);
@@ -55,15 +55,11 @@ struct TestTool : public Tool {
 	}
 };
 
-TestCommandLineParsing::TestCommandLineParsing(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-void TestCommandLineParsing::test()
+void UnitTest::test()
 {
 	const char *args[] = {"-foo", "bar", "-intOpt", "69", "-blah", "-blahblah", "p1", "p2", "-lastOption", "p3", 0};
 
-	TestTool testTool(sizeof(args) / sizeof(char *) - 1, const_cast<char **>(args));
+	UnitTest testTool(sizeof(args) / sizeof(char *) - 1, const_cast<char **>(args));
 	testTool.run();
 }
 
@@ -72,4 +68,4 @@ void TestCommandLineParsing::test()
 } // namespace odb 
 
 
-MAIN(TestCommandLineParsing)
+

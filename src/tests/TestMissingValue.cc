@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestMissingValue.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -18,7 +18,7 @@
 
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
-#include "TestMissingValue.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -28,18 +28,11 @@ namespace tool {
 namespace test {
 
 
-
-TestMissingValue::TestMissingValue(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestMissingValue::~TestMissingValue() { }
-
-void TestMissingValue::setUp()
+void UnitTest::setUp()
 {
-	Tracer t(Log::debug(), "TestMissingValue::setUp");
+	Tracer t(Log::debug(), "UnitTest::setUp");
 
-	odb::Writer<> f("TestMissingValue.odb");
+	odb::Writer<> f("UnitTest.odb");
 	odb::Writer<>::iterator it = f.begin();
 	MetaData& md = it->columns();
 
@@ -65,26 +58,26 @@ void TestMissingValue::setUp()
 	}
 }
 
-void TestMissingValue::test()
+void UnitTest::test()
 {
 	selectIntoSecondFile();
 
-	odb::Comparator().compare("TestMissingValue.odb", "TestMissingValue2.odb");
+	odb::Comparator().compare("UnitTest.odb", "UnitTest.odb");
 
 	{
-		odb::Reader f("TestMissingValue.odb");
+		odb::Reader f("UnitTest.odb");
 		odb::Reader::iterator fbegin(f.begin());
 		odb::Reader::iterator fend(f.end());
 
-		odb::Select s("select * from \"TestMissingValue2.odb\";");
+		odb::Select s("select * from \"UnitTest.odb\";");
 		odb::Select::iterator sbegin(s.begin());
 		odb::Select::iterator send(s.end());
 
-		odb::Comparator().compare(fbegin, fend, sbegin, send, "TestMissingValue.odb", "SELECT TestMissingValue2.odb");
+		odb::Comparator().compare(fbegin, fend, sbegin, send, "UnitTest.odb", "SELECT UnitTest.odb");
 	}
 
 	{
-		odb::Reader f("TestMissingValue.odb");
+		odb::Reader f("UnitTest.odb");
 		odb::Reader::iterator it = f.begin();
 		odb::Reader::iterator end = f.end();
 
@@ -92,7 +85,7 @@ void TestMissingValue::test()
 		Column& column = *md[0];
 		codec::Codec& codec = column.coder();
 
-		Log::info() << "TestMissingValue::test: codec: " << codec << std::endl;	
+		Log::info() << "UnitTest::test: codec: " << codec << std::endl;	
 
 		ASSERT(codec.hasMissing());
 		ASSERT(codec.missingValue() == 1);
@@ -111,7 +104,7 @@ void TestMissingValue::test()
 
 	{
 		// Check the isMissing and missingValue API of SelectIterator
-		odb::Select s("select * from \"TestMissingValue.odb\";"); //, fileName);
+		odb::Select s("select * from \"UnitTest.odb\";"); //, fileName);
 		odb::Select::iterator i = s.begin();
 		odb::Select::iterator e = s.end();
 		for (; i != e; ++i)
@@ -134,12 +127,12 @@ void TestMissingValue::test()
 
 }
 
-void TestMissingValue::selectIntoSecondFile()
+void UnitTest::selectIntoSecondFile()
 {
-	Tracer t(Log::debug(), "TestMissingValue::selectIntoSecondFile");
+	Tracer t(Log::debug(), "UnitTest::selectIntoSecondFile");
 
-	const string fileName = "TestMissingValue.odb";
-	string sql = "select lat,bf into \"TestMissingValue2.odb\"";
+	const string fileName = "UnitTest.odb";
+	string sql = "select lat,bf into \"UnitTest.odb\"";
 	sql += " from \"" + fileName + "\" ;";
 
 	odb::Select f(sql); //, fileName);
@@ -149,7 +142,7 @@ void TestMissingValue::selectIntoSecondFile()
 	++it; // this is needed to push the third row to the INTO file 
 }
 
-void TestMissingValue::tearDown() { }
+void UnitTest::tearDown() { }
 
 
 } // namespace test 
@@ -157,4 +150,4 @@ void TestMissingValue::tearDown() { }
 } // namespace odb 
 
 
-MAIN(TestMissingValue)
+

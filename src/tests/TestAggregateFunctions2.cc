@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestAggregateFunctions2.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, September 2010
 
@@ -17,7 +17,7 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestAggregateFunctions2.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,17 +27,10 @@ namespace tool {
 namespace test {
 
 
-
-TestAggregateFunctions2::TestAggregateFunctions2(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestAggregateFunctions2::~TestAggregateFunctions2() { }
-
 ///
-void TestAggregateFunctions2::test()
+void UnitTest::test()
 {
-	string sql = "select count(*) from \"TestAggregateFunctions2.odb\";";
+	string sql = "select count(*) from \"UnitTest.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
@@ -51,7 +44,7 @@ void TestAggregateFunctions2::test()
 	odb::Select::iterator it2 = sel.begin();
 	odb::Select::iterator end2 = sel.end();
 
-	FILE *fout = fopen("TestAggregateFunctions2_out.odb", "w");
+	FILE *fout = fopen("UnitTest.odb", "w");
 	StdFileHandle fhout(fout);
 	odb::Writer<> writer(fhout);
 	odb::Writer<>::iterator outit = writer.begin();
@@ -66,20 +59,20 @@ void TestAggregateFunctions2::test()
 	ASSERT( i == 1);
 }
 
-void TestAggregateFunctions2::setUp()
+void UnitTest::setUp()
 {
 	stringstream s;
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
 		s << i << std::endl;
-	ImportTool::importText(s.str().c_str(), "TestAggregateFunctions2.odb");
+	ImportTool::importText(s.str().c_str(), "UnitTest.odb");
 }
 
-void TestAggregateFunctions2::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestAggregateFunctions2)
+

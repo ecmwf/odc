@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSetvbuffer.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -16,7 +16,7 @@
 #include "odblib/ODBAPISettings.h"
 
 #include "odblib/Writer.h"
-#include "TestSetvbuffer.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -29,15 +29,15 @@ namespace test {
 
 
 
-TestSetvbuffer::TestSetvbuffer(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestSetvbuffer::~TestSetvbuffer() { }
+() { }
 
-void TestSetvbuffer::setUp() { }
+void UnitTest::setUp() { }
 
-void TestSetvbuffer::test()
+void UnitTest::test()
 {
 	size_t cols = 400;
 	long long rows = 1000;
@@ -46,18 +46,18 @@ void TestSetvbuffer::test()
 	for (size_t i = 0; i < 10; ++i)
 	{
 		stringstream s;
-		s << "TestSetvbuffer::setUp(): createFile(" << cols << ", " << rows << ", " << buffSize << ")" << std::endl;
+		s << "UnitTest::setUp(): createFile(" << cols << ", " << rows << ", " << buffSize << ")" << std::endl;
 		Timer t(s.str());
 		createFile(cols, rows, buffSize);
 	}
 }
 
-void TestSetvbuffer::createFile(size_t numberOfColumns, long long numberOfRows, size_t setvbufferSize)
+void UnitTest::createFile(size_t numberOfColumns, long long numberOfRows, size_t setvbufferSize)
 {
 
 	ODBAPISettings::instance().setvbufferSize(setvbufferSize);
 
-	odb::Writer<> oda("TestSetvbuffer.odb");
+	odb::Writer<> oda("UnitTest.odb");
 	odb::Writer<>::iterator row = oda.begin();
 
 	MetaData& md = row->columns();
@@ -75,9 +75,9 @@ void TestSetvbuffer::createFile(size_t numberOfColumns, long long numberOfRows, 
 			(*row)[c] = c;
 }
 
-void TestSetvbuffer::tearDown()
+void UnitTest::tearDown()
 {
-	int catStatus = system("ls -l TestSetvbuffer.odb");
+	int catStatus = system("ls -l UnitTest.odb");
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 }
 
@@ -87,4 +87,4 @@ void TestSetvbuffer::tearDown()
 } // namespace odb 
 
 
-MAIN(TestSetvbuffer)
+

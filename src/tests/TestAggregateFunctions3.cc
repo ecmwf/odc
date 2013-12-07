@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestAggregateFunctions3.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, September 2010
 
@@ -16,7 +16,7 @@
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
 
-#include "TestAggregateFunctions3.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -26,17 +26,10 @@ namespace tool {
 namespace test {
 
 
-
-TestAggregateFunctions3::TestAggregateFunctions3(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestAggregateFunctions3::~TestAggregateFunctions3() { }
-
 ///
-void TestAggregateFunctions3::test()
+void UnitTest::test()
 {
-	string sql = "select sum(a) from \"TestAggregateFunctions3.odb\";";
+	string sql = "select sum(a) from \"UnitTest.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
@@ -47,20 +40,20 @@ void TestAggregateFunctions3::test()
 	ASSERT( (*it2)[0] == 55);
 }
 
-void TestAggregateFunctions3::setUp()
+void UnitTest::setUp()
 {
 	stringstream s;
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
 		s << i << std::endl;
-	ImportTool::importText(s.str().c_str(), "TestAggregateFunctions3.odb");
+	ImportTool::importText(s.str().c_str(), "UnitTest.odb");
 }
 
-void TestAggregateFunctions3::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestAggregateFunctions3)
+

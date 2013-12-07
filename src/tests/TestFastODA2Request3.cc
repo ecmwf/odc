@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFastODA2Request3.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
@@ -16,7 +16,7 @@
 #include "eckit/types/Types.h"
 #include "odblib/FastODA2Request.h"
 #include "odblib/ODAHandle.h"
-#include "TestFastODA2Request3.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -28,15 +28,15 @@ namespace test {
 
 
 
-TestFastODA2Request3::TestFastODA2Request3(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFastODA2Request3::~TestFastODA2Request3() {}
 
-void TestFastODA2Request3::setUp() {}
 
-void TestFastODA2Request3::test()
+void UnitTest::setUp() {}
+
+void UnitTest::test()
 {
 	const char * configFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 	const char * config = 
@@ -66,21 +66,21 @@ void TestFastODA2Request3::test()
 	ASSERT(rc == true);
 
 	for (size_t i = 0; i < handles.size(); ++i)
-		Log::info() << "TestFastODA2Request3::test: handles[" << i << "]=" << *handles[i] << std::endl;
+		Log::info() << "UnitTest::test: handles[" << i << "]=" << *handles[i] << std::endl;
 
 	string r = o.genRequest();
-	Log::info() << "TestFastODA2Request3::test: o.genRequest() => " << endl << r << std::endl;
+	Log::info() << "UnitTest::test: o.genRequest() => " << endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
-	Log::info() << "TestFastODA2Request3::test: rowsNumber == " << n <<  std::endl;
+	Log::info() << "UnitTest::test: rowsNumber == " << n <<  std::endl;
 }
 
 
-void TestFastODA2Request3::tearDown() { }
+void UnitTest::tearDown() { }
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestFastODA2Request3)
+

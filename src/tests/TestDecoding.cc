@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestDecoding.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, June 2009
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Reader.h"
 
-#include "TestDecoding.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -26,19 +26,19 @@ namespace test {
 
 
 
-TestDecoding::TestDecoding(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestDecoding::~TestDecoding() { }
+() { }
 
-/// Tests DispatchingWriter
+/// UnitTest DispatchingWriter
 ///
-void TestDecoding::test()
+void UnitTest::test()
 {
 	const string fileName = "2000010106.odb";
 
-	Timer t(string("TestDecoding::test: reading file '") + fileName + "'");
+	Timer t(string("UnitTest::test: reading file '") + fileName + "'");
 
 	odb::Reader f(fileName);
 	odb::Reader::iterator it = f.begin();
@@ -48,15 +48,15 @@ void TestDecoding::test()
 	for (; it != end; ++it)
 		++n;
 
-	Log::info() << "TestDecoding::test decoded " << n << " lines." << std::endl;
+	Log::info() << "UnitTest::test decoded " << n << " lines." << std::endl;
 }
 
-void TestDecoding::setUp() {}
-void TestDecoding::tearDown() {}
+void UnitTest::setUp() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestDecoding)
+

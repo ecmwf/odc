@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestSimpleFilterIterator2.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, June 2009
 
@@ -17,7 +17,7 @@
 #include "odblib/Reader.h"
 #include "odblib/SimpleFilter.h"
 
-#include "TestSimpleFilterIterator2.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -29,15 +29,9 @@ namespace test {
 
 
 
-TestSimpleFilterIterator2::TestSimpleFilterIterator2(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestSimpleFilterIterator2::~TestSimpleFilterIterator2() { }
-
-/// Tests DispatchingWriter
+/// UnitTest DispatchingWriter
 ///
-void TestSimpleFilterIterator2::test()
+void UnitTest::test()
 {
 	const string fileName = "2000010106.odb";
 	string sql = string("select * from \"") + fileName + "\" where obstype = 7 and sensor = 1;";
@@ -47,7 +41,7 @@ void TestSimpleFilterIterator2::test()
 	long n2 = 0;
 
 	{
-		Timer t("TestSimpleFilterIterator2::test: selecting rows where obstype == 7 and sensor = 1");
+		Timer t("UnitTest::test: selecting rows where obstype == 7 and sensor = 1");
 		typedef odb::SimpleFilter<odb::Reader::iterator> Filter;
 		typedef odb::SimpleFilter<Filter::iterator> Filter2;
 
@@ -60,30 +54,30 @@ void TestSimpleFilterIterator2::test()
 		for (; it != end; ++it)
 			++n1;
 
-		Log::info() << "TestSimpleFilterIterator2::test: selected " << n1 << " rows." << std::endl;
+		Log::info() << "UnitTest::test: selected " << n1 << " rows." << std::endl;
 	}
 
 	{
-		Timer t("TestSimpleFilterIterator2::test: selecting rows using SQL where obstype == 7 and sensor = 1");
-		Log::info() << "TestSimpleFilterIterator2::test: Execute '" << sql << "'" << std::endl;
+		Timer t("UnitTest::test: selecting rows using SQL where obstype == 7 and sensor = 1");
+		Log::info() << "UnitTest::test: Execute '" << sql << "'" << std::endl;
 		odb::Select::iterator end = odas.end();
 		for(odb::Select::iterator it = odas.begin();
 			it != end; ++it)
 			++n2;
-		Log::info() << "TestSimpleFilterIterator2::test: selected " << n2 << " rows." << std::endl;
+		Log::info() << "UnitTest::test: selected " << n2 << " rows." << std::endl;
 	}
 
-	Log::info() << "TestSimpleFilterIterator2::test: n1=" << n1 << ", n2=" << n2 << std::endl;
+	Log::info() << "UnitTest::test: n1=" << n1 << ", n2=" << n2 << std::endl;
 
 	ASSERT(n1 == n2);
 }
 
-void TestSimpleFilterIterator2::setUp() {}
-void TestSimpleFilterIterator2::tearDown() {}
+void UnitTest::setUp() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestSimpleFilterIterator2)
+

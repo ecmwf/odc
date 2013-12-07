@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestStar.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, May 2009
 
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "TestStar.h"
+#include "UnitTest.h"
 
 namespace odb {
 namespace tool {
@@ -23,15 +23,9 @@ namespace test {
 
 
 
-TestStar::TestStar(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestStar::~TestStar() { }
-
-/// Tests syntax: select *@odb_table from "file.oda";
+/// UnitTest syntax: select *@odb_table from "file.oda";
 ///
-void TestStar::test()
+void UnitTest::test()
 {
     const std::string SELECT = "select *@hdr from \"2000010106.odb\";";
 
@@ -41,13 +35,13 @@ void TestStar::test()
 	ASSERT("hdr has 27 columns excluding @LINKs." && it->columns().size() == 27);
 }
 
-void TestStar::setUp() {}
+void UnitTest::setUp() {}
 
-void TestStar::tearDown() {}
+void UnitTest::tearDown() {}
 
 } // namespace test
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestStar)
+

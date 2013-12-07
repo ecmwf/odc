@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionsForTemperatureConversion.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -16,7 +16,7 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionsForTemperatureConversion.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,18 +27,18 @@ namespace test {
 
 
 
-TestFunctionsForTemperatureConversion::TestFunctionsForTemperatureConversion(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionsForTemperatureConversion::~TestFunctionsForTemperatureConversion() { }
+() { }
 
-void TestFunctionsForTemperatureConversion::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionsForTemperatureConversion::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test various functions to convert temperatures");
 	odb::Writer<> oda("test_tempconv.odb");
@@ -58,12 +58,12 @@ void TestFunctionsForTemperatureConversion::setUp()
 	++row;
 }
 
-void TestFunctionsForTemperatureConversion::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_tempconv.odb").unlink();
 }
 
-void TestFunctionsForTemperatureConversion::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select celsius(kelvin_col), fahrenheit(kelvin_col), c2k(celsius_col),c2f(celsius_col),f2c(fahrenheit_col), f2k(fahrenheit_col), k2f(kelvin_col) from \"test_tempconv.odb\";";
 
@@ -89,4 +89,4 @@ void TestFunctionsForTemperatureConversion::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionsForTemperatureConversion)
+

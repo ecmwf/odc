@@ -1,9 +1,9 @@
-/// @file   TestDataPage.cc
+/// @file   UnitTest.cc
 /// @author Tomas Kral
 
 #include "odblib/DataColumns.h"
 #include "odblib/DataTable.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 
 
 using namespace std;
@@ -405,4 +405,4 @@ TEST_FIXTURE(FullPage, SplitFullPage)
 
 } // namespace
 
-MAIN(TestDataPage)
+

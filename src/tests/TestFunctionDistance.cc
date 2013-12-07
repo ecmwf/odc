@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionDistance.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -19,7 +19,7 @@ const double EPS =     7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionDistance.h"
+#include "UnitTest.h"
 
 
 using namespace std;
@@ -31,19 +31,19 @@ namespace test {
 
 
 
-TestFunctionDistance::TestFunctionDistance(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestFunctionDistance::~TestFunctionDistance() { }
+() { }
 
 
-void TestFunctionDistance::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionDistance::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test various functions to compute the distance");
 	odb::Writer<> oda("test_distance.odb");
@@ -62,12 +62,12 @@ void TestFunctionDistance::setUp()
     ++row;
 }
 
-void TestFunctionDistance::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_distance.odb").unlink();
 }
 
-void TestFunctionDistance::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select rad(45.0,0.0,1.0,lat,lon), rad(10.0,0.0,0.0,lat,lon),distance(46.0,0.0,lat,lon),km(46.0,0.0,lat,lon),dist(100.,46.0,1.0,lat,lon), dist(40.0,5.0,1000.0,lat,lon) from \"test_distance.odb\";";
 
@@ -96,4 +96,4 @@ void TestFunctionDistance::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionDistance)
+

@@ -8,14 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestMetaDataReader.h
+/// \file UnitTest.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 #include "tools/ImportTool.h"
 #include "odblib/MetaData.h"
 
-#include "TestMetaDataReader.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -27,34 +27,34 @@ namespace test {
 
 
 
-TestMetaDataReader::TestMetaDataReader(int argc, char **argv)
-: TestCase(argc, argv)
+(int argc, char **argv)
+: UnitTest(argc, argv)
 {}
 
-TestMetaDataReader::~TestMetaDataReader() { }
+() { }
 
-void TestMetaDataReader::setUp()
+void UnitTest::setUp()
 {
-	ImportTool::importText("x:REAL\n1\n2\n3\n", "TestMetaDataReader.odb");
+	ImportTool::importText("x:REAL\n1\n2\n3\n", "UnitTest.odb");
 }
 
 
-void TestMetaDataReader::test()
+void UnitTest::test()
 {
-	const char *fileName = "TestMetaDataReader.odb";
+	const char *fileName = "UnitTest.odb";
 
 	MetaData wholeFileMD(MetaData::scanFile(fileName));
 
 	ASSERT(wholeFileMD[0]->min() == 1 && wholeFileMD[0]->max() == 3);
 
-	Log::info() << "TestMetaDataReader::test wholeFileMD==" << wholeFileMD << std::endl;
+	Log::info() << "UnitTest::test wholeFileMD==" << wholeFileMD << std::endl;
 }
 
-void TestMetaDataReader::tearDown() { }
+void UnitTest::tearDown() { }
 
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
 
-MAIN(TestMetaDataReader)
+

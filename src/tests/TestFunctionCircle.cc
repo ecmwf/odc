@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestFunctionCircle.cc
+/// \file UnitTest.cc
 ///
 /// @author ECMWF, July 2010
 
@@ -19,7 +19,7 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "TestFunctionCircle.h"
+#include "UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -31,19 +31,12 @@ namespace test {
 
 
 
-TestFunctionCircle::TestFunctionCircle(int argc, char **argv)
-: TestCase(argc, argv)
-{}
-
-TestFunctionCircle::~TestFunctionCircle() { }
-
-
-void TestFunctionCircle::test()
+void UnitTest::test()
 {
 	testReaderIterator();
 }
 
-void TestFunctionCircle::setUp()
+void UnitTest::setUp()
 {
 	Timer t("Test Circle function");
 	odb::Writer<> oda("test_circle.odb");
@@ -62,12 +55,12 @@ void TestFunctionCircle::setUp()
     ++row;
 }
 
-void TestFunctionCircle::tearDown() 
+void UnitTest::tearDown() 
 { 
 	PathName("test_circle.odb").unlink();
 }
 
-void TestFunctionCircle::testReaderIterator()
+void UnitTest::testReaderIterator()
 {
     const string sql = "select circle(lat,46.0, lon,11.0,1.0), circle(lat,46.0, lon,11.0,1.5) from \"test_circle.odb\";";
 
@@ -86,4 +79,4 @@ void TestFunctionCircle::testReaderIterator()
 } // namespace odb 
 
 
-MAIN(TestFunctionCircle)
+

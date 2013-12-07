@@ -1,9 +1,9 @@
-/// @file   TestDataJoin.cc
+/// @file   UnitTest.cc
 /// @author Tomas Kral
 
 #include "odblib/DataJoin.h"
 #include "odblib/DataTable.h"
-#include "tests/TestCase.h"
+#include "tests/UnitTest.h"
 
 
 using namespace std;
@@ -188,4 +188,4 @@ TEST_FIXTURE(InnerJoin, InnerJoinReturnsExpectedValues)
 
 } // namespace
 
-MAIN(TestDataJoin)
+
