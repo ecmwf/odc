@@ -18,7 +18,7 @@ const double EPS = 4e-5;
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFunctionNorm.h"
 
@@ -30,7 +30,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFunctionNorm> _TestFunctionNorm("TestFunctionNorm");
+
 
 TestFunctionNorm::TestFunctionNorm(int argc, char **argv)
 : TestCase(argc, argv)
@@ -90,3 +90,5 @@ void TestFunctionNorm::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFunctionNorm)

@@ -16,7 +16,7 @@
 #include "eckit/log/Log.h"
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestAggregateFunctions.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestAggregateFunctions> _TestAggregateFunctions("TestAggregateFunctions");
+
 
 TestAggregateFunctions::TestAggregateFunctions(int argc, char **argv)
 : TestCase(argc, argv)
@@ -82,3 +82,5 @@ void TestAggregateFunctions::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestAggregateFunctions)

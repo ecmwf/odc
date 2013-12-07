@@ -18,7 +18,7 @@ const double EPS =   7e-6;
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFunctionEqBox.h"
 
@@ -30,7 +30,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFunctionEqBox> _TestFunctionEqBox("TestFunctionEqBox");
+
 
 TestFunctionEqBox::TestFunctionEqBox(int argc, char **argv)
 : TestCase(argc, argv)
@@ -86,3 +86,5 @@ void TestFunctionEqBox::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFunctionEqBox)

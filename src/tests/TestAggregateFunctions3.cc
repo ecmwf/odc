@@ -12,10 +12,10 @@
 ///
 /// @author Piotr Kuchta, ECMWF, September 2010
 
-#include "odblib/ImportTool.h"
+#include "tools/ImportTool.h"
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestAggregateFunctions3.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestAggregateFunctions3> _TestAggregateFunctions3("TestAggregateFunctions3");
+
 
 TestAggregateFunctions3::TestAggregateFunctions3(int argc, char **argv)
 : TestCase(argc, argv)
@@ -62,3 +62,5 @@ void TestAggregateFunctions3::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestAggregateFunctions3)

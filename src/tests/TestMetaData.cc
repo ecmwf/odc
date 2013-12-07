@@ -14,7 +14,7 @@
 
 #include "odblib/DataStream.h"
 #include "odblib/MetaData.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestMetaData.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestMetaData> _TestMetaData("TestMetaData");
+
 
 TestMetaData::TestMetaData(int argc, char **argv)
 : TestCase(argc, argv)
@@ -68,3 +68,5 @@ void TestMetaData::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestMetaData)

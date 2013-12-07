@@ -3,8 +3,8 @@
 
 #include "odblib/DataColumns.h"
 #include "odblib/DataTable.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
+#include "tests/TestCase.h"
+
 
 using namespace std;
 using namespace odb;
@@ -404,3 +404,5 @@ TEST_FIXTURE(FullPage, SplitFullPage)
 }
 
 } // namespace
+
+MAIN(TestDataPage)

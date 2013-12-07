@@ -15,7 +15,7 @@
 #ifndef TEST_CIRCLE_H
 #define TEST_CIRCLE_H
 
-#include "odblib/TestCase.h"
+#include "tests/TestCase.h"
 
 namespace odb {
 namespace tool {
@@ -41,4 +41,5 @@ public:
 } // namespace odb 
 
 #endif
+
 

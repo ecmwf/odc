@@ -14,14 +14,14 @@
 
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestStar.h"
 
 namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestStar> _TestStar("TestStar");
+
 
 TestStar::TestStar(int argc, char **argv)
 : TestCase(argc, argv)
@@ -49,3 +49,5 @@ void TestStar::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestStar)

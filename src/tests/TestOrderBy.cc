@@ -14,9 +14,9 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/utils/StringTools.h"
-#include "odblib/ImportTool.h"
+#include "tools/ImportTool.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestOrderBy.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestOrderBy> _TestOrderBy("TestOrderBy");
+
 
 TestOrderBy::TestOrderBy(int argc, char **argv)
 : TestCase(argc, argv)
@@ -140,3 +140,5 @@ void TestOrderBy::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestOrderBy)

@@ -12,10 +12,10 @@
 ///
 /// @author Piotr Kuchta, ECMWF, June 2009
 
-#include "odblib/CountTool.h"
+#include "tools/CountTool.h"
 #include "odblib/DispatchingWriter.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestDispatchingWriter.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestDispatchingWriter> _TestDispatchingWriter("TestDispatchingWriter");
+
 
 TestDispatchingWriter::TestDispatchingWriter(int argc, char **argv)
 : TestCase(argc, argv)
@@ -70,3 +70,5 @@ void TestDispatchingWriter::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestDispatchingWriter)

@@ -8,8 +8,8 @@
 #include "odblib/DataTable.h"
 #include "odblib/Reader.h"
 #include "odblib/TemporaryFile.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
+#include "tests/TestCase.h"
+
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Writer.h"
 
@@ -220,3 +220,5 @@ TEST_FIXTURE(FilledDataSet, DataSaverOutputContainsExpectedRows)
 }
 
 } // namespace
+
+MAIN(TestDataLoader)

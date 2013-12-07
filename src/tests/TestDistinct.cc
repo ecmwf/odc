@@ -13,9 +13,9 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "eckit/filesystem/PathName.h"
-#include "odblib/ImportTool.h"
+#include "tools/ImportTool.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestDistinct.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestDistinct> _TestDistinct("TestDistinct");
+
 
 TestDistinct::TestDistinct(int argc, char **argv)
 : TestCase(argc, argv)
@@ -66,3 +66,5 @@ void TestDistinct::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestDistinct)

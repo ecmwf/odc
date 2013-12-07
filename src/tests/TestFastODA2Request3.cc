@@ -26,7 +26,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-//ToolFactory<TestFastODA2Request3> _TestFastODA2Request3("TestFastODA2Request3");
+
 
 TestFastODA2Request3::TestFastODA2Request3(int argc, char **argv)
 : TestCase(argc, argv)
@@ -82,3 +82,5 @@ void TestFastODA2Request3::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFastODA2Request3)

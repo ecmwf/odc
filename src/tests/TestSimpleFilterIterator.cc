@@ -16,7 +16,7 @@
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
 #include "odblib/SimpleFilter.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestSimpleFilterIterator.h"
 
 
@@ -31,7 +31,7 @@ namespace test {
 //int const OBSTYPE = 1;
 //int const SENSOR = 24;
 
-ToolFactory<TestSimpleFilterIterator> _TestSimpleFilterIterator("TestSimpleFilterIterator");
+
 
 TestSimpleFilterIterator::TestSimpleFilterIterator(int argc, char **argv)
 : TestCase(argc, argv)
@@ -132,3 +132,5 @@ void TestSimpleFilterIterator::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestSimpleFilterIterator)

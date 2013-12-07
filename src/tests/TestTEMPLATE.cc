@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
-#include "odblib/ToolFactory.h"
+
 #include "TestTEMPLATE.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestTEMPLATE> _TestTEMPLATE("TestTEMPLATE");
+
 
 TestTEMPLATE::TestTEMPLATE(int argc, char **argv)
 : TestCase(argc, argv)
@@ -45,3 +45,5 @@ void TestTEMPLATE::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestTEMPLATE)

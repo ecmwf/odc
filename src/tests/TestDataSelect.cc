@@ -6,8 +6,8 @@
 #include "odblib/DataSelectIterator.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
+#include "tests/TestCase.h"
+
 
 using namespace std;
 using namespace odb;
@@ -202,3 +202,5 @@ TEST_FIXTURE(SelectAll, CanUseCopyToAppendResults)
 }
 
 } // namespace
+
+MAIN(TestDataSelect)

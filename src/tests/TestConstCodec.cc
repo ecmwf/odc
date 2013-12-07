@@ -31,9 +31,9 @@
 #include "odblib/SQLAST.h"
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLIteratorSession.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/Tool.h"
+#include "tests/TestCase.h"
+
+#include "tools/Tool.h"
 #include "odblib/Writer.h"
 #include "MockReader.h"
 #include "TestConstCodec.h"
@@ -48,7 +48,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestConstCodec> _TestConstCodec("TestConstCodec");
+
 
 const char *pies = "pies\0\0\0\0";
 
@@ -145,3 +145,5 @@ void TestConstCodec::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestConstCodec)

@@ -14,7 +14,7 @@
 
 #include "odblib/FastODA2Request.h"
 #include "odblib/ODAHandle.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFastODA2Request2.h"
 
@@ -26,7 +26,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFastODA2Request2> _TestFastODA2Request2("TestFastODA2Request2");
+
 
 TestFastODA2Request2::TestFastODA2Request2(int argc, char **argv)
 : TestCase(argc, argv)
@@ -143,3 +143,5 @@ void TestFastODA2Request2::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFastODA2Request2)

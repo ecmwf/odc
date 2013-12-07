@@ -12,7 +12,6 @@
 #include "eckit/thread/ThreadSingleton.h"
 #include "odblib/DispatchingWriter.h"
 #include "odblib/FunctionExpression.h"
-#include "odblib/ImportTool.h"
 #include "odblib/ShiftedBitColumnExpression.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLDistinctOutput.h"
@@ -39,7 +38,7 @@ SQLSelectFactory::SQLSelectFactory()
   config_(SQLOutputConfig::defaultConfig()),
   maxColumnShift_(0),
   minColumnShift_(0),
-  csvDelimiter_(odb::tool::ImportTool::defaultDelimiter())
+  csvDelimiter_(",")
 {}
 
 SQLSelectFactory& SQLSelectFactory::instance()

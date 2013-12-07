@@ -15,23 +15,23 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/utils/Timer.h"
 #include "odblib/Comparator.h"
-#include "odblib/CountTool.h"
+#include "tools/CountTool.h"
 #include "odblib/DateTime.h"
 #include "odblib/Decoder.h"
-#include "odblib/ImportTool.h"
+#include "tools/ImportTool.h"
 #include "odblib/MapReduce.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
-#include "odblib/SplitTool.h"
+#include "tools/SplitTool.h"
 #include "odblib/SQLInteractiveSession.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelectFactory.h"
-#include "odblib/TestCase.h"
+#include "tests/TestCase.h"
 #include "odblib/TextReader.h"
 #include "odblib/TextReaderIterator.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestOdaCAPI.h"
 
@@ -1015,3 +1015,5 @@ TEST(TextReaderIterator_parseBitfields)
 } // namespace tool 
 } // namespace odb 
 
+
+//MAIN(UnitTests)

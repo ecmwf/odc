@@ -259,3 +259,7 @@ int test_odacapi3(int argc, char *argv[])
 } // namespace tool 
 } // namespace odb 
 
+
+int main(int argc, char** argv) {
+    return odb::tool::test::test_odacapi(argc, argv);
+}

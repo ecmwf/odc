@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
 #include "TestSelectTwoFiles.h"
@@ -27,7 +27,7 @@ namespace tool {
 namespace test {
 
 
-ToolFactory<TestSelectTwoFiles> testSelectTwoFiles("TestSelectTwoFiles");
+
 
 TestSelectTwoFiles::TestSelectTwoFiles(int argc, char **argv)
 : TestCase(argc, argv)
@@ -89,3 +89,5 @@ void TestSelectTwoFiles::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestSelectTwoFiles)

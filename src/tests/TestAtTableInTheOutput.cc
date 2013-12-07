@@ -16,7 +16,7 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestAtTableInTheOutput.h"
 
@@ -27,7 +27,7 @@ namespace tool {
 namespace test {
 
 
-ToolFactory<TestAtTableInTheOutput> testTestAtTableInTheOutput("TestAtTableInTheOutput");
+
 
 TestAtTableInTheOutput::TestAtTableInTheOutput(int argc, char **argv)
 : TestCase(argc, argv)
@@ -110,3 +110,5 @@ void TestAtTableInTheOutput::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestAtTableInTheOutput)

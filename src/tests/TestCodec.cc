@@ -14,7 +14,7 @@
 
 #include "eckit/io/DataHandle.h"
 #include "odblib/DataStream.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestCodec.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestCodec> _TestCodec("TestCodec");
+
 
 TestCodec::TestCodec(int argc, char **argv)
 : TestCase(argc, argv),
@@ -97,3 +97,5 @@ void TestCodec::tearDown() { delete codec_; codec_ = 0; }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestCodec)

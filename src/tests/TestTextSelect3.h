@@ -15,7 +15,7 @@
 #ifndef TestTextSelect3_H
 #define TestTextSelect3_H
 
-#include "odblib/TestCase.h"
+#include "tests/TestCase.h"
 
 namespace odb {
 namespace tool {
@@ -40,4 +40,5 @@ private:
 } // namespace odb 
 
 #endif
+
 

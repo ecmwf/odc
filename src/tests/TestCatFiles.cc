@@ -14,7 +14,7 @@
 
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestCatFiles.h"
 
@@ -26,7 +26,7 @@ namespace tool {
 namespace test {
 
 
-ToolFactory<TestCatFiles> testCatFiles("TestCatFiles");
+
 
 TestCatFiles::TestCatFiles(int argc, char **argv)
 : TestCase(argc, argv)
@@ -189,3 +189,5 @@ void TestCatFiles::testSelectIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestCatFiles)

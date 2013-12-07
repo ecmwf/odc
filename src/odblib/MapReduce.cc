@@ -25,7 +25,6 @@
 #include "odblib/MapReduce.h"
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
-#include "odblib/SplitTool.h"
 
 using namespace std;
 
@@ -130,8 +129,13 @@ void * SingleThreadMapReduce::process(void* userData, const eckit::PathName& fil
 
 void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const std::string& sql, CallBackProcessArray f)
 { 
+#if 1
+    NOTIMP;
 	eckit::ThreadPool pool(std::string("[") + fileName + " processors]", threadPoolSize_);
 	std::vector<void *> results;
+
+#else
+    // A library should not call a tool
 	std::vector<pair<eckit::Offset,eckit::Length> > chunks(SplitTool::getChunks(fileName));
     for(size_t i=0; i < chunks.size(); ++i)
 	{   
@@ -156,6 +160,8 @@ void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& f
 	}
 
 	return r;
+#endif
+
 } 
 
 void * MultipleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, const std::string& sql, CallBackProcessOneRow f)
@@ -163,6 +169,9 @@ void * MultipleThreadMapReduce::process(void* userData, eckit::DataHandle& dh, c
 
 void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& fileName, const std::string& sql, CallBackProcessOneRow f)
 {
+#if 1
+    NOTIMP;
+#else
 	eckit::ThreadPool pool(std::string("[") + fileName + " processors]", threadPoolSize_);
 
 	std::vector<void *> results;
@@ -189,6 +198,7 @@ void * MultipleThreadMapReduce::process(void* userData, const eckit::PathName& f
 	}
 
 	return r;
+#endif
 }
 
 

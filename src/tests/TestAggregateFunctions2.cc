@@ -13,9 +13,9 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "eckit/io/StdFileHandle.h"
-#include "odblib/ImportTool.h"
+#include "tools/ImportTool.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestAggregateFunctions2.h"
 
@@ -26,7 +26,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestAggregateFunctions2> _TestAggregateFunctions2("TestAggregateFunctions2");
+
 
 TestAggregateFunctions2::TestAggregateFunctions2(int argc, char **argv)
 : TestCase(argc, argv)
@@ -81,3 +81,5 @@ void TestAggregateFunctions2::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestAggregateFunctions2)

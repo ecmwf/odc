@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/log/Log.h"
-#include "odblib/ToolFactory.h"
+#include "odblib/StringTool.h"
 #include "TestAAAImportODBDispatching.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestAAAImportODBDispatching> _TestAAAImportODBDispatching("TestAAAImportODBDispatching");
+
 
 TestAAAImportODBDispatching::TestAAAImportODBDispatching(int argc, char **argv)
 : TestCase(argc, argv)
@@ -34,10 +34,10 @@ TestAAAImportODBDispatching::~TestAAAImportODBDispatching() {}
 void TestAAAImportODBDispatching::test()
 {
 	if (getenv("ODB_ROOT"))
-		shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
+        StringTool::shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
 	else {
 		Log::warning() << "TestAAAImportODBDispatching: ODB_ROOT not set, skipping testing of odb_migrator" << std::endl;
-		shell("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
+        StringTool::shell("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
 	}
 }
 
@@ -49,3 +49,5 @@ void TestAAAImportODBDispatching::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestAAAImportODBDispatching)

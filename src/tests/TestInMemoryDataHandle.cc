@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odblib/InMemoryDataHandle.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestInMemoryDataHandle.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestInMemoryDataHandle> _TestInMemoryDataHandle("TestInMemoryDataHandle");
+
 
 TestInMemoryDataHandle::TestInMemoryDataHandle(int argc, char **argv)
 : TestCase(argc, argv)
@@ -57,3 +57,5 @@ void TestInMemoryDataHandle::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestInMemoryDataHandle)

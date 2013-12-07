@@ -17,7 +17,7 @@ const double EPS = 7e-6;
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
 #include "odblib/piconst.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFunctionsForAngleConversion.h"
 
@@ -28,7 +28,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFunctionsForAngleConversion> _TestFunctionsForAngleConversion("TestFunctionsForAngleConversion");
+
 
 TestFunctionsForAngleConversion::TestFunctionsForAngleConversion(int argc, char **argv)
 : TestCase(argc, argv)
@@ -116,3 +116,5 @@ void TestFunctionsForAngleConversion::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFunctionsForAngleConversion)

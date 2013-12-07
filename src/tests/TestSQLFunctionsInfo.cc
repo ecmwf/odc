@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odblib/FunctionFactory.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestSQLFunctionsInfo.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestSQLFunctionsInfo> _TestSQLFunctionsInfo("TestSQLFunctionsInfo");
+
 
 TestSQLFunctionsInfo::TestSQLFunctionsInfo(int argc, char **argv)
 : TestCase(argc, argv)
@@ -49,3 +49,5 @@ void TestSQLFunctionsInfo::test()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestSQLFunctionsInfo)

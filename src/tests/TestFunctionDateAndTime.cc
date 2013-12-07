@@ -18,7 +18,7 @@ const double EPS =     1e-6;
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFunctionDateAndTime.h"
 
@@ -30,7 +30,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFunctionDateAndTime> _TestFunctionDateAndTime("TestFunctionDateAndTime");
+
 
 TestFunctionDateAndTime::TestFunctionDateAndTime(int argc, char **argv)
 : TestCase(argc, argv)
@@ -92,3 +92,5 @@ void TestFunctionDateAndTime::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFunctionDateAndTime)

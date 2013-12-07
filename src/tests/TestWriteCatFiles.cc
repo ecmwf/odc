@@ -14,7 +14,7 @@
 
 #include "odblib/Comparator.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestWriteCatFiles.h"
 
@@ -23,7 +23,7 @@ namespace tool {
 namespace test {
 
 
-ToolFactory<TestWriteCatFiles> testWriteCatFiles("TestWriteCatFiles");
+
 
 TestWriteCatFiles::TestWriteCatFiles(int argc, char **argv)
 : TestCase(argc, argv)
@@ -117,3 +117,5 @@ void TestWriteCatFiles::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestWriteCatFiles)

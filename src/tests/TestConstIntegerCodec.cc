@@ -15,7 +15,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/MetaData.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "MockReader.h"
 #include "TestConstIntegerCodec.h"
@@ -27,7 +27,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestConstIntegerCodec> _TestConstIntegerCodec("TestConstIntegerCodec");
+
 
 const long the_const_value = 20090624;
 
@@ -107,3 +107,5 @@ void TestConstIntegerCodec::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestConstIntegerCodec)

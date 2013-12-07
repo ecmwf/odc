@@ -18,7 +18,7 @@ const double EPS =   7e-6;
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFunctionRggBox.h"
 
@@ -30,7 +30,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFunctionRggBox> _TestFunctionRggBox("TestFunctionRggBox");
+
 
 TestFunctionRggBox::TestFunctionRggBox(int argc, char **argv)
 : TestCase(argc, argv)
@@ -89,3 +89,5 @@ void TestFunctionRggBox::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFunctionRggBox)

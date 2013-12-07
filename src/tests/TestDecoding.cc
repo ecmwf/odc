@@ -14,7 +14,7 @@
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestDecoding.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestDecoding> _TestDecoding("TestDecoding");
+
 
 TestDecoding::TestDecoding(int argc, char **argv)
 : TestCase(argc, argv)
@@ -58,3 +58,5 @@ void TestDecoding::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestDecoding)

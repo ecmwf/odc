@@ -12,10 +12,9 @@
 #include "odblib/FunctionFactory.h"
 #include "odblib/ODBAPIVersion.h"
 #include "odblib/odbcapi.h"
-#include "odblib/TestRunnerApplication.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolRunnerApplication.h"
+#include "tools/ToolFactory.h"
+#include "tools/Tool.h"
+#include "tools/ToolRunnerApplication.h"
 
 using namespace std;
 using namespace eckit;

@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/config/Resource.h"
-#include "odblib/ToolFactory.h"
+#include "odblib/StringTool.h"
 #include "TestAAAImportODB.h"
 
 using namespace eckit;
@@ -23,7 +23,6 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestAAAImportODB> _TestAAAImportODB("TestAAAImportODB");
 
 TestAAAImportODB::TestAAAImportODB(int argc, char **argv) : TestCase(argc, argv) {}
 
@@ -47,7 +46,7 @@ void TestAAAImportODB::test()
 
 		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.odb.gz >2000010106.odb";
 	}
-   	shell(cmd.c_str(), Here());
+    StringTool::shell(cmd.c_str(), Here());
 }
 
 
@@ -55,7 +54,9 @@ void TestAAAImportODB::setUp() {}
 
 void TestAAAImportODB::tearDown() {}
 
+
 } // namespace test 
 } // namespace tool 
 } // namespace odb 
 
+MAIN(TestAAAImportODB)

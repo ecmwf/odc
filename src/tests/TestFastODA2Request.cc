@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 #include "odblib/FastODA2Request.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestFastODA2Request.h"
 
 using namespace std;
@@ -24,7 +24,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFastODA2Request> _TestFastODA2Request("TestFastODA2Request");
+
 
 TestFastODA2Request::TestFastODA2Request(int argc, char **argv)
 : TestCase(argc, argv)
@@ -82,3 +82,5 @@ void TestFastODA2Request::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFastODA2Request)

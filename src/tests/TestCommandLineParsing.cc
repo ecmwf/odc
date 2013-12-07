@@ -13,8 +13,9 @@
 /// @author Piotr Kuchta, ECMWF, July 2009
 
 #include "eckit/exception/Exceptions.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestCommandLineParsing.h"
+#include "tools/Tool.h"
 
 using namespace std;
 using namespace eckit;
@@ -23,7 +24,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestCommandLineParsing> testCommandLineParsing("TestCommandLineParsing");
+
 
 struct TestTool : public Tool {
 
@@ -70,3 +71,5 @@ void TestCommandLineParsing::test()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestCommandLineParsing)

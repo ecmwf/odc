@@ -22,7 +22,7 @@
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestMinMax.h"
 
@@ -33,7 +33,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestMinMax> _TestMinMax("TestMinMax");
+
 
 TestMinMax::TestMinMax(int argc, char **argv)
 : TestCase(argc, argv)
@@ -101,3 +101,5 @@ void TestMinMax::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestMinMax)

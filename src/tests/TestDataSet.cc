@@ -5,8 +5,8 @@
 #include "odblib/DataColumns.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
+#include "tests/TestCase.h"
+
 
 using namespace std;
 using namespace odb;
@@ -38,3 +38,5 @@ TEST_FIXTURE(Fixture, InsertingTablesIncreasesSize)
 }
 
 } // namespace
+
+MAIN(TestDataSet)

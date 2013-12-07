@@ -16,7 +16,7 @@
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFunctionTdiff.h"
 
@@ -28,7 +28,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFunctionTdiff> _TestFunctionTdiff("TestFunctionTdiff");
+
 
 TestFunctionTdiff::TestFunctionTdiff(int argc, char **argv)
 : TestCase(argc, argv)
@@ -83,3 +83,5 @@ void TestFunctionTdiff::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFunctionTdiff)

@@ -4,8 +4,8 @@
 #include "eckit/exception/Exceptions.h"
 #include "odblib/DataColumns.h"
 #include "odblib/DataRow.h"
-#include "odblib/TestCase.h"
-#include "odblib/ToolFactory.h"
+#include "tests/TestCase.h"
+
 
 using namespace std;
 using namespace odb;
@@ -159,3 +159,5 @@ TEST(DataRowCanSetStrings)
 }
 
 } // namespace
+
+MAIN(TestDataRow)

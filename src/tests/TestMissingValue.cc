@@ -15,7 +15,7 @@
 #include "odblib/Comparator.h"
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
 #include "TestMissingValue.h"
@@ -27,7 +27,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestMissingValue> testMissingValue("TestMissingValue");
+
 
 TestMissingValue::TestMissingValue(int argc, char **argv)
 : TestCase(argc, argv)
@@ -156,3 +156,5 @@ void TestMissingValue::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestMissingValue)

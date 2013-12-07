@@ -13,7 +13,7 @@
 // @author Piotr Kuchta, ECMWF, Oct 2010
 
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestTextSelect.h"
 
 using namespace std;
@@ -23,7 +23,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestTextSelect> _TestTextSelect("TestTextSelect");
+
 
 TestTextSelect::TestTextSelect(int argc, char **argv)
 : TestCase(argc, argv)
@@ -91,3 +91,5 @@ void TestTextSelect::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestTextSelect)

@@ -15,7 +15,7 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestSelectDataHandle.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestSelectDataHandle> _TestSelectDataHandle("TestSelectDataHandle");
+
 
 TestSelectDataHandle::TestSelectDataHandle(int argc, char **argv)
 : TestCase(argc, argv)
@@ -89,3 +89,5 @@ void TestSelectDataHandle::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestSelectDataHandle)

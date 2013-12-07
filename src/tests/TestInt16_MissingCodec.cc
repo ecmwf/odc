@@ -15,7 +15,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/MetaData.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "MockReader.h"
 #include "TestInt16_MissingCodec.h"
@@ -28,7 +28,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestInt16_MissingCodec> _TestInt16_MissingCodec("TestInt16_MissingCodec");
+
 
 class MockReaderIterator3 : public odb::RowsReaderIterator 
 {
@@ -144,3 +144,5 @@ void TestInt16_MissingCodec::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestInt16_MissingCodec)

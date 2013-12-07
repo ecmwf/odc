@@ -15,7 +15,7 @@
 #ifndef TestInt16_MissingCodec_H
 #define TestInt16_MissingCodec_H
 
-#include "odblib/TestCase.h"
+#include "tests/TestCase.h"
 
 namespace odb {
 namespace tool {
@@ -40,4 +40,5 @@ public:
 } // namespace odb 
 
 #endif
+
 

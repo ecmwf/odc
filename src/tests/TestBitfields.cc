@@ -15,7 +15,7 @@
 #include "eckit/log/Log.h"
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestBitfields.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestBitfields> _TestBitfields("TestBitfields");
+
 
 TestBitfields::TestBitfields(int argc, char **argv)
 : TestCase(argc, argv)
@@ -78,3 +78,5 @@ void TestBitfields::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestBitfields)

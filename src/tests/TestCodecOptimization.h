@@ -15,7 +15,7 @@
 #ifndef TestCodecOptimization_H
 #define TestCodecOptimization_H
 
-#include "odblib/TestCase.h"
+#include "tests/TestCase.h"
 
 namespace odb {
 namespace tool {
@@ -42,4 +42,5 @@ public:
 } // namespace odb 
 
 #endif
+
 

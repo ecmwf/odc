@@ -14,7 +14,7 @@
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestSelectIterator3.h"
 
@@ -26,7 +26,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestSelectIterator3> _TestSelectIterator3("TestSelectIterator3");
+
 
 TestSelectIterator3::TestSelectIterator3(int argc, char **argv)
 : TestCase(argc, argv)
@@ -81,3 +81,5 @@ void TestSelectIterator3::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestSelectIterator3)

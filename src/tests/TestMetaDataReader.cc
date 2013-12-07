@@ -12,9 +12,9 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
-#include "odblib/ImportTool.h"
+#include "tools/ImportTool.h"
 #include "odblib/MetaData.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestMetaDataReader.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestMetaDataReader> _TestMetaDataReader("TestMetaDataReader");
+
 
 TestMetaDataReader::TestMetaDataReader(int argc, char **argv)
 : TestCase(argc, argv)
@@ -56,3 +56,5 @@ void TestMetaDataReader::tearDown() { }
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestMetaDataReader)

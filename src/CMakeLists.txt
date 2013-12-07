@@ -27,4 +27,4 @@ add_subdirectory( tools )
 
 add_subdirectory( migrator )
 
-#add_subdirectory( tests )
+add_subdirectory( tests )

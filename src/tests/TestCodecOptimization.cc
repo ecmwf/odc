@@ -15,7 +15,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odblib/MetaData.h"
 #include "odblib/Reader.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestCodecOptimization.h"
 
@@ -28,7 +28,7 @@ namespace test {
 
 const size_t numberOfColumns = 1;
 
-ToolFactory<TestCodecOptimization> testCodecOptimization("TestCodecOptimization");
+
 
 TestCodecOptimization::TestCodecOptimization(int argc, char **argv)
 : TestCase(argc, argv)
@@ -92,3 +92,5 @@ void TestCodecOptimization::testSelectIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestCodecOptimization)

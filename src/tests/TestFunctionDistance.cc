@@ -17,7 +17,7 @@ const double EPS =     7e-6;
 
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestFunctionDistance.h"
 
@@ -29,7 +29,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestFunctionDistance> _TestFunctionDistance("TestFunctionDistance");
+
 
 TestFunctionDistance::TestFunctionDistance(int argc, char **argv)
 : TestCase(argc, argv)
@@ -95,3 +95,5 @@ void TestFunctionDistance::testReaderIterator()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestFunctionDistance)

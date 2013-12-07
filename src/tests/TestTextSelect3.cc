@@ -14,7 +14,7 @@
 
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
-#include "odblib/ToolFactory.h"
+
 #include "TestTextSelect3.h"
 
 using namespace std;
@@ -26,7 +26,7 @@ namespace tool {
 namespace test {
 
 // TODO: (test not finished yet)
-//ToolFactory<TestTextSelect3> _TestTextSelect3("TestTextSelect3");
+
 
 TestTextSelect3::TestTextSelect3(int argc, char **argv)
 : TestCase(argc, argv)
@@ -95,3 +95,5 @@ void TestTextSelect3::tearDown() {}
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestTextSelect3)

@@ -14,7 +14,7 @@
 
 #include "eckit/utils/Timer.h"
 #include "odblib/ODBAPISettings.h"
-#include "odblib/ToolFactory.h"
+
 #include "odblib/Writer.h"
 #include "TestSetvbuffer.h"
 
@@ -27,7 +27,7 @@ namespace odb {
 namespace tool {
 namespace test {
 
-ToolFactory<TestSetvbuffer> testSetvbuffer("TestSetvbuffer");
+
 
 TestSetvbuffer::TestSetvbuffer(int argc, char **argv)
 : TestCase(argc, argv)
@@ -86,3 +86,5 @@ void TestSetvbuffer::tearDown()
 } // namespace tool 
 } // namespace odb 
 
+
+MAIN(TestSetvbuffer)
