@@ -16,7 +16,6 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolRunnerApplication.h"
-#include "odb/TestOdaCAPI.h"
 
 using namespace std;
 using namespace eckit;
@@ -56,6 +55,7 @@ int executeCommand(int argc, char *argv[])
 
 	if (firstArg == "g") { odb_start(); return gdb(argc, argv); }
 	if (firstArg == "vg") { odb_start(); return valgrind(argc, argv); }
+    /*
 	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
 	if (firstArg == "test")
 	{
@@ -76,6 +76,7 @@ int executeCommand(int argc, char *argv[])
 		// It never really gets here.
 		return 0;
 	}
+    */
 
 	if (firstArg == "help")
 	{

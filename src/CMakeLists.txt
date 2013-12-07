@@ -23,7 +23,7 @@ add_subdirectory( fortran )
 
 ### apps
 
-add_subdirectory( odb )
+add_subdirectory( tools )
 
 add_subdirectory( migrator )
 
