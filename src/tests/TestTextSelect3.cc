@@ -15,30 +15,19 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 // TODO: (test not finished yet)
 
 
-void UnitTest::setUp() { }
+static void setUp() { }
 
-/// UnitTest syntax 'select lat, lon' (no file name)
-///
-void UnitTest::test()
-{
-	selectStarOneColumn();
-	selectSumOneColumn();
-}
 
-void UnitTest::selectStarOneColumn()
+static void selectStarOneColumn()
 {
 	string sql = "select *";
 	const string fileName = "2000010106.4.0.oda.csv";//"UnitTest.txt";
@@ -46,21 +35,21 @@ void UnitTest::selectStarOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "UnitTest::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "selectStarOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
-	Log::info() << "UnitTest::selectStarOneColumn: columns().size():  " << it->columns().size() << std::endl;
+	Log::info() << "selectStarOneColumn: columns().size():  " << it->columns().size() << std::endl;
 
 	unsigned long n = 0;
 	for( ; it != end; ++it, ++n)
 	{
 	}
 
-	Log::info() << "UnitTest::selectStarOneColumn: number of rows:  " << n << std::endl;
+	Log::info() << "selectStarOneColumn: number of rows:  " << n << std::endl;
 }
 
-void UnitTest::selectSumOneColumn()
+static void selectSumOneColumn()
 {
 /*
 	string sql = "select sum(a), sum(b)";
@@ -69,7 +58,7 @@ void UnitTest::selectSumOneColumn()
 	
 	odb::Select oda(sql, fs);
 	
-	Log::info(Here()) << "UnitTest::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "selectSumOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -83,11 +72,15 @@ void UnitTest::selectSumOneColumn()
 }
 
 
-void UnitTest::tearDown() {}
+/// UnitTest syntax 'select lat, lon' (no file name)
+///
+static void test()
+{
+    selectStarOneColumn();
+    selectSumOneColumn();
+}
 
-} // namespace test
-} // namespace tool 
-} // namespace odb 
 
+static void tearDown(){}
 
-
+TEST_MAIN;

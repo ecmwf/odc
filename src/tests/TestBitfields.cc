@@ -16,20 +16,15 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
+using namespace odb;
 
 /// UnitTest problem fixed with p4 change 23687
 ///
-void UnitTest::test()
+static void test()
 {
 	string statusFields =
 "status.active@body,status.passive@body,status.rejected@body,status.blacklisted@body,status.monthly@body,status.constant@body,status.experimental@body,status.whitelist@body";
@@ -44,7 +39,7 @@ void UnitTest::test()
 
 	odb::Select::iterator it = oda.begin();
 
-	Log::debug() << "UnitTest::test: it->columns().size() == " << it->columns().size() << std::endl;
+	Log::debug() << "test: it->columns().size() == " << it->columns().size() << std::endl;
 
 	ASSERT(it->columns().size() == 9);
 
@@ -64,13 +59,9 @@ void UnitTest::test()
 	}
 }
 
-void UnitTest::setUp() {}
-
-void UnitTest::tearDown() {}
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
+static void setUp(){}
+static void tearDown(){}
 
+TEST_MAIN;

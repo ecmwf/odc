@@ -12,7 +12,7 @@
 using namespace std;
 using namespace odb;
 
-namespace {
+
 
 struct FilledDataSet
 {
@@ -201,6 +201,12 @@ TEST_FIXTURE(SelectAll, CanUseCopyToAppendResults)
             CHECK_EQUAL((*expected)[i], (*actual)[i]);
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

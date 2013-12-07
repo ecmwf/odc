@@ -20,23 +20,14 @@ const double EPS = 4e-5;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-void UnitTest::test()
-{
-	testReaderIterator();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Test Norm function");
 	odb::Writer<> oda("test_norm.odb");
@@ -60,12 +51,12 @@ void UnitTest::setUp()
     ++row;
 }
 
-void UnitTest::tearDown() 
+static void tearDown() 
 { 
 	PathName("test_norm.odb").unlink();
 }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
     const string sql = "select norm(x,y) from \"test_norm.odb\";";
 
@@ -78,9 +69,6 @@ void UnitTest::testReaderIterator()
 
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
-
+TEST_MAIN;

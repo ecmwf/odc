@@ -18,19 +18,14 @@
 
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-void UnitTest::setUp()
+using namespace odb;
+static void setUp()
 {
-	Tracer t(Log::debug(), "UnitTest::setUp");
+	Tracer t(Log::debug(), "setUp");
 
 	odb::Writer<> f("UnitTest.odb");
 	odb::Writer<>::iterator it = f.begin();
@@ -58,7 +53,23 @@ void UnitTest::setUp()
 	}
 }
 
-void UnitTest::test()
+static void selectIntoSecondFile()
+{
+    Tracer t(Log::debug(), "selectIntoSecondFile");
+
+    const string fileName = "UnitTest.odb";
+    string sql = "select lat,bf into \"UnitTest.odb\"";
+    sql += " from \"" + fileName + "\" ;";
+
+    odb::Select f(sql); //, fileName);
+    odb::Select::iterator it = f.begin();
+
+    ++it; // this is needed to push the second row to the INTO file
+    ++it; // this is needed to push the third row to the INTO file
+}
+
+
+static void test()
 {
 	selectIntoSecondFile();
 
@@ -85,7 +96,7 @@ void UnitTest::test()
 		Column& column = *md[0];
 		codec::Codec& codec = column.coder();
 
-		Log::info() << "UnitTest::test: codec: " << codec << std::endl;	
+		Log::info() << "test: codec: " << codec << std::endl;	
 
 		ASSERT(codec.hasMissing());
 		ASSERT(codec.missingValue() == 1);
@@ -127,27 +138,9 @@ void UnitTest::test()
 
 }
 
-void UnitTest::selectIntoSecondFile()
-{
-	Tracer t(Log::debug(), "UnitTest::selectIntoSecondFile");
 
-	const string fileName = "UnitTest.odb";
-	string sql = "select lat,bf into \"UnitTest.odb\"";
-	sql += " from \"" + fileName + "\" ;";
-
-	odb::Select f(sql); //, fileName);
-	odb::Select::iterator it = f.begin();
-
-	++it; // this is needed to push the second row to the INTO file 
-	++it; // this is needed to push the third row to the INTO file 
-}
-
-void UnitTest::tearDown() { }
-
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
 
+TEST_MAIN;

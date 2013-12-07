@@ -14,22 +14,14 @@
 
 #include "odblib/FunctionFactory.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-void UnitTest::test()
+static void test()
 {
 	typedef odb::sql::expression::function::FunctionFactory::FunctionInfo FI;
 
@@ -45,9 +37,8 @@ void UnitTest::test()
 	Log::info() << std::endl;
 }
 
-} // namespace test
-} // namespace tool 
-} // namespace odb 
 
+static void setUp(){}
+static void tearDown(){}
 
-
+TEST_MAIN;

@@ -16,7 +16,7 @@
 using namespace std;
 using namespace odb;
 
-namespace {
+
 
 typedef odb::DataStream<odb::SameByteOrder, odb::PrettyFastInMemoryDataHandle> DataStream;
 
@@ -219,6 +219,12 @@ TEST_FIXTURE(FilledDataSet, DataSaverOutputContainsExpectedRows)
     }
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

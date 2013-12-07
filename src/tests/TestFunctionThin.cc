@@ -20,30 +20,14 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-
-
-void UnitTest::test()
-{
-	testReaderIterator();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Test thin function");
 	odb::Writer<> oda("test_thin.odb");
@@ -63,12 +47,12 @@ void UnitTest::setUp()
 	(*++row)[0] = 45.0;
 }
 
-void UnitTest::tearDown() 
+static void tearDown() 
 { 
 	PathName("test_thin.odb").unlink();
 }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
     const string sql = "select thin(2.0,lat) from \"test_thin.odb\";";
 
@@ -86,9 +70,5 @@ void UnitTest::testReaderIterator()
 
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
-
-
+TEST_MAIN;

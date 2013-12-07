@@ -30,3 +30,8 @@ WHERE (biascorr@body is not NULL and biascorr@body <> 0)
 	AND  not((obstype@hdr == 10 and obschar.codetype@hdr == 250))
 	AND (obstype@hdr in (1,4,8,9) or (obstype@hdr == 7 and (obschar.codetype@hdr == 215 or obschar.codetype@hdr == 206)));
 
+JUST_ONE_TEST(test, setUp, tearDown)
+void test(){}
+void setUp(){}
+void tearDown(){}
+JUST_ONE_TEST(test, setUp, tearDown)

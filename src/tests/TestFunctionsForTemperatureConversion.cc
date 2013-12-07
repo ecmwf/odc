@@ -16,29 +16,15 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
 
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::test()
-{
-	testReaderIterator();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Test various functions to convert temperatures");
 	odb::Writer<> oda("test_tempconv.odb");
@@ -58,12 +44,12 @@ void UnitTest::setUp()
 	++row;
 }
 
-void UnitTest::tearDown() 
+static void tearDown() 
 { 
 	PathName("test_tempconv.odb").unlink();
 }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
     const string sql = "select celsius(kelvin_col), fahrenheit(kelvin_col), c2k(celsius_col),c2f(celsius_col),f2c(fahrenheit_col), f2k(fahrenheit_col), k2f(kelvin_col) from \"test_tempconv.odb\";";
 
@@ -84,9 +70,5 @@ void UnitTest::testReaderIterator()
 }
 
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
-
-
+TEST_MAIN;

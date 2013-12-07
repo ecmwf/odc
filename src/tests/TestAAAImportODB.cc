@@ -14,21 +14,13 @@
 
 #include "eckit/config/Resource.h"
 #include "odblib/StringTool.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
-using namespace eckit;
 using namespace std;
+using namespace eckit;
+using namespace odb;
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-
-
-
-void UnitTest::test()
+static void test()
 {
 	string e(Resource<string>("$ODB_API_TEST_DATA_PATH", string(""))); 
 	if (e.size())
@@ -46,17 +38,12 @@ void UnitTest::test()
 
 		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.odb.gz >2000010106.odb";
 	}
-    StringTool::shell(cmd.c_str(), Here());
+    odb::StringTool::shell(cmd.c_str(), Here());
 }
 
+static void setUp(){}
 
-void UnitTest::setUp() {}
-
-void UnitTest::tearDown() {}
-
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown(){}
 
 
+TEST_MAIN;

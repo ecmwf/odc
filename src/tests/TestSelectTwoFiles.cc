@@ -16,28 +16,15 @@
 
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::setUp()
+static void setUp()
 {
-	Tracer t(Log::debug(), "UnitTest::setUp");
+	Tracer t(Log::debug(), "setUp");
 	{
 		odb::Writer<> f("UnitTest.odb");
 		odb::Writer<>::iterator it = f.begin();
@@ -58,9 +45,9 @@ void UnitTest::setUp()
 	}
 }
 
-void UnitTest::test()
+static void test()
 {
-	Tracer t(Log::debug(), "UnitTest::test");
+	Tracer t(Log::debug(), "test");
 
 	odb::Select s("select * from \"UnitTest.odb\", \"UnitTest.odb\";");
 	//odb::Select s("select a,b from \"UnitTest.odb\", \"UnitTest.odb\"");
@@ -73,7 +60,7 @@ void UnitTest::test()
 	unsigned long i = 0;
 	for (; it != end; ++it)
 	{
-		Log::debug() << "UnitTest::test:    " << (*it)[0] << "    " << (*it)[0] << std::endl;
+		Log::debug() << "test:    " << (*it)[0] << "    " << (*it)[0] << std::endl;
 
 		ASSERT( ((*it)[0] == 1) && ((*it)[1] == 2) );
 		++i;
@@ -82,12 +69,8 @@ void UnitTest::test()
 	ASSERT(i == 1);
 }
 
-void UnitTest::tearDown() { }
-
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
 
+TEST_MAIN;

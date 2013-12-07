@@ -16,18 +16,13 @@
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-///
-void UnitTest::test()
+static void test()
 {
 	string sql = "select sum(a) from \"UnitTest.odb\";";
 
@@ -40,20 +35,16 @@ void UnitTest::test()
 	ASSERT( (*it2)[0] == 55);
 }
 
-void UnitTest::setUp()
+static void setUp()
 {
 	stringstream s;
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
 		s << i << std::endl;
-	ImportTool::importText(s.str().c_str(), "UnitTest.odb");
+    odb::tool::ImportTool::importText(s.str().c_str(), "UnitTest.odb");
 }
 
-void UnitTest::tearDown() {}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown(){}
 
-
-
+TEST_MAIN;

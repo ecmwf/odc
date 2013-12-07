@@ -14,25 +14,11 @@
 
 #include "odblib/FastODA2Request.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::setUp() {}
+using namespace odb;
 
 const char * cfg = 
 //"CLASS: class\n"
@@ -46,9 +32,9 @@ const char * cfg =
 
 const char * cfgFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 
-void UnitTest::test()
+static void test()
 {
-	FastODA2Request<ODA2RequestClientTraits> o;
+    odb::FastODA2Request<odb::ODA2RequestClientTraits> o;
 	o.parseConfig(cfg);
 	o.scanFile("2000010106.2.0.odb");
 
@@ -57,8 +43,8 @@ void UnitTest::test()
 	string r = o.genRequest();
 	unsigned long long n = o.rowsNumber();
 
-	Log::info() << "UnitTest::test: request is:" << endl << r << std::endl;
-	Log::info() << "UnitTest::test: file has " << n << " rows(s)." << std::endl;
+	Log::info() << "test: request is:" << endl << r << std::endl;
+	Log::info() << "test: file has " << n << " rows(s)." << std::endl;
 
 	ASSERT(o.getValues("DATE").size() == 1);
 	ASSERT(*o.getValues("DATE").begin() == "20000101");
@@ -76,11 +62,7 @@ void UnitTest::test()
 }
 
 
-void UnitTest::tearDown() { }
+static void setUp(){}
+static void tearDown(){}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
-
-
-
+TEST_MAIN;

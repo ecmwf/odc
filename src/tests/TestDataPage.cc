@@ -10,7 +10,7 @@ using namespace std;
 using namespace odb;
 using namespace odb::internal;
 
-namespace {
+
 
 struct EmptyPage
 {
@@ -403,6 +403,12 @@ TEST_FIXTURE(FullPage, SplitFullPage)
     delete newPage;
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

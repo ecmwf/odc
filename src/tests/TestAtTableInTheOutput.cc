@@ -18,33 +18,24 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
+using namespace eckit;
+using namespace odb;
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-void UnitTest::test()
-{
-	selectIntoSecondFile();
-	compareFiles();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	odb::Writer<> f("UnitTest.odb");
 	odb::Writer<>::iterator it = f.begin();
-	MetaData& md = it->columns();
+    odb::MetaData& md = it->columns();
 
 	md.setSize(4);
 	it->setColumn(0, "lat@hdr", odb::REAL);
 	it->setColumn(1, "lon@hdr", odb::REAL);
 	it->setColumn(2, "obsvalue", odb::REAL);
 
-	BitfieldDef bfDef;
+    odb::BitfieldDef bfDef;
 	bfDef.first.push_back("x");
 	bfDef.second.push_back(1);
 	bfDef.first.push_back("y");
@@ -63,7 +54,7 @@ void UnitTest::setUp()
 	}
 }
 
-void UnitTest::selectIntoSecondFile()
+static void selectIntoSecondFile()
 {
 	const string fileName = "UnitTest.odb";
 	string sql = "select lat,lon,obsvalue,bf into \"UnitTest.odb\"";
@@ -82,7 +73,7 @@ void UnitTest::selectIntoSecondFile()
 	///ASSERT("");
 }
 
-void UnitTest::compareFiles()
+static void compareFiles()
 {
 	odb::Reader oda1("UnitTest.odb");
 	odb::Reader oda2("UnitTest.odb");
@@ -95,12 +86,15 @@ void UnitTest::compareFiles()
 	odb::Comparator().compare(it1, end1, it2, end2, "UnitTest.odb", "UnitTest.odb");
 }
 
-void UnitTest::tearDown() { }
+
+static void test()
+{
+    selectIntoSecondFile();
+    compareFiles();
+}
 
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
+static void tearDown(){}
 
-
+TEST_MAIN;

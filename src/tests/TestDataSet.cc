@@ -11,7 +11,7 @@
 using namespace std;
 using namespace odb;
 
-namespace {
+
 
 struct Fixture
 {
@@ -37,6 +37,12 @@ TEST_FIXTURE(Fixture, InsertingTablesIncreasesSize)
     CHECK_EQUAL(2u, dataset.tables().size());
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

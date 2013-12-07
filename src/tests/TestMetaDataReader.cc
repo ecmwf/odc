@@ -15,31 +15,19 @@
 #include "tools/ImportTool.h"
 #include "odblib/MetaData.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::setUp()
+static void setUp()
 {
-	ImportTool::importText("x:REAL\n1\n2\n3\n", "UnitTest.odb");
+    odb::tool::ImportTool::importText("x:REAL\n1\n2\n3\n", "UnitTest.odb");
 }
 
 
-void UnitTest::test()
+static void test()
 {
 	const char *fileName = "UnitTest.odb";
 
@@ -47,14 +35,10 @@ void UnitTest::test()
 
 	ASSERT(wholeFileMD[0]->min() == 1 && wholeFileMD[0]->max() == 3);
 
-	Log::info() << "UnitTest::test wholeFileMD==" << wholeFileMD << std::endl;
+	Log::info() << "test wholeFileMD==" << wholeFileMD << std::endl;
 }
 
-void UnitTest::tearDown() { }
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
-
+TEST_MAIN;

@@ -19,30 +19,15 @@ const double EPS = 7e-6;
 #include "odblib/piconst.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
 
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-
-void UnitTest::test()
-{
-	testReaderIterator();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Test various functions to convert angles (radians to degrees, etc.)");
 	odb::Writer<> oda("test_angleconv.odb");
@@ -68,12 +53,12 @@ void UnitTest::setUp()
 	++row;
 }
 
-void UnitTest::tearDown() 
+static void tearDown() 
 { 
 	PathName("test_angleconv.odb").unlink();
 }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
     const string sql = "select degrees(radian_col),radians(degrees_col), rad2deg(radian_col), deg2rad(degrees_col), radians(degrees(radian_col)), degrees(radians(degrees_col)) from \"test_angleconv.odb\";";
 
@@ -112,9 +97,6 @@ void UnitTest::testReaderIterator()
 
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
-
+TEST_MAIN;

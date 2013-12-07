@@ -15,17 +15,16 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "UnitTest.h"
-
-namespace odb {
-namespace tool {
-namespace test {
+#include "tests/UnitTest.h"
 
 
+using namespace std;
+using namespace eckit;
+using namespace odb;
 
 /// UnitTest syntax: select *@odb_table from "file.oda";
 ///
-void UnitTest::test()
+static void test()
 {
     const std::string SELECT = "select *@hdr from \"2000010106.odb\";";
 
@@ -35,13 +34,9 @@ void UnitTest::test()
 	ASSERT("hdr has 27 columns excluding @LINKs." && it->columns().size() == 27);
 }
 
-void UnitTest::setUp() {}
-
-void UnitTest::tearDown() {}
-
-} // namespace test
-} // namespace tool 
-} // namespace odb 
 
 
+static void setUp(){}
+static void tearDown(){}
 
+TEST_MAIN;

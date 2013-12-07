@@ -19,31 +19,14 @@ const double EPS =     7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
-
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-
-void UnitTest::test()
-{
-	testReaderIterator();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Test various functions to compute the distance");
 	odb::Writer<> oda("test_distance.odb");
@@ -62,12 +45,12 @@ void UnitTest::setUp()
     ++row;
 }
 
-void UnitTest::tearDown() 
+static void tearDown() 
 { 
 	PathName("test_distance.odb").unlink();
 }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
     const string sql = "select rad(45.0,0.0,1.0,lat,lon), rad(10.0,0.0,0.0,lat,lon),distance(46.0,0.0,lat,lon),km(46.0,0.0,lat,lon),dist(100.,46.0,1.0,lat,lon), dist(40.0,5.0,1000.0,lat,lon) from \"test_distance.odb\";";
 
@@ -91,9 +74,6 @@ void UnitTest::testReaderIterator()
 
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
-
+TEST_MAIN;

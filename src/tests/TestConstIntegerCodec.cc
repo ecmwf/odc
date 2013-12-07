@@ -17,17 +17,12 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "MockReader.h"
-#include "UnitTest.h"
+#include "tests/MockReader.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
+using namespace odb;
 
 const long the_const_value = 20090624;
 
@@ -40,7 +35,7 @@ public:
 		ASSERT(col);
 
 		col->name("date"); 
-		col->type<DataStream<SameByteOrder, DataHandle> >(odb::INTEGER, false);
+        col->type<odb::DataStream<odb::SameByteOrder, DataHandle> >(odb::INTEGER, false);
 		col->hasMissing(false);
 		odb::codec::CodecInt32<odb::SameByteOrder> *codec = new odb::codec::CodecInt32<odb::SameByteOrder>;
 		col->coder(codec);
@@ -65,13 +60,7 @@ public:
 };
 
 
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Writing test_integer_const.odb");
 	odb::Writer<> oda("test_integer_const.odb");
@@ -86,7 +75,7 @@ void UnitTest::setUp()
 	outit->pass1(b, e);
 }
 
-void UnitTest::test()
+static void test()
 {
 	odb::Reader oda("test_integer_const.odb");
 	odb::Reader::iterator it = oda.begin();
@@ -97,15 +86,11 @@ void UnitTest::test()
 	for ( ; it != end; ++it)
 		ASSERT((*it)[0] == the_const_value);
 
-	Log::debug() << "UnitTest::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
+	Log::debug() << "test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
 	ASSERT(it->columns()[0]->coder().name() == "constant");
 }
 
-void UnitTest::tearDown() {}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown(){}
 
-
-
+TEST_MAIN;

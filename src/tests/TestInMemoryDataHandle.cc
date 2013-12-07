@@ -14,18 +14,13 @@
 
 #include "odblib/InMemoryDataHandle.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
 
-namespace odb {
-namespace tool {
-namespace test {
 
-
-void UnitTest::setUp() {}
-void UnitTest::test()
+static void test()
 {
 	char data[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 	char data2[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
@@ -44,11 +39,10 @@ void UnitTest::test()
 	}
 }
 
-void UnitTest::tearDown() {}
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
 
+TEST_MAIN;

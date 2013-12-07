@@ -13,9 +13,6 @@
 
 #include "odblib/IteratorProxy.h"
 
-namespace odb {
-namespace tool {
-
 template <typename T>
 class MockReader
 {
@@ -28,9 +25,4 @@ public:
 };
 
 
-} // namespace tool 
-} // namespace odb 
-
 #endif
-
-

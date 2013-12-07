@@ -39,3 +39,8 @@ cat TestMetaDataReader1.odb TestMetaDataReader2.odb TestMetaDataReader3.odb >Tes
 ./odb sql select \* from \"TestMetaDataReader.odb\"
 
 log +++ All tests completed OK
+JUST_ONE_TEST(test, setUp, tearDown)
+void test(){}
+void setUp(){}
+void tearDown(){}
+JUST_ONE_TEST(test, setUp, tearDown)

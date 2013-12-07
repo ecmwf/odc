@@ -9,3 +9,8 @@ a:REAL
 8
 9
 10
+JUST_ONE_TEST(test, setUp, tearDown)
+void test(){}
+void setUp(){}
+void tearDown(){}
+JUST_ONE_TEST(test, setUp, tearDown)

@@ -15,26 +15,13 @@
 #include "odblib/DataStream.h"
 #include "odblib/MetaData.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-
-
-void UnitTest::setUp() {}
-
-void UnitTest::test()
+static void test()
 {
 	typedef DataStream<SameByteOrder, DataHandle> DS;
 
@@ -62,11 +49,8 @@ void UnitTest::test()
 	ASSERT(sum == sum2);
 }
 
-void UnitTest::tearDown() {}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void setUp(){}
+static void tearDown(){}
 
-
-
+TEST_MAIN;

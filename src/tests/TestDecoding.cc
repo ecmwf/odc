@@ -15,30 +15,19 @@
 #include "eckit/log/Timer.h"
 #include "odblib/Reader.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
+using namespace odb;
 
 /// UnitTest DispatchingWriter
 ///
-void UnitTest::test()
+static void test()
 {
 	const string fileName = "2000010106.odb";
 
-	Timer t(string("UnitTest::test: reading file '") + fileName + "'");
+	Timer t(string("test: reading file '") + fileName + "'");
 
 	odb::Reader f(fileName);
 	odb::Reader::iterator it = f.begin();
@@ -48,15 +37,10 @@ void UnitTest::test()
 	for (; it != end; ++it)
 		++n;
 
-	Log::info() << "UnitTest::test decoded " << n << " lines." << std::endl;
+	Log::info() << "test decoded " << n << " lines." << std::endl;
 }
 
-void UnitTest::setUp() {}
-void UnitTest::tearDown() {}
+static void setUp(){}
+static void tearDown(){}
 
-} // namespace test
-} // namespace tool 
-} // namespace odb 
-
-
-
+TEST_MAIN;

@@ -16,43 +16,18 @@
 #include "odblib/ODBAPISettings.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
 
 
-namespace odb {
-namespace tool {
-namespace test {
+static void setUp() { }
 
 
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::setUp() { }
-
-void UnitTest::test()
-{
-	size_t cols = 400;
-	long long rows = 1000;
-	size_t buffSize = 8 * 1024 * 1024;
-
-	for (size_t i = 0; i < 10; ++i)
-	{
-		stringstream s;
-		s << "UnitTest::setUp(): createFile(" << cols << ", " << rows << ", " << buffSize << ")" << std::endl;
-		Timer t(s.str());
-		createFile(cols, rows, buffSize);
-	}
-}
-
-void UnitTest::createFile(size_t numberOfColumns, long long numberOfRows, size_t setvbufferSize)
+static void createFile(size_t numberOfColumns, long long numberOfRows, size_t setvbufferSize)
 {
 
 	ODBAPISettings::instance().setvbufferSize(setvbufferSize);
@@ -75,16 +50,28 @@ void UnitTest::createFile(size_t numberOfColumns, long long numberOfRows, size_t
 			(*row)[c] = c;
 }
 
-void UnitTest::tearDown()
+static void tearDown()
 {
 	int catStatus = system("ls -l UnitTest.odb");
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 }
 
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void test()
+{
+    size_t cols = 400;
+    long long rows = 1000;
+    size_t buffSize = 8 * 1024 * 1024;
+
+    for (size_t i = 0; i < 10; ++i)
+    {
+        stringstream s;
+        s << "setUp(): createFile(" << cols << ", " << rows << ", " << buffSize << ")" << std::endl;
+        Timer t(s.str());
+        createFile(cols, rows, buffSize);
+    }
+}
 
 
 
+TEST_MAIN;

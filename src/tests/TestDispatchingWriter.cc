@@ -15,27 +15,17 @@
 #include "tools/CountTool.h"
 #include "odblib/DispatchingWriter.h"
 #include "odblib/Reader.h"
+#include "odblib/StringTool.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
+using namespace odb;
 
 /// UnitTest DispatchingWriter
 ///
-void UnitTest::test()
+static void test()
 {
 	const string fileName = "2000010106.odb";
 
@@ -53,22 +43,17 @@ void UnitTest::test()
 	vector<PathName> files = (**wi).getFiles();
 	for (size_t i = 0; i < files.size(); ++i)
 	{
-		unsigned long long n = CountTool::rowCount(files[i]);
+        unsigned long long n = odb::tool::CountTool::rowCount(files[i]);
 		Log::info() << i << ". " << files[i] << ": " << n << std::endl;
 		sum += n;
 	}
 
 	ASSERT(n1 == sum);
-	shell("ls -l disp.*.*.odb", Here());
+    odb::StringTool::shell("ls -l disp.*.*.odb", Here());
 }
 
-void UnitTest::setUp() {}
 
-void UnitTest::tearDown() {}
+static void setUp(){}
+static void tearDown(){}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
-
-
-
+TEST_MAIN;

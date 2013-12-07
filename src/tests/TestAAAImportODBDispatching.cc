@@ -14,33 +14,26 @@
 
 #include "eckit/log/Log.h"
 #include "odblib/StringTool.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-void UnitTest::test()
+static void test()
 {
 	if (getenv("ODB_ROOT"))
-        StringTool::shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
+        odb::StringTool::shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
 	else {
 		Log::warning() << "UnitTest: ODB_ROOT not set, skipping testing of odb_migrator" << std::endl;
-        StringTool::shell("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
+        odb::StringTool::shell("./odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
 	}
 }
 
-void UnitTest::setUp() {}
-
-void UnitTest::tearDown() {}
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
 
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

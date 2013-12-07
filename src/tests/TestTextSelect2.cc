@@ -15,17 +15,14 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
-void UnitTest::setUp()
+static void setUp()
 {
 	ofstream f("UnitTest.txt");
 	f << 
@@ -42,15 +39,9 @@ void UnitTest::setUp()
 	"10,10\n";
 }
 
-/// UnitTest syntax 'select lat, lon' (no file name)
-///
-void UnitTest::test()
-{
-	selectStarOneColumn();
-	selectSumOneColumn();
-}
 
-void UnitTest::selectStarOneColumn()
+
+static void selectStarOneColumn()
 {
 	string sql = "select * where a > 4;";
 	const string fileName = "UnitTest.txt";
@@ -58,7 +49,7 @@ void UnitTest::selectStarOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "UnitTest::selectStarOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "selectStarOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -75,7 +66,7 @@ void UnitTest::selectStarOneColumn()
 	ASSERT(n == 6);
 }
 
-void UnitTest::selectSumOneColumn()
+static void selectSumOneColumn()
 {
 	string sql = "select sum(a), sum(b);";
 	const string fileName = "UnitTest.txt";
@@ -83,7 +74,7 @@ void UnitTest::selectSumOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "UnitTest::selectSumOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "selectSumOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -96,11 +87,15 @@ void UnitTest::selectSumOneColumn()
 }
 
 
-void UnitTest::tearDown() {}
+/// UnitTest syntax 'select lat, lon' (no file name)
+///
+static void test()
+{
+    selectStarOneColumn();
+    selectSumOneColumn();
+}
 
-} // namespace test
-} // namespace tool 
-} // namespace odb 
 
+static void tearDown(){}
 
-
+TEST_MAIN;

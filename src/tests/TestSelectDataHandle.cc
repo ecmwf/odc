@@ -16,20 +16,15 @@
 #include "eckit/log/Timer.h"
 #include "odblib/Select.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
+using namespace odb;
 
 /// UnitTest syntax 'select lat, lon' (no file name)
 ///
-void UnitTest::test()
+static void test()
 {
 	string sql = "select * where obstype = 7;";
 	//string sql = "select * where obstype = 7;";
@@ -40,10 +35,10 @@ void UnitTest::test()
 	fh.openForRead();
 	odb::Select oda(sql, fh);
 	
-	Log::info(Here()) << "UnitTest::test: Execute '" << sql << "'" << std::endl;
+	Log::info(Here()) << "test: Execute '" << sql << "'" << std::endl;
 	long n = 0;
 	{
-		Timer t("UnitTest::test: selecting rows using SQL" );
+		Timer t("test: selecting rows using SQL" );
 
 		odb::Select::iterator it = oda.begin();
 		odb::Select::iterator end = oda.end();
@@ -51,12 +46,12 @@ void UnitTest::test()
 		for( ; it != end; ++it)
 			++n;
 	}
-	Log::info(Here()) << "UnitTest::test: selected " << n << " rows." << std::endl;
+	Log::info(Here()) << "test: selected " << n << " rows." << std::endl;
 	ASSERT(n == 3134386); 
 	fh.close();
 }
 
-void UnitTest::setUp()
+static void setUp()
 {
 #if 0
 	string s = "Data to be saved";
@@ -77,11 +72,7 @@ void UnitTest::setUp()
 #endif
 }
 
-void UnitTest::tearDown() {}
 
-} // namespace test
-} // namespace tool 
-} // namespace odb 
+static void tearDown(){}
 
-
-
+TEST_MAIN;

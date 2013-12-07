@@ -17,18 +17,13 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-///
-void UnitTest::test()
+static void test()
 {
 	string sql = 
 "SELECT "
@@ -67,13 +62,9 @@ void UnitTest::test()
 	ASSERT((*it)[1] == 91119); // COUNT(lat) == 91119
 }
 
-void UnitTest::setUp() {}
-
-void UnitTest::tearDown() {}
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
+static void setUp(){}
+static void tearDown(){}
 
+TEST_MAIN;

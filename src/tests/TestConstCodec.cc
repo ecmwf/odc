@@ -22,33 +22,23 @@
 #include "odblib/HashTable.h"
 #include "odblib/Header.h"
 #include "odblib/MetaData.h"
-#include "odblib/odb_api.h"
 #include "odblib/Reader.h"
 #include "odblib/ReaderIterator.h"
 #include "odblib/RowsIterator.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SelectIterator.h"
 #include "odblib/SQLAST.h"
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLIteratorSession.h"
-#include "tests/UnitTest.h"
-
-#include "tools/Tool.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SelectIterator.h"
 #include "odblib/Writer.h"
-#include "MockReader.h"
-#include "UnitTest.h"
+#include "odblib/odb_api.h"
+#include "tests/MockReader.h"
+#include "tests/UnitTest.h"
+#include "tools/Tool.h"
 
 using namespace std;
 using namespace eckit;
-
 using namespace odb;
-using namespace odb::codec;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
 
 const char *pies = "pies\0\0\0\0";
 
@@ -99,13 +89,7 @@ public:
 };
 
 
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Writing UnitTest.odb");
 	odb::Writer<> oda("UnitTest.odb");
@@ -121,7 +105,7 @@ void UnitTest::setUp()
 	outit->pass1(b, e);
 }
 
-void UnitTest::test()
+static void test()
 {
 	odb::Reader oda("UnitTest.odb");
 	odb::Reader::iterator it = oda.begin();
@@ -131,19 +115,15 @@ void UnitTest::test()
 	
 	for ( ; it != end; ++it)
 	{
-		//Log::debug() << "UnitTest::test: '" << it.string(0) << "' (" << (*it)[0] << ")" << std::endl;
+		//Log::debug() << "test: '" << it.string(0) << "' (" << (*it)[0] << ")" << std::endl;
 		ASSERT((*it)[0] == * ((double *) pies));
 	}
 
-	Log::debug() << "UnitTest::test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
+	Log::debug() << "test: codec name is '" << it->columns()[0]->coder().name() << "'" << std::endl;
 	ASSERT(it->columns()[0]->coder().name() == "constant_string");
 }
 
-void UnitTest::tearDown() {}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown(){}
 
-
-
+TEST_MAIN;

@@ -18,24 +18,15 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
 
-void UnitTest::test()
-{
-	testReaderIterator();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Test tdiff function");
 	odb::Writer<> oda("test_tdiff.odb");
@@ -54,12 +45,12 @@ void UnitTest::setUp()
     ++row;
 }
 
-void UnitTest::tearDown() 
+static void tearDown() 
 { 
 	PathName("test_tdiff.odb").unlink();
 }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
     const string sql = "select tdiff(date,time,20090707.0,0.0) from \"test_tdiff.odb\";";
 
@@ -72,9 +63,6 @@ void UnitTest::testReaderIterator()
 
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
-
+TEST_MAIN;

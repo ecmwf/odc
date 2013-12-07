@@ -16,27 +16,13 @@
 #include "eckit/types/Types.h"
 #include "odblib/FastODA2Request.h"
 #include "odblib/ODAHandle.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-
-
-void UnitTest::setUp() {}
-
-void UnitTest::test()
+static void test()
 {
 	const char * configFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 	const char * config = 
@@ -66,21 +52,17 @@ void UnitTest::test()
 	ASSERT(rc == true);
 
 	for (size_t i = 0; i < handles.size(); ++i)
-		Log::info() << "UnitTest::test: handles[" << i << "]=" << *handles[i] << std::endl;
+		Log::info() << "test: handles[" << i << "]=" << *handles[i] << std::endl;
 
 	string r = o.genRequest();
-	Log::info() << "UnitTest::test: o.genRequest() => " << endl << r << std::endl;
+	Log::info() << "test: o.genRequest() => " << endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
-	Log::info() << "UnitTest::test: rowsNumber == " << n <<  std::endl;
+	Log::info() << "test: rowsNumber == " << n <<  std::endl;
 }
 
 
-void UnitTest::tearDown() { }
+static void setUp(){}
+static void tearDown(){}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
-
-
-
+TEST_MAIN;

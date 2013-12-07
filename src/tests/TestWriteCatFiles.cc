@@ -16,14 +16,16 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
-namespace odb {
-namespace tool {
-namespace test {
+using namespace std;
+using namespace eckit;
+using namespace odb;
 
 
-void UnitTest::test()
+
+
+static void test()
 {
 	Reader in("concatenated.odb");
 	Reader::iterator it = in.begin();
@@ -36,7 +38,7 @@ void UnitTest::test()
 	Comparator().compare("concatenated.odb", "copy_of_concatenated.odb");
 }
 
-void UnitTest::setUp()
+static void setUp()
 {
  {
 	odb::Writer<> oda("file1.odb");
@@ -102,12 +104,8 @@ void UnitTest::setUp()
 
 }
 
-void UnitTest::tearDown() { }
-
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
 
+TEST_MAIN;

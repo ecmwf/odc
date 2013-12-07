@@ -24,32 +24,17 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
+using namespace odb;
 
 
 const string SELECT  = "select * from \"test.odb\";";
 
-void UnitTest::test()
-{
-	testReaderIterator();
-}
 
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Writing testminmax.odb");
 	odb::Writer<> oda("testminmax.odb");
@@ -75,9 +60,9 @@ void UnitTest::setUp()
 	++row;
 }
 
-void UnitTest::tearDown() { }
+static void tearDown() { }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
 	odb::Reader oda("testminmax.odb");
 	odb::Reader::iterator it = oda.begin();
@@ -97,9 +82,6 @@ void UnitTest::testReaderIterator()
 	//ASSERT(! (it != oda.end()));
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
 
-
+TEST_MAIN;

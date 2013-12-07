@@ -6,11 +6,9 @@
 #include "odblib/DataTable.h"
 #include "tests/UnitTest.h"
 
-
 using namespace std;
+using namespace eckit;
 using namespace odb;
-
-namespace {
 
 struct FilledTables
 {
@@ -204,6 +202,12 @@ TEST_FIXTURE(FilledLink, InsertRowAtTheEndOfTheLastRange)
     }
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

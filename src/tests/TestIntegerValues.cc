@@ -16,25 +16,28 @@
 #include "tools/ImportTool.h"
 #include "odblib/Reader.h"
 
-#include "UnitTest.h"
-
-namespace odb {
-namespace tool {
-namespace test {
+#include "tests/UnitTest.h"
 
 
-void UnitTest::setUp()
+
+
+
+using namespace std;
+using namespace eckit;
+using namespace odb;
+
+static void setUp()
 {
 	const char* data =
 	"date:REAL\n"
 	"20101130\n"
 	"20101201\n"
 	"20101202\n";
-	ImportTool::importText(data, "UnitTest.odb");
+    odb::tool::ImportTool::importText(data, "UnitTest.odb");
 }
 
 
-void UnitTest::test()
+static void test()
 {
 	//Log::info() << fixed;
  //////////////////////////////           ODB from MARS             //////////////////////////////    
@@ -77,11 +80,7 @@ void UnitTest::test()
 	}
 }
 
-void UnitTest::tearDown() { }
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
-
+TEST_MAIN;

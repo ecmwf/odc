@@ -14,21 +14,16 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 #include "tools/Tool.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-namespace odb {
-namespace tool {
-namespace test {
+struct TestTool : public odb::tool::Tool {
 
-
-
-struct UnitTest : public Tool {
-
-    UnitTest
+    TestTool(int argc, char **argv) : odb::tool::Tool(argc, argv)
 	{
 		registerOptionWithArgument("-foo");
 		registerOptionWithArgument("-intOpt");
@@ -37,7 +32,7 @@ struct UnitTest : public Tool {
 	static void help(std::ostream &o) { o << "No help available for this command yet." << std::endl; }
 
 	void run() {
-		Log::info() << "UnitTest::test: UnitTest::run" << std::endl;
+		Log::info() << "test: run" << std::endl;
 
 		ASSERT(optionArgument("-foo", std::string("NONE")) == "bar");
 		ASSERT(optionArgument("-intOpt", 0) == 69);
@@ -55,17 +50,16 @@ struct UnitTest : public Tool {
 	}
 };
 
-void UnitTest::test()
+static void test()
 {
 	const char *args[] = {"-foo", "bar", "-intOpt", "69", "-blah", "-blahblah", "p1", "p2", "-lastOption", "p3", 0};
 
-	UnitTest testTool(sizeof(args) / sizeof(char *) - 1, const_cast<char **>(args));
+    TestTool testTool(sizeof(args) / sizeof(char *) - 1, const_cast<char **>(args));
 	testTool.run();
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
+static void setUp(){}
+static void tearDown(){}
 
-
+TEST_MAIN;

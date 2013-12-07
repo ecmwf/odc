@@ -15,25 +15,23 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/log/Timer.h"
 #include "odblib/Comparator.h"
-#include "tools/CountTool.h"
 #include "odblib/DateTime.h"
 #include "odblib/Decoder.h"
-#include "tools/ImportTool.h"
 #include "odblib/MapReduce.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
-#include "odblib/Select.h"
 #include "odblib/Reader.h"
-#include "tools/SplitTool.h"
 #include "odblib/SQLInteractiveSession.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelectFactory.h"
-#include "tests/UnitTest.h"
+#include "odblib/Select.h"
 #include "odblib/TextReader.h"
 #include "odblib/TextReaderIterator.h"
-
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
+#include "tools/CountTool.h"
+#include "tools/ImportTool.h"
+#include "tools/SplitTool.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"
@@ -41,17 +39,12 @@ extern "C" {
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
-
-namespace odb { namespace tool { void producer_consumer(); }}
-
-namespace odb {
-namespace tool {
-namespace test {
 
 typedef long long llong;
 
-void foobar()
+static void foobar()
 {
 	Reader in("concatenated.odb");
 	Reader::iterator it = in.begin();
@@ -65,7 +58,7 @@ void foobar()
 }
 //TESTCASE(foobar);
 
-void createDataForMixedAggregated()
+static void createDataForMixedAggregated()
 {
 	// See UnitTest.sql as well
 	const char *data = 
@@ -76,7 +69,7 @@ void createDataForMixedAggregated()
 	"2,2,0.1\n"
 	;
 
-	ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
+    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
 }
 
 TEST(selectAggregatedAndNonAggregated)
@@ -111,7 +104,7 @@ TEST(selectAggregatedAndNonAggregated)
 }
 
 
-void createDataForMixedAggregated2()
+static void createDataForMixedAggregated2()
 {
 	Writer<> out("selectAggregatedAndNonAggregated2.odb");
 	Writer<>::iterator o = out.begin();
@@ -145,7 +138,7 @@ TEST(selectAggregatedAndNonAggregated2)
 	ASSERT(counter == 110);
 }
 
-void createDataForMixedAggregated3()
+static void createDataForMixedAggregated3()
 {
 	// See UnitTest.sql as well
 	const char *data = 
@@ -156,7 +149,7 @@ void createDataForMixedAggregated3()
 	"'B',2,0.1\n"
 	;
 
-	ImportTool::importText(data, "selectAggregatedAndNonAggregated3.odb");
+    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated3.odb");
 }
 
 TEST(selectAggregatedAndNonAggregated3)
@@ -176,7 +169,7 @@ TEST(selectAggregatedAndNonAggregated3)
 }
 
 
-void createDataForMixedAggregatedNULL()
+static void createDataForMixedAggregatedNULL()
 {
 	// See UnitTest.sql as well
 	const char *data = 
@@ -190,7 +183,7 @@ void createDataForMixedAggregatedNULL()
 	"NULL,3,0.3\n"
 	;
 
-	ImportTool::importText(data, "selectAggregatedAndNonAggregatedNULL.odb");
+    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregatedNULL.odb");
 }
 
 TEST(selectAggregatedAndNonAggregatedNULL)
@@ -213,7 +206,7 @@ TEST(selectAggregatedAndNonAggregatedNULL)
 /////////////////////////////////////////
 // Regular expressions on the select list
 
-void createDataForRegex1()
+static void createDataForRegex1()
 {
 	// See UnitTest.sql as well
 	const char *data = 
@@ -223,10 +216,10 @@ void createDataForRegex1()
 	"11,22,33,44\n"
 	;
 
-	ImportTool::importText(data, "regex1.odb");
+    odb::tool::ImportTool::importText(data, "regex1.odb");
 }
 
-void regex1()
+static void regex1()
 {
 	//createDataForRegex1();
 	odb::Select oda("select \"/a.*/\" from \"regex1.odb\";");
@@ -256,7 +249,7 @@ TEST(vector_syntax)
 	"10,10\n"
 	;
 
-	ImportTool::importText(data, "vector_syntax.odb");
+    odb::tool::ImportTool::importText(data, "vector_syntax.odb");
 
 	const char *sql =
 	"set $X = [1,2,3,4,5];"
@@ -303,7 +296,7 @@ TEST(bitfieldsLength)
 	}
 }
 
-void create_stringInWhere_file()
+static void create_stringInWhere_file()
 {
 	const char *data = 
 	"a:STRING,b:INTEGER\n"
@@ -312,7 +305,7 @@ void create_stringInWhere_file()
 	"'bbb',2\n"
 	"'bbbc',2\n"
 	;
-	ImportTool::importText(data, "stringInWhere.odb");
+    odb::tool::ImportTool::importText(data, "stringInWhere.odb");
 }
 
 TEST(stringInWhere)
@@ -391,7 +384,7 @@ TEST(sqlOutputFormatting)
 
 	const char* testFile("sqlOutputFormatting.odb");
 
-	ImportTool::importText(data, testFile);
+    odb::tool::ImportTool::importText(data, testFile);
 
 	bool doNotWriteColumnNames(false); // -T
 	bool doNotWriteNULL(false);        // -N
@@ -438,7 +431,7 @@ TEST(dateTime)
 	//ASSERT(j1 > j2);
 }
 
-void createDataForWindSpeedWindDirection()
+static void createDataForWindSpeedWindDirection()
 {
 	const char *data = 
 	"u:REAL,v:REAL\n"
@@ -448,7 +441,7 @@ void createDataForWindSpeedWindDirection()
 	"5.4,0.0\n"
 	;
 
-	ImportTool::importText(data, "uv.odb");
+    odb::tool::ImportTool::importText(data, "uv.odb");
 }
 
 TEST(windSpeedWindDirection)
@@ -471,12 +464,6 @@ TEST(windSpeedWindDirection)
     }
 }
 
-TEST(odbcapi)
-{
-	odb::tool::test::test_odacapi_setup_in_C(0,0);
-	odb::tool::test::test_odacapi3(0,0);
-}
-
 TEST(HashTable_clone)
 {
 	using namespace odb::codec;
@@ -491,11 +478,11 @@ TEST(HashTable_clone)
 	delete c;
 }
 
-void SplitTool_chunks()
+static void SplitTool_chunks()
 {
 	const char * fn = "selectAggregatedAndNonAggregated.odb";
-	unsigned long long n = CountTool::fastRowCount(fn);
-	vector<pair<Offset,Length> > chunks = SplitTool::getChunks(fn);
+    unsigned long long n = odb::tool::CountTool::fastRowCount(fn);
+    vector<pair<Offset,Length> > chunks = odb::tool::SplitTool::getChunks(fn);
 
 	Log::info() << "chunks.size():" << chunks.size() << std::endl;
 	ASSERT(chunks.size() == 1 && chunks[0].first == Offset(0) && chunks[0].second == Length(357));
@@ -503,13 +490,13 @@ void SplitTool_chunks()
 //TESTCASE(SplitTool_chunks);
 
 
-void FilePool1()
+static void FilePool1()
 {
 	//FilePool<SimpleFilePoolTraits> pool(1);
 }
 //TESTCASE(FilePool1);
 
-void copyVectorToArray()
+static void copyVectorToArray()
 {
 	const size_t size = 1024; 
 	const size_t n = 1000000;
@@ -534,15 +521,15 @@ void copyVectorToArray()
 //TESTCASE(copyVectorToArray);
 
 
-void count(void *counter, const double* data, size_t n) { ++*((llong*)counter); }
-void *create_counter()
+static void count(void *counter, const double* data, size_t n) { ++*((llong*)counter); }
+static void *create_counter()
 {
 	llong* r = new llong;
 	*r = 0;
 	return r;
 }
-void destroy_counter(void *counter) { delete (llong*) counter; }
-void *reduce_counter(void *left, void *right)
+static void destroy_counter(void *counter) { delete (llong*) counter; }
+static void *reduce_counter(void *left, void *right)
 {
 	llong *result = new llong;
 	*result = (*(llong *) left) + (*(llong *) right);
@@ -559,22 +546,22 @@ CallBackProcessOneRow create_counter_callback()
 }
 
 
-void map_reduce_mt()
+static void map_reduce_mt()
 {
     const string fileName = "/scratch/ma/mak/odb-16/all.odb";
     const string sql = "select lat,lon;";
-	llong n = CountTool::fastRowCount(fileName);
+    llong n = odb::tool::CountTool::fastRowCount(fileName);
 	llong* result = (llong*) MultipleThreadMapReduce::process(0, fileName, sql, create_counter_callback());
 	Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << std::endl;
 	ASSERT(*result == n);
 }
 //TESTCASE(map_reduce_mt);
 
-void map_reduce_st()
+static void map_reduce_st()
 {
     const string fileName = "/scratch/ma/mak/odb-16/all.odb";
     const string sql = "select lat,lon;";
-	llong n = CountTool::fastRowCount(fileName);
+    llong n = odb::tool::CountTool::fastRowCount(fileName);
 	llong r = 0;
 	llong* result = (llong*) SingleThreadMapReduce::process(&r, fileName, sql, create_counter_callback());
 	Log::info() << "map_reduce: SingleThreadMapReduce::process => " << *result << std::endl;
@@ -586,7 +573,7 @@ void map_reduce_st()
 
 ///////////////////////////////////////////////////////////////////////
 
-void array_count(void *counter, struct Array a)
+static void array_count(void *counter, struct Array a)
 {
 	*((llong*) counter) += a.nRows;
 
@@ -609,7 +596,7 @@ CallBackProcessArray create_array_counter_callback()
 	return cb;
 }
 
-void process_array_st()
+static void process_array_st()
 {
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << std::endl;
@@ -622,7 +609,7 @@ void process_array_st()
 //TESTCASE(process_array_st);
 
 
-void process_array_mt()
+static void process_array_mt()
 {
 	//llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
 	//Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << std::endl;
@@ -635,7 +622,7 @@ void process_array_mt()
 //TESTCASE(process_array_mt);
 
 
-void producer_consumer()
+static void producer_consumer()
 {
 	odb::tool::producer_consumer();
 }
@@ -667,7 +654,7 @@ TEST(hash_operator_on_select_list)
 	;
 
 	ScratchFile f("hash_operator.odb");
-	ImportTool::importText(data, f);
+    odb::tool::ImportTool::importText(data, f);
 
 	string sql("select x,x#-1,x#1 from \"" + f + "\";");
     odb::Select select(sql);
@@ -698,7 +685,7 @@ TEST(hash_operator_in_where)
 	;
 
 	ScratchFile f("hash_operator.odb");
-	ImportTool::importText(data, f);
+    odb::tool::ImportTool::importText(data, f);
 
 	string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
     odb::Select select(sql);
@@ -857,7 +844,7 @@ TEST(operator_ge)
 	"10,10\n"
 	;
 
-	ImportTool::importText(data, "1to10.odb");
+    odb::tool::ImportTool::importText(data, "1to10.odb");
 
 	odb::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
 	unsigned long counter = 0;
@@ -868,7 +855,7 @@ TEST(operator_ge)
 	ASSERT(counter == 8);
 }
 
-void create_1to10()
+static void create_1to10()
 {
 	const char *data = 
 	"a:INTEGER,b:INTEGER\n"
@@ -884,7 +871,7 @@ void create_1to10()
 	"10,10\n"
 	;
 
-	ImportTool::importText(data, "1to10.odb");
+    odb::tool::ImportTool::importText(data, "1to10.odb");
 }
 
 /* FIXME
@@ -904,7 +891,7 @@ TEST(Select_isNewDataset)
 */
 
 template<typename T> 
-void test_isNewDataset()
+static void test_isNewDataset()
 {
     create_1to10();
     size_t blocks (0);
@@ -1011,9 +998,15 @@ TEST(TextReaderIterator_parseBitfields)
         Log::info() << "TextReaderIterator_parseBitfields: size: " << i << " " << sizes[i] << std::endl;
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+
+
+
 
 
 //(UnitTests)
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

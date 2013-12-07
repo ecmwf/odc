@@ -20,31 +20,15 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
 
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-
-void UnitTest::test()
-{
-	testReaderIterator();
-}
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Test eq_boxlat and eq_boxlon functions");
 	odb::Writer<> oda("test_eq_box.odb");
@@ -63,12 +47,12 @@ void UnitTest::setUp()
     ++row;
 }
 
-void UnitTest::tearDown() 
+static void tearDown() 
 { 
 	PathName("test_eq_box.odb").unlink();
 }
 
-void UnitTest::testReaderIterator()
+static void test()
 {
     const string sql = "select eq_boxlat(lat,lon,10.5), eq_boxlon(lat,lon,10.5) from \"test_eq_box.odb\";";
 
@@ -82,9 +66,5 @@ void UnitTest::testReaderIterator()
 
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
 
-
-
+TEST_MAIN;

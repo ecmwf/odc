@@ -16,24 +16,20 @@
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 
 const string testFile = "UnitTest.odb";
 
 const double VALUE[] = { 1, 2, 3 };
 
-void UnitTest::setUp()
+static void setUp()
 {
-	Log::debug() << "UnitTest::setUp" << std::endl;
+	Log::debug() << "setUp" << std::endl;
 
 	Timer t("Writing " + testFile );
 	odb::Writer<> oda(testFile);
@@ -53,7 +49,7 @@ void UnitTest::setUp()
 ///
 /// UnitTest problem fixed with p4 change 23687
 ///
-void UnitTest::test()
+static void test()
 {
 	const string SELECT = "select * from \"" + testFile + "\";";
 
@@ -63,16 +59,12 @@ void UnitTest::test()
 		it != oda.end() && i < sizeof(VALUE) / sizeof(double);
 		++it, ++i) 
 	{
-		Log::info() << "UnitTest::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << std::endl;
+		Log::info() << "testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << std::endl;
 		ASSERT((*it)[0] == VALUE[i]);
 	}
 }
 
-void UnitTest::tearDown() { }
-
-} // namespace test
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
-
+TEST_MAIN;

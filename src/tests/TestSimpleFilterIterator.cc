@@ -17,31 +17,20 @@
 #include "odblib/Reader.h"
 #include "odblib/SimpleFilter.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 
 using namespace std;
 using namespace eckit;
-
-
-namespace odb {
-namespace tool {
-namespace test {
+using namespace odb;
 
 //int const OBSTYPE = 1;
 //int const SENSOR = 24;
 
 
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
 /// UnitTest DispatchingWriter
 ///
-void UnitTest::test()
+static void test()
 {
 	const string fileName = "2000010106.odb";
 	string sql = string("select * from \"") + fileName + "\" where obstype = 7;";
@@ -50,7 +39,7 @@ void UnitTest::test()
 	long n2 = 0;
 
 	{
-		Timer t("UnitTest::test: selecting rows where obstype == 7 the simple way");
+		Timer t("test: selecting rows where obstype == 7 the simple way");
 		odb::Reader oda(fileName);
 		odb::Reader::iterator it = oda.begin();
 		size_t obstype_index = it->columns().columnIndex("obstype");
@@ -73,7 +62,7 @@ void UnitTest::test()
 	}
 
 	{
-		Timer t("UnitTest::test: selecting rows where obstype == 7");
+		Timer t("test: selecting rows where obstype == 7");
 
 		odb::Reader oda(fileName);
 
@@ -94,12 +83,12 @@ void UnitTest::test()
 #endif
 		}
 
-		Log::info() << "UnitTest::test: selected " << n1 << " rows." << std::endl;
+		Log::info() << "test: selected " << n1 << " rows." << std::endl;
 	}
 
 	{
-		Timer t("UnitTest::test: selecting rows using SQL where obstype == 7");
-		Log::info() << "UnitTest::test: Execute '" << sql << "'" << std::endl;
+		Timer t("test: selecting rows using SQL where obstype == 7");
+		Log::info() << "test: Execute '" << sql << "'" << std::endl;
 
 		odb::Select odas(sql, fileName);
 		for(odb::Select::iterator it = odas.begin(); it != odas.end(); ++it)
@@ -117,20 +106,17 @@ void UnitTest::test()
 #endif
 		}
 
-		Log::info() << "UnitTest::test: selected " << n2 << " rows." << std::endl;
+		Log::info() << "test: selected " << n2 << " rows." << std::endl;
 	}
 
-	Log::info() << "UnitTest::test: n0=" << n0 << ", n1=" << n1 << ", n2=" << n2 << std::endl;
+	Log::info() << "test: n0=" << n0 << ", n1=" << n1 << ", n2=" << n2 << std::endl;
 	ASSERT(n0 == n1);
 	ASSERT(n1 == n2);
 }
 
-void UnitTest::setUp() {}
-void UnitTest::tearDown() {}
-
-} // namespace test
-} // namespace tool 
-} // namespace odb 
 
 
+static void setUp(){}
+static void tearDown(){}
 
+TEST_MAIN;

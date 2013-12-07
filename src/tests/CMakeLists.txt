@@ -12,14 +12,14 @@ TestCodecOptimization
 TestCommandLineParsing
 TestConstCodec
 TestConstIntegerCodec
-TestDataJoin
-TestDataLink
-TestDataLoader
-TestDataPage
-TestDataRow
-TestDataSelect
-TestDataSet
-TestDataTable
+#TestDataJoin
+#TestDataLink
+#TestDataLoader
+#TestDataPage
+#TestDataRow
+#TestDataSelect
+#TestDataSet
+#TestDataTable
 TestDecoding
 TestDispatchingWriter
 TestDistinct
@@ -38,7 +38,7 @@ TestFunctionThin
 TestFunctionTypeConversion
 TestFunctionsForAngleConversion
 TestFunctionsForTemperatureConversion
-TestInMemoryDataHandle
+#TestInMemoryDataHandle
 TestInt16_MissingCodec
 TestIntegerValues
 TestMetaData
@@ -69,7 +69,6 @@ UnitTests
 foreach(t ${TESTS})
 
 ecbuild_add_test(  TARGET ${t}
-                   SOURCES ${t}.cc
+                   SOURCES ${t}.cc MockReader.h UnitTest.h
                    LIBS odbtools Odb ${ECKIT_LIBRARIES} )
 endforeach()
-

@@ -8,7 +8,7 @@
 using namespace std;
 using namespace odb;
 
-namespace {
+
 
 struct EmptyTable
 {
@@ -302,6 +302,12 @@ TEST_FIXTURE(ThreeColumnTable, MultiLineInitialization)
     CHECK_EQUAL(2.0, table[1].get<double>(1));
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

@@ -17,22 +17,11 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
+using namespace odb;
 
 
 const string SELECT  = "select * from \"test.odb\";";
@@ -65,7 +54,7 @@ unsigned char REF_DATA[] =
 ///
 /// UnitTest problem fixed with p4 change 23687
 ///
-void UnitTest::testBug01()
+static void testBug01()
 {
 
 #if defined(AIX) || defined(_HPUX_SOURCE)
@@ -88,20 +77,12 @@ void UnitTest::testBug01()
 		it != oda.end() && i < (sizeof(REF_DATA) / sizeof(double));
 		++it, ++i) 
 	{
-		Log::info() << "UnitTest::testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << OBSVALUE[i] << std::endl;
+		Log::info() << "testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << OBSVALUE[i] << std::endl;
 		ASSERT( (*it)[0] == OBSVALUE[i] );
 	}
 }
 
 
-void UnitTest::test()
-{
-	testReaderIteratorForEach();
-	testReaderIteratorLoop();
-	testSelectIteratorForEach();
-	testSelectIteratorLoop();
-	testBug01();
-}
 
 
 template<class T> struct Count: public unary_function<T, void>
@@ -126,9 +107,9 @@ template<class T> struct Count: public unary_function<T, void>
 };
 
 
-void UnitTest::setUp()
+static void setUp()
 {
-	Log::debug() << "UnitTest::setUp" << std::endl;
+	Log::debug() << "setUp" << std::endl;
 
 	Timer t("Writing test.odb");
 	odb::Writer<> oda("test.odb");
@@ -150,11 +131,11 @@ void UnitTest::setUp()
 	}
 }
 
-void UnitTest::tearDown() { }
+static void tearDown() { }
 
-void UnitTest::testReaderIteratorForEach()
+static void testReaderIteratorForEach()
 {
-	Log::debug() << "UnitTest::testReaderIteratorForEach" << std::endl;
+	Log::debug() << "testReaderIteratorForEach" << std::endl;
 
 	odb::Reader oda("test.odb");
 	Timer t("for_each oda.reader Reading test.odb");
@@ -166,9 +147,9 @@ void UnitTest::testReaderIteratorForEach()
 	ASSERT(counter1.counter == 10);
 }
 
-void UnitTest::testReaderIteratorLoop()
+static void testReaderIteratorLoop()
 {
-	Log::debug() << "UnitTest::testReaderIteratorLoop" << std::endl;
+	Log::debug() << "testReaderIteratorLoop" << std::endl;
 
 	odb::Reader oda("test.odb");
 	int j = 0;
@@ -193,7 +174,7 @@ void UnitTest::testReaderIteratorLoop()
 	ASSERT(j == 10);
 }
 
-void UnitTest::testSelectIteratorLoop()
+static void testSelectIteratorLoop()
 {
 	odb::Select oda(SELECT, "test.odb");
 	int i=0;
@@ -213,7 +194,7 @@ void UnitTest::testSelectIteratorLoop()
 	ASSERT(i == 10);
 }
 
-void UnitTest::testSelectIteratorForEach()
+static void testSelectIteratorForEach()
 {
 	odb::Select oda(SELECT, "test.odb");
 	Count<odb::Select::row> counter;
@@ -223,9 +204,16 @@ void UnitTest::testSelectIteratorForEach()
 }
 
 
-} // namespace test
-} // namespace tool 
-} // namespace odb 
+
+static void test()
+{
+    testReaderIteratorForEach();
+    testReaderIteratorLoop();
+    testSelectIteratorForEach();
+    testSelectIteratorLoop();
+    testBug01();
+}
 
 
 
+TEST_MAIN;

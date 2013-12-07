@@ -17,25 +17,14 @@
 #include "tools/ImportTool.h"
 #include "odblib/Select.h"
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-
+using namespace odb;
 
 ///
-void UnitTest::test()
+static void test()
 {
 	{
 		string sql = "select distinct a from \"a1to10twice.odb\" order by a;";
@@ -45,15 +34,15 @@ void UnitTest::test()
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "UnitTest::test: entering the loop" << std::endl;
+		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 0;
 		for (; it != end; ++it)
 		{
 			int v = (*it)[0];
-			Log::info()  << "UnitTest::test:" <<  v  << std::endl;
+			Log::info()  << "test:" <<  v  << std::endl;
 			ASSERT(v == ++i);
 		}
-		Log::info()  << "UnitTest::test: i = " <<  i  << std::endl;
+		Log::info()  << "test: i = " <<  i  << std::endl;
 		ASSERT(i == 10);
 	}
 
@@ -65,16 +54,16 @@ void UnitTest::test()
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "UnitTest::test: entering the loop" << std::endl;
+		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 0, j = 0;
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::info()  << "UnitTest::test:" <<  v  << std::endl;
+			Log::info()  << "test:" <<  v  << std::endl;
 			ASSERT(i <= v);
 			i = v;
 		}
-		Log::info()  << "UnitTest::test: i=" <<  i  << ", j=" << j << std::endl;
+		Log::info()  << "test: i=" <<  i  << ", j=" << j << std::endl;
 		ASSERT(i == 10);
 		ASSERT(j == 20);
 	}
@@ -87,15 +76,15 @@ void UnitTest::test()
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "UnitTest::test: entering the loop" << std::endl;
+		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 10, j = 0;
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::info()  << "UnitTest::test:" <<  v  << std::endl;
+			Log::info()  << "test:" <<  v  << std::endl;
 			ASSERT(i-- == v);
 		}
-		Log::info()  << "UnitTest::test: i = " <<  i  << std::endl;
+		Log::info()  << "test: i = " <<  i  << std::endl;
 		ASSERT(i == 0);
 		ASSERT(j == 10);
 	}
@@ -107,7 +96,7 @@ void UnitTest::test()
 		"1,20,'two'\n"
 		"2,30,'three'\n"
 		"2,40,'four'\n";
-		ImportTool::importText(in, "UnitTest.odb");
+        odb::tool::ImportTool::importText(in, "UnitTest.odb");
 
 		string sql = "select distinct a,b,c from \"UnitTest.odb\" order by a desc, b asc;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
@@ -116,7 +105,7 @@ void UnitTest::test()
 		odb::Select::iterator it = sel.begin();
 		odb::Select::iterator end = sel.end();
 
-		Log::info()  << "UnitTest::test: entering the loop" << std::endl;
+		Log::info()  << "test: entering the loop" << std::endl;
         int i = 0, v1 = 0 , v2 = 0;
 		string s;
 		for (; it != end; ++it, ++i)
@@ -124,21 +113,16 @@ void UnitTest::test()
 			v1 = (*it)[0];
 			v2 = (*it)[1];
 			s = (*it).string(2);
-			Log::info() << "UnitTest::test:" <<  v1  << ", " << v2 << ", '" << s << "'" << std::endl;
+			Log::info() << "test:" <<  v1  << ", " << v2 << ", '" << s << "'" << std::endl;
 		}
-		Log::info()  << "UnitTest::test: i = " <<  i  << std::endl;
+		Log::info()  << "test: i = " <<  i  << std::endl;
 		ASSERT(i == 4);
 		ASSERT(v1 == 1 && v2 == 20 && StringTools::trim(s) == "two");
 	}
 }
 
-void UnitTest::setUp() {}
 
-void UnitTest::tearDown() {}
+static void setUp(){}
+static void tearDown(){}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
-
-
-
+TEST_MAIN;

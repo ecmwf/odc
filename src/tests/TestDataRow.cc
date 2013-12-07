@@ -10,7 +10,7 @@
 using namespace std;
 using namespace odb;
 
-namespace {
+
 
 TEST(UnInitializedDataRowHasExpectedSize)
 {
@@ -158,6 +158,12 @@ TEST(DataRowCanSetStrings)
     CHECK_ARRAY_EQUAL("ABCD    ", reinterpret_cast<char*>(&row[0]), sizeof(double));
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

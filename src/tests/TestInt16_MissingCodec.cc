@@ -17,17 +17,12 @@
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"
-#include "MockReader.h"
-#include "UnitTest.h"
+#include "tests/MockReader.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
-
-
-namespace odb {
-namespace tool {
-namespace test {
-
+using namespace odb;
 
 
 class MockReaderIterator3 : public odb::RowsReaderIterator 
@@ -87,14 +82,7 @@ private:
 	double data_;
 };
 
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-void UnitTest::setUp()
+static void setUp()
 {
 	Timer t("Writing test_int16_missing.odb");
 	odb::Writer<> oda("test_int16_missing.odb");
@@ -108,7 +96,7 @@ void UnitTest::setUp()
 	outit->pass1(b, e);
 }
 
-void UnitTest::test()
+static void test()
 {
 	odb::Reader oda("test_int16_missing.odb");
 	odb::Reader::iterator it = oda.begin();
@@ -131,18 +119,14 @@ void UnitTest::test()
 
 	string name = coder.name();
 
-	Log::debug() << "UnitTest::test: codec name is '" << name << "'" << std::endl;
+	Log::debug() << "test: codec name is '" << name << "'" << std::endl;
 
 	ASSERT(name == "int16_missing");
 
-	Log::debug() << "UnitTest::test: OK" << std::endl;
+	Log::debug() << "test: OK" << std::endl;
 }
 
-void UnitTest::tearDown() {}
 
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown(){}
 
-
-
+TEST_MAIN;

@@ -7,9 +7,8 @@
 
 
 using namespace std;
+using namespace eckit;
 using namespace odb;
-
-namespace {
 
 struct Tables
 {
@@ -186,6 +185,12 @@ TEST_FIXTURE(InnerJoin, InnerJoinReturnsExpectedValues)
     }
 }
 
-} // namespace
 
 
+
+
+static void test(){}
+static void setUp(){}
+static void tearDown(){}
+
+TEST_MAIN;

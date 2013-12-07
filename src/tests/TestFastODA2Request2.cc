@@ -16,25 +16,16 @@
 #include "odblib/ODAHandle.h"
 
 #include "odblib/Writer.h"
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb;
 
+static Length size1;
+static Length size2;
 
-namespace odb {
-namespace tool {
-namespace test {
-
-
-
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
-
-() { }
-
-Length UnitTest::createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
+Length createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
 {
 	{
 		odb::Writer<> oda(fileName);
@@ -57,10 +48,10 @@ Length UnitTest::createFile(const string& fileName, unsigned int andate, unsigne
 	return p.size();
 } 
 
-void UnitTest::setUp()
+static void setUp()
 {
-	size1_ = createFile("UnitTest.odb", 20110823, 0, 21);
-	size2_ = createFile("UnitTest.odb", 20110823, 0, 22);
+    size1 = createFile("UnitTest.odb", 20110823, 0, 21);
+    size2 = createFile("UnitTest.odb", 20110823, 0, 22);
 
 	const char *cmd =
 	"cat "
@@ -75,7 +66,7 @@ void UnitTest::setUp()
 	catStatus = system("cat UnitTest.odb UnitTest.odb >UnitTest.odb");
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 }
-void UnitTest::test()
+static void test()
 {
 	const char * configFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 	const char * config = 
@@ -95,19 +86,19 @@ void UnitTest::test()
 	o.scanFile("UnitTest.odb", offsets, lengths, handles);
 
 	for (size_t i = 0; i < handles.size(); ++i)
-		Log::info() << "UnitTest::test: handles[" << i << "]=" << *handles[i] << std::endl;
+		Log::info() << "test: handles[" << i << "]=" << *handles[i] << std::endl;
 
 	ASSERT(handles.size() == 2);
 	ASSERT(0 == handles[0]->start());
-	ASSERT(size1_ * 3 == handles[0]->end());
-	ASSERT(size1_ * 3 == handles[1]->start());
-	ASSERT(size1_ * 3 + size2_ * 2 == handles[1]->end());
+    ASSERT(size1 * 3 == handles[0]->end());
+    ASSERT(size1 * 3 == handles[1]->start());
+    ASSERT(size1 * 3 + size2 * 2 == handles[1]->end());
 
 	string r = o.genRequest();
-	Log::info() << "UnitTest::test: o.genRequest() => " << endl << r << std::endl;
+	Log::info() << "test: o.genRequest() => " << endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
-	Log::info() << "UnitTest::test: rowsNumber == " << n <<  std::endl;
+	Log::info() << "test: rowsNumber == " << n <<  std::endl;
 	ASSERT(n == 2 * (2 + 3));
 
 	
@@ -137,11 +128,7 @@ void UnitTest::test()
 }
 
 
-void UnitTest::tearDown() { }
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
-
+TEST_MAIN;

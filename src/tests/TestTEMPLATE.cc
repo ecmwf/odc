@@ -13,37 +13,25 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 
-#include "UnitTest.h"
+#include "tests/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
 
-
-namespace odb {
-namespace tool {
-namespace test {
-
+using namespace std;
+using namespace eckit;
+//using namespace odb;
 
 
-(int argc, char **argv)
-: UnitTest(argc, argv)
-{}
 
-() { }
-
-void UnitTest::setUp() {}
-
-
-void UnitTest::test()
+static void test()
 {
 	Log::info() << "I'm just a template, I don't test anything, really." << std::endl;
 }
 
-void UnitTest::tearDown() { }
-
-} // namespace test 
-} // namespace tool 
-} // namespace odb 
+static void tearDown() { }
 
 
+static void setUp(){}
 
+TEST_MAIN;
