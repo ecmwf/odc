@@ -16,7 +16,7 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
-#include "odb/TestSelectTwoFiles.h"
+#include "TestSelectTwoFiles.h"
 
 using namespace std;
 using namespace eckit;

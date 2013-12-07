@@ -20,7 +20,7 @@ const double EPS =     1e-6;
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestFunctionDateAndTime.h"
+#include "TestFunctionDateAndTime.h"
 
 using namespace std;
 using namespace eckit;

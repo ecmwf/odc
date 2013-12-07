@@ -18,7 +18,7 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
-#include "odb/TestMissingValue.h"
+#include "TestMissingValue.h"
 
 using namespace std;
 using namespace eckit;

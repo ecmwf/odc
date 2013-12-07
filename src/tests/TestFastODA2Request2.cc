@@ -16,7 +16,7 @@
 #include "odblib/ODAHandle.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestFastODA2Request2.h"
+#include "TestFastODA2Request2.h"
 
 using namespace std;
 using namespace eckit;

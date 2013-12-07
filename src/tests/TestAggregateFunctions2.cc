@@ -17,7 +17,7 @@
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestAggregateFunctions2.h"
+#include "TestAggregateFunctions2.h"
 
 using namespace std;
 using namespace eckit;

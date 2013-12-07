@@ -17,7 +17,7 @@
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestCodecOptimization.h"
+#include "TestCodecOptimization.h"
 
 using namespace std;
 using namespace eckit;

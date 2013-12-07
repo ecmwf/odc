@@ -16,7 +16,7 @@
 #include "odblib/ImportTool.h"
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestDistinct.h"
+#include "TestDistinct.h"
 
 using namespace std;
 using namespace eckit;

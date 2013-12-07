@@ -19,7 +19,7 @@ const double EPS = 7e-6;
 #include "odblib/piconst.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestFunctionsForAngleConversion.h"
+#include "TestFunctionsForAngleConversion.h"
 
 using namespace std;
 using namespace eckit;

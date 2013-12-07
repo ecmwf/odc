@@ -20,7 +20,7 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestFunctionRggBox.h"
+#include "TestFunctionRggBox.h"
 
 using namespace std;
 using namespace eckit;

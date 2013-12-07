@@ -15,7 +15,7 @@
 #include "eckit/io/DataHandle.h"
 #include "odblib/DataStream.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestCodec.h"
+#include "TestCodec.h"
 
 using namespace std;
 using namespace eckit;

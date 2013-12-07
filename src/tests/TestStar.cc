@@ -15,7 +15,7 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestStar.h"
+#include "TestStar.h"
 
 namespace odb {
 namespace tool {

@@ -14,7 +14,7 @@
 
 #include "odblib/InMemoryDataHandle.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestInMemoryDataHandle.h"
+#include "TestInMemoryDataHandle.h"
 
 using namespace std;
 using namespace eckit;

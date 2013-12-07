@@ -16,7 +16,7 @@
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestFunctionTypeConversion.h"
+#include "TestFunctionTypeConversion.h"
 
 using namespace std;
 using namespace eckit;

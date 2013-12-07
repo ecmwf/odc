@@ -14,7 +14,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/ColumnType.h"
 #include "odblib/Writer.h"
-#include "odb/TestOdaCAPI.h"
+#include "TestOdaCAPI.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"

@@ -14,7 +14,7 @@
 
 #include "odblib/FastODA2Request.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestFastODA2Request.h"
+#include "TestFastODA2Request.h"
 
 using namespace std;
 using namespace eckit;
@@ -53,7 +53,7 @@ void TestFastODA2Request::test()
 	o.scanFile("2000010106.2.0.odb");
 
 	//o.parseConfig(StringTool::readFile(cfgFile));
-	//o.scanFile("/hugetmp/odb/mondb_conv.17.16001.odb");
+	//o.scanFile("/hugetmp/mondb_conv.17.16001.odb");
 	string r = o.genRequest();
 	unsigned long long n = o.rowsNumber();
 

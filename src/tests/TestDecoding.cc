@@ -15,7 +15,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestDecoding.h"
+#include "TestDecoding.h"
 
 using namespace std;
 using namespace eckit;

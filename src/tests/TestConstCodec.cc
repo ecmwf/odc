@@ -35,8 +35,8 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/Tool.h"
 #include "odblib/Writer.h"
-#include "odb/MockReader.h"
-#include "odb/TestConstCodec.h"
+#include "MockReader.h"
+#include "TestConstCodec.h"
 
 using namespace std;
 using namespace eckit;

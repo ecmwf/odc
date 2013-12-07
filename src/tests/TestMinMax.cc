@@ -24,7 +24,7 @@
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestMinMax.h"
+#include "TestMinMax.h"
 
 using namespace std;
 using namespace eckit;

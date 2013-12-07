@@ -17,7 +17,7 @@
 #include "odblib/Reader.h"
 #include "odblib/SimpleFilter.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestSimpleFilterIterator.h"
+#include "TestSimpleFilterIterator.h"
 
 
 using namespace std;

@@ -17,7 +17,7 @@
 #include "odblib/Reader.h"
 #include "odblib/SimpleFilter.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestSimpleFilterIterator2.h"
+#include "TestSimpleFilterIterator2.h"
 
 using namespace std;
 using namespace eckit;

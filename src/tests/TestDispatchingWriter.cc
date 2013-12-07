@@ -16,7 +16,7 @@
 #include "odblib/DispatchingWriter.h"
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestDispatchingWriter.h"
+#include "TestDispatchingWriter.h"
 
 using namespace std;
 using namespace eckit;

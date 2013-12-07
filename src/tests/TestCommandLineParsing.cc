@@ -14,7 +14,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestCommandLineParsing.h"
+#include "TestCommandLineParsing.h"
 
 using namespace std;
 using namespace eckit;

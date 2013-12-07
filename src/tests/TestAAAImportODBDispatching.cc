@@ -14,7 +14,7 @@
 
 #include "eckit/log/Log.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestAAAImportODBDispatching.h"
+#include "TestAAAImportODBDispatching.h"
 
 using namespace std;
 using namespace eckit;

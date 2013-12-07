@@ -16,7 +16,7 @@
 #include "odblib/ToolFactory.h"
 #include "odblib/Tool.h"
 #include "odblib/ToolRunnerApplication.h"
-#include "odb/TestOdaCAPI.h"
+#include "TestOdaCAPI.h"
 
 using namespace std;
 using namespace eckit;

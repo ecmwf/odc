@@ -14,7 +14,7 @@
 
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestTextSelect.h"
+#include "TestTextSelect.h"
 
 using namespace std;
 using namespace eckit;

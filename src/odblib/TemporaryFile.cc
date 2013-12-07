@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+#include <unistd.h>
+
 #include "eckit/io/Buffer.h"
 #include "odblib/TemporaryFile.h"
 

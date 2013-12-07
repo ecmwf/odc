@@ -33,7 +33,7 @@
 #include "odblib/TextReaderIterator.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestOdaCAPI.h"
+#include "TestOdaCAPI.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"

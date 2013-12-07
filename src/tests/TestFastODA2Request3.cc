@@ -16,7 +16,7 @@
 #include "eckit/types/Types.h"
 #include "odblib/FastODA2Request.h"
 #include "odblib/ODAHandle.h"
-#include "odb/TestFastODA2Request3.h"
+#include "TestFastODA2Request3.h"
 
 using namespace std;
 using namespace eckit;

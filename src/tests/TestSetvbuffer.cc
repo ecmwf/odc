@@ -16,7 +16,7 @@
 #include "odblib/ODBAPISettings.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestSetvbuffer.h"
+#include "TestSetvbuffer.h"
 
 using namespace std;
 using namespace eckit;

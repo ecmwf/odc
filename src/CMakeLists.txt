@@ -26,3 +26,5 @@ add_subdirectory( fortran )
 add_subdirectory( odb )
 
 add_subdirectory( migrator )
+
+#add_subdirectory( tests )

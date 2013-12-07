@@ -17,7 +17,7 @@
 #include "odblib/ImportTool.h"
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestOrderBy.h"
+#include "TestOrderBy.h"
 
 using namespace std;
 using namespace eckit;

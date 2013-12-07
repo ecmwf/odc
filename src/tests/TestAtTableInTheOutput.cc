@@ -18,7 +18,7 @@
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestAtTableInTheOutput.h"
+#include "TestAtTableInTheOutput.h"
 
 using namespace std;
 

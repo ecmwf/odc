@@ -16,7 +16,7 @@
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestWriteCatFiles.h"
+#include "TestWriteCatFiles.h"
 
 namespace odb {
 namespace tool {

@@ -20,7 +20,7 @@ const double EPS =   7e-6;
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestFunctionEqBox.h"
+#include "TestFunctionEqBox.h"
 
 using namespace std;
 using namespace eckit;

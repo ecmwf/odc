@@ -14,7 +14,7 @@
 
 #include "eckit/config/Resource.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestAAAImportODB.h"
+#include "TestAAAImportODB.h"
 
 using namespace eckit;
 using namespace std;

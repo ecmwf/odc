@@ -16,7 +16,7 @@
 #include "odblib/ImportTool.h"
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestIntegerValues.h"
+#include "TestIntegerValues.h"
 
 namespace odb {
 namespace tool {

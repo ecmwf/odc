@@ -3,10 +3,16 @@ configure_file( ODBAPIVersionSHA1.cc.in ODBAPIVersionSHA1.cc @ONLY )
 list( APPEND odblib_src_files
 ODBAPIVersionSHA1.cc
 Array.h
+TestRunner.cc
+TestRunner.h
+TestRunnerApplication.cc
+TestRunnerApplication.h
 BitColumnExpression.cc
 BitColumnExpression.h
 ShiftedBitColumnExpression.cc
 ShiftedBitColumnExpression.h
+TestCase.cc
+TestCase.h
 Codec.cc
 Codec.h
 CodecFactory.h
@@ -354,12 +360,6 @@ TemplateParameters.cc
 TemplateParameters.h
 TemporaryFile.cc
 TemporaryFile.h
-TestCase.cc
-TestCase.h
-TestRunner.cc
-TestRunner.h
-TestRunnerApplication.cc
-TestRunnerApplication.h
 TextReader.cc
 TextReader.h
 TextReaderIterator.cc

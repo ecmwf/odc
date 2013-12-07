@@ -12,17 +12,6 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-//#include <strings.h>
-//#include <iostream>
-
-using namespace std;
-
-//#include "eckit/runtime/Application.h"
-
-//#include "odblib/CommandLineParser.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-
 #include "odblib/CompactTool.h"
 #include "odblib/CompareTool.h"
 #include "odblib/CountTool.h"
@@ -36,6 +25,8 @@ using namespace std;
 #include "odblib/SQLTool.h"
 #include "odblib/SetTool.h"
 #include "odblib/SplitTool.h"
+#include "odblib/Tool.h"
+#include "odblib/ToolFactory.h"
 #include "odblib/XYVTool.h"
 
 namespace odb {

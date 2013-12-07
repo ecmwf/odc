@@ -15,7 +15,7 @@
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestSelectStarAt.h"
+#include "TestSelectStarAt.h"
 
 using namespace std;
 using namespace eckit;

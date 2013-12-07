@@ -17,8 +17,8 @@
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/MockReader.h"
-#include "odb/TestConstIntegerCodec.h"
+#include "MockReader.h"
+#include "TestConstIntegerCodec.h"
 
 using namespace std;
 using namespace eckit;

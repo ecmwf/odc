@@ -16,7 +16,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestSelectDataHandle.h"
+#include "TestSelectDataHandle.h"
 
 using namespace std;
 using namespace eckit;

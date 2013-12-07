@@ -15,7 +15,7 @@
 #include "odblib/ImportTool.h"
 #include "odblib/MetaData.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestMetaDataReader.h"
+#include "TestMetaDataReader.h"
 
 using namespace std;
 using namespace eckit;

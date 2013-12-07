@@ -14,7 +14,7 @@
 
 #include "odblib/FunctionFactory.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestSQLFunctionsInfo.h"
+#include "TestSQLFunctionsInfo.h"
 
 using namespace std;
 using namespace eckit;

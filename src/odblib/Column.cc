@@ -8,10 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include <iostream>
-//#include <map>
-
-using namespace std;
 
 #include "eckit/eckit.h"
 #include "odblib/Column.h"

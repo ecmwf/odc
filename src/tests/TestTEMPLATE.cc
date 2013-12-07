@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 #include "odblib/ToolFactory.h"
-#include "odb/TestTEMPLATE.h"
+#include "TestTEMPLATE.h"
 
 using namespace std;
 using namespace eckit;

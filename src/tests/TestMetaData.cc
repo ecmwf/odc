@@ -15,7 +15,7 @@
 #include "odblib/DataStream.h"
 #include "odblib/MetaData.h"
 #include "odblib/ToolFactory.h"
-#include "odb/TestMetaData.h"
+#include "TestMetaData.h"
 
 using namespace std;
 using namespace eckit;

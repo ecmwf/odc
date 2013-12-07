@@ -20,7 +20,7 @@ const double EPS = 4e-5;
 #include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
-#include "odb/TestFunctionNorm.h"
+#include "TestFunctionNorm.h"
 
 using namespace std;
 using namespace eckit;
