@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, May 2009
 
 #include "odblib/MetaData.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odb/TestStar.h"
 
@@ -33,7 +33,7 @@ TestStar::~TestStar() { }
 ///
 void TestStar::test()
 {
-	const string SELECT = "select *@hdr from \"2000010106.odb\";";
+    const std::string SELECT = "select *@hdr from \"2000010106.odb\";";
 
 	odb::Select oda(SELECT);
 

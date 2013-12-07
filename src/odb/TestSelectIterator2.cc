@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/utils/Timer.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
 #include "odb/TestSelectIterator2.h"

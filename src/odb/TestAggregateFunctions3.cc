@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "odblib/ImportTool.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
 #include "odb/TestAggregateFunctions3.h"

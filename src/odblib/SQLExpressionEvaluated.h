@@ -14,7 +14,6 @@
 #ifndef SQLExpressionEvaluated_H
 #define SQLExpressionEvaluated_H
 
-#include "eckit/exception/Exceptions.h"
 #include "odblib/SQLExpression.h"
 
 namespace odb {
@@ -28,18 +27,18 @@ public:
 
 	// Overriden
 
-	virtual void prepare(SQLSelect&) { NOTIMP; }
-	virtual void cleanup(SQLSelect&) { NOTIMP; }
-	virtual double eval(bool& missing) const { if (missing_) missing = true; return value_; }
-	virtual bool isConstant() const { NOTIMP; /*?*/ return true; }
-	virtual bool isNumber() const { NOTIMP; /**/ return false; }
-	virtual SQLExpression* simplify(bool&) { NOTIMP; return 0; }
-	virtual SQLExpression* clone() const { NOTIMP; return 0; }
-	virtual bool isAggregate() const { NOTIMP; return false; }
+    virtual void prepare(SQLSelect&);
+    virtual void cleanup(SQLSelect&);
+    virtual double eval(bool& missing) const ;
+    virtual bool isConstant() const ;
+    virtual bool isNumber() const ;
+    virtual SQLExpression* simplify(bool&) ;
+    virtual SQLExpression* clone() const;
+    virtual bool isAggregate() const ;
 
-	virtual const odb::sql::type::SQLType* type() const { return type_; }
+    virtual const odb::sql::type::SQLType* type() const ;
 
-	virtual void output(SQLOutput& o) const { type_->output(o, value_, missing_); }
+    virtual void output(SQLOutput& o) const ;
 
 protected:
 	virtual void print(std::ostream&) const;

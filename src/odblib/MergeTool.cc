@@ -11,7 +11,7 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/utils/Timer.h"
 #include "odblib/MergeTool.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/Reader.h"
 #include "odblib/Writer.h"
 

@@ -46,7 +46,7 @@ void TestIntegerValues::test()
 	//Log::info() << fixed;
  //////////////////////////////           ODB from MARS             //////////////////////////////    
 
-	const string fileNameOdb="TestIntegerValues.odb";
+    const std::string fileNameOdb="TestIntegerValues.odb";
 
 	odb::Reader odb(fileNameOdb);
 	odb::Reader::iterator it = odb.begin();

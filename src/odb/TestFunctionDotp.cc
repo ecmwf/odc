@@ -12,12 +12,12 @@
 ///
 /// @author ECMWF, July 2010
 
-#define EPS    4e-5
+const double EPS =     4e-5;
 
 #include <cmath>
 
 #include "eckit/utils/Timer.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
 #include "odb/TestFunctionDotp.h"

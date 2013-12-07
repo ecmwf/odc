@@ -15,7 +15,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "odblib/MetaData.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odb/TestAggregateFunctions.h"
 

@@ -11,8 +11,6 @@
 #include "odblib/DateTime.h"
 #include "odblib/FunctionJULIAN.h"
 
-#define trunc(x) ((x) -fmod((x), 1))
-
 namespace odb {
 namespace sql {
 namespace expression {

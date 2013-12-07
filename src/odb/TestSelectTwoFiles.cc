@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"

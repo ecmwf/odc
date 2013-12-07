@@ -14,7 +14,7 @@
 /// @author Piotr Kuchta, April 2010
 
 #include "eckit/io/FileHandle.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 
 using namespace std;
 using namespace eckit;

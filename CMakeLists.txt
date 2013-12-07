@@ -66,6 +66,7 @@ set( ODB_API_TPLS           eckit )
 
 # source files
 add_subdirectory( src )
+add_subdirectory( tests )
 
 ############################################################################################
 # finalize

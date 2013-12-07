@@ -12,7 +12,7 @@
 ///
 // @author Piotr Kuchta, ECMWF, Oct 2010
 
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odb/TestTextSelect.h"
 

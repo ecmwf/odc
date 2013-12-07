@@ -14,7 +14,7 @@
 
 #include "eckit/io/StdFileHandle.h"
 #include "odblib/ImportTool.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
 #include "odb/TestAggregateFunctions2.h"

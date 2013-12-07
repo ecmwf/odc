@@ -12,12 +12,8 @@
 ///
 /// @author ECMWF, July 2010
 
-//#define RMDI   -2147483647
-//#define NMDI   2147483647
-//#define EPS    7e-6
-
 #include "eckit/utils/Timer.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"
 #include "odb/TestFunctionTypeConversion.h"

@@ -16,7 +16,7 @@
 #include "odblib/FastODA2Request.h"
 #include "odblib/GribCodes.h"
 #include "odblib/ODA2RequestTool.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 
 using namespace std;
 using namespace eckit;

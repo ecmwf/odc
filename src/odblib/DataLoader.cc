@@ -10,7 +10,7 @@
 #include "odblib/DataSetFiller.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/Reader.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/TextReader.h"

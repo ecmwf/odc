@@ -13,7 +13,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
 #include "odblib/ImportTool.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/Writer.h"
 #include "odblib/SQLSelectFactory.h"

@@ -14,7 +14,7 @@
 
 #include "odblib/Comparator.h"
 #include "odblib/MetaData.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/Reader.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/Writer.h"

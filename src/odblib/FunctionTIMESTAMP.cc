@@ -14,8 +14,6 @@
 #include "odblib/FunctionTIMESTAMP.h"
 #include "odblib/MDI.h"
 
-#define trunc(x) ((x) -fmod((x), 1))
-
 namespace odb {
 namespace sql {
 namespace expression {

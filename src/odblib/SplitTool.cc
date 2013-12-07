@@ -13,7 +13,7 @@
 #include "odblib/DispatchingWriter.h"
 #include "odblib/MetaDataReader.h"
 #include "odblib/MetaDataReaderIterator.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/Reader.h"
 #include "odblib/SplitTool.h"
 #include "odblib/Stack.h"

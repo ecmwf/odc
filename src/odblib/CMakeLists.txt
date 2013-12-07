@@ -236,8 +236,8 @@ ODBApplication.cc
 ODBApplication.h
 ODBBehavior.cc
 ODBBehavior.h
-ODBSelect.cc
-ODBSelect.h
+Select.cc
+Select.h
 OrderByExpressions.cc
 OrderByExpressions.h
 ParameterExpression.cc

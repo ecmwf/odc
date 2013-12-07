@@ -24,7 +24,7 @@
 #include "odblib/ODBAPIVersion.h"
 #include "odblib/ODBBehavior.h"
 #include "odblib/odbcapi.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/Reader.h"
 #include "odblib/Writer.h"
 

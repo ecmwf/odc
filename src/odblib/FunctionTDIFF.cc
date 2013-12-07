@@ -12,9 +12,6 @@
 #include "odblib/FunctionTDIFF.h"
 #include "odblib/MDI.h"
 
-#define RMDI   -2147483647
-#define trunc(x) ((x) -fmod((x), 1))
-
 namespace odb {
 namespace sql {
 namespace expression {

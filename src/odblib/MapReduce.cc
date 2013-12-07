@@ -24,7 +24,7 @@
 #include "eckit/utils/Timer.h"
 #include "odblib/MapReduce.h"
 #include "odblib/MetaData.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/SplitTool.h"
 
 using namespace std;

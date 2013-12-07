@@ -15,7 +15,7 @@
 
 #include "odblib/DataStream.h"
 #include "odblib/MetaData.h"
-#include "odblib/ODBSelect.h"
+#include "odblib/Select.h"
 #include "odblib/SelectIterator.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelectFactory.h"
