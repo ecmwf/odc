@@ -14,7 +14,7 @@
 
 //const double EPS =     7e-6
 
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"

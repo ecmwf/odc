@@ -12,8 +12,8 @@
 #include "odblib/DataColumns.h"
 //#include "eckit/exception/Exceptions.h"
 //#include "eckit/log/Log.h"
-//#include "eckit/utils/Timer.h"
-#include "eckit/utils/Tokenizer.h"
+//#include "eckit/log/Timer.h"
+#include "eckit/parser/Tokenizer.h"
 
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLBitfield.h"

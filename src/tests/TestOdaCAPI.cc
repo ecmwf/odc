@@ -11,7 +11,7 @@
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/ColumnType.h"
 #include "odblib/Writer.h"
 #include "UnitTest.h"

@@ -9,7 +9,7 @@
  */
 
 #include "eckit/thread/ThreadSingleton.h"
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/ODADatabase.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLSession.h"

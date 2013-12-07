@@ -15,7 +15,7 @@
 #define ODATranslator_H
 
 #include "eckit/eckit.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/utils/Translator.h"
 #include "eckit/types/Date.h"
 #include "eckit/types/Time.h"
 #include "odblib/StringTool.h"

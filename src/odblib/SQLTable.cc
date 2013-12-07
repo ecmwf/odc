@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/utils/Tokenizer.h"
+#include "eckit/parser/Tokenizer.h"
 #include "odblib/SQLBitColumn.h"
 #include "odblib/SQLColumn.h"
 #include "odblib/SQLDatabase.h"

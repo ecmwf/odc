@@ -10,8 +10,8 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "eckit/utils/StringTools.h"
-#include "eckit/utils/Tokenizer.h"
+#include "eckit/parser/StringTools.h"
+#include "eckit/parser/Tokenizer.h"
 #include "odblib/Header.h"
 #include "odblib/MetaData.h"
 #include "odblib/MetaDataReader.h"

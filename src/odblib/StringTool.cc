@@ -14,9 +14,9 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/FileHandle.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/utils/Translator.h"
 #include "eckit/utils/Regex.h"
-#include "eckit/utils/StringTools.h"
+#include "eckit/parser/StringTools.h"
 #include "odblib/StringTool.h"
 
 using namespace std;

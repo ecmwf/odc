@@ -15,7 +15,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/log/Log.h"
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
 #include "odblib/DataStream.h"

@@ -12,7 +12,7 @@
 /// @author Piotr Kuchta, ECMWF, July 2009
 
 #include "eckit/exception/Exceptions.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/utils/Translator.h"
 #include "odblib/CommandLineParser.h"
 
 namespace odb {

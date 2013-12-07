@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/Select.h"
 #include "odblib/Reader.h"
 

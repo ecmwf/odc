@@ -18,7 +18,7 @@
 #include "eckit/io/PartHandle.h"
 #include "eckit/io/SharedHandle.h"
 #include "eckit/log/Bytes.h"
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/DirectAccess.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/Reader.h"

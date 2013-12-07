@@ -9,7 +9,7 @@
  */
 
 //#include "eckit/log/Log.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/utils/Translator.h"
 
 //#include "odblib/Codec.h"
 //#include "odblib/DataStream.h"

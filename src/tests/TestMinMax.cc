@@ -20,7 +20,7 @@
 # define INT32_MIN		(-INT32_MAX-1)
 #endif
 
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/Reader.h"
 
 #include "odblib/Writer.h"

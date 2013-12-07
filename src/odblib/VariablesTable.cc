@@ -10,7 +10,7 @@
 
 #include "odblib/VariablesTable.h"
 //#include "eckit/compat/StrStream.h"
-//#include "eckit/utils/Tokenizer.h"
+//#include "eckit/parser/Tokenizer.h"
 
 //#include "odblib/SQLAST.h"
 //#include "odblib/SQLBitColumn.h"

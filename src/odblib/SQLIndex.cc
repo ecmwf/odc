@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/utils/Timer.h"
+//#include "eckit/log/Timer.h"
 
 #include "odblib/SQLIndex.h"
 //#include "odblib/SQLColumn.h"

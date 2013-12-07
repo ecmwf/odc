@@ -11,7 +11,7 @@
 //#include <sstream>
 
 #include "eckit/eckit.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/utils/Translator.h"
 #include "odblib/ColumnExpression.h"
 #include "odblib/SQLColumn.h"
 #include "odblib/SQLSelect.h"

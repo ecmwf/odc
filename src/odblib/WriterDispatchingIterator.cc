@@ -25,8 +25,8 @@
 //#include "odblib/WriterBufferingIterator.h"
 #include "odblib/Comparator.h"
 #include "odblib/Reader.h"
-#include "eckit/utils/Timer.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/log/Timer.h"
+#include "eckit/utils/Translator.h"
 
 namespace odb {
 

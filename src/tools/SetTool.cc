@@ -10,7 +10,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "eckit/utils/Tokenizer.h"
+#include "eckit/parser/Tokenizer.h"
 #include "odblib/ConstantSetter.h"
 #include "odblib/Reader.h"
 #include "odblib/Writer.h"

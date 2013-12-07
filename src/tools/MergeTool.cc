@@ -9,7 +9,7 @@
  */
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/Reader.h"
 #include "odblib/Select.h"
 #include "odblib/Writer.h"

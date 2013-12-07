@@ -10,9 +10,9 @@
 
 #include "eckit/eckit.h"
 #include "eckit/log/Log.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/utils/Translator.h"
 #include "eckit/types/Types.h"
-#include "eckit/utils/Tokenizer.h"
+#include "eckit/parser/Tokenizer.h"
 #include "odblib/Decoder.h"
 #include "odblib/SQLBitfield.h"
 #include "odblib/SQLBit.h"

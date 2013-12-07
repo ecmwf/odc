@@ -21,7 +21,7 @@
 #include "eckit/thread/ThreadControler.h"
 #include "eckit/thread/Thread.h"
 #include "eckit/thread/ThreadPool.h"
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/MapReduce.h"
 #include "odblib/MetaData.h"
 #include "odblib/Select.h"

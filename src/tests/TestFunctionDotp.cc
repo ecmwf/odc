@@ -16,7 +16,7 @@ const double EPS =     4e-5;
 
 #include <cmath>
 
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"

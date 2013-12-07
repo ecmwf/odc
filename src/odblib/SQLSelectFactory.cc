@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/parser/Translator.h"
+#include "eckit/utils/Translator.h"
 #include "eckit/thread/ThreadSingleton.h"
 #include "odblib/DispatchingWriter.h"
 #include "odblib/FunctionExpression.h"

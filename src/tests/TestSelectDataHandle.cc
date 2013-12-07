@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2010
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/utils/Timer.h"
+#include "eckit/log/Timer.h"
 #include "odblib/Select.h"
 
 #include "UnitTest.h"

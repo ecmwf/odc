@@ -14,7 +14,7 @@
 /// @author Piotr Kuchta, Oct 2010
 
 #include "odblib/TextReaderIterator.h"
-#include "eckit/utils/StringTools.h"
+#include "eckit/parser/StringTools.h"
 #include "odblib/TextReader.h"
 #include "eckit/types/Types.h"
 #include "odblib/StringTool.h"
