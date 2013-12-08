@@ -3,7 +3,7 @@
 
 #include "odblib/DataColumns.h"
 #include "odblib/DataTable.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 
 using namespace std;
@@ -404,11 +404,4 @@ TEST_FIXTURE(FullPage, SplitFullPage)
 }
 
 
-
-
-
-static void test(){}
-static void setUp(){}
-static void tearDown(){}
-
-TEST_MAIN;
+RUN_ALL_TESTS

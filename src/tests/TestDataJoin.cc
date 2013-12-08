@@ -3,7 +3,7 @@
 
 #include "odblib/DataJoin.h"
 #include "odblib/DataTable.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 
 using namespace std;
@@ -186,11 +186,4 @@ TEST_FIXTURE(InnerJoin, InnerJoinReturnsExpectedValues)
 }
 
 
-
-
-
-static void test(){}
-static void setUp(){}
-static void tearDown(){}
-
-TEST_MAIN;
+RUN_ALL_TESTS

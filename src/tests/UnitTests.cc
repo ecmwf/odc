@@ -28,7 +28,7 @@
 #include "odblib/TextReader.h"
 #include "odblib/TextReaderIterator.h"
 #include "odblib/Writer.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 #include "tools/CountTool.h"
 #include "tools/ImportTool.h"
 #include "tools/SplitTool.h"
@@ -996,4 +996,4 @@ TEST(TextReaderIterator_parseBitfields)
 
 
 
-MANY_TESTS_MAIN;
+RUN_ALL_TESTS;

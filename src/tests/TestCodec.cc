@@ -16,7 +16,7 @@
 #include "odblib/DataStream.h"
 #include "odblib/Codec.h"
 
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -85,4 +85,4 @@ static void tearDown() { delete c; }
 
 static void setUp(){}
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

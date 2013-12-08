@@ -16,7 +16,7 @@
 
 #include "odblib/Tracer.h"
 #include "odblib/Writer.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -73,4 +73,4 @@ static void tearDown() { }
 
 
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

@@ -5,7 +5,7 @@
 #include "odblib/DataColumns.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataTable.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 
 using namespace std;
@@ -37,12 +37,4 @@ TEST_FIXTURE(Fixture, InsertingTablesIncreasesSize)
     CHECK_EQUAL(2u, dataset.tables().size());
 }
 
-
-
-
-
-static void test(){}
-static void setUp(){}
-static void tearDown(){}
-
-TEST_MAIN;
+RUN_ALL_TESTS

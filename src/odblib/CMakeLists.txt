@@ -326,8 +326,6 @@ TReadOnlyMemoryDataHandle.cc
 TReadOnlyMemoryDataHandle.h
 TemplateParameters.cc
 TemplateParameters.h
-TemporaryFile.cc
-TemporaryFile.h
 TextReader.cc
 TextReader.h
 TextReaderIterator.cc

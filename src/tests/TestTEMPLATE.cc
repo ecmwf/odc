@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -34,4 +34,4 @@ static void tearDown() { }
 
 static void setUp(){}
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

@@ -69,6 +69,6 @@ UnitTests
 foreach(t ${TESTS})
 
 ecbuild_add_test(  TARGET ${t}
-                   SOURCES ${t}.cc MockReader.h UnitTest.h
+                   SOURCES ${t}.cc MockReader.h
                    LIBS odbtools Odb ${ECKIT_LIBRARIES} )
 endforeach()

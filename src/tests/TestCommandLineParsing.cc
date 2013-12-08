@@ -14,7 +14,7 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 #include "tools/Tool.h"
 
 using namespace std;
@@ -62,4 +62,4 @@ static void test()
 static void setUp(){}
 static void tearDown(){}
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

@@ -16,7 +16,7 @@
 #include "tools/ImportTool.h"
 #include "odblib/Reader.h"
 
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 
 
@@ -83,4 +83,4 @@ static void test()
 static void tearDown() { }
 
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

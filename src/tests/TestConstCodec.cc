@@ -33,7 +33,7 @@
 #include "odblib/Writer.h"
 #include "odblib/odb_api.h"
 #include "tests/MockReader.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 #include "tools/Tool.h"
 
 using namespace std;
@@ -126,4 +126,4 @@ static void test()
 
 static void tearDown(){}
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

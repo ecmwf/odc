@@ -4,7 +4,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odblib/DataColumns.h"
 #include "odblib/DataRow.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 
 using namespace std;
@@ -159,11 +159,4 @@ TEST(DataRowCanSetStrings)
 }
 
 
-
-
-
-static void test(){}
-static void setUp(){}
-static void tearDown(){}
-
-TEST_MAIN;
+RUN_ALL_TESTS

@@ -20,7 +20,7 @@ const double EPS =     1e-6;
 #include "odblib/Select.h"
 
 #include "odblib/Writer.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 using namespace std;
 using namespace eckit;
@@ -73,4 +73,4 @@ static void test()
 
 
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

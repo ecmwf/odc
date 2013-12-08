@@ -14,7 +14,7 @@
 #include "eckit/log/Timer.h"
 #include "odblib/ColumnType.h"
 #include "odblib/Writer.h"
-#include "tests/UnitTest.h"
+#include "eckit/testing/UnitTest.h"
 
 extern "C" {
 #include "odblib/odbcapi.h"
@@ -261,4 +261,4 @@ static void test(){
 static void setUp(){}
 static void tearDown(){}
 
-TEST_MAIN;
+RUN_SIMPLE_TEST

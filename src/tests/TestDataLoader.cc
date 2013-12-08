@@ -7,14 +7,15 @@
 #include "odblib/DataStream.h"
 #include "odblib/DataTable.h"
 #include "odblib/Reader.h"
-#include "odblib/TemporaryFile.h"
-#include "tests/UnitTest.h"
+#include "eckit/filesystem/TmpFile.h"
+#include "eckit/testing/UnitTest.h"
 
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Writer.h"
 
 using namespace std;
 using namespace odb;
+using namespace eckit;
 
 
 
@@ -24,8 +25,8 @@ struct Fixture
 {
     Fixture();
 
-    TemporaryFile input;
-    TemporaryFile output;
+    TmpFile input;
+    TmpFile output;
 };
 
 const int PARENT_ROWS_COUNT = 5; 
@@ -219,12 +220,4 @@ TEST_FIXTURE(FilledDataSet, DataSaverOutputContainsExpectedRows)
     }
 }
 
-
-
-
-
-static void test(){}
-static void setUp(){}
-static void tearDown(){}
-
-TEST_MAIN;
+RUN_ALL_TESTS
