@@ -1,4 +1,5 @@
 #include "eckit/runtime/Tool.h"
+#include "eckit/log/Log.h"
 
 class UnitTest : public eckit::Tool {
 
@@ -47,16 +48,31 @@ class OneTest {
     void (*t_)();
 public:
     OneTest(const char* n, void (*t)()): n_(n), t_(t), next_(one_tests) { one_tests =  this; }
+    void test() {
+        if(next_) next_->test();
+        eckit::Log::info() << "Test " << n_ << std::endl;
+        t_();
+    }
 };
 
+class OneTestApp : public UnitTest {
+
+    OneTest* t_;
+    virtual void test()     { t_->test(); }
+
+
+public:
+    OneTestApp(int argc, char** argv, OneTest *t): UnitTest(argc, argv), t_(t) {}
+
+};
 
 #define TEST(name) static void name(); static OneTest test##name(#name, &name); static void name() 
 
 //=========================================
 
 
-
+#define CHECK_EQUAL(a, b) ASSERT((a) == (b))
 
 #define _JUST_ONE_TEST(t,u,d) int main(int c,char** v) { JustTest x(c,v,&t,&u,&d); x.start(); return 0; }
 #define TEST_MAIN _JUST_ONE_TEST(test,setUp,tearDown)
-#define MANY_TESTS_MAIN _JUST_ONE_TEST(test,setUp,tearDown)
+#define MANY_TESTS_MAIN int main(int c,char** v) { OneTestApp x(c,v, one_tests); x.start(); return 0; }
