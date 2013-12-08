@@ -26,7 +26,7 @@ static void test()
 	char data2[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 	bzero(data2, sizeof(data2));
 
-    InMemoryDataHandle h;
+    odb::InMemoryDataHandle h;
     h.openForWrite(0);
 
 	h.write(data, sizeof(data));
@@ -43,8 +43,6 @@ static void test()
 }
 
 
-
-static void test(){}
 static void setUp(){}
 static void tearDown(){}
 

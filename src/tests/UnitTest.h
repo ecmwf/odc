@@ -66,13 +66,27 @@ public:
 
 };
 
-#define TEST(name) static void name(); static OneTest test##name(#name, &name); static void name() 
+#define TEST(name) \
+    static void name(); \
+    static OneTest call##name(#name, &name); \
+    static void name()
+
+#define TEST_FIXTURE(type, name) \
+    struct Test##type##name : public type {  void test(); }; \
+    static void test##type##name() { Test##type##name().test(); } \
+    static OneTest call##type##name("test"#type#name, &test##type##name); \
+    void Test##type##name::test()
+
+
 
 //=========================================
 
 
 #define CHECK_EQUAL(a, b) ASSERT((a) == (b))
+#define CHECK(expected) ASSERT(expected)
+#define CHECK_EQUAL(expected, actual) ASSERT((expected) == (actual))
 
 #define _JUST_ONE_TEST(t,u,d) int main(int c,char** v) { JustTest x(c,v,&t,&u,&d); x.start(); return 0; }
 #define TEST_MAIN _JUST_ONE_TEST(test,setUp,tearDown)
 #define MANY_TESTS_MAIN int main(int c,char** v) { OneTestApp x(c,v, one_tests); x.start(); return 0; }
+#define CHECK_ARRAY_EQUAL(expected, actual, count) /**/

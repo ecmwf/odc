@@ -18,7 +18,7 @@ using namespace odb;
 
 
 
-typedef odb::DataStream<odb::SameByteOrder, odb::PrettyFastInMemoryDataHandle> DataStream;
+typedef odb::DataStream<odb::SameByteOrder, odb::PrettyFastInMemoryDataHandle> DS;
 
 struct Fixture
 {
@@ -39,10 +39,10 @@ Fixture::Fixture()
     odb::Writer<> writer(input);
     odb::Writer<>::iterator it = writer.begin();
 
-    it->columns().addColumn<DataStream>("parent_id@parent", "INTEGER");
-    it->columns().addColumn<DataStream>("child.offset@parent", "INTEGER");
-    it->columns().addColumn<DataStream>("child.len@parent", "INTEGER");
-    it->columns().addColumn<DataStream>("child_id@child", "INTEGER");
+    it->columns().addColumn<DS>("parent_id@parent", "INTEGER");
+    it->columns().addColumn<DS>("child.offset@parent", "INTEGER");
+    it->columns().addColumn<DS>("child.len@parent", "INTEGER");
+    it->columns().addColumn<DS>("child_id@child", "INTEGER");
     it->writeHeader();
 
     for (int ordinal = 0; ordinal < TOTAL_ROWS_COUNT; ++ordinal, ++it)
