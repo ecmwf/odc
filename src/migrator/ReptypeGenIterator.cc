@@ -15,12 +15,13 @@
 
 #include <strings.h>
 
-#include "eckit/utils/Tokenizer.h"
-#include "eckit/parser/Translator.h"
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/parser/StringTools.h"
+#include "eckit/utils/Translator.h"
 #include "eckit/types/Types.h"
 
 #include "odblib/odb_api.h"
-#include "odblib/Tool.h"
+#include "tools/Tool.h"
 
 extern "C" {
 #include "odbdump.h"
@@ -35,7 +36,7 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
-ostream& operator<<(std::ostream& s, const ReptypeTable& m)
+std::ostream& operator<<(std::ostream& s, const ReptypeTable& m)
 {
 	s << "{";
 	for (ReptypeTable::const_iterator it = m.begin(); it != m.end(); ++it)
@@ -72,7 +73,7 @@ codetype@hdr
 Anne. 
 */
 
-vector<std::string> ReptypeTableConfig::columns_ = vector<std::string>();
+std::vector<std::string> ReptypeTableConfig::columns_ = std::vector<std::string>();
 ReptypeTable ReptypeTableConfig::reptypeTable_ = ReptypeTable();
 
 void ReptypeTableConfig::load(const PathName& fileName)
@@ -81,16 +82,16 @@ void ReptypeTableConfig::load(const PathName& fileName)
 	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << std::endl;
 	Log::debug() << "ReptypeTableConfig::load(fileName = '" << fileName << "')" << "'" << s << "'" << std::endl;
 
-    vector<std::string> lines = StringTools::split("\n", s);
+    std::vector<std::string> lines = StringTools::split("\n", s);
 
 	size_t i = 0;
 	while (lines[i] == "")
 		++i;
 
-	vector<std::string> firstLine = StringTools::split(":", lines[i]);
+    std::vector<std::string> firstLine = StringTools::split(":", lines[i]);
 	ASSERT(firstLine[0] == "reptype");
 
-	vector<std::string> columnNames = StringTools::split(",", firstLine[1]);
+    std::vector<std::string> columnNames = StringTools::split(",", firstLine[1]);
 	std::for_each(columnNames.begin(), columnNames.end(), Tool::trimInPlace);
 
 	columns_.insert(columns_.end(), columnNames.begin(), columnNames.end());
@@ -98,7 +99,7 @@ void ReptypeTableConfig::load(const PathName& fileName)
 
     for (; i < lines.size(); ++i)
     {
-        vector<std::string> lr;
+        std::vector<std::string> lr;
         Tokenizer(":")(lines[i], lr);
 
         // Skip empty lines.
@@ -108,7 +109,7 @@ void ReptypeTableConfig::load(const PathName& fileName)
 
 		int reptype_value = Translator<std::string, int>()(lr[0]);
 
-		vector<std::string> rvalues = StringTools::split(",", lr[1]);
+        std::vector<std::string> rvalues = StringTools::split(",", lr[1]);
 		//Log::debug() << "ReptypeTableConfig::load: rvalues = " << rvalues << std::endl;
 
 		ASSERT("Number of values must be equal to number of column names (first line)"
@@ -147,8 +148,8 @@ ReptypeGenIterator<ITERATOR, CONFIG>::ReptypeGenIterator(const PathName& db, con
 	data_ = new double[md.size()];
 	reptypeIndex_ = md.columnIndex("reptype");
 
-	const vector<std::string>& columnNames = CONFIG::columns();
-	for (vector<std::string>::const_iterator i = columnNames.begin(); i != columnNames.end(); ++i)
+	const std::vector<std::string>& columnNames = CONFIG::columns();
+	for (std::vector<std::string>::const_iterator i = columnNames.begin(); i != columnNames.end(); ++i)
 	{
 		std::string name = *i;
 
@@ -196,7 +197,7 @@ bool ReptypeGenIterator<ITERATOR, CONFIG>::next()
 	{
 		double* trueData = iterator_.data();
 
-		copy(trueData, trueData + iterator_.columns().size(), data_);
+        std::copy(trueData, trueData + iterator_.columns().size(), data_);
 
 		for (size_t i = 0; i < indices_.size(); ++i)
 			values_[i] = data_[indices_[i]];

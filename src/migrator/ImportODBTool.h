@@ -17,7 +17,8 @@
 class ODBIterator;
 class CommandLineParser;
 
-#include "OldODBReader.h"
+#include "tools/Tool.h"
+#include "migrator/OldODBReader.h"
 
 namespace odb {
 namespace tool {

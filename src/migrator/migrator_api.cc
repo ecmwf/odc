@@ -10,7 +10,7 @@
 
 #include "odblib/odb_api.h"
 #include "odblib/odbcapi.h"
-#include "odblib/Tool.h"
+#include "tools/Tool.h"
 
 #include "ImportODBTool.h"
 

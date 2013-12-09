@@ -15,11 +15,16 @@
 
 #include <map>
 
+#include "eckit/filesystem/PathName.h"
+#include "eckit/config/Resource.h"
+#include "eckit/parser/StringTools.h"
 #include "odblib/SQLDatabase.h"
+#include "odblib/SQLParser.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/StringTool.h"
 #include "tools/Tool.h"
 #include "odblib/odb_api.h"
+#include "odblib/MetaData.h"
 
 #include "migrator/ODBIterator.h"
 
@@ -110,7 +115,7 @@ void ODBIterator::createColumns()
 	int nci = 0;
 	ci_ = (colinfo_t *) odbdump_create_colinfo(odbHandle_, &nci); 
 	ASSERT(nci == noOfColumns_);
-    map<std::string, std::string> truenames;
+    std::map<std::string, std::string> truenames;
 	for (int i = 0; i < noOfColumns_; i++)
 	{
 		colinfo_t *pci = &((colinfo_t *) ci_)[i];

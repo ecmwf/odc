@@ -66,9 +66,19 @@ TestWriteCatFiles
 UnitTests
 )
 
+set(EXTRA_INCLUDES "")
+set(EXTRA_LIBS "")
+
+if( ENABLE_MIGRATOR )
+	list(APPEND TESTS TestImportODB)
+	set(EXTRA_INCLUDES ${ODB_INCLUDE_DIRS})
+	set(EXTRA_LIBS Odbmigrator)
+endif()
+
 foreach(t ${TESTS})
 
 ecbuild_add_test(  TARGET ${t}
                    SOURCES ${t}.cc MockReader.h
-                   LIBS odbtools Odb ${ECKIT_LIBRARIES} )
+				   INCLUDES   ${EXTRA_INCLUDES}
+				   LIBS ${EXTRA_LIBS} odbtools Odb ${ECKIT_LIBRARIES} )
 endforeach()

@@ -9,14 +9,14 @@
  */
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/filesystem/FileHandle.h"
+#include "eckit/io/FileHandle.h"
 
 #include "odblib/odb_api.h"
 
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/ToolRunnerApplication.h"
-#include "odblib/TestRunnerApplication.h"
+#include "tools/Tool.h"
+#include "tools/ToolFactory.h"
+#include "tools/ToolRunnerApplication.h"
+//#include "odblib/TestRunnerApplication.h"
 
 #include "migrator/ReptypeGenIterator.h"
 #include "migrator/ODBIterator.h"
