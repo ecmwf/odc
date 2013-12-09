@@ -157,7 +157,7 @@ public:
 
 	PyObject* getitem(const char* s)
 	{
-		string name(s);
+        std::string name(s);
 		size_t i = 0;
 		if (iter_->columns().hasColumn(name))
 			return getitem(iter_->columns().columnIndex(name));

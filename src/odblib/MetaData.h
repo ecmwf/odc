@@ -71,7 +71,7 @@ public:
 #ifdef SWIGPYTHON
 	std::string __str__()
 	{
-		stringstream s;
+        std::stringstream s;
 		s << "[";
 		for (size_t i = 0; i < size(); ++i)
 		{

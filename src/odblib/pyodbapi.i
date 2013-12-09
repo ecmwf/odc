@@ -3,8 +3,7 @@
 %include "std_vector.i"
 %{
 #define SWIG_FILE_WITH_INIT
-
-#include "odblib/odb_api.h"
+#include "odblib/pyodbapi.h"
 
 %}
 
@@ -53,7 +52,7 @@ using namespace std;
 
 using namespace eckit;
 
-%include "odblib/ODBSelect.h"
+%include "odblib/Select.h"
 %include "odblib/SQLType.h"
 
 %include "odblib/ColumnType.h"
@@ -70,9 +69,9 @@ using namespace eckit;
 using namespace odb;
 
 %template(MetaDataBase) std::vector<Column*>;
-%include "MetaData.h"
+%include "odblib/MetaData.h"
 
-%include "RowsIterator.h"
+%include "odblib/RowsIterator.h"
 #include "odblib/Header.h"
 
 %include "exception.i"
@@ -85,18 +84,18 @@ using namespace odb;
 %template(SelectIteratorRow) odb::Row_<odb::SelectIterator,odb::Select,const double,odb::IteratorProxy<odb::SelectIterator,odb::Select,const double> >;
 
 #include "odblib/TemplateParameters.h"
-%include "Reader.h"
-%include "TextReader.h"
-%include "ODBSelect.h"
-%include "Writer.h"
-%include "WriterBufferingIterator.h"
-%include "WriterDispatchingIterator.h"
-%include "DispatchingWriter.h"
-%include "DispatchingWriter.h"
-%include "ReaderIterator.h"
-%include "TextReaderIterator.h"
+%include "odblib/Reader.h"
+%include "odblib/TextReader.h"
+%include "odblib/Select.h"
+%include "odblib/Writer.h"
+%include "odblib/WriterBufferingIterator.h"
+%include "odblib/WriterDispatchingIterator.h"
+%include "odblib/DispatchingWriter.h"
+%include "odblib/DispatchingWriter.h"
+%include "odblib/ReaderIterator.h"
+%include "odblib/TextReaderIterator.h"
 #include "odblib/RowsIterator.h"
-%include "SelectIterator.h"
+%include "odblib/SelectIterator.h"
 #include "odblib/FixedSizeWriterIterator.h"
 
 #include "odblib/SQLType.h"
