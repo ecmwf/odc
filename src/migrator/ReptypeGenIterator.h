@@ -20,10 +20,10 @@ namespace tool {
 
 class ODBIterator;
 
-typedef vector<size_t> Indices;
-typedef vector<double> Values;
+typedef std::vector<size_t> Indices;
+typedef std::vector<double> Values;
 
-typedef map<Values, int> ReptypeTableBase;
+typedef std::map<Values, int> ReptypeTableBase;
 
 class ReptypeTable : public ReptypeTableBase
 {
@@ -36,12 +36,12 @@ public:
 	template <typename I>
 	static void addColumns(I begin, I end) { columns_.insert(columns_.end(), begin, end); }
 
-	static const vector<std::string> columns() { return columns_; }
+    static const std::vector<std::string> columns() { return columns_; }
 	static const ReptypeTable& reptypeTable() { return reptypeTable_; }
 
 	static void reptypeTable(const ReptypeTable &rt) { reptypeTable_ = rt; }
 private:
-	static vector<std::string> columns_;
+    static std::vector<std::string> columns_;
 	static ReptypeTable reptypeTable_;
 };
 

@@ -18,7 +18,7 @@
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/StringTool.h"
-#include "odblib/Tool.h"
+#include "tools/Tool.h"
 #include "odblib/odb_api.h"
 
 #include "migrator/ODBIterator.h"

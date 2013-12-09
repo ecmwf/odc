@@ -11,11 +11,18 @@
 #ifndef ODBIterator_H
 #define ODBIterator_H
 
+#include "eckit/filesystem/PathName.h"
+#include "odblib/RowsIterator.h"
+#include "odblib/SQLInteractiveSession.h"
+
 namespace eckit { class PathName; }
 
 namespace odb { namespace sql { class SchemaAnalyzer; class SQLInteractiveSession; } }
 
 namespace odb {
+
+class MetaData;
+
 namespace tool {
 
 class ODBIterator : public odb::RowsReaderIterator {

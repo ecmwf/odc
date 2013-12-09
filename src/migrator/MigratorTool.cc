@@ -17,12 +17,12 @@
 #include <iostream>
 #include <fstream>
 
-#include "eckit/utils/StringTools.h"
+#include "eckit/parser//StringTools.h"
 
 #include "odblib/odb_api.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/Tool.h"
-#include "odblib/TestRunnerApplication.h"
+#include "tools/ToolFactory.h"
+#include "tools/Tool.h"
+//#include "odblib/TestRunnerApplication.h"
 #include "odblib/MDI.h"
 
 #include "migrator/ODBIterator.h"
@@ -37,9 +37,9 @@ namespace odb {
 namespace tool {
 
 
-int gdb(const vector<std::string>& params)
+int gdb(const std::vector<std::string>& params)
 {
-    cout << "gdb: params: " << params << std::endl;
+    std::cout << "gdb: params: " << params << std::endl;
 	str cmd(params[0]);
 	str args;
 	for (size_t i = 1; i < params.size(); ++i)
@@ -65,9 +65,9 @@ int gdb(const vector<std::string>& params)
 }
 
 // valgrind --log-file=v.log --show-reachable=yes --leak-check=full ./oda test 
-int valgrind(const vector<std::string>& params)
+int valgrind(const std::vector<std::string>& params)
 {
-    cout << "valgrind: params: " << params << std::endl;
+    std::cout << "valgrind: params: " << params << std::endl;
 	str cmd(params[0]);
 	str args;
 	for (size_t i = 1; i < params.size(); ++i)
@@ -88,7 +88,7 @@ void MigratorTool::run()
 	if (parameters(1) == "g"
         || parameters(1) == "vg") {
 
-        vector<std::string> params;
+        std::vector<std::string> params;
         for (size_t i(0); i < parameters().size(); ++i)
             if (i != 1)
                 params.push_back(parameters()[i]);
@@ -101,7 +101,7 @@ void MigratorTool::run()
     }
 	if (parameters(1) == "test")
 	{
-		odb::tool::test::TestRunnerApplication(argc(), argv()).start();
+		//odb::tool::test::TestRunnerApplication(argc(), argv()).start();
 		return; // TODO: Retrieve a status from the test runner
 	}
 

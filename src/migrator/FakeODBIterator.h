@@ -13,6 +13,11 @@
 
 #ifndef FakeODBIterator_H
 #define FakeODBIterator_H
+
+
+#include <eckit/eckit.h>
+#include "odblib/MetaData.h"
+
 namespace eckit { class PathName; }
 
 namespace odb {
@@ -20,8 +25,8 @@ namespace tool {
 
 class ODBIterator;
 
-typedef pair<std::string, std::string> Assignment;
-typedef vector<Assignment> AssignmentsBase;
+typedef std::pair<std::string, std::string> Assignment;
+typedef std::vector<Assignment> AssignmentsBase;
 
 struct Assignments : public AssignmentsBase {
 	Assignments(const std::string&);
@@ -40,7 +45,7 @@ struct ConstParameter {
 class FakeODBIterator : public odb::RowsReaderIterator
 {
 public:
-	struct ConstParameters : public vector<ConstParameter>
+    struct ConstParameters : public std::vector<ConstParameter>
 	{
 		// Not thread safe.
 		static ConstParameters& instance() { return instance_; }

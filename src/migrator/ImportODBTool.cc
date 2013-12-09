@@ -9,18 +9,22 @@
  */
 
 #include "eckit/filesystem/LocalPathName.h"
+#include "eckit/io/FileHandle.h"
+
 #include "eckit/log/BigNum.h"
+#include "eckit/log/Timer.h"
 
 #include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "odblib/ToolFactory.h"
+#include "tools/Tool.h"
+#include "tools/ToolFactory.h"
 #include "odblib/Comparator.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SchemaAnalyzer.h"
 #include "odblib/SQLInteractiveSession.h"
-#include "odblib/CountTool.h"
-#include "odblib/ODA2RequestTool.h"
+#include "tools/CountTool.h"
+#include "tools/ODA2RequestTool.h"
 #include "odblib/SchemaAnalyzer.h"
+#include "odblib/DispatchingWriter.h"
 
 #include "migrator/ImportODBTool.h"
 #include "migrator/ReptypeGenIterator.h"
@@ -53,7 +57,7 @@ ImportODBTool<IN>::ImportODBTool (const CommandLineParser& clp)
 //ToolFactory<ImportODBTool> importODB("importodb");
 
 template <typename IN>
-pair<unsigned long long, const vector<eckit::PathName> > ImportODBTool<IN>::importDispatching(eckit::PathName db, const std::string& sql, const std::string& dumpFile)
+std::pair<unsigned long long, const std::vector<eckit::PathName> > ImportODBTool<IN>::importDispatching(eckit::PathName db, const std::string& sql, const std::string& dumpFile)
 {    
     using namespace eckit;
 
@@ -68,8 +72,8 @@ pair<unsigned long long, const vector<eckit::PathName> > ImportODBTool<IN>::impo
 
 	unsigned long long inRowsNumber = saveData<>(w, db, sql);
 
-	vector<eckit::PathName> files = (**w).getFiles();
-	return make_pair(inRowsNumber, files);
+    std::vector<eckit::PathName> files = (**w).getFiles();
+    return std::make_pair(inRowsNumber, files);
 }
 
 template <typename IN>
@@ -92,7 +96,7 @@ void ImportODBTool<IN>::validate(eckit::PathName db, const std::string& sql, con
 
 
 template <typename IN>
-void ImportODBTool<IN>::validateRowsNumber(unsigned long long inRowsNumber, const vector<eckit::PathName>& files)
+void ImportODBTool<IN>::validateRowsNumber(unsigned long long inRowsNumber, const std::vector<eckit::PathName>& files)
 {
     using namespace eckit;
     
@@ -120,7 +124,7 @@ void ImportODBTool<IN>::validateRowsNumber(unsigned long long inRowsNumber, cons
 
 
 template <typename IN>
-void ImportODBTool<IN>::archiveFiles(const vector<eckit::PathName>& files)
+void ImportODBTool<IN>::archiveFiles(const std::vector<eckit::PathName>& files)
 {
     using namespace eckit;
     
@@ -129,7 +133,7 @@ void ImportODBTool<IN>::archiveFiles(const vector<eckit::PathName>& files)
 		PathName fn = files[i];
 		ODA2RequestTool oda2request;
 		str request = oda2request.generateMarsRequest(fn);
-		Log::info() << "ImportODBTool::archiveFiles: request to archive '" << fn << "': " << endl << request << std::endl;
+        Log::info() << "ImportODBTool::archiveFiles: request to archive '" << fn << "': " << std::endl << request << std::endl;
 		
 		PathName requestFile = fn + ".archive.request";
 		FileHandle rf(requestFile);
@@ -177,7 +181,7 @@ void ImportODBTool<IN>::run()
 		DispatchResult r = importDispatching(db, sql, dumpFile);
 
 		unsigned long long importedRowsNumber = r.first;
-		const vector<eckit::PathName>& outFiles = r.second;
+        const std::vector<eckit::PathName>& outFiles = r.second;
 
 		Timer verification("Verification");
 		validateRowsNumber(importedRowsNumber, outFiles);

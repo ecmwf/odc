@@ -16,8 +16,9 @@
 #include <strings.h>
 
 #include "odblib/odb_api.h"
-#include "odblib/Tool.h"
-#include "eckit/utils/Tokenizer.h"
+#include "tools/Tool.h"
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Translator.h"
 
 extern "C" {
 #include "odbdump.h"

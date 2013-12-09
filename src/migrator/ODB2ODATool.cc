@@ -16,11 +16,11 @@
 #include <iostream>
 #include <fstream>
 
-#include "eckit/utils/StringTools.h"
+#include "eckit/parser/StringTools.h"
 
 #include "odblib/odb_api.h"
-#include "odblib/ToolFactory.h"
-#include "odblib/Tool.h"
+#include "tools/ToolFactory.h"
+#include "tools/Tool.h"
 #include "odblib/MDI.h"
 
 #include "migrator/ODBIterator.h"
@@ -48,10 +48,10 @@ ODB2ODATool::ODB2ODATool (const CommandLineParser &clp)
 void ODB2ODATool::resetMDI(const std::string& s)
 {
     typedef eckit::StringTools S;
-    vector<std::string> columns(S::split(",", s));
+    std::vector<std::string> columns(S::split(",", s));
     for (size_t i = 0; i < columns.size(); ++i)
     {
-        vector<std::string> ass(S::split(":", columns[i]));
+        std::vector<std::string> ass(S::split(":", columns[i]));
 
         if (ass.size() != 2)
             throw UserError("Error parsing option -mdi");
@@ -74,17 +74,17 @@ void ODB2ODATool::run()
 {
 	if (parameters().size() < 2 || parameters().size() > 4)
 	{
-		cerr << "Usage:" << endl
+        std::cerr << "Usage:" << std::endl
 			<< "	" << parameters(0)
 
-            << " [<options>] <odb_database> [<file-with-select-statement-defining-dump> [<output.odb>]]" << endl
+            << " [<options>] <odb_database> [<file-with-select-statement-defining-dump> [<output.odb>]]" << std::endl
 
-            << "Options: " << endl << endl
+            << "Options: " << std::endl << std::endl
 
-			<< "\t[-genreptype <list-of-columns>]" << endl
-			<< "\t[-reptypecfg <reptype-generation-config-file>]" << endl
-			<< "\t[-addcolumns <list-of-assignments>]" << endl
-            << "\t[-mdi <type1:MDI1,type2:MDI2,...>]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << endl
+            << "\t[-genreptype <list-of-columns>]" << std::endl
+            << "\t[-reptypecfg <reptype-generation-config-file>]" << std::endl
+            << "\t[-addcolumns <list-of-assignments>]" << std::endl
+            << "\t[-mdi <type1:MDI1,type2:MDI2,...>]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << std::endl
 
 			<< std::endl;
 		return;
@@ -106,7 +106,7 @@ void ODB2ODATool::run()
 	ASSERT("Only one of -genreptype and -reptypecfg can be choosen at a time." && !(genReptype && reptypeCfg));
 
 	if (genReptype) {
-		vector<std::string> columns = StringTools::split(",", optionArgument<std::string>("-genreptype", ""));
+        std::vector<std::string> columns = StringTools::split(",", optionArgument<std::string>("-genreptype", ""));
 		ReptypeTableConfig::addColumns(columns.begin(), columns.end());
 	}
 
