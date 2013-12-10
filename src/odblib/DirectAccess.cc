@@ -44,33 +44,33 @@ void DirectAccessBlock::unload() {
 }
 
 
-DirectAccess::DirectAccess(DataHandle &dh, size_t maxBlocks)
+DirectAccess::DirectAccess(DataHandle &dh, size_t maxBlocksSize)
     : HandleHolder(dh),
       current_(new DirectAccessIterator(*this)),
       row_(current_),
-      maxBlocks_(maxBlocks),
-      usedBlocks_(0)
+      maxBlocksSize_(maxBlocksSize),
+      usedBlocksSize_(0)
 {
     initBlocks();
 }
 
-DirectAccess::DirectAccess(DataHandle *dh, size_t maxBlocks)
+DirectAccess::DirectAccess(DataHandle *dh, size_t maxBlocksSize)
     : HandleHolder(dh),
       current_(new DirectAccessIterator(*this)),
       row_(current_),
-      maxBlocks_(maxBlocks),
-      usedBlocks_(0)
+      maxBlocksSize_(maxBlocksSize),
+      usedBlocksSize_(0)
 {
     initBlocks();
 }
 
-DirectAccess::DirectAccess(const std::string& path, size_t maxBlocks)
+DirectAccess::DirectAccess(const std::string& path, size_t maxBlocksSize)
     : HandleHolder(new FileHandle(path)),
       path_(path),
       current_(new DirectAccessIterator(*this)),
       row_(current_),
-      maxBlocks_(maxBlocks),
-      usedBlocks_(0)
+      maxBlocksSize_(maxBlocksSize),
+      usedBlocksSize_(0)
 {
     handle().openForRead();
     initBlocks();
@@ -122,7 +122,7 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
     if(!b->handle()) {
 
 
-        while(usedBlocks_ >= maxBlocks_) {
+        while(usedBlocksSize_ >= maxBlocksSize_) {
             // Unload blocks
 
 
@@ -131,26 +131,27 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
             for(std::deque<DirectAccessBlock>::iterator j = blocks_.begin();
                 j != blocks_.end(); ++j) {
-                    DirectAccessBlock& u = *j;
-                    if(u.handle()) {
-                        if(t == 0 || u.last() < t) {
-                            k = j;
-                            t = u.last();
-                        }
+                DirectAccessBlock& u = *j;
+                if(u.handle()) {
+                    if(t == 0 || u.last() < t) {
+                        k = j;
+                        t = u.last();
                     }
+                }
             }
 
             ASSERT(t);
+            usedBlocksSize_ -= (*k).size();
             (*k).unload();
-            std::cout << "UNLOAD " << (*k).n() << " maxBlocks " << maxBlocks_ << std::endl;
-            usedBlocks_--;
+            //std::cout << "UNLOAD " << (*k).n() << " maxBlocksSize " << maxBlocksSize_ << std::endl;
+
         }
 
-        usedBlocks_++;
 
-        std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
-                  <<  eckit::Bytes(b->length()) << std::endl;
-        std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
+
+        //std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
+                  //<<  eckit::Bytes(b->length()) << std::endl;
+        //std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
         b->handle(new PartHandle(new SharedHandle(handle()), b->offset(), b->length()));
 
 
@@ -160,9 +161,6 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
     if(!b->data())
     {
-
-
-
 
 
         Reader in(*b->handle());
@@ -175,7 +173,9 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
         size_t width = md.size();
         size_t height = md.rowsNumber();
 
-        b->data(new double[width * height]);
+        b->size(width * height);
+        usedBlocksSize_  += b->size();
+        b->data(new double[b->size()]);
         b->metaData(md.clone());
 
         //eckit::Timer t("Read part");
