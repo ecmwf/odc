@@ -136,11 +136,11 @@ bool ReaderIterator::next()
 		return false; 
 
 	uint16_t c = 0;
-	unsigned long bytesRead = 0;
+     long bytesRead = 0;
 
 	if ( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
 	{
-		if ( (bytesRead = f->read(&c, 2)) == 0)
+        if ( (bytesRead = f->read(&c, 2)) <= 0)
 			return ! (noMore_ = true);
 		ASSERT(bytesRead == 2);
 
@@ -163,7 +163,7 @@ bool ReaderIterator::next()
 			if (! readBuffer(dataSize))
 				return ! (noMore_ = true);
 
-			if( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
+            if( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
 				return ! (noMore_ = true);
 			ASSERT(bytesRead == 2);
 

@@ -110,9 +110,9 @@ public:
     typedef IteratorProxy<DirectAccessIterator, DirectAccess, double> iterator;
     typedef iterator::Row row;
 
-    DirectAccess(eckit::DataHandle &, size_t maxBlocksSize = 1024*1024*64);
-    DirectAccess(eckit::DataHandle *, size_t maxBlocksSize = 1024*1024*64);
-    DirectAccess(const std::string& path, size_t maxBlocksSize = 1024*1024*64);
+    DirectAccess(eckit::DataHandle &, const std::string &statement = "", size_t maxBlocksSize = 1024*1024*64);
+    DirectAccess(eckit::DataHandle *, const std::string &statement = "", size_t maxBlocksSize = 1024*1024*64);
+    DirectAccess(const std::string& path, const std::string &statement = "", size_t maxBlocksSize = 1024*1024*64);
 
     virtual ~DirectAccess();
 
@@ -142,6 +142,9 @@ private:
     std::vector<std::pair<DirectAccessBlock*,size_t> > index_;
 
 
+    template<class Source>
+    void readPart(DirectAccessBlock& b, Source& s, Reader& rd);
+
     //const eckit::PathName path_;
     const std::string path_;
 
@@ -153,6 +156,10 @@ private:
 
     size_t maxBlocksSize_;
     size_t usedBlocksSize_;
+
+    std::string statement_;
+
+    unsigned long long seq_;
 
 
 

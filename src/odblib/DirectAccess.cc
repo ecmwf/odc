@@ -21,10 +21,13 @@
 #include "eckit/io/PartHandle.h"
 #include "eckit/io/SharedHandle.h"
 #include "eckit/log/Bytes.h"
+#include "eckit/log/BigNum.h"
+
 #include "eckit/log/Timer.h"
 #include "odblib/DirectAccess.h"
 #include "odblib/MetaDataReaderIterator.h"
 #include "odblib/Reader.h"
+#include "odblib/Select.h"
 
 using namespace std;
 using namespace eckit;
@@ -44,33 +47,39 @@ void DirectAccessBlock::unload() {
 }
 
 
-DirectAccess::DirectAccess(DataHandle &dh, size_t maxBlocksSize)
+DirectAccess::DirectAccess(DataHandle &dh, const std::string& statement, size_t maxBlocksSize)
     : HandleHolder(dh),
+      statement_(statement),
       current_(new DirectAccessIterator(*this)),
       row_(current_),
       maxBlocksSize_(maxBlocksSize),
-      usedBlocksSize_(0)
+      usedBlocksSize_(0),
+      seq_(0)
 {
     initBlocks();
 }
 
-DirectAccess::DirectAccess(DataHandle *dh, size_t maxBlocksSize)
+DirectAccess::DirectAccess(DataHandle *dh, const std::string& statement, size_t maxBlocksSize)
     : HandleHolder(dh),
+      statement_(statement),
       current_(new DirectAccessIterator(*this)),
       row_(current_),
       maxBlocksSize_(maxBlocksSize),
-      usedBlocksSize_(0)
+      usedBlocksSize_(0),
+      seq_(0)
 {
     initBlocks();
 }
 
-DirectAccess::DirectAccess(const std::string& path, size_t maxBlocksSize)
+DirectAccess::DirectAccess(const std::string& path, const string &statement, size_t maxBlocksSize)
     : HandleHolder(new FileHandle(path)),
+      statement_(statement),
       path_(path),
       current_(new DirectAccessIterator(*this)),
       row_(current_),
       maxBlocksSize_(maxBlocksSize),
-      usedBlocksSize_(0)
+      usedBlocksSize_(0),
+      seq_(0)
 {
     handle().openForRead();
     initBlocks();
@@ -112,9 +121,44 @@ void DirectAccess::initBlocks()
 
 }
 
+
+template<class Source>
+void DirectAccess::readPart(DirectAccessBlock& b,Source& in, Reader& rd)
+{
+    typename Source::iterator it = in.begin();
+    typename Source::iterator end = in.end();
+
+    MetaData& md = it->columns();
+
+    std::cout << "SIZE " << md.size() << std::endl;
+    std::cout <<  md << std::endl;
+
+    size_t width = md.size();
+
+    Reader::iterator ri = rd.begin();
+    MetaData& mr = it->columns();
+    std::cout << "ROWS " << BigNum(mr.rowsNumber()) << std::endl;
+    size_t height = mr.rowsNumber();
+
+    b.size(width * height);
+    usedBlocksSize_  += b.size();
+    b.data(new double[b.size()]);
+    b.metaData(md.clone());
+
+    //eckit::Timer t("Read part");
+    size_t n = 0;
+    size_t off = 0;
+    for(; it != end; ++it) {
+        const double* d = it->data();
+        std::copy(d, d+width, b.data() + off);
+        n++;
+        off += width;
+    }
+    ASSERT(n == height); // This will happen if there is a 'where' clause
+}
+
 DirectAccess::row* DirectAccess::operator[](size_t n)
 {
-    struct timeval t;
 
     ASSERT(n < index_.size());
     std::pair<DirectAccessBlock*, size_t>& e = index_[n];
@@ -150,7 +194,7 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
 
         //std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
-                  //<<  eckit::Bytes(b->length()) << std::endl;
+        //<<  eckit::Bytes(b->length()) << std::endl;
         //std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
         b->handle(new PartHandle(new SharedHandle(handle()), b->offset(), b->length()));
 
@@ -162,38 +206,20 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
     if(!b->data())
     {
 
-
-        Reader in(*b->handle());
-        Reader::iterator it = in.begin();
-        Reader::iterator end = in.end();
-        MetaData& md = it->columns();
-        //std::cout << "SIZE " << md.size() << std::endl;
-        //std::cout << "ROWS " << md.rowsNumber() << std::endl;
-
-        size_t width = md.size();
-        size_t height = md.rowsNumber();
-
-        b->size(width * height);
-        usedBlocksSize_  += b->size();
-        b->data(new double[b->size()]);
-        b->metaData(md.clone());
-
-        //eckit::Timer t("Read part");
-        size_t n = 0;
-        size_t off = 0;
-        for(; it != end; ++it) {
-            const double* d = it->data();
-            std::copy(d, d+width, b->data() + off);
-            n++;
-            off += width;
+        if(statement_.length()) {
+            Reader rd(*b->handle());
+            Select in(statement_, *b->handle());
+            readPart(*b, in, rd);
         }
-        ASSERT(n == height);
+        else
+        {
+            Reader in(*b->handle());
+            readPart(*b, in, in);
+        }
 
     }
 
-    ::gettimeofday(&t,0);
-
-    b->last(t.tv_sec * 1000000 + t.tv_usec) ;
+    b->last(++seq_) ;
 
     idx_   = e.second;
     block_ = b;
