@@ -122,12 +122,6 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
     if(!b->handle()) {
 
 
-        std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
-                  <<  eckit::Bytes(b->length()) << std::endl;
-        std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
-        b->handle(new PartHandle(new SharedHandle(handle()), b->offset(), b->length()));
-
-
         while(usedBlocks_ >= maxBlocks_) {
             // Unload blocks
 
@@ -148,11 +142,18 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
             ASSERT(t);
             (*k).unload();
-            std::cout << "UNLOAD " << (*k).n() << std::endl;
+            std::cout << "UNLOAD " << (*k).n() << " maxBlocks " << maxBlocks_ << std::endl;
             usedBlocks_--;
         }
 
         usedBlocks_++;
+
+        std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
+                  <<  eckit::Bytes(b->length()) << std::endl;
+        std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
+        b->handle(new PartHandle(new SharedHandle(handle()), b->offset(), b->length()));
+
+
 
 
     }
