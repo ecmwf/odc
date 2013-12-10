@@ -106,6 +106,9 @@ public:
     iterator __iter__() { return iterator(createReadIterator()); }
 #endif
 
+    size_t size() const { return index_.size(); }
+    size_t count() const { return blocks_.size(); }
+
 private:
     // No copy allowed
     DirectAccess(const DirectAccess&);

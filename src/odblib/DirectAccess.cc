@@ -115,8 +115,8 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
         Reader::iterator it = in.begin();
         Reader::iterator end = in.end();
         MetaData& md = it->columns();
-        std::cout << "SIZE " << md.size() << std::endl;
-        std::cout << "ROWS " << md.rowsNumber() << std::endl;
+        //std::cout << "SIZE " << md.size() << std::endl;
+        //std::cout << "ROWS " << md.rowsNumber() << std::endl;
 
         size_t width = md.size();
         size_t height = md.rowsNumber();
@@ -124,7 +124,7 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
         b->data(new double[width * height]);
         b->metaData(md.clone());
 
-        eckit::Timer t("Read part");
+        //eckit::Timer t("Read part");
         size_t n = 0;
         size_t off = 0;
         for(; it != end; ++it) {
