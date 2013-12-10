@@ -45,11 +45,15 @@ class DirectAccessBlock {
     eckit::DataHandle* handle_;
     double* data_;
     MetaData* metaData_;
-
+    unsigned long long last_;
+    unsigned long long unloads_;
+unsigned long long loads_;
 
 public:
     DirectAccessBlock(size_t n, size_t rows, const eckit::Offset& offset, const eckit::Length& length):
-        n_(n), rows_(rows), offset_(offset), length_(length), handle_(0), data_(0), metaData_(0) {}
+        n_(n), rows_(rows), offset_(offset),
+        length_(length), handle_(0), data_(0), metaData_(0), loads_(0), unloads_(0) {}
+
     ~DirectAccessBlock();
 
     size_t n() const { return n_; }
@@ -61,7 +65,10 @@ public:
     void handle(eckit::DataHandle *h) {
         ASSERT(h); ASSERT(!handle_);
         handle_ = h;
+        loads_++;
     }
+
+    void unload();
 
     double* data() { return data_; }
 
@@ -77,6 +84,14 @@ public:
         metaData_ = h;
     }
 
+    unsigned long long last() const { return last_; }
+
+    void last(unsigned long long h) {
+        last_ = h;
+    }
+
+    unsigned long long loads() const { return loads_; }
+    unsigned long long unloads() const { return unloads_; }
 
 };
 
@@ -88,9 +103,9 @@ public:
     typedef IteratorProxy<DirectAccessIterator, DirectAccess, double> iterator;
     typedef iterator::Row row;
 
-    DirectAccess(eckit::DataHandle &);
-    DirectAccess(eckit::DataHandle *);
-    DirectAccess(const std::string& path);
+    DirectAccess(eckit::DataHandle &, size_t maxBlocks = 256);
+    DirectAccess(eckit::DataHandle *, size_t maxBlocks);
+    DirectAccess(const std::string& path, size_t maxBlocks);
 
     virtual ~DirectAccess();
 
@@ -128,6 +143,9 @@ private:
 
     DirectAccessBlock* block_;
     size_t idx_;
+
+    size_t maxBlocks_;
+    size_t usedBlocks_;
 
 
 
