@@ -230,11 +230,13 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
 DirectAccess::~DirectAccess()
 {
+    /*
     std::cout << "BLOCKS : " << blocks_.size() << std::endl;
     for(std::deque<DirectAccessBlock>::iterator j = blocks_.begin(); j != blocks_.end(); ++j) {
         DirectAccessBlock& b = *j;
         std::cout << "BLOCK " << b.n() << " loads: " << b.loads() << " unloads: " << b.unloads() << std::endl;
     }
+    */
 }
 
 
