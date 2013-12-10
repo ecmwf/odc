@@ -8,29 +8,27 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/filesystem/LocalPathName.h"
-#include "eckit/io/FileHandle.h"
-
-#include "eckit/log/BigNum.h"
-#include "eckit/log/Timer.h"
-
-#include "odblib/odb_api.h"
-#include "tools/Tool.h"
-#include "tools/ToolFactory.h"
-#include "odblib/Comparator.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "tools/CountTool.h"
-#include "tools/ODA2RequestTool.h"
-#include "odblib/SchemaAnalyzer.h"
-#include "odblib/DispatchingWriter.h"
-
-#include "migrator/ImportODBTool.h"
-#include "migrator/ReptypeGenIterator.h"
-
 #include <iostream>
 #include <fstream>
+
+#include "eckit/filesystem/LocalPathName.h"
+#include "eckit/io/FileHandle.h"
+#include "eckit/log/BigNum.h"
+#include "eckit/log/Timer.h"
+#include "migrator/ImportODBTool.h"
+#include "migrator/ReptypeGenIterator.h"
+#include "odblib/Comparator.h"
+#include "odblib/DispatchingWriter.h"
+#include "odblib/SQLDatabase.h"
+#include "odblib/SQLInteractiveSession.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/SchemaAnalyzer.h"
+#include "odblib/odb_api.h"
+#include "tools/CountTool.h"
+#include "tools/ODA2RequestTool.h"
+#include "tools/Tool.h"
+#include "tools/ToolFactory.h"
+
 
 extern "C" {
 #include "odbdump.h"

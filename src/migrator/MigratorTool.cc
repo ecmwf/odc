@@ -18,20 +18,18 @@
 #include <fstream>
 
 #include "eckit/parser//StringTools.h"
-
-#include "odblib/odb_api.h"
-#include "tools/ToolFactory.h"
-#include "tools/Tool.h"
-//#include "odblib/TestRunnerApplication.h"
-#include "odblib/MDI.h"
-
-#include "migrator/ODBIterator.h"
 #include "migrator/FakeODBIterator.h"
-#include "migrator/ReptypeGenIterator.h"
 #include "migrator/ImportODBTool.h"
-#include "migrator/ODB2ODATool.h"
 #include "migrator/MigratorTool.h"
+#include "migrator/ODB2ODATool.h"
+#include "migrator/ODBIterator.h"
 #include "migrator/OldODBReader.h"
+#include "migrator/ReptypeGenIterator.h"
+#include "odblib/MDI.h"
+#include "odblib/odb_api.h"
+#include "tools/Tool.h"
+#include "tools/ToolFactory.h"
+
 
 namespace odb {
 namespace tool {

@@ -12,13 +12,16 @@
 #define ImportODBTool_H
 
 #include <eckit/eckit.h>
+
 #include "eckit/filesystem/PathName.h"
+#include "migrator/OldODBReader.h"
+#include "tools/Tool.h"
+
 
 class ODBIterator;
 class CommandLineParser;
 
-#include "tools/Tool.h"
-#include "migrator/OldODBReader.h"
+
 
 namespace odb {
 namespace tool {

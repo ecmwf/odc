@@ -8,13 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
+#include "migrator/ImportODBTool.h"
+#include "migrator/migrator_api.h"
 #include "odblib/odb_api.h"
 #include "odblib/odbcapi.h"
 #include "tools/Tool.h"
 
-#include "ImportODBTool.h"
-
-#include "migrator_api.h"
 
 namespace odb {
 namespace tool {

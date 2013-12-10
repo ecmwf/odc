@@ -15,17 +15,17 @@
 
 #include <strings.h>
 
-#include "odblib/odb_api.h"
-#include "tools/Tool.h"
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/utils/Translator.h"
-
 extern "C" {
 #include "odbdump.h"
 }
 
-#include "ODBIterator.h"
-#include "FakeODBIterator.h"
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Translator.h"
+#include "migrator/FakeODBIterator.h"
+#include "migrator/ODBIterator.h"
+#include "odblib/odb_api.h"
+#include "tools/Tool.h"
+
 
 using namespace eckit;
 

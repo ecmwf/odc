@@ -10,19 +10,16 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/FileHandle.h"
-
+#include "migrator/FakeODBIterator.h"
+#include "migrator/MigratorTool.h"
+#include "migrator/ODB2ODATool.h"
+#include "migrator/ODBIterator.h"
+#include "migrator/ReptypeGenIterator.h"
 #include "odblib/odb_api.h"
-
 #include "tools/Tool.h"
 #include "tools/ToolFactory.h"
 #include "tools/ToolRunnerApplication.h"
-//#include "odblib/TestRunnerApplication.h"
 
-#include "migrator/ReptypeGenIterator.h"
-#include "migrator/ODBIterator.h"
-#include "migrator/FakeODBIterator.h"
-#include "migrator/ODB2ODATool.h"
-#include "migrator/MigratorTool.h"
 
 using namespace std;
 using namespace odb::tool;

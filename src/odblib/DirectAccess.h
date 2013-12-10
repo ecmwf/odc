@@ -23,6 +23,8 @@
 
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
+#include "eckit/io/HandleHolder.h"
+
 #include "odblib/DirectAccessIterator.h"
 #include "odblib/IteratorProxy.h"
 
@@ -79,7 +81,7 @@ public:
 };
 
 
-class DirectAccess
+class DirectAccess : public eckit::HandleHolder
 {
 public:
 
@@ -87,6 +89,7 @@ public:
     typedef iterator::Row row;
 
     DirectAccess(eckit::DataHandle &);
+    DirectAccess(eckit::DataHandle *);
     DirectAccess(const std::string& path);
 
     virtual ~DirectAccess();
@@ -94,7 +97,7 @@ public:
 
     row* operator[](size_t);
 
-    eckit::DataHandle* dataHandle() { return handle_; }
+    eckit::DataHandle* dataHandle() { return &handle(); }
     // For C API
     DirectAccessIterator* createReadIterator(const eckit::PathName&);
     DirectAccessIterator* createReadIterator();
@@ -114,8 +117,6 @@ private:
     std::vector<std::pair<DirectAccessBlock*,size_t> > index_;
 
 
-    eckit::DataHandle* handle_;
-    bool deleteDataHandle_;
     //const eckit::PathName path_;
     const std::string path_;
 

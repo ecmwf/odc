@@ -35,30 +35,35 @@ DirectAccessBlock::~DirectAccessBlock()
 }
 
 DirectAccess::DirectAccess(DataHandle &dh)
-    : handle_(&dh),
-      deleteDataHandle_(false),
+    : HandleHolder(dh),
       current_(new DirectAccessIterator(*this)),
       row_(current_)
 {
     initBlocks();
 }
 
+DirectAccess::DirectAccess(DataHandle *dh)
+    : HandleHolder(dh),
+      current_(new DirectAccessIterator(*this)),
+      row_(current_)
+{
+    initBlocks();
+}
 
 DirectAccess::DirectAccess(const std::string& path)
-    : handle_(new FileHandle(path)),
-      deleteDataHandle_(true),
+    : HandleHolder(new FileHandle(path)),
       path_(path),
       current_(new DirectAccessIterator(*this)),
       row_(current_)
 {
-    handle_->openForRead();
+    handle().openForRead();
     initBlocks();
 }
 
 void DirectAccess::initBlocks()
 {
     eckit::Timer timer("DirectAccessIterator::initBlocks");
-    IteratorProxy<MetaDataReaderIterator, DirectAccessIterator, const double> it(new MetaDataReaderIterator(*handle_, true));
+    IteratorProxy<MetaDataReaderIterator, DirectAccessIterator, const double> it(new MetaDataReaderIterator(handle(), true));
     IteratorProxy<MetaDataReaderIterator, DirectAccessIterator, const double> end(0);
 
     unsigned long long n = 0;
@@ -100,7 +105,7 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
         std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
                   <<  eckit::Bytes(b->length()) << std::endl;
         std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
-        b->handle(new PartHandle(new SharedHandle(*handle_), b->offset(), b->length()));
+        b->handle(new PartHandle(new SharedHandle(handle()), b->offset(), b->length()));
     }
 
     if(!b->data())
@@ -141,11 +146,6 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
 DirectAccess::~DirectAccess()
 {
-    if (handle_ && deleteDataHandle_)
-    {
-        handle_->close();
-        delete handle_;
-    }
     std::cout << "BLOCKS : " << blocks_.size() << std::endl;
 }
 

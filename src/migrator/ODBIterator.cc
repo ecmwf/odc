@@ -15,18 +15,18 @@
 
 #include <map>
 
-#include "eckit/filesystem/PathName.h"
 #include "eckit/config/Resource.h"
+#include "eckit/filesystem/PathName.h"
 #include "eckit/parser/StringTools.h"
+#include "migrator/ODBIterator.h"
+#include "odblib/MetaData.h"
 #include "odblib/SQLDatabase.h"
 #include "odblib/SQLParser.h"
 #include "odblib/SQLSelectFactory.h"
 #include "odblib/StringTool.h"
-#include "tools/Tool.h"
 #include "odblib/odb_api.h"
-#include "odblib/MetaData.h"
+#include "tools/Tool.h"
 
-#include "migrator/ODBIterator.h"
 
 namespace odb { namespace sql { class SQLInteractiveSession; } }
 

@@ -15,21 +15,20 @@
 
 #include <strings.h>
 
-#include "eckit/parser/Tokenizer.h"
-#include "eckit/parser/StringTools.h"
-#include "eckit/utils/Translator.h"
-#include "eckit/types/Types.h"
-
-#include "odblib/odb_api.h"
-#include "tools/Tool.h"
-
 extern "C" {
 #include "odbdump.h"
 }
 
-#include "migrator/ODBIterator.h"
+#include "eckit/parser/StringTools.h"
+#include "eckit/parser/Tokenizer.h"
+#include "eckit/types/Types.h"
+#include "eckit/utils/Translator.h"
 #include "migrator/FakeODBIterator.h"
+#include "migrator/ODBIterator.h"
 #include "migrator/ReptypeGenIterator.h"
+#include "odblib/odb_api.h"
+#include "tools/Tool.h"
+
 
 using namespace eckit;
 

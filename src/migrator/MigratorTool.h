@@ -11,7 +11,7 @@
 #ifndef MigratorTool_H
 #define MigratorTool_H
 
-
+#include "tools/Tool.h"
 
 namespace odb {
 namespace tool {

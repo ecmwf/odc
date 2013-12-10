@@ -11,8 +11,8 @@
 #ifndef OldODBReader_H
 #define OldODBReader_H
 
-#include "TSQLReader.h"
-#include "ODBIterator.h"
+#include "migrator/TSQLReader.h"
+#include "migrator/ODBIterator.h"
 
 namespace odb {
 namespace tool {
