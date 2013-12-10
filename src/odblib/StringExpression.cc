@@ -47,7 +47,8 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 {
     std::ostream& L(Log::info());
 
-	Log::info() << "StringExpression::expandStars: name_: '"  << name_ << "', value_: '" << value_ << "'" << std::endl;
+    //TODO: if(verbose_) {...}
+    //Log::info() << "StringExpression::expandStars: name_: '"  << name_ << "', value_: '" << value_ << "'" << std::endl;
 
 	if (! StringTool::isColumnRegex(name_))
 	{

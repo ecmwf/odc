@@ -432,8 +432,9 @@ void SQLSelect::postExecute()
 	for(expression::Expressions::iterator c = results_.begin(); c != results_.end() ; ++c)
 		(*c)->cleanup(*this);
 
-	Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << std::endl;
-	Log::info() << "Skips : " << BigNum(skips_) << std::endl;
+    //TODO: if(verbose_) {...}
+    //Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << std::endl;
+    //Log::info() << "Skips : " << BigNum(skips_) << std::endl;
 
 	reset();
 }

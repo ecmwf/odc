@@ -143,7 +143,7 @@ private:
 
 
     template<class Source>
-    void readPart(DirectAccessBlock& b, Source& s, Reader& rd);
+    void readPart(DirectAccessBlock& b, Source& s, size_t height);
 
     //const eckit::PathName path_;
     const std::string path_;

@@ -104,7 +104,7 @@ void DirectAccess::initBlocks()
                                             ));
     }
 
-    std::cout << "Rows " << n << endl;
+    std::cout << "Rows " << BigNum(n) << endl;
     eckit::Timer t("DirectAccessIterator::initBlocks (index)");
 
     ASSERT(size_t(n) == n);
@@ -123,22 +123,19 @@ void DirectAccess::initBlocks()
 
 
 template<class Source>
-void DirectAccess::readPart(DirectAccessBlock& b,Source& in, Reader& rd)
+void DirectAccess::readPart(DirectAccessBlock& b, Source& in, size_t height)
 {
     typename Source::iterator it = in.begin();
     typename Source::iterator end = in.end();
 
     MetaData& md = it->columns();
 
-    std::cout << "SIZE " << md.size() << std::endl;
-    std::cout <<  md << std::endl;
+    //std::cout << "SIZE " << md.size() << std::endl;
+    //std::cout <<  md << std::endl;
 
     size_t width = md.size();
 
-    Reader::iterator ri = rd.begin();
-    MetaData& mr = it->columns();
-    std::cout << "ROWS " << BigNum(mr.rowsNumber()) << std::endl;
-    size_t height = mr.rowsNumber();
+
 
     b.size(width * height);
     usedBlocksSize_  += b.size();
@@ -199,22 +196,28 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
         b->handle(new PartHandle(new SharedHandle(handle()), b->offset(), b->length()));
 
 
-
-
     }
 
     if(!b->data())
     {
+        size_t height = 0;
+        {
+            Reader in(*b->handle());
+            Reader::iterator it = in.begin();
+            MetaData& md = it->columns();
+            //std::cout << "ROWS " << BigNum(md.rowsNumber()) << std::endl;
+            height = md.rowsNumber();
+            b->handle()->rewind();
+        }
 
         if(statement_.length()) {
-            Reader rd(*b->handle());
             Select in(statement_, *b->handle());
-            readPart(*b, in, rd);
+            readPart(*b, in, height);
         }
         else
         {
             Reader in(*b->handle());
-            readPart(*b, in, in);
+            readPart(*b, in, height);
         }
 
     }

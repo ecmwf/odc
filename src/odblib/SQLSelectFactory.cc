@@ -168,7 +168,9 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	Expressions group_by,
 	std::pair<Expressions,std::vector<bool> > order_by)
 {
-    std::ostream& L(Log::info());
+    //TODO: if(verbose_) {...}
+    std::ostream& L(Log::debug());
+    //std::ostream& L(Log::info());
 
 	if (where) L << "SQLSelectFactory::create: where = " << *where << std::endl;
 
