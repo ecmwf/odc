@@ -123,7 +123,7 @@ void DirectAccess::initBlocks()
 
 
 template<class Source>
-void DirectAccess::readPart(DirectAccessBlock& b, Source& in, size_t height)
+void DirectAccess::readPart(DirectAccessBlock& b, Source& in)
 {
     typename Source::iterator it = in.begin();
     typename Source::iterator end = in.end();
@@ -134,7 +134,7 @@ void DirectAccess::readPart(DirectAccessBlock& b, Source& in, size_t height)
     //std::cout <<  md << std::endl;
 
     size_t width = md.size();
-
+    size_t height = b.rows();
 
 
     b.size(width * height);
@@ -200,24 +200,14 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
     if(!b->data())
     {
-        size_t height = 0;
-        {
-            Reader in(*b->handle());
-            Reader::iterator it = in.begin();
-            MetaData& md = it->columns();
-            //std::cout << "ROWS " << BigNum(md.rowsNumber()) << std::endl;
-            height = md.rowsNumber();
-            b->handle()->rewind();
-        }
-
         if(statement_.length()) {
             Select in(statement_, *b->handle());
-            readPart(*b, in, height);
+            readPart(*b, in);
         }
         else
         {
             Reader in(*b->handle());
-            readPart(*b, in, height);
+            readPart(*b, in);
         }
 
     }
@@ -233,13 +223,14 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
 DirectAccess::~DirectAccess()
 {
-    /*
+
     std::cout << "BLOCKS : " << blocks_.size() << std::endl;
     for(std::deque<DirectAccessBlock>::iterator j = blocks_.begin(); j != blocks_.end(); ++j) {
         DirectAccessBlock& b = *j;
-        std::cout << "BLOCK " << b.n() << " loads: " << b.loads() << " unloads: " << b.unloads() << std::endl;
+        if(b.loads())
+            std::cout << "BLOCK " << b.n() << " loads: " << b.loads() << " unloads: " << b.unloads() << std::endl;
     }
-    */
+
 }
 
 
