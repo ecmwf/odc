@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include <locale>         // std::locale, std::isdigit
 #include <stdexcept>
 
 #include "eckit/eckit.h"

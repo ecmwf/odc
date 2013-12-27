@@ -11,6 +11,7 @@
 #ifndef Codec_H
 #define Codec_H
 
+#include <strings.h> // for bzero
 #include <limits>
 
 #include "odblib/CodecFactory.h"

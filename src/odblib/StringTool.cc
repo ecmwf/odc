@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include <strings.h> // for bzero
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/utils/Translator.h"
