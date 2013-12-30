@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include <strings.h>
+
 #include "eckit/io/DataHandle.h"
 #include "odblib/DataStream.h"
 #include "odblib/Codec.h"

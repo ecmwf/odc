@@ -8,12 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
+#include <strings.h>
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/parser/Tokenizer.h"
+
 #include "odblib/ConstantSetter.h"
 #include "odblib/Reader.h"
 #include "odblib/Writer.h"
+
 #include "tools/SetTool.h"
 
 using namespace eckit;

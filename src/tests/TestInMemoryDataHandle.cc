@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include <strings.h>
+
 #include "odblib/InMemoryDataHandle.h"
 
 #include "eckit/testing/UnitTest.h"
