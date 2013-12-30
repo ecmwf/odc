@@ -12,14 +12,6 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#ifndef INT32_MAX
-# define INT32_MAX		(2147483647)
-#endif
-
-#ifndef INT32_MIN
-# define INT32_MIN		(-INT32_MAX-1)
-#endif
-
 #include "eckit/log/Timer.h"
 #include "odblib/Reader.h"
 
@@ -30,6 +22,13 @@ using namespace std;
 using namespace eckit;
 using namespace odb;
 
+#ifndef INT32_MAX
+# define INT32_MAX		(2147483647)
+#endif
+
+#ifndef INT32_MIN
+# define INT32_MIN		(-INT32_MAX-1)
+#endif
 
 const string SELECT  = "select * from \"test.odb\";";
 
