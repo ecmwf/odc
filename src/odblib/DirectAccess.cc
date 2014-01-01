@@ -138,6 +138,8 @@ void DirectAccess::readPart(DirectAccessBlock& b, Source& in)
 
 
     b.size(width * height);
+    b.width(width);
+
     usedBlocksSize_  += b.size();
     b.data(new double[b.size()]);
     b.metaData(md.clone());
@@ -150,6 +152,11 @@ void DirectAccess::readPart(DirectAccessBlock& b, Source& in)
         std::copy(d, d+width, b.data() + off);
         n++;
         off += width;
+/*
+        if(n <5) {
+            std::cout << "++++";
+            for(size_t p = 0; p < width; p++) std::cout << " - " << d[p]; std::cout << std::endl;
+        }*/
     }
     ASSERT(n == height); // This will happen if there is a 'where' clause
 }
@@ -188,11 +195,11 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
 
         }
 
-
-
-        //std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
-        //<<  eckit::Bytes(b->length()) << std::endl;
-        //std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
+        /*
+        std::cout << "LOADING block " << b->n() << " at offset " << eckit::Bytes(b->offset()) << ", length "
+                  <<  eckit::Bytes(b->length()) << std::endl;
+        std::cout << "INDEX is " << n << " offset in block is " << e.second << std::endl;
+        */
         b->handle(new PartHandle(new SharedHandle(handle()), b->offset(), b->length()));
 
 
@@ -213,8 +220,16 @@ DirectAccess::row* DirectAccess::operator[](size_t n)
     }
 
     b->last(++seq_) ;
+    //std::cout << " ==== n = " << n << " idx " << e.second << std::endl;
 
-    idx_   = e.second;
+/*
+    {
+        const double* d = b->data() + e.second;
+        std::cout << "****";
+        for(size_t p = 0; p < 10; p++) std::cout << " - " << d[p]; std::cout << std::endl;
+    }*/
+
+    idx_   = e.second * b->width();
     block_ = b;
     return &(*current_);
 

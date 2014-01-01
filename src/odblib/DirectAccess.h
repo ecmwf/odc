@@ -49,11 +49,12 @@ class DirectAccessBlock {
     unsigned long long unloads_;
     unsigned long long loads_;
     size_t size_;
+    size_t width_;
 
 public:
     DirectAccessBlock(size_t n, size_t rows, const eckit::Offset& offset, const eckit::Length& length):
         n_(n), rows_(rows), offset_(offset),
-        length_(length), handle_(0), data_(0), metaData_(0), loads_(0), unloads_(0), size_(0) {}
+        length_(length), handle_(0), data_(0), metaData_(0), loads_(0), unloads_(0), size_(0), width_(0) {}
 
     ~DirectAccessBlock();
 
@@ -95,6 +96,12 @@ public:
 
     void size(size_t h) {
         size_ = h;
+    }
+
+    size_t width() const { return width_; }
+
+    void width(size_t h) {
+        width_ = h;
     }
 
     unsigned long long loads() const { return loads_; }
