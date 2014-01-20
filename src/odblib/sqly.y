@@ -46,6 +46,7 @@ int yylex();
 //int yylex(YYSTYPE*, void*);
 //int yylex ( YYSTYPE * lvalp, YYLTYPE * llocp, yyscan_t scanner );
 //int yydebug;
+extern "C" int isatty(int);
 #endif
 
 Expressions emptyExpressionList;
