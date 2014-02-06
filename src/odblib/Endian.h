@@ -14,6 +14,7 @@
 #ifndef Endian_H
 #define Endian_H
 
+#include "odb_api_config.h"
 
 namespace odb {
 
@@ -39,7 +40,7 @@ template<class T> const int Swap<T>::last = sizeof(T) - 1;
 class Endian {
 public:
 
-#ifdef linux
+#ifdef EC_LITTLE_ENDIAN
 	template<class T> static T transform(T x)  { return Swap<T>()(x); }
 #else
 	template<class T> static T transform(T x)  { return x; }
