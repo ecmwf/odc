@@ -244,6 +244,13 @@ void WriterBufferingIterator::flush()
 {
 	if (nextRowInBuffer_ == rowsBuffer_)
 		return;
+    
+
+    ///////////////////
+    //cout << "WriterBufferingIterator::flush(): sleeping in process " << getpid() <<  endl;
+    //sleep(20);
+
+    ///////////////////
 	
 	setOptimalCodecs<DataStream<SameByteOrder, FastInMemoryDataHandle> >();
 

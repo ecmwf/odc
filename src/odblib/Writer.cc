@@ -26,7 +26,7 @@ using namespace std;
 #include "eclib/DataHandle.h"
 #include "eclib/Exceptions.h"
 #include "eclib/PathName.h"
-
+#include "eclib/FileDescHandle.h"
 
 #include "odblib/Codec.h"
 #include "odblib/Column.h"
@@ -76,7 +76,14 @@ Writer<ITERATOR>::Writer(const eclib::PathName path)
   rowsBufferSize_(eclib::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
   openDataHandle_(true),
   deleteDataHandle_(true)
-{} 
+{
+    if (path_ == "/dev/stdout" || path_ == "stdout")
+    {
+        eclib::Log::info() << "Writing to stdout" << endl;
+        dataHandle_ = new eclib::FileDescHandle(1);
+        openDataHandle_ = false;
+    }
+} 
 
 template <typename ITERATOR>
 Writer<ITERATOR>::Writer(eclib::DataHandle *dh, bool openDataHandle, bool deleteDataHandle)
@@ -121,7 +128,7 @@ template <typename ITERATOR>
 typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 {
 	eclib::DataHandle *dh = 0;
-	if (string(path_).size())
+	if (dataHandle_ == 0)
     {
 		dh = ODBAPISettings::instance().writeToFile(path_, eclib::Length(0), false);
     }

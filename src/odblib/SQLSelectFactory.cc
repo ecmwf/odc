@@ -223,8 +223,8 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	TemplateParameters::parse(outputFile, templateParameters);
 	if (templateParameters.size() == 0)
 	{
-		Writer<> dump(outputFile);
-		SQLOutput *out = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<Writer<>::iterator>(dump.begin());
+		Writer<> writer(outputFile);
+		SQLOutput *out = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<Writer<>::iterator>(writer.begin());
 
 		if(distinct) { out = new SQLDistinctOutput(out); }
 		if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
@@ -233,8 +233,8 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	else
 	{
 		// TODO? make the constant  (maxOpenFiles) passed to DispatchingWriter configurable
-		DispatchingWriter dump(outputFile, order_by.first.size() ? 1 : 100);
-		SQLOutput *out = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<DispatchingWriter::iterator>(dump.begin());
+		DispatchingWriter writer(outputFile, order_by.first.size() ? 1 : 100);
+		SQLOutput *out = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<DispatchingWriter::iterator>(writer.begin());
 
 		if(distinct)        { out = new SQLDistinctOutput(out); }
 		if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }

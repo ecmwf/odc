@@ -9,6 +9,7 @@
  */
 
 #include "eclib/PartFileHandle.h"
+#include "eclib/FileDescHandle.h"
 #include "odblib/odb_api.h"
 #include "odblib/ToolFactory.h"
 #include "odblib/SQLSelectFactory.h"
@@ -28,6 +29,7 @@ SQLTool::SQLTool(int argc,char **argv)
 {
 	registerOptionWithArgument("-o");
 	registerOptionWithArgument("-i");
+	registerOptionWithArgument("-I");
 	registerOptionWithArgument("-delimiter");
 	registerOptionWithArgument("-f"); // output format 
 	registerOptionWithArgument("-offset"); 
@@ -38,10 +40,10 @@ SQLTool::SQLTool(int argc,char **argv)
 	delimiter_ = optionArgument("-delimiter", string("\t"));
 
 	if ((inputFile_ = optionArgument("-i", string(""))) == "-")
-		inputFile_ = "/dev/tty";
+		inputFile_ = "/dev/stdin";
 
 	if ((outputFile_ = optionArgument("-o", string(""))) == "-")
-		outputFile_ = "/dev/tty";
+		outputFile_ = "/dev/stdout";
 
 	outputFormat_ = optionArgument("-f", string("default"));
 
@@ -68,6 +70,7 @@ void SQLTool::run()
 
 	string sql(StringTool::isSelectStatement(params[0])
 				? StringTools::join(" ",  params) + ";"
+                // FIXME:
 				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
 	auto_ptr<ofstream> foutPtr(optionIsSet("-o")
 								? new ofstream(optionArgument("-o", string("")).c_str())
@@ -102,7 +105,12 @@ void SQLTool::runSQL(const string& sql, const eclib::PathName& inputFile, SQLSes
 		PartFileHandle fh(inputFile, offset, length); 
 		fh.openForRead();
 		parser.parseString(sql, &fh, config);
-	} else {
+	} else if (inputFile == "/dev/stdin" || inputFile == "stdin") {
+        Log::info() << "Reading from standard input" << endl;
+		FileDescHandle fh(0);
+		fh.openForRead();
+		parser.parseString(sql, &fh, config);
+    } else {
 		FileHandle fh(inputFile);
 		fh.openForRead();
 		parser.parseString(sql, &fh, config);
