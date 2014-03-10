@@ -1,6 +1,7 @@
 // Classes user by swig
 
-#include <eckit/eckit.h>
+#include "eckit/eckit.h"
+
 #include "odblib/ODBAPIVersion.h"
 #include "odblib/Column.h"
 #include "odblib/IteratorProxy.h"

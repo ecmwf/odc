@@ -56,7 +56,7 @@ endif()
 ###############################################################################
 # contents
 
-set_directory_properties( PROPERTIES COMPILE_DEFINITIONS ${ECKIT_DEFINITIONS} )
+set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" )
 
 get_directory_property( ODB_API_DEFINITIONS COMPILE_DEFINITIONS )
 
