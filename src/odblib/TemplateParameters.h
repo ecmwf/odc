@@ -44,12 +44,13 @@ private:
 class TemplateParameters : public vector<TemplateParameter*> {
 public:
 	TemplateParameters();
+	TemplateParameters(const string& fileNameTemplate, const MetaData& = nullMD);
 	~TemplateParameters();
+
 	void release();
 	static TemplateParameters& parse(const string& fileNameTemplate, TemplateParameters&, const MetaData& = nullMD);
 
 private:
-// No copy allowed.
 	TemplateParameters(const TemplateParameters&);
 	TemplateParameters& operator=(const TemplateParameters&);
 

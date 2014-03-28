@@ -75,9 +75,8 @@ void TestMissingValue::setUp()
 
 	odb::Writer<> f("TestMissingValue.odb");
 	odb::Writer<>::iterator it = f.begin();
-	MetaData& md = it->columns();
+    it->setNumberOfColumns(2);
 
-	md.setSize(2);
 	it->setColumn(0, "lat@hdr", odb::REAL);
 	it->missingValue(0, 1);
 
@@ -122,7 +121,7 @@ void TestMissingValue::test()
 		odb::Reader::iterator it = f.begin();
 		odb::Reader::iterator end = f.end();
 
-		MetaData& md = it->columns();
+		const MetaData& md = it->columns();
 		Column& column = *md[0];
 		codec::Codec& codec = column.coder();
 

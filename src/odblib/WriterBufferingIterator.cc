@@ -25,12 +25,13 @@
 #include "odblib/InMemoryDataHandle.h"
 #include "odblib/MemoryBlock.h"
 #include "odblib/ODBAPISettings.h"
+#include "odblib/SQLAST.h"
 
 using namespace eclib;
 
 namespace odb {
 
-WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle)
+WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odb::sql::TableDef* tableDef)
 : owner_(owner),
   columns_(0),
   lastValues_(0),
@@ -47,7 +48,8 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   columnsBuffer_(0),
   rowsBufferSize_(owner.rowsBufferSize()),
   setvBuffer_(0),
-  maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() )
+  maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() ),
+  tableDef_(tableDef)
 {
 	if (openDataHandle)	
 		open();
@@ -61,10 +63,11 @@ WriterBufferingIterator::~WriterBufferingIterator()
 	delete f;
 }
 
-
 unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigned long count)
 {
 	ASSERT(count == columns().size());
+
+	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "gatherStats: columns_[" << i << "]=" << *columns_[i] << endl;
 
 	for(size_t i = 0; i < count; i++)
 		columns_[i]->coder().gatherStats(values[i]);
@@ -81,7 +84,7 @@ int WriterBufferingIterator::setOptimalCodecs()
 		columnsBuffer_.resetStats();
 	}
 
-	return codecOptimizer_.setOptimalCodecs<DATASTREAM>(columns());
+	return codecOptimizer_.setOptimalCodecs<DATASTREAM>(const_cast<MetaData&>(columns()));
 }
 
 void WriterBufferingIterator::allocBuffers()
@@ -118,6 +121,8 @@ void WriterBufferingIterator::writeHeader()
 	allocBuffers();
 	for (size_t i = 0; i < columns_.size(); ++i)
 		columns_[i]->coder().resetStats();
+
+	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "writeHeader: columns_[" << i << "]=" << *columns_[i] << endl;
 }
 
 bool WriterBufferingIterator::next() { return writeRow(nextRow_, columns().size()) == 0; }
@@ -245,13 +250,6 @@ void WriterBufferingIterator::flush()
 	if (nextRowInBuffer_ == rowsBuffer_)
 		return;
     
-
-    ///////////////////
-    //cout << "WriterBufferingIterator::flush(): sleeping in process " << getpid() <<  endl;
-    //sleep(20);
-
-    ///////////////////
-	
 	setOptimalCodecs<DataStream<SameByteOrder, FastInMemoryDataHandle> >();
 
 	unsigned long rowsWritten = 0;
@@ -292,8 +290,13 @@ void WriterBufferingIterator::flush()
 
 	nextRowInBuffer_ = rowsBuffer_;
 
-	columns() = columnsBuffer_;
-	columns().resetStats();
+    MetaData& md(const_cast<MetaData&>(columns()));
+    md = columnsBuffer_;
+    md.resetStats();
+
+	//MetaData md (columnsBuffer_);
+	//md.resetStats();
+    //columns(md);
 }
 
 

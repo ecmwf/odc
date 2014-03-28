@@ -57,6 +57,7 @@ void TestRunner::run()
 	if (clp_.parameters().size() == 1)
 	{
 		tests.reset(AbstractToolFactory::testCases());
+        Log::info() << "clp_.parameters()" << clp_.parameters() << endl;
 		runTests(*tests);
 	}
 	else

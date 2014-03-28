@@ -199,7 +199,7 @@ const double* values, unsigned long count)
 	iteratorIndex2fileName_[iteratorIndex] = fileName;
 
 	// Prop. metadata
-	iterators_[iteratorIndex]->columns() = columns();
+	iterators_[iteratorIndex]->columns(columns());
 	//iterators_[iteratorIndex]->writeHeader();
 	//iterators_[iteratorIndex]->allocBuffers();
 	//iterators_[iteratorIndex]->gatherStats(values, count);
@@ -366,7 +366,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	}
 
 	// Copy columns from the input iterator.
-	columns() = it->columns();
+	columns(it->columns());
 
 	if (!initialized_) parseTemplateParameters();
 
@@ -380,14 +380,14 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	{
 		if (it->isNewDataset() && columns() != it->columns() )
 		{
-			columns() = it->columns();
+			columns(it->columns());
 
 			parseTemplateParameters();
 
 			for (size_t i = 0; i < iterators_.size(); ++i)
 			{
 				iterators_[i]->flush();
-				iterators_[i]->columns() = columns();
+				iterators_[i]->columns(columns());
 				iterators_[i]->writeHeader();
 			}
 		}
@@ -426,9 +426,9 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 	size_t i = 0;
 	for (; i < rowsOutputFileIndex_.size(); ++i)
 	{
-		size_t fileIndex = rowsOutputFileIndex_[i];
-		const string& outFileName = files_[fileIndex];
-		MetaData& metaData(it->columns());
+		size_t fileIndex (rowsOutputFileIndex_[i]);
+		const string& outFileName (files_[fileIndex]);
+		const MetaData& metaData (it->columns());
 		size_t n(metaData.size());
 
 		typedef Reader::iterator I;
@@ -436,7 +436,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 		I& sIt(its.first),
 		sEnd(its.second);
 
-		MetaData& sMetaData(sIt->columns());
+		const MetaData& sMetaData (sIt->columns());
 
 		try {
 			ASSERT(it != end);

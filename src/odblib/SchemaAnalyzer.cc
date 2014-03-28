@@ -11,6 +11,7 @@
 #include "odblib/odb_api.h"
 #include "odblib/SQLAST.h"
 #include "odblib/SchemaAnalyzer.h"
+#include "odblib/StringTool.h"
 
 using namespace eclib;
 
@@ -74,86 +75,62 @@ void SchemaAnalyzer::endSchema()
     currentSchema_.clear();
 }
 
-void SchemaAnalyzer::addTable(TableDef& table)
-{
-        string schemaName = "";
+void SchemaAnalyzer::addTable(TableDef& table) {
+    Log::info() << "SchemaAnalyzer::addTable:" << table.name() << endl;
+    string schemaName = "";
 
+    if (StringTool::isInQuotes(table.name())) table.name(StringTool::unQuote(table.name()));
+    else {
         size_t pos = table.name().find(".");
-        if (pos != string::npos)
-        {
+        if (pos != string::npos) {
             schemaName = table.name().substr(0, pos);
-            table.name(table.name().substr(pos+1));
+            table.name(table.name().substr(pos + 1));
         }
+    }
 
-	ColumnDefs& columns = table.columns();
+	ColumnDefs& columns (table.columns());
+	for (ColumnDefs::iterator it = columns.begin(); it != columns.end(); ++it) {
+        ColumnDef& column(*it);
+        column.name(column.name() + "@" + table.name());
+        columnTypes_[column.name()] = column.type();
 
-	for (ColumnDefs::iterator it = columns.begin(); it != columns.end(); ++it)
-	{
-            ColumnDef& column = *it;
-            column.name(column.name() + "@" + table.name());
-            columnTypes_[column.name()] = column.type();
-
-            if (isBitfield(column.name()))
-                column.bitfieldDef(getBitfieldTypeDefinition(column.name()));
+        if (isBitfield(column.name()))
+            column.bitfieldDef(getBitfieldTypeDefinition(column.name()));
 	}
 
-        for (int i = 0, n = table.parents().size(); i < n; i++)
-        {
-            TableDefs::const_iterator it = tableDefs_.find(table.parents()[i]);
+    for (int i = 0, n = table.parents().size(); i < n; i++) {
+        TableDefs::const_iterator it(tableDefs_.find(table.parents()[i]));
 
-            if (it == tableDefs_.end())
-            {
-                string message = "Could not find definition of parent table '"
-                    + table.parents()[i] + "' inherited by table '" + table.name() + "'";
-                throw eclib::UserError(message);
-            }
+        if (it == tableDefs_.end())
+            throw eclib::UserError(string("Could not find definition of parent table '")
+                     + table.parents()[i] + "' inherited by table '" + table.name() + "'");
 
-            const TableDef& parent = it->second;
+        const TableDef& parent (it->second);
+        if(! parent.parents().empty()) throw UserError("More than 1-level inheritance not supported");
 
-            ASSERT(parent.parents().empty() && "More than 1-level inheritance not supported");
+        for (ColumnDefs::const_iterator c (parent.columns().begin()); c != parent.columns().end(); ++c)
+            table.columns().push_back(*c);
+    }
 
-            for (ColumnDefs::const_iterator c = parent.columns().begin();
-                    c != parent.columns().end(); ++c)
-                table.columns().push_back(*c);
-        }
+    if (currentSchema_.empty() && schemaName.empty()) {
+        pair<TableDefs::iterator, bool> result (tableDefs_.insert(pair<string, TableDef>(table.name(), table)));
+        if (result.second == false)
+            throw eclib::UserError(string ("Table '") + table.name() + "' already defined");
+    } else {
+        if (schemaName.empty())
+            schemaName = currentSchema_;
 
-        if (currentSchema_.empty() && schemaName.empty())
-        {
-            pair<TableDefs::iterator, bool> result;
-            result = tableDefs_.insert(pair<string, TableDef>(table.name(), table));
+        SchemaDefs::iterator it (schemas_.find(schemaName));
+        if (it == schemas_.end())
+            throw eclib::UserError(string("Referenced schema '") + schemaName + "' not defined '");
 
-            if (result.second == false)
-            {
-                string message = "Table '" + table.name() + "' already defined";
-                throw eclib::UserError(message);
-            }
-        }
-        else
-        {
-            if (schemaName.empty())
-                schemaName = currentSchema_;
+        SchemaDef& schema (it->second);
+        TableDefs& tables (schema.tables());
 
-            SchemaDefs::iterator it = schemas_.find(schemaName);
-
-            if (it == schemas_.end())
-            {
-                string message = "Referenced schema '" + schemaName + "' not defined '";
-                throw eclib::UserError(message);
-            }
-
-            SchemaDef& schema = it->second;
-            TableDefs& tables = schema.tables();
-
-            pair<TableDefs::iterator, bool> result;
-            result = tables.insert(pair<string, TableDef>(table.name(), table));
-
-            if (result.second == false)
-            {
-                string message = "Table '" + table.name() + "' already defined in '"
-                    + schemaName + "' schema";
-                throw eclib::UserError(message);
-            }
-        }
+        pair<TableDefs::iterator, bool> result (tables.insert(pair<string, TableDef>(table.name(), table)));
+        if (result.second == false) 
+            throw eclib::UserError(string ("Table '") + table.name() + "' already defined in '" + schemaName + "' schema");
+    }
 }
 
 void SchemaAnalyzer::skipTable(string tableName)
@@ -206,11 +183,11 @@ void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields
 
 bool SchemaAnalyzer::isBitfield(const string columnName) const
 {
-        ASSERT(columnTypes_.find(columnName) != columnTypes_.end());
-	if (columnTypes_.find(columnName) == columnTypes_.end())
-            return false;
-	string columnType = columnTypes_.find(columnName)->second;
-	return bitfieldTypes_.find(columnType) != bitfieldTypes_.end();
+    ASSERT(columnTypes_.find(columnName) != columnTypes_.end());
+    if (columnTypes_.find(columnName) == columnTypes_.end())
+        return false;
+    string columnType = columnTypes_.find(columnName)->second;
+    return bitfieldTypes_.find(columnType) != bitfieldTypes_.end();
 }
 
 const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const string columnName) 
@@ -224,12 +201,28 @@ void SchemaAnalyzer::updateBitfieldsDefs(MetaData &md, map<string,string> & true
 {
 	for (size_t i = 0; i < md.size(); i++)
 	{
-		Column &c = *md[i];
+		Column &c (*md[i]);
 		if (c.type() == BITFIELD) {
             //Log::info() << "colname = " << c.name() << " truename = " << truenames[c.name()] << endl;
 			c.bitfieldDef(const_cast<SchemaAnalyzer*>(this)->getBitfieldTypeDefinition(truenames[c.name()]));
         }
 	}
+}
+
+bool SchemaAnalyzer::tableKnown(const string& name) const
+{
+    return tableDefs_.find(name) != tableDefs_.end();
+}
+
+const TableDef& SchemaAnalyzer::findTable(const string& name) const
+{
+    for (TableDefs::const_iterator it(tableDefs_.begin()); it != tableDefs_.end(); ++it)
+    {
+        Log::info() << "SchemaAnalyzer::findTable: " << it->first << endl;
+        if (it->first == name)
+            return it->second;
+    }
+    throw eclib::UserError(string("Table '" + name + "' not found"));
 }
 
 } // namespace sql

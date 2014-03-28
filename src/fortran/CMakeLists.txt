@@ -11,6 +11,14 @@ if( ODB_API_FORTRAN )
                     SOURCES    test_fortran_api.f90
                     LIBS       Odb_fortran 
                     LINKER_LANGUAGE ${LINKER_LANGUAGE} )
+
+  #include_directories( ${ODB_MODPATH} )
+
+  #ecbuild_add_test( TARGET     pmigrator
+  #                  SOURCES    pmigrator.f90
+  #                  LIBS       Odb_fortran Odb Ec
+  #                  INCLUDES   ${ODB_MODPATH}
+  #                  LINKER_LANGUAGE ${LINKER_LANGUAGE} )
 else()
   ecbuild_declare_project_files( odb_c_binding.f90 test_fortran_api.f90 )
 endif()

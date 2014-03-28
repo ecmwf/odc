@@ -44,7 +44,7 @@ namespace odb {
 
 class Reader;
 
-class ReaderIterator : public RowsReaderIterator
+class ReaderIterator //: public RowsReaderIterator
 {
 public:
 	ReaderIterator (Reader &owner);
@@ -59,7 +59,9 @@ public:
 	void property(string, string);
 	string property(string);
 
-	virtual MetaData& columns() { return columns_; }
+	const MetaData& columns() { return columns_; }
+	const MetaData& columns(const MetaData& md) { return columns_ = md; }
+    void setNumberOfColumns(size_t n) { columns_.setSize(n); }
 
 #ifdef SWIGPYTHON
 	int setColumn(size_t, const std::string&, ColumnType) { NOTIMP; }

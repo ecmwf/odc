@@ -20,7 +20,7 @@ subroutine odb_find_ctype(cname,ctype)
 !-Exceptions
   if(cname(:k)== "datum_status") ctype="status_t"
   if(cname(:k)== "datum_anflag") ctype="datum_flag_t"
-  if(cname(:k)=="report_status") ctype="status_t"
+  if(cname(:k)== "report_status") ctype="status_t"
 
 end subroutine odb_find_ctype
 

@@ -40,10 +40,12 @@ Fixture::Fixture()
     odb::Writer<> writer(input);
     odb::Writer<>::iterator it = writer.begin();
 
-    it->columns().addColumn<DataStream>("parent_id@parent", "INTEGER");
-    it->columns().addColumn<DataStream>("child.offset@parent", "INTEGER");
-    it->columns().addColumn<DataStream>("child.len@parent", "INTEGER");
-    it->columns().addColumn<DataStream>("child_id@child", "INTEGER");
+    MetaData md (it->columns());
+    md.addColumn<DataStream>("parent_id@parent", "INTEGER");
+    md.addColumn<DataStream>("child.offset@parent", "INTEGER");
+    md.addColumn<DataStream>("child.len@parent", "INTEGER");
+    md.addColumn<DataStream>("child_id@child", "INTEGER");
+    it->columns(md);
     it->writeHeader();
 
     for (int ordinal = 0; ordinal < TOTAL_ROWS_COUNT; ++ordinal, ++it)

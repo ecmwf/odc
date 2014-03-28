@@ -66,7 +66,7 @@ void TestMinMax::setUp()
 	odb::Writer<> oda("testminmax.odb");
 
 	odb::Writer<>::iterator row = oda.begin();
-	row->columns().setSize(2);
+	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "intcol", odb::INTEGER);
 	row->setColumn(1, "realcol", odb::REAL);

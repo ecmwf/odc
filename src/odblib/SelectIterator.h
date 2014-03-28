@@ -37,7 +37,7 @@ namespace sql {
 	class SQLSelect;
 }
 
-class SelectIterator : public RowsReaderIterator {
+class SelectIterator { //: public RowsReaderIterator {
 public:
 	SelectIterator (Select &owner, std::string select);
 	~SelectIterator();
@@ -45,7 +45,9 @@ public:
 	virtual bool isNewDataset();
 	virtual const double* data();
 
-	virtual MetaData& columns();
+	const MetaData& columns();
+	const MetaData& columns(const MetaData&) { NOTIMP; }
+    void setNumberOfColumns(size_t) { NOTIMP; }
 
 	int close() { NOTIMP; }
 	int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }

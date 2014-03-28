@@ -16,6 +16,7 @@
 
 #include "odblib/SQLOutput.h"
 #include "odblib/SQLBitfield.h"
+#include "odblib/MetaData.h"
 
 namespace odb {
 namespace sql {
@@ -26,6 +27,7 @@ template<typename ITERATOR>
 class SQLODAOutput : public SQLOutput {
 public:
 	SQLODAOutput(ITERATOR);
+	SQLODAOutput(ITERATOR, const MetaData&);
 	virtual ~SQLODAOutput(); // Change to virtual if base class
 
 protected:
@@ -37,20 +39,11 @@ private:
 
 // -- Members
 	ITERATOR writer_;
-
-	//vector<string> columnNames_;
-	//vector<bool> isBitfield_;
-	//vector<BitfieldDef> bitfieldDefs_;
-	//vector<bool> hasMissingValue_;
-	//vector<double> missingValue_;
+    MetaData metaData_;
 
 	unsigned long long count_;
 
-// -- Methods
-	// None
-
 // -- Overridden methods
-
 	virtual void size(int);
 	virtual void reset();
 	virtual void flush();

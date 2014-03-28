@@ -43,12 +43,17 @@ int main(int argc, char *argv[])
 	}
 }
 
+void start(const char *argv0) {
+    odb_start();
+    odb::ODBAPISettings::instance().setHome(argv0);
+}
+
 int executeCommand(int argc, char *argv[])
 {
 	Tool::registerTools();
 	if (argc < 2)
 	{
-		odb_start();
+		start(argv[0]);
 		cerr << "Usage:" << endl
 			<< "        " << argv[0] << " <command> [<command's-parameters>]" << endl 
 			<< "        " << argv[0] << " help <command>" << endl << endl
@@ -60,8 +65,8 @@ int executeCommand(int argc, char *argv[])
 
 	const string firstArg(argv[1]);
 
-	if (firstArg == "g") { odb_start(); return gdb(argc, argv); }
-	if (firstArg == "vg") { odb_start(); return valgrind(argc, argv); }
+	if (firstArg == "g") { start(argv[0]); return gdb(argc, argv); }
+	if (firstArg == "vg") { start(argv[0]); return valgrind(argc, argv); }
 	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
 	if (firstArg == "test")
 	{
@@ -78,6 +83,7 @@ int executeCommand(int argc, char *argv[])
 		cout << endl << "Running tests." << endl;
 
 		odb::tool::test::TestRunnerApplication testRunner(argc - 1, argv + 1);
+        odb::ODBAPISettings::instance().setHome(argv[0]);
 		testRunner.start();
 		// It never really gets here.
 		return 0;
@@ -85,7 +91,7 @@ int executeCommand(int argc, char *argv[])
 
 	if (firstArg == "help")
 	{
-		odb_start();
+		start(argv[0]);
 		if (argc == 2)
 			AbstractToolFactory::printToolsHelp(cout);
 		else
@@ -107,6 +113,7 @@ int executeCommand(int argc, char *argv[])
 	}
 
 	ToolRunnerApplication runner(argc, argv);
+    odb::ODBAPISettings::instance().setHome(argv[0]);
 	runner.start();
 	return 0;
 }

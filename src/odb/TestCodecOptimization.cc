@@ -72,8 +72,7 @@ void TestCodecOptimization::setUp()
 	odb::Writer<> oda("TestCodecOptimization1.odb");
 	odb::Writer<>::iterator row = oda.begin();
 
-	MetaData& md = row->columns();
-	md.setSize(numberOfColumns);
+	row->setNumberOfColumns(numberOfColumns);
 
 	row->setColumn(0, "x", odb::REAL);
 	//row->setColumn(1, "y", odb::REAL);
@@ -100,12 +99,11 @@ void TestCodecOptimization::testSelectIterator()
 
 	odb::Reader reader("TestCodecOptimization1.odb");
 	odb::Reader::iterator it = reader.begin();
-	odb::MetaData& md = it->columns();
 
-	Log::info() << "TestCodecOptimization::testSelectIterator: md = " << md << endl; 
-	ASSERT(md.size() == numberOfColumns);
+	Log::info() << "TestCodecOptimization::testSelectIterator: md = " << it->columns() << endl; 
+	ASSERT(it->columns().size() == numberOfColumns);
 
-	string codecName = md[0]->coder().name();
+	string codecName = it->columns()[0]->coder().name();
 
 	Log::info() << "TestCodecOptimization::testSelectIterator: codecName = " << codecName << endl; 
 

@@ -30,6 +30,28 @@ MetaData::MetaData(int i, Column *p) : vector<Column*>(i, p), rowsNumber_(0), se
 MetaData::MetaData(const MetaData& md) : vector<Column*>(0), rowsNumber_(0), self(*this)
 { self += md; }
 
+odb::ColumnType MetaData::convertType(const string& t)
+{
+    std::string type(t);
+    transform(type.begin(), type.end(), type.begin(), ::toupper);
+
+    if      (type == "INTEGER")  return odb::INTEGER;
+    else if (type == "YYYYMMDD") return odb::INTEGER;
+    else if (type == "HHMMSS")   return odb::INTEGER;
+    else if (type == "PK1INT")   return odb::INTEGER;
+    else if (type == "PK9INT")   return odb::INTEGER;
+    else if (type == "@LINK")    return odb::INTEGER;
+    else if (type == "REAL")     return odb::REAL;
+    else if (type == "FLOAT")    return odb::REAL;
+    else if (type == "DOUBLE")   return odb::DOUBLE;
+    else if (type == "PK9REAL")  return odb::DOUBLE;
+    else if (type == "STRING")   return odb::STRING;
+    else if (type.find("BITFIELD") != string::npos) return odb::BITFIELD;
+    else throw eclib::UserError("Unsupported column type: " + type);
+
+    return odb::IGNORE; // never reached
+}
+
 MetaData* MetaData::clone() const {
 	const MetaData& self(*this);
 	MetaData* md = new MetaData(*this);

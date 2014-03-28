@@ -93,8 +93,7 @@ void TestSetvbuffer::createFile(size_t numberOfColumns, long long numberOfRows, 
 	odb::Writer<> oda("TestSetvbuffer.odb");
 	odb::Writer<>::iterator row = oda.begin();
 
-	MetaData& md = row->columns();
-	md.setSize(numberOfColumns);
+    row->setNumberOfColumns(numberOfColumns);
 	for (size_t i = 0; i < numberOfColumns; ++i)
 	{
 		stringstream name;

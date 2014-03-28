@@ -32,8 +32,7 @@ public:
 	bool isNewDataset() { return ii_.isNewDataset(); }
 	const double* data() { return ii_->data(); }
 
-	virtual MetaData& columns() { return ii_->columns(); }
-
+	const MetaData& columns() { return ii_->columns(); }
 
 //protected:
 	bool next();

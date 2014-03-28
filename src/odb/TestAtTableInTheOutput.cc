@@ -70,9 +70,8 @@ void TestAtTableInTheOutput::setUp()
 {
 	odb::Writer<> f("TestAtTableInTheOutput.odb");
 	odb::Writer<>::iterator it = f.begin();
-	MetaData& md = it->columns();
 
-	md.setSize(4);
+	it->setNumberOfColumns(4);
 	it->setColumn(0, "lat@hdr", odb::REAL);
 	it->setColumn(1, "lon@hdr", odb::REAL);
 	it->setColumn(2, "obsvalue", odb::REAL);
@@ -105,13 +104,13 @@ void TestAtTableInTheOutput::selectIntoSecondFile()
 	odb::Select f(sql); //, fileName);
 	odb::Select::iterator it = f.begin();
 
-	//string c0 = it.columns()[0]->name();
-	//string c1 = it.columns()[1]->name();
-	//string c2 = it.columns()[2]->name();
+	string c0 = it->columns()[0]->name();
+	string c1 = it->columns()[1]->name();
+	string c2 = it->columns()[2]->name();
 
 	++it; // this is needed to push the second row to the INTO file 
 
-	//Log::info()  << "c0=" << c0 << ", c1=" << c1 << ", c2=" << c2 << endl;
+	eclib::Log::info()  << "c0=" << c0 << ", c1=" << c1 << ", c2=" << c2 << endl;
 	///ASSERT("");
 }
 

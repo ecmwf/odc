@@ -49,6 +49,8 @@ private:
 	virtual void cleanup(SQLSelect&);
 	virtual unsigned long long count();
 
+    template <typename T> void outputValue(double x, bool missing) const;
+
 	virtual void outputReal(double, bool) const;
 	virtual void outputDouble(double, bool) const;
 	virtual void outputInt(double, bool) const;

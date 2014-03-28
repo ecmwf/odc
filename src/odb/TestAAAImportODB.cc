@@ -61,12 +61,13 @@ void TestAAAImportODB::test()
 	string e(Resource<string>("$ODB_API_TEST_DATA_PATH", string(""))); 
 	if (e.size())
 		Log::info() << "ODB_API_TEST_DATA_PATH=" << e << endl;
-	string testDataPath = e.size() ? e : "../../../odb_api/src/migrator";
+	string testDataPath = e; //e.size() ? e : "../../../odb_api/src/migrator";
 
 	string cmd;
 	if (getenv("ODB_ROOT"))
 	{
-		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.odb";
+		cmd = string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags "
+            + ODBAPISettings::instance().fileInHome("~/bin/odb_migrator") + " 2000010106/ECMA . 2000010106.odb";
 	}
 	else
 	{

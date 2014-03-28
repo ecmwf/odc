@@ -89,9 +89,7 @@ SQLTable* SQLSelect::findTable(const string& name,
 	Log::debug() << "SQLSelect::findTable: name='" << name << "', fullName=" << (fullName ? (string("'")+ *fullName+"'") : "") << endl;
 
 	return *names.begin();
-		
 }
-
 
 pair<double,bool>* SQLSelect::column(const string& name, SQLTable* table)
 {

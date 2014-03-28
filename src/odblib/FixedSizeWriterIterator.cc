@@ -21,7 +21,7 @@ using namespace eclib;
 namespace odb {
 
 FixedSizeWriterIterator::FixedSizeWriterIterator(Owner &owner, DataHandle *dh)
-: WriterBufferingIterator(owner, dh)
+: WriterBufferingIterator(owner, dh, true)
 {}
 
 int FixedSizeWriterIterator::writeRow(const double* values, unsigned long count)

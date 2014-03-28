@@ -98,7 +98,7 @@ bool FastODA2Request<T>::scanFile(const eclib::PathName& fileName, eclib::Offset
 	for ( ; it != end; ++it)
 	{
 		ASSERT(it->isNewDataset());
-		MetaData &md = it->columns();
+		const MetaData &md (it->columns());
 		++mds;
 
 		Offset startOffset = (**it).blockStartOffset(), endOffset = (**it).blockEndOffset();

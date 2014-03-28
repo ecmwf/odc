@@ -35,6 +35,9 @@ public:
 	eclib::DataHandle* writeToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0), bool openDataHandle = true);
 	eclib::DataHandle* appendToFile(const eclib::PathName&, const eclib::Length& = eclib::Length(0), bool openDataHandle = true);
 
+    void setHome(const char *argv0);
+    std::string fileInHome(const std::string&);
+
 	static bool debug;
 
 private:
@@ -48,6 +51,8 @@ private:
 	size_t setvbufferSize_;
 
 	bool useAIO_;
+
+    string home_;
 
     friend class eclib::ThreadSingleton<ODBAPISettings>;
 };

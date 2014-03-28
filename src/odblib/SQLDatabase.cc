@@ -34,6 +34,7 @@ namespace sql {
 void SQLDatabase::setUpVariablesTable()
 {
 	tablesByName_["variables"] = new VariablesTable(*this, "variables");
+	tablesByName_["dual"] = dualTable();
 }
 
 SQLDatabase::SQLDatabase(const PathName& path,const string& name)
@@ -75,7 +76,7 @@ SQLDatabase::~SQLDatabase()
 		//delete it->second;
 	}
 	variables_.clear();
-    delete dual_;
+    //delete dual_;
     delete dualTable_;
 }
 
@@ -112,7 +113,8 @@ SQLTable* SQLDatabase::dualTable()
         dualTable_ = new DataTable("dual", columns, properties);
         double row = 0;
         dualTable_->push_back(&row);
-        dual_ = new SQLDataTable(SQLSession::current().currentDatabase(), *dualTable_);
+        //dual_ = new SQLDataTable(SQLSession::current().currentDatabase(), *dualTable_);
+        dual_ = new SQLDataTable(*this, *dualTable_);
     }
     return dual_;
 }

@@ -106,7 +106,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 	int64_t nextFrameOffset;
 	f.readInt64(nextFrameOffset);
 	dataSize_ = nextFrameOffset;
-	owner_.columns().dataSize(dataSize_);
+	const_cast<MetaData&>(owner_.columns()).dataSize(dataSize_);
 
 	// Reserved, not used yet.
 	int64_t prevFrameOffset;
@@ -118,7 +118,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 	int64_t numberOfRows;
 	f.readInt64(numberOfRows);
 	rowsNumber_ = numberOfRows;
-	owner_.columns().rowsNumber(rowsNumber_);
+	const_cast<MetaData&>(owner_.columns()).rowsNumber(rowsNumber_);
 
 	eclib::Log::debug() << "Header<OWNER>::load: numberOfRows = " << numberOfRows << endl;
 
@@ -128,7 +128,7 @@ void Header<OWNER>::load(DATASTREAM &ff)
 
 	f.readProperties(owner_.properties_);
 
-	owner_.columns().load(f);
+	const_cast<MetaData&>(owner_.columns()).load(f);
 }
 
 template <typename BYTEORDER, typename DATAHANDLE>

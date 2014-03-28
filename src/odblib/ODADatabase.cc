@@ -37,6 +37,12 @@ SQLTable* ODADatabase::table(const string& name)
 {
 	map<string,SQLTable*>::iterator j = tablesByName_.find(name);
 
+    Log::info() << "ODADatabase::table(" << name << ") tablesByName_.size()==" << tablesByName_.size() << endl;
+    for (map<string,SQLTable*>::iterator it(tablesByName_.begin()); it != tablesByName_.end(); ++it)
+    {
+        Log::info() << " : " << it->first << endl;
+    }
+
 	if(j == tablesByName_.end())
 	{
 		// FIXME (?): path_ is '.'. ignore now

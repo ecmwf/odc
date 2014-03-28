@@ -47,7 +47,7 @@ int test_odacapi_setup_in_C(int argc, char *argv[])
 	const char *filename = "test.odb";
 	int err = 0;
 
-	oda_writer* writer = odb_writer_create("", &err);
+	oda_writer* writer = odb_writer_create(filename, &err);
 	ASSERT(writer);
 
 	oda_write_iterator* wi = odb_create_write_iterator(writer, filename, &err);
@@ -78,8 +78,8 @@ int test_odacapi_setup(int argc, char *argv[])
 	Timer t("Writing test.odb");
 	odb::Writer<> oda("test.odb");
 
-	odb::Writer<>::iterator writer = oda.begin();
-	writer->columns().setSize(2);
+	odb::Writer<>::iterator writer (oda.begin());
+    writer->setNumberOfColumns(2);
 
 	writer->setColumn(0, "ifoo", odb::INTEGER);
 	writer->setColumn(1, "nbar", odb::REAL);
@@ -220,7 +220,7 @@ int test_odacapi3(int argc, char *argv[])
 	cout << "test_odacapi3: number of rows = " << n << endl;
 	ASSERT(n == 10);
 
-	oda_writer* writer = odb_writer_create("", &err);
+	oda_writer* writer = odb_writer_create(filename, &err);
 	ASSERT(writer);
 
 	oda_write_iterator* wi = odb_create_append_iterator(writer, filename, &err);

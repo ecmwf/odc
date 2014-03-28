@@ -35,7 +35,6 @@ public:
 	SQLSession();
 	virtual ~SQLSession(); // Change to virtual if base class
 
-
 	SQLDatabase& openDatabase(const eclib::PathName&,const string& name = "");
 	void closeDatabase(const string& name);
 
@@ -63,28 +62,20 @@ public:
 	static SQLSession& current();
 
 protected:
-
 	unsigned long long lastExecuteResult_;
-
 	unsigned long long execute(SQLStatement&);
-	
 	// void print(ostream&) const; // Change to virtual if base class	
-
 private:
 // No copy allowed
 
 	SQLSession(const SQLSession&);
 	SQLSession& operator=(const SQLSession&);
 
-// -- Members
-
 	SQLDatabase* current_;
 	map<int,double> params_;
-
 	map<string,SQLDatabase*> databases_;
 
 // -- Friends
-
 	//friend ostream& operator<<(ostream& s,const SQLSession& p)
 	//	{ p.print(s); return s; }
 };

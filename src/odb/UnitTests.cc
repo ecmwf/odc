@@ -138,12 +138,13 @@ void createDataForMixedAggregated2()
 {
 	Writer<> out("selectAggregatedAndNonAggregated2.odb");
 	Writer<>::iterator o = out.begin();
-	MetaData& md(o->columns());
+	MetaData md (o->columns());
 
 	typedef DataStream<SameByteOrder, DataHandle> DS;
 	md.addColumn<DS>("x", "INTEGER");//, true, .0);
 	md.addColumn<DS>("y", "INTEGER");//, true, .0);
 	md.addColumn<DS>("v", "DOUBLE");//, true, .0);
+    o->columns(md);
 	o->writeHeader();
 
 	for (size_t row = 0; row < 1000; ++row)
@@ -254,7 +255,7 @@ void regex1()
 	//createDataForRegex1();
 	odb::Select oda("select \"/a.*/\" from \"regex1.odb\";");
 	odb::Select::iterator it = oda.begin();
-	MetaData& md(it->columns());
+	const MetaData& md(it->columns());
 
 	Log::info() << "regex1: " << md << endl;
 	
@@ -810,6 +811,31 @@ TEST(include)
 	}
 }
 
+TEST(include2)
+{
+	ofstream f("stuff.sql");
+	f 
+		//<< "select * from \"file1.odb\";" << endl
+		<< "set $foo = 10;" << endl
+		<< "set $bar = 20;" << endl;
+	f.close();
+
+	const char *sql =
+	"#include \"stuff.sql\"\n"
+	"set $baz = $bar;"
+	"select $foo * $bar;"
+	;
+	
+	unsigned long counter = 0;
+	odb::Select o(sql);
+	for (odb::Select::iterator it(o.begin()), end(o.end());
+		it != o.end();
+		++it, ++counter)
+	{
+		Log::info() << it << endl;
+	}
+}
+
 TEST(log_error)
 {
     Log::error() << "Just a logger test" << endl;
@@ -1032,6 +1058,48 @@ TEST(TextReaderIterator_parseBitfields)
     Log::info() << "TextReaderIterator_parseBitfields: FieldNames: " << names << endl;
     for (size_t i = 0; i < sizes.size(); ++i)
         Log::info() << "TextReaderIterator_parseBitfields: size: " << i << " " << sizes[i] << endl;
+}
+
+TEST(JULIAN_SECONDS)
+{
+    ASSERT(1 == (*odb::Select("select julian_seconds(19750311,0) < julian_seconds(20140210,0) from dual;").begin())[0]);
+}
+
+TEST(CREATE_TABLE_and_SELECT_INTO)
+{
+	const char *inputData = 
+	"a:INTEGER,b:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
+    const char* sql =
+    "CREATE TABLE \"foo.odb\" AS ( "
+    "lat real,"
+    "lon real,"
+    ");"
+    "SELECT * INTO \"foo.odb\" FROM \"CREATE_TABLE_and_SELECT_INTO.odb\";"
+    ;
+
+    {
+        odb::Select o(sql);
+        odb::Select::iterator it = o.begin();
+        unsigned long counter = 0;
+        for ( ; it != o.end(); ++it, ++counter)
+            ;
+        Log::info() << "CREATE_TABLE_and_SELECT_INTO: counter=" << counter << endl;
+    }
+    system("ls -l foo.odb; ");
+    system((ODBAPISettings::instance().fileInHome("~/bin/odb") + " header foo.odb").c_str());
 }
 
 } // namespace test 

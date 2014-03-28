@@ -76,7 +76,7 @@ void TestSelectIterator3::setUp()
 	odb::Writer<> oda(testFile);
 
 	odb::Writer<>::iterator writer = oda.begin();
-	writer->columns().setSize(1);
+	writer->setNumberOfColumns(1);
 	(**writer).setColumn(0, "value", odb::INTEGER);
 	(**writer).writeHeader();
 

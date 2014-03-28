@@ -34,7 +34,7 @@ public:
 
 	SQLSelect* create(bool distinct,
 		Expressions select_list,
-		string into,
+		const string& into,
 		vector<SQLTable*> from,
 		odb::sql::expression::SQLExpression *where,
 		Expressions group_by,
@@ -78,6 +78,10 @@ private:
 
     eclib::DataHandle* implicitFromTableSource_;
     istream* implicitFromTableSourceStream_;
+
+    SchemaAnalyzer& analyzer();
+    MetaData columns(const string& tableName);
+    SQLOutput* createOutput(SQLSession&, const string& into, size_t orderBySize);
 
 	SQLDatabase* database_;
 	SQLOutputConfig config_;

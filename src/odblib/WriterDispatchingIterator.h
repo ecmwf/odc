@@ -34,7 +34,7 @@ class TemplateParameters;
 
 //template <typename WRITE_ITERATOR = WriterBufferingIterator, typename OWNER = DispatchingWriter>
 template <typename WRITE_ITERATOR, typename OWNER >
-class WriterDispatchingIterator : public RowsWriterIterator
+class WriterDispatchingIterator //: public RowsWriterIterator
 {
 	typedef vector<double> Values;
 	typedef map<Values,int> Values2IteratorIndex;
@@ -47,8 +47,8 @@ public:
 
 	double* data();
 
-	virtual int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
-	virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
+	int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
+	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
 
 	void missingValue(size_t i, double); 
 
@@ -56,14 +56,15 @@ public:
 	template <typename T> void verify(T&, const T&);
 	unsigned long gatherStats(const double* values, unsigned long count);
 
-	virtual int close();
+	int close();
 
 	ColumnType columnType(size_t index);
 	const std::string& columnName(size_t index) const;
 	const std::string& codecName(size_t index) const;
 	double columnMissingValue(size_t index);
 
-	virtual MetaData& columns() { return columns_; }
+	const MetaData& columns() { return columns_; }
+	const MetaData& columns(const MetaData& md) { return columns_ = md; }
 
 	OWNER& owner() { return owner_; }
 

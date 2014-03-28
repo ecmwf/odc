@@ -70,9 +70,7 @@ void TestCatFiles::setUp()
  {
 	odb::Writer<> oda("file1.odb");
 	odb::Writer<>::iterator row = oda.begin();
-
-	MetaData& md = row->columns();
-	md.setSize(3);
+    row->setNumberOfColumns(3);
 
 	row->setColumn(0, "x", odb::REAL);
 	row->setColumn(1, "y", odb::REAL);
@@ -90,7 +88,7 @@ void TestCatFiles::setUp()
 
 	odb::Writer<> oda2("file2.odb");
 	odb::Writer<>::iterator row2 = oda2.begin();
-	row2->columns().setSize(3);
+	row2->setNumberOfColumns(3);
 	row2->setColumn(0, "x", odb::REAL);
 	row2->setColumn(1, "y", odb::REAL);
 	row2->setColumn(2, "v", odb::REAL);
@@ -107,7 +105,7 @@ void TestCatFiles::setUp()
 
 	odb::Writer<> oda3("file3.odb");
 	odb::Writer<>::iterator row3 = oda3.begin();
-	row3->columns().setSize(4);
+	row3->setNumberOfColumns(4);
 
 	row3->setColumn(0, "x", odb::REAL);
 	row3->setColumn(1, "v", odb::REAL);

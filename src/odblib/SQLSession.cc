@@ -22,6 +22,8 @@
 #include "odblib/SQLStatement.h"
 #include "odblib/SQLTable.h"
 #include "odblib/SchemaAnalyzer.h"
+#include "odblib/SQLODAOutput.h"
+#include "odblib/Writer.h"
 
 using namespace eclib;
 

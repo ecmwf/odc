@@ -60,7 +60,7 @@ void TestFunctionCircle::setUp()
 	odb::Writer<> oda("test_circle.odb");
 
 	odb::Writer<>::iterator row = oda.begin();
-	row->columns().setSize(2);
+	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "lat", odb::REAL);
 	row->setColumn(1, "lon", odb::REAL);

@@ -290,12 +290,13 @@ end subroutine odb2_get
 
 !-----------------------------------------------------------------------------------------
 
-subroutine odb2_set_columns(o2, ncol, cname)
+subroutine odb2_set_columns(o2, ncol, cname, bitfield_definitions)
   implicit none
 
   type (todb2),     intent(inout) :: o2
   integer,          intent(inout) :: ncol
   character(len=*), intent(inout) :: cname(ncol)
+  character(len=*),allocatable    :: bitfield_definitions(:)
 
   !type(C_PTR)                     :: odb_it
   integer(kind=C_INT)             :: itype, cerr, c_ncol

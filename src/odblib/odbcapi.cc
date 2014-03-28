@@ -85,10 +85,7 @@ double odb_count(const char * filename)
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 	MDR mdReader(path);
 	for (MDR::iterator it(mdReader.begin()), end(mdReader.end()); it != end; ++it)
-	{
-		MetaData &md = it->columns();
-		n += md.rowsNumber();
-	}
+		n += it->columns().rowsNumber();
 	return n;
 }
 
@@ -200,7 +197,6 @@ oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr co, const c
     SelectIterator* iter = o->createSelectIterator(full_sql);
     *err = !iter;
     return oda_select_iterator_ptr(iter);
-
 }
 
 
@@ -303,12 +299,12 @@ int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, doub
 oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filename, int *err)
 {
 	Writer<> *o = reinterpret_cast<Writer<> *>(co);
-	string fileName(filename);
-	PathName fn(fileName);
-	DataHandle *fh = ODBAPISettings::instance().appendToFile(fn);
+	
+    eclib::Length estimatedLength(0);
+	DataHandle *fh = ODBAPISettings::instance().appendToFile(PathName(string(filename)), estimatedLength, true);
 
 	// TODO: make sure there's no leaks (FileHandle)
-	Writer<>::iterator_class* w = new Writer<>::iterator_class(*o, fh, false);
+	Writer<>::iterator_class* w (new Writer<>::iterator_class(*o, fh, false));
 	*err = !w;
 	return oda_write_iterator_ptr(w);
 }
@@ -316,12 +312,11 @@ oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filena
 oda_write_iterator_ptr odb_create_write_iterator(oda_ptr co, const char *filename, int *err)
 {
 	Writer<> *o = reinterpret_cast<Writer<> *>(co);
-	string fileName(filename);
-	PathName fn(fileName);
-	DataHandle *fh = ODBAPISettings::instance().appendToFile(fn);
+    eclib::Length estimatedLength(0);
+	DataHandle *fh = ODBAPISettings::instance().writeToFile(PathName(string(filename)), estimatedLength, true);
 
 	// TODO: make sure there's no leaks (FileHandle)
-	Writer<>::iterator_class* w = new Writer<>::iterator_class(*o, fh);
+	Writer<>::iterator_class* w (new Writer<>::iterator_class(*o, fh, true));
 	*err = !w;
 	return oda_write_iterator_ptr(w);
 }
@@ -334,17 +329,15 @@ int odb_write_iterator_destroy(oda_write_iterator_ptr wi)
 
 int odb_write_iterator_set_no_of_columns(oda_write_iterator_ptr wi, int n)
 {
-	Writer<>::iterator_class *w = reinterpret_cast<Writer<>::iterator_class *>(wi);
-	w->columns().setSize(n);
+	Writer<>::iterator_class *w (reinterpret_cast<Writer<>::iterator_class *>(wi));
+	w->setNumberOfColumns(n);
 	return 0;
 }
 
 int odb_write_iterator_set_column(oda_write_iterator_ptr wi, int index, int type, const char *name)
 {
-	Writer<>::iterator_class * w = reinterpret_cast<Writer<>::iterator_class *>(wi);
-	std::string columnName(name);
-	
-	return w->setColumn(index, columnName, ColumnType(type));
+	Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
+	return w->setColumn(index, std::string(name), ColumnType(type));
 }
 
 int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int type, const char *name, const char* bitfieldNames, const char *bitfieldSizes)
@@ -375,30 +368,32 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
 
     odb::BitfieldDef bitfieldType(make_pair(bitfield_names,bitfield_sizes));
 
-	Writer<>::iterator_class * w = reinterpret_cast<Writer<>::iterator_class *>(wi);
+	Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
 	std::string columnName(name);
 	
 	int rc = w->setBitfieldColumn(index, columnName, ColumnType(type), bitfieldType);
-
 	return rc;
 }
 
 int odb_write_iterator_set_missing_value(oda_write_iterator_ptr wi, int index, double value)
 {
-	Writer<>::iterator_class * w = reinterpret_cast<Writer<>::iterator_class *>(wi);
+	Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
 	w->missingValue(index, value);
 	return 0;
 }
 
 int odb_write_iterator_write_header(oda_write_iterator_ptr wi)
 {
-	Writer<>::iterator_class * w = reinterpret_cast<Writer<>::iterator_class *>(wi);
+	Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
 	w->writeHeader();
 	return 0;
 }
 
 int odb_write_iterator_set_next_row(oda_write_iterator_ptr wi, double *data, int count)
-{ return reinterpret_cast<Writer<>::iterator_class *>(wi)->writeRow(data, count); }
+{ 
+	Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
+    return w->writeRow(data, count);
+}
 
 int odb_read_iterator_get_bitfield(oda_read_iterator_ptr it,
 	int index,

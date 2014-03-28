@@ -164,7 +164,7 @@ void TestSelectIterator::setUp()
 	odb::Writer<> oda("test.odb");
 
 	odb::Writer<>::iterator writer = oda.begin();
-	writer->columns().setSize(3);
+	writer->setNumberOfColumns(3);
 
 	(**writer).setColumn(0, "ifoo", odb::INTEGER);
 	(**writer).setColumn(1, "nbar", odb::REAL);

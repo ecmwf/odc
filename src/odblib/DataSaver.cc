@@ -49,7 +49,7 @@ void DataSaver::save(const DataSet& dataset, const string& master)
         metadata.push_back(c);
     }
 
-    target_->columns() = metadata;
+    target_->columns(metadata);
     target_->writeHeader();
     size_t size = view.columns().size();
 

@@ -29,6 +29,7 @@
 #include "FunctionIntegerExpression.h"
 #include "FunctionJOIN.h"
 #include "FunctionJULIAN.h"
+#include "FunctionJULIAN_SECONDS.h"
 #include "FunctionMAX.h"
 #include "FunctionMIN.h"
 #include "FunctionNORM.h"
@@ -606,6 +607,7 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	static FunctionMaker<FunctionJULIAN> make_JULIAN("julian",2, "");
 	static FunctionMaker<FunctionJULIAN> make_JD("jd",2, "");
 	static FunctionMaker<FunctionJULIAN> make_JULIAN_DATE("julian_date",2, "");
+	static FunctionMaker<FunctionJULIAN_SECONDS> make_JULIAN_SECONDS("julian_seconds",2, "Returns time in Julian calendar expressed in seconds.");
 	static FunctionMaker<FunctionMAX> make_MAX("max",1, "");
 	static FunctionMaker<FunctionMIN> make_MIN("min",1, "");
 	static FunctionMaker<FunctionNORM> make_NORM("norm",2, "");

@@ -29,29 +29,30 @@ namespace sql {
 class SchemaAnalyzer {
 
 public:
-	SchemaAnalyzer();
-	~SchemaAnalyzer();
+    SchemaAnalyzer();
+    ~SchemaAnalyzer();
 
-        void beginSchema(const string& name);
-        void endSchema();
-	void addTable(TableDef& table);
-	void addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature);
-	bool isBitfield(const string columnName) const; 
-	const BitfieldDef& getBitfieldTypeDefinition(const string columnName); 
-	void updateBitfieldsDefs(MetaData &, map<string, string> &) const;
+    void beginSchema(const string& name);
+    void endSchema();
+    void addTable(TableDef& table);
+    void addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature);
+    bool isBitfield(const string columnName) const; 
+    const BitfieldDef& getBitfieldTypeDefinition(const string columnName); 
+    void updateBitfieldsDefs(MetaData &, map<string, string> &) const;
 
-        const TableDef* findTable(const string& name) const;
-	void skipTable(string tableName);
-	string generateSELECT() const;
-        Definitions generateDefinitions();
+    bool tableKnown(const string& name) const;
+    const TableDef& findTable(const string& name) const;
+    void skipTable(string tableName);
+    string generateSELECT() const;
+    Definitions generateDefinitions();
 
 private:
-        string currentSchema_;
-        SchemaDefs schemas_;
-	TableDefs tableDefs_;
-	BitfieldDefs bitfieldTypes_;
-	set<string> tablesToSkip_;
-	map<string,string> columnTypes_;
+    string currentSchema_;
+    SchemaDefs schemas_;
+    TableDefs tableDefs_;
+    BitfieldDefs bitfieldTypes_;
+    set<string> tablesToSkip_;
+    map<string,string> columnTypes_;
 };
 
 } // namespace sql

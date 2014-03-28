@@ -75,7 +75,7 @@ void TestSelectTwoFiles::setUp()
 	{
 		odb::Writer<> f("TestSelectTwoFiles1.odb");
 		odb::Writer<>::iterator it = f.begin();
-		it->columns().setSize(1);
+		it->setNumberOfColumns(1);
 		it->setColumn(0, "a", odb::REAL);
 		it->writeHeader();
 		(*it)[0] = 1;
@@ -84,7 +84,7 @@ void TestSelectTwoFiles::setUp()
 	{
 		odb::Writer<> f("TestSelectTwoFiles2.odb");
 		odb::Writer<>::iterator it = f.begin();
-		it->columns().setSize(1);
+		it->setNumberOfColumns(1);
 		it->setColumn(0, "b", odb::REAL);
 		it->writeHeader();
 		(*it)[0] = 2;
@@ -101,7 +101,7 @@ void TestSelectTwoFiles::test()
 	odb::Select::iterator it = s.begin();
 	odb::Select::iterator end = s.end();
 
-	MetaData& md = it->columns();
+	const MetaData& md = it->columns();
 	ASSERT(md.size() == 2);
 
 	unsigned long i = 0;

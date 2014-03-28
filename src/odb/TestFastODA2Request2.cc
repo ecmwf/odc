@@ -47,8 +47,7 @@ Length TestFastODA2Request2::createFile(const string& fileName, unsigned int and
 	{
 		odb::Writer<> oda(fileName);
 		odb::Writer<>::iterator row = oda.begin();
-		MetaData& md = row->columns();
-		md.setSize(3);
+		row->setNumberOfColumns(3);
 		row->setColumn(0, "antime", odb::INTEGER);
 		row->setColumn(1, "andate", odb::INTEGER);
 		row->setColumn(2, "reportype", odb::INTEGER);

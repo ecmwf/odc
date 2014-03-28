@@ -35,10 +35,10 @@ public:
 
 	static MetaData scanFile(const eclib::PathName&);
 
-	unsigned long long rowsNumber() { return rowsNumber_; }
+	unsigned long long rowsNumber() const { return rowsNumber_; }
 	void rowsNumber(unsigned long long n) { rowsNumber_ = n; }
 
-	unsigned long long dataSize() { return dataSize_; }
+	unsigned long long dataSize() const { return dataSize_; }
 	void dataSize(unsigned long long n) { dataSize_ = n; }
 
 	MetaData& operator=(const MetaData&);
@@ -68,6 +68,7 @@ public:
 	Column* columnByName(const string&) const;
 	size_t columnIndex(const string&) const;
 
+    static odb::ColumnType convertType(const string&);
 #ifdef SWIGPYTHON
 	std::string __str__()
 	{

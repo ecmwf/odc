@@ -42,7 +42,7 @@ namespace odb {
 namespace odb {
 
 
-class MetaDataReaderIterator : public RowsReaderIterator
+class MetaDataReaderIterator //: public RowsReaderIterator
 {
 protected:
 	typedef MetaDataReader<MetaDataReaderIterator> Owner;
@@ -59,7 +59,8 @@ public:
 	void property(string, string);
 	string property(string);
 
-	virtual MetaData& columns() { return columns_; }
+	const MetaData& columns() { return columns_; }
+	const MetaData& columns(MetaData& md) { return columns_ = md; }
 
 	eclib::Offset blockStartOffset() { return blockStartOffset_; }
 	eclib::Offset blockEndOffset() { return blockEndOffset_; }
