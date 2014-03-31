@@ -76,7 +76,7 @@ void SchemaAnalyzer::endSchema()
 }
 
 void SchemaAnalyzer::addTable(TableDef& table) {
-    Log::info() << "SchemaAnalyzer::addTable:" << table.name() << endl;
+    Log::debug() << "SchemaAnalyzer::addTable:" << table.name() << endl;
     string schemaName = "";
 
     if (StringTool::isInQuotes(table.name())) table.name(StringTool::unQuote(table.name()));
