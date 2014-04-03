@@ -39,6 +39,8 @@ public:
 												<< " bitfields definitions in header)" << endl;
         o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << endl; 
         o << "                                   delim can be any character or string" << endl;
+        o << "             [--binary]            Print bitfields in binary notation" << endl;
+        o << "             [--no_alignment]      Do not align columns" << endl;
 	}
 
 private:

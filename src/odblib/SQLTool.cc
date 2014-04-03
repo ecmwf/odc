@@ -51,7 +51,7 @@ SQLTool::SQLTool(int argc,char **argv)
 	length_ = optionArgument("-length", (long) 0);
 
 	SQLSelectFactory::instance()
-		.config(SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_));
+		.config(SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_, optionIsSet("--binary"), optionIsSet("--no_alignment")));
 }
 
 SQLTool::~SQLTool() {}

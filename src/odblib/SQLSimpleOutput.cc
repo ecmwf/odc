@@ -15,9 +15,8 @@
 namespace odb {
 namespace sql {
 
-SQLSimpleOutput::SQLSimpleOutput(ostream& out):
-	out_(out),
-	count_(0)
+SQLSimpleOutput::SQLSimpleOutput(ostream& out)
+: out_(out), count_(0)
 {
 	out_ << fixed;
 }
@@ -44,7 +43,7 @@ bool SQLSimpleOutput::output(const expression::Expressions& results)
 	size_t n = results.size();
     for(size_t i = 0; i < n; i++)
     {
-        if(i) out_ << config_.fieldDelimiter;
+        if(i) out_ << config_.fieldDelimiter();
 		currentColumn_ = i;
         results[i]->output(*this);
     }
@@ -56,7 +55,7 @@ bool SQLSimpleOutput::output(const expression::Expressions& results)
 template <typename T> void SQLSimpleOutput::outputValue(double x, bool missing) const
 {
     format(out_, currentColumn_);
-    if (missing && !config_.doNotWriteNULL)
+    if (missing && !config_.doNotWriteNULL())
         out_ << "NULL";
     else
         out_ << static_cast<T>(x);
@@ -70,7 +69,7 @@ void SQLSimpleOutput::outputUnsignedInt(double x, bool missing) const { outputVa
 void SQLSimpleOutput::outputString(double x, bool missing) const
 {
 	format(out_, currentColumn_);
-	if (missing && !config_.doNotWriteNULL)
+	if (missing && !config_.doNotWriteNULL())
 		out_ << "NULL";
 	else
 	{
@@ -88,11 +87,14 @@ void SQLSimpleOutput::outputString(double x, bool missing) const
 
 void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 {
-	outputUnsignedInt(x, missing);
-	return;
-	// TODO: decimal, optionally binary
+    if (! config_.displayBitfieldsBinary())
+    {
+        outputUnsignedInt(x, missing);
+        return;
+    }
+	
 	format(out_, currentColumn_);
-	if (missing && !config_.doNotWriteNULL)
+	if (missing && !config_.doNotWriteNULL())
 		out_ << "NULL";
 	else
 	{
@@ -105,21 +107,21 @@ void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 void SQLSimpleOutput::prepare(SQLSelect& sql)
 {
 	const expression::Expressions& columns(sql.output());
-	for (size_t i = 0; i < columns.size(); i++)
+	for (size_t i (0); i < columns.size(); i++)
 	{
-		string name = columns[i]->title();
-		const type::SQLType* type = columns[i]->type();
-
-		columnWidths_.push_back(max(type->width(), name.size()));
+		string name (columns[i]->title());
+		const type::SQLType* type (columns[i]->type());
+ 
+        columnWidths_.push_back(config_.disableAlignmentOfColumns() ? 1 : max(type->width(), name.size()));
 		columnAlignments_.push_back(type->format());
 
-		if (! config_.doNotWriteColumnNames)
+		if (! config_.doNotWriteColumnNames())
 		{
-			if(i) out_ << config_.fieldDelimiter;
+			if(i) out_ << config_.fieldDelimiter();
 
 			format(out_, i);
 
-			if (config_.outputFormat != "wide")
+			if (config_.outputFormat() != "wide")
 				out_ << name;
 			else 
 			{
@@ -130,7 +132,7 @@ void SQLSimpleOutput::prepare(SQLSelect& sql)
 		}
 		
 	}
-    if (! config_.doNotWriteColumnNames)
+    if (! config_.doNotWriteColumnNames())
 		out_ << endl;
 }
 

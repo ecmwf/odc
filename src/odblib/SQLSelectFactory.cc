@@ -270,7 +270,7 @@ SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const string& in
     SQLOutput *r (NULL);
 
     TemplateParameters templateParameters;
-    string outputFile = (config_.outputFormat == "odb") ? config_.outputFile : into;
+    string outputFile = (config_.outputFormat() == "odb") ? config_.outputFile() : into;
     TemplateParameters::parse(outputFile, templateParameters);
 	if (templateParameters.size())
 	{
