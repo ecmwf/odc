@@ -114,7 +114,7 @@ void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
     using eckit::Log;
 
     Log::debug() << "ODATableIterator::updateMetaData: " << std::endl;
-	MetaData& newColumns(reader_->columns());
+	MetaData newColumns (reader_->columns());
 	for(size_t i = 0; i < selected.size(); i++)
 	{
 		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);

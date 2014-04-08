@@ -153,7 +153,7 @@ TEST(DataRowCanSetDoubles)
 TEST(DataRowCanSetStrings)
 {
     DataRow row(1);
-    row.DataRow::set<string>(0, "ABCD");
+    row.DataRow::set<std::string>(0, "ABCD");
     CHECK(row.modified());
     CHECK_ARRAY_EQUAL("ABCD    ", reinterpret_cast<char*>(&row[0]), sizeof(double));
 }

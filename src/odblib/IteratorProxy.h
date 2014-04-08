@@ -82,7 +82,9 @@ public:
 		return std::string(s, j);
 	}
 
-	MetaData& columns() { return ((*it_).iter_)->columns(); }
+	const MetaData& columns() { return ((*it_).iter_)->columns(); }
+    void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
+	const MetaData& columns(const MetaData& md) { return ((*it_).iter_)->columns(md); }
 	bool isNewDataset() { return ((*it_).iter_)->isNewDataset(); }
 	bool isMissing(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data()[i]; }
 	double missingValue(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue(); }

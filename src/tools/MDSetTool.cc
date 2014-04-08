@@ -76,15 +76,12 @@ void MDSetTool::run()
 	R reader(inFile, false);
 	const R::iterator end = reader.end();
 	R::iterator it = reader.begin();
-
 	
-	// Se if the file was created on a different order architecture
-
-
+	// See if the file was created on a different order architecture
 	for (; it != end; ++it)
 	{
 		ASSERT(it->isNewDataset());
-		MetaData& md = it->columns();
+		MetaData md (it->columns());
 		for (size_t i = 0; i < columns.size(); ++i)
 			md[md.columnIndex(columns[i])]->bitfieldDef(bitfieldDefs[i]);
 

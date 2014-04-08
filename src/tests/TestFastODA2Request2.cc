@@ -25,13 +25,12 @@ using namespace odb;
 static Length size1;
 static Length size2;
 
-Length createFile(const string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
+Length createFile(const std::string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
 {
 	{
 		odb::Writer<> oda(fileName);
 		odb::Writer<>::iterator row = oda.begin();
-		MetaData& md = row->columns();
-		md.setSize(3);
+		row->setNumberOfColumns(3);
 		row->setColumn(0, "antime", odb::INTEGER);
 		row->setColumn(1, "andate", odb::INTEGER);
 		row->setColumn(2, "reportype", odb::INTEGER);
@@ -95,7 +94,7 @@ static void test()
     ASSERT(size1 * 3 + size2 * 2 == handles[1]->end());
 
 	string r = o.genRequest();
-	Log::info() << "test: o.genRequest() => " << endl << r << std::endl;
+	Log::info() << "test: o.genRequest() => " << std::endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
 	Log::info() << "test: rowsNumber == " << n <<  std::endl;

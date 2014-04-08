@@ -43,7 +43,7 @@ static void test()
 	string r = o.genRequest();
 	unsigned long long n = o.rowsNumber();
 
-	Log::info() << "test: request is:" << endl << r << std::endl;
+	Log::info() << "test: request is:" << std::endl << r << std::endl;
 	Log::info() << "test: file has " << n << " rows(s)." << std::endl;
 
 	ASSERT(o.getValues("DATE").size() == 1);

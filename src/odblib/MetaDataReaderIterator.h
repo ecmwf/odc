@@ -47,7 +47,7 @@ namespace odb {
 namespace odb {
 
 
-class MetaDataReaderIterator : public RowsReaderIterator
+class MetaDataReaderIterator //: public RowsReaderIterator
 {
 public:
 
@@ -64,7 +64,8 @@ public:
 	void property(std::string, std::string);
 	std::string property(std::string);
 
-	virtual MetaData& columns() { return columns_; }
+	const MetaData& columns() { return columns_; }
+	const MetaData& columns(MetaData& md) { return columns_ = md; }
 
 	eckit::Offset blockStartOffset() { return blockStartOffset_; }
 	eckit::Offset blockEndOffset() { return blockEndOffset_; }

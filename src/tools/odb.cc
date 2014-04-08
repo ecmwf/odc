@@ -43,7 +43,7 @@ int executeCommand(int argc, char *argv[])
 		odb_start();
 		cerr << "Usage:" << endl
 			<< "        " << argv[0] << " <command> [<command's-parameters>]" << endl 
-			<< "        " << argv[0] << " help <command>" << endl << endl
+			<< "        " << argv[0] << " help <command>" << std::endl << endl
 			<< "Available commands:" << std::endl;
 
 		AbstractToolFactory::listTools(cout);
@@ -62,13 +62,13 @@ int executeCommand(int argc, char *argv[])
 		{
 			std::cout << "Testing C API" << std::endl;
 
-			string testCapi = string(argv[0]) + " testodbcapi";
+			string testCapi = std::string(argv[0]) + " testodbcapi";
 			cerr << "Executing '" << testCapi << "'" << std::endl;
 			int rc = system(testCapi.c_str());
 			if (rc) return rc;
 		}
 
-		std::cout << endl << "Running tests." << std::endl;
+		std::cout << std::endl << "Running tests." << std::endl;
 
 		odb::tool::test::TestRunnerApplication testRunner(argc - 1, argv + 1);
 		testRunner.start();
@@ -85,7 +85,7 @@ int executeCommand(int argc, char *argv[])
 		else
 		{
 			AbstractToolFactory::printToolHelp(argv[2], cout);
-			std::cout << endl << "Usage:" << endl << endl << "\t";
+			std::cout << std::endl << "Usage:" << std::endl << std::endl << "\t";
 			AbstractToolFactory::printToolUsage(argv[2], cout);
 		}
 		return 0;
@@ -111,19 +111,19 @@ int gdb(int argc, char *argv[])
 	string args;
 	string gdbScript = argv[1];
 	for (int i = 2; i < argc; i++)
-		args += string(" ") + argv[i];
+		args += std::string(" ") + argv[i];
 
-	PathName scriptFile = string(".gdb_") + string(argv[2]);
+	PathName scriptFile = std::string(".gdb_") + std::string(argv[2]);
     if (! scriptFile.exists())
 	{
-		string s = string("file ") + cmd + "\nbreak main\nrun " + args + "\ncatch throw\n";
+		string s = std::string("file ") + cmd + "\nbreak main\nrun " + args + "\ncatch throw\n";
 		FileHandle f(scriptFile);
 		f.openForWrite(1024);
 		f.write(s.c_str(), s.size());
 		f.close();
 	}
-	string vi = string("vi ") + scriptFile;
-	string gdb = string("gdb -x ") + scriptFile;
+	string vi = std::string("vi ") + scriptFile;
+	string gdb = std::string("gdb -x ") + scriptFile;
 	std::cout << "Executing '" << vi << "'" << std::endl;
     system(vi.c_str());
 	std::cout << "Executing '" << gdb << "'" << std::endl;
@@ -136,11 +136,11 @@ int valgrind(int argc, char *argv[])
 	string cmd = argv[0];
 	string args;
 	for (int i = 2; i < argc; i++)
-		args += string(" ") + argv[i];
+		args += std::string(" ") + argv[i];
 
 
-	string logFile = string("vg.") + argv[2] + ".log";
-	string vg = string("valgrind --log-file=") + logFile + " --show-reachable=yes --leak-check=full "
+	string logFile = std::string("vg.") + argv[2] + ".log";
+	string vg = std::string("valgrind --log-file=") + logFile + " --show-reachable=yes --leak-check=full "
          + " --db-attach=yes " // --suppressions=eckit.supp "
 		 + cmd + " " + args;
 	std::cout << "Executing '" << vg << "'" << std::endl;

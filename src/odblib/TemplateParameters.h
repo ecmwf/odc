@@ -49,12 +49,13 @@ private:
 class TemplateParameters : public std::vector<TemplateParameter*> {
 public:
 	TemplateParameters();
+	TemplateParameters(const std::string& fileNameTemplate, const MetaData& = nullMD);
 	~TemplateParameters();
+
 	void release();
 	static TemplateParameters& parse(const std::string& fileNameTemplate, TemplateParameters&, const MetaData& = nullMD);
 
 private:
-// No copy allowed.
 	TemplateParameters(const TemplateParameters&);
 	TemplateParameters& operator=(const TemplateParameters&);
 

@@ -74,13 +74,16 @@ void doMerge(std::vector<std::pair<I, I> >& iterators, const PathName& outputFil
 
 	for (size_t i = 0; i < iterators.size(); ++i)
 	{
-		MetaData& columns(iterators[i].first->columns());
+		MetaData columns (iterators[i].first->columns());
 
 		for (size_t i = 0; i < columns.size(); ++i)
 			if (out->columns().hasColumn(columns[i]->name()))
 				throw eckit::UserError(std::string("Column '") + columns[i]->name()
 					+ "' occurs in more than one input file of merge.");
-		out->columns() += columns;
+        MetaData md (out->columns());
+        md += columns;
+        out->columns(md);
+		//out->columns() += columns;
 	}
 
 	out->writeHeader();

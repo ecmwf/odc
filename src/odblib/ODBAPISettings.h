@@ -35,6 +35,9 @@ public:
     eckit::DataHandle* writeToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0), bool openDataHandle = true);
     eckit::DataHandle* appendToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0), bool openDataHandle = true);
 
+    void setHome(const char *argv0);
+    std::string fileInHome(const std::string&);
+
 	static bool debug;
 
 private:
@@ -47,6 +50,8 @@ private:
 	bool useAIO_;
 
     friend class eckit::NewAlloc0<ODBAPISettings>;
+    std::string home_;
+
 };
 
 } // namespace odb

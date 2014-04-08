@@ -29,7 +29,7 @@ template <>
 struct ODATranslator<std::string> {
 	std::string operator()(double n) {
 		std::string r = odb::StringTool::double_as_string(n);
-		eckit::Log::info(Here()) << "ODATranslator<string>::operator()(double n=" << n << ") => " << r << std::endl;
+		eckit::Log::info(Here()) << "ODATranslator<std::string>::operator()(double n=" << n << ") => " << r << std::endl;
 		return r;
 	}
 };

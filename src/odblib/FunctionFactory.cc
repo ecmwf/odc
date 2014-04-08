@@ -12,6 +12,7 @@
 
 #include "eckit/eckit.h"
 #include "eckit/thread/ThreadSingleton.h"
+ 
 #include "odblib/FunctionAND.h"
 #include "odblib/FunctionAVG.h"
 #include "odblib/FunctionCOUNT.h"
@@ -24,6 +25,7 @@
 #include "odblib/FunctionIntegerExpression.h"
 #include "odblib/FunctionJOIN.h"
 #include "odblib/FunctionJULIAN.h"
+#include "odblib/FunctionJULIAN_SECONDS.h"
 #include "odblib/FunctionMAX.h"
 #include "odblib/FunctionMIN.h"
 #include "odblib/FunctionNORM.h"
@@ -44,8 +46,6 @@
 #include "odblib/FunctionVAR.h"
 #include "odblib/piconst.h"
 
-using namespace eckit;
-
 namespace odb {
 namespace sql {
 namespace expression {
@@ -59,14 +59,14 @@ const double EPS          = 1e-7;
 const double D2R          = piconst::pi/180.0;
 const double R2D          = 180.0/piconst::pi;
 
-static ThreadSingleton<FunctionFactory> functionFactory_;
+static eckit::ThreadSingleton<FunctionFactory> functionFactory_;
 
 struct FFMap : public std::map<std::pair<std::string,int>, FunctionFactoryBase*> { static FFMap& instance(); };
-static ThreadSingleton<FFMap> map_;
+static eckit::ThreadSingleton<FFMap> map_;
 FFMap& FFMap::instance() { return map_.instance(); }
 
 struct SQLFunctionHelp : public std::map<std::pair<std::string,int>, std::string> { static SQLFunctionHelp& instance(); };
-static ThreadSingleton<SQLFunctionHelp> sqlFunctionsHelp_;
+static eckit::ThreadSingleton<SQLFunctionHelp> sqlFunctionsHelp_;
 SQLFunctionHelp& SQLFunctionHelp::instance() { return sqlFunctionsHelp_.instance(); }
 
 FunctionFactory& FunctionFactory::instance() { return functionFactory_.instance(); }
@@ -581,6 +581,7 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	static FunctionMaker<FunctionJULIAN> make_JULIAN("julian",2, "");
 	static FunctionMaker<FunctionJULIAN> make_JD("jd",2, "");
 	static FunctionMaker<FunctionJULIAN> make_JULIAN_DATE("julian_date",2, "");
+	static FunctionMaker<FunctionJULIAN_SECONDS> make_JULIAN_SECONDS("julian_seconds",2, "Returns time in Julian calendar expressed in seconds.");
 	static FunctionMaker<FunctionMAX> make_MAX("max",1, "");
 	static FunctionMaker<FunctionMIN> make_MIN("min",1, "");
 	static FunctionMaker<FunctionNORM> make_NORM("norm",2, "");

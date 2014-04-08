@@ -108,7 +108,7 @@ static void createDataForMixedAggregated2()
 {
     Writer<> out("selectAggregatedAndNonAggregated2.odb");
     Writer<>::iterator o = out.begin();
-    MetaData& md(o->columns());
+    MetaData md(o->columns());
 
     typedef DataStream<SameByteOrder, DataHandle> DS;
     md.addColumn<DS>("x", "INTEGER");//, true, .0);
@@ -224,11 +224,10 @@ static void regex1()
     //createDataForRegex1();
     odb::Select oda("select \"/a.*/\" from \"regex1.odb\";");
     odb::Select::iterator it = oda.begin();
-    MetaData& md(it->columns());
 
-    Log::info() << "regex1: " << md << std::endl;
+    Log::info() << "regex1: " << it->columns() << std::endl;
 
-    ASSERT(md.size() == 2);
+    ASSERT(it->columns().size() == 2);
 }
 //TESTCASE(regex1);
 

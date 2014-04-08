@@ -33,7 +33,7 @@ static void setUp()
 	odb::Writer<> oda("test_thin.odb");
 
 	odb::Writer<>::iterator row = oda.begin();
-	row->columns().setSize(1);
+	row->setNumberOfColumns(1);
 
 	row->setColumn(0, "lat", odb::REAL);
 	

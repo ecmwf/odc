@@ -17,13 +17,13 @@ struct Tables
         right("right", columns("right"))
     {}
 
-    static DataColumns columns(const string& name);
+    static DataColumns columns(const std::string& name);
 
     DataTable left;
     DataTable right;
 };
 
-DataColumns Tables::columns(const string& name)
+DataColumns Tables::columns(const std::string& name)
 {
     DataColumns columns;
 

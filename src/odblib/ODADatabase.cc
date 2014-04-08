@@ -36,6 +36,12 @@ SQLTable* ODADatabase::table(const std::string& name)
 {
 	std::map<std::string,SQLTable*>::iterator j = tablesByName_.find(name);
 
+    Log::info() << "ODADatabase::table(" << name << ") tablesByName_.size()==" << tablesByName_.size() << std::endl;
+    for (std::map<std::string,SQLTable*>::iterator it(tablesByName_.begin()); it != tablesByName_.end(); ++it)
+    {
+        Log::info() << " : " << it->first << std::endl;
+    }
+
 	if(j == tablesByName_.end())
 	{
 		// FIXME (?): path_ is '.'. ignore now

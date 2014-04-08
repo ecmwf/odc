@@ -27,7 +27,7 @@ class HashTable;
 class SQLIteratorSession;
 
 template <typename T>
-class ODAUpdatingIterator : public RowsReaderIterator
+class ODAUpdatingIterator //: public RowsReaderIterator
 {
 public:
 	//ODAUpdatingIterator (T& inputIterator, const T& end, const std::vector<size_t>& columnIndices, const std::vector<double>& values);
@@ -38,7 +38,8 @@ public:
 	bool isNewDataset();
 	double* data() { return data_; }
 
-	virtual MetaData& columns() { return ii_->columns(); }
+	const MetaData& columns() { return ii_->columns(); }
+	const MetaData& columns(MetaData& md) { return ii_->columns(md); }
 
     ODAUpdatingIterator& operator++() { next(); return *this; }
 

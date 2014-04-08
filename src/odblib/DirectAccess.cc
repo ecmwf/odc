@@ -95,7 +95,7 @@ void DirectAccess::initBlocks()
     size_t c = 0;
     for (; it != end; ++it)
     {
-        MetaData &md = it->columns();
+        const MetaData &md = it->columns();
         n += md.rowsNumber();
         blocks_.push_back(DirectAccessBlock(c++,
                                             md.rowsNumber(),
@@ -104,7 +104,7 @@ void DirectAccess::initBlocks()
                                             ));
     }
 
-    std::cout << "Rows " << BigNum(n) << endl;
+    std::cout << "Rows " << BigNum(n) << std::endl;
     eckit::Timer t("DirectAccessIterator::initBlocks (index)");
 
     ASSERT(size_t(n) == n);
@@ -128,7 +128,7 @@ void DirectAccess::readPart(DirectAccessBlock& b, Source& in)
     typename Source::iterator it = in.begin();
     typename Source::iterator end = in.end();
 
-    MetaData& md = it->columns();
+    const MetaData& md = it->columns();
 
     //std::cout << "SIZE " << md.size() << std::endl;
     //std::cout <<  md << std::endl;

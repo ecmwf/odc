@@ -38,7 +38,7 @@ ODAUpdatingIterator<T>::ODAUpdatingIterator (T& ii, const T& end, const std::vec
 template <typename T>
 void ODAUpdatingIterator<T>::updateIndices()
 {
-	MetaData& md = ii_->columns();
+	const MetaData& md (ii_->columns());
 
 	delete [] data_;
 	data_ = new double[md.size()];

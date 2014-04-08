@@ -40,11 +40,11 @@ void XYVTool::run()
     std::ofstream out;
 	out.open(outputFile.asString().c_str());
 
-	out << "#GEO" << endl << std::endl;
-	out << "#FORMAT XYV" << endl << std::endl;
-	out << "PARAMETER = 12004" << endl << std::endl; 
+	out << "#GEO" << std::endl << std::endl;
+	out << "#FORMAT XYV" << std::endl << std::endl;
+	out << "PARAMETER = 12004" << std::endl << std::endl; 
 	out << "x/long	y/lat	value" << std::endl;
-	out << "#DATA" << endl << std::endl;
+	out << "#DATA" << std::endl << std::endl;
 
 	std::string select = std::string("select lat, lon, ") + valueColumn + " from \"" + inputFile + "\";";
 	Log::info() << select << std::endl;

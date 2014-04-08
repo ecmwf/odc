@@ -29,29 +29,32 @@ namespace sql {
 class SchemaAnalyzer {
 
 public:
-	SchemaAnalyzer();
-	~SchemaAnalyzer();
 
-        void beginSchema(const std::string& name);
-        void endSchema();
-	void addTable(TableDef& table);
-	void addBitfieldType(const std::string name, const FieldNames& fields, const Sizes& sizes, const std::string typeSignature);
-	bool isBitfield(const std::string columnName) const; 
-	const BitfieldDef& getBitfieldTypeDefinition(const std::string columnName); 
+    SchemaAnalyzer();
+    ~SchemaAnalyzer();
+
+    void beginSchema(const std::string& name);
+    void endSchema();
+    void addTable(TableDef& table);
+    void addBitfieldType(const std::string& name, const FieldNames& fields, const Sizes& sizes, const std::string& typeSignature);
+    bool isBitfield(const std::string columnName) const; 
+    const BitfieldDef& getBitfieldTypeDefinition(const std::string columnName); 
     void updateBitfieldsDefs(MetaData &, std::map<std::string, std::string> &) const;
 
-        const TableDef* findTable(const std::string& name) const;
-	void skipTable(std::string tableName);
-	std::string generateSELECT() const;
-        Definitions generateDefinitions();
+    bool tableKnown(const std::string& name) const;
+    const TableDef& findTable(const std::string& name) const;
+    void skipTable(std::string tableName);
+    std::string generateSELECT() const;
+    Definitions generateDefinitions();
 
 private:
-        std::string currentSchema_;
-        SchemaDefs schemas_;
-	TableDefs tableDefs_;
-	BitfieldDefs bitfieldTypes_;
+    std::string currentSchema_;
+    SchemaDefs schemas_;
+    TableDefs tableDefs_;
+    BitfieldDefs bitfieldTypes_;
     std::set<std::string> tablesToSkip_;
     std::map<std::string,std::string> columnTypes_;
+
 };
 
 } // namespace sql

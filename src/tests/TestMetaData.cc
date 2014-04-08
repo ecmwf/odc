@@ -29,15 +29,15 @@ static void test()
 	md1.addColumn<DS>("A", "REAL");//, false, 0.);
 	md1.addColumn<DS>("B", "INTEGER");//, false, 0.);
 
-	Log::info() << "md1: " << endl << md1 << std::endl;
+	Log::info() << "md1: " << std::endl << md1 << std::endl;
 
 	MetaData md2(0);
 	md2.addColumn<DS>("C", "STRING");//, false, 0.);
 
-	Log::info() << "md2:" << endl << md2 << std::endl;
+	Log::info() << "md2:" << std::endl << md2 << std::endl;
 
 	MetaData sum = md1 + md2;
-	Log::info() << "md1 + md2: " << endl <<  sum << std::endl;
+	Log::info() << "md1 + md2: " << std::endl <<  sum << std::endl;
 
 	ASSERT(sum.size() == md1.size() + md2.size());
 	ASSERT(sum == md1 + md2);

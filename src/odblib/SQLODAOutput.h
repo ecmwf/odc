@@ -15,7 +15,10 @@
 #define SQLODAOutput_H
 
 #include "eckit/exception/Exceptions.h"
+
 #include "odblib/SQLOutput.h"
+#include "odblib/SQLBitfield.h"
+#include "odblib/MetaData.h"
 
 namespace odb {
 namespace sql {
@@ -26,7 +29,8 @@ template<typename ITERATOR>
 class SQLODAOutput : public SQLOutput {
 public:
 	SQLODAOutput(ITERATOR);
-	virtual ~SQLODAOutput(); 
+	SQLODAOutput(ITERATOR, const MetaData&);
+	virtual ~SQLODAOutput(); // Change to virtual if base class
 
 protected:
 	virtual void print(std::ostream&) const; 	
@@ -37,20 +41,11 @@ private:
 
 // -- Members
 	ITERATOR writer_;
-
-	//std::vector<std::string> columnNames_;
-	//std::vector<bool> isBitfield_;
-	//std::vector<BitfieldDef> bitfieldDefs_;
-	//std::vector<bool> hasMissingValue_;
-	//std::vector<double> missingValue_;
+    MetaData metaData_;
 
 	unsigned long long count_;
 
-// -- Methods
-	// None
-
 // -- Overridden methods
-
 	virtual void size(int);
 	virtual void reset();
 	virtual void flush();

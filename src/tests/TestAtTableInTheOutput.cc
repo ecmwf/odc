@@ -28,10 +28,9 @@ static void setUp()
 {
 	odb::Writer<> f("UnitTest.odb");
 	odb::Writer<>::iterator it = f.begin();
-    odb::MetaData& md = it->columns();
 
-	md.setSize(4);
-	it->setColumn(0, "lat@hdr", odb::REAL);
+    it->setNumberOfColumns(4);
+    it->setColumn(0, "lat@hdr", odb::REAL);
 	it->setColumn(1, "lon@hdr", odb::REAL);
 	it->setColumn(2, "obsvalue", odb::REAL);
 

@@ -31,13 +31,16 @@ namespace odb {
 class HashTable;
 class SQLIteratorSession;
 template <typename I> class Writer;
+namespace sql { class TableDef; }
 
-class WriterBufferingIterator : public RowsWriterIterator
+class WriterBufferingIterator //: public RowsWriterIterator
 {
 public:
 	typedef Writer<WriterBufferingIterator> Owner;
 
-	WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle=true);
+	//WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle=true);
+	WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle, const odb::sql::TableDef* tableDef=0);
+
 	~WriterBufferingIterator();
 
 	int open();
@@ -45,17 +48,20 @@ public:
 	double* data();
 	double& data(size_t i);
 
-    virtual int setColumn(size_t index, std::string name, ColumnType type);
-    virtual int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
+	int setColumn(size_t index, std::string name, ColumnType type);
+	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
 
 	void missingValue(size_t i, double); 
 
 	template <typename T> unsigned long pass1(T&, const T&);
 	unsigned long gatherStats(const double* values, unsigned long count);
 
-	virtual int close();
+	int close();
 
-	virtual MetaData& columns() { return columns_; }
+	const MetaData& columns() { return columns_; }
+	const MetaData& columns(const MetaData& md) { return columns_ = md; }
+
+    void setNumberOfColumns(size_t n) { columns_.setSize(n); }
 
 	Owner& owner() { return owner_; }
 
@@ -119,6 +125,8 @@ private:
 
 	codec::CodecOptimizer codecOptimizer_;
 
+    const odb::sql::TableDef* tableDef_;
+
 	friend class IteratorProxy<WriterBufferingIterator, Owner>;
 	friend class Header<WriterBufferingIterator>;
 };
@@ -129,9 +137,9 @@ void WriterBufferingIterator::pass1init(T& it, const T& end)
 	eckit::Log::info() << "WriterBufferingIterator::pass1init" << std::endl;
 
 	// Copy columns from the input iterator.
-	columns() = columnsBuffer_ = it->columns();
+	columns(columnsBuffer_ = it->columns());
 
-	columns().resetStats();
+	columns_.resetStats();
 	columnsBuffer_.resetStats();
 	
 	size_t nCols = it->columns().size();

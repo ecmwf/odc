@@ -14,11 +14,10 @@
 #include "eckit/thread/ThreadSingleton.h"
 #include "odblib/Expressions.h"
 #include "odblib/SQLOutputConfig.h"
+#include "odblib/SchemaAnalyzer.h"
 
-namespace eckit {
-class DataHandle;
+namespace eckit { class DataHandle; }
 
-}
 namespace odb {
 
     class DataTable;
@@ -35,11 +34,11 @@ public:
 
 	SQLSelect* create(bool distinct,
 		Expressions select_list,
-		std::string into,
+		const std::string& into,
 		std::vector<SQLTable*> from,
 		odb::sql::expression::SQLExpression *where,
 		Expressions group_by,
-		std::pair<Expressions,std::vector<bool> > order_by);
+        std::pair<Expressions,std::vector<bool> > order_by);
 
 	SQLExpression* createColumn(
 		const std::string& columnName,
@@ -82,6 +81,10 @@ private:
     eckit::DataHandle* implicitFromTableSource_;
 
     std::istream* implicitFromTableSourceStream_;
+
+    SchemaAnalyzer& analyzer();
+    MetaData columns(const std::string& tableName);
+    SQLOutput* createOutput(SQLSession&, const std::string& into, size_t orderBySize);
 
 	SQLDatabase* database_;
 	SQLOutputConfig config_;

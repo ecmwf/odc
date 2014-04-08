@@ -32,7 +32,6 @@ public:
 	SQLSession();
 	virtual ~SQLSession(); 
 
-
 	SQLDatabase& openDatabase(const eckit::PathName&,const std::string& name = "");
 	void closeDatabase(const std::string& name);
 
@@ -60,12 +59,8 @@ public:
 	static SQLSession& current();
 
 protected:
-
 	unsigned long long lastExecuteResult_;
-
 	unsigned long long execute(SQLStatement&);
-	
-	// void print(std::ostream&) const; 	
 
 private:
 // No copy allowed
@@ -73,17 +68,12 @@ private:
 	SQLSession(const SQLSession&);
 	SQLSession& operator=(const SQLSession&);
 
-// -- Members
-
 	SQLDatabase* current_;
-    std::map<int, double> params_;
 
-    std::map<std::string, SQLDatabase*> databases_;
+    std::map<int,double> params_;
 
-// -- Friends
+    std::map<std::string,SQLDatabase*> databases_;
 
-	//friend std::ostream& operator<<(std::ostream& s,const SQLSession& p)
-	//	{ p.print(s); return s; }
 };
 
 } // namespace sql

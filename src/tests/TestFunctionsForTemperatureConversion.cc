@@ -30,7 +30,7 @@ static void setUp()
 	odb::Writer<> oda("test_tempconv.odb");
 
 	odb::Writer<>::iterator row = oda.begin();
-	row->columns().setSize(3);
+	row->setNumberOfColumns(3);
 
 	row->setColumn(0, "kelvin_col", odb::REAL);
 	row->setColumn(1, "celsius_col", odb::REAL);

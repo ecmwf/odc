@@ -79,7 +79,7 @@ std::string GribCodes::alphanumeric(const std::string& keyword, const std::strin
 
 GribCodesBase::GribCodesBase(const PathName& fileName)
 : configFileName_(
-	std::string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
+	std::string(Resource<std::string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
 	+ std::string("/etc/")
 	+ fileName),
   fieldDelimiter_(" \t"),
@@ -91,7 +91,7 @@ GribCodesBase::GribCodesBase(const PathName& fileName)
 
 GribCodesBase::GribCodesBase(const PathName& fileName, const std::string& fieldDelimiter)
 : configFileName_(
-	std::string(Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
+	std::string(Resource<std::string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current"))
 	+ std::string("/etc/")
 	+ fileName),
   fieldDelimiter_(fieldDelimiter),

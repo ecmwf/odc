@@ -27,7 +27,7 @@ static void test()
 {
 	const string fileName = "2000010106.odb";
 
-	Timer t(string("test: reading file '") + fileName + "'");
+	Timer t(std::string("test: reading file '") + fileName + "'");
 
 	odb::Reader f(fileName);
 	odb::Reader::iterator it = f.begin();

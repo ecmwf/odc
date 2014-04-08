@@ -115,9 +115,9 @@ void AbstractToolFactory::printToolsHelp(std::ostream &s)
 		{
 				s << toolName << ":\t";
 				toolFactory->help(s);
-				s << endl << "Usage:" << endl << "\t";
+				s << std::endl << "Usage:" << std::endl << "\t";
 				toolFactory->usage(toolName, s);
-				s << endl << std::endl;
+				s << std::endl << std::endl;
 		}
 	}
 }

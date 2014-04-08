@@ -40,7 +40,7 @@ public:
 	typedef ITERATOR iterator_class;
 	typedef IteratorProxy<ITERATOR, Writer> iterator;
 
-	Writer(const eckit::PathName path);
+	Writer(const eckit::PathName& path);
 	Writer(eckit::DataHandle &, bool openDataHandle=true);
 	Writer(eckit::DataHandle *, bool openDataHandle=true, bool deleteDataHandle=false);
 	Writer();
@@ -55,9 +55,6 @@ public:
 	unsigned long rowsBufferSize() { return rowsBufferSize_; }
 	Writer& rowsBufferSize(unsigned long n) { rowsBufferSize_ = n; }
 
-protected:
-	ITERATOR* writer(bool fixedSizeRows = false);
-
 private:
 // No copy allowed
     Writer(const Writer&);
@@ -70,22 +67,6 @@ private:
 	bool openDataHandle_;
 	bool deleteDataHandle_;
 };
-
-/*
-template <typename INPUT_ITERATOR, typename OUTPUT_ITERATOR>
-Writer<OUTPUT_ITERATOR>& operator<< (Writer<OUTPUT_ITERATOR>&, INPUT_ITERATOR);
-
-template <typename INPUT_ITERATOR, typename OUTPUT_ITERATOR>
-Writer<OUTPUT_ITERATOR>& operator<< (Writer<OUTPUT_ITERATOR>& writer, INPUT_ITERATOR in)
-{
-	typename Writer<OUTPUT_ITERATOR>::iterator outIt = writer.begin(false);
-
-	INPUT_ITERATOR i1 = in;
-	outIt->pass1(*i1);
-	
-	return writer;
-}
-*/
 
 } // namespace odb
 

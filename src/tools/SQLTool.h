@@ -40,7 +40,9 @@ public:
         o << "             [-f default|wide|odb] ODB output format (default is ascii; odb is binary ODB, wide is ascii with"
 												<< " bitfields definitions in header)" << std::endl;
         o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << std::endl; 
-        o << "                                   delim can be any character or std::string" << std::endl;
+        o << "                                   delim can be any character or string" << std::endl;
+        o << "             [--binary]            Print bitfields in binary notation" << std::endl;
+        o << "             [--no_alignment]      Do not align columns" << std::endl;
 	}
 
 private:

@@ -32,7 +32,7 @@ static void setUp()
 	odb::Writer<> oda("test_tdiff.odb");
 
 	odb::Writer<>::iterator row = oda.begin();
-	row->columns().setSize(2);
+	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "date", odb::INTEGER);
 	row->setColumn(1, "time", odb::INTEGER);

@@ -28,7 +28,7 @@ static void setUp()
 	{
 		odb::Writer<> f("UnitTest.odb");
 		odb::Writer<>::iterator it = f.begin();
-		it->columns().setSize(1);
+        it->setNumberOfColumns(1);
 		it->setColumn(0, "a", odb::REAL);
 		it->writeHeader();
 		(*it)[0] = 1;
@@ -37,7 +37,7 @@ static void setUp()
 	{
 		odb::Writer<> f("UnitTest.odb");
 		odb::Writer<>::iterator it = f.begin();
-		it->columns().setSize(1);
+        it->setNumberOfColumns(1);
 		it->setColumn(0, "b", odb::REAL);
 		it->writeHeader();
 		(*it)[0] = 2;
@@ -54,8 +54,7 @@ static void test()
 	odb::Select::iterator it = s.begin();
 	odb::Select::iterator end = s.end();
 
-	MetaData& md = it->columns();
-	ASSERT(md.size() == 2);
+    ASSERT(it->columns().size() == 2);
 
 	unsigned long i = 0;
 	for (; it != end; ++it)

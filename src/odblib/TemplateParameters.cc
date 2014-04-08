@@ -34,6 +34,11 @@ void TemplateParameters::release()
 
 MetaData TemplateParameters::nullMD(0);
 
+TemplateParameters::TemplateParameters(const std::string& fileNameTemplate, const MetaData& columns)
+{
+    parse(fileNameTemplate, *this, columns);
+}
+
 TemplateParameters& TemplateParameters::parse(const std::string& fileNameTemplate, TemplateParameters& params, const MetaData& columns)
 {
 	const std::string &t = fileNameTemplate;

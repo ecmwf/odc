@@ -23,41 +23,62 @@ namespace sql {
 class SQLOutputConfig {
 public:
 	SQLOutputConfig(const SQLOutputConfig& that)
-	: doNotWriteColumnNames(that.doNotWriteColumnNames),
-	  doNotWriteNULL(that.doNotWriteNULL),
-	  fieldDelimiter(that.fieldDelimiter),
-	  outputFile(that.outputFile),
-	  outputFormat(that.outputFormat)
+	: doNotWriteColumnNames_(that.doNotWriteColumnNames_),
+	  doNotWriteNULL_(that.doNotWriteNULL_),
+	  fieldDelimiter_(that.fieldDelimiter_),
+	  outputFile_(that.outputFile_),
+	  outputFormat_(that.outputFormat_),
+      displayBitfieldsBinary_(that.displayBitfieldsBinary_),
+      disableAlignmentOfColumns_(that.disableAlignmentOfColumns_)
 	{}
 
 	SQLOutputConfig& operator=(const SQLOutputConfig& that)
 	{
-		doNotWriteColumnNames = that.doNotWriteColumnNames;
-		doNotWriteNULL = that.doNotWriteNULL;
-		fieldDelimiter = that.fieldDelimiter;
-		outputFile = that.outputFile;
-		outputFormat = that.outputFormat;
+		doNotWriteColumnNames_ = that.doNotWriteColumnNames_;
+		doNotWriteNULL_ = that.doNotWriteNULL_;
+		fieldDelimiter_ = that.fieldDelimiter_;
+		outputFile_ = that.outputFile_;
+		outputFormat_ = that.outputFormat_;
+        displayBitfieldsBinary_ = that.displayBitfieldsBinary_;
+        disableAlignmentOfColumns_ = that.disableAlignmentOfColumns_;
 		return *this;
 	}
 
 
-	SQLOutputConfig(bool cn = false, bool n = false, const std::string& d = defaultDelimiter_, 
-                    const std::string& output = defaultOutputFile_, const std::string& format = defaultFormat_)
-	: doNotWriteColumnNames(cn),
-	  doNotWriteNULL(n),
-	  fieldDelimiter(d),
-      outputFile(output),
-      outputFormat(format)
+	SQLOutputConfig(bool cn = false,
+                    bool n = false,
+                    const std::string& d = defaultDelimiter_,
+                    const std::string& output = defaultOutputFile_,
+                    const std::string& format = defaultFormat_,
+                    bool displayBitfieldsBinary = false,
+                    bool disableAlignmentOfColumns = false)
+	: doNotWriteColumnNames_(cn),
+	  doNotWriteNULL_(n),
+	  fieldDelimiter_(d),
+      outputFile_(output),
+      outputFormat_(format),
+      displayBitfieldsBinary_(displayBitfieldsBinary),
+      disableAlignmentOfColumns_(disableAlignmentOfColumns)
 	{}
+
+	bool doNotWriteColumnNames () const { return doNotWriteColumnNames_; }
+	bool doNotWriteNULL () const { return  doNotWriteNULL_; }
+    const std::string& fieldDelimiter() const { return fieldDelimiter_; }
+    const std::string& outputFile () const { return outputFile_; }
+    const std::string& outputFormat () const { return outputFormat_; }
+    bool displayBitfieldsBinary () const { return displayBitfieldsBinary_; }
+    bool disableAlignmentOfColumns () const { return disableAlignmentOfColumns_; }
 
 	static const SQLOutputConfig& defaultConfig() { return defaultConfig_; }
 
-//private:
-	bool doNotWriteColumnNames;
-	bool doNotWriteNULL;
-	std::string fieldDelimiter;
-	std::string outputFile;          // -o
-	std::string outputFormat;        // -f
+private:
+	bool doNotWriteColumnNames_;
+	bool doNotWriteNULL_;
+    std::string fieldDelimiter_;
+    std::string outputFile_;          // -o
+    std::string outputFormat_;        // -f
+    bool displayBitfieldsBinary_;     // --binary
+    bool disableAlignmentOfColumns_;  // --no_alignment
 
 	static const SQLOutputConfig defaultConfig_;
 	static const char* defaultDelimiter_;

@@ -160,13 +160,25 @@ void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, std::vector<SQLT
     from.push_back(table);
 }
 
+
+SchemaAnalyzer& SQLSelectFactory::analyzer()
+{ return SQLSession::current().currentDatabase().schemaAnalyzer(); }
+
+MetaData SQLSelectFactory::columns(const std::string& tableName)
+{
+    const TableDef& tabledef ( analyzer().findTable(tableName) );
+    const ColumnDefs& columnDefs ( tabledef.columns() );
+
+    "TODO: Convert ColumnDefs (from tabledef) into MetaData and push it into the SQLODAOutput";
+}
+
 SQLSelect* SQLSelectFactory::create (bool distinct,
 	Expressions select_list,
-	std::string into,
+	const std::string& into,
 	std::vector<SQLTable*> from,
 	SQLExpression *where,
 	Expressions group_by,
-	std::pair<Expressions,std::vector<bool> > order_by)
+    std::pair<Expressions,std::vector<bool> > order_by)
 {
     //TODO: if(verbose_) {...}
     std::ostream& L(Log::debug());
@@ -210,32 +222,70 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	if (group_by.size())
 		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << std::endl;
 
-	TemplateParameters templateParameters;
-    std::string outputFile = (config_.outputFormat == "odb") ? config_.outputFile : into;
-	TemplateParameters::parse(outputFile, templateParameters);
-	if (templateParameters.size() == 0)
-	{
-		Writer<> dump(outputFile);
-		SQLOutput *out = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<Writer<>::iterator>(dump.begin());
+    SQLOutput *out (createOutput(session, into, order_by.first.size()));
 
-		if(distinct) { out = new SQLDistinctOutput(out); }
-		if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
-		r = new SQLSelect(select, from, where, out, config_);
-	}
-	else
-	{
-		// TODO? make the constant  (maxOpenFiles) passed to DispatchingWriter configurable
-		DispatchingWriter dump(outputFile, order_by.first.size() ? 1 : 100);
-		SQLOutput *out = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<DispatchingWriter::iterator>(dump.begin());
+    if(distinct)             { out = new SQLDistinctOutput(out); }
+    if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
+    r = new SQLSelect(select, from, where, out, config_);
 
-		if(distinct)        { out = new SQLDistinctOutput(out); }
-		if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
-		r = new SQLSelect(select, from, where, out, config_);
-	}
 	maxColumnShift_ = 0;
 	return r;
 }
 
+MetaData toODAColumns(const odb::sql::TableDef& tableDef)
+{
+    std::ostream& L(eckit::Log::info());
+
+    L << "tableDef_ -> columns_" << std::endl;
+    odb::sql::ColumnDefs columnDefs (tableDef.columns());
+    MetaData md(0); //(columnDefs.size());
+    for (size_t i(0); i < columnDefs.size(); ++i)
+    {
+        odb::sql::ColumnDef& c (columnDefs[i]);
+        L << "   " << c.name() << ":" << c.type() << std::endl; //"(" << Column::columnTypeName(type) << ")" << std::endl;
+
+        typedef DataStream<SameByteOrder, DataHandle> DS;
+        ColumnType type (Column::type(c.type()));
+        if (type == BITFIELD)
+            md.addBitfield<DS>(c.name(), c.bitfieldDef());
+        else
+            md.addColumn<DS>(c.name(), c.type());
+
+        ASSERT( &md[i]->coder() );
+    }
+    L << "toODAColumns ==> " << std::endl << md << std::endl;
+    return md;
+}
+
+SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const std::string& into, size_t orderBySize)
+{
+    SQLOutput *r (NULL);
+
+    TemplateParameters templateParameters;
+    std::string outputFile = (config_.outputFormat() == "odb") ? config_.outputFile() : into;
+    TemplateParameters::parse(outputFile, templateParameters);
+	if (templateParameters.size())
+	{
+		// TODO? make the constant  (maxOpenFiles) passed to DispatchingWriter configurable
+		DispatchingWriter writer(outputFile, orderBySize  ? 1 : 100);
+        // TODO: use SQLSession::output
+		r = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<DispatchingWriter::iterator>(writer.begin());
+	} else {
+        if (outputFile == "") r = session.defaultOutput();
+        else {
+            SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());
+            if (! a.tableKnown(outputFile)) 
+                r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin());
+            else
+            {
+                Log::info() << "Table in the INTO clause known (" << outputFile << ")" << std::endl;
+                const odb::sql::TableDef* tableDef (&a.findTable(outputFile));
+                r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin(), toODAColumns(*tableDef));
+            } 
+        }
+    }
+    return r;
+}
 
 } // namespace sql
 } // namespace odb

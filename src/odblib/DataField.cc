@@ -23,7 +23,7 @@ std::ostream& operator<<(std::ostream& stream, const DataField& field)
         case INTEGER: stream << field.as<long>();
         case REAL:    stream << field.as<float>();
         case DOUBLE:  stream << field.as<double>();
-        case STRING:  stream << field.as<string>();
+        case STRING:  stream << field.as<std::string>();
         case BITFIELD:
             stream << hex << setiosflags(ios_base::showbase);
             stream << field.as<unsigned int>();

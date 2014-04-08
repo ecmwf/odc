@@ -33,7 +33,7 @@ static void setUp()
 	odb::Writer<> oda("test_angleconv.odb");
 
 	odb::Writer<>::iterator row = oda.begin();
-	row->columns().setSize(2);
+	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "radian_col", odb::REAL);
 	row->setColumn(1, "degrees_col", odb::REAL);

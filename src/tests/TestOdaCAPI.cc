@@ -62,7 +62,7 @@ static int test_odacapi_setup()
     odb::Writer<> oda("test.odb");
 
     odb::Writer<>::iterator writer = oda.begin();
-    writer->columns().setSize(2);
+    writer->setNumberOfColumns(2);
 
     writer->setColumn(0, "ifoo", odb::INTEGER);
     writer->setColumn(1, "nbar", odb::REAL);

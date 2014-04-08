@@ -19,16 +19,27 @@ namespace odb {
 namespace sql {
 
 template<typename ITERATOR>
-SQLODAOutput<ITERATOR>::SQLODAOutput(ITERATOR writer):
-	writer_(writer),
-	count_(0)
+SQLODAOutput<ITERATOR>::SQLODAOutput(ITERATOR writer, const MetaData& columns)
+: writer_(writer), count_(0), metaData_(0)
+{
+    eckit::Log::info() << " => SQLODAOutput::SQLODAOutput: columns = " << columns << std::endl;
+    metaData_ = columns;
+    eckit::Log::info() << " <= SQLODAOutput::SQLODAOutput" << std::endl;
+}
+
+template<typename ITERATOR>
+SQLODAOutput<ITERATOR>::SQLODAOutput(ITERATOR writer)
+: writer_(writer), count_(0), metaData_(0)
 {}
 
 template<typename ITERATOR>
 SQLODAOutput<ITERATOR>::~SQLODAOutput() {}
 
 template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::print(std::ostream& s) const { s << "SQLODAOutput"; }
+void SQLODAOutput<ITERATOR>::print(std::ostream& s) const
+{ 
+    s << "SQLODAOutput: writer: " << writer_ << " metaData_: " <<  metaData_ << std::endl;;
+}
 
 template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::size(int) {}
@@ -61,43 +72,44 @@ bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results)
 }
 
 template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql)
-{
-    using eckit::Log;
-    
+void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql) {
 	const expression::Expressions& columns (sql.output());
-	size_t n = columns.size();
+    size_t n = columns.size();
 
-	writer_->columns().setSize(n);
-	for(size_t i = 0; i < n; i++)
-	{
-		SQLExpression& c = *columns[i];
-		//results[i]->title(columnNames_[i]);
+    std::ostream& L(eckit::Log::info());
 
-		std::string name = c.title();
-		const type::SQLType& type = *c.type();
-		std::string t = type.name();
-		ColumnType typ =
-			t == "integer" ? INTEGER
-			: t == "std::string" ? STRING
-			: t == "real" ? REAL
-			: t == "double" ? DOUBLE
-			: t.find("Bitfield") == 0 ? BITFIELD
-			: IGNORE;
+    if (metaData_.size()) {
+        L << "SQLODAOutput: Using meta of INTO table" << std::endl;
+        ASSERT(metaData_.size() == n);
+        const_cast<MetaData&>(writer_->columns()) = metaData_;
+    }
+    else
+    {
+        const_cast<MetaData&>(writer_->columns()).setSize(n);
+        for(size_t i = 0; i < n; i++)
+        {
+            SQLExpression& c(*columns[i]);
+            std::string name(c.title());
+            const type::SQLType& type(*c.type());
+            std::string t(type.name());
+            ColumnType typ =
+                t == "integer" ? INTEGER
+                : t == "string" ? STRING
+                : t == "real" ? REAL
+                : t == "double" ? DOUBLE
+                : t.find("Bitfield") == 0 ? BITFIELD
+                : IGNORE;
 
-		Log::debug(Here()) << "SQLODAOutput::output: " << i << " " << name
-			<< " hasMissingValue: " << (c.hasMissingValue() ? "true" : "false")
-			<< ", missingValue: " << c.missingValue() << std::endl;
+            if (! (typ == BITFIELD))
+                (**writer_).setColumn(i, name, typ);
+            else
+                (**writer_).setBitfieldColumn(i, name, typ, c.bitfieldDef());
 
-		if (! (typ == BITFIELD))
-			(**writer_).setColumn(i, name, typ);
-		else
-			(**writer_).setBitfieldColumn(i, name, typ, c.bitfieldDef());
-
-		(**writer_).missingValue(i, c.missingValue());
-	}
-	Log::debug(Here()) << "SQLODAOutput::output: write header" << std::endl;
-	(**writer_).writeHeader();
+            (**writer_).missingValue(i, c.missingValue());
+        }
+    }
+    (**writer_).writeHeader();
+    L << " => SQLODAOutput: " << std::endl << (**writer_).columns() << std::endl;
 }
 
 

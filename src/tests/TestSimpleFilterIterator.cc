@@ -33,7 +33,7 @@ using namespace odb;
 static void test()
 {
 	const string fileName = "2000010106.odb";
-	string sql = string("select * from \"") + fileName + "\" where obstype = 7;";
+	string sql = std::string("select * from \"") + fileName + "\" where obstype = 7;";
 	long n0 = 0;
 	long n1 = 0;
 	long n2 = 0;

@@ -10,6 +10,8 @@
 
 
 #include "eckit/eckit.h"
+#include "eckit/parser/StringTools.h"
+
 #include "odblib/Column.h"
 
 using namespace eckit;
@@ -19,7 +21,7 @@ namespace odb {
 Column::Column(MetaData &owner)
 : owner_(owner),
   name_(),
-  type_(IGNORE/*?*/),
+  type_(IGNORE),
   coder_(0),
   bitfieldDef_()
 {}
@@ -36,7 +38,7 @@ Column::Column(const Column& o)
 
 Column::~Column()
 {
-	//cerr << "Column::~Column():@" << this  << ", name= " << name_ << endl << std::endl;
+    //cerr << "Column::~Column():@" << this  << ", name= " << name_ << std::endl << std::endl;
 	delete coder_; 
 }
 
@@ -70,12 +72,13 @@ const char *Column::columnTypeName(ColumnType type)
 
 ColumnType Column::type(const std::string& t)
 {
-	if (t == "IGNORE") return IGNORE;
-	if (t == "INTEGER") return INTEGER;
-	if (t == "REAL") return REAL;
-	if (t == "DOUBLE") return DOUBLE;
-	if (t == "STRING") return STRING;
-	if (t == "BITFIELD") return BITFIELD;
+    std::string ut(StringTools::upper(t));
+	if (ut == "IGNORE") return IGNORE;
+	if (ut == "INTEGER") return INTEGER;
+	if (ut == "REAL") return REAL;
+	if (ut == "DOUBLE") return DOUBLE;
+	if (ut == "STRING") return STRING;
+	if (ut == "BITFIELD") return BITFIELD;
 
 	Log::error() << "Unknown type: '" << t << "'" << std::endl;
 	ASSERT(0 && "Unknown type");

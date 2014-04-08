@@ -91,7 +91,7 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 	for ( ; it != end; ++it)
 	{
 		ASSERT(it->isNewDataset());
-		MetaData &md = it->columns();
+		const MetaData &md (it->columns());
 		++mds;
 
 		eckit::Offset startOffset = (**it).blockStartOffset(), endOffset = (**it).blockEndOffset();

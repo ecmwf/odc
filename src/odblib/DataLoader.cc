@@ -116,7 +116,7 @@ void DataLoader::fillFromText(DataSet& dataset)
 
     TextReader reader(*stream_, ","); // FIXME: delimiter is hardcoded now
     TextReader::iterator source = reader.begin();
-    MetaData& metadata = source->columns();
+    const MetaData& metadata = source->columns();
 
     DataSetBuilder builder(metadata, mappings_, true);
     builder.build(dataset);
@@ -137,7 +137,7 @@ void DataLoader::fillFromBinary(DataSet& dataset)
 
     Reader reader(*handle_);
     Reader::iterator source = reader.begin();
-    MetaData& metadata = source->columns();
+    const MetaData& metadata (source->columns());
 
     DataSetBuilder builder(metadata, mappings_, true);
     builder.build(dataset);

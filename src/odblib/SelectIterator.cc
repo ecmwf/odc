@@ -56,7 +56,6 @@ SelectIterator::SelectIterator(Select &owner, std::string select)
 	if (owner.dataIStream())
 		parse(owner.dataIStream());
 	else
-		// TODO: SelectIterator should be templatizec with DATASTREAM and the parameter used below
 		parse<DataStream<SameByteOrder, DataHandle> >(owner.dataHandle());
 }
 
@@ -68,7 +67,6 @@ void SelectIterator::parse(typename DATASTREAM::DataHandleType *dh)
 	sql::SQLParser p;
 	p.parseString(select_, dh, odb::sql::SQLSelectFactory::instance().config());
 	sql::SQLStatement *stmt = session_.statement();
-
 
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
 	ASSERT(selectStmt_);
@@ -177,7 +175,7 @@ double& SelectIterator::data(size_t i)
 	return data_[i];
 }
 
-MetaData& SelectIterator::columns()
+const MetaData& SelectIterator::columns()
 {
 	ASSERT(metaData_);
 	return *metaData_;

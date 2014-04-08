@@ -32,10 +32,7 @@ unsigned long long CountTool::fastRowCount(const PathName &db)
 	MDR::iterator it = mdReader.begin();
 	MDR::iterator end = mdReader.end();
 	for (; it != end; ++it)
-	{
-		MetaData &md = it->columns();
-		n += md.rowsNumber();
-	}
+		n += it->columns().rowsNumber();
 	return n;
 }
 

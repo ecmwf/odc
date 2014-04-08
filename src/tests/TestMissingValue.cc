@@ -29,9 +29,9 @@ static void setUp()
 
 	odb::Writer<> f("UnitTest.odb");
 	odb::Writer<>::iterator it = f.begin();
-	MetaData& md = it->columns();
 
-	md.setSize(2);
+    it->setNumberOfColumns(2);
+
 	it->setColumn(0, "lat@hdr", odb::REAL);
 	it->missingValue(0, 1);
 
@@ -92,8 +92,7 @@ static void test()
 		odb::Reader::iterator it = f.begin();
 		odb::Reader::iterator end = f.end();
 
-		MetaData& md = it->columns();
-		Column& column = *md[0];
+        Column& column = *it->columns()[0];
 		codec::Codec& codec = column.coder();
 
 		Log::info() << "test: codec: " << codec << std::endl;	

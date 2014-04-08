@@ -86,9 +86,7 @@ SQLTable* SQLSelect::findTable(const std::string& name,
 	Log::debug() << "SQLSelect::findTable: name='" << name << "', fullName=" << (fullName ? (std::string("'")+ *fullName+"'") : "") << std::endl;
 
 	return *names.begin();
-		
 }
-
 
 std::pair<double,bool>* SQLSelect::column(const std::string& name, SQLTable* table)
 {

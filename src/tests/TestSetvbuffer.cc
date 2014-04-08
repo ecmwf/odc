@@ -35,8 +35,8 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 	odb::Writer<> oda("UnitTest.odb");
 	odb::Writer<>::iterator row = oda.begin();
 
-	MetaData& md = row->columns();
-	md.setSize(numberOfColumns);
+    row->setNumberOfColumns(numberOfColumns);
+
 	for (size_t i = 0; i < numberOfColumns; ++i)
 	{
 		stringstream name;

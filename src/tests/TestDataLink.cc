@@ -64,7 +64,7 @@ FilledTables::~FilledTables()
         delete result[i];
 }
 
-DataColumns FilledTables::columns(const string& name)
+DataColumns FilledTables::columns(const std::string& name)
 {
     DataColumns columns;
 

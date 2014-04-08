@@ -369,13 +369,13 @@ column_reference: IDENT table_reference { $$ = $1 + $2; }
 
 create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list constraint_list ')' inherits
 	{
-		bool temporary($2);
-                std::string name($4);
-		ColumnDefs cols ($7);
-                std::vector<std::string> inheritance($10);
-		TableDef tableDef(name, cols, $8, inheritance);
-		SQLSession& s  = SQLSession::current();
-		s.currentDatabase().schemaAnalyzer().addTable(tableDef);
+        bool temporary($2);
+		std::string name($4);
+        ColumnDefs cols ($7);
+		std::vector<std::string> inheritance($10);
+        TableDef tableDef(name, cols, $8, inheritance);
+        SQLSession& s  = SQLSession::current();
+        s.currentDatabase().schemaAnalyzer().addTable(tableDef);
 	}
 	;
 

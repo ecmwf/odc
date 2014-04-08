@@ -1,14 +1,18 @@
 /// @file   UnitTest.cc
 /// @author Tomas Kral
 
+#include <string>
+
+#include "eckit/filesystem/TmpFile.h"
+#include "eckit/testing/UnitTest.h"
+
 #include "odblib/DataLoader.h"
 #include "odblib/DataSaver.h"
 #include "odblib/DataSet.h"
 #include "odblib/DataStream.h"
 #include "odblib/DataTable.h"
 #include "odblib/Reader.h"
-#include "eckit/filesystem/TmpFile.h"
-#include "eckit/testing/UnitTest.h"
+#include "odblib/MetaData.h"
 
 #include "odblib/UnsafeInMemoryDataHandle.h"
 #include "odblib/Writer.h"
@@ -16,8 +20,6 @@
 using namespace std;
 using namespace odb;
 using namespace eckit;
-
-
 
 typedef odb::DataStream<odb::SameByteOrder, odb::PrettyFastInMemoryDataHandle> DS;
 
@@ -40,10 +42,13 @@ Fixture::Fixture()
     odb::Writer<> writer(input);
     odb::Writer<>::iterator it = writer.begin();
 
-    it->columns().addColumn<DS>("parent_id@parent", "INTEGER");
-    it->columns().addColumn<DS>("child.offset@parent", "INTEGER");
-    it->columns().addColumn<DS>("child.len@parent", "INTEGER");
-    it->columns().addColumn<DS>("child_id@child", "INTEGER");
+    odb::MetaData md (it->columns());
+
+    md.addColumn<DS>("parent_id@parent", "INTEGER");
+    md.addColumn<DS>("child.offset@parent", "INTEGER" );
+    md.addColumn<DS>("child.len@parent", "INTEGER" );
+    md.addColumn<DS>("child_id@child", "INTEGER" );
+    it->columns(md);
     it->writeHeader();
 
     for (int ordinal = 0; ordinal < TOTAL_ROWS_COUNT; ++ordinal, ++it)

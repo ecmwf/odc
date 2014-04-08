@@ -21,9 +21,6 @@ namespace eckit { class PathName; }
 
 namespace odb {
 
-//class Column;
-//class BitfieldDef;
-
 typedef std::vector<Column*> MetaDataBase;
 
 class MetaData : public MetaDataBase {
@@ -35,10 +32,10 @@ public:
 
 	static MetaData scanFile(const eckit::PathName&);
 
-	unsigned long long rowsNumber() { return rowsNumber_; }
+	unsigned long long rowsNumber() const { return rowsNumber_; }
 	void rowsNumber(unsigned long long n) { rowsNumber_ = n; }
 
-	unsigned long long dataSize() { return dataSize_; }
+	unsigned long long dataSize() const { return dataSize_; }
 	void dataSize(unsigned long long n) { dataSize_ = n; }
 
 	MetaData& operator=(const MetaData&);
@@ -68,6 +65,7 @@ public:
 	Column* columnByName(const std::string&) const;
 	size_t columnIndex(const std::string&) const;
 
+    static odb::ColumnType convertType(const std::string&);
 #ifdef SWIGPYTHON
 	std::string __str__()
 	{

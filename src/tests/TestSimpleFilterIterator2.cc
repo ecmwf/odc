@@ -28,7 +28,7 @@ using namespace odb;
 static void test()
 {
 	const string fileName = "2000010106.odb";
-	string sql = string("select * from \"") + fileName + "\" where obstype = 7 and sensor = 1;";
+	string sql = std::string("select * from \"") + fileName + "\" where obstype = 7 and sensor = 1;";
 	odb::Reader oda(fileName);
 	odb::Select odas(sql, fileName);
 	long n1 = 0;

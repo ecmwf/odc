@@ -206,6 +206,8 @@ int ODBIterator::setColumn(unsigned long index, std::string& name, odb::ColumnTy
 //const char* defaultSQL = "select {!/LINK/} from hdr,body,errstat";
 PathName ODBIterator::schemaFile(const PathName db)
 {
+    Log::info() << "ODBIterator::schemaFile: db=" << db << endl;
+
 	std::string d = db;
 
 	if (d[d.size() - 1] != '/')

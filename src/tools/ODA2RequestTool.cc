@@ -44,7 +44,7 @@ ODA2RequestTool::~ODA2RequestTool() {}
 
 void ODA2RequestTool::help(std::ostream &o) { o << "Creates MARS ARCHIVE request for a given file"; }
 
-void ODA2RequestTool::usage(const string& name, std::ostream &o)
+void ODA2RequestTool::usage(const std::string& name, std::ostream &o)
 {
 	o << name << " [-c configFile] [-q] <input-file.odb> [<output-file>]";
 }
@@ -87,7 +87,7 @@ void ODA2RequestTool::run()
 
 PathName ODA2RequestTool::config()
 {
-	string ODB_API_HOME = Resource<string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current");
+	string ODB_API_HOME = Resource<std::string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current");
 	return optionArgument("-c", ODB_API_HOME + "//etc//ODA2RequestTool.cfg");
 }
 
@@ -105,18 +105,18 @@ void ODA2RequestTool::readConfig(const PathName& fileName)
 	parseConfig(s);
 }
 
-void ODA2RequestTool::parseConfig(const string& s)
+void ODA2RequestTool::parseConfig(const std::string& s)
 {
 	Log::debug() << "ODA2RequestTool::parseConfig: '" << s << "'" << std::endl;
 
-    vector<string> lines;
+    vector<std::string> lines;
     Tokenizer("\n")(s, lines);
 
     Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
 	{
 		//Log::debug() << "ODA2RequestTool::readConfig: '" << lines[i] << "'" << std::endl;
-		vector<string> words;
+		vector<std::string> words;
 		tokenizer(lines[i], words);
 
 		if (words.size() == 0)
@@ -159,7 +159,7 @@ void ODA2RequestTool::gatherStats(const PathName& inputFile)
 		columnList += it->first;
 	}
 	
-	const string select = string("select ") + columnList + " from \"" + inputFile + "\";";
+	const string select = std::string("select ") + columnList + " from \"" + inputFile + "\";";
 	Log::info() << "Executing '" << select << "'" << std::endl;
 
 	Translator<double, string> double2string;
@@ -192,7 +192,7 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 		{
 			if (request.str().size()) request << ",\n";
 
-			const string& key = it->second;
+			const std::string& key = it->second;
 			const string k = StringTools::upper(key);
 
 			string valuesList;	

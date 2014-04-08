@@ -2,11 +2,11 @@ if( ENABLE_FORTRAN )
     ecbuild_enable_fortran( REQUIRED )
 endif()
   
-ecbuild_add_library( TARGET     Odb_fortran
-                     COMPONENT  odb_api
-					 CONDITION  ENABLE_FORTRAN
-                     SOURCES    odb_c_binding.f90
-                     LIBS       Odb )
+ecbuild_add_library(TARGET     Odb_fortran
+                    COMPONENT  odb_api
+					          CONDITION  ENABLE_FORTRAN
+                    SOURCES    odb_c_binding.f90
+                    LIBS       Odb )
 
 ecbuild_add_test( TARGET     test_fortran_api
                   CONDITION  ENABLE_FORTRAN

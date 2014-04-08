@@ -11,9 +11,12 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/io/PartFileHandle.h"
+#include "eckit/io/FileDescHandle.h"
 #include "eckit/parser/StringTools.h"
+
 #include "odblib/SQLInteractiveSession.h"
 #include "odblib/SQLParser.h"
+#include "odblib/odb_api.h"
 #include "odblib/SQLSelectFactory.h"
 #include "tools/SQLTool.h"
 
@@ -30,6 +33,7 @@ SQLTool::SQLTool(int argc,char **argv)
 {
 	registerOptionWithArgument("-o");
 	registerOptionWithArgument("-i");
+	registerOptionWithArgument("-I");
 	registerOptionWithArgument("-delimiter");
 	registerOptionWithArgument("-f"); // output format 
 	registerOptionWithArgument("-offset"); 
@@ -39,12 +43,11 @@ SQLTool::SQLTool(int argc,char **argv)
 	doNotWriteNULL_ = optionIsSet("-N");
 	delimiter_ = optionArgument("-delimiter", std::string("\t"));
 
-    // FIXME: stdin and /dev/tyy are not the same!
-	if ((inputFile_ = optionArgument("-i", std::string(""))) == "-")
-		inputFile_ = "/dev/tty";
+    if ((inputFile_ = optionArgument("-i", std::string(""))) == "-")
+		inputFile_ = "/dev/stdin";
 
-	if ((outputFile_ = optionArgument("-o", std::string(""))) == "-")
-		outputFile_ = "/dev/tty";
+    if ((outputFile_ = optionArgument("-o", std::string(""))) == "-")
+		outputFile_ = "/dev/stdout";
 
 	outputFormat_ = optionArgument("-f", std::string("default"));
 
@@ -52,7 +55,7 @@ SQLTool::SQLTool(int argc,char **argv)
 	length_ = optionArgument("-length", (long) 0);
 
 	SQLSelectFactory::instance()
-		.config(SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_));
+		.config(SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_, optionIsSet("--binary"), optionIsSet("--no_alignment")));
 }
 
 SQLTool::~SQLTool() {}
@@ -71,6 +74,7 @@ void SQLTool::run()
 
 	std::string sql(StringTool::isSelectStatement(params[0])
 				? StringTools::join(" ",  params) + ";"
+                // FIXME:
 				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
     std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o")
                                 ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
@@ -105,7 +109,12 @@ void SQLTool::runSQL(const std::string& sql, const eckit::PathName& inputFile, S
 		PartFileHandle fh(inputFile, offset, length); 
 		fh.openForRead();
 		parser.parseString(sql, &fh, config);
-	} else {
+	} else if (inputFile == "/dev/stdin" || inputFile == "stdin") {
+        Log::info() << "Reading from standard input" << std::endl;
+		FileDescHandle fh(0);
+		fh.openForRead();
+		parser.parseString(sql, &fh, config);
+    } else {
 		FileHandle fh(inputFile);
 		fh.openForRead();
 		parser.parseString(sql, &fh, config);

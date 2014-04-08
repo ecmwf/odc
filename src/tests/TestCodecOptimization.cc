@@ -32,8 +32,7 @@ static void setUp()
     odb::Writer<> oda("UnitTest.odb");
     odb::Writer<>::iterator row = oda.begin();
 
-    odb::MetaData& md = row->columns();
-    md.setSize(numberOfColumns);
+    row->setNumberOfColumns(numberOfColumns);
 
     row->setColumn(0, "x", odb::REAL);
     //row->setColumn(1, "y", odb::REAL);
@@ -58,7 +57,7 @@ static void test()
 
     odb::Reader reader("UnitTest.odb");
     odb::Reader::iterator it = reader.begin();
-    odb::MetaData& md = it->columns();
+    const odb::MetaData& md = it->columns();
 
     Log::info() << "testSelectIterator: md = " << md << std::endl;
     ASSERT(md.size() == numberOfColumns);

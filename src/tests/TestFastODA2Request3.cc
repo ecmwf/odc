@@ -46,7 +46,7 @@ static void test()
 
 	//PathName pathName("mondb_conv.17.16001.odb.fn6x");
 	ASSERT(getenv("ODB_API_TEST_DATA_PATH") && "ODB_API_TEST_DATA_PATH must be set");
-	string e(Resource<string>("$ODB_API_TEST_DATA_PATH", string("../../../odb_api/src/odb")));
+	string e(Resource<std::string>("$ODB_API_TEST_DATA_PATH", string("../../../odb_api/src/odb")));
 	PathName pathName(e + "/mondb.1.12.odb");
 	bool rc = o.scanFile(pathName, offsets, lengths, handles);
 	ASSERT(rc == true);
@@ -55,7 +55,7 @@ static void test()
 		Log::info() << "test: handles[" << i << "]=" << *handles[i] << std::endl;
 
 	string r = o.genRequest();
-	Log::info() << "test: o.genRequest() => " << endl << r << std::endl;
+	Log::info() << "test: o.genRequest() => " << std::endl << r << std::endl;
 
 	unsigned long long n = o.rowsNumber();
 	Log::info() << "test: rowsNumber == " << n <<  std::endl;

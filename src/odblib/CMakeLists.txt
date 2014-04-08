@@ -141,6 +141,8 @@ FunctionJOIN.cc
 FunctionJOIN.h
 FunctionJULIAN.cc
 FunctionJULIAN.h
+FunctionJULIAN_SECONDS.cc
+FunctionJULIAN_SECONDS.h
 FunctionMAX.cc
 FunctionMAX.h
 FunctionMIN.cc

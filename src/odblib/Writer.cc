@@ -13,11 +13,33 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <errno.h>
+#include <math.h>
+//#include <values.h>
+
+using namespace std;
+
+#include "eckit/io/DataHandle.h"
+#include "eckit/exception/Exceptions.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/FileDescHandle.h"
 #include "eckit/config/Resource.h"
+
+#include "odblib/Codec.h"
+#include "odblib/Column.h"
+#include "odblib/MetaData.h"
+#include "odblib/CodecOptimizer.h"
+#include "odblib/DataStream.h"
 #include "odblib/FixedSizeWriterIterator.h"
 #include "odblib/ODBAPISettings.h"
 #include "odblib/Writer.h"
 #include "odblib/WriterBufferingIterator.h"
+#include "odblib/WriterBufferingIterator.h"
+#include "odblib/ODBAPISettings.h"
+#include "odblib/SQLAST.h"
 
 namespace odb {
 
@@ -32,13 +54,20 @@ Writer<ITERATOR>::Writer()
 {} 
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer(const eckit::PathName path)
+Writer<ITERATOR>::Writer(const eckit::PathName& path)
 : path_(path),
   dataHandle_(0),
   rowsBufferSize_(eckit::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
   openDataHandle_(true),
   deleteDataHandle_(true)
-{} 
+{
+    if (path_ == "/dev/stdout" || path_ == "stdout")
+    {
+        eckit::Log::info() << "Writing to stdout" << std::endl;
+        dataHandle_ = new eckit::FileDescHandle(1);
+        openDataHandle_ = false;
+    }
+} 
 
 template <typename ITERATOR>
 Writer<ITERATOR>::Writer(eckit::DataHandle *dh, bool openDataHandle, bool deleteDataHandle)
@@ -62,28 +91,10 @@ template <typename ITERATOR>
 Writer<ITERATOR>::~Writer() { if (deleteDataHandle_) delete dataHandle_; }
 
 template <typename ITERATOR>
-ITERATOR* Writer<ITERATOR>::writer(bool fixedSizeRows)
-{
-	if (std::string(path_).size())
-	{
-		eckit::DataHandle *fh = ODBAPISettings::instance().writeToFile(path_);
-		return fixedSizeRows ?
-			new FixedSizeWriterIterator(*this, fh)
-			: new ITERATOR(*this, fh);
-	}
-		
-	ASSERT(dataHandle_);	
-
-	return fixedSizeRows ?
-		new FixedSizeWriterIterator(*this, dataHandle_)
-		: new ITERATOR(*this, dataHandle_);
-}
-
-template <typename ITERATOR>
 typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 {
 	eckit::DataHandle *dh = 0;
-	if (std::string(path_).size())
+	if (dataHandle_ == 0)
     {
 		dh = ODBAPISettings::instance().writeToFile(path_, eckit::Length(0), false);
     }
@@ -108,7 +119,7 @@ ITERATOR* Writer<ITERATOR>::createWriteIterator(eckit::PathName pathName, bool a
 // Explicit templates' instantiations.
 
 template Writer<WriterBufferingIterator>::Writer();
-template Writer<WriterBufferingIterator>::Writer(eckit::PathName);
+template Writer<WriterBufferingIterator>::Writer(const eckit::PathName&);
 template Writer<WriterBufferingIterator>::Writer(eckit::DataHandle&,bool);
 template Writer<WriterBufferingIterator>::Writer(eckit::DataHandle*,bool,bool);
 

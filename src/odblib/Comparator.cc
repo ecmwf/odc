@@ -106,7 +106,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 {
 	ASSERT("Number of columns must be the same" && (metaData1.size() == metaData2.size()));
 
-	std::set<string> excludedColumnsTypes(exColumnsTypes.begin(), exColumnsTypes.end());
+	std::set<std::string> excludedColumnsTypes(exColumnsTypes.begin(), exColumnsTypes.end());
 
 	size_t size = metaData1.size();
 	for (size_t i = 0; i < size; i++)
