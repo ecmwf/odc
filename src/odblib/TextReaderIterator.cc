@@ -95,8 +95,8 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 
 		int size = atoi(v[1].c_str());
 		
-		if (! v.size() > 0)
-            throw UserError("Size of a bitfield must be positive");
+        if ( !(v.size() > 0) )
+            throw UserError("Size of a bitfield must be positive and larger than zero");
 
         numberOfBits += size;
 		sizes.push_back(size);

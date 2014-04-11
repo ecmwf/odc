@@ -45,7 +45,7 @@ double FunctionJULIAN_SECONDS::eval(bool& missing) const
     int min = (intime % 10000) / 100;
     int sec = intime % 100;
 
-    " Julianday * 24 * 60 * 60 + hh * 3600 + mm * 60 + ss ";
+//  " Julianday * 24 * 60 * 60 + hh * 3600 + mm * 60 + ss ";
 
     return eckit::Date(year, month, day).julian() * 24 * 60 * 60 + hour * 3600 + min * 60 + sec;
 }

@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+#include <unistd.h>
+
 #include "eckit/config/Resource.h"
 #include "eckit/io/AIOHandle.h"
 #include "eckit/io/FileHandle.h"
@@ -44,7 +46,7 @@ void odb::ODBAPISettings::setHome(const char *argv0)
         {
             size_t bufferLen =1024*8;
             char buffer[bufferLen];
-            full = std::string(getcwd(buffer, bufferLen)) + std::string(argv0 + 1);
+            full = std::string( ::getcwd(buffer, bufferLen) ) + std::string(argv0 + 1);
         } else
         {
             std::vector<std::string> ps(StringTools::split(":", getenv("PATH")));
@@ -57,7 +59,7 @@ void odb::ODBAPISettings::setHome(const char *argv0)
                     if (ps[i][0] != '/') {
                         size_t bufferLen =1024*8;
                         char buffer[bufferLen];
-                        full = std::string(getcwd(buffer, bufferLen)) + full;
+                        full = std::string( ::getcwd(buffer, bufferLen) ) + full;
                     }
                     break;
                 }
