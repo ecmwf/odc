@@ -382,7 +382,7 @@ ShiftedColumnExpression.cc
 ecbuild_add_library( TARGET     Odb
                      INSTALL_HEADERS LISTED
 					 HEADER_DESTINATION
-						${INSTALL_INCLUDE_DIR}/odblib
+						${INSTALL_INCLUDE_DIR}/odb_api/odblib
                      COMPONENT  server
                      SOURCES    ${odblib_src_files}
                      GENERATED  ODBAPIVersionSHA1.cc

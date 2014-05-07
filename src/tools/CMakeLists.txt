@@ -38,13 +38,11 @@ XYVTool.h
 ecbuild_add_library( TARGET     odbtools
                      INSTALL_HEADERS LISTED
 					 HEADER_DESTINATION
-						${INSTALL_INCLUDE_DIR}/odblib
-                     COMPONENT  adb_api
+						${INSTALL_INCLUDE_DIR}/odb_api/odblib
                      SOURCES    ${odbtools_src_files}
                      TEMPLATES  ${odbtools_templates}
                      LIBS       Odb ${ECKIT_LIBRARIES} )
 
 ecbuild_add_executable( TARGET    odb
-                      COMPONENT odb_api
                       SOURCES   odb.cc
                       LIBS      odbtools Odb ${ECKIT_LIBRARIES} )

@@ -6,7 +6,7 @@ ecbuild_find_project_files()
 ecbuild_generate_config_headers()
 configure_file( odb_api_config.h.in odb_api_config.h )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/odb_api_config.h DESTINATION ${INSTALL_INCLUDE_DIR} )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/odb_api_config.h DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api )
 
 ### include directories
 
