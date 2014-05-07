@@ -9,10 +9,10 @@
  */
 
 #include "eckit/eckit.h"
-#include "odblib/MetaData.h"
-#include "odblib/MetaDataReader.h"
-#include "odblib/MetaDataReaderIterator.h"
-#include "odblib/Reader.h"
+#include "odb_api/odblib/MetaData.h"
+#include "odb_api/odblib/MetaDataReader.h"
+#include "odb_api/odblib/MetaDataReaderIterator.h"
+#include "odb_api/odblib/Reader.h"
 #include "tools/CountTool.h"
 
 using namespace eckit;

@@ -1,9 +1,9 @@
 /// @file   UnitTest.cc
 /// @author Tomas Kral
 
-#include "odblib/DataColumns.h"
-#include "odblib/DataLink.h"
-#include "odblib/DataTable.h"
+#include "odb_api/odblib/DataColumns.h"
+#include "odb_api/odblib/DataLink.h"
+#include "odb_api/odblib/DataTable.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

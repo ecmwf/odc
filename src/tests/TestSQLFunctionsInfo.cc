@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odblib/FunctionFactory.h"
+#include "odb_api/odblib/FunctionFactory.h"
 
 #include "eckit/testing/UnitTest.h"
 

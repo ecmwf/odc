@@ -14,7 +14,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "tools/ImportTool.h"
-#include "odblib/Reader.h"
+#include "odb_api/odblib/Reader.h"
 
 #include "eckit/testing/UnitTest.h"
 

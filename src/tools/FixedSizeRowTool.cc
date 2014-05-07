@@ -10,9 +10,9 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "odblib/Comparator.h"
-#include "odblib/Reader.h"
-#include "odblib/Writer.h"
+#include "odb_api/odblib/Comparator.h"
+#include "odb_api/odblib/Reader.h"
+#include "odb_api/odblib/Writer.h"
 #include "tools/FixedSizeRowTool.h"
 
 using namespace eckit;

@@ -14,8 +14,8 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "odblib/MetaData.h"
-#include "odblib/Select.h"
+#include "odb_api/odblib/MetaData.h"
+#include "odb_api/odblib/Select.h"
 
 #include "eckit/testing/UnitTest.h"
 

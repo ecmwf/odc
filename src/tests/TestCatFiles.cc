@@ -12,10 +12,10 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odblib/MetaData.h"
-#include "odblib/Select.h"
+#include "odb_api/odblib/MetaData.h"
+#include "odb_api/odblib/Select.h"
 
-#include "odblib/Writer.h"
+#include "odb_api/odblib/Writer.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

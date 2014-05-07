@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/config/Resource.h"
-#include "odblib/StringTool.h"
+#include "odb_api/odblib/StringTool.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

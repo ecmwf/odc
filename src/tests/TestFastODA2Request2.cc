@@ -12,10 +12,10 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
-#include "odblib/FastODA2Request.h"
-#include "odblib/ODAHandle.h"
+#include "odb_api/odblib/FastODA2Request.h"
+#include "odb_api/odblib/ODAHandle.h"
 
-#include "odblib/Writer.h"
+#include "odb_api/odblib/Writer.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

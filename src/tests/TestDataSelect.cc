@@ -1,11 +1,11 @@
 /// @file   UnitTest.cc
 /// @author Tomas Kral
 
-#include "odblib/DataColumns.h"
-#include "odblib/DataSelect.h"
-#include "odblib/DataSelectIterator.h"
-#include "odblib/DataSet.h"
-#include "odblib/DataTable.h"
+#include "odb_api/odblib/DataColumns.h"
+#include "odb_api/odblib/DataSelect.h"
+#include "odb_api/odblib/DataSelectIterator.h"
+#include "odb_api/odblib/DataSet.h"
+#include "odb_api/odblib/DataTable.h"
 #include "eckit/testing/UnitTest.h"
 
 

@@ -14,8 +14,8 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/types/Types.h"
-#include "odblib/FastODA2Request.h"
-#include "odblib/ODAHandle.h"
+#include "odb_api/odblib/FastODA2Request.h"
+#include "odb_api/odblib/ODAHandle.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

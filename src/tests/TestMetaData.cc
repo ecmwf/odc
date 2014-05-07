@@ -12,8 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odblib/DataStream.h"
-#include "odblib/MetaData.h"
+#include "odb_api/odblib/DataStream.h"
+#include "odb_api/odblib/MetaData.h"
 
 #include "eckit/testing/UnitTest.h"
 

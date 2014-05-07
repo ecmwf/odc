@@ -11,7 +11,7 @@
 #ifndef MockReader_H
 #define MockReader_H
 
-#include "odblib/IteratorProxy.h"
+#include "odb_api/odblib/IteratorProxy.h"
 
 template <typename T>
 class MockReader

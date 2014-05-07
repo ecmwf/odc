@@ -12,12 +12,12 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
-#include "odblib/ColumnType.h"
-#include "odblib/Writer.h"
+#include "odb_api/odblib/ColumnType.h"
+#include "odb_api/odblib/Writer.h"
 #include "eckit/testing/UnitTest.h"
 
 extern "C" {
-#include "odblib/odbcapi.h"
+#include "odb_api/odblib/odbcapi.h"
 }
 
 using namespace std;

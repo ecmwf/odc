@@ -14,9 +14,9 @@
 
 #include "eckit/io/StdFileHandle.h"
 #include "tools/ImportTool.h"
-#include "odblib/Select.h"
+#include "odb_api/odblib/Select.h"
 
-#include "odblib/Writer.h"
+#include "odb_api/odblib/Writer.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

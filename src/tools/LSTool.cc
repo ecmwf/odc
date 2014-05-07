@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odblib/Reader.h"
+#include "odb_api/odblib/Reader.h"
 #include "tools/LSTool.h"
 
 using namespace eckit;

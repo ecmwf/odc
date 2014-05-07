@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
-#include "odblib/FastODA2Request.h"
+#include "odb_api/odblib/FastODA2Request.h"
 
 #include "eckit/testing/UnitTest.h"
 

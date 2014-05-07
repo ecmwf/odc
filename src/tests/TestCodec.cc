@@ -15,8 +15,8 @@
 #include <strings.h>
 
 #include "eckit/io/DataHandle.h"
-#include "odblib/DataStream.h"
-#include "odblib/Codec.h"
+#include "odb_api/odblib/DataStream.h"
+#include "odb_api/odblib/Codec.h"
 
 #include "eckit/testing/UnitTest.h"
 

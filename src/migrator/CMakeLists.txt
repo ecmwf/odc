@@ -20,13 +20,10 @@ migrator_api.h
 
 if( ENABLE_MIGRATOR )
     ecbuild_find_fortranlibs( REQUIRED )
+	message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
 endif()
 
-    debug_var( ODB_FOUND )
-    debug_var( FORTRAN_LIBRARIES)
-
     ecbuild_add_library(  TARGET Odbmigrator
-                        COMPONENT  odb_api
                         SOURCES    ${migrator_srcs}
   		             	CONDITION
 				            ENABLE_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES

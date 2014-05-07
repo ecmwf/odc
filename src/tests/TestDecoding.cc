@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, June 2009
 
 #include "eckit/log/Timer.h"
-#include "odblib/Reader.h"
+#include "odb_api/odblib/Reader.h"
 
 #include "eckit/testing/UnitTest.h"
 

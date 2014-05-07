@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 #include "tools/ImportTool.h"
-#include "odblib/MetaData.h"
+#include "odb_api/odblib/MetaData.h"
 
 #include "eckit/testing/UnitTest.h"
 

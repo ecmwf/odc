@@ -15,9 +15,9 @@
 //const double EPS =     7e-6
 
 #include "eckit/log/Timer.h"
-#include "odblib/Select.h"
+#include "odb_api/odblib/Select.h"
 
-#include "odblib/Writer.h"
+#include "odb_api/odblib/Writer.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

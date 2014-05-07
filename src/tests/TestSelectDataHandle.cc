@@ -14,7 +14,7 @@
 
 #include "eckit/io/FileHandle.h"
 #include "eckit/log/Timer.h"
-#include "odblib/Select.h"
+#include "odb_api/odblib/Select.h"
 
 #include "eckit/testing/UnitTest.h"
 

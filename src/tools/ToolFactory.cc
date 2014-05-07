@@ -20,8 +20,8 @@
 //#include "eckit/utils/Regex.h"
 #include "eckit/exception/Exceptions.h"
 
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
+//#include "odb_api/odblib/Tool.h"
+//#include "odb_api/odblib/TestCase.h"
 #include "tools/ToolFactory.h"
 
 using namespace std;

@@ -1,7 +1,7 @@
 /// @file   UnitTest.cc
 /// @author Tomas Kral
 
-#include "odblib/DataTable.h"
+#include "odb_api/odblib/DataTable.h"
 #include "eckit/testing/UnitTest.h"
 
 

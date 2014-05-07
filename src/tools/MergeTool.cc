@@ -10,9 +10,9 @@
 
 #include "eckit/io/FileHandle.h"
 #include "eckit/log/Timer.h"
-#include "odblib/Reader.h"
-#include "odblib/Select.h"
-#include "odblib/Writer.h"
+#include "odb_api/odblib/Reader.h"
+#include "odb_api/odblib/Select.h"
+#include "odb_api/odblib/Writer.h"
 #include "tools/MergeTool.h"
 
 using namespace eckit;

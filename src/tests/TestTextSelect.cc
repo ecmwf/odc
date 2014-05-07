@@ -12,7 +12,7 @@
 ///
 // @author Piotr Kuchta, ECMWF, Oct 2010
 
-#include "odblib/Select.h"
+#include "odb_api/odblib/Select.h"
 
 #include "eckit/testing/UnitTest.h"
 

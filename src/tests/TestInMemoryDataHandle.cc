@@ -14,7 +14,7 @@
 
 #include <strings.h>
 
-#include "odblib/InMemoryDataHandle.h"
+#include "odb_api/odblib/InMemoryDataHandle.h"
 
 #include "eckit/testing/UnitTest.h"
 

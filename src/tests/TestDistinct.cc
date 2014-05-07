@@ -14,7 +14,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "tools/ImportTool.h"
-#include "odblib/Select.h"
+#include "odb_api/odblib/Select.h"
 
 #include "eckit/testing/UnitTest.h"
 

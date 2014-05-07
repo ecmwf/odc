@@ -15,12 +15,12 @@
 #include "eckit/runtime/Context.h"
 #include "eckit/filesystem/PathName.h"
 
-//#include "odblib/Tool.h"
-//#include "odblib/TestCase.h"
+//#include "odb_api/odblib/Tool.h"
+//#include "odb_api/odblib/TestCase.h"
 #include "tools/ToolFactory.h"
 #include "tools/ToolRunnerApplication.h"
-//#include "odblib/ODBBehavior.h"
-//#include "odblib/ODBApplication.h"
+//#include "odb_api/odblib/ODBBehavior.h"
+//#include "odb_api/odblib/ODBApplication.h"
 
 using namespace eckit;
 

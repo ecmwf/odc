@@ -13,10 +13,10 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/exception/Exceptions.h"
-#include "odblib/MetaData.h"
-#include "odblib/Reader.h"
+#include "odb_api/odblib/MetaData.h"
+#include "odb_api/odblib/Reader.h"
 
-#include "odblib/Writer.h"
+#include "odb_api/odblib/Writer.h"
 #include "eckit/testing/UnitTest.h"
 
 using namespace std;

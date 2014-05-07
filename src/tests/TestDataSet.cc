@@ -2,9 +2,9 @@
 /// @author Tomas Kral
 
 #include "eckit/exception/Exceptions.h"
-#include "odblib/DataColumns.h"
-#include "odblib/DataSet.h"
-#include "odblib/DataTable.h"
+#include "odb_api/odblib/DataColumns.h"
+#include "odb_api/odblib/DataSet.h"
+#include "odb_api/odblib/DataTable.h"
 #include "eckit/testing/UnitTest.h"
 
 
