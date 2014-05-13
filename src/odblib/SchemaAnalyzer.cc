@@ -181,16 +181,39 @@ void SchemaAnalyzer::addBitfieldType(const string name, const FieldNames& fields
 	bitfieldTypes_[name] = make_pair(fields, sizes);
 }
 
-bool SchemaAnalyzer::isBitfield(const string columnName) const
+bool SchemaAnalyzer::isBitfield(const string& columnName) const
 {
-    ASSERT(columnTypes_.find(columnName) != columnTypes_.end());
-    if (columnTypes_.find(columnName) == columnTypes_.end())
-        return false;
-    string columnType = columnTypes_.find(columnName)->second;
-    return bitfieldTypes_.find(columnType) != bitfieldTypes_.end();
+    ostream& L( Log::debug() );
+    L << "SchemaAnalyzer::isBitfield: columnName=" << columnName << endl;
+
+    for (map<string,string>::const_iterator it(columnTypes_.begin()); it != columnTypes_.end(); ++it)
+    {
+        L << "SchemaAnalyzer::isBitfield: columnTypes_: " << it->first << " : " << it->second << endl;
+
+        if (it->first == columnName)
+        {
+            string columnType (it->second);
+            L << "SchemaAnalyzer::isBitfield: columnType='" << columnType << "'" << endl;
+            for (std::map<std::string, BitfieldDef>::const_iterator it(bitfieldTypes_.begin()); it != bitfieldTypes_.end(); ++it)
+            {
+                L << "SchemaAnalyzer::isBitfield: bitfieldTypes_: '" << it->first  << "'" /*<< " : " << it->second */ << endl;
+                if (it->first == columnType)
+                {
+                    L << "SchemaAnalyzer::isBitfield => true" << endl;
+                    return true;
+                }
+            }
+        }
+    }
+    L << "SchemaAnalyzer::isBitfield => false" << endl;
+    return false;
+
+    //if (columnTypes_.find(columnName) == columnTypes_.end()) return false;
+    //string columnType = columnTypes_.find(columnName)->second;
+    //return bitfieldTypes_.find(columnType) != bitfieldTypes_.end();
 }
 
-const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const string columnName) 
+const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const string& columnName) 
 {
 	ASSERT(isBitfield(columnName));
 	string columnType = columnTypes_.find(columnName)->second;

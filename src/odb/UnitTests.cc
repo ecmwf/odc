@@ -1083,11 +1083,20 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
 
 	ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
     const char* sql =
+    "CREATE TYPE mybitfield AS ( "
+    "codetype bit9,"
+    "instype bit10,"
+    "retrtype bit6,"
+    "geoarea bit6,"
+    ");"
+
     "CREATE TABLE \"foo.odb\" AS ( "
     "lat real,"
     "lon real,"
+    "status mybitfield,"
     ");"
-    "SELECT * INTO \"foo.odb\" FROM \"CREATE_TABLE_and_SELECT_INTO.odb\";"
+
+    "SELECT a,b,a*b INTO \"foo.odb\" FROM \"CREATE_TABLE_and_SELECT_INTO.odb\";"
     ;
 
     {

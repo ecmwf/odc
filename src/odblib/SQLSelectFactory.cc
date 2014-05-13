@@ -240,6 +240,8 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	return r;
 }
 
+typedef DataStream<SameByteOrder, DataHandle> DS;
+
 MetaData toODAColumns(const odb::sql::TableDef& tableDef)
 {
     ostream& L(eclib::Log::info());
@@ -252,12 +254,19 @@ MetaData toODAColumns(const odb::sql::TableDef& tableDef)
         odb::sql::ColumnDef& c (columnDefs[i]);
         L << "   " << c.name() << ":" << c.type() << endl; //"(" << Column::columnTypeName(type) << ")" << endl;
 
-        typedef DataStream<SameByteOrder, DataHandle> DS;
-        ColumnType type (Column::type(c.type()));
-        if (type == BITFIELD)
-            md.addBitfield<DS>(c.name(), c.bitfieldDef());
-        else
-            md.addColumn<DS>(c.name(), c.type());
+        SchemaAnalyzer& a (SQLSession::current().currentDatabase().schemaAnalyzer());
+        if (a.isBitfield(c.name())) {
+            const BitfieldDef& bf ( a.getBitfieldTypeDefinition(c.name()) );
+            md.addBitfield<DS>(c.name(), bf ); //c.bitfieldDef());
+        }
+        else {
+
+            ColumnType type (Column::type(c.type()));
+            if (type == BITFIELD)
+                md.addBitfield<DS>(c.name(), c.bitfieldDef());
+            else
+                md.addColumn<DS>(c.name(), c.type());
+        }
 
         ASSERT( &md[i]->coder() );
     }

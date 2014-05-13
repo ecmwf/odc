@@ -36,8 +36,8 @@ public:
     void endSchema();
     void addTable(TableDef& table);
     void addBitfieldType(const string name, const FieldNames& fields, const Sizes& sizes, const string typeSignature);
-    bool isBitfield(const string columnName) const; 
-    const BitfieldDef& getBitfieldTypeDefinition(const string columnName); 
+    bool isBitfield(const string&) const; 
+    const BitfieldDef& getBitfieldTypeDefinition(const string&); 
     void updateBitfieldsDefs(MetaData &, map<string, string> &) const;
 
     bool tableKnown(const string& name) const;
