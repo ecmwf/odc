@@ -19,18 +19,26 @@ migrator_api.h
 )
 
 if( ENABLE_MIGRATOR )
+    enable_language (Fortran)
+    ecbuild_enable_fortran( REQUIRED )
     ecbuild_find_fortranlibs( REQUIRED )
+    #if(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+    #    cmake_add_fortran_flags("-r8")
+    #    elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+    #    # NOTE that if we add -fdefault-real-8 then we NEED -fdefault-double-8 to avoid quadmath
+    #    cmake_add_fortran_flags("-fdefault-real-8 -fdefault-double-8")
+    #endif()
 	message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
 endif()
 
-    ecbuild_add_library(  TARGET Odbmigrator
-                        SOURCES    ${migrator_srcs}
-  		             	CONDITION
+    ecbuild_add_library( TARGET Odbmigrator
+                         SOURCES    ${migrator_srcs}
+  		             	 CONDITION
 				            ENABLE_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES
-                        TEMPLATES
+                         TEMPLATES
                             ImportODBTool.cc TSQLReader.cc
-                            INCLUDES   ${ODB_INCLUDE_DIRS}
-                            LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
+                         INCLUDES   ${ODB_INCLUDE_DIRS}
+                         LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} gomp ) #FIXME: gfortran specific
                         
     ecbuild_add_executable( TARGET     odb_migrator
                         CONDITION
@@ -49,7 +57,8 @@ endif()
 
 	if( ENABLE_MIGRATOR AND ENABLE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
         set(CMAKE_SWIG_FLAGS "")
-        include_directories( "." ${PYTHON_INCLUDE_PATH} )
+        include_directories( "." ${PYTHON_INCLUDE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api )
+        #include_directories( "." ${PYTHON_INCLUDE_PATH} )
         set_source_files_properties( pyodbdump.i PROPERTIES CPLUSPLUS ON )
 #    set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
         swig_add_module( pyodbdump python pyodbdump.i )

@@ -13,11 +13,16 @@
 #       -DBUILD_SHARED_LIBS=ON
 
 cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
+message( STATUS " ecbuild/cmake  : [${CMAKE_CURRENT_SOURCE_DIR}/ecbuild/cmake]" )
+
+
+# Add path for custom modules
+set(CMAKE_MODULE_PATH
+  ${CMAKE_MODULE_PATH}
+  "${CMAKE_CURRENT_SOURCE_DIR}/ecbuild/cmake"
+)
 
 project( odb_api CXX )
-
-set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
-
 include( ecbuild_system )
 
 ecbuild_requires_macro_version( 1.3 )

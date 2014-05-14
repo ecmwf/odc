@@ -70,7 +70,8 @@ set(EXTRA_INCLUDES "")
 set(EXTRA_LIBS "")
 
 if( ENABLE_MIGRATOR )
-	list(APPEND TESTS TestImportODB)
+# FIXME: TestImportODB must be back!!!
+	#list(APPEND TESTS TestImportODB)
 	set(EXTRA_INCLUDES ${ODB_INCLUDE_DIRS})
 	set(EXTRA_LIBS Odbmigrator)
 endif()
