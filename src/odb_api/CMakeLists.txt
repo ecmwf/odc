@@ -418,3 +418,9 @@ if( ENABLE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyodbapi.py  DESTINATION ${PYTHON_DEST})
 
 endif()
+
+### apps
+
+add_subdirectory( tools )
+
+add_subdirectory( migrator )

@@ -20,9 +20,4 @@ add_subdirectory( odb_api )
 
 add_subdirectory( fortran )
 
-### apps
-
-add_subdirectory( tools )
-
-add_subdirectory( migrator )
 

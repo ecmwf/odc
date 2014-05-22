@@ -1,0 +1,4 @@
+file /tmp/build/debug/bin/odb
+break main
+run  TestAtTableInTheOutput
+catch throw

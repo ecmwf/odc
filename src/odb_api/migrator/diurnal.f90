@@ -1,0 +1,76 @@
+SUBROUTINE DIURNAL(K_MM,K_DD,K_HH,P_DLAT,P_DLON,P_ANGLE)
+
+!**** *DIURNAL*
+
+!       PURPOSE.
+!      ----------
+
+!           COMPUTE SOLAR ELEVATION ANGLE
+
+!       INTERFACE.
+!      ------------
+
+!         CALL DIURNAL(MM,DD,HH,DLAT,DLON,ANGLE)
+
+!        INPUT
+!         MM     -  MONTH
+!         DD     -  DAY OF MONTH
+!         HH     -  HOUR
+!         DLAT   -  LATITUDE
+!         DLON   -  LONGITUDE
+
+!        OUTPUT
+!         ANGLE  -  SOLAR ELEVATION
+
+!       EXTERNALS.
+!      -----------
+
+!         NONE
+
+!       REFERENCE.
+!      ------------
+
+!         NONE
+
+!       AUTHOR.
+!      ---------
+
+!         ANTTI LANGE,  ECMWF,  25 JULY 1984
+
+!       MODIFICATIONS.
+!      ----------------
+!        M.Hamrud      01-Oct-2003 CY28 Cleaning
+
+!         NONE
+
+IMPLICIT NONE
+INTEGER,INTENT(IN)    :: K_MM 
+INTEGER,INTENT(IN)    :: K_DD 
+INTEGER,INTENT(IN)    :: K_HH 
+REAL   ,INTENT(IN)    :: P_DLAT 
+REAL   ,INTENT(IN)    :: P_DLON 
+REAL   ,INTENT(OUT)   :: P_ANGLE 
+REAL :: Z_PI, Z_TWOPI, Z_RADCON, Z_DAY, Z_SEASON,Z_COSSSN,&
+ & Z_DECL, Z_RLAT, Z_SINLAT, Z_COSLAT, Z_RLON, Z_RLHH, Z_COSLHH, Z_SINE  
+
+Z_PI=2.0*ASIN(1.0)
+Z_TWOPI=2.0*Z_PI
+Z_RADCON=Z_TWOPI/360.0
+
+!*** SINUS OF SOLAR ELEVATION ANGLE WILL BE APPROXIMATED ************
+
+Z_DAY=REAL(K_MM)*30.44+REAL(K_DD)-31.44
+Z_SEASON=Z_TWOPI*(Z_DAY+9.5)/365.25
+Z_COSSSN=COS(Z_SEASON)
+Z_DECL=-Z_RADCON*23.5*Z_COSSSN
+Z_RLAT=Z_RADCON*P_DLAT
+Z_SINLAT=SIN(Z_RLAT)
+Z_COSLAT=COS(Z_RLAT)
+Z_RLON=Z_RADCON*P_DLON
+Z_RLHH=Z_TWOPI*K_HH/24.00+Z_RLON-Z_PI
+Z_COSLHH=COS(Z_RLHH)
+Z_SINE=SIN(Z_DECL)*Z_SINLAT+COS(Z_DECL)*Z_COSLAT*Z_COSLHH
+
+P_ANGLE = ASIN(Z_SINE) * 180. / Z_PI
+
+END SUBROUTINE DIURNAL

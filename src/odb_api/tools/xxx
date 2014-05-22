@@ -1,0 +1,6 @@
+FILES=$(grep -l SIMPLE_TEST *cc)
+for f in $FILES; do
+    test_name=$(echo $f|sed s/.cc//g|sed s/^Test//g)
+    echo $f $test_name
+    perl -p -i -e s/SIMPLE_TEST/SIMPLE_TEST\($test_name\)/g $f
+done
