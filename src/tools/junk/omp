@@ -1,3 +1,0 @@
-#!/bin/ksh
-. build_test_omp.ksh
-OMP_NUM_THREADS=100 time ./test_omp && echo Finished OK # && ls -l omp*odb

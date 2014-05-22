@@ -17,8 +17,9 @@
 
 //#include "odb_api/odblib/Tool.h"
 //#include "odb_api/odblib/TestCase.h"
-#include "tools/ToolFactory.h"
-#include "tools/ToolRunnerApplication.h"
+#include "Tool.h"
+#include "ToolFactory.h"
+#include "ToolRunnerApplication.h"
 //#include "odb_api/odblib/ODBBehavior.h"
 //#include "odb_api/odblib/ODBApplication.h"
 

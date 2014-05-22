@@ -20,9 +20,9 @@
 //#include "eckit/utils/Regex.h"
 #include "eckit/exception/Exceptions.h"
 
-//#include "odb_api/odblib/Tool.h"
-//#include "odb_api/odblib/TestCase.h"
-#include "tools/ToolFactory.h"
+#include "Tool.h"
+#include "TestCase.h"
+#include "ToolFactory.h"
 
 using namespace std;
 using namespace eckit;
@@ -39,12 +39,11 @@ public:
 
 const std::vector<std::string> AbstractToolFactory::matchAll = MatchAll();
 
-/*
-test::TestCases* AbstractToolFactory::testCases(const std::vector<std::string> &patterns)
+std::vector<test::TestCase*>* AbstractToolFactory::testCases(const std::vector<std::string> &patterns)
 {
 	ASSERT(toolFactories != 0);
 
-	test::TestCases *v = new test::TestCases();
+	std::vector<test::TestCase*> *v = new std::vector<test::TestCase*>();
 
 	for (std::map<std::string,AbstractToolFactory*>::iterator it = toolFactories->begin();
 		it != toolFactories->end();
@@ -75,7 +74,6 @@ test::TestCases* AbstractToolFactory::testCases(const std::vector<std::string> &
 	}
 	return v;
 }
-*/
 
 AbstractToolFactory& AbstractToolFactory::findTool(const std::string &name)
 {

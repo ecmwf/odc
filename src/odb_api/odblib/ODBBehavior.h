@@ -19,22 +19,15 @@ namespace odb {
 
 class ODBBehavior : public eckit::ContextBehavior {
 public:
-
-    /// Contructors
-
     ODBBehavior();
-
-    /// Destructor
-
     ~ODBBehavior();
 
-public: // methods
+public:
 
     virtual eckit::Channel& infoChannel();
     virtual eckit::Channel& warnChannel();
     virtual eckit::Channel& errorChannel();
     virtual eckit::Channel& debugChannel();
-
 };
 
 } // namespace odb

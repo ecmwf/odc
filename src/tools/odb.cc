@@ -9,12 +9,16 @@
  */
 
 #include "eckit/io/FileHandle.h"
-#include "odb_api/odblib/FunctionFactory.h"
-#include "odb_api/odblib/ODBAPIVersion.h"
-#include "odb_api/odblib/odbcapi.h"
-#include "tools/ToolFactory.h"
-#include "tools/Tool.h"
-#include "tools/ToolRunnerApplication.h"
+
+#include "odblib/FunctionFactory.h"
+#include "odblib/ODBAPIVersion.h"
+#include "odblib/odbcapi.h"
+
+#include "TestOdaCAPI.h"
+#include "ToolFactory.h"
+#include "Tool.h"
+#include "ToolRunnerApplication.h"
+#include "TestRunnerApplication.h"
 
 using namespace std;
 using namespace eckit;
@@ -54,7 +58,7 @@ int executeCommand(int argc, char *argv[])
 
 	if (firstArg == "g") { odb_start(); return gdb(argc, argv); }
 	if (firstArg == "vg") { odb_start(); return valgrind(argc, argv); }
-    /*
+    
 	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
 	if (firstArg == "test")
 	{
@@ -75,7 +79,6 @@ int executeCommand(int argc, char *argv[])
 		// It never really gets here.
 		return 0;
 	}
-    */
 
 	if (firstArg == "help")
 	{

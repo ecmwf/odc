@@ -355,6 +355,8 @@ odb_api.h
 odbcapi.cc
 odbcapi.h
 piconst.h
+ODBFormatBuffer.cc
+ODBFormatBuffer.h
 )
 
 # templates

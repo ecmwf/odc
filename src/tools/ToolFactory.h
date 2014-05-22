@@ -10,10 +10,13 @@
 #ifndef ToolFactory_H
 #define ToolFactory_H
 
-#include "tools/Tool.h"
+//#include "TestCase.h"
 
 namespace odb {
 namespace tool {
+
+    namespace test { class TestCase; }
+    class Tool;
 
 class AbstractToolFactory {
 public:
@@ -22,6 +25,7 @@ public:
 	static void printToolHelp(const std::string&, std::ostream &);
 	static void printToolUsage(const std::string& name, std::ostream &);
 	static void printToolsHelp(std::ostream &);
+    static std::vector<odb::tool::test::TestCase*>* testCases(const std::vector<std::string>& = matchAll);
 
 	static void listTools(std::ostream&);
 
@@ -51,7 +55,7 @@ public:
 
 	void help(std::ostream &o) { T::help(o); }
 	void usage(const std::string &name, std::ostream &o) { T::usage(name, o); }
-	bool experimental() { return ExperimentalTool<T>::experimental; }
+	bool experimental() { return false; }
 };
 
 } // namespace tool 
