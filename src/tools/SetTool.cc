@@ -14,9 +14,9 @@
 #include "eckit/log/Log.h"
 #include "eckit/parser/Tokenizer.h"
 
-#include "odb_api/odblib/ConstantSetter.h"
-#include "odb_api/odblib/Reader.h"
-#include "odb_api/odblib/Writer.h"
+#include "odb_api/ConstantSetter.h"
+#include "odb_api/Reader.h"
+#include "odb_api/Writer.h"
 
 #include "tools/SetTool.h"
 

@@ -12,10 +12,10 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odb_api/odblib/MetaData.h"
-#include "odb_api/odblib/Select.h"
+#include "odb_api/MetaData.h"
+#include "odb_api/Select.h"
 
-#include "odb_api/odblib/Writer.h"
+#include "odb_api/Writer.h"
 #include "TestCase.h"
 
 using namespace std;

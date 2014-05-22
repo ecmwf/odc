@@ -1,11 +1,11 @@
 /// @file   UnitTest.cc
 /// @author Tomas Kral
 
-#include "odb_api/odblib/DataColumns.h"
-#include "odb_api/odblib/DataSelect.h"
-#include "odb_api/odblib/DataSelectIterator.h"
-#include "odb_api/odblib/DataSet.h"
-#include "odb_api/odblib/DataTable.h"
+#include "odb_api/DataColumns.h"
+#include "odb_api/DataSelect.h"
+#include "odb_api/DataSelectIterator.h"
+#include "odb_api/DataSet.h"
+#include "odb_api/DataTable.h"
 #include "TestCase.h"
 
 

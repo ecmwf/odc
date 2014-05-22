@@ -13,10 +13,10 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/log/Timer.h"
-#include "odb_api/odblib/MetaData.h"
-#include "odb_api/odblib/Reader.h"
+#include "odb_api/MetaData.h"
+#include "odb_api/Reader.h"
 
-#include "odb_api/odblib/Writer.h"
+#include "odb_api/Writer.h"
 #include "MockReader.h"
 #include "TestCase.h"
 

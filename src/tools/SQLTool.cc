@@ -14,10 +14,10 @@
 #include "eckit/io/FileDescHandle.h"
 #include "eckit/parser/StringTools.h"
 
-#include "odb_api/odblib/SQLInteractiveSession.h"
-#include "odb_api/odblib/SQLParser.h"
-#include "odb_api/odblib/odb_api.h"
-#include "odb_api/odblib/SQLSelectFactory.h"
+#include "odb_api/SQLInteractiveSession.h"
+#include "odb_api/SQLParser.h"
+#include "odb_api/odb_api.h"
+#include "odb_api/SQLSelectFactory.h"
 #include "tools/SQLTool.h"
 
 using namespace eckit;

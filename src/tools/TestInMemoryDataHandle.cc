@@ -14,7 +14,7 @@
 
 #include <strings.h>
 
-#include "odb_api/odblib/InMemoryDataHandle.h"
+#include "odb_api/InMemoryDataHandle.h"
 
 #include "TestCase.h"
 

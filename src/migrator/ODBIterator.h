@@ -12,8 +12,8 @@
 #define ODBIterator_H
 
 #include "eckit/filesystem/PathName.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/SQLInteractiveSession.h"
+#include "odb_api/RowsIterator.h"
+#include "odb_api/SQLInteractiveSession.h"
 
 namespace eckit { class PathName; }
 

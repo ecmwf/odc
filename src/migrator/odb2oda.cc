@@ -15,7 +15,7 @@
 #include "migrator/ODB2ODATool.h"
 #include "migrator/ODBIterator.h"
 #include "migrator/ReptypeGenIterator.h"
-#include "odblib/odb_api.h"
+#include "odb_api/odb_api.h"
 #include "tools/Tool.h"
 #include "tools/ToolFactory.h"
 #include "tools/ToolRunnerApplication.h"

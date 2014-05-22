@@ -13,9 +13,9 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/log/Timer.h"
-#include "odb_api/odblib/Reader.h"
+#include "odb_api/Reader.h"
 
-#include "odb_api/odblib/Writer.h"
+#include "odb_api/Writer.h"
 #include "TestCase.h"
 
 using namespace std;

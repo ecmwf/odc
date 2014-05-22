@@ -13,8 +13,8 @@
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/log/Timer.h"
-#include "odb_api/odblib/Comparator.h"
-#include "odb_api/odblib/Reader.h"
+#include "odb_api/Comparator.h"
+#include "odb_api/Reader.h"
 #include "tools/CompareTool.h"
 
 using namespace std;

@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/log/Log.h"
-#include "odb_api/odblib/StringTool.h"
+#include "odb_api/StringTool.h"
 #include "TestCase.h"
 
 using namespace std;

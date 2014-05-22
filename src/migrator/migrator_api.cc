@@ -10,8 +10,8 @@
 
 #include "migrator/ImportODBTool.h"
 #include "migrator/migrator_api.h"
-#include "odblib/odb_api.h"
-#include "odblib/odbcapi.h"
+#include "odb_api/odb_api.h"
+#include "odb_api/odbcapi.h"
 #include "tools/Tool.h"
 
 

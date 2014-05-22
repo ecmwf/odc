@@ -13,9 +13,9 @@
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/parser/Tokenizer.h"
-#include "odb_api/odblib/FastODA2Request.h"
-#include "odb_api/odblib/GribCodes.h"
-#include "odb_api/odblib/Select.h"
+#include "odb_api/FastODA2Request.h"
+#include "odb_api/GribCodes.h"
+#include "odb_api/Select.h"
 #include "tools/ODA2RequestTool.h"
 
 using namespace std;

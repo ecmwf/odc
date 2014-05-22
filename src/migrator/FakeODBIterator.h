@@ -16,8 +16,8 @@
 
 
 #include <eckit/eckit.h>
-#include "odblib/MetaData.h"
-#include "odblib/RowsIterator.h"
+#include "odb_api/MetaData.h"
+#include "odb_api/RowsIterator.h"
 #include "migrator/ODBIterator.h"
 
 namespace eckit { class PathName; }

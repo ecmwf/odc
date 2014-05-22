@@ -15,7 +15,7 @@
 #ifndef TestRunner_H
 #define TestRunner_H
 
-#include "odblib/CommandLineParser.h"
+#include "odb_api/CommandLineParser.h"
 #include "eckit/filesystem/PathName.h"
 
 namespace odb {

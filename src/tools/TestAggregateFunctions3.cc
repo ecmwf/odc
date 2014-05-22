@@ -13,8 +13,8 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "tools/ImportTool.h"
-#include "odb_api/odblib/Select.h"
-#include "odb_api/odblib/Reader.h"
+#include "odb_api/Select.h"
+#include "odb_api/Reader.h"
 
 #include "TestCase.h"
 

@@ -12,12 +12,12 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
-#include "odblib/ColumnType.h"
-#include "odblib/Writer.h"
+#include "odb_api/ColumnType.h"
+#include "odb_api/Writer.h"
 #include "TestCase.h"
 
 extern "C" {
-#include "odblib/odbcapi.h"
+#include "odb_api/odbcapi.h"
 }
 
 #include "TestOdaCAPI.h"

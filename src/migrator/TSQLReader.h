@@ -12,7 +12,7 @@
 #define TSQLReader_H
 
 #include "eckit/filesystem/PathName.h"
-#include "odblib/IteratorProxy.h"
+#include "odb_api/IteratorProxy.h"
 
 namespace odb {
 namespace tool {

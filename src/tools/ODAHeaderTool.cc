@@ -9,8 +9,8 @@
  */
 
 #include "ODAHeaderTool.h"
-#include "odb_api/odblib/MetaDataReader.h"
-#include "odb_api/odblib/MetaDataReaderIterator.h"
+#include "odb_api/MetaDataReader.h"
+#include "odb_api/MetaDataReaderIterator.h"
 
 using namespace eckit;
 

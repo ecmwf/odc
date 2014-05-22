@@ -23,7 +23,7 @@ extern "C" {
 #include "eckit/utils/Translator.h"
 #include "migrator/FakeODBIterator.h"
 #include "migrator/ODBIterator.h"
-#include "odblib/odb_api.h"
+#include "odb_api/odb_api.h"
 #include "tools/Tool.h"
 
 

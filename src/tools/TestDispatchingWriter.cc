@@ -13,9 +13,9 @@
 /// @author Piotr Kuchta, ECMWF, June 2009
 
 #include "tools/CountTool.h"
-#include "odb_api/odblib/DispatchingWriter.h"
-#include "odb_api/odblib/Reader.h"
-#include "odb_api/odblib/StringTool.h"
+#include "odb_api/DispatchingWriter.h"
+#include "odb_api/Reader.h"
+#include "odb_api/StringTool.h"
 
 #include "TestCase.h"
 

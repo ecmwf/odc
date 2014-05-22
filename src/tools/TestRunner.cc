@@ -18,7 +18,7 @@
 #include "eckit/log/Timer.h"
 #include "eckit/parser/StringTools.h"
 
-#include "odblib/CommandLineParser.h"
+#include "odb_api/CommandLineParser.h"
 #include "Tool.h"
 #include "TestCase.h"
 #include "ToolFactory.h"

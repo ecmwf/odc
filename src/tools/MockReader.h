@@ -11,7 +11,7 @@
 #ifndef MockReader_H
 #define MockReader_H
 
-#include "odblib/IteratorProxy.h"
+#include "odb_api/IteratorProxy.h"
 
 namespace odb {
 namespace tool {

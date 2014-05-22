@@ -1,9 +1,9 @@
 /// @file   UnitTest.cc
 /// @author Tomas Kral
 
-#include "odb_api/odblib/DataColumns.h"
-#include "odb_api/odblib/DataLink.h"
-#include "odb_api/odblib/DataTable.h"
+#include "odb_api/DataColumns.h"
+#include "odb_api/DataLink.h"
+#include "odb_api/DataTable.h"
 #include "TestCase.h"
 
 using namespace std;

@@ -6,16 +6,16 @@
 #include "eckit/filesystem/TmpFile.h"
 #include "TestCase.h"
 
-#include "odb_api/odblib/DataLoader.h"
-#include "odb_api/odblib/DataSaver.h"
-#include "odb_api/odblib/DataSet.h"
-#include "odb_api/odblib/DataStream.h"
-#include "odb_api/odblib/DataTable.h"
-#include "odb_api/odblib/Reader.h"
-#include "odb_api/odblib/MetaData.h"
+#include "odb_api/DataLoader.h"
+#include "odb_api/DataSaver.h"
+#include "odb_api/DataSet.h"
+#include "odb_api/DataStream.h"
+#include "odb_api/DataTable.h"
+#include "odb_api/Reader.h"
+#include "odb_api/MetaData.h"
 
-#include "odb_api/odblib/UnsafeInMemoryDataHandle.h"
-#include "odb_api/odblib/Writer.h"
+#include "odb_api/UnsafeInMemoryDataHandle.h"
+#include "odb_api/Writer.h"
 
 using namespace std;
 using namespace odb;

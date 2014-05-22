@@ -10,7 +10,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "odb_api/odblib/Select.h"
+#include "odb_api/Select.h"
 #include "tools/XYVTool.h"
 
 using namespace std;

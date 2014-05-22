@@ -12,8 +12,8 @@
 ///
 // @author Piotr Kuchta, ECMWF, Oct 2010
 
-#include "odb_api/odblib/MetaData.h"
-#include "odb_api/odblib/Select.h"
+#include "odb_api/MetaData.h"
+#include "odb_api/Select.h"
 
 #include "TestCase.h"
 

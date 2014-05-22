@@ -13,16 +13,16 @@
 
 using namespace std;
 
-#include "odblib/MetaData.h"
-#include "odblib/RowsIterator.h"
-#include "odblib/Header.h"
-#include "odblib/IteratorProxy.h"
-#include "odblib/ODBAPIVersion.h"
-#include "odblib/ODBAPISettings.h"
-#include "odblib/SQLSession.h"
-#include "odblib/SQLInteractiveSession.h"
-#include "odblib/SQLParser.h"
-#include "odblib/Column.h"
+#include "odb_api/MetaData.h"
+#include "odb_api/RowsIterator.h"
+#include "odb_api/Header.h"
+#include "odb_api/IteratorProxy.h"
+#include "odb_api/ODBAPIVersion.h"
+#include "odb_api/ODBAPISettings.h"
+#include "odb_api/SQLSession.h"
+#include "odb_api/SQLInteractiveSession.h"
+#include "odb_api/SQLParser.h"
+#include "odb_api/Column.h"
 
 #include "migrator_api.h"
 
@@ -67,17 +67,17 @@ using namespace odb::tool;
 	
 }
 
-%include "odblib/ODBAPIVersion.h"
-%include "odblib/ODBAPISettings.h"
-%include "odblib/Column.h"
-%include "odblib/IteratorProxy.h"
+%include "odb_api/ODBAPIVersion.h"
+%include "odb_api/ODBAPISettings.h"
+%include "odb_api/Column.h"
+%include "odb_api/IteratorProxy.h"
 %include "TSQLReader.h"
 %template(MetaDataBase) std::vector<odb::Column*>;
 %template(OldODBReader) odb::tool::TSQLReader<odb::tool::ODBIterator>;
 %template(ODBReader_iterator) odb::IteratorProxy<odb::tool::ODBIterator,odb::tool::TSQLReader<odb::tool::ODBIterator>, const double>;
-%include "odblib/MetaData.h"
-%include "odblib/RowsIterator.h"
-#include "odblib/Header.h"
+%include "odb_api/MetaData.h"
+%include "odb_api/RowsIterator.h"
+#include "odb_api/Header.h"
 
 %include "migrator_api.h"
 %include "ODBIterator.h"

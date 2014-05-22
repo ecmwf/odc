@@ -13,9 +13,9 @@
 /// @author Piotr Kuchta, ECMWF, June 2009
 
 #include "eckit/log/Timer.h"
-#include "odb_api/odblib/Select.h"
-#include "odb_api/odblib/Reader.h"
-#include "odb_api/odblib/SimpleFilter.h"
+#include "odb_api/Select.h"
+#include "odb_api/Reader.h"
+#include "odb_api/SimpleFilter.h"
 
 #include "TestCase.h"
 

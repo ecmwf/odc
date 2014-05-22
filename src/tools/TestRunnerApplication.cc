@@ -21,7 +21,7 @@
 #include "ToolFactory.h"
 #include "TestRunnerApplication.h"
 #include "TestRunner.h"
-#include "odblib/ODBBehavior.h"
+#include "odb_api/ODBBehavior.h"
 
 namespace odb {
 namespace tool {

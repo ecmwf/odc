@@ -15,7 +15,7 @@
 #ifndef ToolRunnerApplication_H
 #define ToolRunnerApplication_H
 
-#include "odb_api/odblib/ODBApplication.h"
+#include "odb_api/ODBApplication.h"
 
 namespace odb {
 namespace tool {

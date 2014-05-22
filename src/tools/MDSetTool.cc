@@ -12,12 +12,12 @@
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/parser/Tokenizer.h"
-#include "odb_api/odblib/Header.h"
-#include "odb_api/odblib/MetaData.h"
-#include "odb_api/odblib/MetaDataReader.h"
-#include "odb_api/odblib/MetaDataReaderIterator.h"
-#include "odb_api/odblib/ODBAPISettings.h"
-#include "odb_api/odblib/Types.h"
+#include "odb_api/Header.h"
+#include "odb_api/MetaData.h"
+#include "odb_api/MetaDataReader.h"
+#include "odb_api/MetaDataReaderIterator.h"
+#include "odb_api/ODBAPISettings.h"
+#include "odb_api/Types.h"
 #include "tools/MDSetTool.h"
 
 using namespace eckit;

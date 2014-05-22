@@ -1,8 +1,8 @@
 /// @file   UnitTest.cc
 /// @author Tomas Kral
 
-#include "odb_api/odblib/DataJoin.h"
-#include "odb_api/odblib/DataTable.h"
+#include "odb_api/DataJoin.h"
+#include "odb_api/DataTable.h"
 #include "TestCase.h"
 
 

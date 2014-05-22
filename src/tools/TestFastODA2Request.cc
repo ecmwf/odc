@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
-#include "odb_api/odblib/FastODA2Request.h"
+#include "odb_api/FastODA2Request.h"
 
 #include "TestCase.h"
 

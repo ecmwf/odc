@@ -19,12 +19,12 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/StringTools.h"
 #include "migrator/ODBIterator.h"
-#include "odblib/MetaData.h"
-#include "odblib/SQLDatabase.h"
-#include "odblib/SQLParser.h"
-#include "odblib/SQLSelectFactory.h"
-#include "odblib/StringTool.h"
-#include "odblib/odb_api.h"
+#include "odb_api/MetaData.h"
+#include "odb_api/SQLDatabase.h"
+#include "odb_api/SQLParser.h"
+#include "odb_api/SQLSelectFactory.h"
+#include "odb_api/StringTool.h"
+#include "odb_api/odb_api.h"
 #include "tools/Tool.h"
 
 

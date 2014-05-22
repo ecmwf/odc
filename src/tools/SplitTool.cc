@@ -10,13 +10,13 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/PartFileHandle.h"
-#include "odb_api/odblib/DispatchingWriter.h"
-#include "odb_api/odblib/MetaDataReader.h"
-#include "odb_api/odblib/MetaDataReaderIterator.h"
-#include "odb_api/odblib/Reader.h"
-#include "odb_api/odblib/Select.h"
-#include "odb_api/odblib/Stack.h"
-#include "odb_api/odblib/TemplateParameters.h"
+#include "odb_api/DispatchingWriter.h"
+#include "odb_api/MetaDataReader.h"
+#include "odb_api/MetaDataReaderIterator.h"
+#include "odb_api/Reader.h"
+#include "odb_api/Select.h"
+#include "odb_api/Stack.h"
+#include "odb_api/TemplateParameters.h"
 #include "tools/SplitTool.h"
 
 using namespace eckit;

@@ -12,10 +12,10 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
-#include "odb_api/odblib/SQLSelectFactory.h"
-#include "odb_api/odblib/Select.h"
-#include "odb_api/odblib/SelectIterator.h"
-#include "odb_api/odblib/Writer.h"
+#include "odb_api/SQLSelectFactory.h"
+#include "odb_api/Select.h"
+#include "odb_api/SelectIterator.h"
+#include "odb_api/Writer.h"
 #include "tools/ImportTool.h"
 
 using namespace std;

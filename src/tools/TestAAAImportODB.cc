@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/config/Resource.h"
-#include "odblib/StringTool.h"
+#include "odb_api/StringTool.h"
 #include "TestCase.h"
 #include "ToolFactory.h"
 

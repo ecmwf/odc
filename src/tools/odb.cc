@@ -10,9 +10,9 @@
 
 #include "eckit/io/FileHandle.h"
 
-#include "odblib/FunctionFactory.h"
-#include "odblib/ODBAPIVersion.h"
-#include "odblib/odbcapi.h"
+#include "odb_api/FunctionFactory.h"
+#include "odb_api/ODBAPIVersion.h"
+#include "odb_api/odbcapi.h"
 
 #include "TestOdaCAPI.h"
 #include "ToolFactory.h"
