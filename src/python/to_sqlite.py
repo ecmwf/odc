@@ -29,10 +29,10 @@ def createTable(tableName, columns):
     return 'CREATE TABLE ' + tableName + ' (' + ', '.join(colDefs) + ')'
 
 def convert(inputFileName, outputFileName):
-    os.remove(outputFileName)
+    #os.remove(outputFileName)
     conn = sqlite3.connect(outputFileName)
     c = conn.cursor()
-    tableName = outputFileName.split('.')[0]
+    tableName = inputFileName.split('.')[0]
     columns = metadata(inputFileName)
     ct = createTable(tableName, columns)
     try:

@@ -183,16 +183,35 @@ void SchemaAnalyzer::addBitfieldType(const std::string& name, const FieldNames& 
 	bitfieldTypes_[name] = make_pair(fields, sizes);
 }
 
-bool SchemaAnalyzer::isBitfield(const std::string columnName) const
+bool SchemaAnalyzer::isBitfield(const std::string& columnName) const
 {
-    ASSERT(columnTypes_.find(columnName) != columnTypes_.end());
-    if (columnTypes_.find(columnName) == columnTypes_.end())
-        return false;
-    std::string columnType = columnTypes_.find(columnName)->second;
-    return bitfieldTypes_.find(columnType) != bitfieldTypes_.end();
+    std::ostream& L( Log::debug() );
+    L << "SchemaAnalyzer::isBitfield: columnName=" << columnName << std::endl;
+
+    for (std::map<std::string,std::string>::const_iterator it(columnTypes_.begin()); it != columnTypes_.end(); ++it)
+    {
+        L << "SchemaAnalyzer::isBitfield: columnTypes_: " << it->first << " : " << it->second << std::endl;
+
+        if (it->first == columnName)
+        {
+            std::string columnType (it->second);
+            L << "SchemaAnalyzer::isBitfield: columnType='" << columnType << "'" << std::endl;
+            for (std::map<std::string, BitfieldDef>::const_iterator it(bitfieldTypes_.begin()); it != bitfieldTypes_.end(); ++it)
+            {
+                L << "SchemaAnalyzer::isBitfield: bitfieldTypes_: '" << it->first  << "'" /*<< " : " << it->second */ << std::endl;
+                if (it->first == columnType)
+                {
+                    L << "SchemaAnalyzer::isBitfield => true" << std::endl;
+                    return true;
+                }
+            }
+        }
+    }
+    L << "SchemaAnalyzer::isBitfield => false" << std::endl;
+    return false;
 }
 
-const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const std::string columnName) 
+const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const std::string& columnName) 
 {
 	ASSERT(isBitfield(columnName));
 	std::string columnType = columnTypes_.find(columnName)->second;

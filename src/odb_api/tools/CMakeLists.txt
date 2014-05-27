@@ -45,6 +45,7 @@ MockReader.cc
 )
 
 list( APPEND odbtest_src_files
+UnitTests.cc
 TestAAAImportODB.cc
 TestAAAImportODBDispatching.cc
 TestAggregateFunctions.cc

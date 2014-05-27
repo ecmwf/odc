@@ -14,6 +14,8 @@
 
 #include "eckit/io/FileHandle.h"
 #include "eckit/log/Timer.h"
+#include "eckit/exception/Exceptions.h"
+
 #include "odb_api/Comparator.h"
 #include "odb_api/DateTime.h"
 #include "odb_api/Decoder.h"
@@ -29,9 +31,10 @@
 #include "odb_api/TextReaderIterator.h"
 #include "odb_api/Writer.h"
 #include "TestCase.h"
-#include "tools/CountTool.h"
-#include "tools/ImportTool.h"
-#include "tools/SplitTool.h"
+#include "odb_api/tools/CountTool.h"
+#include "odb_api/tools/ImportTool.h"
+#include "odb_api/tools/SplitTool.h"
+#include "odb_api/ODBAPISettings.h"
 
 extern "C" {
 #include "odb_api/odbcapi.h"
@@ -114,6 +117,7 @@ static void createDataForMixedAggregated2()
     md.addColumn<DS>("x", "INTEGER");//, true, .0);
     md.addColumn<DS>("y", "INTEGER");//, true, .0);
     md.addColumn<DS>("v", "DOUBLE");//, true, .0);
+    o->columns(md);
     o->writeHeader();
 
     for (size_t row = 0; row < 1000; ++row)
@@ -267,8 +271,8 @@ TEST(vector_syntax)
 
 TEST(bitfieldsLength)
 {
-    Log::info() << "UnitTest: sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
-    Log::info() << "UnitTest: sizeof(double)" << sizeof(double) << std::endl;
+    Log::info() << "sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
+    Log::info() << "sizeof(double)" << sizeof(double) << std::endl;
 
     //>>> int('0b11100110011',2)
     //1843
@@ -279,7 +283,7 @@ TEST(bitfieldsLength)
         stringstream s;
         Decoder::printBinary(s, 1843);
         string r = s.str();
-        Log::info() << "UnitTest: " << r << std::endl;
+        Log::info() << "r: " << r << std::endl;
 
         ASSERT(r.size() == 11);
         ASSERT(r == "11100110011");
@@ -288,7 +292,7 @@ TEST(bitfieldsLength)
         stringstream s;
         Decoder::printBinary(s, 0);
         string r = s.str();
-        Log::info() << "UnitTest: " << r << std::endl;
+        Log::info() << "r: " << r << std::endl;
 
         ASSERT(r.size() == 1);
         ASSERT(r == "0");
@@ -333,10 +337,10 @@ TEST(blocksSizes)
     off_t* offsets = 0;
     size_t* sizes = 0;
 
-    int r = get_blocks_offsets("UnitTest.odb", &numberOfBlocks, &offsets, &sizes);
+    int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);
     ASSERT(r == 0);
 
-    Log::info() << "UnitTest: num of blocks: " << numberOfBlocks << std::endl;
+    Log::info() << "num of blocks: " << numberOfBlocks << std::endl;
     for (size_t i = 0; i < numberOfBlocks; ++i)
     {
         Log::info() << "UnitTest: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
@@ -462,6 +466,12 @@ TEST(windSpeedWindDirection)
         ASSERT((*it)[1] == (*it)[5]);
     }
 }
+
+//TEST(odbcapi)
+//{
+//	odb::tool::test::test_odacapi_setup_in_C(0,0);
+//	odb::tool::test::test_odacapi3(0,0);
+//}
 
 TEST(HashTable_clone)
 {
@@ -753,7 +763,7 @@ TEST(include)
     f.close();
 
     const char *sql =
-            "//#include \"stuff.sql\"\n"
+            "#include \"stuff.sql\"\n"
             "set $baz = $bar;"
             "select $foo * $bar;"
             ;
@@ -771,6 +781,8 @@ TEST(include)
 TEST(log_error)
 {
     Log::error() << "Just a logger test" << std::endl;
+    // TODO: test Log::error writes to stderr
+    // TODO: test Log::error has a prefirx with timestamp and other things
 }
 
 /*
@@ -804,7 +816,7 @@ TEST(meta_data_reader_checks_if_file_truncated)
         for(MDR::iterator it(mdr.begin()), end(mdr.end()); it != end; ++it)
             ;
         ASSERT(0 && "Scanning of truncated file did not fail");
-    } catch (ShortFile ex) {
+    } catch (eckit::ShortFile ex) {
         Log::info() << "Scanning of truncated file disp.7.1.odb.truncated failed as expected." << std::endl;
     }
 }
@@ -817,7 +829,7 @@ TEST(meta_data_reader_fails_scanning_corrupted_file)
         for(MDR::iterator it(mdr.begin()), end(mdr.end()); it != end; ++it)
             ;
         ASSERT(0 && "Scanning of corrupted.odb did not fail");
-    } catch (ShortFile ex) {
+    } catch (eckit::ShortFile ex) {
         Log::info() << "Scanning of corrupted.odb failed as expected." << std::endl;
     }
 }
@@ -992,3 +1004,54 @@ TEST(TextReaderIterator_parseBitfields)
         Log::info() << "TextReaderIterator_parseBitfields: size: " << i << " " << sizes[i] << std::endl;
 }
 
+
+TEST(JULIAN_SECONDS)
+{
+    ASSERT(1 == (*odb::Select("select julian_seconds(19750311,0) < julian_seconds(20140210,0) from dual;").begin())[0]);
+}
+
+TEST(CREATE_TABLE_and_SELECT_INTO)
+{
+	const char *inputData = 
+	"a:INTEGER,b:INTEGER\n"
+	"1,1\n"
+	"2,2\n"
+	"3,3\n"
+	"4,4\n"
+	"5,5\n"
+	"6,6\n"
+	"7,7\n"
+	"8,8\n"
+	"9,9\n"
+	"10,10\n"
+	;
+
+	odb::tool::ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
+    const char* sql =
+    "CREATE TYPE mybitfield AS ( "
+    "codetype bit9,"
+    "instype bit10,"
+    "retrtype bit6,"
+    "geoarea bit6,"
+    ");"
+
+    "CREATE TABLE \"foo.odb\" AS ( "
+    "lat real,"
+    "lon real,"
+    "status mybitfield,"
+    ");"
+
+    "SELECT a,b,a*b INTO \"foo.odb\" FROM \"CREATE_TABLE_and_SELECT_INTO.odb\";"
+    ;
+
+    {
+        odb::Select o(sql);
+        odb::Select::iterator it = o.begin();
+        unsigned long counter = 0;
+        for ( ; it != o.end(); ++it, ++counter)
+            ;
+        Log::info() << "CREATE_TABLE_and_SELECT_INTO: counter=" << counter << endl;
+    }
+    system("ls -l foo.odb; ");
+    system((ODBAPISettings::instance().fileInHome("~/bin/odb") + " header foo.odb").c_str());
+}

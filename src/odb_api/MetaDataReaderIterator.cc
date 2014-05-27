@@ -16,6 +16,7 @@
 #include <arpa/inet.h>
 
 #include "eckit/eckit.h"
+#include "eckit/exception/Exceptions.h"
 #include "odb_api/MetaDataReaderIterator.h"
 
 using namespace eckit;
@@ -146,7 +147,7 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 	{
         Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << std::endl;
 		if (fileSize_ && f->position() + Offset(dataSize) > fileSize_)
-            throw Exception("MetaDataReaderIterator::readBuffer()");
+            throw eckit::ShortFile("MetaDataReaderIterator::skip");
 
         f->skip(dataSize);
         return true;

@@ -22,9 +22,7 @@ template<typename ITERATOR>
 SQLODAOutput<ITERATOR>::SQLODAOutput(ITERATOR writer, const MetaData& columns)
 : writer_(writer), count_(0), metaData_(0)
 {
-    eckit::Log::info() << " => SQLODAOutput::SQLODAOutput: columns = " << columns << std::endl;
     metaData_ = columns;
-    eckit::Log::info() << " <= SQLODAOutput::SQLODAOutput" << std::endl;
 }
 
 template<typename ITERATOR>
@@ -76,7 +74,7 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql) {
 	const expression::Expressions& columns (sql.output());
     size_t n = columns.size();
 
-    std::ostream& L(eckit::Log::info());
+    std::ostream& L(eckit::Log::debug());
 
     if (metaData_.size()) {
         L << "SQLODAOutput: Using meta of INTO table" << std::endl;
