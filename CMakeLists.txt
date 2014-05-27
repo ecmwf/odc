@@ -17,8 +17,8 @@ message( STATUS " ecbuild/cmake  : [${CMAKE_CURRENT_SOURCE_DIR}/ecbuild/cmake]" 
 
 
 # Add path for custom modules
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/ecbuild/cmake")
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/ecbuild/cmake")
 
 project( odb_api CXX )
 include( ecbuild_system )
