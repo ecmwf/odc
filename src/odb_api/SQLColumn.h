@@ -32,7 +32,6 @@ public:
 	SQLColumn(const type::SQLType&, SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue);
 	virtual ~SQLColumn();
 
-
 	void scan();
 
 	unsigned long long noRows() const;

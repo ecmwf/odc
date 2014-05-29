@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// zfile TODATable.h
+/// \file TODATable.h
 /// Piotr Kuchta - ECMWF Oct 2010
 
 #ifndef TODATable_H
@@ -23,7 +23,6 @@ namespace sql {
 template <typename T>
 class TODATable : public SQLTable {
 public:
-
 	typedef T TReader;
 	typedef TODATableIterator<TODATable> TableIterator;
 
@@ -45,12 +44,9 @@ protected:
 	SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue);
 
 private:
-
 // No copy allowed
 	TODATable(const TODATable&);
 	TODATable& operator=(const TODATable&);
-
-// -- Members
 
 public:
 
@@ -62,7 +58,7 @@ public:
 // -- Methods
 
 	void populateMetaData();
-	void updateMetaData(const std::vector<SQLColumn*>&);
+	void updateMetaData(std::vector<SQLColumn*>&);
 
 	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const;
 };

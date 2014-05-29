@@ -8,17 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "odb_api/odb_api.h"
-
-//#include "odb_api/ODAColumn.h"
-//#include "odb_api/SQLDatabase.h"
-//#include "odb_api/SQLType.h"
-//#include "odb_api/TODATable.h"
-
+#include <sstream>
 #include "odb_api/SQLBitfield.h"
 
-
-
+using namespace std;
 
 namespace odb {
 namespace sql {
@@ -87,7 +80,7 @@ void TODATable<T>::populateMetaData()
 		switch(column.type())
 		{
 			case INTEGER: sqlType = "integer"; break;
-			case STRING:  sqlType = "std::string"; break;
+			case STRING:  sqlType = "string"; break;
 			case REAL:    sqlType = "real"; break;
 			case DOUBLE:  sqlType = "double"; break;
 			case BITFIELD:
@@ -109,11 +102,11 @@ void TODATable<T>::populateMetaData()
 }
 
 template <typename T>
-void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
+void TODATable<T>::updateMetaData(std::vector<SQLColumn*>& selected)
 {
     using eckit::Log;
 
-    Log::debug() << "ODATableIterator::updateMetaData: " << std::endl;
+    Log::debug() << "ODATableIterator::updateMetaData: " << endl;
 	MetaData newColumns (reader_->columns());
 	for(size_t i = 0; i < selected.size(); i++)
 	{
@@ -121,8 +114,8 @@ void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
 		ASSERT(c);
 		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name()) 
 		{
-			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << std::endl;
-			Log::warning() << "Was: " << c->index() << "." << std::endl;
+			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl
+			               << "Was: " << c->index() << "." << endl;
 			bool newIndexFound = false;
 			for (size_t j = 0; j < newColumns.size(); ++j)
 			{
@@ -130,12 +123,23 @@ void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
 				if (other.name() == c->name() || other.name() == c->fullName())
 				{
 					newIndexFound = true;
-					Log::warning() << "New index: " << j << std::endl;
+					Log::warning() << "New index: " << j << endl;
 					c->index(j);
 					break;
 				}
 			}
-			ASSERT("One of selected columns does not exist in new data set." && newIndexFound);
+            if (! newIndexFound)
+            {
+                // TODO: if user specified MAYBE keyword, then use a constant NULL column.
+                //if (maybe_) {
+                //    Log::warning() << "Column '" << c->name() << "' not found." << endl;
+                //    selected[i] = new NullColumn(*selected[i]);
+                //} else {
+                    stringstream ss;
+                    ss << "One of selected columns, '" << c->name() << "', does not exist in new data set.";
+                    throw eckit::UserError(ss.str());
+                //}
+            }
 		}
 		//c->value(&data_[i]);
 	}

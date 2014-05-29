@@ -206,6 +206,8 @@ NumberExpression.cc
 NumberExpression.h
 ODAColumn.cc
 ODAColumn.h
+NullColumn.cc
+NullColumn.h
 ODADatabase.cc
 ODADatabase.h
 ODAHandle.cc
@@ -384,7 +386,7 @@ ShiftedColumnExpression.cc
 ecbuild_add_library( TARGET     Odb
                      INSTALL_HEADERS LISTED
 					 HEADER_DESTINATION
-						${INSTALL_INCLUDE_DIR}/odb_api/odblib
+						${INSTALL_INCLUDE_DIR}/odb_api
                      COMPONENT  server
                      SOURCES    ${odblib_src_files}
                      GENERATED  ODBAPIVersionSHA1.cc
