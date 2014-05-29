@@ -53,18 +53,9 @@ namespace utils {
   friend std::istream& operator>>(std::istream&, Duration&);
 
   public:
-
-  // -- Constructors
     Duration();
-
     Duration(const int64_t);
-
     Duration(const std::string &);
-
-  // -- Destructor
-  //  ~Example() -- not required. This is a simple class.
-
-  // -- Methods
 
     //! Set the duration from an ISO 8601 duration: [-]P[dD]T[hH][mM][sS]
     void set(const std::string &);
@@ -90,14 +81,12 @@ namespace utils {
     int operator%(const Duration& other) const;
 
   private:
-
   // -- Copy allowed
   //  Example(const Example&); -- default shallow copy is OK
   //  Example& operator=(const Example&); -- default shallow copy is OK
   
   std::string eatDigits(std::istream &);
 
-  // -- Members
 
     int64_t seconds_;  // 32-bit int overflows at ~68 years
 

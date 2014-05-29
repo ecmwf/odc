@@ -102,7 +102,7 @@ void TODATable<T>::populateMetaData()
 }
 
 template <typename T>
-void TODATable<T>::updateMetaData(std::vector<SQLColumn*>& selected)
+void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
 {
     using eckit::Log;
 

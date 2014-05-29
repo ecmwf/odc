@@ -149,7 +149,7 @@ void SQLType::registerStaticTypes()
 	static SQLInt linklen_t("linklen_t");
 	*/
 	static SQLReal real("real");
-	static SQLString type("std::string");
+	static SQLString type("string");
 	static SQLDouble double_("double");
 }
 

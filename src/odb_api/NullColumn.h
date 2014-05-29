@@ -27,7 +27,7 @@ public:
 	~NullColumn();
 
 	void value(double* p) { value_ = p; }
-	double * value() const { return &missing_; }
+	double * value() const { return const_cast<double *>(&missing_); }
 
 private:
 	NullColumn(const NullColumn&);

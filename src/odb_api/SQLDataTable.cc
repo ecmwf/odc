@@ -128,7 +128,7 @@ void SQLDataTable::populateColumns()
             case INTEGER: sqlType = "integer"; break;
             case REAL:    sqlType = "real";    break;
             case DOUBLE:  sqlType = "double";  break;
-            case STRING:  sqlType = "std::string";  break;
+            case STRING:  sqlType = "string";  break;
 
             case BITFIELD:
             {

@@ -58,7 +58,7 @@ public:
 // -- Methods
 
 	void populateMetaData();
-	void updateMetaData(std::vector<SQLColumn*>&);
+	void updateMetaData(const std::vector<SQLColumn*>&);
 
 	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const;
 };

@@ -24,28 +24,16 @@ using std::invalid_argument;
 
 namespace utils {
 
-// -----------------------------------------------------------------------------
-
 Duration::Duration() : seconds_(0) {}
-
-// -----------------------------------------------------------------------------
 
 Duration::Duration(const int64_t s) : seconds_(s) {}
 
-// -----------------------------------------------------------------------------
-
-Duration::Duration(const std::string & s) {
-  this->set(s);
-}
-
-// -----------------------------------------------------------------------------
+Duration::Duration(const std::string & s) { this->set(s); }
 
 ostream& operator<<(std::ostream& output, const Duration& d) {
     output << d.toString();
     return output;
 }
-
-// -----------------------------------------------------------------------------
 
 istream& operator>>(std::istream& input, Duration& d) {
     std::string duration;
@@ -53,8 +41,6 @@ istream& operator>>(std::istream& input, Duration& d) {
     d.set(duration);
     return input;
 }
-
-// -----------------------------------------------------------------------------
 
 void Duration::set(const std::string & str) {
   this ->seconds_ = 0;
@@ -150,13 +136,11 @@ void Duration::set(const std::string & str) {
 
   }
   catch(...) {
-    std::string message="Badly formed duration std::string: ";
+    std::string message="Badly formed duration string: ";
     message.append(str);
     throw invalid_argument(message);
   }
 }
-
-// -----------------------------------------------------------------------------
 
 std::string Duration::eatDigits(std::istream & is) {
   std::string str;
@@ -170,11 +154,7 @@ std::string Duration::eatDigits(std::istream & is) {
   return str;
 }
 
-// -----------------------------------------------------------------------------
-
 int64_t Duration::toSeconds () const {return seconds_;}
-
-// -----------------------------------------------------------------------------
 
 std::string Duration::toString () const {
   ostringstream os;
@@ -216,48 +196,32 @@ std::string Duration::toString () const {
   return os.str();
 }
 
-// -----------------------------------------------------------------------------
-
     bool Duration::operator==(const Duration& other) const {
       return this->seconds_ == other.seconds_;
     }
-
-// -----------------------------------------------------------------------------
 
     bool Duration::operator!=(const Duration& other) const {
       return this->seconds_ != other.seconds_;
     }
 
-// -----------------------------------------------------------------------------
-
     bool Duration::operator<(const Duration& other) const {
       return this->seconds_ < other.seconds_;
     }
-
-// -----------------------------------------------------------------------------
 
     bool Duration::operator<=(const Duration& other) const {
       return this->seconds_ <= other.seconds_;
     }
 
-// -----------------------------------------------------------------------------
-
     bool Duration::operator>(const Duration& other) const {
       return this->seconds_ > other.seconds_;
     }
-
-// -----------------------------------------------------------------------------
 
     bool Duration::operator>=(const Duration& other) const {
       return this->seconds_ >= other.seconds_;
     }
 
-// -----------------------------------------------------------------------------
-
     int Duration::operator%(const Duration& other) const {
       return this->seconds_ % other.seconds_;
     }
-
-// -----------------------------------------------------------------------------
 
 } //namespace

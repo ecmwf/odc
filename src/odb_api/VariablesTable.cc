@@ -52,7 +52,7 @@ public:
 VariablesTable::VariablesTable(SQLDatabase& owner, const std::string& name)
 : SQLTable(owner, "", name)
 {
-	addColumn(new VariablesColumn("name", 0, "std::string", *this), "name", 0);
+	addColumn(new VariablesColumn("name", 0, "string", *this), "name", 0);
 	addColumn(new VariablesColumn("value", 1, "real", *this), "value", 1);
 }
 
