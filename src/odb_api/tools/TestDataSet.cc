@@ -1,29 +1,30 @@
-/// @file   UnitTest.cc
+/// @file   TestDataSet.cc
 /// @author Tomas Kral
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/DataColumns.h"
+
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
 #include "odb_api/DataSet.h"
 #include "odb_api/DataTable.h"
-#include "TestCase.h"
-
+#include "odb_api/DataLink.h"
 
 using namespace std;
 using namespace odb;
 
+namespace {
 
-
-struct Fixture2
+struct Fixture
 {
-    Fixture2();
+    Fixture();
     DataSet dataset;
 };
 
-Fixture2::Fixture2()
+Fixture::Fixture()
   : dataset("dataset")
 {}
 
-TEST_FIXTURE(Fixture2, InsertingTablesIncreasesSize)
+TEST_FIXTURE(Fixture, InsertingTablesIncreasesSize)
 {
     DataColumns columns;
 
@@ -37,3 +38,4 @@ TEST_FIXTURE(Fixture2, InsertingTablesIncreasesSize)
     CHECK_EQUAL(2u, dataset.tables().size());
 }
 
+} // namespace

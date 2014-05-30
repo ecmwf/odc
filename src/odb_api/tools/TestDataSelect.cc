@@ -1,18 +1,19 @@
-/// @file   UnitTest.cc
+/// @file   TestDataSelect.cc
 /// @author Tomas Kral
 
-#include "odb_api/DataColumns.h"
-#include "odb_api/DataSelect.h"
-#include "odb_api/DataSelectIterator.h"
+#include <string>
+
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
 #include "odb_api/DataSet.h"
 #include "odb_api/DataTable.h"
-#include "TestCase.h"
-
+#include "odb_api/DataSelect.h"
+#include "odb_api/DataSelectIterator.h"
 
 using namespace std;
 using namespace odb;
 
-
+namespace {
 
 struct FilledDataSet
 {
@@ -22,7 +23,7 @@ struct FilledDataSet
 };
 
 FilledDataSet::FilledDataSet()
-  : dataset("UnitTest")
+  : dataset("TestDataSelect")
 {
     DataColumns columns;
     columns.add("digit", "INTEGER");
@@ -201,4 +202,4 @@ TEST_FIXTURE(SelectAll, CanUseCopyToAppendResults)
             CHECK_EQUAL((*expected)[i], (*actual)[i]);
 }
 
-
+} // namespace

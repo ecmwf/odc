@@ -1,14 +1,14 @@
-/// @file   UnitTest.cc
+/// @file   TestDataJoin.cc
 /// @author Tomas Kral
 
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
 #include "odb_api/DataJoin.h"
-#include "odb_api/DataTable.h"
-#include "TestCase.h"
-
 
 using namespace std;
-using namespace eckit;
 using namespace odb;
+
+namespace {
 
 struct Tables
 {
@@ -17,13 +17,13 @@ struct Tables
         right("right", columns("right"))
     {}
 
-    static DataColumns columns(const std::string& name);
+    static DataColumns columns(const string& name);
 
     DataTable left;
     DataTable right;
 };
 
-DataColumns Tables::columns(const std::string& name)
+DataColumns Tables::columns(const string& name)
 {
     DataColumns columns;
 
@@ -185,3 +185,4 @@ TEST_FIXTURE(InnerJoin, InnerJoinReturnsExpectedValues)
     }
 }
 
+} // namespace

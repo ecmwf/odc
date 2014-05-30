@@ -1,27 +1,26 @@
-/// @file   UnitTest.cc
+/// @file   TestDataLoader.cc
 /// @author Tomas Kral
 
 #include <string>
 
 #include "eckit/filesystem/TmpFile.h"
-#include "TestCase.h"
+#include "odb_api/Reader.h"
 
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
 #include "odb_api/DataLoader.h"
 #include "odb_api/DataSaver.h"
-#include "odb_api/DataSet.h"
-#include "odb_api/DataStream.h"
 #include "odb_api/DataTable.h"
-#include "odb_api/Reader.h"
-#include "odb_api/MetaData.h"
-
-#include "odb_api/UnsafeInMemoryDataHandle.h"
-#include "odb_api/Writer.h"
+#include "odb_api/DataTableMappings.h"
+#include "odb_api/DataSet.h"
 
 using namespace std;
 using namespace odb;
 using namespace eckit;
 
-typedef odb::DataStream<odb::SameByteOrder, odb::PrettyFastInMemoryDataHandle> DS;
+namespace {
+
+typedef odb::DataStream<odb::SameByteOrder, odb::PrettyFastInMemoryDataHandle> DataStream;
 
 struct Fixture
 {
@@ -42,12 +41,11 @@ Fixture::Fixture()
     odb::Writer<> writer(input);
     odb::Writer<>::iterator it = writer.begin();
 
-    odb::MetaData md (it->columns());
-
-    md.addColumn<DS>("parent_id@parent", "INTEGER");
-    md.addColumn<DS>("child.offset@parent", "INTEGER" );
-    md.addColumn<DS>("child.len@parent", "INTEGER" );
-    md.addColumn<DS>("child_id@child", "INTEGER" );
+    MetaData md (it->columns());
+    md.addColumn<DataStream>("parent_id@parent", "INTEGER");
+    md.addColumn<DataStream>("child.offset@parent", "INTEGER");
+    md.addColumn<DataStream>("child.len@parent", "INTEGER");
+    md.addColumn<DataStream>("child_id@child", "INTEGER");
     it->columns(md);
     it->writeHeader();
 
@@ -225,3 +223,4 @@ TEST_FIXTURE(FilledDataSet, DataSaverOutputContainsExpectedRows)
     }
 }
 
+} // namespace

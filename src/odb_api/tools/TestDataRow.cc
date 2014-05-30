@@ -1,16 +1,19 @@
-/// @file   UnitTest.cc
+/// @file   TestDataRow.cc
 /// @author Tomas Kral
 
-#include "eckit/exception/Exceptions.h"
-#include "odb_api/DataColumns.h"
-#include "odb_api/DataRow.h"
-#include "TestCase.h"
+#include <cstdlib>
+#include <string>
 
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
+#include "odb_api/DataRow.h"
+#include "odb_api/DataTable.h"
+#include "odb_api/DataColumns.h"
 
 using namespace std;
 using namespace odb;
 
-
+namespace {
 
 TEST(UnInitializedDataRowHasExpectedSize)
 {
@@ -137,7 +140,7 @@ TEST_FIXTURE(Ordinals, CopiedDataRowHasExpectedValues)
 TEST(DataRowCanSetIntegers)
 {
     DataRow row(1);
-    row.DataRow::set<int>(0, static_cast<int>(3.14) ); // this conversion to int is intentional
+    row.set<int>(0, 3.14);
     CHECK(row.modified());
     CHECK_EQUAL(3, row[0]);
 }
@@ -145,7 +148,7 @@ TEST(DataRowCanSetIntegers)
 TEST(DataRowCanSetDoubles)
 {
     DataRow row(1);
-    row.DataRow::set<double>(0, 3.14);
+    row.set<double>(0, 3.14);
     CHECK(row.modified());
     CHECK_EQUAL(3.14, row[0]);
 }
@@ -153,8 +156,9 @@ TEST(DataRowCanSetDoubles)
 TEST(DataRowCanSetStrings)
 {
     DataRow row(1);
-    row.DataRow::set<std::string>(0, "ABCD");
+    row.set<string>(0, "ABCD");
     CHECK(row.modified());
     CHECK_ARRAY_EQUAL("ABCD    ", reinterpret_cast<char*>(&row[0]), sizeof(double));
 }
 
+} // namespace

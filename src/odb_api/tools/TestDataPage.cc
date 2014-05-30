@@ -1,16 +1,19 @@
-/// @file   UnitTest.cc
+/// @file   TestDataPage.cc
 /// @author Tomas Kral
 
-#include "odb_api/DataColumns.h"
-#include "odb_api/DataTable.h"
-#include "TestCase.h"
+#include <string>
+#include <iostream>
 
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
+#include "odb_api/DataTable.h"
+#include "odb_api/DataPage.h"
 
 using namespace std;
 using namespace odb;
 using namespace odb::internal;
 
-
+namespace {
 
 struct EmptyPage
 {
@@ -403,3 +406,4 @@ TEST_FIXTURE(FullPage, SplitFullPage)
     delete newPage;
 }
 
+} // namespace

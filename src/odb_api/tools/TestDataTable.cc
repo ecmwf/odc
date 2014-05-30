@@ -1,14 +1,16 @@
-/// @file   UnitTest.cc
+/// @file   TestDataTable.cc
 /// @author Tomas Kral
 
-#include "odb_api/DataTable.h"
-#include "TestCase.h"
+#include <string>
 
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
+#include "odb_api/DataTable.h"
 
 using namespace std;
 using namespace odb;
 
-
+namespace {
 
 struct EmptyTable
 {
@@ -302,4 +304,4 @@ TEST_FIXTURE(ThreeColumnTable, MultiLineInitialization)
     CHECK_EQUAL(2.0, table[1].get<double>(1));
 }
 
-
+} // namespace

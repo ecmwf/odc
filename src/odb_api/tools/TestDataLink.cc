@@ -1,26 +1,30 @@
-/// @file   UnitTest.cc
+/// @file   TestDataLink.cc
 /// @author Tomas Kral
 
-#include "odb_api/DataColumns.h"
-#include "odb_api/DataLink.h"
+#include <string>
+#include <vector>
+
+#include "odb_api/tools/TestCase.h"
+#include "odb_api/tools/ToolFactory.h"
 #include "odb_api/DataTable.h"
-#include "TestCase.h"
+#include "odb_api/DataLink.h"
 
 using namespace std;
-using namespace eckit;
 using namespace odb;
+
+namespace {
 
 struct FilledTables
 {
     FilledTables();
    ~FilledTables();
 
-    static DataColumns columns(const std::string& name);
+    static DataColumns columns(const string& name);
     static DataTableProperties properties();
     
     DataTable parent;
     DataTable child;
-    std::vector<DataTable*> result;
+    vector<DataTable*> result;
 };
 
 FilledTables::FilledTables()
@@ -64,7 +68,7 @@ FilledTables::~FilledTables()
         delete result[i];
 }
 
-DataColumns FilledTables::columns(const std::string& name)
+DataColumns FilledTables::columns(const string& name)
 {
     DataColumns columns;
 
@@ -202,3 +206,4 @@ TEST_FIXTURE(FilledLink, InsertRowAtTheEndOfTheLastRange)
     }
 }
 
+} // namespace
