@@ -23,6 +23,7 @@ namespace eckit {
 namespace odb {
 
 class MetaData;
+class Column;
 
 const double maxAbsoluteError = 1e-9;
 const double maxRelativeError = 1e-9;
@@ -47,8 +48,6 @@ public:
 
 	void compare(const MetaData&, const MetaData&, const std::vector<std::string>&);
 	void compare(int nCols, const double *data1, const double *data2, const MetaData&, const MetaData&);
-	void compare(int nCols, const double *data1, const double *data2, const MetaData& md)
-	{ compare(nCols, data1, data2, md, md); } 
 
 	void checkMissingFlag(bool v) { checkMissingFlag_ = v; }
 
@@ -66,6 +65,8 @@ public:
 	}
 
 	inline static int same(double A,double B) { return err(A,B) < maxRelativeError; }
+
+    void raiseNotEqual(const Column&, double, double);
 
 private:
 	long nRow_;
@@ -99,7 +100,7 @@ bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const
 		if (it2->isNewDataset())
 			compare(it1->columns(), it2->columns(), excludedColumnsTypes);
 
-		compare(it1->columns().size(), it1->data(), it2->data(), it1->columns());
+		compare(it1->columns().size(), it1->data(), it2->data(), it1->columns(), it2->columns());
 	}
 
 	ASSERT("First file has more rows!"  && ! (it1 != end1));

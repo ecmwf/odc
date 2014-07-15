@@ -21,6 +21,8 @@
 #include "odb_api/tools/MDSetTool.h"
 
 using namespace eckit;
+using namespace std;
+typedef eckit::StringTools S;
 
 namespace odb {
 namespace tool {
@@ -29,64 +31,55 @@ MDSetTool::MDSetTool (int argc, char *parameters[]) : Tool(argc, parameters) { }
 
 void MDSetTool::run()
 {
-	if (parameters().size() != 4)
-	{
-		Log::error() << "Usage: ";
-		usage(parameters(0), Log::error());
-		Log::error() << std::endl;
-		return;
-	}
+    if (parameters().size() != 4)
+    {
+        Log::error() << "Usage: ";
+        usage(parameters(0), Log::error());
+        Log::error() << std::endl;
+        return;
+    }
 
-	std::vector<std::string> columns;
-	std::vector<std::string> types;
-
-	PathName inFile = parameters(2);
-
-	PathName outFile = parameters(3);
+    PathName inFile = parameters(2), outFile = parameters(3);
     std::auto_ptr<DataHandle> outHandle(ODBAPISettings::instance().writeToFile(outFile));
 
-	parseUpdateList(parameters(1), columns, types);
-    ASSERT(columns.size() == types.size());
+    std::vector<std::string> columns, types, values;
+    std::vector<BitfieldDef> bitfieldDefs;
+    parseUpdateList(parameters(1), columns, types, values, bitfieldDefs);
 
-	std::vector<BitfieldDef> bitfieldDefs;
-    for (size_t i = 0; i < types.size(); ++i)
-    {   
-        Log::info() << columns[i] << " : " << types[i] << std::endl;
+    typedef odb::MetaDataReader<odb::MetaDataReaderIterator> R;
+    R reader(inFile, false);
 
-        // Only bitfoelds now:
-        // [active:1;passive:1;rejected:1;blacklisted:1;use_emiskf_only:1;monthly:1;constant:1;experimental:1;whitelist:]
-        ASSERT(types[i].size());
-        ASSERT(types[i][0] == '[');
-        ASSERT(types[i][types[i].size() - 1] == ']');
+    for (R::iterator it = reader.begin(), end = reader.end();
+        it != end;
+        ++it)
+    {
+        ASSERT(it->isNewDataset());
+        const MetaData& md (it->columns());
+        for (size_t i = 0; i < columns.size(); ++i)
+        {
+            Column& c (*md[md.columnIndex(columns[i])]);
+            Log::info() << "" << columns[i]  << ": " << c << endl;
 
-        BitfieldDef bf; 
-        std::vector<std::string> parts(StringTools::split(";", types[i].substr(1, types[i].size() - 2)));
-        for (size_t p = 0; p < parts.size(); ++p)
-        {   
-            std::vector<std::string> field = StringTools::split(":", parts[p]);
-            bf.first.push_back(field[0]);
-            bf.second.push_back(atoi(field[1].c_str()));
-        }   
-        bitfieldDefs.push_back(bf);
-        Log::info() << "" << i << ": " << columns[i] << " - " << bf.first << std::endl; // "[" << bf.second << "]" << std::endl;
-    } 
+            if (types[i].size() && types[i] != "NONE") c.type(Column::type(types[i]));
+            if (bitfieldDefs[i].first.size()) c.bitfieldDef(bitfieldDefs[i]);
+            if (values[i].size() && values[i] != "NONE")
+            {
+                odb::codec::Codec& codec (c.coder());
+                if (codec.name().find("constant") == std::string::npos)
+                {
+                    stringstream ss;
+                    ss << "Column '" << columns[i] << "' is not constant (codec: " << codec.name() << ")" << endl;
+                    throw UserError(ss.str());
+                }
+                double v (StringTool::translate(values[i]));
+                c.min(v);
+                c.max(v);
+            }
+        }
 
-
-	typedef odb::MetaDataReader<odb::MetaDataReaderIterator> R;
-	R reader(inFile, false);
-	const R::iterator end = reader.end();
-	R::iterator it = reader.begin();
-	
-	// See if the file was created on a different order architecture
-	for (; it != end; ++it)
-	{
-		ASSERT(it->isNewDataset());
-		MetaData md (it->columns());
-		for (size_t i = 0; i < columns.size(); ++i)
-			md[md.columnIndex(columns[i])]->bitfieldDef(bitfieldDefs[i]);
-
-		size_t sizeOfEncodedData =(**it).sizeOfEncodedData(); 
+		size_t sizeOfEncodedData = (**it).sizeOfEncodedData(); 
 		Properties props;
+	    // See if the file was created on a different order architecture
 		if ((**it).byteOrder() == BYTE_ORDER_INDICATOR)
 		{
 			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << std::endl;
@@ -102,31 +95,48 @@ void MDSetTool::run()
 			DataStream<OtherByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
 		}
 	}
-
 }
 
-void MDSetTool::parseUpdateList(std::string s, std::vector<std::string>& columns, std::vector<std::string>& values)
-{
-    Tokenizer splitAssignments(",");
-    std::vector<std::string> assignments;
-    splitAssignments(s, assignments);
-	
-    Tokenizer splitEq("=");
+// 
+//static std::vector<std::string> split(const std::string& delim, const std::string& text);
 
+void MDSetTool::parseUpdateList(const std::string& s,
+                                std::vector<std::string>& columns,
+                                std::vector<std::string>& types,
+                                std::vector<std::string>& values,
+                                std::vector<BitfieldDef>& bitfieldDefs)
+{
+    std::vector<std::string> assignments(S::split(",", s));
 	for (size_t i = 0; i < assignments.size(); ++i)
 	{
-		std::vector<std::string> assignment;
-		splitEq(assignments[i], assignment);
-		ASSERT(assignment.size() == 2);
+		vector<string> assignment(S::split("=", assignments[i]));
+        string value (assignment.size() == 2 ? assignment[1] : "NONE");
+        vector<string> columnNameAndType(S::split(":", assignment[0]));
+        string type (columnNameAndType.size() == 2 ? columnNameAndType[1] : "NONE");
+        string column (assignment[0]);
+	
+        BitfieldDef bf; 
+        if (type.size() && type[0] == '[' && type[type.size() - 1] == ']')
+        {
+            std::vector<std::string> parts(StringTools::split(";", type.substr(1, type.size() - 2)));
+            for (size_t p = 0; p < parts.size(); ++p)
+            {   
+                std::vector<std::string> field (S::split(":", parts[p]));
+                bf.first.push_back(field[0]);
+                bf.second.push_back(atoi(field[1].c_str()));
+            }   
+        }
 
-		std::string colName = assignment[0];
-		std::string value = assignment[1];
-		
-		Log::info() << "MDSetTool::parseUpdateList: " << colName << "='" << value << "'" << std::endl;
+		Log::info() << "MDSetTool::parseUpdateList: " << column << " : " << type << " = '" << value << "'" << std::endl;
 
-		columns.push_back(colName);
+		columns.push_back(column);
+		types.push_back(type);
 		values.push_back(value);
+        bitfieldDefs.push_back(bf);
 	}
+    ASSERT(columns.size() == types.size());
+    ASSERT(columns.size() == values.size());
+    ASSERT(columns.size() == bitfieldDefs.size());
 }
 
 } // namespace tool 

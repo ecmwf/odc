@@ -15,6 +15,7 @@
 #include "odb_api/Reader.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/Tracer.h"
+ #include <string.h>
 
 using namespace std;
 using namespace eckit;
@@ -55,50 +56,58 @@ void Comparator::compare(const PathName& p1, const PathName& p2, const std::vect
 	compare(it1, end1, it2, end2, p1, p2, excludedColumnsTypes);
 }
 
+void Comparator::raiseNotEqual(const Column& column, double d1, double d2) {
+    ColumnType type(column.type());
+    stringstream ss;
+    ss << "Values different in column " << column.name() << ": " 
+        << StringTool::valueAsString(d1, type) << " is not equal " << StringTool::valueAsString(d2, type) << endl;
+    throw ValuesDifferent(ss.str());
+}
+
 void Comparator::compare(int nCols, const double *data1, const double *data2, const MetaData& md1, const MetaData& md2)
 {
-	for (int i=0; i < nCols; i++)
-		try
-		{
-			const Column& column(*md1[i]);
-			ColumnType type(column.type());
-			switch (type)
-			{
-				case INTEGER:
-				case BITFIELD:
-				case STRING:
-				case DOUBLE:
-					if (! (same(data1[i], data2[i]) || (NaN_isOK_ && (isnan(data1[i]) && isnan(data2[i])))))
-					{
-						stringstream ss;
-						ss << "Values different: " 
-						<< " data1[" << i << "]==" << StringTool::valueAsString(data1[i], type)
-						<< " data2[" << i << "]==" << StringTool::valueAsString(data2[i], type)  << std::endl;
-						throw ValuesDifferent(ss.str());
-					}
-					break;
-				case REAL:
-					ASSERT(same(float(data1[i]), float(data2[i])) || (NaN_isOK_ && (isnan(data1[i]) && isnan(data2[i]))));
-					break;
-				case IGNORE:
-				default:
-					ASSERT(!"Unknown type");
-					break;
-			}
-		} catch (Exception &e) {
-			Log::info() << "While comparing rows number " << nRow_ << ", columns " << i
-				<< " found different." << std::endl;
-			Log::info() << " " << e.what() << std::endl;
+    for (int i=0; i < nCols; i++)
+        try
+        {
+            const Column& column(*md1[i]);
+            ColumnType type(column.type());
+            double d1 (data1[i]), d2 (data2[i]);
 
-			Log::info() << " data1[" << i << "] = " << std::scientific << data1[i] << std::endl;
-			Log::info() << " data2[" << i << "] = " << std::scientific << data2[i] << std::endl;
+            switch (type)
+            {
+                case STRING:
+                    if (strncmp(reinterpret_cast<const char*>(&d1), reinterpret_cast<const char*>(&d2), sizeof(double)))
+                        raiseNotEqual(column, d1, d2);
+                    break;
+                case INTEGER:
+                case BITFIELD:
+                case DOUBLE:
+                    if (! (same(d1, d2) || (NaN_isOK_ && (isnan(d1) && isnan(d2)))))
+                        raiseNotEqual(column, d1, d2);
+                    break;
+                case REAL:
+                    if (! (same(float(d1), float(d2)) || (NaN_isOK_ && (isnan(d1) && isnan(d2)))))
+                        raiseNotEqual(column, d1, d2);
+                    break;
+                case IGNORE:
+                default:
+                    ASSERT(!"Unknown type");
+                    break;
+            }
+        } catch (Exception &e) {
+            Log::info() << "While comparing rows number " << nRow_ << ", columns " << i
+                << " found different." << std::endl;
+            Log::info() << " " << e.what() << std::endl;
 
-			Log::info() << " md1[" << i << "] = " << *md1[i] << std::endl;
-			Log::info() << " md2[" << i << "] = " << *md2[i] << std::endl;
+            Log::info() << " data1[" << i << "] = " << std::scientific << data1[i] << std::endl;
+            Log::info() << " data2[" << i << "] = " << std::scientific << data2[i] << std::endl;
 
-			//TODO: make it an option to stop when an error found
-			//throw;
-		}
+            Log::info() << " md1[" << i << "] = " << *md1[i] << std::endl;
+            Log::info() << " md2[" << i << "] = " << *md2[i] << std::endl;
+
+            //TODO: make it an option to stop when an error found
+            //throw;
+        }
 }
 
 
