@@ -31,8 +31,8 @@ Cmake creates Makefiles only, so the next step is to call make and actually buil
 
   $ pwd
   /tmp/test
-  $ tar zxf OdbAPI-0.9.20-dev-Source.tar.gz
-  $ cd OdbAPI-0.9.20-dev-Source
+  $ tar zxf OdbAPI-0.10.1-dev-Source.tar.gz
+  $ cd OdbAPI-0.10.1-dev-Source
   $ mkdir -p build/production
   $ cd build/production
   $ ../../configure_ecmwf_ecgate.sh
@@ -98,13 +98,13 @@ Path to old ODB installation. Normally it should be set to $ODB_ROOT.
     CMAKE_MODULE_PATH
 
 Path to ECMWF cmake macros. The macros are supplied with ODB API source. For example, if the ODB API source code was unpacked in
-directory /tmp/test then CMAKE_MODULE_PATH should be set to /tmp/test/OdbAPI-0.9.20-dev-Source/ecbuild/cmake
+directory /tmp/test then CMAKE_MODULE_PATH should be set to /tmp/test/OdbAPI-0.10.1-dev-Source/ecbuild/cmake
 
 
-    ECLIB_SOURCE
+    ECKIT_SOURCE
 
-Path to EClib source. EClib is supplied with ODB API source. For example, if the ODB API source code was unpacked in directory
-/tmp/test then ECLIB_SOURCE should be set to /tmp/test/OdbAPI-0.9.20-dev-Source/eclib
+Path to EcKit source. EcKit is supplied with ODB API source. For example, if the ODB API source code was unpacked in directory
+/tmp/test then ECKIT_SOURCE should be set to /tmp/test/OdbAPI-0.10.1-dev-Source/eckit
 
 
     BUILD_SHARED_LIBS
@@ -112,17 +112,17 @@ Path to EClib source. EClib is supplied with ODB API source. For example, if the
 Possible values: ON or OFF
 
 
-    ODB_API_MIGRATOR
+    ENABLE_MIGRATOR
 
 Spcifies if odb_migrator should be built. Possible values: ON or OFF
 
 
-    ODB_API_FORTRAN
+    ENABLE_FORTRAN
 
 Specifies if ODB API Fortran interface should be built. Possiblle values: ON or OFF
 
 
-    ODB_API_PYTHON
+    ENABLE_PYTHON
 
 Specifies if ODB API Python interface should be built. Possiblle values: ON or OFF
 

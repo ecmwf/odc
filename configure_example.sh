@@ -16,11 +16,11 @@ SRC=$(cd ../.. && pwd)
     -DCMAKE_INSTALL_PREFIX=$SRC/`cat ../../VERSION.cmake|awk '{print $3}'|sed 's/["]//g'`/  \
     -DODB_PATH=$ODB_ROOT \
     -DCMAKE_MODULE_PATH=$SRC/ecbuild/cmake \
-    -DECLIB_SOURCE=$SRC/eclib \
+    -DECKIT_SOURCE=$SRC/eckit \
     -DBUILD_SHARED_LIBS=OFF \
-    -DODB_API_MIGRATOR=ON \
-    -DODB_API_FORTRAN=ON \
-    -DODB_API_PYTHON=ON \
+    -DENABLE_MIGRATOR=ON \
+    -DENABLE_FORTRAN=ON \
+    -DENABLE_PYTHON=ON \
     -DBISON_EXECUTABLE=/usr/local/apps/bison/current/bin/bison \
     -DSWIG_EXECUTABLE=/usr/local/apps/swig/current/bin/swig
 
