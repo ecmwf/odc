@@ -20,6 +20,8 @@
 
 #include <stddef.h>
 #include <sys/types.h>
+// For off_t on Cray:
+#include <unistd.h>
 
 #if defined(__cplusplus) || defined(c_plusplus) || defined(SWIGPYTHON)
 extern "C" {

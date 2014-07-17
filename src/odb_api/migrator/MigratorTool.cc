@@ -30,6 +30,8 @@
 #include "odb_api/tools/Tool.h"
 #include "odb_api/tools/ToolFactory.h"
 
+using namespace eckit;
+using namespace std;
 
 namespace odb {
 namespace tool {
@@ -83,25 +85,27 @@ MigratorTool::MigratorTool (const CommandLineParser &clp) : Tool(clp) { }
 
 void MigratorTool::run()
 {
-	if (parameters(1) == "g"
-        || parameters(1) == "vg") {
+    if (parameters().size() > 1)
+    {
+        if (parameters(1) == "g" || parameters(1) == "vg")
+        {
+            std::vector<std::string> params;
+            for (size_t i(0); i < parameters().size(); ++i)
+                if (i != 1)
+                    params.push_back(parameters()[i]);
 
-        std::vector<std::string> params;
-        for (size_t i(0); i < parameters().size(); ++i)
-            if (i != 1)
-                params.push_back(parameters()[i]);
+            if (parameters(1) == "g")
+                gdb(params);
+            else valgrind(params);
 
-        if (parameters(1) == "g")
-            gdb(params);
-        else valgrind(params);
-
-        return;
+            return;
+        }
+        if (parameters(1) == "test")
+        {
+            //odb::tool::test::TestRunnerApplication(argc(), argv()).start();
+            return; // TODO: Retrieve a status from the test runner
+        }
     }
-	if (parameters(1) == "test")
-	{
-		//odb::tool::test::TestRunnerApplication(argc(), argv()).start();
-		return; // TODO: Retrieve a status from the test runner
-	}
 
     ODB2ODATool odb2oda(*this);
     odb2oda.run();

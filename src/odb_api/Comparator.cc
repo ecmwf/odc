@@ -66,9 +66,9 @@ void Comparator::raiseNotEqual(const Column& column, double d1, double d2) {
 
 void Comparator::compare(int nCols, const double *data1, const double *data2, const MetaData& md1, const MetaData& md2)
 {
+    unsigned long long numberOfDifferences (0);
     for (int i=0; i < nCols; i++)
-        try
-        {
+        try {
             const Column& column(*md1[i]);
             ColumnType type(column.type());
             double d1 (data1[i]), d2 (data2[i]);
@@ -95,6 +95,7 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
                     break;
             }
         } catch (Exception &e) {
+            ++numberOfDifferences; 
             Log::info() << "While comparing rows number " << nRow_ << ", columns " << i
                 << " found different." << std::endl;
             Log::info() << " " << e.what() << std::endl;
@@ -108,6 +109,12 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
             //TODO: make it an option to stop when an error found
             //throw;
         }
+    if (numberOfDifferences)
+    {
+        stringstream ss;
+        ss << "Files differ. "; // << numberOfDifferences << " difference" << ((numberOfDifferences == 1) ? "" : "s") << " found.";
+        throw Exception(ss.str());
+    }
 }
 
 
