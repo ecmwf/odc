@@ -36,7 +36,6 @@ ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
 # some variables/options of this project
 
 option( ENABLE_MIGRATOR  "whether or not to build the migrator"           OFF )
-option( ENABLE_PMIGRATOR "whether or not to build the parallel migrator"  OFF )
 option( ENABLE_FORTRAN   "whether or not to build the Fortran interface"  OFF )
 option( ENABLE_PYTHON    "whether or not to build the Python interface"   OFF )
 

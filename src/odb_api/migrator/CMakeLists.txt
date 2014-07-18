@@ -40,7 +40,7 @@ endif()
                          INCLUDES   ${ODB_INCLUDE_DIRS}
                          INSTALL_HEADERS LISTED
                          HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/migrator
-                         LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} gomp ) #FIXME: gfortran specific
+                         LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} ) #FIXME: add gomp for gfortran 
                         
     ecbuild_add_executable( TARGET     odb_migrator
                         CONDITION

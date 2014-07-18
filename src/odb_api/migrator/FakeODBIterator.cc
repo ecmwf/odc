@@ -39,13 +39,13 @@ FakeODBIterator::ConstParameters FakeODBIterator::ConstParameters::instance_ = F
 Assignments::Assignments(const std::string& s)
 {
     Tokenizer splitAssignments(",");
-    vector<std::string> assignments;
+    std::vector<std::string> assignments;
     splitAssignments(s, assignments);
 	
     Tokenizer splitEq("=");
 	for (size_t i = 0; i < assignments.size(); ++i)
 	{
-		vector<std::string> assignment;
+		std::vector<std::string> assignment;
 		splitEq(assignments[i], assignment);
 		ASSERT(assignment.size() == 2);
 
