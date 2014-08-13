@@ -15,8 +15,8 @@
 #include "odb_api/odbcapi.h"
 
 #include "TestOdaCAPI.h"
-#include "ToolFactory.h"
 #include "Tool.h"
+#include "ToolFactory.h"
 #include "ToolRunnerApplication.h"
 #include "TestRunnerApplication.h"
 
@@ -116,7 +116,7 @@ int gdb(int argc, char *argv[])
 	for (int i = 2; i < argc; i++)
 		args += std::string(" ") + argv[i];
 
-	PathName scriptFile = std::string(".gdb_") + std::string(argv[2]);
+	PathName scriptFile = std::string(".gdb_") + std::string(argc < 3 ? "odb" : argv[2]);
     if (! scriptFile.exists())
 	{
 		string s = std::string("file ") + cmd + "\nbreak main\nrun " + args + "\ncatch throw\n";
