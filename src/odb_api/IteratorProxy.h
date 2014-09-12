@@ -184,9 +184,8 @@ public:
 			return PyString_FromStringAndSize(s, j);
 		}
 		case INTEGER: return PyLong_FromDouble(d);
-		case BITFIELD:
-		{
-			//cerr << "BITFIELD" << std::endl;
+		case BITFIELD: return PyLong_FromDouble(d);
+		/*{
 			typedef unsigned long B;
 			char buf[sizeof(B) + 1];
 			char *s = buf;
@@ -201,6 +200,7 @@ public:
 			buf[sizeof(B)] = 0;
 			return PyString_FromStringAndSize(buf, sizeof(B) + 1);
 		}
+        */
 		default: return PyFloat_FromDouble(d);
 		}
 	}
