@@ -74,7 +74,7 @@ void FunctionRLIKE::prepare(SQLSelect& sql)
 
     std::string re (p2, len2);
     //eckit::Log::info() << "FunctionRLIKE::prepare: regex: '" << re << "'" << std::endl;
-    re_.reset(new eckit::Regex(re, true));
+    re_.reset(new eckit::Regex(re));
 }
 
 bool FunctionRLIKE::match(const SQLExpression& l, const SQLExpression& r, bool& missing) const
