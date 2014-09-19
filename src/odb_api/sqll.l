@@ -153,6 +153,8 @@ SEMICOLON [;]
 [rR][eE][fF][eE][rR][eE][nN][cC][eE][sS] return REFERENCES;
 [dD][eE][fF][aA][uU][lL][tT]      return DEFAULT;
 [iI][nN][hH][eE][rR][iI][tT][sS]  { BEGIN 0; return INHERITS; }
+[lL][iI][kK][eE]                  return LIKE;
+[rR][lL][iI][kK][eE]              return RLIKE;
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << std::endl;
