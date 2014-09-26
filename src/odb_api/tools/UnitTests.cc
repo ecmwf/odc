@@ -268,7 +268,6 @@ TEST(vector_syntax)
     ASSERT(counter == 5);
 }
 
-
 TEST(bitfieldsLength)
 {
     Log::info() << "sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
@@ -279,24 +278,25 @@ TEST(bitfieldsLength)
     //>>> len('0b11100110011')
     //13
     //>>>
-    {
-        stringstream s;
-        Decoder::printBinary(s, 1843);
-        string r = s.str();
-        Log::info() << "r: " << r << std::endl;
 
-        ASSERT(r.size() == 11);
-        ASSERT(r == "11100110011");
-    }
-    {
-        stringstream s;
-        Decoder::printBinary(s, 0);
-        string r = s.str();
-        Log::info() << "r: " << r << std::endl;
+    ASSERT(Decoder::printBinary(1843).size() == 11);
+    ASSERT(Decoder::printBinary(1843) == "11100110011");
+    
+    ASSERT(Decoder::printBinary(0).size() == 1);
+    ASSERT(Decoder::printBinary(0) == "0");
+}
 
-        ASSERT(r.size() == 1);
-        ASSERT(r == "0");
-    }
+/// ODB-85
+TEST(bitfieldsPrintHexadecimal) 
+{
+    ASSERT(Decoder::printHexadecimal(1843) == std::string("733"));
+
+    //eckit::Log::info() << Decoder::printHexadecimal(15)  << std::endl;
+
+    ASSERT(Decoder::printHexadecimal(10) == std::string("a"));
+    ASSERT(Decoder::printHexadecimal(11) == std::string("b"));
+    ASSERT(Decoder::printHexadecimal(15) == std::string("f"));
+    ASSERT(Decoder::printHexadecimal(255) == std::string("ff"));
 }
 
 static void create_stringInWhere_file()

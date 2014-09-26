@@ -89,7 +89,8 @@ void SQLSimpleOutput::outputString(double x, bool missing) const
 
 void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 {
-    if (! config_.displayBitfieldsBinary())
+    if (! config_.displayBitfieldsBinary()
+        && ! config_.displayBitfieldsHexadecimal())
     {
         outputUnsignedInt(x, missing);
         return;
@@ -101,8 +102,11 @@ void SQLSimpleOutput::outputBitfield(double x, bool missing) const
 	else
 	{
         std::stringstream ss;
-		Decoder::printBinary(ss, static_cast<unsigned long>(x));
-		out_ << ss.str();
+        if (config_.displayBitfieldsBinary())
+            Decoder::printBinary(ss, static_cast<unsigned long>(x));
+        else
+            Decoder::printHexadecimal(ss, static_cast<unsigned long>(x));
+        out_ << ss.str();
 	}
 }
 
