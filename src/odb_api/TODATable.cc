@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include "odb_api/SQLBitfield.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -177,14 +178,14 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 
 	std::string colName = name + "@";
 
-	int n = 0;
+    std::vector<std::string> matchingNames;
 	std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
 	for ( ; it != columnsByName_.end(); ++it)
 	{
 		std::string s = it->first;
 		if (s.find(colName) == 0)
 		{
-			n++;
+			matchingNames.push_back(s);
 			if (fullName)
 			{
 				*fullName = s;
@@ -193,10 +194,14 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 		}
 	}
 
-	if (n == 0) return false;
-	if (n == 1) return true;
+	if (matchingNames.size() == 0) return false;
+	if (matchingNames.size() == 1) return true;
 
-	throw eckit::UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+    stringstream ss;
+    ss << "Column name '" << name << "' is ambigous, could be one of: ";
+    std::copy(matchingNames.begin(), matchingNames.end(), std::ostream_iterator<std::string>(ss, ", "));
+
+	throw eckit::UserError(std::string(ss.str()));
 
 	return false;
 }
