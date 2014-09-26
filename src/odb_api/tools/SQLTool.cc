@@ -60,7 +60,7 @@ SQLTool::SQLTool(int argc,char **argv)
                                 delimiter_, 
                                 outputFile_, 
                                 outputFormat_, 
-                                optionIsSet("--binary"), 
+                                optionIsSet("--bin") || optionIsSet("--binary"), 
                                 optionIsSet("--hex") || optionIsSet("--hexadecimal"), 
                                 optionIsSet("--no_alignment")));
 }
