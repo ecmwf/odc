@@ -20,6 +20,8 @@
 namespace odb {
 namespace sql {
 
+class SQLSelect;
+
 template <typename T>
 class TODATable : public SQLTable {
 public:
@@ -60,7 +62,7 @@ public:
 	void populateMetaData();
 	void updateMetaData(const std::vector<SQLColumn*>&);
 
-	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const;
+	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&, SQLSelect*) const;
 };
 
 } // namespace sql 

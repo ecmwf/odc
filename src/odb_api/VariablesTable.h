@@ -51,7 +51,7 @@ public:
     SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
     SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue);
 
-	SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const;
+	SQLTableIterator* iterator(const std::vector<SQLColumn*>&, odb::sql::SQLSelect*) const;
 
 private:
     

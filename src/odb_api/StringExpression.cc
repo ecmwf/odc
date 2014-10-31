@@ -47,7 +47,6 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 {
     std::ostream& L(Log::info());
 
-    //TODO: if(verbose_) {...}
     //Log::info() << "StringExpression::expandStars: name_: '"  << name_ << "', value_: '" << value_ << "'" << std::endl;
 
 	if (! StringTool::isColumnRegex(name_))
@@ -59,12 +58,12 @@ void StringExpression::expandStars(const std::vector<SQLTable*>& tables, express
 	unsigned int matched = 0;
 	for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)
 	{
-		SQLTable* table = (*j);
-		std::vector<std::string> names = table->columnNames();
+		SQLTable* table (*j);
+		std::vector<std::string> names (table->columnNames());
 
 		for(size_t i = 0; i < names.size(); i++)
 		{
-			const std::string& name = names[i];
+			const std::string& name (names[i]);
 			if (! StringTool::matchEx(name_, name))
 			{
 				L << "StringExpression::expandStars: skip '" << name << "'" << std::endl;

@@ -33,11 +33,12 @@ public:
 	static SQLSelectFactory& instance();
 
 	SQLSelect* create(bool distinct,
-		Expressions select_list,
-		const std::string& into,
-		std::vector<SQLTable*> from,
-		odb::sql::expression::SQLExpression *where,
-		Expressions group_by,
+        bool all,
+        Expressions select_list,
+        const std::string& into,
+        std::vector<SQLTable*> from,
+        odb::sql::expression::SQLExpression *where,
+        Expressions group_by,
         std::pair<Expressions,std::vector<bool> > order_by);
 
 	SQLExpression* createColumn(
@@ -67,14 +68,10 @@ private:
     SQLSelectFactory();
 
      // No copy allowed
-     SQLSelectFactory(const SQLSelectFactory&);
-     SQLSelectFactory& operator=(const SQLSelectFactory&);
+    SQLSelectFactory(const SQLSelectFactory&);
+    SQLSelectFactory& operator=(const SQLSelectFactory&);
 
-	std::string index(const std::string& columnName, const SQLExpression* index);
-
-	void reshift(Expressions&);
-
-	SQLExpression* reshift(SQLExpression*);
+    std::string index(const std::string& columnName, const SQLExpression* index);
 
     void resolveImplicitFrom(SQLSession&, std::vector<SQLTable*>& from);
 
@@ -88,7 +85,7 @@ private:
 
 	SQLDatabase* database_;
 	SQLOutputConfig config_;
-	int maxColumnShift_;
+	//int maxColumnShift_;
 	int minColumnShift_;
 	std::string csvDelimiter_;
 

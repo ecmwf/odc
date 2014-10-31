@@ -1055,3 +1055,31 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
     system("ls -l foo.odb; ");
     system((ODBAPISettings::instance().fileInHome("~/bin/odb") + " header foo.odb").c_str());
 }
+
+TEST(SELECT_ALL)
+{
+    ostream& L(eckit::Log::info());
+    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
+    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
+    system("cat select_all_1.odb select_all_2.odb >select_all.odb");
+
+    L << "--- Test_SELECT_ALL: open select_all.odb" << endl;
+    odb::Select o("SELECT ALL * FROM \"select_all.odb\";");
+    odb::Select::iterator it (o.begin()), end (o.end());
+    L << "--- Test_SELECT_ALL: row #0" << endl;
+    ++it;
+    ASSERT(it->columns().size() == 2);
+    L << "--- Test_SELECT_ALL: row #1" << endl;
+    ++it;
+    ASSERT(it->columns().size() == 3);
+}
+
+// ODB-106
+TEST(SELECT_WHERE_0)
+{
+    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", "select_where_0.odb");
+    odb::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
+    odb::Select::iterator it (o.begin()), end (o.end());
+    ++it;
+}
+

@@ -9,6 +9,7 @@ namespace sql {
     class SQLColumn;
     class SQLDatabase;
     class SQLTableIterator;
+    class SQLSelect;
 
 }}
 
@@ -25,7 +26,7 @@ public:
 
     virtual odb::sql::SQLColumn* column(const std::string& name);
     virtual bool hasColumn(const std::string& name, std::string* fullName = 0);
-    virtual odb::sql::SQLTableIterator* iterator(const std::vector<odb::sql::SQLColumn*>&) const;
+    virtual odb::sql::SQLTableIterator* iterator(const std::vector<odb::sql::SQLColumn*>&, odb::sql::SQLSelect*) const;
 
 protected:
 	virtual odb::sql::SQLColumn* createSQLColumn(const odb::sql::type::SQLType& type,

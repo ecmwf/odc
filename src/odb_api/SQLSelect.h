@@ -38,7 +38,14 @@ class SQLSelect : public SQLStatement {
 	friend class odb::SelectIterator;
 
 public:
-	SQLSelect(const Expressions&, const std::vector<SQLTable*>&, odb::sql::expression::SQLExpression*, SQLOutput*, SQLOutputConfig);
+	SQLSelect(const Expressions&,
+              const std::vector<SQLTable*>&, 
+              odb::sql::expression::SQLExpression*, 
+              std::pair<Expressions,std::vector<bool> > order_by,
+              SQLOutput*, 
+              SQLOutputConfig, 
+              bool all = false, 
+              int minColumnShift = 0);
 	~SQLSelect(); 
 
 // -- Methods
@@ -63,6 +70,8 @@ public:
 // -- Overridden methods
 	virtual unsigned long long execute();
 
+    void expandStar();
+
 protected:
 	virtual void print(std::ostream&) const; 	
 
@@ -71,8 +80,13 @@ private:
 	SQLSelect(const SQLSelect&);
 	SQLSelect& operator=(const SQLSelect&);
 
+    void checkForLinks();
+    void analyseWhere(SQLExpression*);
+    void simplifyWhere(SQLExpression* &where);
+
 // -- Members
 	Expressions select_;
+	Expressions originalSelect_;
 	std::vector<SQLTable*> tables_;
 	SortedTables sortedTables_;
 
@@ -103,15 +117,22 @@ private:
 	Expressions nonAggregated_;
 	std::vector<bool> mixedResultColumnIsAggregated_;
 	SQLOutputConfig outputConfig_;
+    bool all_;
+    int minColumnShift_;
 // -- Methods
 
 	void reset();
 	bool resultsOut();
 	bool output(odb::sql::expression::SQLExpression*);
+    void prepareColumns();
+    void prepareAggregated();
     SQLExpression* findAliasedExpression(const std::string& alias);
 
 	friend class odb::sql::expression::function::FunctionROWNUMBER; // needs access to count_
 	friend class odb::sql::expression::function::FunctionTHIN; // needs access to count_
+
+	static void reshift(Expressions&, int);
+    static SQLExpression* reshift(SQLExpression*, int);
 
 	friend std::ostream& operator<<(std::ostream& s,const SQLSelect& p)
 		{ p.print(s); return s; }
