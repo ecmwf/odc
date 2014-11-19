@@ -82,11 +82,11 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
                 case INTEGER:
                 case BITFIELD:
                 case DOUBLE:
-                    if (! (same(d1, d2) || (NaN_isOK_ && (isnan(d1) && isnan(d2)))))
+                    if (! (same(d1, d2) || (NaN_isOK_ && (::isnan(d1) && ::isnan(d2)))))
                         raiseNotEqual(column, d1, d2);
                     break;
                 case REAL:
-                    if (! (same(float(d1), float(d2)) || (NaN_isOK_ && (isnan(d1) && isnan(d2)))))
+                    if (! (same(float(d1), float(d2)) || (NaN_isOK_ && (::isnan(d1) && ::isnan(d2)))))
                         raiseNotEqual(column, d1, d2);
                     break;
                 case IGNORE:
