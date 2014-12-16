@@ -400,6 +400,17 @@ void SQLSelect::prepareAggregated()
 	}
 }
 
+void SQLSelect::refreshSelectList()
+{
+	tablesToFetch_.clear();
+	allTables_.clear();
+	sortedTables_.clear();
+    values_.clear();
+
+    prepareColumns();
+    expandStar();
+}
+
 void SQLSelect::prepareExecute()
 {
 	reset();

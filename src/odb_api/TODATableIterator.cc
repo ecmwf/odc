@@ -17,8 +17,6 @@
 //#include "odb_api/TODATable.h"
 //#include "odb_api/TODATableIterator.h"
 
-
-
 namespace odb {
 namespace sql {
 
@@ -32,6 +30,12 @@ TODATableIterator<T>::TODATableIterator(Table &p, iterator reader, iterator end,
   firstRow_(true),
   select_(select)
 {
+    std::ostream& L(eckit::Log::info());
+    L << "TODATableIterator::TODATableIterator: columns_: "; 
+    for (size_t i(0); i < columns_.size(); ++i) 
+        L << columns_[i]->name() << ", ";
+    L << std::endl;
+
 	if (reader_ != end_)
 	{
 		updateMetaData();
@@ -73,7 +77,12 @@ void TODATableIterator<T>::copyRow()
 template <typename T>
 void TODATableIterator<T>::updateMetaData()
 {
-    eckit::Log::info() << "TODATableIterator<T>::updateMetaData:" << std::endl;
+    std::ostream& L(eckit::Log::info());
+
+    L << "TODATableIterator<T>::updateMetaData: columns_:";
+    for (size_t i(0); i < columns_.size(); ++i)
+        L << columns_[i]->name() << ", ";
+    L << std::endl;
 
     // TODO: if SELECT ALL: 
 
@@ -88,7 +97,8 @@ void TODATableIterator<T>::updateMetaData()
 		odaColumn->value(const_cast<double*>(reader_->data()) + columns_[i]->index());
 	}
 
-    select_->expandStar();
+    select_->refreshSelectList();
+    //select_->expandStar();
 }
 
 } // namespace sql

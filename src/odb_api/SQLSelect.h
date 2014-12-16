@@ -50,6 +50,10 @@ public:
 
 // -- Methods
 	void prepareExecute(); //SQLExpression*& where);
+
+    /// to be called when metadata on file change and SELECT ALL * used.
+    void refreshSelectList();
+
 	unsigned long long process(odb::sql::expression::SQLExpression*,SortedTables::iterator);
 	bool processOneRow();
 	void postExecute();
