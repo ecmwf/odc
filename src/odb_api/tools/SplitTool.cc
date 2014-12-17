@@ -20,6 +20,7 @@
 #include "SplitTool.h"
 
 using namespace eckit;
+using namespace std;
 
 namespace odb {
 namespace tool {
@@ -40,16 +41,16 @@ void SplitTool::run()
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << std::endl;
+		Log::error() << endl;
 		return;
 	}
 
 	if (optionIsSet("-sort")) sort_ = true;
 	maxOpenFiles_ = optionArgument("-maxopenfiles", maxOpenFiles_);
-	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << std::endl;
+	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
 
-	PathName inFile = parameters(1);
-	std::string outFileTemplate = parameters(2);
+	PathName inFile (parameters(1));
+	string outFileTemplate (parameters(2));
 
 	if (sort_)
 		presortAndSplit(inFile, outFileTemplate);
@@ -62,8 +63,8 @@ void SplitTool::run()
 */
 std::vector<std::pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
 {
-    std::ostream &L(Log::debug());
-	L << "SplitTool::getChunks: " << std::endl;
+    ostream &L(Log::debug());
+	L << "SplitTool::getChunks: " << endl;
 
     std::vector<std::pair<Offset,Length> > r;
 
@@ -72,23 +73,22 @@ std::vector<std::pair<Offset,Length> > SplitTool::getChunks(const PathName& inFi
 
 	Offset currentOffset(0);
 	Length currentLength(0);
-
-	size_t currentSize = 0;
+	size_t currentSize (0);
 
     for(; it != end; ++it)
     {   
         Offset offset((**it).blockStartOffset());
         Length length((**it).blockEndOffset() - offset);
-		size_t numberOfRows = it->columns().rowsNumber();
-		size_t numberOfColumns = it->columns().size();
+		size_t numberOfRows (it->columns().rowsNumber());
+		size_t numberOfColumns (it->columns().size());
 
-		L << "SplitTool::getChunks: " << offset << " " << length << std::endl;
+		L << "SplitTool::getChunks: " << offset << " " << length << endl;
 
-		size_t size = numberOfRows * numberOfColumns * sizeof(double);
+		size_t size (numberOfRows * numberOfColumns * sizeof(double));
 		if (currentSize + size > maxExpandedSize)
 		{
-			L << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << std::endl;
-            r.push_back(std::make_pair(currentOffset, currentLength));
+			L << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << endl;
+            r.push_back(make_pair(currentOffset, currentLength));
 			currentOffset = offset;
 			currentLength = length;
 		} else {
@@ -97,7 +97,7 @@ std::vector<std::pair<Offset,Length> > SplitTool::getChunks(const PathName& inFi
 		}
     } 
 	if (r.size() == 0 || r.back().first != currentOffset)
-        r.push_back(std::make_pair(currentOffset, currentLength));
+        r.push_back(make_pair(currentOffset, currentLength));
 	return r;
 }
 
@@ -114,19 +114,19 @@ std::string SplitTool::genOrderBySelect(const std::string& inFile, const std::st
 		if (i) ss << ",";
 		ss << templateParameters[i]->name;
 	}
-	std::string sql = ss.str();
-	Log::info() << "SplitTool::genOrderBySelect: sql: '" << sql << "'" << std::endl;
+	std::string sql (ss.str());
+	Log::info() << "SplitTool::genOrderBySelect: sql: '" << sql << "'" << endl;
 	return sql;
 }
 
 void SplitTool::presortAndSplit(const PathName& inFile, const std::string& outFileTemplate)
 {
 	odb::DispatchingWriter out(outFileTemplate, 1); 
-	odb::DispatchingWriter::iterator outIt = out.begin();
+	odb::DispatchingWriter::iterator outIt (out.begin());
 
-	std::string sql(genOrderBySelect(inFile, outFileTemplate));
+	string sql(genOrderBySelect(inFile, outFileTemplate));
 	
-    std::vector<std::pair<Offset,Length> > chunks(getChunks(inFile));
+    vector<std::pair<Offset,Length> > chunks(getChunks(inFile));
     for(size_t i=0; i < chunks.size(); ++i)
     {   
 		PartFileHandle h(inFile, chunks[i].first, chunks[i].second);
@@ -141,7 +141,7 @@ void SplitTool::split(const PathName& inFile, const std::string& outFileTemplate
 	odb::Reader in(inFile);
 	odb::DispatchingWriter out(outFileTemplate, maxOpenFiles);
 
-	odb::DispatchingWriter::iterator outIt = out.begin();
+	odb::DispatchingWriter::iterator outIt (out.begin());
 	outIt->pass1(in.begin(), in.end());
 
 	odb::Reader input(inFile);

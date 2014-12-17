@@ -169,8 +169,7 @@ MetaData SQLSelectFactory::columns(const std::string& tableName)
     const TableDef& tabledef ( analyzer().findTable(tableName) );
     const ColumnDefs& columnDefs ( tabledef.columns() );
 
-#warning "TODO: Convert ColumnDefs (from tabledef) into MetaData and push it into the SQLODAOutput"
-
+    //TODO: Convert ColumnDefs (from tabledef) into MetaData and push it into the SQLODAOutput
     ASSERT( false ); /// @todo this code must be fixed and return
 }
 
