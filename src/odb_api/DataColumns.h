@@ -42,6 +42,9 @@ public:
     /// Creates and populates a new collection of columns.
     DataColumns(const odb::MetaData& metadata);
 
+    /// Creates and populates a new collection of columns.
+    DataColumns(const DataColumns& other);
+
     /// Destroys the collection.
     ~DataColumns();
 
