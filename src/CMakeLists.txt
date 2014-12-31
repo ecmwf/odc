@@ -20,4 +20,6 @@ add_subdirectory( odb_api )
 
 add_subdirectory( fortran )
 
+add_subdirectory( tests )
+
 
