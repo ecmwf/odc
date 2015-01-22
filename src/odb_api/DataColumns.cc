@@ -26,6 +26,10 @@ DataColumns::DataColumns(const odb::MetaData& metadata)
     }
 }
 
+DataColumns::DataColumns(const DataColumns& other)
+  : std::vector<DataColumn>(other.begin(), other.end())
+{}
+
 DataColumns::~DataColumns()
 {}
 
