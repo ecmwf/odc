@@ -268,6 +268,7 @@ TEST(vector_syntax)
     ASSERT(counter == 5);
 }
 
+
 TEST(bitfieldsLength)
 {
     Log::info() << "sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
@@ -278,25 +279,24 @@ TEST(bitfieldsLength)
     //>>> len('0b11100110011')
     //13
     //>>>
+    {
+        stringstream s;
+        Decoder::printBinary(s, 1843);
+        string r = s.str();
+        Log::info() << "r: " << r << std::endl;
 
-    ASSERT(Decoder::printBinary(1843).size() == 11);
-    ASSERT(Decoder::printBinary(1843) == "11100110011");
-    
-    ASSERT(Decoder::printBinary(0).size() == 1);
-    ASSERT(Decoder::printBinary(0) == "0");
-}
+        ASSERT(r.size() == 11);
+        ASSERT(r == "11100110011");
+    }
+    {
+        stringstream s;
+        Decoder::printBinary(s, 0);
+        string r = s.str();
+        Log::info() << "r: " << r << std::endl;
 
-/// ODB-85
-TEST(bitfieldsPrintHexadecimal) 
-{
-    ASSERT(Decoder::printHexadecimal(1843) == std::string("733"));
-
-    //eckit::Log::info() << Decoder::printHexadecimal(15)  << std::endl;
-
-    ASSERT(Decoder::printHexadecimal(10) == std::string("a"));
-    ASSERT(Decoder::printHexadecimal(11) == std::string("b"));
-    ASSERT(Decoder::printHexadecimal(15) == std::string("f"));
-    ASSERT(Decoder::printHexadecimal(255) == std::string("ff"));
+        ASSERT(r.size() == 1);
+        ASSERT(r == "0");
+    }
 }
 
 static void create_stringInWhere_file()
@@ -1055,31 +1055,3 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
     system("ls -l foo.odb; ");
     system((ODBAPISettings::instance().fileInHome("~/bin/odb") + " header foo.odb").c_str());
 }
-
-TEST(SELECT_ALL)
-{
-    ostream& L(eckit::Log::info());
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
-    system("cat select_all_1.odb select_all_2.odb >select_all.odb");
-
-    L << "--- Test_SELECT_ALL: open select_all.odb" << endl;
-    odb::Select o("SELECT ALL * FROM \"select_all.odb\";");
-    odb::Select::iterator it (o.begin()), end (o.end());
-    L << "--- Test_SELECT_ALL: row #0" << endl;
-    ++it;
-    ASSERT(it->columns().size() == 2);
-    L << "--- Test_SELECT_ALL: row #1" << endl;
-    ++it;
-    ASSERT(it->columns().size() == 3);
-}
-
-// ODB-106
-TEST(SELECT_WHERE_0)
-{
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", "select_where_0.odb");
-    odb::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
-    odb::Select::iterator it (o.begin()), end (o.end());
-    ++it;
-}
-

@@ -10,7 +10,6 @@
 
 #include <sstream>
 #include "odb_api/SQLBitfield.h"
-#include <algorithm>
 
 using namespace std;
 
@@ -59,9 +58,10 @@ TODATable<T>::TODATable(SQLDatabase& owner, std::istream &is, const std::string 
 template <typename T>
 void TODATable<T>::populateMetaData()
 {
-	size_t count (reader_->columns().size());
-
-	eckit::Log::info() << "TODATable::populateMetaData: #columns=" << count << std::endl;
+    using eckit::Log;
+    
+	Log::debug() << "TODATable::populateMetaData:" << std::endl;
+	size_t count = reader_->columns().size();
 
 	delete[] data_;
 	data_ = new double[count];
@@ -69,15 +69,15 @@ void TODATable<T>::populateMetaData()
 
 	for(size_t i = 0; i < count; i++)
 	{
-		Column& column (*reader_->columns()[i]);
+		Column& column = *reader_->columns()[i];
 
-		const std::string name (column.name());
-		bool hasMissing (column.hasMissing());
-		double missing (column.missingValue());
-		BitfieldDef bitfieldDef (column.bitfieldDef());
+		const std::string name = column.name();
+		bool hasMissing = column.hasMissing();
+		double missing = column.missingValue();
+		BitfieldDef bitfieldDef = column.bitfieldDef();
 	
 		std::string sqlType;
-		switch (column.type())
+		switch(column.type())
 		{
 			case INTEGER: sqlType = "integer"; break;
 			case STRING:  sqlType = "string"; break;
@@ -85,7 +85,7 @@ void TODATable<T>::populateMetaData()
 			case DOUBLE:  sqlType = "double"; break;
 			case BITFIELD:
 				{
-					std::string typeSignature (type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias"));
+					std::string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
 					addColumn(name, i, type::SQLType::lookup(typeSignature), hasMissing, missing, true, bitfieldDef);
 					continue;
 				}
@@ -94,9 +94,9 @@ void TODATable<T>::populateMetaData()
 				ASSERT("Unknown type" && 1==0);
 				break;
 		}
-		SQLColumn *c (column.type() == BITFIELD
-                       ? new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, bitfieldDef, &data_[i])
-                       : new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, &data_[i]));
+		SQLColumn *c = column.type() == BITFIELD
+                        ? new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, bitfieldDef, &data_[i])
+                        : new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, &data_[i]);
 		addColumn(c, name, i);
 	}
 }
@@ -108,18 +108,18 @@ void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
 
     Log::debug() << "ODATableIterator::updateMetaData: " << endl;
 	MetaData newColumns (reader_->columns());
-	for(size_t i (0); i < selected.size(); i++)
+	for(size_t i = 0; i < selected.size(); i++)
 	{
-		ODAColumn *c (dynamic_cast<ODAColumn *>(selected[i]));
+		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);
 		ASSERT(c);
 		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name()) 
 		{
 			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl
 			               << "Was: " << c->index() << "." << endl;
-			bool newIndexFound (false);
-			for (size_t j (0); j < newColumns.size(); ++j)
+			bool newIndexFound = false;
+			for (size_t j = 0; j < newColumns.size(); ++j)
 			{
-				Column &other (*newColumns[j]);
+				Column &other(*newColumns[j]);
 				if (other.name() == c->name() || other.name() == c->fullName())
 				{
 					newIndexFound = true;
@@ -177,14 +177,14 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 
 	std::string colName = name + "@";
 
-    std::vector<std::string> matchingNames;
+	int n = 0;
 	std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
 	for ( ; it != columnsByName_.end(); ++it)
 	{
 		std::string s = it->first;
 		if (s.find(colName) == 0)
 		{
-			matchingNames.push_back(s);
+			n++;
 			if (fullName)
 			{
 				*fullName = s;
@@ -193,14 +193,10 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 		}
 	}
 
-	if (matchingNames.size() == 0) return false;
-	if (matchingNames.size() == 1) return true;
+	if (n == 0) return false;
+	if (n == 1) return true;
 
-    stringstream ss;
-    ss << "Column name '" << name << "' is ambigous, could be one of: ";
-    std::copy(matchingNames.begin(), matchingNames.end(), std::ostream_iterator<std::string>(ss, ", "));
-
-	throw eckit::UserError(std::string(ss.str()));
+	throw eckit::UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
 
 	return false;
 }
@@ -208,18 +204,19 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 template <typename T>
 SQLColumn* TODATable<T>::column(const std::string& name)
 {
-	std::string colName (name + "@");
+	std::string colName = name + "@";
 
-	SQLColumn * column (0);
-	std::map<std::string,SQLColumn*>::iterator it (columnsByName_.begin());
+	SQLColumn * column = 0;
+	std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
 	for ( ; it != columnsByName_.end(); ++it)
 	{
-		std::string s (it->first);
+		std::string s = it->first;
 		if (s.find(colName) == 0)
 		{
-			if (! column) column = it->second;
+			if (column)
+				throw eckit::UserError(std::string("TODATable::column: \"") + name + "\": ambiguous name.");
 			else 
-				throw eckit::UserError(std::string("column: \"") + name + "\": ambiguous name.");
+				column = it->second;
 		}
 	}
 	if (column) return column;
@@ -228,9 +225,9 @@ SQLColumn* TODATable<T>::column(const std::string& name)
 }
 
 template <typename T>
-SQLTableIterator* TODATable<T>::iterator(const std::vector<SQLColumn*>& x, SQLSelect* select) const
+SQLTableIterator* TODATable<T>::iterator(const std::vector<SQLColumn*>& x) const
 {
-	return new TableIterator(const_cast<TODATable&>(*this), reader_, end_, const_cast<double *>(data_), x, select);
+	return new TableIterator(const_cast<TODATable&>(*this), reader_, end_, const_cast<double *>(data_), x);
 }
 
 } // namespace sql

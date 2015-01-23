@@ -82,7 +82,7 @@ SQLExpression* FunctionAND::simplify(bool& changed)
 			}
 			else
 			{
-                std::cout << "SIMPLIFY " << *this << "to 0 " << std::endl;
+                std::cout << "SYMPLIFY " << *this << "to 0 " << std::endl;
 				changed = true;
 				return SQLExpression::number(0);
 			}

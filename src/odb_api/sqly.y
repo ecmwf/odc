@@ -118,9 +118,6 @@ Expressions emptyExpressionList;
 
 %token HASH
 
-%token LIKE
-%token RLIKE
-
 %type <exp>column
 %type <exp>vector_index 
 
@@ -164,7 +161,6 @@ Expressions emptyExpressionList;
 %type <exp>select_;
 
 %type <bol>distinct;
-%type <bol>all;
 %type <val>into;
 %type <val>func;
 %type <val>relational_operator;
@@ -425,30 +421,26 @@ default_value: DEFAULT expression_ex { SQLExpression* e($2); $$ = e->title(); }
 create_view_statement: CREATE VIEW IDENT AS select_statement
 	;
 
-select_statement: SELECT distinct all select_list into from where group_by order_by
-                {   
-                    bool                   distinct($2);
-                    bool                   all($3);
-                    Expressions            select_list($4);
-                    std::string            into($5);
-                    std::vector<SQLTable*> from($6);
-                    SQLExpression          *where($7);
-                    Expressions            group_by($8);
-                    std::pair<Expressions,std::vector<bool> >      order_by($9);
+select_statement: SELECT distinct select_list into from where group_by order_by
+					{   
+						bool                   distinct($2);
+						Expressions            select_list($3);
+                                                std::string                 into($4);
+                                                std::vector<SQLTable*>      from($5);
+						SQLExpression          *where($6);
+						Expressions            group_by($7);
+                                                std::pair<Expressions,std::vector<bool> >      order_by($8);
 
-                    SQLSelect* sqlSelect = SQLSelectFactory::instance()
-                        .create(distinct, all, select_list, into, from, where, group_by, order_by);
-                    SQLSession::current().statement(sqlSelect);
-                }
+						SQLSelect* sqlSelect = SQLSelectFactory::instance()
+							.create(distinct, select_list, into, from, where, group_by, order_by);
+						SQLSession::current().statement(sqlSelect);
+					}
                 ;
 
 distinct: DISTINCT { $$ = true; }
+        | ALL      { $$ = false; }
 		| empty    { $$ = false; }
 		;
-
-all: ALL      { $$ = true; }
-   | empty    { $$ = false; }
-   ;
 
 into: INTO IDENT   { $$ = $2; }
     | INTO STRING  { $$ = $2; }
@@ -624,10 +616,10 @@ atom_or_number : '(' expression ')'           { $$ = $2; }
 			   | func '(' empty ')'           { $$ = ast($1, emptyExpressionList); }
 			   | func '(' '*' ')'             
 				{
-                    if (std::string("count") != $1)
-                        throw eckit::UserError(std::string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
+                                        if (std::string("count") != $1)
+                                                throw eckit::UserError(std::string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
 
-                    $$ = ast("count", new NumberExpression(1.0));
+					$$ = ast("count", new NumberExpression(1.0));
 				}
 			   | STRING                       { $$ = new StringExpression($1); }
 			   ;
@@ -663,8 +655,8 @@ relational_operator: '>' { $$ = ">"; }
                    ;
 condition   : term relational_operator term relational_operator term { $$ = ast("and", ast($2,$1,$3), ast($4,$3,$5)); }
             | term relational_operator term                          { $$ = ast($2, $1, $3); }
-            | condition IN '(' expression_list ')'                  { $4.push_back($1); $$ = ast("in",$4);   }
-            | condition IN VAR         
+            | condition  IN '(' expression_list ')'                  { $4.push_back($1); $$ = ast("in",$4);   }
+            | condition  IN VAR         
 			{ 
 				SQLExpression* v = SQLSession::current().currentDatabase().getVariable($3);
 				ASSERT(v && v->isVector());
@@ -672,8 +664,8 @@ condition   : term relational_operator term relational_operator term { $$ = ast(
 				e.push_back($1);
 				$$ = ast("in", e);
 			}
-            | condition NOT IN '(' expression_list ')'  { $5.push_back($1); $$ = ast("not_in",$5);   }
-            | condition NOT IN VAR  
+            | condition  NOT IN '(' expression_list ')'  { $5.push_back($1); $$ = ast("not_in",$5);   }
+            | condition  NOT IN VAR  
 			{ 
 				SQLExpression* v = SQLSession::current().currentDatabase().getVariable($4);
 				ASSERT(v && v->isVector());
@@ -687,8 +679,6 @@ condition   : term relational_operator term relational_operator term { $$ = ast(
 			| condition IS NOT NIL      { $$ = ast("not_null",$1);   }
 			| condition BETWEEN term AND term { $$ = ast("between",$1,$3,$5); }
 			| condition NOT BETWEEN term AND term { $$ = ast("not_between",$1,$4,$6); }
-            | condition LIKE term       { $$ = ast("like", $1, $3); }
-            | condition RLIKE term      { $$ = ast("rlike", $1, $3); }
             | term
             ;
 
@@ -718,17 +708,17 @@ expression  : disjonction
 				if (container->isDictionary())
 				{
 					// TODO: check title always returns string repr of it's value
-                    std::string key = index->title();
+                                        std::string key = index->title();
 					//cerr << "==== key: '" << key << "'" << std::endl;
 					if (container->dictionary().find(key) == container->dictionary().end())
 					{
-                        std::stringstream ss;
+                                                std::stringstream ss;
 						ss << "Key '" << key << "' not found.";
 						throw eckit::UserError(ss.str());
 					}
 					
-                    $$ = container->dictionary()[key];
-                }
+					$$ = container->dictionary()[key];
+				}
 			}
             ;
 

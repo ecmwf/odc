@@ -10,22 +10,8 @@
 
 #include "eckit/eckit.h"
 #include "odb_api/Decoder.h"
-#include "eckit/exception/Exceptions.h"
-#include <bitset>
 
 namespace odb {
-
-std::string Decoder::printBinary(W n) {
-    std::stringstream ss;
-    printBinary(ss, n);
-    return ss.str();
-}
-
-std::string Decoder::printHexadecimal(W n) {
-    std::stringstream ss;
-    printHexadecimal(ss, n);
-    return ss.str();
-}
 
 Decoder::W Decoder::makeMask(W size)
 {
@@ -34,18 +20,8 @@ Decoder::W Decoder::makeMask(W size)
 	return mask;
 }
 
-void Decoder::printHexadecimal(std::ostream& ss, W n)
-{
-    ss << std::hex << n << std::dec;
-}
-
 void Decoder::printBinary(std::ostream& ss, W n)
 {
-    /*
-    std::bitset<sizeof(W) * sizeof(char)> bs(n);
-    ss << bs;
-    */
-
 	unsigned char *s = reinterpret_cast<unsigned char *>(&n);
 
 	bool oneSeen = false;

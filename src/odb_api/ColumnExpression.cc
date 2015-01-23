@@ -18,7 +18,6 @@
 #include "odb_api/SQLTable.h"
 
 using namespace eckit;
-using namespace std;
 
 namespace odb {
 namespace sql {
@@ -35,9 +34,7 @@ ColumnExpression::ColumnExpression(const std::string& name, SQLTable* table, int
   beginIndex_(begin),
   endIndex_(end),
   nominalShift_(0)
-{
-    Log::info() << "ColumnExpression<" << this << ">::ColumnExpression: name=" << name << endl;
-}
+{}
 
 ColumnExpression::ColumnExpression(const std::string& name, const std::string& tableReference, int begin, int end)
 : type_(0),
@@ -48,9 +45,7 @@ ColumnExpression::ColumnExpression(const std::string& name, const std::string& t
   beginIndex_(begin),
   endIndex_(end),
   nominalShift_(0)
-{
-    Log::info() << "ColumnExpression<" << this << ">::ColumnExpression: name=" << name << endl;
-}
+{}
 
 ColumnExpression::ColumnExpression(const ColumnExpression& e)
 : type_(e.type_),
@@ -61,17 +56,11 @@ ColumnExpression::ColumnExpression(const ColumnExpression& e)
   beginIndex_(e.beginIndex_),
   endIndex_(e.endIndex_),
   nominalShift_(e.nominalShift_)
-{
-    Log::info() << "ColumnExpression<" << this << ">::ColumnExpression: columnName_=" << columnName_ << endl;
-}
+{}
 
-SQLExpression* ColumnExpression::clone() const {return new ColumnExpression(*this); }
+SQLExpression* ColumnExpression::clone() const { return new ColumnExpression(*this); }
 
-ColumnExpression::~ColumnExpression()
-{
-    Log::info() << "ColumnExpression<" << this << ">::~ColumnExpression: columnName_=" << columnName_ << endl;
-    Log::info() << endl;
-}
+ColumnExpression::~ColumnExpression() {}
 
 double ColumnExpression::eval(bool& missing) const
 {
@@ -91,7 +80,7 @@ void ColumnExpression::prepare(SQLSelect& sql)
 	value_ = sql.column(columnName_, table_);
 	type_  = sql.typeOf(columnName_, table_);
 
-	Log::info() << "ColumnExpression<" << this << ">::prepare: columnName_=" << columnName_ 
+	Log::debug() << "ColumnExpression::prepare: columnName_=" << columnName_ 
 	<< ", title=" << title()
 	<< ", table=" << table_->name()
 	<< ", fullName =" << fullName
@@ -133,13 +122,13 @@ void ColumnExpression::output(SQLOutput& o) const
 
 void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
 {
-    std::ostream& L(Log::info());
+    std::ostream& L(Log::debug());
 	L << "ColumnExpression::expandStars: expanding '" << columnName_ << "' (" << tableReference_ << ")" << std::endl;
 
 	if(beginIndex_ != -1 && endIndex_ != -1)
 	{
 		ASSERT(beginIndex_ <= endIndex_);
-		for(int i (beginIndex_); i <= endIndex_; i++)
+		for(int i = beginIndex_; i <= endIndex_; i++)
 			e.push_back(new ColumnExpression(columnName_ + "_" + Translator<int,std::string>()(i), this->table()));
 		return;
 	}
@@ -154,36 +143,32 @@ void ColumnExpression::expandStars(const std::vector<SQLTable*>& tables, express
 
     std::stringstream ss;
 	
-	unsigned int matched (0);
-    for(std::vector<SQLTable*>::const_iterator j (tables.begin());  j != tables.end(); ++j)
+	unsigned int matched = 0;
+    for(std::vector<SQLTable*>::const_iterator j = tables.begin();  j != tables.end(); ++j)
 	{
-		SQLTable* table (*j);
-        std::vector<std::string> names (table->columnNames());
+		SQLTable* table = (*j);
+        std::vector<std::string> names = table->columnNames();
 
-        L << "ColumnExpression::expandStars: table " << table->name() << ": ";
-        std::copy (names.begin(), names.end(), std::ostream_iterator<std::string>(L, ", "));
-        L << std::endl;
-
-        for(size_t i (0); i < names.size(); i++)
-        {
-            if ((tableReference_.size())
-                && ((names[i].rfind(tableReference_) == std::string::npos)
-                    || (names[i].rfind(tableReference_) + tableReference_.size() < names[i].size())))
-            {
-                L << "ColumnExpression::expandStars: skip '" << names[i] << "'" << std::endl;
-                continue;
-            }
+		for(size_t i = 0; i < names.size(); i++)
+		{
+			if ((tableReference_.size())
+				&& ((names[i].rfind(tableReference_) == std::string::npos)
+					|| (names[i].rfind(tableReference_) + tableReference_.size() < names[i].size())))
+			{
+				L << "ColumnExpression::expandStars: skip '" << names[i] << "'" << std::endl;
+				continue;
+			}
 			
-            ss << names[i] << ", ";
-            ++matched;
-            e.push_back(new ColumnExpression(names[i], table));
-        }
-    }
-    if (! matched)
-        throw eckit::UserError(std::string("No columns matching ") + columnName_ + tableReference_ + " found.");
+			ss << names[i] << ", ";
+			++matched;
+			e.push_back(new ColumnExpression(names[i], table));
+		}
+	}
+	if (! matched)
+		throw eckit::UserError(std::string("No columns matching ") + columnName_ + tableReference_ + " found.");
 
-    L << "ColumnExpression::expandStars: added " << ss.str() << std::endl;
-    //delete this; // TODO: fix leak????
+	L << "ColumnExpression::expandStars: added " << ss.str() << std::endl;
+	delete this;
 }
 
 bool ColumnExpression::indexed() 

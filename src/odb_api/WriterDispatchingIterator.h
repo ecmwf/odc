@@ -84,6 +84,7 @@ protected:
 
 	/// Find iterator data should be dispatched to.
 	WRITE_ITERATOR& dispatch(const double* values, unsigned long count);
+	int dispatchIndex(const double* values, unsigned long count);
     int createIterator(const Values& dispatchedValues, const std::string& fileName, const double* values, unsigned long count);
 
 	std::string generateFileName(const double* values, unsigned long count);
@@ -125,7 +126,6 @@ private:
 	int maxOpenFiles_;
 
 	std::map<std::string,int> filesCreated_;
-	std::vector<unsigned int> rowsOutputFileIndex_;
 
 	friend class IteratorProxy<WriterDispatchingIterator<WRITE_ITERATOR,DispatchingWriter>, DispatchingWriter>;
 };

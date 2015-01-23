@@ -58,7 +58,7 @@ VariablesTable::VariablesTable(SQLDatabase& owner, const std::string& name)
 
 VariablesTable::~VariablesTable() {}
 
-SQLTableIterator* VariablesTable::iterator(const std::vector<SQLColumn*>&, SQLSelect* ) const
+SQLTableIterator* VariablesTable::iterator(const std::vector<SQLColumn*>&) const
 {
 	return new VariablesTableIterator(SQLSession::current().currentDatabase().variables());
 }

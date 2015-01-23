@@ -28,7 +28,6 @@ namespace sql {
 class SQLPool;
 class SQLColumn;
 class SQLDatabase;
-class SQLSelect;
 
 class SQLTableIterator {
 public:
@@ -82,7 +81,7 @@ public:
 
 	virtual void print(std::ostream& s) const;
 
-	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&, SQLSelect*) const = 0;
+	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const = 0;
 
 protected:
     eckit::PathName path_;

@@ -8,7 +8,7 @@ ecbuild_add_library(TARGET		Odb_fortran
 					LIBS		Odb )
 
 ecbuild_add_test( TARGET     test_fortran_api
-				  CONDITION  ENABLE_FORTRAN AND OFF
+                  CONDITION  ENABLE_FORTRAN
                   SOURCES    test_fortran_api.f90
                   LIBS       Odb_fortran ${ODB_LIBS} #${ODB_LIBPATH}
                   LINKER_LANGUAGE Fortran ) #${LINKER_LANGUAGE} )

@@ -42,7 +42,6 @@ public:
         o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << std::endl; 
         o << "                                   delim can be any character or string" << std::endl;
         o << "             [--binary]            Print bitfields in binary notation" << std::endl;
-        o << "             [--hex]               Print bitfields in hexadecimal notation" << std::endl;
         o << "             [--no_alignment]      Do not align columns" << std::endl;
 	}
 

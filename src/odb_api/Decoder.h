@@ -23,10 +23,6 @@ public:
 
 	static W makeMask(W);
 	static void printBinary(std::ostream&, W);
-	static void printHexadecimal(std::ostream&, W);
-
-	static std::string printBinary(W);
-	static std::string printHexadecimal(W);
 };
 
 } // namespace odb 

@@ -86,7 +86,7 @@ bool SQLDataTable::hasColumn(const std::string& name, std::string* fullName)
     return false;
 }
 
-SQLTableIterator* SQLDataTable::iterator(const std::vector<SQLColumn*>& columns, odb::sql::SQLSelect*) const
+SQLTableIterator* SQLDataTable::iterator(const std::vector<SQLColumn*>& columns) const
 {
     return new SQLDataTableIterator(table_, const_cast<double*>(data_), columns);
 }

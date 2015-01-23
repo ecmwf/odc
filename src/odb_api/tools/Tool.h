@@ -33,7 +33,7 @@ public:
 	virtual ~Tool();
 
 	std::string name() { return name_; }
-	void name(const std::string& s) { name_ = s; }
+	void name(std::string s) { name_ = s; }
 
 	static void registerTools();
 

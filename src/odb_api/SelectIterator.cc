@@ -184,28 +184,38 @@ const MetaData& SelectIterator::columns()
 template <typename DATASTREAM>
 void SelectIterator::populateMetaData()
 {
-    eckit::Log::info() << "SelectIterator::populateMetaData:" << std::endl;
-
-	Expressions &results_ (selectStmt_->results_);
+	Expressions &results_ = selectStmt_->results_;
 	delete metaData_;
 	metaData_ = new MetaData(results_.size());
-	for (size_t i (0); i < results_.size(); i++)
+	for (size_t i = 0; i < results_.size(); i++)
 	{
-		Column* col (new Column(*metaData_));
+		Column* col = new Column(*metaData_);
 		(*metaData_)[i] = col;
-		sql::expression::SQLExpression *exp (results_[i]);
-		std::string title (exp->title());
+		sql::expression::SQLExpression *exp = results_[i];
+		std::string title = exp->title();
 		col->name(title);
 
-		const sql::type::SQLType* sqlType (exp->type());
-		int kind (sqlType->getKind());
+		const sql::type::SQLType* sqlType = exp->type();
+		int kind = sqlType->getKind();
 		switch (kind) {
-			case sql::type::SQLType::realType:    col->type<DATASTREAM>(REAL, false); break;
-			case sql::type::SQLType::doubleType:  col->type<DATASTREAM>(DOUBLE, false); break;
-			case sql::type::SQLType::integerType: col->type<DATASTREAM>(INTEGER, false); break;
-			case sql::type::SQLType::stringType:  col->type<DATASTREAM>(STRING, false); break;
-			case sql::type::SQLType::bitmapType:  col->type<DATASTREAM>(BITFIELD, false); break;
-			case sql::type::SQLType::blobType:    NOTIMP; break;
+			case sql::type::SQLType::realType:
+				col->type<DATASTREAM>(REAL, false); //FIXME
+				break;
+			case sql::type::SQLType::doubleType:
+				col->type<DATASTREAM>(DOUBLE, false); //FIXME
+				break;
+			case sql::type::SQLType::integerType:
+				col->type<DATASTREAM>(INTEGER, false); //FIXME
+				break;
+			case sql::type::SQLType::stringType:
+				col->type<DATASTREAM>(STRING, false); // FIXME
+				break;
+			case sql::type::SQLType::bitmapType:
+				col->type<DATASTREAM>(BITFIELD, false);
+				break;
+			case sql::type::SQLType::blobType:
+				NOTIMP;
+				break;
 			default:
 				Log::error() << "Unknown type: " << *sqlType << ", kind: " << kind << std::endl;
 				ASSERT(!"UnknownType");

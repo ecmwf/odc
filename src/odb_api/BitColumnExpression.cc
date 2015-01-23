@@ -117,7 +117,7 @@ void BitColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expr
 		}
 	}
 
-	//delete this; //TODO: fix leak??
+	delete this;
 }
 
 } // namespace expression

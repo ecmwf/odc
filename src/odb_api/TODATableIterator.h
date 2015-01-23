@@ -14,15 +14,13 @@
 namespace odb {
 namespace sql {
 
-class SQLSelect;
-
 template <typename T>
 class TODATableIterator : public SQLTableIterator {
 	typedef T Table;
 	typedef typename Table::TReader::iterator iterator;
 
 public:
-	TODATableIterator(Table&, iterator, iterator, double*, const std::vector<odb::sql::SQLColumn*>&, SQLSelect*);
+	TODATableIterator(Table&, iterator, iterator, double*, const std::vector<odb::sql::SQLColumn*>&);
 	virtual ~TODATableIterator();
 	virtual void rewind();
 	virtual bool next();
@@ -34,7 +32,6 @@ private:
 	iterator end_;
 	double* data_;
 	const std::vector<SQLColumn*>& columns_;
-    SQLSelect* select_;
 
 	bool firstRow_;
 
