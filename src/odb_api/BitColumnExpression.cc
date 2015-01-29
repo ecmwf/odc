@@ -98,6 +98,10 @@ double BitColumnExpression::eval(bool& missing) const
 
 void BitColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
 {
+    using namespace eckit;
+    using namespace std;
+
+    Log::info() << "BitColumnExpression::expandStars: " << e << endl;
 	// TODO: regex
 	if(field_ != "*")
 	{
