@@ -29,7 +29,7 @@ template <typename T>
 void FastODA2Request<T>::parseConfig(const std::string& s)
 {
     std::vector<std::string> lines;
-    eckit::Tokenizer("\n")(s, lines);
+    eckit::Tokenizer(",\n")(s, lines);
 
     eckit::Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
