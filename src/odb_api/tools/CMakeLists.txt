@@ -117,21 +117,22 @@ TestTextSelect3.cc
 TestWriteCatFiles.cc
 )
 
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api )
+
 ecbuild_add_library( TARGET     odbtools
                      INSTALL_HEADERS LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/tools
                      SOURCES    ${odbtools_src_files}
                      TEMPLATES  ${odbtools_templates}
-                     LIBS       Odb ${ECKIT_LIBRARIES} )
+                     LIBS       Odb eckit )
 
 ecbuild_add_library( TARGET     odbtest
                      #INSTALL_HEADERS LISTED
-					 #HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/tools
+                     #HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/tools
                      SOURCES    ${odbtest_src_files}
-                     INCLUDES   ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api ${ECKIT_INCLUDE_DIRS}
                      TEMPLATES  ${odbtest_templates}
-                     LIBS       Odb odbtools ${ECKIT_LIBRARIES} )
+                     LIBS       Odb odbtools eckit )
 
 ecbuild_add_executable( TARGET    odb
-                      SOURCES   odb.cc
-                      LIBS      Odb odbtools odbtest ${ECKIT_LIBRARIES} )
+                        SOURCES   odb.cc
+                        LIBS      Odb odbtools odbtest eckit )
