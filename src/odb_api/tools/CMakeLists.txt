@@ -119,7 +119,7 @@ TestWriteCatFiles.cc
 
 ecbuild_add_library( TARGET     odbtools
                      INSTALL_HEADERS LISTED
-					 HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/tools
+                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/tools
                      SOURCES    ${odbtools_src_files}
                      TEMPLATES  ${odbtools_templates}
                      LIBS       Odb ${ECKIT_LIBRARIES} )
@@ -128,7 +128,7 @@ ecbuild_add_library( TARGET     odbtest
                      #INSTALL_HEADERS LISTED
 					 #HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/tools
                      SOURCES    ${odbtest_src_files}
-                     INCLUDES  "." ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api ${CMAKE_CURRENT_SOURCE_DIR}/../../eckit/src/
+                     INCLUDES   ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api ${ECKIT_INCLUDE_DIRS}
                      TEMPLATES  ${odbtest_templates}
                      LIBS       Odb odbtools ${ECKIT_LIBRARIES} )
 
