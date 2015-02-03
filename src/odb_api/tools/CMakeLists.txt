@@ -136,3 +136,12 @@ ecbuild_add_library( TARGET     odbtest
 ecbuild_add_executable( TARGET    odb
                         SOURCES   odb.cc
                         LIBS      Odb odbtools odbtest eckit )
+
+####################################################################################################
+# tests
+
+get_target_property( odb_bin odb LOCATION )
+
+ecbuild_add_test( TARGET     test_odbcapi
+                  COMMAND    ${odb_bin}
+                  ARGS       odbcapi )
