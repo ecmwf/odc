@@ -41,8 +41,9 @@ public:
 	static bool debug;
 
 private:
-
     ODBAPISettings();
+
+    static void createDirectories(const eckit::PathName& path);
 
 	size_t headerBufferSize_;
 	size_t setvbufferSize_;
@@ -51,7 +52,6 @@ private:
 
     friend class eckit::NewAlloc0<ODBAPISettings>;
     std::string home_;
-
 };
 
 } // namespace odb

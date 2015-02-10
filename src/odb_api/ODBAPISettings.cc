@@ -19,6 +19,7 @@
 #include "odb_api/ODBAPISettings.h"
 
 using namespace eckit;
+using namespace std;
 
 inline size_t MEGA(size_t n) { return n*1024*1204; }
 
@@ -32,24 +33,24 @@ void odb::ODBAPISettings::setHome(const char *argv0)
     const char* env(getenv("ODB_API_HOME"));
     if (env) {
         home_ = env;
-        Log::info() << "ODB_API_HOME set to " << home_ << std::endl;
+        Log::info() << "ODB_API_HOME set to " << home_ << endl;
     } else {
-        std::string full;
+        string full;
         if (argv0[0] == '/') {
             char *absoluteArgv0;
             // The resolved_path == NULL feature, not standardized in POSIX.1-2001, but standardized in POSIX.1-2008
             if(0 == (absoluteArgv0 = ::realpath(argv0, 0)))
-                throw eckit::FailedSystemCall(std::string("realpath ") + argv0);
-            full = std::string(absoluteArgv0);
+                throw eckit::FailedSystemCall(string("realpath ") + argv0);
+            full = string(absoluteArgv0);
             ::free(absoluteArgv0);
         } else if (argv0[0] == '.' && argv0[1] == '/')
         {
             size_t bufferLen =1024*8;
             char buffer[bufferLen];
-            full = std::string( ::getcwd(buffer, bufferLen) ) + std::string(argv0 + 1);
+            full = string( ::getcwd(buffer, bufferLen) ) + string(argv0 + 1);
         } else
         {
-            std::vector<std::string> ps(StringTools::split(":", getenv("PATH")));
+            vector<string> ps(StringTools::split(":", getenv("PATH")));
             for (size_t i(0); i < ps.size(); ++i)
             {
                 // TODO: perhaps we should also check if the file is readable, executable, etc...
@@ -59,24 +60,24 @@ void odb::ODBAPISettings::setHome(const char *argv0)
                     if (ps[i][0] != '/') {
                         size_t bufferLen =1024*8;
                         char buffer[bufferLen];
-                        full = std::string( ::getcwd(buffer, bufferLen) ) + full;
+                        full = string( ::getcwd(buffer, bufferLen) ) + full;
                     }
                     break;
                 }
             }
             
         }
-        std::vector<std::string> ps(StringTools::split("/", full));
-        Log::debug() << "ODBAPISettings::setHome: argv0: " << ps << std::endl;
+        vector<string> ps(StringTools::split("/", full));
+        Log::debug() << "ODBAPISettings::setHome: argv0: " << ps << endl;
         ASSERT("odb executable should be in a bin directory" && ps.size() >= 2 && ps[ps.size() - 2] == "bin");
         ps.pop_back(); // odb
         ps.pop_back(); // bin
         home_ = "/" + StringTools::join("/", ps);
-        Log::info() << "ODB_API_HOME inferred as " << home_ << std::endl;
+        Log::info() << "ODB_API_HOME inferred as " << home_ << endl;
     }
 }
 
-std::string odb::ODBAPISettings::fileInHome(const std::string& fileName)
+string odb::ODBAPISettings::fileInHome(const string& fileName)
 {
     ASSERT(fileName[0] == '~');
     ASSERT(fileName[1] == '/');
@@ -84,7 +85,7 @@ std::string odb::ODBAPISettings::fileInHome(const std::string& fileName)
 }
 
 void debugMeNow() {
-	Log::info() << "Debug me now" << std::endl;
+	Log::info() << "Debug me now" << endl;
 	odb::ODBAPISettings::debug = true;
 }
 
@@ -108,8 +109,25 @@ void ODBAPISettings::headerBufferSize(size_t n) { headerBufferSize_ = n; }
 size_t ODBAPISettings::setvbufferSize() { return setvbufferSize_; }
 void ODBAPISettings::setvbufferSize(size_t n) { setvbufferSize_ = n; }
 
+void ODBAPISettings::createDirectories(const PathName& path)
+{
+    vector<string> parts (StringTools::split("/", path));
+    if (parts.size() < 2)
+        return;
+
+    parts.pop_back();
+    PathName directory ((string(path)[0] == '/' ? "/" : "") + StringTools::join("/", parts));
+
+    Log::debug() << "Making sure diretory " << directory << " exists" << endl;
+
+    directory.mkdir();
+}
+
 DataHandle* ODBAPISettings::writeToFile(const PathName& fn, const Length& length, bool openDataHandle)
 {
+    // ODB-122 Create subdirectories before creating a file
+    createDirectories(fn);
+
 	DataHandle* h (useAIO_
                     ? static_cast<DataHandle*>(new AIOHandle(fn))
                     : static_cast<DataHandle*>(new FileHandle(fn)));
