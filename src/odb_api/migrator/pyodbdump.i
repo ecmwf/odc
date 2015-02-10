@@ -24,11 +24,11 @@ using namespace std;
 #include "odb_api/SQLParser.h"
 #include "odb_api/Column.h"
 
-#include "migrator_api.h"
+#include "odb_api/migrator/migrator_api.h"
 
-#include "OldODBReader.h"
-#include "TSQLReader.h"
-#include "ODBIterator.h"
+#include "odb_api/migrator/OldODBReader.h"
+#include "odb_api/migrator/TSQLReader.h"
+#include "odb_api/migrator/ODBIterator.h"
 
 using namespace odb;
 using namespace odb::tool;
