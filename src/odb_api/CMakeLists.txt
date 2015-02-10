@@ -405,7 +405,7 @@ if( ENABLE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
 
     message("Configured for building Python bindings.")
     set(CMAKE_SWIG_FLAGS "")
-    include_directories( ${PYTHON_INCLUDE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/.. )
+    include_directories( ${PYTHON_INCLUDE_PATH} )
 
     set_source_files_properties( pyodbapi.i PROPERTIES CPLUSPLUS ON )
 #    set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
