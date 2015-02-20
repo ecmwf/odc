@@ -15,8 +15,10 @@
 #ifndef Tool_H
 #define Tool_H
 
-#include "odb_api/CommandLineParser.h"
-#include "odb_api/StringTool.h"
+//#include "odb_api/CommandLineParser.h"
+#include "../CommandLineParser.h"
+//#include "odb_api/StringTool.h"
+#include "../StringTool.h"
 
 
 namespace eckit { class PathName; }

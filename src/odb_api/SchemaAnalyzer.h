@@ -17,7 +17,7 @@
 //#include <set>
 //#include <map>
 
-#include "odb_api/SQLAST.h"
+#include "SQLAST.h"
 //#include "odb_api/SQLBitfield.h"
 
 namespace odb {

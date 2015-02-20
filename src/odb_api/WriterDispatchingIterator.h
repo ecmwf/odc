@@ -47,8 +47,8 @@ public:
 
 	double* data();
 
-	int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
-	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
+	int setColumn(size_t index, std::string name, ColumnType type);
+	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
 
 	void missingValue(size_t i, double); 
 

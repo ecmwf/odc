@@ -48,6 +48,33 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
   append_(append)
 {}
 
+
+template <typename WRITE_ITERATOR, typename OWNER>
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, ColumnType type)
+{
+	ASSERT(index < columns().size());
+	Column* col = columns_[index];
+	ASSERT(col);
+
+	col->name(name); 
+	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
+	return 0;
+}
+
+template <typename WRITE_ITERATOR, typename OWNER>
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
+{
+	ASSERT(index < columns().size());
+	Column* col = columns_[index];
+	ASSERT(col);
+
+	col->name(name); 
+	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
+    col->bitfieldDef(b);
+	col->missingValue(0);
+	return 0;
+}
+
 template <typename WRITE_ITERATOR, typename OWNER>
 std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const double* values, unsigned long count)
 {

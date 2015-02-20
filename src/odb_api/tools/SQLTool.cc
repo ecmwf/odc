@@ -20,6 +20,7 @@
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/tools/SQLTool.h"
 
+using namespace std;
 using namespace eckit;
 using namespace odb::sql;
 
@@ -62,63 +63,77 @@ SQLTool::~SQLTool() {}
 
 void SQLTool::run()
 {
-	if (parameters().size() < 2)
-	{
-		Log::error() << "Usage: ";
-		usage(parameters(0), Log::error());
-		Log::error() << std::endl;
-		return;// 1;
-	}
-	std::vector<std::string> params(parameters());
-	params.erase(params.begin());
+    if (parameters().size() < 2)
+    {
+        Log::error() << "Usage: ";
+        usage(parameters(0), Log::error());
+        Log::error() << std::endl;
+        return;// 1;
+    }
+    std::vector<std::string> params(parameters());
+    params.erase(params.begin());
 
-	std::string sql(StringTool::isSelectStatement(params[0])
-				? StringTools::join(" ",  params) + ";"
+    std::string sql(StringTool::isSelectStatement(params[0])
+                ? StringTools::join(" ",  params) + ";"
                 // FIXME:
-				: StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
+                : StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
     std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o")
                                 ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
-								: 0);
+                                : 0);
     std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
-	SQLInteractiveSession session(out);
-	SQLParser parser;
-	SQLOutputConfig config(SQLSelectFactory::instance().config());
+    SQLInteractiveSession session(out);
+    SQLParser parser;
+    SQLOutputConfig config(SQLSelectFactory::instance().config());
     PathName inputFile(inputFile_);
-	runSQL(sql, inputFile, session, parser, config, offset_, length_);
+    runSQL(sql, inputFile, session, parser, config, offset_, length_);
 }
 
-void SQLTool::execute(const std::string& sql, std::ostream& out)
+void SQLTool::execute(const string& sql)
 {
-	SQLInteractiveSession session(out);
-	SQLParser parser;
-	SQLOutputConfig config(SQLSelectFactory::instance().config());
-	runSQL(sql, "", session, parser, config);
+    execute(sql, cout);
 }
 
-void SQLTool::runSQL(const std::string& sql, const eckit::PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
+void SQLTool::execute(const string& sql, ostream& out)
 {
-	Log::info() << "Executing '" << sql << "'" << std::endl;
+    SQLInteractiveSession session(out);
+    SQLParser parser;
+    SQLOutputConfig config(SQLSelectFactory::instance().config());
+    runSQL(sql, "", session, parser, config);
+}
 
-	if (inputFile.path().size() == eckit::Length(0))
-		parser.parseString(sql, static_cast<DataHandle*>(0), config);
-	else if (offset != Offset(0) || length != Length(0))
-	{
-		// FIXME: PartFileHandle doesn't think length 0 means to the end of the file - get correct length
-		Log::info() << "Selecting " << length << " bytes from offset " << offset
-				<< " of " << inputFile << std::endl;
-		PartFileHandle fh(inputFile, offset, length); 
-		fh.openForRead();
-		parser.parseString(sql, &fh, config);
-	} else if (inputFile == "/dev/stdin" || inputFile == "stdin") {
+void SQLTool::runSQL(const string& sql, const PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config)
+{
+    if (inputFile.path().size() == eckit::Length(0)) {
+        parser.parseString(sql, static_cast<DataHandle*>(0), config);
+    } else if (inputFile == "/dev/stdin" || inputFile == "stdin") {
         Log::info() << "Reading from standard input" << std::endl;
-		FileDescHandle fh(0);
-		fh.openForRead();
-		parser.parseString(sql, &fh, config);
+        FileDescHandle fh(0);
+        fh.openForRead();
+        parser.parseString(sql, &fh, config);
     } else {
-		FileHandle fh(inputFile);
-		fh.openForRead();
-		parser.parseString(sql, &fh, config);
-	}
+        FileHandle fh(inputFile);
+        fh.openForRead();
+        parser.parseString(sql, &fh, config);
+    }
+}
+
+void SQLTool::runSQL(const string& sql, const PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
+{
+    if (offset == Offset(0) && length == Length(0))
+    {
+        runSQL(sql, inputFile, session, parser, config);
+        return;
+    }
+
+    if (inputFile.path().size() == eckit::Length(0))
+        parser.parseString(sql, static_cast<DataHandle*>(0), config);
+    else
+    {
+        Log::info() << "Selecting " << length << " bytes from offset " << offset << " of " << inputFile << std::endl;
+        PartFileHandle fh(inputFile, offset, length); 
+        fh.openForRead();
+        parser.parseString(sql, &fh, config);
+    } 
 }
 
 

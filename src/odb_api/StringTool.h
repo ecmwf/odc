@@ -16,7 +16,8 @@
 #define StringTool_H
 
 #include "eckit/eckit.h"
-#include "odb_api/ColumnType.h"
+//#include "odb_api/ColumnType.h"
+#include "ColumnType.h"
 
 
 namespace eckit { class PathName; class CodeLocation; }

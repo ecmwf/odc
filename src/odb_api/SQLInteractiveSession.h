@@ -14,7 +14,8 @@
 #ifndef SQLInteractiveSession_H
 #define SQLInteractiveSession_H
 
-#include "odb_api/SQLSession.h"
+//#include "odb_api/SQLSession.h"
+#include "SQLSession.h"
 
 namespace odb {
 namespace sql {

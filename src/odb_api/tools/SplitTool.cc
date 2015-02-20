@@ -61,12 +61,12 @@ void SplitTool::run()
 /**
  * @param maxExpandedSize maximum size of the data in chunks after decoding
 */
-std::vector<std::pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
+vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
 {
     ostream &L(Log::debug());
 	L << "SplitTool::getChunks: " << endl;
 
-    std::vector<std::pair<Offset,Length> > r;
+    vector<pair<Offset,Length> > r;
 
     MDReader mdr(inFile);
     MDReader::iterator it(mdr.begin()), end(mdr.end());

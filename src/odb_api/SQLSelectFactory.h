@@ -12,9 +12,9 @@
 #define SQLSelectFactory_H
 
 #include "eckit/thread/ThreadSingleton.h"
-#include "odb_api/Expressions.h"
-#include "odb_api/SQLOutputConfig.h"
-#include "odb_api/SchemaAnalyzer.h"
+#include "Expressions.h"
+#include "SQLOutputConfig.h"
+#include "SchemaAnalyzer.h"
 
 namespace eckit { class DataHandle; }
 
