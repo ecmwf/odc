@@ -71,7 +71,8 @@ public:
 	void property(std::string key, std::string value);
 	std::string property(std::string);
 
-	std::vector<eckit::PathName> getFiles();
+	//std::vector<eckit::PathName> getFiles();
+    std::vector<eckit::PathName> outputFiles();
 	TemplateParameters& templateParameters() { return templateParameters_; }
 
 //protected:

@@ -52,7 +52,7 @@ template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::flush() {}
 
 template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::cleanup(SQLSelect& sql) {} // { writer_->close(); }
+void SQLODAOutput<ITERATOR>::cleanup(SQLSelect& sql) { sql.outputFiles((**writer_).outputFiles()); }
 
 template<typename ITERATOR>
 bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results)

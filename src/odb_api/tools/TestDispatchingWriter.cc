@@ -40,7 +40,7 @@ static void test()
 	wi->close();
 	
 	unsigned long long sum = 0;
-	vector<PathName> files = (**wi).getFiles();
+	vector<PathName> files = (**wi).outputFiles();
 	for (size_t i = 0; i < files.size(); ++i)
 	{
         unsigned long long n = odb::tool::CountTool::rowCount(files[i]);

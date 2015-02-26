@@ -20,8 +20,6 @@ namespace odb {
 
 class ReaderIterator;
 class SelectIterator;
-class SQLOutput;
-class SQLStatement;
 
 namespace sql {
 

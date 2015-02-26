@@ -165,7 +165,7 @@ const double* values, unsigned long count)
         }
 		iteratorIndex = oldest;
 
-		L << "WriterDispatchingIterator::createIterator: evicted iterator " << iteratorIndex
+		L << "split writer: evicted iterator " << iteratorIndex
 			<< "' " << iteratorIndex2fileName_[iteratorIndex] << "' "
 			<< " (oldest row: " << oldestRow << "), nrows_=" << nrows_ <<  std::endl;
 
@@ -199,7 +199,7 @@ const double* values, unsigned long count)
         }
     }
 
-    L << "WriterDispatchingIterator::dispatch: iterator " << iteratorIndex << ":" << operation << " '" << fileName << "'" << std::endl;
+    L << iteratorIndex << ": " << operation << " '" << fileName << "'" << std::endl;
 
     if (iteratorIndex == iterators_.size())
     {
@@ -225,7 +225,7 @@ const double* values, unsigned long count)
 } 
 
 template <typename WRITE_ITERATOR, typename OWNER>
-std::vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::getFiles()
+std::vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::outputFiles()
 {
     std::vector<eckit::PathName> paths;
     for (std::map<std::string,int>::iterator it (filesCreated_.begin()); it != filesCreated_.end(); ++it)
