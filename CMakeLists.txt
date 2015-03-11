@@ -14,13 +14,14 @@
 
 cmake_minimum_required( VERSION 2.8.4 FATAL_ERROR )
 
+project( odb_api CXX )
+
 # Add path for custom modules
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
-project( odb_api CXX )
 include( ecbuild_system )
 
-ecbuild_requires_macro_version( 1.3 )
+ecbuild_requires_macro_version( 1.6 )
 
 ###############################################################################
 # local project
@@ -69,6 +70,11 @@ add_subdirectory( src )
 
 ############################################################################################
 # finalize
+
+ecbuild_pkgconfig( NAME ${PROJECT_NAME}
+                   DESCRIPTION "ECMWF coding, decoding and processing of observational data"
+                   URL "https://software.ecmwf.int/wiki/display/ODB/ODB+API"
+                   LIBRARIES Odb )
 
 ecbuild_install_project( NAME OdbAPI )
 
