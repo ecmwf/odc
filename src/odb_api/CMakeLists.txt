@@ -391,7 +391,7 @@ ecbuild_add_library( TARGET     Odb
                      SOURCES    ${odblib_src_files}
                      GENERATED  ODBAPIVersionSHA1.cc
                      TEMPLATES  ${odblib_templates}
-                     LIBS       ${ECKIT_LIBRARIES} )
+                     LIBS       eckit )
 
 ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly
@@ -411,8 +411,8 @@ if( ENABLE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
 #    set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
 
     swig_add_module( pyodbapi python pyodbapi.i )
-    set(EXTRA_LIBS ${ECKIT_LIBRARIES} )
-    swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} ${ECKIT_LIBRARIES} )
+    set( EXTRA_LIBS eckit )
+    swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} eckit )
     #swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} )
 
     set(PYTHON_DEST "lib/python${PYTHON_VERSION}/site-packages" )
