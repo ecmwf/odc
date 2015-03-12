@@ -31,7 +31,7 @@ static void test()
 	string cmd;
 	if (getenv("ODB_ROOT"))
 	{
-		cmd = std::string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags ./odb_migrator 2000010106/ECMA . 2000010106.odb";
+		cmd = std::string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.old.ECMA.tar.gz|tar xf - && ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags odb_migrator 2000010106/ECMA . 2000010106.odb";
 	}
 	else
 	{

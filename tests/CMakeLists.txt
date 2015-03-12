@@ -230,7 +230,7 @@ foreach( _test ${odb_migrator_tests} )
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
                     CONDITION  HAVE_MIGRATOR
-                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
+                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR} PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
                     TEST_DEPENDS get_test_data )
 
 endforeach()
