@@ -21,7 +21,7 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system )
 
-ecbuild_requires_macro_version( 1.6 )
+ecbuild_requires_macro_version( 1.7 )
 
 ###############################################################################
 # local project
@@ -36,9 +36,38 @@ ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
 ###############################################################################
 # some variables/options of this project
 
-option( ENABLE_MIGRATOR  "whether or not to build the migrator"           OFF )
-option( ENABLE_FORTRAN   "whether or not to build the Fortran interface"  OFF )
-option( ENABLE_PYTHON    "whether or not to build the Python interface"   OFF )
+ecbuild_add_option( FEATURE MIGRATOR
+                    DESCRIPTION "whether or not to build the migrator"
+                    DEFAULT OFF
+                    REQUIRED_PACKAGES "ODB" )
+
+ecbuild_add_option( FEATURE FORTRAN
+                    DESCRIPTION "whether or not to build the Fortran interface"
+                    DEFAULT OFF )
+
+if( HAVE_FORTRAN OR HAVE_MIGRATOR )
+
+  ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )
+
+endif()
+
+if( HAVE_MIGRATOR )
+
+    ecbuild_find_fortranlibs( REQUIRED )
+    #if(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
+    #    cmake_add_fortran_flags("-r8")
+    #    elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+    #    # NOTE that if we add -fdefault-real-8 then we NEED -fdefault-double-8 to avoid quadmath
+    #    cmake_add_fortran_flags("-fdefault-real-8 -fdefault-double-8")
+    #endif()
+  message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
+
+endif()
+
+
+ecbuild_add_option( FEATURE PYTHON
+                    DESCRIPTION "whether or not to build the Python interface"
+                    DEFAULT OFF )
 
 ###############################################################################
 # find extra packages
@@ -48,10 +77,6 @@ ecbuild_find_python( VERSION 2.7 )
 find_package( SWIG )
 if( SWIG_FOUND )
     include( ${SWIG_USE_FILE} )
-endif()
-
-if( WITH_ODB OR DEFINED ODB_PATH OR ENABLE_MIGRATOR ) # old version of odb
-    find_package(ODB) 
 endif()
 
 ###############################################################################

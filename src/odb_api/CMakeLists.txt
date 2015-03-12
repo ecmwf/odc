@@ -385,8 +385,7 @@ ShiftedColumnExpression.cc
 
 ecbuild_add_library( TARGET     Odb
                      INSTALL_HEADERS LISTED
-					 HEADER_DESTINATION
-						${INSTALL_INCLUDE_DIR}/odb_api
+                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api
                      COMPONENT  server
                      SOURCES    ${odblib_src_files}
                      GENERATED  ODBAPIVersionSHA1.cc
@@ -401,7 +400,7 @@ ecbuild_generate_yy( YYPREFIX odblib_
 ###############################################################################
 # swig python interface
 
-if( ENABLE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
+if( HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
 
     message("Configured for building Python bindings.")
     set(CMAKE_SWIG_FLAGS "")

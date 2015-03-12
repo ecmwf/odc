@@ -229,7 +229,7 @@ foreach( _test ${odb_migrator_tests} )
   ecbuild_add_test( TARGET     ${_test}
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
-                    CONDITION  ENABLE_MIGRATOR
+                    CONDITION  HAVE_MIGRATOR
                     ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
                     TEST_DEPENDS get_test_data )
 
@@ -238,8 +238,7 @@ endforeach()
 ### odb_api tests
 
 # remove dependency on migrator tests if migrator not enabled
-
-if( NOT ENABLE_MIGRATOR )
+if( NOT HAVE_MIGRATOR )
   unset( odb_migrator_tests )
 endif()
 
