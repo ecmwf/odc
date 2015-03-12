@@ -2,6 +2,17 @@
 
 list( APPEND test_data_files
 2000010106.odb.gz
+2000010106.odb
+2000010106.1.0.odb
+2000010106.2.0.odb
+2000010106.3.0.odb
+2000010106.4.0.odb
+2000010106.5.0.odb
+2000010106.6.0.odb
+2000010106.7.0.odb
+2000010106.7.1.odb
+2000010106.7.2.odb
+2000010106.7.3.odb
 mondb.1.12.odb
 TestIntegerValues.odb
 2000010106.old.ECMA.tar.gz
