@@ -1,0 +1,254 @@
+### test data files
+
+list( APPEND test_data_files
+2000010106.odb.gz
+mondb.1.12.odb
+TestIntegerValues.odb
+2000010106.old.ECMA.tar.gz
+split_crash_on_andate_and_antime.odb
+TestMetaDataReader.odb
+a1to10twice.odb
+TestAggregateFunctions2.odb
+dribu.odb
+TestAggregateFunctions3.odb )
+
+ecbuild_get_test_multidata( TARGET get_test_data NAMES ${test_data_files} NOCHECK )
+
+### list tests
+
+list( APPEND odb_migrator_tests
+Test_AAAImportODB
+Test_AAAImportODBDispatching
+)
+
+list( APPEND odb_api_tests
+odbcapi
+Test_AggregateFunctions
+Test_AggregateFunctions2
+Test_AggregateFunctions3
+Test_AtTableInTheOutput
+Test_Bitfields
+Test_CREATE_TABLE_and_SELECT_INTO
+Test_CatFiles
+Test_ChildTable_DataLoaderReturnsExpectedChildTableRows
+Test_ChildTable_DataLoaderReturnsExpectedNumberOfChildTableColumns
+Test_ChildTable_DataLoaderReturnsExpectedNumberOfChildTableRows
+Test_Codec
+Test_CodecOptimization
+Test_CommandLineParsing
+Test_ConstCodec
+Test_ConstIntegerCodec
+Test_DataRowCanSetDoubles
+Test_DataRowCanSetIntegers
+Test_DataRowCanSetStrings
+Test_DataRowInitializedFromColumnsHasExpectedFlags
+Test_DataRowInitializedFromColumnsHasExpectedSize
+Test_DataRowInitializedFromColumnsHasExpectedValues
+Test_Decoding
+Test_DispatchingWriter
+Test_Distinct
+Test_EmptyPageWithFillMark_PushBackRowsToEmptyPageWithFillMark
+Test_EmptyPageWithFillMark_ResizeEmptyPageWithFillMark
+Test_EmptyPage_CanIncreasePageSizeAndInitializeValues
+Test_EmptyPage_CannotIncreasePageSizeBeyondItsCapacity
+Test_EmptyPage_DecreadingSizeOfEmptyPageToZero
+Test_EmptyPage_EmptyPageCanBeCleared
+Test_EmptyPage_EmptyPageHasZeroSize
+Test_EmptyPage_EmptyPageIsEmpty
+Test_EmptyPage_EmptyPageIsNotFull
+Test_EmptyPage_HasTheCorrectCapacity
+Test_EmptyPage_IncreadingSizeOfEmptyPageToHalfTheCapacity
+Test_EmptyPage_IteratorReturnsExpectedNumberOfRows
+Test_EmptyPage_PushingBackRowsToAnEmptyPage
+Test_EmptyTable_CanBeCleared
+Test_EmptyTable_CapacityCanBeIncreased
+Test_EmptyTable_HasExpectedCapacity
+Test_EmptyTable_HasZeroSize
+Test_EmptyTable_IsEmpty
+Test_EmptyTable_SizeCanBeIncreased
+Test_FastODA2Request
+Test_FastODA2Request2
+Test_FastODA2Request3
+Test_FilledDataSet_DataLoaderReturnsExpectedNumberOfTables
+Test_FilledDataSet_DataLoaderReturnsExpectedTables
+Test_FilledDataSet_DataSaverOutputContainsExpectedRows
+Test_FilledLink_DataLinkHasExpectedSize
+Test_FilledLink_DataLinkIteratorReturnsExpectedNumberOfChildRows
+Test_FilledLink_DataLinkIteratorReturnsExpectedNumberOfParentRows
+Test_FilledLink_DataLinkIteratorReturnsExpectedRows
+Test_FilledLink_DataLinkReturnsExpectedChildTable
+Test_FilledLink_DataLinkReturnsExpectedParentTable
+Test_FilledLink_InsertRowAtTheBeginningOfTheFirstRange
+Test_FilledLink_InsertRowAtTheEndOfTheLastRange
+Test_FilledTable_AdvanceIteratorBackward
+Test_FilledTable_AdvanceIteratorByHalf
+Test_FilledTable_AdvanceIteratorByZero
+Test_FilledTable_AdvanceIteratorForewardByOne
+Test_FilledTable_AdvanceIteratorToTheEnd
+Test_FilledTable_CanBeCleared
+Test_FilledTable_CanIterateBackward
+Test_FilledTable_CanIterateForeward
+Test_FilledTable_CapacityCanBeIncreased
+Test_FilledTable_DistanceBetweenBeginAndEndIteratorIsAsExpected
+Test_FilledTable_DistanceBetweenTheSameIteratorsIsZero
+Test_FilledTable_GetRowAtTheBack
+Test_FilledTable_HasExpectedCapacity
+Test_FilledTable_HasExpectedNonZeroSize
+Test_FilledTable_InsertRowAtTheBeginning
+Test_FilledTable_InsertRowAtTheEnd
+Test_FilledTable_IsNotEmpty
+Test_FilledTable_SizeCanBeDecreased
+Test_FilledTable_SizeCanBeIncreased
+Test_Fixture_DataLoaderWithTableMappings
+Test_Fixture_InsertingTablesIncreasesSize
+Test_Fixture_LoadDataSetFromSqlQueries
+Test_FullPage_CanDecreasePageSize
+Test_FullPage_CanNotInsertRowToAFullPage
+Test_FullPage_DecreadingSizeOfFullPageByHalf
+Test_FullPage_DecreadingSizeOfFullPageToZero
+Test_FullPage_DecreasingSizeOfFullPageToHalfTheCapacity
+Test_FullPage_FullPageCanBeCleared
+Test_FullPage_FullPageHasSizeOfItsCapacity
+Test_FullPage_FullPageIsFull
+Test_FullPage_FullPageIsNotEmpty
+Test_FullPage_IncreadingSizeOfFullPageBeyondItsCapacity
+Test_FullPage_IteratorReturnsExpectedNumberOfRows
+Test_FullPage_IteratorReturnsExpectedRows
+Test_FullPage_PushingBackRowsToTheFullPage
+Test_FullPage_SplitFullPage
+Test_FunctionCircle
+Test_FunctionDateAndTime
+Test_FunctionDistance
+Test_FunctionDotp
+Test_FunctionEqBox
+Test_FunctionNorm
+Test_FunctionRggBox
+Test_FunctionTdiff
+Test_FunctionThin
+Test_FunctionTypeConversion
+Test_FunctionsForAngleConversion
+Test_FunctionsForTemperatureConversion
+Test_HalfEmptyPage_InsertRowAtTheBeginning
+Test_HalfEmptyPage_InsertRowAtTheEnd
+Test_HashTable_clone
+Test_InMemoryDataHandle
+Test_InitializedDataRowHasExpectedFlags
+Test_InitializedDataRowHasExpectedSize
+Test_InitializedDataRowHasExpectedValues
+Test_InnerJoin_InnerJoinHasExpectedColumns
+Test_InnerJoin_InnerJoinHasExpectedNumberOfColumns
+Test_InnerJoin_InnerJoinReturnsExpectedNumberOfResults
+Test_InnerJoin_InnerJoinReturnsExpectedValues
+Test_Int16_MissingCodec
+Test_IntegerValues
+Test_JULIAN_SECONDS
+Test_LinkedTables_DataJoinCanBeUsedWithStlAlgorithms
+Test_LinkedTables_DataJoinHasExpectedColumns
+Test_LinkedTables_DataJoinHasExpectedNumberOfColumns
+Test_LinkedTables_DataJoinReturnsExpectedNumberOfResults
+Test_LinkedTables_DataJoinReturnsExpectedValues
+Test_MetaData
+Test_MetaDataReader
+Test_MinMax
+Test_MissingValue
+Test_OrderBy
+Test_Ordinals_CopiedDataRowHasExpectedFlags
+Test_Ordinals_CopiedDataRowHasExpectedValues
+Test_Ordinals_DataRowCopyHasExpectedFlags
+Test_Ordinals_DataRowCopyHasExpectedSize
+Test_Ordinals_DataRowCopyHasExpectedValues
+Test_ParentTable_DataLoaderReturnsExpectedNumberOfParentTableColumns
+Test_ParentTable_DataLoaderReturnsExpectedNumberOfParentTableRows
+Test_ParentTable_DataLoaderReturnsExpectedParentTableRows
+Test_SQLFunctionsInfo
+Test_SelectAggregate_ReturnsExpectedColumns
+Test_SelectAggregate_ReturnsExpectedNumberOfColumns
+Test_SelectAggregate_ReturnsExpectedNumberOfResults
+Test_SelectAggregate_ReturnsExpectedResults
+Test_SelectAll_CanUseCopyToAppendResults
+Test_SelectAll_ReturnsExpectedColumns
+Test_SelectAll_ReturnsExpectedNumberOfColumns
+Test_SelectAll_ReturnsExpectedNumberOfResults
+Test_SelectAll_ReturnsExpectedResults
+Test_SelectDataHandle
+Test_SelectIterator
+Test_SelectIterator2
+Test_SelectIterator3
+Test_SelectStarAt
+Test_SelectTwoFiles
+Test_SelectWhere_ReturnsExpectedColumns
+Test_SelectWhere_ReturnsExpectedNumberOfColumns
+Test_SelectWhere_ReturnsExpectedNumberOfResults
+Test_SelectWhere_ReturnsExpectedResults
+Test_Setvbuffer
+Test_SimpleFilterIterator
+Test_SimpleFilterIterator2
+Test_Star
+Test_TEMPLATE
+Test_TextReaderIterator_parseBitfields
+Test_TextReaderIterator_parseBitfields_32bits_limit
+Test_TextSelect
+Test_TextSelect2
+Test_ThreeColumnTable_LineByLineInitialization
+Test_ThreeColumnTable_MultiLineInitialization
+Test_UnInitializedDataRowHasExpectedFlags
+Test_UnInitializedDataRowHasExpectedSize
+Test_WriteCatFiles
+Test_bitfieldsLength
+Test_bitfields_hash_operator
+Test_blocksSizes
+Test_dateTime
+Test_hash_operator_in_where
+Test_hash_operator_on_select_list
+Test_include
+Test_log_error
+Test_meta_data_reader_checks_if_file_truncated
+Test_meta_data_reader_fails_scanning_corrupted_file
+Test_operator_ge
+Test_rownumber1
+Test_selectAggregatedAndNonAggregated
+Test_selectAggregatedAndNonAggregated2
+Test_selectAggregatedAndNonAggregated3
+Test_selectAggregatedAndNonAggregatedNULL
+Test_select_constant_value
+Test_sqlOutputFormatting
+Test_stringInWhere
+Test_vector_syntax
+Test_vector_syntax2
+Test_windSpeedWindDirection
+)
+
+### get location of odb executable
+
+get_target_property( odb_bin odb LOCATION )
+
+### migrator tests
+
+foreach( _test ${odb_migrator_tests} )
+
+  ecbuild_add_test( TARGET     ${_test}
+                    COMMAND    ${odb_bin}
+                    ARGS       ${_test}
+                    CONDITION  ENABLE_MIGRATOR
+                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
+                    TEST_DEPENDS get_test_data )
+
+endforeach()
+
+### odb_api tests
+
+# remove dependency on migrator tests if migrator not enabled
+
+if( NOT ENABLE_MIGRATOR )
+  unset( odb_migrator_tests )
+endif()
+
+foreach( _test ${odb_api_tests} )
+
+  ecbuild_add_test( TARGET     ${_test}
+                    COMMAND    ${odb_bin}
+                    ARGS       ${_test}
+                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
+                    TEST_DEPENDS get_test_data ${odb_migrator_tests} )
+
+endforeach()
