@@ -61,8 +61,9 @@ public:
 	virtual Expressions output() const; 
 
 	Expressions& results() { return results_; }
-    std::vector<eckit::PathName> outputFiles() { return outputFiles_; }
-    void outputFiles(const std::vector<eckit::PathName> files) { outputFiles_ = files; }
+
+    std::vector<eckit::PathName> outputFiles() const;
+    void outputFiles(const std::vector<eckit::PathName>& files);
 
 // -- Overridden methods
 	virtual unsigned long long execute();

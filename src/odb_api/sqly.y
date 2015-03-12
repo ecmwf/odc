@@ -21,23 +21,23 @@ using namespace SQLYacc;
 typedef SQLExpression* SQLExpressionPtr; // For casts.
 
 struct YYSTYPE {
-	SQLExpression         *exp;
-	SQLTable              *table;
-	double                 num;
-        std::string                 val;
-        std::vector<std::string>         list;
-	Expressions            explist;
-	std::pair<SQLExpression*,SQLExpression*> ass;
-	Dictionary				dic;
-	std::pair<SQLExpression*,bool> orderexp;
-        std::pair<Expressions,std::vector<bool> > orderlist;
-        std::vector<SQLTable*>      tablist;
-	ColumnDefs             coldefs;
-	ColumnDef              coldef;
-	ConstraintDefs         condefs;
-	ConstraintDef          condef;
-	Range                  r;
-	bool                   bol;
+    SQLExpression         *exp;
+    SQLTable              *table;
+    double                num;
+    std::string           val;
+    std::vector<std::string>         list;
+    Expressions            explist;
+    std::pair<SQLExpression*,SQLExpression*> ass;
+    Dictionary				dic;
+    std::pair<SQLExpression*,bool> orderexp;
+    std::pair<Expressions,std::vector<bool> > orderlist;
+    std::vector<SQLTable*>      tablist;
+    ColumnDefs             coldefs;
+    ColumnDef              coldef;
+    ConstraintDefs         condefs;
+    ConstraintDef          condef;
+    Range                  r;
+    bool                   bol;
 };
 
 #ifdef YYBISON

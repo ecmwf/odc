@@ -41,6 +41,20 @@ void Comparator::compare(const PathName& p1, const PathName& p2)
 	compare(p1, p2, noExcludedColumnTypes);
 }
 
+void Comparator::compare(eckit::DataHandle& l, eckit::DataHandle& r)
+{
+	std::vector<std::string> noExcludedColumnTypes;
+	odb::Reader oda1(l);
+	odb::Reader oda2(r);
+
+	odb::Reader::iterator it1(oda1.begin());
+	odb::Reader::iterator end1(oda1.end());
+	odb::Reader::iterator it2(oda2.begin());
+	odb::Reader::iterator end2(oda2.end());
+	
+	compare(it1, end1, it2, end2, "left", "right", noExcludedColumnTypes);
+}
+
 void Comparator::compare(const PathName& p1, const PathName& p2, const std::vector<std::string>& excludedColumnsTypes)
 {
     Tracer t(Log::debug(), std::string("Comparator::compare: ") + p1 + ", " + p2);

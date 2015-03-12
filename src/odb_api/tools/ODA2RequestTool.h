@@ -34,7 +34,7 @@ public:
 	void readConfig(const eckit::PathName&);
 	void parseConfig(const std::string&);
 
-	std::string generateMarsRequest(const eckit::PathName& inputFile, bool fast = false);
+    std::string generateMarsRequest(const eckit::PathName& inputFile, bool fast = false);
 
 protected:
 	std::vector<Values>& values() { return values_; }
