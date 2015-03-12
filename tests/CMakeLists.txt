@@ -33,7 +33,6 @@ Test_AAAImportODBDispatching
 )
 
 list( APPEND odb_api_tests
-odbcapi
 Test_AggregateFunctions
 Test_AggregateFunctions2
 Test_AggregateFunctions3
