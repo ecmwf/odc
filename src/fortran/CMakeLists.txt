@@ -8,3 +8,5 @@ ecbuild_add_test( TARGET     test_fortran_api
                   SOURCES    test_fortran_api.f90
                   LIBS       Odb_fortran ${ODB_LIBS} #${ODB_LIBPATH}
                   LINKER_LANGUAGE Fortran ) #${LINKER_LANGUAGE} )
+
+install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odb_c_binding.mod DESTINATION ${INSTALL_INCLUDE_DIR} )
