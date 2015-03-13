@@ -15,7 +15,7 @@
 #define Expressions_H
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/SQLExpression.h"
+#include "SQLExpression.h"
 
 namespace odb {
 namespace sql {

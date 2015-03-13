@@ -47,8 +47,8 @@ public:
 
 	double* data();
 
-	int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
-	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
+	int setColumn(size_t index, std::string name, ColumnType type);
+	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
 
 	void missingValue(size_t i, double); 
 
@@ -71,7 +71,8 @@ public:
 	void property(std::string key, std::string value);
 	std::string property(std::string);
 
-	std::vector<eckit::PathName> getFiles();
+	//std::vector<eckit::PathName> getFiles();
+    std::vector<eckit::PathName> outputFiles();
 	TemplateParameters& templateParameters() { return templateParameters_; }
 
 //protected:

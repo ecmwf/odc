@@ -15,7 +15,7 @@
 #define SQLAST_H
 
 #include "eckit/eckit.h"
-#include "odb_api/Types.h"
+#include "Types.h"
 
 namespace odb {
 namespace sql {

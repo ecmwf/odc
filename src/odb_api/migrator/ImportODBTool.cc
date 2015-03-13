@@ -70,7 +70,7 @@ std::pair<unsigned long long, const std::vector<eckit::PathName> > ImportODBTool
 
 	unsigned long long inRowsNumber = saveData<>(w, db, sql);
 
-    std::vector<eckit::PathName> files = (**w).getFiles();
+    std::vector<eckit::PathName> files = (**w).outputFiles();
     return std::make_pair(inRowsNumber, files);
 }
 

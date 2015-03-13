@@ -225,7 +225,7 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 
     SQLOutput *out (createOutput(session, into, order_by.first.size()));
 
-    if(distinct)             { out = new SQLDistinctOutput(out); }
+    if(distinct)              { out = new SQLDistinctOutput(out); }
     if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
     r = new SQLSelect(select, from, where, out, config_);
 
@@ -253,7 +253,6 @@ MetaData toODAColumns(const odb::sql::TableDef& tableDef)
             md.addBitfield<DS>(c.name(), bf ); //c.bitfieldDef());
         }
         else {
-
             ColumnType type (Column::type(c.type()));
             if (type == BITFIELD)
                 md.addBitfield<DS>(c.name(), c.bitfieldDef());

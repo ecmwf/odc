@@ -48,6 +48,33 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
   append_(append)
 {}
 
+
+template <typename WRITE_ITERATOR, typename OWNER>
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, ColumnType type)
+{
+	ASSERT(index < columns().size());
+	Column* col = columns_[index];
+	ASSERT(col);
+
+	col->name(name); 
+	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
+	return 0;
+}
+
+template <typename WRITE_ITERATOR, typename OWNER>
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
+{
+	ASSERT(index < columns().size());
+	Column* col = columns_[index];
+	ASSERT(col);
+
+	col->name(name); 
+	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
+    col->bitfieldDef(b);
+	col->missingValue(0);
+	return 0;
+}
+
 template <typename WRITE_ITERATOR, typename OWNER>
 std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const double* values, unsigned long count)
 {
@@ -138,7 +165,7 @@ const double* values, unsigned long count)
         }
 		iteratorIndex = oldest;
 
-		L << "WriterDispatchingIterator::createIterator: evicted iterator " << iteratorIndex
+		L << "split writer: evicted iterator " << iteratorIndex
 			<< "' " << iteratorIndex2fileName_[iteratorIndex] << "' "
 			<< " (oldest row: " << oldestRow << "), nrows_=" << nrows_ <<  std::endl;
 
@@ -172,7 +199,7 @@ const double* values, unsigned long count)
         }
     }
 
-    L << "WriterDispatchingIterator::dispatch: iterator " << iteratorIndex << ":" << operation << " '" << fileName << "'" << std::endl;
+    L << iteratorIndex << ": " << operation << " '" << fileName << "'" << std::endl;
 
     if (iteratorIndex == iterators_.size())
     {
@@ -198,7 +225,7 @@ const double* values, unsigned long count)
 } 
 
 template <typename WRITE_ITERATOR, typename OWNER>
-std::vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::getFiles()
+std::vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::outputFiles()
 {
     std::vector<eckit::PathName> paths;
     for (std::map<std::string,int>::iterator it (filesCreated_.begin()); it != filesCreated_.end(); ++it)

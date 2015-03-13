@@ -62,12 +62,25 @@ public:
 	{}
 
 	bool doNotWriteColumnNames () const { return doNotWriteColumnNames_; }
+    void doNotWriteColumnNames(bool b) { doNotWriteColumnNames_ = b; }
+
 	bool doNotWriteNULL () const { return  doNotWriteNULL_; }
+	void doNotWriteNULL (bool b) { doNotWriteNULL_ = b; }
+
     const std::string& fieldDelimiter() const { return fieldDelimiter_; }
+    void fieldDelimiter(const std::string& d) { fieldDelimiter_ = d; }
+
     const std::string& outputFile () const { return outputFile_; }
+    void outputFile (const std::string& fn) { outputFile_ = fn; }
+
     const std::string& outputFormat () const { return outputFormat_; }
+    void outputFormat (const std::string& s) { outputFormat_ = s; }
+
     bool displayBitfieldsBinary () const { return displayBitfieldsBinary_; }
+    void displayBitfieldsBinary (bool b) { displayBitfieldsBinary_ = b; }
+
     bool disableAlignmentOfColumns () const { return disableAlignmentOfColumns_; }
+    void disableAlignmentOfColumns (bool b) { disableAlignmentOfColumns_ = b; }
 
 	static const SQLOutputConfig& defaultConfig() { return defaultConfig_; }
 

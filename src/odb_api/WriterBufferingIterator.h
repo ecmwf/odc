@@ -81,6 +81,8 @@ public:
 	void rowsBufferSize(size_t n) { rowsBufferSize_ = n; }
 
 	void flush();
+
+    std::vector<eckit::PathName> outputFiles() { return std::vector<eckit::PathName>(); }
 protected:
 	bool next();
 	Owner& owner_;

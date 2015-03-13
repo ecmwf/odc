@@ -25,9 +25,10 @@ public:
 	SQLTool(int argc, char **argv);
 	~SQLTool();
 	virtual void run();
-    static void execute(const std::string&, std::ostream& = std::cout);
-	static void help(std::ostream &o) { o << "Executes SQL statement"; }
+    static void execute(const std::string&);
+    static void execute(const std::string&, std::ostream&);
 
+	static void help(std::ostream &o) { o << "Executes SQL statement"; }
 	static void usage(const std::string& name, std::ostream &o)
 	{
 		o << name << " <select-statement> | <script-filename>" << std::endl;
@@ -50,9 +51,15 @@ private:
                 const eckit::PathName&,
                 odb::sql::SQLSession&,
                 odb::sql::SQLParser&,
+                const odb::sql::SQLOutputConfig&);
+
+	static void runSQL(const std::string&,
+                const eckit::PathName&,
+                odb::sql::SQLSession&,
+                odb::sql::SQLParser&,
                 const odb::sql::SQLOutputConfig&,
-                const eckit::Offset& offset = eckit::Offset(0),
-                const eckit::Length& length = eckit::Length(0));
+                const eckit::Offset& offset,
+                const eckit::Length& length);
 
 	bool doNotWriteColumnNames_; // -T
 	bool doNotWriteNULL_;        // -N

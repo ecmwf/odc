@@ -18,6 +18,7 @@
 
 namespace eckit {
     class PathName;
+    class DataHandle;
 }
 
 namespace odb {
@@ -43,6 +44,7 @@ public:
 		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2,
 					const std::vector<std::string>& excludedColumnsTypes);
 
+	void compare(eckit::DataHandle&, eckit::DataHandle&);
 	void compare(const eckit::PathName&, const eckit::PathName&);
 	void compare(const eckit::PathName&, const eckit::PathName&, const std::vector<std::string>& excludedColumnsTypes);
 

@@ -19,6 +19,8 @@
 #include "odb_api/SQLStatement.h"
 #include "odb_api/Stack.h"
 
+#include "eckit/filesystem/PathName.h"
+
 namespace odb {
 
 	class SelectIterator;
@@ -59,6 +61,9 @@ public:
 	virtual Expressions output() const; 
 
 	Expressions& results() { return results_; }
+
+    std::vector<eckit::PathName> outputFiles() const;
+    void outputFiles(const std::vector<eckit::PathName>& files);
 
 // -- Overridden methods
 	virtual unsigned long long execute();
@@ -103,6 +108,7 @@ private:
 	Expressions nonAggregated_;
 	std::vector<bool> mixedResultColumnIsAggregated_;
 	SQLOutputConfig outputConfig_;
+    std::vector<eckit::PathName> outputFiles_;
 // -- Methods
 
 	void reset();

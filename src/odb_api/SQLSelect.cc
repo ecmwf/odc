@@ -19,6 +19,7 @@
 #include "odb_api/SQLTable.h"
 
 using namespace eckit;
+using namespace std;
 
 namespace odb {
 namespace sql {
@@ -390,14 +391,13 @@ void SQLSelect::postExecute()
 {
 	if (mixedAggregatedAndScalar_)
 	{
-		for (AggregatedResults::iterator it = aggregatedResults_.begin(); it != aggregatedResults_.end(); ++it)
+		for (AggregatedResults::iterator it (aggregatedResults_.begin()); it != aggregatedResults_.end(); ++it)
 		{
-            const std::vector<std::pair<double,bool> >& nonAggregatedValues = it->first;
-			const Expressions& aggregated = *(it->second); 
-
+            const std::vector<std::pair<double,bool> >& nonAggregatedValues (it->first);
+			const Expressions& aggregated (*(it->second)); 
 			Expressions results;
-			size_t ai = 0, ni = 0;
-			for (size_t i = 0; i < mixedResultColumnIsAggregated_.size(); ++i)
+			size_t ai(0), ni(0);
+			for (size_t i (0); i < mixedResultColumnIsAggregated_.size(); ++i)
 			{
 				if (mixedResultColumnIsAggregated_[i])
 					results.push_back(aggregated[ai++]->clone());
@@ -412,7 +412,6 @@ void SQLSelect::postExecute()
 			}
 
 			output_->output(results);
-
 			results.release();
 		}
 	}
@@ -422,18 +421,15 @@ void SQLSelect::postExecute()
 	}
 
 	output_->flush();
-
 	output_->cleanup(*this);
-
 	if(simplifiedWhere_) simplifiedWhere_->cleanup(*this);
 	
-	for(expression::Expressions::iterator c = results_.begin(); c != results_.end() ; ++c)
+	for(expression::Expressions::iterator c (results_.begin()); c != results_.end() ; ++c)
 		(*c)->cleanup(*this);
 
     //TODO: if(verbose_) {...}
     //Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << std::endl;
     //Log::info() << "Skips : " << BigNum(skips_) << std::endl;
-
 	reset();
 }
 
@@ -614,6 +610,9 @@ void SQLSelect::print(std::ostream& s) const
 }
 
 expression::Expressions SQLSelect::output() const { return select_; }
+
+vector<PathName> SQLSelect::outputFiles() const { return outputFiles_; }
+void SQLSelect::outputFiles(const vector<PathName>& files) { outputFiles_ = files; }
 
 } // namespace sql 
 } // namespace odb 
