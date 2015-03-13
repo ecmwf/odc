@@ -1,4 +1,5 @@
 %module pyodbdump
+#include <cstdef>
 %{
 
 #define SWIG_FILE_WITH_INIT

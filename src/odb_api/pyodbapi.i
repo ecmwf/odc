@@ -1,4 +1,5 @@
 %module pyodbapi
+#include <cstdef>
 %include "std_string.i"
 %include "std_vector.i"
 %{
