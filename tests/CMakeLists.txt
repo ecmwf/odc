@@ -232,6 +232,12 @@ Test_windSpeedWindDirection
 
 get_target_property( odb_bin odb LOCATION )
 
+set( test_environment
+  ODB_API_HOME=${PROJECT_SOURCE_DIR}
+  ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
+  PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
+  ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc )
+
 ### migrator tests
 
 foreach( _test ${odb_migrator_tests} )
@@ -240,7 +246,7 @@ foreach( _test ${odb_migrator_tests} )
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
                     CONDITION  HAVE_MIGRATOR
-                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR} PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
+                    ENVIRONMENT ${test_environment}
                     TEST_DEPENDS get_test_data )
 
 endforeach()
@@ -257,7 +263,7 @@ foreach( _test ${odb_api_tests} )
   ecbuild_add_test( TARGET     ${_test}
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
-                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR} ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc
+                    ENVIRONMENT ${test_environment}
                     TEST_DEPENDS get_test_data ${odb_migrator_tests} )
 
 endforeach()
