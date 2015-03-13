@@ -24,7 +24,7 @@ using namespace odb;
 
 static void test()
 {
-	const char * configFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
+//	const char * configFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 	const char * config = 
 	"DATE: andate\n"
 	"TIME: antime\n"
@@ -46,7 +46,7 @@ static void test()
 
 	//PathName pathName("mondb_conv.17.16001.odb.fn6x");
 	ASSERT(getenv("ODB_API_TEST_DATA_PATH") && "ODB_API_TEST_DATA_PATH must be set");
-	string e(Resource<std::string>("$ODB_API_TEST_DATA_PATH", string("../../../odb_api/src/odb")));
+	string e = Resource<std::string>("$ODB_API_TEST_DATA_PATH");
 	PathName pathName(e + "/mondb.1.12.odb");
 	bool rc = o.scanFile(pathName, offsets, lengths, handles);
 	ASSERT(rc == true);

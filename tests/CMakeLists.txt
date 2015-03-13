@@ -257,7 +257,7 @@ foreach( _test ${odb_api_tests} )
   ecbuild_add_test( TARGET     ${_test}
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
-                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
+                    ENVIRONMENT ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR} ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc
                     TEST_DEPENDS get_test_data ${odb_migrator_tests} )
 
 endforeach()
