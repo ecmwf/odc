@@ -80,7 +80,7 @@ std::string GribCodes::alphanumeric(const std::string& keyword, const std::strin
 GribCodesBase::GribCodesBase(const PathName& fileName)
 : configFileName_(
 	std::string(Resource<std::string>("$ODB_API_CODES", "/usr/local/apps/odb_api/codes/"))
-	+ fileName),
+	+ "/" + fileName),
   fieldDelimiter_(" \t"),
   mapsLoaded_(false)
 {
@@ -91,7 +91,7 @@ GribCodesBase::GribCodesBase(const PathName& fileName)
 GribCodesBase::GribCodesBase(const PathName& fileName, const std::string& fieldDelimiter)
 : configFileName_(
 	std::string(Resource<std::string>("$ODB_API_CODES", "/usr/local/apps/odb_api/codes/"))
-	+ fileName),
+	+ "/" + fileName),
   fieldDelimiter_(fieldDelimiter),
   mapsLoaded_(false)
 {
