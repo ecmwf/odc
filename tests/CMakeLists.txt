@@ -233,6 +233,7 @@ Test_windSpeedWindDirection
 get_target_property( odb_bin odb LOCATION )
 
 set( test_environment
+  ODB_API_CODES=${PROJECT_SOURCE_DIR}/etc
   ODB_API_HOME=${PROJECT_SOURCE_DIR}
   ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
   PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
