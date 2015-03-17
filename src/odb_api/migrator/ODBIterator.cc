@@ -114,7 +114,7 @@ void ODBIterator::createColumns()
 	ci_ = (colinfo_t *) odbdump_destroy_colinfo( (colinfo_t *) ci_, noOfColumns_); 
 	int nci = 0;
 	ci_ = (colinfo_t *) odbdump_create_colinfo(odbHandle_, &nci); 
-	ASSERT(nci == noOfColumns_);
+
     std::map<std::string, std::string> truenames;
 	for (int i = 0; i < noOfColumns_; i++)
 	{
