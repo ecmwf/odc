@@ -65,6 +65,7 @@ private:
 	odb::MetaData *columns_;
 	int newDataset_;
 	double* data_;
+	int nd_;
 	unsigned long long count_;
 	bool hasNext_;
 

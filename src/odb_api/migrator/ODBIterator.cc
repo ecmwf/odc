@@ -43,9 +43,11 @@ namespace tool {
 ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 : db_(db),
   odbHandle_(0),
+  noOfColumns_(0),
   ci_(0),
   columns_(0),
   data_(0),
+  nd_(0),
   schemaParsed_(false),
   noMore_(true)
 {
@@ -63,13 +65,13 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 	const char *db_path = dbPath.c_str();
 	const char *sql_select = select.c_str();
 
-	Log::info() << "ODBIterator::ODBIterator: Calling odbdump_open(\"" << db_path << "\",\"" << sql_select << "\", NULL, NULL, NULL, &" << noOfColumns_ << ")" << std::endl;
+	Log::info() << "ODBIterator::ODBIterator: Calling odbdump_open(\"" << db_path << "\",\"" << sql_select << "\", NULL, NULL, NULL, &" << nd_ << ")" << std::endl;
 
-	odbHandle_ = odbdump_open(db_path, sql_select, NULL, NULL, NULL, &noOfColumns_);
+	odbHandle_ = odbdump_open(db_path, sql_select, NULL, NULL, NULL, &nd_);
 	ASSERT("odbdump_open returned NULL" && odbHandle_);
-	ASSERT("odbdump_open returned noOfColumns_ <= 0" && noOfColumns_ > 0);
+	ASSERT("odbdump_open returned nd_ <= 0" && nd_ > 0);
 
-	data_ = new double[noOfColumns_];
+	data_ = new double[nd_];
 
 	//next();
 	//if (noMore_) Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << std::endl;
@@ -78,10 +80,9 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 bool ODBIterator::next()
 {
 	newDataset_ = false;
-	int nd = odbdump_nextrow(odbHandle_, data_, noOfColumns_, &newDataset_);
-	if (nd == 0)
+	noOfColumns_ = odbdump_nextrow(odbHandle_, data_, nd_, &newDataset_);
+	if (noOfColumns_ == 0)
 	{
-		noOfColumns_ = nd;
 		return !(noMore_ = true);
 	}
 
@@ -91,7 +92,7 @@ bool ODBIterator::next()
 		createColumns();
 	}
 
-	ASSERT(nd == noOfColumns_);
+	ASSERT(noOfColumns_ <= nd_);
     // FIXME: read the missing values for a given constant from somewhere
 	// This is because sometime ODB has MISSING_VALUE_REAL in INTEGER columns...
 	// for example station_type@hdr in ECMA.conv
@@ -114,7 +115,7 @@ void ODBIterator::createColumns()
 	ci_ = (colinfo_t *) odbdump_destroy_colinfo( (colinfo_t *) ci_, noOfColumns_); 
 	int nci = 0;
 	ci_ = (colinfo_t *) odbdump_create_colinfo(odbHandle_, &nci); 
-	ASSERT(nci == noOfColumns_);
+
     std::map<std::string, std::string> truenames;
 	for (int i = 0; i < noOfColumns_; i++)
 	{
