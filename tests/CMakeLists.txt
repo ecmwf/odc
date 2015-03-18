@@ -261,10 +261,18 @@ endif()
 
 foreach( _test ${odb_api_tests} )
 
-  ecbuild_add_test( TARGET     ${_test}
-                    COMMAND    ${odb_bin}
-                    ARGS       ${_test}
-                    ENVIRONMENT ${test_environment}
-                    TEST_DEPENDS get_test_data ${odb_migrator_tests} )
+    if( HAVE_MIGRATOR )
+      ecbuild_add_test( TARGET     ${_test}
+                        COMMAND    ${odb_bin}
+                        ARGS       ${_test}
+                        ENVIRONMENT ${test_environment}
+                        TEST_DEPENDS ${odb_migrator_tests} )
+    else()
+      ecbuild_add_test( TARGET     ${_test}
+                        COMMAND    ${odb_bin}
+                        ARGS       ${_test}
+                        ENVIRONMENT ${test_environment}
+                        TEST_DEPENDS get_test_data )
+    endif()
 
 endforeach()
