@@ -1,5 +1,10 @@
 ### test data files
 
+list( APPEND test_migrator_data_files
+2000010106.old.ECMA.tar.gz )
+
+ecbuild_get_test_multidata( TARGET get_migrator_test_data NAMES ${test_migrator_data_files} NOCHECK )
+
 list( APPEND test_data_files
 2000010106.odb.gz
 2000010106.odb
@@ -15,7 +20,6 @@ list( APPEND test_data_files
 2000010106.7.3.odb
 mondb.1.12.odb
 TestIntegerValues.odb
-2000010106.old.ECMA.tar.gz
 split_crash_on_andate_and_antime.odb
 TestMetaDataReader.odb
 a1to10twice.odb
@@ -266,7 +270,7 @@ foreach( _test ${odb_api_tests} )
                         COMMAND    ${odb_bin}
                         ARGS       ${_test}
                         ENVIRONMENT ${test_environment}
-                        TEST_DEPENDS ${odb_migrator_tests} )
+                        TEST_DEPENDS get_migrator_test_data ${odb_migrator_tests} )
     else()
       ecbuild_add_test( TARGET     ${_test}
                         COMMAND    ${odb_bin}
