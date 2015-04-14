@@ -242,14 +242,12 @@ set( test_environment
 ### migrator tests
 
 foreach( _test ${odb_migrator_tests} )
-
   ecbuild_add_test( TARGET     ${_test}
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
                     CONDITION  HAVE_MIGRATOR
                     ENVIRONMENT ${test_environment}
                     TEST_DEPENDS get_test_data )
-
 endforeach()
 
 ### odb_api tests
@@ -260,11 +258,18 @@ if( NOT HAVE_MIGRATOR )
 endif()
 
 foreach( _test ${odb_api_tests} )
-
-  ecbuild_add_test( TARGET     ${_test}
-                    COMMAND    ${odb_bin}
-                    ARGS       ${_test}
-                    ENVIRONMENT ${test_environment}
-                    TEST_DEPENDS get_test_data ${odb_migrator_tests} )
-
+    if( HAVE_MIGRATOR )
+      ecbuild_add_test( TARGET     ${_test}
+                        COMMAND    ${odb_bin}
+                        ARGS       ${_test}
+                        ENVIRONMENT ${test_environment}
+                        TEST_DEPENDS get_migrator_test_data ${odb_migrator_tests} )
+    else()
+      ecbuild_add_test( TARGET     ${_test}
+                        COMMAND    ${odb_bin}
+                        ARGS       ${_test}
+                        ENVIRONMENT ${test_environment}
+                        TEST_DEPENDS get_test_data )
+    endif()
 endforeach()
+

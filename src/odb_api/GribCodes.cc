@@ -59,44 +59,44 @@ std::string GribCodes::numeric(const std::string& keyword, const std::string& al
 
 std::string GribCodes::alphanumeric(const std::string& keyword, const std::string& numeric)
 {
-	load();
-	const std::string kw = StringTools::upper(keyword);
-	if (kw == "TYPE") 
-	{
-		// HACK:
-		if (numeric == "262") return "MFB";
-		if (numeric == "263") return "OFB";
+    load();
+    const std::string kw (StringTools::upper(keyword));
+    if (kw == "TYPE") 
+    {
+        // HACK:
+        if (numeric == "262") return "MFB";
+        if (numeric == "263") return "OFB";
 
-		return typeCodes_->alphanumeric(numeric);
-	}
-	if (kw == "CLASS") return classCodes_->alphanumeric(numeric);
-	if (kw == "STREAM") return streamCodes_->alphanumeric(numeric);
-	if (kw == "OBSGROUP") return obsgroupCodes_->alphanumeric(numeric);
+        return typeCodes_->alphanumeric(numeric);
+    }
+    if (kw == "CLASS") return classCodes_->alphanumeric(numeric);
+    if (kw == "STREAM") return streamCodes_->alphanumeric(numeric);
+    if (kw == "OBSGROUP") return obsgroupCodes_->alphanumeric(numeric);
 
-	throw eckit::UserError(std::string("'") + keyword + "' is not a known GRIB keyword");
-	return "Don't want the compiler to warn me about non-void function not returning anything";
+    throw eckit::UserError(std::string("'") + keyword + "' is not a known GRIB keyword");
+    return "Don't want the compiler to warn me about non-void function not returning anything";
 }
 
 GribCodesBase::GribCodesBase(const PathName& fileName)
-: configFileName_(
-	std::string(Resource<std::string>("$ODB_API_CODES", "/usr/local/apps/odb_api/codes/"))
-	+ "/" + fileName),
+: configFileName_( std::string(Resource<std::string>("$ODB_API_CODES", "/usr/local/apps/odb_api/codes/")) + "/" + fileName),
   fieldDelimiter_(" \t"),
-  mapsLoaded_(false)
+  mapsLoaded_(false),
+  numericIndex_(0),
+  alphanumericIndex_(1)
 {
-	Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
-	readConfig(configFileName_);
+    Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
+    readConfig(configFileName_);
 }
 
-GribCodesBase::GribCodesBase(const PathName& fileName, const std::string& fieldDelimiter)
-: configFileName_(
-	std::string(Resource<std::string>("$ODB_API_CODES", "/usr/local/apps/odb_api/codes/"))
-	+ "/" + fileName),
+GribCodesBase::GribCodesBase(const PathName& fileName, const std::string& fieldDelimiter, size_t numericIndex, size_t alphanumericIndex)
+: configFileName_(std::string(Resource<std::string>("$ODB_API_CODES", "/usr/local/apps/odb_api/codes/")) + "/" + fileName),
   fieldDelimiter_(fieldDelimiter),
-  mapsLoaded_(false)
+  mapsLoaded_(false),
+  numericIndex_(numericIndex),
+  alphanumericIndex_(alphanumericIndex)
 {
-	Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
-	readConfig(configFileName_);
+    Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
+    readConfig(configFileName_);
 }
 
 void GribCodesBase::readConfig(const PathName& fileName)
@@ -105,14 +105,14 @@ void GribCodesBase::readConfig(const PathName& fileName)
 	numeric2alpha_.clear();
 	alpha2numeric_.clear();
 
-	std::vector<std::string> lines = StringTool::readLines(fileName);
+	std::vector<std::string> lines (StringTool::readLines(fileName));
 	for (size_t i = 0; i < lines.size(); ++i)
 	{
 		std::vector<std::string> words = StringTools::split(fieldDelimiter_, lines[i]);
 		if (words.size() >= 2)
 		{
-			std::string num = StringTools::trim(words[0]);
-			std::string alpha = StringTools::trim(words[1]);
+			std::string num (StringTools::trim(words[numericIndex_]));
+			std::string alpha (StringTools::trim(words[alphanumericIndex_]));
 			numeric2alpha_[num] = alpha;
 			alpha2numeric_[alpha] = num;
 			Log::debug() << "GribCodesBase::readConfig: num='" << num << "' alpha='" << alpha << "'" << std::endl;

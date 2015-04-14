@@ -25,7 +25,7 @@ namespace odb {
 class GribCodesBase {
 public:
 	GribCodesBase(const eckit::PathName&);
-	GribCodesBase(const eckit::PathName&, const std::string& fieldDelimiter);
+	GribCodesBase(const eckit::PathName&, const std::string& fieldDelimiter, size_t numericIndex, size_t alphanumericIndex);
 
 	virtual void readConfig(const eckit::PathName& fileName);
 
@@ -37,6 +37,9 @@ private:
 	bool mapsLoaded_;
 	std::map<std::string,std::string> numeric2alpha_;
 	std::map<std::string,std::string> alpha2numeric_;
+
+    size_t numericIndex_;
+    size_t alphanumericIndex_;
 };
 
 
@@ -57,7 +60,7 @@ public:
 
 class GroupCodes : public GribCodesBase {
 public:
-	GroupCodes() : GribCodesBase("obsgroups.txt", ";") {}
+	GroupCodes() : GribCodesBase("group.txt", ";", 0, 3) {}
 };
 
 class GribCodes {
