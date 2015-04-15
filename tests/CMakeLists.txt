@@ -278,8 +278,11 @@ foreach( _test ${odb_api_tests} )
 endforeach()
 
 
-set_tests_properties(Test_AAAImportODBDispatching PROPERTIES DEPENDS Test_AAAImportODB)
-set_tests_properties(Test_AggregateFunctions PROPERTIES DEPENDS Test_AAAImportODBDispatching)
+if( HAVE_MIGRATOR )
+    set_tests_properties(Test_AAAImportODBDispatching PROPERTIES DEPENDS Test_AAAImportODB)
+    set_tests_properties(Test_AggregateFunctions PROPERTIES DEPENDS Test_AAAImportODBDispatching)
+endif()
+
 set_tests_properties(Test_AggregateFunctions2 PROPERTIES DEPENDS Test_AggregateFunctions)
 set_tests_properties(Test_AggregateFunctions3 PROPERTIES DEPENDS Test_AggregateFunctions2)
 set_tests_properties(Test_AtTableInTheOutput PROPERTIES DEPENDS Test_AggregateFunctions3)
