@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestMissingValue.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -27,7 +27,7 @@ static void setUp()
 {
 	Tracer t(Log::debug(), "setUp");
 
-	odb::Writer<> f("UnitTest.odb");
+	odb::Writer<> f("TestMissingValue.odb");
 	odb::Writer<>::iterator it = f.begin();
 
     it->setNumberOfColumns(2);
@@ -57,8 +57,8 @@ static void selectIntoSecondFile()
 {
     Tracer t(Log::debug(), "selectIntoSecondFile");
 
-    const string fileName = "UnitTest.odb";
-    string sql = "select lat,bf into \"UnitTest.odb\"";
+    const string fileName = "TestMissingValue.odb";
+    string sql = "select lat,bf into \"TestMissingValue.odb\"";
     sql += " from \"" + fileName + "\" ;";
 
     odb::Select f(sql); //, fileName);
@@ -73,22 +73,22 @@ static void test()
 {
 	selectIntoSecondFile();
 
-	odb::Comparator().compare("UnitTest.odb", "UnitTest.odb");
+	odb::Comparator().compare("TestMissingValue.odb", "TestMissingValue.odb");
 
 	{
-		odb::Reader f("UnitTest.odb");
+		odb::Reader f("TestMissingValue.odb");
 		odb::Reader::iterator fbegin(f.begin());
 		odb::Reader::iterator fend(f.end());
 
-		odb::Select s("select * from \"UnitTest.odb\";");
+		odb::Select s("select * from \"TestMissingValue.odb\";");
 		odb::Select::iterator sbegin(s.begin());
 		odb::Select::iterator send(s.end());
 
-		odb::Comparator().compare(fbegin, fend, sbegin, send, "UnitTest.odb", "SELECT UnitTest.odb");
+		odb::Comparator().compare(fbegin, fend, sbegin, send, "TestMissingValue.odb", "SELECT TestMissingValue.odb");
 	}
 
 	{
-		odb::Reader f("UnitTest.odb");
+		odb::Reader f("TestMissingValue.odb");
 		odb::Reader::iterator it = f.begin();
 		odb::Reader::iterator end = f.end();
 
@@ -114,7 +114,7 @@ static void test()
 
 	{
 		// Check the isMissing and missingValue API of SelectIterator
-		odb::Select s("select * from \"UnitTest.odb\";"); //, fileName);
+		odb::Select s("select * from \"TestMissingValue.odb\";"); //, fileName);
 		odb::Select::iterator i = s.begin();
 		odb::Select::iterator e = s.end();
 		for (; i != e; ++i)

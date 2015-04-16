@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestMetaDataReader.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
@@ -23,13 +23,13 @@ using namespace odb;
 
 static void setUp()
 {
-    odb::tool::ImportTool::importText("x:REAL\n1\n2\n3\n", "UnitTest.odb");
+    odb::tool::ImportTool::importText("x:REAL\n1\n2\n3\n", "TestMetaDataReader.odb");
 }
 
 
 static void test()
 {
-	const char *fileName = "UnitTest.odb";
+	const char *fileName = "TestMetaDataReader.odb";
 
 	MetaData wholeFileMD(MetaData::scanFile(fileName));
 

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestAtTableInTheOutput.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -26,7 +26,7 @@ using namespace odb;
 
 static void setUp()
 {
-	odb::Writer<> f("UnitTest.odb");
+	odb::Writer<> f("TestAtTableInTheOutput_A.odb");
 	odb::Writer<>::iterator it = f.begin();
 
     it->setNumberOfColumns(4);
@@ -55,8 +55,8 @@ static void setUp()
 
 static void selectIntoSecondFile()
 {
-	const string fileName = "UnitTest.odb";
-	string sql = "select lat,lon,obsvalue,bf into \"UnitTest.odb\"";
+	const string fileName = "TestAtTableInTheOutput_A.odb";
+	string sql = "select lat,lon,obsvalue,bf into \"TestAtTableInTheOutput_B.odb\"";
 	sql += " from \"" + fileName + "\" ;";
 
 	odb::Select f(sql); //, fileName);
@@ -74,15 +74,15 @@ static void selectIntoSecondFile()
 
 static void compareFiles()
 {
-	odb::Reader oda1("UnitTest.odb");
-	odb::Reader oda2("UnitTest.odb");
+	odb::Reader oda1("TestAtTableInTheOutput_A.odb");
+	odb::Reader oda2("TestAtTableInTheOutput_B.odb");
 
 	odb::Reader::iterator it1(oda1.begin());
 	odb::Reader::iterator end1(oda1.end());
 	odb::Reader::iterator it2(oda2.begin());
 	odb::Reader::iterator end2(oda2.end());
 	
-	odb::Comparator().compare(it1, end1, it2, end2, "UnitTest.odb", "UnitTest.odb");
+	odb::Comparator().compare(it1, end1, it2, end2, "TestAtTableInTheOutput_A.odb", "TestAtTableInTheOutput_B.odb");
 }
 
 

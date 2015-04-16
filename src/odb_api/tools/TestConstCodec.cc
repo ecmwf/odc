@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestConstCodec.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -91,8 +91,8 @@ public:
 
 static void setUp()
 {
-	Timer t("Writing UnitTest.odb");
-	odb::Writer<> oda("UnitTest.odb");
+	Timer t("Writing TestConstCodec.odb");
+	odb::Writer<> oda("TestConstCodec.odb");
 
 	typedef tool::MockReader<MockReaderIterator> M;
 
@@ -107,7 +107,7 @@ static void setUp()
 
 static void test()
 {
-	odb::Reader oda("UnitTest.odb");
+	odb::Reader oda("TestConstCodec.odb");
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 

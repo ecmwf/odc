@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestCodecOptimization.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -29,7 +29,7 @@ const size_t numberOfColumns = 1;
 static void setUp()
 {
 
-    odb::Writer<> oda("UnitTest.odb");
+    odb::Writer<> oda("TestCodecOptimization.odb");
     odb::Writer<>::iterator row = oda.begin();
 
     row->setNumberOfColumns(numberOfColumns);
@@ -55,7 +55,7 @@ static void setUp()
 static void test()
 {
 
-    odb::Reader reader("UnitTest.odb");
+    odb::Reader reader("TestCodecOptimization.odb");
     odb::Reader::iterator it = reader.begin();
     const odb::MetaData& md = it->columns();
 

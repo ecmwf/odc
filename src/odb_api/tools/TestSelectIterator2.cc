@@ -23,7 +23,7 @@ using namespace eckit;
 using namespace odb;
 
 
-const string testFile = "UnitTest.odb";
+const string testFile = "TestSelectIterator2.odb";
 
 const double VALUE[] = { 1, 2, 3 };
 
