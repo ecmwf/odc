@@ -25,7 +25,7 @@
 
 using namespace eckit;
 
-template class ThreadSingleton<odb::sql::SQLSelectFactory>;
+template class eckit::ThreadSingleton<odb::sql::SQLSelectFactory>;
 static ThreadSingleton<odb::sql::SQLSelectFactory> instance_;
 
 namespace odb {

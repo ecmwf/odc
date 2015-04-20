@@ -124,9 +124,9 @@ Channel& ODBBehavior::debugChannel()
 
 } // namespace odb
 
-template class ThreadSingleton<Channel,odb::CreateInfoChannel>;
-template class ThreadSingleton<Channel,odb::CreateWarnChannel>;
-template class ThreadSingleton<Channel,odb::CreateErrorChannel>;
-template class ThreadSingleton<Channel,odb::CreateDebugChannel>;
+template class eckit::ThreadSingleton<Channel,odb::CreateInfoChannel>;
+template class eckit::ThreadSingleton<Channel,odb::CreateWarnChannel>;
+template class eckit::ThreadSingleton<Channel,odb::CreateErrorChannel>;
+template class eckit::ThreadSingleton<Channel,odb::CreateDebugChannel>;
 
 
