@@ -17,7 +17,7 @@
 
 using namespace eckit;
 
-template class ThreadSingleton<odb::sql::SQLSession*>;
+template class eckit::ThreadSingleton<odb::sql::SQLSession*>;
 static ThreadSingleton<odb::sql::SQLSession*> instance_;
 
 namespace odb {

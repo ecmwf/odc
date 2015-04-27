@@ -23,7 +23,7 @@ using namespace std;
 
 inline size_t MEGA(size_t n) { return n*1024*1204; }
 
-template class ThreadSingleton<odb::ODBAPISettings>;
+template class eckit::ThreadSingleton<odb::ODBAPISettings>;
 static ThreadSingleton<odb::ODBAPISettings> instance_;
 
 bool odb::ODBAPISettings::debug = false;
