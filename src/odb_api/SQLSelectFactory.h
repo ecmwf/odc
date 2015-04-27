@@ -33,11 +33,12 @@ public:
 	static SQLSelectFactory& instance();
 
 	SQLSelect* create(bool distinct,
-		Expressions select_list,
-		const std::string& into,
-		std::vector<SQLTable*> from,
-		odb::sql::expression::SQLExpression *where,
-		Expressions group_by,
+        bool all,
+        Expressions select_list,
+        const std::string& into,
+        std::vector<SQLTable*> from,
+        odb::sql::expression::SQLExpression *where,
+        Expressions group_by,
         std::pair<Expressions,std::vector<bool> > order_by);
 
 	SQLExpression* createColumn(
@@ -63,12 +64,11 @@ public:
 	void csvDelimiter(const std::string& d) { csvDelimiter_ = d; }
 
 private:
-
     SQLSelectFactory();
 
-     // No copy allowed
-     SQLSelectFactory(const SQLSelectFactory&);
-     SQLSelectFactory& operator=(const SQLSelectFactory&);
+    // No copy allowed
+    SQLSelectFactory(const SQLSelectFactory&);
+    SQLSelectFactory& operator=(const SQLSelectFactory&);
 
 	std::string index(const std::string& columnName, const SQLExpression* index);
 
@@ -86,11 +86,11 @@ private:
     MetaData columns(const std::string& tableName);
     SQLOutput* createOutput(SQLSession&, const std::string& into, size_t orderBySize);
 
-	SQLDatabase* database_;
-	SQLOutputConfig config_;
-	int maxColumnShift_;
-	int minColumnShift_;
-	std::string csvDelimiter_;
+    SQLDatabase* database_;
+    SQLOutputConfig config_;
+    int maxColumnShift_;
+    int minColumnShift_;
+    std::string csvDelimiter_;
 
     friend class eckit::NewAlloc0<SQLSelectFactory>;
 };

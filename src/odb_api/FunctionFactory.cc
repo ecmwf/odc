@@ -44,6 +44,7 @@
 #include "odb_api/FunctionTHIN.h"
 #include "odb_api/FunctionTIMESTAMP.h"
 #include "odb_api/FunctionVAR.h"
+#include "odb_api/FunctionRLIKE.h"
 #include "odb_api/piconst.h"
 
 namespace odb {
@@ -603,6 +604,9 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	static FunctionMaker<FunctionTIMESTAMP> make_TIMESTAMP("timestamp",2, "");
 	static FunctionMaker<FunctionVAR> make_VAR("var",1, "");
 	static FunctionMaker<FunctionVAR> make_VARP("varp",1, "");
+    static FunctionMaker<FunctionRLIKE> make_RLIKE("rlike",2, "");
+    //TODO: not exactly sure LIKE and RLIKE are the same
+    static FunctionMaker<FunctionRLIKE> make_LIKE("like",2, "");
 
 	FunctionIntegerExpression::registerIntegerFunctions();
 }

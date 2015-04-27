@@ -29,6 +29,7 @@ public:
 	  outputFile_(that.outputFile_),
 	  outputFormat_(that.outputFormat_),
       displayBitfieldsBinary_(that.displayBitfieldsBinary_),
+      displayBitfieldsHexadecimal_(that.displayBitfieldsHexadecimal_),      
       disableAlignmentOfColumns_(that.disableAlignmentOfColumns_)
 	{}
 
@@ -40,6 +41,7 @@ public:
 		outputFile_ = that.outputFile_;
 		outputFormat_ = that.outputFormat_;
         displayBitfieldsBinary_ = that.displayBitfieldsBinary_;
+        displayBitfieldsHexadecimal_ = that.displayBitfieldsHexadecimal_;        
         disableAlignmentOfColumns_ = that.disableAlignmentOfColumns_;
 		return *this;
 	}
@@ -51,6 +53,7 @@ public:
                     const std::string& output = defaultOutputFile_,
                     const std::string& format = defaultFormat_,
                     bool displayBitfieldsBinary = false,
+                    bool displayBitfieldsHexadecimal = false,                    
                     bool disableAlignmentOfColumns = false)
 	: doNotWriteColumnNames_(cn),
 	  doNotWriteNULL_(n),
@@ -58,6 +61,7 @@ public:
       outputFile_(output),
       outputFormat_(format),
       displayBitfieldsBinary_(displayBitfieldsBinary),
+      displayBitfieldsHexadecimal_(displayBitfieldsHexadecimal),
       disableAlignmentOfColumns_(disableAlignmentOfColumns)
 	{}
 
@@ -79,6 +83,10 @@ public:
     bool displayBitfieldsBinary () const { return displayBitfieldsBinary_; }
     void displayBitfieldsBinary (bool b) { displayBitfieldsBinary_ = b; }
 
+    bool displayBitfieldsHexadecimal () const { return displayBitfieldsHexadecimal_; }
+    void displayBitfieldsHexadecimal (bool b) { displayBitfieldsHexadecimal_ = b; }
+    
+
     bool disableAlignmentOfColumns () const { return disableAlignmentOfColumns_; }
     void disableAlignmentOfColumns (bool b) { disableAlignmentOfColumns_ = b; }
 
@@ -91,6 +99,7 @@ private:
     std::string outputFile_;          // -o
     std::string outputFormat_;        // -f
     bool displayBitfieldsBinary_;     // --binary
+    bool displayBitfieldsHexadecimal_; // --hex
     bool disableAlignmentOfColumns_;  // --no_alignment
 
 	static const SQLOutputConfig defaultConfig_;

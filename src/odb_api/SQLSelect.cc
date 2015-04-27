@@ -204,10 +204,10 @@ void SQLSelect::prepareExecute() {
 		if(where->isConstant()) {
 			bool missing = false;
 			if(where->eval(missing)) {
-				Log::debug() << "WHERE condition always true, ignoring" << std::endl;
+				Log::info() << "WHERE condition always true, ignoring" << std::endl;
 				where = 0;
 			} else {
-				Log::debug() << "WHERE condition always false" << std::endl;
+				Log::info() << "WHERE condition always false" << std::endl;
 				return;
 			}
 		}
@@ -264,7 +264,6 @@ void SQLSelect::prepareExecute() {
 
 	if(where) {
 		// Try to analyse where
-		
 		expression::Expressions e;
 		if(!where->andSplit(e))
 			e.push_back(where);
@@ -428,8 +427,8 @@ void SQLSelect::postExecute()
 		(*c)->cleanup(*this);
 
     //TODO: if(verbose_) {...}
-    //Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << std::endl;
-    //Log::info() << "Skips : " << BigNum(skips_) << std::endl;
+    Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << std::endl;
+    Log::info() << "Skips: " << BigNum(skips_) << std::endl;
 	reset();
 }
 
@@ -474,7 +473,10 @@ bool SQLSelect::output(SQLExpression* where)
 
 	bool newRow = false;
 	bool missing = false;
-	if ( (where == 0) || (where->eval(missing) && !missing) )
+    double value;
+	if ( (where == 0)
+        || ((value = where->eval(missing)) || !value) // !value for the 'WHERE 0' case, ODB-106 
+        && !missing)
 	{
 		if (! aggregate_)
 			newRow = resultsOut();

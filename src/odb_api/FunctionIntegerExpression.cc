@@ -13,6 +13,7 @@
 #include "odb_api/FunctionFactory.h"
 #include "odb_api/FunctionIntegerExpression.h"
 #include "odb_api/MDI.h"
+#include "odb_api/StringTool.h"
 
 #define ftrunc(x) ((x) -fmod((x), 1))
 #define F90nint(x) ( ((x) > 0) ? (int)((x) + 0.5) : (int)((x) - 0.5) )
@@ -86,6 +87,7 @@ inline double Func_dnint(double x) { return ((fabs(x) != fabs((double) MDI::real
 inline double Func_dint(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(ftrunc(x)) : (double) MDI::integerMDI());}
 inline double Func_ceil(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(ceil(x)) : (double) MDI::integerMDI());}
 inline double Func_floor(double x) { return ((fabs(x) != fabs((double) MDI::realMDI())) ? (double)(floor(x)) : (double) MDI::integerMDI());}
+inline double Func_atoi(double x) { return (fabs(x) != fabs((double) MDI::realMDI())) ? (double) atoi(StringTool::double_as_string(x).c_str()) : (double) MDI::integerMDI(); }
 
 void FunctionIntegerExpression::registerIntegerFunctions()
 {
@@ -103,6 +105,7 @@ void FunctionIntegerExpression::registerIntegerFunctions()
 	DEFINE_MATH_INT_FUNC_1F(Func_ftrunc,trunc,"");
 	DEFINE_MATH_INT_FUNC_1F(Func_dint,int,"");
 	DEFINE_MATH_INT_FUNC_1F(Func_dnint,nint,"");
+	DEFINE_MATH_INT_FUNC_1F(Func_atoi,atoi,"Convert string to integer. Return NULL if argument is NULL ");
 }
 
 } // namespace function

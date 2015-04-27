@@ -55,8 +55,15 @@ SQLTool::SQLTool(int argc,char **argv)
 	offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
 	length_ = optionArgument("-length", (long) 0);
 
-	SQLSelectFactory::instance()
-		.config(SQLOutputConfig(doNotWriteColumnNames_, doNotWriteNULL_, delimiter_, outputFile_, outputFormat_, optionIsSet("--binary"), optionIsSet("--no_alignment")));
+    SQLSelectFactory::instance()
+        .config(SQLOutputConfig(doNotWriteColumnNames_,
+                                doNotWriteNULL_,
+                                delimiter_, 
+                                outputFile_, 
+                                outputFormat_, 
+                                optionIsSet("--bin") || optionIsSet("--binary"), 
+                                optionIsSet("--hex") || optionIsSet("--hexadecimal"), 
+                                optionIsSet("--no_alignment")));
 }
 
 SQLTool::~SQLTool() {}
