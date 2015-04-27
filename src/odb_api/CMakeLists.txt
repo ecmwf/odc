@@ -123,6 +123,8 @@ FunctionDOTP.cc
 FunctionDOTP.h
 FunctionEQ.cc
 FunctionEQ.h
+FunctionRLIKE.cc
+FunctionRLIKE.h
 FunctionEQ_BOXLAT.cc
 FunctionEQ_BOXLAT.h
 FunctionEQ_BOXLON.cc

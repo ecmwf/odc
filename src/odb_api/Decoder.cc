@@ -9,9 +9,28 @@
  */
 
 #include "eckit/eckit.h"
+#include "eckit/exception/Exceptions.h"
+#include <bitset>
 #include "odb_api/Decoder.h"
 
 namespace odb {
+
+std::string Decoder::printBinary(W n) {
+    std::stringstream ss;
+    printBinary(ss, n);
+    return ss.str();
+}
+
+std::string Decoder::printHexadecimal(W n) {
+    std::stringstream ss;
+    printHexadecimal(ss, n);
+    return ss.str();
+}
+
+void Decoder::printHexadecimal(std::ostream& ss, W n)
+{
+    ss << std::hex << n << std::dec;
+}
 
 Decoder::W Decoder::makeMask(W size)
 {

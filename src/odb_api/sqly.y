@@ -117,6 +117,8 @@ Expressions emptyExpressionList;
 %token DESC
 
 %token HASH
+%token LIKE
+%token RLIKE
 
 %type <exp>column
 %type <exp>vector_index 
@@ -161,6 +163,7 @@ Expressions emptyExpressionList;
 %type <exp>select_;
 
 %type <bol>distinct;
+%type <bol>all;
 %type <val>into;
 %type <val>func;
 %type <val>relational_operator;
@@ -421,26 +424,31 @@ default_value: DEFAULT expression_ex { SQLExpression* e($2); $$ = e->title(); }
 create_view_statement: CREATE VIEW IDENT AS select_statement
 	;
 
-select_statement: SELECT distinct select_list into from where group_by order_by
-					{   
-						bool                   distinct($2);
-						Expressions            select_list($3);
-                                                std::string                 into($4);
-                                                std::vector<SQLTable*>      from($5);
-						SQLExpression          *where($6);
-						Expressions            group_by($7);
-                                                std::pair<Expressions,std::vector<bool> >      order_by($8);
+select_statement: SELECT distinct all select_list into from where group_by order_by
+                {   
+                    bool                   distinct($2);
+                    bool                   all($3);
+                    Expressions            select_list($4);
+                    std::string            into($5);
+                    std::vector<SQLTable*> from($6);
+                    SQLExpression          *where($7);
+                    Expressions            group_by($8);
+                    std::pair<Expressions,std::vector<bool> >      order_by($9);
 
-						SQLSelect* sqlSelect = SQLSelectFactory::instance()
-							.create(distinct, select_list, into, from, where, group_by, order_by);
-						SQLSession::current().statement(sqlSelect);
-					}
+                    SQLSelect* sqlSelect = SQLSelectFactory::instance()
+                        .create(distinct, all, select_list, into, from, where, group_by, order_by);
+                    SQLSession::current().statement(sqlSelect);
+                }
                 ;
 
 distinct: DISTINCT { $$ = true; }
-        | ALL      { $$ = false; }
 		| empty    { $$ = false; }
 		;
+
+all: ALL      { $$ = true; }
+   | empty    { $$ = false; }
+   ;
+
 
 into: INTO IDENT   { $$ = $2; }
     | INTO STRING  { $$ = $2; }
@@ -679,6 +687,8 @@ condition   : term relational_operator term relational_operator term { $$ = ast(
 			| condition IS NOT NIL      { $$ = ast("not_null",$1);   }
 			| condition BETWEEN term AND term { $$ = ast("between",$1,$3,$5); }
 			| condition NOT BETWEEN term AND term { $$ = ast("not_between",$1,$4,$6); }
+            | condition LIKE term       { $$ = ast("like", $1, $3); }
+            | condition RLIKE term      { $$ = ast("rlike", $1, $3); }
             | term
             ;
 

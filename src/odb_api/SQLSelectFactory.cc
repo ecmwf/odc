@@ -174,11 +174,12 @@ MetaData SQLSelectFactory::columns(const std::string& tableName)
 }
 
 SQLSelect* SQLSelectFactory::create (bool distinct,
-	Expressions select_list,
-	const std::string& into,
-	std::vector<SQLTable*> from,
-	SQLExpression *where,
-	Expressions group_by,
+    bool all,
+    Expressions select_list,
+    const std::string& into,
+    std::vector<SQLTable*> from,
+    SQLExpression *where,
+    Expressions group_by,
     std::pair<Expressions,std::vector<bool> > order_by)
 {
     //TODO: if(verbose_) {...}

@@ -55,7 +55,7 @@ public:
 
 	void help(std::ostream &o) { T::help(o); }
 	void usage(const std::string &name, std::ostream &o) { T::usage(name, o); }
-	bool experimental() { return false; }
+	bool experimental() { return odb::tool::ExperimentalTool<T>::experimental; }
 };
 
 } // namespace tool 
