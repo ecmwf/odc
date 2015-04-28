@@ -27,9 +27,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test various functions to convert temperatures");
-	odb::Writer<> oda("test_tempconv.odb");
+	odb::Writer oda("test_tempconv.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer::iterator row = oda.begin();
 	row->setNumberOfColumns(3);
 
 	row->setColumn(0, "kelvin_col", odb::REAL);

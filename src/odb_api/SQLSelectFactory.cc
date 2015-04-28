@@ -285,12 +285,12 @@ SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const std::strin
         else {
             SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());
             if (! a.tableKnown(outputFile)) 
-                r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin());
+                r = new SQLODAOutput<Writer::iterator>(Writer(outputFile).begin());
             else
             {
                 Log::info() << "Table in the INTO clause known (" << outputFile << ")" << std::endl;
                 const odb::sql::TableDef* tableDef (&a.findTable(outputFile));
-                r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin(), toODAColumns(*tableDef));
+                r = new SQLODAOutput<Writer::iterator>(Writer(outputFile).begin(), toODAColumns(*tableDef));
             } 
         }
     }

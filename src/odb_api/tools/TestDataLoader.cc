@@ -38,8 +38,8 @@ Fixture::Fixture()
   : input(),
     output()
 {
-    odb::Writer<> writer(input);
-    odb::Writer<>::iterator it = writer.begin();
+    odb::Writer writer(input);
+    odb::Writer::iterator it = writer.begin();
 
     MetaData md (it->columns());
     md.addColumn<DataStream>("parent_id@parent", "INTEGER");

@@ -30,13 +30,13 @@ namespace odb {
 
 class HashTable;
 class SQLIteratorSession;
-template <typename I> class Writer;
+template <typename I> class WriterT;
 namespace sql { class TableDef; }
 
 class WriterBufferingIterator //: public RowsWriterIterator
 {
 public:
-	typedef Writer<WriterBufferingIterator> Owner;
+	typedef WriterT<WriterBufferingIterator> Owner;
 
 	//WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle=true);
 	WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle, const odb::sql::TableDef* tableDef=0);

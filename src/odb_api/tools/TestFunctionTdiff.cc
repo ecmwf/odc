@@ -29,9 +29,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test tdiff function");
-	odb::Writer<> oda("test_tdiff.odb");
+	odb::Writer oda("test_tdiff.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "date", odb::INTEGER);

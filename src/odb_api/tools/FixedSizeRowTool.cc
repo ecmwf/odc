@@ -36,11 +36,11 @@ void FixedSizeRowTool::run()
 	PathName outFile = parameters(2);
 
 	odb::Reader in(inFile);
-	odb::Writer<> out(outFile);
+	odb::Writer out(outFile);
 
 	odb::Reader::iterator it = in.begin();
 	odb::Reader::iterator end = in.end();
-	odb::Writer<>::iterator outIt(out.begin());
+	odb::Writer::iterator outIt(out.begin());
 	outIt->pass1(it, end);
 	
 	odb::Reader outReader(outFile);

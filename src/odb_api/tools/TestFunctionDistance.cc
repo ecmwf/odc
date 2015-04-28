@@ -29,9 +29,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test various functions to compute the distance");
-	odb::Writer<> oda("test_distance.odb");
+	odb::Writer oda("test_distance.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer::iterator row = oda.begin();
     row->setNumberOfColumns(2);
 
 	row->setColumn(0, "lat", odb::REAL);

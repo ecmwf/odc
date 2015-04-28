@@ -27,8 +27,8 @@ static void setUp()
 {
 	Tracer t(Log::debug(), "setUp");
 
-	odb::Writer<> f("TestMissingValue.odb");
-	odb::Writer<>::iterator it = f.begin();
+	odb::Writer f("TestMissingValue.odb");
+	odb::Writer::iterator it = f.begin();
 
     it->setNumberOfColumns(2);
 

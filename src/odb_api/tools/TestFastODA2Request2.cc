@@ -28,8 +28,8 @@ static Length size2;
 Length createFile(const std::string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
 {
 	{
-		odb::Writer<> oda(fileName);
-		odb::Writer<>::iterator row = oda.begin();
+		odb::Writer oda(fileName);
+		odb::Writer::iterator row = oda.begin();
 		row->setNumberOfColumns(3);
 		row->setColumn(0, "antime", odb::INTEGER);
 		row->setColumn(1, "andate", odb::INTEGER);

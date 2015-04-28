@@ -189,8 +189,8 @@ void ImportODBTool<IN>::run()
 	else
 	{
 
-		odb::Writer<> writer(dumpFile);
-		odb::Writer<>::iterator w = writer.begin();
+		odb::Writer writer(dumpFile);
+		odb::Writer::iterator w = writer.begin();
 
 		unsigned long long importedRowsNumber = saveData<>(w, db, sql); //, schema);
 		Log::info() << "Imported " << BigNum(importedRowsNumber) << " row(s)." << std::endl;

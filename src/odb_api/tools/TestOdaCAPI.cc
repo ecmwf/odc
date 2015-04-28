@@ -64,9 +64,9 @@ int test_odacapi_setup_in_C(int argc, char* argv[])
 int test_odacapi_setup(int argc, char* argv[])
 {
     Timer t("Writing test.odb");
-    odb::Writer<> oda("test.odb");
+    odb::Writer oda("test.odb");
 
-    odb::Writer<>::iterator writer = oda.begin();
+    odb::Writer::iterator writer = oda.begin();
     writer->setNumberOfColumns(2);
 
     writer->setColumn(0, "ifoo", odb::INTEGER);

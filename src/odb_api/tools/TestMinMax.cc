@@ -36,9 +36,9 @@ const string SELECT  = "select * from \"test.odb\";";
 static void setUp()
 {
 	Timer t("Writing testminmax.odb");
-	odb::Writer<> oda("testminmax.odb");
+	odb::Writer oda("testminmax.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "intcol", odb::INTEGER);

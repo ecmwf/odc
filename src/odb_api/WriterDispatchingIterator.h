@@ -92,7 +92,7 @@ protected:
 
 	unsigned char *buffer_;
 	OWNER& owner_;
-	Writer<WRITE_ITERATOR> iteratorsOwner_;
+	WriterT<WRITE_ITERATOR> iteratorsOwner_;
 	MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;

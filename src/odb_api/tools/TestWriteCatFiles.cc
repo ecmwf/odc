@@ -28,8 +28,8 @@ static void test()
 	Reader::iterator it = in.begin();
 	Reader::iterator end = in.end();
 
-	Writer<> out("copy_of_concatenated.odb");
-	Writer<>::iterator o = out.begin();
+	Writer out("copy_of_concatenated.odb");
+	Writer::iterator o = out.begin();
 	o->pass1(it, end);
 
 	Comparator().compare("concatenated.odb", "copy_of_concatenated.odb");
@@ -38,8 +38,8 @@ static void test()
 static void setUp()
 {
  {
-	odb::Writer<> oda("file1.odb");
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer oda("file1.odb");
+	odb::Writer::iterator row = oda.begin();
 
 	row->setNumberOfColumns(3);
 
@@ -57,8 +57,8 @@ static void setUp()
 		++row;
 	}
 
-	odb::Writer<> oda2("file2.odb");
-	odb::Writer<>::iterator row2 = oda2.begin();
+	odb::Writer oda2("file2.odb");
+	odb::Writer::iterator row2 = oda2.begin();
 	row2->setNumberOfColumns(3);
 	row2->setColumn(0, "x", odb::REAL);
 	row2->setColumn(1, "y", odb::REAL);
@@ -74,8 +74,8 @@ static void setUp()
 		++row2;
 	}
 
-	odb::Writer<> oda3("file3.odb");
-	odb::Writer<>::iterator row3 = oda3.begin();
+	odb::Writer oda3("file3.odb");
+	odb::Writer::iterator row3 = oda3.begin();
 	row3->setNumberOfColumns(4);
 
 	row3->setColumn(0, "x", odb::REAL);

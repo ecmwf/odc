@@ -26,9 +26,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test TypeConversion function");
-	odb::Writer<> oda("test_type_conversion.odb");
+	odb::Writer oda("test_type_conversion.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer::iterator row = oda.begin();
 	row->setNumberOfColumns(1);
 
 	row->setColumn(0, "obsvalue", odb::REAL);

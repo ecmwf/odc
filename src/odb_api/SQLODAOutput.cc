@@ -113,7 +113,7 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql) {
 
 // Explicit template instantiations.
 
-template class SQLODAOutput<Writer<>::iterator>;
+template class SQLODAOutput<Writer::iterator>;
 template class SQLODAOutput<DispatchingWriter::iterator>;
 
 } // namespace sql

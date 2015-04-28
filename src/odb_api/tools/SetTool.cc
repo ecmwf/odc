@@ -44,9 +44,9 @@ void SetTool::run()
 	PathName outFile = parameters(3);
 
 	odb::Reader in(inFile);
-	odb::Writer<> out(outFile);
+	odb::Writer out(outFile);
 
-	odb::Writer<>::iterator writer(out.begin());
+	odb::Writer::iterator writer(out.begin());
 
 	odb::Reader::iterator sourceIt = in.begin();
 	const odb::Reader::iterator sourceEnd = in.end();

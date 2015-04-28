@@ -30,9 +30,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test thin function");
-	odb::Writer<> oda("test_thin.odb");
+	odb::Writer oda("test_thin.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer::iterator row = oda.begin();
 	row->setNumberOfColumns(1);
 
 	row->setColumn(0, "lat", odb::REAL);

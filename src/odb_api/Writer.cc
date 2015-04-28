@@ -45,7 +45,7 @@ namespace odb {
 
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer()
+WriterT<ITERATOR>::WriterT()
 : path_(""),
   dataHandle_(0),
   rowsBufferSize_(eckit::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
@@ -54,7 +54,7 @@ Writer<ITERATOR>::Writer()
 {} 
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer(const eckit::PathName& path)
+WriterT<ITERATOR>::WriterT(const eckit::PathName& path)
 : path_(path),
   dataHandle_(0),
   rowsBufferSize_(eckit::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
@@ -70,7 +70,7 @@ Writer<ITERATOR>::Writer(const eckit::PathName& path)
 } 
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer(eckit::DataHandle *dh, bool openDataHandle, bool deleteDataHandle)
+WriterT<ITERATOR>::WriterT(eckit::DataHandle *dh, bool openDataHandle, bool deleteDataHandle)
 : path_(""),
   dataHandle_(dh),
   rowsBufferSize_(eckit::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
@@ -79,7 +79,7 @@ Writer<ITERATOR>::Writer(eckit::DataHandle *dh, bool openDataHandle, bool delete
 {}
 
 template <typename ITERATOR>
-Writer<ITERATOR>::Writer(eckit::DataHandle &dh, bool openDataHandle)
+WriterT<ITERATOR>::WriterT(eckit::DataHandle &dh, bool openDataHandle)
 : path_(""),
   dataHandle_(&dh),
   rowsBufferSize_(eckit::Resource<long>("$ODB_ROWS_BUFFER_SIZE;-rowsBufferSize;rowsBufferSize", DEFAULT_ROWS_BUFFER_SIZE)),
@@ -88,10 +88,10 @@ Writer<ITERATOR>::Writer(eckit::DataHandle &dh, bool openDataHandle)
 {}
 
 template <typename ITERATOR>
-Writer<ITERATOR>::~Writer() { if (deleteDataHandle_) delete dataHandle_; }
+WriterT<ITERATOR>::~WriterT() { if (deleteDataHandle_) delete dataHandle_; }
 
 template <typename ITERATOR>
-typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
+typename WriterT<ITERATOR>::iterator WriterT<ITERATOR>::begin(bool openDataHandle)
 {
 	eckit::DataHandle *dh = 0;
 	if (dataHandle_ == 0)
@@ -103,11 +103,11 @@ typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 		ASSERT(dataHandle_);
 		dh = dataHandle_;
 	}
-	return typename Writer::iterator(new ITERATOR(*this, dh, openDataHandle));
+	return typename WriterT::iterator(new ITERATOR(*this, dh, openDataHandle));
 }
 
 template <typename ITERATOR>
-ITERATOR* Writer<ITERATOR>::createWriteIterator(eckit::PathName pathName, bool append)
+ITERATOR* WriterT<ITERATOR>::createWriteIterator(eckit::PathName pathName, bool append)
 {
 	eckit::Length estimatedLength = 10*1024*1024;
 	eckit::DataHandle *h = append
@@ -118,13 +118,13 @@ ITERATOR* Writer<ITERATOR>::createWriteIterator(eckit::PathName pathName, bool a
 
 // Explicit templates' instantiations.
 
-template Writer<WriterBufferingIterator>::Writer();
-template Writer<WriterBufferingIterator>::Writer(const eckit::PathName&);
-template Writer<WriterBufferingIterator>::Writer(eckit::DataHandle&,bool);
-template Writer<WriterBufferingIterator>::Writer(eckit::DataHandle*,bool,bool);
+template WriterT<WriterBufferingIterator>::WriterT();
+template WriterT<WriterBufferingIterator>::WriterT(const eckit::PathName&);
+template WriterT<WriterBufferingIterator>::WriterT(eckit::DataHandle&,bool);
+template WriterT<WriterBufferingIterator>::WriterT(eckit::DataHandle*,bool,bool);
 
-template Writer<WriterBufferingIterator>::~Writer();
-template Writer<WriterBufferingIterator>::iterator Writer<WriterBufferingIterator>::begin(bool);
-template WriterBufferingIterator * Writer<WriterBufferingIterator>::createWriteIterator(eckit::PathName,bool);
+template WriterT<WriterBufferingIterator>::~WriterT();
+template WriterT<WriterBufferingIterator>::iterator WriterT<WriterBufferingIterator>::begin(bool);
+template WriterBufferingIterator * WriterT<WriterBufferingIterator>::createWriteIterator(eckit::PathName,bool);
 
 } // namespace odb

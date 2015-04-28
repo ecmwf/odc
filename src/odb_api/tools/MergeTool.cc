@@ -69,8 +69,8 @@ void MergeTool::run()
 template <typename T, typename I>
 void doMerge(std::vector<std::pair<I, I> >& iterators, const PathName& outputFile)
 {
-	odb::Writer<> writer(outputFile);
-	odb::Writer<>::iterator out(writer.begin());
+	odb::Writer writer(outputFile);
+	odb::Writer::iterator out(writer.begin());
 
 	for (size_t i = 0; i < iterators.size(); ++i)
 	{

@@ -37,12 +37,12 @@ void CompactTool::run()
 	PathName outFile = parameters(2);
 
 	odb::Reader in(inFile);
-	odb::Writer<> out(outFile);
+	odb::Writer out(outFile);
 
 	odb::Reader::iterator it(in.begin());
 	odb::Reader::iterator end(in.end());
 
-	odb::Writer<>::iterator writer(out.begin());
+	odb::Writer::iterator writer(out.begin());
 	writer->pass1(it, end);
 	
 	odb::Reader outReader(outFile);

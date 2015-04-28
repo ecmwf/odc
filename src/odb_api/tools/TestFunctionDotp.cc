@@ -31,9 +31,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test Dotp function");
-	odb::Writer<> oda("test_dotp.odb");
+	odb::Writer oda("test_dotp.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "x", odb::REAL);

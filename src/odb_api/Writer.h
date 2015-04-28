@@ -33,18 +33,18 @@ class ReaderIterator;
 typedef WriterBufferingIterator DefaultWritingIterator;
 
 template <typename ITERATOR = DefaultWritingIterator>
-class Writer
+class WriterT
 {
 	enum { DEFAULT_ROWS_BUFFER_SIZE = 10000 };
 public:
 	typedef ITERATOR iterator_class;
-	typedef IteratorProxy<ITERATOR, Writer> iterator;
+	typedef IteratorProxy<ITERATOR, WriterT> iterator;
 
-	Writer(const eckit::PathName& path);
-	Writer(eckit::DataHandle &, bool openDataHandle=true);
-	Writer(eckit::DataHandle *, bool openDataHandle=true, bool deleteDataHandle=false);
-	Writer();
-	virtual ~Writer();
+	WriterT(const eckit::PathName& path);
+	WriterT(eckit::DataHandle &, bool openDataHandle=true);
+	WriterT(eckit::DataHandle *, bool openDataHandle=true, bool deleteDataHandle=false);
+	WriterT();
+	virtual ~WriterT();
 
 	iterator begin(bool openDataHandle=true);
 
@@ -53,12 +53,12 @@ public:
 	ITERATOR* createWriteIterator(eckit::PathName, bool append = false);
 
 	unsigned long rowsBufferSize() { return rowsBufferSize_; }
-	Writer& rowsBufferSize(unsigned long n) { rowsBufferSize_ = n; }
+	WriterT& rowsBufferSize(unsigned long n) { rowsBufferSize_ = n; }
 
 private:
 // No copy allowed
-    Writer(const Writer&);
-    Writer& operator=(const Writer&);
+    WriterT(const WriterT&);
+    WriterT& operator=(const WriterT&);
 
 	const eckit::PathName path_;
 	eckit::DataHandle* dataHandle_;
@@ -67,6 +67,8 @@ private:
 	bool openDataHandle_;
 	bool deleteDataHandle_;
 };
+
+typedef WriterT<DefaultWritingIterator> Writer;
 
 } // namespace odb
 

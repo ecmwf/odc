@@ -32,8 +32,8 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 
 	ODBAPISettings::instance().setvbufferSize(setvbufferSize);
 
-	odb::Writer<> oda("TestSetvbuffer.odb");
-	odb::Writer<>::iterator row = oda.begin();
+	odb::Writer oda("TestSetvbuffer.odb");
+	odb::Writer::iterator row = oda.begin();
 
     row->setNumberOfColumns(numberOfColumns);
 
