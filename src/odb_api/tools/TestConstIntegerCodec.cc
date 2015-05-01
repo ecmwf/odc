@@ -63,12 +63,12 @@ public:
 static void setUp()
 {
 	Timer t("Writing test_integer_const.odb");
-	odb::Writer oda("test_integer_const.odb");
+	odb::Writer<> oda("test_integer_const.odb");
 
 	typedef tool::MockReader<MockReaderIterator2> M;
 	M reader;
 
-	odb::Writer::iterator outit = oda.begin();
+	odb::Writer<>::iterator outit = oda.begin();
 
 	M::iterator b = reader.begin();
 	const M::iterator e = reader.end();

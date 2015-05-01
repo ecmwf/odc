@@ -29,8 +29,8 @@ const size_t numberOfColumns = 1;
 static void setUp()
 {
 
-    odb::Writer oda("TestCodecOptimization.odb");
-    odb::Writer::iterator row = oda.begin();
+    odb::Writer<> oda("TestCodecOptimization.odb");
+    odb::Writer<>::iterator row = oda.begin();
 
     row->setNumberOfColumns(numberOfColumns);
 

@@ -42,8 +42,8 @@ static void test()
 
 	FILE *fout = fopen("TestAggregateFunctions2.odb", "w");
 	StdFileHandle fhout(fout);
-	odb::Writer writer(fhout);
-	odb::Writer::iterator outit = writer.begin();
+	odb::Writer<> writer(fhout);
+	odb::Writer<>::iterator outit = writer.begin();
 
 	//outit->pass1(it2, end2);
 	size_t i = 0;

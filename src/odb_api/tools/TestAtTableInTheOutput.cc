@@ -26,8 +26,8 @@ using namespace odb;
 
 static void setUp()
 {
-	odb::Writer f("TestAtTableInTheOutput_A.odb");
-	odb::Writer::iterator it = f.begin();
+	odb::Writer<> f("TestAtTableInTheOutput_A.odb");
+	odb::Writer<>::iterator it = f.begin();
 
     it->setNumberOfColumns(4);
     it->setColumn(0, "lat@hdr", odb::REAL);

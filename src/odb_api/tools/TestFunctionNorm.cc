@@ -30,9 +30,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test Norm function");
-	odb::Writer oda("test_norm.odb");
+	odb::Writer<> oda("test_norm.odb");
 
-	odb::Writer::iterator row = oda.begin();
+	odb::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "x", odb::REAL);

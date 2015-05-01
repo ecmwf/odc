@@ -29,9 +29,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test Circle function");
-	odb::Writer oda("test_circle.odb");
+	odb::Writer<> oda("test_circle.odb");
 
-	odb::Writer::iterator row = oda.begin();
+	odb::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "lat", odb::REAL);

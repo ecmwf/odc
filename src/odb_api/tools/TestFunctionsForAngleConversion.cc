@@ -30,9 +30,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test various functions to convert angles (radians to degrees, etc.)");
-	odb::Writer oda("test_angleconv.odb");
+	odb::Writer<> oda("test_angleconv.odb");
 
-	odb::Writer::iterator row = oda.begin();
+	odb::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "radian_col", odb::REAL);

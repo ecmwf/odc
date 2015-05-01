@@ -48,8 +48,8 @@ private:
     DataSaver(const DataSaver&);
     DataSaver& operator=(const DataSaver&);
 
-    Writer writer_;
-    Writer::iterator target_;
+    Writer<> writer_;
+    Writer<>::iterator target_;
 };
 
 } // namespace odb

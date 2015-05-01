@@ -31,9 +31,9 @@ using namespace odb;
 static void setUp()
 {
 	Timer t("Test eq_boxlat and eq_boxlon functions");
-	odb::Writer oda("test_eq_box.odb");
+	odb::Writer<> oda("test_eq_box.odb");
 
-	odb::Writer::iterator row = oda.begin();
+	odb::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
 	row->setColumn(0, "lat", odb::REAL);

@@ -92,12 +92,12 @@ public:
 static void setUp()
 {
 	Timer t("Writing TestConstCodec.odb");
-	odb::Writer oda("TestConstCodec.odb");
+	odb::Writer<> oda("TestConstCodec.odb");
 
 	typedef tool::MockReader<MockReaderIterator> M;
 
 	M mockReader;
-	odb::Writer::iterator outit = oda.begin();
+	odb::Writer<>::iterator outit = oda.begin();
 
 	M::iterator b = mockReader.begin();
 	const M::iterator e = mockReader.end();
