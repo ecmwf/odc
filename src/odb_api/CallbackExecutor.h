@@ -16,34 +16,29 @@
 #ifndef CallbackExecutor_h
 #define CallbackExecutor_h
 
-namespace eckit { class PathName; class DataHandle; }
+namespace eckit { class DataHandle; }
 
 namespace odb {
-    namespace sql { class SQLRowCallback; class SQLRowsCallback; }
+
+namespace sql { class SQLRowCallback; class SQLRowsCallback; }
 
 class CallbackExecutor
 {
 public:
-
 	CallbackExecutor(const std::string& selectStatement, eckit::DataHandle &);
-	CallbackExecutor(const std::string& selectStatement, std::istream &, const std::string& delimiter);
     CallbackExecutor(const std::string& selectStatement, const std::string& path);
 	CallbackExecutor(const std::string& selectStatement);
 	CallbackExecutor();
 
 	virtual ~CallbackExecutor();
 
-    void execute(odb::sql::SQLRowCallback&, void *);
+    void execute(odb::sql::SQLRowCallback&);
 
 private:
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
 
-	std::istream* istream_;
-	bool deleteIStream_;
-
 	std::string selectStatement_;
-	std::string delimiter_;
 };
 
 } // namespace odb 

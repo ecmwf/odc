@@ -77,47 +77,47 @@ void SQLParser::parseString(const std::string& s, std::istream* is, SQLOutputCon
 {
     AutoLock<Mutex> lock(local_mutex);
 
-	SQLSelectFactory::instance().implicitFromTableSourceStream(is);
-	SQLSelectFactory::instance().config(cfg);
-	SQLSelectFactory::instance().csvDelimiter(csvDelimiter);
+    SQLSelectFactory::instance().implicitFromTableSourceStream(is);
+    SQLSelectFactory::instance().config(cfg);
+    SQLSelectFactory::instance().csvDelimiter(csvDelimiter);
 
-	pushInclude(s, "");
+    pushInclude(s, "");
 
     SQLYacc::odblib_parse();
-	lexRelease();
+    lexRelease();
 
-	SQLSelectFactory::instance().implicitFromTableSourceStream(0);
+    SQLSelectFactory::instance().implicitFromTableSourceStream(0);
 }
 
 void SQLParser::parseString(const std::string& s, DataHandle* dh, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(local_mutex);
-	SQLSelectFactory::instance().implicitFromTableSource(dh);
-	SQLSelectFactory::instance().config(cfg);
+    SQLSelectFactory::instance().implicitFromTableSource(dh);
+    SQLSelectFactory::instance().config(cfg);
 
-	pushInclude(s, "");
+    pushInclude(s, "");
 
-	SQLYacc::odblib_parse();
-	lexRelease();
+    SQLYacc::odblib_parse();
+    lexRelease();
 
-	SQLSelectFactory::instance().implicitFromTableSource(0);
+    SQLSelectFactory::instance().implicitFromTableSource(0);
 }
 
 void SQLParser::parseString(const std::string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(local_mutex);
     SQLSession::current().currentDatabase(&db);
-	SQLSelectFactory::instance().database(&db);
-	SQLSelectFactory::instance().config(cfg);
+    SQLSelectFactory::instance().database(&db);
+    SQLSelectFactory::instance().config(cfg);
 
-	pushInclude(s, "");
+    pushInclude(s, "");
 
-	SQLYacc::odblib_parse();
-	lexRelease();
+    SQLYacc::odblib_parse();
+    lexRelease();
 
     //SQLSession::current().currentDatabase(0);
-	SQLSelectFactory::instance().implicitFromTableSource(0);
-	SQLSelectFactory::instance().database(0);
+    SQLSelectFactory::instance().implicitFromTableSource(0);
+    SQLSelectFactory::instance().database(0);
 }
 
 

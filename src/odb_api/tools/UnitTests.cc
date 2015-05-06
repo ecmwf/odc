@@ -34,6 +34,8 @@
 #include "odb_api/tools/CountTool.h"
 #include "odb_api/tools/ImportTool.h"
 #include "odb_api/tools/SplitTool.h"
+#include "odb_api/CallbackExecutor.h"
+#include "odb_api/SQLRowCallback.h"
 #include "odb_api/ODBAPISettings.h"
 
 extern "C" {
@@ -43,6 +45,7 @@ extern "C" {
 using namespace std;
 using namespace eckit;
 using namespace odb;
+using namespace odb::sql;
 
 
 typedef long long llong;
@@ -1089,5 +1092,30 @@ TEST(SELECT_WHERE_0)
     odb::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
     odb::Select::iterator it (o.begin()), end (o.end());
     ++it;
+}
+
+struct TestRowCallback : public SQLRowCallback
+{
+    TestRowCallback() : sum_(0) {}
+
+    void operator()(const double* row, size_t n, MetaData& md, void *aux)
+    {
+        ASSERT(md.size() == n && n == 2);
+
+        sum_ += row[0] + row[1];
+
+        Log::info() << "TestRowCallback: [" << row[0] << ", " << row[1] << "], sum=" << sum_ << endl;
+    }
+
+    long sum_;
+};
+
+TEST(Callback)
+{
+    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", "callback.odb");
+    CallbackExecutor executor("select *;", "callback.odb");
+    TestRowCallback callback;
+    executor.execute(callback);
+    ASSERT(callback.sum_ == 10);
 }
 

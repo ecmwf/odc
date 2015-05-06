@@ -269,18 +269,24 @@ MetaData toODAColumns(const odb::sql::TableDef& tableDef)
 
 SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const std::string& into, size_t orderBySize)
 {
+    //TODO: pass parameter into to defaultFormat
     SQLOutput *r (NULL);
+
+    if (config_.outputFormat() == "callback")
+        return session.defaultOutput();
 
     TemplateParameters templateParameters;
     std::string outputFile = (config_.outputFormat() == "odb") ? config_.outputFile() : into;
     TemplateParameters::parse(outputFile, templateParameters);
-	if (templateParameters.size())
-	{
-		// TODO? make the constant  (maxOpenFiles) passed to DispatchingWriter configurable
-		DispatchingWriter writer(outputFile, orderBySize  ? 1 : 100);
+    if (templateParameters.size())
+    {
+        // TODO? make the constant  (maxOpenFiles) passed to DispatchingWriter configurable
+        DispatchingWriter writer(outputFile, orderBySize  ? 1 : 100);
         // TODO: use SQLSession::output
-		r = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<DispatchingWriter::iterator>(writer.begin());
-	} else {
+        r = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<DispatchingWriter::iterator>(writer.begin());
+    } 
+    else 
+    {
         if (outputFile == "") r = session.defaultOutput();
         else {
             SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());

@@ -33,7 +33,7 @@ private:
     std::ostream &out_;
 
 // -- Overridden methods
-	void       statement(SQLStatement*);
+	void statement(SQLStatement*);
 	SQLOutput* defaultOutput();
 
 	//friend std::ostream& operator<<(std::ostream& s,const SQLInteractiveSession& p)

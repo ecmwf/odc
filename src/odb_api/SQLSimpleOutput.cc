@@ -54,7 +54,7 @@ bool SQLSimpleOutput::output(const expression::Expressions& results)
 	return true;
 }
 
-template <typename T> void SQLSimpleOutput::outputValue(double x, bool missing) const
+template <typename T> void SQLSimpleOutput::outputValue(double x, bool missing) 
 {
     format(out_, currentColumn_);
     if (missing && !config_.doNotWriteNULL())
@@ -63,12 +63,12 @@ template <typename T> void SQLSimpleOutput::outputValue(double x, bool missing) 
         out_ << static_cast<T>(x);
 }
 
-void SQLSimpleOutput::outputReal(double x, bool missing) const { outputValue<double>(x, missing); }
-void SQLSimpleOutput::outputDouble(double x, bool missing) const { outputValue<double>(x, missing); }
-void SQLSimpleOutput::outputInt(double x, bool missing) const { outputValue<long long>(x, missing); }
-void SQLSimpleOutput::outputUnsignedInt(double x, bool missing) const { outputValue<unsigned long>(x, missing); }
+void SQLSimpleOutput::outputReal(double x, bool missing) { outputValue<double>(x, missing); }
+void SQLSimpleOutput::outputDouble(double x, bool missing) { outputValue<double>(x, missing); }
+void SQLSimpleOutput::outputInt(double x, bool missing) { outputValue<long long>(x, missing); }
+void SQLSimpleOutput::outputUnsignedInt(double x, bool missing) { outputValue<unsigned long>(x, missing); }
 
-void SQLSimpleOutput::outputString(double x, bool missing) const
+void SQLSimpleOutput::outputString(double x, bool missing)
 {
 	format(out_, currentColumn_);
 	if (missing && !config_.doNotWriteNULL())
@@ -87,7 +87,7 @@ void SQLSimpleOutput::outputString(double x, bool missing) const
 	}
 }
 
-void SQLSimpleOutput::outputBitfield(double x, bool missing) const
+void SQLSimpleOutput::outputBitfield(double x, bool missing)
 {
     if (! config_.displayBitfieldsBinary())
     {

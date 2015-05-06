@@ -8,37 +8,34 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file SQLSimpleOutput.h
-/// Baudouin Raoult - ECMWF Dec 03
+/// \file SQLCallbackOutput.h
+/// Piotr Kuchta - ECMWF May 2015
 
-#ifndef SQLSimpleOutput_H
-#define SQLSimpleOutput_H
+#ifndef SQLCallbackOutput_H
+#define SQLCallbackOutput_H
 
 #include "odb_api/SQLOutput.h"
+#include "odb_api/SQLRowCallback.h"
 
 namespace odb {
 namespace sql {
 
-class SQLSimpleOutput : public SQLOutput {
+class SQLCallbackOutput : public SQLOutput {
 public:
-    SQLSimpleOutput(std::ostream& = std::cout);
-	virtual ~SQLSimpleOutput(); 
+    SQLCallbackOutput(SQLRowCallback&);
+	virtual ~SQLCallbackOutput(); 
 
 protected:
 	virtual void print(std::ostream&) const; 	
 
 private:
-	SQLSimpleOutput(const SQLSimpleOutput&);
-	SQLSimpleOutput& operator=(const SQLSimpleOutput&);
+	SQLCallbackOutput(const SQLCallbackOutput&);
+	SQLCallbackOutput& operator=(const SQLCallbackOutput&);
 
-    std::ostream& out_;
 	unsigned long long count_;
-	std::vector<size_t> columnWidths_;
-	typedef std::ios_base& (*manipulator)(std::ios_base&);
-	std::vector<manipulator> columnAlignments_;
 	size_t currentColumn_;
-
-    std::ostream& format(std::ostream&, size_t) const;
+    std::vector<double> values_;
+    SQLRowCallback& callback_;
 
 // -- Overridden methods
 	virtual void size(int);
@@ -49,7 +46,7 @@ private:
 	virtual void cleanup(SQLSelect&);
 	virtual unsigned long long count();
 
-    template <typename T> void outputValue(double x, bool missing);
+    void outputValue(double x, bool missing);
 
 	virtual void outputReal(double, bool);
 	virtual void outputDouble(double, bool);

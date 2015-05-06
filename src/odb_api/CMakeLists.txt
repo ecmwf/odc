@@ -278,6 +278,8 @@ SQLInt.cc
 SQLInt.h
 SQLInteractiveSession.cc
 SQLInteractiveSession.h
+SQLNonInteractiveSession.cc
+SQLNonInteractiveSession.h
 SQLCallbackSession.cc
 SQLCallbackSession.h
 CallbackExecutor.h
@@ -286,6 +288,8 @@ SQLRowsCallback.cc
 SQLRowsCallback.h
 SQLRowCallback.cc
 SQLRowCallback.h
+SQLCallbackOutput.cc
+SQLCallbackOutput.h
 SQLIterator.h
 SQLIteratorOutput.cc
 SQLIteratorOutput.h

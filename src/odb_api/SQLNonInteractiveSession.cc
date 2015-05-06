@@ -10,40 +10,33 @@
 
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/SQLCallbackSession.h"
-#include "odb_api/SQLRowCallback.h"
+#include "odb_api/SQLNonInteractiveSession.h"
+#include "odb_api/SQLSimpleOutput.h"
 #include "odb_api/SQLStatement.h"
-#include "odb_api/SQLRowCallback.h"
-#include "odb_api/SQLCallbackOutput.h"
 
 namespace odb {
 namespace sql {
 
-SQLCallbackSession::SQLCallbackSession(SQLRowCallback& callback)
-: sql_(0), 
-  callback_(callback)
+SQLNonInteractiveSession::SQLNonInteractiveSession()
+: statement_(0)
 {}
 
-SQLCallbackSession::~SQLCallbackSession()
+SQLNonInteractiveSession::~SQLNonInteractiveSession()
+{}
+
+SQLOutput* SQLNonInteractiveSession::defaultOutput()
 {
-    delete sql_;
+    NOTIMP;
 }
 
-SQLOutput* SQLCallbackSession::defaultOutput()
+void SQLNonInteractiveSession::statement(SQLStatement *sql)
 {
-	return new SQLCallbackOutput(callback_);
+    statement_ = sql;
 }
 
-void SQLCallbackSession::statement(SQLStatement *sql)
+SQLStatement * SQLNonInteractiveSession::statement()
 {
-	ASSERT(sql);	
-    sql_ = sql;
-}
-
-SQLStatement& SQLCallbackSession::statement()
-{
-    ASSERT(sql_);
-    return *sql_;
+    return statement_;
 }
 
 } // namespace sql

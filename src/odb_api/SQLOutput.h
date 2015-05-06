@@ -40,12 +40,12 @@ public:
 
 	virtual bool output(const expression::Expressions&) = 0;
 
-	virtual void outputReal(double, bool) const = 0;
-	virtual void outputDouble(double, bool) const = 0;
-	virtual void outputInt(double, bool) const = 0;
-	virtual void outputUnsignedInt(double, bool) const = 0;
-	virtual void outputString(double, bool) const = 0;
-	virtual void outputBitfield(double, bool) const = 0;
+	virtual void outputReal(double, bool) = 0;
+	virtual void outputDouble(double, bool) = 0;
+	virtual void outputInt(double, bool) = 0;
+	virtual void outputUnsignedInt(double, bool) = 0;
+	virtual void outputString(double, bool) = 0;
+	virtual void outputBitfield(double, bool) = 0;
 
 	virtual const SQLOutputConfig& config();
 	virtual	void config(SQLOutputConfig&);

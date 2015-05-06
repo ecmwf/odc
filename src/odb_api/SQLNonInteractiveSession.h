@@ -8,40 +8,38 @@
  * does it submit to any jurisdiction.
  */
 
-// File SQLCallbackSession.h
-// Piotr Kuchta - ECMWF February 2015
+// File SQLNonInteractiveSession.h
+// Piotr Kuchta - ECMWF May 2015
 
-#ifndef SQLCallbackSession_H
-#define SQLCallbackSession_H
+#ifndef SQLNonInteractiveSession_H
+#define SQLNonInteractiveSession_H
 
 //#include "odb_api/SQLSession.h"
 #include "SQLSession.h"
-#include "SQLRowCallback.h"
 
 namespace odb {
 namespace sql {
 
-class SQLCallbackSession : public SQLSession {
+class SQLNonInteractiveSession : public SQLSession {
 public:
-    SQLCallbackSession(SQLRowCallback&);
-	~SQLCallbackSession(); 
+    SQLNonInteractiveSession();
+	~SQLNonInteractiveSession(); 
 
-    SQLStatement& statement();
-
+	SQLStatement* statement();
 private:
 // No copy allowed
-	SQLCallbackSession(const SQLCallbackSession&);
-	SQLCallbackSession& operator=(const SQLCallbackSession&);
+	SQLNonInteractiveSession(const SQLNonInteractiveSession&);
+	SQLNonInteractiveSession& operator=(const SQLNonInteractiveSession&);
 
-    SQLRowCallback& callback_;
-    SQLStatement* sql_;
+    SQLStatement* statement_;
 
 // -- Overridden methods
 	void statement(SQLStatement*);
-
 	SQLOutput* defaultOutput();
-	//friend std::ostream& operator<<(std::ostream& s,const SQLCallbackSession& p)
+
+	//friend std::ostream& operator<<(std::ostream& s,const SQLNonInteractiveSession& p)
 	//	{ p.print(s); return s; }
+
 };
 
 } // namespace sql 

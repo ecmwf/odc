@@ -36,12 +36,12 @@ private:
 	virtual void cleanup(odb::sql::SQLSelect&) {}
 	virtual unsigned long long count() { return count_; }
 
-	virtual void outputReal(double, bool) const {}
-	virtual void outputDouble(double, bool) const {}
-	virtual void outputInt(double, bool) const {}
-	virtual void outputUnsignedInt(double, bool) const {}
-	virtual void outputString(double, bool) const {}
-	virtual void outputBitfield(double, bool) const {}
+	virtual void outputReal(double, bool) {}
+	virtual void outputDouble(double, bool) {}
+	virtual void outputInt(double, bool) {}
+	virtual void outputUnsignedInt(double, bool) {}
+	virtual void outputString(double, bool) {}
+	virtual void outputBitfield(double, bool) {}
 };
 
 } // namespace internal

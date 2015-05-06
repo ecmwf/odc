@@ -19,6 +19,7 @@
 #include "odb_api/SQLCallbackSession.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLParser.h"
+#include "odb_api/SQLSelect.h"
 #include "odb_api/SQLSelectFactory.h"
 
 using namespace std;
@@ -30,72 +31,48 @@ namespace odb {
 CallbackExecutor::CallbackExecutor(const std::string& selectStatement, DataHandle &dh)
 : dataHandle_(&dh),
   deleteDataHandle_(false),
-  istream_(0),
-  deleteIStream_(true),
   selectStatement_(selectStatement)
-{}
-
-CallbackExecutor::CallbackExecutor(const std::string& selectStatement, std::istream &is, const std::string& delimiter)
-: dataHandle_(0),
-  deleteDataHandle_(true),
-  istream_(&is),
-  deleteIStream_(false),
-  selectStatement_(selectStatement),
-  delimiter_(delimiter)
 {}
 
 CallbackExecutor::CallbackExecutor(const std::string& selectStatement)
 : dataHandle_(0),
   deleteDataHandle_(true),
-  istream_(0),
-  deleteIStream_(true),
   selectStatement_(selectStatement)
 {}
 
 CallbackExecutor::CallbackExecutor()
 : dataHandle_(0),
   deleteDataHandle_(true),
-  istream_(0),
-  deleteIStream_(true),
   selectStatement_()
 {}
 
 CallbackExecutor::CallbackExecutor(const std::string& selectStatement, const std::string& path)
 : dataHandle_(new FileHandle(path)),
   deleteDataHandle_(true),
-  // TODO: depending on file extension?
-  istream_(0),
-  deleteIStream_(true),
   selectStatement_(selectStatement)
 {}
 
 CallbackExecutor::~CallbackExecutor()
 {
     if (deleteDataHandle_) delete dataHandle_;
-    if (deleteIStream_) delete istream_;
 }
 
-void CallbackExecutor::execute(odb::sql::SQLRowCallback& callback,void * aux)
+void CallbackExecutor::execute(odb::sql::SQLRowCallback& callback)
 {
-    /** TODO
     Log::info() << "CallbackExecutor::execute: " << endl;
 
-    //input.openForRead();
+    dataHandle_->openForRead();
 
-    SQLCallbackSession session;
+    SQLCallbackSession session(callback);
 
     SQLOutputConfig config(SQLSelectFactory::instance().config());
-    //config.outputFormat("odb");
+    config.outputFormat("callback");
     //config.outputFile(into);
     SQLParser parser;
-    //parser.parseString(sql, &input, config);
-    parser.parseString(selectStatement_, config);
-
+    parser.parseString(selectStatement_, dataHandle_, config);
     SQLSelect& sqlSelect(dynamic_cast<SQLSelect&>(session.statement()));
-
     long long numberOfRows (sqlSelect.execute());
     Log::info() << "Processed " << numberOfRows << " row(s)." << endl;
-    */
 }
 
 } // namespace odb
