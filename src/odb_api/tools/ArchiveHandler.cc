@@ -13,8 +13,6 @@
 #include <string>
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/io/MultiHandle.h"
-#include "eckit/runtime/Context.h"
 #include "eckit/parser/Request.h"
 #include "eckit/parser/RequestParser.h"
 #include "eckit/utils/ExecutionContext.h"
@@ -123,19 +121,15 @@ string ArchiveHandler::generateRequest(const string& source)
 void ArchiveHandler::archive(const PathName& source, const string& host, const Request& request)
 {
     Log::info() << "ARCHIVE " << source << " on " << host << endl;
+    Log::info() << "ARCHIVE request: " << request << endl;
+
+    FileHandle input(source);
 
     stringstream ss;
     ss << request;
+    auto_ptr<DataHandle> mars (DataHandleFactory::openForWrite(ss.str()));
 
-    MultiHandle mars;
-    vector<string> v;
-    v.push_back(ss.str());
-    DataHandleFactory::buildMultiHandle(mars, v);
-
-    FileHandle p(source);
-    //MarsRequestHandle h(request, new DHSProtocol(host, host, 9000));
-
-    p.saveInto(mars);
+    input.saveInto(*mars);
 }
 
 /// If source not set then set its value with values taken from the stack
