@@ -40,8 +40,12 @@ ToolRunnerApplication.cc
 ToolRunnerApplication.h
 XYVTool.cc
 XYVTool.h
-MockReader.h
-MockReader.cc
+ArchiveHandler.cc
+DuplicateHandler.cc
+RetrieveHandler.cc
+CompareHandler.cc
+SQLHandler.cc
+ODBModule.cc
 )
 
 list( APPEND odbtest_src_files
@@ -115,6 +119,8 @@ TestTextSelect2.cc
 TestTextSelect2.txt
 TestTextSelect3.cc
 TestWriteCatFiles.cc
+MockReader.h
+MockReader.cc
 )
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api )
