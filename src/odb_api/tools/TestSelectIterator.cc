@@ -112,9 +112,9 @@ static void setUp()
 	Log::debug() << "setUp" << std::endl;
 
 	Timer t("Writing test.odb");
-	odb::Writer oda("test.odb");
+	odb::Writer<> oda("test.odb");
 
-	odb::Writer::iterator writer = oda.begin();
+	odb::Writer<>::iterator writer = oda.begin();
 	writer->setNumberOfColumns(3);
 
 	(**writer).setColumn(0, "ifoo", odb::INTEGER);

@@ -26,8 +26,8 @@ static void setUp()
 {
 	Tracer t(Log::debug(), "setUp");
 	{
-		odb::Writer f("TestSelectTwoFiles1.odb");
-		odb::Writer::iterator it = f.begin();
+		odb::Writer<> f("TestSelectTwoFiles1.odb");
+		odb::Writer<>::iterator it = f.begin();
         it->setNumberOfColumns(1);
 		it->setColumn(0, "a", odb::REAL);
 		it->writeHeader();
@@ -35,8 +35,8 @@ static void setUp()
 		++it;
 	}
 	{
-		odb::Writer f("TestSelectTwoFiles2.odb");
-		odb::Writer::iterator it = f.begin();
+		odb::Writer<> f("TestSelectTwoFiles2.odb");
+		odb::Writer<>::iterator it = f.begin();
         it->setNumberOfColumns(1);
 		it->setColumn(0, "b", odb::REAL);
 		it->writeHeader();

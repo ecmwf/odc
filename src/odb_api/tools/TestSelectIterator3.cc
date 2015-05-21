@@ -31,9 +31,9 @@ static void setUp()
 	Log::debug() << "setUp" << std::endl;
 
 	Timer t("Writing " + testFile );
-	odb::Writer oda(testFile);
+	odb::Writer<> oda(testFile);
 
-	odb::Writer::iterator writer = oda.begin();
+	odb::Writer<>::iterator writer = oda.begin();
     writer->setNumberOfColumns(1);
 	(**writer).setColumn(0, "value", odb::INTEGER);
 	(**writer).writeHeader();

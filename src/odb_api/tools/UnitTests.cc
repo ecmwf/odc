@@ -56,8 +56,8 @@ static void foobar()
     Reader::iterator it = in.begin();
     Reader::iterator end = in.end();
 
-    Writer out("copy_of_concatenated.odb");
-    Writer::iterator o = out.begin();
+    Writer<> out("copy_of_concatenated.odb");
+    Writer<>::iterator o = out.begin();
     o->pass1(it, end);
 
     Comparator().compare("concatenated.odb", "copy_of_concatenated.odb");
@@ -112,8 +112,8 @@ TEST(selectAggregatedAndNonAggregated)
 
 static void createDataForMixedAggregated2()
 {
-    Writer out("selectAggregatedAndNonAggregated2.odb");
-    Writer::iterator o = out.begin();
+    Writer<> out("selectAggregatedAndNonAggregated2.odb");
+    Writer<>::iterator o = out.begin();
     MetaData md(o->columns());
 
     typedef DataStream<SameByteOrder, DataHandle> DS;

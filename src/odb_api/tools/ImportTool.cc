@@ -69,8 +69,8 @@ void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, co
 	ifstream fs( in.asString().c_str() );
 	odb::Select input(sql, fs, delimiter);
 
-	odb::Writer writer(out);
-	odb::Writer::iterator output(writer.begin());
+	odb::Writer<> writer(out);
+	odb::Writer<>::iterator output(writer.begin());
 	unsigned long long n = output->pass1(input.begin(), input.end());
 
     Log::info() << "ImportTool::importFile: Copied " << n << " rows." << std::endl;
@@ -83,8 +83,8 @@ void ImportTool::importText(const std::string& s, const PathName& out, const std
 	stringstream fs(s);
 	odb::Select input("select *;", fs, delimiter);
 
-	odb::Writer writer(out);
-	odb::Writer::iterator output(writer.begin());
+	odb::Writer<> writer(out);
+	odb::Writer<>::iterator output(writer.begin());
 
 	unsigned long long n = output->pass1(input.begin(), input.end());
 

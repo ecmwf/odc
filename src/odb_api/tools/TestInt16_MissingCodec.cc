@@ -85,14 +85,14 @@ private:
 static void setUp()
 {
 	Timer t("Writing test_int16_missing.odb");
-	odb::Writer oda("test_int16_missing.odb");
+	odb::Writer<> oda("test_int16_missing.odb");
 
 	typedef tool::MockReader<MockReaderIterator3> M;
 	M reader;
 	M::iterator b = reader.begin();
 	const M::iterator e = reader.end();
 
-	odb::Writer::iterator outit = oda.begin();
+	odb::Writer<>::iterator outit = oda.begin();
 	outit->pass1(b, e);
 }
 
