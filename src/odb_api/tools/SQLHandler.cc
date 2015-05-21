@@ -34,23 +34,36 @@ using namespace odb::sql;
 
 SQLHandler::SQLHandler(const string& name) : RequestHandler(name) {}
 
-Values SQLHandler::handle(const Request& request)
+Values SQLHandler::handle(const Request request)
 {
     string target (getValueAsString(request, "target", "")),
            filter (cleanUpSQLText(getValueAsString(request, "filter", "")));
+    vector<string> sources (getValueAsList(request, "source"));
 
     MultiHandle input;
-    DataHandleFactory::buildMultiHandle(input, request.at("source"));
+    DataHandleFactory::buildMultiHandle(input, sources);
 
     Log::debug() << "SQLHandler:" << " target: " << target << ", input : " << input << ", filter: " << filter << endl;
 
     input.openForRead();
-    return pathNamesToStrings(executeSelect(filter, input, target));
+
+    vector<string> ps( pathNamesToStrings(executeSelect(filter, input, target)) );
+    ASSERT(ps.size());
+    Values vs(0);
+    for (size_t i(0); i < ps.size(); ++i)
+        if (i)
+            vs->append(new Cell("_list", new Cell(ps[i], 0, 0), 0));
+        else
+            vs = new Cell("_list", new Cell(ps[i], 0, 0), 0);
+    //if (vs) vs->showGraph("SQLHandler::handle => " + vs->str());
+    // TODO: return an empty list object?
+    if (vs) return vs;
+    else return new Cell("_list", 0, 0);
 }
 
 /// If source not set then set its value with list taken from the stack
 /// After handling request leave produced files on stack.
-Values SQLHandler::handle(const Request& request, ExecutionContext& context)
+Values SQLHandler::handle(const Request request, ExecutionContext& context)
 {
     Request req(request);
     popIfNotSet(string("source"), req, context);

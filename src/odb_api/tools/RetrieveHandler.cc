@@ -28,7 +28,7 @@ using namespace odb;
 
 RetrieveHandler::RetrieveHandler(const string& name) : RequestHandler(name) {}
 
-Values RetrieveHandler::handle(const Request& request)
+Values RetrieveHandler::handle(const Request request)
 {
     const string host (database(request)),
                  target (getValueAsString(request, "target", "")),
@@ -65,13 +65,17 @@ Values RetrieveHandler::handle(const Request& request)
         input.saveInto(p);
         r.push_back(target);
     }
-    return pathNamesToStrings(r);
+    NOTIMP;
+    // TODO:
+    //return pathNamesToStrings(r);
 }
 
 /// Retrieves data, then pushes file(s) specified in TARGET on the stack.
-Values RetrieveHandler::handle(const Request& request, ExecutionContext& context)
+Values RetrieveHandler::handle(const Request request, ExecutionContext& context)
 {
+    /*
     Values r(handle(request));
     context.stack().push(r);
     return r;
+    */
 }

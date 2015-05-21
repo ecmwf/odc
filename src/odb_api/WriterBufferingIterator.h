@@ -82,7 +82,7 @@ public:
 
 	void flush();
 
-    std::vector<eckit::PathName> outputFiles() { return std::vector<eckit::PathName>(); }
+    std::vector<eckit::PathName> outputFiles();
 protected:
 	bool next();
 	Owner& owner_;
@@ -93,6 +93,7 @@ protected:
 
 	eckit::DataHandle *f;
 	Array<unsigned char> encodedDataBuffer_;
+    eckit::PathName path_;
 
 	unsigned char* writeNumberOfRepeatedValues(unsigned char *, uint16_t);
 

@@ -39,39 +39,44 @@ const char * cfg_ =
 
 ArchiveHandler::ArchiveHandler(const string& name) : RequestHandler(name) {}
 
-Values ArchiveHandler::handle(const Request& request)
+Values ArchiveHandler::handle(const Request request)
 {
     const string host (database(request));
 
-    vector<string> sources(request.at("source"));
+    vector<string> sources(getValueAsList(request, "source"));
     if (! sources.size())
         throw UserError("You must specify file(s) to be archived using the SOURCE keyword");
 
-    Values r;
+    Values r(0);
     for (size_t i(0); i < sources.size(); ++i)
     {
         const string source(sources[i]);
 
-        string generatedRequest (generateRequest(source) + ",database=" + host);
+        Request generatedRequest (generateRequest(source));
+        
+        setValue(generatedRequest, "database", host);
         checkRequestMatchesFilesMetaData(request, generatedRequest);
-        r.push_back(generatedRequest);
  
         Log::info() << "Request generated for file " << source << ":" << endl
                     << generatedRequest << endl;
 
         archive(source, host, request);
+
+        Values gr (new Cell(string("mars://") + generatedRequest->str(), 0, 0));
+
+        if (r == 0)
+            r = new Cell("_list", gr, 0);
+        else
+            r->append(new Cell("_list", gr, 0));
     }
 
     return r;
 }
 
-void ArchiveHandler::checkRequestMatchesFilesMetaData(const Request& request, const string& generatedRequest)
+void ArchiveHandler::checkRequestMatchesFilesMetaData(const Request request, const Request generatedRequest)
 {
-    list<Request> requests (RequestParser::parse(generatedRequest));
-    ASSERT(requests.size() == 1);
-
-    const Request metaData (*requests.begin());
-    for (Request::const_iterator it(metaData.begin()); it != metaData.end(); ++it)
+    /*
+    for (Request::const_iterator it(generatedRequest.begin()); it != generatedRequest.end(); ++it)
     {
         string key (it->first);
         Values values (it->second);
@@ -89,9 +94,10 @@ void ArchiveHandler::checkRequestMatchesFilesMetaData(const Request& request, co
             // TODO: check values in range
         }
     }
+    */
 }
 
-string ArchiveHandler::generateRequest(const string& source)
+Request ArchiveHandler::generateRequest(const string& source)
 {
     odb::FastODA2Request<odb::ODA2RequestClientTraits> o2r;
     o2r.parseConfig(cfg_);
@@ -115,10 +121,17 @@ string ArchiveHandler::generateRequest(const string& source)
     r.erase(std::remove(r.begin(), r.end(), ' '), r.end());
     
     r = "RETRIEVE," + r;
-    return r;
+    Request requests (RequestParser::parse(r));
+    //ASSERT(requests.size() == 1);
+    //return requests.front();
+    ASSERT(requests->name() == "_list");
+
+    //requests->showGraph(string("generateRequest: ") + requests->str() );
+    
+    return requests->value();
 }
 
-void ArchiveHandler::archive(const PathName& source, const string& host, const Request& request)
+void ArchiveHandler::archive(const PathName& source, const string& host, const Request request)
 {
     Log::info() << "ARCHIVE " << source << " on " << host << endl;
     Log::info() << "ARCHIVE request: " << request << endl;
@@ -126,19 +139,20 @@ void ArchiveHandler::archive(const PathName& source, const string& host, const R
     FileHandle input(source);
 
     stringstream ss;
-    ss << request;
+    ss << "mars://" << request;
     auto_ptr<DataHandle> mars (DataHandleFactory::openForWrite(ss.str()));
 
     input.saveInto(*mars);
 }
 
 /// If source not set then set its value with values taken from the stack
-Values ArchiveHandler::handle(const Request& request, ExecutionContext& context)
+Values ArchiveHandler::handle(const Request request, ExecutionContext& context)
 {
     Request req(request);
     popIfNotSet("source", req, context);
     Values r(handle(req));
-    context.stack().push(r);
+    context.stack().push(new Cell(r)); // TODO: not sure we need to clone here
+    //r->showGraph("ArchiveHandler::handle => " + r->str());
     return r;
 }
 

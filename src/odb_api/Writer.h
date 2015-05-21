@@ -55,6 +55,8 @@ public:
 	unsigned long rowsBufferSize() { return rowsBufferSize_; }
 	WriterT& rowsBufferSize(unsigned long n) { rowsBufferSize_ = n; }
 
+	const eckit::PathName path() { return path_; }
+
 private:
 // No copy allowed
     WriterT(const WriterT&);

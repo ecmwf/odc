@@ -27,15 +27,12 @@ using namespace odb;
 
 CompareHandler::CompareHandler(const string& name) : RequestHandler(name) {}
 
-Values CompareHandler::handle(const Request& req, ExecutionContext& context)
-//Values CompareHandler::handle(const Request& request)
+Values CompareHandler::handle(const Request req)
 {
     Request request(req);
-    popIfNotSet("left", request, context);
-    popIfNotSet("right", request, context);
 
-    Values left (request.at("left")),
-           right (request.at("right"));
+    vector<string> left (getValueAsList(request,"left"));
+    vector<string> right (getValueAsList(request, "right"));
 
     Log::info() << "left: " << left << endl;
     Log::info() << "right: " << right  << endl;
@@ -61,13 +58,11 @@ Values CompareHandler::handle(const Request& req, ExecutionContext& context)
     return Values();
 }
 
-Values CompareHandler::handle(const Request& request)
-//void CompareHandler::handle(const Request& request, ExecutionContext& context)
+Values CompareHandler::handle(const Request request, ExecutionContext& context)
 {
-    NOTIMP; // FIXME
     Request req(request);
-    //popIfNotSet("left", req, context);
-    //popIfNotSet("right", req, context);
-    handle(req);
+    popIfNotSet("left", req, context);
+    popIfNotSet("right", req, context);
+    return handle(req);
 }
 

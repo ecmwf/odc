@@ -18,16 +18,20 @@ using namespace eckit;
 
 DuplicateHandler::DuplicateHandler(const string& name) : RequestHandler(name) {}
 
-Values DuplicateHandler::handle(const Request& request)
+Values DuplicateHandler::handle(const Request request)
 {
     throw UserError("Duplicate makes sense in a context only"); // ?
     return Values();
 }
 
-Values DuplicateHandler::handle(const Request& request, ExecutionContext& context)
+Values DuplicateHandler::handle(const Request request, ExecutionContext& context)
 {
     Values r (context.stack().top());
-    context.stack().push(r);
-    return r;
+
+    ASSERT(r && "NULL on stack");
+
+    Request clone (new Cell(r));
+    context.stack().push(clone);
+    return clone;
 }
 
