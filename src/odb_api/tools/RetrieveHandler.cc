@@ -31,8 +31,8 @@ RetrieveHandler::RetrieveHandler(const string& name) : RequestHandler(name) {}
 Values RetrieveHandler::handle(const Request request)
 {
     const string host (database(request)),
-                 target (getValueAsString(request, "target", "")),
-                 filter (getValueAsString(request, "filter", ""));
+                 target (request->valueAsString("target", "")),
+                 filter (request->valueAsString("filter", ""));
 
     if (! target.size())
         throw UserError("You must specify TARGET explicitly");

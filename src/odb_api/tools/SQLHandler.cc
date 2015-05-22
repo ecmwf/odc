@@ -36,8 +36,8 @@ SQLHandler::SQLHandler(const string& name) : RequestHandler(name) {}
 
 Values SQLHandler::handle(const Request request)
 {
-    string target (getValueAsString(request, "target", "")),
-           filter (cleanUpSQLText(getValueAsString(request, "filter", "")));
+    string target (request->valueAsString("target", "")),
+           filter (cleanUpSQLText(request->valueAsString("filter", "")));
     vector<string> sources (getValueAsList(request, "source"));
 
     MultiHandle input;

@@ -30,7 +30,7 @@ Values DuplicateHandler::handle(const Request request, ExecutionContext& context
 
     ASSERT(r && "NULL on stack");
 
-    Request clone (new Cell(r));
+    Request clone (Cell::clone(r));
     context.stack().push(clone);
     return clone;
 }

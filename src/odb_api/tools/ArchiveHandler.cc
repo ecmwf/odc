@@ -53,8 +53,7 @@ Values ArchiveHandler::handle(const Request request)
         const string source(sources[i]);
 
         Request generatedRequest (generateRequest(source));
-        
-        setValue(generatedRequest, "database", host);
+        generatedRequest->value("database", host);
         checkRequestMatchesFilesMetaData(request, generatedRequest);
  
         Log::info() << "Request generated for file " << source << ":" << endl
@@ -151,7 +150,7 @@ Values ArchiveHandler::handle(const Request request, ExecutionContext& context)
     Request req(request);
     popIfNotSet("source", req, context);
     Values r(handle(req));
-    context.stack().push(new Cell(r)); // TODO: not sure we need to clone here
+    context.stack().push(r);
     //r->showGraph("ArchiveHandler::handle => " + r->str());
     return r;
 }
