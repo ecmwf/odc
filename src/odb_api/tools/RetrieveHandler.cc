@@ -65,17 +65,22 @@ Values RetrieveHandler::handle(const Request request)
         input.saveInto(p);
         r.push_back(target);
     }
-    NOTIMP;
-    // TODO:
-    //return pathNamesToStrings(r);
+
+    ASSERT(r.size());
+
+    Values rv(0);
+    for (size_t i(0); i < r.size(); ++i)
+        if (i) rv->append(new Cell("_list", new Cell(r[i], 0, 0), 0));
+        else rv = new Cell("_list", new Cell(r[i], 0, 0), 0);
+
+    ASSERT(rv);
+    return rv;
 }
 
 /// Retrieves data, then pushes file(s) specified in TARGET on the stack.
 Values RetrieveHandler::handle(const Request request, ExecutionContext& context)
 {
-    /*
     Values r(handle(request));
     context.stack().push(r);
     return r;
-    */
 }
