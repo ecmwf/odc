@@ -20,6 +20,7 @@
 #include "SQLHandler.h"
 #include "CompareHandler.h"
 #include "DuplicateHandler.h"
+#include "ListHandler.h"
 
 #include "ODBModule.h"
 
@@ -35,5 +36,6 @@ void ODBModule::importInto(ExecutionContext& context)
     e.set("split", new SQLHandler("split"));
     e.set("compare", new CompareHandler("compare"));
     e.set("duplicate", new DuplicateHandler("duplicate"));
+    e.set("list", new ListHandler("list"));
 }
 

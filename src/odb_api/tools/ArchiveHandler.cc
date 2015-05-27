@@ -48,6 +48,7 @@ Values ArchiveHandler::handle(const Request request)
         throw UserError("You must specify file(s) to be archived using the SOURCE keyword");
 
     Values r(0);
+    List list(r);
     for (size_t i(0); i < sources.size(); ++i)
     {
         const string source(sources[i]);
@@ -61,12 +62,7 @@ Values ArchiveHandler::handle(const Request request)
 
         archive(source, host, request);
 
-        Values gr (new Cell(string("mars://") + generatedRequest->str(), 0, 0));
-
-        if (r == 0)
-            r = new Cell("_list", gr, 0);
-        else
-            r->append(new Cell("_list", gr, 0));
+        list.append(string("mars://") + generatedRequest->str());
     }
 
     return r;
@@ -123,7 +119,7 @@ Request ArchiveHandler::generateRequest(const string& source)
     Request requests (RequestParser::parse(r));
     //ASSERT(requests.size() == 1);
     //return requests.front();
-    ASSERT(requests->name() == "_list");
+    ASSERT(requests->tag() == "_requests");
 
     //requests->showGraph(string("generateRequest: ") + requests->str() );
     
@@ -147,6 +143,7 @@ void ArchiveHandler::archive(const PathName& source, const string& host, const R
 /// If source not set then set its value with values taken from the stack
 Values ArchiveHandler::handle(const Request request, ExecutionContext& context)
 {
+    //request->showGraph("ArchiveHandler::handle => " + request->str());
     Request req(request);
     popIfNotSet("source", req, context);
     Values r(handle(req));

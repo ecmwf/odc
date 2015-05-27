@@ -50,15 +50,14 @@ Values SQLHandler::handle(const Request request)
     vector<string> ps( pathNamesToStrings(executeSelect(filter, input, target)) );
     ASSERT(ps.size());
     Values vs(0);
+    List list(vs);
     for (size_t i(0); i < ps.size(); ++i)
-        if (i)
-            vs->append(new Cell("_list", new Cell(ps[i], 0, 0), 0));
-        else
-            vs = new Cell("_list", new Cell(ps[i], 0, 0), 0);
+        list.append(ps[i]);
+
     //if (vs) vs->showGraph("SQLHandler::handle => " + vs->str());
     // TODO: return an empty list object?
     if (vs) return vs;
-    else return new Cell("_list", 0, 0);
+    else return new Cell("_list", "", 0, 0);
 }
 
 /// If source not set then set its value with list taken from the stack

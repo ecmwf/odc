@@ -30,6 +30,7 @@ RetrieveHandler::RetrieveHandler(const string& name) : RequestHandler(name) {}
 
 Values RetrieveHandler::handle(const Request request)
 {
+    //request->showGraph(false);
     const string host (database(request)),
                  target (request->valueAsString("target", "")),
                  filter (request->valueAsString("filter", ""));
@@ -69,9 +70,9 @@ Values RetrieveHandler::handle(const Request request)
     ASSERT(r.size());
 
     Values rv(0);
+    List list(rv);
     for (size_t i(0); i < r.size(); ++i)
-        if (i) rv->append(new Cell("_list", new Cell(r[i], 0, 0), 0));
-        else rv = new Cell("_list", new Cell(r[i], 0, 0), 0);
+        list.append(r[i]);
 
     ASSERT(rv);
     return rv;
