@@ -39,11 +39,11 @@ const char * cfg_ =
 
 ArchiveHandler::ArchiveHandler(const string& name) : RequestHandler(name) {}
 
-Values ArchiveHandler::handle(const Request request)
+Values ArchiveHandler::handle(ExecutionContext& context)
 {
-    const string host (database(request));
+    const string host (database(context));
 
-    vector<string> sources(getValueAsList(request, "source"));
+    vector<string> sources(getValueAsList(context, "source"));
     if (! sources.size())
         throw UserError("You must specify file(s) to be archived using the SOURCE keyword");
 
@@ -54,22 +54,29 @@ Values ArchiveHandler::handle(const Request request)
         const string source(sources[i]);
 
         Request generatedRequest (generateRequest(source));
+
         generatedRequest->value("database", host);
-        checkRequestMatchesFilesMetaData(request, generatedRequest);
+
+        ASSERT(generatedRequest->text() == "RETRIEVE");
+        generatedRequest->text("ARCHIVE");
+
+        checkRequestMatchesFilesMetaData(context, generatedRequest);
  
         Log::info() << "Request generated for file " << source << ":" << endl
                     << generatedRequest << endl;
 
-        archive(source, host, request);
+        archive(source, host, generatedRequest);
 
+        generatedRequest->text("RETRIEVE");
         list.append(string("mars://") + generatedRequest->str());
     }
 
     return r;
 }
 
-void ArchiveHandler::checkRequestMatchesFilesMetaData(const Request request, const Request generatedRequest)
+void ArchiveHandler::checkRequestMatchesFilesMetaData(const ExecutionContext& context, const Request generatedRequest)
 {
+    // TODO
     /*
     for (Request::const_iterator it(generatedRequest.begin()); it != generatedRequest.end(); ++it)
     {
@@ -138,17 +145,5 @@ void ArchiveHandler::archive(const PathName& source, const string& host, const R
     auto_ptr<DataHandle> mars (DataHandleFactory::openForWrite(ss.str()));
 
     input.saveInto(*mars);
-}
-
-/// If source not set then set its value with values taken from the stack
-Values ArchiveHandler::handle(const Request request, ExecutionContext& context)
-{
-    //request->showGraph("ArchiveHandler::handle => " + request->str());
-    Request req(request);
-    popIfNotSet("source", req, context);
-    Values r(handle(req));
-    context.stack().push(r);
-    //r->showGraph("ArchiveHandler::handle => " + r->str());
-    return r;
 }
 

@@ -17,6 +17,7 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/parser/Request.h"
 #include "eckit/utils/ExecutionContext.h"
+#include "eckit/utils/Environment.h"
 #include "eckit/utils/DataHandleFactory.h"
 
 #include "odb_api/DispatchingWriter.h"
@@ -28,12 +29,13 @@ using namespace odb;
 
 RetrieveHandler::RetrieveHandler(const string& name) : RequestHandler(name) {}
 
-Values RetrieveHandler::handle(const Request request)
+Values RetrieveHandler::handle(ExecutionContext& context)
 {
+    Request request (context.environment().currentFrame());
     //request->showGraph(false);
-    const string host (database(request)),
-                 target (request->valueAsString("target", "")),
-                 filter (request->valueAsString("filter", ""));
+    const string host (database(context)),
+                 target (context.environment().lookup("target", "")),
+                 filter (context.environment().lookup("filter", ""));
 
     if (! target.size())
         throw UserError("You must specify TARGET explicitly");
@@ -78,10 +80,3 @@ Values RetrieveHandler::handle(const Request request)
     return rv;
 }
 
-/// Retrieves data, then pushes file(s) specified in TARGET on the stack.
-Values RetrieveHandler::handle(const Request request, ExecutionContext& context)
-{
-    Values r(handle(request));
-    context.stack().push(r);
-    return r;
-}

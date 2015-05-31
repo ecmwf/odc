@@ -41,7 +41,6 @@ ToolRunnerApplication.h
 XYVTool.cc
 XYVTool.h
 ArchiveHandler.cc
-DuplicateHandler.cc
 ListHandler.cc
 RetrieveHandler.cc
 CompareHandler.cc

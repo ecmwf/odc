@@ -7,20 +7,21 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-/// @author Piotr Kuchta, May 2015
 
-#ifndef ListHandler_H
-#define ListHandler_H
+// File ODBModule.h
+// Piotr Kuchta - (c) ECMWF May 2015
 
-#include <sstream>
+#ifndef ODBModule_H
+#define ODBModule_H
 
-#include "eckit/parser/Request.h"
-#include "eckit/utils/RequestHandler.h"
+#include "eckit/utils/Module.h"
+#include "eckit/utils/ExecutionContext.h"
 
-class ListHandler : public RequestHandler {
+class ODBModule : public Module {
 public:
-    ListHandler(const std::string&);
-    virtual Values handle(ExecutionContext&);
+    ODBModule();
+    ~ODBModule();
+    void importInto(ExecutionContext&);
 };
 
 #endif

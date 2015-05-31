@@ -11,6 +11,10 @@
 // File ODBModule.cc
 // Piotr Kuchta - (c) ECMWF May 2015
 
+#include <string>
+
+#include "eckit/parser/Request.h"
+
 #include "eckit/utils/RequestHandler.h"
 #include "eckit/utils/ExecutionContext.h"
 #include "eckit/utils/Environment.h"
@@ -19,23 +23,35 @@
 #include "RetrieveHandler.h"
 #include "SQLHandler.h"
 #include "CompareHandler.h"
-#include "DuplicateHandler.h"
 #include "ListHandler.h"
 
 #include "ODBModule.h"
 
+using namespace std;
+
 ODBModule::ODBModule() {}
 ODBModule::~ODBModule() {}
 
+static Request native(const string& name)
+{
+    return new Cell("_native", name, 0, 0);
+}
+
 void ODBModule::importInto(ExecutionContext& context)
 {
+    static ArchiveHandler archive("odb.archive");
+    static RetrieveHandler retrieve("odb.retrieve");
+    static SQLHandler sql("sql");
+    static SQLHandler split("split");
+    static CompareHandler compare("compare");
+    static ListHandler list("list");
+
     Environment& e(context.environment());
-    e.set("archive", new ArchiveHandler("archive"));
-    e.set("retrieve", new RetrieveHandler("retrieve"));
-    e.set("sql", new SQLHandler("sql"));
-    e.set("split", new SQLHandler("split"));
-    e.set("compare", new CompareHandler("compare"));
-    e.set("duplicate", new DuplicateHandler("duplicate"));
-    e.set("list", new ListHandler("list"));
+    e.set("archive", native(archive.name()));
+    e.set("retrieve", native(retrieve.name())); 
+    e.set("sql", native(sql.name()));
+    e.set("split", native(split.name()));
+    e.set("compare", native(compare.name()));
+    e.set("list", native(list.name()));
 }
 

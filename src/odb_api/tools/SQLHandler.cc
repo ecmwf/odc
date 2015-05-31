@@ -17,6 +17,7 @@
 #include "eckit/parser/Request.h"
 #include "eckit/parser/RequestParser.h"
 #include "eckit/utils/ExecutionContext.h"
+#include "eckit/utils/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/StringTool.h"
@@ -34,11 +35,11 @@ using namespace odb::sql;
 
 SQLHandler::SQLHandler(const string& name) : RequestHandler(name) {}
 
-Values SQLHandler::handle(const Request request)
+Values SQLHandler::handle(ExecutionContext& context)
 {
-    string target (request->valueAsString("target", "")),
-           filter (cleanUpSQLText(request->valueAsString("filter", "")));
-    vector<string> sources (getValueAsList(request, "source"));
+    string target (context.environment().lookup("target", "")),
+           filter (cleanUpSQLText(context.environment().lookup("filter", "")));
+    vector<string> sources (getValueAsList(context, "source"));
 
     MultiHandle input;
     DataHandleFactory::buildMultiHandle(input, sources);
@@ -58,17 +59,6 @@ Values SQLHandler::handle(const Request request)
     // TODO: return an empty list object?
     if (vs) return vs;
     else return new Cell("_list", "", 0, 0);
-}
-
-/// If source not set then set its value with list taken from the stack
-/// After handling request leave produced files on stack.
-Values SQLHandler::handle(const Request request, ExecutionContext& context)
-{
-    Request req(request);
-    popIfNotSet(string("source"), req, context);
-    Values r(handle(req));
-    context.stack().push(r);
-    return r;
 }
 
 vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& input, const string& into)

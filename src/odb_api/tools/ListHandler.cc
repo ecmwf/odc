@@ -12,26 +12,16 @@
 
 #include "eckit/parser/Request.h"
 #include "eckit/utils/ExecutionContext.h"
+#include "eckit/utils/Environment.h"
 
 using namespace std;
 using namespace eckit;
 
 ListHandler::ListHandler(const string& name) : RequestHandler(name) {}
 
-Values ListHandler::handle(const Request request)
+Values ListHandler::handle(ExecutionContext& context)
 {
-    NOTIMP;
-    return Values();
-}
-
-Values ListHandler::handle(const Request request, ExecutionContext& context)
-{
-    request->showGraph("ListHandler::handle: request", false);
-
-    Values r (Cell::clone(request->valueOrDefault("values", new Cell("_list", "", 0, 0))));
-
-    r->showGraph("value of values", false);
-
+    Values r (Cell::clone(context.environment().lookup("values")));
     context.stack().push(r);
     return r;
 }

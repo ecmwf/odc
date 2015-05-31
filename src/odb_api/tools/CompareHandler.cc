@@ -18,6 +18,7 @@
 #include "eckit/parser/Request.h"
 #include "eckit/parser/RequestParser.h"
 #include "eckit/utils/ExecutionContext.h"
+#include "eckit/utils/Environment.h"
 
 #include "eckit/utils/DataHandleFactory.h"
 
@@ -27,12 +28,10 @@ using namespace odb;
 
 CompareHandler::CompareHandler(const string& name) : RequestHandler(name) {}
 
-Values CompareHandler::handle(const Request req)
+Values CompareHandler::handle(ExecutionContext& context)
 {
-    Request request(req);
-
-    vector<string> left (getValueAsList(request,"left"));
-    vector<string> right (getValueAsList(request, "right"));
+    vector<string> left (context.environment().lookupList("left", context));
+    vector<string> right (context.environment().lookupList("right", context));
 
     Log::info() << "left: " << left << endl;
     Log::info() << "right: " << right  << endl;
@@ -57,12 +56,3 @@ Values CompareHandler::handle(const Request req)
     // For now this is not returning anything, just throwing if a difference found
     return Values();
 }
-
-Values CompareHandler::handle(const Request request, ExecutionContext& context)
-{
-    Request req(request);
-    popIfNotSet("left", req, context);
-    popIfNotSet("right", req, context);
-    return handle(req);
-}
-

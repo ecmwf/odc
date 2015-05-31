@@ -7,20 +7,21 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-/// @author Piotr Kuchta, May 2015
+/// @author Piotr Kuchta, February 2015
 
-#ifndef ListHandler_H
-#define ListHandler_H
-
-#include <sstream>
+#ifndef SQLHandler_H
+#define SQLHandler_H
 
 #include "eckit/parser/Request.h"
 #include "eckit/utils/RequestHandler.h"
 
-class ListHandler : public RequestHandler {
+class SQLHandler : public RequestHandler {
 public:
-    ListHandler(const std::string&);
+    SQLHandler(const std::string&);
     virtual Values handle(ExecutionContext&);
+
+    static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&);
+    static std::string cleanUpSQLText(const std::string&);
 };
 
 #endif

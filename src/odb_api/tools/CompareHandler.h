@@ -7,19 +7,19 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-/// @author Piotr Kuchta, May 2015
+/// @author Piotr Kuchta, February 2015
 
-#ifndef ListHandler_H
-#define ListHandler_H
+#ifndef CompareHandler_H
+#define CompareHandler_H
 
 #include <sstream>
 
 #include "eckit/parser/Request.h"
 #include "eckit/utils/RequestHandler.h"
 
-class ListHandler : public RequestHandler {
+class CompareHandler : public RequestHandler {
 public:
-    ListHandler(const std::string&);
+    CompareHandler(const std::string&);
     virtual Values handle(ExecutionContext&);
 };
 
