@@ -17,10 +17,10 @@
 #include "eckit/parser/Request.h"
 #include "eckit/utils/RequestHandler.h"
 
-class PrintHandler : public RequestHandler {
+class PrintHandler : public eckit::RequestHandler {
 public:
     PrintHandler(const std::string&, const std::string&);
-    virtual Values handle(ExecutionContext&);
+    virtual Values handle(eckit::ExecutionContext&);
 private:
     const std::string end_;
 };

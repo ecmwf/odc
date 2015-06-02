@@ -15,10 +15,10 @@
 #include "eckit/parser/Request.h"
 #include "eckit/utils/RequestHandler.h"
 
-class SQLHandler : public RequestHandler {
+class SQLHandler : public eckit::RequestHandler {
 public:
     SQLHandler(const std::string&);
-    virtual Values handle(ExecutionContext&);
+    virtual Values handle(eckit::ExecutionContext&);
 
     static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&);
     static std::string cleanUpSQLText(const std::string&);

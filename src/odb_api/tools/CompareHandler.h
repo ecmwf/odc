@@ -17,10 +17,10 @@
 #include "eckit/parser/Request.h"
 #include "eckit/utils/RequestHandler.h"
 
-class CompareHandler : public RequestHandler {
+class CompareHandler : public eckit::RequestHandler {
 public:
     CompareHandler(const std::string&);
-    virtual Values handle(ExecutionContext&);
+    virtual Values handle(eckit::ExecutionContext&);
 };
 
 #endif

@@ -17,11 +17,11 @@
 #include "eckit/utils/Module.h"
 #include "eckit/utils/ExecutionContext.h"
 
-class ODBModule : public Module {
+class ODBModule : public eckit::Module {
 public:
     ODBModule();
     ~ODBModule();
-    void importInto(ExecutionContext&);
+    void importInto(eckit::ExecutionContext&);
 };
 
 #endif

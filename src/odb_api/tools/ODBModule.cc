@@ -30,6 +30,7 @@
 #include "ODBModule.h"
 
 using namespace std;
+using namespace eckit;
 
 ODBModule::ODBModule() {}
 ODBModule::~ODBModule() {}

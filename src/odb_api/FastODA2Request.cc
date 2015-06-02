@@ -34,7 +34,7 @@ void FastODA2Request<T>::parseConfig(const std::string& s)
     eckit::Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
 	{
-		eckit::Log::debug() << "FastODA2Request<T>::parseConfig: " << i<< ": '" << lines[i] << "'" << std::endl;
+		eckit::Log::debug() << "FastODA2Request<T>::parseConfig: " << i << ": '" << lines[i] << "'" << std::endl;
 		std::vector<std::string> words;
 		tokenizer(lines[i], words);
 
@@ -73,8 +73,9 @@ template <typename T>
 bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::OffsetList& offsets, eckit::LengthList& lengths, std::vector<ODAHandle*>& handles)
 {
     using eckit::Log;
+    ostream& L (Log::debug());
 
-	Log::debug() << "Iterating over headers of '" << fileName << "'" <<  std::endl;
+	L << "Iterating over headers of '" << fileName << "'" <<  std::endl;
 	
     inputFile_ = fileName;
 
@@ -99,12 +100,12 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 
 		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD->equalsIncludingConstants(md, columnNames_))
 		{
-			Log::debug() << "FastODA2Request::scanFile: new handle for <" << startOffset << "," << endOffset << ">" << std::endl;
+			L << "FastODA2Request@" << this << "::scanFile: new handle for <" << startOffset << "," << endOffset << ">" << std::endl;
 
 			ODAHandle* odaHandle = new ODAHandle(startOffset, endOffset);
 			if (! collectValues(md, *odaHandle))
 			{
-				Log::debug() << "FastODA2Request<T>::scanFile: collectValues returned false" << std::endl;
+				L << "FastODA2Request@" << this << "::scanFile: collectValues returned false" << std::endl;
 				return false;
 			}
 			currentMD.reset(md.clone());
@@ -116,7 +117,7 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 		}
 		else
 		{
-			Log::debug() << "FastODA2Request::scanFile: append <" << startOffset << "," << endOffset << "> to existing handle" << std::endl;
+			L << "FastODA2Request@" << this << "::scanFile: append <" << startOffset << "," << endOffset << "> to existing handle" << std::endl;
 
 			ODAHandle& lastHandle = *(handles.back());
 			lastHandle.end(lastHandle.end() + blockSize);
@@ -124,9 +125,9 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 		}
 		rowsNumber_ += md.rowsNumber();
 	}
-	Log::debug() << "FastODA2Request<T>::scanFile => offsets=" << offsets << std::endl;
-	Log::debug() << "FastODA2Request<T>::scanFile => lengths=" << lengths << std::endl;
-	Log::debug() << "FastODA2Request<T>::scanFile => rowsNumber_=" << rowsNumber_ << std::endl;
+	Log::debug() << "FastODA2Request@" << this << "::scanFile => offsets=" << offsets << std::endl;
+	Log::debug() << "FastODA2Request@" << this << "::scanFile => lengths=" << lengths << std::endl;
+	Log::debug() << "FastODA2Request@" << this << "::scanFile => rowsNumber_=" << rowsNumber_ << std::endl;
 	return true;
 }
 
@@ -134,12 +135,12 @@ template <typename T>
 bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 {
     using eckit::Offset;
+    ostream& L (eckit::Log::debug());
     
 	std::vector<std::string> currentValues;
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
-		const std::string& columnName = columnNames_[i];
-		eckit::Log::debug() << "FastODA2Request::collectValues: columnName: " << columnName << std::endl;
+		const std::string& columnName (columnNames_[i]);
 
 		Column* column = md.hasColumn(columnName) ? md.columnByName(columnName) : 0;
 		std::string v = ! column ? columnNotFound(columnName)
@@ -150,6 +151,8 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 		values_[i].insert(v);
 		currentValues.push_back(v);
 		double dv = !column ? odb::MDI::realMDI() : column->min();
+
+		L << "FastODA2Request@" << this << "::collectValues: columnName: " << columnName << ": " << v << "(" << dv << ")" << endl;
 
 		odaHandle.addValue(columnNames_[i], dv);
 		doubleValues_[keywords_[i]].insert(dv);
@@ -178,6 +181,7 @@ template <typename T>
 std::string FastODA2Request<T>::genRequest() const
 {
     std::stringstream request;
+    ostream& L (eckit::Log::debug());
 
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
@@ -192,7 +196,7 @@ std::string FastODA2Request<T>::genRequest() const
 		request << key << " = " << valuesList;
 	}
 
-    eckit::Log::debug() << "FastODA2Request<T>::genRequest() => " << std::endl << request.str() << std::endl;
+    L << "FastODA2Request@" << this << "::genRequest() => " << std::endl << request.str() << std::endl;
 	
 	return request.str();
 }
@@ -202,19 +206,20 @@ std::string FastODA2Request<T>::patchValue(const std::string& k, const std::stri
 {
     using eckit::Log;
     using eckit::StringTools;
+    ostream& L (Log::debug());
     
 	std::string v = StringTools::trim(value);
-	Log::debug() << "FastODA2Request::patchValue: v = '" << v  << "', key = " << k << std::endl;
+	L << "FastODA2Request@" << this << "::patchValue: v = '" << v  << "', key = " << k << std::endl;
 	if (k == "TIME")
 		v = StringTool::patchTimeForMars(v);
 	else if (k == "CLASS" || k == "TYPE" || k == "STREAM" || k == "OBSGROUP")
 	{
-		Log::debug() << "FastODA2Request::genRequest: checking if '" << v << "' is numeric" << std::endl;
+		L << "FastODA2Request@" << this << "::genRequest: checking if '" << v << "' is numeric" << std::endl;
 		if (StringTool::check(v, isdigit))
 		{
-			Log::debug() << "FastODA2Request::genRequest: replacing " << v << " with ";
+			L << "FastODA2Request@" << this << "::genRequest: replacing " << v << " with ";
 			v = GribCodes::alphanumeric(StringTools::lower(k), v);
-			Log::debug() << v << std::endl;
+			L << v << std::endl;
 		}
 		v = StringTools::upper(v);
 	}
@@ -254,13 +259,16 @@ template <typename T>
 std::map<std::string, double> FastODA2Request<T>::getUniqueValues()
 {
 	std::map<std::string, double> r;
-	for (size_t i = 0; i < keywords_.size(); ++i)
+	for (size_t i (0); i < keywords_.size(); ++i)
 	{
-		std::string kw = keywords_[i];
+		std::string kw (keywords_[i]);
 		if ( doubleValues_[kw].size() != 1)
 		{
             std::stringstream s;
-			s << "Data contains more than one '" << kw << "' value.";
+            std::set<double>& values (doubleValues_[kw]);
+			s << "Data should contain only one '" << kw << "' value, found: " << values.size() << ". ";
+            for (std::set<double>::iterator it (values.begin()); it != values.end(); ++it)
+                s << *it << ", ";
 			throw eckit::UserError(s.str());
 		}
 		r[kw] = *doubleValues_[kw].begin();

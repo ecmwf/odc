@@ -15,17 +15,17 @@
 #include "eckit/parser/Request.h"
 #include "eckit/utils/RequestHandler.h"
 
-class ArchiveHandler : public RequestHandler {
+class ArchiveHandler : public eckit::RequestHandler {
 public:
     ArchiveHandler(const std::string&);
 
-    virtual Values handle(ExecutionContext&);
+    virtual Values handle(eckit::ExecutionContext&);
 
     static Request generateRequest(const std::string&);
 
 private:
     void archive(const eckit::PathName& source, const std::string& host, const Request request);
-    static void checkRequestMatchesFilesMetaData(const ExecutionContext&, const Request);
+    static void checkRequestMatchesFilesMetaData(const eckit::ExecutionContext&, const Request);
 };
 
 #endif
