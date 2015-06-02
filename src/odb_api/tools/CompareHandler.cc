@@ -53,6 +53,7 @@ Values CompareHandler::handle(ExecutionContext& context)
     }
     Log::info() << "No difference found" << endl;
 
-    // For now this is not returning anything, just throwing if a difference found
-    return Values();
+    Request r(new Cell("_list", "", 0, 0));
+
+    return r;
 }

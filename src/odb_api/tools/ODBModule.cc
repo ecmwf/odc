@@ -24,6 +24,8 @@
 #include "SQLHandler.h"
 #include "CompareHandler.h"
 #include "ListHandler.h"
+#include "VariableLookupHandler.h"
+#include "PrintHandler.h"
 
 #include "ODBModule.h"
 
@@ -41,10 +43,13 @@ void ODBModule::importInto(ExecutionContext& context)
 {
     static ArchiveHandler archive("odb.archive");
     static RetrieveHandler retrieve("odb.retrieve");
-    static SQLHandler sql("sql");
-    static SQLHandler split("split");
-    static CompareHandler compare("compare");
+    static SQLHandler sql("odb.sql");
+    static SQLHandler split("odb.split");
+    static CompareHandler compare("odb.compare");
     static ListHandler list("list");
+    static VariableLookupHandler value("value");
+    static PrintHandler print("print", "");
+    static PrintHandler printnl("printnl", "\n");
 
     Environment& e(context.environment());
     e.set("archive", native(archive.name()));
@@ -53,5 +58,8 @@ void ODBModule::importInto(ExecutionContext& context)
     e.set("split", native(split.name()));
     e.set("compare", native(compare.name()));
     e.set("list", native(list.name()));
+    e.set("value", native(value.name()));
+    e.set("print", native(print.name()));
+    e.set("printnl", native(printnl.name()));
 }
 

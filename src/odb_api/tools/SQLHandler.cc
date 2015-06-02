@@ -37,8 +37,8 @@ SQLHandler::SQLHandler(const string& name) : RequestHandler(name) {}
 
 Values SQLHandler::handle(ExecutionContext& context)
 {
-    string target (context.environment().lookup("target", "")),
-           filter (cleanUpSQLText(context.environment().lookup("filter", "")));
+    string target (context.environment().lookup("target", "", context)),
+           filter (cleanUpSQLText(context.environment().lookup("filter", "", context)));
     vector<string> sources (getValueAsList(context, "source"));
 
     MultiHandle input;
@@ -72,6 +72,8 @@ vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& inp
         Log::info() << "No SQL, using default 'select *;'" << endl;
         sql = "select *;";
     }
+
+    // TODO: append semicolon to filter if missing
 
     string s (cleanUpSQLText(sql));
     Log::info() << "Executing '" << s << "'" << endl;

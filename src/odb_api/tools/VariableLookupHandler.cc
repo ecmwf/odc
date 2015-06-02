@@ -8,20 +8,28 @@
  * does it submit to any jurisdiction.
  */
 
-#include "ListHandler.h"
+#include "VariableLookupHandler.h"
 
 #include "eckit/parser/Request.h"
 #include "eckit/utils/ExecutionContext.h"
 #include "eckit/utils/Environment.h"
+#include "eckit/utils/Interpreter.h"
 
 using namespace std;
 using namespace eckit;
 
-ListHandler::ListHandler(const string& name) : RequestHandler(name) {}
+VariableLookupHandler::VariableLookupHandler(const string& name) : RequestHandler(name) {}
 
-Values ListHandler::handle(ExecutionContext& context)
+Values VariableLookupHandler::handle(ExecutionContext& context)
 {
-    Values r (Cell::clone(context.environment().lookup("values")));
+    vector<string> vars (getValueAsList(context, "of"));
+    ASSERT("'value,of' expects one variable name currently" && vars.size() == 1);
+
+    string var (vars[0]);
+    Values r (Interpreter::eval(context.environment().lookup(var), context));
+
+    Log::debug() << "value,of=" << var << " => " << r << endl;
+
     return r;
 }
 

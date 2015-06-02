@@ -34,8 +34,8 @@ Values RetrieveHandler::handle(ExecutionContext& context)
     Request request (context.environment().currentFrame());
     //request->showGraph(false);
     const string host (database(context)),
-                 target (context.environment().lookup("target", "")),
-                 filter (context.environment().lookup("filter", ""));
+                 target (context.environment().lookup("target", "", context)),
+                 filter (context.environment().lookup("filter", "", context));
 
     if (! target.size())
         throw UserError("You must specify TARGET explicitly");
