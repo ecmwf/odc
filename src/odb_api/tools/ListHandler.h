@@ -20,7 +20,7 @@
 class ListHandler : public eckit::RequestHandler {
 public:
     ListHandler(const std::string&);
-    virtual Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(eckit::ExecutionContext&);
 };
 
 #endif

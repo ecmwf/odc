@@ -19,13 +19,13 @@ class ArchiveHandler : public eckit::RequestHandler {
 public:
     ArchiveHandler(const std::string&);
 
-    virtual Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(eckit::ExecutionContext&);
 
-    static Request generateRequest(const std::string&);
+    static eckit::Request generateRequest(const std::string&);
 
 private:
-    void archive(const eckit::PathName& source, const std::string& host, const Request request);
-    static void checkRequestMatchesFilesMetaData(const eckit::ExecutionContext&, const Request);
+    void archive(const eckit::PathName& source, const std::string& host, const eckit::Request request);
+    static void checkRequestMatchesFilesMetaData(const eckit::ExecutionContext&, const eckit::Request);
 };
 
 #endif

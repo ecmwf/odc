@@ -26,7 +26,7 @@ Values VariableLookupHandler::handle(ExecutionContext& context)
     ASSERT("'value,of' expects one variable name currently" && vars.size() == 1);
 
     string var (vars[0]);
-    Values r (Interpreter::eval(context.environment().lookup(var), context));
+    Values r (context.interpreter().eval(context.environment().lookup(var), context));
 
     Log::debug() << "value,of=" << var << " => " << r << endl;
 

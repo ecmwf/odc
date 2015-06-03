@@ -20,7 +20,7 @@
 class PrintHandler : public eckit::RequestHandler {
 public:
     PrintHandler(const std::string&, const std::string&);
-    virtual Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(eckit::ExecutionContext&);
 private:
     const std::string end_;
 };

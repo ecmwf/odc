@@ -9,17 +9,18 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef CompareHandler_H
-#define CompareHandler_H
+#ifndef RetrieveHandler_H
+#define RetrieveHandler_H
 
 #include <sstream>
 
 #include "eckit/parser/Request.h"
 #include "eckit/utils/RequestHandler.h"
 
-class CompareHandler : public eckit::RequestHandler {
+class RetrieveHandler : public eckit::RequestHandler {
 public:
-    CompareHandler(const std::string&);
+    RetrieveHandler(const std::string&);
+
     virtual eckit::Values handle(eckit::ExecutionContext&);
 };
 

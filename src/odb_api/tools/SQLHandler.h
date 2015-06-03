@@ -18,7 +18,7 @@
 class SQLHandler : public eckit::RequestHandler {
 public:
     SQLHandler(const std::string&);
-    virtual Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(eckit::ExecutionContext&);
 
     static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&);
     static std::string cleanUpSQLText(const std::string&);

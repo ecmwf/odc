@@ -31,7 +31,7 @@ Values PrintHandler::handle(ExecutionContext& context)
     else
         for (Request e(r); e; e = e->rest())
             if (e->value())
-                cout << Interpreter::eval(e->value(), context) << " ";
+                cout << context.interpreter().eval(e->value(), context) << " ";
             else
                 cout << "NULL" << " ";
 
