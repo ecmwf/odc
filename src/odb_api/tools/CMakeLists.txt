@@ -40,6 +40,8 @@ ToolRunnerApplication.cc
 ToolRunnerApplication.h
 XYVTool.cc
 XYVTool.h
+LetHandler.cc
+DefineFunctionHandler.cc
 VariableLookupHandler.cc
 ArchiveHandler.cc
 ListHandler.cc

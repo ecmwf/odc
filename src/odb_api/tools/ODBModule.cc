@@ -18,6 +18,7 @@
 #include "eckit/utils/RequestHandler.h"
 #include "eckit/utils/ExecutionContext.h"
 #include "eckit/utils/Environment.h"
+#include "eckit/utils/SpecialFormHandler.h"
 
 #include "ArchiveHandler.h"
 #include "RetrieveHandler.h"
@@ -27,18 +28,20 @@
 #include "VariableLookupHandler.h"
 #include "PrintHandler.h"
 
+#include "LetHandler.h"
+#include "DefineFunctionHandler.h"
+
 #include "ODBModule.h"
 
 using namespace std;
 using namespace eckit;
+using namespace odb::tool;
 
 ODBModule::ODBModule() {}
 ODBModule::~ODBModule() {}
 
-static Request native(const string& name)
-{
-    return new Cell("_native", name, 0, 0);
-}
+static Request native(const string& name) { return new Cell("_native", name, 0, 0); }
+static Request macro(const string& name) { return new Cell("_macro", name, 0, 0); }
 
 void ODBModule::importInto(ExecutionContext& context)
 {
@@ -51,8 +54,12 @@ void ODBModule::importInto(ExecutionContext& context)
     static VariableLookupHandler value("value");
     static PrintHandler print("print", "");
     static PrintHandler printnl("printnl", "\n");
+    static LetHandler let("let");
+    static DefineFunctionHandler function("function");
 
     Environment& e(context.environment());
+    e.set("let", macro(let.name()));
+    e.set("function", macro(function.name()));
     e.set("archive", native(archive.name()));
     e.set("retrieve", native(retrieve.name())); 
     e.set("sql", native(sql.name()));
