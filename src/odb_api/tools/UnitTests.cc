@@ -666,7 +666,7 @@ TEST(hash_operator_on_select_list)
             "10,10\n"
             ;
 
-    ScratchFile f("hash_operator.odb");
+    ScratchFile f("hash_operator_on_select_list.odb");
     odb::tool::ImportTool::importText(data, f);
 
     string sql("select x,x#-1,x#1 from \"" + f + "\";");
@@ -680,7 +680,8 @@ TEST(hash_operator_on_select_list)
 
 }
 
-
+/// Shift or hash (#) operator doesn't work in the WHERE clause.
+/// This test doesn't test anything yet.
 TEST(hash_operator_in_where)
 {
     const char *data =
@@ -697,7 +698,7 @@ TEST(hash_operator_in_where)
             "10,10\n"
             ;
 
-    ScratchFile f("hash_operator.odb");
+    ScratchFile f("hash_operator_in_where.odb");
     odb::tool::ImportTool::importText(data, f);
 
     string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
