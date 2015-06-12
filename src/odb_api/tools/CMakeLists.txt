@@ -41,15 +41,25 @@ ToolRunnerApplication.h
 XYVTool.cc
 XYVTool.h
 LetHandler.cc
+LetHandler.h
 DefineFunctionHandler.cc
+DefineFunctionHandler.h
 VariableLookupHandler.cc
+VariableLookupHandler.h
 ArchiveHandler.cc
+ArchiveHandler.h
 ListHandler.cc
+ListHandler.h
 PrintHandler.cc
+PrintHandler.h
 RetrieveHandler.cc
+RetrieveHandler.h
 CompareHandler.cc
+CompareHandler.h
 SQLHandler.cc
+SQLHandler.h
 ODBModule.cc
+ODBModule.h
 )
 
 list( APPEND odbtest_src_files
