@@ -27,7 +27,7 @@ migrator_api.h
                          INCLUDES   ${ODB_INCLUDE_DIRS}
                          INSTALL_HEADERS LISTED
                          HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/migrator
-                         LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} ) #FIXME: add gomp for gfortran 
+                         LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} ${EXTRA_ODB_MIGRATOR_LIBS} ) # pass gomp in EXTRA_ODB_MIGRATOR_LIBS for gfortran if needed
                         
     ecbuild_add_executable( TARGET     odb_migrator
                         CONDITION
