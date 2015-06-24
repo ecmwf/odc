@@ -375,10 +375,6 @@ ODBFormatBuffer.cc
 ODBFormatBuffer.h
 )
 
-if("${CMAKE_C_COMPILER_ID}" STREQUAL "Cray")
-  set_source_files_properties(md5_hash.c PROPERTIES COMPILE_FLAGS "-O0")
-endif()
-
 # templates
 
 list( APPEND odblib_templates
