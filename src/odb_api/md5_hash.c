@@ -21,7 +21,9 @@
 #include <stdint.h>
 
 /* Cray C compiler should not try to optimize this code */
-#pragma _CRI noopt
+#if _CRAYC
+    #pragma _CRI noopt
+#endif
 
 static unsigned long r[] = {
     7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
