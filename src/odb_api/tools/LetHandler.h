@@ -13,8 +13,8 @@
 #define LetHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/parser/Request.h"
-#include "eckit/utils/SpecialFormHandler.h"
+#include "experimental/ecml/parser/Request.h"
+#include "experimental/ecml/SpecialFormHandler.h"
 
 namespace eckit { class ExecutionContext; }
 

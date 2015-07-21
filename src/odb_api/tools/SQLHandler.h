@@ -12,8 +12,10 @@
 #ifndef SQLHandler_H
 #define SQLHandler_H
 
-#include "eckit/parser/Request.h"
-#include "eckit/utils/RequestHandler.h"
+#include "experimental/ecml/parser/Request.h"
+#include "experimental/ecml/RequestHandler.h"
+
+#include "experimental/ecml/ExecutionContext.h"
 
 class SQLHandler : public eckit::RequestHandler {
 public:

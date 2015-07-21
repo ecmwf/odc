@@ -16,5 +16,30 @@
 #ifndef PUBLIC_ODB_API_H
 #define PUBLIC_ODB_API_H
 
+#include "odb_api/MetaData.h"
+#include "odb_api/Column.h"
+#include "odb_api/Select.h"
+#include "odb_api/ColumnType.h"
+#include "odb_api/Reader.h"
+#include "odb_api/TextReader.h"
+#include "odb_api/Writer.h"
+
+//#include "odb_api/ResultSet.h"
+//#include "odb_api/ResultSetStore.h"
+
+#include "odb_api/tools/ODBModule.h"
+
+// For importing data from text - used by examples and tests
+#include "odb_api/tools/ImportTool.h"
+
+// For MARS language support
+#include "experimental/ecml/ExecutionContext.h"
+#include "experimental/ecml/Environment.h"
+#include "experimental/ecml/RequestHandler.h"
+#include "experimental/ecml/parser/RequestParser.h"
+#include "experimental/ecml/parser/Cell.h"
+
+// Exceptions.
+#include "eckit/exception/Exceptions.h"
 
 #endif
