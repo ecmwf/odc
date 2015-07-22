@@ -14,8 +14,8 @@
 #ifndef ODBModule_H
 #define ODBModule_H
 
-#include "experimental/ecml/Module.h"
-#include "experimental/ecml/ExecutionContext.h"
+#include "experimental/eckit/ecml/Module.h"
+#include "experimental/eckit/ecml/ExecutionContext.h"
 
 class ODBModule : public eckit::Module {
 public:
