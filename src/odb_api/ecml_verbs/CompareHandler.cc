@@ -15,12 +15,11 @@
 #include "odb_api/Comparator.h"
 
 #include "eckit/types/Types.h"
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/parser/RequestParser.h"
-#include "experimental/ecml/ExecutionContext.h"
-#include "experimental/ecml/Environment.h"
-
-#include "eckit/utils/DataHandleFactory.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/parser/RequestParser.h"
+#include "experimental/eckit/ecml/core//ExecutionContext.h"
+#include "experimental/eckit/ecml/core/Environment.h"
+#include "experimental/eckit/ecml/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;

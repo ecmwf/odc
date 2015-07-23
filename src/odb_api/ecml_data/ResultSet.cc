@@ -8,26 +8,29 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file SQLRowsCallback.h
-/// Piotr Kuchta - ECMWF March 2015
+#include "odb_api/ecml_data/ResultSet.h"
 
-#ifndef SQLRowsCallback_H
-#define SQLRowsCallback_H
-
-#include "odb_api/MetaData.h"
+using namespace std;
 
 namespace odb {
 namespace sql {
 
-class SQLRowsCallback {
-public:
-	virtual ~SQLRowsCallback(); 
+ResultSet::ResultSet() {}
 
-    virtual void operator()(const double*, size_t, size_t, MetaData&, void *aux=0) = 0;
+void ResultSet::append(std::vector<double>& values, std::vector<bool>& missing)
+{
+    matrix_.append(values, missing);
+}
 
-};
+void ResultSet::print(std::ostream& s) const
+{
+    s << "result_set,at=" << this 
+        << ",number_of_rows=" << matrix_.numberOfRows() 
+        << ",number_of_columns=" << matrix_.numberOfColumns() 
+        << endl;
+}
+
+ResultSet::~ResultSet() {}
 
 } // namespace sql
 } // namespace odb
-
-#endif

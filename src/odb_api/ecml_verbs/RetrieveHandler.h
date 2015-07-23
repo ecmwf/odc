@@ -7,21 +7,21 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
+/// @author Piotr Kuchta, February 2015
 
-// File ODBModule.h
-// Piotr Kuchta - (c) ECMWF May 2015
+#ifndef RetrieveHandler_H
+#define RetrieveHandler_H
 
-#ifndef ODBModule_H
-#define ODBModule_H
+#include <sstream>
 
-#include "experimental/eckit/ecml/Module.h"
-#include "experimental/eckit/ecml/ExecutionContext.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
 
-class ODBModule : public eckit::Module {
+class RetrieveHandler : public eckit::RequestHandler {
 public:
-    ODBModule();
-    ~ODBModule();
-    void importInto(eckit::ExecutionContext&);
+    RetrieveHandler(const std::string&);
+
+    virtual eckit::Values handle(eckit::ExecutionContext&);
 };
 
 #endif

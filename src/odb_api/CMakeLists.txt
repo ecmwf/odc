@@ -280,16 +280,6 @@ SQLInteractiveSession.cc
 SQLInteractiveSession.h
 SQLNonInteractiveSession.cc
 SQLNonInteractiveSession.h
-SQLCallbackSession.cc
-SQLCallbackSession.h
-CallbackExecutor.h
-CallbackExecutor.cc
-SQLRowsCallback.cc
-SQLRowsCallback.h
-SQLRowCallback.cc
-SQLRowCallback.h
-SQLCallbackOutput.cc
-SQLCallbackOutput.h
 SQLIterator.h
 SQLIteratorOutput.cc
 SQLIteratorOutput.h
@@ -373,6 +363,21 @@ odbcapi.h
 piconst.h
 ODBFormatBuffer.cc
 ODBFormatBuffer.h
+
+# ECML interface
+ODBModule.cc
+# * ECML verbs
+ecml_verbs/ArchiveHandler.cc
+ecml_verbs/RetrieveHandler.cc
+ecml_verbs/CompareHandler.cc
+ecml_verbs/SQLHandler.cc
+# * ECML data
+ecml_data/ResultSet.cc
+ecml_data/ResultSet.h
+ecml_data/Matrix.cc
+ecml_data/Matrix.h
+ecml_data/ResultSetStore.cc
+ecml_data/ResultSetStore.h
 )
 
 # templates
@@ -404,7 +409,7 @@ ecbuild_add_library( TARGET     Odb
                      SOURCES    ${odblib_src_files}
                      GENERATED  ODBAPIVersionSHA1.cc
                      TEMPLATES  ${odblib_templates}
-                     LIBS       eckit )
+                     LIBS       eckit eckit_ecml )
 
 ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly

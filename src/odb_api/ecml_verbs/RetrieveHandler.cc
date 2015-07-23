@@ -15,10 +15,10 @@
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/io/FileHandle.h"
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/ExecutionContext.h"
-#include "experimental/ecml/Environment.h"
-#include "eckit/utils/DataHandleFactory.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "experimental/eckit/ecml/core/Environment.h"
+#include "experimental/eckit/ecml/data/DataHandleFactory.h"
 
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/TemplateParameters.h"
@@ -57,7 +57,7 @@ Values RetrieveHandler::handle(ExecutionContext& context)
     if (filter.size() || templateParameters.size())
     {
         try { 
-            r = SQLHandler::executeSelect(filter, input, target);
+            r = SQLHandler::executeSelect(filter, input, target, &context);
         } catch (eckit::ReadError e) {
             Log::warning() << "No data received from " << host << endl;
         }

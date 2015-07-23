@@ -12,17 +12,18 @@
 #ifndef SQLHandler_H
 #define SQLHandler_H
 
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/RequestHandler.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
 
-#include "experimental/ecml/ExecutionContext.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
 
 class SQLHandler : public eckit::RequestHandler {
 public:
     SQLHandler(const std::string&);
     virtual eckit::Values handle(eckit::ExecutionContext&);
 
-    static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&);
+    static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&, eckit::ExecutionContext* context);
+
     static std::string cleanUpSQLText(const std::string&);
 };
 

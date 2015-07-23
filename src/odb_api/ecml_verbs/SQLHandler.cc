@@ -14,10 +14,10 @@
 
 #include "eckit/io/MultiHandle.h"
 
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/parser/RequestParser.h"
-#include "experimental/ecml/ExecutionContext.h"
-#include "experimental/ecml/Environment.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/parser/RequestParser.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "experimental/eckit/ecml/core/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/StringTool.h"
@@ -26,7 +26,7 @@
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLSelect.h"
 
-#include "eckit/utils/DataHandleFactory.h"
+#include "experimental/eckit/ecml/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;
@@ -39,6 +39,7 @@ Values SQLHandler::handle(ExecutionContext& context)
 {
     string target (context.environment().lookup("target", "", context)),
            filter (cleanUpSQLText(context.environment().lookup("filter", "", context)));
+           //callback (context.environment().lookup("callback", "", context));
     vector<string> sources (getValueAsList(context, "source"));
 
     MultiHandle input;
@@ -48,8 +49,8 @@ Values SQLHandler::handle(ExecutionContext& context)
 
     input.openForRead();
 
-    vector<string> ps( pathNamesToStrings(executeSelect(filter, input, target)) );
-    ASSERT(ps.size());
+    vector<string> ps( pathNamesToStrings(executeSelect(filter, input, target, &context)) );
+    //ASSERT(ps.size());
     Values vs(0);
     List list(vs);
     for (size_t i(0); i < ps.size(); ++i)
@@ -61,7 +62,7 @@ Values SQLHandler::handle(ExecutionContext& context)
     else return new Cell("_list", "", 0, 0);
 }
 
-vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& input, const string& into)
+vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& input, const string& into, ExecutionContext* context)
 {
     // We don't call saveInto here so have to open the handle explicitly:
     input.openForRead();

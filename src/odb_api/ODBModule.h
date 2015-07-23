@@ -7,20 +7,21 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-/// @author Piotr Kuchta, February 2015
 
-#ifndef CompareHandler_H
-#define CompareHandler_H
+// File ODBModule.h
+// Piotr Kuchta - (c) ECMWF May 2015
 
-#include <sstream>
+#ifndef ODBModule_H
+#define ODBModule_H
 
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/RequestHandler.h"
+#include "experimental/eckit/ecml/core/Module.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
 
-class CompareHandler : public eckit::RequestHandler {
+class ODBModule : public eckit::Module {
 public:
-    CompareHandler(const std::string&);
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    ODBModule();
+    ~ODBModule();
+    void importInto(eckit::ExecutionContext&);
 };
 
 #endif

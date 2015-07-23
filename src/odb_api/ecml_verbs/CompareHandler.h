@@ -9,18 +9,17 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef RetrieveHandler_H
-#define RetrieveHandler_H
+#ifndef CompareHandler_H
+#define CompareHandler_H
 
 #include <sstream>
 
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/RequestHandler.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
 
-class RetrieveHandler : public eckit::RequestHandler {
+class CompareHandler : public eckit::RequestHandler {
 public:
-    RetrieveHandler(const std::string&);
-
+    CompareHandler(const std::string&);
     virtual eckit::Values handle(eckit::ExecutionContext&);
 };
 

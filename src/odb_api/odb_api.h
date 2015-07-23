@@ -24,20 +24,21 @@
 #include "odb_api/TextReader.h"
 #include "odb_api/Writer.h"
 
-//#include "odb_api/ResultSet.h"
-//#include "odb_api/ResultSetStore.h"
-
-#include "odb_api/tools/ODBModule.h"
+// For importing data from text - used by examples and tests
+#include "odb_api/tools/ImportTool.h"
 
 // For importing data from text - used by examples and tests
 #include "odb_api/tools/ImportTool.h"
 
-// For MARS language support
-#include "experimental/eckit/ecml/ExecutionContext.h"
-#include "experimental/eckit/ecml/Environment.h"
-#include "experimental/eckit/ecml/RequestHandler.h"
+// For ECML support
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "experimental/eckit/ecml/core/Environment.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
 #include "experimental/eckit/ecml/parser/RequestParser.h"
 #include "experimental/eckit/ecml/parser/Cell.h"
+#include "odb_api/ODBModule.h"
+#include "odb_api/ecml_data/ResultSet.h"
+#include "odb_api/ecml_data/ResultSetStore.h"
 
 // Exceptions.
 #include "eckit/exception/Exceptions.h"
