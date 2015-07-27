@@ -366,6 +366,7 @@ ODBFormatBuffer.h
 
 # ECML interface
 ODBModule.cc
+ODBModule.h
 # * ECML verbs
 ecml_verbs/ArchiveHandler.cc
 ecml_verbs/RetrieveHandler.cc
