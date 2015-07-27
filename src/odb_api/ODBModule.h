@@ -17,11 +17,15 @@
 #include "experimental/eckit/ecml/core/Module.h"
 #include "experimental/eckit/ecml/core/ExecutionContext.h"
 
+namespace odb {
+
 class ODBModule : public eckit::Module {
 public:
     ODBModule();
     ~ODBModule();
     void importInto(eckit::ExecutionContext&);
 };
+
+}  // namespace odb
 
 #endif

@@ -30,6 +30,8 @@
 using namespace std;
 using namespace eckit;
 
+namespace odb {
+
 ODBModule::ODBModule() {}
 ODBModule::~ODBModule() {}
 
@@ -52,3 +54,4 @@ void ODBModule::importInto(ExecutionContext& context)
     e.set("compare", native(compare.name()));
 }
 
+}  // namespace odb
