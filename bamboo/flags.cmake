@@ -1,0 +1,1 @@
+SET(ENABLE_MIGRATOR ON CACHE BOOL "Build migrator tool")

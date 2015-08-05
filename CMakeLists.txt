@@ -27,6 +27,7 @@ ecbuild_requires_macro_version( 1.7 )
 # local project
 
 ecbuild_use_package( PROJECT eckit VERSION 0.6 REQUIRED )
+ecbuild_use_package( PROJECT odb   VERSION 1.0 QUIET )
 
 ecbuild_declare_project()
 

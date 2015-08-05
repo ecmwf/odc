@@ -251,7 +251,7 @@ foreach( _test ${odb_migrator_tests} )
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
                     CONDITION  HAVE_MIGRATOR
-                    ENVIRONMENT ${test_environment}
+                    ENVIRONMENT ${test_environment} ${ODB_ENVIRONMENT}
                     TEST_DEPENDS ${_prev_test} )
     set( _prev_test ${_test} )
 endforeach()
