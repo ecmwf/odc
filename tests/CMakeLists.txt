@@ -33,7 +33,7 @@ ecbuild_get_test_multidata( TARGET get_test_data NAMES ${test_data_files} NOCHEC
 
 list( APPEND odb_migrator_tests
 Test_AAAImportODB
-Test_AAAImportODBDispatching
+#Test_AAAImportODBDispatching # Disable for now as per Tomas' request
 )
 
 list( APPEND odb_api_tests
