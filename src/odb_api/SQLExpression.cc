@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-//#include "eckit/compat/StrStream.h"
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/SQLExpression.h"
 #include "odb_api/NumberExpression.h"
@@ -76,9 +75,9 @@ std::string SQLExpression::title() const
 	if(title_.size())
 		return title_;
 
-	StrStream s;
-	s << *this << StrStream::ends;
-    return std::string(s);
+    std::ostringstream s;
+    s << *this;
+    return s.str();
 }
 
 
