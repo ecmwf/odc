@@ -21,7 +21,7 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 1.7 )
+ecbuild_requires_macro_version( 1.9 )
 
 ###############################################################################
 # local project
@@ -89,7 +89,6 @@ get_directory_property( ODB_API_DEFINITIONS COMPILE_DEFINITIONS )
 
 set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( ODB_API_LIBRARIES      Odb )
-set( ODB_API_TPLS           eckit )
 
 add_subdirectory( src )
 add_subdirectory( tests )
