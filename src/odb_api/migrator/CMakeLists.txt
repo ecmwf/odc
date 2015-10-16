@@ -34,8 +34,8 @@ migrator_api.h
                             HAVE_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES
                         SOURCES    odb2oda.cc
                         INCLUDES   ${ODB_INCLUDE_DIRS}
-                        LINKER_LANGUAGE ${LINKER_LANGUAGE}
-                        LIBS       Odbmigrator odbtools ${ODB_LIBS} ) #${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
+                        # LINKER_LANGUAGE Fortran
+                        LIBS       Odbmigrator odbtools ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
 
 
   if( HAVE_MIGRATOR AND HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )

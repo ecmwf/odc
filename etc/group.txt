@@ -56,4 +56,5 @@
 57  ; SSMI 1DVAR TCWV Cloudy-Sky  ; 2  ; SSMI_1D  ; SSMI 1DVAR TCWV Cloudy-Sky  ;    
 58  ; MWHS2 All-sky  ; 2  ; MWHS2_AS  ; Microwave Humidity Sounder 2  ;    
 59  ; SSMT2  ; 2  ; SSMT2  ; SSMT2  ;    
+60  ; SMAP  ; 2  ; SMAP  ; Soil Moisture Active and Passive  ;    
 99  ; TEST  ; 4  ; TEST  ;    ;           
