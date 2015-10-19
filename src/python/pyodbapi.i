@@ -41,8 +41,8 @@
 
 using namespace std;
 
-%include "ODBAPIVersion.h"
-%include "ODBAPISettings.h"
+%include "odb_api/ODBAPIVersion.h"
+%include "odb_api/ODBAPISettings.h"
 
 #include "eckit/filesystem/PathName.h"
 #include "odb_api/MemoryBlock.h"
@@ -77,7 +77,7 @@ using namespace odb;
 
 %include "exception.i"
 
-%include "IteratorProxy.h"
+%include "odb_api/IteratorProxy.h"
 %template(ReaderIteratorProxy) odb::IteratorProxy<odb::ReaderIterator,odb::Reader,const double>;
 %template(ReaderIteratorRow) odb::Row_<odb::ReaderIterator,odb::Reader,const double,odb::IteratorProxy<odb::ReaderIterator,odb::Reader,const double> >;
 
@@ -107,7 +107,7 @@ using namespace odb;
 #include "odb_api/SQLParser.h"
 #include "odb_api/SQLExpression.h"
 
-#include "odbcapi.h"
+#include "odb_api/odbcapi.h"
 %init %{
 	void python_api_start();
 	python_api_start();
