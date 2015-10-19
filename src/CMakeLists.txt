@@ -16,7 +16,7 @@ include_directories( ${ODB_API_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
 ### libs
 
 add_subdirectory( odb_api )
-
+add_subdirectory( python )
 add_subdirectory( fortran )
 
 
