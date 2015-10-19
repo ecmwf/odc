@@ -402,29 +402,6 @@ ecbuild_generate_yy( YYPREFIX odblib_
                   DEPENDANT SQLParser.cc )
 
 ###############################################################################
-# swig python interface
-
-if( HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
-
-    message("Configured for building Python bindings.")
-    set(CMAKE_SWIG_FLAGS "")
-    include_directories( ${PYTHON_INCLUDE_PATH} )
-
-    set_source_files_properties( pyodbapi.i PROPERTIES CPLUSPLUS ON )
-#    set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
-
-    swig_add_module( pyodbapi python pyodbapi.i )
-    set( EXTRA_LIBS eckit )
-    swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} eckit )
-    #swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} )
-
-    set(PYTHON_DEST "lib/python${PYTHON_VERSION}/site-packages" )
-    install(TARGETS _pyodbapi DESTINATION ${PYTHON_DEST} )
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyodbapi.py  DESTINATION ${PYTHON_DEST})
-
-endif()
-
-### apps
 
 add_subdirectory( tools )
 
