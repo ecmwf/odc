@@ -9,7 +9,6 @@
  */
 
 #include "odb_api/VariablesTable.h"
-//#include "eckit/compat/StrStream.h"
 //#include "eckit/parser/Tokenizer.h"
 
 //#include "odb_api/SQLAST.h"
