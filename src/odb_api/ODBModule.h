@@ -14,8 +14,8 @@
 #ifndef ODBModule_H
 #define ODBModule_H
 
-#include "experimental/eckit/ecml/core/Module.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Module.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 

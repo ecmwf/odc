@@ -15,10 +15,10 @@
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/io/FileHandle.h"
-#include "experimental/eckit/ecml/parser/Request.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
-#include "experimental/eckit/ecml/core/Environment.h"
-#include "experimental/eckit/ecml/data/DataHandleFactory.h"
+#include "eckit/ecml/parser/Request.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
 
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/TemplateParameters.h"
