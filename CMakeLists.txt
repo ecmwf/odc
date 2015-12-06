@@ -88,6 +88,10 @@ set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" 
 get_directory_property( ODB_API_DEFINITIONS COMPILE_DEFINITIONS )
 
 set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
+if( HAVE_FORTRAN )
+  list( APPEND ODB_API_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
+endif()
+
 set( ODB_API_LIBRARIES      Odb )
 
 add_subdirectory( src )
