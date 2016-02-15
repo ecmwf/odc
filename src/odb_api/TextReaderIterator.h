@@ -19,12 +19,10 @@
 #include "odb_api/Header.h"
 #include "odb_api/IteratorProxy.h"
 #include "odb_api/MetaData.h"
-#include "odb_api/RowsIterator.h"
-#include "odb_api/SimpleFilterIterator.h"
-
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 	namespace sql {
@@ -37,7 +35,7 @@ namespace odb {
 
 class TextReader;
 
-class TextReaderIterator : public RowsReaderIterator
+class TextReaderIterator 
 {
 public:
 	TextReaderIterator (TextReader &owner);
@@ -58,7 +56,7 @@ public:
 	virtual int close();
 
 // next() is public cause it needs to be used by the C API functions - normally client code should not use it
-	virtual bool next();
+	virtual bool next(eckit::ExecutionContext* context=0);
 
 private:
 // No copy allowed.
@@ -81,6 +79,8 @@ private:
 	bool noMore_;
 
 	bool ownsF_;
+public:
+	eckit::ExecutionContext* context_;
 
 	//ReadOnlyMemoryDataHandle memDataHandle_;
 
@@ -95,7 +95,6 @@ protected:
 
 	friend class odb::TextReader;
 	friend class odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double>;
-	friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double> >;
 	friend class odb::Header<odb::TextReaderIterator>;
 	friend class odb::sql::ODATableIterator;
 };

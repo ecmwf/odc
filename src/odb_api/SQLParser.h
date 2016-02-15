@@ -20,11 +20,13 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 namespace sql {
 
 class SQLDatabase;
+class SQLSession;
 
 class SyntaxError : public eckit::SeriousBug {
 public:
@@ -44,16 +46,19 @@ class SQLParser {
 public:
 	static int line();
 
-	static void parseString(const std::string&, eckit::DataHandle*, SQLOutputConfig);
-    static void parseString(const std::string&, std::istream*, SQLOutputConfig, const std::string& cvsDelimiter);
-	static void parseString(const std::string&, SQLDatabase&, SQLOutputConfig);
+    // 3 dodgy methods for compatibility with older versions
+	static void parseString(const std::string&, eckit::DataHandle*, const SQLOutputConfig&);
+    static void parseString(const std::string&, std::istream*, const SQLOutputConfig&, const std::string& cvsDelimiter);
+	static void parseString(const std::string&, SQLDatabase&, const SQLOutputConfig&);
+
+	static void parseString(odb::sql::SQLSession&, const std::string&, eckit::DataHandle*, const SQLOutputConfig&);
+    static void parseString(odb::sql::SQLSession&, const std::string&, std::istream*, const SQLOutputConfig&, const std::string& cvsDelimiter);
+	static void parseString(odb::sql::SQLSession&, const std::string&, SQLDatabase&, const SQLOutputConfig&);
 
 	//static void include(const eckit::PathName&);
 
-	static void pushInclude(const std::string&, const std::string&);
-	static void popInclude();
-
-	static void lexRelease();
+	static void pushInclude(const std::string&, const std::string&, void*, void*);
+	static void popInclude(void*);
 
 	static std::stack<ParseFrame> frames_;
 };

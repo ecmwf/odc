@@ -50,18 +50,18 @@ unsigned long long SQLOrderOutput::count() { return output_->count(); }
 
 void SQLOrderOutput::reset() { output_->reset(); }
 
-void SQLOrderOutput::flush()
+void SQLOrderOutput::flush(eckit::ExecutionContext* context)
 {
 	for (SortedResults::iterator it = sortedResults_.begin(); it != sortedResults_.end(); ++it)
 	{
 		std::vector<Expressions>& rows = it->second;
 		for (size_t i = 0; i < rows.size(); ++i)
-			output_->output(rows[i]);
+			output_->output(rows[i], context);
 	}
-	output_->flush();
+	output_->flush(context);
 }
 
-bool SQLOrderOutput::output(const Expressions& results)
+bool SQLOrderOutput::output(const Expressions& results, eckit::ExecutionContext* context)
 {
 	OrderByExpressions byValues(by_.second);
     Expressions& byExpressions(by_.first);

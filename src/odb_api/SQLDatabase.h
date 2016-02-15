@@ -19,11 +19,10 @@
 #include "odb_api/SchemaAnalyzer.h"
 
 namespace eckit { class DataHandle; }
+namespace odb { class DataTable; }
+namespace odb { class DataTable; }
 
 namespace odb {
-
-class DataTable;
-
 namespace sql {
 // Forward declarations
 
@@ -82,7 +81,7 @@ protected:
 	std::string name_;
 	SchemaAnalyzer schemaAnalyzer_;
 
-    DataTable* dualTable_;
+    odb::DataTable* dualTable_;
     SQLTable* dual_;
 
 private:

@@ -40,7 +40,9 @@ double ParameterExpression::eval(bool& missing) const { return value_; }
 
 void ParameterExpression::prepare(SQLSelect& sql)
 {
-	value_ = SQLSession::current().getParameter(which_);
+    NOTIMP;
+    //TODO: 
+	//value_ = SQLSession::current().getParameter(which_);
 //	std::cout << "ParameterExpression " << name_ << " " << value_ << std::endl;
 }
 

@@ -26,13 +26,13 @@ static void test()
 	typedef DataStream<SameByteOrder, DataHandle> DS;
 
 	MetaData md1(0);
-	md1.addColumn<DS>("A", "REAL");//, false, 0.);
-	md1.addColumn<DS>("B", "INTEGER");//, false, 0.);
+	md1.addColumn /*<DS>*/("A", "REAL");//, false, 0.);
+	md1.addColumn /*<DS>*/("B", "INTEGER");//, false, 0.);
 
 	Log::info() << "md1: " << std::endl << md1 << std::endl;
 
 	MetaData md2(0);
-	md2.addColumn<DS>("C", "STRING");//, false, 0.);
+	md2.addColumn /*<DS> */("C", "STRING");//, false, 0.);
 
 	Log::info() << "md2:" << std::endl << md2 << std::endl;
 

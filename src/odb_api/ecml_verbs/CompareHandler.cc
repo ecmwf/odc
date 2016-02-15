@@ -13,17 +13,20 @@
 #include "CompareHandler.h"
 
 #include "odb_api/Comparator.h"
+#include "eckit/io/MultiHandle.h"
 
 #include "eckit/types/Types.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core//ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/parser/RequestParser.h"
+#include "experimental/eckit/ecml/core//ExecutionContext.h"
+#include "experimental/eckit/ecml/core/Environment.h"
+#include "experimental/eckit/ecml/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;
 using namespace odb;
+
+namespace odb {
 
 CompareHandler::CompareHandler(const string& name) : RequestHandler(name) {}
 
@@ -35,6 +38,18 @@ Values CompareHandler::handle(ExecutionContext& context)
     Log::info() << "left: " << left << endl;
     Log::info() << "right: " << right  << endl;
 
+
+    MultiHandle leftH, rightH;
+    DataHandleFactory::buildMultiHandle(leftH, left);
+    DataHandleFactory::buildMultiHandle(rightH, right);
+
+    leftH.openForRead();
+    rightH.openForRead();
+
+    Comparator comparator;
+    comparator.compare(leftH, rightH);
+    /*
+
     if (left.size() != right.size())
         throw UserError("Sizes of lists differ");
 
@@ -45,14 +60,23 @@ Values CompareHandler::handle(ExecutionContext& context)
         Log::info() << "Comparing" << endl << " " << leftString << endl << "to" << endl << " " << rightString << endl;
 
         {
-            auto_ptr<DataHandle> l (DataHandleFactory::openForRead(leftString)),
-                                 r (DataHandleFactory::openForRead(rightString));
+            //auto_ptr<DataHandle> l (DataHandleFactory::openForRead(leftString)),
+            //                     r (DataHandleFactory::openForRead(rightString));
+            // TODO: fix leak. we probably cannot just use 'delete' here - I get:
+            //    free(): invalid pointer: 0x0000000000670548 ***
+            // on bamboo with the auto_ptr, perhaps because the dataHandle was allocated in a different library???
+            DataHandle* l (DataHandleFactory::openForRead(leftString));
+            DataHandle* r (DataHandleFactory::openForRead(rightString));
             comparator.compare(*l, *r);
         }
     }
+    */
     Log::info() << "No difference found" << endl;
 
     Request r(new Cell("_list", "", 0, 0));
 
     return r;
 }
+
+} // namespace odb 
+

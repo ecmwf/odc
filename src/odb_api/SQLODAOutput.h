@@ -48,8 +48,8 @@ private:
 // -- Overridden methods
 	virtual void size(int);
 	virtual void reset();
-	virtual void flush();
-	virtual bool output(const expression::Expressions&);
+	virtual void flush(eckit::ExecutionContext*);
+	virtual bool output(const expression::Expressions&, eckit::ExecutionContext*);
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 	virtual unsigned long long count();

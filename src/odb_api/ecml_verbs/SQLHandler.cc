@@ -14,10 +14,10 @@
 
 #include "eckit/io/MultiHandle.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/parser/RequestParser.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "experimental/eckit/ecml/core/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/StringTool.h"
@@ -26,30 +26,36 @@
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLSelect.h"
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "experimental/eckit/ecml/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;
 using namespace odb;
 using namespace odb::sql;
 
+namespace odb {
+
 SQLHandler::SQLHandler(const string& name) : RequestHandler(name) {}
 
 Values SQLHandler::handle(ExecutionContext& context)
 {
     string target (context.environment().lookup("target", "", context)),
-           filter (cleanUpSQLText(context.environment().lookup("filter", "", context)));
+           include (cleanUpSQLText(context.environment().lookup("include", "", context)));
            //callback (context.environment().lookup("callback", "", context));
-    vector<string> sources (getValueAsList(context, "source"));
+
+    vector<string> filters (context.getValueAsList("filter"));
+    vector<string> sources (context.getValueAsList("source"));
+
+    string filter;
+    for (size_t i(0); i < filters.size(); ++i)
+        filter += cleanUpSQLText(filters[i]) + "\n";
 
     MultiHandle input;
     DataHandleFactory::buildMultiHandle(input, sources);
 
     Log::debug() << "SQLHandler:" << " target: " << target << ", input : " << input << ", filter: " << filter << endl;
 
-    input.openForRead();
-
-    vector<string> ps( pathNamesToStrings(executeSelect(filter, input, target, &context)) );
+    vector<string> ps( pathNamesToStrings(executeSelect(filter, include, input, target, &context)) );
     //ASSERT(ps.size());
     Values vs(0);
     List list(vs);
@@ -64,6 +70,11 @@ Values SQLHandler::handle(ExecutionContext& context)
 
 vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& input, const string& into, ExecutionContext* context)
 {
+    return executeSelect(select, "", input, into, context);
+}
+
+vector<PathName> SQLHandler::executeSelect(const string& select, const string& inc, DataHandle& input, const string& into, ExecutionContext* context)
+{
     // We don't call saveInto here so have to open the handle explicitly:
     input.openForRead();
 
@@ -74,23 +85,37 @@ vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& inp
         sql = "select *;";
     }
 
-    // TODO: append semicolon to filter if missing
-
-    string s (cleanUpSQLText(sql));
-    Log::info() << "Executing '" << s << "'" << endl;
+    sql = cleanUpSQLText(sql);
+    Log::info() << "Executing '" << sql << "'" << endl;
 
     SQLNonInteractiveSession session;
 
-    SQLOutputConfig config(SQLSelectFactory::instance().config());
+    SQLOutputConfig config(session.selectFactory().config());
     config.outputFormat("odb");
     config.outputFile(into);
 
     SQLParser parser;
-    parser.parseString(sql, &input, config);
+    if (inc.size())
+        parser.parseString(session, inc, &input, config);
+    parser.parseString(session, sql, &input, config);
 
-    SQLSelect* sqlSelect(dynamic_cast<SQLSelect*>(session.statement()));
+    SQLStatement* statement (session.statement());
+    if (! statement)
+    {
+        //throw UserError("sql: No SELECT parsed");
+        Log::info()  << "sql: No SELECT parsed" << endl;
+        return vector<PathName> ();
+    }
 
-    long long numberOfRows (sqlSelect->execute());
+    SQLSelect* sqlSelect(dynamic_cast<SQLSelect*>(statement));
+    if (! sqlSelect) 
+    {
+        stringstream ss;
+        ss << "sql: Parsed statement " << *statement << " is not SELECT";
+        throw UserError(ss.str());
+    }
+
+    long long numberOfRows (sqlSelect->execute(context));
     vector<PathName> r(sqlSelect->outputFiles());
 
     delete sqlSelect;
@@ -113,4 +138,6 @@ string SQLHandler::cleanUpSQLText(const string& sql)
         s.append(";");
     return s;
 }
+
+} // namespace odb 
 

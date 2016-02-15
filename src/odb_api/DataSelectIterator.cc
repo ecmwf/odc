@@ -12,11 +12,13 @@ using namespace odb;
 namespace odb {
 namespace internal {
 
-DataSelectIterator::DataSelectIterator(const DataSelect& query, bool begin)
-  : query_(query),
+DataSelectIterator::DataSelectIterator(const DataSelect& query, bool begin, eckit::ExecutionContext* context)
+  : context_(context),
+    query_(query),
     session_(begin ? createSession() : 0),
     select_(begin ? dynamic_cast<sql::SQLSelect*>(session_->statement()) : 0),
     row_(begin ? select_->results().size() : 0),
+
     aggregateResult_(false),
     noMore_(begin ? false : true)
 {
@@ -55,7 +57,7 @@ DataSelectSession* DataSelectIterator::createSession()
     ASSERT(session);
 
     sql::SQLParser parser;
-    parser.parseString(query_.statement(), *db, sql::SQLOutputConfig::defaultConfig());
+    parser.parseString(*session, query_.statement(), *db, sql::SQLOutputConfig::defaultConfig());
 
     sql::SQLStatement* statement = session->statement();
     sql::SQLSelect* select = dynamic_cast<sql::SQLSelect*>(statement);
@@ -77,7 +79,7 @@ void DataSelectIterator::increment()
         return;
     }
 
-    bool ok = select_->processOneRow();
+    bool ok = select_->processOneRow(context_);
 
     if (!ok)
     {
@@ -88,7 +90,7 @@ void DataSelectIterator::increment()
         else
             noMore_ = true;
 
-        select_->postExecute();
+        select_->postExecute(context_);
     }
 }
 

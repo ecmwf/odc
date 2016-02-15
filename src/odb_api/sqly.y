@@ -1,3 +1,9 @@
+%pure-parser
+%lex-param {yyscan_t scanner}
+%lex-param {odb::sql::SQLSession* session}
+%parse-param {yyscan_t scanner}
+%parse-param {odb::sql::SQLSession* session}
+
 %{
 
 /*
@@ -15,36 +21,24 @@
 #include <unistd.h>
 
 #include "eckit/eckit.h"
+#include "odb_api/SQLSession.h"
+#include "odb_api/SQLStatement.h"
 
-using namespace SQLYacc;
+#include <iostream>
 
-typedef SQLExpression* SQLExpressionPtr; // For casts.
-
-struct YYSTYPE {
-    SQLExpression         *exp;
-    SQLTable              *table;
-    double                num;
-    std::string           val;
-    std::vector<std::string>         list;
-    Expressions            explist;
-    std::pair<SQLExpression*,SQLExpression*> ass;
-    Dictionary				dic;
-    std::pair<SQLExpression*,bool> orderexp;
-    std::pair<Expressions,std::vector<bool> > orderlist;
-    std::vector<SQLTable*>      tablist;
-    ColumnDefs             coldefs;
-    ColumnDef              coldef;
-    ConstraintDefs         condefs;
-    ConstraintDef          condef;
-    Range                  r;
-    bool                   bol;
-};
+//#include "odb_api/odblib_lex.h"
 
 #ifdef YYBISON
-#define YYSTYPE_IS_DECLARED
-int yylex(); 
+//#define YYSTYPE_IS_DECLARED
+//int yylex(); 
 //int yylex(YYSTYPE*, void*);
 //int yylex ( YYSTYPE * lvalp, YYLTYPE * llocp, yyscan_t scanner );
+
+/// # define YYLEX odblib_lex (&odblib_lval, scanner, session)
+
+//#define YY_DECL int odblib_lex (YYSTYPE *, yyscan_t, odb::sql::SQLSession*);
+
+//int yylex ( void * lvalp, void * llocp, void* scanner );
 //int yydebug;
 extern "C" int isatty(int);
 #endif
@@ -54,6 +48,7 @@ Expressions emptyExpressionList;
 %}
 
 %token <val>STRING
+%token <val>EMBEDDED_CODE
 %token <val>IDENT
 %token <val>VAR
 
@@ -119,14 +114,15 @@ Expressions emptyExpressionList;
 %token HASH
 %token LIKE
 %token RLIKE
+%token MATCH
+%token QUERY
 
-%type <exp>column
-%type <exp>vector_index 
+%type <exp>column;
+%type <exp>vector_index;
 
 %type <exp>condition;
 %type <exp>atom_or_number;
 %type <exp>expression;
-%type <exp>expression_ex;
 
 %type <exp>factor;
 %type <exp>power;
@@ -138,12 +134,7 @@ Expressions emptyExpressionList;
 %type <exp>where;
 
 %type <exp>assignment_rhs;
-%type <exp>vector;
-%type <exp>dictionary;
-%type <ass>association;
-%type <dic>association_list;
 %type <explist>expression_list;
-%type <explist>expression_list_ex;
 
 %type <tablist>table_list;
 %type <table>table
@@ -192,10 +183,12 @@ Expressions emptyExpressionList;
 %type <condef>foreign_key;
 %type <list>column_reference_list;
 %type <val>column_reference;
+%type <select_statement>select_statement;
+%type <select_statement>create_view_statement;
 
 %%
 
-start : statements { SQLSession::current().currentDatabase().setLinks(); }
+start : statements { session->currentDatabase().setLinks(); }
 	;
 
 statements : statement ';'
@@ -203,9 +196,17 @@ statements : statement ';'
 		   ;
 
 statement: select_statement
+           {
+               SelectAST a($1);
+               session->statement(session->selectFactory().create(*session, a));
+           }
 		 | set_statement
 		 | create_schema_statement
 		 | create_view_statement
+           {
+               SelectAST a($1);
+               session->statement(session->selectFactory().create(*session, a));
+           }
 		 | create_index_statement 
 		 | create_type_statement
 		 | create_table_statement
@@ -218,7 +219,7 @@ statement: select_statement
 		 | empty
 	;
 
-exit_statement: EXIT { /*delete &SQLSession::current();*/ return 0; }
+exit_statement: EXIT { return 0; }
 	;
 
 readonly_statement: READONLY
@@ -235,17 +236,15 @@ safeguard_statement: SAFEGUARD
 
 create_schema_statement: CREATE SCHEMA schema_name schema_element_list
         {
-            sql::SQLDatabase& db = SQLSession::current().currentDatabase();
-            db.schemaAnalyzer().endSchema();
+            session->currentDatabase().schemaAnalyzer().endSchema();
         }
         ;
 
 schema_name: IDENT
-           {
-               sql::SQLDatabase& db = SQLSession::current().currentDatabase();
-               db.schemaAnalyzer().beginSchema($1);
-           }
-           ;
+        {
+           session->currentDatabase().schemaAnalyzer().beginSchema($1);
+        }
+       ;
 
 schema_element_list: schema_element
                    | schema_element_list schema_element
@@ -258,38 +257,36 @@ schema_element: create_table_statement
 
 create_index_statement: CREATE INDEX IDENT TABLE IDENT
 	{
-		SQLSession& s  = SQLSession::current();
-		s.createIndex($3,$5);
+        session->createIndex($3,$5);
 	}
 	| CREATE INDEX IDENT '@' IDENT
 	{
-		SQLSession& s  = SQLSession::current();
-		s.createIndex($3,$5);
+        session->createIndex($3,$5);
 	}
 	;
 
 create_type_statement: create_type IDENT as_or_eq '(' bitfield_def_list ')'
 	{
-                std::string		typeName = $2;
-		ColumnDefs	colDefs = $5;
-		FieldNames	fields;
-		Sizes		sizes;
-		for (ColumnDefs::size_type i = 0; i < colDefs.size(); i++) {
-                        std::string name = colDefs[i].name();
-                        std::string memberType = colDefs[i].type();
+        std::string typeName ($2);
+        ColumnDefs	colDefs ($5);
+        FieldNames	fields;
+        Sizes		sizes;
+        for (ColumnDefs::size_type i (0); i < colDefs.size(); ++i)
+        {
+            std::string name (colDefs[i].name());
+            std::string memberType (colDefs[i].type());
 
-			fields.push_back(name);
+            fields.push_back(name);
 
-                        int size = ::atof(memberType.c_str() + 3); // bit[0-9]+
+            int size (::atof(memberType.c_str() + 3)); // bit[0-9]+
 			ASSERT(size > 0);
 
-			sizes.push_back(size);
-		}
-                std::string typeSignature = type::SQLBitfield::make("Bitfield", fields, sizes, typeName.c_str());
+            sizes.push_back(size);
+        }
+        std::string typeSignature (type::SQLBitfield::make("Bitfield", fields, sizes, typeName.c_str()));
 
-		SQLSession::current()
-		.currentDatabase()
-		.schemaAnalyzer().addBitfieldType(typeName, fields, sizes, typeSignature);
+        session->currentDatabase()
+        .schemaAnalyzer().addBitfieldType(typeName, fields, sizes, typeSignature);
 		
 		//cout << "CREATE TYPE " << typeName << " AS " << typeSignature << ";" << std::endl;		
 	}
@@ -363,7 +360,7 @@ constraint_name: CONSTRAINT IDENT { $$ = $2; }
                | empty { $$ = std::string(); }
                ;
 
-column_reference_list: column_reference { $$ =std:: vector<std::string>(1, $1); }
+column_reference_list: column_reference { $$ = std::vector<std::string>(1, $1); }
                 | column_reference_list ',' column_reference { $$ = $1; $$.push_back($3); }
                 ;
 
@@ -377,17 +374,14 @@ create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list
         ColumnDefs cols ($7);
 		std::vector<std::string> inheritance($10);
         TableDef tableDef(name, cols, $8, inheritance);
-        SQLSession& s  = SQLSession::current();
-        s.currentDatabase().schemaAnalyzer().addTable(tableDef);
+        session->currentDatabase().schemaAnalyzer().addTable(tableDef);
 	}
 	;
 
 table_name: IDENT { $$ = $1; }
           | IDENT '.' IDENT { $$ = $1 + std::string(".") + $3; }
-          | expression_ex { SQLExpression* e($1); $$ = e->title(); }
+          | expression { SQLExpression* e($1); $$ = e->title(); }
           ;
-
-/* TODO: optional_as: AS | empty; BREAKS PARSING */
 
 column_def_list: column_def_list_     { $$ = $1; }
                | column_def_list_ ',' { $$ = $1; }
@@ -417,27 +411,25 @@ data_type: IDENT                 { $$ = $1; }
          | TYPEOF '(' column ')' { $$ = ($3)->type()->name(); }
          ;
 
-default_value: DEFAULT expression_ex { SQLExpression* e($2); $$ = e->title(); }
+default_value: DEFAULT expression { SQLExpression* e($2); $$ = e->title(); }
              | empty { $$ = std::string(); }
              ;
 
-create_view_statement: CREATE VIEW IDENT AS select_statement
+create_view_statement: CREATE VIEW IDENT AS select_statement { $$ = $5; }
 	;
 
 select_statement: SELECT distinct all select_list into from where group_by order_by
                 {   
-                    bool                   distinct($2);
-                    bool                   all($3);
-                    Expressions            select_list($4);
-                    std::string            into($5);
-                    std::vector<SQLTable*> from($6);
-                    SQLExpression          *where($7);
-                    Expressions            group_by($8);
-                    std::pair<Expressions,std::vector<bool> >      order_by($9);
+                    bool                                      distinct($2);
+                    bool                                      all($3);
+                    Expressions                               select_list($4);
+                    std::string                               into($5);
+                    std::vector<Table>                        from ($6);
+                    SQLExpression*                            where($7);
+                    Expressions                               group_by($8);
+                    std::pair<Expressions,std::vector<bool> > order_by($9);
 
-                    SQLSelect* sqlSelect = SQLSelectFactory::instance()
-                        .create(distinct, all, select_list, into, from, where, group_by, order_by);
-                    SQLSession::current().statement(sqlSelect);
+                    $$ = SelectAST(distinct, all, select_list, into, from, where, group_by, order_by);
                 }
                 ;
 
@@ -455,41 +447,34 @@ into: INTO IDENT   { $$ = $2; }
     | empty        { $$ = ""; }
     ;
 
-from : FROM table_list { $$ = $2; }
-         | empty           { $$ = std::vector<SQLTable*>(); }
+from : FROM table_list    { $$ = $2; }
+     | FROM EMBEDDED_CODE 
+        { 
+            std::cerr << "FROM EMBEDDED_CODE: " << $2 << std::endl;
+            $$ = std::vector<Table>();
+            $$.push_back(Table($2, "", true));
+        } 
+     | empty              { $$ = std::vector<Table>(); }
 	 ;
 
 where : WHERE expression { $$ = $2; }
 	  |                  { $$ = 0;  } 
 	  ;
 
-vector	: '[' expression_list_ex ']' { $$ = new Expressions($2); }
+assignment_rhs	: expression
 		;
 
-dictionary: '{' association_list '}' { $$ = new Dictionary($2); }
-		  ;
-
-assignment_rhs	: expression_ex
-		;
-
-association: expression ':' expression_ex  { $$ = std::make_pair($1, $3); }
-		   ;
-
-association_list: association { Dictionary d; d[($1 .first)->title()] = $1 .second; $$ = d; }
-				| association_list ',' association { $$ = $1; $$[($3 .first)->title()] = $3 .second; }
-				| empty { $$ = Dictionary(); }
-				;
-
-set_statement : SET DATABASE STRING { SQLSession::current().openDatabase($3); }
+set_statement : SET DATABASE STRING { session->openDatabase($3); }
 	; 
 
-set_statement : SET DATABASE STRING AS IDENT { SQLSession::current().openDatabase($3,$5); }
+set_statement : SET DATABASE STRING AS IDENT { session->openDatabase($3,$5); }
 	; 
 
 set_statement : SET VAR EQ assignment_rhs
 	{ 
+        //using namespace std;
 		//cout << "== set variable " << $2 << " to "; if ($4) cout << *($4) << std::endl; else cout << "NULL" << std::endl;
-		SQLSession::current().currentDatabase().setVariable($2, $4);
+		session->currentDatabase().setVariable($2, $4);
 	}
 	; 
 
@@ -499,14 +484,14 @@ bitfield_ref: '.' IDENT  { $$ = $2; }
 column: IDENT vector_index table_reference optional_hash
 		  {
 
-			std::string columnName      ($1);
-			std::string bitfieldName    ;
-			SQLExpression* vectorIndex  ($2);
-			std::string table           ($3);
-			SQLExpression* pshift       ($4);
+			std::string columnName($1);
+			SQLExpression* vectorIndex($2);
+			Table table($3, "", false); // TODO: table_reference should handle .<database> suffix
+			SQLExpression* pshift($4);
 
             bool missing;
-			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
+			std::string bitfieldName;
+			$$ = session->selectFactory().createColumn(columnName, bitfieldName, vectorIndex, table /*TODO: handle .<database> */, pshift);
 		  }
 	   | IDENT bitfield_ref table_reference optional_hash
 		{
@@ -514,11 +499,11 @@ column: IDENT vector_index table_reference optional_hash
 			std::string columnName      ($1);
 			std::string bitfieldName    ($2);
 			SQLExpression* vectorIndex  (0); 
-			std::string table           ($3);
+			Table table($3, "", false); // TODO: table_reference should handle .<database> suffix
 			SQLExpression* pshift       ($4);
 
             bool missing;
-			$$ = SQLSelectFactory::instance().createColumn(columnName, bitfieldName, vectorIndex, table, pshift);
+			$$ = session->selectFactory().createColumn(columnName, bitfieldName, vectorIndex, table /*TODO: handle .<database> */, pshift);
 		 }
 	  ;
 
@@ -530,12 +515,12 @@ table_reference: '@' IDENT   { $$ = std::string("@") + $2; }
                | empty       { $$ = std::string(""); }
                ;
 
-table : IDENT '.' IDENT { SQLSession& s  = SQLSession::current(); $$ = s.findTable($1,$3); }
-	  | IDENT           { SQLSession& s  = SQLSession::current(); $$ = s.findTable($1); }
-	  | STRING			{ SQLSession& s  = SQLSession::current(); $$ = s.findFile($1); }
-	  ;
+table : IDENT '.' IDENT { $$ = Table(std::string($1), std::string($3), false); } 
+      | IDENT           { $$ = Table(std::string($1), std::string(""), false); } 
+      | STRING			{ $$ = Table(std::string($1), std::string(""), false); } 
+      ;
 
-table_list : table                  { $$ = std::vector<SQLTable*>(1,$1); }
+table_list : table                  { $$ = std::vector<Table>(); $$.push_back($1); }
 	       | table_list  ',' table  { $$ = $1; $$.push_back($3); }
 	       ;
 
@@ -552,15 +537,16 @@ select_list_ : select         { $$ = Expressions(1, $1); }
 select: select_ access_decl { $$ = $1; }
       ;
 
-select_: '*' table_reference                              { $$ = new ColumnExpression("*", $2);  } 
-	   | IDENT '.' '*'   table_reference                   { $$ = new BitColumnExpression($1, "*", $4); }
+select_: '*' table_reference                             { $$ = new ColumnExpression("*", $2);  } 
+	   | IDENT '.' '*' table_reference                   { $$ = new BitColumnExpression($1, "*", $4); }
 	   | IDENT '[' expression ':' expression ']' table
 		{
 			// TODO: Add simillar rule for BitColumnExpression.
-			bool missing = false;
-			int begin = $3->eval(missing); //ASSERT(!missing);
-			int end = $5->eval(missing); //ASSERT(!missing);
-			$$ = new ColumnExpression($1, $7, begin, end);
+			bool missing (false);
+			int begin ($3->eval(missing)); //ASSERT(!missing);
+			int end ($5->eval(missing)); //ASSERT(!missing);
+            Table table ($7);
+			$$ = new ColumnExpression($1, table.name /*TODO: handle .<database> */, begin, end);
 		}
 	   | expression AS IDENT table_reference { $$ = $1; $$->title($3 + $4); }
 	   | expression
@@ -589,19 +575,9 @@ order_list : order                  { $$ = std::make_pair(Expressions(1, $1 .fir
 
 order : expression DESC      { $$ = std::make_pair($1, false); }
       | expression ASC       { $$ = std::make_pair($1, true); }
-          | expression			 { $$ = std::make_pair($1, true); }
+      | expression			 { $$ = std::make_pair($1, true); }
 	  ;
 
-/*================= EXTENDED EXPRESSION =================================*/
-
-expression_ex : expression
-			  | vector 
-			  | dictionary
-			  ;
-
-expression_list_ex : expression_ex   {  $$ = Expressions(1, $1); }
-					| expression_list_ex ',' expression_ex { $$ = $1; $$.push_back($3); }
-					;
 
 /*================= EXPRESSION =========================================*/
 
@@ -618,18 +594,19 @@ atom_or_number : '(' expression ')'           { $$ = $2; }
 			   | '-' expression               { $$ = ast("-",$2); }
 			   | DOUBLE                       { $$ = new NumberExpression($1); }
 			   | column                   
-			   | VAR                          { $$ = SQLSession::current().currentDatabase().getVariable($1); } 
+			   | VAR                          { $$ = session->currentDatabase().getVariable($1); } 
 			   | '?' DOUBLE                   { $$ = new ParameterExpression($2); }
 			   | func '(' expression_list ')' { $$ = ast($1, $3); }
 			   | func '(' empty ')'           { $$ = ast($1, emptyExpressionList); }
 			   | func '(' '*' ')'             
 				{
-                                        if (std::string("count") != $1)
-                                                throw eckit::UserError(std::string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
+                    if (std::string("count") != $1)
+                        throw eckit::UserError(std::string("Only function COUNT can accept '*' as parameter (") + $1 + ")");
 
-					$$ = ast("count", new NumberExpression(1.0));
+                    $$ = ast("count", new NumberExpression(1.0));
 				}
 			   | STRING                       { $$ = new StringExpression($1); }
+			   | EMBEDDED_CODE                { $$ = new EmbeddedCodeExpression($1); }
 			   ;
 
 
@@ -661,21 +638,31 @@ relational_operator: '>' { $$ = ">"; }
                    | LE  { $$ = "<="; }
                    | NE  { $$ = "<>"; }
                    ;
+
 condition   : term relational_operator term relational_operator term { $$ = ast("and", ast($2,$1,$3), ast($4,$3,$5)); }
             | term relational_operator term                          { $$ = ast($2, $1, $3); }
+            | MATCH '(' expression_list ')' IN QUERY '(' select_statement ')'
+            { 
+                const Expressions& matchList ($3);
+                const SelectAST& subquery ($8);
+                $$ = ast("match", matchList, subquery);
+            }
             | condition  IN '(' expression_list ')'                  { $4.push_back($1); $$ = ast("in",$4);   }
             | condition  IN VAR         
 			{ 
-				SQLExpression* v = SQLSession::current().currentDatabase().getVariable($3);
-				ASSERT(v && v->isVector());
-				Expressions e(v->vector());
-				e.push_back($1);
-				$$ = ast("in", e);
+                SQLExpression* v = session->currentDatabase().getVariable($3);
+                ASSERT(v && v->isVector());
+                Expressions e(v->vector());
+                e.push_back($1);
+                $$ = ast("in", e);
 			}
             | condition  NOT IN '(' expression_list ')'  { $5.push_back($1); $$ = ast("not_in",$5);   }
             | condition  NOT IN VAR  
 			{ 
-				SQLExpression* v = SQLSession::current().currentDatabase().getVariable($4);
+                // This has not been implemented yet.
+                throw UserError("Syntax: 'condition NOT IN VAR' not yet supported");
+
+				SQLExpression* v = session->currentDatabase().getVariable($4);
 				ASSERT(v && v->isVector());
 				Expressions e(v->vector());
 				e.push_back($1);
@@ -701,8 +688,11 @@ disjonction : disjonction OR conjonction      { $$ = ast("or",$1,$3);   }
             ;
 
 expression  : disjonction
-			| expression '[' expression ']'  
+			| expression '[' expression ']' 
 			{
+                // This has not been implemented yet.
+                throw UserError("Syntax: 'expression [ expression ]' not yet supported");
+
 				SQLExpression* container = $1;
 				SQLExpression* index = $3;
 
@@ -717,17 +707,15 @@ expression  : disjonction
 				else
 				if (container->isDictionary())
 				{
-					// TODO: check title always returns string repr of it's value
-                                        std::string key = index->title();
-					//cerr << "==== key: '" << key << "'" << std::endl;
-					if (container->dictionary().find(key) == container->dictionary().end())
-					{
-                                                std::stringstream ss;
-						ss << "Key '" << key << "' not found.";
-						throw eckit::UserError(ss.str());
-					}
+                    std::string key (index->title());
+                    if (container->dictionary().find(key) == container->dictionary().end())
+                    {
+                        std::stringstream ss;
+                        ss << "Key '" << key << "' not found.";
+                        throw eckit::UserError(ss.str());
+                    }
 					
-					$$ = container->dictionary()[key];
+                    $$ = container->dictionary()[key];
 				}
 			}
             ;

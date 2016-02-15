@@ -16,6 +16,7 @@
 
 #include "eckit/eckit.h"
 #include "Types.h"
+#include "Expressions.h"
 
 namespace odb {
 namespace sql {
@@ -124,6 +125,64 @@ public:
 private:
     SchemaDefs schemas_;
     TableDefs tables_;
+};
+
+struct Table {
+    Table() : name(), database(), embeddedCode() {}
+
+    Table(const std::string& n, const std::string& db, const bool c)
+    : name(n), database(db), embeddedCode(c) {}
+
+    Table(const Table& o)
+    : name(o.name), database(o.database), embeddedCode(o.embeddedCode) {}
+
+    std::string name;
+    std::string database;
+    bool embeddedCode; // data to be computed
+};
+
+struct SelectAST {
+    SelectAST(
+        bool                                             distinct,
+        bool                                             all,
+        const Expressions&                               selectList,
+        const std::string&                               into,
+        const std::vector<Table>&                        from,
+        SQLExpression*                                   where,
+        const Expressions&                               groupBy,
+        const std::pair<Expressions,std::vector<bool> >& orderBy )
+
+    : distinct(distinct),
+      all(all),
+      selectList(selectList),
+      into(into),
+      from(from),
+      where(where),
+      groupBy(groupBy),
+      orderBy(orderBy)
+    {}
+
+    SelectAST(const SelectAST& o)
+    : distinct(o.distinct),
+      all(o.all),
+      selectList(o.selectList),
+      into(o.into),
+      from(o.from),
+      where(o.where),
+      groupBy(o.groupBy),
+      orderBy(o.orderBy)
+    {}
+
+    SelectAST() {}
+
+    bool                                      distinct;
+    bool                                      all;
+    Expressions                               selectList;
+    std::string                               into;
+    std::vector<Table>                        from;
+    SQLExpression*                            where;
+    Expressions                               groupBy;
+    std::pair<Expressions,std::vector<bool> > orderBy;
 };
 
 } // namespace sql

@@ -11,7 +11,8 @@
 #ifndef _SQLTool_H
 #define _SQLTool_H
 
-#include "Tool.h"
+#include "odb_api/tools/Tool.h"
+#include "odb_api/SQLOutputConfig.h"
 
 namespace odb {
 
@@ -61,12 +62,15 @@ private:
                 const eckit::Offset& offset,
                 const eckit::Length& length);
 
-	bool doNotWriteColumnNames_; // -T
-	bool doNotWriteNULL_;        // -N
-	std::string delimiter_;           // -delimiter
+    sql::SQLOutputConfig sqlOutputConfig_;
+
+	//bool doNotWriteColumnNames_; // -T
+	//bool doNotWriteNULL_;        // -N
+	//std::string delimiter_;           // -delimiter
+	//std::string outputFile_;          // -o
+	//std::string outputFormat_;        // default is ascii
+
 	std::string inputFile_;           // -i
-	std::string outputFile_;          // -o
-	std::string outputFormat_;        // default is ascii
 	eckit::Offset offset_;       // -offset
 	eckit::Length length_;       // -length
 };

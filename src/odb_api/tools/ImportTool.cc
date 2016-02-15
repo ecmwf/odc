@@ -17,6 +17,7 @@
 #include "odb_api/SelectIterator.h"
 #include "odb_api/Writer.h"
 #include "odb_api/tools/ImportTool.h"
+#include "odb_api/SQLInteractiveSession.h"
 
 using namespace std;
 using namespace eckit;
@@ -64,7 +65,8 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const std::
 
 void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, const std::string& sql, const std::string& delimiter)
 {
-	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
+    odb::sql::SQLInteractiveSession session;
+	session.selectFactory().csvDelimiter(delimiter);
 
 	ifstream fs( in.asString().c_str() );
 	odb::Select input(sql, fs, delimiter);
@@ -78,7 +80,8 @@ void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, co
 
 void ImportTool::importText(const std::string& s, const PathName& out, const std::string& delimiter)
 {
-	odb::sql::SQLSelectFactory::instance().csvDelimiter(delimiter);
+    odb::sql::SQLInteractiveSession session;
+	session.selectFactory().csvDelimiter(delimiter);
 
 	stringstream fs(s);
 	odb::Select input("select *;", fs, delimiter);

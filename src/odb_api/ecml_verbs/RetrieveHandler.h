@@ -9,19 +9,31 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef RetrieveHandler_H
-#define RetrieveHandler_H
+#ifndef odb_api_RetrieveHandler_H
+#define odb_api_RetrieveHandler_H
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
+
+namespace odb {
 
 class RetrieveHandler : public eckit::RequestHandler {
 public:
-    RetrieveHandler(const std::string&);
+    RetrieveHandler(const std::string&, bool local);
 
     virtual eckit::Values handle(eckit::ExecutionContext&);
+
+    static std::string odbPathNameSchema(eckit::ExecutionContext&);
+    static std::string odbServerRoots(eckit::ExecutionContext&);
+
+    static std::string valueInContextOrResource(eckit::ExecutionContext&, const std::string& keyword, bool required = true);
+
+private:
+    bool local_;
 };
+
+} // namespace odb
 
 #endif

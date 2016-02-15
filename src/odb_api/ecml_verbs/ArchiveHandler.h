@@ -9,11 +9,13 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef ArchiveHandler_H
-#define ArchiveHandler_H
+#ifndef odb_api_ArchiveHandler_H
+#define odb_api_ArchiveHandler_H
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
+
+namespace odb {
 
 class ArchiveHandler : public eckit::RequestHandler {
 public:
@@ -27,5 +29,7 @@ private:
     void archive(const eckit::PathName& source, const std::string& host, const eckit::Request request);
     static void checkRequestMatchesFilesMetaData(const eckit::ExecutionContext&, const eckit::Request);
 };
+
+} // namespace odb
 
 #endif

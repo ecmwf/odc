@@ -25,6 +25,7 @@ typedef std::vector<Column*> MetaDataBase;
 
 class MetaData : public MetaDataBase {
 public:
+	MetaData();
 	MetaData(int);
 	MetaData(int, Column *);
 	MetaData(const MetaData&);
@@ -56,10 +57,14 @@ public:
 
 	void setSize(size_t);
 
-	template<typename DATASTREAM>
 	MetaData& addColumn(const std::string& name, const std::string& type);
 
-	template<typename DATASTREAM> MetaData& addBitfield(const std::string& name, const BitfieldDef&);
+	template<typename DATASTREAM>
+	MetaData& addColumnPrivate(const std::string& name, const std::string& type);
+
+
+	MetaData& addBitfield(const std::string& name, const BitfieldDef&);
+	template<typename DATASTREAM> MetaData& addBitfieldPrivate(const std::string& name, const BitfieldDef&);
 
 	bool hasColumn(const std::string&) const;
 	Column* columnByName(const std::string&) const;
@@ -124,7 +129,7 @@ void MetaData::load(DATASTREAM &f)
 }
 
 template <typename DATASTREAM>
-MetaData& MetaData::addColumn(const std::string& name, const std::string& type)
+MetaData& MetaData::addColumnPrivate(const std::string& name, const std::string& type)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);
@@ -137,7 +142,7 @@ MetaData& MetaData::addColumn(const std::string& name, const std::string& type)
 }
 
 template<typename DATASTREAM> 
-MetaData& MetaData::addBitfield(const std::string& name, const BitfieldDef& bd)
+MetaData& MetaData::addBitfieldPrivate(const std::string& name, const BitfieldDef& bd)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);

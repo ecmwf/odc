@@ -9,13 +9,15 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef SQLHandler_H
-#define SQLHandler_H
+#ifndef odb_api_SQLHandler_H
+#define odb_api_SQLHandler_H
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+
+namespace odb {
 
 class SQLHandler : public eckit::RequestHandler {
 public:
@@ -24,7 +26,11 @@ public:
 
     static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&, eckit::ExecutionContext* context);
 
+    static std::vector<eckit::PathName> executeSelect(const std::string&, const std::string&, eckit::DataHandle&, const std::string&, eckit::ExecutionContext* context);
+
     static std::string cleanUpSQLText(const std::string&);
 };
+
+} // namespace odb
 
 #endif

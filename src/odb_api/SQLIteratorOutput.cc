@@ -35,10 +35,10 @@ template <typename T>
 void SQLIteratorOutput<T>::reset() { count_ = 0; }
 
 template <typename T>
-void SQLIteratorOutput<T>::flush() {}
+void SQLIteratorOutput<T>::flush(eckit::ExecutionContext*) {}
 
 template <typename T>
-bool SQLIteratorOutput<T>::output(const expression::Expressions& results)
+bool SQLIteratorOutput<T>::output(const expression::Expressions& results, eckit::ExecutionContext* context)
 {
 	size_t nCols = results.size();
 	///ASSERT(nCols == iterator_.columns().size());

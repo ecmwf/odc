@@ -15,11 +15,13 @@
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/io/FileHandle.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "eckit/config/Resource.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "experimental/eckit/ecml/core/Environment.h"
+#include "experimental/eckit/ecml/data/DataHandleFactory.h"
 
+#include "odb_api/FileCollector.h"
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/TemplateParameters.h"
 
@@ -27,12 +29,38 @@ using namespace std;
 using namespace eckit;
 using namespace odb;
 
-RetrieveHandler::RetrieveHandler(const string& name) : RequestHandler(name) {}
+namespace odb {
+
+RetrieveHandler::RetrieveHandler(const string& name, bool local) 
+: RequestHandler(name), 
+  local_(local) 
+{}
+
+std::string RetrieveHandler::odbPathNameSchema(eckit::ExecutionContext& context) 
+{ 
+    return FileCollector::expandTilde(valueInContextOrResource(context, "odbPathNameSchema")); 
+}
+
+std::string RetrieveHandler::odbServerRoots(eckit::ExecutionContext& context) 
+{ 
+    return FileCollector::expandTilde(valueInContextOrResource(context, "odbServerRoots")); 
+} 
+
+std::string RetrieveHandler::valueInContextOrResource(eckit::ExecutionContext& context, const string& keyword, bool required)
+{
+    string r (context.environment().lookup(keyword, eckit::Resource<std::string>(keyword, ""), context));
+    if (required && ! r.size())
+        throw UserError(string("Value of ") + keyword + " not found in neither ECML context nor config resource.");
+    return r;
+}
 
 Values RetrieveHandler::handle(ExecutionContext& context)
 {
-    Request request (context.environment().currentFrame());
-    //request->showGraph(false);
+    Request request (Cell::clone(context.environment().currentFrame())); // TODO: delete later
+    request->text("retrieve"); // TODO: we should not need to do this
+
+    Log::info() << "RetrieveHandler::handle: request: " << request << endl;
+ 
     const string host (database(context)),
                  target (context.environment().lookup("target", "", context)),
                  filter (context.environment().lookup("filter", "", context));
@@ -43,11 +71,13 @@ Values RetrieveHandler::handle(ExecutionContext& context)
     Log::info() << "RETRIEVE from " << host << " into " << target << endl;
 
     stringstream ss;
-    ss << request;
-    vector<string> v;
-    v.push_back(ss.str());
+    ss << (local_ ? "local://" : "mars://") << request;
+    if (local_)
+        ss << ",odbPathNameSchema=\"" << odbPathNameSchema(context) << "\""
+           << ",odbServerRoots=\"" << odbServerRoots(context) << "\"";
+
     MultiHandle input;
-    DataHandleFactory::buildMultiHandle(input, v);
+    DataHandleFactory::buildMultiHandle(input, ss.str());
     Log::info() << "RETRIEVE input " << input << endl;
 
     TemplateParameters templateParameters;
@@ -70,13 +100,11 @@ Values RetrieveHandler::handle(ExecutionContext& context)
     }
 
     ASSERT(r.size());
-
-    Values rv(0);
-    List list(rv);
+    List list;
     for (size_t i(0); i < r.size(); ++i)
         list.append(r[i]);
-
-    ASSERT(rv);
-    return rv;
+    return list;
 }
+
+} // namespace odb 
 

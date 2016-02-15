@@ -18,6 +18,7 @@ using namespace eckit;
 
 namespace odb {
 
+MetaData::MetaData() : std::vector<Column*>(), rowsNumber_(0), self(*this) {}
 MetaData::MetaData(int i) : std::vector<Column*>(i), rowsNumber_(0), self(*this) {}
 MetaData::MetaData(int i, Column *p) : std::vector<Column*>(i, p), rowsNumber_(0), self(*this) {}
 MetaData::MetaData(const MetaData& md) : std::vector<Column*>(0), rowsNumber_(0), self(*this)
@@ -61,8 +62,8 @@ MetaData MetaData::scanFile(const PathName& fileName)
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 
 	MDR mdReader(fileName);
-	MDR::iterator it = mdReader.begin();
-	MDR::iterator end = mdReader.end();
+	MDR::iterator it (mdReader.begin());
+	MDR::iterator end (mdReader.end());
 
 	MetaData wholeFileMD(it->columns());
 
@@ -256,6 +257,16 @@ void MetaData::print(std::ostream& s) const
 {
 	for (size_t i = 0; i < size(); i++)
 		s << i << ". " << *at(i) << std::endl;
+}
+
+MetaData& MetaData::addColumn(const std::string& name, const std::string& type)
+{
+    return addColumnPrivate<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(name, type);
+}
+
+MetaData& MetaData::addBitfield(const std::string& name, const BitfieldDef& bf)
+{
+    return addBitfieldPrivate<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(name, bf);
 }
 
 } // namespace odb

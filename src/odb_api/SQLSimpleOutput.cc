@@ -38,9 +38,9 @@ std::ostream& SQLSimpleOutput::format(std::ostream& o, size_t i) const
 
 void SQLSimpleOutput::size(int) {}
 void SQLSimpleOutput::reset() { count_ = 0; }
-void SQLSimpleOutput::flush() { out_ << std::flush; }
+void SQLSimpleOutput::flush(eckit::ExecutionContext*) { out_ << std::flush; }
 
-bool SQLSimpleOutput::output(const expression::Expressions& results)
+bool SQLSimpleOutput::output(const expression::Expressions& results, eckit::ExecutionContext* context)
 {
 	size_t n = results.size();
     for(size_t i = 0; i < n; i++)

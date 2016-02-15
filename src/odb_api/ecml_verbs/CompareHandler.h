@@ -9,18 +9,22 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef CompareHandler_H
-#define CompareHandler_H
+#ifndef odb_api_CompareHandler_H
+#define odb_api_CompareHandler_H
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/core/RequestHandler.h"
+
+namespace odb {
 
 class CompareHandler : public eckit::RequestHandler {
 public:
     CompareHandler(const std::string&);
     virtual eckit::Values handle(eckit::ExecutionContext&);
 };
+
+} // namespace odb
 
 #endif

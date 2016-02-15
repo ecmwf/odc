@@ -15,6 +15,9 @@
 #define FunctionFactory_H
 
 #include "odb_api/FunctionExpression.h"
+#include "odb_api/SQLAST.h"
+
+namespace odb { namespace sql { class SelectAST; } }
 
 namespace odb {
 namespace sql {
@@ -37,6 +40,7 @@ public:
 	FunctionExpression* build(const std::string&, SQLExpression*, SQLExpression*);
 	FunctionExpression* build(const std::string&, SQLExpression*, SQLExpression*, SQLExpression*);
 	FunctionExpression* build(const std::string&, const expression::Expressions&);
+    FunctionExpression* build(const std::string&, const expression::Expressions&, const SelectAST&);
 };
 
 class FunctionFactory : public FunctionFactoryBase {
@@ -68,6 +72,7 @@ FunctionExpression* ast(const std::string& s, SQLExpression* e);
 FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2);
 FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3);
 FunctionExpression* ast(const std::string& s, const expression::Expressions& e);
+FunctionExpression* ast(const std::string& s, const expression::Expressions& matchList, const SelectAST& selectAST);
 
 } // namespace function
 } // namespace expression 

@@ -15,6 +15,8 @@
 #define SQLOutput_H
 
 #include "odb_api/SQLOutputConfig.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/exception/Exceptions.h"
 
 namespace odb {
 namespace sql {
@@ -36,9 +38,11 @@ public:
 	virtual void cleanup(SQLSelect&) = 0;
 
 	virtual void reset() = 0;
-	virtual void flush() = 0;
+	virtual void flush(eckit::ExecutionContext*) { NOTIMP; } //= 0;
+	virtual void flush() { flush(0); } //= 0; //TODO: remove
 
-	virtual bool output(const expression::Expressions&) = 0;
+	virtual bool output(const expression::Expressions&, eckit::ExecutionContext*) { NOTIMP; } //= 0;
+	virtual bool output(const expression::Expressions& es) { output(es, 0); } //= 0; //TODO: remove me
 
 	virtual void outputReal(double, bool) = 0;
 	virtual void outputDouble(double, bool) = 0;

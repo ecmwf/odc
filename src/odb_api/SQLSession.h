@@ -11,13 +11,16 @@
 // File SQLSession.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef SQLSession_H
-#define SQLSession_H
+#ifndef odb_sql_SQLSession_H
+#define odb_sql_SQLSession_H
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 #include "eckit/eckit.h"
+
+#include "odb_api/SQLSelectFactory.h"
 
 namespace odb {
 namespace sql {
@@ -39,6 +42,8 @@ public:
 
 	SQLDatabase* getDatabase(const std::string& name);
 
+    SQLSelectFactory& selectFactory();
+
 	double getParameter(int) const;
 	void   setParameter(int,double);
 
@@ -56,11 +61,10 @@ public:
 	SQLDatabase& currentDatabase() const;
 	SQLDatabase& currentDatabase(SQLDatabase*);
 
-	static SQLSession& current();
+	unsigned long long execute(SQLStatement&, eckit::ExecutionContext*);
 
 protected:
 	unsigned long long lastExecuteResult_;
-	unsigned long long execute(SQLStatement&);
 
 private:
 // No copy allowed
@@ -68,12 +72,10 @@ private:
 	SQLSession(const SQLSession&);
 	SQLSession& operator=(const SQLSession&);
 
-	SQLDatabase* current_;
-
+	SQLDatabase* currentDatabase_;
     std::map<int,double> params_;
-
     std::map<std::string,SQLDatabase*> databases_;
-
+    SQLSelectFactory selectFactory_;
 };
 
 } // namespace sql

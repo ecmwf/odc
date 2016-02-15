@@ -30,8 +30,8 @@ private:
 
 	virtual void size(int) {}
 	virtual void reset() { count_ = 0; }
-	virtual void flush() {}
-	virtual bool output(const odb::sql::expression::Expressions&);
+	virtual void flush(eckit::ExecutionContext*) {}
+	virtual bool output(const odb::sql::expression::Expressions&, eckit::ExecutionContext*);
 	virtual void prepare(odb::sql::SQLSelect&) {}
 	virtual void cleanup(odb::sql::SQLSelect&) {}
 	virtual unsigned long long count() { return count_; }

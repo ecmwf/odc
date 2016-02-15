@@ -13,10 +13,10 @@
 #include <string>
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "experimental/eckit/ecml/parser/Request.h"
+#include "experimental/eckit/ecml/parser/RequestParser.h"
+#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "experimental/eckit/ecml/data/DataHandleFactory.h"
 
 #include "ArchiveHandler.h"
 
@@ -24,6 +24,8 @@
 
 using namespace std;
 using namespace eckit;
+
+namespace odb {
 
 // TODO: clean it up!
 const char * cfg_ = 
@@ -43,7 +45,7 @@ Values ArchiveHandler::handle(ExecutionContext& context)
 {
     const string host (database(context));
 
-    vector<string> sources(getValueAsList(context, "source"));
+    vector<string> sources(context.getValueAsList("source"));
     if (! sources.size())
         throw UserError("You must specify file(s) to be archived using the SOURCE keyword");
 
@@ -146,4 +148,6 @@ void ArchiveHandler::archive(const PathName& source, const string& host, const R
 
     input.saveInto(*mars);
 }
+
+} // namespace odb 
 
