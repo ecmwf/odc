@@ -38,16 +38,16 @@ if( HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
         #DEPENDS _pyodbapi
     )
 
-    ecbuild_add_test ( TARGET       test_python_odb_api.py
-                       TYPE         PYTHON
-                       COMMAND      ${CMAKE_CURRENT_SOURCE_DIR}/test_python_odb_api.py
-                       CONDITION    HAVE_PYTHON
-                       ENVIRONMENT 
-                                    PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH}
-                                    LD_LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}:${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-                                    PYTHON=${PYTHON_EXECUTABLE} 
-                       TEST_DEPENDS python_odb_api_get_test_data
-                     )
+#    ecbuild_add_test ( TARGET       test_python_odb_api.py
+#                       TYPE         PYTHON
+#                       COMMAND      ${CMAKE_CURRENT_SOURCE_DIR}/test_python_odb_api.py
+#                       CONDITION    HAVE_PYTHON
+#                       ENVIRONMENT 
+#                                    PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PYTHONPATH}
+#                                    LD_LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}:${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
+#                                    PYTHON=${PYTHON_EXECUTABLE} 
+#                       TEST_DEPENDS python_odb_api_get_test_data
+#                     )
 
     install(TARGETS _pyodbapi DESTINATION ${PYTHON_DEST} )
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyodbapi.py  DESTINATION ${PYTHON_DEST})

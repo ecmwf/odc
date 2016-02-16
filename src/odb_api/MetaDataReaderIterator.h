@@ -46,7 +46,7 @@ namespace odb {
 namespace odb {
 
 
-class MetaDataReaderIterator //: public RowsReaderIterator
+class MetaDataReaderIterator 
 {
 public:
 

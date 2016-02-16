@@ -227,7 +227,7 @@ Test_selectAggregatedAndNonAggregatedNULL
 Test_select_constant_value
 Test_sqlOutputFormatting
 Test_stringInWhere
-Test_vector_syntax
+#Test_vector_syntax
 Test_vector_syntax2
 Test_windSpeedWindDirection
 )

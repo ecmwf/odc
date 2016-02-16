@@ -147,6 +147,11 @@ oda_ptr odb_read_create(const char *config, int *err)
 	return oda_ptr(o);
 }
 
+oda_ptr odb_create(const char *config, int *err)
+{
+    return odb_read_create(config, err);
+}
+
 /// @param config  ignored for now.
 oda_ptr odb_select_create(const char *config, int *err)
 {
@@ -168,6 +173,11 @@ int odb_read_destroy(oda_ptr o)
 {
 	delete reinterpret_cast<Reader *>(o);
 	return 0;
+}
+
+int odb_destroy(oda_ptr o)
+{
+    return odb_read_destroy(o);
 }
 
 int odb_select_destroy(oda_ptr o)

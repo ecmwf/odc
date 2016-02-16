@@ -27,7 +27,6 @@ namespace odb {
 class Reader;
 class HashTable;
 class SQLIteratorSession;
-class RowsReaderIterator;
 class ReaderIterator;
 
 typedef WriterBufferingIterator DefaultWritingIterator;

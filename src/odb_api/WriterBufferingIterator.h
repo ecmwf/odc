@@ -33,7 +33,7 @@ class SQLIteratorSession;
 template <typename I> class Writer;
 namespace sql { class TableDef; }
 
-class WriterBufferingIterator //: public RowsWriterIterator
+class WriterBufferingIterator 
 {
 public:
 	typedef Writer<WriterBufferingIterator> Owner;

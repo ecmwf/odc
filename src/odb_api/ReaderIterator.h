@@ -47,7 +47,7 @@ namespace odb {
 
 class Reader;
 
-class ReaderIterator //: public RowsReaderIterator
+class ReaderIterator
 {
 public:
 	ReaderIterator (Reader &owner);

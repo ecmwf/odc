@@ -56,7 +56,9 @@ unsigned int odb_api_format_version_major();
 unsigned int odb_api_format_version_minor();
 
 oda_ptr odb_read_create(const char *, int *);
+oda_ptr odb_create(const char *, int *); // Compatibility
 int odb_read_destroy(oda_ptr);
+int odb_destroy(oda_ptr); // Compatibility
 oda_read_iterator_ptr odb_create_read_iterator(oda_ptr, const char *, int *);
 int odb_read_iterator_destroy(oda_read_iterator_ptr);
 int odb_read_iterator_get_no_of_columns(oda_read_iterator_ptr, int*);

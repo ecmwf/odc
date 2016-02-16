@@ -28,7 +28,7 @@ class HashTable;
 class SQLIteratorSession;
 
 template <typename T>
-class ODAUpdatingIterator //: public RowsReaderIterator
+class ODAUpdatingIterator 
 {
 public:
 	ODAUpdatingIterator (T& inputIterator, const T& end, const std::vector<std::string>& columns, const std::vector<double>& values);

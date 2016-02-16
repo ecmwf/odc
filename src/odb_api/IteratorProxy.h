@@ -50,7 +50,6 @@ namespace odb {
 class Reader;
 class HashTable;
 class SQLIteratorSession;
-class RowsReaderIterator;
 class ReaderIterator;
 class MetaData;
 class MetaDataReaderIterator;
