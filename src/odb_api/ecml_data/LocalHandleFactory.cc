@@ -14,11 +14,11 @@
 #include "eckit/io/MultiHandle.h"
 #include "eckit/config/Resource.h"
 
-#include "experimental/eckit/ecml/parser/Request.h"
-#include "experimental/eckit/ecml/parser/RequestParser.h"
-#include "experimental/eckit/ecml/core/RequestHandler.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
-#include "experimental/eckit/ecml/core/Environment.h"
+#include "eckit/ecml/parser/Request.h"
+#include "eckit/ecml/parser/RequestParser.h"
+#include "eckit/ecml/core/RequestHandler.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
 
 #include "odb_api/FileMapper.h"
 #include "odb_api/FileCollector.h"

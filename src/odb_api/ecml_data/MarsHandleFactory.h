@@ -9,18 +9,17 @@
  */
 /// @author Piotr Kuchta, May 2015
 
-#ifndef ListHandler_H
-#define ListHandler_H
+#ifndef MarsHandleFactory_H
+#define MarsHandleFactory_H
 
-#include <sstream>
+#include "eckit/ecml/data/DataHandleFactory.h"
 
-#include "ecml/parser/Request.h"
-#include "ecml/RequestHandler.h"
-
-class ListHandler : public eckit::RequestHandler {
+class MarsHandleFactory : public eckit::DataHandleFactory
+{
 public:
-    ListHandler(const std::string&);
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    MarsHandleFactory();
+protected:
+    eckit::DataHandle* makeHandle(const std::string&) const;
 };
 
 #endif

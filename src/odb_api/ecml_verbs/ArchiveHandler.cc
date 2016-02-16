@@ -13,10 +13,10 @@
 #include <string>
 
 #include "eckit/io/FileHandle.h"
-#include "experimental/eckit/ecml/parser/Request.h"
-#include "experimental/eckit/ecml/parser/RequestParser.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
-#include "experimental/eckit/ecml/data/DataHandleFactory.h"
+#include "eckit/ecml/parser/Request.h"
+#include "eckit/ecml/parser/RequestParser.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
 
 #include "ArchiveHandler.h"
 

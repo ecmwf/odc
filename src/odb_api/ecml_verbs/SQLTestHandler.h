@@ -13,8 +13,8 @@
 #define odb_api_SQLTestHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "experimental/eckit/ecml/parser/Request.h"
-#include "experimental/eckit/ecml/core/RequestHandler.h"
+#include "eckit/ecml/parser/Request.h"
+#include "eckit/ecml/core/RequestHandler.h"
 #include "eckit/filesystem/PathName.h"
 
 namespace odb {

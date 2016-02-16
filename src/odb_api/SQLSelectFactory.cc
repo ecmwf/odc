@@ -9,8 +9,8 @@
  */
 
 #include "eckit/utils/Translator.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
-#include "experimental/eckit/ecml/core/Environment.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
 #include "eckit/types/Types.h"
 
 #include "odb_api/SQLDatabase.h"

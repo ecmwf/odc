@@ -10,10 +10,10 @@
 
 #include "VariableLookupHandler.h"
 
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/ExecutionContext.h"
-#include "experimental/ecml/Environment.h"
-#include "experimental/ecml/Interpreter.h"
+#include "ecml/parser/Request.h"
+#include "ecml/ExecutionContext.h"
+#include "ecml/Environment.h"
+#include "ecml/Interpreter.h"
 
 using namespace std;
 using namespace eckit;

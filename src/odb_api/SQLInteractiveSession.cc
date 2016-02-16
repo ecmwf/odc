@@ -10,7 +10,7 @@
 
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 #include "odb_api/SQLInteractiveSession.h"
 #include "odb_api/SQLSimpleOutput.h"

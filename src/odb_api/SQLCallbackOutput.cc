@@ -10,12 +10,12 @@
 
 #include "eckit/eckit.h"
 
-#include "experimental/eckit/ecml/parser/Request.h"
-#include "experimental/eckit/ecml/parser/RequestParser.h"
-#include "experimental/eckit/ecml/parser/Cell.h"
+#include "eckit/ecml/parser/Request.h"
+#include "eckit/ecml/parser/RequestParser.h"
+#include "eckit/ecml/parser/Cell.h"
 
-#include "experimental/eckit/ecml/core/Environment.h"
-#include "experimental/eckit/ecml/core/Interpreter.h"
+#include "eckit/ecml/core/Environment.h"
+#include "eckit/ecml/core/Interpreter.h"
 
 #include "odb_api/Decoder.h"
 #include "odb_api/Expressions.h"

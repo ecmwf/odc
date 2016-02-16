@@ -13,9 +13,9 @@
 #include "eckit/parser/StringTools.h"
 #include "eckit/io/FileHandle.h"
 
-#include "experimental/eckit/ecml/parser/Request.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
-#include "experimental/eckit/ecml/core/Environment.h"
+#include "eckit/ecml/parser/Request.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/Comparator.h"

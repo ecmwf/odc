@@ -12,7 +12,7 @@
 #ifndef odb_api_LocalHandleFactory_H
 #define odb_api_LocalHandleFactory_H
 
-#include "experimental/eckit/ecml/data/DataHandleFactory.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
 
 class LocalHandleFactory : public eckit::DataHandleFactory
 {

@@ -9,7 +9,7 @@
 #include "odb_api/SQLDataSet.h"
 #include "odb_api/SQLDataTable.h"
 
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 using namespace odb;
 using namespace eckit;

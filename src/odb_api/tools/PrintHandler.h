@@ -14,8 +14,8 @@
 
 #include <sstream>
 
-#include "experimental/ecml/parser/Request.h"
-#include "experimental/ecml/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/RequestHandler.h"
 
 class PrintHandler : public eckit::RequestHandler {
 public:

@@ -14,11 +14,11 @@
 #include "eckit/types/Types.h"
 #include "eckit/parser/StringTools.h"
 
-#include "experimental/eckit/ecml/parser/Request.h"
-#include "experimental/eckit/ecml/parser/RequestParser.h"
-#include "experimental/eckit/ecml/core//ExecutionContext.h"
-#include "experimental/eckit/ecml/core/Environment.h"
-#include "experimental/eckit/ecml/data/DataHandleFactory.h"
+#include "eckit/ecml/parser/Request.h"
+#include "eckit/ecml/parser/RequestParser.h"
+#include "eckit/ecml/core//ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
 
 #include "CreatePartitionsHandler.h"
 #include "odb_api/Partitioner.h"
