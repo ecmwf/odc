@@ -35,7 +35,6 @@
 #include "odb_api/MetaData.h"
 #include "odb_api/MetaDataReader.h"
 #include "odb_api/MetaDataReaderIterator.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/SelectIterator.h"
 #include "odb_api/SQLBitfield.h"
 #include "odb_api/SQLExpression.h"
@@ -90,7 +89,7 @@ template <typename T>
 typename MetaDataReader<T>::iterator MetaDataReader<T>::begin()
 {
     T* it = new T(this->dataHandle(), skipData_);
-	it->next();
+	it->next(0); // TODO: get a context...
 	return iterator(it);
 }
 

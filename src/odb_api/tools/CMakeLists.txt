@@ -103,8 +103,6 @@ TestSelectIterator3.cc
 TestSelectStarAt.cc
 TestSelectTwoFiles.cc
 TestSetvbuffer.cc
-TestSimpleFilterIterator.cc
-TestSimpleFilterIterator2.cc
 TestStar.cc
 TestTEMPLATE.cc
 TestTextSelect.cc

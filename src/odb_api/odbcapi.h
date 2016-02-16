@@ -55,9 +55,8 @@ const char* odb_api_git_sha1();
 unsigned int odb_api_format_version_major();
 unsigned int odb_api_format_version_minor();
 
-oda_ptr odb_create(const char *, int *);
-int odb_destroy(oda_ptr);
-
+oda_ptr odb_read_create(const char *, int *);
+int odb_read_destroy(oda_ptr);
 oda_read_iterator_ptr odb_create_read_iterator(oda_ptr, const char *, int *);
 int odb_read_iterator_destroy(oda_read_iterator_ptr);
 int odb_read_iterator_get_no_of_columns(oda_read_iterator_ptr, int*);
@@ -65,7 +64,10 @@ int odb_read_iterator_get_column_type(oda_read_iterator_ptr, int, int*);
 int odb_read_iterator_get_column_name(oda_read_iterator_ptr, int, char**, int*);
 int odb_read_iterator_get_bitfield(oda_read_iterator_ptr, int, char**, char**, int*, int*);
 int odb_read_iterator_get_next_row(oda_read_iterator_ptr, int, double*, int*);
+int odb_read_iterator_get_missing_value(oda_read_iterator_ptr, int, double*);
 
+oda_ptr odb_select_create(const char *, int *);
+int odb_select_destroy(oda_ptr);
 oda_select_iterator_ptr odb_create_select_iterator(oda_ptr, const char *, int *);
 oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr, const char *, const char *, int *);
 int odb_select_iterator_destroy(oda_select_iterator_ptr);

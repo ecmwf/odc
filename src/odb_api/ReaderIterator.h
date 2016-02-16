@@ -17,14 +17,13 @@
 #define ReaderIterator_H
 
 #include "odb_api/IteratorProxy.h"
-//#include "odb_api/RowsIterator.h"
 #include "odb_api/TReadOnlyMemoryDataHandle.h"
 
-#include "odb_api/RowsIterator.h"
 #include "odb_api/MetaData.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 extern "C" {
 	typedef void oda;
@@ -52,7 +51,9 @@ class ReaderIterator //: public RowsReaderIterator
 {
 public:
 	ReaderIterator (Reader &owner);
+	ReaderIterator (Reader &owner, eckit::ExecutionContext* context);
 	ReaderIterator (Reader &owner, const eckit::PathName&);
+	ReaderIterator (Reader &owner, const eckit::PathName&, eckit::ExecutionContext*);
 	~ReaderIterator ();
 
 	virtual bool isNewDataset();
@@ -85,7 +86,7 @@ public:
 
 	virtual int close();
 
-	virtual bool next();
+	virtual bool next(eckit::ExecutionContext*);
 protected:
 	size_t readBuffer(size_t dataSize);
 
@@ -118,6 +119,7 @@ private:
 
 	unsigned long headerCounter_;
 	int32_t byteOrder_;
+    eckit::ExecutionContext* context_;
 
 public:
 	int refCount_;

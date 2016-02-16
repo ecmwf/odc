@@ -21,7 +21,6 @@
 #include "odb_api/Header.h"
 #include "odb_api/MetaData.h"
 #include "odb_api/MetaDataReader.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/TReadOnlyMemoryDataHandle.h"
 
 namespace eckit { class PathName; }
@@ -85,7 +84,7 @@ public:
 	virtual int close();
 
 // next() is public because it is used in C API functions
-	virtual bool next();
+	virtual bool next(eckit::ExecutionContext*);
 protected:
     virtual bool skip(size_t dataSize);
 
@@ -126,6 +125,7 @@ protected:
 
 public:
 	int refCount_;
+    eckit::ExecutionContext* context_;
 
 	friend class MetaDataReader<MetaDataReaderIterator>;
     //friend class odb::IteratorProxy<odb::MetaDataReaderIterator, Owner>;

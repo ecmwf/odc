@@ -18,13 +18,13 @@
 
 #include "eckit/eckit.h"
 #include "odb_api/ColumnType.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/TemplateParameters.h"
 #include "odb_api/Types.h"
 #include "odb_api/Writer.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 
@@ -32,9 +32,8 @@ class HashTable;
 class SQLIteratorSession;
 class TemplateParameters;
 
-//template <typename WRITE_ITERATOR = WriterBufferingIterator, typename OWNER = DispatchingWriter>
 template <typename WRITE_ITERATOR, typename OWNER >
-class WriterDispatchingIterator //: public RowsWriterIterator
+class WriterDispatchingIterator 
 {
 	typedef std::vector<double> Values;
 	typedef std::map<Values,int> Values2IteratorIndex;
@@ -64,7 +63,7 @@ public:
 	double columnMissingValue(size_t index);
 
 	const MetaData& columns() { return columns_; }
-	const MetaData& columns(const MetaData& md) { return columns_ = md; }
+	const MetaData& columns(const MetaData& md); 
 
 	OWNER& owner() { return owner_; }
 
@@ -81,7 +80,7 @@ public:
 	int writeRow(const double* values, unsigned long count);
 
 protected:
-	bool next();
+	bool next(eckit::ExecutionContext*);
 
 	/// Find iterator data should be dispatched to.
 	WRITE_ITERATOR& dispatch(const double* values, unsigned long count);
@@ -110,6 +109,7 @@ protected:
 	int lastIndex_;
 	bool initialized_;
 	bool append_;
+    eckit::ExecutionContext* context_;
 
 private:
 // No copy allowed.

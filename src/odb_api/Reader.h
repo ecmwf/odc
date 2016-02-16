@@ -25,6 +25,7 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 
@@ -35,8 +36,11 @@ public:
 	typedef iterator::Row row;
 
 	Reader(eckit::DataHandle &);
+	Reader(eckit::DataHandle &, eckit::ExecutionContext*);
     Reader(const std::string& path);
+    Reader(const std::string& path, eckit::ExecutionContext*);
 	Reader();
+	Reader(eckit::ExecutionContext*);
 
 	virtual ~Reader();
 
@@ -57,11 +61,11 @@ private:
     Reader(const Reader&);
     Reader& operator=(const Reader&);
 
-
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
 	//const eckit::PathName path_;
 	const std::string path_;
+    eckit::ExecutionContext* context_;
 
 	friend class IteratorProxy<ReaderIterator,Reader,const double>;
 	friend class ReaderIterator;

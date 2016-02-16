@@ -272,7 +272,10 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-bool WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::next() { return writeRow(nextRow_, columns().size()) == 0; }
+bool WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::next(eckit::ExecutionContext*)
+{
+    return writeRow(nextRow_, columns().size()) == 0;
+}
 
 template <typename WRITE_ITERATOR, typename OWNER>
 void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::parseTemplateParameters()
@@ -361,6 +364,12 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 */
 
 template <typename WRITE_ITERATOR, typename OWNER>
+const MetaData& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::columns(const MetaData& md)
+{
+    columns_ = md;
+}
+
+template <typename WRITE_ITERATOR, typename OWNER>
 void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::missingValue(size_t i, double missingValue)
 {
 	ASSERT(i < columns().size());
@@ -374,11 +383,9 @@ template <>
 template <typename T>
 unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::pass1(T& it, const T& end)
 {
-	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1:" << std::endl;
-
 	if (! (it != end))
 	{
-		eckit::Log::warning() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: No input data." << std::endl;
+		eckit::Log::warning() << "Split: No input data." << std::endl;
 		return 0;
 	}
 
@@ -398,7 +405,6 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 		if (it->isNewDataset() && columns() != it->columns() )
 		{
 			columns(it->columns());
-
 			parseTemplateParameters();
 
 			for (size_t i = 0; i < iterators_.size(); ++i)
@@ -415,7 +421,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 		ASSERT(rc == 0);
 	} 
 
-	eckit::Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::pass1: processed " << nrows_ << " row(s)." << std::endl;
+	eckit::Log::info() << "Split: processed " << nrows_ << " row(s)." << std::endl;
 	return nrows_;
 }
 
@@ -424,7 +430,7 @@ template <typename T>
 void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verify(T& it, const T& end) {
     using namespace eckit;
     using namespace std;
-    Log::info() << "WriterDispatchingIterator<WriterBufferingIterator>::verify: Verifying..." << endl;
+    Log::info() << "Verifying split..." << endl;
     Timer timer("Split verification");
 
     vector<Reader*> readers;
@@ -442,22 +448,29 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
     long long i (0);
     for (; it != end; ++i)
     {
+		//if (it->isNewDataset() && columns() != it->columns() )
+		if (columns() != it->columns())
+		{
+			columns(it->columns());
+			parseTemplateParameters();
+        }
+
         size_t fileIndex(dispatchIndex(it->data(), it->columns().size()));
         const std::string& outFileName (files_[fileIndex]);
-        const MetaData& metaData (it->columns());
-        size_t n(metaData.size());
+        
+        size_t n(columns().size());
         typedef Reader::iterator I;
         std::pair<I, I>& its(iterators[fileIndex]);
         I& sIt(its.first), sEnd(its.second);
 
         const MetaData& sMetaData (sIt->columns());
         try {
-            ASSERT(sIt != sEnd && sMetaData == metaData);
+            ASSERT(sIt != sEnd && sMetaData == columns());
 
             ++rowsRead[fileIndex];
             const double* const& originalData(it->data());
             const double* const& outputData(sIt->data());
-            comparator.compare(n, originalData, outputData, metaData, sMetaData);
+            comparator.compare(n, originalData, outputData, columns(), sMetaData);
         } catch (...) {
             ++numberOfDifferences; 
             Log::info() << "Row " << i << " of input (" << rowsRead[fileIndex] << " of " << outFileName << ") not correct." << endl << endl;

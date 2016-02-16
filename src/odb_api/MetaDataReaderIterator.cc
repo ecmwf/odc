@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- *
+ * 
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
- * In applying this licence, ECMWF does not waive the privileges and immunities
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
+ * In applying this licence, ECMWF does not waive the privileges and immunities 
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -117,8 +117,6 @@ MetaDataReaderIterator::~MetaDataReaderIterator ()
 
 bool MetaDataReaderIterator::operator!=(const MetaDataReaderIterator& other)
 {
-    /// @warning: reference cannot be bound to dereferenced null pointer in well-defined C++ code;
-    ///           comparison may be assumed to always evaluate to false
 	ASSERT(&other == 0);
 	return noMore_;
 }
@@ -136,7 +134,7 @@ void MetaDataReaderIterator::initRowBuffer()
 	for(size_t i = 0; i < nCols; i++)
 	{
 		codecs_[i] = &columns()[i]->coder();
-		lastValues_[i] = codecs_[i]->missingValue();
+		lastValues_[i] = codecs_[i]->missingValue(); 
 		codecs_[i]->dataHandle(&memDataHandle_);
 	}
 }
@@ -162,11 +160,11 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 		delete [] encodedData_;
 		encodedData_ = new char[dataSize];
 	}
-
+	
 	size_t actualNumberOfBytes = 0;
 	if ((actualNumberOfBytes = f->read(encodedData_, dataSize)) != dataSize)
 	{
-		Log::warning() << "MetaDataReaderIteratorReadingData::skip: expected " << dataSize
+		Log::warning() << "MetaDataReaderIteratorReadingData::skip: expected " << dataSize 
 						<< " could read only " << actualNumberOfBytes << std::endl;
 		return false;
 	}
@@ -175,11 +173,11 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 	return true;
 }
 
-bool MetaDataReaderIterator::next()
+bool MetaDataReaderIterator::next(ExecutionContext* context)
 {
 	newDataset_ = false;
 	if (noMore_)
-		return false;
+		return false; 
 
 	uint16_t c = 0;
     long bytesRead = 0;
@@ -193,7 +191,7 @@ bool MetaDataReaderIterator::next()
 			return ! (noMore_ = true);
 		ASSERT(bytesRead == 2);
 
-		if (c == ODA_MAGIC_NUMBER)
+		if (c == ODA_MAGIC_NUMBER) 
 		{
 			DataStream<SameByteOrder> ds(f);
 

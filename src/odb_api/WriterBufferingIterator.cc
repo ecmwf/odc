@@ -47,7 +47,8 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   setvBuffer_(0),
   maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() ),
   tableDef_(tableDef),
-  path_(owner.path())
+  path_(owner.path()),
+  openDataHandle_(openDataHandle)
 {
 	if (openDataHandle)	
 		open();
@@ -58,7 +59,8 @@ WriterBufferingIterator::~WriterBufferingIterator()
 	close();
 	delete [] lastValues_;
 	delete [] nextRow_;
-	delete f;
+	if (! openDataHandle_)	
+        delete f;
 }
 
 unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigned long count)
@@ -119,11 +121,13 @@ void WriterBufferingIterator::writeHeader()
 	allocBuffers();
 	for (size_t i = 0; i < columns_.size(); ++i)
 		columns_[i]->coder().resetStats();
-
 	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "writeHeader: columns_[" << i << "]=" << *columns_[i] << std::endl;
 }
 
-bool WriterBufferingIterator::next() { return writeRow(nextRow_, columns().size()) == 0; }
+bool WriterBufferingIterator::next(ExecutionContext* context)
+{
+    return writeRow(nextRow_, columns().size()) == 0;
+}
 
 double* WriterBufferingIterator::data() { return nextRow_; }
 double& WriterBufferingIterator::data(size_t i)
@@ -307,7 +311,7 @@ int WriterBufferingIterator::close()
 {
 	flush();
 
-	if (f)
+	if (!openDataHandle_ && f)
 	{
 		f->close();
 		f = 0;

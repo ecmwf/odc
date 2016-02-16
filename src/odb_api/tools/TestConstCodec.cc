@@ -42,7 +42,7 @@ using namespace odb;
 
 const char *pies = "pies\0\0\0\0";
 
-class MockReaderIterator : public odb::RowsReaderIterator 
+class MockReaderIterator 
 {
 public:
 	MockReaderIterator()
@@ -72,11 +72,11 @@ public:
 	bool isNewDataset() { return false; } // { return n_ == nRows_; }
 	double* data() { return data_; }
 	
-	MockReaderIterator& operator++() { next(); return *this; }
+	MockReaderIterator& operator++() { next(0); return *this; }
 	bool operator!=(const MockReaderIterator& o) { ASSERT(&o == 0); return nRows_ > 0; }
 	const MockReaderIterator& end() { return *reinterpret_cast<MockReaderIterator*>(0); }
 
-	bool next() { bool r = nRows_-- > 0; noMore_ = !r; return r; }
+	bool next(eckit::ExecutionContext*) { bool r = nRows_-- > 0; noMore_ = !r; return r; }
 
 private:
 	odb::MetaData columns_;
@@ -86,6 +86,7 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
+    ExecutionContext* context_;
 };
 
 

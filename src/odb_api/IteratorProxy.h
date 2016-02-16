@@ -150,7 +150,7 @@ public:
 
     IteratorProxy& operator++()
 	{
-		iter_->next();
+		iter_->next(iter_->context_);
 		return *this;
 	}
 
@@ -280,7 +280,7 @@ public:
 	IteratorProxy  __next__() { return next(); }
 	IteratorProxy next()
 	{
-		if (! iter_->next())
+		if (! iter_->next(iter_->context_))
 			throw ODBStopIteration();
 		return *this;
 	}
