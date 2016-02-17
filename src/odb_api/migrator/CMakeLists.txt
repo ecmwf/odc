@@ -40,8 +40,7 @@ migrator_api.h
 
   if( HAVE_MIGRATOR AND HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
         set(CMAKE_SWIG_FLAGS "")
-        include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_INCLUDE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api )
-        # include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_INCLUDE_PATH} )
+        include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api )
         set_source_files_properties( pyodbdump.i PROPERTIES CPLUSPLUS ON )
         # set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
         swig_add_module( pyodbdump python pyodbdump.i )
