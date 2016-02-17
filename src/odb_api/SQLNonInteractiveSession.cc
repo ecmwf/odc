@@ -31,6 +31,7 @@ SQLOutput* SQLNonInteractiveSession::defaultOutput()
 
 void SQLNonInteractiveSession::statement(SQLStatement *sql)
 {
+    delete statement_;
     statement_ = sql;
 }
 

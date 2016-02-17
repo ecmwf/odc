@@ -24,7 +24,6 @@
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLSelect.h"
 #include "odb_api/SQLSession.h"
-#include "odb_api/SQLNonInteractiveSession.h"
 #include "odb_api/StringExpression.h"
 #include "odb_api/EmbeddedCodeExpression.h"
 #include "odb_api/StringTool.h"
@@ -144,12 +143,6 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 
     pushInclude(s, "", scanner, scanner);
     SQLYacc::odblib_parse(scanner, &session);
-}
-
-void SQLParser::parseString(const std::string& s, SQLDatabase& db, const SQLOutputConfig& cfg)
-{
-    odb::sql::SQLNonInteractiveSession session;
-    parseString(session, s, db, cfg);
 }
 
 void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, SQLDatabase& db, const SQLOutputConfig& cfg)
