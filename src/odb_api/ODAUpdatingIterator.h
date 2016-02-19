@@ -41,7 +41,7 @@ public:
 	const MetaData& columns() { return ii_->columns(); }
 	const MetaData& columns(MetaData& md) { return ii_->columns(md); }
 
-    ODAUpdatingIterator& operator++() { next(); return *this; }
+    ODAUpdatingIterator& operator++() { next(0); return *this; }
 
 	bool operator!=(const ODAUpdatingIterator& o) { ASSERT(&o == 0); return ii_ != end_; }
 

@@ -30,5 +30,7 @@ struct YYSTYPE {
 #endif
 #define YY_DECL int odblib_lex (YYSTYPE *odblib_lval_param, odblib_scan_t odblib_scanner, odb::sql::SQLSession*)
 
+#define YYSTYPE_IS_DECLARED 1
+
 YY_DECL;
 
