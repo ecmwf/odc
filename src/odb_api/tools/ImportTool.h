@@ -35,13 +35,11 @@ public:
 	static void filterAndImportFile(const eckit::PathName& in, const eckit::PathName& out, const std::string& sql, const std::string& delimiter = defaultDelimiter());
 	static void importText(const std::string& s, const eckit::PathName& out, const std::string& delimiter = defaultDelimiter());
 
-	static std::string defaultDelimiter() { return defaultDelimiter_; };
+	static std::string defaultDelimiter() { return ","; };
 private:
 // No copy allowed
     ImportTool(const ImportTool&);
     ImportTool& operator=(const ImportTool&);
-
-	static std::string defaultDelimiter_;
 };
 
 } // namespace tool 

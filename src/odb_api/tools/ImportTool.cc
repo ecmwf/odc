@@ -25,8 +25,6 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
-std::string ImportTool::defaultDelimiter_ = ",";
-
 ImportTool::ImportTool(int argc, char *parameters[])
 : Tool(argc, parameters)
 {
