@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -56,7 +56,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 	Column* col = columns_[index];
 	ASSERT(col);
 
-	col->name(name); 
+	col->name(name);
 	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
 	return 0;
 }
@@ -68,7 +68,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 	Column* col = columns_[index];
 	ASSERT(col);
 
-	col->name(name); 
+	col->name(name);
 	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
     col->bitfieldDef(b);
 	col->missingValue(0);
@@ -222,7 +222,7 @@ const double* values, unsigned long count)
     //iterators_[iteratorIndex]->gatherStats(values, count);
 
     return iteratorIndex;
-} 
+}
 
 template <typename WRITE_ITERATOR, typename OWNER>
 std::vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::outputFiles()
@@ -248,7 +248,7 @@ template <typename WRITE_ITERATOR, typename OWNER>
 unsigned long WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::gatherStats(const double* values, unsigned long count)
 {
     return dispatch(values, count).gatherStats(values, count);
-} 
+}
 
 template <typename WRITE_ITERATOR, typename OWNER>
 void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
@@ -306,11 +306,11 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeRow(const double* val
     WRITE_ITERATOR& wi = dispatch(values, count);
     int rc = wi.writeRow(values, count);
 
-    if (rc == 0)	
+    if (rc == 0)
         nrows_++;
 
     return rc;
-} 
+}
 
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::open() { return 0; }
@@ -325,7 +325,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 
 	typedef DataStream<SameByteOrder, FastInMemoryDataHandle> DS;
 
-	col->name(name); 
+	col->name(name);
 	col->type<DS>(type, false);
 	//col->hasMissing(hasMissing);
 	//col->missingValue(missingValue);
@@ -367,6 +367,7 @@ template <typename WRITE_ITERATOR, typename OWNER>
 const MetaData& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::columns(const MetaData& md)
 {
     columns_ = md;
+    return md;
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
@@ -419,7 +420,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 		size_t size (it->columns().size());
 		int rc (writeRow(data, size));
 		ASSERT(rc == 0);
-	} 
+	}
 
 	eckit::Log::info() << "Split: processed " << nrows_ << " row(s)." << std::endl;
 	return nrows_;
@@ -457,7 +458,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 
         size_t fileIndex(dispatchIndex(it->data(), it->columns().size()));
         const std::string& outFileName (files_[fileIndex]);
-        
+
         size_t n(columns().size());
         typedef Reader::iterator I;
         std::pair<I, I>& its(iterators[fileIndex]);
@@ -472,7 +473,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
             const double* const& outputData(sIt->data());
             comparator.compare(n, originalData, outputData, columns(), sMetaData);
         } catch (...) {
-            ++numberOfDifferences; 
+            ++numberOfDifferences;
             Log::info() << "Row " << i << " of input (" << rowsRead[fileIndex] << " of " << outFileName << ") not correct." << endl << endl;
         }
         ++it;
@@ -510,5 +511,5 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::close()
 	return rc;
 }
 
-} // namespace odb 
+} // namespace odb
 
