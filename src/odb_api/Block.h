@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -29,7 +29,7 @@ typedef unsigned long long ullong;
 class Block {
 public:
     Block()
-    : 
+    :
     fileName (),
     start (),
     end (),
@@ -42,7 +42,7 @@ public:
           const eckit::Offset& end,
           const ullong firstRow,
           const ullong lastRow)
-    : 
+    :
     fileName (fileName),
     start (start),
     end (end),
@@ -66,6 +66,7 @@ public:
         end = other.end;
         firstRow = other.firstRow;
         lastRow = other.lastRow;
+        return *this;
     }
 
     eckit::PathName fileName;
@@ -79,6 +80,6 @@ public:
 
 std::ostream& operator<<(std::ostream&, const Block&);
 
-} // namespace odb 
+} // namespace odb
 
-#endif 
+#endif

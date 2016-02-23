@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -38,7 +38,7 @@ std::ostream& operator<< (std::ostream& o, const Partition& p)
     return o;
 }
 
-std::ostream& Partition::save(std::ostream& o, size_t poolNumber) const 
+std::ostream& Partition::save(std::ostream& o, size_t poolNumber) const
 {
     for (size_t i (0); i < blocks_.size(); ++i)
         o << poolNumber << "\t" << blocks_[i] << endl;
@@ -70,7 +70,7 @@ Partition::Partition(const PathName& fileName, size_t partitionNumber)
         context.pushEnvironmentFrame(requests->value());
 
         if (part == partitionNumber)
-            add( Block (eckit::PathName(context.getValueAsList("file")[0]), //eckit::PathName(fs[1]), 
+            add( Block (eckit::PathName(context.getValueAsList("file")[0]), //eckit::PathName(fs[1]),
                         eckit::Offset(atol(context.getValueAsList("start")[0].c_str())),//eckit::Offset(atol(fs[2].c_str())),
                         eckit::Offset(atol(context.getValueAsList("end")[0].c_str())),//eckit::Offset(atol(fs[3].c_str())),
                         atol(context.getValueAsList("firstRow")[0].c_str()),//atol(fs[4].c_str()),
@@ -95,6 +95,7 @@ Partition& Partition::operator=(const Partition& other)
     blocks_ = other.blocks_;
     startOfLastBlock_ = other.startOfLastBlock_;
     rowsOnLastBlock_ = other.rowsOnLastBlock_;
+    return *this;
 }
 
 ullong Partition::numberOfRows() const
@@ -131,8 +132,8 @@ void Partition::add(const PathName& fileName, ullong start, ullong length, ullon
 
         Block& last (blocks_.back());
         if (last.fileName != fileName)
-            blocks_.push_back(Block(fileName, start, length, firstRow, firstRow + nRows)); 
-        else 
+            blocks_.push_back(Block(fileName, start, length, firstRow, firstRow + nRows));
+        else
         {
             last.lastRow += nRows;
 
@@ -177,8 +178,8 @@ ullong writeBlock(DataHandle& in, const Block& block, Writer<>::iterator& out)
     return rowNumber;
 }
 
-ullong Partition::write(DataHandle& dh) const 
-{ 
+ullong Partition::write(DataHandle& dh) const
+{
     long long rowNumber (0);
     const vector<Block>& blocks (blocks_);
     for (size_t i (0); i < blocks.size(); ++i)
@@ -188,7 +189,7 @@ ullong Partition::write(DataHandle& dh) const
         Writer<> writer(&dh, false, false);
         Writer<>::iterator out (writer.begin(/*openDataHandle*/ false));
 
-        PartFileHandle fh (block.fileName, block.start, block.end - block.start); 
+        PartFileHandle fh (block.fileName, block.start, block.end - block.start);
 
         Log::info() << "Partition::write: writing PartFileHandle: " << fh << endl;
 
@@ -226,7 +227,7 @@ ullong Partition::write(const PathName& fileName) const
         Writer<> writer(&dh, false, false);
         Writer<>::iterator out (writer.begin(/*openDataHandle*/ false));
 
-        PartFileHandle fh (block.fileName, block.start, block.end - block.start); 
+        PartFileHandle fh (block.fileName, block.start, block.end - block.start);
         fh.openForRead();
         ullong nr (writeBlock(fh, block, out));
         rowNumber += nr;
@@ -234,5 +235,5 @@ ullong Partition::write(const PathName& fileName) const
     return rowNumber;
 }
 
-} // namespace odb 
+} // namespace odb
 
