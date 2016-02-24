@@ -443,14 +443,15 @@ ShiftedColumnExpression.cc
 
 # define Odb library
 
-ecbuild_add_library( TARGET     Odb
-                     INSTALL_HEADERS LISTED
+ecbuild_add_library( TARGET             Odb
+                     INSTALL_HEADERS    LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api
-                     COMPONENT  server
-                     SOURCES    ${odblib_src_files}
-                     GENERATED  ODBAPIVersionSHA1.cc
-                     TEMPLATES  ${odblib_templates}
-                     LIBS       eckit eckit_ecml )
+                     COMPONENT          server
+                     SOURCES            ${odblib_src_files}
+                     GENERATED          ODBAPIVersionSHA1.cc
+                     TEMPLATES          ${odblib_templates}
+                     LINKER_LANGUAGE    CXX
+                     LIBS               eckit eckit_ecml )
 
 ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly
