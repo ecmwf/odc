@@ -46,7 +46,10 @@ migrator_api.h
         # set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
         swig_add_module( pyodbdump python pyodbdump.i )
         swig_link_libraries( pyodbdump Odbmigrator Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} ${PYTHON_LIBRARIES} )
-        set(PYTHON_DEST "lib/python${PYTHON_VERSION}/site-packages" )
-        install(TARGETS _pyodbdump DESTINATION ${PYTHON_DEST} )
+        
+        set(PYTHON_SITE "${INSTALL_LIB_DIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages" )
+        set(PYTHON_DEST "${PYTHON_SITE}" )
+
+        install(TARGETS _pyodbdump                              DESTINATION ${PYTHON_DEST} )
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyodbdump.py  DESTINATION ${PYTHON_DEST})
     endif()
