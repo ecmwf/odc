@@ -11,25 +11,28 @@
 
 import pyodbapi
 
+def addSemicolon(s):
+    """ Adds semicolon to the end of SQL statement if it's missing.
+    """
+    if not s.strip().endswith(';'):
+        s += ';'
+    return s;
+
 class Select:
-	def __init__(self, sql):
-		if not isinstance(sql, str):
-			raise TypeError('sql must be a string object')
-		self.sql = sql
+    def __init__(self, sql):
+        if not isinstance(sql, str):
+            raise TypeError('sql must be a string object')
+        self.sql = sql
 		
 
 def sql(statement):
-	if not isinstance(statement, str):
-		raise TypeError('statement must be a string object')
-	print "odb.sql: '" + statement + "'"
-	return pyodbapi.Select(statement)
+    if not isinstance(statement, str):
+        raise TypeError('statement must be a string object')
+    statement = addSemicolon(statement)
+    return pyodbapi.Select(statement)
 
 def open(fileName):
-	if not isinstance(fileName, str):
-		raise TypeError('fileName must be a string object')
-	print "odb.open: '" + fileName + "'"
-	return pyodbapi.Reader(fileName)
-
-# ex file
-fn = '../oda/some_conv_2011-01-08.odb'
+    if not isinstance(fileName, str):
+        raise TypeError('fileName must be a string object')
+    return pyodbapi.Reader(fileName)
 
