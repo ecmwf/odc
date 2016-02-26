@@ -390,6 +390,7 @@ Stager.cc
 
 
 # ECML interface
+ODBModule.h
 ODBModule.cc
 # * ECML verbs
 ecml_verbs/ArchiveHandler.h
