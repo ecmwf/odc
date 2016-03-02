@@ -61,27 +61,29 @@ Select::Select(const std::string& selectStatement, const std::string& path)
   istream_(0),
   deleteIStream_(true),
   selectStatement_(selectStatement)
-{}
+{
+    dataHandle_->openForRead();
+}
 
 Select::~Select()
 {
-        if (deleteDataHandle_) delete dataHandle_;
-        if (deleteIStream_) delete istream_;
+    if (deleteDataHandle_) delete dataHandle_;
+    if (deleteIStream_) delete istream_;
 }
 
 SelectIterator* Select::createSelectIterator(std::string sql)
 {
-        return new SelectIterator(*this, sql);
+    return new SelectIterator(*this, sql);
 }
 
 const Select::iterator Select::end() { return iterator(0); }
 
 Select::iterator Select::begin()
 {
-        SelectIterator* it = new SelectIterator(*this, selectStatement_);
-        ASSERT(it);
-        it->next();
-        return iterator(it);
+    SelectIterator* it = new SelectIterator(*this, selectStatement_);
+    ASSERT(it);
+    it->next();
+    return iterator(it);
 }
 
 } // namespace odb
