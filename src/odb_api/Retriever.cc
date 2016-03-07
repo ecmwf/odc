@@ -52,6 +52,9 @@ void Retriever::retrieve(MultiHandle&                                           
 {
     std::map<std::string,std::vector<std::string> > request(r);
 
+    if (r.count("odbPathNameSchema") == 0)
+        throw UserError("RETRIEVE: odbPathNameSchema not set");
+
     FileMapper mapper(r.at("odbPathNameSchema")[0]);
 
     vector<string> odbServerRoots (eckit::StringTools::split(":", r.at("odbServerRoots")[0]));
@@ -63,9 +66,10 @@ void Retriever::retrieve(MultiHandle&                                           
     checkKeywordsHaveValues(request, keywords);
 
     const vector<string> partitionNumbers ( request["part_number"] );
+
     if (partitionNumbers.size())
     {
-        const string partitionsInfo (FileCollector::expandTilde(request["partitionsInfo"][0]));
+        const string partitionsInfo (FileCollector::expandTilde(request["partitionsinfo"][0]));
 
         vector<size_t> parts;
         for (size_t i(0); i < partitionNumbers.size(); ++i)
@@ -113,8 +117,6 @@ void Retriever::sendPartitions(MultiHandle& output, const PathName& partitionsIn
     for (size_t i(0); i < partitionNumbers.size(); ++i)
     {
         Partition partition (partitionsInfo, partitionNumbers[i]);
-
-        Log::info() << "sendPartitions: write partition: " << partition << endl;
 
         InMemoryDataHandle* dh (new InMemoryDataHandle);
         dh->openForWrite(0);

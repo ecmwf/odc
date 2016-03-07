@@ -95,7 +95,7 @@ void Stager::stage(eckit::MultiHandle&                                    output
     Log::info() << "STAGE: request: " << request << endl;
 
     Retriever::checkKeywordsHaveValues(request, keywords);
-    const string partitionsInfoFile (FileCollector::expandTilde(request.at("partitionsInfo")[0]));
+    const string partitionsInfoFile (FileCollector::expandTilde(request.at("partitionsinfo")[0]));
 
     FileMapper mapper (request.at("odbPathNameSchema")[0]);
     prepareMapper(mapper, keywords, request);

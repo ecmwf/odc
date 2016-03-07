@@ -13,8 +13,11 @@
 ///
 /// @author Piotr Kuchta, April 2010
 
-#include "eckit/io/FileHandle.h"
 #include "odb_api/Select.h"
+
+#include "eckit/io/DataHandle.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
+
 
 using namespace std;
 using namespace eckit;
@@ -55,14 +58,13 @@ Select::Select()
 {}
 
 Select::Select(const std::string& selectStatement, const std::string& path)
-: dataHandle_(new FileHandle(path)),
+: dataHandle_(DataHandleFactory::openForRead(path)),
   deleteDataHandle_(true),
-  // TODO: depending on file extension?
   istream_(0),
   deleteIStream_(true),
   selectStatement_(selectStatement)
 {
-    dataHandle_->openForRead();
+    //dataHandle_->openForRead();
 }
 
 Select::~Select()
