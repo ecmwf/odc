@@ -162,15 +162,6 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 		
 			if (checkMissingFlag_)	
 			{
-				if (column1.hasMissing() != column2.hasMissing())
-				{
-					Log::warning() << column1.name() << " : " 
-						<< "column1.hasMissing()=" << column1.hasMissing() << ", " 
-						<< "column2.hasMissing()=" << column2.hasMissing() << ", " 
-						<< std::endl;
-					ASSERT(column1.hasMissing() == column2.hasMissing());
-				}
-
 				if (column1.missingValue() != column2.missingValue())
 				{
 					Log::warning() << column1.name() << " : " 
@@ -182,13 +173,6 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 			}
 			else
 			{
-				if (column1.hasMissing() != column2.hasMissing())
-				{
-					Log::warning() << column1.name() << " : " 
-						<< "column1.hasMissing()=" << column1.hasMissing() << ", " 
-						<< "column2.hasMissing()=" << column2.hasMissing() << ", " 
-						<< std::endl;
-				}
 				if (column1.missingValue() != column2.missingValue())
 				{
 					Log::warning() << column1.name() << " : " 
