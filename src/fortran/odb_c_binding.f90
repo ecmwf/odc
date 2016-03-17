@@ -49,19 +49,31 @@ interface
      real(kind=C_DOUBLE)                  :: odb_count
    end function odb_count
 
-   function odb_read_new(config, err) bind(C, name = "odb_create")
+   function odb_select_new(config, err) bind(C, name = "odb_select_create")
+     use, intrinsic                       :: iso_c_binding
+     character(kind=C_CHAR),dimension(*)  :: config
+     integer(kind=C_INT)                  :: err
+     type(C_PTR)                          :: odb_select_new
+   end function odb_select_new
+
+   function odb_select_delete(odb) bind(C, name = "odb_select_destroy")
+     use, intrinsic                       :: iso_c_binding
+     type(C_PTR),VALUE                    :: odb
+     integer(kind=C_INT)                  :: odb_select_delete
+   end function odb_select_delete
+
+   function odb_read_new(config, err) bind(C, name = "odb_read_create")
      use, intrinsic                       :: iso_c_binding
      character(kind=C_CHAR),dimension(*)  :: config
      integer(kind=C_INT)                  :: err
      type(C_PTR)                          :: odb_read_new
    end function odb_read_new
 
-   function odb_read_delete(odb) bind(C, name = "odb_destroy")
+   function odb_read_delete(odb) bind(C, name = "odb_read_destroy")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR),VALUE                    :: odb
      integer(kind=C_INT)                  :: odb_read_delete
    end function odb_read_delete
-
 
 !> Create new read iterator.
    function odb_read_iterator_new(odb, filename, err) bind(C, name="odb_create_read_iterator")
@@ -122,6 +134,16 @@ interface
      real(kind=C_DOUBLE),dimension(*)     :: data
      integer(kind=C_INT)                  :: odb_read_get_next_row
    end function odb_read_get_next_row
+
+! odb_read_iterator_get_missing_value(oda_read_iterator_ptr ri, int index, double* value)
+   function odb_read_get_missing_value(odb_iterator, n, v) &
+   bind(C, name="odb_read_iterator_get_missing_value")
+     use, intrinsic                       :: iso_c_binding
+     type(C_PTR), VALUE                   :: odb_iterator
+     integer(kind=C_INT),VALUE            :: n
+     real(kind=C_DOUBLE)                  :: v
+     integer(kind=C_INT)                  :: odb_read_get_missing_value
+   end function odb_read_get_missing_value
 
   
 ! SELECT ITERATOR
@@ -191,7 +213,6 @@ interface
      real(kind=C_DOUBLE),dimension(*)     :: data
      integer(kind=C_INT)                  :: odb_select_get_next_row
    end function odb_select_get_next_row
-
   
 ! WRITE
    function odb_write_new(config, err) bind(C, name = "odb_writer_create")

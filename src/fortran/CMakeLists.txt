@@ -9,12 +9,17 @@ ecbuild_add_test( TARGET     test_fortran_api
                   LIBS       Odb_fortran ${ODB_LIBS} #${ODB_LIBPATH}
                   LINKER_LANGUAGE Fortran )
 
-ecbuild_add_test( TARGET     test_client_lib_fortran_local.f90
+ecbuild_add_test( TARGET     test_client_lib_fortran_local
                   CONDITION  HAVE_FORTRAN
                   SOURCES    test_client_lib_fortran_local.f90
                   LIBS       Odb_fortran ${ODB_LIBS} #${ODB_LIBPATH}
                   LINKER_LANGUAGE Fortran )
 
+ecbuild_add_test( TARGET     test_fortran_api_open_non_existing_file
+                  CONDITION  HAVE_FORTRAN
+                  SOURCES    test_fortran_api_open_non_existing_file.f90
+                  LIBS       Odb_fortran ${ODB_LIBS} #${ODB_LIBPATH}
+                  LINKER_LANGUAGE Fortran )
 
 if( HAVE_FORTRAN )
   install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odb_c_binding.mod DESTINATION ${INSTALL_INCLUDE_DIR} )
