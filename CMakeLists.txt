@@ -38,13 +38,18 @@ ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
 # some variables/options of this project
 
 ecbuild_add_option( FEATURE MIGRATOR
-                    DESCRIPTION "whether or not to build the migrator"
+                    DESCRIPTION "whether or not to build the ODB migrator tool"
                     DEFAULT OFF
-                    REQUIRED_PACKAGES "odb" )
+                    REQUIRED_PACKAGES "ODB" )
 
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
                     DEFAULT OFF )
+
+ecbuild_add_option( FEATURE NETCDF
+                    DESCRIPTION "whether or not to build the odb2netcdf tool"
+                    DEFAULT OFF
+                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
 if( HAVE_FORTRAN OR HAVE_MIGRATOR )
 

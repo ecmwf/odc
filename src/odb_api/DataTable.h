@@ -1,8 +1,8 @@
 /// @file   DataTable.h
 /// @author Tomas Kral
 
-#ifndef DATATABLE_H_
-#define DATATABLE_H_
+#ifndef odb_sql_DataTable_H
+#define odb_sql_DataTable_H
 
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/DataRow.h"
@@ -360,4 +360,4 @@ private:
 
 } // namespace odb
 
-#endif // DATATABLE_H_
+#endif // odb_sql_DataTable_H

@@ -41,7 +41,7 @@ namespace sql {
 
 class SelectIterator { 
 public:
-    SelectIterator (Select &owner, const std::string&, eckit::ExecutionContext* context=0);
+    SelectIterator (Select &owner, const std::string&, eckit::ExecutionContext*);
 	~SelectIterator();
 
 	virtual bool isNewDataset();
@@ -62,7 +62,7 @@ public:
 	double& data(size_t i);
 
 protected:
-	virtual bool next(eckit::ExecutionContext* context=0);
+	virtual bool next(eckit::ExecutionContext*);
 
 private:
 // No copy allowed.

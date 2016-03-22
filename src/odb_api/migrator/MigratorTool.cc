@@ -18,6 +18,8 @@
 #include <fstream>
 
 #include "eckit/parser//StringTools.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+
 #include "odb_api/migrator/FakeODBIterator.h"
 #include "odb_api/migrator/ImportODBTool.h"
 #include "odb_api/migrator/MigratorTool.h"
@@ -29,6 +31,9 @@
 #include "odb_api/odb_api.h"
 #include "odb_api/tools/Tool.h"
 #include "odb_api/tools/ToolFactory.h"
+#include "odb_api/ODBModule.h"
+
+#include "ODBMigratorModule.h"
 
 using namespace eckit;
 using namespace std;
@@ -83,6 +88,25 @@ int valgrind(const std::vector<std::string>& params)
 
 MigratorTool::MigratorTool (const CommandLineParser &clp) : Tool(clp) { } 
 
+void MigratorTool::runECML()
+{
+    ExecutionContext context;
+    ODBModule odbModule;
+    ODBMigratorModule migratorModule;
+    context.import(odbModule);
+    context.import(migratorModule);
+
+    std::vector<std::string> params(parameters());
+    params.erase(params.begin());
+    params.erase(params.begin());
+    for (size_t i (0); i < params.size(); ++i)
+    {
+        Log::info() << "*** Executing " << params[i] << endl;
+        context.executeScriptFile(params[i]);
+    }
+
+}
+
 void MigratorTool::run()
 {
     if (parameters().size() > 1)
@@ -100,6 +124,9 @@ void MigratorTool::run()
 
             return;
         }
+        if (parameters(1) == "ecml")
+            return runECML();
+
         if (parameters(1) == "test")
         {
             //odb::tool::test::TestRunnerApplication(argc(), argv()).start();

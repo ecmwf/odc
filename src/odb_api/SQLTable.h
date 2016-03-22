@@ -19,8 +19,6 @@
 #include "odb_api/SQLType.h"
 #include "odb_api/Types.h"
 
-namespace eckit { class PathName; }
-
 namespace odb {
 namespace sql {
 
@@ -40,7 +38,7 @@ typedef std::vector<std::string> ColumnNames;
 
 class SQLTable : private eckit::NonCopyable {
 public:
-	SQLTable(SQLDatabase&,const eckit::PathName&,const std::string&);
+	SQLTable(SQLDatabase&,const std::string&,const std::string&);
 	virtual ~SQLTable(); 
 
     void loadIOMAP(std::istream&);
@@ -77,14 +75,14 @@ public:
 	bool sameAs(const SQLTable& other) const;
 	bool sameDatabase(const SQLTable& other) const;
 
-    const eckit::PathName& path() const { return path_; }
+    const std::string& path() const { return path_; }
 
 	virtual void print(std::ostream& s) const;
 
 	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const = 0;
 
 protected:
-    eckit::PathName path_;
+    std::string path_;
 	std::string   name_;
 
 	//std::map<int,SQLFile*> files_;

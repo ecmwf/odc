@@ -56,7 +56,7 @@ public:
 	virtual int close();
 
 // next() is public cause it needs to be used by the C API functions - normally client code should not use it
-	virtual bool next(eckit::ExecutionContext* context=0);
+	virtual bool next(eckit::ExecutionContext*);
 
 private:
 // No copy allowed.

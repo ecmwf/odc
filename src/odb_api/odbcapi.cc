@@ -213,7 +213,7 @@ oda_select_iterator_ptr odb_create_select_iterator(oda_ptr co, const char *sql, 
 {
     Select *o (reinterpret_cast<Select*>(co));
     try { 
-        SelectIterator* iter (o->createSelectIterator(sql));
+        SelectIterator* iter (o->createSelectIterator(sql, /*ExecutionContext*/ 0));
         *err = !iter;
         return oda_select_iterator_ptr(iter);
     }
@@ -235,7 +235,7 @@ oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr co, const c
 
     std::string full_sql (std::string(sql) + " from \"" + std::string(filename) + "\"");
 
-    SelectIterator* iter (o->createSelectIterator(full_sql));
+    SelectIterator* iter (o->createSelectIterator(full_sql, /*ExecutionContext*/ 0));
     *err = !iter;
     return oda_select_iterator_ptr(iter);
 }

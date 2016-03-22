@@ -24,7 +24,6 @@
 #include "odb_api/MetaData.h"
 #include "odb_api/Reader.h"
 #include "odb_api/ReaderIterator.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/SQLAST.h"
 #include "odb_api/SQLBitfield.h"
 #include "odb_api/SQLIteratorSession.h"

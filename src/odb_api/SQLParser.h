@@ -15,13 +15,14 @@
 #define SQLParser_H
 
 #include "eckit/exception/Exceptions.h"
+//#include "odb_api/SQLOutputConfig.h"
 #include "SQLOutputConfig.h"
-
-#define ODB_API_HAS_REENTRANT_SQL_PARSER
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 namespace eckit { class ExecutionContext; }
+
+#define ODB_API_HAS_REENTRANT_SQL_PARSER 1
 
 namespace odb {
 namespace sql {
@@ -31,32 +32,32 @@ class SQLSession;
 
 class SyntaxError : public eckit::SeriousBug {
 public:
-    SyntaxError(const std::string& s): eckit::SeriousBug(s) {}
+	SyntaxError(const std::string& s): eckit::SeriousBug(s) {}
 };
 
 struct ParseFrame {
-    ParseFrame(const std::string& sql, const std::string& yypath);
+	ParseFrame(const std::string& sql, const std::string& yypath);
 
-    std::string inputString_;
-    std::string yypath_;
-    char* inputText_;
-    char* inputEnd_;
+	std::string inputString_;
+	std::string yypath_;
+	char* inputText_;
+	char* inputEnd_;
 };
 
 class SQLParser {
 public:
-    static int line();
+	static int line();
 
-    static void parseString(odb::sql::SQLSession&, const std::string&, eckit::DataHandle*, const SQLOutputConfig&);
-    static void parseString(odb::sql::SQLSession&, const std::string&, std::istream*, const SQLOutputConfig&, const std::string& cvsDelimiter);
-    static void parseString(odb::sql::SQLSession&, const std::string&, SQLDatabase&, const SQLOutputConfig&);
+	static void parseString(odb::sql::SQLSession&, const std::string&, eckit::DataHandle*, SQLOutputConfig);
+    static void parseString(odb::sql::SQLSession&, const std::string&, std::istream*, SQLOutputConfig, const std::string& cvsDelimiter);
+	static void parseString(odb::sql::SQLSession&, const std::string&, SQLDatabase&, SQLOutputConfig);
 
-    //static void include(const eckit::PathName&);
+	//static void include(const eckit::PathName&);
 
-    static void pushInclude(const std::string&, const std::string&, void*, void*);
-    static void popInclude(void*);
+	static void pushInclude(const std::string&, const std::string&, void*, void*);
+	static void popInclude(void*);
 
-    static std::stack<ParseFrame> frames_;
+	static std::stack<ParseFrame> frames_;
 };
 
 } // namespace sql

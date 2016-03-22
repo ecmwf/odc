@@ -24,7 +24,7 @@
 #include "odb_api/SchemaAnalyzer.h"
 #include "odb_api/SchemaAnalyzer.h"
 #include "odb_api/odb_api.h"
-#include "odb_api/tools/CountTool.h"
+#include "odb_api/RowsCounter.h"
 #include "odb_api/tools/ODA2RequestTool.h"
 #include "odb_api/tools/Tool.h"
 #include "odb_api/tools/ToolFactory.h"
@@ -103,13 +103,13 @@ void ImportODBTool<IN>::validateRowsNumber(unsigned long long inRowsNumber, cons
 	Log::info() << "ImportODBTool::validateRowsNumber: Validating output. " << std::endl;
 	Log::info() << "ImportODBTool::validateRowsNumber: input rows number: " << BigNum(inRowsNumber) << std::endl;
 
-	unsigned long long outRowsNumber = 0;
-	unsigned long long outFilesSize = 0;
+	unsigned long long outRowsNumber (0);
+	unsigned long long outFilesSize (0);
 	for (size_t i = 0; i < files.size(); ++i)
 	{
-		const PathName &fn = files[i];
-		unsigned long long n = CountTool::rowCount(fn);
-		unsigned long long fileSize = fn.size();
+		const PathName &fn (files[i]);
+		unsigned long long n (RowsCounter::rowCount(fn));
+		unsigned long long fileSize (fn.size());
 
 		outRowsNumber += n;
 		outFilesSize += fileSize;

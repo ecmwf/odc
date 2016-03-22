@@ -1,5 +1,5 @@
-#ifndef SQLDATATABLE_H_
-#define SQLDATATABLE_H_
+#ifndef odb_sql_SQLDataTable_H
+#define odb_sql_SQLDataTable_H
 
 #include "odb_api/SQLTable.h"
 
@@ -48,4 +48,4 @@ private:
 
 } // namespace odb
 
-#endif // SQLDATATABLE_H_
+#endif // odb_sql_SQLDataTable_H

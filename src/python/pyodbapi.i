@@ -72,7 +72,6 @@ using namespace odb;
 %template(MetaDataBase) std::vector<Column*>;
 %include "odb_api/MetaData.h"
 
-%include "odb_api/RowsIterator.h"
 #include "odb_api/Header.h"
 
 %include "exception.i"
@@ -95,7 +94,6 @@ using namespace odb;
 %include "odb_api/DispatchingWriter.h"
 %include "odb_api/ReaderIterator.h"
 %include "odb_api/TextReaderIterator.h"
-#include "odb_api/RowsIterator.h"
 %include "odb_api/SelectIterator.h"
 #include "odb_api/FixedSizeWriterIterator.h"
 

@@ -15,7 +15,6 @@
 using namespace std;
 
 #include "odb_api/MetaData.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/Header.h"
 #include "odb_api/IteratorProxy.h"
 #include "odb_api/ODBAPIVersion.h"
@@ -77,7 +76,6 @@ using namespace odb::tool;
 %template(OldODBReader) odb::tool::TSQLReader<odb::tool::ODBIterator>;
 %template(ODBReader_iterator) odb::IteratorProxy<odb::tool::ODBIterator,odb::tool::TSQLReader<odb::tool::ODBIterator>, const double>;
 %include "odb_api/MetaData.h"
-%include "odb_api/RowsIterator.h"
 #include "odb_api/Header.h"
 
 %include "migrator_api.h"

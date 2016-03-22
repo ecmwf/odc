@@ -17,10 +17,10 @@
 
 #include <eckit/eckit.h>
 #include "odb_api/MetaData.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/migrator/ODBIterator.h"
 
 namespace eckit { class PathName; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 namespace tool {
@@ -44,7 +44,7 @@ struct ConstParameter {
 	odb::ColumnType  type;
 };
 
-class FakeODBIterator : public odb::RowsReaderIterator
+class FakeODBIterator //: public odb::RowsReaderIterator
 {
 public:
     struct ConstParameters : public std::vector<ConstParameter>
@@ -75,10 +75,11 @@ public:
 	virtual double* data();
 
 //protected:
-	virtual bool next();
+	virtual bool next(eckit::ExecutionContext*);
 
 	int refCount_;
 	bool noMore_;
+    eckit::ExecutionContext* context_;
 
 private:
 	ODBIterator iterator_;

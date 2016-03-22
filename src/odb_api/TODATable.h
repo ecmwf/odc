@@ -26,7 +26,7 @@ public:
 	typedef T TReader;
 	typedef TODATableIterator<TODATable> TableIterator;
 
-	TODATable(SQLDatabase&, const eckit::PathName&, const std::string&);
+	TODATable(SQLDatabase&, const std::string&, const std::string&);
 	TODATable(SQLDatabase&, eckit::DataHandle&);
     TODATable(SQLDatabase&, std::istream&, const std::string& delimiter);
 

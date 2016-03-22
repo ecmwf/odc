@@ -34,7 +34,6 @@
 #include "odb_api/tools/CountTool.h"
 #include "odb_api/tools/ImportTool.h"
 #include "odb_api/tools/SplitTool.h"
-#include "odb_api/CallbackExecutor.h"
 #include "odb_api/ODBAPISettings.h"
 
 extern "C" {

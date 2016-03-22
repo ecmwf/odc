@@ -1,0 +1,7 @@
+println, values = "ODB_API_TEST_DATA_PATH=" / (getenv, values = ODB_API_TEST_DATA_PATH)
+
+# append 2000010106 pass to migrate
+
+migrate, source = foo,
+         target = foo.odb,
+         filter = "select andate,antime,expver,reportype,varno,obsvalue"

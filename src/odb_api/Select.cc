@@ -13,11 +13,9 @@
 ///
 /// @author Piotr Kuchta, April 2010
 
-#include "odb_api/Select.h"
-
-#include "eckit/io/DataHandle.h"
 #include "eckit/ecml/data/DataHandleFactory.h"
-
+#include "odb_api/Select.h"
+#include "eckit/io/DataHandle.h"
 
 using namespace std;
 using namespace eckit;
@@ -29,7 +27,17 @@ Select::Select(const std::string& selectStatement, DataHandle &dh)
   deleteDataHandle_(false),
   istream_(0),
   deleteIStream_(true),
-  selectStatement_(selectStatement)
+  selectStatement_(selectStatement),
+  context_(0)
+{}
+
+Select::Select(const std::string& selectStatement, DataHandle &dh, ExecutionContext* context)
+: dataHandle_(&dh),
+  deleteDataHandle_(false),
+  istream_(0),
+  deleteIStream_(true),
+  selectStatement_(selectStatement),
+  context_(context)
 {}
 
 Select::Select(const std::string& selectStatement, std::istream &is, const std::string& delimiter)
@@ -38,7 +46,18 @@ Select::Select(const std::string& selectStatement, std::istream &is, const std::
   istream_(&is),
   deleteIStream_(false),
   selectStatement_(selectStatement),
-  delimiter_(delimiter)
+  delimiter_(delimiter),
+  context_(0)
+{}
+
+Select::Select(const std::string& selectStatement, std::istream &is, const std::string& delimiter, ExecutionContext* context)
+: dataHandle_(0),
+  deleteDataHandle_(true),
+  istream_(&is),
+  deleteIStream_(false),
+  selectStatement_(selectStatement),
+  delimiter_(delimiter),
+  context_(context)
 {}
 
 Select::Select(const std::string& selectStatement)
@@ -46,7 +65,17 @@ Select::Select(const std::string& selectStatement)
   deleteDataHandle_(true),
   istream_(0),
   deleteIStream_(true),
-  selectStatement_(selectStatement)
+  selectStatement_(selectStatement),
+  context_(0)
+{}
+
+Select::Select(const std::string& selectStatement, ExecutionContext* context)
+: dataHandle_(0),
+  deleteDataHandle_(true),
+  istream_(0),
+  deleteIStream_(true),
+  selectStatement_(selectStatement),
+  context_(context)
 {}
 
 Select::Select()
@@ -54,7 +83,17 @@ Select::Select()
   deleteDataHandle_(true),
   istream_(0),
   deleteIStream_(true),
-  selectStatement_()
+  selectStatement_(),
+  context_(0)
+{}
+
+Select::Select(ExecutionContext* context)
+: dataHandle_(0),
+  deleteDataHandle_(true),
+  istream_(0),
+  deleteIStream_(true),
+  selectStatement_(),
+  context_(context)
 {}
 
 Select::Select(const std::string& selectStatement, const std::string& path)
@@ -62,7 +101,19 @@ Select::Select(const std::string& selectStatement, const std::string& path)
   deleteDataHandle_(true),
   istream_(0),
   deleteIStream_(true),
-  selectStatement_(selectStatement)
+  selectStatement_(selectStatement),
+  context_(0)
+{
+    //dataHandle_->openForRead();
+}
+
+Select::Select(const std::string& selectStatement, const std::string& path, ExecutionContext* context)
+: dataHandle_(DataHandleFactory::openForRead(path)),
+  deleteDataHandle_(true),
+  istream_(0),
+  deleteIStream_(true),
+  selectStatement_(selectStatement),
+  context_(context)
 {
     //dataHandle_->openForRead();
 }
@@ -73,18 +124,18 @@ Select::~Select()
     if (deleteIStream_) delete istream_;
 }
 
-SelectIterator* Select::createSelectIterator(std::string sql)
+SelectIterator* Select::createSelectIterator(const std::string& sql, ExecutionContext* context)
 {
-    return new SelectIterator(*this, sql);
+    return new SelectIterator(*this, sql, context);
 }
 
 const Select::iterator Select::end() { return iterator(0); }
 
 Select::iterator Select::begin()
 {
-    SelectIterator* it = new SelectIterator(*this, selectStatement_);
+    SelectIterator* it = new SelectIterator(*this, selectStatement_, context_);
     ASSERT(it);
-    it->next();
+    it->next(context_);
     return iterator(it);
 }
 

@@ -283,8 +283,8 @@ SQLInteractiveSession.cc
 SQLInteractiveSession.h
 SQLNonInteractiveSession.cc
 SQLNonInteractiveSession.h
-#SQLCallbackOutput.cc
-#SQLCallbackOutput.h
+SQLCallbackOutput.cc
+SQLCallbackOutput.h
 SQLIterator.h
 SQLIteratorOutput.cc
 SQLIteratorOutput.h
@@ -460,4 +460,3 @@ ecbuild_generate_yy( YYPREFIX odblib_
                   FLEX_FLAGS "-d"
                   DEPENDANT SQLParser.cc )
 
-add_subdirectory (tools)

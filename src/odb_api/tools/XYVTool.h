@@ -23,7 +23,7 @@ public:
 	~XYVTool();
 
 	static void help(std::ostream &o)
-	{ o << "Creates XYV representation of file for displaying in a grphics program"; }
+	{ o << "Creates XYV representation of file for displaying in a graphics program"; }
 
 	static void usage(const std::string& name, std::ostream &o)
 	{ o << name << " <input-file.odb> <value-column> <output-file.odb>"; }

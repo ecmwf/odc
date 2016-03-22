@@ -24,6 +24,7 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 
@@ -36,15 +37,20 @@ public:
 	typedef iterator::Row row;
 
 	Select(const std::string& selectStatement, eckit::DataHandle &);
+	Select(const std::string& selectStatement, eckit::DataHandle &, eckit::ExecutionContext*);
 	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter);
+	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter, eckit::ExecutionContext*);
     Select(const std::string& selectStatement, const std::string& path);
+    Select(const std::string& selectStatement, const std::string& path, eckit::ExecutionContext*);
 	Select(const std::string& selectStatement);
+	Select(const std::string& selectStatement, eckit::ExecutionContext*);
 	Select();
+	Select(eckit::ExecutionContext*);
 
 	virtual ~Select();
 
 #ifdef SWIGPYTHON
-	iterator __iter__() { return iterator(createSelectIterator(selectStatement_)); }
+	iterator __iter__() { return iterator(createSelectIterator(selectStatement_, context_)); }
 #endif
 
 	iterator begin();
@@ -53,7 +59,7 @@ public:
 	eckit::DataHandle* dataHandle() { return dataHandle_; };
 	std::istream* dataIStream() { return istream_; }
 
-	SelectIterator* createSelectIterator(std::string);
+	SelectIterator* createSelectIterator(const std::string&, eckit::ExecutionContext*);
 
 private:
 	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
@@ -66,6 +72,8 @@ private:
 
 	std::string selectStatement_;
 	std::string delimiter_;
+
+    eckit::ExecutionContext* context_;
 };
 
 } // namespace odb 

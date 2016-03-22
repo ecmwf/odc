@@ -105,7 +105,7 @@ private:
     SQLSession& session_;
 };
 
-void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, std::istream* is, const SQLOutputConfig& cfg, const std::string& csvDelimiter)
+void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, std::istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
 {
     AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
@@ -128,7 +128,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::odblib_lex_init(&scanner); // TODO: handle unwind
 }
 
-void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, DataHandle* dh, const SQLOutputConfig& cfg)
+void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, DataHandle* dh, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
@@ -145,7 +145,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::odblib_parse(scanner, &session);
 }
 
-void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, SQLDatabase& db, const SQLOutputConfig& cfg)
+void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
     AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);

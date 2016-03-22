@@ -14,6 +14,10 @@ ReptypeGenIterator.cc
 ReptypeGenIterator.h
 TSQLReader.cc
 TSQLReader.h
+ODBMigratorModule.h
+ODBMigratorModule.cc
+MigrateHandler.h
+MigrateHandler.cc
 migrator_api.cc
 migrator_api.h
 )
@@ -24,10 +28,10 @@ migrator_api.h
                             HAVE_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES
                          TEMPLATES
                             ImportODBTool.cc TSQLReader.cc
-                         INCLUDES   ${ODB_INCLUDE_DIRS}
+                         PRIVATE_INCLUDES   ${ODB_INCLUDE_DIRS}
                          INSTALL_HEADERS LISTED
                          HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/migrator
-                         LIBS       Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} ${EXTRA_ODB_MIGRATOR_LIBS} ) # pass gomp in EXTRA_ODB_MIGRATOR_LIBS for gfortran if needed
+                         LIBS       Odb odbtools ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} ${EXTRA_ODB_MIGRATOR_LIBS}) #FIXME: add gomp for gfortran 
                         
     ecbuild_add_executable( TARGET     odb_migrator
                         CONDITION
@@ -37,6 +41,22 @@ migrator_api.h
                         # LINKER_LANGUAGE Fortran
                         LIBS       Odbmigrator odbtools ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
 
+    get_target_property( migrator_bin odb_migrator LOCATION )
+
+    set( test_environment
+      ODB_API_CODES=${PROJECT_SOURCE_DIR}/etc
+      ODB_API_HOME=${PROJECT_SOURCE_DIR}
+      ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
+      PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
+      ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc )
+
+    # TODO
+    #ecbuild_add_test( TARGET test_migrator.ecml
+    #                  COMMAND ${migrator_bin} 
+    #                  ARGS    ecml test_migrator.ecml
+    #                  CONDITION  HAVE_MIGRATOR
+    #                  ENVIRONMENT ${test_environment}
+    #                  )
 
   if( HAVE_MIGRATOR AND HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
         set(CMAKE_SWIG_FLAGS "")
@@ -45,7 +65,9 @@ migrator_api.h
         # set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
         swig_add_module( pyodbdump python pyodbdump.i )
         swig_link_libraries( pyodbdump Odbmigrator Odb ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} ${PYTHON_LIBRARIES} )
-        set(PYTHON_DEST "lib/python${PYTHON_VERSION}/site-packages" )
+        
+        set(PYTHON_SITE "${INSTALL_LIB_DIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages" )
+        set(PYTHON_DEST "${PYTHON_SITE}" )
         install(TARGETS _pyodbdump DESTINATION ${PYTHON_DEST} )
         install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyodbdump.py  DESTINATION ${PYTHON_DEST})
     endif()

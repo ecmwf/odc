@@ -540,36 +540,41 @@ void CodecChars<BYTEORDER>::save(eckit::DataHandle *dh)
 template<typename BYTEORDER>
 unsigned char* CodecShortReal<BYTEORDER>::encode(unsigned char* p, double d)
 {
-	float s = (d == missingValue_) ? std::numeric_limits<float>::min() : d;
-	memcpy(p, &s, sizeof(s));
-	return p + sizeof(s);
+    const uint32_t minFloatAsInt ( 0x800000 );
+
+    float s = (d == missingValue_) ? *reinterpret_cast<const float*>( &minFloatAsInt ) : d;
+    memcpy(p, &s, sizeof(s));
+    return p + sizeof(s);
 }
 
 template<typename BYTEORDER>
 double CodecShortReal<BYTEORDER>::decode()
 {
-	float s;
-	ds().readFloat(s);
+    float s;
+    ds().readFloat(s);
 
-	return s == std::numeric_limits<float>::min() ? missingValue_ : s;
+    const uint32_t minFloatAsInt ( 0x800000 );
+    return s == *reinterpret_cast<const float*>( &minFloatAsInt ) ? missingValue_ : s;
 }
 
 
 template<typename BYTEORDER>
 unsigned char* CodecShortReal2<BYTEORDER>::encode(unsigned char* p, double d)
 {
-	float s = (d == missingValue_) ? - std::numeric_limits<float>::max() : d;
-	memcpy(p, &s, sizeof(s));
-	return p + sizeof(s);
+    const uint32_t maxFloatAsInt ( 0x7f7fffff );
+    float s = (d == missingValue_) ? - *reinterpret_cast<const float*>( &maxFloatAsInt ) : d;
+    memcpy(p, &s, sizeof(s));
+    return p + sizeof(s);
 }
 
 template<typename BYTEORDER>
 double CodecShortReal2<BYTEORDER>::decode()
 {
-	float s;
-	ds().readFloat(s);
+    float s;
+    ds().readFloat(s);
 
-	return s == - std::numeric_limits<float>::max() ? missingValue_ : s;
+    const uint32_t maxFloatAsInt ( 0x7f7fffff );
+    return s == - *reinterpret_cast<const float*>( &maxFloatAsInt ) ? missingValue_ : s;
 }
 
 template<typename BYTEORDER>

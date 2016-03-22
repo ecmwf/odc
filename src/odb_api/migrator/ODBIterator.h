@@ -12,10 +12,11 @@
 #define ODBIterator_H
 
 #include "eckit/filesystem/PathName.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/SQLInteractiveSession.h"
+#include "odb_api/ColumnType.h"
 
 namespace eckit { class PathName; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb { namespace sql { class SchemaAnalyzer; class SQLInteractiveSession; } }
 
@@ -25,7 +26,8 @@ class MetaData;
 
 namespace tool {
 
-class ODBIterator : public odb::RowsReaderIterator {
+class ODBIterator 
+{
 public:
 
 	//ODBIterator(const eckit::PathName& db, const std::string& sql); 
@@ -38,7 +40,7 @@ public:
 
 	bool operator!=(const ODBIterator& o) { ASSERT(&o == 0); return hasNext_; }
 
-	ODBIterator& operator++() { next(); return *this; }
+	ODBIterator& operator++() { next(context_); return *this; }
 
 	odb::MetaData& columns();
 
@@ -47,7 +49,7 @@ public:
 
 	static eckit::PathName schemaFile(const eckit::PathName db);
 
-	virtual bool next();
+	virtual bool next(eckit::ExecutionContext*);
 
 protected:
 	int setColumn(unsigned long index, std::string& name, odb::ColumnType type, double missingValue);
@@ -79,6 +81,7 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
+    eckit::ExecutionContext* context_;
 };
 
 } // namespace tool 
