@@ -14,8 +14,8 @@
 #ifndef Odb2NetcdfModule_H
 #define Odb2NetcdfModule_H
 
-#include "experimental/eckit/ecml/core/Module.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Module.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 

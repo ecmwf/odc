@@ -9,7 +9,7 @@
 #include "odb_api/CommandLineParser.h"
 #include "odb_api/ODBModule.h"
 
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 #include "Odb2NetCDF.h"
 #include "Odb2NetcdfModule.h"

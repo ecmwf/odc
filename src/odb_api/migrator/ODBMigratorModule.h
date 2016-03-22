@@ -14,8 +14,8 @@
 #ifndef eckit_ecml_ODBMigratorModule_H
 #define eckit_ecml_ODBMigratorModule_H
 
-#include "experimental/eckit/ecml/core/Module.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Module.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 

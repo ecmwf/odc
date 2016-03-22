@@ -11,8 +11,8 @@
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
-#include "experimental/eckit/ecml/prelude/REPLHandler.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/prelude/REPLHandler.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/ODBModule.h"

@@ -7,7 +7,7 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 using namespace std;
 using namespace odb;

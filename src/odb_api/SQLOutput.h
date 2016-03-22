@@ -15,7 +15,7 @@
 #define SQLOutput_H
 
 #include "odb_api/SQLOutputConfig.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 namespace sql {

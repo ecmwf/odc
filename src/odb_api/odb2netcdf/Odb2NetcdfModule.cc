@@ -13,12 +13,12 @@
 
 #include <string>
 
-#include "experimental/eckit/ecml/parser/Request.h"
+#include "eckit/ecml/parser/Request.h"
 
-#include "experimental/eckit/ecml/core/RequestHandler.h"
-#include "experimental/eckit/ecml/core/ExecutionContext.h"
-#include "experimental/eckit/ecml/core/Environment.h"
-#include "experimental/eckit/ecml/core/SpecialFormHandler.h"
+#include "eckit/ecml/core/RequestHandler.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
+#include "eckit/ecml/core/SpecialFormHandler.h"
 
 #include "odb_api/odb2netcdf/ecml_verbs/Odb2NetcdfHandler.h"
 
