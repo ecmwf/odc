@@ -70,6 +70,13 @@ if( HAVE_MIGRATOR )
 
 endif()
 
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  cmake_add_fortran_flags("-fPIC -ffree-line-length-none")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  cmake_add_cxx_flags("-fPIC -Wl,--as-needed")
+endif()
 
 ecbuild_add_option( FEATURE PYTHON
                     DESCRIPTION "whether or not to build the Python interface"
