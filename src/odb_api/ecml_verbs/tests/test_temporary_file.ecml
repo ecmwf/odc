@@ -1,0 +1,6 @@
+test, label = check temporary_file works,
+do = (
+    println, values = Generated file name is / (temporary_file)
+    println, values = OK
+
+), expect = OK

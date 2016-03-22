@@ -1,0 +1,26 @@
+test, label = Check verb chunk works,
+do = (
+    let, input = "2000010106.odb"
+    let, chunks = (chunk, source = ($,_ = input))
+
+    let, left  = (sql, filter = "select varno,sum(varno_count) as varno_count",
+                       source = (for, c = ($,_ = chunks),
+                                      do = (sql,
+                                              source = ($,_ = c),
+                                              filter = "select varno,count(*) as varno_count",
+                                              target = (temporary_file))),
+                       target = (temporary_file))
+
+    println, values = " **** left: " / ($,_ = left)
+
+    let, right = (sql, source = ($,_ = input),
+                       filter = "select varno, count(*) as varno_count",
+                       target = (temporary_file) )
+
+    println, values = " *** right: " / ($,_ = right)
+
+    compare, left = ($,_ = left), right = ($,_ = right)
+
+    sequence, values = OK
+),
+expect = OK

@@ -1,0 +1,42 @@
+#let, selects = (for, q = (glob,_="/tmp/ddl/*sql"), do = (read_text_file,_ = ($,_ = q)))
+
+#let, vars = (read_text_file,_="/tmp/42r1_sql/ddl/obstype.h")
+
+let, 
+    vars = (read_text_file, _ = "obstype.h"),
+    queries = (for, f = (glob, _ = "/tmp/ddl/*sql"),
+                    do = (let, 
+                            path = (f),
+                            select = (read_text_file,_ = (f)))),
+    data = (retrieve, 
+                type = mfb, 
+                date = 20151108, 
+                time = 12, 
+                database = marsod,
+                target="20151108_12_reportype_16002_type_mfb.odb",
+                reportype = 16002)
+
+function, of = queries, process_queries =
+    (for, 
+        q = (queries),
+        do = (
+            #println, values = Process / ($,_=q/path) / "::: " / ($,_=q/select)
+            try,
+                do = (sql, source = (data),
+                           filter = ($,_ = q/select),
+                           include = (vars)
+                      let, 
+                           path = ($,_ = q/path), 
+                           exception = NONE),
+
+                catch = (let, 
+                           path = ($,_ = q/path),
+                           exception = (current_exception) )))
+
+#println,values = "files:" / (for, f = ($,_=queries), do = ($,_=f/path))
+
+for, l = (process_queries),
+    do = (println, values = ""
+                    / ($,_ = l/exception) / ": "
+                    / ($,_ = l/path) 
+                    )

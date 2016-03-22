@@ -1,0 +1,76 @@
+test, label = check STAGE works,
+
+do = (
+    run, source = "test_config_local.ecml"
+
+    let, 
+        number_of_partitions = 3,
+        #rts = 16030
+        rts = 16030/16002/16029/16045/16065/16009
+    let,
+        data_description = (let,
+                                class = OD, 
+                                date = 20151108, 
+                                time = 1200, 
+                                type = MFB, 
+                                obsgroup = conv, 
+                                groupid = 17, # TODO: we need to translate obsgroup to groupid in local_stage
+                                reportype = ($,_=rts), 
+                                stream = oper, 
+                                expver = qu12,
+                                database = localhost)
+    
+    # STAGE the data described by data_description so given number_of_partitions is ready
+    # for subsequent parallel RETRIEVE requests can fetch each of the partitions.
+
+    # TODO (?): The data saved by STAGE in TARGET file should contain detailed information on
+    # the partitions (rows and reports numbers, etc.) 
+
+    apply, function  = ($,_ = local_stage),
+        args         = (update, _        = ($, _ = data_description),
+                                n_parts  = ($,_ = number_of_partitions),
+                                target   = 20150218_0_16001_parts_info.odb)
+
+    #throw,what=STOP
+
+    # retrieve_part is a helper function which retrieves partition number n
+    # using the data_description and number_of_partitions defined earlier
+
+    function, of = n, capture = data_description / number_of_partitions,
+        retrieve_part = (apply, function = ($,_ = local_retrieve),
+                            args         = (update, _           = ($, _ = data_description),
+                                                    n_parts     = ($,_ = number_of_partitions),
+                                                    part_number = ($,_ = n),
+                                                    target      = (temporary_file)))
+
+    println, values = OK
+
+    # RETRIEVE all data described by data_description to a temporary file,
+    # set variable all to path of that file
+
+    let, all = (apply, 
+                   function = ($, _ = local_retrieve),
+                   args     = (update, _      = ($, _ = data_description),
+                                       target = (temporary_file)))
+
+    let, parts = (
+        for, i = (range, from = 0, below = ($, _ = number_of_partitions)),
+             do = (
+                 println, values = " **** Retrieving part " / ($,_=i)
+                 retrieve_part, n = ($,_=i)
+             )
+    )
+
+    println,values = "**** Compare concatenation of partitions: " / ($,_ = parts)
+    println,values = "**** to the whole dataset: " / ($,_ = all)
+
+    compare, 
+        left = ($,_ = parts), 
+        right = ($,_ = all)
+
+    #system, values = "rm -rf " / ($,_=parts) / ($,_=all) 
+
+    println, values = OK
+),
+expect = OK
+
