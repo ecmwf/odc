@@ -27,7 +27,6 @@ ecbuild_requires_macro_version( 1.9 )
 # local project
 
 ecbuild_use_package( PROJECT eckit VERSION 0.9 REQUIRED )
-ecbuild_use_package( PROJECT odb   VERSION 1.0 QUIET )
 
 ecbuild_declare_project()
 
@@ -40,7 +39,7 @@ ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
 ecbuild_add_option( FEATURE MIGRATOR
                     DESCRIPTION "whether or not to build the ODB migrator tool"
                     DEFAULT OFF
-                    REQUIRED_PACKAGES "ODB" )
+                    REQUIRED_PACKAGES "PROJECT odb VERSION 1.0 QUIET" )
 
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"

@@ -41,8 +41,6 @@ migrator_api.h
                         # LINKER_LANGUAGE Fortran
                         LIBS       Odbmigrator odbtools ${ODB_LIBRARIES} ${FORTRAN_LIBRARIES} ${DL_LIBRARIES} )
 
-    get_target_property( migrator_bin odb_migrator LOCATION )
-
     set( test_environment
       ODB_API_CODES=${PROJECT_SOURCE_DIR}/etc
       ODB_API_HOME=${PROJECT_SOURCE_DIR}
@@ -51,12 +49,15 @@ migrator_api.h
       ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc )
 
     # TODO
+    # if( HAVE_MIGRATOR AND ODB_FOUND AND DEFINED FORTRAN_LIBRARIES )
+    # get_target_property( migrator_bin odb_migrator LOCATION)
     #ecbuild_add_test( TARGET test_migrator.ecml
     #                  COMMAND ${migrator_bin} 
     #                  ARGS    ecml test_migrator.ecml
     #                  CONDITION  HAVE_MIGRATOR
     #                  ENVIRONMENT ${test_environment}
     #                  )
+    # endif()
 
   if( HAVE_MIGRATOR AND HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
         set(CMAKE_SWIG_FLAGS "")
