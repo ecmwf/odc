@@ -16,6 +16,13 @@ foreach( _test ${fortran_tests} )
                       LIBS       Odb_fortran ${ODB_LIBS} 
                       ENVIRONMENT 
                                 TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
+
+                       TEST_DEPENDS get_odb_api_test_data 
+                                    get_mars_client_test_data_mo
+                                    get_mars_client_test_data_ec
+                                    test_ec_archiving.ecml
+                                    test_mo_archiving.ecml
+
                       LINKER_LANGUAGE Fortran )
 endforeach()
 
