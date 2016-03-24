@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "eckit/io/FileHandle.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
 #include "odb_api/Reader.h"
 
 using namespace std;
@@ -23,47 +23,68 @@ namespace odb {
 
 Reader::Reader(DataHandle &dh)
 : dataHandle_(&dh),
-  deleteDataHandle_(false)
+  deleteDataHandle_(false),
+  context_(0)
+{}
+
+Reader::Reader(DataHandle &dh, ExecutionContext* context)
+: dataHandle_(&dh),
+  deleteDataHandle_(false),
+  context_(context)
 {}
 
 Reader::Reader()
 : dataHandle_(0),
   deleteDataHandle_(true),
-  path_("")
+  path_(""),
+  context_(0)
+{}
+
+Reader::Reader(ExecutionContext* context)
+: dataHandle_(0),
+  deleteDataHandle_(true),
+  path_(""),
+  context_(context)
+{}
+
+Reader::Reader(const std::string& path, ExecutionContext* context)
+: dataHandle_(DataHandleFactory::openForRead(path)),
+  deleteDataHandle_(true),
+  path_(path),
+  context_(context)
 {}
 
 Reader::Reader(const std::string& path)
-: dataHandle_(new FileHandle(path)),
+: dataHandle_(DataHandleFactory::openForRead(path)),
   deleteDataHandle_(true),
-  path_(path)
-{
-        dataHandle_->openForRead();
-}
+  path_(path),
+  context_(0)
+{}
 
 Reader::~Reader()
 {
-        if (dataHandle_ && deleteDataHandle_)
-        {
-                dataHandle_->close();
-                delete dataHandle_;
-        }
+    if (dataHandle_ && deleteDataHandle_)
+    {
+        dataHandle_->close();
+        delete dataHandle_;
+    }
 }
 
 ReaderIterator* Reader::createReadIterator(const PathName& pathName)
 {
-        return new ReaderIterator(*this, pathName);
+    return new ReaderIterator(*this, pathName);
 }
 
 ReaderIterator* Reader::createReadIterator()
 {
-	return createReadIterator(path_);
+return createReadIterator(path_);
 }
 
 Reader::iterator Reader::begin()
 {
-        ReaderIterator * it = new ReaderIterator(*this);
-        it->next();
-        return iterator(it);
+    ReaderIterator * it = new ReaderIterator(*this);
+    it->next(context_);
+    return iterator(it);
 }
 
 const Reader::iterator Reader::end() { return iterator(0); }

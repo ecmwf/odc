@@ -92,7 +92,7 @@ int test_odacapi1(int argc, char* argv[])
 
     std::cout << "Calling oda_create..." << std::endl;
 
-    oda_ptr oh = odb_create("", &err);
+    oda_ptr oh = odb_read_create("", &err);
 
     oda_read_iterator* it = odb_create_read_iterator(oh, "test.odb", &err);
     ASSERT(0 == err);
@@ -133,7 +133,7 @@ int test_odacapi1(int argc, char* argv[])
     }
 
     ASSERT(0 == odb_read_iterator_destroy(it));
-    ASSERT(0 == odb_destroy(oh));
+    ASSERT(0 == odb_read_destroy(oh));
     std::cout << "OK" << std::endl;
     return 0;
 }
@@ -149,7 +149,7 @@ int test_odacapi2(int argc, char* argv[])
 
     std::cout << "Calling odb_create..." << std::endl;
 
-    oda_ptr oh = odb_create("", &err);
+    oda_ptr oh = odb_select_create("", &err);
 
     Log::info() << "Log::info initialised properly." << std::endl;
 
@@ -192,7 +192,7 @@ int test_odacapi2(int argc, char* argv[])
     }
 
     ASSERT(0 == odb_select_iterator_destroy(it));
-    ASSERT(0 == odb_destroy(oh));
+    ASSERT(0 == odb_read_destroy(oh));
     std::cout << "OK" << std::endl;
     return 0;
 }

@@ -1,8 +1,8 @@
 /// @file   DataColumn.h
 /// @author Tomas Kral
 
-#ifndef DATACOLUMN_H_
-#define DATACOLUMN_H_
+#ifndef odb_sql_DataColumn_H
+#define odb_sql_DataColumn_H
 
 #include "eckit/eckit.h"
 #include "odb_api/ColumnType.h"

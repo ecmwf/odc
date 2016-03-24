@@ -49,18 +49,19 @@ template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::reset() { count_ = 0; }
 
 template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::flush() {}
+void SQLODAOutput<ITERATOR>::flush(eckit::ExecutionContext*) {}
 
 template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::cleanup(SQLSelect& sql) { sql.outputFiles((**writer_).outputFiles()); }
 
 template<typename ITERATOR>
-bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results)
+bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results, eckit::ExecutionContext* context)
 {
 	size_t nCols = results.size();
     for(size_t i = 0; i < nCols; i++)
 	{
 		bool missing = false;
+        // TODO: pass the context to writer_
 		(*writer_)[i] = results[i]->eval(missing);
 	}
 

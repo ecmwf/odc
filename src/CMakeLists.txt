@@ -1,4 +1,4 @@
-### check if all sources are used
+## check if all sources are used
 ecbuild_find_project_files()
 
 ### config header
@@ -16,7 +16,10 @@ include_directories( ${ODB_API_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
 ### libs
 
 add_subdirectory( odb_api )
-add_subdirectory( python )
+add_subdirectory( odb_api/tools )
+add_subdirectory( odb_api/migrator )
+add_subdirectory( odb_api/odb2netcdf )
+add_subdirectory( odb_api/odb2_to_odb1 )
 add_subdirectory( fortran )
-
+add_subdirectory( python )
 

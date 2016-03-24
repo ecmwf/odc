@@ -15,28 +15,31 @@
 #include "Expressions.h"
 #include "SQLOutputConfig.h"
 #include "SchemaAnalyzer.h"
+#include "SQLAST.h"
 
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
+namespace odb { namespace sql { class DataTable; } }
+namespace odb { namespace sql { class SQLDatabase; } }
 
-namespace odb {
-
-    class DataTable;
-    class SQLDatabase;
-
+namespace odb { 
 namespace sql {
 
 class SQLSession;
 
 class SQLSelectFactory {
 public:
+    SQLSelectFactory();
 
-	static SQLSelectFactory& instance();
+	SQLSelect* create(odb::sql::SQLSession&, const SelectAST&);
 
-	SQLSelect* create(bool distinct,
+	SQLSelect* create(
+        odb::sql::SQLSession&,
+        bool distinct,
         bool all,
         Expressions select_list,
         const std::string& into,
-        std::vector<SQLTable*> from,
+        std::vector<Table> from,
         odb::sql::expression::SQLExpression *where,
         Expressions group_by,
         std::pair<Expressions,std::vector<bool> > order_by);
@@ -45,7 +48,7 @@ public:
 		const std::string& columnName,
 		const std::string& bitfieldName,
 		const SQLExpression* vectorIndex,
-		const std::string& table,
+		const Table& table,
 		const SQLExpression* pshift);
 
     eckit::DataHandle* implicitFromTableSource() { return implicitFromTableSource_; }
@@ -63,9 +66,9 @@ public:
 	std::string csvDelimiter() { return csvDelimiter_; }
 	void csvDelimiter(const std::string& d) { csvDelimiter_ = d; }
 
-private:
-    SQLSelectFactory();
+    void reset();
 
+private:
     // No copy allowed
     SQLSelectFactory(const SQLSelectFactory&);
     SQLSelectFactory& operator=(const SQLSelectFactory&);
@@ -76,15 +79,16 @@ private:
 
 	SQLExpression* reshift(SQLExpression*);
 
-    void resolveImplicitFrom(SQLSession&, std::vector<SQLTable*>& from);
+    //void resolveImplicitFrom(SQLSession&, std::vector<SQLTable*>& from);
+    std::vector<SQLTable*> resolveImplicitFrom(SQLSession&, std::vector<Table>& from);
 
     eckit::DataHandle* implicitFromTableSource_;
 
     std::istream* implicitFromTableSourceStream_;
 
-    SchemaAnalyzer& analyzer();
+    //SchemaAnalyzer& analyzer();
     MetaData columns(const std::string& tableName);
-    SQLOutput* createOutput(SQLSession&, const std::string& into, size_t orderBySize);
+    SQLOutput* createOutput(SQLSession&, const std::string& into, size_t orderBySize );
 
     SQLDatabase* database_;
     SQLOutputConfig config_;

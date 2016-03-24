@@ -13,6 +13,8 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
+#include "odb_api/odb_api.h"
+
 #include "eckit/runtime/ContextBehavior.h"
 #include "eckit/runtime/Context.h"
 #include "odb_api/FastODA2Request.h"
@@ -138,9 +140,22 @@ unsigned int odb_api_format_version_major() { return odb::ODBAPIVersion::formatV
 unsigned int odb_api_format_version_minor() { return odb::ODBAPIVersion::formatVersionMinor(); }
 
 /// @param config  ignored for now.
-oda_ptr odb_create(const char *config, int *err)
+oda_ptr odb_read_create(const char *config, int *err)
 {
 	Reader* o = new Reader;
+	*err = !o;
+	return oda_ptr(o);
+}
+
+oda_ptr odb_create(const char *config, int *err)
+{
+    return odb_read_create(config, err);
+}
+
+/// @param config  ignored for now.
+oda_ptr odb_select_create(const char *config, int *err)
+{
+	Select* o = new Select;
 	*err = !o;
 	return oda_ptr(o);
 }
@@ -154,9 +169,20 @@ oda_writer_ptr odb_writer_create(const char *config, int *err)
 	return oda_writer_ptr(o);
 }
 
+int odb_read_destroy(oda_ptr o)
+{
+	delete reinterpret_cast<Reader *>(o);
+	return 0;
+}
+
 int odb_destroy(oda_ptr o)
 {
-	delete reinterpret_cast<Reader*>(o);
+    return odb_read_destroy(o);
+}
+
+int odb_select_destroy(oda_ptr o)
+{
+	delete reinterpret_cast<Select *>(o);
 	return 0;
 }
 
@@ -168,16 +194,16 @@ int odb_writer_destroy(oda_writer_ptr o)
 
 oda_read_iterator_ptr odb_create_read_iterator(oda_ptr co, const char *filename, int *err)
 {
-	Reader *o = reinterpret_cast<Reader*>(co);
-	std::string fileName = filename;
-	PathName fn(fileName);
+	Reader *o (reinterpret_cast<Reader*>(co));
+	std::string fileName (filename);
+	PathName fn (fileName);
 	if (! fn.exists())
 	{
 		*err = 2; //TODO: define error codes
 		return 0;
 	}
 	
-	ReaderIterator* iter = o->createReadIterator(fn);
+	ReaderIterator* iter (o->createReadIterator(fn));
 	*err = !iter;
 	return oda_read_iterator_ptr(iter);
 	
@@ -185,21 +211,31 @@ oda_read_iterator_ptr odb_create_read_iterator(oda_ptr co, const char *filename,
 
 oda_select_iterator_ptr odb_create_select_iterator(oda_ptr co, const char *sql, int *err)
 {
-	Select *o = reinterpret_cast<Select*>(co);
-	
-	SelectIterator* iter = o->createSelectIterator(sql);
-	*err = !iter;
-	return oda_select_iterator_ptr(iter);
-	
+    Select *o (reinterpret_cast<Select*>(co));
+    try { 
+        SelectIterator* iter (o->createSelectIterator(sql, /*ExecutionContext*/ 0));
+        *err = !iter;
+        return oda_select_iterator_ptr(iter);
+    }
+    catch (eckit::CantOpenFile e)
+    {
+		*err = 1;
+		return 0;
+    }
+    catch (eckit::ReadError e)
+    {
+		*err = 2; 
+		return 0;
+    }
 }
 
 oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr co, const char *sql, const char *filename, int *err)
 {
-    Select *o = reinterpret_cast<Select*>(co);
+    Select *o (reinterpret_cast<Select*>(co));
 
-    std::string full_sql = std::string(sql) + " from \"" + std::string(filename) + "\"";
+    std::string full_sql (std::string(sql) + " from \"" + std::string(filename) + "\"");
 
-    SelectIterator* iter = o->createSelectIterator(full_sql);
+    SelectIterator* iter (o->createSelectIterator(full_sql, /*ExecutionContext*/ 0));
     *err = !iter;
     return oda_select_iterator_ptr(iter);
 }
@@ -219,35 +255,35 @@ int odb_select_iterator_destroy(oda_select_iterator_ptr it)
 
 int odb_read_iterator_get_no_of_columns(oda_read_iterator_ptr it, int *numberOfColumns)
 {
-	ReaderIterator* iter = reinterpret_cast<ReaderIterator*>(it);
+	ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
 	*numberOfColumns = iter->columns().size();
 	return 0;
 }
 
 int odb_select_iterator_get_no_of_columns(oda_select_iterator_ptr it, int *numberOfColumns)
 {
-	SelectIterator* iter = reinterpret_cast<SelectIterator*>(it);
+	SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
 	*numberOfColumns = iter->columns().size();
 	return 0;
 }
 
 int odb_read_iterator_get_column_type(oda_read_iterator_ptr it, int n, int *type)
 {
-	ReaderIterator* iter = reinterpret_cast<ReaderIterator*>(it);
+	ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
 	*type = iter->columns()[n]->type();
 	return 0;
 }
 
 int odb_select_iterator_get_column_type(oda_select_iterator_ptr it, int n, int *type)
 {
-	SelectIterator* iter = reinterpret_cast<SelectIterator*>(it);
+	SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
 	*type = iter->columns()[n]->type();
 	return 0;
 }
 
 int odb_read_iterator_get_column_name(oda_read_iterator_ptr it, int n, char **name, int *size_name)
 {
-	ReaderIterator* iter = reinterpret_cast<ReaderIterator*>(it);
+	ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
 	*name = const_cast<char*>(iter->columns()[n]->name().c_str());
 	*size_name = iter->columns()[n]->name().length();
     return 0;
@@ -255,7 +291,7 @@ int odb_read_iterator_get_column_name(oda_read_iterator_ptr it, int n, char **na
 
 int odb_select_iterator_get_column_name(oda_select_iterator_ptr it, int n, char **name, int *size_name)
 {
-	SelectIterator* iter = reinterpret_cast<SelectIterator*>(it);
+	SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
 	*name = const_cast<char*>(iter->columns()[n]->name().c_str());
 	*size_name = iter->columns()[n]->name().length();
      return 0;
@@ -263,8 +299,8 @@ int odb_select_iterator_get_column_name(oda_select_iterator_ptr it, int n, char 
 
 int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* data, int *new_dataset)
 {
-	ReaderIterator* iter = reinterpret_cast<ReaderIterator*>(it);
-	if (! iter->next())
+	ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
+	if (! iter->next(/*ExecutionContext*/ 0))
 		return 1;
 
 	if (iter->isNewDataset())
@@ -275,7 +311,7 @@ int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* 
 	if (count != static_cast<int>(iter->columns().size()))
 		return 2; // TDOO: define error codes
 
-	for (int i = 0; i < count; ++i)
+	for (int i (0); i < count; ++i)
 		data[i] = iter->data()[i];
 
 	return 0;
@@ -283,8 +319,8 @@ int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* 
 
 int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, double* data, int *new_dataset)
 {
-	SelectIterator* iter = reinterpret_cast<SelectIterator*>(it);
-	if (! iter->next())
+	SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
+	if (! iter->next(/*ExecutionContext*/ 0))
 		return 1;
 
 	if (iter->isNewDataset())
@@ -295,7 +331,7 @@ int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, doub
 	if (count != static_cast<int>(iter->columns().size()))
 		return 2; // TDOO: define error codes
 
-	for (int i = 0; i < count; ++i)
+	for (int i (0); i < count; ++i)
 		data[i] = iter->data()[i];
 
 	return 0;
@@ -303,7 +339,7 @@ int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, doub
 
 oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filename, int *err)
 {
-	Writer<> *o = reinterpret_cast<Writer<> *>(co);
+	Writer<> *o (reinterpret_cast<Writer<> *>(co));
     eckit::Length estimatedLength(0);
 	DataHandle *fh = ODBAPISettings::instance().appendToFile(PathName(std::string(filename)), estimatedLength, true);
 
@@ -315,7 +351,7 @@ oda_write_iterator_ptr odb_create_append_iterator(oda_ptr co, const char *filena
 
 oda_write_iterator_ptr odb_create_write_iterator(oda_ptr co, const char *filename, int *err)
 {
-	Writer<> *o = reinterpret_cast<Writer<> *>(co);
+	Writer<> *o (reinterpret_cast<Writer<> *>(co));
     eckit::Length estimatedLength(0);
 	DataHandle *fh = ODBAPISettings::instance().writeToFile(PathName(std::string(filename)), estimatedLength, true);
 
@@ -346,37 +382,56 @@ int odb_write_iterator_set_column(oda_write_iterator_ptr wi, int index, int type
 
 int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int type, const char *name, const char* bitfieldNames, const char *bitfieldSizes)
 {
-	std::string bnames = bitfieldNames;
-    std::string bsizes = bitfieldSizes;
-    odb::FieldNames bitfield_names;
-    odb::Sizes      bitfield_sizes;
+	std::string bnames (bitfieldNames);
+    std::string bsizes (bitfieldSizes);
+    odb::FieldNames    (bitfield_names);
+    odb::Sizes         (bitfield_sizes);
  
 //	std::cout << " columnName = " << name << " " << bnames << " " << bsizes << std::endl;
-	size_t iprev = 0;
-	for (size_t i = 0; i < bnames.size(); i++) {
-		if (bnames[i] == ':') {
-			std::string name = bnames.substr(iprev,i-iprev);
+	size_t iprev (0);
+	for (size_t i (0); i < bnames.size(); i++)
+    {
+		if (bnames[i] == ':')
+        {
+			std::string name (bnames.substr(iprev,i-iprev));
 			iprev = i+1;    
 			bitfield_names.push_back(name);
 		}
 	}
+
     iprev = 0;
-	for (size_t i = 0; i < bsizes.size(); i++) {
-		if (bsizes[i] == ':') {
-			std::string name = bsizes.substr(iprev,i-iprev);
-			size_t size = atof(name.c_str()); // bit[0-9]+
+	for (size_t i (0); i < bsizes.size(); i++)
+    {
+		if (bsizes[i] == ':')
+        {
+			std::string name (bsizes.substr(iprev, i-iprev));
+			size_t size (atof(name.c_str())); // bit[0-9]+
 			iprev = i+1;    
 			bitfield_sizes.push_back(size);
 		}
 	}
 
-    odb::BitfieldDef bitfieldType(make_pair(bitfield_names,bitfield_sizes));
+    odb::BitfieldDef bitfieldType(make_pair(bitfield_names, bitfield_sizes));
 
 	Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
 	std::string columnName(name);
 	
-	int rc = w->setBitfieldColumn(index, columnName, ColumnType(type), bitfieldType);
+	int rc (w->setBitfieldColumn(index, columnName, ColumnType(type), bitfieldType));
 	return rc;
+}
+
+int odb_read_iterator_get_missing_value(oda_read_iterator_ptr ri, int index, double* value)
+{
+    ReaderIterator* r (reinterpret_cast<ReaderIterator*>(ri));
+    if (index < 0 && r->columns().size() < index) 
+    {
+        stringstream ss;
+        ss << "odb_read_iterator_get_missing_value: index " << index 
+            << " out of range, should be between 0 and " << r->columns().size();
+        throw UserError(ss.str());
+    }
+    *value = r->columns()[index]->missingValue();
+    return 0;
 }
 
 int odb_write_iterator_set_missing_value(oda_write_iterator_ptr wi, int index, double value)

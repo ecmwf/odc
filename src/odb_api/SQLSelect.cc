@@ -136,9 +136,9 @@ static bool compareTables(SelectOneTable* a,SelectOneTable *b)
 //#endif
 }
 
-inline bool SQLSelect::resultsOut()
+inline bool SQLSelect::resultsOut(ExecutionContext* context)
 {
-	return output_->output(results_);
+	return output_->output(results_, context);
 }
 
 SQLExpression* SQLSelect::findAliasedExpression(const std::string& alias)
@@ -355,8 +355,7 @@ void SQLSelect::prepareExecute() {
 				}
 		}
 
-	// Add what's left to last table
-
+        // Add what's left to last table
 		for(size_t i = 0 ; i < e.size() ; ++i)
             if(e[i]) 
                 sortedTables_.back()->check_.push_back(e[i]);
@@ -374,19 +373,15 @@ void SQLSelect::prepareExecute() {
 	}
 }
 
-unsigned long long SQLSelect::execute()
+unsigned long long SQLSelect::execute(eckit::ExecutionContext* context)
 {
 	prepareExecute();
-
-	unsigned long long n = process(simplifiedWhere_, sortedTables_.begin());
-
-	postExecute();
-
+	unsigned long long n = process(simplifiedWhere_, sortedTables_.begin(), context);
+	postExecute(context);
 	return n;
 }
 
-
-void SQLSelect::postExecute()
+void SQLSelect::postExecute(eckit::ExecutionContext* context)
 {
 	if (mixedAggregatedAndScalar_)
 	{
@@ -410,23 +405,22 @@ void SQLSelect::postExecute()
 				}
 			}
 
-			output_->output(results);
+			output_->output(results, context);
 			results.release();
 		}
 	}
 	else if (aggregate_)
 	{
-		resultsOut();
+		resultsOut(context);
 	}
 
-	output_->flush();
+	output_->flush(context);
 	output_->cleanup(*this);
 	if(simplifiedWhere_) simplifiedWhere_->cleanup(*this);
 	
 	for(expression::Expressions::iterator c (results_.begin()); c != results_.end() ; ++c)
 		(*c)->cleanup(*this);
 
-    //TODO: if(verbose_) {...}
     Log::info() << "Matching row(s): " << BigNum(output_->count()) << " out of " << BigNum(total_) << std::endl;
     Log::info() << "Skips: " << BigNum(skips_) << std::endl;
 	reset();
@@ -467,7 +461,7 @@ void SQLSelect::reset()
 
 
 
-bool SQLSelect::output(SQLExpression* where)
+bool SQLSelect::output(SQLExpression* where, ExecutionContext* context)
 {
 	//if (where) Log::info() << "SQLSelect::output: where: " << *where << std::endl;
 
@@ -479,7 +473,7 @@ bool SQLSelect::output(SQLExpression* where)
         && !missing)
 	{
 		if (! aggregate_)
-			newRow = resultsOut();
+			newRow = resultsOut(context);
 		else
 		{
 			size_t n = results_.size();
@@ -510,18 +504,18 @@ bool SQLSelect::output(SQLExpression* where)
 }
 
 
-unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterator j) {
+unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterator j, ExecutionContext* context) {
 	simplifiedWhere_ = where;
 	env.pushFrame(j);
 
 	unsigned long long n = 0;
-	while (processOneRow())
+	while (processOneRow(context))
 		++n;
 	return n;
 }
 
 
-bool SQLSelect::processOneRow() { 
+bool SQLSelect::processOneRow(eckit::ExecutionContext* context) { 
 	++count_;
 	//Log::info() << "SQLSelect::processOneRow: count = " << count_ << std::endl;
 	bool recursiveCall;
@@ -530,7 +524,7 @@ bool SQLSelect::processOneRow() {
 		recursiveCall = false;
 		if(sortedTables_.size() == 0 || env.tablesIterator() == sortedTables_.end())
 		{
-			bool rowProduced = output(simplifiedWhere_);
+			bool rowProduced = output(simplifiedWhere_, context);
 			env.popFrame();
 			if (rowProduced)
 				return true;

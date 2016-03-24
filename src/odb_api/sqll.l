@@ -1,3 +1,5 @@
+%option reentrant
+%option bison-bridge
 %{
 
 /*
@@ -13,6 +15,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "odb_api/odblib_lex.h"
 
 // http://flex.sourceforge.net/manual/Multiple-Input-Buffers.html#Multiple-Input-Buffers
 #if 0
@@ -50,11 +54,11 @@
 	#define unput(c) (*--inputText = c)
 #endif
 
-const size_t maxIncludeDepth = 20;
+const size_t maxIncludeDepth = 2000;
 YY_BUFFER_STATE includeStack[maxIncludeDepth];
 int includeStackPtr = 0;
 
-void pushInclude(const std::string& sql, const std::string& yypath)
+void pushInclude(const std::string& sql, const std::string& yypath, YY_BUFFER_STATE state, odblib_scan_t scanner)
 {
     //cerr << "pushInclude:" << yypath << std::endl;
     //cerr << "<INCLUDE>" << std::endl;
@@ -63,28 +67,36 @@ void pushInclude(const std::string& sql, const std::string& yypath)
 
     if (includeStackPtr > maxIncludeDepth)
         throw eckit::UserError("Includes nested too deeply");
-    includeStack[includeStackPtr++] = YY_CURRENT_BUFFER;
-    odblib__switch_to_buffer(odblib__scan_bytes(sql.c_str(), sql.size()));
+    //includeStack[includeStackPtr++] = YY_CURRENT_BUFFER;
+    includeStack[includeStackPtr++] = state;
+//YY_BUFFER_STATE odblib__scan_bytes (odblib_const char *bytes,odblib__size_t len ,odblib_scan_t odblib_scanner );
+//void odblib__switch_to_buffer (YY_BUFFER_STATE new_buffer ,odblib_scan_t odblib_scanner );
+    odblib__switch_to_buffer(odblib__scan_bytes(sql.c_str(), sql.size(), scanner), scanner);
 }
 
-int popInclude()
+int popInclude(odblib_scan_t scanner)
 {
-    if ( --includeStackPtr == 0 )
+    YY_BUFFER_STATE currentState (includeStack[includeStackPtr]);
+
+    if ( includeStackPtr - 1 <= 0 )
     {
         //cerr << "** lex terminate **" << std::endl;
         return 1;
     }
     else
     {
-        odblib__delete_buffer(YY_CURRENT_BUFFER);
-        odblib__switch_to_buffer(includeStack[includeStackPtr]);
+        //odblib__delete_buffer(YY_CURRENT_BUFFER);
+        // FIXME: leak (?)
+        //odblib__delete_buffer(currentState, scanner);
+        odblib__switch_to_buffer(includeStack[--includeStackPtr], scanner);
         return 0;
     }
 }
 
-int wrap() {
+
+int wrap(odblib_scan_t scanner) {
     //Log::info() << "** wrap **" << std::endl;
-    return popInclude();
+    return popInclude(scanner);
 }
 
 /*
@@ -153,11 +165,19 @@ SEMICOLON [;]
 [rR][eE][fF][eE][rR][eE][nN][cC][eE][sS] return REFERENCES;
 [dD][eE][fF][aA][uU][lL][tT]      return DEFAULT;
 [iI][nN][hH][eE][rR][iI][tT][sS]  { BEGIN 0; return INHERITS; }
+[mM][aA][tT][cC][hH]              return MATCH;
+[qQ][uU][eE][rR][yY]              return QUERY;
+[lL][iI][kK][eE]                  return LIKE;
+[rR][lL][iI][kK][eE]              return RLIKE;
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << std::endl;
 
     eckit::PathName fileName(StringTool::unQuote(yytext));
+
+    // TODO: need to pass SQLSession to flex
+
+    /*
     if (!fileName.exists())
     {
         SQLSession& session = SQLSession::current();
@@ -172,11 +192,11 @@ SEMICOLON [;]
             }
         }
     }
+    */
+    //cerr << "Opening " << fileName << std::endl;
     std::string text(StringTool::readFile(fileName));
 
-    //cerr << "Opening " << fileName << std::endl;
-
-    pushInclude(text, fileName);
+    pushInclude(text, fileName, YY_CURRENT_BUFFER, odblib_scanner);
     BEGIN(INITIAL);
 }
 
@@ -185,38 +205,55 @@ SEMICOLON [;]
     odblib_terminate();
 }
 
-\"|\'  {
-			int c,q = yytext[0];
+\"|\'   {
+            int c, end = yytext[0];
 
-			yyleng = 0;
-
-			while((c = yyinput()) && c != q && c != '\n')
-			{
-               if(c == '\\') yytext[yyleng++] = yyinput();
-               else yytext[yyleng++] =  c;
-			}
+            yyleng = 0;
+            while ((c = yyinput(yyscanner)) && c != end)
+            {
+                yytext[yyleng++] = (c == '\\') ? yyinput(yyscanner) : c;
+                // TODO: FIXME:
+                //if (c == '\n') 
+                //    ++SQLYacc::odblib_lineno;
+            }
 
             yytext[yyleng++] = 0;
-            yylval.val = yytext;
-			//cerr << "**** lex: STRING='" << yytext << "'" << std::endl;
+            yylval->val = yytext;
             return STRING;
+        }
+
+\{      {
+            int c, end = '}';
+
+            yyleng = 0;
+            while ((c = yyinput(yyscanner)) && c != end)
+            {
+                yytext[yyleng++] = (c == '\\') ? yyinput(yyscanner) : c;
+                // TODO: FIXME:
+                //if (c == '\n') 
+                //    ++SQLYacc::odblib_lineno;
+            }
+
+            yytext[yyleng++] = 0;
+            yylval->val = yytext;
+            return EMBEDDED_CODE;
         }
 
 {IDENT}	{ 
 			char *p = yytext; while(*p) { *p = tolower(*p); p++; }
-			yylval.val = yytext; 
+			yylval->val = yytext; 
 			//cerr << "****I " << yylval.val << " ****" << std::endl; 
 			return IDENT; 
 		}
 {VAR}   { 
 			char *p = yytext; while(*p) { *p = tolower(*p); p++; }
-			yylval.val = yytext; 
+			yylval->val = yytext; 
 			//cerr << "****V " << yylval.val << " ****" << std::endl; 
 			return VAR; 
 		}
 
 {NUMB}	{
-			yylval.num = atof(yytext);
+			yylval->num = atof(yytext);
 			//cerr << "****N " << yylval.num << " ****" << std::endl; 
 			return DOUBLE;
 		}
@@ -225,7 +262,7 @@ SEMICOLON [;]
 "//".*  ;
 
 [ \t]*  ;
-\n      ++yylineno;
+\n      ; //++SQLYacc::odblib_lineno;
 
 "="       return EQ;
 "=="      return EQ;

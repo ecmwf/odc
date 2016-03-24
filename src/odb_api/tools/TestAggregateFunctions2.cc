@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestAggregateFunctions2.h
 ///
 /// @author Piotr Kuchta, ECMWF, September 2010
 
@@ -26,7 +26,7 @@ using namespace odb;
 
 static void test()
 {
-	string sql = "select count(*) from \"UnitTest.odb\";";
+	string sql = "select count(*) from \"TestAggregateFunctions2.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
@@ -40,7 +40,7 @@ static void test()
 	odb::Select::iterator it2 = sel.begin();
 	odb::Select::iterator end2 = sel.end();
 
-	FILE *fout = fopen("UnitTest.odb", "w");
+	FILE *fout = fopen("TestAggregateFunctions2.odb", "w");
 	StdFileHandle fhout(fout);
 	odb::Writer<> writer(fhout);
 	odb::Writer<>::iterator outit = writer.begin();
@@ -61,7 +61,7 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
 		s << i << std::endl;
-    odb::tool::ImportTool::importText(s.str().c_str(), "UnitTest.odb");
+    odb::tool::ImportTool::importText(s.str().c_str(), "TestAggregateFunctions2.odb");
 }
 
 

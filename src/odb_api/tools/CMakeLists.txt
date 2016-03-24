@@ -1,4 +1,6 @@
 list( APPEND odbtools_src_files
+ECMLTool.cc
+ECMLTool.h
 TestCase.h 
 TestCase.cc 
 TestRunner.cc 
@@ -12,6 +14,8 @@ CompareTool.cc
 CompareTool.h
 CountTool.cc
 CountTool.h
+IndexTool.cc
+IndexTool.h
 FixedSizeRowTool.cc
 FixedSizeRowTool.h
 ImportTool.cc
@@ -40,11 +44,13 @@ ToolRunnerApplication.cc
 ToolRunnerApplication.h
 XYVTool.cc
 XYVTool.h
-MockReader.h
-MockReader.cc
+odb_api_tools_c.cc
+odb_api_tools_c.h
 )
 
 list( APPEND odbtest_src_files
+Examples.cc
+CAPIExamples.cc
 UnitTests.cc
 TestAAAImportODB.cc
 TestAAAImportODBDispatching.cc
@@ -105,8 +111,6 @@ TestSelectIterator3.cc
 TestSelectStarAt.cc
 TestSelectTwoFiles.cc
 TestSetvbuffer.cc
-TestSimpleFilterIterator.cc
-TestSimpleFilterIterator2.cc
 TestStar.cc
 TestTEMPLATE.cc
 TestTextSelect.cc
@@ -115,6 +119,9 @@ TestTextSelect2.cc
 TestTextSelect2.txt
 TestTextSelect3.cc
 TestWriteCatFiles.cc
+MockReader.h
+MockReader.cc
+TestODBModule.cc
 )
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api )

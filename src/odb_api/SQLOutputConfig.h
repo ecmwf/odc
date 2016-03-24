@@ -49,9 +49,9 @@ public:
 
 	SQLOutputConfig(bool cn = false,
                     bool n = false,
-                    const std::string& d = defaultDelimiter_,
-                    const std::string& output = defaultOutputFile_,
-                    const std::string& format = defaultFormat_,
+                    const std::string& d = defaultDelimiter(),
+                    const std::string& output = defaultOutputFile(),
+                    const std::string& format = defaultFormat(),
                     bool displayBitfieldsBinary = false,
                     bool displayBitfieldsHexadecimal = false,                    
                     bool disableAlignmentOfColumns = false)
@@ -90,7 +90,7 @@ public:
     bool disableAlignmentOfColumns () const { return disableAlignmentOfColumns_; }
     void disableAlignmentOfColumns (bool b) { disableAlignmentOfColumns_ = b; }
 
-	static const SQLOutputConfig& defaultConfig() { return defaultConfig_; }
+	static const SQLOutputConfig defaultConfig() { return SQLOutputConfig(); }
 
 private:
 	bool doNotWriteColumnNames_;
@@ -102,10 +102,9 @@ private:
     bool displayBitfieldsHexadecimal_; // --hex
     bool disableAlignmentOfColumns_;  // --no_alignment
 
-	static const SQLOutputConfig defaultConfig_;
-	static const char* defaultDelimiter_;
-	static const char* defaultOutputFile_;
-	static const char* defaultFormat_;
+    static const char* defaultDelimiter() { return "	"; }
+    static const char* defaultOutputFile() { return "output.odb"; }
+    static const char* defaultFormat() { return "default"; }
 };
 
 } // namespace sql

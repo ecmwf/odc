@@ -129,6 +129,12 @@ FunctionEQ_BOXLAT.cc
 FunctionEQ_BOXLAT.h
 FunctionEQ_BOXLON.cc
 FunctionEQ_BOXLON.h
+FunctionMATCH.h
+FunctionMATCH.cc
+SQLMATCHSubquerySession.h
+SQLMATCHSubquerySession.cc
+SQLMATCHSubquerySessionOutput.h
+SQLMATCHSubquerySessionOutput.cc
 FunctionExpression.cc
 FunctionExpression.h
 FunctionFactory.cc
@@ -239,7 +245,6 @@ RegionCache.cc
 RegionCache.h
 RggRegionCache.cc
 RggRegionCache.h
-RowsIterator.h
 SQLAST.cc
 SQLAST.h
 SQLBit.cc
@@ -252,8 +257,6 @@ SQLColumn.cc
 SQLColumn.h
 SQLCountStar.cc
 SQLCountStar.h
-SQLCreateTable.cc
-SQLCreateTable.h
 SQLDataColumn.cc
 SQLDataColumn.h
 SQLDataSet.cc
@@ -278,8 +281,10 @@ SQLInt.cc
 SQLInt.h
 SQLInteractiveSession.cc
 SQLInteractiveSession.h
-SQLCallbackSession.cc
-SQLCallbackSession.h
+SQLNonInteractiveSession.cc
+SQLNonInteractiveSession.h
+SQLCallbackOutput.cc
+SQLCallbackOutput.h
 SQLIterator.h
 SQLIteratorOutput.cc
 SQLIteratorOutput.h
@@ -295,6 +300,7 @@ SQLOutputConfig.cc
 SQLOutputConfig.h
 SQLParser.cc
 SQLParser.h
+odblib_lex.h
 SQLReal.cc
 SQLReal.h
 SQLSelect.cc
@@ -319,14 +325,14 @@ SelectIterator.cc
 SelectIterator.h
 SelectOneTable.cc
 SelectOneTable.h
-SimpleFilter.cc
-SimpleFilter.h
-SimpleFilterIterator.cc
-SimpleFilterIterator.h
 Stack.cc
 Stack.h
 StringExpression.cc
 StringExpression.h
+EmbeddedCodeExpression.cc
+EmbeddedCodeExpression.h
+EmbeddedCodeParser.cc
+EmbeddedCodeParser.h
 TODATable.cc
 TODATable.h
 TODATableIterator.cc
@@ -343,18 +349,12 @@ Tracer.cc
 Tracer.h
 Types.h
 UnsafeInMemoryDataHandle.h
-VariableExpression.cc
-VariableExpression.h
 Writer.cc
 Writer.h
 WriterBufferingIterator.cc
 WriterBufferingIterator.h
 WriterDispatchingIterator.cc
 WriterDispatchingIterator.h
-MapReduce.cc
-MapReduce.h
-VariablesTable.cc
-VariablesTable.h
 md5_hash.h
 md5_hash.c
 odb_api.h
@@ -363,6 +363,65 @@ odbcapi.h
 piconst.h
 ODBFormatBuffer.cc
 ODBFormatBuffer.h
+RowsCounter.h
+RowsCounter.cc
+Block.h
+Block.cc
+Partition.h
+Partition.cc
+Partitions.h
+Partitions.cc
+Indexer.h
+Indexer.cc
+Partitioner.h
+Partitioner.cc
+FileCollector.h
+FileCollector.cc
+FileMapper.h
+FileMapper.cc
+Odb2Hub.h
+Odb2Hub.cc
+Archiver.h 
+Archiver.cc 
+Retriever.h 
+Retriever.cc
+Stager.h
+Stager.cc
+
+
+# ECML interface
+ODBModule.h
+ODBModule.cc
+# * ECML verbs
+ecml_verbs/ArchiveHandler.h
+ecml_verbs/ArchiveHandler.cc
+ecml_verbs/RetrieveHandler.h
+ecml_verbs/RetrieveHandler.cc
+ecml_verbs/StageHandler.h
+ecml_verbs/StageHandler.cc
+ecml_verbs/CompareHandler.h
+ecml_verbs/CompareHandler.cc
+ecml_verbs/SQLHandler.h
+ecml_verbs/SQLHandler.cc
+ecml_verbs/ChunkHandler.h
+ecml_verbs/ChunkHandler.cc
+ecml_verbs/SQLTestHandler.h
+ecml_verbs/SQLTestHandler.cc
+ecml_verbs/ImportTextHandler.h
+ecml_verbs/ImportTextHandler.cc
+ecml_verbs/CreatePartitionsHandler.h
+ecml_verbs/CreatePartitionsHandler.cc
+ecml_verbs/CreateIndexHandler.h
+ecml_verbs/CreateIndexHandler.cc
+# * ECML data
+ecml_data/ResultSet.cc
+ecml_data/ResultSet.h
+ecml_data/Matrix.cc
+ecml_data/Matrix.h
+ecml_data/ResultSetStore.cc
+ecml_data/ResultSetStore.h
+ecml_data/LocalHandleFactory.h
+ecml_data/LocalHandleFactory.cc
 )
 
 # templates
@@ -375,8 +434,6 @@ Header.cc
 ODAUpdatingIterator.cc
 SQLIteratorOutput.cc
 SQLIteratorSession.cc
-SimpleFilter.cc
-SimpleFilterIterator.cc
 TODATable.cc
 TODATableIterator.cc
 WriterDispatchingIterator.cc
@@ -387,22 +444,19 @@ ShiftedColumnExpression.cc
 
 # define Odb library
 
-ecbuild_add_library( TARGET     Odb
-                     INSTALL_HEADERS LISTED
+ecbuild_add_library( TARGET             Odb
+                     INSTALL_HEADERS    LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api
-                     COMPONENT  server
-                     SOURCES    ${odblib_src_files}
-                     GENERATED  ODBAPIVersionSHA1.cc
-                     TEMPLATES  ${odblib_templates}
-                     LIBS       eckit )
+                     COMPONENT          server
+                     SOURCES            ${odblib_src_files}
+                     GENERATED          ODBAPIVersionSHA1.cc
+                     TEMPLATES          ${odblib_templates}
+                     LINKER_LANGUAGE    CXX
+                     LIBS               eckit eckit_ecml )
 
 ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly
                   LEX  sqll
+                  FLEX_FLAGS "-d"
                   DEPENDANT SQLParser.cc )
 
-###############################################################################
-
-add_subdirectory( tools )
-
-add_subdirectory( migrator )

@@ -27,7 +27,7 @@ class UnsafeInMemoryDataHandle : public T {
 public:
     UnsafeInMemoryDataHandle(unsigned char *p) : buf_(p), p_(p) {}
 
-    virtual ~UnsafeInMemoryDataHandle() {}
+    ~UnsafeInMemoryDataHandle() {}
 
 	void print(std::ostream& s) const { /*TODO*/ }
 
@@ -35,7 +35,7 @@ public:
 	unsigned char* buffer() { return buf_; }
 
 	/// Return estimated length.
-    virtual eckit::Length openForRead()
+    eckit::Length openForRead()
 	{
 		size_t size = p_ - buf_;
 		p_ = buf_;
@@ -71,6 +71,9 @@ public:
     void rewind()                { /*?*/ p_ = buf_; }
 	eckit::Length estimate()            { /*?*/ return p_ - buf_; }
 	eckit::Offset position()            { return p_ - buf_; }
+
+    std::string title() const { return name(); }
+    std::string name() const { return "UnsafeInMemoryDataHandle"; }
 
 private:
     UnsafeInMemoryDataHandle();

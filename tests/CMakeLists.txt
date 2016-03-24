@@ -1,5 +1,13 @@
 ### test data files
 
+list( APPEND test_migrator_data_files
+2000010106.old.ECMA.tar.gz )
+
+ecbuild_get_test_multidata( TARGET get_migrator_test_data 
+                            #DIRNAME odb_api/tests 
+                            NAMES ${test_migrator_data_files} 
+                            NOCHECK )
+
 list( APPEND test_data_files
 2000010106.odb.gz
 2000010106.odb
@@ -15,7 +23,6 @@ list( APPEND test_data_files
 2000010106.7.3.odb
 mondb.1.12.odb
 TestIntegerValues.odb
-2000010106.old.ECMA.tar.gz
 split_crash_on_andate_and_antime.odb
 TestMetaDataReader.odb
 a1to10twice.odb
@@ -23,7 +30,10 @@ TestAggregateFunctions2.odb
 dribu.odb
 TestAggregateFunctions3.odb )
 
-ecbuild_get_test_multidata( TARGET get_test_data NAMES ${test_data_files} NOCHECK )
+ecbuild_get_test_multidata( TARGET get_odb_api_test_data
+                            #DIRNAME odb_api/tests 
+                            NAMES ${test_data_files} 
+                            NOCHECK )
 
 ### list tests
 
@@ -191,8 +201,6 @@ Test_SelectWhere_ReturnsExpectedNumberOfColumns
 Test_SelectWhere_ReturnsExpectedNumberOfResults
 Test_SelectWhere_ReturnsExpectedResults
 Test_Setvbuffer
-Test_SimpleFilterIterator
-Test_SimpleFilterIterator2
 Test_Star
 Test_TEMPLATE
 Test_TextReaderIterator_parseBitfields
@@ -223,9 +231,21 @@ Test_selectAggregatedAndNonAggregatedNULL
 Test_select_constant_value
 Test_sqlOutputFormatting
 Test_stringInWhere
-Test_vector_syntax
-Test_vector_syntax2
 Test_windSpeedWindDirection
+Test_IndexTool
+
+#Examples.cc
+Test_example_select_data_read_results
+Test_example_read_data
+Test_example_write_data
+Test_example_sql_select_callback
+Test_example_sql_select_callback_invoked_as_a_request
+Test_example_sql_select_and_a_mars_verb_as_a_callback
+
+#CAPIExamples.cc
+Test_c_api_example_select_data_read_results
+Test_c_api_example_read_data
+Test_c_api_example_write_data
 )
 
 ### get location of odb executable
@@ -237,18 +257,56 @@ set( test_environment
   ODB_API_HOME=${PROJECT_SOURCE_DIR}
   ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
   PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-  ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc )
+  ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc 
+
+  TEST_DHSHOME=${CMAKE_CURRENT_SOURCE_DIR}/dhshome/
+  TEST_DATA_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}
+  )
 
 ### migrator tests
 
+set( _prev_test get_migrator_test_data )
 foreach( _test ${odb_migrator_tests} )
   ecbuild_add_test( TARGET     ${_test}
                     COMMAND    ${odb_bin}
                     ARGS       ${_test}
                     CONDITION  HAVE_MIGRATOR
-                    ENVIRONMENT ${test_environment}
-                    TEST_DEPENDS get_test_data )
+                    ENVIRONMENT ${test_environment} ${ODB_ENVIRONMENT}
+                    TEST_DEPENDS ${_prev_test} )
+    set( _prev_test ${_test} )
 endforeach()
+
+### odb2_to_odb1 tests
+
+ecbuild_get_test_multidata( TARGET get_odb2_to_odb1_data NAMES odb2_to_odb1.ECMA.conv.tar.gz NOCHECK )
+
+ecbuild_add_test( TARGET test_odb2_to_odb1
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2_to_odb1.sh
+    ENVIRONMENT ${test_environment} ${ODB_ENVIRONMENT}
+        PATH=${CMAKE_BINARY_DIR}/bin:${odb_BASE_DIR}/bin:$ENV{PATH}
+        ODB_IO_METHOD=4
+        ODB_IO_GRPSIZE=160
+    TEST_DEPENDS get_odb2_to_odb1_data
+    CONDITION HAVE_FORTRAN AND ODB_FOUND AND ODB_HAVE_ECMA)
+
+### odb2netcdf tests
+
+ecbuild_get_test_multidata( TARGET get_odb2netcdf_data
+    NAMES odb2netcdf_1d.odb odb2netcdf_1d.cdl
+          odb2netcdf_2d_hdr.odb odb2netcdf_2d_body.odb odb2netcdf_2d.cdl
+    NOCHECK )
+
+ecbuild_add_test( TARGET test_odb2netcdf_1d
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_1d.sh
+    ENVIRONMENT ${test_environment}
+    TEST_DEPENDS get_odb2netcdf_data
+    CONDITION HAVE_NETCDF )
+
+ecbuild_add_test( TARGET test_odb2netcdf_2d
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_2d.sh
+    ENVIRONMENT ${test_environment}
+    TEST_DEPENDS get_odb2netcdf_data
+    CONDITION HAVE_NETCDF )
 
 ### odb_api tests
 
@@ -257,19 +315,99 @@ if( NOT HAVE_MIGRATOR )
   unset( odb_migrator_tests )
 endif()
 
+if( HAVE_MIGRATOR )
+    set( _prev_test get_migrator_test_data  )
+else()
+    set( _prev_test get_odb_api_test_data  )
+endif()
+
 foreach( _test ${odb_api_tests} )
     if( HAVE_MIGRATOR )
-      ecbuild_add_test( TARGET     ${_test}
-                        COMMAND    ${odb_bin}
-                        ARGS       ${_test}
-                        ENVIRONMENT ${test_environment}
-                        TEST_DEPENDS get_migrator_test_data ${odb_migrator_tests} )
+        set( _dependencies ${odb_migrator_tests} ${_prev_test} )
     else()
-      ecbuild_add_test( TARGET     ${_test}
-                        COMMAND    ${odb_bin}
-                        ARGS       ${_test}
-                        ENVIRONMENT ${test_environment}
-                        TEST_DEPENDS get_test_data )
+        set( _dependencies ${_prev_test} )
     endif()
+    ecbuild_add_test( TARGET       ${_test}
+                      COMMAND      ${odb_bin}
+                      ARGS         ${_test}
+                      ENVIRONMENT  ${test_environment}
+                      TEST_DEPENDS ${_dependencies})
+    set( _prev_test ${_test} )
 endforeach()
 
+#### ECML ODB Module verbs tests
+
+#list( APPEND ecml_test_data_files  2000010106.odb)
+#ecbuild_get_test_multidata( TARGET ecml_get_odb_api_test_data DIRNAME odb_api/tests NAMES ${ecml_test_data_files} NOCHECK )
+
+list( APPEND odb_module_tests
+    test_sql_splitting.ecml
+    test_chunk.ecml
+    test_chunk2.ecml
+    test_embedded_ecml_in_from_clause.ecml
+    test_sql_like.ecml
+    test_sql_match_in.ecml
+    test_create_partitions.ecml
+
+# tests moved from ODB Server
+    #test_mo_archiving.ecml
+    #test_ec_archiving.ecml
+    test_server_side_processing.ecml
+    test_stage.ecml
+)
+
+ecbuild_add_test ( TARGET       test_ec_archiving.ecml
+                   COMMAND      ${odb_bin}
+                   ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_ec_archiving.ecml
+                   ENVIRONMENT  ${test_environment} 
+                   TEST_DEPENDS get_odb_api_test_data 
+                                get_mars_client_test_data_ec )
+
+
+ecbuild_add_test ( TARGET       test_mo_archiving.ecml
+                   COMMAND      ${odb_bin}
+                   ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_mo_archiving.ecml
+                   ENVIRONMENT  ${test_environment} 
+                   TEST_DEPENDS get_odb_api_test_data 
+                                get_mars_client_test_data_mo)
+
+foreach( _test ${odb_module_tests} )
+    ecbuild_add_test ( TARGET       ${_test}
+                       COMMAND      ${odb_bin}
+                       ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/${_test}
+                       ENVIRONMENT  ${test_environment} 
+
+                       TEST_DEPENDS get_odb_api_test_data 
+                                    get_mars_client_test_data_mo
+                                    get_mars_client_test_data_ec
+                                    test_ec_archiving.ecml
+                                    test_mo_archiving.ecml
+                       )
+endforeach()
+
+
+ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_mo
+                            DIRNAME odb_api/tests
+                            NAMES   20150218_glu_surface_odb2 )
+
+ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_ec
+                            DIRNAME odb_api/tests
+                            NAMES   conv_mfb_20151108_12.odb )
+
+ecbuild_add_executable( TARGET      test_client_lib_fortran
+                        CONDITION   HAVE_FORTRAN AND HAVE_ODB
+                        SOURCES     test_client_lib_fortran.f90
+                        LIBS        Odb_fortran ${ODB_LIBS} marskit
+                        LINKER_LANGUAGE Fortran)
+
+ecbuild_add_executable( TARGET      test_client_lib_fortran_server_side_ecml
+                        CONDITION   HAVE_FORTRAN AND HAVE_ODB
+                        SOURCES     test_client_lib_fortran_server_side_ecml.f90
+                        LIBS        Odb_fortran ${ODB_LIBS} marskit
+                        LINKER_LANGUAGE Fortran)
+
+ecbuild_add_executable( TARGET      test_client_lib_cpp
+                        CONDITION   HAVE_ODB
+                        SOURCES     test_client_lib_cpp.cc
+                        INCLUDES    ${ODB_API_INCLUDE_DIRS}
+                        LIBS        Odb odbtools marskit )

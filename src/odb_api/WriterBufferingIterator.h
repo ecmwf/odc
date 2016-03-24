@@ -21,10 +21,10 @@
 #include "odb_api/Header.h"
 #include "odb_api/IteratorProxy.h"
 #include "odb_api/MemoryBlock.h"
-#include "odb_api/RowsIterator.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 
@@ -33,7 +33,7 @@ class SQLIteratorSession;
 template <typename I> class Writer;
 namespace sql { class TableDef; }
 
-class WriterBufferingIterator //: public RowsWriterIterator
+class WriterBufferingIterator 
 {
 public:
 	typedef Writer<WriterBufferingIterator> Owner;
@@ -82,17 +82,19 @@ public:
 
 	void flush();
 
-    std::vector<eckit::PathName> outputFiles() { return std::vector<eckit::PathName>(); }
+    std::vector<eckit::PathName> outputFiles();
+	int refCount_;
+	bool next(eckit::ExecutionContext*);
 protected:
-	bool next();
 	Owner& owner_;
 	MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;
-	unsigned long nrows_;
+	unsigned long long nrows_;
 
 	eckit::DataHandle *f;
 	Array<unsigned char> encodedDataBuffer_;
+    eckit::PathName path_;
 
 	unsigned char* writeNumberOfRepeatedValues(unsigned char *, uint16_t);
 
@@ -112,7 +114,6 @@ private:
 
 	int doWriteRow(const double*, unsigned long);
 
-	int refCount_;
 	Properties properties_;
 
 	Array<unsigned char> blockBuffer_;
@@ -128,6 +129,11 @@ private:
 	codec::CodecOptimizer codecOptimizer_;
 
     const odb::sql::TableDef* tableDef_;
+
+public:
+    eckit::ExecutionContext* context_;
+private:
+    bool openDataHandle_;
 
 	friend class IteratorProxy<WriterBufferingIterator, Owner>;
 	friend class Header<WriterBufferingIterator>;

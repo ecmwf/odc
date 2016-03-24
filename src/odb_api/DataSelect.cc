@@ -9,26 +9,30 @@
 #include "odb_api/SQLDataSet.h"
 #include "odb_api/SQLDataTable.h"
 
+#include "eckit/ecml/core/ExecutionContext.h"
+
 using namespace odb;
 using namespace eckit;
 
 namespace odb {
 
 
-DataSelect::DataSelect(const std::string& statement, const DataSet& dataset)
+DataSelect::DataSelect(const std::string& statement, const DataSet& dataset, eckit::ExecutionContext* context)
   : statement_(statement),
     dataset_(&dataset),
     table_(0),
-    begin_(new internal::DataSelectIterator(*this, true))
+    begin_(new internal::DataSelectIterator(*this, true, context)),
+    context_(context)
 {
     populateColumns();
 }
 
-DataSelect::DataSelect(const std::string& statement, const DataTable& table)
+DataSelect::DataSelect(const std::string& statement, const DataTable& table, eckit::ExecutionContext* context)
   : statement_(statement),
     dataset_(0),
     table_(&table),
-    begin_(new internal::DataSelectIterator(*this, true))
+    begin_(new internal::DataSelectIterator(*this, true, context)),
+    context_(context)
 {
     populateColumns();
 }
@@ -66,7 +70,7 @@ DataSelect::iterator DataSelect::begin()
 {
     internal::DataSelectIterator* it = begin_.get()
         ? begin_.release()
-        : new internal::DataSelectIterator(*this, true);
+        : new internal::DataSelectIterator(*this, true, context_);
 
     ASSERT(it);
 
@@ -77,7 +81,7 @@ DataSelect::iterator DataSelect::begin()
 
 DataSelect::iterator DataSelect::end() const
 {
-    return iterator(new internal::DataSelectIterator(*this, false));
+    return iterator(new internal::DataSelectIterator(*this, false, context_));
 }
 
 void DataSelect::populateColumns()

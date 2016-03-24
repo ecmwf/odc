@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestSetvbuffer.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -32,7 +32,7 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 
 	ODBAPISettings::instance().setvbufferSize(setvbufferSize);
 
-	odb::Writer<> oda("UnitTest.odb");
+	odb::Writer<> oda("TestSetvbuffer.odb");
 	odb::Writer<>::iterator row = oda.begin();
 
     row->setNumberOfColumns(numberOfColumns);
@@ -52,7 +52,7 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 
 static void tearDown()
 {
-	int catStatus = system("ls -l UnitTest.odb");
+	int catStatus = system("ls -l TestSetvbuffer.odb");
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 }
 

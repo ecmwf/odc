@@ -23,13 +23,16 @@ public:
 	void run(); 
 
 	static void help(std::ostream &o)
+	{ o << "Creates a new file resetting types or values (constants only) of columns."; }
+
+	static void usage(const std::string& name, std::ostream &o)
 	{ 
         using namespace std;
 
         o << "Creates a new file resetting types or values (constants only) of columns." << endl << endl
 
           << "Syntax:" << endl
-          << "  odb <update-list> <input.odb> <output.odb>" << endl << endl
+          << name << " <update-list> <input.odb> <output.odb>" << endl << endl
 
           << "Syntax of the <update-list> is a comma separated list of expressions of the form:" << endl
           << "  <column-name> : <type> = <value>" << endl << endl
@@ -40,9 +43,6 @@ public:
           << "" << endl
           ;
     }
-
-	static void usage(const std::string& name, std::ostream &o)
-	{ o << name << " <update-list> <input.odb> <output.odb>"; }
 
 private:
 // No copy allowed

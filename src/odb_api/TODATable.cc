@@ -10,6 +10,7 @@
 
 #include <sstream>
 #include "odb_api/SQLBitfield.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
 
 using namespace std;
 
@@ -17,42 +18,42 @@ namespace odb {
 namespace sql {
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, const eckit::PathName& path, const std::string& name):
-	SQLTable(owner, path, name),
-	data_(0),
-	oda_(path),
-	reader_(oda_.begin()),
-    end_(oda_.end())
+TODATable<T>::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name)
+: SQLTable(owner, path, name),
+  data_(0),
+  oda_(*eckit::DataHandleFactory::openForRead(path)), // TODO: fix leak
+  reader_(oda_.begin()),
+  end_(oda_.end())
 {
-	populateMetaData();
+    populateMetaData();
 }
 
 template <typename T>
 TODATable<T>::~TODATable() { delete[] data_; }
 
-static const eckit::PathName nullPathName("<>");
+static const std::string nullPathName("<>");
 static const std::string inputTable("input");
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, eckit::DataHandle &dh):
-	SQLTable(owner, nullPathName, inputTable),
-	data_(0),
-	oda_(dh),
-	reader_(oda_.begin()),
-    end_(oda_.end())
+TODATable<T>::TODATable(SQLDatabase& owner, eckit::DataHandle &dh)
+: SQLTable(owner, nullPathName, inputTable),
+  data_(0),
+  oda_(dh),
+  reader_(oda_.begin()),
+  end_(oda_.end())
 {
-	populateMetaData();
+    populateMetaData();
 }
 
 template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, std::istream &is, const std::string &delimiter):
-	SQLTable(owner, nullPathName, inputTable),
-	data_(0),
-	oda_(is, delimiter),
-	reader_(oda_.begin()),
-    end_(oda_.end())
+TODATable<T>::TODATable(SQLDatabase& owner, std::istream &is, const std::string &delimiter)
+: SQLTable(owner, nullPathName, inputTable),
+  data_(0),
+  oda_(is, delimiter),
+  reader_(oda_.begin()),
+  end_(oda_.end())
 {
-	populateMetaData();
+    populateMetaData();
 }
 
 template <typename T>
@@ -60,44 +61,44 @@ void TODATable<T>::populateMetaData()
 {
     using eckit::Log;
     
-	Log::debug() << "TODATable::populateMetaData:" << std::endl;
-	size_t count = reader_->columns().size();
+    Log::debug() << "TODATable::populateMetaData:" << std::endl;
+    size_t count = reader_->columns().size();
 
-	delete[] data_;
-	data_ = new double[count];
-	ASSERT(data_);
+    delete[] data_;
+    data_ = new double[count];
+    ASSERT(data_);
 
-	for(size_t i = 0; i < count; i++)
-	{
-		Column& column = *reader_->columns()[i];
+    for(size_t i = 0; i < count; i++)
+    {
+        Column& column = *reader_->columns()[i];
 
-		const std::string name = column.name();
-		bool hasMissing = column.hasMissing();
-		double missing = column.missingValue();
-		BitfieldDef bitfieldDef = column.bitfieldDef();
-	
-		std::string sqlType;
-		switch(column.type())
-		{
-			case INTEGER: sqlType = "integer"; break;
-			case STRING:  sqlType = "string"; break;
-			case REAL:    sqlType = "real"; break;
-			case DOUBLE:  sqlType = "double"; break;
-			case BITFIELD:
-				{
-					std::string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
-					addColumn(name, i, type::SQLType::lookup(typeSignature), hasMissing, missing, true, bitfieldDef);
-					continue;
-				}
-				break;
-			default:
-				ASSERT("Unknown type" && 1==0);
-				break;
-		}
-		SQLColumn *c = column.type() == BITFIELD
-                        ? new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, bitfieldDef, &data_[i])
-                        : new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, &data_[i]);
-		addColumn(c, name, i);
+        const std::string name = column.name();
+        bool hasMissing = column.hasMissing();
+        double missing = column.missingValue();
+        BitfieldDef bitfieldDef = column.bitfieldDef();
+
+        std::string sqlType;
+        switch(column.type())
+        {
+            case INTEGER: sqlType = "integer"; break;
+            case STRING:  sqlType = "string"; break;
+            case REAL:    sqlType = "real"; break;
+            case DOUBLE:  sqlType = "double"; break;
+            case BITFIELD:
+                {
+                    std::string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
+                    addColumn(name, i, type::SQLType::lookup(typeSignature), hasMissing, missing, true, bitfieldDef);
+                    continue;
+                }
+                break;
+            default:
+            ASSERT("Unknown type" && 1==0);
+            break;
+        }
+        SQLColumn *c = column.type() == BITFIELD
+                ? new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, bitfieldDef, &data_[i])
+                : new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, &data_[i]);
+        addColumn(c, name, i);
 	}
 }
 

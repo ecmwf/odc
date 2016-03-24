@@ -45,6 +45,7 @@
 #include "odb_api/FunctionTIMESTAMP.h"
 #include "odb_api/FunctionVAR.h"
 #include "odb_api/FunctionRLIKE.h"
+#include "odb_api/FunctionMATCH.h"
 #include "odb_api/piconst.h"
 
 namespace odb {
@@ -148,6 +149,17 @@ FunctionExpression* FunctionFactoryBase::build(const std::string& name, SQLExpre
 	return build(name,args);
 }
 
+FunctionExpression* FunctionFactoryBase::build(const std::string& name, const expression::Expressions& matchList, const SelectAST& selectAST)
+{
+    using namespace std;
+    ostream& L( eckit::Log::info() );
+    //eckit::Log::info() << "FunctionFactoryBase::build: name: " << name << std::endl;
+    ASSERT(name == "match"); // this only for now
+
+    return new FunctionMATCH(name, matchList, selectAST);
+}
+
+
 //===============================
 
 //#include <math.h>
@@ -238,30 +250,30 @@ private:
 };
 
 #define DEFINE_MATH_FUNC_1(F,Help) \
-static FunctionMaker<MathFunctionExpression_1<F> > make_1_##F(#F,1,Help)
+new FunctionMaker<MathFunctionExpression_1<F> > (#F,1,Help)
 
 #define DEFINE_MATH_FUNC_1F(FuncName, Name, Help) \
-static FunctionMaker<MathFunctionExpression_1<FuncName> > make_1_##FuncName(#Name,1,Help)
+new FunctionMaker<MathFunctionExpression_1<FuncName> > (#Name,1,Help)
 
 #define DEFINE_MATH_FUNC_2(F,Help) \
-static FunctionMaker<MathFunctionExpression_2<F> > make_2_##F(#F,2,Help)
+new FunctionMaker<MathFunctionExpression_2<F> > (#F,2,Help)
 
 #define DEFINE_MATH_FUNC_2F(FuncName, Name, Help) \
-static FunctionMaker<MathFunctionExpression_2<FuncName> > make_2_##FuncName(#Name,2,Help)
+new FunctionMaker<MathFunctionExpression_2<FuncName> > (#Name,2,Help)
 
 #define DEFINE_MATH_FUNC_3(F,Help) \
-static FunctionMaker<MathFunctionExpression_3<F> > make_3_##F(#F,3,Help)
+new FunctionMaker<MathFunctionExpression_3<F> > (#F,3,Help)
 
 #define DEFINE_MATH_FUNC_4(F,Help) \
-static FunctionMaker<MathFunctionExpression_4<F> > make_4_##F(#F,4,Help)
+new FunctionMaker<MathFunctionExpression_4<F> > (#F,4,Help)
 
 #define DEFINE_MATH_FUNC_5(F,Help) \
-static FunctionMaker<MathFunctionExpression_5<F> > make_5_##F(#F,5,Help)
+new FunctionMaker<MathFunctionExpression_5<F> > (#F,5,Help)
 
 //--------------------------------------------------------------
 
-#define DEFINE_UNARY(N,T,Help)  static FunctionMaker<MathFunctionExpression_1<T> > make_##T(#N,1,Help)
-#define DEFINE_BINARY(N,T,Help) static FunctionMaker<MathFunctionExpression_2<T> > make_##T(#N,2,Help)
+#define DEFINE_UNARY(N,T,Help)  new FunctionMaker<MathFunctionExpression_1<T> > (#N,1,Help)
+#define DEFINE_BINARY(N,T,Help) new FunctionMaker<MathFunctionExpression_2<T> > (#N,2,Help)
 
 inline double abs(double x) { return fabs(x); }
 // Note: ODB's trigonometric funcs require args in degrees 
@@ -494,7 +506,7 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	DEFINE_BINARY(+,plus_double,"add");
 	DEFINE_BINARY(-,minus_double,"subtract");
 	//DEFINE_BINARY(*,multiplies_double);
-	static FunctionMaker<MultiplyExpression> make_MultiplyExpression("*",2,"multiply");
+	new FunctionMaker<MultiplyExpression> ("*",2,"multiply");
 	DEFINE_BINARY(/,divides_double,"divide");
 
 	DEFINE_UNARY(-,negate_double,"negate");
@@ -568,45 +580,45 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	DEFINE_MATH_FUNC_5(circle, "");
 	DEFINE_MATH_FUNC_5(rad, "");
 
-	static FunctionMaker<FunctionAND> make_AND("and",2, "");
-	static FunctionMaker<FunctionAVG> make_AVG("avg",1, "");
-	static FunctionMaker<FunctionCOUNT> make_COUNT("count",1, "");
-	static FunctionMaker<FunctionDOTP> make_DOTP("dotp",2, "");
-	static FunctionMaker<FunctionEQ> make_EQ("=",2, "");
-	static FunctionMaker<FunctionEQ_BOXLAT> make_EQ_BOXLAT("eq_boxlat", 3, "");
-	static FunctionMaker<FunctionEQ_BOXLON> make_EQ_BOXLON("eq_boxlon",3, "");
-	//#define DEFINE_UNARY(N,T)  static FunctionMaker<MathFunctionExpression_1<T<double> > > make_##T(#N,1)
-	//#define DEFINE_BINARY(N,T) static FunctionMaker<MathFunctionExpression_2<T<double> > > make_##T(#N,2)
-	static FunctionMaker<FunctionIN> make_IN("in", -1, "");
-	static FunctionMaker<FunctionJOIN> make_JOIN("join",2, "");
-	static FunctionMaker<FunctionJULIAN> make_JULIAN("julian",2, "");
-	static FunctionMaker<FunctionJULIAN> make_JD("jd",2, "");
-	static FunctionMaker<FunctionJULIAN> make_JULIAN_DATE("julian_date",2, "");
-	static FunctionMaker<FunctionJULIAN_SECONDS> make_JULIAN_SECONDS("julian_seconds",2, "Returns time in Julian calendar expressed in seconds.");
-	static FunctionMaker<FunctionMAX> make_MAX("max",1, "");
-	static FunctionMaker<FunctionMIN> make_MIN("min",1, "");
-	static FunctionMaker<FunctionNORM> make_NORM("norm",2, "");
-	static FunctionMaker<FunctionNOT_IN> make_NOT_IN("not_in", -1, "");
-	static FunctionMaker<FunctionNOT_NULL> make_NOT_NULL("not_null",1, "");
-	static FunctionMaker<FunctionNULL> make_NULL("null",1, "");
-	static FunctionMaker<FunctionNULL> make_ISNULL("isnull",1, "");
-	static FunctionMaker<FunctionNVL> make_NVL("nvl",2, "");
-	static FunctionMaker<FunctionOR> make_OR("or",2, "");
-	static FunctionMaker<FunctionRGG_BOXLAT> make_RGG_BOXLAT("rgg_boxlat", 3, "");
-	static FunctionMaker<FunctionRGG_BOXLON> make_RGG_BOXLON("rgg_boxlon",3, "");
-	static FunctionMaker<FunctionRMS> make_RMS("rms",1, "");
-	static FunctionMaker<FunctionROWNUMBER> make_ROWNUMBER("rownumber", 0, "");
-	static FunctionMaker<FunctionSTDEV> make_STDEV("stdev",1, "");
-	static FunctionMaker<FunctionSTDEV> make_STDEVP("stdevp",1, "");
-	static FunctionMaker<FunctionSUM> make_SUM("sum",1, "");
-	static FunctionMaker<FunctionTDIFF> make_TDIFF("tdiff",4, "");
-	static FunctionMaker<FunctionTHIN> make_THIN("thin", 2, "");
-	static FunctionMaker<FunctionTIMESTAMP> make_TIMESTAMP("timestamp",2, "");
-	static FunctionMaker<FunctionVAR> make_VAR("var",1, "");
-	static FunctionMaker<FunctionVAR> make_VARP("varp",1, "");
-    static FunctionMaker<FunctionRLIKE> make_RLIKE("rlike",2, "");
+	new FunctionMaker<FunctionAND> ("and",2, "");
+	new FunctionMaker<FunctionAVG> ("avg",1, "");
+	new FunctionMaker<FunctionCOUNT> ("count",1, "");
+	new FunctionMaker<FunctionDOTP> ("dotp",2, "");
+	new FunctionMaker<FunctionEQ> ("=",2, "");
+	new FunctionMaker<FunctionEQ_BOXLAT> ("eq_boxlat", 3, "");
+	new FunctionMaker<FunctionEQ_BOXLON> ("eq_boxlon",3, "");
+	//#define DEFINE_UNARY(N,T)  new FunctionMaker<MathFunctionExpression_1<T<double> > > make_##T(#N,1)
+	//#define DEFINE_BINARY(N,T) new FunctionMaker<MathFunctionExpression_2<T<double> > > make_##T(#N,2)
+	new FunctionMaker<FunctionIN> ("in", -1, "");
+	new FunctionMaker<FunctionJOIN> ("join",2, "");
+	new FunctionMaker<FunctionJULIAN> ("julian",2, "");
+	new FunctionMaker<FunctionJULIAN> ("jd",2, "");
+	new FunctionMaker<FunctionJULIAN> ("julian_date",2, "");
+	new FunctionMaker<FunctionJULIAN_SECONDS> ("julian_seconds",2, "Returns time in Julian calendar expressed in seconds.");
+	new FunctionMaker<FunctionMAX> ("max",1, "");
+	new FunctionMaker<FunctionMIN> ("min",1, "");
+	new FunctionMaker<FunctionNORM> ("norm",2, "");
+	new FunctionMaker<FunctionNOT_IN> ("not_in", -1, "");
+	new FunctionMaker<FunctionNOT_NULL> ("not_null",1, "");
+	new FunctionMaker<FunctionNULL> ("null",1, "");
+	new FunctionMaker<FunctionNULL> ("isnull",1, "");
+	new FunctionMaker<FunctionNVL> ("nvl",2, "");
+	new FunctionMaker<FunctionOR> ("or",2, "");
+	new FunctionMaker<FunctionRGG_BOXLAT> ("rgg_boxlat", 3, "");
+	new FunctionMaker<FunctionRGG_BOXLON> ("rgg_boxlon",3, "");
+	new FunctionMaker<FunctionRMS> ("rms",1, "");
+	new FunctionMaker<FunctionROWNUMBER> ("rownumber", 0, "");
+	new FunctionMaker<FunctionSTDEV> ("stdev",1, "");
+	new FunctionMaker<FunctionSTDEV> ("stdevp",1, "");
+	new FunctionMaker<FunctionSUM> ("sum",1, "");
+	new FunctionMaker<FunctionTDIFF> ("tdiff",4, "");
+	new FunctionMaker<FunctionTHIN> ("thin", 2, "");
+	new FunctionMaker<FunctionTIMESTAMP> ("timestamp",2, "");
+	new FunctionMaker<FunctionVAR> ("var",1, "");
+	new FunctionMaker<FunctionVAR> ("varp",1, "");
+    new FunctionMaker<FunctionRLIKE> ("rlike",2, "");
     //TODO: not exactly sure LIKE and RLIKE are the same
-    static FunctionMaker<FunctionRLIKE> make_LIKE("like",2, "");
+    new FunctionMaker<FunctionRLIKE> ("like",2, "");
 
 	FunctionIntegerExpression::registerIntegerFunctions();
 }
@@ -621,6 +633,11 @@ FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* 
 { return FunctionFactory::instance().build(s, e1, e2, e3); }
 
 FunctionExpression* ast(const std::string& s, const expression::Expressions& e) { return FunctionFactory::instance().build(s, e); }
+
+FunctionExpression* ast(const std::string& s, const expression::Expressions& matchList, const SelectAST& selectAST) 
+{ 
+    return FunctionFactory::instance().build(s, matchList, selectAST);
+}
 
 } // namespace function
 } // namespace expression

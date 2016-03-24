@@ -26,7 +26,7 @@ using namespace odb;
 
 const long the_const_value = 20090624;
 
-class MockReaderIterator2 : public odb::RowsReaderIterator 
+class MockReaderIterator2 
 {
 public:
 	MockReaderIterator2() : columns_(1), nRows_(2), n_(nRows_), data_(the_const_value), refCount_(0), noMore_(false)
@@ -46,7 +46,7 @@ public:
 	bool isNewDataset() { return false; } // { return n_ == nRows_; }
 	double* data() { return &data_; }
 
-	bool next() { return !(noMore_ = nRows_-- <= 0); }
+	bool next(eckit::ExecutionContext*) { return !(noMore_ = nRows_-- <= 0); }
 
 private:
 	odb::MetaData columns_;
@@ -57,8 +57,8 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
+    ExecutionContext* context_;
 };
-
 
 static void setUp()
 {

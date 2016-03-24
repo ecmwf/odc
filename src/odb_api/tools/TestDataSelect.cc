@@ -14,6 +14,7 @@ using namespace std;
 using namespace odb;
 
 namespace {
+    /*
 
 struct FilledDataSet
 {
@@ -201,5 +202,6 @@ TEST_FIXTURE(SelectAll, CanUseCopyToAppendResults)
         for (unsigned i = 0; i < select.columns().size(); i++)
             CHECK_EQUAL((*expected)[i], (*actual)[i]);
 }
+*/
 
 } // namespace

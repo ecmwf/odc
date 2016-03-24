@@ -15,6 +15,7 @@
 #define SQLStatement_H
 
 #include "odb_api/Expressions.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 namespace sql {
@@ -27,7 +28,7 @@ public:
 	SQLStatement();
 	virtual ~SQLStatement(); 
 
-	virtual unsigned long long execute() = 0;
+	virtual unsigned long long execute(eckit::ExecutionContext*) = 0;
 	virtual expression::Expressions output() const = 0;
 
 protected:

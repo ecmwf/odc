@@ -1,0 +1,17 @@
+test, label = Check verb chunk works,
+do = (
+    let, input = "2000010106.odb"
+    let, chunks = (chunk, source = (value, of = input))
+
+    #println, values = (value, of = chunks)
+
+    compare, left = (sql, source = (value, of = chunks),
+                          filter = "select count(*)",
+                          target = (temporary_file) ),
+             right = (sql, source = (value, of = input),
+                           filter = "select count(*)",
+                           target = (temporary_file) )
+
+    sequence, values = OK
+),
+expect = OK

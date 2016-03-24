@@ -173,7 +173,7 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 	return true;
 }
 
-bool MetaDataReaderIterator::next()
+bool MetaDataReaderIterator::next(ExecutionContext* context)
 {
 	newDataset_ = false;
 	if (noMore_)

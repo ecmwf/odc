@@ -28,7 +28,7 @@ class SQLIteratorSession;
 class MetaData;
 
 template <typename T>
-class MDUpdatingIterator : public RowsReaderIterator
+class MDUpdatingIterator 
 {
 public:
 	MDUpdatingIterator (T& inputIterator, const T& end, const std::vector<std::string>& columns, const std::vector<std::string>& types);

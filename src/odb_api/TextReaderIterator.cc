@@ -61,15 +61,17 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 
 odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 {
-    std::ostream& L( Log::debug() );
+    //std::ostream& L( Log::debug() );
 
-    L << "TextReaderIterator::parseBitfields: " << c << std::endl;
 	size_t leftBracket (c.find('['));
 	size_t rightBracket (c.find(']'));
-	ASSERT(leftBracket != std::string::npos && rightBracket != std::string::npos);
+
+	if ( !(leftBracket != std::string::npos && rightBracket != std::string::npos))
+        throw UserError(std::string("Error parsing bitfield definition. Should be like: bitfield_column_name:BITFIELD[a:1;b:3] was: '") + c + "'");
+
 	std::string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
 
-    L << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
+    //L << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
 
 	odb::FieldNames names;
 	odb::Sizes      sizes;
@@ -77,13 +79,13 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
     size_t numberOfBits = 0;
 	std::vector<std::string> bs(S::split(";", s));
 
-    L << "TextReaderIterator::parseBitfields: bs=" << bs << std::endl;
+    //L << "TextReaderIterator::parseBitfields: bs=" << bs << std::endl;
 
 	for (size_t i = 0; i < bs.size(); ++i)
 	{
 		std::vector<std::string> v(S::split(":", bs[i]));
 
-        L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << std::endl;
+        //L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << std::endl;
 
 		if (v.size() != 2)
             throw UserError("Bitfields definition parse error");
@@ -101,7 +103,7 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
         numberOfBits += size;
 		sizes.push_back(size);
 	}
-    L << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << std::endl;
+    //L << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << std::endl;
 
     if (numberOfBits > 31)
         throw UserError("Bitfields can have up to 31 bits only currently");
@@ -136,12 +138,12 @@ void TextReaderIterator::parseHeader()
 		{
 			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
 						<< columnType << std::endl;
-			columns_.addColumn<DataStream<SameByteOrder, DataHandle> >(columnName, columnType);
+			columns_.addColumn(columnName, columnType);
 		}
 		else
 		{
 			Log::debug() << "TextReaderIterator::parseHeader: adding BITFIELD " << columns_.size() << " '" << columns[i] << std::endl;
-			columns_.addBitfield<DataStream<SameByteOrder, DataHandle> >(columnName, parseBitfields(columns[i]));
+			columns_.addBitfield(columnName, parseBitfields(columns[i]));
 		}
 	}
 	initRowBuffer();
@@ -168,28 +170,29 @@ void TextReaderIterator::initRowBuffer()
 		lastValues_[i] = columns()[i]->missingValue(); 
 }
 
-bool TextReaderIterator::next()
+bool TextReaderIterator::next(ExecutionContext*)
 {
-	newDataset_ = false;
-	if (noMore_)
-		return false; 
+    newDataset_ = false;
+    if (noMore_)
+        return false; 
 
-	std::string line;
-	std::getline(*in_, line);
-	std::vector<std::string> values(S::split(owner_.delimiter(), line));
+    std::string line;
+    std::getline(*in_, line);
+    StringTool::trimInPlace(line);
+    std::vector<std::string> values(S::split(owner_.delimiter(), line));
 
-	size_t nCols = values.size();
-	if (nCols == 0)
-		return ! (noMore_ = true);
-	ASSERT(nCols == columns().size());
+    size_t nCols = values.size();
+    if (nCols == 0)
+        return ! (noMore_ = true);
+    ASSERT(nCols == columns().size());
 
-	for(size_t i = 0; i < nCols; ++i)
-	{
-		const std::string& v (S::trim(values[i]));
-		lastValues_[i] = S::upper(v) == "NULL" ? columns_[i]->missingValue() : StringTool::translate(v);
-	}
+    for(size_t i = 0; i < nCols; ++i)
+    {
+        const std::string& v (S::trim(values[i]));
+        lastValues_[i] = S::upper(v) == "NULL" ? columns_[i]->missingValue() : StringTool::translate(v);
+    }
 
-	return nCols;
+    return nCols;
 }
 
 bool TextReaderIterator::isNewDataset() { return newDataset_; }

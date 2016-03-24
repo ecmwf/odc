@@ -189,9 +189,9 @@ bool ReptypeGenIterator<ITERATOR, CONFIG>::isNewDataset()
 }
 
 template<typename ITERATOR, typename CONFIG>
-bool ReptypeGenIterator<ITERATOR, CONFIG>::next()
+bool ReptypeGenIterator<ITERATOR, CONFIG>::next(eckit::ExecutionContext* context)
 {
-	bool r = iterator_.next();
+	bool r = iterator_.next(context);
 	if (r)
 	{
 		double* trueData = iterator_.data();

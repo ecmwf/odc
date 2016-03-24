@@ -17,8 +17,9 @@
 #define _SelectIterator_H
 
 #include "odb_api/Expressions.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/SQLIteratorSession.h"
+
+namespace eckit { class ExecutionContext; }
 
 extern "C" {
 	typedef void oda_select_iterator;
@@ -38,9 +39,9 @@ namespace sql {
 	class SQLSelect;
 }
 
-class SelectIterator { //: public RowsReaderIterator {
+class SelectIterator { 
 public:
-    SelectIterator (Select &owner, std::string select);
+    SelectIterator (Select &owner, const std::string&, eckit::ExecutionContext*);
 	~SelectIterator();
 
 	virtual bool isNewDataset();
@@ -61,7 +62,7 @@ public:
 	double& data(size_t i);
 
 protected:
-	virtual bool next();
+	virtual bool next(eckit::ExecutionContext*);
 
 private:
 // No copy allowed.
@@ -69,8 +70,8 @@ private:
 	SelectIterator& operator=(const SelectIterator&);
 
 	template <typename DATASTREAM> void populateMetaData();
-	template <typename DATASTREAM> void parse(typename DATASTREAM::DataHandleType *);
-	void parse(std::istream *);
+	template <typename DATASTREAM> void parse(odb::sql::SQLSession&, typename DATASTREAM::DataHandleType *);
+	void parse(odb::sql::SQLSession&, std::istream *);
 
 	Select& owner_;
     std::string select_;
@@ -85,6 +86,7 @@ private:
 	bool aggregateResultRead_;
 	bool isCachingRows_;
 	std::list<std::vector<double> > rowCache_;
+	eckit::ExecutionContext* context_;
 
 protected:
 	SelectIterator (Select &owner);

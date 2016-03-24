@@ -15,7 +15,7 @@
 
 #include <arpa/inet.h>
 
-#include "eckit/io/FileHandle.h"
+#include "eckit/ecml/data/DataHandleFactory.h"
 #include "odb_api/Header.h"
 #include "odb_api/Reader.h"
 #include "odb_api/ReaderIterator.h"
@@ -25,6 +25,26 @@ using namespace eckit;
 namespace odb {
 
 ReaderIterator::ReaderIterator(Reader &owner)
+: owner_(owner),
+  columns_(0),
+  lastValues_(0),
+  codecs_(0),
+  nrows_(0),
+  f(0),
+  newDataset_(false),
+  noMore_(false),
+  ownsF_(false),
+  headerCounter_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR),
+  refCount_(0)
+{
+	f = owner.dataHandle();
+	ASSERT(f);
+
+	loadHeaderAndBufferData();
+}
+
+ReaderIterator::ReaderIterator(Reader &owner, eckit::ExecutionContext*)
 : owner_(owner),
   columns_(0),
   lastValues_(0),
@@ -58,10 +78,30 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-	f = new FileHandle(pathName);
+    f = DataHandleFactory::openForRead(pathName);
 	ASSERT(f);
 	ownsF_ = true;
-	f->openForRead();
+
+	loadHeaderAndBufferData();
+}
+
+ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName, eckit::ExecutionContext*)
+: owner_(owner),
+  columns_(0),
+  lastValues_(0),
+  codecs_(0),
+  nrows_(0),
+  f(0),
+  newDataset_(false),
+  noMore_(false),
+  ownsF_(false),
+  headerCounter_(0),
+  byteOrder_(BYTE_ORDER_INDICATOR),
+  refCount_(0)
+{
+	f = DataHandleFactory::openForRead(pathName);
+	ASSERT(f);
+	ownsF_ = true;
 
 	loadHeaderAndBufferData();
 }
@@ -129,7 +169,7 @@ size_t ReaderIterator::readBuffer(size_t dataSize)
 	return bytesRead;
 }
 
-bool ReaderIterator::next()
+bool ReaderIterator::next(ExecutionContext* context)
 {
 	newDataset_ = false;
 	if (noMore_)

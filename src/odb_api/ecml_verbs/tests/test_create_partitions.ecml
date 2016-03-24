@@ -1,0 +1,35 @@
+
+let, files = (import_text, target = 'test_create_partitions_1.input.odb', text = 
+'seqno:INTEGER,a:INTEGER
+1,1
+1,1
+1,1
+2,2
+2,2
+2,2
+') / (import_text, target = 'test_create_partitions_2.input.odb', text = 
+'seqno:INTEGER,a:INTEGER
+3,3,
+3,3,
+3,3,
+4,4,
+4,4,
+4,4,
+')
+
+function, of = files / number_of_partitions, partition = 
+(
+    println, values = Create indices for files / ($, _ = files)
+    create_index, files = ($, _ = files)
+    println, values = Create partitions for files / ($, _ = files)
+    let, partitions = (create_partitions, n = ($, _ = number_of_partitions), 
+                                          write_files = true, 
+                                          files = ($, _ = files))
+    compare, left = ($, _ = files), 
+             right = ($, _ = partitions) 
+)
+
+
+
+
+partition, files = '2000010106.odb', number_of_partitions = 5

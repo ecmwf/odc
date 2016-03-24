@@ -19,15 +19,6 @@
 #include "odb_api/WriterBufferingIterator.h"
 #include <arpa/inet.h>
 
-//#include "eckit/config/Resource.h"
-
-//#include "odb_api/odb_api.h"
-
-//#include "odb_api/Codec.h"
-//#include "odb_api/CodecOptimizer.h"
-//#include "odb_api/DataStream.h"
-//#include "odb_api/InMemoryDataHandle.h"
-//#include "odb_api/MemoryBlock.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/SQLAST.h"
 
@@ -55,7 +46,9 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   rowsBufferSize_(owner.rowsBufferSize()),
   setvBuffer_(0),
   maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() ),
-  tableDef_(tableDef)
+  tableDef_(tableDef),
+  path_(owner.path()),
+  openDataHandle_(openDataHandle)
 {
 	if (openDataHandle)	
 		open();
@@ -66,7 +59,8 @@ WriterBufferingIterator::~WriterBufferingIterator()
 	close();
 	delete [] lastValues_;
 	delete [] nextRow_;
-	delete f;
+	if (! openDataHandle_)	
+        delete f;
 }
 
 unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigned long count)
@@ -127,11 +121,13 @@ void WriterBufferingIterator::writeHeader()
 	allocBuffers();
 	for (size_t i = 0; i < columns_.size(); ++i)
 		columns_[i]->coder().resetStats();
-
 	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "writeHeader: columns_[" << i << "]=" << *columns_[i] << std::endl;
 }
 
-bool WriterBufferingIterator::next() { return writeRow(nextRow_, columns().size()) == 0; }
+bool WriterBufferingIterator::next(ExecutionContext* context)
+{
+    return writeRow(nextRow_, columns().size()) == 0;
+}
 
 double* WriterBufferingIterator::data() { return nextRow_; }
 double& WriterBufferingIterator::data(size_t i)
@@ -217,7 +213,6 @@ int WriterBufferingIterator::open()
 int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnType type)
 {
 	//Log::debug() << "WriterBufferingIterator::setColumn: " << std::endl;
-
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
 	ASSERT(col);
@@ -230,7 +225,6 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnTyp
 int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
 {
 	//Log::debug() << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
-
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
 	ASSERT(col);
@@ -299,10 +293,6 @@ void WriterBufferingIterator::flush()
     MetaData& md(const_cast<MetaData&>(columns()));
     md = columnsBuffer_;
     md.resetStats();
-
-	//MetaData md (columnsBuffer_);
-	//md.resetStats();
-    //columns(md);
 }
 
 
@@ -321,12 +311,19 @@ int WriterBufferingIterator::close()
 {
 	flush();
 
-	if (f)
+	if (!openDataHandle_ && f)
 	{
 		f->close();
 		f = 0;
 	}
 	return 0;
+}
+
+std::vector<eckit::PathName> WriterBufferingIterator::outputFiles()
+{
+    std::vector<eckit::PathName> r;
+    r.push_back(path_);
+    return r;
 }
 
 } // namespace odb 

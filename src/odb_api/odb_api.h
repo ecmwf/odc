@@ -16,5 +16,31 @@
 #ifndef PUBLIC_ODB_API_H
 #define PUBLIC_ODB_API_H
 
+#include "odb_api/MetaData.h"
+#include "odb_api/Column.h"
+#include "odb_api/Select.h"
+#include "odb_api/ColumnType.h"
+#include "odb_api/Reader.h"
+#include "odb_api/TextReader.h"
+#include "odb_api/Writer.h"
+
+// For importing data from text - used by examples and tests
+#include "odb_api/tools/ImportTool.h"
+
+// For importing data from text - used by examples and tests
+#include "odb_api/tools/ImportTool.h"
+
+// For ECML support
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
+#include "eckit/ecml/core/RequestHandler.h"
+#include "eckit/ecml/parser/RequestParser.h"
+#include "eckit/ecml/parser/Cell.h"
+#include "odb_api/ODBModule.h"
+#include "odb_api/ecml_data/ResultSet.h"
+#include "odb_api/ecml_data/ResultSetStore.h"
+
+// Exceptions.
+#include "eckit/exception/Exceptions.h"
 
 #endif

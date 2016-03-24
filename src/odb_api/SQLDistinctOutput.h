@@ -41,18 +41,18 @@ private:
 // -- Overridden methods
 	virtual void size(int);
 	virtual void reset();
-	virtual void flush();
-	virtual bool output(const expression::Expressions&);
+	virtual void flush(eckit::ExecutionContext*);
+	virtual bool output(const expression::Expressions&, eckit::ExecutionContext*);
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 	virtual unsigned long long count();
 
-	virtual void outputReal(double, bool) const { NOTIMP; };
-	virtual void outputDouble(double, bool) const { NOTIMP; };
-	virtual void outputInt(double, bool) const { NOTIMP; };
-	virtual void outputUnsignedInt(double, bool) const { NOTIMP; };
-	virtual void outputString(double, bool) const { NOTIMP; };
-	virtual void outputBitfield(double, bool) const { NOTIMP; };
+	virtual void outputReal(double, bool) { NOTIMP; };
+	virtual void outputDouble(double, bool) { NOTIMP; };
+	virtual void outputInt(double, bool) { NOTIMP; };
+	virtual void outputUnsignedInt(double, bool) { NOTIMP; };
+	virtual void outputString(double, bool) { NOTIMP; };
+	virtual void outputBitfield(double, bool) { NOTIMP; };
 };
 
 } // namespace sql 

@@ -40,7 +40,7 @@ SelectIterator::SelectIterator(Select &owner)
 {
 }
 
-SelectIterator::SelectIterator(Select &owner, std::string select)
+SelectIterator::SelectIterator(Select &owner, const std::string& select, ExecutionContext* context)
 : owner_(owner),
   select_(select),
   session_(*this),
@@ -54,24 +54,20 @@ SelectIterator::SelectIterator(Select &owner, std::string select)
   refCount_(0)
 {
 	if (owner.dataIStream())
-		parse(owner.dataIStream());
+		parse(session_, owner.dataIStream());
 	else
-		parse<DataStream<SameByteOrder, DataHandle> >(owner.dataHandle());
+		parse<DataStream<SameByteOrder, DataHandle> >(session_, owner.dataHandle());
 }
 
 template <typename DATASTREAM> 
-void SelectIterator::parse(typename DATASTREAM::DataHandleType *dh)
+void SelectIterator::parse(odb::sql::SQLSession& session, typename DATASTREAM::DataHandleType *dh)
 {
-    //TODO: if(verbose_) {...}
-    //Log::info() << "SelectIterator::parse: '" << select_ << "'" << std::endl;
 	sql::SQLParser p;
-	p.parseString(select_, dh, odb::sql::SQLSelectFactory::instance().config());
-	sql::SQLStatement *stmt = session_.statement();
+	p.parseString(session, select_, dh, session.selectFactory().config());
+	sql::SQLStatement *stmt (session_.statement());
 
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
 	ASSERT(selectStmt_);
-    //TODO: if(verbose_) {...}
-    //Log::info() << "SelectIterator::parse: " << *selectStmt_ << std::endl;
 
 	selectStmt_->prepareExecute();
 	
@@ -80,12 +76,13 @@ void SelectIterator::parse(typename DATASTREAM::DataHandleType *dh)
 	selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
 }
 
-void SelectIterator::parse(std::istream *is)
+void SelectIterator::parse(odb::sql::SQLSession& session, std::istream *is)
 {
 	sql::SQLParser p;
-	odb::sql::SQLSelectFactory& factory(odb::sql::SQLSelectFactory::instance());
-	p.parseString(select_, is, factory.config(), factory.csvDelimiter());
-	sql::SQLStatement *stmt = session_.statement();
+	odb::sql::SQLSelectFactory& factory(session.selectFactory());
+	p.parseString(session, select_, is, factory.config(), factory.csvDelimiter());
+    // TODO: do we really need to pass session here
+	sql::SQLStatement *stmt (session_.statement());
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
 	ASSERT(selectStmt_);
 	selectStmt_->prepareExecute();
@@ -112,7 +109,7 @@ void SelectIterator::cacheRow(const Expressions& results)
 	rowCache_.push_back(v);
 }
 
-bool SelectIterator::next()
+bool SelectIterator::next(ExecutionContext* context)
 {
 	newDataset_ = false;
 	if (noMore_) return false;
@@ -138,7 +135,7 @@ bool SelectIterator::next()
 
 	if (aggregateResultRead_) return noMore_ = true;
 
-	bool rc = selectStmt_->processOneRow();
+	bool rc = selectStmt_->processOneRow(context);
 
 	if (!rc)
 	{
@@ -148,7 +145,7 @@ bool SelectIterator::next()
 			noMore_ = true;
 
 		isCachingRows_ = true;
-		selectStmt_->postExecute();
+		selectStmt_->postExecute(context);
 		//isCachingRows_ = false; // this would be needed if we reuse the same iterator for several queries. 
 		
 		if (rowCache_.size())

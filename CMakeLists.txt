@@ -19,14 +19,14 @@ project( odb_api CXX )
 # Add path for custom modules
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
-include( ecbuild_system )
+include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 1.7 )
+ecbuild_requires_macro_version( 1.9 )
 
 ###############################################################################
 # local project
 
-ecbuild_use_package( PROJECT eckit VERSION 0.6 REQUIRED )
+ecbuild_use_package( PROJECT eckit VERSION 0.9 REQUIRED )
 
 ecbuild_declare_project()
 
@@ -37,13 +37,18 @@ ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
 # some variables/options of this project
 
 ecbuild_add_option( FEATURE MIGRATOR
-                    DESCRIPTION "whether or not to build the migrator"
+                    DESCRIPTION "whether or not to build the ODB migrator tool"
                     DEFAULT OFF
-                    REQUIRED_PACKAGES "ODB" )
+                    REQUIRED_PACKAGES "PROJECT odb VERSION 1.0 QUIET" )
 
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
                     DEFAULT OFF )
+
+ecbuild_add_option( FEATURE NETCDF
+                    DESCRIPTION "whether or not to build the odb2netcdf tool"
+                    DEFAULT OFF
+                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
 if( HAVE_FORTRAN OR HAVE_MIGRATOR )
 
@@ -55,15 +60,22 @@ if( HAVE_MIGRATOR )
 
     ecbuild_find_fortranlibs( REQUIRED )
     #if(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
-    #    cmake_add_fortran_flags("-r8")
+    #    ecbuild_add_fortran_flags("-r8")
     #    elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     #    # NOTE that if we add -fdefault-real-8 then we NEED -fdefault-double-8 to avoid quadmath
-    #    cmake_add_fortran_flags("-fdefault-real-8 -fdefault-double-8")
+    #    ecbuild_add_fortran_flags("-fdefault-real-8 -fdefault-double-8")
     #endif()
   message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
 
 endif()
 
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  cmake_add_fortran_flags("-fPIC -ffree-line-length-none")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  cmake_add_cxx_flags("-fPIC -Wl,--as-needed")
+endif()
 
 ecbuild_add_option( FEATURE PYTHON
                     DESCRIPTION "whether or not to build the Python interface"
@@ -87,8 +99,11 @@ set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" 
 get_directory_property( ODB_API_DEFINITIONS COMPILE_DEFINITIONS )
 
 set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
+if( HAVE_FORTRAN )
+  list( APPEND ODB_API_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
+endif()
+
 set( ODB_API_LIBRARIES      Odb )
-set( ODB_API_TPLS           eckit )
 
 add_subdirectory( src )
 add_subdirectory( tests )

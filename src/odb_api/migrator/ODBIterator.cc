@@ -77,7 +77,7 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 	//if (noMore_) Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << std::endl;
 }
 
-bool ODBIterator::next()
+bool ODBIterator::next(eckit::ExecutionContext*)
 {
 	newDataset_ = false;
 	noOfColumns_ = odbdump_nextrow(odbHandle_, data_, nd_, &newDataset_);
@@ -230,13 +230,11 @@ const odb::sql::SchemaAnalyzer& ODBIterator::getSchema(const PathName db)
 		Log::info() << "ImportODBTool::getSchema: parsing '" << schemaFile << "'" << std::endl;
 	
 		odb::sql::SQLParser p;
-		p.parseString(StringTool::readFile(schemaFile),
-			static_cast<DataHandle*>(0),
-			odb::sql::SQLSelectFactory::instance().config());
+		p.parseString(session_, StringTool::readFile(schemaFile), static_cast<DataHandle*>(0), session_.selectFactory().config());
 		schemaParsed_ = true;
 	}
 
-	return odb::sql::SQLSession::current()
+	return session_
 			.currentDatabase()
 			.schemaAnalyzer();
 }

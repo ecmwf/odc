@@ -27,7 +27,7 @@ using namespace odb;
 static void test()
 {
 	{
-		string sql = "select distinct a from \"a1to10twice.odb\" order by a;";
+		string sql = "select distinct a from \"TestOrderBy_a1to10twice.odb\" order by a;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
@@ -47,7 +47,7 @@ static void test()
 	}
 
 	{
-		string sql = "select a from \"a1to10twice.odb\" order by a;";
+		string sql = "select a from \"TestOrderBy_a1to10twice.odb\" order by a;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
@@ -69,7 +69,7 @@ static void test()
 	}
 
 	{
-		string sql = "select distinct a from \"a1to10twice.odb\" order by a desc;";
+		string sql = "select distinct a from \"TestOrderBy_a1to10twice.odb\" order by a desc;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
@@ -96,9 +96,9 @@ static void test()
 		"1,20,'two'\n"
 		"2,30,'three'\n"
 		"2,40,'four'\n";
-        odb::tool::ImportTool::importText(in, "UnitTest.odb");
+        odb::tool::ImportTool::importText(in, "TestOrderBy.odb");
 
-		string sql = "select distinct a,b,c from \"UnitTest.odb\" order by a desc, b asc;";
+		string sql = "select distinct a,b,c from \"TestOrderBy.odb\" order by a desc, b asc;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odb::Select sel(sql);
@@ -122,7 +122,14 @@ static void test()
 }
 
 
-static void setUp(){}
+static void setUp()
+{
+	stringstream s;
+	s << "a:REAL" << std::endl;
+	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
+	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
+    odb::tool::ImportTool::importText(s.str().c_str(), "TestOrderBy_a1to10twice.odb");
+}
 static void tearDown(){}
 
 SIMPLE_TEST(OrderBy)

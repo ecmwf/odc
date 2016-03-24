@@ -75,7 +75,7 @@ bool ODAUpdatingIterator<T>::isNewDataset()
 }
 
 template <typename T>
-bool ODAUpdatingIterator<T>::next()
+bool ODAUpdatingIterator<T>::next(eckit::ExecutionContext*)
 {
 	if (noMore_)
 		return noMore_;

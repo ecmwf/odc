@@ -40,11 +40,11 @@ void SQLDistinctOutput::reset()
 	seen_.clear();
 }
 
-void SQLDistinctOutput::flush() { output_->flush(); }
+void SQLDistinctOutput::flush(eckit::ExecutionContext* context) { output_->flush(context); }
 
 unsigned long long SQLDistinctOutput::count() { return output_->count(); }
 
-bool SQLDistinctOutput::output(const expression::Expressions& results)
+bool SQLDistinctOutput::output(const expression::Expressions& results, eckit::ExecutionContext* context)
 {
 	for(size_t i = 0; i < results.size(); i++)
 	{
@@ -56,7 +56,7 @@ bool SQLDistinctOutput::output(const expression::Expressions& results)
 	if(seen_.find(tmp_) == seen_.end())
 	{
 		seen_.insert(tmp_);
-		output_->output(results);
+		output_->output(results, context);
 		return true;
 	}
 	return false;

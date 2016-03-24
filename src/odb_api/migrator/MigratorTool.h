@@ -29,6 +29,8 @@ private:
 // No copy allowed
     MigratorTool(const MigratorTool&);
     MigratorTool& operator=(const MigratorTool&);
+
+    void runECML();
 };
 
 } // namespace tool 

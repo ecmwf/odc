@@ -8,145 +8,132 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/thread/ThreadSingleton.h"
 #include "eckit/log/Timer.h"
 #include "odb_api/ODADatabase.h"
 #include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLSession.h"
+#include "odb_api/SQLNonInteractiveSession.h"
 #include "odb_api/SQLStatement.h"
+#include "odb_api/SQLSelectFactory.h"
 
 using namespace eckit;
-
-template class ThreadSingleton<odb::sql::SQLSession*>;
-static ThreadSingleton<odb::sql::SQLSession*> instance_;
 
 namespace odb {
 namespace sql {
 
 std::string defaultDB = "default";
 
-SQLSession::SQLSession():
-	current_(0)
+SQLSession::SQLSession()
+: currentDatabase_(0)
 {
-	//ASSERT(!instance_.instance());
-	instance_.instance() = this;
-
-	current_ = new ODADatabase(".", defaultDB); 
-	current_->open();
-	databases_[defaultDB] = current_;
-}
-
-SQLDatabase& SQLSession::currentDatabase(SQLDatabase *db)
-{
-	delete current_;
-	current_ = db;
-	current_->open();
-	databases_[defaultDB] = current_;
-	return *current_;
+    currentDatabase_ = new ODADatabase(".", defaultDB); 
+    currentDatabase_->open();
+    databases_[defaultDB] = currentDatabase_;
 }
 
 SQLSession::~SQLSession()
 {
-	//instance_.instance() = (SQLSession*)0;
-	//cerr << "SQLSession::~SQLSession" << std::endl;
-	for(std::map<std::string,SQLDatabase*>::iterator j = databases_.begin(); j != databases_.end(); ++j)
-		delete (*j).second;
+    for(std::map<std::string,SQLDatabase*>::iterator j = databases_.begin(); j != databases_.end(); ++j)
+        delete (*j).second;
 }
 
-SQLSession& SQLSession::current()
+SQLSelectFactory& SQLSession::selectFactory() { return selectFactory_; }
+
+SQLDatabase& SQLSession::currentDatabase(SQLDatabase *db)
 {
-	//ASSERT(instance_.instance());
-	SQLSession* x = instance_.instance();
-	return *x;
+    delete currentDatabase_;
+    currentDatabase_ = db;
+    currentDatabase_->open();
+    databases_[defaultDB] = currentDatabase_;
+    return *currentDatabase_;
 }
 
 SQLDatabase& SQLSession::openDatabase(const PathName& path,const std::string& name)
 {
-	std::map<std::string,SQLDatabase*>::iterator j = databases_.find(name);
-	if(j != databases_.end())
-	{
-		SQLDatabase* db = (*j).second;
-		db->close();
-		delete db;
-	}
+    std::map<std::string,SQLDatabase*>::iterator j = databases_.find(name);
+    if(j != databases_.end())
+    {
+        SQLDatabase* db = (*j).second;
+        db->close();
+        delete db;
+    }
 
-	current_ = new ODADatabase(path,name);
-	current_->open();
+    currentDatabase_ = new ODADatabase(path,name);
+    currentDatabase_->open();
 
-	databases_[name] = current_;
-	return *current_;
+    databases_[name] = currentDatabase_;
+    return *currentDatabase_;
 }
 
-unsigned long long SQLSession::execute(SQLStatement& sql)
+unsigned long long SQLSession::execute(SQLStatement& sql, ExecutionContext* context)
 {
-	Timer timer("Execute");
-	ASSERT(current_);	
+    Timer timer("Execute");
+    ASSERT(currentDatabase_);	
 
-	unsigned long long n = sql.execute();
-	return lastExecuteResult_ = n;
+    unsigned long long n = sql.execute(context);
+    return lastExecuteResult_ = n;
 }
 
 SQLDatabase& SQLSession::currentDatabase() const
 {
-	ASSERT(current_);	
-	return *current_;
+    ASSERT(currentDatabase_);	
+    return *currentDatabase_;
 }
 
 double SQLSession::getParameter(int which) const
 {
-	std::map<int,double>::const_iterator j = params_.find(which);
-	if(j == params_.end())
-		throw eckit::UserError("Undefined parameter");
-	return (*j).second;
+    std::map<int,double>::const_iterator j = params_.find(which);
+    if(j == params_.end())
+        throw eckit::UserError("Undefined parameter");
+    return (*j).second;
 }
 
 void SQLSession::setParameter(int which,double value)
 {
-	params_[which] = value;
+    params_[which] = value;
 }
 
 SQLDatabase* SQLSession::getDatabase(const std::string& name)
 {
-	std::map<std::string,SQLDatabase*>::iterator j = databases_.find(name);
-	if(j == databases_.end())
-		throw eckit::UserError("Cannot find database", name);
-	return (*j).second;
+    std::map<std::string,SQLDatabase*>::iterator j = databases_.find(name);
+    if(j == databases_.end())
+        throw eckit::UserError("Cannot find database", name);
+    return (*j).second;
 }
 
 SQLTable* SQLSession::findFile(const std::string& name)
 {
-	ASSERT(current_);
-	return current_->table(name);
+    ASSERT(currentDatabase_);
+    return currentDatabase_->table(name);
 }
 
 SQLTable* SQLSession::findTable(const std::string& name)
 {
-	ASSERT(current_);
-	return current_->table(name);
+    ASSERT(currentDatabase_);
+    return currentDatabase_->table(name);
 }
 
 SQLTable* SQLSession::openDataStream(std::istream &is, const std::string& delimiter)
 {
-	ASSERT(current_);
-	return current_->openDataStream(is, delimiter);
+    ASSERT(currentDatabase_);
+    return currentDatabase_->openDataStream(is, delimiter);
 }
 
 SQLTable* SQLSession::openDataHandle(DataHandle &dh)
 {
-	ASSERT(current_);
-	return current_->openDataHandle(dh);
+	ASSERT(currentDatabase_);
+	return currentDatabase_->openDataHandle(dh);
 }
 
 SQLTable* SQLSession::findTable(const std::string& database,const std::string& name)
 {
-	return getDatabase(database)->table(name);
+    return getDatabase(database)->table(name);
 }
 
 void SQLSession::createIndex(const std::string& column,const std::string& table)
 {
-	ASSERT(current_);
+    ASSERT(currentDatabase_);
 #if 0
-	current_->table(table)->column(column)->createIndex();
+	currentDatabase_->table(table)->column(column)->createIndex();
 #endif
 }
 

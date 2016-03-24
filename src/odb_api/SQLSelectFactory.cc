@@ -9,11 +9,14 @@
  */
 
 #include "eckit/utils/Translator.h"
-#include "eckit/thread/ThreadSingleton.h"
+#include "eckit/ecml/core/ExecutionContext.h"
+#include "eckit/ecml/core/Environment.h"
+#include "eckit/types/Types.h"
+
+#include "odb_api/SQLDatabase.h"
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/FunctionExpression.h"
 #include "odb_api/ShiftedBitColumnExpression.h"
-#include "odb_api/SQLDatabase.h"
 #include "odb_api/SQLDistinctOutput.h"
 #include "odb_api/SQLODAOutput.h"
 #include "odb_api/SQLOrderOutput.h"
@@ -22,11 +25,12 @@
 #include "odb_api/SQLSession.h"
 #include "odb_api/TemplateParameters.h"
 #include "odb_api/Writer.h"
+#include "odb_api/SQLCallbackOutput.h"
+#include "odb_api/EmbeddedCodeParser.h"
+#include "odb_api/SQLAST.h"
 
 using namespace eckit;
-
-template class ThreadSingleton<odb::sql::SQLSelectFactory>;
-static ThreadSingleton<odb::sql::SQLSelectFactory> instance_;
+using namespace std;
 
 namespace odb {
 namespace sql {
@@ -41,29 +45,34 @@ SQLSelectFactory::SQLSelectFactory()
   csvDelimiter_(",")
 {}
 
-SQLSelectFactory& SQLSelectFactory::instance()
+void SQLSelectFactory::reset()
 {
-	ASSERT( &instance_.instance() != 0 );
-	return instance_.instance();
+    // TODO> we may need to delete things here...
+    implicitFromTableSource_ = 0;
+    implicitFromTableSourceStream_ = 0;
+    database_ = 0;
+    config_ = SQLOutputConfig::defaultConfig();
+    maxColumnShift_ = 0;
+    minColumnShift_ = 0;
+    csvDelimiter_ = ",";
 }
 
-
-std::string SQLSelectFactory::index(const std::string& columnName, const SQLExpression* index)
+string SQLSelectFactory::index(const string& columnName, const SQLExpression* index)
 {
 	if (index == 0)
 		return columnName;
 
 	bool missing = false;
-	std::string idx = Translator<int,std::string>()(int(index->eval(missing)));
+	string idx = Translator<int,string>()(int(index->eval(missing)));
 	ASSERT(! missing);
 	return columnName + "_" + idx;
 }
 
 SQLExpression* SQLSelectFactory::createColumn(
-	const std::string& columnName,
-	const std::string& bitfieldName,
+	const string& columnName,
+	const string& bitfieldName,
 	const SQLExpression* vectorIndex,
-	const std::string& table,
+	const Table& table,
 	const SQLExpression* pshift)
 {
 	if (! pshift->isConstant()) throw eckit::UserError("Value of shift operator must be constant");
@@ -75,12 +84,13 @@ SQLExpression* SQLSelectFactory::createColumn(
 	if (shift > maxColumnShift_) maxColumnShift_ = shift;
 	if (shift < minColumnShift_) minColumnShift_ = shift;
 
-	std::string expandedColumnName( index(columnName, vectorIndex) );
+	string expandedColumnName( index(columnName, vectorIndex) );
+    // TODO: handle .<database>
 	return bitfieldName.size()
-		? (shift == 0 ? new BitColumnExpression(expandedColumnName, bitfieldName, table)
-					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table, shift, -shift))
-		: (shift == 0 ? new ColumnExpression(expandedColumnName + table, table)
-					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table, table, shift, -shift));
+		? (shift == 0 ? new BitColumnExpression(expandedColumnName, bitfieldName, table.name)
+					  : new ShiftedColumnExpression<BitColumnExpression>(expandedColumnName, bitfieldName, table.name, shift, -shift))
+		: (shift == 0 ? new ColumnExpression(expandedColumnName + table.name, table.name)
+					  : new ShiftedColumnExpression<ColumnExpression>(expandedColumnName + table.name, table.name, shift, -shift));
 }
 
 SQLExpression* SQLSelectFactory::reshift(SQLExpression* e)
@@ -129,90 +139,131 @@ SQLExpression* SQLSelectFactory::reshift(SQLExpression* e)
         return r;
     }
 
-    Log::info() << "SQLSelectFactory::reshift: SKIP " << *e << std::endl;
+    Log::info() << "SQLSelectFactory::reshift: SKIP " << *e << endl;
     return r;
 }
 
 void SQLSelectFactory::reshift(Expressions& select)
 {
-    std::ostream& L(Log::debug());
-	L << "reshift: maxColumnShift_ = " << maxColumnShift_ << std::endl;
-	L << "reshift: minColumnShift_ = " << minColumnShift_ << std::endl;
+    ostream& L(Log::debug());
+	L << "reshift: maxColumnShift_ = " << maxColumnShift_ << endl;
+	L << "reshift: minColumnShift_ = " << minColumnShift_ << endl;
 	for (size_t i = 0; i < select.size(); ++i)
-		L << "reshift: <- select[" << i << "]=" << *select[i] << std::endl;
+		L << "reshift: <- select[" << i << "]=" << *select[i] << endl;
 
 	for (size_t i = 0; i < select.size(); ++i)
         select[i] = reshift(select[i]);
 
-	L << std::endl;
+	L << endl;
 	for (size_t i = 0; i < select.size(); ++i)
-		L << "reshift: -> select[" << i << "]=" << *select[i] << std::endl;
+		L << "reshift: -> select[" << i << "]=" << *select[i] << endl;
 }
 
-void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, std::vector<SQLTable*>& from)
+//void SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vector<SQLTable*>& from)
+vector<SQLTable*> SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vector<Table>& from)
 {
-    Log::debug() << "No <from> clause" << std::endl;
+    ostream& L (Log::debug());
+    
+    L << "No <from> clause" << endl;
+
+    // TODO: SQLTable => string. 
 
     SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
         : implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
         : database_ ? database_->table("defaultTable")
         : session.currentDatabase().dualTable();
-    from.push_back(table);
+
+    L << "Implicit FROM: " << *table << endl;
+
+    vector<SQLTable*> fromTables;
+    fromTables.push_back(table);
+    return fromTables;
 }
 
-
+/*
 SchemaAnalyzer& SQLSelectFactory::analyzer()
 { return SQLSession::current().currentDatabase().schemaAnalyzer(); }
 
-MetaData SQLSelectFactory::columns(const std::string& tableName)
+MetaData SQLSelectFactory::columns(const string& tableName)
 {
-    const TableDef& tabledef ( analyzer().findTable(tableName) );
+    const TableDef& tabledef ( enalyzer().findTable(tableName) );
     const ColumnDefs& columnDefs ( tabledef.columns() );
 
     //TODO: Convert ColumnDefs (from tabledef) into MetaData and push it into the SQLODAOutput
     ASSERT( false ); /// @todo this code must be fixed and return
 }
+*/
 
-SQLSelect* SQLSelectFactory::create (bool distinct,
+SQLSelect* SQLSelectFactory::create (SQLSession& session, const SelectAST& a)
+{
+    return session.selectFactory().create(session, a.distinct, a.all, a.selectList, a.into, a.from, a.where, a.groupBy, a.orderBy);
+}
+
+SQLSelect* SQLSelectFactory::create (
+    odb::sql::SQLSession& session,
+    bool distinct,
     bool all,
     Expressions select_list,
-    const std::string& into,
-    std::vector<SQLTable*> from,
+    const string& into,
+    //vector<SQLTable*> from,
+    vector<Table> from,
     SQLExpression *where,
     Expressions group_by,
-    std::pair<Expressions,std::vector<bool> > order_by)
+    pair<Expressions,vector<bool> > order_by)
 {
-    //TODO: if(verbose_) {...}
-    std::ostream& L(Log::debug());
-    //std::ostream& L(Log::info());
+    //ostream& L(Log::debug());
+    ostream& L(Log::info());
 
-	if (where) L << "SQLSelectFactory::create: where = " << *where << std::endl;
+	if (where) L << "SQLSelectFactory::create: where = " << *where << endl;
 
-	SQLSelect* r = 0;
-	SQLSession& session = SQLSession::current();
+	SQLSelect* r (0);
+	//SQLSession& session (SQLSession::current());
 
-	if (from.size() == 0) resolveImplicitFrom(session, from);
+    std::vector<SQLTable*> fromTables;
+
+	if (! from.size()) 
+    {
+        std::vector<SQLTable*> implicitTables (resolveImplicitFrom(session, from));
+        fromTables.insert( fromTables.begin(), implicitTables.begin(), implicitTables.end() );
+    }
+
+    //table : IDENT '.' IDENT { SQLSession& s  = SQLSession::current(); $$ = s.findTable($1,$3); }
+    for (size_t i(0); i < from.size(); ++i)
+    {
+        Table& t (from[i]);
+
+        if (! t.embeddedCode)
+            fromTables.push_back( t.database.size() 
+                                  ? session.findTable( t.name, t.database) 
+                                  : session.findTable( t.name) ); 
+        else
+        {
+            ExecutionContext context; // TODO: get it from session, don't pass it to getFromTables
+            std::vector<SQLTable*> computed (EmbeddedCodeParser::getFromTables(t.name, t.database, session, &context));
+            fromTables.insert(fromTables.begin(), computed.begin(), computed.end());
+        }
+    }
 
 	Expressions select;
-	for (ColumnDefs::size_type i = 0; i < select_list.size(); ++i)
+	for (ColumnDefs::size_type i (0); i < select_list.size(); ++i)
 	{
-		L << "expandStars: " << *select_list[i] << std::endl;
-		select_list[i]->expandStars(from, select);
+		L << "expandStars: " << *select_list[i] << endl;
+		select_list[i]->expandStars(fromTables, select);
 	}
 
 	ASSERT(maxColumnShift_ >= 0);
 	ASSERT(minColumnShift_ <= 0);
 	if (minColumnShift_ < 0) 
     {
-        L << std::endl << "SELECT_LIST before reshifting:" << select << std::endl;
+        L << endl << "SELECT_LIST before reshifting:" << select << endl;
 		reshift(select);
-        L << "SELECT_LIST after reshifting:" << select << std::endl << std::endl;
+        L << "SELECT_LIST after reshifting:" << select << endl << endl;
 
         if (where)
         {
-            L << std::endl << "WHERE before reshifting:" << *where << std::endl;
+            L << endl << "WHERE before reshifting:" << *where << endl;
             where = reshift(where);
-            L << "WHERE after reshifting:" << *where << std::endl << std::endl;
+            L << "WHERE after reshifting:" << *where << endl << endl;
         }
 
         reshift(order_by.first);
@@ -222,77 +273,84 @@ SQLSelect* SQLSelectFactory::create (bool distinct,
 	minColumnShift_ = 0;
 
 	if (group_by.size())
-		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << std::endl;
+		Log::info() << "GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead." << endl;
 
     SQLOutput *out (createOutput(session, into, order_by.first.size()));
 
     if(distinct)              { out = new SQLDistinctOutput(out); }
     if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
-    r = new SQLSelect(select, from, where, out, config_);
+    r = new SQLSelect(select, fromTables, where, out, config_);
 
 	maxColumnShift_ = 0;
 	return r;
 }
 
-typedef DataStream<SameByteOrder, DataHandle> DS;
-
-MetaData toODAColumns(const odb::sql::TableDef& tableDef)
+MetaData toODAColumns(odb::sql::SQLSession& session, const odb::sql::TableDef& tableDef)
 {
-    std::ostream& L(eckit::Log::info());
+    ostream& L(eckit::Log::info());
 
-    L << "tableDef_ -> columns_" << std::endl;
+    L << "tableDef_ -> columns_" << endl;
     odb::sql::ColumnDefs columnDefs (tableDef.columns());
     MetaData md(0); //(columnDefs.size());
     for (size_t i(0); i < columnDefs.size(); ++i)
     {
         odb::sql::ColumnDef& c (columnDefs[i]);
-        L << "   " << c.name() << ":" << c.type() << std::endl; //"(" << Column::columnTypeName(type) << ")" << std::endl;
+        L << "   " << c.name() << ":" << c.type() << endl; //"(" << Column::columnTypeName(type) << ")" << endl;
 
-        SchemaAnalyzer& a (SQLSession::current().currentDatabase().schemaAnalyzer());
+        SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());
         if (a.isBitfield(c.name())) {
             const BitfieldDef& bf ( a.getBitfieldTypeDefinition(c.name()) );
-            md.addBitfield<DS>(c.name(), bf ); //c.bitfieldDef());
+            md.addBitfield(c.name(), bf ); //c.bitfieldDef());
         }
         else {
             ColumnType type (Column::type(c.type()));
             if (type == BITFIELD)
-                md.addBitfield<DS>(c.name(), c.bitfieldDef());
+                md.addBitfield(c.name(), c.bitfieldDef());
             else
-                md.addColumn<DS>(c.name(), c.type());
+                md.addColumn(c.name(), c.type());
         }
 
         ASSERT( &md[i]->coder() );
     }
-    L << "toODAColumns ==> " << std::endl << md << std::endl;
+    L << "toODAColumns ==> " << endl << md << endl;
     return md;
 }
 
-SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const std::string& into, size_t orderBySize)
+SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const string& into, size_t orderBySize)
 {
+    // TODO: FIXME
+    //size_t maxOpenFiles ( ! context ? 100 : atoi(context->environment().lookup("maxOpenFiles", "100", *context).c_str()));
+    size_t maxOpenFiles ( 100);
+    //TODO: pass parameter into to defaultFormat
     SQLOutput *r (NULL);
+    //if (config_.outputFormat() == "callback") return session.defaultOutput();
+    // TODO: FIXME
+    //if (context && context->environment().lookupNoThrow("callback") )
+    //    return r = new SQLCallbackOutput(*context);
+
+    string outputFile ((config_.outputFormat() == "odb") ? config_.outputFile() : into);
+    Log::info() << "SQLSelectFactory::createOutput: outputFile: '" << outputFile << "'" << endl;
+    if (! outputFile.size())
+        return r = session.defaultOutput();
 
     TemplateParameters templateParameters;
-    std::string outputFile = (config_.outputFormat() == "odb") ? config_.outputFile() : into;
     TemplateParameters::parse(outputFile, templateParameters);
-	if (templateParameters.size())
-	{
-		// TODO? make the constant  (maxOpenFiles) passed to DispatchingWriter configurable
-		DispatchingWriter writer(outputFile, orderBySize  ? 1 : 100);
-        // TODO: use SQLSession::output
-		r = (outputFile == "") ? session.defaultOutput() : new SQLODAOutput<DispatchingWriter::iterator>(writer.begin());
-	} else {
-        if (outputFile == "") r = session.defaultOutput();
-        else {
-            SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());
-            if (! a.tableKnown(outputFile)) 
-                r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin());
-            else
-            {
-                Log::info() << "Table in the INTO clause known (" << outputFile << ")" << std::endl;
-                const odb::sql::TableDef* tableDef (&a.findTable(outputFile));
-                r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin(), toODAColumns(*tableDef));
-            } 
-        }
+    if (templateParameters.size())
+    {
+        DispatchingWriter writer(outputFile, orderBySize ? 1 : maxOpenFiles);
+        r = new SQLODAOutput<DispatchingWriter::iterator>(writer.begin());
+    } 
+    else 
+    {
+        SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());
+        if (! a.tableKnown(outputFile)) 
+            r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin());
+        else
+        {
+            Log::info() << "Table in the INTO clause known (" << outputFile << ")" << endl;
+            const odb::sql::TableDef* tableDef (&a.findTable(outputFile));
+            r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin(), toODAColumns(session, *tableDef));
+        } 
     }
     return r;
 }

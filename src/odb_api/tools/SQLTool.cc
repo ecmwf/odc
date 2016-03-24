@@ -29,6 +29,8 @@ namespace tool {
 
 SQLTool::SQLTool(int argc,char **argv)
 : Tool(argc,argv),
+  sqlOutputConfig_(),
+  inputFile_(),
   offset_(),
   length_()
 {
@@ -40,30 +42,24 @@ SQLTool::SQLTool(int argc,char **argv)
 	registerOptionWithArgument("-offset"); 
 	registerOptionWithArgument("-length");
 
-	doNotWriteColumnNames_ = optionIsSet("-T");
-	doNotWriteNULL_ = optionIsSet("-N");
-	delimiter_ = optionArgument("-delimiter", std::string("\t"));
+	sqlOutputConfig_.doNotWriteColumnNames(optionIsSet("-T"));
+	sqlOutputConfig_.doNotWriteNULL(optionIsSet("-N"));
+	sqlOutputConfig_.fieldDelimiter(optionArgument("-delimiter", std::string("\t")));
 
     if ((inputFile_ = optionArgument("-i", std::string(""))) == "-")
 		inputFile_ = "/dev/stdin";
 
-    if ((outputFile_ = optionArgument("-o", std::string(""))) == "-")
-		outputFile_ = "/dev/stdout";
+    sqlOutputConfig_.outputFile(optionArgument("-o", std::string("")));
+    if (sqlOutputConfig_.outputFile() == "-")
+		sqlOutputConfig_.outputFile("/dev/stdout");
 
-	outputFormat_ = optionArgument("-f", std::string("default"));
+    sqlOutputConfig_.outputFormat(optionArgument("-f", std::string("default")));
+    sqlOutputConfig_.displayBitfieldsBinary(optionIsSet("--bin") || optionIsSet("--binary"));
+    sqlOutputConfig_.displayBitfieldsHexadecimal(optionIsSet("--hex") || optionIsSet("--hexadecimal"));
+    sqlOutputConfig_.disableAlignmentOfColumns(optionIsSet("--no_alignment"));
 
 	offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
 	length_ = optionArgument("-length", (long) 0);
-
-    SQLSelectFactory::instance()
-        .config(SQLOutputConfig(doNotWriteColumnNames_,
-                                doNotWriteNULL_,
-                                delimiter_, 
-                                outputFile_, 
-                                outputFormat_, 
-                                optionIsSet("--bin") || optionIsSet("--binary"), 
-                                optionIsSet("--hex") || optionIsSet("--hexadecimal"), 
-                                optionIsSet("--no_alignment")));
 }
 
 SQLTool::~SQLTool() {}
@@ -89,9 +85,10 @@ void SQLTool::run()
                                 : 0);
     std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
     SQLInteractiveSession session(out);
-    SQLParser parser;
-    SQLOutputConfig config(SQLSelectFactory::instance().config());
+    session.selectFactory().config(sqlOutputConfig_);
+    SQLOutputConfig config(session.selectFactory().config());
     PathName inputFile(inputFile_);
+    SQLParser parser;
     runSQL(sql, inputFile, session, parser, config, offset_, length_);
 }
 
@@ -104,23 +101,23 @@ void SQLTool::execute(const string& sql, ostream& out)
 {
     SQLInteractiveSession session(out);
     SQLParser parser;
-    SQLOutputConfig config(SQLSelectFactory::instance().config());
+    SQLOutputConfig config(session.selectFactory().config());
     runSQL(sql, "", session, parser, config);
 }
 
 void SQLTool::runSQL(const string& sql, const PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config)
 {
     if (inputFile.path().size() == eckit::Length(0)) {
-        parser.parseString(sql, static_cast<DataHandle*>(0), config);
+        parser.parseString(session, sql, static_cast<DataHandle*>(0), config);
     } else if (inputFile == "/dev/stdin" || inputFile == "stdin") {
         Log::info() << "Reading from standard input" << std::endl;
         FileDescHandle fh(0);
         fh.openForRead();
-        parser.parseString(sql, &fh, config);
+        parser.parseString(session, sql, &fh, config);
     } else {
         FileHandle fh(inputFile);
         fh.openForRead();
-        parser.parseString(sql, &fh, config);
+        parser.parseString(session, sql, &fh, config);
     }
 }
 
@@ -133,13 +130,13 @@ void SQLTool::runSQL(const string& sql, const PathName& inputFile, SQLSession& s
     }
 
     if (inputFile.path().size() == eckit::Length(0))
-        parser.parseString(sql, static_cast<DataHandle*>(0), config);
+        parser.parseString(session, sql, static_cast<DataHandle*>(0), config);
     else
     {
         Log::info() << "Selecting " << length << " bytes from offset " << offset << " of " << inputFile << std::endl;
         PartFileHandle fh(inputFile, offset, length); 
         fh.openForRead();
-        parser.parseString(sql, &fh, config);
+        parser.parseString(session, sql, &fh, config);
     } 
 }
 

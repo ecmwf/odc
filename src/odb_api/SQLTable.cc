@@ -18,7 +18,7 @@ using namespace eckit;
 namespace odb {
 namespace sql {
 
-SQLTable::SQLTable(SQLDatabase& owner,const PathName& path,const std::string& name):
+SQLTable::SQLTable(SQLDatabase& owner,const std::string& path,const std::string& name):
 	path_(path),
 	name_(name),
 	owner_(owner),

@@ -18,6 +18,7 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 
@@ -27,10 +28,9 @@ class HashTable;
 class SQLIteratorSession;
 
 template <typename T>
-class ODAUpdatingIterator //: public RowsReaderIterator
+class ODAUpdatingIterator 
 {
 public:
-	//ODAUpdatingIterator (T& inputIterator, const T& end, const std::vector<size_t>& columnIndices, const std::vector<double>& values);
 	ODAUpdatingIterator (T& inputIterator, const T& end, const std::vector<std::string>& columns, const std::vector<double>& values);
 	ODAUpdatingIterator (const T& end);
 	~ODAUpdatingIterator ();
@@ -41,12 +41,12 @@ public:
 	const MetaData& columns() { return ii_->columns(); }
 	const MetaData& columns(MetaData& md) { return ii_->columns(md); }
 
-    ODAUpdatingIterator& operator++() { next(); return *this; }
+    ODAUpdatingIterator& operator++() { next(0); return *this; }
 
 	bool operator!=(const ODAUpdatingIterator& o) { ASSERT(&o == 0); return ii_ != end_; }
 
 //protected:
-	bool next();
+	bool next(eckit::ExecutionContext*);
 
 private:
 // No copy allowed.
@@ -68,6 +68,7 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
+    eckit::ExecutionContext* context_;
 };
 
 } // namespace odb 

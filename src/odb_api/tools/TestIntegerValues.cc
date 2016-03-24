@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestIntegerValues.h
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
@@ -34,7 +34,7 @@ static void setUp()
 	"20101130\n"
 	"20101201\n"
 	"20101202\n";
-    odb::tool::ImportTool::importText(data, "UnitTest.odb");
+    odb::tool::ImportTool::importText(data, "TestIntegerValues.odb");
 }
 
 
@@ -43,7 +43,7 @@ static void test()
 	//Log::info() << fixed;
  //////////////////////////////           ODB from MARS             //////////////////////////////    
 
-    const std::string fileNameOdb="UnitTest.odb";
+    const std::string fileNameOdb="TestIntegerValues.odb";
 
 	odb::Reader odb(fileNameOdb);
 	odb::Reader::iterator it = odb.begin();

@@ -148,9 +148,9 @@ bool FakeODBIterator::isNewDataset()
 	return iterator_.isNewDataset();
 }
 
-bool FakeODBIterator::next()
+bool FakeODBIterator::next(eckit::ExecutionContext* context)
 {
-	bool r = iterator_.next();
+	bool r = iterator_.next(context);
 	noMore_ = !r;
 	return r;
 }

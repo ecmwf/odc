@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file UnitTest.h
+/// \file TestConstCodec.h
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
@@ -24,7 +24,6 @@
 #include "odb_api/MetaData.h"
 #include "odb_api/Reader.h"
 #include "odb_api/ReaderIterator.h"
-#include "odb_api/RowsIterator.h"
 #include "odb_api/SQLAST.h"
 #include "odb_api/SQLBitfield.h"
 #include "odb_api/SQLIteratorSession.h"
@@ -42,7 +41,7 @@ using namespace odb;
 
 const char *pies = "pies\0\0\0\0";
 
-class MockReaderIterator : public odb::RowsReaderIterator 
+class MockReaderIterator 
 {
 public:
 	MockReaderIterator()
@@ -72,11 +71,11 @@ public:
 	bool isNewDataset() { return false; } // { return n_ == nRows_; }
 	double* data() { return data_; }
 	
-	MockReaderIterator& operator++() { next(); return *this; }
+	MockReaderIterator& operator++() { next(0); return *this; }
 	bool operator!=(const MockReaderIterator& o) { ASSERT(&o == 0); return nRows_ > 0; }
 	const MockReaderIterator& end() { return *reinterpret_cast<MockReaderIterator*>(0); }
 
-	bool next() { bool r = nRows_-- > 0; noMore_ = !r; return r; }
+	bool next(eckit::ExecutionContext*) { bool r = nRows_-- > 0; noMore_ = !r; return r; }
 
 private:
 	odb::MetaData columns_;
@@ -86,13 +85,14 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
+    ExecutionContext* context_;
 };
 
 
 static void setUp()
 {
-	Timer t("Writing UnitTest.odb");
-	odb::Writer<> oda("UnitTest.odb");
+	Timer t("Writing TestConstCodec.odb");
+	odb::Writer<> oda("TestConstCodec.odb");
 
 	typedef tool::MockReader<MockReaderIterator> M;
 
@@ -107,7 +107,7 @@ static void setUp()
 
 static void test()
 {
-	odb::Reader oda("UnitTest.odb");
+	odb::Reader oda("TestConstCodec.odb");
 	odb::Reader::iterator it = oda.begin();
 	odb::Reader::iterator end = oda.end();
 

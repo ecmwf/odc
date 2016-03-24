@@ -35,7 +35,9 @@ public:
 	typedef iterator::Row row;
 
 	TextReader(std::istream &, const std::string& delimiter);
+	TextReader(std::istream &, const std::string& delimiter, eckit::ExecutionContext*);
     TextReader(const std::string& path, const std::string& delimiter);
+    TextReader(const std::string& path, const std::string& delimiter, eckit::ExecutionContext*);
 
 	virtual ~TextReader();
 
@@ -62,6 +64,7 @@ private:
 	//const eckit::PathName path_;
 	const std::string path_;
 	const std::string delimiter_;
+    eckit::ExecutionContext* context_;
 
 	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,const double>;
 	friend class odb::TextReaderIterator;

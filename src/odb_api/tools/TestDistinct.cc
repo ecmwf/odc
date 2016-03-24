@@ -25,7 +25,7 @@ using namespace odb;
 ///
 static void test()
 {
-    std::string sql = "select distinct a from \"a1to10twice.odb\";";
+    std::string sql = "select distinct a from \"TestDistinct_a1to10twice.odb\";";
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
@@ -46,7 +46,7 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
-    odb::tool::ImportTool::importText(s.str().c_str(), "a1to10twice.odb");
+    odb::tool::ImportTool::importText(s.str().c_str(), "TestDistinct_a1to10twice.odb");
 }
 
 

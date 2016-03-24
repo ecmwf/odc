@@ -17,6 +17,7 @@
 #define FixedSizeWriterIterator_H
 
 #include "odb_api/WriterBufferingIterator.h"
+#include "odb_api/Writer.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

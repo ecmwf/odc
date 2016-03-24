@@ -1,0 +1,2 @@
+# depends on definitions from odb_server_management.ecml
+start_server

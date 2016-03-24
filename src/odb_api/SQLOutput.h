@@ -15,6 +15,7 @@
 #define SQLOutput_H
 
 #include "odb_api/SQLOutputConfig.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 namespace sql {
@@ -36,16 +37,16 @@ public:
 	virtual void cleanup(SQLSelect&) = 0;
 
 	virtual void reset() = 0;
-	virtual void flush() = 0;
+	virtual void flush(eckit::ExecutionContext*) = 0;
 
-	virtual bool output(const expression::Expressions&) = 0;
+	virtual bool output(const expression::Expressions&, eckit::ExecutionContext*) = 0;
 
-	virtual void outputReal(double, bool) const = 0;
-	virtual void outputDouble(double, bool) const = 0;
-	virtual void outputInt(double, bool) const = 0;
-	virtual void outputUnsignedInt(double, bool) const = 0;
-	virtual void outputString(double, bool) const = 0;
-	virtual void outputBitfield(double, bool) const = 0;
+	virtual void outputReal(double, bool) = 0;
+	virtual void outputDouble(double, bool) = 0;
+	virtual void outputInt(double, bool) = 0;
+	virtual void outputUnsignedInt(double, bool) = 0;
+	virtual void outputString(double, bool) = 0;
+	virtual void outputBitfield(double, bool) = 0;
 
 	virtual const SQLOutputConfig& config();
 	virtual	void config(SQLOutputConfig&);

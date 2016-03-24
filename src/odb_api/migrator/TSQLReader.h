@@ -33,7 +33,7 @@ public:
 	iterator begin()
     { 
         iterator_class* it = new iterator_class(pathName_, sql_);
-        it->next();
+        it->next(it->context_);
         if (it->noMore_)
             eckit::Log::warning() << "ODBIterator::ODBIterator: result set empty, no data." << std::endl;
         return iterator(it);

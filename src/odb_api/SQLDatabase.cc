@@ -8,26 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/DataColumns.h"
-//#include "eckit/exception/Exceptions.h"
-//#include "eckit/log/Log.h"
-//#include "eckit/log/Timer.h"
 #include "eckit/parser/Tokenizer.h"
 
-//#include "odb_api/SQLAST.h"
-//#include "odb_api/SQLBitfield.h"
-//#include "odb_api/SQLBitfield.h"
-//#include "odb_api/SQLDatabase.h"
-//#include "odb_api/SQLStatement.h"
-//#include "odb_api/SQLTable.h"
-//#include "odb_api/SQLType.h"
-//#include "odb_api/SchemaAnalyzer.h"
-#include "odb_api/VariablesTable.h"
+#include "odb_api/DataColumns.h"
 #include "odb_api/DataTable.h"
-//#include "odb_api/DataTable.h"
-#include "odb_api/SQLDataTable.h"
+
 #include "odb_api/SQLSession.h"
+#include "odb_api/SQLDatabase.h"
+#include "odb_api/SQLDataTable.h"
 
 using namespace eckit;
 
@@ -36,7 +24,7 @@ namespace sql {
 
 void SQLDatabase::setUpVariablesTable()
 {
-	tablesByName_["variables"] = new VariablesTable(*this, "variables");
+	//tablesByName_["variables"] = new VariablesTable(*this, "variables");
 	tablesByName_["dual"] = dualTable();
 }
 
@@ -79,8 +67,9 @@ SQLDatabase::~SQLDatabase()
 		//delete it->second;
 	}
 	variables_.clear();
+    // TODO: FIXME
     //delete dual_;
-    delete dualTable_;
+    //delete dualTable_;
 }
 
 void SQLDatabase::open()
@@ -113,10 +102,9 @@ SQLTable* SQLDatabase::dualTable()
         columns.add("dummy", "INTEGER");
         DataTableProperties properties;
         properties.blockSizeInNumberOfRows(10); // ?
-        dualTable_ = new DataTable("dual", columns, properties);
+        dualTable_ = new odb::DataTable("dual", columns, properties);
         double row = 0;
         dualTable_->push_back(&row);
-        //dual_ = new SQLDataTable(SQLSession::current().currentDatabase(), *dualTable_);
         dual_ = new SQLDataTable(*this, *dualTable_);
     }
     return dual_;

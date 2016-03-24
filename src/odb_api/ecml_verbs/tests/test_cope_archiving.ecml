@@ -1,0 +1,16 @@
+# ec:/dipl/cope/demo_sample/odb2/{airs|amsua|*}.odb
+
+test, label = "Check archiving and retrieving from server works (COPE)",
+do = (
+    for, obsgroup = airs/amsua/amsua_allsky/atms/conv/cris/gbrad/geos/gmi/gpsro/hirs/iasi/ims/iras/mhs/mhs_allsky/mwhs/mwhs2/mwts2/ralt/resat/satob/scatt/ssmis/tmi/windsat,
+         do = ( 
+                split,
+                    source = (join_strings, _ = "/tmp/cope_demo_sample/" / (obsgroup) /  ".odb"),
+                    filter = "select *",
+                    #output_schema = (path, _ = (getenv, values = TEST_DATA_DIRECTORY)/"odb_root/{andate}/{antime}/{reportype}.odb"),
+                    target = "/tmp/odb_root/{andate}/{antime}/{groupid}/{reportype}.odb"
+         )
+    println, values = OK
+
+), expect = OK
+

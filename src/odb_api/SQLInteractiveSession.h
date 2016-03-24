@@ -17,6 +17,8 @@
 //#include "odb_api/SQLSession.h"
 #include "SQLSession.h"
 
+namespace eckit { class ExecutionContext; }
+
 namespace odb {
 namespace sql {
 
@@ -33,12 +35,11 @@ private:
     std::ostream &out_;
 
 // -- Overridden methods
-	void       statement(SQLStatement*);
+	void statement(SQLStatement*);
 	SQLOutput* defaultOutput();
 
 	//friend std::ostream& operator<<(std::ostream& s,const SQLInteractiveSession& p)
 	//	{ p.print(s); return s; }
-
 };
 
 } // namespace sql 

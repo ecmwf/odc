@@ -14,6 +14,7 @@
 #include "ODBIterator.h"
 
 namespace eckit { class PathName; }
+namespace eckit { class ExecutionContext; }
 
 namespace odb {
 namespace tool {
@@ -46,7 +47,8 @@ private:
 };
 
 template<typename ITERATOR = ODBIterator, typename CONFIG = ReptypeTableConfig>
-class ReptypeGenIterator : public odb::RowsReaderIterator {
+class ReptypeGenIterator //: public odb::RowsReaderIterator 
+{
 public:
 
 	ReptypeGenIterator(const eckit::PathName& db, const std::string& sql); 
@@ -63,9 +65,10 @@ public:
 
 	int refCount_;
 	bool noMore_;
+    eckit::ExecutionContext* context_;
 
 //protected:
-	virtual bool next();
+	virtual bool next(eckit::ExecutionContext*);
 	//void addColumn(std::string name);
 
 private:

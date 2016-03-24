@@ -27,7 +27,6 @@ namespace odb {
 class Reader;
 class HashTable;
 class SQLIteratorSession;
-class RowsReaderIterator;
 class ReaderIterator;
 
 typedef WriterBufferingIterator DefaultWritingIterator;
@@ -54,6 +53,8 @@ public:
 
 	unsigned long rowsBufferSize() { return rowsBufferSize_; }
 	Writer& rowsBufferSize(unsigned long n) { rowsBufferSize_ = n; }
+
+	const eckit::PathName path() { return path_; }
 
 private:
 // No copy allowed
