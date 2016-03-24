@@ -38,12 +38,12 @@ RetrieveHandler::RetrieveHandler(const string& name, bool local)
 
 std::string RetrieveHandler::odbPathNameSchema(eckit::ExecutionContext& context) 
 { 
-    return FileCollector::expandTilde(valueInContextOrResource(context, "odbPathNameSchema")); 
+    return FileCollector::expandTilde(valueInContextOrResource(context, "odbpathnameschema")); 
 }
 
 std::string RetrieveHandler::odbServerRoots(eckit::ExecutionContext& context) 
 { 
-    return FileCollector::expandTilde(valueInContextOrResource(context, "odbServerRoots")); 
+    return FileCollector::expandTilde(valueInContextOrResource(context, "odbserverroots")); 
 } 
 
 std::string RetrieveHandler::valueInContextOrResource(eckit::ExecutionContext& context, const string& keyword, bool required)
@@ -65,16 +65,18 @@ Values RetrieveHandler::handle(ExecutionContext& context)
                  target (context.environment().lookup("target", "", context)),
                  filter (context.environment().lookup("filter", "", context));
 
+    const string protocol (host == "local" ? "local://" : "mars://");
+
     if (! target.size())
         throw UserError("You must specify TARGET explicitly");
 
     Log::info() << "RETRIEVE from " << host << " into " << target << endl;
 
     stringstream ss;
-    ss << (local_ ? "local://" : "mars://") << request;
+    ss << (local_ ? "local://" : protocol) << request;
     if (local_)
-        ss << ",odbPathNameSchema=\"" << odbPathNameSchema(context) << "\""
-           << ",odbServerRoots=\"" << odbServerRoots(context) << "\"";
+        ss << ",odbpathnameschema=\"" << odbPathNameSchema(context) << "\""
+           << ",odbserverroots=\"" << odbServerRoots(context) << "\"";
 
     MultiHandle input;
     DataHandleFactory::buildMultiHandle(input, ss.str());

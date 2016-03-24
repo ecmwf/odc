@@ -52,12 +52,12 @@ void Retriever::retrieve(MultiHandle&                                           
 {
     std::map<std::string,std::vector<std::string> > request(r);
 
-    if (r.count("odbPathNameSchema") == 0)
-        throw UserError("RETRIEVE: odbPathNameSchema not set");
+    if (r.count("odbpathnameschema") == 0)
+        throw UserError("RETRIEVE: odbpathnameschema not set");
 
-    FileMapper mapper(r.at("odbPathNameSchema")[0]);
+    FileMapper mapper(r.at("odbpathnameschema")[0]);
 
-    vector<string> odbServerRoots (eckit::StringTools::split(":", r.at("odbServerRoots")[0]));
+    vector<string> odbServerRoots (eckit::StringTools::split(":", r.at("odbserverroots")[0]));
     for (size_t i(0); i < odbServerRoots.size(); ++i)
         odbServerRoots[i] = FileCollector::expandTilde(odbServerRoots[i]);
     mapper.addRoots(odbServerRoots);

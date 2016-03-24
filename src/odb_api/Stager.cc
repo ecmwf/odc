@@ -37,7 +37,7 @@ void Stager::prepareMapper(FileMapper&                                          
                            const std::vector<std::string>&                        keywords,
                            const std::map<std::string,std::vector<std::string> >& request)
 {
-    vector<string> expandedRoots, roots (eckit::StringTools::split(":", request.at("odbServerRoots")[0]));
+    vector<string> expandedRoots, roots (eckit::StringTools::split(":", request.at("odbserverroots")[0]));
     for (size_t i(0); i < roots.size(); ++i)
         expandedRoots.push_back(FileCollector::expandTilde(roots[i]));
     mapper.addRoots(expandedRoots);
@@ -97,7 +97,7 @@ void Stager::stage(eckit::MultiHandle&                                    output
     Retriever::checkKeywordsHaveValues(request, keywords);
     const string partitionsInfoFile (FileCollector::expandTilde(request.at("partitionsinfo")[0]));
 
-    FileMapper mapper (request.at("odbPathNameSchema")[0]);
+    FileMapper mapper (request.at("odbpathnameschema")[0]);
     prepareMapper(mapper, keywords, request);
 
     MultiHandle devNull;

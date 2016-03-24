@@ -11,12 +11,16 @@
 #include "eckit/parser/StringTools.h"
 #include "eckit/config/Resource.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
+#include "eckit/io/FileHandle.h"
+#include "eckit/io/MultiHandle.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/FileMapper.h"
 #include "odb_api/Odb2Hub.h"
 #include "odb_api/Archiver.h"
+#include "odb_api/FileCollector.h"
 
 #include <stdio.h>
 #include <fstream>
@@ -67,3 +71,42 @@ void Archiver::archive(const eckit::PathName& path,
     }
 }
 
+void Archiver::archive(eckit::MultiHandle& h,
+                       const std::vector<std::string>& keywords,
+                       const std::map<std::string,std::vector<std::string> >& request)
+{
+    std::map<std::string,std::vector<std::string> > r(request);
+
+    vector<string> sources (r["source"]);
+    if (sources.size() == 0) throw UserError("ARCHIVE missing SOURCE");
+    if (sources.size() > 1) throw UserError("ARCHIVE supports single SOURCE currently");
+
+    const string source (sources[0]);
+    const string schema (r["odbpathnameschema"][0]);
+    const string odbServerArchiveRoot (r["odbserverroots"][0]);
+    // TODO: this is a resource in dhshome/etc/config/local
+    const string odbServerKeywordsConfig (
+    "class:class\n"
+    "stream:stream\n"
+    "expver:expver\n"
+    "date:andate\n"
+    "time:antime\n"
+    "type:type\n"
+    "obsgroup:groupid\n"
+    "reportype:reportype\n"
+    );
+
+    PathName targetPath (FileCollector::expandTilde(odbServerArchiveRoot) + "/" + Odb2Hub::getPath(schema, source, odbServerKeywordsConfig));
+
+    Log::info() << "targetPath: " << targetPath << endl;
+
+    createDirectories(targetPath);
+    eckit::DataHandle * fh (new eckit::FileHandle(targetPath));
+
+    if (! eckit::PathName(source).exists())
+        throw UserError(string("ARCHIVE: file '") + source + "' doesn't exist." );
+
+    h += fh;
+    h += Length(fileSize(source));
+
+}

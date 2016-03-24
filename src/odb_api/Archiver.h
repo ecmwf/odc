@@ -18,11 +18,16 @@
 
 class Archiver {
 public:
+
     static void archive(const eckit::PathName& path, 
                         const std::string& schema, 
                         const std::string& keywordsConfig,
                         const std::string& odbServerArchiveRoot);
-private:
+
+    static void archive(eckit::MultiHandle&,
+                        const std::vector<std::string>&,
+                        const std::map<std::string,std::vector<std::string> >&);
+
     static std::ifstream::pos_type fileSize(const eckit::PathName&);
     static void createDirectories(const eckit::PathName&);
 };

@@ -257,7 +257,11 @@ set( test_environment
   ODB_API_HOME=${PROJECT_SOURCE_DIR}
   ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
   PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-  ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc )
+  ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc 
+
+  TEST_DHSHOME=${CMAKE_CURRENT_SOURCE_DIR}/dhshome/
+  TEST_DATA_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}
+  )
 
 ### migrator tests
 
@@ -344,6 +348,12 @@ list( APPEND odb_module_tests
     test_sql_like.ecml
     test_sql_match_in.ecml
     test_create_partitions.ecml
+
+# tests moved from ODB Server
+    test_mo_archiving.ecml
+    test_server_side_processing.ecml
+    test_ec_archiving.ecml
+    test_stage.ecml
 )
 
 foreach( _test ${odb_module_tests} )
@@ -351,6 +361,36 @@ foreach( _test ${odb_module_tests} )
                        COMMAND      ${odb_bin}
                        ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/${_test}
                        ENVIRONMENT  ${test_environment} 
-                       TEST_DEPENDS get_odb_api_test_data )
+
+                       TEST_DEPENDS get_odb_api_test_data 
+                                    get_mars_client_test_data_mo
+                                    get_mars_client_test_data_ec
+                       )
 endforeach()
 
+
+ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_mo
+                            DIRNAME odb_api/tests
+                            NAMES   20150218_glu_surface_odb2 )
+
+ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_ec
+                            DIRNAME odb_api/tests
+                            NAMES   conv_mfb_20151108_12.odb )
+
+ecbuild_add_executable( TARGET      test_client_lib_fortran
+                        CONDITION   HAVE_FORTRAN AND HAVE_ODB
+                        SOURCES     test_client_lib_fortran.f90
+                        LIBS        Odb_fortran ${ODB_LIBS} marskit
+                        LINKER_LANGUAGE Fortran)
+
+ecbuild_add_executable( TARGET      test_client_lib_fortran_server_side_ecml
+                        CONDITION   HAVE_FORTRAN AND HAVE_ODB
+                        SOURCES     test_client_lib_fortran_server_side_ecml.f90
+                        LIBS        Odb_fortran ${ODB_LIBS} marskit
+                        LINKER_LANGUAGE Fortran)
+
+ecbuild_add_executable( TARGET      test_client_lib_cpp
+                        CONDITION   HAVE_ODB
+                        SOURCES     test_client_lib_cpp.cc
+                        INCLUDES    ${ODB_API_INCLUDE_DIRS}
+                        LIBS        Odb odbtools marskit )

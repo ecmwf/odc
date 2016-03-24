@@ -45,9 +45,9 @@ subroutine example_fortran_api_stage_local
  character(kind=C_CHAR, len=2048)              :: sql='select partition_number,number_of_rows from &
  &"local://stage,class=OD,date=20151108,time=1200,type=OFB,&
  &obsgroup=conv,reportype=16030,stream=oper,expver=qu12,&
- &odbPathNameSchema=''{date}/{time}/{reportype}.odb'',&
- &odbServerRoots=''~/data/root'',&
- &partitionsInfo=''~/data/partitions_info.txt'',&
+ &odbpathnameschema=''{date}/{time}/{reportype}.odb'',&
+ &odbserverroots=''~/data/root'',&
+ &partitionsinfo=''~/data/partitions_info.txt'',&
  &n_parts=13,&
  &database=localhost";'//achar(0)
  integer(kind=C_INT)                           :: itype, newdataset, c_ncolumns=2, size_name 
@@ -114,9 +114,9 @@ subroutine example_fortran_api_retrieve_part_local
  character(kind=C_CHAR, len=2048)              :: sql='select * from &
  & "local://retrieve,class=OD,date=20151108,time=1200,type=OFB,&
  & obsgroup=conv,reportype=16030,stream=oper,expver=qu12,&
- & odbPathNameSchema=''{date}/{time}/{reportype}.odb'',&
- & odbServerRoots=''~/data/root'',&
- & partitionsInfo=''~/data/partitions_info.txt'',&
+ & odbpathnameschema=''{date}/{time}/{reportype}.odb'',&
+ & odbserverroots=''~/data/root'',&
+ & partitionsinfo=''~/data/partitions_info.txt'',&
  & n_parts=13,&
  & part_number=0,&
  & database=localhost";'//achar(0)

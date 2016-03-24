@@ -13,6 +13,7 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/MultiHandle.h"
 #include "eckit/config/Resource.h"
+#include "eckit/parser/StringTools.h"
 
 #include "eckit/ecml/parser/Request.h"
 #include "eckit/ecml/parser/RequestParser.h"
@@ -22,8 +23,9 @@
 
 #include "odb_api/FileMapper.h"
 #include "odb_api/FileCollector.h"
-#include "odb_api/Retriever.h"
+#include "odb_api/Archiver.h"
 #include "odb_api/Stager.h"
+#include "odb_api/Retriever.h"
 
 #include "LocalHandleFactory.h"
 
@@ -34,8 +36,9 @@ LocalHandleFactory::LocalHandleFactory()
 : DataHandleFactory("local")
 {}
 
-DataHandle* LocalHandleFactory::makeHandle(const string& r) const
+DataHandle* LocalHandleFactory::makeHandle(const string& req) const
 {
+    const string r (StringTools::lower(req));
     Log::info() << "LocalHandleFactory::makeHandle: parsing [" << r << "]" << endl;
 
     Request requests (eckit::RequestParser::parse(r));
@@ -48,14 +51,14 @@ DataHandle* LocalHandleFactory::makeHandle(const string& r) const
 
     ExecutionContext context;
     context.pushEnvironmentFrame(request->rest());
-    if (context.getValueAsList("odbPathNameSchema").size() != 1)
+    if (context.getValueAsList("odbpathnameschema").size() != 1)
         throw UserError(string("\"local://\" descriptor must have one value of odbPathNameSchema: '") + r + "'");
 
-    if (context.getValueAsList("odbServerRoots").size() != 1)
+    if (context.getValueAsList("odbserverroots").size() != 1)
         throw UserError(string("\"local://\" descriptor must have one value of odbServerRoots (string with colon separated directories): '") + r + "'");
 
-    const string odbPathNameSchema (context.getValueAsList("odbPathNameSchema")[0]);
-    const string odbServerRoots (FileCollector::expandTilde(context.getValueAsList("odbServerRoots")[0]));
+    const string odbPathNameSchema (context.getValueAsList("odbpathnameschema")[0]);
+    const string odbServerRoots (FileCollector::expandTilde(context.getValueAsList("odbserverroots")[0]));
 
     const vector<string> keywords (FileMapper(odbPathNameSchema).keywords());
     map<string, vector<string> > rq;
@@ -79,12 +82,17 @@ DataHandle* LocalHandleFactory::makeHandle(const string& r) const
         Log::debug() << " =+= " << keyword << " = " << rq[keyword] << endl;
     }
 
-    MultiHandle* output (new MultiHandle);
-    if (request->text() == "stage")
-        Stager::stage(*output, keywords, rq);
+    MultiHandle* h (new MultiHandle);
+    if (request->text() == "archive")
+    {
+        rq["source"] = context.getValueAsList("source");
+        Archiver::archive(*h, keywords, rq);
+    }
+    else if (request->text() == "stage")
+        Stager::stage(*h, keywords, rq);
     else
-        Retriever::retrieve(*output, keywords, rq);
-    return output;
+        Retriever::retrieve(*h, keywords, rq);
+    return h;
 }
 
 LocalHandleFactory localHandleFactory;

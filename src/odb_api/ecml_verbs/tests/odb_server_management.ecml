@@ -1,0 +1,43 @@
+### Helper functions
+
+function, of = _, path = (join_strings, separator = "/", _ = (_))
+
+function, of = _, sh = (
+    let, cmd = (join_strings, separator = "", _ = (_))
+
+    println, values = "sh: executing '" / (value, of = cmd) / "'",
+             separator = ""
+
+    test, label = (value, of = cmd), # TODO: test doesn't evaluate label at the moment
+    do = (
+        let, rc = (system, values = (value, of = cmd))
+        println, values = (value, of = cmd) / "=>" / (value, of = rc)
+        value, of = rc
+    ),
+    expect = 0
+)
+
+#################### the ODB Server management functions ###############
+
+println, values = "odb_server_management.ecml: define start_server, stop_server"
+
+function, start_server = (
+    let, server = (path, _ = (getenv, values = MARS_INSTALLATION_DIRECTORY)/bin/mars)
+
+    println, values = "Trying to start ODB Server:" / (server)
+
+    stop_server
+    sh, _ = "ls -l " / (server) 
+    sh, _ = "rm -rf " / (getenv, values = TEST_DHSHOME) / "/txn/*"
+    sh, _ = "PIPE_DEBUG=1 DHSHOME=" / (getenv, values = TEST_DHSHOME) / " " / (server) / " &"
+    #sh, _ = "ps auxw | grep $(basename " / (server) / ")"
+)
+
+function, stop_server = (
+    println, values = "Trying to kill ODB Server..."
+    sh, _ = "killall -s 9 mars mars.t queue.t || true"
+    println, values = "Done"
+)
+
+#function, stop_server = ( println, values = "(DUMMY) Trying to kill ODB Server..." )
+#function, start_server = ( println, values = "(DUMMY)Trying to start ODB Server" ) 

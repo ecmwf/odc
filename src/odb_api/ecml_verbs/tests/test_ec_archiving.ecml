@@ -1,0 +1,61 @@
+function, of = _, path = (join_strings, separator = "/", _ = (_))
+
+# Function split_and_archive:
+#
+# - prepares ODB data for archiving by splitting it into several files 
+#   with data homogenious with regards to analysis date, time and report type,
+#   suitable for indexing on MARS Server / ODB Server.
+#
+# - archives the files,
+#
+# - verifies the archiving was successfull by retrieving archived files
+#   and comparing them to the originals
+
+# Function split_and_archive accepts 3 parameters:
+function,of = filter         # SQL to be applied to input files.
+            / source         # List of files to be procesed.
+            / output_schema, # Template of output files with ODB columns to split 
+                             # the data by in curly braces,
+                             # e.g. "/odb_root/{andate}/{antime}/{reportype}.odb"
+
+         split_and_archive = (
+
+            println, values = "******** About to archive" / ($,_ = source) / "*******" 
+
+            let, files = (split,
+                            source = ($,_ = source),
+                            target = ($,_ = output_schema),
+                            filter = ($,_ = filter))
+
+            println,values = "******** Files produced by split:" / ($,_ = files)
+
+            let, mars_handles = (archive,
+                                    database = local,
+                                    odbpathnameschema = "{date}/{time}/{reportype}.odb",
+                                    odbserverroots = "~/data/root",
+                                    source = ($,_ = files))
+
+            # Retrieve each file using list of "local://retrieve,..." 
+            # URLs produced by archive, and compare them to 
+            # original files as produced by split
+
+            compare, left = ($,_ = files), right = ($,_ = mars_handles)
+
+            $,_ = mars_handles
+         )
+
+let, sql_filter = "select *"
+
+test, label = "Check archiving and retrieving from server works (ECMWF)",
+do = (
+    system, values = "rm -rf " / (path, _ = (getenv, values = TEST_DATA_DIRECTORY)/"odb_root/*")
+
+    split_and_archive,
+        filter = ($,_ = sql_filter),
+        source = (path, _ = (getenv, values = TEST_DATA_DIRECTORY)/"conv_mfb_20151108_12.odb"),
+        output_schema = (path, _ = (getenv, values = TEST_DATA_DIRECTORY)/"odb_root/{andate}/{antime}/{reportype}.odb")
+
+    println, values = OK
+
+), expect = OK
+

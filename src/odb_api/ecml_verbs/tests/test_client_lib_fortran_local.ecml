@@ -1,0 +1,6 @@
+test, label = Execute test_client_lib_fortran_local,
+do = (
+    sh, _ = (getenv, values = MARS_INSTALLATION_DIRECTORY)/"/bin/test_client_lib_fortran_local"
+    sequence, values = OK
+),
+expect = OK

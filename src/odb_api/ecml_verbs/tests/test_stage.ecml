@@ -1,0 +1,72 @@
+test, label = check STAGE works,
+
+do = (
+    let, 
+        number_of_partitions = 3,
+        rts = 16030/16002/16029/16045/16065/16009
+        #rts = 16030
+    let,
+        data_description = (let,
+                                class = OD, 
+                                date = 20151108, 
+                                time = 1200, 
+                                type = MFB, 
+                                obsgroup = conv, 
+                                reportype = (rts), 
+                                stream = oper, 
+                                expver = qu12,
+                                odbpathnameschema = "{date}/{time}/{reportype}.odb",
+                                odbserverroots = "~/data/root",
+                                database = local)
+    # STAGE the data described by data_description so given number_of_partitions is ready
+    # for subsequent parallel RETRIEVE requests can fetch each of the partitions
+    # The data saved by STAGE in TARGET file should contain detailed information on
+    # the partitions (rows and reports numbers, etc. TODO) 
+
+    apply, function  = ($,_ = stage),
+        args         = (update, _        = (data_description),
+                                n_parts  = (number_of_partitions),
+                                partitionsinfo = "~/data/partitions_info_test_stage.txt",
+                                target   = 20150218_0_16001_parts_info.odb)
+
+    # retrieve_part is a helper function which retrieves partition number n
+    # using the data_description and number_of_partitions defined earlier
+
+    function, of = n, capture = data_description / number_of_partitions,
+        retrieve_part = (apply, 
+                            function     = ($,_ = retrieve),
+                            args         = (update, _           = (data_description),
+                                                    n_parts     = (number_of_partitions),
+                                                    partitionsinfo = "~/data/partitions_info_test_stage.txt",
+                                                    part_number = (n),
+                                                    target      = (temporary_file)))
+
+    # RETRIEVE all data described by data_description to a temporary file,
+    # set variable all to path of that file
+
+    let, all = (apply, 
+                    function = ($,_ = retrieve),
+                    args     = (update, _      = (data_description),
+                                        target = (temporary_file)))
+
+    # RETRIEVE each partition separately, 
+    # Assign list of retrieved files to variable parts.
+
+    let, parts = (
+        for, i = (range, from = 0, below = (number_of_partitions)),
+             do = (retrieve_part, n = (i))
+    )
+
+    println,values = Compare concatenation of partitions / (parts)
+    println,values = to the whole dataset / (all)
+
+    compare, 
+        left = (parts), 
+        right = (all)
+
+    system, values = "rm -rf " / (parts) / (all) 
+
+    println, values = OK
+),
+expect = OK
+

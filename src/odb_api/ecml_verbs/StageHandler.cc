@@ -51,8 +51,9 @@ Values StageHandler::handle(ExecutionContext& context)
     if (! local_)
     {
         const string host (database(context)); 
+        const string protocol (host == "local" ? "local://" : "mars://");
         Log::info() << "STAGE on " << host << " save partitions info to '" << target << "'" << endl;
-        DataHandleFactory::buildMultiHandle(input, string("mars://") + request->str());
+        DataHandleFactory::buildMultiHandle(input, protocol + request->str());
     }
     else
     {

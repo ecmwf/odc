@@ -1,0 +1,45 @@
+test, label = check server side processing works,
+do = (
+    let, processed_on_server = 
+            (retrieve,
+                class = OD,
+                date = 20150218,
+                time = 1200,
+                type = OFB,
+                obsgroup = conv,
+                reportype = 16058,
+                stream = oper,
+                expver = qu12,
+                server_side = (function, of = source, _ = (sql, filter = "select varno,count(*) order by varno", target = (temporary_file))),
+                target = 20150218_0_16001_stats_server_side.odb,
+                odbpathnameschema = "{date}/{time}/{reportype}.odb",
+                odbserverroots = "~/data/root",
+                database = local)
+
+    println, values = XXXXXXXXXX Retrieved / (processed_on_server)
+
+    let, processed_on_client = 
+            (retrieve,
+                class = OD,
+                date = 20150218,
+                time = 1200,
+                type = OFB,
+                obsgroup = conv,
+                reportype = 16058,
+                stream = oper,
+                expver = qu12,
+                filter = "select varno,count(*) order by varno",
+                target = 20150218_0_16001_stats.odb,
+                odbpathnameschema = "{date}/{time}/{reportype}.odb",
+                odbserverroots = "~/data/root",
+                database = local)
+
+    println, values = XXXXXXXXXX Retrieved / (processed_on_client)
+
+    compare, left = (processed_on_server),
+            right = (processed_on_client)
+
+    println, values = OK
+),
+expect = OK
+

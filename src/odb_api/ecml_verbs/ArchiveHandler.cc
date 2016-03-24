@@ -21,6 +21,7 @@
 #include "ArchiveHandler.h"
 
 #include "odb_api/FastODA2Request.h"
+#include "odb_api/Archiver.h"
 
 using namespace std;
 using namespace eckit;
@@ -44,8 +45,9 @@ ArchiveHandler::ArchiveHandler(const string& name) : RequestHandler(name) {}
 Values ArchiveHandler::handle(ExecutionContext& context)
 {
     const string host (database(context));
+    const string protocol (host == "local" ? "local://" : "mars://");
 
-    vector<string> sources(context.getValueAsList("source"));
+    vector<string> sources (context.getValueAsList("source"));
     if (! sources.size())
         throw UserError("You must specify file(s) to be archived using the SOURCE keyword");
 
@@ -53,11 +55,14 @@ Values ArchiveHandler::handle(ExecutionContext& context)
     List list(r);
     for (size_t i(0); i < sources.size(); ++i)
     {
-        const string source(sources[i]);
+        const string source (sources[i]);
 
         Request generatedRequest (generateRequest(source));
 
         generatedRequest->value("database", host);
+        generatedRequest->value("odbpathnameschema", context.getValueAsList("odbpathnameschema")[0]);
+        generatedRequest->value("odbserverroots", context.getValueAsList("odbserverroots")[0]);
+        generatedRequest->value("source", source);
 
         ASSERT(generatedRequest->text() == "RETRIEVE");
         generatedRequest->text("ARCHIVE");
@@ -67,10 +72,10 @@ Values ArchiveHandler::handle(ExecutionContext& context)
         Log::info() << "Request generated for file " << source << ":" << endl
                     << generatedRequest << endl;
 
-        archive(source, host, generatedRequest);
+        archive(source, host, generatedRequest, protocol);
 
         generatedRequest->text("RETRIEVE");
-        list.append(string("mars://") + generatedRequest->str());
+        list.append(protocol + generatedRequest->str());
     }
 
     return r;
@@ -135,7 +140,7 @@ Request ArchiveHandler::generateRequest(const string& source)
     return requests->value();
 }
 
-void ArchiveHandler::archive(const PathName& source, const string& host, const Request request)
+void ArchiveHandler::archive(const PathName& source, const string& host, const Request request, const string& protocol)
 {
     Log::info() << "ARCHIVE " << source << " on " << host << endl;
     Log::info() << "ARCHIVE request: " << request << endl;
@@ -143,8 +148,8 @@ void ArchiveHandler::archive(const PathName& source, const string& host, const R
     FileHandle input(source);
 
     stringstream ss;
-    ss << "mars://" << request;
-    auto_ptr<DataHandle> mars (DataHandleFactory::openForWrite(ss.str()));
+    ss << protocol << request;
+    auto_ptr<DataHandle> mars (DataHandleFactory::openForWrite(ss.str(), eckit::Length(Archiver::fileSize(source))));
 
     input.saveInto(*mars);
 }

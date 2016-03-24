@@ -26,7 +26,7 @@ public:
     static eckit::Request generateRequest(const std::string&);
 
 private:
-    void archive(const eckit::PathName& source, const std::string& host, const eckit::Request request);
+    void archive(const eckit::PathName& source, const std::string& host, const eckit::Request request, const std::string& protocol);
     static void checkRequestMatchesFilesMetaData(const eckit::ExecutionContext&, const eckit::Request);
 };
 

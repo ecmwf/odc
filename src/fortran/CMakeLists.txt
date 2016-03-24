@@ -14,6 +14,8 @@ foreach( _test ${fortran_tests} )
                       CONDITION  HAVE_FORTRAN
                       SOURCES    ${_test}.f90
                       LIBS       Odb_fortran ${ODB_LIBS} 
+                      ENVIRONMENT 
+                                TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
                       LINKER_LANGUAGE Fortran )
 endforeach()
 
