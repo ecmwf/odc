@@ -38,7 +38,7 @@ public:
 	bool isNewDataset();
 	double* data() { return data_; }
 
-	virtual MetaData& columns(); // { return ii_->columns(); }
+	MetaData& columns(); // { return ii_->columns(); }
 
     MDUpdatingIterator& operator++() { next(); return *this; }
 

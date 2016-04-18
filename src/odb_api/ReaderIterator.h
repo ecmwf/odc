@@ -55,9 +55,9 @@ public:
 	ReaderIterator (Reader &owner, const eckit::PathName&);
 	ReaderIterator (Reader &owner, const eckit::PathName&, eckit::ExecutionContext*);
 
-	virtual ~ReaderIterator ();
+	~ReaderIterator ();
 
-	virtual bool isNewDataset();
+	bool isNewDataset();
 	const double* data();
 
 	bool operator!=(const ReaderIterator& other);
@@ -85,9 +85,9 @@ public:
 	int32_t byteOrder() const { return byteOrder_; }
 //protected:
 
-	virtual int close();
+	int close();
 
-	virtual bool next(eckit::ExecutionContext*);
+	bool next(eckit::ExecutionContext*);
 protected:
 	size_t readBuffer(size_t dataSize);
 

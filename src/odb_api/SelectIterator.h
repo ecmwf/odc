@@ -44,8 +44,8 @@ public:
     SelectIterator (Select &owner, const std::string&, eckit::ExecutionContext*);
 	~SelectIterator();
 
-	virtual bool isNewDataset();
-	virtual const double* data();
+	bool isNewDataset();
+	const double* data();
 
 	const MetaData& columns();
 	const MetaData& columns(const MetaData&) { NOTIMP; }
@@ -62,7 +62,7 @@ public:
 	double& data(size_t i);
 
 protected:
-	virtual bool next(eckit::ExecutionContext*);
+	bool next(eckit::ExecutionContext*);
 
 private:
 // No copy allowed.
