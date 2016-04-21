@@ -40,21 +40,27 @@ Values ChunkHandler::handle(ExecutionContext& context)
 
     string fileName (source[0]); // TODO: process rest of files
 
-	MDReader oda (fileName);
-	MDReader::iterator r(oda.begin());
-	MDReader::iterator end(oda.end());
+    Log::info() << "chunk: chunking file " << fileName << std::endl;
 
-	odb::MetaData metaData(r->columns());
+    MDReader oda (fileName);
+    MDReader::iterator r(oda.begin());
+    MDReader::iterator end(oda.end());
+
+    if (! (r != end))
+        throw UserError(string("chunk: file ") + fileName + " appears to be empty");
+
+    odb::MetaData metaData(r->columns());
     List l;
-	for(; r != end; ++r)
-	{
-		ASSERT (r->isNewDataset());
-		Offset offset ((**r).blockStartOffset());
-		Length length ((**r).blockEndOffset() - (**r).blockStartOffset());
+    for(; r != end; ++r)
+    {
+        ASSERT (r->isNewDataset());
+        Offset offset ((**r).blockStartOffset());
+        Length length ((**r).blockEndOffset() - (**r).blockStartOffset());
         stringstream ss;
         ss << "partfile://" << fileName << ":" << offset << "," << length;
+
         l.append(ss.str());
-	}
+    }
     return l;
 }
 
