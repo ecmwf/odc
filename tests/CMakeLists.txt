@@ -39,7 +39,7 @@ ecbuild_get_test_multidata( TARGET get_odb_api_test_data
 
 list( APPEND odb_migrator_tests
 #Test_AAAImportODB
-Test_AAAImportODBDispatching
+#Test_AAAImportODBDispatching
 )
 
 list( APPEND odb_api_tests
