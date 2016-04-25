@@ -1,7 +1,7 @@
 sql_test, 
     label = "Check operator MATCH (..) IN QUERY (SELECT ...) ODB-146",
 
-    input_tables = (dictionary,
+    input_tables = (let,
                         test_match_in_query_input = "a:INTEGER,b:INTEGER
                                                         1,2
                                                         3,4
