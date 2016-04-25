@@ -349,29 +349,26 @@ list( APPEND odb_module_tests
     test_sql_match_in.ecml
     test_create_partitions.ecml
 
-# tests moved from ODB Server
-    #test_mo_archiving.ecml
-    #test_ec_archiving.ecml
-
 # Disabled till ODB-215 fixed as it fails in Bamboo
-    #test_server_side_processing.ecml
-    #test_stage.ecml
+    test_server_side_processing.ecml
+    test_stage.ecml
 )
 
-#ecbuild_add_test ( TARGET       test_ec_archiving.ecml
-#                   COMMAND      ${odb_bin}
-#                   ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_ec_archiving.ecml
-#                   ENVIRONMENT  ${test_environment} 
-#                   TEST_DEPENDS get_odb_api_test_data 
-#                                get_mars_client_test_data_ec )
+# tests moved from ODB Server that populate ODB Server root - that data is used by other tests
+ecbuild_add_test ( TARGET       test_ec_archiving.ecml
+                   COMMAND      ${odb_bin}
+                   ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_ec_archiving.ecml
+                   ENVIRONMENT  ${test_environment} 
+                   TEST_DEPENDS get_odb_api_test_data 
+                                get_mars_client_test_data_ec )
 
 
-#ecbuild_add_test ( TARGET       test_mo_archiving.ecml
-#                   COMMAND      ${odb_bin}
-#                   ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_mo_archiving.ecml
-#                   ENVIRONMENT  ${test_environment} 
-#                   TEST_DEPENDS get_odb_api_test_data 
-#                                get_mars_client_test_data_mo)
+ecbuild_add_test ( TARGET       test_mo_archiving.ecml
+                   COMMAND      ${odb_bin}
+                   ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_mo_archiving.ecml
+                   ENVIRONMENT  ${test_environment} 
+                   TEST_DEPENDS get_odb_api_test_data 
+                                get_mars_client_test_data_mo)
 
 foreach( _test ${odb_module_tests} )
     ecbuild_add_test ( TARGET       ${_test}
@@ -382,8 +379,8 @@ foreach( _test ${odb_module_tests} )
                        TEST_DEPENDS get_odb_api_test_data 
                                     get_mars_client_test_data_mo
                                     get_mars_client_test_data_ec
-#                                    test_ec_archiving.ecml
-#                                    test_mo_archiving.ecml
+                                    test_ec_archiving.ecml
+                                    test_mo_archiving.ecml
                        )
 endforeach()
 
