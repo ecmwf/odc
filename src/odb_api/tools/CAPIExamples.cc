@@ -165,7 +165,7 @@ TEST(c_api_example_write_data)
     ASSERT(0 == odb_write_iterator_set_bitfield(wi, 3, odb::BITFIELD, "bf", "a:b:c", "1:2:1"));
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
-    double data[2];
+    double data[4];
     for (int i = 1; i <= 10; ++i)
     {
         data[0] = i;
