@@ -233,6 +233,7 @@ Test_sqlOutputFormatting
 Test_stringInWhere
 Test_windSpeedWindDirection
 Test_IndexTool
+Test_BufferedHandle_ODB80
 
 #Examples.cc
 Test_example_select_data_read_results
