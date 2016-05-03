@@ -342,7 +342,7 @@ endforeach()
 #ecbuild_get_test_multidata( TARGET ecml_get_odb_api_test_data DIRNAME odb_api/tests NAMES ${ecml_test_data_files} NOCHECK )
 
 list( APPEND odb_module_tests
-    test_odb_governance.ecml
+    #test_odb_governance.ecml
     test_sql_splitting.ecml
     test_chunk.ecml
     test_chunk2.ecml
