@@ -38,7 +38,7 @@ LocalHandleFactory::LocalHandleFactory()
 
 DataHandle* LocalHandleFactory::makeHandle(const string& req) const
 {
-    const string r (StringTools::lower(req));
+    const string& r (req);
     Log::info() << "LocalHandleFactory::makeHandle: parsing [" << r << "]" << endl;
 
     Request requests (eckit::RequestParser::parse(r));
@@ -66,7 +66,7 @@ DataHandle* LocalHandleFactory::makeHandle(const string& req) const
     context.pushEnvironmentFrame(request);
     for (Cell* p(request->rest()); p; p = p->rest())
     {
-        const string keyword (p->text());
+        const string keyword (StringTools::lower(p->text()));
         if (keyword != "server_side")
             rq[keyword] = context.getValueAsList(keyword);
         else
@@ -83,12 +83,13 @@ DataHandle* LocalHandleFactory::makeHandle(const string& req) const
     }
 
     MultiHandle* h (new MultiHandle);
-    if (request->text() == "archive")
+    const string verb (StringTools::lower(request->text()));
+    if (verb == "archive")
     {
         rq["source"] = context.getValueAsList("source");
         Archiver::archive(*h, keywords, rq);
     }
-    else if (request->text() == "stage")
+    else if (verb == "stage")
         Stager::stage(*h, keywords, rq);
     else
         Retriever::retrieve(*h, keywords, rq);

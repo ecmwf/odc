@@ -53,9 +53,9 @@ public:
     MetaDataReaderIterator (eckit::DataHandle* handle, bool skipData);
     MetaDataReaderIterator (eckit::DataHandle& handle, bool skipData);
     MetaDataReaderIterator (const eckit::PathName&, bool skipData);
-	virtual ~MetaDataReaderIterator ();
+	~MetaDataReaderIterator ();
 
-	virtual bool isNewDataset();
+	bool isNewDataset();
 	const double* data();
 
 	bool operator!=(const MetaDataReaderIterator& other);
@@ -81,57 +81,56 @@ public:
 	size_t sizeOfEncodedData() { return sizeOfEncodedData_; }
 //protected:
 
-	virtual int close();
+    int close();
 
-// next() is public because it is used in C API functions
-	virtual bool next(eckit::ExecutionContext*);
+    bool next(eckit::ExecutionContext*);
 protected:
-    virtual bool skip(size_t dataSize);
+    bool skip(size_t dataSize);
 
 private:
 // No copy allowed.
     MetaDataReaderIterator(const MetaDataReaderIterator&);
     MetaDataReaderIterator& operator=(const MetaDataReaderIterator&);
 
-	void initRowBuffer();
-	void loadHeaderAndBufferData();
+    void initRowBuffer();
+    void loadHeaderAndBufferData();
 
-	MetaData columns_;
-	double* lastValues_;
-	odb::codec::Codec** codecs_;
-	unsigned long long nrows_;
+    MetaData columns_;
+    double* lastValues_;
+    odb::codec::Codec** codecs_;
+    unsigned long long nrows_;
 protected:
-	eckit::DataHandle *f;
-	Properties properties_;
-	bool newDataset_;
+    eckit::DataHandle *f;
+    Properties properties_;
+    bool newDataset_;
 public:
-	bool noMore_;
+    bool noMore_;
 
-	bool ownsF_;
+    bool ownsF_;
 private:
-	ReadOnlyMemoryDataHandle memDataHandle_;
+    ReadOnlyMemoryDataHandle memDataHandle_;
 
-	unsigned long headerCounter_;
+    unsigned long headerCounter_;
 
-	eckit::Offset blockStartOffset_;
-	eckit::Offset blockEndOffset_;
-	eckit::Length fileSize_; // This will be positive if we read data from a file, not a socket.
+    eckit::Offset blockStartOffset_;
+    eckit::Offset blockEndOffset_;
+    eckit::Length fileSize_; // This will be positive if we read data from a file, not a socket.
 
 protected:
-	bool skipData_;
-	char *encodedData_;
-	size_t sizeOfEncodedData_;
-	int32_t byteOrder_;
+    bool skipData_;
+    char *encodedData_;
+    size_t sizeOfEncodedData_;
+    int32_t byteOrder_;
 
 public:
-	int refCount_;
+    int refCount_;
     eckit::ExecutionContext* context_;
 
-	friend class MetaDataReader<MetaDataReaderIterator>;
+    friend class MetaDataReader<MetaDataReaderIterator>;
     //friend class odb::IteratorProxy<odb::MetaDataReaderIterator, Owner>;
     //friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::MetaDataReaderIterator, Owner, const double> >;
-	friend class odb::Header<odb::MetaDataReaderIterator>;
-	friend class odb::sql::ODATableIterator;
+    friend class odb::Header<odb::MetaDataReaderIterator>;
+    friend class odb::sql::ODATableIterator;
 };
 
 } // namespace odb

@@ -49,7 +49,7 @@ bool SQLSimpleOutput::output(const expression::Expressions& results, eckit::Exec
 		currentColumn_ = i;
         results[i]->output(*this);
     }
-    out_ << std::endl;
+    out_ << "\n";
 	count_++;
 	return true;
 }
@@ -108,34 +108,40 @@ void SQLSimpleOutput::outputBitfield(double x, bool missing)
 
 void SQLSimpleOutput::prepare(SQLSelect& sql)
 {
-	const expression::Expressions& columns(sql.output());
-	for (size_t i (0); i < columns.size(); i++)
-	{
-		std::string name (columns[i]->title());
-		const type::SQLType* type (columns[i]->type());
+    printHeader(sql);
+}
+
+void SQLSimpleOutput::printHeader(SQLSelect& sql)
+{
+    const expression::Expressions& columns(sql.output());
+    for (size_t i (0); i < columns.size(); i++)
+    {
+        const std::string& name (columns[i]->title());
+        const type::SQLType* type (columns[i]->type());
  
         columnWidths_.push_back(config_.disableAlignmentOfColumns() ? 1 : std::max(type->width(), name.size()));
-		columnAlignments_.push_back(type->format());
+        columnAlignments_.push_back(type->format());
 
-		if (! config_.doNotWriteColumnNames())
-		{
-			if(i) out_ << config_.fieldDelimiter();
+        if (! config_.doNotWriteColumnNames())
+        {
+            if(i) out_ << config_.fieldDelimiter();
 
-			format(out_, i);
+            format(out_, i);
 
-			if (config_.outputFormat() != "wide")
-				out_ << name;
-			else 
-			{
+            if (config_.outputFormat() != "wide")
+                out_ << name;
+            else
+            {
                 std::stringstream ss;
-				ss << name << ":" << type->name();
-				out_ << ss.str();
-			}
+                ss << name << ":" << type->name();
+                out_ << ss.str();
+            }
+
 		}
 		
 	}
     if (! config_.doNotWriteColumnNames())
-		out_ << std::endl;
+        out_ << "\n";
 }
 
 void SQLSimpleOutput::cleanup(SQLSelect& sql) {}

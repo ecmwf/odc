@@ -13,6 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/io/FileHandle.h"
+#include "eckit/io/BufferedHandle.h"
 #include "eckit/log/Timer.h"
 #include "eckit/exception/Exceptions.h"
 
@@ -554,104 +555,6 @@ static void *reduce_counter(void *left, void *right)
     return result;
 }
 
-/*
-odb::tool::CallBackProcessOneRow create_counter_callback()
-{
-    odb::tool::CallBackProcessOneRow cb;
-    cb.mapper = count;
-    cb.reducer = reduce_counter;
-    cb.create = create_counter;
-    cb.destroy = destroy_counter;
-    return cb;
-}
-*/
-
-/*
-static void map_reduce_mt()
-{
-    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-    const string sql = "select lat,lon;";
-    llong n = odb::tool::CountTool::fastRowCount(fileName);
-    llong* result = (llong*) odb::tool::MultipleThreadMapReduce::process(0, fileName, sql, create_counter_callback());
-    Log::info() << "map_reduce: MultipleThreadMapReduce::process => " << *result << std::endl;
-    ASSERT(*result == n);
-}
-*/
-//TESTCASE(map_reduce_mt);
-
-/*
-static void map_reduce_st()
-{
-    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-    const string sql = "select lat,lon;";
-    llong n = odb::tool::CountTool::fastRowCount(fileName);
-    llong r = 0;
-    llong* result = (llong*) odb::tool::SingleThreadMapReduce::process(&r, fileName, sql, create_counter_callback());
-    Log::info() << "map_reduce: SingleThreadMapReduce::process => " << *result << std::endl;
-    ASSERT(*result == n);
-    //delete result;
-}
-*/
-//TESTCASE(map_reduce_st);
-
-
-///////////////////////////////////////////////////////////////////////
-
-/*
-static void array_count(void *counter, struct odb::tool::Array a)
-{
-    *((llong*) counter) += a.nRows;
-
-    for (size_t i = 0; i < a.nRows; ++i)
-    {
-        for (size_t j = 0; j < a.nCols; ++j)
-        {
-            //double x = *( ((double *) a.data) + i * a.nRows + j);
-        }
-    }
-}
-
-odb::tool::CallBackProcessArray create_array_counter_callback()
-{
-    odb::tool::CallBackProcessArray cb;
-    cb.mapper = array_count;
-    cb.reducer = reduce_counter;
-    cb.create = create_counter;
-    cb.destroy = destroy_counter;
-    return cb;
-}
-*/
-
-/*
-static void process_array_st()
-{
-    //llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-    //Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << std::endl;
-    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-    const string sql = "select lat,lon;";
-
-    llong* result = (llong*) odb::tool::SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-    Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << std::endl;
-}
-*/
-//TESTCASE(process_array_st);
-
-/*
-static void process_array_mt()
-{
-    //llong* result = (llong*) SingleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-    //Log::info() << "map_reduce: SingleThreadMapReduce::process=> " << *result << std::endl;
-
-    const string fileName = "/scratch/ma/mak/odb-16/all.odb";
-    const string sql = "select lat,lon";
-    llong* result = (llong*) odb::tool::MultipleThreadMapReduce::process(0, fileName, sql, create_array_counter_callback());
-    Log::info() << "map_reduce: MultipleThreadMapReduce::process=> " << *result << std::endl;
-}
-*/
-//TESTCASE(process_array_mt);
-
-
-
 class TemporaryPathName : public PathName {
 public:
     TemporaryPathName(const string &fn) : PathName (fn) {}
@@ -754,24 +657,6 @@ TEST(select_constant_value)
     }
     CHECK_EQUAL(counter, 1);
 }
-
-/* TODO:
-TEST(select_variables)
-{
-    const char *sql =
-    "set $x=1; set $v=[1,2,3]; select * from variables;"
-    ;
-
-    unsigned long counter = 0;
-    odb::Select o(sql);
-    for (odb::Select::iterator it(o.begin()), end(o.end());
-        it != o.end();
-        ++it, ++counter)
-    {
-        Log::info() << (*it)[0] << ", " << (*it)[1] << std::endl;
-    }
-}
-*/
 
 TEST(include)
 {
@@ -1105,3 +990,32 @@ TEST(SELECT_WHERE_0)
     ++it;
 }
 
+TEST(BufferedHandle_ODB80)
+{
+    const char *path ("ODB_80.odb");
+    const char *data (
+            "a:INTEGER,b:INTEGER\n"
+            "1,1\n"
+            "2,2\n"
+            "3,3\n"
+            );
+
+    odb::tool::ImportTool::importText(data, path);
+
+    BufferedHandle fh(new FileHandle(path));
+    fh.openForRead();
+
+    odb::Reader in(fh);
+    odb::Reader::iterator it (in.begin()), end (in.end());
+
+    stringstream ss;
+    for(size_t i (0); i < it->columns().size(); ++i) 
+        ss << it->columns()[i]->name() << ",";
+    ASSERT( ss.str() == "a,b," );
+
+    size_t n(0);
+    for (; it != end; ++it)
+        ++n;
+
+    ASSERT( n == 3 );
+}

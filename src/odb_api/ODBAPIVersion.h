@@ -20,6 +20,9 @@ public:
     static const char *gitsha1();
 	static unsigned int formatVersionMajor();
 	static unsigned int formatVersionMinor();
+
+	static const char *installPrefix();
+	static const char *buildDirectory();
 };
 
 } // namespace odb

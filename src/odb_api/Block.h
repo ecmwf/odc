@@ -66,6 +66,7 @@ public:
         end = other.end;
         firstRow = other.firstRow;
         lastRow = other.lastRow;
+        return *this;
     }
 
     eckit::PathName fileName;

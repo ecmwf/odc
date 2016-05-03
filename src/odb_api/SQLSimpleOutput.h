@@ -40,6 +40,8 @@ private:
 
     std::ostream& format(std::ostream&, size_t) const;
 
+	void printHeader(SQLSelect&);
+
 // -- Overridden methods
 	virtual void size(int);
 	virtual void reset();

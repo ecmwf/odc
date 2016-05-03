@@ -42,21 +42,21 @@ public:
 	TextReaderIterator (TextReader &owner, const eckit::PathName&);
 	~TextReaderIterator ();
 
-	virtual bool isNewDataset();
+	bool isNewDataset();
 	const double* data();
-	//virtual long integer(int i);
+	//long integer(int i);
 
 	bool operator!=(const TextReaderIterator& other);
 
-	virtual MetaData& columns() { return columns_; }
+	MetaData& columns() { return columns_; }
 
 	static odb::BitfieldDef parseBitfields(const std::string&);
 //protected:
 
-	virtual int close();
+	int close();
 
 // next() is public cause it needs to be used by the C API functions - normally client code should not use it
-	virtual bool next(eckit::ExecutionContext*);
+	bool next(eckit::ExecutionContext*);
 
 private:
 // No copy allowed.

@@ -35,7 +35,10 @@ using namespace odb::tool;
 
 void Retriever::checkKeywordsHaveValues(const std::map<std::string,std::vector<std::string> >& request, const vector<string>& keywords)
 {
-    std::map<std::string,std::vector<std::string> > r (request);
+    typedef std::map<std::string,std::vector<std::string> > ms;
+    ms r;
+    for (ms::const_iterator it (request.begin()); it != request.end(); ++it)
+        r[eckit::StringTools::lower(it->first)] = it->second;
 
     for (size_t i (0); i < keywords.size(); ++i)
     {

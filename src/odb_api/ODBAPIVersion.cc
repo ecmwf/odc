@@ -21,7 +21,9 @@ namespace odb {
     const char *ODBAPIVersion::version() { return ODB_API_VERSION_STR; }
 
 	unsigned int ODBAPIVersion::formatVersionMajor() { return FORMAT_VERSION_NUMBER_MAJOR; }
-	unsigned int ODBAPIVersion::formatVersionMinor() { return FORMAT_VERSION_NUMBER_MINOR ;}
+	unsigned int ODBAPIVersion::formatVersionMinor() { return FORMAT_VERSION_NUMBER_MINOR; }
+	const char *installPrefix()                      { return ODB_API_INSTALL_PREFIX; }
+	const char *buildDirectory()                     { return ODB_API_BINARY_DIR; }
 
 } // namespace odb
 

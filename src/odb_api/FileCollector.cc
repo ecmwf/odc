@@ -93,7 +93,9 @@ std::vector<eckit::PathName> FileCollector::foundFilesAsPathNames() const
 
 void FileCollector::collectFile(const std::map<std::string,std::vector<std::string> >& r, const map<string,string>& values)
 {
-    vector<string> foundFiles, files(mapper_.encode(values));
+    const string relativePath (mapper_.encodeRelative(values));
+
+    vector<string> foundFiles, files (mapper_.encode(values));
     ASSERT(files.size() > 0);
     for (size_t i (0); i < files.size(); ++i)
     {
@@ -107,7 +109,13 @@ void FileCollector::collectFile(const std::map<std::string,std::vector<std::stri
             Log::info() << "FileCollector::collectFile: NOT found " << p << endl;
         }
     }
-    ASSERT("File found in more than one root directory" && ! (foundFiles.size() > 1));
+
+    if (foundFiles.size() > 1)
+    {
+        stringstream ss;
+        ss << "File " << relativePath << " found in more than one root directory: " << foundFiles;
+        throw UserError(ss.str());
+    }
 
     if (foundFiles.size() == 1)
     {

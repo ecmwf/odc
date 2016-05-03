@@ -45,6 +45,8 @@ Values SQLHandler::handle(ExecutionContext& context)
 
     vector<string> filters (context.getValueAsList("filter"));
     vector<string> sources (context.getValueAsList("source"));
+    if (sources.empty())
+        throw UserError("sql: SOURCE is empty");
 
     string filter;
     for (size_t i(0); i < filters.size(); ++i)

@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -34,7 +34,7 @@ extern "C" {
 }
 
 namespace odb {
-	namespace codec { class Codec; } 
+	namespace codec { class Codec; }
 	namespace sql {
 		template <typename T> class SQLIteratorSession;
 		class ODATableIterator;
@@ -54,9 +54,10 @@ public:
 	ReaderIterator (Reader &owner, eckit::ExecutionContext* context);
 	ReaderIterator (Reader &owner, const eckit::PathName&);
 	ReaderIterator (Reader &owner, const eckit::PathName&, eckit::ExecutionContext*);
+
 	~ReaderIterator ();
 
-	virtual bool isNewDataset();
+	bool isNewDataset();
 	const double* data();
 
 	bool operator!=(const ReaderIterator& other);
@@ -84,9 +85,9 @@ public:
 	int32_t byteOrder() const { return byteOrder_; }
 //protected:
 
-	virtual int close();
+	int close();
 
-	virtual bool next(eckit::ExecutionContext*);
+	bool next(eckit::ExecutionContext*);
 protected:
 	size_t readBuffer(size_t dataSize);
 
