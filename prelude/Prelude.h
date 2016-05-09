@@ -14,11 +14,11 @@
 #ifndef eckit_ecml_Prelude_H
 #define eckit_ecml_Prelude_H
 
-#include "eckit/ecml/core/Module.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/Module.h"
+#include "ecml/core/ExecutionContext.h"
 #include "eckit/filesystem/PathName.h"
 
-namespace eckit {
+namespace ecml {
 
 class Prelude : public eckit::Module {
 public:
@@ -31,6 +31,6 @@ private:
     void executePrelude(eckit::ExecutionContext&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

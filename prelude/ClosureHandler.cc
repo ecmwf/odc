@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/prelude/ClosureHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/prelude/ClosureHandler.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 ClosureHandler::ClosureHandler(const string& name)
 : SpecialFormHandler(name)
@@ -24,4 +24,4 @@ Request ClosureHandler::handle(const Request request, ExecutionContext&)
     return Cell::clone(request);
 }
 
-} // namespace eckit
+} // namespace ecml

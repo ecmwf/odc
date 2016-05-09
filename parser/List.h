@@ -19,9 +19,9 @@
 #include <map>
 #include <ostream>
 
-#include "eckit/ecml/parser/Cell.h"
+#include "ecml/parser/Cell.h"
 
-namespace eckit {
+namespace ecml {
 
 class List {
 public:
@@ -43,6 +43,6 @@ private:
     friend std::ostream& operator<<(std::ostream& s, const List& l) { return l.print(s); }
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

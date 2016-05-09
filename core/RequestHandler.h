@@ -13,9 +13,9 @@
 #define eckit_utils_RequestHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit { 
+namespace ecml { 
 
 class ExecutionContext;
 class MultiHandle; 
@@ -43,6 +43,6 @@ protected:
     static std::map<std::string,RequestHandler*> registeredHandlers_;
 };
 
-} //namespace eckit 
+} //namespace ecml 
 
 #endif

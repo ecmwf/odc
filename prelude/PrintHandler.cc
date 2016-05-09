@@ -10,15 +10,15 @@
 
 #include "PrintHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
 PrintHandler::PrintHandler(const string& name, const string& end, std::ostream& o)
 : RequestHandler(name),
@@ -72,4 +72,4 @@ void PrintHandler::printList(ostream& out, Values values, const std::string& sep
     }
 }
 
-} // namespace eckit
+} // namespace ecml

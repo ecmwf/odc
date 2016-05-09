@@ -10,11 +10,11 @@
 
 #include <sstream>
 
-#include "eckit/ecml/data/PartFileHandleFactory.h"
+#include "ecml/data/PartFileHandleFactory.h"
 #include "eckit/io/PartFileHandle.h"
 #include "eckit/parser/StringTools.h"
 
-using namespace eckit;
+using namespace ecml;
 using namespace std;
 
 PartFileHandleFactory::PartFileHandleFactory()

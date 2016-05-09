@@ -11,20 +11,20 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
-#include "eckit/ecml/ast/Closure.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
+#include "ecml/core/SpecialFormHandler.h"
+#include "ecml/ast/Closure.h"
 
 #include "ApplyHandler.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
 ApplyHandler::ApplyHandler(const string& name)
 : SpecialFormHandler(name)
@@ -68,5 +68,5 @@ Request ApplyHandler::handle(const Request request, ExecutionContext& context)
     return r;
 }
 
-} // namespace eckit
+} // namespace ecml
 

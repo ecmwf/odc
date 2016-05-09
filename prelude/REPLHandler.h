@@ -15,16 +15,16 @@
 #include "eckit/eckit_config.h"
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/SpecialFormHandler.h"
+#include "ecml/core/ExecutionContext.h"
 
-namespace eckit {
+namespace ecml {
 
 class REPLHandler : public eckit::SpecialFormHandler {
 public:
     REPLHandler(const std::string&);
-    virtual eckit::Request handle(const eckit::Request, eckit::ExecutionContext&);
+    virtual ecml::Request handle(const ecml::Request, eckit::ExecutionContext&);
 
     static void repl(ExecutionContext&);
 
@@ -37,7 +37,7 @@ private:
     static bool showResultGraph(ExecutionContext&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 
 #endif

@@ -17,11 +17,11 @@
 #include "eckit/runtime/Context.h"
 #include "eckit/parser/StringTools.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/SpecialFormHandler.h"
 
 #include "ListHandler.h"
 #include "SequenceHandler.h"
@@ -52,7 +52,7 @@
 #include "TryHandler.h"
 #include "ThrowHandler.h"
 
-namespace eckit {
+namespace ecml {
 
 using namespace std;
 
@@ -153,4 +153,4 @@ void Prelude::importInto(ExecutionContext& context)
     executePrelude(context);
 }
 
-} // namespace eckit
+} // namespace ecml

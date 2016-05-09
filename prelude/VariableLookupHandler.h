@@ -14,12 +14,12 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-namespace eckit {
+namespace ecml {
 
-class VariableLookupHandler : public eckit::RequestHandler {
+class VariableLookupHandler : public ecml::RequestHandler {
 public:
     VariableLookupHandler(const std::string&, const std::string&);
     virtual eckit::Values handle(eckit::ExecutionContext&);
@@ -27,6 +27,6 @@ private:
     const std::string of_;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

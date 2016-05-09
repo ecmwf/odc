@@ -14,17 +14,17 @@
 //#include "eckit/filesystem/FileSpace.h"
 #include "eckit/io/FileHandle.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
 
 #include "RunHandler.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 
 RunHandler::RunHandler(const std::string& name) : SpecialFormHandler(name) {}
@@ -65,4 +65,4 @@ Values RunHandler::handle(const Request request, ExecutionContext& context)
     return rv;
 }
 
-} // namespace eckit
+} // namespace ecml

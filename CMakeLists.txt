@@ -1,10 +1,27 @@
+cmake_minimum_required(VERSION 2.8)
+
+project( ecml CXX )
+
+include( ecbuild_system NO_POLICY_SCOPE )
+
+ecbuild_requires_macro_version( 1.9 )
+
+ecbuild_declare_project()
+
+ecbuild_use_package( PROJECT eckit VERSION 0.9 REQUIRED )
+
+set( ECML_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
+set( ECML_LIBRARIES      ecml )
+
+include_directories( ${ECML_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
+
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-list( APPEND eckit_ecml_srcs
+list( APPEND ecml_srcs
 # Parser
 parser/Cell.h
 parser/Cell.cc
@@ -122,21 +139,21 @@ ecbuild_generate_yy( YYPREFIX    request_
                      LEX_TARGET  requestl
                      DEPENDANT   parser/RequestParser.cc )
 
-ecbuild_add_library( TARGET             eckit_ecml
+ecbuild_add_library( TARGET             ecml
                      INSTALL_HEADERS    ALL
-                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/eckit/ecml
-                     SOURCES            ${eckit_ecml_srcs}
+                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}
+                     SOURCES            ${ecml_srcs}
                      LIBS               eckit 
                                         eckit_cmd # for UserInput
                                         )
 
-ecbuild_add_executable( TARGET eckit_ecml_test
+ecbuild_add_executable( TARGET ecml_test
                         SOURCES tests/ecml_test.cc
-                        LIBS eckit eckit_ecml )
+                        LIBS eckit eckit_cmd )
 
-ecbuild_add_executable( TARGET eckit_ecml_unittests
+ecbuild_add_executable( TARGET ecml_unittests
                         SOURCES tests/ecml_unittests.cc
-                        LIBS eckit eckit_ecml)
+                        LIBS eckit eckit_cmd)
 
 add_subdirectory( tests )
 
@@ -144,4 +161,14 @@ configure_file( prelude/prelude.ecml ${CMAKE_BINARY_DIR}/include/prelude.ecml CO
 
 install(FILES       ${CMAKE_CURRENT_SOURCE_DIR}/prelude/prelude.ecml
         DESTINATION ${INSTALL_INCLUDE_DIR} )
+
+
+ecbuild_pkgconfig( NAME ${PROJECT_NAME}
+                   DESCRIPTION "ECML language interpreter"
+                   URL "https://software.ecmwf.int/wiki/display/ODB/ODB+API"
+                   LIBRARIES ecml )
+
+#ecbuild_install_project( NAME ecml )
+
+ecbuild_print_summary()
 

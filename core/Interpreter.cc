@@ -10,8 +10,8 @@
 
 #include "eckit/log/Log.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/ast/Closure.h"
+#include "ecml/parser/Request.h"
+#include "ecml/ast/Closure.h"
 #include "SpecialFormHandler.h"
 #include "RequestHandler.h"
 #include "Interpreter.h"
@@ -20,7 +20,7 @@
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 Interpreter::Interpreter()
 : debug_(0)

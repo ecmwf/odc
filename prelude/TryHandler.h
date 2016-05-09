@@ -13,10 +13,10 @@
 #define eckit_ecml_TryHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/SpecialFormHandler.h"
 
-namespace eckit {
+namespace ecml {
 
 class ExecutionContext;
 
@@ -24,9 +24,9 @@ class TryHandler : public eckit::SpecialFormHandler {
 public:
     TryHandler(const std::string&);
 
-    virtual eckit::Request handle(const eckit::Request, eckit::ExecutionContext&);
+    virtual ecml::Request handle(const ecml::Request, eckit::ExecutionContext&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

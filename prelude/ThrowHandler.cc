@@ -10,16 +10,16 @@
 
 #include "ThrowHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include <vector>
 #include "eckit/parser/StringTools.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 ThrowHandler::ThrowHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -40,4 +40,4 @@ Values ThrowHandler::handle(ExecutionContext& context)
     return 0;
 }
 
-} // namespace eckit
+} // namespace ecml

@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 #include "eckit/parser/StringTools.h"
 
 #include "GlobHandler.h"
@@ -18,7 +18,7 @@
 #include <glob.h>
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
 int glob_error_handler(const char* fn, int errnum)
 {
@@ -27,7 +27,7 @@ int glob_error_handler(const char* fn, int errnum)
     return 0;
 }
 
-namespace eckit {
+namespace ecml {
 
 GlobHandler::GlobHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -61,4 +61,4 @@ Values GlobHandler::handle(ExecutionContext& context)
     return r;
 }
 
-} // namespace eckit
+} // namespace ecml

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/ecml/parser/RequestParser.h"
+#include "ecml/parser/RequestParser.h"
 
 #include "eckit/thread/AutoLock.h"
 #include "eckit/log/Log.h"
@@ -22,7 +22,7 @@
 #include <stdexcept> 
 #include <sstream>
 
-namespace eckit {
+namespace ecml {
 
 struct RequestParserMutex : public eckit::AutoLock<eckit::Mutex> {
     RequestParserMutex();
@@ -107,7 +107,7 @@ namespace RequestYacc {
         void request_error(const char* msg);
     }
 
-#include "eckit/ecml/requesty.c"
+#include "ecml/requesty.c"
 
     extern "C" 
     {
@@ -143,4 +143,4 @@ void do_parse_request_in_string(const char *s)
     request__delete_buffer(buffer);
 }
 
-} // namespace eckit 
+} // namespace ecml 

@@ -14,12 +14,13 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/runtime/Context.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/prelude/REPLHandler.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/prelude/REPLHandler.h"
 
 using namespace std;
-using namespace eckit;
+
+namespace ecml {
 
 class TestECML : public Tool {
 public:
@@ -53,6 +54,8 @@ void TestECML::runScript(const string& pathName)
     ExecutionContext context;
     context.executeScriptFile(pathName);
 }
+
+} // namespace ecml
 
 int main(int argc,char **argv)
 {

@@ -10,11 +10,11 @@
 
 #include "RestHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
-namespace eckit {
+namespace ecml {
 
 RestHandler::RestHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -28,4 +28,4 @@ Values RestHandler::handle(ExecutionContext& context)
     return Cell::clone(vs->rest());
 }
 
-} // namespace eckit
+} // namespace ecml

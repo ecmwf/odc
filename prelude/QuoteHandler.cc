@@ -11,19 +11,19 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
-#include "eckit/ecml/ast/FunctionDefinition.h"
-#include "eckit/ecml/ast/Closure.h"
-#include "eckit/ecml/prelude/QuoteHandler.h"
+#include "ecml/ast/FunctionDefinition.h"
+#include "ecml/ast/Closure.h"
+#include "ecml/prelude/QuoteHandler.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 QuoteHandler::QuoteHandler(const string& name)
 : SpecialFormHandler(name)
@@ -36,4 +36,4 @@ Request QuoteHandler::handle(const Request request, ExecutionContext& context)
     return Cell::clone(c);
 }
 
-} // namespace eckit
+} // namespace ecml

@@ -14,17 +14,17 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-namespace eckit {
+namespace ecml {
 
-class ListHandler : public eckit::RequestHandler {
+class ListHandler : public ecml::RequestHandler {
 public:
     ListHandler(const std::string&);
     virtual eckit::Values handle(eckit::ExecutionContext&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

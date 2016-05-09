@@ -19,7 +19,7 @@
 #include <map>
 #include <ostream>
 
-namespace eckit {
+namespace ecml {
 
 class Cell;
 
@@ -35,6 +35,6 @@ public:
     static std::string snippet(const std::string& s, size_t maxCharacters, size_t maxLines);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

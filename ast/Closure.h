@@ -16,9 +16,9 @@
 #include <string>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit {
+namespace ecml {
 
 class FunctionDefinition;
 class ExecutionContext;
@@ -42,7 +42,7 @@ private:
     Cell* code_;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 
 #endif

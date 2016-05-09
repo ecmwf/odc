@@ -15,15 +15,15 @@
 
 #include "eckit/utils/Translator.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
-#include "eckit/ecml/misc/DynamicParametrisation.h"
+#include "ecml/misc/DynamicParametrisation.h"
 
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 DynamicParametrisation::DynamicParametrisation(ExecutionContext& context)
 : context_(context)
@@ -102,5 +102,5 @@ bool DynamicParametrisation::get(const std::string& name, std::vector<double>& v
     return r;
 }
 
-} // namespace eckit
+} // namespace ecml
 

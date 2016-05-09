@@ -10,10 +10,10 @@
 
 #include <sstream>
 
-#include "eckit/ecml/data/FileHandleFactory.h"
+#include "ecml/data/FileHandleFactory.h"
 #include "eckit/io/FileHandle.h"
 
-using namespace eckit;
+using namespace ecml;
 using namespace std;
 
 FileHandleFactory::FileHandleFactory()

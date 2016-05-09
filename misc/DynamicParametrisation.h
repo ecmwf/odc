@@ -19,7 +19,7 @@
 #include <string>
 #include <vector>
 
-namespace eckit {
+namespace ecml {
 
 class ExecutionContext;
 
@@ -44,7 +44,7 @@ private:
     eckit::ExecutionContext& context_;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif
 

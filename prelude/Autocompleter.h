@@ -12,10 +12,10 @@
 #ifndef eckit_ecml_Autocompleter_H
 #define eckit_ecml_Autocompleter_H
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
 
-namespace eckit {
+namespace ecml {
 
 class Autocompleter {
 
@@ -30,7 +30,7 @@ private:
     friend class REPLHandler;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 
 #endif

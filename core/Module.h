@@ -14,13 +14,13 @@
 #ifndef Module_H
 #define Module_H
 
-namespace eckit {
+namespace ecml {
 
 class ExecutionContext;
 
 /**
  * Each software package/library X willing to add some functionality to the MARS language
- * in forms of a new (native) function aka verb, should derive a class from eckit::RequestHandler
+ * in forms of a new (native) function aka verb, should derive a class from ecml::RequestHandler
  * and create instance of it, for example as a static local variable in <X>Module::importInto,
  * which will register the new RequestHandler, and also insert reference to them in the
  * context().environment, see ODBModule.cc in ODB API. 
@@ -39,6 +39,6 @@ public:
     virtual void importInto(ExecutionContext&) = 0;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

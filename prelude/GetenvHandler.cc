@@ -10,14 +10,14 @@
 
 #include "GetenvHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
 GetenvHandler::GetenvHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -35,4 +35,4 @@ Values GetenvHandler::handle(ExecutionContext& context)
     return r;
 }
 
-} // namespace eckit
+} // namespace ecml

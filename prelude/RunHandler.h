@@ -14,17 +14,17 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/SpecialFormHandler.h"
 
-namespace eckit {
+namespace ecml {
 
 class RunHandler : public eckit::SpecialFormHandler {
 public:
     RunHandler(const std::string&);
-    virtual eckit::Values handle(const eckit::Request, eckit::ExecutionContext&);
+    virtual eckit::Values handle(const ecml::Request, eckit::ExecutionContext&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

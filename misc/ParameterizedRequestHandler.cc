@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
 
 #include "ParameterizedRequestHandler.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
 ParameterizedRequestHandler::ParameterizedRequestHandler(const string& name)
 : RequestHandler(name)

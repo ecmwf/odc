@@ -8,16 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 #include "eckit/io/FileHandle.h"
 
 #include "ReadTextFileHandler.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
 ReadTextFileHandler::ReadTextFileHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -57,4 +57,4 @@ std::string ReadTextFileHandler::readFile(const PathName& fileName)
 	return ret;
 }
 
-} // namespace eckit
+} // namespace ecml

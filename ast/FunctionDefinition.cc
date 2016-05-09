@@ -11,17 +11,17 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
 #include "FunctionDefinition.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 // E.g.: function,of=x,capture=a/b,f=(println,values=FOO)
 FunctionDefinition::FunctionDefinition(Cell* request)
@@ -55,4 +55,4 @@ std::vector<std::string> FunctionDefinition::parameters() const { return paramet
 std::vector<std::string> FunctionDefinition::capturedVariables() const { return capturedVariables_; }
 Cell* FunctionDefinition::code() const { return code_; }
 
-} // namespace eckit
+} // namespace ecml

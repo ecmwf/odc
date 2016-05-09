@@ -11,19 +11,19 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
+#include "ecml/core/SpecialFormHandler.h"
 
 #include "TestHandler.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
 TestHandler::TestHandler(const string& name)
 : SpecialFormHandler(name)
@@ -53,5 +53,5 @@ Request TestHandler::handle(const Request request, ExecutionContext& context)
     return new Cell("_list", "", 0, 0);
 }
 
-} // namespace eckit
+} // namespace ecml
 

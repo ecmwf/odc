@@ -13,19 +13,19 @@
 #define eckit_ecml_ClosureHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/SpecialFormHandler.h"
+#include "ecml/core/ExecutionContext.h"
 
-namespace eckit {
+namespace ecml {
 
 class ClosureHandler : public eckit::SpecialFormHandler {
 public:
     ClosureHandler(const std::string&);
-    virtual eckit::Request handle(const eckit::Request, eckit::ExecutionContext&);
+    virtual ecml::Request handle(const ecml::Request, eckit::ExecutionContext&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 
 #endif

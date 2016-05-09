@@ -12,19 +12,19 @@
 #ifndef eckit_utils_ParameterizedRequestHandler_H
 #define eckit_utils_ParameterizedRequestHandler_H
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-#include "eckit/ecml/misc/DynamicParametrisation.h"
+#include "ecml/misc/DynamicParametrisation.h"
 
 #include <string>
 
-namespace eckit { 
+namespace ecml { 
 
 class ExecutionContext;
 class MultiHandle; 
 
-class ParameterizedRequestHandler : public eckit::RequestHandler {
+class ParameterizedRequestHandler : public ecml::RequestHandler {
 public:
     ParameterizedRequestHandler(const std::string&);
     ~ParameterizedRequestHandler();
@@ -34,6 +34,6 @@ public:
     virtual std::vector<std::string> handle(eckit::Parametrisation&) = 0;
 };
 
-} //namespace eckit 
+} //namespace ecml 
 
 #endif

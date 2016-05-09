@@ -19,7 +19,7 @@
 #include <map>
 #include <ostream>
 
-namespace eckit {
+namespace ecml {
 
 class CellDotPrinter {
 public:
@@ -29,6 +29,6 @@ public:
     static std::ostream& printDotVerb(std::ostream&, const Cell*, bool);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

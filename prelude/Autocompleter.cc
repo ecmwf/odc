@@ -17,20 +17,20 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 #include "eckit/cmd/UserInput.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
-#include "eckit/ecml/ast/FunctionDefinition.h"
-#include "eckit/ecml/ast/Closure.h"
-#include "eckit/ecml/prelude/Autocompleter.h"
+#include "ecml/ast/FunctionDefinition.h"
+#include "ecml/ast/Closure.h"
+#include "ecml/prelude/Autocompleter.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 ExecutionContext* Autocompleter::context_ (0);
 
@@ -103,4 +103,4 @@ bool Autocompleter::completion(const char* line, int pos, char* insert, int inse
     return false;
 }
 
-} // namespace eckit
+} // namespace ecml

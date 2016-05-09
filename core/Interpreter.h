@@ -14,9 +14,9 @@
 
 #include <list>
 
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit {
+namespace ecml {
 
 class ExecutionContext;
 
@@ -41,6 +41,6 @@ private:
     bool debug_;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

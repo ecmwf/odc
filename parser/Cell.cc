@@ -21,7 +21,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace eckit {
+namespace ecml {
 
 typedef StringTools S;
 
@@ -212,5 +212,5 @@ std::vector<std::string> Cell::valueAsListOfStrings() const
     return r;
 }
 
-} // namespace eckit
+} // namespace ecml
 

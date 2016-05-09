@@ -16,9 +16,9 @@
 #include <map>
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit { 
+namespace ecml { 
 
 class DataHandle;
 class MultiHandle;
@@ -54,6 +54,6 @@ private:
     std::string prefix_;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

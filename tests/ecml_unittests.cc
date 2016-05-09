@@ -16,20 +16,21 @@
 
 #include "eckit/runtime/Context.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
-#include "eckit/ecml/core/Module.h"
-#include "eckit/ecml/prelude/PrintHandler.h"
-#include "eckit/ecml/prelude/DefineFunctionHandler.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/ast/FunctionDefinition.h"
-#include "eckit/ecml/ast/Closure.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
-#include "eckit/ecml/data/PartFileHandleFactory.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
+#include "ecml/core/Module.h"
+#include "ecml/prelude/PrintHandler.h"
+#include "ecml/prelude/DefineFunctionHandler.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/ast/FunctionDefinition.h"
+#include "ecml/ast/Closure.h"
+#include "ecml/data/DataHandleFactory.h"
+#include "ecml/data/PartFileHandleFactory.h"
 
 using namespace std;
-using namespace eckit;
+
+namespace ecml {
 
 class ECMLUnitTests : public Tool {
 public:
@@ -194,3 +195,5 @@ int main(int argc,char **argv)
     ECMLUnitTests runner(argc, argv);
     return runner.start();
 }
+
+// namespace ecml 

@@ -11,13 +11,13 @@
 #include <sstream>
 #include <memory>
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/memory/ScopedPtr.h"
 
-using namespace eckit;
+using namespace ecml;
 
 DataHandleFactory::DataHandleFactory(const std::string& prefix)
 : prefix_(prefix)

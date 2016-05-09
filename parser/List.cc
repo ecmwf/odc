@@ -14,9 +14,9 @@
 #include "eckit/parser/StringTools.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
 typedef StringTools S;
 
@@ -57,5 +57,5 @@ std::ostream& List::print(std::ostream& s) const
     return s << cell_;
 }
 
-} // namespace eckit
+} // namespace ecml
 

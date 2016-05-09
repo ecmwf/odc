@@ -14,7 +14,7 @@
 
 #include "DataHandleFactory.h"
 
-namespace eckit { 
+namespace ecml { 
 
 class FileHandleFactory : public DataHandleFactory
 {
@@ -24,6 +24,6 @@ protected:
     eckit::DataHandle* makeHandle(const std::string&) const;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

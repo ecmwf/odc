@@ -19,7 +19,7 @@
 #include <map>
 #include <ostream>
 
-namespace eckit {
+namespace ecml {
 
 class Cell {
 public:
@@ -83,6 +83,6 @@ private:
     friend std::ostream& operator<< (std::ostream& s, const Cell *r) { return r->print(s); }
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

@@ -11,19 +11,19 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
-#include "eckit/ecml/ast/FunctionDefinition.h"
-#include "eckit/ecml/ast/Closure.h"
-#include "eckit/ecml/prelude/DefineFunctionHandler.h"
+#include "ecml/ast/FunctionDefinition.h"
+#include "ecml/ast/Closure.h"
+#include "ecml/prelude/DefineFunctionHandler.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 DefineFunctionHandler::DefineFunctionHandler(const string& name)
 : SpecialFormHandler(name)
@@ -39,4 +39,4 @@ Request DefineFunctionHandler::handle(const Request request, ExecutionContext& c
     return Cell::clone(closureWrapped);
 }
 
-} // namespace eckit
+} // namespace ecml

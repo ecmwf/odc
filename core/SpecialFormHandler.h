@@ -13,9 +13,9 @@
 #define eckit_utils_SpecialFormHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit { 
+namespace ecml { 
 
 class ExecutionContext;
 
@@ -35,6 +35,6 @@ protected:
     static std::map<std::string,SpecialFormHandler*> registeredHandlers_;
 };
 
-} //namespace eckit 
+} //namespace ecml 
 
 #endif

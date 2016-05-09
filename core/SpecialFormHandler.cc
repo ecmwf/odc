@@ -12,14 +12,14 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
 
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 #include "SpecialFormHandler.h"
 #include "ExecutionContext.h"
 #include "Environment.h"
 #include "Interpreter.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
 std::map<std::string,SpecialFormHandler*> SpecialFormHandler::registeredHandlers_ = std::map<std::string,SpecialFormHandler*>();
 

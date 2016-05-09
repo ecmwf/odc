@@ -11,18 +11,18 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
-#include "eckit/ecml/ast/FunctionDefinition.h"
-#include "eckit/ecml/ast/Closure.h"
+#include "ecml/ast/FunctionDefinition.h"
+#include "ecml/ast/Closure.h"
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 // E.g.: closure,name=f,parameters=x,captured=(environment,a=1,b=2),code=(println,values=FOO)
 Closure::Closure(Cell* request)
@@ -111,4 +111,4 @@ Cell* Closure::capturedEnvironment() const { return capturedEnvironment_; }
 
 Cell* Closure::code() const { return code_; }
 
-} // namespace eckit
+} // namespace ecml

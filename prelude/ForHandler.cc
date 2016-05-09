@@ -11,13 +11,13 @@
 #include "eckit/types/Types.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
-#include "eckit/ecml/prelude/ForHandler.h"
+#include "ecml/prelude/ForHandler.h"
 
 #ifdef _OPENMP
 # include <omp.h>
@@ -25,7 +25,7 @@
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 ForHandler::ForHandler(const string& name)
 : SpecialFormHandler(name)
@@ -128,4 +128,4 @@ Request ForHandler::handle(const Request r, ExecutionContext& context)
     return result;
 }
 
-} // namespace eckit
+} // namespace ecml

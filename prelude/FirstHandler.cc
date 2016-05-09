@@ -10,11 +10,11 @@
 
 #include "FirstHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
-namespace eckit {
+namespace ecml {
 
 FirstHandler::FirstHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -24,4 +24,4 @@ Values FirstHandler::handle(ExecutionContext& context)
     return new Cell("_list", "", Cell::clone(vs->value()), 0);
 }
 
-} // namespace eckit
+} // namespace ecml

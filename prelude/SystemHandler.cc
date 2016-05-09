@@ -10,15 +10,15 @@
 
 #include "SystemHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/prelude/PrintHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/prelude/PrintHandler.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
 SystemHandler::SystemHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -40,4 +40,4 @@ Values SystemHandler::handle(ExecutionContext& context)
     return r;
 }
 
-} // namespace eckit
+} // namespace ecml

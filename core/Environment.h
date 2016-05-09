@@ -14,9 +14,9 @@
 #ifndef eckit_utils_Environment_H
 #define eckit_utils_Environment_H
 
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit {
+namespace ecml {
 
 class ExecutionContext;
 
@@ -49,6 +49,6 @@ friend std::ostream& operator<<(std::ostream& o, const Environment& e) { e.print
 
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

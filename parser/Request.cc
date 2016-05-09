@@ -14,9 +14,9 @@
 #include "eckit/parser/StringTools.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
-namespace eckit {
+namespace ecml {
 
-} // namespace eckit
+} // namespace ecml
 

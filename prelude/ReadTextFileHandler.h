@@ -14,12 +14,12 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-namespace eckit {
+namespace ecml {
 
-class ReadTextFileHandler : public eckit::RequestHandler {
+class ReadTextFileHandler : public ecml::RequestHandler {
 public:
     ReadTextFileHandler(const std::string&);
     virtual eckit::Values handle(eckit::ExecutionContext&);
@@ -27,6 +27,6 @@ private:
     std::string readFile(const eckit::PathName&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

@@ -12,17 +12,17 @@
 #ifndef eckit_ecml_NullHandler_H
 #define eckit_ecml_NullHandler_H
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-namespace eckit {
+namespace ecml {
 
-class NullHandler : public eckit::RequestHandler {
+class NullHandler : public ecml::RequestHandler {
 public:
     NullHandler(const std::string&);
     virtual eckit::Values handle(eckit::ExecutionContext&);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

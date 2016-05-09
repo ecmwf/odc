@@ -12,9 +12,9 @@
 #ifndef eckit_utils_ExecutionContext_H
 #define eckit_utils_ExecutionContext_H
 
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit {
+namespace ecml {
 
 class Environment;
 class Module;
@@ -29,8 +29,8 @@ public:
 
     std::vector<std::string> getValueAsList(const std::string& keyword);
 
-    void registerHandler(const char*, eckit::RequestHandler&);
-    void registerHandler(const std::string&, eckit::RequestHandler&);
+    void registerHandler(const char*, ecml::RequestHandler&);
+    void registerHandler(const std::string&, ecml::RequestHandler&);
 
     eckit::Values execute(const std::string&);
     eckit::Values executeScriptFile(const std::string&);
@@ -40,9 +40,9 @@ public:
     /// Creates a new environment frame and pushes it onto stack.
     void pushEnvironmentFrame();
 
-    void pushEnvironmentFrame(eckit::Request);
+    void pushEnvironmentFrame(ecml::Request);
     void popEnvironmentFrame();
-    void popEnvironmentFrame(eckit::Request);
+    void popEnvironmentFrame(ecml::Request);
 
     Environment& environment();
 
@@ -57,6 +57,6 @@ private:
     eckit::Interpreter* interpreter_;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

@@ -17,7 +17,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace eckit {
+namespace ecml {
 
 typedef StringTools S;
 
@@ -153,5 +153,5 @@ std::ostream& CellPrinter::print(std::ostream& s, const Cell* p, size_t depth)
     return s << p->text();
 }
 
-} // namespace eckit
+} // namespace ecml
 

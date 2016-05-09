@@ -15,11 +15,12 @@
 #include "Module.h"
 #include "Interpreter.h"
 #include "RequestHandler.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/prelude/Prelude.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/prelude/Prelude.h"
 
 using namespace std;
-using namespace eckit;
+
+namespace ecml {
 
 ExecutionContext::ExecutionContext()
 : environment_(new Environment(0, new Cell("_list", "", 0, 0))),
@@ -45,12 +46,12 @@ ExecutionContext::~ExecutionContext()
 
 Environment& ExecutionContext::environment() { return *environment_; }
 
-void ExecutionContext::registerHandler(const char* name, eckit::RequestHandler& handler)
+void ExecutionContext::registerHandler(const char* name, ecml::RequestHandler& handler)
 {
     registerHandler(string(name), handler);
 }
 
-void ExecutionContext::registerHandler(const std::string& name, eckit::RequestHandler& handler)
+void ExecutionContext::registerHandler(const std::string& name, ecml::RequestHandler& handler)
 {
     environment().set(name, new Cell("_native", handler.name(), 0, 0));
 
@@ -134,3 +135,5 @@ std::vector<std::string> ExecutionContext::getValueAsList(const std::string& key
 
     return r;
 }
+
+} //namespace ecml

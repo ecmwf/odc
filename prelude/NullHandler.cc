@@ -10,9 +10,9 @@
 
 #include "NullHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-namespace eckit {
+namespace ecml {
 
 NullHandler::NullHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -21,4 +21,4 @@ Values NullHandler::handle(ExecutionContext&)
     return new Cell("_list", "", 0, 0);
 }
 
-} // namespace eckit
+} // namespace ecml

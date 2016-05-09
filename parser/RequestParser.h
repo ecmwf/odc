@@ -15,11 +15,11 @@
 #ifndef eckit_parser_RequestParser_H
 #define eckit_parser_RequestParser_H
 
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/filesystem/PathName.h"
 
-namespace eckit {
+namespace ecml {
 
 class RequestParser : private eckit::NonCopyable
 {
@@ -30,6 +30,6 @@ public:
     static std::string readFile(const PathName& fileName, bool logging);
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

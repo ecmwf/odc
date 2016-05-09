@@ -10,15 +10,14 @@
 
 #include "VariableLookupHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
 using namespace std;
-using namespace eckit;
 
-namespace eckit {
+namespace ecml {
 
 VariableLookupHandler::VariableLookupHandler(const string& name, const string& parameterName) 
 : RequestHandler(name),
@@ -56,4 +55,4 @@ Values VariableLookupHandler::handle(ExecutionContext& context)
     return Cell::clone(r);
 }
 
-} // namespace eckit
+} // namespace ecml

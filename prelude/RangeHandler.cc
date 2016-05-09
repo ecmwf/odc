@@ -10,15 +10,15 @@
 
 #include "RangeHandler.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include <vector>
 
 using namespace std;
 
-namespace eckit {
+namespace ecml {
 
 RangeHandler::RangeHandler(const std::string& name) : RequestHandler(name) {}
 
@@ -49,4 +49,4 @@ Values RangeHandler::handle(ExecutionContext& context)
     return r;
 }
 
-} // namespace eckit
+} // namespace ecml

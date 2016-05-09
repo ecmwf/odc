@@ -21,10 +21,10 @@
 #include <iostream> 
 #include <sstream>
 
-#include "eckit/ecml/parser/Cell.h"
-#include "eckit/ecml/parser/List.h"
+#include "ecml/parser/Cell.h"
+#include "ecml/parser/List.h"
 
-namespace eckit {
+namespace ecml {
 
 typedef Cell* Values;
 typedef Cell* Request;
@@ -35,11 +35,11 @@ static void convertToMarsRequest(const Request request, MARSREQUEST& marsRequest
     //marsRequest.name(verb(request));
     marsRequest.name(request->text());
     std::cerr << "convertToMarsRequest: verb is " << request->text() << std::endl;
-    for (eckit::Request r(request->rest()); r; r = r->rest())
+    for (ecml::Request r(request->rest()); r; r = r->rest())
     {
         std::string key (r->text());
         std::vector<std::string> vs;
-        for (eckit::Request v (r->value()); v; v = v->rest())
+        for (ecml::Request v (r->value()); v; v = v->rest())
         {
             std::stringstream ss;
             if (v->value()) 
@@ -50,6 +50,6 @@ static void convertToMarsRequest(const Request request, MARSREQUEST& marsRequest
     }
 }
 
-} // namespace eckit
+} // namespace ecml
 
 #endif

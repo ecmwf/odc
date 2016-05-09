@@ -18,7 +18,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace eckit {
+namespace ecml {
 
 typedef StringTools S;
 
@@ -141,5 +141,5 @@ ostream& CellDotPrinter::dot(ostream& s, const Cell* p, const string& label, boo
     return s;
 }
 
-} // namespace eckit
+} // namespace ecml
 

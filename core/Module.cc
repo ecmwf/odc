@@ -13,7 +13,7 @@
 
 #include "Module.h"
 
-using namespace eckit;
+using namespace ecml;
 
 Module::~Module() {}
 

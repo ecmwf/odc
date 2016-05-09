@@ -14,12 +14,12 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-namespace eckit {
+namespace ecml {
 
-class PrintHandler : public eckit::RequestHandler {
+class PrintHandler : public ecml::RequestHandler {
 public:
     PrintHandler(const std::string&, const std::string&, std::ostream&);
     PrintHandler(const std::string&, const std::string&);
@@ -36,6 +36,6 @@ private:
     std::ostream* out_;
 };
 
-} // namespace eckit
+} // namespace ecml
 
 #endif
