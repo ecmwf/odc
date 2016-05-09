@@ -1,0 +1,8 @@
+digraph g  {
+graph [ rankdir = "LR" label="let, foo = \"1\" / \"2\" / \"3\" / \"4\""];
+node [ fontsize = "16" shape = "ellipse" ];
+edge [ ];
+"node0x1e55aa0" [ label="<f0> [_list] 0x1e55aa0  1 | <f1> 0x1e55b00  2 | <f2> 0x1e55b60  3 | <f3> 0x1e55bc0  4" shape="record" ]; 
+"node0x1e55a40" [ label="<f0>\"0x1e55a40\" let, | <f1> \"0x1e55a70\" foo = " shape="record" ]; 
+"node0x1e55a40":f1 -> "node0x1e55aa0":f0;
+}
