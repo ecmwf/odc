@@ -160,7 +160,11 @@ add_subdirectory( src/ecml/tests )
 
 configure_file( src/ecml/prelude/prelude.ecml ${CMAKE_BINARY_DIR}/include/prelude.ecml COPYONLY)
 
-install(FILES       ${CMAKE_CURRENT_SOURCE_DIR}/prelude/prelude.ecml
+install(DIRECTORY src/ 
+        DESTINATION ${INSTALL_INCLUDE_DIR} 
+        FILES_MATCHING PATTERN "*.h")
+
+install(FILES       ${CMAKE_CURRENT_SOURCE_DIR}/src/ecml/prelude/prelude.ecml
         DESTINATION ${INSTALL_INCLUDE_DIR} )
 
 
