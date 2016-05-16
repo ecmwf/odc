@@ -47,18 +47,25 @@ void ECMLTool::run()
 
     if (parameters().size() < 2)
     {
-        //Log::error() << "Usage: ";
-        //usage(parameters(0), Log::error());
-        //Log::error() << std::endl;
         REPLHandler::repl(context);
-        return;// 1;
+        return;
     }
 
-    std::vector<std::string> params(parameters());
-    params.erase(params.begin());
-    for (size_t i (0); i < params.size(); ++i)
+    for (size_t i (1); i < argc(); ++i)
     {
-        context.executeScriptFile(params[i]);
+        const string param (argv()[i]);
+
+        Log::info() << " ** param: '" << param << "'" << endl;
+
+        if (param == "-e") 
+        {
+            const string& e (argv()[++i]);
+
+            Log::info() << "Trying to execute expression '" << e << "':" << endl;
+            context.execute(e);
+        }
+        else
+            context.executeScriptFile(param);
     }
 }
 
