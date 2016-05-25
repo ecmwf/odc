@@ -111,7 +111,11 @@ void Stager::stage(eckit::MultiHandle&                                    output
     createIndices (files);
 
     Partitions partitions (Partitioner::createPartitions(files, numberOfPartitions(request)));
-    ASSERT(partitions.size() == numberOfPartitions(request));
+    size_t requestedNumberOfPartitions (numberOfPartitions(request));
+
+    if (partitions.size() != requestedNumberOfPartitions)
+        Log::warning() << "Number of partitions (" << partitions.size() 
+            << ") different than requested: " << requestedNumberOfPartitions << std::endl;
 
     Log::info() << "Saving partitions info to " << partitionsInfoFile << endl;
     partitions.save(partitionsInfoFile);

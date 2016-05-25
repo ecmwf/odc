@@ -12,6 +12,7 @@
 #define ECMLTool_H
 
 #include "Tool.h"
+#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 
@@ -31,6 +32,7 @@ public:
 		o << name << " <script-file> ..." << std::endl;
 	}
 
+    static void executeRC(eckit::ExecutionContext&);
 };
 
 } // namespace tool 

@@ -29,12 +29,8 @@ ECMLTool::ECMLTool(int argc, char **argv) : Tool(argc, argv) {}
 
 ECMLTool::~ECMLTool() {}
 
-void ECMLTool::run()
+void ECMLTool::executeRC(ExecutionContext& context)
 {
-    ExecutionContext context;
-    ODBModule odbModule;
-    context.import(odbModule);
-
     const PathName ecmlrc (string(getenv("HOME")) + "/.ecmlrc");
     if (ecmlrc.exists())
         try { 
@@ -44,6 +40,15 @@ void ECMLTool::run()
         {
             Log::info() << "Exception while trying to execute " << ecmlrc << ":" << e.what() << endl;
         }
+}
+
+void ECMLTool::run()
+{
+    ExecutionContext context;
+    ODBModule odbModule;
+    context.import(odbModule);
+
+    executeRC(context);
 
     if (parameters().size() < 2)
     {
@@ -54,9 +59,6 @@ void ECMLTool::run()
     for (size_t i (1); i < argc(); ++i)
     {
         const string param (argv()[i]);
-
-        Log::info() << " ** param: '" << param << "'" << endl;
-
         if (param == "-e") 
         {
             const string& e (argv()[++i]);
