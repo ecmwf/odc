@@ -8,11 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef ECMLTool_H
-#define ECMLTool_H
+#ifndef odb_api_ECMLTool_H
+#define odb_api_ECMLTool_H
+
+#include "ecml/core/ExecutionContext.h"
 
 #include "Tool.h"
-#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 
@@ -32,7 +33,7 @@ public:
 		o << name << " <script-file> ..." << std::endl;
 	}
 
-    static void executeRC(eckit::ExecutionContext&);
+    static void executeRC(ecml::ExecutionContext&);
 };
 
 } // namespace tool 

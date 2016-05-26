@@ -12,9 +12,9 @@
 #ifndef MarsHandleFactory_H
 #define MarsHandleFactory_H
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 
-class MarsHandleFactory : public eckit::DataHandleFactory
+class MarsHandleFactory : public ecml::DataHandleFactory
 {
 public:
     MarsHandleFactory();

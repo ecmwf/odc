@@ -14,15 +14,15 @@
 
 #include <string>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/ExecutionContext.h"
 
-class MigrateHandler : public eckit::RequestHandler {
+class MigrateHandler : public ecml::RequestHandler {
 public:
     MigrateHandler(const std::string&);
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(ecml::ExecutionContext&);
 private:
     std::string cleanUpSQLText(const std::string&);
 };

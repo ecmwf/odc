@@ -452,7 +452,7 @@ ecbuild_add_library( TARGET             Odb
                      GENERATED          ODBAPIVersionSHA1.cc
                      TEMPLATES          ${odblib_templates}
                      LINKER_LANGUAGE    CXX
-                     LIBS               eckit eckit_ecml )
+                     LIBS               ecml )
 
 ecbuild_generate_yy( YYPREFIX odblib_
                   YACC sqly

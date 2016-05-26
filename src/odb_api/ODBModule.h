@@ -11,19 +11,19 @@
 // File ODBModule.h
 // Piotr Kuchta - (c) ECMWF May 2015
 
-#ifndef ODBModule_H
-#define ODBModule_H
+#ifndef odb_api_ODBModule_H
+#define odb_api_ODBModule_H
 
-#include "eckit/ecml/core/Module.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/Module.h"
+#include "ecml/core/ExecutionContext.h"
 
 namespace odb {
 
-class ODBModule : public eckit::Module {
+class ODBModule : public ecml::Module {
 public:
     ODBModule();
     ~ODBModule();
-    void importInto(eckit::ExecutionContext&);
+    void importInto(ecml::ExecutionContext&);
 };
 
 }  // namespace odb

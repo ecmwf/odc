@@ -14,15 +14,15 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
 namespace odb {
 
-class CreateIndexHandler : public eckit::RequestHandler {
+class CreateIndexHandler : public ecml::RequestHandler {
 public:
     CreateIndexHandler(const std::string&);
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

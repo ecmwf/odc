@@ -5,7 +5,8 @@
 #define ODBLIB_DATASELECT_H_
 
 #include "eckit/eckit.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+
+#include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/DataColumns.h"
 #include "odb_api/SharedIterator.h"
@@ -84,7 +85,7 @@ private:
     const DataTable* const table_;
     std::auto_ptr<internal::DataSelectIterator> begin_;
     DataColumns columns_;
-    eckit::ExecutionContext* context_;
+    ecml::ExecutionContext* context_;
 
     friend class internal::DataSelectIterator;
 };

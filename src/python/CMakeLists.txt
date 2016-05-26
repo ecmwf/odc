@@ -20,8 +20,8 @@ if( HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
     ecbuild_append_to_rpath( "../../../lib" )        # for ctest to find the libs
 
     swig_add_module( pyodbapi python pyodbapi.i )
-    set( EXTRA_LIBS eckit )
-    swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} eckit )
+    set( EXTRA_LIBS eckit ecml )
+    swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} eckit ecml )
 
     #swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} )
 

@@ -14,21 +14,21 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
 namespace odb {
 
-class RetrieveHandler : public eckit::RequestHandler {
+class RetrieveHandler : public ecml::RequestHandler {
 public:
     RetrieveHandler(const std::string&, bool local);
 
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(ecml::ExecutionContext&);
 
-    static std::string odbPathNameSchema(eckit::ExecutionContext&);
-    static std::string odbServerRoots(eckit::ExecutionContext&);
+    static std::string odbPathNameSchema(ecml::ExecutionContext&);
+    static std::string odbServerRoots(ecml::ExecutionContext&);
 
-    static std::string valueInContextOrResource(eckit::ExecutionContext&, const std::string& keyword, bool required = true);
+    static std::string valueInContextOrResource(ecml::ExecutionContext&, const std::string& keyword, bool required = true);
 
 private:
     bool local_;

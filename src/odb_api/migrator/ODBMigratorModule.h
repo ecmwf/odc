@@ -14,12 +14,12 @@
 #ifndef eckit_ecml_ODBMigratorModule_H
 #define eckit_ecml_ODBMigratorModule_H
 
-#include "eckit/ecml/core/Module.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/Module.h"
+#include "ecml/core/ExecutionContext.h"
 
 namespace odb {
 
-class ODBMigratorModule : public eckit::Module {
+class ODBMigratorModule : public ecml::Module {
 public:
     ODBMigratorModule();
     ~ODBMigratorModule();

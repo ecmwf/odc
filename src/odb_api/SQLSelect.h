@@ -14,13 +14,14 @@
 #ifndef SQLSelect_H
 #define SQLSelect_H
 
+#include "eckit/filesystem/PathName.h"
+
+#include "ecml/core/ExecutionContext.h"
+
 #include "odb_api/SelectOneTable.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLStatement.h"
 #include "odb_api/Stack.h"
-
-#include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/core/ExecutionContext.h"
 
 namespace odb {
 
@@ -46,11 +47,11 @@ public:
 
 // -- Methods
 	void prepareExecute(); //SQLExpression*& where);
-	unsigned long long process(odb::sql::expression::SQLExpression*,SortedTables::iterator, eckit::ExecutionContext*);
+	unsigned long long process(odb::sql::expression::SQLExpression*,SortedTables::iterator, ecml::ExecutionContext*);
 	bool processOneRow() { return processOneRow(0); }
-	bool processOneRow(eckit::ExecutionContext*);
+	bool processOneRow(ecml::ExecutionContext*);
 	void postExecute() { postExecute(0); }
-	void postExecute(eckit::ExecutionContext*);
+	void postExecute(ecml::ExecutionContext*);
 
 	void pushFirstFrame();
 
@@ -69,7 +70,7 @@ public:
     void outputFiles(const std::vector<eckit::PathName>& files);
 
 // -- Overridden methods
-	unsigned long long execute(eckit::ExecutionContext*);
+	unsigned long long execute(ecml::ExecutionContext*);
 
 protected:
 	virtual void print(std::ostream&) const; 	
@@ -116,8 +117,8 @@ private:
 // -- Methods
 
 	void reset();
-	bool resultsOut(eckit::ExecutionContext*);
-	bool output(odb::sql::expression::SQLExpression*, eckit::ExecutionContext*);
+	bool resultsOut(ecml::ExecutionContext*);
+	bool output(odb::sql::expression::SQLExpression*, ecml::ExecutionContext*);
     SQLExpression* findAliasedExpression(const std::string& alias);
 
 	friend class odb::sql::expression::function::FunctionROWNUMBER; // needs access to count_

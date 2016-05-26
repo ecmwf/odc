@@ -12,22 +12,22 @@
 #ifndef odb_api_ArchiveHandler_H
 #define odb_api_ArchiveHandler_H
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
 namespace odb {
 
-class ArchiveHandler : public eckit::RequestHandler {
+class ArchiveHandler : public ecml::RequestHandler {
 public:
     ArchiveHandler(const std::string&);
 
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(ecml::ExecutionContext&);
 
     static eckit::Request generateRequest(const std::string&);
 
 private:
-    void archive(const eckit::PathName& source, const std::string& host, const eckit::Request request, const std::string& protocol);
-    static void checkRequestMatchesFilesMetaData(const eckit::ExecutionContext&, const eckit::Request);
+    void archive(const eckit::PathName& source, const std::string& host, const ecml::Request request, const std::string& protocol);
+    static void checkRequestMatchesFilesMetaData(const ecml::ExecutionContext&, const ecml::Request);
 };
 
 } // namespace odb

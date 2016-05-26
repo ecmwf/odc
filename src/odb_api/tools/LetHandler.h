@@ -9,10 +9,11 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef LetHandler_H
-#define LetHandler_H
+#ifndef odb_api_LetHandler_H
+#define odb_api_LetHandler_H
 
 #include "eckit/filesystem/PathName.h"
+
 #include "ecml/parser/Request.h"
 #include "ecml/SpecialFormHandler.h"
 
@@ -21,11 +22,11 @@ namespace eckit { class ExecutionContext; }
 namespace odb { 
 namespace tool {  
 
-class LetHandler : public eckit::SpecialFormHandler {
+class LetHandler : public ecml::SpecialFormHandler {
 public:
     LetHandler(const std::string&);
 
-    virtual eckit::Request handle(const eckit::Request, eckit::ExecutionContext&);
+    virtual ecml::Request handle(const ecml::Request, ecml::ExecutionContext&);
 };
 
 } //namespace tool
