@@ -10,17 +10,18 @@ ecbuild_declare_project()
 
 ecbuild_find_lexyacc()
 ecbuild_use_package( PROJECT eckit VERSION 0.9 REQUIRED )
+ecbuild_use_package( PROJECT marskit VERSION 0.1 REQUIRED )
 
 set( ECML_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
 set( ECML_LIBRARIES      ecml )
-
-include_directories( ${ECML_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
 
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
+
+include_directories( ${ECML_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${MARSKIT_INCLUDE_DIRS} )
 
 list( APPEND ecml_srcs
 # Parser
@@ -124,6 +125,9 @@ src/ecml/data/FileHandleFactory.h
 src/ecml/data/FileHandleFactory.cc
 src/ecml/data/PartFileHandleFactory.h
 src/ecml/data/PartFileHandleFactory.cc
+# requires  marskit:
+src/ecml/data/MarsHandleFactory.cc
+src/ecml/data/MarsHandleFactory.h
 
 # Miscellaneous
 # Adapter for eckit::Parametrisation
@@ -146,15 +150,16 @@ ecbuild_add_library( TARGET             ecml
                      SOURCES            ${ecml_srcs}
                      LIBS               eckit 
                                         eckit_cmd # for UserInput
+                                        marskit
                                         )
 
-ecbuild_add_executable( TARGET ecml_test
+ecbuild_add_executable( TARGET  ecml_test
                         SOURCES src/ecml/tests/ecml_test.cc
-                        LIBS ecml eckit eckit_cmd )
+                        LIBS    ecml )
 
-ecbuild_add_executable( TARGET ecml_unittests
+ecbuild_add_executable( TARGET  ecml_unittests
                         SOURCES src/ecml/tests/ecml_unittests.cc
-                        LIBS ecml eckit eckit_cmd)
+                        LIBS    ecml )
 
 add_subdirectory( src/ecml/tests )
 
