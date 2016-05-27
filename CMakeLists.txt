@@ -178,7 +178,8 @@ ecbuild_pkgconfig( NAME ${PROJECT_NAME}
                    URL "https://software.ecmwf.int/wiki/display/ODB/ODB+API"
                    LIBRARIES ecml )
 
-#ecbuild_install_project( NAME ecml )
+# export to other packages and define install targets
+ecbuild_install_project( NAME ecml )
 
 ecbuild_print_summary()
 
