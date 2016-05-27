@@ -15,21 +15,22 @@
 #include "eckit/filesystem/PathName.h"
 #include "ecml/parser/Request.h"
 
+namespace eckit { class MultiHandle; }
+
 namespace ecml { 
 
 class ExecutionContext;
-class MultiHandle; 
 
 class RequestHandler {
 public:
-    virtual Values handle(ExecutionContext&) = 0;
+    virtual ecml::Values handle(ecml::ExecutionContext&) = 0;
 
     virtual std::string name() const;
 
     static std::string database(ExecutionContext&);
     static long port(ExecutionContext&);
     static std::string database(Request);
-    static long port(Request);
+    static long port(ecml::Request);
 
     static RequestHandler& handler(const std::string&);
 
@@ -40,7 +41,7 @@ protected:
 
     std::string name_;
     
-    static std::map<std::string,RequestHandler*> registeredHandlers_;
+    static std::map<std::string,ecml::RequestHandler*> registeredHandlers_;
 };
 
 } //namespace ecml 
