@@ -13,15 +13,15 @@
 #include "eckit/filesystem/TmpFile.h"
 #include "eckit/io/MultiHandle.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/StringTool.h"
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 
 #include "MigrateHandler.h"
 #include "migrator_api.h"
@@ -33,7 +33,7 @@ using namespace odb::sql;
 
 MigrateHandler::MigrateHandler(const string& name) : RequestHandler(name) {}
 
-Values MigrateHandler::handle(ExecutionContext& context)
+ecml::Values MigrateHandler::handle(ecml::ExecutionContext& context)
 {
     string target (context.environment().lookup("target", "", context)),
            filter (cleanUpSQLText(context.environment().lookup("filter", "", context))),
@@ -58,7 +58,7 @@ Values MigrateHandler::handle(ExecutionContext& context)
         throw UserError("migrator failed");
     }
 
-    List r;
+    ecml::List r;
     r.append(target);
 
     return r;

@@ -16,11 +16,13 @@
 #include "eckit/io/MultiHandle.h"
 
 #include "eckit/types/Types.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core//ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core//ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/data/DataHandleFactory.h"
+
 #include "odb_api/Indexer.h"
 
 using namespace std;
@@ -31,7 +33,7 @@ namespace odb {
 
 CreateIndexHandler::CreateIndexHandler(const string& name) : RequestHandler(name) {}
 
-Values CreateIndexHandler::handle(ExecutionContext& context)
+ecml::Values CreateIndexHandler::handle(ecml::ExecutionContext& context)
 {
     vector<string> fs (context.environment().lookupList("files", context));
 
@@ -41,7 +43,7 @@ Values CreateIndexHandler::handle(ExecutionContext& context)
 
     vector<PathName> indices (odb::Indexer::createIndex(files));
 
-    List l;
+    ecml::List l;
     for (size_t i(0); i < indices.size(); ++i)
         l.append(indices[i]);
 

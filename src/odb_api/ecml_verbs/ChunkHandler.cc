@@ -15,11 +15,12 @@
 #include "odb_api/Comparator.h"
 
 #include "eckit/types/Types.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/data/DataHandleFactory.h"
 
 #include "odb_api/MetaDataReader.h"
 #include "odb_api/MetaDataReaderIterator.h"
@@ -32,7 +33,7 @@ namespace odb {
 
 ChunkHandler::ChunkHandler(const string& name) : RequestHandler(name) {}
 
-Values ChunkHandler::handle(ExecutionContext& context)
+ecml::Values ChunkHandler::handle(ecml::ExecutionContext& context)
 {
     vector<string> source (context.environment().lookupList("source", context));
 
@@ -50,7 +51,7 @@ Values ChunkHandler::handle(ExecutionContext& context)
         throw UserError(string("chunk: file ") + fileName + " appears to be empty");
 
     odb::MetaData metaData(r->columns());
-    List l;
+    ecml::List l;
     for(; r != end; ++r)
     {
         ASSERT (r->isNewDataset());

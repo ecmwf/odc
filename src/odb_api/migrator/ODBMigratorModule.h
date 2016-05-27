@@ -23,7 +23,7 @@ class ODBMigratorModule : public ecml::Module {
 public:
     ODBMigratorModule();
     ~ODBMigratorModule();
-    void importInto(eckit::ExecutionContext&);
+    void importInto(ecml::ExecutionContext&);
 };
 
 } // namespace odb

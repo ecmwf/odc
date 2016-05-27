@@ -83,7 +83,7 @@ public:
 
     int close();
 
-    bool next(eckit::ExecutionContext*);
+    bool next(ecml::ExecutionContext*);
 protected:
     bool skip(size_t dataSize);
 
@@ -124,7 +124,7 @@ protected:
 
 public:
     int refCount_;
-    eckit::ExecutionContext* context_;
+    ecml::ExecutionContext* context_;
 
     friend class MetaDataReader<MetaDataReaderIterator>;
     //friend class odb::IteratorProxy<odb::MetaDataReaderIterator, Owner>;

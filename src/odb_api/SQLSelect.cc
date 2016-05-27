@@ -136,7 +136,7 @@ static bool compareTables(SelectOneTable* a,SelectOneTable *b)
 //#endif
 }
 
-inline bool SQLSelect::resultsOut(ExecutionContext* context)
+inline bool SQLSelect::resultsOut(ecml::ExecutionContext* context)
 {
 	return output_->output(results_, context);
 }
@@ -373,7 +373,7 @@ void SQLSelect::prepareExecute() {
 	}
 }
 
-unsigned long long SQLSelect::execute(eckit::ExecutionContext* context)
+unsigned long long SQLSelect::execute(ecml::ExecutionContext* context)
 {
 	prepareExecute();
 	unsigned long long n = process(simplifiedWhere_, sortedTables_.begin(), context);
@@ -381,7 +381,7 @@ unsigned long long SQLSelect::execute(eckit::ExecutionContext* context)
 	return n;
 }
 
-void SQLSelect::postExecute(eckit::ExecutionContext* context)
+void SQLSelect::postExecute(ecml::ExecutionContext* context)
 {
 	if (mixedAggregatedAndScalar_)
 	{
@@ -461,7 +461,7 @@ void SQLSelect::reset()
 
 
 
-bool SQLSelect::output(SQLExpression* where, ExecutionContext* context)
+bool SQLSelect::output(SQLExpression* where, ecml::ExecutionContext* context)
 {
 	//if (where) Log::info() << "SQLSelect::output: where: " << *where << std::endl;
 
@@ -504,7 +504,7 @@ bool SQLSelect::output(SQLExpression* where, ExecutionContext* context)
 }
 
 
-unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterator j, ExecutionContext* context) {
+unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterator j, ecml::ExecutionContext* context) {
 	simplifiedWhere_ = where;
 	env.pushFrame(j);
 
@@ -515,7 +515,7 @@ unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterat
 }
 
 
-bool SQLSelect::processOneRow(eckit::ExecutionContext* context) { 
+bool SQLSelect::processOneRow(ecml::ExecutionContext* context) { 
 	++count_;
 	//Log::info() << "SQLSelect::processOneRow: count = " << count_ << std::endl;
 	bool recursiveCall;

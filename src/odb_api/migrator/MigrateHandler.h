@@ -22,7 +22,7 @@
 class MigrateHandler : public ecml::RequestHandler {
 public:
     MigrateHandler(const std::string&);
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 private:
     std::string cleanUpSQLText(const std::string&);
 };

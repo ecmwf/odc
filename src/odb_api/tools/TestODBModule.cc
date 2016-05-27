@@ -7,7 +7,8 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+
+#include "ecml/core/ExecutionContext.h"
 
 using namespace std;
 using namespace odb;
@@ -25,7 +26,7 @@ struct ODBModule
     }
 
     odb::ODBModule odbModule;
-    eckit::ExecutionContext context;
+    ecml::ExecutionContext context;
 };
 
 

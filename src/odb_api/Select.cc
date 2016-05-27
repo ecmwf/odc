@@ -13,12 +13,13 @@
 ///
 /// @author Piotr Kuchta, April 2010
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 #include "odb_api/Select.h"
 #include "eckit/io/DataHandle.h"
 
 using namespace std;
 using namespace eckit;
+using namespace ecml;
 
 namespace odb {
 
@@ -31,7 +32,7 @@ Select::Select(const std::string& selectStatement, DataHandle &dh)
   context_(0)
 {}
 
-Select::Select(const std::string& selectStatement, DataHandle &dh, ExecutionContext* context)
+Select::Select(const std::string& selectStatement, DataHandle &dh, ecml::ExecutionContext* context)
 : dataHandle_(&dh),
   deleteDataHandle_(false),
   istream_(0),
@@ -50,7 +51,7 @@ Select::Select(const std::string& selectStatement, std::istream &is, const std::
   context_(0)
 {}
 
-Select::Select(const std::string& selectStatement, std::istream &is, const std::string& delimiter, ExecutionContext* context)
+Select::Select(const std::string& selectStatement, std::istream &is, const std::string& delimiter, ecml::ExecutionContext* context)
 : dataHandle_(0),
   deleteDataHandle_(true),
   istream_(&is),
@@ -69,7 +70,7 @@ Select::Select(const std::string& selectStatement)
   context_(0)
 {}
 
-Select::Select(const std::string& selectStatement, ExecutionContext* context)
+Select::Select(const std::string& selectStatement, ecml::ExecutionContext* context)
 : dataHandle_(0),
   deleteDataHandle_(true),
   istream_(0),
@@ -87,7 +88,7 @@ Select::Select()
   context_(0)
 {}
 
-Select::Select(ExecutionContext* context)
+Select::Select(ecml::ExecutionContext* context)
 : dataHandle_(0),
   deleteDataHandle_(true),
   istream_(0),
@@ -107,7 +108,7 @@ Select::Select(const std::string& selectStatement, const std::string& path)
     //dataHandle_->openForRead();
 }
 
-Select::Select(const std::string& selectStatement, const std::string& path, ExecutionContext* context)
+Select::Select(const std::string& selectStatement, const std::string& path, ecml::ExecutionContext* context)
 : dataHandle_(DataHandleFactory::openForRead(path)),
   deleteDataHandle_(true),
   istream_(0),
@@ -124,7 +125,7 @@ Select::~Select()
     if (deleteIStream_) delete istream_;
 }
 
-SelectIterator* Select::createSelectIterator(const std::string& sql, ExecutionContext* context)
+SelectIterator* Select::createSelectIterator(const std::string& sql, ecml::ExecutionContext* context)
 {
     return new SelectIterator(*this, sql, context);
 }

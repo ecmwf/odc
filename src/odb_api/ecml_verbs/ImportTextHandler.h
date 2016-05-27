@@ -26,7 +26,7 @@ public:
     static unsigned long long importText(const eckit::PathName& pathName, const std::string& csv);
 
 private:
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

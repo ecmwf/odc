@@ -75,7 +75,7 @@ public:
 	bool operator!=(const MockReaderIterator& o) { ASSERT(&o == 0); return nRows_ > 0; }
 	const MockReaderIterator& end() { return *reinterpret_cast<MockReaderIterator*>(0); }
 
-	bool next(eckit::ExecutionContext*) { bool r = nRows_-- > 0; noMore_ = !r; return r; }
+	bool next(ecml::ExecutionContext*) { bool r = nRows_-- > 0; noMore_ = !r; return r; }
 
 private:
 	odb::MetaData columns_;
@@ -85,7 +85,7 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
-    ExecutionContext* context_;
+    ecml::ExecutionContext* context_;
 };
 
 

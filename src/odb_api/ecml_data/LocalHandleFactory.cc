@@ -15,11 +15,11 @@
 #include "eckit/config/Resource.h"
 #include "eckit/parser/StringTools.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/RequestHandler.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core/RequestHandler.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include "odb_api/FileMapper.h"
 #include "odb_api/FileCollector.h"
@@ -30,6 +30,7 @@
 #include "LocalHandleFactory.h"
 
 using namespace eckit;
+using namespace ecml;
 using namespace std;
 
 LocalHandleFactory::LocalHandleFactory()
@@ -41,7 +42,7 @@ DataHandle* LocalHandleFactory::makeHandle(const string& req) const
     const string& r (req);
     Log::info() << "LocalHandleFactory::makeHandle: parsing [" << r << "]" << endl;
 
-    Request requests (eckit::RequestParser::parse(r));
+    Request requests (ecml::RequestParser::parse(r));
     Request request (requests->value());
 
     Log::debug() << "LocalHandleFactory::makeHandle: request = " << request << endl;

@@ -46,7 +46,7 @@ public:
 	bool isNewDataset() { return false; } // { return n_ == nRows_; }
 	double* data() { return &data_; }
 
-	bool next(eckit::ExecutionContext*) { return !(noMore_ = nRows_-- <= 0); }
+	bool next(ecml::ExecutionContext*) { return !(noMore_ = nRows_-- <= 0); }
 
 private:
 	odb::MetaData columns_;
@@ -57,7 +57,7 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
-    ExecutionContext* context_;
+    ecml::ExecutionContext* context_;
 };
 
 static void setUp()

@@ -11,8 +11,8 @@
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/prelude/REPLHandler.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/prelude/REPLHandler.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/ODBModule.h"
@@ -29,7 +29,7 @@ ECMLTool::ECMLTool(int argc, char **argv) : Tool(argc, argv) {}
 
 ECMLTool::~ECMLTool() {}
 
-void ECMLTool::executeRC(ExecutionContext& context)
+void ECMLTool::executeRC(ecml::ExecutionContext& context)
 {
     const PathName ecmlrc (string(getenv("HOME")) + "/.ecmlrc");
     if (ecmlrc.exists())
@@ -44,7 +44,7 @@ void ECMLTool::executeRC(ExecutionContext& context)
 
 void ECMLTool::run()
 {
-    ExecutionContext context;
+    ecml::ExecutionContext context;
     ODBModule odbModule;
     context.import(odbModule);
 
@@ -52,7 +52,7 @@ void ECMLTool::run()
 
     if (parameters().size() < 2)
     {
-        REPLHandler::repl(context);
+        ecml::REPLHandler::repl(context);
         return;
     }
 

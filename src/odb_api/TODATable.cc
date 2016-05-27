@@ -10,7 +10,7 @@
 
 #include <sstream>
 #include "odb_api/SQLBitfield.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ template <typename T>
 TODATable<T>::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name)
 : SQLTable(owner, path, name),
   data_(0),
-  oda_(*eckit::DataHandleFactory::openForRead(path)), // TODO: fix leak
+  oda_(*ecml::DataHandleFactory::openForRead(path)), // TODO: fix leak
   reader_(oda_.begin()),
   end_(oda_.end())
 {

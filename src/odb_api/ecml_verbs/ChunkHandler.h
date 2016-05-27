@@ -22,7 +22,7 @@ namespace odb {
 class ChunkHandler : public ecml::RequestHandler {
 public:
     ChunkHandler(const std::string&);
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

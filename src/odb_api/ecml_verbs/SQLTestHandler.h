@@ -26,9 +26,9 @@ public:
 private:
     eckit::PathName generatePathName(const std::string& testLabel, const std::string& parameterName);
     eckit::PathName write(const std::string& testLabel, const std::string& parameterName, const std::string& csv);
-    void createInputTables(eckit::Cell*);
+    void createInputTables(ecml::Cell*);
 
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

@@ -18,10 +18,10 @@
 
 namespace odb {
 
-class SQLHandler : public eckit::RequestHandler {
+class SQLHandler : public ecml::RequestHandler {
 public:
     SQLHandler(const std::string&);
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 
     static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&, ecml::ExecutionContext* context);
 

@@ -21,9 +21,9 @@ class ArchiveHandler : public ecml::RequestHandler {
 public:
     ArchiveHandler(const std::string&);
 
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 
-    static eckit::Request generateRequest(const std::string&);
+    static ecml::Request generateRequest(const std::string&);
 
 private:
     void archive(const eckit::PathName& source, const std::string& host, const ecml::Request request, const std::string& protocol);

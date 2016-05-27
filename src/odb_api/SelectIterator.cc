@@ -40,7 +40,7 @@ SelectIterator::SelectIterator(Select &owner)
 {
 }
 
-SelectIterator::SelectIterator(Select &owner, const std::string& select, ExecutionContext* context)
+SelectIterator::SelectIterator(Select &owner, const std::string& select, ecml::ExecutionContext* context)
 : owner_(owner),
   select_(select),
   session_(*this),
@@ -109,7 +109,7 @@ void SelectIterator::cacheRow(const Expressions& results)
 	rowCache_.push_back(v);
 }
 
-bool SelectIterator::next(ExecutionContext* context)
+bool SelectIterator::next(ecml::ExecutionContext* context)
 {
 	newDataset_ = false;
 	if (noMore_) return false;

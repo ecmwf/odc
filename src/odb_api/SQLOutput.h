@@ -11,11 +11,12 @@
 // File SQLOutput.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef SQLOutput_H
-#define SQLOutput_H
+#ifndef odb_api_SQLOutput_H
+#define odb_api_SQLOutput_H
+
+#include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/SQLOutputConfig.h"
-#include "ecml/core/ExecutionContext.h"
 
 namespace odb {
 namespace sql {
@@ -37,9 +38,9 @@ public:
 	virtual void cleanup(SQLSelect&) = 0;
 
 	virtual void reset() = 0;
-	virtual void flush(eckit::ExecutionContext*) = 0;
+	virtual void flush(ecml::ExecutionContext*) = 0;
 
-	virtual bool output(const expression::Expressions&, eckit::ExecutionContext*) = 0;
+	virtual bool output(const expression::Expressions&, ecml::ExecutionContext*) = 0;
 
 	virtual void outputReal(double, bool) = 0;
 	virtual void outputDouble(double, bool) = 0;

@@ -10,12 +10,12 @@
 
 #include "eckit/eckit.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/parser/Cell.h"
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/parser/Cell.h"
 
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/Interpreter.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/Interpreter.h"
 
 #include "odb_api/Decoder.h"
 #include "odb_api/Expressions.h"
@@ -27,14 +27,15 @@
 #include "odb_api/ecml_data/ResultSetStore.h"
 
 using namespace eckit;
+using namespace ecml;
 using namespace std;
 
 namespace odb {
 namespace sql {
 
-SQLCallbackOutput::SQLCallbackOutput(eckit::ExecutionContext& context)
+SQLCallbackOutput::SQLCallbackOutput(ecml::ExecutionContext& context)
 {
-    eckit::Environment& e (context.environment());
+    ecml::Environment& e (context.environment());
 
     Request callback ( e.lookup("callback") );
 
@@ -63,7 +64,7 @@ void SQLCallbackOutput::print(std::ostream& s) const
 void SQLCallbackOutput::size(int) {}
 void SQLCallbackOutput::reset() { count_ = 0; }
 
-void SQLCallbackOutput::flush(eckit::ExecutionContext* context)
+void SQLCallbackOutput::flush(ecml::ExecutionContext* context)
 {
     Log::info() << "SQLCallbackOutput::flush: resultSet: " << resultSet_ << endl;
 
@@ -97,7 +98,7 @@ void SQLCallbackOutput::flush(eckit::ExecutionContext* context)
     ResultSetStore::remove(id);
 }
 
-bool SQLCallbackOutput::output(const expression::Expressions& results, eckit::ExecutionContext* context)
+bool SQLCallbackOutput::output(const expression::Expressions& results, ecml::ExecutionContext* context)
 {
     ostream& L(Log::info());
 

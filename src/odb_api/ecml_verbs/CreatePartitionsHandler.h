@@ -22,7 +22,7 @@ namespace odb {
 class CreatePartitionsHandler : public ecml::RequestHandler {
 public:
     CreatePartitionsHandler(const std::string&);
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

@@ -49,13 +49,13 @@ template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::reset() { count_ = 0; }
 
 template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::flush(eckit::ExecutionContext*) {}
+void SQLODAOutput<ITERATOR>::flush(ecml::ExecutionContext*) {}
 
 template<typename ITERATOR>
 void SQLODAOutput<ITERATOR>::cleanup(SQLSelect& sql) { sql.outputFiles((**writer_).outputFiles()); }
 
 template<typename ITERATOR>
-bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results, eckit::ExecutionContext* context)
+bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results, ecml::ExecutionContext* context)
 {
 	size_t nCols = results.size();
     for(size_t i = 0; i < nCols; i++)

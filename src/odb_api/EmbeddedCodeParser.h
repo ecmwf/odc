@@ -21,7 +21,7 @@
 
 #include "SQLTable.h"
 
-namespace eckit { class ExecutionContext; }
+namespace ecml { class ExecutionContext; }
 
 namespace odb {
 
@@ -29,7 +29,7 @@ namespace sql { class SQLTable; }
 
 class EmbeddedCodeParser {
 public:
-    static std::vector<odb::sql::SQLTable*> getFromTables(const std::string&, const std::string&, odb::sql::SQLSession&, eckit::ExecutionContext* context);
+    static std::vector<odb::sql::SQLTable*> getFromTables(const std::string&, const std::string&, odb::sql::SQLSession&, ecml::ExecutionContext* context);
 };
 
 } // namespace odb 

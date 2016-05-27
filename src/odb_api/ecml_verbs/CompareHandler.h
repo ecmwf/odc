@@ -22,7 +22,7 @@ namespace odb {
 class CompareHandler : public ecml::RequestHandler {
 public:
     CompareHandler(const std::string&);
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

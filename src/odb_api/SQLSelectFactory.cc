@@ -9,9 +9,10 @@
  */
 
 #include "eckit/utils/Translator.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
 #include "eckit/types/Types.h"
+
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include "odb_api/SQLDatabase.h"
 #include "odb_api/DispatchingWriter.h"
@@ -238,7 +239,7 @@ SQLSelect* SQLSelectFactory::create (
                                   : session.findTable( t.name) ); 
         else
         {
-            ExecutionContext context; // TODO: get it from session, don't pass it to getFromTables
+            ecml::ExecutionContext context; // TODO: get it from session, don't pass it to getFromTables
             std::vector<SQLTable*> computed (EmbeddedCodeParser::getFromTables(t.name, t.database, session, &context));
             fromTables.insert(fromTables.begin(), computed.begin(), computed.end());
         }

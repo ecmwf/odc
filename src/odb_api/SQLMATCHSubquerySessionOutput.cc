@@ -46,9 +46,9 @@ void SQLMATCHSubquerySessionOutput::size(int) {}
 
 void SQLMATCHSubquerySessionOutput::reset() { }
 
-void SQLMATCHSubquerySessionOutput::flush(eckit::ExecutionContext*) {}
+void SQLMATCHSubquerySessionOutput::flush(ecml::ExecutionContext*) {}
 
-bool SQLMATCHSubquerySessionOutput::output(const expression::Expressions& results, eckit::ExecutionContext* context)
+bool SQLMATCHSubquerySessionOutput::output(const expression::Expressions& results, ecml::ExecutionContext* context)
 {
 	const size_t nCols (results.size());
     vector<double> v(nCols);

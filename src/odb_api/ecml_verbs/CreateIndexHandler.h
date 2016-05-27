@@ -22,7 +22,7 @@ namespace odb {
 class CreateIndexHandler : public ecml::RequestHandler {
 public:
     CreateIndexHandler(const std::string&);
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

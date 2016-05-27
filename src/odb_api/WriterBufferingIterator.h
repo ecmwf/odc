@@ -24,7 +24,7 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace eckit { class ExecutionContext; }
+namespace ecml { class ExecutionContext; }
 
 namespace odb {
 
@@ -84,7 +84,7 @@ public:
 
     std::vector<eckit::PathName> outputFiles();
 	int refCount_;
-	bool next(eckit::ExecutionContext*);
+	bool next(ecml::ExecutionContext*);
 protected:
 	Owner& owner_;
 	MetaData columns_;
@@ -131,7 +131,7 @@ private:
     const odb::sql::TableDef* tableDef_;
 
 public:
-    eckit::ExecutionContext* context_;
+    ecml::ExecutionContext* context_;
 private:
     bool openDataHandle_;
 

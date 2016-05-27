@@ -16,7 +16,7 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace eckit { class ExecutionContext; }
+namespace ecml { class ExecutionContext; }
 
 #include "eckit/eckit.h"
 
@@ -61,7 +61,7 @@ public:
 	SQLDatabase& currentDatabase() const;
 	SQLDatabase& currentDatabase(SQLDatabase*);
 
-	unsigned long long execute(SQLStatement&, eckit::ExecutionContext*);
+	unsigned long long execute(SQLStatement&, ecml::ExecutionContext*);
 
 protected:
 	unsigned long long lastExecuteResult_;

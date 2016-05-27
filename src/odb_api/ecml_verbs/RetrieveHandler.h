@@ -23,7 +23,7 @@ class RetrieveHandler : public ecml::RequestHandler {
 public:
     RetrieveHandler(const std::string&, bool local);
 
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 
     static std::string odbPathNameSchema(ecml::ExecutionContext&);
     static std::string odbServerRoots(ecml::ExecutionContext&);

@@ -20,7 +20,7 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace eckit { class ExecutionContext; }
+namespace ecml { class ExecutionContext; }
 
 #define ODB_API_HAS_REENTRANT_SQL_PARSER 1
 

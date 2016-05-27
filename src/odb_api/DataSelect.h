@@ -53,10 +53,10 @@ public:
     typedef SharedIterator<internal::DataSelectIterator> iterator;
 
     /// Creates new query on the given @em dataset.
-    DataSelect(const std::string& statement, const DataSet& dataset, eckit::ExecutionContext*);
+    DataSelect(const std::string& statement, const DataSet& dataset, ecml::ExecutionContext*);
 
     /// Creates new query on the given @em table.
-    DataSelect(const std::string& statement, const DataTable& table, eckit::ExecutionContext*);
+    DataSelect(const std::string& statement, const DataTable& table, ecml::ExecutionContext*);
 
     /// Frees the query from memory.
     ~DataSelect();

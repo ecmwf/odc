@@ -23,7 +23,7 @@ class StageHandler : public ecml::RequestHandler {
 public:
     StageHandler(const std::string&, bool local);
 
-    virtual eckit::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 
 private:
     bool local_;

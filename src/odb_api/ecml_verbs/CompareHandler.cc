@@ -16,21 +16,23 @@
 #include "eckit/io/MultiHandle.h"
 
 #include "eckit/types/Types.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core//ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core//ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;
+using namespace ecml;
 using namespace odb;
 
 namespace odb {
 
 CompareHandler::CompareHandler(const string& name) : RequestHandler(name) {}
 
-Values CompareHandler::handle(ExecutionContext& context)
+ecml::Values CompareHandler::handle(ExecutionContext& context)
 {
     vector<string> left (context.environment().lookupList("left", context));
     vector<string> right (context.environment().lookupList("right", context));
