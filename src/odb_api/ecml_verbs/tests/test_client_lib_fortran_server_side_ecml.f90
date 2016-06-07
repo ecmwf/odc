@@ -41,7 +41,8 @@ subroutine example_fortran_api_retrieve_server_side
  character(kind=C_CHAR, len=2048)              :: sql='select * from &
  & "mars://retrieve,class=OD,date=20150218,time=1200,type=OFB,&
  & obsgroup=conv,reportype=16058,stream=oper,expver=qu12,&
- & server_side=(function,of=source,_=(sql,filter=\"select count(*)\",target=(temporary_file))),&
+ & server_side=(function,of=source,_=&
+ &  (sql,filter=\"select count(*)\",target=(temporary_file))),&
  & database=localhost";'//achar(0)
  integer(kind=C_INT)                           :: itype, newdataset, c_ncolumns=1, size_name 
  integer(kind=C_INT)                           :: bitfield_names_size, bitfield_sizes_size
