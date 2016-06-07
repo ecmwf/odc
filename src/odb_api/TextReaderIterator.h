@@ -56,7 +56,7 @@ public:
 	int close();
 
 // next() is public cause it needs to be used by the C API functions - normally client code should not use it
-	bool next(eckit::ExecutionContext*);
+	bool next(ecml::ExecutionContext*);
 
 private:
 // No copy allowed.
@@ -80,7 +80,7 @@ private:
 
 	bool ownsF_;
 public:
-	eckit::ExecutionContext* context_;
+	ecml::ExecutionContext* context_;
 
 	//ReadOnlyMemoryDataHandle memDataHandle_;
 

@@ -16,8 +16,9 @@
 #include "eckit/config/Resource.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/io/PartFileHandle.h"
-#include "eckit/ecml/core/Interpreter.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+
+#include "ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/FileCollector.h"
 #include "odb_api/FileMapper.h"
@@ -142,15 +143,15 @@ void Retriever::handleServerSide(MultiHandle& output, const FileCollector& fileC
 
     Log::info() << "server_side: '" << endl << code << endl << "'" << endl;
 
-    ExecutionContext context;
+    ecml::ExecutionContext context;
     odb::ODBModule odbModule;
     context.import(odbModule);
 
     // server_side should return a list of files
-    Values result (context.execute(code));
+    ecml::Values result (context.execute(code));
     Log::info() << "server_side result: " << result << endl;
 
-    for (Cell* v (result); v; v = v->rest())
+    for (ecml::Cell* v (result); v; v = v->rest())
     {
         ASSERT(v->value());
         string fileName (v->value()->text());

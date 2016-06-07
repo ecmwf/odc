@@ -14,11 +14,11 @@
 #include "eckit/types/Types.h"
 #include "eckit/parser/StringTools.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core//ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core//ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/data/DataHandleFactory.h"
 
 #include "CreatePartitionsHandler.h"
 #include "odb_api/Partitioner.h"
@@ -41,7 +41,7 @@ CreatePartitionsHandler::CreatePartitionsHandler(const string& name) : RequestHa
 ///
 /// return value: descriptors of partitions
 
-Values CreatePartitionsHandler::handle(ExecutionContext& context)
+ecml::Values CreatePartitionsHandler::handle(ecml::ExecutionContext& context)
 {
     string target (context.environment().lookup("target", "partitions_info.txt", context));
 
@@ -68,7 +68,7 @@ Values CreatePartitionsHandler::handle(ExecutionContext& context)
     Partitions partitions (odb::Partitioner::createPartitions(files, n));
     partitions.save(target);
 
-    List l;
+    ecml::List l;
 
     if (! doWriteFiles)
         l.append(target);

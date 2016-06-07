@@ -46,8 +46,8 @@ protected:
 	virtual unsigned long long count();
 	virtual void size(int);
 	virtual void reset();
-	virtual void flush(eckit::ExecutionContext*);
-	virtual bool output(const expression::Expressions&, eckit::ExecutionContext*);
+	virtual void flush(ecml::ExecutionContext*);
+	virtual bool output(const expression::Expressions&, ecml::ExecutionContext*);
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 

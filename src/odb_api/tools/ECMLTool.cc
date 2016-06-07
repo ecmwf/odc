@@ -11,8 +11,8 @@
 #include "eckit/log/Log.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/prelude/REPLHandler.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/prelude/REPLHandler.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/ODBModule.h"
@@ -29,12 +29,8 @@ ECMLTool::ECMLTool(int argc, char **argv) : Tool(argc, argv) {}
 
 ECMLTool::~ECMLTool() {}
 
-void ECMLTool::run()
+void ECMLTool::executeRC(ecml::ExecutionContext& context)
 {
-    ExecutionContext context;
-    ODBModule odbModule;
-    context.import(odbModule);
-
     const PathName ecmlrc (string(getenv("HOME")) + "/.ecmlrc");
     if (ecmlrc.exists())
         try { 
@@ -44,21 +40,34 @@ void ECMLTool::run()
         {
             Log::info() << "Exception while trying to execute " << ecmlrc << ":" << e.what() << endl;
         }
+}
+
+void ECMLTool::run()
+{
+    ecml::ExecutionContext context;
+    ODBModule odbModule;
+    context.import(odbModule);
+
+    executeRC(context);
 
     if (parameters().size() < 2)
     {
-        //Log::error() << "Usage: ";
-        //usage(parameters(0), Log::error());
-        //Log::error() << std::endl;
-        REPLHandler::repl(context);
-        return;// 1;
+        ecml::REPLHandler::repl(context);
+        return;
     }
 
-    std::vector<std::string> params(parameters());
-    params.erase(params.begin());
-    for (size_t i (0); i < params.size(); ++i)
+    for (size_t i (1); i < argc(); ++i)
     {
-        context.executeScriptFile(params[i]);
+        const string param (argv()[i]);
+        if (param == "-e") 
+        {
+            const string& e (argv()[++i]);
+
+            Log::info() << "Trying to execute expression '" << e << "':" << endl;
+            context.execute(e);
+        }
+        else
+            context.executeScriptFile(param);
     }
 }
 

@@ -14,13 +14,13 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
-class Odb2NetcdfHandler : public eckit::RequestHandler {
+class Odb2NetcdfHandler : public ecml::RequestHandler {
 public:
     Odb2NetcdfHandler(const std::string&);
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(ecml::ExecutionContext&);
 };
 
 #endif

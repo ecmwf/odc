@@ -14,16 +14,16 @@
 
 #include <sstream>
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
 namespace odb {
 
-class StageHandler : public eckit::RequestHandler {
+class StageHandler : public ecml::RequestHandler {
 public:
     StageHandler(const std::string&, bool local);
 
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 
 private:
     bool local_;

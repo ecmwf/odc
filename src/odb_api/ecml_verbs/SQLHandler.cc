@@ -14,10 +14,10 @@
 
 #include "eckit/io/MultiHandle.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/StringTool.h"
@@ -26,10 +26,11 @@
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLSelect.h"
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;
+using namespace ecml;
 using namespace odb;
 using namespace odb::sql;
 
@@ -37,7 +38,7 @@ namespace odb {
 
 SQLHandler::SQLHandler(const string& name) : RequestHandler(name) {}
 
-Values SQLHandler::handle(ExecutionContext& context)
+Values SQLHandler::handle(ecml::ExecutionContext& context)
 {
     string target (context.environment().lookup("target", "", context)),
            include (cleanUpSQLText(context.environment().lookup("include", "", context)));

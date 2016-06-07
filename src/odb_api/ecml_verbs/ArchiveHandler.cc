@@ -13,10 +13,11 @@
 #include <string>
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/data/DataHandleFactory.h"
 
 #include "ArchiveHandler.h"
 
@@ -24,7 +25,7 @@
 #include "odb_api/Archiver.h"
 
 using namespace std;
-using namespace eckit;
+using namespace ecml;
 
 namespace odb {
 
@@ -49,7 +50,7 @@ Values ArchiveHandler::handle(ExecutionContext& context)
 
     vector<string> sources (context.getValueAsList("source"));
     if (! sources.size())
-        throw UserError("You must specify file(s) to be archived using the SOURCE keyword");
+        throw eckit::UserError("You must specify file(s) to be archived using the SOURCE keyword");
 
     Values r(0);
     List list(r);
@@ -69,7 +70,7 @@ Values ArchiveHandler::handle(ExecutionContext& context)
 
         checkRequestMatchesFilesMetaData(context, generatedRequest);
  
-        Log::info() << "Request generated for file " << source << ":" << endl
+        eckit::Log::info() << "Request generated for file " << source << ":" << endl
                     << generatedRequest << endl;
 
         archive(source, host, generatedRequest, protocol);
@@ -119,8 +120,8 @@ Request ArchiveHandler::generateRequest(const string& source)
         delete handles[i];
     handles.clear();
     if (! rc)
-        throw UserError(string("Cannot archive file ") + source);
-    Log::info() << "File " << source << " has " << o2r.rowsNumber() << " rows." << endl;
+        throw eckit::UserError(string("Cannot archive file ") + source);
+    eckit::Log::info() << "File " << source << " has " << o2r.rowsNumber() << " rows." << endl;
 
     ASSERT(lengths.size() && lengths.size() == offsets.size());
 
@@ -140,16 +141,16 @@ Request ArchiveHandler::generateRequest(const string& source)
     return requests->value();
 }
 
-void ArchiveHandler::archive(const PathName& source, const string& host, const Request request, const string& protocol)
+void ArchiveHandler::archive(const eckit::PathName& source, const string& host, const Request request, const string& protocol)
 {
-    Log::info() << "ARCHIVE " << source << " on " << host << endl;
-    Log::info() << "ARCHIVE request: " << request << endl;
+    eckit::Log::info() << "ARCHIVE " << source << " on " << host << endl;
+    eckit::Log::info() << "ARCHIVE request: " << request << endl;
 
-    FileHandle input(source);
+    eckit::FileHandle input(source);
 
     stringstream ss;
     ss << protocol << request;
-    auto_ptr<DataHandle> mars (DataHandleFactory::openForWrite(ss.str(), eckit::Length(Archiver::fileSize(source))));
+    auto_ptr<eckit::DataHandle> mars (DataHandleFactory::openForWrite(ss.str(), eckit::Length(Archiver::fileSize(source))));
 
     input.saveInto(*mars);
 }

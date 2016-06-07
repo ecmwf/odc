@@ -8,8 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef ECMLTool_H
-#define ECMLTool_H
+#ifndef odb_api_ECMLTool_H
+#define odb_api_ECMLTool_H
+
+#include "ecml/core/ExecutionContext.h"
 
 #include "Tool.h"
 
@@ -31,6 +33,7 @@ public:
 		o << name << " <script-file> ..." << std::endl;
 	}
 
+    static void executeRC(ecml::ExecutionContext&);
 };
 
 } // namespace tool 

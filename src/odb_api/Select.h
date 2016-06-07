@@ -24,7 +24,7 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace eckit { class ExecutionContext; }
+namespace ecml { class ExecutionContext; }
 
 namespace odb {
 
@@ -37,15 +37,15 @@ public:
 	typedef iterator::Row row;
 
 	Select(const std::string& selectStatement, eckit::DataHandle &);
-	Select(const std::string& selectStatement, eckit::DataHandle &, eckit::ExecutionContext*);
+	Select(const std::string& selectStatement, eckit::DataHandle &, ecml::ExecutionContext*);
 	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter);
-	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter, eckit::ExecutionContext*);
+	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter, ecml::ExecutionContext*);
     Select(const std::string& selectStatement, const std::string& path);
-    Select(const std::string& selectStatement, const std::string& path, eckit::ExecutionContext*);
+    Select(const std::string& selectStatement, const std::string& path, ecml::ExecutionContext*);
 	Select(const std::string& selectStatement);
-	Select(const std::string& selectStatement, eckit::ExecutionContext*);
+	Select(const std::string& selectStatement, ecml::ExecutionContext*);
 	Select();
-	Select(eckit::ExecutionContext*);
+	Select(ecml::ExecutionContext*);
 
 	virtual ~Select();
 
@@ -59,7 +59,7 @@ public:
 	eckit::DataHandle* dataHandle() { return dataHandle_; };
 	std::istream* dataIStream() { return istream_; }
 
-	SelectIterator* createSelectIterator(const std::string&, eckit::ExecutionContext*);
+	SelectIterator* createSelectIterator(const std::string&, ecml::ExecutionContext*);
 
 private:
 	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
@@ -73,7 +73,7 @@ private:
 	std::string selectStatement_;
 	std::string delimiter_;
 
-    eckit::ExecutionContext* context_;
+    ecml::ExecutionContext* context_;
 };
 
 } // namespace odb 

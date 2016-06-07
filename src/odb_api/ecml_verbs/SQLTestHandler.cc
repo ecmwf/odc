@@ -13,9 +13,9 @@
 #include "eckit/parser/StringTools.h"
 #include "eckit/io/FileHandle.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/Comparator.h"
@@ -50,16 +50,16 @@ PathName SQLTestHandler::write(const string& testLabel, const string& parameterN
     return fn;
 }
 
-void SQLTestHandler::createInputTables(Cell* dictionary)
+void SQLTestHandler::createInputTables(ecml::Cell* dictionary)
 {
     if (! dictionary) return;
     dictionary = dictionary->value();
     if (! dictionary) return;
 
-    for (Cell* p (dictionary->rest()); p; p = p->rest())
+    for (ecml::Cell* p (dictionary->rest()); p; p = p->rest())
     {
         string tableName (p->text());
-        Cell* csv (p->value()->value());
+        ecml::Cell* csv (p->value()->value());
         const string text (csv->text());
 
         Log::info() << "createInputTables: tableName: " << tableName << endl;
@@ -70,16 +70,16 @@ void SQLTestHandler::createInputTables(Cell* dictionary)
 }
 
 /// Accepted parameters: label, input, expect, sql
-Request SQLTestHandler::handle(ExecutionContext& context)
+ecml::Request SQLTestHandler::handle(ecml::ExecutionContext& context)
 {
-    Environment& e (context.environment());
+    ecml::Environment& e (context.environment());
 
     const string label (e.lookup("label", "", context));
     const string input (e.lookup("input", "", context));
     const string expect (e.lookup("expect", "", context));
     const string sql (e.lookup("sql", "", context));
 
-    Cell * inputTables (e.lookupNoThrow("input_tables"));
+    ecml::Cell * inputTables (e.lookupNoThrow("input_tables"));
     createInputTables (inputTables);
 
     if (! (expect.size() && sql.size()))
@@ -111,7 +111,7 @@ Request SQLTestHandler::handle(ExecutionContext& context)
     odb::Comparator comparator;
     comparator.compare (l, r);
 
-    return new Cell("_list", "", 0, 0);
+    return new ecml::Cell("_list", "", 0, 0);
 }
 
 } // namespace odb 

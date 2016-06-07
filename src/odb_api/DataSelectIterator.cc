@@ -12,7 +12,7 @@ using namespace odb;
 namespace odb {
 namespace internal {
 
-DataSelectIterator::DataSelectIterator(const DataSelect& query, bool begin, eckit::ExecutionContext* context)
+DataSelectIterator::DataSelectIterator(const DataSelect& query, bool begin, ecml::ExecutionContext* context)
   : context_(context),
     query_(query),
     session_(begin ? createSession() : 0),

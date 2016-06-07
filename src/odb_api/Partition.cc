@@ -20,11 +20,13 @@
 #include "eckit/io/Length.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/StringTools.h"
-#include "eckit/ecml/parser/RequestParser.h"
+
+#include "ecml/parser/RequestParser.h"
 
 #include "odb_api/WriterBufferingIterator.h"
 
 using namespace eckit;
+using namespace ecml;
 using namespace std;
 
 namespace odb {
@@ -66,7 +68,7 @@ Partition::Partition(const PathName& fileName, size_t partitionNumber)
 
         Request requests (RequestParser::parse(blockDescription));
 
-        ExecutionContext context;
+        ecml::ExecutionContext context;
         context.pushEnvironmentFrame(requests->value());
 
         if (part == partitionNumber)

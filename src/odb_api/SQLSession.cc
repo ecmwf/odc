@@ -64,7 +64,7 @@ SQLDatabase& SQLSession::openDatabase(const PathName& path,const std::string& na
     return *currentDatabase_;
 }
 
-unsigned long long SQLSession::execute(SQLStatement& sql, ExecutionContext* context)
+unsigned long long SQLSession::execute(SQLStatement& sql, ecml::ExecutionContext* context)
 {
     Timer timer("Execute");
     ASSERT(currentDatabase_);	

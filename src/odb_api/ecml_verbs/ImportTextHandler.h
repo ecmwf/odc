@@ -13,19 +13,20 @@
 #define odb_api_ImportTextHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
 namespace odb {
 
-class ImportTextHandler : public eckit::RequestHandler {
+class ImportTextHandler : public ecml::RequestHandler {
 public:
     ImportTextHandler(const std::string&);
 
     static unsigned long long importText(const eckit::PathName& pathName, const std::string& csv);
 
 private:
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

@@ -11,7 +11,9 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/odb_api_config.h DESTINATION ${INSTALL
 
 ### include directories
 
-include_directories( ${ODB_API_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
+ecbuild_debug_var (ECML_INCLUDE_DIRS)
+
+include_directories( ${ODB_API_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${ECML_INCLUDE_DIRS} )
 
 ### libs
 

@@ -990,32 +990,16 @@ TEST(SELECT_WHERE_0)
     ++it;
 }
 
-TEST(BufferedHandle_ODB80)
+TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
 {
-    const char *path ("ODB_80.odb");
+    const char *path ("ODB_235.odb");
     const char *data (
-            "a:INTEGER,b:INTEGER\n"
-            "1,1\n"
-            "2,2\n"
-            "3,3\n"
+            "a:INTEGER,b:INTEGER,expver:STRING\n"
+            "1,1,'?'\n"
+            "2,2,'?'\n"
+            "3,3,'?'\n"
             );
 
     odb::tool::ImportTool::importText(data, path);
-
-    BufferedHandle fh(new FileHandle(path));
-    fh.openForRead();
-
-    odb::Reader in(fh);
-    odb::Reader::iterator it (in.begin()), end (in.end());
-
-    stringstream ss;
-    for(size_t i (0); i < it->columns().size(); ++i) 
-        ss << it->columns()[i]->name() << ",";
-    ASSERT( ss.str() == "a,b," );
-
-    size_t n(0);
-    for (; it != end; ++it)
-        ++n;
-
-    ASSERT( n == 3 );
+    Log::info() << "QuestionMarkHandlingWhenSplittingByStringColumn_ODB235: Created file " << "ODB_235.odb" << endl;
 }

@@ -398,17 +398,17 @@ ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_ec
 ecbuild_add_executable( TARGET      test_client_lib_fortran
                         CONDITION   HAVE_FORTRAN AND HAVE_ODB
                         SOURCES     test_client_lib_fortran.f90
-                        LIBS        Odb_fortran ${ODB_LIBS} marskit
+                        LIBS        Odb_fortran ${ODB_LIBS} 
                         LINKER_LANGUAGE Fortran)
 
 ecbuild_add_executable( TARGET      test_client_lib_fortran_server_side_ecml
                         CONDITION   HAVE_FORTRAN AND HAVE_ODB
                         SOURCES     test_client_lib_fortran_server_side_ecml.f90
-                        LIBS        Odb_fortran ${ODB_LIBS} marskit
+                        LIBS        Odb_fortran ${ODB_LIBS} 
                         LINKER_LANGUAGE Fortran)
 
 ecbuild_add_executable( TARGET      test_client_lib_cpp
                         CONDITION   HAVE_ODB
                         SOURCES     test_client_lib_cpp.cc
                         INCLUDES    ${ODB_API_INCLUDE_DIRS}
-                        LIBS        Odb odbtools marskit )
+                        LIBS        Odb odbtools )

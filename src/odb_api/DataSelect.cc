@@ -9,7 +9,7 @@
 #include "odb_api/SQLDataSet.h"
 #include "odb_api/SQLDataTable.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/ExecutionContext.h"
 
 using namespace odb;
 using namespace eckit;
@@ -17,7 +17,7 @@ using namespace eckit;
 namespace odb {
 
 
-DataSelect::DataSelect(const std::string& statement, const DataSet& dataset, eckit::ExecutionContext* context)
+DataSelect::DataSelect(const std::string& statement, const DataSet& dataset, ecml::ExecutionContext* context)
   : statement_(statement),
     dataset_(&dataset),
     table_(0),
@@ -27,7 +27,7 @@ DataSelect::DataSelect(const std::string& statement, const DataSet& dataset, eck
     populateColumns();
 }
 
-DataSelect::DataSelect(const std::string& statement, const DataTable& table, eckit::ExecutionContext* context)
+DataSelect::DataSelect(const std::string& statement, const DataTable& table, ecml::ExecutionContext* context)
   : statement_(statement),
     dataset_(0),
     table_(&table),

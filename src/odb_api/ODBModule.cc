@@ -13,12 +13,12 @@
 
 #include <string>
 
-#include "eckit/ecml/parser/Request.h"
+#include "ecml/parser/Request.h"
 
-#include "eckit/ecml/core/RequestHandler.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
+#include "ecml/core/RequestHandler.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/core/SpecialFormHandler.h"
 
 #include "odb_api/ecml_verbs/ArchiveHandler.h"
 #include "odb_api/ecml_verbs/RetrieveHandler.h"
@@ -36,6 +36,7 @@
 namespace odb {
 
 using namespace std;
+using namespace ecml;
 using namespace eckit;
 
 ODBModule::ODBModule() {}

@@ -19,7 +19,7 @@
 #include "odb_api/Expressions.h"
 #include "odb_api/SQLIteratorSession.h"
 
-namespace eckit { class ExecutionContext; }
+namespace ecml { class ExecutionContext; }
 
 extern "C" {
 	typedef void oda_select_iterator;
@@ -41,7 +41,7 @@ namespace sql {
 
 class SelectIterator { 
 public:
-    SelectIterator (Select &owner, const std::string&, eckit::ExecutionContext*);
+    SelectIterator (Select &owner, const std::string&, ecml::ExecutionContext*);
 	~SelectIterator();
 
 	bool isNewDataset();
@@ -62,7 +62,7 @@ public:
 	double& data(size_t i);
 
 protected:
-	bool next(eckit::ExecutionContext*);
+	bool next(ecml::ExecutionContext*);
 
 private:
 // No copy allowed.
@@ -86,7 +86,7 @@ private:
 	bool aggregateResultRead_;
 	bool isCachingRows_;
 	std::list<std::vector<double> > rowCache_;
-	eckit::ExecutionContext* context_;
+	ecml::ExecutionContext* context_;
 
 protected:
 	SelectIterator (Select &owner);

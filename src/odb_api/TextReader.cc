@@ -32,7 +32,7 @@ TextReader::TextReader(std::istream& input, const std::string& delimiter)
   context_(0)
 {}
 
-TextReader::TextReader(std::istream& input, const std::string& delimiter, ExecutionContext* context)
+TextReader::TextReader(std::istream& input, const std::string& delimiter, ecml::ExecutionContext* context)
 : in_(&input),
   deleteDataHandle_(false),
   delimiter_(delimiter),
@@ -57,7 +57,7 @@ TextReader::TextReader(const std::string& path, const std::string& delimiter)
 	//dataHandle_->openForRead();
 }
 
-TextReader::TextReader(const std::string& path, const std::string& delimiter, ExecutionContext* context)
+TextReader::TextReader(const std::string& path, const std::string& delimiter, ecml::ExecutionContext* context)
 : in_(new std::ifstream(path.c_str())),
   deleteDataHandle_(true),
   path_(path),

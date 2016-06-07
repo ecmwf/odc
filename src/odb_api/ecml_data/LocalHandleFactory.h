@@ -12,9 +12,9 @@
 #ifndef odb_api_LocalHandleFactory_H
 #define odb_api_LocalHandleFactory_H
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 
-class LocalHandleFactory : public eckit::DataHandleFactory
+class LocalHandleFactory : public ecml::DataHandleFactory
 {
 public:
     LocalHandleFactory();

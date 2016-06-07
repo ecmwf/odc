@@ -9,18 +9,18 @@
  */
 /// @author Piotr Kuchta, May 2015
 
-#ifndef PrintHandler_H
-#define PrintHandler_H
+#ifndef odb_api_PrintHandler_H
+#define odb_api_PrintHandler_H
 
 #include <sstream>
 
 #include "ecml/parser/Request.h"
 #include "ecml/RequestHandler.h"
 
-class PrintHandler : public eckit::RequestHandler {
+class PrintHandler : public ecml::RequestHandler {
 public:
     PrintHandler(const std::string&, const std::string&);
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual eckit::Values handle(ecml::ExecutionContext&);
 private:
     const std::string end_;
 };

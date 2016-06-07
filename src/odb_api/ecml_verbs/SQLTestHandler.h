@@ -13,22 +13,22 @@
 #define odb_api_SQLTestHandler_H
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
-#include "eckit/filesystem/PathName.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
 
 namespace odb {
 
-class SQLTestHandler : public eckit::RequestHandler {
+class SQLTestHandler : public ecml::RequestHandler {
 public:
     SQLTestHandler(const std::string&);
 
 private:
     eckit::PathName generatePathName(const std::string& testLabel, const std::string& parameterName);
     eckit::PathName write(const std::string& testLabel, const std::string& parameterName, const std::string& csv);
-    void createInputTables(eckit::Cell*);
+    void createInputTables(ecml::Cell*);
 
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
 } // namespace odb

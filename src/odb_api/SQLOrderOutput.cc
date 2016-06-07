@@ -50,7 +50,7 @@ unsigned long long SQLOrderOutput::count() { return output_->count(); }
 
 void SQLOrderOutput::reset() { output_->reset(); }
 
-void SQLOrderOutput::flush(eckit::ExecutionContext* context)
+void SQLOrderOutput::flush(ecml::ExecutionContext* context)
 {
 	for (SortedResults::iterator it = sortedResults_.begin(); it != sortedResults_.end(); ++it)
 	{
@@ -61,7 +61,7 @@ void SQLOrderOutput::flush(eckit::ExecutionContext* context)
 	output_->flush(context);
 }
 
-bool SQLOrderOutput::output(const Expressions& results, eckit::ExecutionContext* context)
+bool SQLOrderOutput::output(const Expressions& results, ecml::ExecutionContext* context)
 {
 	OrderByExpressions byValues(by_.second);
     Expressions& byExpressions(by_.first);

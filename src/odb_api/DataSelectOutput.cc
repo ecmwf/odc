@@ -18,7 +18,7 @@ DataSelectOutput::DataSelectOutput(DataSelectIterator& it)
 DataSelectOutput::~DataSelectOutput()
 {}
 
-bool DataSelectOutput::output(const Expressions& results, eckit::ExecutionContext* context)
+bool DataSelectOutput::output(const Expressions& results, ecml::ExecutionContext* context)
 {
     double* const data = it_.data();
     size_t size = results.size();

@@ -10,7 +10,8 @@
 
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+
+#include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/SQLInteractiveSession.h"
 #include "odb_api/SQLSimpleOutput.h"
@@ -34,7 +35,7 @@ SQLOutput* SQLInteractiveSession::defaultOutput()
 void SQLInteractiveSession::statement(SQLStatement *sql)
 {
 	ASSERT(sql);
-    eckit::ExecutionContext context; // TODO
+    ecml::ExecutionContext context; // TODO
 	execute(*sql, &context);
 	delete sql;
 }

@@ -13,9 +13,9 @@
 #include "eckit/parser/StringTools.h"
 #include "eckit/io/FileHandle.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
 
 #include "odb_api/odb_api.h"
 #include "odb_api/Comparator.h"
@@ -48,9 +48,9 @@ unsigned long long ImportTextHandler::importText(const PathName& pathName, const
 }
 
 /// Accepted parameters: text, source, target
-Request ImportTextHandler::handle(ExecutionContext& context)
+ecml::Request ImportTextHandler::handle(ecml::ExecutionContext& context)
 {
-    Environment& e (context.environment());
+    ecml::Environment& e (context.environment());
 
     //const string source (e.lookup("source", "", context));
     const PathName target (e.lookup("target", "", context));
@@ -71,7 +71,7 @@ Request ImportTextHandler::handle(ExecutionContext& context)
         importText(target, text);
     }
 
-    List l;
+    ecml::List l;
     l.append(target);
 
     return l;

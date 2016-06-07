@@ -40,11 +40,11 @@ void SQLDistinctOutput::reset()
 	seen_.clear();
 }
 
-void SQLDistinctOutput::flush(eckit::ExecutionContext* context) { output_->flush(context); }
+void SQLDistinctOutput::flush(ecml::ExecutionContext* context) { output_->flush(context); }
 
 unsigned long long SQLDistinctOutput::count() { return output_->count(); }
 
-bool SQLDistinctOutput::output(const expression::Expressions& results, eckit::ExecutionContext* context)
+bool SQLDistinctOutput::output(const expression::Expressions& results, ecml::ExecutionContext* context)
 {
 	for(size_t i = 0; i < results.size(); i++)
 	{

@@ -9,10 +9,11 @@
  */
 /// @author Piotr Kuchta, February 2015
 
-#ifndef DefineFunctionHandler_H
-#define DefineFunctionHandler_H
+#ifndef odb_api_DefineFunctionHandler_H
+#define odb_api_DefineFunctionHandler_H
 
 #include "eckit/filesystem/PathName.h"
+
 #include "ecml/parser/Request.h"
 #include "ecml/SpecialFormHandler.h"
 #include "ecml/ExecutionContext.h"
@@ -20,10 +21,10 @@
 namespace odb { 
 namespace tool {
 
-class DefineFunctionHandler : public eckit::SpecialFormHandler {
+class DefineFunctionHandler : public ecml::SpecialFormHandler {
 public:
     DefineFunctionHandler(const std::string&);
-    virtual eckit::Request handle(const eckit::Request, eckit::ExecutionContext&);
+    virtual ecml::Request handle(const ecml::Request, ecml::ExecutionContext&);
 };
 
 } // namespace tool

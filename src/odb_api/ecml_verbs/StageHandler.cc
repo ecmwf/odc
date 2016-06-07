@@ -16,16 +16,18 @@
 #include "eckit/io/MultiHandle.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/config/Resource.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/data/DataHandleFactory.h"
 
 #include "RetrieveHandler.h"
 #include "odb_api/Stager.h"
 #include "odb_api/FileMapper.h"
 
 using namespace std;
+using namespace ecml;
 using namespace eckit;
 using namespace odb;
 
@@ -36,7 +38,7 @@ StageHandler::StageHandler(const string& name, bool local)
   local_(local) 
 {}
 
-Values StageHandler::handle(ExecutionContext& context)
+Values StageHandler::handle(ecml::ExecutionContext& context)
 {
     Request request (Cell::clone(context.environment().currentFrame())); // TODO: delete later
     request->text("stage"); // it could be let if stage is called via apply

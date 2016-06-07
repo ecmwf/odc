@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/data/DataHandleFactory.h"
 #include "odb_api/Reader.h"
 
 using namespace std;
@@ -27,7 +27,7 @@ Reader::Reader(DataHandle &dh)
   context_(0)
 {}
 
-Reader::Reader(DataHandle &dh, ExecutionContext* context)
+Reader::Reader(DataHandle &dh, ecml::ExecutionContext* context)
 : dataHandle_(&dh),
   deleteDataHandle_(false),
   context_(context)
@@ -40,22 +40,22 @@ Reader::Reader()
   context_(0)
 {}
 
-Reader::Reader(ExecutionContext* context)
+Reader::Reader(ecml::ExecutionContext* context)
 : dataHandle_(0),
   deleteDataHandle_(true),
   path_(""),
   context_(context)
 {}
 
-Reader::Reader(const std::string& path, ExecutionContext* context)
-: dataHandle_(DataHandleFactory::openForRead(path)),
+Reader::Reader(const std::string& path, ecml::ExecutionContext* context)
+: dataHandle_(ecml::DataHandleFactory::openForRead(path)),
   deleteDataHandle_(true),
   path_(path),
   context_(context)
 {}
 
 Reader::Reader(const std::string& path)
-: dataHandle_(DataHandleFactory::openForRead(path)),
+: dataHandle_(ecml::DataHandleFactory::openForRead(path)),
   deleteDataHandle_(true),
   path_(path),
   context_(0)

@@ -16,7 +16,8 @@
 
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/io/MultiHandle.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+
+#include "ecml/core/ExecutionContext.h"
 
 class FileMapper;
 

@@ -14,16 +14,16 @@
 #ifndef Odb2NetcdfModule_H
 #define Odb2NetcdfModule_H
 
-#include "eckit/ecml/core/Module.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/Module.h"
+#include "ecml/core/ExecutionContext.h"
 
 namespace odb {
 
-class Odb2NetcdfModule : public eckit::Module {
+class Odb2NetcdfModule : public ecml::Module {
 public:
     Odb2NetcdfModule();
     ~Odb2NetcdfModule();
-    void importInto(eckit::ExecutionContext&);
+    void importInto(ecml::ExecutionContext&);
 };
 
 } // namespace odb

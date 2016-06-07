@@ -12,21 +12,20 @@
 #ifndef odb_api_SQLHandler_H
 #define odb_api_SQLHandler_H
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/RequestHandler.h"
-
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/parser/Request.h"
+#include "ecml/core/RequestHandler.h"
+#include "ecml/core/ExecutionContext.h"
 
 namespace odb {
 
-class SQLHandler : public eckit::RequestHandler {
+class SQLHandler : public ecml::RequestHandler {
 public:
     SQLHandler(const std::string&);
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 
-    static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&, eckit::ExecutionContext* context);
+    static std::vector<eckit::PathName> executeSelect(const std::string&, eckit::DataHandle&, const std::string&, ecml::ExecutionContext* context);
 
-    static std::vector<eckit::PathName> executeSelect(const std::string&, const std::string&, eckit::DataHandle&, const std::string&, eckit::ExecutionContext* context);
+    static std::vector<eckit::PathName> executeSelect(const std::string&, const std::string&, eckit::DataHandle&, const std::string&, ecml::ExecutionContext* context);
 
     static std::string cleanUpSQLText(const std::string&);
 };

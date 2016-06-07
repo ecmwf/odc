@@ -17,7 +17,8 @@
 class FileMapper;
 class FileCollector;
 
-namespace eckit { class MultiHandle; class ExecutionContext; }
+namespace eckit { class MultiHandle; }
+namespace ecml { class ExecutionContext; }
 
 class Retriever {
 public:

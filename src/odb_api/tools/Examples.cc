@@ -90,13 +90,13 @@ TEST(example_write_data)
     }
 }
 
-class ExampleCallback : public eckit::RequestHandler {
+class ExampleCallback : public ecml::RequestHandler {
 public:
-    ExampleCallback(): eckit::RequestHandler("example_callback") {}
-    virtual eckit::Values handle(eckit::ExecutionContext&);
+    ExampleCallback(): ecml::RequestHandler("example_callback") {}
+    virtual ecml::Values handle(ecml::ExecutionContext&);
 };
 
-eckit::Values ExampleCallback::handle(eckit::ExecutionContext& context)
+ecml::Values ExampleCallback::handle(ecml::ExecutionContext& context)
 {
     // result_set is a variable SQL engine left in the environment for the callback
     std::string resultSetId (context.environment().lookup("result_set", "", context));
@@ -122,10 +122,10 @@ eckit::Values ExampleCallback::handle(eckit::ExecutionContext& context)
         std::cout << std::endl;
     }
 
-    return new eckit::Cell("_list", "", 0, 0);
+    return new ecml::Cell("_list", "", 0, 0);
 }
 
-// Define a callback function by implementing and registering a class derived from eckit::RequestHandler
+// Define a callback function by implementing and registering a class derived from ecml::RequestHandler
 // Execute SQL SELECT statement using SQL verb, passing the new callback as a requests's parameter.
 TEST(example_sql_select_callback)
 {
@@ -136,7 +136,7 @@ TEST(example_sql_select_callback)
                                        "2,2,0.1\n",
                                        "example_sql_select_callback_input.odb");
 
-    eckit::ExecutionContext context;
+    ecml::ExecutionContext context;
     odb::ODBModule odbModule;
     context.import(odbModule);
 
@@ -165,7 +165,7 @@ TEST(example_sql_select_callback_invoked_as_a_request)
                                        "2,2,0.1\n",
                                        "example_sql_select_callback_input.odb");
 
-    eckit::ExecutionContext context;
+    ecml::ExecutionContext context;
     odb::ODBModule odbModule;
     context.import(odbModule);
 
@@ -195,7 +195,7 @@ TEST(example_sql_select_and_a_mars_verb_as_a_callback)
                                        "2,2,0.1\n",
                                        "example_sql_select_callback_input.odb");
 
-    eckit::ExecutionContext context;
+    ecml::ExecutionContext context;
     odb::ODBModule odbModule;
     context.import(odbModule);
 

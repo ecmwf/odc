@@ -49,7 +49,7 @@ public:
 
 	const MockReaderIterator3& end() { return *reinterpret_cast<MockReaderIterator3*>(0); }
 
-	bool next(eckit::ExecutionContext*)
+	bool next(ecml::ExecutionContext*)
 	{
 		if (noMore_) return noMore_;
 		switch (nRows_++)
@@ -75,7 +75,7 @@ public:
 	
 	bool noMore_;
 	int refCount_;
-    eckit::ExecutionContext* context_;
+    ecml::ExecutionContext* context_;
 
 private:
 	odb::MetaData columns_;

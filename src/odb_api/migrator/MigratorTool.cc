@@ -18,7 +18,8 @@
 #include <fstream>
 
 #include "eckit/parser//StringTools.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+
+#include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/migrator/FakeODBIterator.h"
 #include "odb_api/migrator/ImportODBTool.h"
@@ -90,7 +91,7 @@ MigratorTool::MigratorTool (const CommandLineParser &clp) : Tool(clp) { }
 
 void MigratorTool::runECML()
 {
-    ExecutionContext context;
+    ecml::ExecutionContext context;
     ODBModule odbModule;
     ODBMigratorModule migratorModule;
     context.import(odbModule);

@@ -14,8 +14,8 @@
 #include "eckit/config/Resource.h"
 #include "eckit/parser/StringTools.h"
 
-#include "eckit/ecml/core/Interpreter.h"
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/Interpreter.h"
+#include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/FileCollector.h"
 #include "odb_api/FileMapper.h"
@@ -111,7 +111,11 @@ void Stager::stage(eckit::MultiHandle&                                    output
     createIndices (files);
 
     Partitions partitions (Partitioner::createPartitions(files, numberOfPartitions(request)));
-    ASSERT(partitions.size() == numberOfPartitions(request));
+    size_t requestedNumberOfPartitions (numberOfPartitions(request));
+
+    if (partitions.size() != requestedNumberOfPartitions)
+        Log::warning() << "Number of partitions (" << partitions.size() 
+            << ") different than requested: " << requestedNumberOfPartitions << std::endl;
 
     Log::info() << "Saving partitions info to " << partitionsInfoFile << endl;
     partitions.save(partitionsInfoFile);

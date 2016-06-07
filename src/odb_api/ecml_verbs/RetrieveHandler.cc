@@ -16,10 +16,11 @@
 #include "eckit/io/MultiHandle.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/config/Resource.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+
+#include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/data/DataHandleFactory.h"
 
 #include "odb_api/FileCollector.h"
 #include "odb_api/DispatchingWriter.h"
@@ -27,6 +28,7 @@
 
 using namespace std;
 using namespace eckit;
+using namespace ecml;
 using namespace odb;
 
 namespace odb {
@@ -36,17 +38,17 @@ RetrieveHandler::RetrieveHandler(const string& name, bool local)
   local_(local) 
 {}
 
-std::string RetrieveHandler::odbPathNameSchema(eckit::ExecutionContext& context) 
+std::string RetrieveHandler::odbPathNameSchema(ecml::ExecutionContext& context) 
 { 
     return FileCollector::expandTilde(valueInContextOrResource(context, "odbpathnameschema")); 
 }
 
-std::string RetrieveHandler::odbServerRoots(eckit::ExecutionContext& context) 
+std::string RetrieveHandler::odbServerRoots(ecml::ExecutionContext& context) 
 { 
     return FileCollector::expandTilde(valueInContextOrResource(context, "odbserverroots")); 
 } 
 
-std::string RetrieveHandler::valueInContextOrResource(eckit::ExecutionContext& context, const string& keyword, bool required)
+std::string RetrieveHandler::valueInContextOrResource(ecml::ExecutionContext& context, const string& keyword, bool required)
 {
     string r (context.environment().lookup(keyword, eckit::Resource<std::string>(keyword, ""), context));
     if (required && ! r.size())
@@ -54,9 +56,9 @@ std::string RetrieveHandler::valueInContextOrResource(eckit::ExecutionContext& c
     return r;
 }
 
-Values RetrieveHandler::handle(ExecutionContext& context)
+ecml::Values RetrieveHandler::handle(ecml::ExecutionContext& context)
 {
-    Request request (Cell::clone(context.environment().currentFrame())); // TODO: delete later
+    ecml::Request request (ecml::Cell::clone(context.environment().currentFrame())); // TODO: delete later
     request->text("retrieve"); // TODO: we should not need to do this
 
     Log::info() << "RetrieveHandler::handle: request: " << request << endl;
@@ -78,8 +80,8 @@ Values RetrieveHandler::handle(ExecutionContext& context)
         ss << ",odbpathnameschema=\"" << odbPathNameSchema(context) << "\""
            << ",odbserverroots=\"" << odbServerRoots(context) << "\"";
 
-    MultiHandle input;
-    DataHandleFactory::buildMultiHandle(input, ss.str());
+    eckit::MultiHandle input;
+    ecml::DataHandleFactory::buildMultiHandle(input, ss.str());
     Log::info() << "RETRIEVE input " << input << endl;
 
     TemplateParameters templateParameters;

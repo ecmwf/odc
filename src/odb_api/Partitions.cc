@@ -80,12 +80,10 @@ void Partitions::addReport(const PathName& fileName, ullong blockStart, ullong b
 
     Partition& currentPartition (parts.back());
     // Do we have to open new partition?
-    if (! (currentPartition.numberOfRows() + nRows <= rowsPerPartition))
-    {
+    if (! (currentPartition.numberOfRows() + nRows <= rowsPerPartition)) {
         // Open new partition
         ullong firstRow (0);
-        if (! currentPartition.blocks().empty())
-        {
+        if (! currentPartition.blocks().empty()) {
             const Block& lastBlock (currentPartition.blocks().back());
             if (lastBlock.fileName == fileName && currentPartition.startOfLastBlock() == Offset(blockStart))
                 firstRow = currentPartition.rowsOnLastBlock();
@@ -97,30 +95,22 @@ void Partitions::addReport(const PathName& fileName, ullong blockStart, ullong b
         newPartition.add(Block(fileName, blockStart, blockStart + blockLength, firstRow, firstRow + nRows));
         newPartition.startOfLastBlock(Offset(blockStart));
         newPartition.rowsOnLastBlock(nRows);
-    }
-    else
-    {
+    } else {
         // Add to existing partition.
         // First block seen?
-        if (currentPartition.blocks().empty())
-        {
+        if (currentPartition.blocks().empty()) {
             currentPartition.add(Block(fileName, blockStart, blockStart + blockLength, /*firstRow*/ 0, /*lastRow*/ nRows));
             currentPartition.startOfLastBlock(Offset(blockStart));
             currentPartition.rowsOnLastBlock(/*firstRow*/ 0 + nRows);
-        }
-        else
-        {
+        } else {
             // If this is a new file then we need to create a new block
             Block& currentBlock (currentPartition.blocks().back());
 
-            if (currentBlock.fileName != fileName)
-            {
+            if (currentBlock.fileName != fileName) {
                 currentPartition.add(Block(fileName, blockStart, blockStart + blockLength, /*firstRow*/ 0, /*lastRow*/ nRows));
                 currentPartition.startOfLastBlock(Offset(blockStart));
                 currentPartition.rowsOnLastBlock(/*firstRow*/ 0 + nRows);
-            }
-            else
-            {
+            } else {
                 // It's a block on the same file as the previously processed report.
                 // If this is a report in a new physical block then we need to adjust current block's boundaries
                 if (currentBlock.end < Offset(blockStart + blockLength))
@@ -130,8 +120,7 @@ void Partitions::addReport(const PathName& fileName, ullong blockStart, ullong b
 
                 if (currentPartition.startOfLastBlock() == Offset(blockStart))
                     currentPartition.rowsOnLastBlock(currentPartition.rowsOnLastBlock() + nRows);
-                else
-                {
+                else {
                     currentPartition.startOfLastBlock(Offset(blockStart));
                     currentPartition.rowsOnLastBlock(/*firstRow*/ 0 + nRows);
                 }
