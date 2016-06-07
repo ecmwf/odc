@@ -172,6 +172,10 @@ install(DIRECTORY src/
 install(FILES       ${CMAKE_CURRENT_SOURCE_DIR}/src/ecml/prelude/prelude.ecml
         DESTINATION ${INSTALL_INCLUDE_DIR} )
 
+configure_file(       src/ecml/ecml_config.h.in   src/ecml/ecml_config.h )
+install( FILES        ${CMAKE_CURRENT_BINARY_DIR}/src/ecml/ecml_config.h
+         DESTINATION  ${INSTALL_INCLUDE_DIR}/ecml/ )
+
 
 ecbuild_pkgconfig( NAME ${PROJECT_NAME}
                    DESCRIPTION "ECML language interpreter"

@@ -13,10 +13,10 @@
 
 #include <string>
 
-#include "eckit/eckit_version.h"
 #include "eckit/runtime/Context.h"
 #include "eckit/parser/StringTools.h"
 
+#include "ecml/ecml_config.h"
 #include "ecml/parser/Request.h"
 #include "ecml/core/RequestHandler.h"
 #include "ecml/core/ExecutionContext.h"
@@ -65,8 +65,8 @@ static Request macro(const string& name) { return new Cell("_macro", name, 0, 0)
 
 std::string Prelude::preludePath()
 {
-    const std::string installPrefix (ECKIT_INSTALL_PREFIX),
-                      buildDir (ECKIT_BUILD_DIR);
+    const std::string installPrefix (ECML_INSTALL_PREFIX),
+                      buildDir (ECML_BUILD_DIR);
 
     std::string p (installPrefix + "/include/prelude.ecml" );
 
