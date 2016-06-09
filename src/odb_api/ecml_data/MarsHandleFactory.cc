@@ -12,9 +12,9 @@
 
 #include "eckit/io/FileHandle.h"
 
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/RequestHandler.h"
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core/RequestHandler.h"
 
 #include "client/MarsRequestHandle.h"
 #include "client/MarsHandleFactory.h"
@@ -31,19 +31,19 @@ DataHandle* MarsHandleFactory::makeHandle(const string& r) const
 {
     Log::info() << "MarsHandleFactory::makeHandle: parsing " << r << endl;
 
-    Request requests (eckit::RequestParser::parse(r));
+    ecml::Request requests (ecml::RequestParser::parse(r));
 
     Log::info() << "MarsHandleFactory::makeHandle: requests = " << requests << endl;
 
-    Request request(requests->value());
+    ecml::Request request(requests->value());
 
     Log::info() << "MarsHandleFactory::makeHandle: request = " << request << endl;
 
     if (requests->rest())
         Log::warning() << "MarsHandleFactory: Only " << request << " used, skipped rest of " << requests << endl;
 
-    string host(RequestHandler::database(request));
-    long port(RequestHandler::port(request));
+    string host(ecml::RequestHandler::database(request));
+    long port(ecml::RequestHandler::port(request));
     return new MarsRequestHandle(request, new DHSProtocol(host, host, port));
 }
 

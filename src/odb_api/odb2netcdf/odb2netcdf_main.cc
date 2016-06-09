@@ -9,7 +9,7 @@
 #include "odb_api/CommandLineParser.h"
 #include "odb_api/ODBModule.h"
 
-#include "eckit/ecml/core/ExecutionContext.h"
+#include "ecml/core/ExecutionContext.h"
 
 #include "Odb2NetCDF.h"
 #include "Odb2NetcdfModule.h"
@@ -25,7 +25,7 @@ static const string usage = "Usage: odb2netcdf -i [odb_filename|odb_filename_pre
 
 int runScripts(const vector<string>& params)
 {
-    ExecutionContext context;
+    ecml::ExecutionContext context;
     ODBModule odbModule;
     Odb2NetcdfModule odb2NetcdfModule;
     context.import(odbModule);

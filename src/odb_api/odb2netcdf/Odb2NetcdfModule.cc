@@ -13,12 +13,7 @@
 
 #include <string>
 
-#include "eckit/ecml/parser/Request.h"
-
-#include "eckit/ecml/core/RequestHandler.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/core/SpecialFormHandler.h"
+#include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/odb2netcdf/ecml_verbs/Odb2NetcdfHandler.h"
 
@@ -32,10 +27,7 @@ using namespace eckit;
 Odb2NetcdfModule::Odb2NetcdfModule() {}
 Odb2NetcdfModule::~Odb2NetcdfModule() {}
 
-static Request native(const string& name) { return new Cell("_native", name, 0, 0); }
-static Request macro(const string& name) { return new Cell("_macro", name, 0, 0); }
-
-void Odb2NetcdfModule::importInto(ExecutionContext& context)
+void Odb2NetcdfModule::importInto(ecml::ExecutionContext& context)
 {
     static Odb2NetcdfHandler odb2netcdf("odb.odb2netcdf");
     context.registerHandler("odb2netcdf", odb2netcdf);

@@ -13,11 +13,10 @@
 #include "odb_api/Comparator.h"
 
 #include "eckit/types/Types.h"
-#include "eckit/ecml/parser/Request.h"
-#include "eckit/ecml/parser/RequestParser.h"
-#include "eckit/ecml/core/ExecutionContext.h"
-#include "eckit/ecml/core/Environment.h"
-#include "eckit/ecml/data/DataHandleFactory.h"
+#include "ecml/parser/RequestParser.h"
+#include "ecml/core/ExecutionContext.h"
+#include "ecml/core/Environment.h"
+#include "ecml/data/DataHandleFactory.h"
 #include "odb_api/odb2netcdf/ecml_verbs/Odb2NetcdfHandler.h"
 #include "odb_api/odb2netcdf/Odb2NetCDF.h"
 
@@ -28,9 +27,9 @@ using namespace std;
 using namespace eckit;
 using namespace odb;
 
-Odb2NetcdfHandler::Odb2NetcdfHandler(const string& name) : RequestHandler(name) {}
+Odb2NetcdfHandler::Odb2NetcdfHandler(const string& name) : ecml::RequestHandler(name) {}
 
-Values Odb2NetcdfHandler::handle(ExecutionContext& context)
+ecml::Values Odb2NetcdfHandler::handle(ecml::ExecutionContext& context)
 {
     vector<string> source (context.environment().lookupList("source", context));
     vector<string> target (context.environment().lookupList("target", context));
@@ -42,7 +41,7 @@ Values Odb2NetcdfHandler::handle(ExecutionContext& context)
     if (source.size() != target.size())
         throw UserError ("odb2netcdf: number of elements of SOURCE and TARGET must be the same");
 
-    List l;
+    ecml::List l;
 	for(size_t i(0); i < source.size(); ++i)
 	{
         const string& input (source[i]), output (target[i]);
