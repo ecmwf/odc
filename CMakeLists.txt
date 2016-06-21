@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 
 project( ecml CXX )
 
+set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
+
 include( ecbuild_system NO_POLICY_SCOPE )
 
 ecbuild_requires_macro_version( 1.9 )
