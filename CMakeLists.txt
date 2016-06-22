@@ -51,6 +51,10 @@ ecbuild_add_option( FEATURE NETCDF
                     DEFAULT OFF
                     REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
+ecbuild_add_option( FEATURE ODB_API_SERVER_SIDE
+                    DESCRIPTION "Support for keyword SERVER_SIDE"
+                    DEFAULT OFF )
+
 if( HAVE_FORTRAN OR HAVE_MIGRATOR )
 
   ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )

@@ -84,6 +84,7 @@ void Retriever::retrieve(MultiHandle&                                           
     } 
     else
     {
+#ifdef HAVE_ODB_API_SERVER_SIDE
         // Check server_side 
         vector<string> serverSide (request ["server_side"]);
         if (serverSide.size()) 
@@ -103,6 +104,9 @@ void Retriever::retrieve(MultiHandle&                                           
 
             if(output.estimate() == Length(0)) Log::userWarning() << "Data not found" << endl;
         }
+#else
+        Log::debug() << "Server side processing disabled, not checking SERVER_SIDE" << endl;
+#endif
     }
 }
 
