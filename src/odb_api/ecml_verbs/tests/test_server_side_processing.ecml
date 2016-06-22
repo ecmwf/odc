@@ -1,5 +1,4 @@
-test, label = check server side processing works,
-do = (
+function, server_side_test = (
     let, processed_on_server = 
             (retrieve,
                 class = OD,
@@ -38,8 +37,23 @@ do = (
 
     compare, left = (processed_on_server),
             right = (processed_on_client)
+)
 
-    println, values = OK
+test, label = check server side processing works,
+do = (
+    try, 
+    do = (
+        server_side_test
+
+        sequence,values = OK
+    ),
+    catch = (
+        test, label = check exception is caused by disabled support for SERVER_SIDE,
+        do = (current_exception),
+        expect = "UserError: SERVER_SIDE Server side processing disabled at compile time"
+
+        sequence,values = OK
+    )
 ),
 expect = OK
 

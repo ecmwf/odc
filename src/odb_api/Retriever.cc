@@ -84,17 +84,23 @@ void Retriever::retrieve(MultiHandle&                                           
     } 
     else
     {
-#ifdef HAVE_ODB_API_SERVER_SIDE
         // Check server_side 
         vector<string> serverSide (request ["server_side"]);
         if (serverSide.size()) 
         {
+#ifdef HAVE_ODB_API_SERVER_SIDE
             MultiHandle mh;
             FileCollector fileCollector (mapper, mh);
             fileCollector.findFiles(keywords, request);
 
-            if(mh.estimate() == Length(0)) Log::userWarning() << "Data not found" << endl;
+            if(mh.estimate() == Length(0)) 
+                Log::userWarning() << "Data not found" << endl;
+
             handleServerSide(output, fileCollector, serverSide);
+#else
+            Log::error() << "RETRIEVE: SERVER_SIDE Server side processing disabled at compile time" << endl;
+            throw UserError("SERVER_SIDE Server side processing disabled at compile time");
+#endif
         } 
         else 
         {
@@ -102,11 +108,9 @@ void Retriever::retrieve(MultiHandle&                                           
             FileCollector fileCollector (mapper, output);
             fileCollector.findFiles(keywords, request);
 
-            if(output.estimate() == Length(0)) Log::userWarning() << "Data not found" << endl;
+            if(output.estimate() == Length(0)) 
+                Log::userWarning() << "Data not found" << endl;
         }
-#else
-        Log::debug() << "Server side processing disabled, not checking SERVER_SIDE" << endl;
-#endif
     }
 }
 
