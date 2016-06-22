@@ -14,6 +14,7 @@ test_getenv.ecml
 test_apply.ecml
 test_dictionary.ecml
 test_for.ecml
+test_match.ecml
 )
 
 # Get location of test runner executable (for the ECML tests)

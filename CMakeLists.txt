@@ -113,6 +113,8 @@ src/ecml/prelude/ForHandler.cc
 src/ecml/prelude/ForHandler.h
 src/ecml/prelude/GlobHandler.cc
 src/ecml/prelude/GlobHandler.h
+src/ecml/prelude/MatchHandler.h
+src/ecml/prelude/MatchHandler.cc
 src/ecml/prelude/ReadTextFileHandler.h
 src/ecml/prelude/ReadTextFileHandler.cc
 src/ecml/prelude/TryHandler.h

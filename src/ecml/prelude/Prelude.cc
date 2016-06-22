@@ -51,6 +51,7 @@
 #include "ReadTextFileHandler.h"
 #include "TryHandler.h"
 #include "ThrowHandler.h"
+#include "MatchHandler.h"
 
 namespace ecml {
 
@@ -117,6 +118,7 @@ void Prelude::importInto(ExecutionContext& context)
     static ReadTextFileHandler read_text_file("read_text_file");
     static TryHandler _try("try");
     static ThrowHandler _throw("throw");
+    static MatchHandler match("match");
 
     Environment& e(context.environment());
     e.set("let", macro(let.name()));
@@ -149,6 +151,7 @@ void Prelude::importInto(ExecutionContext& context)
     context.registerHandler("glob", _glob);
     context.registerHandler("read_text_file", read_text_file);
     context.registerHandler("throw", _throw);
+    context.registerHandler("match", match);
 
     executePrelude(context);
 }

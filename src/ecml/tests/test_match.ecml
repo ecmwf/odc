@@ -1,0 +1,3 @@
+test, label = test verb match,
+do = (match, regex=foo, strings = foobar/foo/foobaz/bazbaz),
+expect = foobar / foo / foobaz
