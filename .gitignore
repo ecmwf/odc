@@ -1,0 +1,6 @@
+.tags*
+CMakeLists.txt.user*
+*.autosave
+*.sublime-workspace
+.*.sw*
+.*un~
