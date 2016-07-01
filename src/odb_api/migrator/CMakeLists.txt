@@ -59,13 +59,13 @@ migrator_api.h
                                   NAMES ${odb_migrator_data_files} 
                                   NOCHECK )
 
-      ecbuild_add_test( TARGET     test_migrator.ecml
-                      COMMAND      ${migrator_bin} 
-                      ARGS         ecml ${CMAKE_CURRENT_SOURCE_DIR}/test_migrator.ecml
-                      CONDITION    HAVE_MIGRATOR
-                      ENVIRONMENT  ${test_environment}
-                      TEST_DEPENDS get_odb_migrator_test_data
-                      )
+      #ecbuild_add_test( TARGET     test_migrator.ecml
+      #                COMMAND      ${migrator_bin} 
+      #                ARGS         ecml ${CMAKE_CURRENT_SOURCE_DIR}/test_migrator.ecml
+      #                CONDITION    HAVE_MIGRATOR
+      #                ENVIRONMENT  ${test_environment}
+      #                TEST_DEPENDS get_odb_migrator_test_data
+      #                )
     endif()
 
   if( HAVE_MIGRATOR AND HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
