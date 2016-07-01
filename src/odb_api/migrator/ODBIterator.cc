@@ -55,7 +55,8 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
 
 	const std::string odbDirectory = db; //.asString();
 	Log::info() << "Opening ODB in '" << odbDirectory << "'" << std::endl;
-	ASSERT(PathName(odbDirectory).exists());
+	if (! PathName(odbDirectory).exists())
+        throw CantOpenFile(odbDirectory);
 	
 	std::string select = sql.size() ? sql : defaultSQL(db);
 

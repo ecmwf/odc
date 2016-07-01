@@ -1,7 +1,27 @@
 println, values = "ODB_API_TEST_DATA_PATH=" / (getenv, values = ODB_API_TEST_DATA_PATH)
 
-# append 2000010106 pass to migrate
+function, of = label / do, shell = (
+    test, label = (label), do = (
+        println, values = "##### shell: executing '" / (label) / "'"
+        system, values = (do)
+    ), 
+    expect = 0
+)
 
-migrate, source = foo,
-         target = foo.odb,
-         filter = "select andate,antime,expver,reportype,varno,obsvalue"
+function, unpack_data = (
+    shell, label = "unpack test input data: 2000010106.old.ECMA.tar.gz", 
+    do = "tar zxf 2000010106.old.ECMA.tar.gz"
+
+    shell, label = "recreate indices with dcagen", 
+    do = "cd 2000010106/ECMA && dcagen -N 1 -z -F -n -q "
+)
+
+test, label = Check migrate verb works,
+do = (
+    unpack_data
+
+    let, output_files = (migrate, source = "2000010106/ECMA",
+                                  target = "{varno}/varno={varno}.odb",
+                                  filter = "select varno,obsvalue from hdr,body;")
+    output_files
+), expect = "{varno}/varno={varno}.odb" # TODO: this should be a list of files produced
