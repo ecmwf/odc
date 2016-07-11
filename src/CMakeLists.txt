@@ -24,4 +24,5 @@ add_subdirectory( odb_api/odb2netcdf )
 add_subdirectory( odb_api/odb2_to_odb1 )
 add_subdirectory( fortran )
 add_subdirectory( python )
+add_subdirectory( api )
 
