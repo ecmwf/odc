@@ -33,7 +33,7 @@
 
 void prepareData()
 {
-    const char *data ("x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n");
+    const char *data ("x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,10,0.1\n" "2,20,0.2\n" "3,30,0.3\n" "4,40,0.4\n");
     odb::tool::ImportTool::importText(data, "example_select_data_read_results.odb");
 }
 
@@ -72,6 +72,13 @@ TEST(example_select_data_read_results)
         &res, 
         0);    
     checkRC(rc, "Failed to fetch data: ", db);
+
+    int number_of_columns = sqlite3_column_count(res);
+
+    for (int i = 0; i < number_of_columns; ++i)
+        printf("%s%s", sqlite3_column_name(res, i), (i < number_of_columns ? "," : ""));
+
+    printf("\n");
     
     while((rc = sqlite3_step(res)) != SQLITE_DONE)
     {
