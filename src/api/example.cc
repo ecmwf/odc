@@ -50,7 +50,6 @@ TEST(example_libversion)
 {
     std::stringstream ss;
     ss << sqlite3_libversion();
-
 }
 
 TEST(example_select_data_read_results)
@@ -65,16 +64,24 @@ TEST(example_select_data_read_results)
     checkRC(rc, "Cannot open database: ", db);
     
     rc = sqlite3_prepare_v2(db, 
+        // TODO
         //"SELECT SQLITE_VERSION()", 
-        "SELECT '0.12.0';", 
+        //"SELECT '0.12.0';", 
+        "SELECT * FROM \"example_select_data_read_results.odb\";",
         -1, 
         &res, 
         0);    
     checkRC(rc, "Failed to fetch data: ", db);
     
-    rc = sqlite3_step(res);
-    if (rc == SQLITE_ROW) {
-        printf("%s\n", sqlite3_column_text(res, 0));
+    while((rc = sqlite3_step(res)) != SQLITE_DONE)
+    {
+        if (rc == SQLITE_ROW) {
+            printf("%s,%s,%s\n", 
+                sqlite3_column_text(res, 0),
+                sqlite3_column_text(res, 1),
+                sqlite3_column_text(res, 2)
+            );
+        }
     }
     
     sqlite3_finalize(res);

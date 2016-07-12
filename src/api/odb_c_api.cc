@@ -501,12 +501,45 @@ public:
     {
     }
 
+    bool step(); 
+    const unsigned char *column_text(int iCol);
+
 private:
     const std::string sql_;
     odb::Select stmt_;
     odb::Select::iterator it_;
     odb::Select::iterator end_;
+
+    std::vector<std::string> stringCache_;
 };
+
+bool StatementImpl::step()
+{
+    if ( !(it_ != end_))
+        return false;
+    else
+    {
+        ++it_;
+        return true;
+    }
+}
+
+const unsigned char *StatementImpl::column_text(int iCol)
+{
+    if (iCol > stringCache_.size())
+        stringCache_.resize(iCol + 1);
+
+    if (it_->columns()[iCol]->type() == odb::STRING)
+        stringCache_[iCol] = it_->string(iCol);
+    else {
+        stringstream ss;
+        ss << it_->data(iCol);
+        stringCache_[iCol] = ss.str();
+    }
+
+    typedef const unsigned char * cucp_t;
+    return cucp_t(stringCache_[iCol].c_str());
+}
 
 //SQLITE_API const char *SQLITE_STDCALL sqlite3_errmsg(sqlite3*);
 const char * sqlite3_errmsg(sqlite3* db)
@@ -572,16 +605,21 @@ int sqlite3_prepare_v2(
 //SQLITE_API int SQLITE_STDCALL sqlite3_step(sqlite3_stmt*)
 int sqlite3_step(sqlite3_stmt* stmt)
 {
-    //TODO
-    return SQLITE_OK;
+    if (! stmt) 
+        return SQLITE_ERROR;
+
+    StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
+    if (x.step())
+        return SQLITE_ROW;
+
+    return SQLITE_DONE;
 }
 
 //SQLITE_API const unsigned char *SQLITE_STDCALL sqlite3_column_text(sqlite3_stmt*, int iCol);
-const unsigned char *sqlite3_column_text(sqlite3_stmt*, int iCol)
+const unsigned char *sqlite3_column_text(sqlite3_stmt* stmt, int iCol)
 {
-    //TODO
-    typedef const unsigned char * pt;
-    return pt("TODO");
+    StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
+    return x.column_text(iCol);
 }
 
 //SQLITE_API int SQLITE_STDCALL sqlite3_finalize(sqlite3_stmt *pStmt);
