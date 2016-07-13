@@ -84,8 +84,11 @@ class TableDef
 {
 public:
     TableDef();
-    TableDef(const std::string& name, const ColumnDefs& columns,
-            const ConstraintDefs& constraints, const std::vector<std::string>& parents);
+    TableDef(const std::string& name, 
+             const ColumnDefs& columns,
+             const ConstraintDefs& constraints, 
+             const std::vector<std::string>& parents,
+             const std::string& location);
 
     const std::string& name() const { return name_; }
     void name(const std::string& name) { name_ = name; }
@@ -93,11 +96,13 @@ public:
 	const ColumnDefs& columns() const { return columns_; }
     const ConstraintDefs& constraints() const { return constraints_; }
     const std::vector<std::string>& parents() const { return parents_; }
+    const std::string location() const { return location_; }
 private:
     std::string name_;
     ColumnDefs columns_;
     ConstraintDefs constraints_;
 	std::vector<std::string> parents_;
+    std::string location_;
 };
 
 typedef std::map<std::string, TableDef> TableDefs;

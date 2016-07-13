@@ -55,12 +55,16 @@ ConstraintDef::ConstraintDef(const std::string& name, const std::vector<std::str
 TableDef::TableDef()
 {}
 
-TableDef::TableDef(const std::string& name, const ColumnDefs& columns,
-        const ConstraintDefs& constraints, const std::vector<std::string>& parents)
+TableDef::TableDef(const std::string& name, 
+                   const ColumnDefs& columns,
+                   const ConstraintDefs& constraints, 
+                   const std::vector<std::string>& parents,
+                   const std::string& location)
   : name_(name),
     columns_(columns),
     constraints_(constraints),
-    parents_(parents)
+    parents_(parents),
+    location_(location)
 {}
 
 SchemaDef::SchemaDef()

@@ -101,6 +101,7 @@ Expressions emptyExpressionList;
 %token NOT
 %token AND
 %token OR
+%token ON
 %token IS
 %token AS
 %token NIL
@@ -171,6 +172,7 @@ Expressions emptyExpressionList;
 %type <val>data_type;
 %type <val>default_value;
 %type <bol>temporary;
+%type <val>location;
 %type <list>inherits;
 %type <list>inheritance_list;
 %type <list>inheritance_list_;
@@ -367,13 +369,20 @@ column_reference_list: column_reference { $$ = std::vector<std::string>(1, $1); 
 column_reference: IDENT table_reference { $$ = $1 + $2; }
            ;
 
-create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list constraint_list ')' inherits
+location: ON STRING { $$ = $2; }
+        | empty     { $$ = ""; }
+
+create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list constraint_list ')' inherits location
 	{
-        bool temporary($2);
-		std::string name($4);
+        bool temporary ($2);
+		std::string name ($4);
+
         ColumnDefs cols ($7);
+        ConstraintDefs contraints ($8);
 		std::vector<std::string> inheritance($10);
-        TableDef tableDef(name, cols, $8, inheritance);
+        std::string location($11);
+        TableDef tableDef(name, cols, /*constraints*/ $8, inheritance, location);
+
         session->currentDatabase().schemaAnalyzer().addTable(tableDef);
 	}
 	;

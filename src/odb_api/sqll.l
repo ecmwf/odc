@@ -126,6 +126,7 @@ SEMICOLON [;]
 [wW][hH][eE][rR][eE]              return WHERE;
 [aA][nN][dD]                      return AND;
 [oO][rR]                          return OR;
+[oO][nN]                          return ON;
 [iI][sS]                          return IS;
 [nN][uU][lL][lL]                  return NIL;
 [nN][oO][tT]                      return NOT;
