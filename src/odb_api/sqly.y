@@ -173,6 +173,7 @@ Expressions emptyExpressionList;
 %type <val>default_value;
 %type <bol>temporary;
 %type <val>location;
+%type <tablemd>table_md;
 %type <list>inherits;
 %type <list>inheritance_list;
 %type <list>inheritance_list_;
@@ -371,17 +372,22 @@ column_reference: IDENT table_reference { $$ = $1 + $2; }
 
 location: ON STRING { $$ = $2; }
         | empty     { $$ = ""; }
+        ;
 
-create_table_statement: CREATE temporary TABLE table_name AS '(' column_def_list constraint_list ')' inherits location
+table_md: AS '(' column_def_list constraint_list ')' { $$ = make_pair($3, $4); }
+        | empty                                      { $$ = make_pair(ColumnDefs(), ConstraintDefs()); }
+        ;
+
+create_table_statement: CREATE temporary TABLE table_name table_md inherits location
 	{
         bool temporary ($2);
 		std::string name ($4);
 
-        ColumnDefs cols ($7);
-        ConstraintDefs contraints ($8);
-		std::vector<std::string> inheritance($10);
-        std::string location($11);
-        TableDef tableDef(name, cols, /*constraints*/ $8, inheritance, location);
+        ColumnDefs cols ($5.first);
+        ConstraintDefs constraints ($5.second);
+		std::vector<std::string> inheritance($6);
+        std::string location($7);
+        TableDef tableDef(name, cols, constraints, inheritance, location);
 
         session->currentDatabase().schemaAnalyzer().addTable(tableDef);
 	}
