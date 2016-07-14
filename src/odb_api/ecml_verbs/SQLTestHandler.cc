@@ -111,7 +111,10 @@ ecml::Request SQLTestHandler::handle(ecml::ExecutionContext& context)
     odb::Comparator comparator;
     comparator.compare (l, r);
 
-    return new ecml::Cell("_list", "", 0, 0);
+    ecml::List result;
+    result.append(actualOutput);
+
+    return result;
 }
 
 } // namespace odb 

@@ -47,9 +47,7 @@ public:
 	double getParameter(int) const;
 	void   setParameter(int,double);
 
-	SQLTable* findTable(const std::string&);
-	SQLTable* findTable(const std::string&,const std::string&);
-	SQLTable* findFile(const std::string&);
+	SQLTable* findTable(const odb::sql::Table&);
 
 	SQLTable* openDataHandle(eckit::DataHandle &);
     SQLTable* openDataStream(std::istream &, const std::string &);

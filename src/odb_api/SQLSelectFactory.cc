@@ -234,9 +234,7 @@ SQLSelect* SQLSelectFactory::create (
         Table& t (from[i]);
 
         if (! t.embeddedCode)
-            fromTables.push_back( t.database.size() 
-                                  ? session.findTable( t.name, t.database) 
-                                  : session.findTable( t.name) ); 
+            fromTables.push_back(session.findTable(t));
         else
         {
             ecml::ExecutionContext context; // TODO: get it from session, don't pass it to getFromTables

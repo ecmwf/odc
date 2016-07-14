@@ -532,7 +532,7 @@ table_reference: '@' IDENT   { $$ = std::string("@") + $2; }
 
 table : IDENT '.' IDENT { $$ = Table(std::string($1), std::string($3), false); } 
       | IDENT           { $$ = Table(std::string($1), std::string(""), false); } 
-      | STRING			{ $$ = Table(std::string($1), std::string(""), false); } 
+      | STRING			{ $$ = Table(std::string($1), std::string(""), false, true); } 
       ;
 
 table_list : table                  { $$ = std::vector<Table>(); $$.push_back($1); }

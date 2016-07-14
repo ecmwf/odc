@@ -133,17 +133,21 @@ private:
 };
 
 struct Table {
-    Table() : name(), database(), embeddedCode() {}
+    Table() : name(), database(), embeddedCode(), dataDescriptor() {}
 
     Table(const std::string& n, const std::string& db, const bool c)
     : name(n), database(db), embeddedCode(c) {}
+
+    Table(const std::string& n, const std::string& db, const bool c, const bool d)
+    : name(n), database(db), embeddedCode(c), dataDescriptor(d) {}
 
     Table(const Table& o)
     : name(o.name), database(o.database), embeddedCode(o.embeddedCode) {}
 
     std::string name;
     std::string database;
-    bool embeddedCode; // data to be computed
+    bool embeddedCode;   // data to be computed
+    bool dataDescriptor; // we got something in quotes, e.g. file name, instead of identifier (table name)
 };
 
 struct SelectAST {

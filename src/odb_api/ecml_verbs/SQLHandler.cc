@@ -59,16 +59,11 @@ Values SQLHandler::handle(ecml::ExecutionContext& context)
     Log::debug() << "SQLHandler:" << " target: " << target << ", input : " << input << ", filter: " << filter << endl;
 
     vector<string> ps( pathNamesToStrings(executeSelect(filter, include, input, target, &context)) );
-    //ASSERT(ps.size());
-    Values vs(0);
-    List list(vs);
-    for (size_t i(0); i < ps.size(); ++i)
-        list.append(ps[i]);
 
-    //if (vs) vs->showGraph("SQLHandler::handle => " + vs->str());
-    // TODO: return an empty list object?
-    if (vs) return vs;
-    else return new Cell("_list", "", 0, 0);
+    List result;
+    for (size_t i(0); i < ps.size(); ++i)
+        result.append(ps[i]);
+    return result;
 }
 
 vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& input, const string& into, ExecutionContext* context)

@@ -100,16 +100,15 @@ SQLDatabase* SQLSession::getDatabase(const std::string& name)
     return (*j).second;
 }
 
-SQLTable* SQLSession::findFile(const std::string& name)
+SQLTable* SQLSession::findTable(const odb::sql::Table& t)
 {
-    ASSERT(currentDatabase_);
-    return currentDatabase_->table(name);
-}
-
-SQLTable* SQLSession::findTable(const std::string& name)
-{
-    ASSERT(currentDatabase_);
-    return currentDatabase_->table(name);
+    if (t.database.size())
+        return getDatabase(t.database)->table(t.name);
+    else
+    {
+        ASSERT(currentDatabase_);
+        return currentDatabase_->table(t.name);
+    }
 }
 
 SQLTable* SQLSession::openDataStream(std::istream &is, const std::string& delimiter)
@@ -124,10 +123,6 @@ SQLTable* SQLSession::openDataHandle(DataHandle &dh)
 	return currentDatabase_->openDataHandle(dh);
 }
 
-SQLTable* SQLSession::findTable(const std::string& database,const std::string& name)
-{
-    return getDatabase(database)->table(name);
-}
 
 void SQLSession::createIndex(const std::string& column,const std::string& table)
 {
