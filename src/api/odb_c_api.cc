@@ -52,20 +52,23 @@ public:
     DataBaseImpl(const char* filename)
     : filename_(filename)
     {}
+
+    const std::string& filename() const { return filename_; }
+
 private:
     const std::string filename_;
 };
 
 class StatementImpl {
 public:
-    StatementImpl(const char* sql)
-    : sql_(sql),
-      stmt_(sql),
+    StatementImpl(const char* db, const char* sql)
+    : db_(db),
+      sql_(sql),
+      stmt_(std::string(db) + "; " + sql),
       it_(stmt_.begin()),
       end_(stmt_.end()),
       firstStep(true)
-    {
-    }
+    {} 
 
     bool step(); 
     const unsigned char *column_text(int iCol);
@@ -75,6 +78,7 @@ public:
 
 private:
     bool firstStep;
+    const std::string db_;
     const std::string sql_;
     odb::Select stmt_;
     odb::Select::iterator it_;
@@ -202,9 +206,11 @@ int sqlite3_prepare_v2(
 )
 {
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
+
+    DataBaseImpl& dbi (reinterpret_cast<DataBaseImpl&>(*db));
     typedef sqlite3_stmt* stmt_ptr_t; 
 
-    *ppStmt = stmt_ptr_t (new StatementImpl(zSql));
+    *ppStmt = stmt_ptr_t (new StatementImpl(dbi.filename().c_str(), zSql));
 
     return SQLITE_OK;
 }
@@ -239,7 +245,7 @@ int sqlite3_finalize(sqlite3_stmt *pStmt)
 // https://www.sqlite.org/c3ref/column_name.html
 const char *sqlite3_column_name(sqlite3_stmt* stmt, int iCol)
 {
-    StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
+           StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
     return x.column_name(iCol);
 }
 

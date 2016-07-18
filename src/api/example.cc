@@ -60,14 +60,14 @@ TEST(example_select_data_read_results)
     sqlite3 *db;
     sqlite3_stmt *res;
     
-    int rc = sqlite3_open(":memory:", &db);
+    int rc = sqlite3_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", &db);
     checkRC(rc, "Cannot open database: ", db);
     
     rc = sqlite3_prepare_v2(db, 
         // TODO
         //"SELECT SQLITE_VERSION()", 
         //"SELECT '0.12.0';", 
-        "SELECT * FROM \"example_select_data_read_results.odb\";",
+        "SELECT * FROM foo;",
         -1, 
         &res, 
         0);    
