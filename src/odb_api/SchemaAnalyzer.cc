@@ -80,7 +80,8 @@ void SchemaAnalyzer::addTable(TableDef& table)
     Log::debug() << "SchemaAnalyzer::addTable:" << table.name() << std::endl;
     std::string schemaName = "";
 
-    if (StringTool::isInQuotes(table.name())) table.name(StringTool::unQuote(table.name()));
+    if (StringTool::isInQuotes(table.name())) 
+        table.name(StringTool::unQuote(table.name()));
     else {
         size_t pos = table.name().find(".");
         if (pos != std::string::npos)

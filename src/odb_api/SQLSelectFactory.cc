@@ -171,7 +171,8 @@ vector<SQLTable*> SQLSelectFactory::resolveImplicitFrom(SQLSession& session, vec
 
     SQLTable* table = implicitFromTableSource_ ? session.openDataHandle(*implicitFromTableSource_)
         : implicitFromTableSourceStream_ ? session.openDataStream(*implicitFromTableSourceStream_, csvDelimiter_) 
-        : database_ ? database_->table("defaultTable")
+        //: database_ ? database_->table("defaultTable")
+        : database_ ? database_->defaultTable()
         : session.currentDatabase().dualTable();
 
     L << "Implicit FROM: " << *table << endl;

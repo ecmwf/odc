@@ -20,7 +20,6 @@
 
 namespace eckit { class DataHandle; }
 namespace odb { class DataTable; }
-namespace odb { class DataTable; }
 
 namespace odb {
 namespace sql {
@@ -45,7 +44,9 @@ public:
 	virtual void open();
 	virtual void close();
 
-	virtual SQLTable* table(const std::string&);
+    //virtual SQLTable* table(const std::string&);
+    virtual SQLTable* table(const Table&);
+    virtual SQLTable* defaultTable();
 	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA) = 0; 
     virtual SQLTable* openDataStream(std::istream&, const std::string& delimiter, DataFormat = CSV) = 0;
 	virtual void addTable(SQLTable *table) { tablesByName_[table->name()] = table; }
@@ -65,8 +66,8 @@ public:
 	virtual bool sameAs(const SQLDatabase& other) const;
 	SchemaAnalyzer& schemaAnalyzer() { return schemaAnalyzer_; }
 
-        void setIncludePath(const std::string& includePath);
-        const std::vector<eckit::PathName>& includePath() const { return includePath_; }
+    void setIncludePath(const std::string& includePath);
+    const std::vector<eckit::PathName>& includePath() const { return includePath_; }
 
     SQLTable* dualTable();
 

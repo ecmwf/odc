@@ -103,11 +103,13 @@ SQLDatabase* SQLSession::getDatabase(const std::string& name)
 SQLTable* SQLSession::findTable(const odb::sql::Table& t)
 {
     if (t.database.size())
-        return getDatabase(t.database)->table(t.name);
+        return getDatabase(t.database)->table(t);
     else
     {
-        ASSERT(currentDatabase_);
-        return currentDatabase_->table(t.name);
+        if (! currentDatabase_) 
+            throw eckit::UserError("No current database", t.name);
+
+        return currentDatabase_->table(t);
     }
 }
 

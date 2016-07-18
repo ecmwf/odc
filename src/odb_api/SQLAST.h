@@ -136,13 +136,17 @@ struct Table {
     Table() : name(), database(), embeddedCode(), dataDescriptor() {}
 
     Table(const std::string& n, const std::string& db, const bool c)
-    : name(n), database(db), embeddedCode(c) {}
+    : name(n), database(db), embeddedCode(c), dataDescriptor() {}
 
     Table(const std::string& n, const std::string& db, const bool c, const bool d)
     : name(n), database(db), embeddedCode(c), dataDescriptor(d) {}
 
     Table(const Table& o)
-    : name(o.name), database(o.database), embeddedCode(o.embeddedCode) {}
+    : name(o.name), 
+      database(o.database), 
+      embeddedCode(o.embeddedCode),
+      dataDescriptor(o.dataDescriptor)
+    {}
 
     std::string name;
     std::string database;

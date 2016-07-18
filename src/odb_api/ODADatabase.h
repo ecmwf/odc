@@ -39,7 +39,7 @@ private:
 
 	virtual void open();
 	virtual void close();
-	virtual SQLTable* table(const std::string&);
+	virtual SQLTable* table(const Table&);
 	virtual SQLTable* openDataHandle(eckit::DataHandle&, DataFormat = ODA);
 	virtual SQLTable* openDataStream(std::istream&, const std::string& delimiter, DataFormat = CSV); 
 

@@ -255,8 +255,6 @@ SQLBitfield.cc
 SQLBitfield.h
 SQLColumn.cc
 SQLColumn.h
-SQLCountStar.cc
-SQLCountStar.h
 SQLDataColumn.cc
 SQLDataColumn.h
 SQLDataSet.cc

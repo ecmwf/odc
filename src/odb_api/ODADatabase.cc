@@ -32,24 +32,36 @@ void ODADatabase::open() {}
 
 void ODADatabase::close() { SQLDatabase::close(); }
 
-SQLTable* ODADatabase::table(const std::string& name)
+SQLTable* ODADatabase::table(const Table& t)
 {
-	std::map<std::string,SQLTable*>::iterator j = tablesByName_.find(name);
+    std::map<std::string,SQLTable*>::iterator j = tablesByName_.find(t.name);
 
-    Log::debug() << "ODADatabase::table(" << name << ") tablesByName_.size()==" << tablesByName_.size() << std::endl;
+    Log::debug() << "ODADatabase::table(" << t.name << ") tablesByName_.size()==" << tablesByName_.size() << std::endl;
     for (std::map<std::string,SQLTable*>::iterator it(tablesByName_.begin()); it != tablesByName_.end(); ++it)
-    {
         Log::info() << " : " << it->first << std::endl;
-    }
 
-	if(j == tablesByName_.end())
-	{
-		// FIXME (?): path_ is '.'. ignore now
-		//tablesByName_[name] = new TODATable<Reader>(*this,path_,name);
-		tablesByName_[name] = new TODATable<Reader>(*this,name,name);
-		j = tablesByName_.find(name);
-	}
-	return (*j).second;
+    if(j == tablesByName_.end())
+    {
+        if (t.dataDescriptor)
+        {
+            // FIXME (?): path_ is '.'. ignore now
+            //tablesByName_[name] = new TODATable<Reader>(*this,path_,name);
+            tablesByName_[t.name] = new TODATable<Reader>(*this, t.name, t.name);
+            j = tablesByName_.find(t.name);
+        }
+        else
+        {
+            // Table is refered to by its name, not a path or another data descriptor
+            const TableDef& tableDef (schemaAnalyzer().findTable(t.name));
+            const string& location (tableDef.location());
+            if  (location.empty())
+                throw UserError(std::string("Table ") + t.name + " is not associated with a physical file.");
+            tablesByName_[t.name] = new TODATable<Reader>(*this, location, t.name);
+            j = tablesByName_.find(t.name);
+
+        }
+    }
+    return (*j).second;
 }
 
 SQLTable* ODADatabase::openDataHandle(DataHandle& dh, DataFormat dataFormat)

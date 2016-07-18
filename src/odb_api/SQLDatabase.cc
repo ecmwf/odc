@@ -84,14 +84,14 @@ void SQLDatabase::open()
 
 void SQLDatabase::close()
 {
-	for(std::map<std::string,SQLTable*>::iterator j = tablesByName_.begin();
-		j != tablesByName_.end(); ++j)
-	{
-		SQLTable* table = (*j).second;
-		delete table;
-	}
+    for(std::map<std::string,SQLTable*>::iterator j = tablesByName_.begin();
+        j != tablesByName_.end(); ++j)
+    {
+        SQLTable* table = (*j).second;
+        delete table;
+    }
 
-	tablesByName_.clear();
+    tablesByName_.clear();
 }
 
 SQLTable* SQLDatabase::dualTable()
@@ -318,9 +318,17 @@ void SQLDatabase::loadIOMAP()
 }
 #endif
 
-SQLTable* SQLDatabase::table(const std::string& name)
+SQLTable* SQLDatabase::defaultTable()
 {
-	std::map<std::string,SQLTable*>::iterator j = tablesByName_.find(name);
+    std::map<std::string,SQLTable*>::iterator j (tablesByName_.find("defaultTable"));
+    if (j == tablesByName_.end())
+        throw UserError("No default table");
+	return (*j).second;
+}
+
+SQLTable* SQLDatabase::table(const Table& t)
+{
+	std::map<std::string,SQLTable*>::iterator j (tablesByName_.find(t.name));
 	ASSERT(j != tablesByName_.end());
 	return (*j).second;
 }
