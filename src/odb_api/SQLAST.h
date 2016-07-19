@@ -148,6 +148,17 @@ struct Table {
       dataDescriptor(o.dataDescriptor)
     {}
 
+    friend std::ostream& operator<< (std::ostream& s, const Table& t)
+    {
+        return s << "[table,name=" << t.name 
+                 << ",database=" << t.database 
+                 << ",embeddedCode=" << t.embeddedCode 
+                 << ",dataDescriptor=" << t.dataDescriptor 
+                 << "]"
+                 //<< std::endl
+                 ;
+    }
+
     std::string name;
     std::string database;
     bool embeddedCode;   // data to be computed
@@ -196,6 +207,26 @@ struct SelectAST {
     SQLExpression*                            where;
     Expressions                               groupBy;
     std::pair<Expressions,std::vector<bool> > orderBy;
+};
+
+struct InsertAST {
+    InsertAST () {}
+
+    InsertAST (const Table& table, const std::vector<std::string>& columns, const std::vector<std::string>& values)
+    : table_(table),
+      columns_(columns),
+      values_(values)
+    {}
+
+    InsertAST (const InsertAST& other) 
+    : table_(other.table_), 
+      columns_ (other.columns_), 
+      values_(other.values_) 
+    {}
+
+    Table table_;
+    std::vector<std::string> columns_;
+    std::vector<std::string> values_;
 };
 
 } // namespace sql

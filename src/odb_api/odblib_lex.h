@@ -22,6 +22,7 @@ struct YYSTYPE {
     Range                  r;
     bool                   bol;
     SelectAST              select_statement;
+    InsertAST              insert_statement;
     std::pair<ColumnDefs, ConstraintDefs> tablemd;             
 };
 #endif

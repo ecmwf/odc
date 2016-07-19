@@ -21,6 +21,7 @@ namespace ecml { class ExecutionContext; }
 #include "eckit/eckit.h"
 
 #include "odb_api/SQLSelectFactory.h"
+#include "odb_api/SQLInsertFactory.h"
 
 namespace odb {
 namespace sql {
@@ -43,9 +44,10 @@ public:
 	SQLDatabase* getDatabase(const std::string& name);
 
     SQLSelectFactory& selectFactory();
+    SQLInsertFactory& insertFactory();
 
-	double getParameter(int) const;
-	void   setParameter(int,double);
+	//double getParameter(int) const;
+	//void   setParameter(int,double);
 
 	SQLTable* findTable(const odb::sql::Table&);
 
@@ -71,9 +73,10 @@ private:
 	SQLSession& operator=(const SQLSession&);
 
 	SQLDatabase* currentDatabase_;
-    std::map<int,double> params_;
+    //std::map<int,double> params_;
     std::map<std::string,SQLDatabase*> databases_;
     SQLSelectFactory selectFactory_;
+    SQLInsertFactory insertFactory_;
 };
 
 } // namespace sql

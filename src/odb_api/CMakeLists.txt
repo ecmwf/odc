@@ -303,8 +303,12 @@ SQLReal.cc
 SQLReal.h
 SQLSelect.cc
 SQLSelect.h
+SQLInsert.cc
+SQLInsert.h
 SQLSelectFactory.cc
 SQLSelectFactory.h
+SQLInsertFactory.cc
+SQLInsertFactory.h
 SQLSession.cc
 SQLSession.h
 SQLSimpleOutput.cc

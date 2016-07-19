@@ -139,9 +139,7 @@ void SQLCallbackOutput::prepare(SQLSelect& sql)
 
 void SQLCallbackOutput::cleanup(SQLSelect& sql)
 {
-    // This is a bit of a hack here. It does fix the test suite, but not general problem with mess caused by SQLSelectFactory being a global variable aka Singleton.
-    // This should go away after we refactor SQLSelectFactory and output options.
-    //SQLSelectFactory::instance().reset();
+    //SQLSelectFactory::instance().reset(); //?
 }
 
 unsigned long long SQLCallbackOutput::count() { return count_; }

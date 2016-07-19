@@ -74,6 +74,8 @@ Expressions emptyExpressionList;
 %token GROUP
 %token ORDER
 %token BY
+%token INSERT
+%token VALUES
 
 %token CREATE
 %token SCHEMA
@@ -177,6 +179,10 @@ Expressions emptyExpressionList;
 %type <list>inherits;
 %type <list>inheritance_list;
 %type <list>inheritance_list_;
+%type <list>optional_columns;
+%type <list>columns;
+%type <list>values;
+%type <list>values_list;
 
 %type <condefs>constraint_list;
 %type <condefs>constraint_list_;
@@ -187,6 +193,7 @@ Expressions emptyExpressionList;
 %type <list>column_reference_list;
 %type <val>column_reference;
 %type <select_statement>select_statement;
+%type <insert_statement>insert_statement;
 %type <select_statement>create_view_statement;
 
 %%
@@ -198,18 +205,11 @@ statements : statement ';'
 		   | statements statement ';'
 		   ;
 
-statement: select_statement
-           {
-               SelectAST a($1);
-               session->statement(session->selectFactory().create(*session, a));
-           }
+statement: select_statement        { session->statement(session->selectFactory().create(*session, /*SelectAST* */ ($1))); }
+		 | create_view_statement   { session->statement(session->selectFactory().create(*session, /*SelectAST* */ ($1))); }
+		 | insert_statement        { session->statement(session->insertFactory().create(*session, /*InsertAST* */ ($1))); }
 		 | set_statement
 		 | create_schema_statement
-		 | create_view_statement
-           {
-               SelectAST a($1);
-               session->statement(session->selectFactory().create(*session, a));
-           }
 		 | create_index_statement 
 		 | create_type_statement
 		 | create_table_statement
@@ -462,19 +462,38 @@ into: INTO IDENT   { $$ = $2; }
     | empty        { $$ = ""; }
     ;
 
-from : FROM table_list    { $$ = $2; }
+from : FROM table_list   { $$ = $2; }
      | FROM EMBEDDED_CODE 
         { 
             std::cerr << "FROM EMBEDDED_CODE: " << $2 << std::endl;
             $$ = std::vector<Table>();
             $$.push_back(Table($2, "", true));
         } 
-     | empty              { $$ = std::vector<Table>(); }
+     | empty             { $$ = std::vector<Table>(); }
 	 ;
 
 where : WHERE expression { $$ = $2; }
 	  |                  { $$ = 0;  } 
 	  ;
+
+insert_statement: INSERT INTO table optional_columns VALUES values
+                { $$ = InsertAST($3, $4, $6); }
+                ;
+
+optional_columns: '(' columns ')'   { $$ = $2; }
+                | empty             { $$ = std::vector<std::string>(); } 
+                ;
+
+columns: IDENT              { $$ = std::vector<std::string>(); $$.insert($$.begin(), $1); }
+       | columns ',' IDENT  { $$ = $1; $$.push_back($3); }
+       ;
+
+values: '(' values_list ')' { $$ = $2; }
+      ;
+
+values_list: '?'                  { $$ = std::vector<std::string>(); $$.insert($$.begin(), "?" /*$1*/); }
+           | values_list ',' '?'  { $$ = $1; $$.push_back("?"/*$3*/); }
+           ;
 
 assignment_rhs	: expression
 		;
@@ -494,7 +513,7 @@ set_statement : SET VAR EQ assignment_rhs
 	; 
 
 bitfield_ref: '.' IDENT  { $$ = $2; }
-                        |            { $$ = std::string(); }
+            |            { $$ = std::string(); }
 
 column: IDENT vector_index table_reference optional_hash
 		  {

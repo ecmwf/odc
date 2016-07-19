@@ -124,6 +124,8 @@ SEMICOLON [;]
 [iI][nN][tT][oO]                  return INTO;
 [fF][rR][oO][mM]                  return FROM;
 [wW][hH][eE][rR][eE]              return WHERE;
+[iI][nN][sS][eE][rR][tT]          return INSERT;
+[vV][aA][lL][uU][eE][sS]          return VALUES;
 [aA][nN][dD]                      return AND;
 [oO][rR]                          return OR;
 [oO][nN]                          return ON;

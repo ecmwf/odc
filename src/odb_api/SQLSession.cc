@@ -37,6 +37,7 @@ SQLSession::~SQLSession()
 }
 
 SQLSelectFactory& SQLSession::selectFactory() { return selectFactory_; }
+SQLInsertFactory& SQLSession::insertFactory() { return insertFactory_; }
 
 SQLDatabase& SQLSession::currentDatabase(SQLDatabase *db)
 {
@@ -78,7 +79,7 @@ SQLDatabase& SQLSession::currentDatabase() const
     ASSERT(currentDatabase_);	
     return *currentDatabase_;
 }
-
+/*
 double SQLSession::getParameter(int which) const
 {
     std::map<int,double>::const_iterator j = params_.find(which);
@@ -91,6 +92,7 @@ void SQLSession::setParameter(int which,double value)
 {
     params_[which] = value;
 }
+*/
 
 SQLDatabase* SQLSession::getDatabase(const std::string& name)
 {
