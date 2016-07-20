@@ -30,6 +30,7 @@
 #include "odb_api/Reader.h"
 #include "odb_api/Writer.h"
 #include "odb_api/ColumnType.h"
+#include "odb_api/SQLParser.h"
 
 #include "sqlite3.h"
 
@@ -59,9 +60,22 @@ private:
     const std::string filename_;
 };
 
+DataBaseImpl& database (sqlite3* db) { return reinterpret_cast<DataBaseImpl&>(*db); }
+
 class StatementImpl {
 public:
-    StatementImpl(const char* db, const char* sql)
+    virtual bool step() = 0;
+    virtual const unsigned char *column_text(int iCol) = 0;
+    virtual const char *column_name(int iCol) = 0;
+    virtual int column_count() = 0;
+    virtual int column_type(int i) = 0;
+    virtual int bind_double(int i, double v) = 0;
+    virtual int bind_int(int, int) = 0;
+};
+
+class SelectImpl : public StatementImpl {
+public:
+    SelectImpl(const char* db, const char* sql)
     : db_(db),
       sql_(sql),
       stmt_(std::string(db) + "; " + sql),
@@ -70,11 +84,13 @@ public:
       firstStep(true)
     {} 
 
-    bool step(); 
+    bool step();
     const unsigned char *column_text(int iCol);
     const char *column_name(int iCol);
     int column_count();
-    int column_type(int iCol);
+    int column_type(int i);
+    int bind_double(int i, double v);
+    int bind_int(int, int);
 
 private:
     bool firstStep;
@@ -88,7 +104,9 @@ private:
     std::vector<std::string> columnNameCache_;
 };
 
-bool StatementImpl::step()
+StatementImpl& statement (sqlite3_stmt* stmt) { return reinterpret_cast<StatementImpl&>(*stmt); }
+
+bool SelectImpl::step()
 {
     if (firstStep)
     {
@@ -105,12 +123,12 @@ bool StatementImpl::step()
     }
 }
 
-int StatementImpl::column_count()
+int SelectImpl::column_count()
 {
     return it_->columns().size();
 }
 
-const unsigned char *StatementImpl::column_text(int iCol)
+const unsigned char *SelectImpl::column_text(int iCol)
 {
     if (iCol + 1 > stringCache_.size())
         stringCache_.resize(iCol + 1);
@@ -128,7 +146,7 @@ const unsigned char *StatementImpl::column_text(int iCol)
     return cucp_t(stringCache_[iCol].c_str());
 }
 
-const char *StatementImpl::column_name(int iCol)
+const char *SelectImpl::column_name(int iCol)
 {
     if (iCol + 1 > columnNameCache_.size())
         columnNameCache_.resize(iCol + 1);
@@ -137,7 +155,7 @@ const char *StatementImpl::column_name(int iCol)
     return columnNameCache_[iCol].c_str();
 }
 
-int StatementImpl::column_type(int iCol)
+int SelectImpl::column_type(int iCol)
 {
 //  SQLITE_INTEGER, SQLITE_FLOAT, SQLITE_TEXT, SQLITE_BLOB, or SQLITE_NULL.
     switch (it_->columns()[iCol]->type())
@@ -150,6 +168,16 @@ int StatementImpl::column_type(int iCol)
         default:
             return SQLITE_NULL; // TODO?
     }
+}
+
+int SelectImpl::bind_double(int i, double v)
+{
+    NOTIMP;
+}
+
+int SelectImpl::bind_int(int i, int v)
+{
+    NOTIMP;
 }
 
 //SQLITE_API const char *SQLITE_STDCALL sqlite3_errmsg(sqlite3*);
@@ -207,10 +235,11 @@ int sqlite3_prepare_v2(
 {
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
 
-    DataBaseImpl& dbi (reinterpret_cast<DataBaseImpl&>(*db));
-    typedef sqlite3_stmt* stmt_ptr_t; 
+    odb::sql::SQLParser parser;
+    // TODO: parse string, see if we get SelectStatement or InsertStatement
 
-    *ppStmt = stmt_ptr_t (new StatementImpl(dbi.filename().c_str(), zSql));
+    typedef sqlite3_stmt* stmt_ptr_t; 
+    *ppStmt = stmt_ptr_t (new SelectImpl(database(db).filename().c_str(), zSql));
 
     return SQLITE_OK;
 }
@@ -221,22 +250,42 @@ int sqlite3_step(sqlite3_stmt* stmt)
     if (! stmt) 
         return SQLITE_ERROR;
 
-    StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
-    if (x.step())
+    if (statement(stmt).step())
         return SQLITE_ROW;
 
     return SQLITE_DONE;
 }
 
-//SQLITE_API const unsigned char *SQLITE_STDCALL sqlite3_column_text(sqlite3_stmt*, int iCol);
-const unsigned char *sqlite3_column_text(sqlite3_stmt* stmt, int iCol)
+//int sqlite3_bind_blob(sqlite3_stmt*, int, const void*, int n, void(*)(void*));
+//int sqlite3_bind_blob64(sqlite3_stmt*, int, const void*, sqlite3_uint64, void(*)(void*));
+int sqlite3_bind_double(sqlite3_stmt* stmt, int i, double v)
 {
-    StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
-    return x.column_text(iCol);
+    return statement(stmt).bind_double(i, v);
+}
+
+int sqlite3_bind_int(sqlite3_stmt* stmt, int i, int v)
+{
+    return statement(stmt).bind_int(i, v);
+}
+
+//int sqlite3_bind_int64(sqlite3_stmt*, int, sqlite3_int64);
+//int sqlite3_bind_null(sqlite3_stmt*, int);
+//int sqlite3_bind_text(sqlite3_stmt*,int,const char*,int,void(*)(void*));
+//int sqlite3_bind_text16(sqlite3_stmt*, int, const void*, int, void(*)(void*));
+//int sqlite3_bind_text64(sqlite3_stmt*, int, const char*, sqlite3_uint64, void(*)(void*), unsigned char encoding);
+//int sqlite3_bind_value(sqlite3_stmt*, int, const sqlite3_value*);
+//int sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
+//int sqlite3_bind_zeroblob64(sqlite3_stmt*, int, sqlite3_uint64);
+
+
+//SQLITE_API const unsigned char *SQLITE_STDCALL sqlite3_column_text(sqlite3_stmt*, int iCol);
+const unsigned char *sqlite3_column_text(sqlite3_stmt* stmt, int column)
+{
+    return statement(stmt).column_text(column);
 }
 
 //SQLITE_API int SQLITE_STDCALL sqlite3_finalize(sqlite3_stmt *pStmt);
-int sqlite3_finalize(sqlite3_stmt *pStmt)
+int sqlite3_finalize(sqlite3_stmt *stmt)
 {
     //TODO
     return SQLITE_OK;
@@ -245,22 +294,19 @@ int sqlite3_finalize(sqlite3_stmt *pStmt)
 // https://www.sqlite.org/c3ref/column_name.html
 const char *sqlite3_column_name(sqlite3_stmt* stmt, int iCol)
 {
-           StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
-    return x.column_name(iCol);
+    return statement(stmt).column_name(iCol);
 }
 
 //https://www.sqlite.org/c3ref/column_blob.html
 int sqlite3_column_type(sqlite3_stmt* stmt, int iCol)
 {
-    StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
-    return x.column_type(iCol);
+    return statement(stmt).column_type(iCol);
 }
 
 // https://www.sqlite.org/c3ref/column_count.html
 int sqlite3_column_count(sqlite3_stmt *stmt)
 {
-    StatementImpl& x (reinterpret_cast<StatementImpl&>(*stmt));
-    return x.column_count();
+    return statement(stmt).column_count();
 }
 
 } // extern "C" 

@@ -98,17 +98,32 @@ TEST(example_select_data_read_results)
 TEST(example_insert_data)
 {
     sqlite3 *db;
-    sqlite3_stmt *res;
+    sqlite3_stmt *stmt;
 
     int rc = sqlite3_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL) ON 'example_select_data_read_results.odb';", &db);
-    checkRC(rc, "Cannot open database: ", db);
+    checkRC(rc, "Cannot open database", db);
     
     rc = sqlite3_prepare_v2(db, 
         "INSERT INTO foo (x,y,v) VALUES (?,?,?);",
         -1, 
-        &res, 
+        &stmt, 
         0);    
-    checkRC(rc, "Failed to prepare INSERT statement: ", db);
+    checkRC(rc, "Failed to prepare INSERT statement", db);
+
+    for (int i = 1; i <= 3; ++i)
+    {
+        rc = sqlite3_bind_int(stmt, 0, 1 * i);
+        checkRC(rc, "Failed to bind int value", db);
+
+        rc = sqlite3_bind_int(stmt, 1, 10 * i);
+        checkRC(rc, "Failed to bind int value", db);
+
+        rc = sqlite3_bind_double(stmt, 2, 0.1 * i);
+        checkRC(rc, "Failed to bind double value", db);
+
+        rc = sqlite3_step(stmt);
+        checkRC(rc, "Failed to step and write row", db);
+    }
 }
 
 TEST(example_read_data)

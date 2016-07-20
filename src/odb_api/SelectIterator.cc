@@ -53,27 +53,28 @@ SelectIterator::SelectIterator(Select &owner, const std::string& select, ecml::E
   isCachingRows_(false),
   refCount_(0)
 {
-	if (owner.dataIStream())
-		parse(session_, owner.dataIStream());
-	else
-		parse<DataStream<SameByteOrder, DataHandle> >(session_, owner.dataHandle());
+    if (owner.dataIStream())
+        parse(session_, owner.dataIStream());
+    else
+        parse<DataStream<SameByteOrder, DataHandle> >(session_, owner.dataHandle());
 }
 
 template <typename DATASTREAM> 
 void SelectIterator::parse(odb::sql::SQLSession& session, typename DATASTREAM::DataHandleType *dh)
 {
-	sql::SQLParser p;
-	p.parseString(session, select_, dh, session.selectFactory().config());
-	sql::SQLStatement *stmt (session_.statement());
+    sql::SQLParser p;
+    p.parseString(session, select_, dh, session.selectFactory().config());
+    sql::SQLStatement *stmt (session_.statement());
 
-	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
-	ASSERT(selectStmt_);
+    selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
+    if (! selectStmt_)
+        throw UserError(std::string("Expected SELECT, got: ") + select_);
 
-	selectStmt_->prepareExecute();
+    selectStmt_->prepareExecute();
 	
-	populateMetaData<DATASTREAM>();
+    populateMetaData<DATASTREAM>();
 
-	selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
+    selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
 }
 
 void SelectIterator::parse(odb::sql::SQLSession& session, std::istream *is)
@@ -94,19 +95,19 @@ void SelectIterator::parse(odb::sql::SQLSession& session, std::istream *is)
 
 SelectIterator::~SelectIterator()
 {
-	delete [] data_;
-	delete selectStmt_;
-	delete metaData_ ;
+    delete [] data_;
+    delete selectStmt_;
+    delete metaData_ ;
 }
 
 void SelectIterator::cacheRow(const Expressions& results)
 {
-	size_t n = results.size();
-	std::vector<double> v(n);
-	bool missing = false;
-	for(size_t i = 0; i < n; i++)
-		v[i] = results[i]->eval(missing = false);
-	rowCache_.push_back(v);
+    size_t n = results.size();
+    std::vector<double> v(n);
+    bool missing = false;
+    for(size_t i = 0; i < n; i++)
+        v[i] = results[i]->eval(missing = false);
+    rowCache_.push_back(v);
 }
 
 bool SelectIterator::next(ecml::ExecutionContext* context)
