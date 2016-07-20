@@ -119,7 +119,7 @@ TEST(example_libversion)
     std::stringstream ss;
     ss << sqlite3_libversion();
 
-    eckit::Log::info() << "sqlite3_libversion: " << ss << std::endl;
+    eckit::Log::info() << "sqlite3_libversion: " << ss.str() << std::endl;
 }
 
 int main(int argc, char** argv)
