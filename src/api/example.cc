@@ -31,12 +31,6 @@
 #include "odb_api/tools/TestCase.h"
 #include "odb_api/tools/ImportTool.h"
 
-void prepareData()
-{
-    const char *data ("x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,10,0.1\n" "2,20,0.2\n" "3,30,0.3\n" "4,40,0.4\n");
-    odb::tool::ImportTool::importText(data, "example_select_data_read_results.odb");
-}
-
 void checkRC(int rc, const char* message, sqlite3 *db) 
 {
     if (rc != SQLITE_OK) {
@@ -51,7 +45,8 @@ TEST(example_insert_data)
     sqlite3 *db;
     sqlite3_stmt *stmt;
 
-    int rc = sqlite3_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL) ON 'example_select_data_read_results.odb';", &db);
+    int rc = sqlite3_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL)"
+                          " ON 'example_select_data_read_results.odb';", &db);
     checkRC(rc, "Cannot open database", db);
     
     rc = sqlite3_prepare_v2(db, 
@@ -75,12 +70,12 @@ TEST(example_insert_data)
         rc = sqlite3_step(stmt);
         //checkRC(rc, "Failed to step and write row", db);
     }
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
 }
 
 TEST(example_select_data_read_results)
 {
-    prepareData();
-
     sqlite3 *db;
     sqlite3_stmt *res;
     
@@ -140,5 +135,4 @@ int main(int argc, char** argv)
     odb::tool::test::TestRunnerApplication testRunner(argc, argv);
     testRunner.start();
 }
-
 
