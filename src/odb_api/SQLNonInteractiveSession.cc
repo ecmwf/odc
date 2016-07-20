@@ -26,7 +26,7 @@ SQLNonInteractiveSession::~SQLNonInteractiveSession()
 
 SQLOutput* SQLNonInteractiveSession::defaultOutput()
 {
-    NOTIMP;
+    return new SQLSimpleOutput(std::cout);
 }
 
 void SQLNonInteractiveSession::statement(SQLStatement *sql)

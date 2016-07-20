@@ -11,16 +11,11 @@
 //#include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
-//#include "odb_api/Codec.h"
-//#include "odb_api/DataStream.h"
-//#include "odb_api/HashTable.h"
 #include "odb_api/SQLAST.h"
 #include "odb_api/SQLBitfield.h"
 #include "odb_api/SQLCreateTable.h"
 #include "odb_api/SQLDatabase.h"
 #include "odb_api/SQLSession.h"
-//#include "odb_api/SQLType.h"
-//#include "odb_api/SchemaAnalyzer.h"
 
 #include "odb_api/Types.h"
 #include "eckit/exception/Exceptions.h"

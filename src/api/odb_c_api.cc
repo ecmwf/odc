@@ -31,6 +31,11 @@
 #include "odb_api/Writer.h"
 #include "odb_api/ColumnType.h"
 #include "odb_api/SQLParser.h"
+#include "odb_api/InMemoryDataHandle.h"
+#include "odb_api/SQLInteractiveSession.h"
+#include "odb_api/SQLNonInteractiveSession.h"
+#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/SQLDatabase.h"
 
 #include "sqlite3.h"
 
@@ -64,6 +69,8 @@ DataBaseImpl& database (sqlite3* db) { return reinterpret_cast<DataBaseImpl&>(*d
 
 class StatementImpl {
 public:
+    virtual ~StatementImpl() {}
+
     virtual bool step() = 0;
     virtual const unsigned char *column_text(int iCol) = 0;
     virtual const char *column_name(int iCol) = 0;
@@ -106,6 +113,51 @@ private:
 
 StatementImpl& statement (sqlite3_stmt* stmt) { return reinterpret_cast<StatementImpl&>(*stmt); }
 
+class InsertImpl : public StatementImpl {
+public:
+    InsertImpl(const odb::MetaData& metaData, const std::string& location);
+
+    bool step();
+    const unsigned char *column_text(int iCol) { NOTIMP; }
+    const char *column_name(int iCol) { NOTIMP; }
+    int column_count(); 
+    int column_type(int i) { NOTIMP; }
+    int bind_double(int i, double v);
+    int bind_int(int, int);
+
+private:
+    odb::Writer<> writer_;
+    odb::Writer<>::iterator it_;
+};
+
+InsertImpl::InsertImpl(const odb::MetaData& metaData, const std::string& location)
+: writer_(location),
+  it_(writer_.begin())
+{
+    it_->columns(metaData);
+    it_->writeHeader();
+}
+
+int InsertImpl::bind_double(int i, double v) 
+{ 
+    (*it_)[i] = v;
+    return SQLITE_OK;
+}
+
+int InsertImpl::bind_int(int i, int v) 
+{ 
+    (*it_)[i] = v;
+    return SQLITE_OK;
+}
+
+bool InsertImpl::step()
+{
+    ++it_;
+    return true;
+}
+
+int InsertImpl::column_count() { return it_->columns().size(); }
+
 bool SelectImpl::step()
 {
     if (firstStep)
@@ -123,10 +175,7 @@ bool SelectImpl::step()
     }
 }
 
-int SelectImpl::column_count()
-{
-    return it_->columns().size();
-}
+int SelectImpl::column_count() { return it_->columns().size(); }
 
 const unsigned char *SelectImpl::column_text(int iCol)
 {
@@ -235,10 +284,33 @@ int sqlite3_prepare_v2(
 {
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
 
+    odb::sql::SQLNonInteractiveSession session;
+    odb::sql::SQLOutputConfig config (session.selectFactory().config());
     odb::sql::SQLParser parser;
-    // TODO: parse string, see if we get SelectStatement or InsertStatement
+    // Parse the schema / database
+    odb::InMemoryDataHandle input;
+    input.openForRead();
+    //if (database(db).filename().size())
+    //    parser.parseString(session, database(db).filename(), &input, config);
+    parser.parseString(session, database(db).filename() + ";" + zSql, &input, config);
+    odb::sql::SQLStatement* statement (session.statement());
 
     typedef sqlite3_stmt* stmt_ptr_t; 
+
+    if (dynamic_cast<odb::sql::SQLInsert*>(statement))
+    {
+        odb::sql::SQLInsert& sqlInsert (dynamic_cast<odb::sql::SQLInsert&>(*statement));
+        const odb::sql::Table& table (sqlInsert.table());
+        const odb::sql::TableDef& tableDef (session.currentDatabase().schemaAnalyzer().findTable(table.name));
+
+        const MetaData md (odb::sql::SQLSelectFactory::toODAColumns(session, tableDef));
+        const std::string& location (tableDef.location());
+
+        *ppStmt = stmt_ptr_t (new InsertImpl(md, location));
+        return SQLITE_OK;
+    }
+  
+    // Assume this is SELECT for now 
     *ppStmt = stmt_ptr_t (new SelectImpl(database(db).filename().c_str(), zSql));
 
     return SQLITE_OK;
@@ -287,7 +359,7 @@ const unsigned char *sqlite3_column_text(sqlite3_stmt* stmt, int column)
 //SQLITE_API int SQLITE_STDCALL sqlite3_finalize(sqlite3_stmt *pStmt);
 int sqlite3_finalize(sqlite3_stmt *stmt)
 {
-    //TODO
+    delete &statement(stmt);
     return SQLITE_OK;
 }
 

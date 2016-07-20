@@ -34,6 +34,11 @@ public:
 	virtual unsigned long long execute(ecml::ExecutionContext*);
 	virtual expression::Expressions output() const;
 
+
+    const Table& table() const { return table_; }
+    const std::vector<std::string>& columns() const { return columns_; }
+    const std::vector<std::string>& values() const { return values_; }
+
 protected:
 	virtual void print(std::ostream&) const; 	
 

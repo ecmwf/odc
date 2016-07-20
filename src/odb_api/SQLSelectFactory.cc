@@ -285,7 +285,7 @@ SQLSelect* SQLSelectFactory::create (
 	return r;
 }
 
-MetaData toODAColumns(odb::sql::SQLSession& session, const odb::sql::TableDef& tableDef)
+MetaData SQLSelectFactory::toODAColumns(odb::sql::SQLSession& session, const odb::sql::TableDef& tableDef)
 {
     ostream& L(eckit::Log::info());
 

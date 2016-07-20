@@ -68,6 +68,8 @@ public:
 
     void reset();
 
+    static odb::MetaData toODAColumns(odb::sql::SQLSession&, const odb::sql::TableDef&);
+
 private:
     // No copy allowed
     SQLSelectFactory(const SQLSelectFactory&);
