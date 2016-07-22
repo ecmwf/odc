@@ -22,6 +22,7 @@ typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
 class MDPrinter {
 public:
 	virtual void print(std::ostream&, MDReader::iterator &) = 0;
+	virtual void printSummary(std::ostream&) {};
 };
 
 class VerbosePrinter : public MDPrinter {
@@ -53,8 +54,40 @@ private:
 	unsigned long headerCount_;
 };
 
-HeaderTool::HeaderTool (int argc, char *argv[]) : Tool(argc, argv) {}
+class DDLPrinter : public MDPrinter {
+public:
 
+    DDLPrinter(const std::string& path) : path_(path) {}
+
+	void print(std::ostream& o, MDReader::iterator &r)
+	{
+        if (md_.empty() || md_.back() != r->columns())
+        {
+			md_.push_back(r->columns());
+            return;
+        }
+	}
+
+	void printSummary(std::ostream& o) 
+    {
+        for (size_t i(0); i < md_.size(); ++i)
+            printTable(o, md_[i], "foo", path_);
+    }
+
+    static void printTable(std::ostream& o, const odb::MetaData& md, const std::string& tableName, const std::string& path)
+    {
+        o << "CREATE TABLE " << tableName << " AS (";
+        for (size_t i (0); i < md.size(); ++i)
+            o << md[i]->name() << " integer,\n";
+        o << ") ON '" << path << "';\n";
+    }
+
+private:
+	std::vector<odb::MetaData> md_;
+    const std::string& path_;
+};
+
+HeaderTool::HeaderTool (int argc, char *argv[]) : Tool(argc, argv) {}
 
 void HeaderTool::run()
 {
@@ -66,14 +99,17 @@ void HeaderTool::run()
 		return;
 	}
 
-	std::string db = parameters(1);
+	const std::string db (parameters(1));
+    std::ostream& o (std::cout);
 
-    std::ostream& o = std::cout;
 	VerbosePrinter verbosePrinter;
 	OffsetsPrinter offsetsPrinter;
-	MDPrinter& printer(* (optionIsSet("-offsets")
-		? static_cast<MDPrinter*>(&offsetsPrinter)
-		: static_cast<MDPrinter*>(&verbosePrinter)));
+	DDLPrinter ddlPrinter (db);
+
+	MDPrinter& printer(* 
+        (optionIsSet("-offsets") ? static_cast<MDPrinter*>(&offsetsPrinter) : 
+         optionIsSet("-ddl")     ? static_cast<MDPrinter*>(&ddlPrinter) :
+                                   static_cast<MDPrinter*>(&verbosePrinter)));
 
 	MDReader oda(db);
 	MDReader::iterator r(oda.begin());
@@ -86,6 +122,7 @@ void HeaderTool::run()
 		printer.print(o, r);
 		metaData = r->columns();
 	}
+    printer.printSummary(o);
 }
 
 } // namespace tool 

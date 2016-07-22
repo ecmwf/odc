@@ -49,11 +49,7 @@ TEST(example_insert_data)
                           " ON 'example_select_data_read_results.odb';", &db);
     checkRC(rc, "Cannot open database", db);
     
-    rc = sqlite3_prepare_v2(db, 
-        "INSERT INTO foo (x,y,v) VALUES (?,?,?);",
-        -1, 
-        &stmt, 
-        0);    
+    rc = sqlite3_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, &stmt, 0);    
     checkRC(rc, "Failed to prepare INSERT statement", db);
 
     for (int i = 1; i <= 3; ++i)
@@ -79,38 +75,38 @@ TEST(example_select_data_read_results)
     sqlite3 *db;
     sqlite3_stmt *res;
     
-    int rc = sqlite3_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", &db);
-    checkRC(rc, "Cannot open database: ", db);
+    int rc = sqlite3_open("CREATE TABLE foo " //ON 'example_select_data_read_results.odb';", &db);
+                           " ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
+    checkRC(rc, "Cannot open database", db);
     
-    rc = sqlite3_prepare_v2(db, 
-        //"SELECT SQLITE_VERSION()", 
-        //"SELECT '0.12.0';", 
-        "SELECT * FROM foo;",
-        -1, 
-        &res, 
-        0);    
-    checkRC(rc, "Failed to fetch data: ", db);
+    rc = sqlite3_prepare_v2(db, "SELECT * FROM foo;", -1, &res, 0);
+    checkRC(rc, "Failed to prepare statement", db);
 
     int number_of_columns = sqlite3_column_count(res);
 
+    // Print CSV header. Each field is a colon separated pair of column name and type.
     for (int i = 0; i < number_of_columns; ++i)
-        printf("%s%s", sqlite3_column_name(res, i), (i < number_of_columns ? "," : ""));
-
+        printf("%s:%d%s", sqlite3_column_name(res, i), 
+                          sqlite3_column_type(res, i), 
+                          ((i < number_of_columns - 1) ? "," : ""));
     printf("\n");
-    
+   
+    // Print rows of data. 
     while((rc = sqlite3_step(res)) != SQLITE_DONE)
     {
-        if (rc == SQLITE_ROW) {
-            printf("%s,%s,%s\n", 
-                sqlite3_column_text(res, 0),
-                sqlite3_column_text(res, 1),
-                sqlite3_column_text(res, 2)
-            );
+        if (rc == SQLITE_ROW)
+        {
+            for (int column = 0; column < number_of_columns; ++column)
+                printf("%s%s", sqlite3_column_text(res, column),
+                               ((column < number_of_columns - 1) ? "," : ""));
+            printf("\n");
         }
     }
     
-    sqlite3_finalize(res);
-    sqlite3_close(db);
+    rc = sqlite3_finalize(res);
+    checkRC(rc, "sqlite3_finalize failed", db);
+    rc = sqlite3_close(db);
+    checkRC(rc, "sqlite3_close failed", db);
 }
 
 
