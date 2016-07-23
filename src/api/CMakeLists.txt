@@ -12,5 +12,5 @@ ecbuild_add_library( TARGET             OdbCAPI
                      )
 
 ecbuild_add_executable( TARGET    odbql_example
-                        SOURCES   example.cc test.cc 
+                        SOURCES   example.c test.cc 
                         LIBS      OdbCAPI odbtools odbtest )

@@ -31,8 +31,10 @@
 #include "odb_api/tools/TestCase.h"
 #include "odb_api/tools/ImportTool.h"
 
+extern "C" {
 int odbql_example_insert_data();
 int odbql_example_select_data_read_results();
+}
 
 TEST(odbql_example_insert_data) { ASSERT(odbql_example_insert_data() == 0); }
 TEST(odbql_example_select_data_read_results) { ASSERT(odbql_example_select_data_read_results() == 0); }

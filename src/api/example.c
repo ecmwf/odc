@@ -39,7 +39,8 @@ int odbql_example_insert_data()
     rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, &stmt, 0);    
     checkRC(rc, "Failed to prepare INSERT statement", db);
 
-    for (int i = 1; i <= 3; ++i)
+    int i = 0;
+    for ( ; i <= 3; ++i)
     {
         rc = odbql_bind_int(stmt, 0, 1 * i);
         checkRC(rc, "Failed to bind int value", db);
@@ -77,18 +78,18 @@ int odbql_example_select_data_read_results()
     int number_of_columns = odbql_column_count(res);
 
     // Print CSV header. Each field is a colon separated pair of column name and type.
-    for (int i = 0; i < number_of_columns; ++i)
+    int i = 0;
+    for ( ; i < number_of_columns; ++i)
         printf("%s:%d%s", odbql_column_name(res, i), 
                           odbql_column_type(res, i), 
                           ((i < number_of_columns - 1) ? "," : ""));
     printf("\n");
    
     // Print rows of data. 
-    while((rc = odbql_step(res)) != ODBQL_DONE)
-    {
-        if (rc == ODBQL_ROW)
-        {
-            for (int column = 0; column < number_of_columns; ++column)
+    while((rc = odbql_step(res)) != ODBQL_DONE) {
+        if (rc == ODBQL_ROW) {
+            int column = 0;
+            for (; column < number_of_columns; ++column)
                 printf("%s%s", odbql_column_text(res, column),
                                ((column < number_of_columns - 1) ? "," : ""));
             printf("\n");
