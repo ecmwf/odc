@@ -14,33 +14,20 @@
 ///
 /// @author Piotr Kuchta, ECMWF, July 2016
 
-#include <string>
-#include <iostream>
-#include <vector>
-#include <sstream>
-
 #include "odbql.h"
 
-#include "eckit/filesystem/PathName.h"
-#include "eckit/runtime/ContextBehavior.h"
-#include "eckit/runtime/Context.h"
+// We need to include stdio.h for the fprintf declaration
+#include "stdio.h"
 
-#include "odb_api/ODBBehavior.h"
-#include "odb_api/tools/Tool.h"
-#include "odb_api/tools/TestRunnerApplication.h"
-#include "odb_api/tools/TestCase.h"
-#include "odb_api/tools/ImportTool.h"
-
-void checkRC(int rc, const char* message, odbql *db) 
-{
-    if (rc != ODBQL_OK) {
-        std::string msg (std::string(message) + odbql_errmsg(db));
-        odbql_close(db);
-        throw eckit::AssertionFailed (msg);
-    }
+#define checkRC(return_code, message, db) { \
+    if (return_code != ODBQL_OK) { \
+        fprintf(stderr, "%s: %s\n", message, odbql_errmsg(db)); \
+        odbql_close(db); \
+        return 1; \
+    } \
 }
 
-TEST(example_insert_data)
+int odbql_example_insert_data()
 {
     odbql *db;
     odbql_stmt *stmt;
@@ -66,11 +53,16 @@ TEST(example_insert_data)
         rc = odbql_step(stmt);
         //checkRC(rc, "Failed to step and write row", db);
     }
-    odbql_finalize(stmt);
-    odbql_close(db);
+    rc = odbql_finalize(stmt);
+    checkRC(rc, "odbql_finalize failed", db);
+
+    rc = odbql_close(db);
+    checkRC(rc, "odbql_close failed", db);
+
+    return 0;
 }
 
-TEST(example_select_data_read_results)
+int odbql_example_select_data_read_results()
 {
     odbql *db;
     odbql_stmt *res;
@@ -107,28 +99,5 @@ TEST(example_select_data_read_results)
     checkRC(rc, "odbql_finalize failed", db);
     rc = odbql_close(db);
     checkRC(rc, "odbql_close failed", db);
+    return 0;
 }
-
-
-TEST(example_libversion)
-{
-    std::stringstream ss;
-    ss << odbql_libversion();
-
-    eckit::Log::info() << "odbql_libversion: " << ss.str() << std::endl;
-}
-
-int main(int argc, char** argv)
-{
-    using namespace odb;
-    using namespace odb::tool;
-    using namespace eckit;
-
-	Tool::registerTools();
-    static ContextBehavior* behavior (0);
-    if (behavior == 0)
-        Context::instance().behavior(behavior = new ODBBehavior());
-    odb::tool::test::TestRunnerApplication testRunner(argc, argv);
-    testRunner.start();
-}
-

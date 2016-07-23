@@ -90,6 +90,7 @@ public:
       end_(stmt_.end()),
       firstStep(true)
     {} 
+    ~SelectImpl() {}
 
     bool step();
     const unsigned char *column_text(int iCol);
@@ -116,6 +117,7 @@ StatementImpl& statement (odbql_stmt* stmt) { return reinterpret_cast<StatementI
 class InsertImpl : public StatementImpl {
 public:
     InsertImpl(const odb::MetaData& metaData, const std::string& location);
+    ~InsertImpl() {}
 
     bool step();
     const unsigned char *column_text(int iCol) { NOTIMP; }
