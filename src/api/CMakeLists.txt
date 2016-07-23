@@ -1,7 +1,7 @@
 
 list( APPEND odb_c_api_src_files
-sqlite3.h
-odb_c_api.cc  
+odbql.h
+odbql.cc  
 )
 
 ecbuild_add_library( TARGET             OdbCAPI
@@ -11,6 +11,6 @@ ecbuild_add_library( TARGET             OdbCAPI
                      LIBS               Odb
                      )
 
-ecbuild_add_executable( TARGET    c_api_example
+ecbuild_add_executable( TARGET    odbql_example
                         SOURCES   example.cc  
                         LIBS      OdbCAPI odbtools odbtest )

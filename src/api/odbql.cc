@@ -37,7 +37,7 @@
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLDatabase.h"
 
-#include "sqlite3.h"
+#include "odbql.h"
 
 using namespace eckit;
 using namespace odb;
@@ -65,7 +65,7 @@ private:
     const std::string filename_;
 };
 
-DataBaseImpl& database (sqlite3* db) { return reinterpret_cast<DataBaseImpl&>(*db); }
+DataBaseImpl& database (odbql* db) { return reinterpret_cast<DataBaseImpl&>(*db); }
 
 class StatementImpl {
 public:
@@ -111,7 +111,7 @@ private:
     std::vector<std::string> columnNameCache_;
 };
 
-StatementImpl& statement (sqlite3_stmt* stmt) { return reinterpret_cast<StatementImpl&>(*stmt); }
+StatementImpl& statement (odbql_stmt* stmt) { return reinterpret_cast<StatementImpl&>(*stmt); }
 
 class InsertImpl : public StatementImpl {
 public:
@@ -141,13 +141,13 @@ InsertImpl::InsertImpl(const odb::MetaData& metaData, const std::string& locatio
 int InsertImpl::bind_double(int i, double v) 
 { 
     (*it_)[i] = v;
-    return SQLITE_OK;
+    return ODBQL_OK;
 }
 
 int InsertImpl::bind_int(int i, int v) 
 { 
     (*it_)[i] = v;
-    return SQLITE_OK;
+    return ODBQL_OK;
 }
 
 bool InsertImpl::step()
@@ -206,16 +206,16 @@ const char *SelectImpl::column_name(int iCol)
 
 int SelectImpl::column_type(int iCol)
 {
-//  SQLITE_INTEGER, SQLITE_FLOAT, SQLITE_TEXT, SQLITE_BLOB, or SQLITE_NULL.
+//  ODBQL_INTEGER, ODBQL_FLOAT, ODBQL_TEXT, ODBQL_BLOB, or ODBQL_NULL.
     switch (it_->columns()[iCol]->type())
     {
-        case STRING:   return SQLITE_TEXT;
-        case INTEGER:  return SQLITE_INTEGER;
-        case BITFIELD: return SQLITE_INTEGER; // TODO?
-        case REAL:     return SQLITE_FLOAT;
-        case DOUBLE:   return SQLITE_FLOAT;
+        case STRING:   return ODBQL_TEXT;
+        case INTEGER:  return ODBQL_INTEGER;
+        case BITFIELD: return ODBQL_INTEGER; // TODO?
+        case REAL:     return ODBQL_FLOAT;
+        case DOUBLE:   return ODBQL_FLOAT;
         default:
-            return SQLITE_NULL; // TODO?
+            return ODBQL_NULL; // TODO?
     }
 }
 
@@ -229,56 +229,56 @@ int SelectImpl::bind_int(int i, int v)
     NOTIMP;
 }
 
-//SQLITE_API const char *SQLITE_STDCALL sqlite3_errmsg(sqlite3*);
-const char * sqlite3_errmsg(sqlite3* db)
+//ODBQL_API const char *ODBQL_STDCALL odbql_errmsg(odbql*);
+const char * odbql_errmsg(odbql* db)
 {
-    return "sqlite3_errmsg: TODO";
+    return "odbql_errmsg: TODO";
 }
 
-//SQLITE_API const char *SQLITE_STDCALL sqlite3_libversion(void);
-const char * sqlite3_libversion(void)
+//ODBQL_API const char *ODBQL_STDCALL odbql_libversion(void);
+const char * odbql_libversion(void)
 {
     return odb::ODBAPIVersion::version();
 }
 
 
-//SQLITE_API int SQLITE_STDCALL sqlite3_open(
+//ODBQL_API int ODBQL_STDCALL odbql_open(
 //  const char *filename,   /* Database filename (UTF-8) */
-//  sqlite3 **ppDb          /* OUT: SQLite db handle */
+//  odbql **ppDb          /* OUT: SQLite db handle */
 //);
 
-int sqlite3_open(
+int odbql_open(
   const char *filename,   /* Database filename (UTF-8) */
-  sqlite3 **ppDb          /* OUT: SQLite db handle */
+  odbql **ppDb          /* OUT: SQLite db handle */
 ) 
 {
     eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
 
-    typedef sqlite3 * dbp_t; 
+    typedef odbql * dbp_t; 
     *ppDb = dbp_t( new DataBaseImpl(filename) );
-    return SQLITE_OK;
+    return ODBQL_OK;
 }
 
-//SQLITE_API int SQLITE_STDCALL sqlite3_close(sqlite3*);
-int sqlite3_close(sqlite3*)
+//ODBQL_API int ODBQL_STDCALL odbql_close(odbql*);
+int odbql_close(odbql*)
 {
     //TODO
-    return SQLITE_OK;
+    return ODBQL_OK;
 }
 
-//SQLITE_API int SQLITE_STDCALL sqlite3_prepare_v2(
-//  sqlite3 *db,            /* Database handle */
+//ODBQL_API int ODBQL_STDCALL odbql_prepare_v2(
+//  odbql *db,            /* Database handle */
 //  const char *zSql,       /* SQL statement, UTF-8 encoded */
 //  int nByte,              /* Maximum length of zSql in bytes. */
-//  sqlite3_stmt **ppStmt,  /* OUT: Statement handle */
+//  odbql_stmt **ppStmt,  /* OUT: Statement handle */
 //  const char **pzTail     /* OUT: Pointer to unused portion of zSql */
 //);
 
-int sqlite3_prepare_v2(
-  sqlite3 *db,            /* Database handle */
+int odbql_prepare_v2(
+  odbql *db,            /* Database handle */
   const char *zSql,       /* SQL statement, UTF-8 encoded */
   int nByte,              /* Maximum length of zSql in bytes. */
-  sqlite3_stmt **ppStmt,  /* OUT: Statement handle */
+  odbql_stmt **ppStmt,  /* OUT: Statement handle */
   const char **pzTail     /* OUT: Pointer to unused portion of zSql */
 )
 {
@@ -295,7 +295,7 @@ int sqlite3_prepare_v2(
     parser.parseString(session, database(db).filename() + ";" + zSql, &input, config);
     odb::sql::SQLStatement* statement (session.statement());
 
-    typedef sqlite3_stmt* stmt_ptr_t; 
+    typedef odbql_stmt* stmt_ptr_t; 
 
     if (dynamic_cast<odb::sql::SQLInsert*>(statement))
     {
@@ -307,76 +307,86 @@ int sqlite3_prepare_v2(
         const std::string& location (tableDef.location());
 
         *ppStmt = stmt_ptr_t (new InsertImpl(md, location));
-        return SQLITE_OK;
+        return ODBQL_OK;
     }
   
     // Assume this is SELECT for now 
     *ppStmt = stmt_ptr_t (new SelectImpl(database(db).filename().c_str(), zSql));
 
-    return SQLITE_OK;
+    return ODBQL_OK;
 }
 
-//SQLITE_API int SQLITE_STDCALL sqlite3_step(sqlite3_stmt*)
-int sqlite3_step(sqlite3_stmt* stmt)
+//ODBQL_API int ODBQL_STDCALL odbql_step(odbql_stmt*)
+int odbql_step(odbql_stmt* stmt)
 {
     if (! stmt) 
-        return SQLITE_ERROR;
+        return ODBQL_ERROR;
 
     if (statement(stmt).step())
-        return SQLITE_ROW;
+        return ODBQL_ROW;
 
-    return SQLITE_DONE;
+    return ODBQL_DONE;
 }
 
-//int sqlite3_bind_blob(sqlite3_stmt*, int, const void*, int n, void(*)(void*));
-//int sqlite3_bind_blob64(sqlite3_stmt*, int, const void*, sqlite3_uint64, void(*)(void*));
-int sqlite3_bind_double(sqlite3_stmt* stmt, int i, double v)
+//int odbql_bind_blob(odbql_stmt*, int, const void*, int n, void(*)(void*));
+//int odbql_bind_blob64(odbql_stmt*, int, const void*, odbql_uint64, void(*)(void*));
+int odbql_bind_double(odbql_stmt* stmt, int i, double v)
 {
     return statement(stmt).bind_double(i, v);
 }
 
-int sqlite3_bind_int(sqlite3_stmt* stmt, int i, int v)
+int odbql_bind_int(odbql_stmt* stmt, int i, int v)
 {
     return statement(stmt).bind_int(i, v);
 }
 
-//int sqlite3_bind_int64(sqlite3_stmt*, int, sqlite3_int64);
-//int sqlite3_bind_null(sqlite3_stmt*, int);
-//int sqlite3_bind_text(sqlite3_stmt*,int,const char*,int,void(*)(void*));
-//int sqlite3_bind_text16(sqlite3_stmt*, int, const void*, int, void(*)(void*));
-//int sqlite3_bind_text64(sqlite3_stmt*, int, const char*, sqlite3_uint64, void(*)(void*), unsigned char encoding);
-//int sqlite3_bind_value(sqlite3_stmt*, int, const sqlite3_value*);
-//int sqlite3_bind_zeroblob(sqlite3_stmt*, int, int n);
-//int sqlite3_bind_zeroblob64(sqlite3_stmt*, int, sqlite3_uint64);
+//int odbql_bind_int64(odbql_stmt*, int, odbql_int64);
+int odbql_bind_null(odbql_stmt*, int)
+{
+    // TODO
+    NOTIMP;
+}
+
+int odbql_bind_text(odbql_stmt*,int,const char*,int,void(*)(void*))
+{
+    // TODO
+    NOTIMP;
+}
+
+//int odbql_bind_text16(odbql_stmt*, int, const void*, int, void(*)(void*));
+//int odbql_bind_text64(odbql_stmt*, int, const char*, odbql_uint64, void(*)(void*), unsigned char encoding);
+//int odbql_bind_value(odbql_stmt*, int, const odbql_value*);
+//int odbql_bind_zeroblob(odbql_stmt*, int, int n);
+//int odbql_bind_zeroblob64(odbql_stmt*, int, odbql_uint64);
 
 
-//SQLITE_API const unsigned char *SQLITE_STDCALL sqlite3_column_text(sqlite3_stmt*, int iCol);
-const unsigned char *sqlite3_column_text(sqlite3_stmt* stmt, int column)
+//ODBQL_API const unsigned char *ODBQL_STDCALL odbql_column_text(odbql_stmt*, int iCol);
+const unsigned char *odbql_column_text(odbql_stmt* stmt, int column)
 {
     return statement(stmt).column_text(column);
 }
 
-//SQLITE_API int SQLITE_STDCALL sqlite3_finalize(sqlite3_stmt *pStmt);
-int sqlite3_finalize(sqlite3_stmt *stmt)
+//ODBQL_API int ODBQL_STDCALL odbql_finalize(odbql_stmt *pStmt);
+int odbql_finalize(odbql_stmt *stmt)
 {
     delete &statement(stmt);
-    return SQLITE_OK;
+    return ODBQL_OK;
 }
 
 // https://www.sqlite.org/c3ref/column_name.html
-const char *sqlite3_column_name(sqlite3_stmt* stmt, int iCol)
+const char *odbql_column_name(odbql_stmt* stmt, int iCol)
 {
     return statement(stmt).column_name(iCol);
 }
 
 //https://www.sqlite.org/c3ref/column_blob.html
-int sqlite3_column_type(sqlite3_stmt* stmt, int iCol)
+int odbql_column_type(odbql_stmt* stmt, int iCol)
 {
     return statement(stmt).column_type(iCol);
 }
 
 // https://www.sqlite.org/c3ref/column_count.html
-int sqlite3_column_count(sqlite3_stmt *stmt)
+int odbql_column_count(odbql_stmt *stmt)
 {
     return statement(stmt).column_count();
 }

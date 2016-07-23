@@ -19,7 +19,7 @@
 #include <vector>
 #include <sstream>
 
-#include "sqlite3.h"
+#include "odbql.h"
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/runtime/ContextBehavior.h"
@@ -31,91 +31,91 @@
 #include "odb_api/tools/TestCase.h"
 #include "odb_api/tools/ImportTool.h"
 
-void checkRC(int rc, const char* message, sqlite3 *db) 
+void checkRC(int rc, const char* message, odbql *db) 
 {
-    if (rc != SQLITE_OK) {
-        std::string msg (std::string(message) + sqlite3_errmsg(db));
-        sqlite3_close(db);
+    if (rc != ODBQL_OK) {
+        std::string msg (std::string(message) + odbql_errmsg(db));
+        odbql_close(db);
         throw eckit::AssertionFailed (msg);
     }
 }
 
 TEST(example_insert_data)
 {
-    sqlite3 *db;
-    sqlite3_stmt *stmt;
+    odbql *db;
+    odbql_stmt *stmt;
 
-    int rc = sqlite3_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL)"
+    int rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL)"
                           " ON 'example_select_data_read_results.odb';", &db);
     checkRC(rc, "Cannot open database", db);
     
-    rc = sqlite3_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, &stmt, 0);    
+    rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, &stmt, 0);    
     checkRC(rc, "Failed to prepare INSERT statement", db);
 
     for (int i = 1; i <= 3; ++i)
     {
-        rc = sqlite3_bind_int(stmt, 0, 1 * i);
+        rc = odbql_bind_int(stmt, 0, 1 * i);
         checkRC(rc, "Failed to bind int value", db);
 
-        rc = sqlite3_bind_int(stmt, 1, 10 * i);
+        rc = odbql_bind_int(stmt, 1, 10 * i);
         checkRC(rc, "Failed to bind int value", db);
 
-        rc = sqlite3_bind_double(stmt, 2, 0.1 * i);
+        rc = odbql_bind_double(stmt, 2, 0.1 * i);
         checkRC(rc, "Failed to bind double value", db);
 
-        rc = sqlite3_step(stmt);
+        rc = odbql_step(stmt);
         //checkRC(rc, "Failed to step and write row", db);
     }
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
+    odbql_finalize(stmt);
+    odbql_close(db);
 }
 
 TEST(example_select_data_read_results)
 {
-    sqlite3 *db;
-    sqlite3_stmt *res;
+    odbql *db;
+    odbql_stmt *res;
     
-    int rc = sqlite3_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", &db);
+    int rc = odbql_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", &db);
                            //" ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
     checkRC(rc, "Cannot open database", db);
     
-    rc = sqlite3_prepare_v2(db, "SELECT * FROM foo;", -1, &res, 0);
+    rc = odbql_prepare_v2(db, "SELECT * FROM foo;", -1, &res, 0);
     checkRC(rc, "Failed to prepare statement", db);
 
-    int number_of_columns = sqlite3_column_count(res);
+    int number_of_columns = odbql_column_count(res);
 
     // Print CSV header. Each field is a colon separated pair of column name and type.
     for (int i = 0; i < number_of_columns; ++i)
-        printf("%s:%d%s", sqlite3_column_name(res, i), 
-                          sqlite3_column_type(res, i), 
+        printf("%s:%d%s", odbql_column_name(res, i), 
+                          odbql_column_type(res, i), 
                           ((i < number_of_columns - 1) ? "," : ""));
     printf("\n");
    
     // Print rows of data. 
-    while((rc = sqlite3_step(res)) != SQLITE_DONE)
+    while((rc = odbql_step(res)) != ODBQL_DONE)
     {
-        if (rc == SQLITE_ROW)
+        if (rc == ODBQL_ROW)
         {
             for (int column = 0; column < number_of_columns; ++column)
-                printf("%s%s", sqlite3_column_text(res, column),
+                printf("%s%s", odbql_column_text(res, column),
                                ((column < number_of_columns - 1) ? "," : ""));
             printf("\n");
         }
     }
     
-    rc = sqlite3_finalize(res);
-    checkRC(rc, "sqlite3_finalize failed", db);
-    rc = sqlite3_close(db);
-    checkRC(rc, "sqlite3_close failed", db);
+    rc = odbql_finalize(res);
+    checkRC(rc, "odbql_finalize failed", db);
+    rc = odbql_close(db);
+    checkRC(rc, "odbql_close failed", db);
 }
 
 
 TEST(example_libversion)
 {
     std::stringstream ss;
-    ss << sqlite3_libversion();
+    ss << odbql_libversion();
 
-    eckit::Log::info() << "sqlite3_libversion: " << ss.str() << std::endl;
+    eckit::Log::info() << "odbql_libversion: " << ss.str() << std::endl;
 }
 
 int main(int argc, char** argv)
