@@ -249,10 +249,7 @@ const char * odbql_libversion(void)
 //  odbql **ppDb          /* OUT: SQLite db handle */
 //);
 
-int odbql_open(
-  const char *filename,   /* Database filename (UTF-8) */
-  odbql **ppDb          /* OUT: SQLite db handle */
-) 
+int odbql_open(const char *filename, odbql **ppDb) 
 {
     eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
 
@@ -262,9 +259,9 @@ int odbql_open(
 }
 
 //ODBQL_API int ODBQL_STDCALL odbql_close(odbql*);
-int odbql_close(odbql*)
+int odbql_close(odbql* db)
 {
-    //TODO
+    //delete db;
     return ODBQL_OK;
 }
 
@@ -276,13 +273,7 @@ int odbql_close(odbql*)
 //  const char **pzTail     /* OUT: Pointer to unused portion of zSql */
 //);
 
-int odbql_prepare_v2(
-  odbql *db,            /* Database handle */
-  const char *zSql,       /* SQL statement, UTF-8 encoded */
-  int nByte,              /* Maximum length of zSql in bytes. */
-  odbql_stmt **ppStmt,  /* OUT: Statement handle */
-  const char **pzTail     /* OUT: Pointer to unused portion of zSql */
-)
+int odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt **ppStmt, const char **pzTail)
 {
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
 
@@ -330,6 +321,7 @@ int odbql_step(odbql_stmt* stmt)
     return ODBQL_DONE;
 }
 
+// The last argument of odbql_bind_blob and similar: https://www.sqlite.org/c3ref/c_static.html
 //int odbql_bind_blob(odbql_stmt*, int, const void*, int n, void(*)(void*));
 //int odbql_bind_blob64(odbql_stmt*, int, const void*, odbql_uint64, void(*)(void*));
 int odbql_bind_double(odbql_stmt* stmt, int i, double v)
@@ -343,13 +335,13 @@ int odbql_bind_int(odbql_stmt* stmt, int i, int v)
 }
 
 //int odbql_bind_int64(odbql_stmt*, int, odbql_int64);
-int odbql_bind_null(odbql_stmt*, int)
+int odbql_bind_null(odbql_stmt* stmt, int i)
 {
     // TODO
     NOTIMP;
 }
 
-int odbql_bind_text(odbql_stmt*,int,const char*,int,void(*)(void*))
+int odbql_bind_text(odbql_stmt* stmt, int i, const char* s, int n, void(*d)(void*))
 {
     // TODO
     NOTIMP;
