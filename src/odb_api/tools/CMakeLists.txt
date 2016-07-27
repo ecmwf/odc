@@ -138,7 +138,7 @@ ecbuild_add_library( TARGET     odbtest
                      #HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api/tools
                      SOURCES    ${odbtest_src_files}
                      TEMPLATES  ${odbtest_templates}
-                     LIBS       Odb )
+                     LIBS       Odb odbtools )
 
 ecbuild_add_executable( TARGET    odb
                         SOURCES   odb.cc

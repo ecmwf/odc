@@ -91,7 +91,7 @@ def fortranParamTypeDeclaration(p, translate_type = translate_type_for_binding):
     fortran_type = translate_type(typ)
     return formatParameter(fortran_type, parameter_name)
 
-def generateWrapper(declaration, comment):
+def generateWrapper(declaration, comment, template):
 
     procedure_keyword = 'function'
 
@@ -129,7 +129,29 @@ def generateWrapper(declaration, comment):
 
     use_intrinsic = formatParameter('use, intrinsic', 'iso_c_binding')
 
-    template = """
+    return template % locals()
+
+def generateWrappers(decls, header, footer, template):
+    s = header
+    for original, ast in [parseDeclaration(decl) for decl in decls]: 
+        s += generateWrapper(ast, original, template) + '\n'
+
+    s += footer
+    return s
+
+if __name__ == '__main__':
+
+    with open('odbql_binding.f90', 'w') as f: 
+        f.write(generateWrappers(decls, header = """
+module odbql_binding
+  use iso_c_binding
+  use, intrinsic :: iso_c_binding
+  implicit none
+interface
+""", footer = """
+end interface
+end module odbql_binding
+""", template = """
 !> %(comment)s
 
     function %(function_name)s_c %(parameter_list)s bind(C, name="%(function_name)s")
@@ -138,7 +160,22 @@ def generateWrapper(declaration, comment):
      %(binding_return_type_declaration)s
     end function %(function_name)s_c
 
+
+    """))
+
+    with open('odbql_wrappers.f90', 'w') as f: 
+        f.write(generateWrappers(decls, header = """
+module odbql_wrappers
+  use odbql_binding
+  implicit none
+contains
+""", footer = """
+end module odbql_wrappers
+""", template = """
+!> %(comment)s
+
     %(procedure_keyword)s %(function_name)s %(fortran_parameter_list)s 
+     use odbql_binding
      %(use_intrinsic)s
      %(fortran_parameters_declarations)s
      %(fortran_return_type_declaration)s
@@ -148,26 +185,4 @@ def generateWrapper(declaration, comment):
     end %(procedure_keyword)s %(function_name)s
 
     """ 
-    return template % locals()
-
-def generateWrappers(decls):
-    s = """
-module odbql_binding
-  use iso_c_binding
-  use, intrinsic :: iso_c_binding
-  implicit none
-interface
-"""
-    for original, ast in [parseDeclaration(decl) for decl in decls]: 
-        s += generateWrapper(ast, original) + '\n'
-
-    s += """
-end interface
-end module odbql_binding
-"""
-    return s
-
-if __name__ == '__main__':
-    s = generateWrappers(decls)
-    with open('odbql_binding.f90', 'w') as f: 
-        f.write(s)
+    ))

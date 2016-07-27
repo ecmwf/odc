@@ -9,9 +9,9 @@
  */
 
 ///
-/// \file odbcapi.cc
+/// \file odbql.cc
 ///
-/// @author Piotr Kuchta, March 2009
+/// @author Piotr Kuchta, July 2016
 
 #include "odb_api/odb_api.h"
 
@@ -41,8 +41,6 @@
 
 using namespace eckit;
 using namespace odb;
-
-extern "C" {
 
 /////////////////////////////////////////////////////////////
 // #     #                            #    ######    ###   
@@ -231,6 +229,7 @@ int SelectImpl::bind_int(int i, int v)
     NOTIMP;
 }
 
+extern "C" {
 //ODBQL_API const char *ODBQL_STDCALL odbql_errmsg(odbql*);
 const char * odbql_errmsg(odbql* db)
 {
