@@ -6,6 +6,7 @@
 ! granted to it by virtue of its status as an intergovernmental organisation nor
 ! does it submit to any jurisdiction.
 !
+! Piotr Kuchta  July 2016
 
 ! Retrieve some data from MARS, print number of columns and values on first line.
 
@@ -13,14 +14,10 @@ program example_fortran_api
   use, intrinsic :: iso_c_binding
   use odbql_wrappers
   implicit none
-  character(len=255)                            :: s
+  character(len=255)                           :: version
 
-  integer(kind=4)    :: ncolumns = 5
-
-  s = ""
-  write(0,*) "Here we go..."
-
-  call odbql_libversion(s)
+  call odbql_libversion(version)
+  write(0,*) "This program is linked to ODB API version: ", version
 
   call odbql_fortran_example()
 
@@ -30,7 +27,7 @@ subroutine odbql_fortran_example
  implicit none
  type(C_PTR)                                   :: db, stmt
  integer(kind=C_INT)                           :: rc, number_of_columns, i
- character(len=255)                            :: val, unparsed_sql
+ character(len=50)                             :: val, unparsed_sql
 
  write(0,*) 'odbql_fortran_example'
 
