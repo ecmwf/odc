@@ -7,6 +7,8 @@
 ! does it submit to any jurisdiction.
 !
 
+! Retrieve some data from MARS, print number of columns and values on first line.
+
 program example_fortran_api
   use, intrinsic :: iso_c_binding
   use odbql_wrappers
@@ -32,13 +34,15 @@ subroutine odbql_fortran_example
 
  write(0,*) 'odbql_fortran_example'
 
- rc = odbql_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", db)
+! rc = odbql_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", db)
+ rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
  rc = odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
+ write(0,*) "Number of columns: ", number_of_columns 
 
  rc = odbql_step(stmt)
 
- do i=2,number_of_columns
+ do i=0,number_of_columns - 1
      call odbql_column_text(stmt, i, val)
      write(0,*) ' ', val
  enddo
