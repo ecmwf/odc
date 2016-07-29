@@ -32,11 +32,17 @@ int odbql_example_insert_data()
     odbql *db;
     odbql_stmt *stmt;
 
-    int rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y REAL, v STRING)"
-                          " ON 'example_select_data_read_results.odb';", &db);
+    int rc = odbql_open("CREATE TYPE bf AS (f1 bit1, f2 bit2);\n"
+                        "CREATE TABLE foo AS"
+                        "   (x INTEGER, y REAL, v STRING, status bf)"
+                        " ON 'new_api_example.odb';", &db);
     checkRC(rc, "Cannot open database", db);
     
-    rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, &stmt, 0);    
+    rc = odbql_prepare_v2(db, 
+            "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", 
+            -1, 
+            &stmt, 
+            0);
     checkRC(rc, "Failed to prepare INSERT statement", db);
 
     int i = 0;
@@ -48,8 +54,11 @@ int odbql_example_insert_data()
         rc = odbql_bind_double(stmt, 1, 0.1 * i);
         checkRC(rc, "Failed to bind double value", db);
 
-        rc = odbql_bind_text(stmt, 2, "hello", 5 /* strlen("hello") */, ODBQL_STATIC);
+        rc = odbql_bind_text(stmt, 2, i%2 ? "hello" : "HELLO", 5 /* strlen("hello") */, ODBQL_STATIC);
         checkRC(rc, "Failed to bind string", db);
+
+        rc = odbql_bind_int(stmt, 3, 3 * i);
+        checkRC(rc, "Failed to bind bitfield value", db);
 
         rc = odbql_step(stmt);
         //checkRC(rc, "Failed to step and write row", db);
@@ -68,11 +77,11 @@ int odbql_example_select_data_read_results()
     odbql *db;
     odbql_stmt *res;
     
-    int rc = odbql_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", &db);
+    int rc = odbql_open("CREATE TABLE foo ON 'new_api_example.odb';", &db);
                            //" ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
     checkRC(rc, "Cannot open database", db);
     
-    rc = odbql_prepare_v2(db, "SELECT * FROM foo;", -1, &res, 0);
+    rc = odbql_prepare_v2(db, "SELECT x,y,v,status.* FROM foo;", -1, &res, 0);
     checkRC(rc, "Failed to prepare statement", db);
 
     int number_of_columns = odbql_column_count(res);

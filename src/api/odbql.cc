@@ -195,7 +195,7 @@ bool SelectImpl::step()
     else
     {
         ++it_;
-        return true;
+        return it_ != end_;
     }
 }
 
