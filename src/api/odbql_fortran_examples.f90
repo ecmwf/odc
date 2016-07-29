@@ -23,7 +23,7 @@ contains
 
 subroutine odbql_fortran_example
  implicit none
- type(C_PTR)                                   :: db, stmt
+ type(C_PTR)                                   :: db, stmt, destructor
  integer(kind=C_INT)                           :: rc, number_of_columns, i
  character(len=30)                             :: val, column_name
  character(len=1000)                           :: unparsed_sql
@@ -32,14 +32,14 @@ subroutine odbql_fortran_example
 
 !!!! Write to a file with INSERT
 
- rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL) ON 'fort.odb';", db)
+ rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y REAL, v STRING) ON 'fort.odb';", db)
  rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, stmt, unparsed_sql)
 
  do i=0,3 - 1
     rc = odbql_bind_int(stmt, 0, 1 * (i + 1));
-    rc = odbql_bind_int(stmt, 1, 10 * (i + 1));
     v = 0.1 * (i + 1)
-    rc = odbql_bind_double(stmt, 2, v);
+    rc = odbql_bind_double(stmt, 1, v);
+    rc = odbql_bind_text(stmt, 2, "hello", 5, destructor);
     rc = odbql_step(stmt);
  enddo
  rc = odbql_finalize(stmt);

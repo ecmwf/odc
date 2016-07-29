@@ -76,6 +76,7 @@ public:
     virtual int column_type(int i) = 0;
     virtual int bind_double(int i, double v) = 0;
     virtual int bind_int(int, int) = 0;
+    virtual int bind_text(int, const char*, int) = 0;
 };
 
 class SelectImpl : public StatementImpl {
@@ -97,6 +98,7 @@ public:
     int column_type(int i);
     int bind_double(int i, double v);
     int bind_int(int, int);
+    int bind_text(int, const char*, int);
 
 private:
     bool firstStep;
@@ -124,6 +126,7 @@ public:
     int column_type(int i) { NOTIMP; }
     int bind_double(int i, double v);
     int bind_int(int, int);
+    int bind_text(int, const char*, int);
 
 private:
     odb::Writer<> writer_;
@@ -147,6 +150,27 @@ int InsertImpl::bind_double(int i, double v)
 int InsertImpl::bind_int(int i, int v) 
 { 
     (*it_)[i] = v;
+    return ODBQL_OK;
+}
+
+int InsertImpl::bind_text(int i, const char* s, int n)
+{ 
+    if (n > sizeof(double))
+    {
+        // this is the current limitation...
+        // TODO: set error messqge
+        return ODBQL_ERROR;
+    }
+
+    char v[sizeof(double) + 1];
+
+    memset(v, ' ', sizeof(double));
+    v[sizeof(double)] = 0;
+
+    for (size_t j(0); j < n; ++j)
+        v[sizeof(double) - n + j] = s[j];
+
+    (*it_)[i] = *reinterpret_cast<double*>(&v);
     return ODBQL_OK;
 }
 
@@ -225,6 +249,11 @@ int SelectImpl::bind_double(int i, double v)
 }
 
 int SelectImpl::bind_int(int i, int v)
+{
+    NOTIMP;
+}
+
+int SelectImpl::bind_text(int i, const char* s, int n)
 {
     NOTIMP;
 }
@@ -342,8 +371,7 @@ int odbql_bind_null(odbql_stmt* stmt, int i)
 
 int odbql_bind_text(odbql_stmt* stmt, int i, const char* s, int n, void(*d)(void*))
 {
-    // TODO
-    NOTIMP;
+    return statement(stmt).bind_text(i, s, n);
 }
 
 //int odbql_bind_text16(odbql_stmt*, int, const void*, int, void(*)(void*));

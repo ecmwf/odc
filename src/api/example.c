@@ -32,7 +32,7 @@ int odbql_example_insert_data()
     odbql *db;
     odbql_stmt *stmt;
 
-    int rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL)"
+    int rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y REAL, v STRING)"
                           " ON 'example_select_data_read_results.odb';", &db);
     checkRC(rc, "Cannot open database", db);
     
@@ -45,11 +45,11 @@ int odbql_example_insert_data()
         rc = odbql_bind_int(stmt, 0, 1 * i);
         checkRC(rc, "Failed to bind int value", db);
 
-        rc = odbql_bind_int(stmt, 1, 10 * i);
-        checkRC(rc, "Failed to bind int value", db);
-
-        rc = odbql_bind_double(stmt, 2, 0.1 * i);
+        rc = odbql_bind_double(stmt, 1, 0.1 * i);
         checkRC(rc, "Failed to bind double value", db);
+
+        rc = odbql_bind_text(stmt, 2, "hello", 5 /* strlen("hello") */, ODBQL_STATIC);
+        checkRC(rc, "Failed to bind string", db);
 
         rc = odbql_step(stmt);
         //checkRC(rc, "Failed to step and write row", db);
