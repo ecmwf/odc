@@ -8,10 +8,8 @@
 !
 ! Piotr Kuchta  July 2016
 
-! Retrieve some data from MARS, print number of columns and values on first line.
 
 program example_fortran_api
-  use, intrinsic :: iso_c_binding
   use odbql_wrappers
   implicit none
   character(len=255)                           :: version
@@ -27,12 +25,32 @@ subroutine odbql_fortran_example
  implicit none
  type(C_PTR)                                   :: db, stmt
  integer(kind=C_INT)                           :: rc, number_of_columns, i
- character(len=50)                             :: val, unparsed_sql
+ character(len=30)                             :: val, column_name
+ character(len=1000)                           :: unparsed_sql
+ real(kind=C_DOUBLE)                           :: v
 
- write(0,*) 'odbql_fortran_example'
 
-! rc = odbql_open("CREATE TABLE foo ON 'example_select_data_read_results.odb';", db)
- rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
+!!!! Write to a file with INSERT
+
+ rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y INTEGER, v REAL) ON 'fort.odb';", db)
+ rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, stmt, unparsed_sql)
+
+ do i=0,3 - 1
+    rc = odbql_bind_int(stmt, 0, 1 * (i + 1));
+    rc = odbql_bind_int(stmt, 1, 10 * (i + 1));
+    v = 0.1 * (i + 1)
+    rc = odbql_bind_double(stmt, 2, v);
+    rc = odbql_step(stmt);
+ enddo
+ rc = odbql_finalize(stmt);
+ rc = odbql_close(db)
+
+!! Print first row of query result set
+
+! Associate table with a file name
+ rc = odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
+! Retrieve some data from MARS:
+! rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
  rc = odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
@@ -40,8 +58,9 @@ subroutine odbql_fortran_example
  rc = odbql_step(stmt)
 
  do i=0,number_of_columns - 1
+     call odbql_column_name(stmt, i, column_name)
      call odbql_column_text(stmt, i, val)
-     write(0,*) ' ', val
+     write(0,*) i, ' ', column_name, ': ', val
  enddo
 
  rc = odbql_finalize(stmt)
