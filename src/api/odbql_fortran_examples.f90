@@ -23,7 +23,9 @@ contains
 
 subroutine odbql_fortran_example
  implicit none
- type(C_PTR)                                   :: db, stmt, destructor
+ type(odbql)                                   :: db
+ type(odbql_stmt)                              :: stmt
+ type(C_PTR)                                   :: destructor ! not really used
  integer(kind=C_INT)                           :: rc, number_of_columns, i
  character(len=30)                             :: val, column_name
  character(len=1000)                           :: unparsed_sql

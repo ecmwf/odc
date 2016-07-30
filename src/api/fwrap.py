@@ -1,3 +1,5 @@
+#!/usr/bin/env python 
+
 import re
 
 PARAM_TYPE_COLUMN = 37
@@ -74,10 +76,10 @@ def translate_type_for_fortran(t):
     if t == 'const char**':          return 'character(len=*),intent(out)'
     if t == 'double':                return 'real(kind=C_DOUBLE), VALUE'
     if t == 'int':                   return 'integer(kind=C_INT), VALUE'
-    if t == 'odbql*':                return 'type(C_PTR), VALUE'
-    if t == 'odbql**':               return 'type(C_PTR)'
-    if t == 'odbql_stmt*':           return 'type(C_PTR), VALUE'
-    if t == 'odbql_stmt**':          return 'type(C_PTR)'
+    if t == 'odbql*':                return 'type(odbql), VALUE'
+    if t == 'odbql**':               return 'type(odbql)'
+    if t == 'odbql_stmt*':           return 'type(odbql_stmt), VALUE'
+    if t == 'odbql_stmt**':          return 'type(odbql_stmt)'
     if t == 'void(*)(void*)':        return 'type(C_PTR), VALUE'
 
     raise Exception("Don't know how to translate '" + t + "'")
@@ -129,14 +131,22 @@ helper_functions = """
 
 """
 
+def actual_parameter(p):
+    if p[0] == 'const char*': return p[1] + '_tmp'
+    if p[0] == 'odbql*': return p[1] + '%this'
+    if p[0] == 'odbql**': return p[1] + '%this'
+    if p[0] == 'odbql_stmt*': return p[1] + '%this'
+    if p[0] == 'odbql_stmt**': return p[1] + '%this'
+    return p[1]
+
 def generateWrapper(declaration, comment, template):
     procedure_keyword = 'function'
 
     return_type, function_name, params = declaration
 
-    print 'generateWrapper: ', declaration, comment
+    ###print 'generateWrapper: ', declaration, comment
 
-    print 'params:', params  # [(name,type), ...]
+    #print 'params:', params  # [(name,type), ...]
 
     output_parameter = function_name
 
@@ -149,7 +159,7 @@ def generateWrapper(declaration, comment, template):
     fortran_params = params[:]
 
     binding_parameter_list = '(' + ','.join([p[1] for p in params]) + ')'
-    actual_binding_parameter_list = '(' + ','.join([p[0] == 'const char*' and p[1] + '_tmp' or p[1] for p in params]) + ')'
+    actual_binding_parameter_list = '(' + ','.join([actual_parameter(p) for p in params]) + ')'
     # character(len=len_trim(filename) + 1)     :: filename_tmp
     temporary_variables_declarations = '\n     '.join(formatParameter('character(len=len_trim('+p[1]+')+1)', p[1] + '_tmp')
                                                       for p in params if p[0] == 'const char*')
@@ -193,7 +203,7 @@ def generateBindings(source_cc = 'odbql.cc',
     with open(binding_f90, 'w') as f: 
         f.write(generateWrappers(decls, header = """
 
-!!!!! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
 
 module odbql_binding
   use iso_c_binding
@@ -220,11 +230,20 @@ end module odbql_binding
     with open(wrappers_f90, 'w') as f: 
         f.write(generateWrappers(decls, header = """
 
-!!!!! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
 
 module odbql_wrappers
   use odbql_binding
   implicit none
+  
+  type odbql
+    type(c_ptr) :: this
+  end type
+
+  type odbql_stmt
+    type(c_ptr) :: this
+  end type
+
 contains
 
 %(helper_functions)s

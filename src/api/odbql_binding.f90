@@ -1,6 +1,6 @@
 
 
-!!!!! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
 
 module odbql_binding
   use iso_c_binding

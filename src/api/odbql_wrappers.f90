@@ -1,10 +1,19 @@
 
 
-!!!!! THIS FILE HAS BEEN AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
 
 module odbql_wrappers
   use odbql_binding
   implicit none
+  
+  type odbql
+    type(c_ptr) :: this
+  end type
+
+  type odbql_stmt
+    type(c_ptr) :: this
+  end type
+
 contains
 
 
@@ -44,14 +53,14 @@ contains
     subroutine odbql_errmsg (db,return_value) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: db
+     type(odbql), VALUE                   :: db
      character(len=*),intent(out)         :: return_value
 
      
 
      
 
-     return_value = C_to_F_string(odbql_errmsg_c(db))
+     return_value = C_to_F_string(odbql_errmsg_c(db%this))
 
     end subroutine odbql_errmsg
 
@@ -81,14 +90,14 @@ contains
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
      character(len=*),intent(in)          :: filename
-     type(C_PTR)                          :: ppDb
+     type(odbql)                          :: ppDb
      integer(kind=C_INT)                  :: odbql_open
 
      character(len=len_trim(filename)+1)  :: filename_tmp
 
      filename_tmp = filename//achar(0)
 
-     odbql_open = odbql_open_c(filename_tmp,ppDb)
+     odbql_open = odbql_open_c(filename_tmp,ppDb%this)
 
     end function odbql_open
 
@@ -99,14 +108,14 @@ contains
     function odbql_close (db) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: db
+     type(odbql), VALUE                   :: db
      integer(kind=C_INT)                  :: odbql_close
 
      
 
      
 
-     odbql_close = odbql_close_c(db)
+     odbql_close = odbql_close_c(db%this)
 
     end function odbql_close
 
@@ -117,10 +126,10 @@ contains
     function odbql_prepare_v2 (db,zSql,nByte,ppStmt,pzTail) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: db
+     type(odbql), VALUE                   :: db
      character(len=*),intent(in)          :: zSql
      integer(kind=C_INT), VALUE           :: nByte
-     type(C_PTR)                          :: ppStmt
+     type(odbql_stmt)                     :: ppStmt
      character(len=*),intent(out)         :: pzTail
      integer(kind=C_INT)                  :: odbql_prepare_v2
 
@@ -128,7 +137,7 @@ contains
 
      zSql_tmp = zSql//achar(0)
 
-     odbql_prepare_v2 = odbql_prepare_v2_c(db,zSql_tmp,nByte,ppStmt,pzTail)
+     odbql_prepare_v2 = odbql_prepare_v2_c(db%this,zSql_tmp,nByte,ppStmt%this,pzTail)
 
     end function odbql_prepare_v2
 
@@ -139,14 +148,14 @@ contains
     function odbql_step (stmt) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT)                  :: odbql_step
 
      
 
      
 
-     odbql_step = odbql_step_c(stmt)
+     odbql_step = odbql_step_c(stmt%this)
 
     end function odbql_step
 
@@ -157,7 +166,7 @@ contains
     function odbql_bind_double (stmt,i,v) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: i
      real(kind=C_DOUBLE), VALUE           :: v
      integer(kind=C_INT)                  :: odbql_bind_double
@@ -166,7 +175,7 @@ contains
 
      
 
-     odbql_bind_double = odbql_bind_double_c(stmt,i,v)
+     odbql_bind_double = odbql_bind_double_c(stmt%this,i,v)
 
     end function odbql_bind_double
 
@@ -177,7 +186,7 @@ contains
     function odbql_bind_int (stmt,i,v) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: i
      integer(kind=C_INT), VALUE           :: v
      integer(kind=C_INT)                  :: odbql_bind_int
@@ -186,7 +195,7 @@ contains
 
      
 
-     odbql_bind_int = odbql_bind_int_c(stmt,i,v)
+     odbql_bind_int = odbql_bind_int_c(stmt%this,i,v)
 
     end function odbql_bind_int
 
@@ -197,7 +206,7 @@ contains
     function odbql_bind_null (stmt,i) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: i
      integer(kind=C_INT)                  :: odbql_bind_null
 
@@ -205,7 +214,7 @@ contains
 
      
 
-     odbql_bind_null = odbql_bind_null_c(stmt,i)
+     odbql_bind_null = odbql_bind_null_c(stmt%this,i)
 
     end function odbql_bind_null
 
@@ -216,7 +225,7 @@ contains
     function odbql_bind_text (stmt,i,s,n,d) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: i
      character(len=*),intent(in)          :: s
      integer(kind=C_INT), VALUE           :: n
@@ -227,7 +236,7 @@ contains
 
      s_tmp = s//achar(0)
 
-     odbql_bind_text = odbql_bind_text_c(stmt,i,s_tmp,n,d)
+     odbql_bind_text = odbql_bind_text_c(stmt%this,i,s_tmp,n,d)
 
     end function odbql_bind_text
 
@@ -238,7 +247,7 @@ contains
     subroutine odbql_column_text (stmt,column,return_value) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: column
      character(len=*),intent(out)         :: return_value
 
@@ -246,7 +255,7 @@ contains
 
      
 
-     return_value = C_to_F_string(odbql_column_text_c(stmt,column))
+     return_value = C_to_F_string(odbql_column_text_c(stmt%this,column))
 
     end subroutine odbql_column_text
 
@@ -257,14 +266,14 @@ contains
     function odbql_finalize (stmt) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT)                  :: odbql_finalize
 
      
 
      
 
-     odbql_finalize = odbql_finalize_c(stmt)
+     odbql_finalize = odbql_finalize_c(stmt%this)
 
     end function odbql_finalize
 
@@ -275,7 +284,7 @@ contains
     subroutine odbql_column_name (stmt,iCol,return_value) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: iCol
      character(len=*),intent(out)         :: return_value
 
@@ -283,7 +292,7 @@ contains
 
      
 
-     return_value = C_to_F_string(odbql_column_name_c(stmt,iCol))
+     return_value = C_to_F_string(odbql_column_name_c(stmt%this,iCol))
 
     end subroutine odbql_column_name
 
@@ -294,7 +303,7 @@ contains
     function odbql_column_type (stmt,iCol) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: iCol
      integer(kind=C_INT)                  :: odbql_column_type
 
@@ -302,7 +311,7 @@ contains
 
      
 
-     odbql_column_type = odbql_column_type_c(stmt,iCol)
+     odbql_column_type = odbql_column_type_c(stmt%this,iCol)
 
     end function odbql_column_type
 
@@ -313,14 +322,14 @@ contains
     function odbql_column_count (stmt) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
-     type(C_PTR), VALUE                   :: stmt
+     type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT)                  :: odbql_column_count
 
      
 
      
 
-     odbql_column_count = odbql_column_count_c(stmt)
+     odbql_column_count = odbql_column_count_c(stmt%this)
 
     end function odbql_column_count
 
