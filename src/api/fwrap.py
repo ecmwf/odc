@@ -98,7 +98,6 @@ def translate_type_for_fortran_return(t):
     raise Exception("Don't know how to translate '" + t + "'")
 
 def fortranParamTypeDeclaration(p, translate_type = translate_type_for_binding):
-    global PARAM_TYPE_COLUMN
     typ, parameter_name = p
     fortran_type = translate_type(typ)
     return formatParameter(fortran_type, parameter_name)
@@ -147,6 +146,8 @@ def actual_parameter(p):
     if p[0] == 'odbql_stmt**': return p[1] + '%this'
     return p[1]
 
+nl_indent = '\n     '
+
 def generateWrapper(signature, comment, template):
 
     return_type, function_name, params = signature
@@ -162,10 +163,10 @@ def generateWrapper(signature, comment, template):
 
     binding_parameter_list = '(' + ','.join([p[1] for p in params]) + ')'
     actual_binding_parameter_list = '(' + ','.join([actual_parameter(p) for p in params]) + ')'
-    temporary_variables_declarations = '\n     '.join(
+    temporary_variables_declarations = nl_indent.join(
         [formatParameter('character(len=len_trim('+p[1]+')+1)', p[1] + '_tmp') for p in params if p[0] == 'const char*']
         + [formatParameter('type(C_PTR)', p[1]) for p in params if p[0] == 'void(*)(void*)'])
-    temporary_variables_assignments   = '\n     '.join(p[1] + '_tmp = ' + p[1] + '//achar(0)'
+    temporary_variables_assignments   = nl_indent.join(p[1] + '_tmp = ' + p[1] + '//achar(0)'
                                                       for p in params if p[0] == 'const char*')
 
     call_binding = function_name + '_c' + actual_binding_parameter_list
@@ -178,11 +179,11 @@ def generateWrapper(signature, comment, template):
 
     return_value_assignment = output_parameter + ' = ' + call_binding
 
-    binding_parameters_declarations = '\n     '.join([fortranParamTypeDeclaration(p) for p in params])
+    binding_parameters_declarations = nl_indent.join([fortranParamTypeDeclaration(p) for p in params])
     binding_return_type_declaration = formatParameter(translate_type_for_binding_return(return_type), function_name + '_c')
 
     fortran_parameter_list = '(' + ','.join([p[1] for p in fortran_params]) + ')'
-    fortran_parameters_declarations = '\n     ' .join(
+    fortran_parameters_declarations = nl_indent.join(
         [fortranParamTypeDeclaration(p, translate_type = translate_type_for_fortran)
          for p in fortran_params_excluding_return_parameter])
     fortran_return_type_declaration = formatParameter(translate_type_for_fortran_return(return_type), output_parameter)
