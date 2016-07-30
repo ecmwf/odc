@@ -161,13 +161,13 @@ contains
 
     
 
-!> int odbql_bind_double(odbql_stmt* stmt, int i, double v)
+!> int odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
 
-    function odbql_bind_double (stmt,i,v) 
+    function odbql_bind_double (stmt,iCol,v) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
      type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      real(kind=C_DOUBLE), VALUE           :: v
      integer(kind=C_INT)                  :: odbql_bind_double
 
@@ -175,19 +175,19 @@ contains
 
      
 
-     odbql_bind_double = odbql_bind_double_c(stmt%this,i,v)
+     odbql_bind_double = odbql_bind_double_c(stmt%this,iCol-1,v)
 
     end function odbql_bind_double
 
     
 
-!> int odbql_bind_int(odbql_stmt* stmt, int i, int v)
+!> int odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
 
-    function odbql_bind_int (stmt,i,v) 
+    function odbql_bind_int (stmt,iCol,v) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
      type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      integer(kind=C_INT), VALUE           :: v
      integer(kind=C_INT)                  :: odbql_bind_int
 
@@ -195,38 +195,38 @@ contains
 
      
 
-     odbql_bind_int = odbql_bind_int_c(stmt%this,i,v)
+     odbql_bind_int = odbql_bind_int_c(stmt%this,iCol-1,v)
 
     end function odbql_bind_int
 
     
 
-!> int odbql_bind_null(odbql_stmt* stmt, int i)
+!> int odbql_bind_null(odbql_stmt* stmt, int iCol)
 
-    function odbql_bind_null (stmt,i) 
+    function odbql_bind_null (stmt,iCol) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
      type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      integer(kind=C_INT)                  :: odbql_bind_null
 
      
 
      
 
-     odbql_bind_null = odbql_bind_null_c(stmt%this,i)
+     odbql_bind_null = odbql_bind_null_c(stmt%this,iCol-1)
 
     end function odbql_bind_null
 
     
 
-!> int odbql_bind_text(odbql_stmt* stmt, int i, const char* s, int n, void(*d)(void*))
+!> int odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
 
-    function odbql_bind_text (stmt,i,s,n,d) 
+    function odbql_bind_text (stmt,iCol,s,n,d) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
      type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      character(len=*),intent(in)          :: s
      integer(kind=C_INT), VALUE           :: n
      type(C_PTR), VALUE                   :: d
@@ -236,26 +236,26 @@ contains
 
      s_tmp = s//achar(0)
 
-     odbql_bind_text = odbql_bind_text_c(stmt%this,i,s_tmp,n,d)
+     odbql_bind_text = odbql_bind_text_c(stmt%this,iCol-1,s_tmp,n,d)
 
     end function odbql_bind_text
 
     
 
-!> const unsigned char *odbql_column_text(odbql_stmt* stmt, int column)
+!> const unsigned char *odbql_column_text(odbql_stmt* stmt, int iCol)
 
-    subroutine odbql_column_text (stmt,column,return_value) 
+    subroutine odbql_column_text (stmt,iCol,return_value) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
      type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: column
+     integer(kind=C_INT), VALUE           :: iCol
      character(len=*),intent(out)         :: return_value
 
      
 
      
 
-     return_value = C_to_F_string(odbql_column_text_c(stmt%this,column))
+     return_value = C_to_F_string(odbql_column_text_c(stmt%this,iCol-1))
 
     end subroutine odbql_column_text
 
@@ -292,7 +292,7 @@ contains
 
      
 
-     return_value = C_to_F_string(odbql_column_name_c(stmt%this,iCol))
+     return_value = C_to_F_string(odbql_column_name_c(stmt%this,iCol-1))
 
     end subroutine odbql_column_name
 
@@ -311,7 +311,7 @@ contains
 
      
 
-     odbql_column_type = odbql_column_type_c(stmt%this,iCol)
+     odbql_column_type = odbql_column_type_c(stmt%this,iCol-1)
 
     end function odbql_column_type
 

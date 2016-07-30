@@ -73,10 +73,10 @@ public:
     virtual const unsigned char *column_text(int iCol) = 0;
     virtual const char *column_name(int iCol) = 0;
     virtual int column_count() = 0;
-    virtual int column_type(int i) = 0;
-    virtual int bind_double(int i, double v) = 0;
-    virtual int bind_int(int, int) = 0;
-    virtual int bind_text(int, const char*, int) = 0;
+    virtual int column_type(int iCol) = 0;
+    virtual int bind_double(int iCol, double v) = 0;
+    virtual int bind_int(int iCol, int) = 0;
+    virtual int bind_text(int iCol, const char*, int) = 0;
 };
 
 class SelectImpl : public StatementImpl {
@@ -84,7 +84,7 @@ public:
     SelectImpl(const char* db, const char* sql)
     : db_(db),
       sql_(sql),
-      stmt_(std::string(db) + "; " + sql),
+      stmt_(std::string(db) + ";\n" + sql),
       it_(stmt_.begin()),
       end_(stmt_.end()),
       firstStep(true)
@@ -95,10 +95,10 @@ public:
     const unsigned char *column_text(int iCol);
     const char *column_name(int iCol);
     int column_count();
-    int column_type(int i);
-    int bind_double(int i, double v);
-    int bind_int(int, int);
-    int bind_text(int, const char*, int);
+    int column_type(int iCol);
+    int bind_double(int iCol, double v);
+    int bind_int(int iCol, int);
+    int bind_text(int iCol, const char*, int);
 
 private:
     bool firstStep;
@@ -123,10 +123,10 @@ public:
     const unsigned char *column_text(int iCol) { NOTIMP; }
     const char *column_name(int iCol) { NOTIMP; }
     int column_count(); 
-    int column_type(int i) { NOTIMP; }
-    int bind_double(int i, double v);
-    int bind_int(int, int);
-    int bind_text(int, const char*, int);
+    int column_type(int iCol) { NOTIMP; }
+    int bind_double(int iCol, double v);
+    int bind_int(int iCol, int);
+    int bind_text(int iCol, const char*, int);
 
 private:
     odb::Writer<> writer_;
@@ -141,19 +141,19 @@ InsertImpl::InsertImpl(const odb::MetaData& metaData, const std::string& locatio
     it_->writeHeader();
 }
 
-int InsertImpl::bind_double(int i, double v) 
+int InsertImpl::bind_double(int iCol, double v) 
 { 
-    (*it_)[i] = v;
+    (*it_)[iCol] = v;
     return ODBQL_OK;
 }
 
-int InsertImpl::bind_int(int i, int v) 
+int InsertImpl::bind_int(int iCol, int v) 
 { 
-    (*it_)[i] = v;
+    (*it_)[iCol] = v;
     return ODBQL_OK;
 }
 
-int InsertImpl::bind_text(int i, const char* s, int n)
+int InsertImpl::bind_text(int iCol, const char* s, int n)
 { 
     if (n > sizeof(double))
     {
@@ -170,7 +170,7 @@ int InsertImpl::bind_text(int i, const char* s, int n)
     for (size_t j(0); j < n; ++j)
         v[sizeof(double) - n + j] = s[j];
 
-    (*it_)[i] = *reinterpret_cast<double*>(&v);
+    (*it_)[iCol] = *reinterpret_cast<double*>(&v);
     return ODBQL_OK;
 }
 
@@ -243,17 +243,17 @@ int SelectImpl::column_type(int iCol)
     }
 }
 
-int SelectImpl::bind_double(int i, double v)
+int SelectImpl::bind_double(int iCol, double v)
 {
     NOTIMP;
 }
 
-int SelectImpl::bind_int(int i, int v)
+int SelectImpl::bind_int(int iCol, int v)
 {
     NOTIMP;
 }
 
-int SelectImpl::bind_text(int i, const char* s, int n)
+int SelectImpl::bind_text(int iCol, const char* s, int n)
 {
     NOTIMP;
 }
@@ -352,26 +352,26 @@ int odbql_step(odbql_stmt* stmt)
 // The last argument of odbql_bind_blob and similar: https://www.sqlite.org/c3ref/c_static.html
 //int odbql_bind_blob(odbql_stmt*, int, const void*, int n, void(*)(void*));
 //int odbql_bind_blob64(odbql_stmt*, int, const void*, odbql_uint64, void(*)(void*));
-int odbql_bind_double(odbql_stmt* stmt, int i, double v)
+int odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
 {
-    return statement(stmt).bind_double(i, v);
+    return statement(stmt).bind_double(iCol, v);
 }
 
-int odbql_bind_int(odbql_stmt* stmt, int i, int v)
+int odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
 {
-    return statement(stmt).bind_int(i, v);
+    return statement(stmt).bind_int(iCol, v);
 }
 
 //int odbql_bind_int64(odbql_stmt*, int, odbql_int64);
-int odbql_bind_null(odbql_stmt* stmt, int i)
+int odbql_bind_null(odbql_stmt* stmt, int iCol)
 {
     // TODO
     NOTIMP;
 }
 
-int odbql_bind_text(odbql_stmt* stmt, int i, const char* s, int n, void(*d)(void*))
+int odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
 {
-    return statement(stmt).bind_text(i, s, n);
+    return statement(stmt).bind_text(iCol, s, n);
 }
 
 //int odbql_bind_text16(odbql_stmt*, int, const void*, int, void(*)(void*));
@@ -382,9 +382,9 @@ int odbql_bind_text(odbql_stmt* stmt, int i, const char* s, int n, void(*d)(void
 
 
 //ODBQL_API const unsigned char *ODBQL_STDCALL odbql_column_text(odbql_stmt*, int iCol);
-const unsigned char *odbql_column_text(odbql_stmt* stmt, int column)
+const unsigned char *odbql_column_text(odbql_stmt* stmt, int iCol)
 {
-    return statement(stmt).column_text(column);
+    return statement(stmt).column_text(iCol);
 }
 
 //ODBQL_API int ODBQL_STDCALL odbql_finalize(odbql_stmt *pStmt);

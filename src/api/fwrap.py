@@ -132,6 +132,7 @@ helper_functions = """
 """
 
 def actual_parameter(p):
+    if p[1] == 'iCol': return p[1] + '-1'
     if p[0] == 'const char*': return p[1] + '_tmp'
     if p[0] == 'odbql*': return p[1] + '%this'
     if p[0] == 'odbql**': return p[1] + '%this'

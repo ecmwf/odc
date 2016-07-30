@@ -79,12 +79,12 @@ interface
 
     
 
-!> int odbql_bind_double(odbql_stmt* stmt, int i, double v)
+!> int odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
 
-    function odbql_bind_double_c (stmt,i,v) bind(C, name="odbql_bind_double")
+    function odbql_bind_double_c (stmt,iCol,v) bind(C, name="odbql_bind_double")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      real(kind=C_DOUBLE), VALUE           :: v
      integer(kind=C_INT)                  :: odbql_bind_double_c
     end function odbql_bind_double_c
@@ -92,12 +92,12 @@ interface
 
     
 
-!> int odbql_bind_int(odbql_stmt* stmt, int i, int v)
+!> int odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
 
-    function odbql_bind_int_c (stmt,i,v) bind(C, name="odbql_bind_int")
+    function odbql_bind_int_c (stmt,iCol,v) bind(C, name="odbql_bind_int")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      integer(kind=C_INT), VALUE           :: v
      integer(kind=C_INT)                  :: odbql_bind_int_c
     end function odbql_bind_int_c
@@ -105,24 +105,24 @@ interface
 
     
 
-!> int odbql_bind_null(odbql_stmt* stmt, int i)
+!> int odbql_bind_null(odbql_stmt* stmt, int iCol)
 
-    function odbql_bind_null_c (stmt,i) bind(C, name="odbql_bind_null")
+    function odbql_bind_null_c (stmt,iCol) bind(C, name="odbql_bind_null")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      integer(kind=C_INT)                  :: odbql_bind_null_c
     end function odbql_bind_null_c
 
 
     
 
-!> int odbql_bind_text(odbql_stmt* stmt, int i, const char* s, int n, void(*d)(void*))
+!> int odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
 
-    function odbql_bind_text_c (stmt,i,s,n,d) bind(C, name="odbql_bind_text")
+    function odbql_bind_text_c (stmt,iCol,s,n,d) bind(C, name="odbql_bind_text")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: stmt
-     integer(kind=C_INT), VALUE           :: i
+     integer(kind=C_INT), VALUE           :: iCol
      character(kind=C_CHAR),dimension(*)  :: s
      integer(kind=C_INT), VALUE           :: n
      type(C_PTR), VALUE                   :: d
@@ -132,12 +132,12 @@ interface
 
     
 
-!> const unsigned char *odbql_column_text(odbql_stmt* stmt, int column)
+!> const unsigned char *odbql_column_text(odbql_stmt* stmt, int iCol)
 
-    function odbql_column_text_c (stmt,column) bind(C, name="odbql_column_text")
+    function odbql_column_text_c (stmt,iCol) bind(C, name="odbql_column_text")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: stmt
-     integer(kind=C_INT), VALUE           :: column
+     integer(kind=C_INT), VALUE           :: iCol
      type(C_PTR)                          :: odbql_column_text_c
     end function odbql_column_text_c
 

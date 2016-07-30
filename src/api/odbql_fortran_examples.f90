@@ -12,7 +12,7 @@
 program example_fortran_api
   use odbql_wrappers
   implicit none
-  character(len=255)                           :: version
+  character(len=10)                            :: version
 
   call odbql_libversion(version)
   write(0,*) "This program is linked to ODB API version: ", version
@@ -37,11 +37,11 @@ subroutine odbql_fortran_example
  rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y REAL, v STRING) ON 'fort.odb';", db)
  rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, stmt, unparsed_sql)
 
- do i=0,3 - 1
-    rc = odbql_bind_int(stmt, 0, 1 * (i + 1));
-    v = 0.1 * (i + 1)
-    rc = odbql_bind_double(stmt, 1, v);
-    rc = odbql_bind_text(stmt, 2, "hello", 5, destructor);
+ do i=1,3
+    rc = odbql_bind_int(stmt, 1, 1 * i);
+    v = 0.1 * i
+    rc = odbql_bind_double(stmt, 2, v);
+    rc = odbql_bind_text(stmt, 3, "hello", 5, destructor);
     rc = odbql_step(stmt);
  enddo
  rc = odbql_finalize(stmt);
@@ -50,19 +50,19 @@ subroutine odbql_fortran_example
 !! Print first row of query result set
 
 ! Associate table with a file name
- rc = odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
+!rc = odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
 ! Retrieve some data from MARS:
-! rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
+ rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
  rc = odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
 
  rc = odbql_step(stmt)
 
- do i=0,number_of_columns - 1
+ do i=1,number_of_columns
      call odbql_column_name(stmt, i, column_name)
      call odbql_column_text(stmt, i, val)
-     write(0,*) i, ' ', column_name, ': ', val
+     write(6,*) i, ' ', column_name, ': ', val
  enddo
 
  rc = odbql_finalize(stmt)
