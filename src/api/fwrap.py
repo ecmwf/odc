@@ -44,6 +44,10 @@ def parseDeclaration(decl):
 
     params = decl.split('(',1)[1].strip().rsplit(')', 1)[0].strip()
     params = list([parseParam(p) for p in params.split(',')])
+
+    # filter out void from parameterless functions e.g: const char * odbql_libversion(void)
+    if len(params) == 1 and (len(params[0][0]) == 0 and params[0][1] == 'void'):
+        params = []
     return (decl, (return_type, fun_name, params))
 
 def translate_type_for_binding(t):
@@ -131,6 +135,9 @@ helper_functions = """
 
 """
 
+def parameter_type(p): return p[0]
+def parameter_name(p): return p[1]
+
 def actual_parameter(p):
     if p[1] == 'iCol': return p[1] + '-1'
     if p[0] == 'const char*': return p[1] + '_tmp'
@@ -140,46 +147,44 @@ def actual_parameter(p):
     if p[0] == 'odbql_stmt**': return p[1] + '%this'
     return p[1]
 
-def generateWrapper(declaration, comment, template):
+def generateWrapper(signature, comment, template):
+
+    return_type, function_name, params = signature
     procedure_keyword = 'function'
 
-    return_type, function_name, params = declaration
-
-    ###print 'generateWrapper: ', declaration, comment
-
-    #print 'params:', params  # [(name,type), ...]
+    if function_name == 'odbql_bind_text': print 'params:', params  # [(name,type), ...]
 
     output_parameter = function_name
 
-    # filter out void from parameterless functions e.g: const char * odbql_libversion(void)
-    if len(params) == 1 and (len(params[0][0]) == 0 and params[0][1] == 'void'):
-        params = []
     # filter out user supplied destructor functions (not supported now)
-    params = [p for p in params if not p[1] == 'void(*)(void*)']
-
-    fortran_params = params[:]
+    fortran_params = [p for p in params if not parameter_type(p) == 'void(*)(void*)']
+    fortran_params_excluding_return_parameter = fortran_params[:]
 
     binding_parameter_list = '(' + ','.join([p[1] for p in params]) + ')'
     actual_binding_parameter_list = '(' + ','.join([actual_parameter(p) for p in params]) + ')'
-    # character(len=len_trim(filename) + 1)     :: filename_tmp
-    temporary_variables_declarations = '\n     '.join(formatParameter('character(len=len_trim('+p[1]+')+1)', p[1] + '_tmp')
-                                                      for p in params if p[0] == 'const char*')
+    temporary_variables_declarations = '\n     '.join(
+        [formatParameter('character(len=len_trim('+p[1]+')+1)', p[1] + '_tmp') for p in params if p[0] == 'const char*']
+        + [formatParameter('type(C_PTR)', p[1]) for p in params if p[0] == 'void(*)(void*)'])
     temporary_variables_assignments   = '\n     '.join(p[1] + '_tmp = ' + p[1] + '//achar(0)'
                                                       for p in params if p[0] == 'const char*')
 
-    call_binding = output_parameter + ' = ' + function_name + '_c' + actual_binding_parameter_list
+    call_binding = function_name + '_c' + actual_binding_parameter_list
+
     if return_type == 'const char*' or return_type == 'const unsigned char*':
         procedure_keyword = 'subroutine'
         output_parameter = 'return_value'
         fortran_params.append( (return_type, output_parameter) )
-        call_binding = output_parameter + ' = C_to_F_string(' + function_name + '_c' + actual_binding_parameter_list + ')'
+        call_binding = 'C_to_F_string(' + call_binding  + ')'
 
-    fortran_parameter_list = '(' + ','.join([p[1] for p in fortran_params]) + ')'
+    return_value_assignment = output_parameter + ' = ' + call_binding
 
     binding_parameters_declarations = '\n     '.join([fortranParamTypeDeclaration(p) for p in params])
     binding_return_type_declaration = formatParameter(translate_type_for_binding_return(return_type), function_name + '_c')
 
-    fortran_parameters_declarations = '\n     '.join([fortranParamTypeDeclaration(p, translate_type = translate_type_for_fortran) for p in params])
+    fortran_parameter_list = '(' + ','.join([p[1] for p in fortran_params]) + ')'
+    fortran_parameters_declarations = '\n     ' .join(
+        [fortranParamTypeDeclaration(p, translate_type = translate_type_for_fortran)
+         for p in fortran_params_excluding_return_parameter])
     fortran_return_type_declaration = formatParameter(translate_type_for_fortran_return(return_type), output_parameter)
 
     use_intrinsic = formatParameter('use, intrinsic', 'iso_c_binding')
@@ -264,7 +269,7 @@ end module odbql_wrappers
 
      %(temporary_variables_assignments)s
 
-     %(call_binding)s
+     %(return_value_assignment)s
 
     end %(procedure_keyword)s %(function_name)s
 

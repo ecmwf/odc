@@ -222,17 +222,17 @@ contains
 
 !> int odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
 
-    function odbql_bind_text (stmt,iCol,s,n,d) 
+    function odbql_bind_text (stmt,iCol,s,n) 
      use odbql_binding
      use, intrinsic                       :: iso_c_binding
      type(odbql_stmt), VALUE              :: stmt
      integer(kind=C_INT), VALUE           :: iCol
      character(len=*),intent(in)          :: s
      integer(kind=C_INT), VALUE           :: n
-     type(C_PTR), VALUE                   :: d
      integer(kind=C_INT)                  :: odbql_bind_text
 
      character(len=len_trim(s)+1)         :: s_tmp
+     type(C_PTR)                          :: d
 
      s_tmp = s//achar(0)
 

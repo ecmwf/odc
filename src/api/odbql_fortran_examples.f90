@@ -25,7 +25,6 @@ subroutine odbql_fortran_example
  implicit none
  type(odbql)                                   :: db
  type(odbql_stmt)                              :: stmt
- type(C_PTR)                                   :: destructor ! not really used
  integer(kind=C_INT)                           :: rc, number_of_columns, i
  character(len=30)                             :: val, column_name
  character(len=1000)                           :: unparsed_sql
@@ -38,13 +37,13 @@ subroutine odbql_fortran_example
  rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, stmt, unparsed_sql)
 
  do i=1,3
-    rc = odbql_bind_int(stmt, 1, 1 * i);
+    rc = odbql_bind_int(stmt, 1, 1 * i)
     v = 0.1 * i
-    rc = odbql_bind_double(stmt, 2, v);
-    rc = odbql_bind_text(stmt, 3, "hello", 5, destructor);
-    rc = odbql_step(stmt);
+    rc = odbql_bind_double(stmt, 2, v)
+    rc = odbql_bind_text(stmt, 3, "hello", 5)
+    rc = odbql_step(stmt)
  enddo
- rc = odbql_finalize(stmt);
+ rc = odbql_finalize(stmt)
  rc = odbql_close(db)
 
 !! Print first row of query result set
