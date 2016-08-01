@@ -52,7 +52,10 @@ subroutine odbql_fortran_example
     rc = odbql_step(stmt)
  enddo
  rc = odbql_finalize(stmt)
+ if (rc /= ODBQL_OK) STOP 
+
  rc = odbql_close(db)
+ if (rc /= ODBQL_OK) STOP 
 
 !! Print first row of query result set
 
@@ -65,6 +68,7 @@ subroutine odbql_fortran_example
  write(0,*) "Number of columns: ", number_of_columns 
 
  rc = odbql_step(stmt)
+ if (rc /= ODBQL_ROW) STOP 
 
  do i=1,number_of_columns
      call odbql_column_name(stmt, i, column_name)
@@ -73,7 +77,10 @@ subroutine odbql_fortran_example
  enddo
 
  rc = odbql_finalize(stmt)
+ if (rc /= ODBQL_OK) STOP 
+
  rc = odbql_close(db)
+ if (rc /= ODBQL_OK) STOP 
 
 end subroutine odbql_fortran_example
 
