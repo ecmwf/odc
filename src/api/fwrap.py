@@ -38,8 +38,8 @@ def translate_value_and_comment(value_and_possibly_comment):
     if value.find('|') <> -1:
         comment = value + ' ' + comment
         l,r = [x.strip(' ()') for x in value.split('|')]
-        i, shift = r.split('<<')
-        value = 'IOR(%s, LSHIFT(%s,  %s))' % (l, i, shift)
+        i, shift = [x.strip() for x in r.split('<<')]
+        value = 'IOR(%s, LSHIFT(%s,%s))' % (l, i, shift)
     
     if value.startswith('0x'):
         comment = value + ' ' + comment
