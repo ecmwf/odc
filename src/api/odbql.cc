@@ -77,6 +77,10 @@ public:
     virtual int bind_double(int iCol, double v) = 0;
     virtual int bind_int(int iCol, int) = 0;
     virtual int bind_text(int iCol, const char*, int) = 0;
+
+    // NULL handling functions:
+    virtual int bind_null(int iCol) = 0;
+    virtual bool column_value(int iCol) = 0; // This could also be called: column_has_value
 };
 
 class SelectImpl : public StatementImpl {
@@ -99,7 +103,9 @@ public:
     int bind_double(int iCol, double v);
     int bind_int(int iCol, int);
     int bind_text(int iCol, const char*, int);
-
+    int bind_null(int iCol);
+    bool column_value(int iCol); 
+ 
 private:
     bool firstStep;
     const std::string db_;
@@ -127,6 +133,8 @@ public:
     int bind_double(int iCol, double v);
     int bind_int(int iCol, int);
     int bind_text(int iCol, const char*, int);
+    int bind_null(int iCol);
+    bool column_value(int iCol);
 
 private:
     odb::Writer<> writer_;
@@ -172,6 +180,17 @@ int InsertImpl::bind_text(int iCol, const char* s, int n)
 
     (*it_)[iCol] = *reinterpret_cast<double*>(&v);
     return ODBQL_OK;
+}
+
+int InsertImpl::bind_null(int iCol)
+{
+    (*it_)[iCol] = it_->columns()[iCol]->missingValue();
+    return ODBQL_OK;
+}
+
+bool InsertImpl::column_value(int iCol)
+{
+    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
 }
 
 bool InsertImpl::step()
@@ -256,6 +275,16 @@ int SelectImpl::bind_int(int iCol, int v)
 int SelectImpl::bind_text(int iCol, const char* s, int n)
 {
     NOTIMP;
+}
+
+int SelectImpl::bind_null(int iCol)
+{
+    NOTIMP;
+}
+
+bool SelectImpl::column_value(int iCol)
+{
+    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
 }
 
 extern "C" {
@@ -365,8 +394,7 @@ int odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
 //int odbql_bind_int64(odbql_stmt*, int, odbql_int64);
 int odbql_bind_null(odbql_stmt* stmt, int iCol)
 {
-    // TODO
-    NOTIMP;
+    return statement(stmt).bind_null(iCol);
 }
 
 int odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
@@ -404,6 +432,14 @@ const char *odbql_column_name(odbql_stmt* stmt, int iCol)
 int odbql_column_type(odbql_stmt* stmt, int iCol)
 {
     return statement(stmt).column_type(iCol);
+}
+
+/// Use odbql_column_value to check if value of the current row of column iCol is NULL.
+/// @returns  0 is the value is NULL
+///           any other value means the value is not NULL
+odbql_value *odbql_column_value(odbql_stmt* stmt, int iCol)
+{
+    return reinterpret_cast<odbql_value*>( statement(stmt).column_value(iCol) ? -1 : 0);
 }
 
 // https://www.sqlite.org/c3ref/column_count.html

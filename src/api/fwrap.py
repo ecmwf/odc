@@ -126,6 +126,7 @@ def translate_type_for_binding_return(t):
     if t == 'const char*':           return 'type(C_PTR)'
     if t == 'const unsigned char*':  return 'type(C_PTR)'
     if t == 'int':                   return 'integer(kind=C_INT)'
+    if t == 'odbql_value*':          return 'type(C_PTR)'
 
     raise Exception("Don't know how to translate '" + t + "'")
 
@@ -150,6 +151,7 @@ def translate_type_for_fortran_return(t):
     if t == 'const char*':           return 'character(len=*),intent(out)'
     if t == 'const unsigned char*':  return 'character(len=*),intent(out)' # TODO: think about it
     if t == 'int':                   return 'integer(kind=C_INT)'
+    if t == 'odbql_value*':          return 'logical'
 
     raise Exception("Don't know how to translate '" + t + "'")
 
@@ -160,6 +162,23 @@ def fortranParamTypeDeclaration(p, translate_type = translate_type_for_binding):
 
 
 helper_functions = """
+
+!> Helper function to convert C pointer to logical:
+
+    function c_ptr_to_logical(ptr)
+
+      use, intrinsic :: iso_c_binding, only: c_ptr
+
+      type(c_ptr), intent(in)                       :: ptr
+      logical                                       :: c_ptr_to_logical
+
+      if (.not. c_associated(ptr)) then
+          c_ptr_to_logical = .false.
+      else
+          c_ptr_to_logical = .true.
+      end if
+
+    end function c_ptr_to_logical
 
 !> Helper function to convert C '\\0' terminated strings to Fortran strings
 
@@ -232,6 +251,9 @@ def generateWrapper(signature, comment, template):
         output_parameter = 'return_value'
         fortran_params.append( (return_type, output_parameter) )
         call_binding = 'C_to_F_string(' + call_binding  + ')'
+
+    if return_type == 'odbql_value*':
+        call_binding = 'c_ptr_to_logical(' + call_binding  + ')'
 
     return_value_assignment = output_parameter + ' = ' + call_binding
 

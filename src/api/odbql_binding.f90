@@ -179,6 +179,18 @@ interface
 
     
 
+!> odbql_value *odbql_column_value(odbql_stmt* stmt, int iCol)
+
+    function odbql_column_value_c (stmt,iCol) bind(C, name="odbql_column_value")
+     use, intrinsic                       :: iso_c_binding
+     type(C_PTR), VALUE                   :: stmt
+     integer(kind=C_INT), VALUE           :: iCol
+     type(C_PTR)                          :: odbql_column_value_c
+    end function odbql_column_value_c
+
+
+    
+
 !> int odbql_column_count(odbql_stmt *stmt)
 
     function odbql_column_count_c (stmt) bind(C, name="odbql_column_count")

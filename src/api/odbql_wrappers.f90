@@ -19,6 +19,23 @@ contains
 
 
 
+!> Helper function to convert C pointer to logical:
+
+    function c_ptr_to_logical(ptr)
+
+      use, intrinsic :: iso_c_binding, only: c_ptr
+
+      type(c_ptr), intent(in)                       :: ptr
+      logical                                       :: c_ptr_to_logical
+
+      if (.not. c_associated(ptr)) then
+          c_ptr_to_logical = .false.
+      else
+          c_ptr_to_logical = .true.
+      end if
+
+    end function c_ptr_to_logical
+
 !> Helper function to convert C '\0' terminated strings to Fortran strings
 
     function C_to_F_string(c_string_pointer) result(f_string)
@@ -315,6 +332,25 @@ contains
      odbql_column_type = odbql_column_type_c(stmt%this,iCol-1)
 
     end function odbql_column_type
+
+    
+
+!> odbql_value *odbql_column_value(odbql_stmt* stmt, int iCol)
+
+    function odbql_column_value (stmt,iCol) 
+     use odbql_binding
+     use, intrinsic                       :: iso_c_binding
+     type(odbql_stmt), VALUE              :: stmt
+     integer(kind=C_INT), VALUE           :: iCol
+     logical                              :: odbql_column_value
+
+     
+
+     
+
+     odbql_column_value = c_ptr_to_logical(odbql_column_value_c(stmt%this,iCol-1))
+
+    end function odbql_column_value
 
     
 

@@ -19,68 +19,90 @@ program example_fortran_api
 
   call odbql_fortran_example()
 
+  write(0,*) "That's all, folks!"
 contains
 
 subroutine odbql_fortran_example
  implicit none
  type(odbql)                                   :: db
  type(odbql_stmt)                              :: stmt
- integer(kind=C_INT)                           :: rc, number_of_columns, i
+ integer(kind=C_INT)                           :: rc, number_of_columns, column, row
  character(len=30)                             :: val, column_name
  character(len=1000)                           :: unparsed_sql
  real(kind=C_DOUBLE)                           :: v
 
 !!!! Write to a file with INSERT
 
- rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y REAL, v STRING) ON 'fort.odb';", db)
- if (rc /= ODBQL_OK) STOP 1
+ rc = odbql_open("CREATE TYPE BF_T AS (f1 bit1, f2 bit2); CREATE TABLE foo AS (x INTEGER, y REAL, v STRING, status BF_T) ON 'fort.odb';", db)
+ if (rc /= ODBQL_OK) stop
 
- rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, stmt, unparsed_sql)
- if (rc /= ODBQL_OK) STOP 2
+ rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", -1, stmt, unparsed_sql)
+ if (rc /= ODBQL_OK) stop
 
- do i=1,3
-    rc = odbql_bind_int(stmt, 1, 1 * i)
-    if (rc /= ODBQL_OK) STOP 3
+! Populate first row with NULLs
+ do column = 1,4
+     rc = odbql_bind_null(stmt, column)
+     if (rc /= ODBQL_OK) stop 
+ end do
+ rc = odbql_step(stmt)
 
-    v = 0.1 * i
+! Write 3 rows with some values other than NULL
+ do row = 1,3
+    rc = odbql_bind_int(stmt, 1, 1 * row)
+    if (rc /= ODBQL_OK) stop 
+
+    v = 0.1 * row
     rc = odbql_bind_double(stmt, 2, v)
-    if (rc /= ODBQL_OK) STOP 4
+    if (rc /= ODBQL_OK) stop
 
     rc = odbql_bind_text(stmt, 3, "hello", 5)
-    if (rc /= ODBQL_OK) STOP 5
+    if (rc /= ODBQL_OK) stop
+
+    rc = odbql_bind_int(stmt, 4, 1 * row)
+    if (rc /= ODBQL_OK) stop
 
     rc = odbql_step(stmt)
  enddo
+
  rc = odbql_finalize(stmt)
- if (rc /= ODBQL_OK) STOP 
+ if (rc /= ODBQL_OK) stop 
 
  rc = odbql_close(db)
- if (rc /= ODBQL_OK) STOP 
-
-!! Print first row of query result set
+ if (rc /= ODBQL_OK) stop 
 
 ! Associate table with a file name
-!rc = odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
+ rc = odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
 ! Retrieve some data from MARS:
- rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
+! rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
  rc = odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
 
- rc = odbql_step(stmt)
- if (rc /= ODBQL_ROW) STOP 
+ row = 0
+ do 
+   rc = odbql_step(stmt)
+   if (rc == ODBQL_DONE) exit
+   if (rc /= ODBQL_ROW) stop 
 
- do i=1,number_of_columns
-     call odbql_column_name(stmt, i, column_name)
-     call odbql_column_text(stmt, i, val)
-     write(6,*) i, ' ', column_name, ': ', val
- enddo
+   write(6,*) 'Row ', row
+   do column = 1,number_of_columns
+
+       call odbql_column_name(stmt, column, column_name)
+       if (odbql_column_value(stmt, column)) then
+           call odbql_column_text(stmt, column, val)
+           write(6,*) column, ' ', column_name, ': ', val
+       else
+           write(6,*) column, ' ', column_name, ': MISSING'
+       end if
+   end do
+   row = row + 1
+ end do 
 
  rc = odbql_finalize(stmt)
- if (rc /= ODBQL_OK) STOP 
+ if (rc /= ODBQL_OK) stop 
 
  rc = odbql_close(db)
- if (rc /= ODBQL_OK) STOP 
+ if (rc /= ODBQL_OK) stop 
 
 end subroutine odbql_fortran_example
 

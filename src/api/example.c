@@ -31,6 +31,7 @@ int odbql_example_insert_data()
 {
     odbql *db;
     odbql_stmt *stmt;
+    int i;
 
     int rc = odbql_open("CREATE TYPE bf AS (f1 bit1, f2 bit2);\n"
                         "CREATE TABLE foo AS"
@@ -45,8 +46,13 @@ int odbql_example_insert_data()
             0);
     checkRC(rc, "Failed to prepare INSERT statement", db);
 
-    int i = 0;
-    for ( ; i <= 3; ++i)
+    // Populate first row with NULLs
+    for (i = 0; i < 4; ++i) 
+        odbql_bind_null(stmt, i);
+    rc = odbql_step(stmt);
+
+    // Few more rows with some non-NULL values
+    for (i = 0 ; i < 4; ++i)
     {
         rc = odbql_bind_int(stmt, 0, 1 * i);
         checkRC(rc, "Failed to bind int value", db);
@@ -81,7 +87,7 @@ int odbql_example_select_data_read_results()
                            //" ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
     checkRC(rc, "Cannot open database", db);
     
-    rc = odbql_prepare_v2(db, "SELECT x,y,v,status.* FROM foo;", -1, &res, 0);
+    rc = odbql_prepare_v2(db, "SELECT x,y,v,status,status.* FROM foo;", -1, &res, 0);
     checkRC(rc, "Failed to prepare statement", db);
 
     int number_of_columns = odbql_column_count(res);
@@ -99,7 +105,9 @@ int odbql_example_select_data_read_results()
         if (rc == ODBQL_ROW) {
             int column = 0;
             for (; column < number_of_columns; ++column)
-                printf("%s%s", odbql_column_text(res, column),
+                printf("%s%s", odbql_column_value(res, column) 
+                                ? odbql_column_text(res, column) 
+                                : (unsigned char *) "NULL",
                                ((column < number_of_columns - 1) ? "," : ""));
             printf("\n");
         }
