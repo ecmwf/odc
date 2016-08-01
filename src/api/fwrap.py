@@ -12,10 +12,66 @@ def formatParameter(typ, name):
 def declarations(source_cc = 'odbql.cc'):
     decls = [line for line in [l.strip() for l in open(source_cc).read().splitlines()]
          if line.find('odbql_') <> -1 
-            and not line.startswith('//')
-            and line.find('return') == -1
-            and line.find('typedef') == -1]
+             and not line.startswith('//')
+             and line.find('return') == -1
+             and line.find('typedef') == -1]
     return decls
+
+def constants(source_h = 'odbql.h'):
+
+    lines = [line.strip() for line in open(source_h).read().splitlines()
+            if line.startswith('#define ODBQL_') 
+               and len(line.split()) > 2]
+
+    #print '\n'.join(lines)
+           
+    defs = [line.split(None, 2)[1:] for line in lines]
+    return defs
+
+def translate_value_and_comment(value_and_possibly_comment):
+    value = value_and_possibly_comment.split('/*')[0].strip()
+    comment = ''
+
+    if len(value_and_possibly_comment.split('/*')) > 1:
+        comment = value_and_possibly_comment.split('/*')[1].split('*/')[0]
+
+    if value.find('|') <> -1:
+        comment = value + ' ' + comment
+        l,r = [x.strip(' ()') for x in value.split('|')]
+        i, shift = r.split('<<')
+        value = 'IOR(%s, LSHIFT(%s,  %s))' % (l, i, shift)
+    
+    if value.startswith('0x'):
+        comment = value + ' ' + comment
+        value = eval(value)
+
+    return value, '! ' + comment 
+
+def generateParameter(define):
+    name, value_and_possibly_comment = define
+
+    typ = 'integer'
+    if value_and_possibly_comment.find('"') <> -1:
+        typ = 'character(len=*)'
+
+    if name == 'ODBQL_TRANSIENT':
+        value, comment = '-1', " ! ((odbql_destructor_type)-1)"
+    elif name == 'ODBQL_STATIC':
+        value, comment = '0', ' ! ((odbql_destructor_type)0)'
+    else:
+        value, comment = translate_value_and_comment(value_and_possibly_comment) 
+
+    return '%s, parameter :: %s = %s %s' % (typ, name, value, comment)
+
+def generateParameters(defs):
+    return """
+module odbql_constants
+  implicit none
+
+""" + '\n'.join(generateParameter(d) for d in defs) + """
+
+end module odbql_constants
+""" 
 
 def normalize_type(t): return re.sub(' [*]', '*', t)
 
@@ -201,11 +257,18 @@ def generateWrappers(decls, header, footer, template):
     return s
 
 
+
 def generateBindings(source_cc = 'odbql.cc',
+                     source_h = 'odbql.h',
                      binding_f90 = 'odbql_binding.f90',
-                     wrappers_f90 = 'odbql_wrappers.f90'):
+                     wrappers_f90 = 'odbql_wrappers.f90',
+                     constants_f90 = 'odbql_constants.f90'):
 
     decls = declarations(source_cc)
+    defs = constants(source_h)
+    with open(constants_f90, 'w') as f: 
+        f.write(generateParameters(defs))
+
     ########## odbql_binding.f90: declarations of ISO C bindings for the new ODB API
     with open(binding_f90, 'w') as f: 
         f.write(generateWrappers(decls, header = """
@@ -241,6 +304,7 @@ end module odbql_binding
 
 module odbql_wrappers
   use odbql_binding
+  use odbql_constants
   implicit none
   
   type odbql
@@ -277,6 +341,4 @@ end module odbql_wrappers
     """ 
     ))
 
-if __name__ == '__main__':
-    generateBindings()
-
+if __name__ == '__main__': generateBindings()

@@ -30,17 +30,25 @@ subroutine odbql_fortran_example
  character(len=1000)                           :: unparsed_sql
  real(kind=C_DOUBLE)                           :: v
 
-
 !!!! Write to a file with INSERT
 
  rc = odbql_open("CREATE TABLE foo AS (x INTEGER, y REAL, v STRING) ON 'fort.odb';", db)
+ if (rc /= ODBQL_OK) STOP 1
+
  rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, stmt, unparsed_sql)
+ if (rc /= ODBQL_OK) STOP 2
 
  do i=1,3
     rc = odbql_bind_int(stmt, 1, 1 * i)
+    if (rc /= ODBQL_OK) STOP 3
+
     v = 0.1 * i
     rc = odbql_bind_double(stmt, 2, v)
+    if (rc /= ODBQL_OK) STOP 4
+
     rc = odbql_bind_text(stmt, 3, "hello", 5)
+    if (rc /= ODBQL_OK) STOP 5
+
     rc = odbql_step(stmt)
  enddo
  rc = odbql_finalize(stmt)

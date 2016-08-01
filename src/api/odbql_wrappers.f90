@@ -4,6 +4,7 @@
 
 module odbql_wrappers
   use odbql_binding
+  use odbql_constants
   implicit none
   
   type odbql
