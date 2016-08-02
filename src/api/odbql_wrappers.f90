@@ -28,13 +28,10 @@ contains
       type(c_ptr), intent(in)                       :: ptr
       logical                                       :: c_ptr_to_logical
 
-      if (.not. c_associated(ptr)) then
-          c_ptr_to_logical = .false.
-      else
-          c_ptr_to_logical = .true.
-      end if
+      c_ptr_to_logical = c_associated(ptr)
 
     end function c_ptr_to_logical
+
 
 !> Helper function to convert C '\0' terminated strings to Fortran strings
 
@@ -75,9 +72,7 @@ contains
      character(len=*),intent(out)         :: return_value
 
      
-
      
-
      return_value = C_to_F_string(odbql_errmsg_c(db%this))
 
     end subroutine odbql_errmsg
@@ -93,9 +88,7 @@ contains
      character(len=*),intent(out)         :: return_value
 
      
-
      
-
      return_value = C_to_F_string(odbql_libversion_c())
 
     end subroutine odbql_libversion
@@ -112,9 +105,7 @@ contains
      integer(kind=C_INT)                  :: odbql_open
 
      character(len=len_trim(filename)+1)  :: filename_tmp
-
      filename_tmp = filename//achar(0)
-
      odbql_open = odbql_open_c(filename_tmp,ppDb%this)
 
     end function odbql_open
@@ -130,9 +121,7 @@ contains
      integer(kind=C_INT)                  :: odbql_close
 
      
-
      
-
      odbql_close = odbql_close_c(db%this)
 
     end function odbql_close
@@ -152,9 +141,7 @@ contains
      integer(kind=C_INT)                  :: odbql_prepare_v2
 
      character(len=len_trim(zSql)+1)      :: zSql_tmp
-
      zSql_tmp = zSql//achar(0)
-
      odbql_prepare_v2 = odbql_prepare_v2_c(db%this,zSql_tmp,nByte,ppStmt%this,pzTail)
 
     end function odbql_prepare_v2
@@ -170,9 +157,7 @@ contains
      integer(kind=C_INT)                  :: odbql_step
 
      
-
      
-
      odbql_step = odbql_step_c(stmt%this)
 
     end function odbql_step
@@ -190,9 +175,7 @@ contains
      integer(kind=C_INT)                  :: odbql_bind_double
 
      
-
      
-
      odbql_bind_double = odbql_bind_double_c(stmt%this,iCol-1,v)
 
     end function odbql_bind_double
@@ -210,9 +193,7 @@ contains
      integer(kind=C_INT)                  :: odbql_bind_int
 
      
-
      
-
      odbql_bind_int = odbql_bind_int_c(stmt%this,iCol-1,v)
 
     end function odbql_bind_int
@@ -229,9 +210,7 @@ contains
      integer(kind=C_INT)                  :: odbql_bind_null
 
      
-
      
-
      odbql_bind_null = odbql_bind_null_c(stmt%this,iCol-1)
 
     end function odbql_bind_null
@@ -251,9 +230,7 @@ contains
 
      character(len=len_trim(s)+1)         :: s_tmp
      type(C_PTR)                          :: d
-
      s_tmp = s//achar(0)
-
      odbql_bind_text = odbql_bind_text_c(stmt%this,iCol-1,s_tmp,n,d)
 
     end function odbql_bind_text
@@ -270,9 +247,7 @@ contains
      character(len=*),intent(out)         :: return_value
 
      
-
      
-
      return_value = C_to_F_string(odbql_column_text_c(stmt%this,iCol-1))
 
     end subroutine odbql_column_text
@@ -288,9 +263,7 @@ contains
      integer(kind=C_INT)                  :: odbql_finalize
 
      
-
      
-
      odbql_finalize = odbql_finalize_c(stmt%this)
 
     end function odbql_finalize
@@ -307,9 +280,7 @@ contains
      character(len=*),intent(out)         :: return_value
 
      
-
      
-
      return_value = C_to_F_string(odbql_column_name_c(stmt%this,iCol-1))
 
     end subroutine odbql_column_name
@@ -326,9 +297,7 @@ contains
      integer(kind=C_INT)                  :: odbql_column_type
 
      
-
      
-
      odbql_column_type = odbql_column_type_c(stmt%this,iCol-1)
 
     end function odbql_column_type
@@ -345,9 +314,7 @@ contains
      logical                              :: odbql_column_value
 
      
-
      
-
      odbql_column_value = c_ptr_to_logical(odbql_column_value_c(stmt%this,iCol-1))
 
     end function odbql_column_value
@@ -363,9 +330,7 @@ contains
      integer(kind=C_INT)                  :: odbql_column_count
 
      
-
      
-
      odbql_column_count = odbql_column_count_c(stmt%this)
 
     end function odbql_column_count

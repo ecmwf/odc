@@ -172,13 +172,10 @@ helper_functions = """
       type(c_ptr), intent(in)                       :: ptr
       logical                                       :: c_ptr_to_logical
 
-      if (.not. c_associated(ptr)) then
-          c_ptr_to_logical = .false.
-      else
-          c_ptr_to_logical = .true.
-      end if
+      c_ptr_to_logical = c_associated(ptr)
 
     end function c_ptr_to_logical
+
 
 !> Helper function to convert C '\\0' terminated strings to Fortran strings
 
@@ -353,9 +350,7 @@ end module odbql_wrappers
      %(fortran_return_type_declaration)s
 
      %(temporary_variables_declarations)s
-
      %(temporary_variables_assignments)s
-
      %(return_value_assignment)s
 
     end %(procedure_keyword)s %(function_name)s
