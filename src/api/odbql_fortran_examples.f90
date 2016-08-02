@@ -58,8 +58,8 @@ subroutine odbql_fortran_example
 
 ! Associate table with a file name
  call odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
-! Retrieve some data from MARS:
-! rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
+! You could as well retrieve some data directly from MARS instead:
+! call odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
  call odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
