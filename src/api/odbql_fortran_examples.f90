@@ -51,7 +51,7 @@ subroutine odbql_fortran_example
     call odbql_bind_int(stmt, 4, 1 * row)
 
     rc = odbql_step(stmt)
- enddo
+ end do
 
  call odbql_finalize(stmt)
  call odbql_close(db)
