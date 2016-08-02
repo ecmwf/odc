@@ -1,5 +1,4 @@
 import sys
-sys.path.insert(0,'/tmp/mak/odb_api/lib/python2.7.1/site-packages')
 import odb
 
 def quote(s): return '"%s"' % s
