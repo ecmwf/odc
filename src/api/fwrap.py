@@ -2,7 +2,7 @@
 
 import re
 
-PARAM_TYPE_COLUMN = 37
+PARAM_TYPE_COLUMN = 43
 
 def formatParameter(typ, name):
     global PARAM_TYPE_COLUMN 
@@ -108,10 +108,10 @@ def parseDeclaration(decl):
 
 def translate_type_for_binding(t):
     #print 'translate_type_for_binding:', t
-    if t == 'const char*':           return 'character(kind=C_CHAR),dimension(*)'
-    if t == 'const char**':          return 'character(kind=C_CHAR),dimension(*)' # TODO
-    if t == 'double':                return 'real(kind=C_DOUBLE), VALUE'
-    if t == 'int':                   return 'integer(kind=C_INT), VALUE'
+    if t == 'const char*':           return 'character(kind=C_CHAR), dimension(*)'
+    if t == 'const char**':          return 'character(kind=C_CHAR), dimension(*)' # TODO
+    if t == 'double':                return 'real(kind=C_DOUBLE), value'
+    if t == 'int':                   return 'integer(kind=C_INT), value'
     if t == 'odbql*':                return 'type(C_PTR), VALUE'
     if t == 'odbql**':               return 'type(C_PTR)'
     if t == 'odbql_stmt*':           return 'type(C_PTR), VALUE'
@@ -127,31 +127,33 @@ def translate_type_for_binding_return(t):
     if t == 'const unsigned char*':  return 'type(C_PTR)'
     if t == 'int':                   return 'integer(kind=C_INT)'
     if t == 'odbql_value*':          return 'type(C_PTR)'
+    if t == 'error_code_t':          return 'integer(kind=C_INT)'
 
     raise Exception("Don't know how to translate '" + t + "'")
 
 
 def translate_type_for_fortran(t):
     #print 'translate_type_for_fortran:', t
-    if t == 'const char*':           return 'character(len=*),intent(in)'
-    if t == 'const char**':          return 'character(len=*),intent(out)'
-    if t == 'double':                return 'real(kind=C_DOUBLE), VALUE'
-    if t == 'int':                   return 'integer(kind=C_INT), VALUE'
-    if t == 'odbql*':                return 'type(odbql), VALUE'
+    if t == 'const char*':           return 'character(len=*), intent(in)'
+    if t == 'const char**':          return 'character(len=*), intent(out)'
+    if t == 'double':                return 'real(kind=C_DOUBLE), value'
+    if t == 'int':                   return 'integer(kind=C_INT), value'
+    if t == 'odbql*':                return 'type(odbql), value'
     if t == 'odbql**':               return 'type(odbql)'
-    if t == 'odbql_stmt*':           return 'type(odbql_stmt), VALUE'
+    if t == 'odbql_stmt*':           return 'type(odbql_stmt), value'
     if t == 'odbql_stmt**':          return 'type(odbql_stmt)'
-    if t == 'void(*)(void*)':        return 'type(C_PTR), VALUE'
+    if t == 'void(*)(void*)':        return 'type(C_PTR), value'
 
     raise Exception("Don't know how to translate '" + t + "'")
 
 
 def translate_type_for_fortran_return(t):
     #print 'translate_type_for_fortran_return:', t
-    if t == 'const char*':           return 'character(len=*),intent(out)'
-    if t == 'const unsigned char*':  return 'character(len=*),intent(out)' # TODO: think about it
+    if t == 'const char*':           return 'character(len=*), intent(out)'
+    if t == 'const unsigned char*':  return 'character(len=*), intent(out)' # TODO: think about it
     if t == 'int':                   return 'integer(kind=C_INT)'
     if t == 'odbql_value*':          return 'logical'
+    if t == 'error_code_t':          return 'integer(kind=C_INT), intent(out), optional'
 
     raise Exception("Don't know how to translate '" + t + "'")
 
@@ -160,6 +162,7 @@ def fortranParamTypeDeclaration(p, translate_type = translate_type_for_binding):
     fortran_type = translate_type(typ)
     return formatParameter(fortran_type, parameter_name)
 
+nl_indent = '\n     '
 
 helper_functions = """
 
@@ -206,6 +209,18 @@ helper_functions = """
 
 """
 
+status_handling_code = """
+if (present(status)) then
+    status = rc ! let user handle the error
+else
+    if (rc /= ODBQL_OK) then
+        write (0,*) 'Error in %(function_name)s'
+        stop
+    end if
+end if
+"""
+status_handling_code = nl_indent.join (status_handling_code.splitlines())
+
 def parameter_type(p): return p[0]
 def parameter_name(p): return p[1]
 
@@ -218,9 +233,8 @@ def actual_parameter(p):
     if p[0] == 'odbql_stmt**': return p[1] + '%this'
     return p[1]
 
-nl_indent = '\n     '
-
 def generateWrapper(signature, comment, template):
+    global status_handling_code
 
     return_type, function_name, params = signature
     procedure_keyword = 'function'
@@ -235,13 +249,16 @@ def generateWrapper(signature, comment, template):
 
     binding_parameter_list = '(' + ','.join([p[1] for p in params]) + ')'
     actual_binding_parameter_list = '(' + ','.join([actual_parameter(p) for p in params]) + ')'
+
     temporary_variables_declarations = nl_indent.join(
         [formatParameter('character(len=len_trim('+p[1]+')+1)', p[1] + '_tmp') for p in params if p[0] == 'const char*']
         + [formatParameter('type(C_PTR)', p[1]) for p in params if p[0] == 'void(*)(void*)'])
     temporary_variables_assignments   = nl_indent.join(p[1] + '_tmp = ' + p[1] + '//achar(0)'
                                                       for p in params if p[0] == 'const char*')
-
     call_binding = function_name + '_c' + actual_binding_parameter_list
+
+    error_handling = ''
+    return_value_tmp = None
 
     if return_type == 'const char*' or return_type == 'const unsigned char*':
         procedure_keyword = 'subroutine'
@@ -252,7 +269,17 @@ def generateWrapper(signature, comment, template):
     if return_type == 'odbql_value*':
         call_binding = 'c_ptr_to_logical(' + call_binding  + ')'
 
-    return_value_assignment = output_parameter + ' = ' + call_binding
+    if return_type == 'error_code_t':
+        procedure_keyword = 'subroutine'
+        output_parameter = 'status'
+        return_value_tmp = 'rc'
+        temporary_variables_declarations = nl_indent.join(
+            [temporary_variables_declarations, 
+             formatParameter('integer(kind=c_int)', 'rc')])
+        fortran_params.append( (return_type, output_parameter) )
+        error_handling = status_handling_code % locals()
+
+    return_value_assignment = (return_value_tmp or output_parameter) + ' = ' + call_binding
 
     binding_parameters_declarations = nl_indent.join([fortranParamTypeDeclaration(p) for p in params])
     binding_return_type_declaration = formatParameter(translate_type_for_binding_return(return_type), function_name + '_c')
@@ -350,8 +377,10 @@ end module odbql_wrappers
      %(fortran_return_type_declaration)s
 
      %(temporary_variables_declarations)s
+
      %(temporary_variables_assignments)s
      %(return_value_assignment)s
+     %(error_handling)s
 
     end %(procedure_keyword)s %(function_name)s
 

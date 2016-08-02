@@ -33,48 +33,34 @@ subroutine odbql_fortran_example
 
 !!!! Write to a file with INSERT
 
- rc = odbql_open("CREATE TYPE BF_T AS (f1 bit1, f2 bit2); CREATE TABLE foo AS (x INTEGER, y REAL, v STRING, status BF_T) ON 'fort.odb';", db)
- if (rc /= ODBQL_OK) stop
-
- rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", -1, stmt, unparsed_sql)
- if (rc /= ODBQL_OK) stop
+ call odbql_open("CREATE TYPE BF_T AS (f1 bit1, f2 bit2); CREATE TABLE foo AS (x INTEGER, y REAL, v STRING, status BF_T) ON 'fort.odb';", db)
+ call odbql_prepare_v2(db, "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", -1, stmt, unparsed_sql)
 
 ! Populate first row with NULLs
  do column = 1,4
-     rc = odbql_bind_null(stmt, column)
-     if (rc /= ODBQL_OK) stop 
+     call odbql_bind_null(stmt, column)
  end do
  rc = odbql_step(stmt)
 
 ! Write 3 rows with some values other than NULL
  do row = 1,3
-    rc = odbql_bind_int(stmt, 1, 1 * row)
-    if (rc /= ODBQL_OK) stop 
-
+    call odbql_bind_int(stmt, 1, 1 * row)
     v = 0.1 * row
-    rc = odbql_bind_double(stmt, 2, v)
-    if (rc /= ODBQL_OK) stop
-
-    rc = odbql_bind_text(stmt, 3, "hello", 5)
-    if (rc /= ODBQL_OK) stop
-
-    rc = odbql_bind_int(stmt, 4, 1 * row)
-    if (rc /= ODBQL_OK) stop
+    call odbql_bind_double(stmt, 2, v)
+    call odbql_bind_text(stmt, 3, "hello", 5)
+    call odbql_bind_int(stmt, 4, 1 * row)
 
     rc = odbql_step(stmt)
  enddo
 
- rc = odbql_finalize(stmt)
- if (rc /= ODBQL_OK) stop 
-
- rc = odbql_close(db)
- if (rc /= ODBQL_OK) stop 
+ call odbql_finalize(stmt)
+ call odbql_close(db)
 
 ! Associate table with a file name
- rc = odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
+ call odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
 ! Retrieve some data from MARS:
 ! rc = odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
- rc = odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
+ call odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
 
@@ -98,11 +84,8 @@ subroutine odbql_fortran_example
    row = row + 1
  end do 
 
- rc = odbql_finalize(stmt)
- if (rc /= ODBQL_OK) stop 
-
- rc = odbql_close(db)
- if (rc /= ODBQL_OK) stop 
+ call odbql_finalize(stmt)
+ call odbql_close(db)
 
 end subroutine odbql_fortran_example
 

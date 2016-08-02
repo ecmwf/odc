@@ -67,13 +67,15 @@ contains
 
     subroutine odbql_errmsg (db,return_value) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql), VALUE                   :: db
-     character(len=*),intent(out)         :: return_value
+     use, intrinsic                             :: iso_c_binding
+     type(odbql), value                         :: db
+     character(len=*), intent(out)              :: return_value
 
      
+
      
      return_value = C_to_F_string(odbql_errmsg_c(db%this))
+     
 
     end subroutine odbql_errmsg
 
@@ -83,68 +85,103 @@ contains
 
     subroutine odbql_libversion (return_value) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
+     use, intrinsic                             :: iso_c_binding
      
-     character(len=*),intent(out)         :: return_value
+     character(len=*), intent(out)              :: return_value
 
      
+
      
      return_value = C_to_F_string(odbql_libversion_c())
+     
 
     end subroutine odbql_libversion
 
     
 
-!> int odbql_open(const char *filename, odbql **ppDb)
+!> error_code_t odbql_open(const char *filename, odbql **ppDb)
 
-    function odbql_open (filename,ppDb) 
+    subroutine odbql_open (filename,ppDb,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     character(len=*),intent(in)          :: filename
-     type(odbql)                          :: ppDb
-     integer(kind=C_INT)                  :: odbql_open
+     use, intrinsic                             :: iso_c_binding
+     character(len=*), intent(in)               :: filename
+     type(odbql)                                :: ppDb
+     integer(kind=C_INT), intent(out), optional :: status
 
-     character(len=len_trim(filename)+1)  :: filename_tmp
+     character(len=len_trim(filename)+1)        :: filename_tmp
+     integer(kind=c_int)                        :: rc
+
      filename_tmp = filename//achar(0)
-     odbql_open = odbql_open_c(filename_tmp,ppDb%this)
+     rc = odbql_open_c(filename_tmp,ppDb%this)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_open'
+             stop
+         end if
+     end if
 
-    end function odbql_open
+    end subroutine odbql_open
 
     
 
-!> int odbql_close(odbql* db)
+!> error_code_t odbql_close(odbql* db)
 
-    function odbql_close (db) 
+    subroutine odbql_close (db,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql), VALUE                   :: db
-     integer(kind=C_INT)                  :: odbql_close
+     use, intrinsic                             :: iso_c_binding
+     type(odbql), value                         :: db
+     integer(kind=C_INT), intent(out), optional :: status
 
      
-     
-     odbql_close = odbql_close_c(db%this)
+     integer(kind=c_int)                        :: rc
 
-    end function odbql_close
+     
+     rc = odbql_close_c(db%this)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_close'
+             stop
+         end if
+     end if
+
+    end subroutine odbql_close
 
     
 
-!> int odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt **ppStmt, const char **pzTail)
+!> error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt **ppStmt, const char **pzTail)
 
-    function odbql_prepare_v2 (db,zSql,nByte,ppStmt,pzTail) 
+    subroutine odbql_prepare_v2 (db,zSql,nByte,ppStmt,pzTail,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql), VALUE                   :: db
-     character(len=*),intent(in)          :: zSql
-     integer(kind=C_INT), VALUE           :: nByte
-     type(odbql_stmt)                     :: ppStmt
-     character(len=*),intent(out)         :: pzTail
-     integer(kind=C_INT)                  :: odbql_prepare_v2
+     use, intrinsic                             :: iso_c_binding
+     type(odbql), value                         :: db
+     character(len=*), intent(in)               :: zSql
+     integer(kind=C_INT), value                 :: nByte
+     type(odbql_stmt)                           :: ppStmt
+     character(len=*), intent(out)              :: pzTail
+     integer(kind=C_INT), intent(out), optional :: status
 
-     character(len=len_trim(zSql)+1)      :: zSql_tmp
+     character(len=len_trim(zSql)+1)            :: zSql_tmp
+     integer(kind=c_int)                        :: rc
+
      zSql_tmp = zSql//achar(0)
-     odbql_prepare_v2 = odbql_prepare_v2_c(db%this,zSql_tmp,nByte,ppStmt%this,pzTail)
+     rc = odbql_prepare_v2_c(db%this,zSql_tmp,nByte,ppStmt%this,pzTail)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_prepare_v2'
+             stop
+         end if
+     end if
 
-    end function odbql_prepare_v2
+    end subroutine odbql_prepare_v2
 
     
 
@@ -152,88 +189,134 @@ contains
 
     function odbql_step (stmt) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT)                  :: odbql_step
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT)                        :: odbql_step
 
      
+
      
      odbql_step = odbql_step_c(stmt%this)
+     
 
     end function odbql_step
 
     
 
-!> int odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
+!> error_code_t odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
 
-    function odbql_bind_double (stmt,iCol,v) 
+    subroutine odbql_bind_double (stmt,iCol,v,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     real(kind=C_DOUBLE), VALUE           :: v
-     integer(kind=C_INT)                  :: odbql_bind_double
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     real(kind=C_DOUBLE), value                 :: v
+     integer(kind=C_INT), intent(out), optional :: status
 
      
-     
-     odbql_bind_double = odbql_bind_double_c(stmt%this,iCol-1,v)
+     integer(kind=c_int)                        :: rc
 
-    end function odbql_bind_double
+     
+     rc = odbql_bind_double_c(stmt%this,iCol-1,v)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_bind_double'
+             stop
+         end if
+     end if
+
+    end subroutine odbql_bind_double
 
     
 
-!> int odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
+!> error_code_t odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
 
-    function odbql_bind_int (stmt,iCol,v) 
+    subroutine odbql_bind_int (stmt,iCol,v,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     integer(kind=C_INT), VALUE           :: v
-     integer(kind=C_INT)                  :: odbql_bind_int
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     integer(kind=C_INT), value                 :: v
+     integer(kind=C_INT), intent(out), optional :: status
 
      
-     
-     odbql_bind_int = odbql_bind_int_c(stmt%this,iCol-1,v)
+     integer(kind=c_int)                        :: rc
 
-    end function odbql_bind_int
+     
+     rc = odbql_bind_int_c(stmt%this,iCol-1,v)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_bind_int'
+             stop
+         end if
+     end if
+
+    end subroutine odbql_bind_int
 
     
 
-!> int odbql_bind_null(odbql_stmt* stmt, int iCol)
+!> error_code_t odbql_bind_null(odbql_stmt* stmt, int iCol)
 
-    function odbql_bind_null (stmt,iCol) 
+    subroutine odbql_bind_null (stmt,iCol,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     integer(kind=C_INT)                  :: odbql_bind_null
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     integer(kind=C_INT), intent(out), optional :: status
 
      
-     
-     odbql_bind_null = odbql_bind_null_c(stmt%this,iCol-1)
+     integer(kind=c_int)                        :: rc
 
-    end function odbql_bind_null
+     
+     rc = odbql_bind_null_c(stmt%this,iCol-1)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_bind_null'
+             stop
+         end if
+     end if
+
+    end subroutine odbql_bind_null
 
     
 
-!> int odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
+!> error_code_t odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
 
-    function odbql_bind_text (stmt,iCol,s,n) 
+    subroutine odbql_bind_text (stmt,iCol,s,n,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     character(len=*),intent(in)          :: s
-     integer(kind=C_INT), VALUE           :: n
-     integer(kind=C_INT)                  :: odbql_bind_text
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     character(len=*), intent(in)               :: s
+     integer(kind=C_INT), value                 :: n
+     integer(kind=C_INT), intent(out), optional :: status
 
-     character(len=len_trim(s)+1)         :: s_tmp
-     type(C_PTR)                          :: d
+     character(len=len_trim(s)+1)               :: s_tmp
+     type(C_PTR)                                :: d
+     integer(kind=c_int)                        :: rc
+
      s_tmp = s//achar(0)
-     odbql_bind_text = odbql_bind_text_c(stmt%this,iCol-1,s_tmp,n,d)
+     rc = odbql_bind_text_c(stmt%this,iCol-1,s_tmp,n,d)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_bind_text'
+             stop
+         end if
+     end if
 
-    end function odbql_bind_text
+    end subroutine odbql_bind_text
 
     
 
@@ -241,32 +324,45 @@ contains
 
     subroutine odbql_column_text (stmt,iCol,return_value) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     character(len=*),intent(out)         :: return_value
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     character(len=*), intent(out)              :: return_value
 
      
+
      
      return_value = C_to_F_string(odbql_column_text_c(stmt%this,iCol-1))
+     
 
     end subroutine odbql_column_text
 
     
 
-!> int odbql_finalize(odbql_stmt *stmt)
+!> error_code_t odbql_finalize(odbql_stmt *stmt)
 
-    function odbql_finalize (stmt) 
+    subroutine odbql_finalize (stmt,status) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT)                  :: odbql_finalize
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), intent(out), optional :: status
 
      
-     
-     odbql_finalize = odbql_finalize_c(stmt%this)
+     integer(kind=c_int)                        :: rc
 
-    end function odbql_finalize
+     
+     rc = odbql_finalize_c(stmt%this)
+     
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK) then
+             write (0,*) 'Error in odbql_finalize'
+             stop
+         end if
+     end if
+
+    end subroutine odbql_finalize
 
     
 
@@ -274,14 +370,16 @@ contains
 
     subroutine odbql_column_name (stmt,iCol,return_value) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     character(len=*),intent(out)         :: return_value
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     character(len=*), intent(out)              :: return_value
 
      
+
      
      return_value = C_to_F_string(odbql_column_name_c(stmt%this,iCol-1))
+     
 
     end subroutine odbql_column_name
 
@@ -291,14 +389,16 @@ contains
 
     function odbql_column_type (stmt,iCol) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     integer(kind=C_INT)                  :: odbql_column_type
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     integer(kind=C_INT)                        :: odbql_column_type
 
      
+
      
      odbql_column_type = odbql_column_type_c(stmt%this,iCol-1)
+     
 
     end function odbql_column_type
 
@@ -308,14 +408,16 @@ contains
 
     function odbql_column_value (stmt,iCol) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT), VALUE           :: iCol
-     logical                              :: odbql_column_value
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT), value                 :: iCol
+     logical                                    :: odbql_column_value
 
      
+
      
      odbql_column_value = c_ptr_to_logical(odbql_column_value_c(stmt%this,iCol-1))
+     
 
     end function odbql_column_value
 
@@ -325,13 +427,15 @@ contains
 
     function odbql_column_count (stmt) 
      use odbql_binding
-     use, intrinsic                       :: iso_c_binding
-     type(odbql_stmt), VALUE              :: stmt
-     integer(kind=C_INT)                  :: odbql_column_count
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_stmt), value                    :: stmt
+     integer(kind=C_INT)                        :: odbql_column_count
 
      
+
      
      odbql_column_count = odbql_column_count_c(stmt%this)
+     
 
     end function odbql_column_count
 

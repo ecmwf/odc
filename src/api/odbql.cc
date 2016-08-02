@@ -51,6 +51,9 @@ using namespace odb;
 // #    ##  #       ##  ##         #     # #          #    
 // #     #  ######  #    #         #     # #         ###
 
+
+typedef int error_code_t ;
+
 class DataBaseImpl {
 public:
     DataBaseImpl(const char* filename)
@@ -74,12 +77,12 @@ public:
     virtual const char *column_name(int iCol) = 0;
     virtual int column_count() = 0;
     virtual int column_type(int iCol) = 0;
-    virtual int bind_double(int iCol, double v) = 0;
-    virtual int bind_int(int iCol, int) = 0;
-    virtual int bind_text(int iCol, const char*, int) = 0;
+    virtual error_code_t bind_double(int iCol, double v) = 0;
+    virtual error_code_t bind_int(int iCol, int) = 0;
+    virtual error_code_t bind_text(int iCol, const char*, int) = 0;
 
     // NULL handling functions:
-    virtual int bind_null(int iCol) = 0;
+    virtual error_code_t bind_null(int iCol) = 0;
     virtual bool column_value(int iCol) = 0; // This could also be called: column_has_value
 };
 
@@ -100,10 +103,10 @@ public:
     const char *column_name(int iCol);
     int column_count();
     int column_type(int iCol);
-    int bind_double(int iCol, double v);
-    int bind_int(int iCol, int);
-    int bind_text(int iCol, const char*, int);
-    int bind_null(int iCol);
+    error_code_t bind_double(int iCol, double v);
+    error_code_t bind_int(int iCol, int);
+    error_code_t bind_text(int iCol, const char*, int);
+    error_code_t bind_null(int iCol);
     bool column_value(int iCol); 
  
 private:
@@ -130,10 +133,10 @@ public:
     const char *column_name(int iCol) { NOTIMP; }
     int column_count(); 
     int column_type(int iCol) { NOTIMP; }
-    int bind_double(int iCol, double v);
-    int bind_int(int iCol, int);
-    int bind_text(int iCol, const char*, int);
-    int bind_null(int iCol);
+    error_code_t bind_double(int iCol, double v);
+    error_code_t bind_int(int iCol, int);
+    error_code_t bind_text(int iCol, const char*, int);
+    error_code_t bind_null(int iCol);
     bool column_value(int iCol);
 
 private:
@@ -149,19 +152,19 @@ InsertImpl::InsertImpl(const odb::MetaData& metaData, const std::string& locatio
     it_->writeHeader();
 }
 
-int InsertImpl::bind_double(int iCol, double v) 
+error_code_t InsertImpl::bind_double(int iCol, double v) 
 { 
     (*it_)[iCol] = v;
     return ODBQL_OK;
 }
 
-int InsertImpl::bind_int(int iCol, int v) 
+error_code_t InsertImpl::bind_int(int iCol, int v) 
 { 
     (*it_)[iCol] = v;
     return ODBQL_OK;
 }
 
-int InsertImpl::bind_text(int iCol, const char* s, int n)
+error_code_t InsertImpl::bind_text(int iCol, const char* s, int n)
 { 
     if (n > sizeof(double))
     {
@@ -182,7 +185,7 @@ int InsertImpl::bind_text(int iCol, const char* s, int n)
     return ODBQL_OK;
 }
 
-int InsertImpl::bind_null(int iCol)
+error_code_t InsertImpl::bind_null(int iCol)
 {
     (*it_)[iCol] = it_->columns()[iCol]->missingValue();
     return ODBQL_OK;
@@ -262,22 +265,22 @@ int SelectImpl::column_type(int iCol)
     }
 }
 
-int SelectImpl::bind_double(int iCol, double v)
+error_code_t SelectImpl::bind_double(int iCol, double v)
 {
     NOTIMP;
 }
 
-int SelectImpl::bind_int(int iCol, int v)
+error_code_t SelectImpl::bind_int(int iCol, int v)
 {
     NOTIMP;
 }
 
-int SelectImpl::bind_text(int iCol, const char* s, int n)
+error_code_t SelectImpl::bind_text(int iCol, const char* s, int n)
 {
     NOTIMP;
 }
 
-int SelectImpl::bind_null(int iCol)
+error_code_t SelectImpl::bind_null(int iCol)
 {
     NOTIMP;
 }
@@ -306,7 +309,7 @@ const char * odbql_libversion(void)
 //  odbql **ppDb          /* OUT: SQLite db handle */
 //);
 
-int odbql_open(const char *filename, odbql **ppDb) 
+error_code_t odbql_open(const char *filename, odbql **ppDb) 
 {
     eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
 
@@ -316,7 +319,7 @@ int odbql_open(const char *filename, odbql **ppDb)
 }
 
 //ODBQL_API int ODBQL_STDCALL odbql_close(odbql*);
-int odbql_close(odbql* db)
+error_code_t odbql_close(odbql* db)
 {
     //delete db;
     return ODBQL_OK;
@@ -330,7 +333,7 @@ int odbql_close(odbql* db)
 //  const char **pzTail     /* OUT: Pointer to unused portion of zSql */
 //);
 
-int odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt **ppStmt, const char **pzTail)
+error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt **ppStmt, const char **pzTail)
 {
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
 
@@ -379,34 +382,34 @@ int odbql_step(odbql_stmt* stmt)
 }
 
 // The last argument of odbql_bind_blob and similar: https://www.sqlite.org/c3ref/c_static.html
-//int odbql_bind_blob(odbql_stmt*, int, const void*, int n, void(*)(void*));
-//int odbql_bind_blob64(odbql_stmt*, int, const void*, odbql_uint64, void(*)(void*));
-int odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
+//error_code_t odbql_bind_blob(odbql_stmt*, int, const void*, int n, void(*)(void*));
+//error_code_t odbql_bind_blob64(odbql_stmt*, int, const void*, odbql_uint64, void(*)(void*));
+error_code_t odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
 {
     return statement(stmt).bind_double(iCol, v);
 }
 
-int odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
+error_code_t odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
 {
     return statement(stmt).bind_int(iCol, v);
 }
 
 //int odbql_bind_int64(odbql_stmt*, int, odbql_int64);
-int odbql_bind_null(odbql_stmt* stmt, int iCol)
+error_code_t odbql_bind_null(odbql_stmt* stmt, int iCol)
 {
     return statement(stmt).bind_null(iCol);
 }
 
-int odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
+error_code_t odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
 {
     return statement(stmt).bind_text(iCol, s, n);
 }
 
-//int odbql_bind_text16(odbql_stmt*, int, const void*, int, void(*)(void*));
-//int odbql_bind_text64(odbql_stmt*, int, const char*, odbql_uint64, void(*)(void*), unsigned char encoding);
-//int odbql_bind_value(odbql_stmt*, int, const odbql_value*);
-//int odbql_bind_zeroblob(odbql_stmt*, int, int n);
-//int odbql_bind_zeroblob64(odbql_stmt*, int, odbql_uint64);
+//error_code_t odbql_bind_text16(odbql_stmt*, int, const void*, int, void(*)(void*));
+//error_code_t odbql_bind_text64(odbql_stmt*, int, const char*, odbql_uint64, void(*)(void*), unsigned char encoding);
+//error_code_t odbql_bind_value(odbql_stmt*, int, const odbql_value*);
+//error_code_t odbql_bind_zeroblob(odbql_stmt*, int, int n);
+//error_code_t odbql_bind_zeroblob64(odbql_stmt*, int, odbql_uint64);
 
 
 //ODBQL_API const unsigned char *ODBQL_STDCALL odbql_column_text(odbql_stmt*, int iCol);
@@ -416,7 +419,7 @@ const unsigned char *odbql_column_text(odbql_stmt* stmt, int iCol)
 }
 
 //ODBQL_API int ODBQL_STDCALL odbql_finalize(odbql_stmt *pStmt);
-int odbql_finalize(odbql_stmt *stmt)
+error_code_t odbql_finalize(odbql_stmt *stmt)
 {
     delete &statement(stmt);
     return ODBQL_OK;
