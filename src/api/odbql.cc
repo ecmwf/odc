@@ -17,6 +17,8 @@
 
 #include "eckit/runtime/ContextBehavior.h"
 #include "eckit/runtime/Context.h"
+#include "eckit/exception/Exceptions.h"
+
 #include "odb_api/FastODA2Request.h"
 #include "odb_api/MetaData.h"
 #include "odb_api/MetaDataReader.h"
@@ -52,7 +54,8 @@ using namespace odb;
 // #     #  ######  #    #         #     # #         ###
 
 
-typedef int error_code_t ;
+typedef int error_code_t;
+typedef odbql * p_odbql_t;
 
 class DataBaseImpl {
 public:
@@ -61,15 +64,23 @@ public:
     {}
 
     const std::string& filename() const { return filename_; }
+    const char * errmsg() { return errmsg_.c_str(); }
+    void errmsg(const std::string& s) { errmsg_ = s; }
+    error_code_t error_code(error_code_t e) { return error_code_ = e; }
+    error_code_t error_code() { return error_code_; }
 
 private:
     const std::string filename_;
+    std::string errmsg_;
+    error_code_t error_code_;
 };
 
 DataBaseImpl& database (odbql* db) { return reinterpret_cast<DataBaseImpl&>(*db); }
 
 class StatementImpl {
 public:
+    StatementImpl(DataBaseImpl& db) : db_(db) {}
+
     virtual ~StatementImpl() {}
 
     virtual bool step() = 0;
@@ -84,14 +95,17 @@ public:
     // NULL handling functions:
     virtual error_code_t bind_null(int iCol) = 0;
     virtual bool column_value(int iCol) = 0; // This could also be called: column_has_value
+
+private:
+    DataBaseImpl& db_;
 };
 
 class SelectImpl : public StatementImpl {
 public:
-    SelectImpl(const char* db, const char* sql)
-    : db_(db),
+    SelectImpl(DataBaseImpl& db, const char* sql)
+    : StatementImpl(db),
       sql_(sql),
-      stmt_(std::string(db) + ";\n" + sql),
+      stmt_(db.filename() + ";\n" + sql),
       it_(stmt_.begin()),
       end_(stmt_.end()),
       firstStep(true)
@@ -111,7 +125,6 @@ public:
  
 private:
     bool firstStep;
-    const std::string db_;
     const std::string sql_;
     odb::Select stmt_;
     odb::Select::iterator it_;
@@ -125,7 +138,7 @@ StatementImpl& statement (odbql_stmt* stmt) { return reinterpret_cast<StatementI
 
 class InsertImpl : public StatementImpl {
 public:
-    InsertImpl(const odb::MetaData& metaData, const std::string& location);
+    InsertImpl(DataBaseImpl&, const odb::MetaData& metaData, const std::string& location);
     ~InsertImpl() {}
 
     bool step();
@@ -144,8 +157,9 @@ private:
     odb::Writer<>::iterator it_;
 };
 
-InsertImpl::InsertImpl(const odb::MetaData& metaData, const std::string& location)
-: writer_(location),
+InsertImpl::InsertImpl(DataBaseImpl& db, const odb::MetaData& metaData, const std::string& location)
+: StatementImpl(db),
+  writer_(location),
   it_(writer_.begin())
 {
     it_->columns(metaData);
@@ -290,11 +304,50 @@ bool SelectImpl::column_value(int iCol)
     return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
 }
 
+#define TRY_WITH_DB(d) do { DataBaseImpl *p (d); try { 
+    
+
+#define CATCH_ALL  \
+    } \
+    catch(const eckit::CantOpenFile &e) { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::ShortFile &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::ReadError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::UserError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::Exception &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const std::exception &e)      { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(...) { if (p) p->errmsg("unknown error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    } while(false); 
+
+
+error_code_t ql_open(const char *filename, odbql **ppDb) 
+{
+    eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
+    
+    //TRY_WITH_DB (0)
+
+    do { DataBaseImpl *p (0); try { 
+
+    //throw new eckit::CantOpenFile("XXXXXXXXXXXXXXXXXXXXXXXXX");
+
+    (*ppDb) = p_odbql_t( p = new  DataBaseImpl(filename) );
+    return ODBQL_OK;
+
+    } \
+    catch(eckit::CantOpenFile e) { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::ShortFile &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::ReadError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::UserError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::Exception &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const std::exception &e)      { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(...) { if (p) p->errmsg("unknown error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    } while(false); 
+}
+
 extern "C" {
 //ODBQL_API const char *ODBQL_STDCALL odbql_errmsg(odbql*);
 const char * odbql_errmsg(odbql* db)
 {
-    return "odbql_errmsg: TODO";
+    return database(db).errmsg();
 }
 
 //ODBQL_API const char *ODBQL_STDCALL odbql_libversion(void);
@@ -303,20 +356,12 @@ const char * odbql_libversion(void)
     return odb::ODBAPIVersion::version();
 }
 
-
 //ODBQL_API int ODBQL_STDCALL odbql_open(
 //  const char *filename,   /* Database filename (UTF-8) */
 //  odbql **ppDb          /* OUT: SQLite db handle */
 //);
 
-error_code_t odbql_open(const char *filename, odbql **ppDb) 
-{
-    eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
-
-    typedef odbql * dbp_t; 
-    *ppDb = dbp_t( new DataBaseImpl(filename) );
-    return ODBQL_OK;
-}
+error_code_t odbql_open(const char *filename, odbql **ppDb) { return ql_open(filename, ppDb); }
 
 //ODBQL_API int ODBQL_STDCALL odbql_close(odbql*);
 error_code_t odbql_close(odbql* db)
@@ -336,6 +381,7 @@ error_code_t odbql_close(odbql* db)
 error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt **ppStmt, const char **pzTail)
 {
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
+    
 
     odb::sql::SQLNonInteractiveSession session;
     odb::sql::SQLOutputConfig config (session.selectFactory().config());
@@ -343,8 +389,6 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
     // Parse the schema / database
     odb::InMemoryDataHandle input;
     input.openForRead();
-    //if (database(db).filename().size())
-    //    parser.parseString(session, database(db).filename(), &input, config);
     parser.parseString(session, database(db).filename() + ";" + zSql, &input, config);
     odb::sql::SQLStatement* statement (session.statement());
 
@@ -359,12 +403,12 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
         const MetaData md (odb::sql::SQLSelectFactory::toODAColumns(session, tableDef));
         const std::string& location (tableDef.location());
 
-        *ppStmt = stmt_ptr_t (new InsertImpl(md, location));
+        *ppStmt = stmt_ptr_t (new InsertImpl(database(db), md, location));
         return ODBQL_OK;
     }
   
     // Assume this is SELECT for now 
-    *ppStmt = stmt_ptr_t (new SelectImpl(database(db).filename().c_str(), zSql));
+    *ppStmt = stmt_ptr_t (new SelectImpl(database(db), zSql));
 
     return ODBQL_OK;
 }
