@@ -27,7 +27,7 @@ ecbuild_requires_macro_version( 1.9 )
 # local project
 
 ecbuild_use_package( PROJECT eckit VERSION 0.9 REQUIRED )
-ecbuild_use_package( PROJECT ecml  VERSION 0.1 REQUIRED )
+ecbuild_use_package( PROJECT marskit VERSION 0.1 REQUIRED )
 
 ecbuild_declare_project()
 
