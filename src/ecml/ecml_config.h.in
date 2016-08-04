@@ -1,0 +1,7 @@
+#ifndef ecml_config_h
+#define ecml_config_h
+
+#define ECML_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@"
+#define ECML_BUILD_DIR      "@CMAKE_BINARY_DIR@"
+
+#endif // ecml_config_h
