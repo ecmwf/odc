@@ -14,7 +14,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, July 2016
 
-#include "odbql.h"
+#include "odb_api/odbql.h"
 
 // We need to include stdio.h for the fprintf declaration
 #include "stdio.h"

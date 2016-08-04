@@ -55,7 +55,7 @@ using namespace odb;
 
 
 typedef int error_code_t;
-typedef odbql * p_odbql_t;
+typedef odbql * p_odbql;
 
 class DataBaseImpl {
 public:
@@ -95,6 +95,8 @@ public:
     // NULL handling functions:
     virtual error_code_t bind_null(int iCol) = 0;
     virtual bool column_value(int iCol) = 0; // This could also be called: column_has_value
+
+    DataBaseImpl& database() { return db_; }
 
 private:
     DataBaseImpl& db_;
@@ -305,8 +307,7 @@ bool SelectImpl::column_value(int iCol)
 }
 
 #define TRY_WITH_DB(d) do { DataBaseImpl *p (d); try { 
-    
-
+ 
 #define CATCH_ALL  \
     } \
     catch(const eckit::CantOpenFile &e) { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
@@ -318,30 +319,6 @@ bool SelectImpl::column_value(int iCol)
     catch(...) { if (p) p->errmsg("unknown error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     } while(false); 
 
-
-error_code_t ql_open(const char *filename, odbql **ppDb) 
-{
-    eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
-    
-    //TRY_WITH_DB (0)
-
-    do { DataBaseImpl *p (0); try { 
-
-    //throw new eckit::CantOpenFile("XXXXXXXXXXXXXXXXXXXXXXXXX");
-
-    (*ppDb) = p_odbql_t( p = new  DataBaseImpl(filename) );
-    return ODBQL_OK;
-
-    } \
-    catch(eckit::CantOpenFile e) { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
-    catch(const eckit::ShortFile &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
-    catch(const eckit::ReadError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
-    catch(const eckit::UserError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
-    catch(const eckit::Exception &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
-    catch(const std::exception &e)      { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
-    catch(...) { if (p) p->errmsg("unknown error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
-    } while(false); 
-}
 
 extern "C" {
 //ODBQL_API const char *ODBQL_STDCALL odbql_errmsg(odbql*);
@@ -361,12 +338,22 @@ const char * odbql_libversion(void)
 //  odbql **ppDb          /* OUT: SQLite db handle */
 //);
 
-error_code_t odbql_open(const char *filename, odbql **ppDb) { return ql_open(filename, ppDb); }
+error_code_t odbql_open(const char *filename, odbql **ppDb) 
+{
+    eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
+    
+    TRY_WITH_DB (0)
+
+    (*ppDb) = p_odbql( p = new  DataBaseImpl(filename) );
+    return ODBQL_OK;
+
+    CATCH_ALL
+}
 
 //ODBQL_API int ODBQL_STDCALL odbql_close(odbql*);
 error_code_t odbql_close(odbql* db)
 {
-    //delete db;
+    delete &database(db);
     return ODBQL_OK;
 }
 
@@ -380,6 +367,8 @@ error_code_t odbql_close(odbql* db)
 
 error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt **ppStmt, const char **pzTail)
 {
+    TRY_WITH_DB(&database(db))
+
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
     
 
@@ -411,11 +400,15 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
     *ppStmt = stmt_ptr_t (new SelectImpl(database(db), zSql));
 
     return ODBQL_OK;
+
+    CATCH_ALL
 }
 
 //ODBQL_API int ODBQL_STDCALL odbql_step(odbql_stmt*)
-int odbql_step(odbql_stmt* stmt)
+error_code_t odbql_step(odbql_stmt* stmt)
 {
+    TRY_WITH_DB(&statement(stmt).database())
+
     if (! stmt) 
         return ODBQL_ERROR;
 
@@ -423,6 +416,8 @@ int odbql_step(odbql_stmt* stmt)
         return ODBQL_ROW;
 
     return ODBQL_DONE;
+
+    CATCH_ALL
 }
 
 // The last argument of odbql_bind_blob and similar: https://www.sqlite.org/c3ref/c_static.html
@@ -430,23 +425,31 @@ int odbql_step(odbql_stmt* stmt)
 //error_code_t odbql_bind_blob64(odbql_stmt*, int, const void*, odbql_uint64, void(*)(void*));
 error_code_t odbql_bind_double(odbql_stmt* stmt, int iCol, double v)
 {
+    TRY_WITH_DB(&statement(stmt).database())
     return statement(stmt).bind_double(iCol, v);
+    CATCH_ALL
 }
 
 error_code_t odbql_bind_int(odbql_stmt* stmt, int iCol, int v)
 {
+    TRY_WITH_DB(&statement(stmt).database())
     return statement(stmt).bind_int(iCol, v);
+    CATCH_ALL
 }
 
 //int odbql_bind_int64(odbql_stmt*, int, odbql_int64);
 error_code_t odbql_bind_null(odbql_stmt* stmt, int iCol)
 {
+    TRY_WITH_DB(&statement(stmt).database())
     return statement(stmt).bind_null(iCol);
+    CATCH_ALL
 }
 
 error_code_t odbql_bind_text(odbql_stmt* stmt, int iCol, const char* s, int n, void(*d)(void*))
 {
+    TRY_WITH_DB(&statement(stmt).database())
     return statement(stmt).bind_text(iCol, s, n);
+    CATCH_ALL
 }
 
 //error_code_t odbql_bind_text16(odbql_stmt*, int, const void*, int, void(*)(void*));
@@ -465,8 +468,10 @@ const unsigned char *odbql_column_text(odbql_stmt* stmt, int iCol)
 //ODBQL_API int ODBQL_STDCALL odbql_finalize(odbql_stmt *pStmt);
 error_code_t odbql_finalize(odbql_stmt *stmt)
 {
+    TRY_WITH_DB(&statement(stmt).database())
     delete &statement(stmt);
     return ODBQL_OK;
+    CATCH_ALL
 }
 
 // https://www.sqlite.org/c3ref/column_name.html

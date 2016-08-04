@@ -117,7 +117,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_open'
              stop
          end if
@@ -144,7 +144,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_close'
              stop
          end if
@@ -175,7 +175,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_prepare_v2'
              stop
          end if
@@ -185,21 +185,30 @@ contains
 
     
 
-!> int odbql_step(odbql_stmt* stmt)
+!> error_code_t odbql_step(odbql_stmt* stmt)
 
-    function odbql_step (stmt) 
+    subroutine odbql_step (stmt,status) 
      use odbql_binding
      use, intrinsic                             :: iso_c_binding
      type(odbql_stmt), value                    :: stmt
-     integer(kind=C_INT)                        :: odbql_step
+     integer(kind=C_INT), intent(out), optional :: status
 
      
+     integer(kind=c_int)                        :: rc
 
      
-     odbql_step = odbql_step_c(stmt%this)
+     rc = odbql_step_c(stmt%this)
      
+     if (present(status)) then
+         status = rc ! let user handle the error
+     else
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+             write (0,*) 'Error in odbql_step'
+             stop
+         end if
+     end if
 
-    end function odbql_step
+    end subroutine odbql_step
 
     
 
@@ -222,7 +231,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_bind_double'
              stop
          end if
@@ -251,7 +260,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_bind_int'
              stop
          end if
@@ -279,7 +288,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_bind_null'
              stop
          end if
@@ -310,7 +319,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_bind_text'
              stop
          end if
@@ -356,7 +365,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
              write (0,*) 'Error in odbql_finalize'
              stop
          end if

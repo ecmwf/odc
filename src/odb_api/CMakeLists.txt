@@ -2,6 +2,8 @@ configure_file( ODBAPIVersionSHA1.cc.in ODBAPIVersionSHA1.cc @ONLY )
 
 list( APPEND odblib_src_files
 	pyodbapi.h
+    odbql.cc
+    odbql.h
 ODBAPIVersionSHA1.cc
 StringTool.cc
 StringTool.h

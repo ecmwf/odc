@@ -68,7 +68,7 @@ interface
 
     
 
-!> int odbql_step(odbql_stmt* stmt)
+!> error_code_t odbql_step(odbql_stmt* stmt)
 
     function odbql_step_c (stmt) bind(C, name="odbql_step")
      use, intrinsic                             :: iso_c_binding

@@ -14,12 +14,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, July 2016
 
+/*
 #include <string>
 #include <iostream>
 #include <vector>
 #include <sstream>
 
-#include "odbql.h"
+#include "odb_api/odbql.h"
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/runtime/ContextBehavior.h"
@@ -30,12 +31,38 @@
 #include "odb_api/tools/TestRunnerApplication.h"
 #include "odb_api/tools/TestCase.h"
 #include "odb_api/tools/ImportTool.h"
+*/
 
+#include <stdio.h>
+
+/*
 extern "C" {
+*/
+
 int odbql_example_insert_data();
 int odbql_example_select_data_read_results();
+/*
+}
+*/
+
+int main() {
+    if (0 == odbql_example_insert_data())
+        fprintf(stderr, "odbql_example_insert_data passed OK\n");
+    else {
+        fprintf(stderr, "odbql_example_insert_data FAILED\n");
+        return 1;
+    }
+
+    
+    if (0 == odbql_example_select_data_read_results())
+        fprintf(stderr, "odbql_example_select_data_read_results passed OK\n");
+    else {
+        fprintf(stderr, "odbql_example_select_data_read_results FAILED\n");
+        return 1;
+    }
 }
 
+/*
 TEST(odbql_example_insert_data) { ASSERT(odbql_example_insert_data() == 0); }
 TEST(odbql_example_select_data_read_results) { ASSERT(odbql_example_select_data_read_results() == 0); }
 
@@ -52,4 +79,4 @@ int main(int argc, char** argv)
     odb::tool::test::TestRunnerApplication testRunner(argc, argv);
     testRunner.start();
 }
-
+*/

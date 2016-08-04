@@ -26,12 +26,12 @@ subroutine odbql_fortran_example
  implicit none
  type(odbql)                                   :: db
  type(odbql_stmt)                              :: stmt
- integer(kind=C_INT)                           :: rc, number_of_columns, column, row
+ integer(kind=C_INT)                           :: status, number_of_columns, column, row
  character(len=30)                             :: val, column_name
  character(len=1000)                           :: unparsed_sql
  real(kind=C_DOUBLE)                           :: v
 
-!!!! Write to a file with INSERT
+!!!! Write to a file with SQL INSERT
 
  call odbql_open("CREATE TYPE BF_T AS (f1 bit1, f2 bit2); CREATE TABLE foo AS (x INTEGER, y REAL, v STRING, status BF_T) ON 'fort.odb';", db)
  call odbql_prepare_v2(db, "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", -1, stmt, unparsed_sql)
@@ -40,7 +40,7 @@ subroutine odbql_fortran_example
  do column = 1,4
      call odbql_bind_null(stmt, column)
  end do
- rc = odbql_step(stmt)
+ call odbql_step(stmt)
 
 ! Write 3 rows with some values other than NULL
  do row = 1,3
@@ -50,11 +50,14 @@ subroutine odbql_fortran_example
     call odbql_bind_text(stmt, 3, "hello", 5)
     call odbql_bind_int(stmt, 4, 1 * row)
 
-    rc = odbql_step(stmt)
+    call odbql_step(stmt)
  end do
 
+! Write internal buffers to disk and close the file
  call odbql_finalize(stmt)
  call odbql_close(db)
+
+!!!! Read from a file with SQL SELECT
 
 ! Associate table with a file name
  call odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
@@ -64,11 +67,11 @@ subroutine odbql_fortran_example
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
 
- row = 0
+ row = 1
  do 
-   rc = odbql_step(stmt)
-   if (rc == ODBQL_DONE) exit
-   if (rc /= ODBQL_ROW) stop 
+   call odbql_step(stmt, status)
+   if (status == ODBQL_DONE) exit
+   if (status /= ODBQL_ROW) stop 
 
    write(6,*) 'Row ', row
    do column = 1,number_of_columns

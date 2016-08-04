@@ -23,8 +23,6 @@ def constants(source_h = 'odbql.h'):
             if line.startswith('#define ODBQL_') 
                and len(line.split()) > 2]
 
-    #print '\n'.join(lines)
-           
     defs = [line.split(None, 2)[1:] for line in lines]
     return defs
 
@@ -213,7 +211,7 @@ status_handling_code = """
 if (present(status)) then
     status = rc ! let user handle the error
 else
-    if (rc /= ODBQL_OK) then
+    if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
         write (0,*) 'Error in %(function_name)s'
         stop
     end if
@@ -238,8 +236,6 @@ def generateWrapper(signature, comment, template):
 
     return_type, function_name, params = signature
     procedure_keyword = 'function'
-
-    if function_name == 'odbql_bind_text': print 'params:', params  # [(name,type), ...]
 
     output_parameter = function_name
 
@@ -304,8 +300,8 @@ def generateWrappers(decls, header, footer, template):
 
 
 
-def generateBindings(source_cc = 'odbql.cc',
-                     source_h = 'odbql.h',
+def generateBindings(source_cc = '../odb_api/odbql.cc',
+                     source_h = '../odb_api/odbql.h',
                      binding_f90 = 'odbql_binding.f90',
                      wrappers_f90 = 'odbql_wrappers.f90',
                      constants_f90 = 'odbql_constants.f90'):

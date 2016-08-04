@@ -1,33 +1,20 @@
 
-list( APPEND odbql_c_src_files
-    odbql.h
-    odbql.cc  
-)
-
 list( APPEND odbql_fortran_src_files
     odbql_binding.f90 
     odbql_constants.f90
     odbql_wrappers.f90 
 )
 
-# odbql, C/C++ API library.
-ecbuild_add_library( TARGET             odbql
-                     INSTALL_HEADERS    LISTED
-                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api 
-                     SOURCES            ${odbql_c_src_files} 
-                     LIBS               Odb 
-                     )
-
 # Fortran bindings & wrappers.
 ecbuild_add_library(TARGET		odbql_fortran
 					CONDITION	HAVE_FORTRAN
 					SOURCES	    ${odbql_fortran_src_files}
-					LIBS		Odb odbql )
+					LIBS		Odb )
 
 # Examples / tests of C API.
 ecbuild_add_executable( TARGET    odbql_c_example
-                        SOURCES   example.c test.cc 
-                        LIBS      Odb odbql odbtools odbtest )
+                        SOURCES   example.c test.c
+                        LIBS      Odb odbtools odbtest )
 
 
 # Examples / tests of Fortran API.
