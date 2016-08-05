@@ -134,8 +134,8 @@ ecbuild_generate_yy( YYPREFIX    request_
                      DEPENDANT   parser/RequestParser.cc )
 
 ecbuild_add_library( TARGET             ecml
-                     INSTALL_HEADERS    ALL
-                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}
+                     INSTALL_HEADERS    LISTED
+                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/ecml
                      SOURCES            ${ecml_srcs}
                      LIBS               eckit 
                                         eckit_cmd # for UserInput
