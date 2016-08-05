@@ -166,13 +166,13 @@ install( FILES        ${CMAKE_CURRENT_BINARY_DIR}/ecml_config.h
          DESTINATION  ${INSTALL_INCLUDE_DIR}/ecml/ )
 
 
-ecbuild_pkgconfig( NAME ${PROJECT_NAME}
-                   DESCRIPTION "ECML language interpreter"
-                   URL "https://software.ecmwf.int/wiki/display/ODB/ODB+API"
-                   LIBRARIES ecml )
+#ecbuild_pkgconfig( NAME ${PROJECT_NAME}
+#                   DESCRIPTION "ECML language interpreter"
+#                   URL "https://software.ecmwf.int/wiki/display/ODB/ODB+API"
+#                   LIBRARIES ecml )
 
 # export to other packages and define install targets
-ecbuild_install_project( NAME ecml )
+#ecbuild_install_project( NAME ecml )
 
-ecbuild_print_summary()
+#ecbuild_print_summary()
 

@@ -9,6 +9,8 @@ configure_file( odb_api_config.h.in odb_api_config.h )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/odb_api_config.h DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api )
 
+add_subdirectory( ecml )
+
 ### include directories
 
 ecbuild_debug_var (ECML_INCLUDE_DIRS)
@@ -25,5 +27,4 @@ add_subdirectory( odb_api/odb2_to_odb1 )
 add_subdirectory( fortran )
 add_subdirectory( python )
 add_subdirectory( api )
-add_subdirectory( ecml )
 

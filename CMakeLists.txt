@@ -57,29 +57,27 @@ ecbuild_add_option( FEATURE ODB_API_SERVER_SIDE
 
 if( HAVE_FORTRAN OR HAVE_MIGRATOR )
 
-  ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )
+    ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )
+    ecbuild_find_fortranlibs( REQUIRED )
+    message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
 
 endif()
 
-if( HAVE_MIGRATOR )
-
-    ecbuild_find_fortranlibs( REQUIRED )
+#if( HAVE_MIGRATOR )
     #if(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
     #    ecbuild_add_fortran_flags("-r8")
     #    elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
     #    # NOTE that if we add -fdefault-real-8 then we NEED -fdefault-double-8 to avoid quadmath
     #    ecbuild_add_fortran_flags("-fdefault-real-8 -fdefault-double-8")
     #endif()
-  message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
-
-endif()
+#endif()
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-  cmake_add_fortran_flags("-fPIC -ffree-line-length-none")
+  ecbuild_add_fortran_flags("-fPIC -ffree-line-length-none")
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  cmake_add_cxx_flags("-fPIC -Wl,--as-needed")
+  ecbuild_add_cxx_flags("-fPIC -Wl,--as-needed")
 endif()
 
 ecbuild_add_option( FEATURE PYTHON
