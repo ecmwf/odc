@@ -302,9 +302,9 @@ def generateWrappers(decls, header, footer, template):
 
 def generateBindings(source_cc = '../odb_api/odbql.cc',
                      source_h = '../odb_api/odbql.h',
-                     binding_f90 = 'odbql_binding.f90',
-                     wrappers_f90 = 'odbql_wrappers.f90',
-                     constants_f90 = 'odbql_constants.f90'):
+                     binding_f90 = '../fortran/odbql_binding.f90',
+                     wrappers_f90 = '../fortran/odbql_wrappers.f90',
+                     constants_f90 = '../fortran/odbql_constants.f90'):
 
     decls = declarations(source_cc)
     defs = constants(source_h)

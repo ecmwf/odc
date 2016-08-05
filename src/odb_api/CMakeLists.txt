@@ -458,9 +458,9 @@ ecbuild_add_library( TARGET             Odb
                      LINKER_LANGUAGE    CXX
                      LIBS               ecml )
 
-ecbuild_generate_yy( YYPREFIX odblib_
-                  YACC sqly
-                  LEX  sqll
-                  FLEX_FLAGS "-d"
-                  DEPENDANT SQLParser.cc )
+ecbuild_generate_yy( YYPREFIX           odblib_
+                     YACC               sqly
+                     LEX                sqll
+                     FLEX_FLAGS         "-d"
+                     DEPENDANT          SQLParser.cc )
 
