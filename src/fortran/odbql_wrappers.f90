@@ -117,7 +117,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_open'
              stop
          end if
@@ -144,7 +144,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_close'
              stop
          end if
@@ -175,7 +175,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_prepare_v2'
              stop
          end if
@@ -202,7 +202,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_step'
              stop
          end if
@@ -231,7 +231,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_bind_double'
              stop
          end if
@@ -260,7 +260,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_bind_int'
              stop
          end if
@@ -288,7 +288,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_bind_null'
              stop
          end if
@@ -319,7 +319,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_bind_text'
              stop
          end if
@@ -365,7 +365,7 @@ contains
      if (present(status)) then
          status = rc ! let user handle the error
      else
-         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+         if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
              write (0,*) 'Error in odbql_finalize'
              stop
          end if

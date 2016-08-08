@@ -224,7 +224,7 @@ status_handling_code = """
 if (present(status)) then
     status = rc ! let user handle the error
 else
-    if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE) then
+    if (rc /= ODBQL_OK .and. rc /= ODBQL_ROW .and. rc /= ODBQL_DONE .and. rc /= ODBQL_METADATA_CHANGED) then
         write (0,*) 'Error in %(function_name)s'
         stop
     end if
