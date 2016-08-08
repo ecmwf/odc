@@ -3,6 +3,7 @@
 import re
 
 PARAM_TYPE_COLUMN = 43
+CONSTANTS = {}
 
 def formatParameter(typ, name):
     global PARAM_TYPE_COLUMN 
@@ -24,7 +25,15 @@ def constants(source_h = 'odbql.h'):
                and len(line.split()) > 2]
 
     defs = [line.split(None, 2)[1:] for line in lines]
-    return defs
+    return defs 
+
+def evaluated_expression(s):
+    try: 
+        e = s
+        for c in CONSTANTS:
+            e = e.replace(c, CONSTANTS[c])
+        return ' [' + str(eval(e)) + ']'
+    except: return ''
 
 def translate_value_and_comment(value_and_possibly_comment):
     value = value_and_possibly_comment.split('/*')[0].strip()
@@ -34,7 +43,7 @@ def translate_value_and_comment(value_and_possibly_comment):
         comment = value_and_possibly_comment.split('/*')[1].split('*/')[0]
 
     if value.find('|') <> -1:
-        comment = value + ' ' + comment
+        comment = value + ' ' + comment + evaluated_expression(value_and_possibly_comment)
         l,r = [x.strip(' ()') for x in value.split('|')]
         i, shift = [x.strip() for x in r.split('<<')]
         value = 'IOR(%s, LSHIFT(%s,%s))' % (l, i, shift)
@@ -46,6 +55,8 @@ def translate_value_and_comment(value_and_possibly_comment):
     return value, '! ' + comment 
 
 def generateParameter(define):
+    global CONSTANTS
+
     name, value_and_possibly_comment = define
 
     typ = 'integer'
@@ -58,6 +69,8 @@ def generateParameter(define):
         value, comment = '0', ' ! ((odbql_destructor_type)0)'
     else:
         value, comment = translate_value_and_comment(value_and_possibly_comment) 
+
+    CONSTANTS[name] = value
 
     return '%s, parameter :: %s = %s %s' % (typ, name, value, comment)
 

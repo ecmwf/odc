@@ -102,6 +102,13 @@ int odbql_example_select_data_read_results()
    
     // Print rows of data. 
     while((rc = odbql_step(res)) != ODBQL_DONE) {
+
+        if (rc == ODBQL_METADATA_CHANGED)
+        {
+            // Metadata on file: number, names and types of columns changed.
+            number_of_columns = odbql_column_count(res);
+        }
+
         if (rc == ODBQL_ROW) {
             int column = 0;
             for (; column < number_of_columns; ++column)

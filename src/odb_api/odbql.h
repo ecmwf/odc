@@ -433,6 +433,8 @@ ODBQL_API int ODBQL_STDCALL odbql_exec(
 #define ODBQL_WARNING     28   /* Warnings from odbql_log() */
 #define ODBQL_ROW         100  /* odbql_step() has another row ready */
 #define ODBQL_DONE        101  /* odbql_step() has finished executing */
+///////// ECMWF specific:
+#define ODBQL_METADATA_CHANGED        102  /* odbql_step(): metadata has changed */
 /* end-of-error-codes */
 
 /*
