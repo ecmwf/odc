@@ -85,8 +85,7 @@ int odbql_example_select_data_read_results()
     int i, rc, column, number_of_columns;
     long long number_of_rows = 0, number_of_rows_in_current_dataset = 0;
     
-    //rc = odbql_open("CREATE TABLE foo ON 'new_api_example.odb';", &db);
-    rc = odbql_open("CREATE TABLE foo ON 'conv_mfb_ofb.odb';", &db);
+    rc = odbql_open("CREATE TABLE foo ON 'new_api_example.odb';", &db);
                            //" ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
     checkRC(rc, "Cannot open database", db);
     
