@@ -70,6 +70,7 @@ public:
     void outputFiles(const std::vector<eckit::PathName>& files);
     bool all() const { return all_; }
     std::vector<SQLTable*>& tables() { return tables_; }
+    odb::sql::expression::SQLExpression* where() { return where_.get(); }
 
 // -- Overridden methods
 	unsigned long long execute(ecml::ExecutionContext*);

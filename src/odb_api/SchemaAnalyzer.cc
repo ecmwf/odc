@@ -240,7 +240,7 @@ const TableDef& SchemaAnalyzer::findTable(const std::string& name) const
 {
     for (TableDefs::const_iterator it(tableDefs_.begin()); it != tableDefs_.end(); ++it)
     {
-        Log::info() << "SchemaAnalyzer::findTable: " << it->first << std::endl;
+        //Log::info() << "SchemaAnalyzer::findTable: " << it->first << std::endl;
         if (it->first == name)
             return it->second;
     }

@@ -20,9 +20,7 @@ SQLInsert::SQLInsert(const InsertAST& a)
 : table_(a.table_),
   columns_(a.columns_),
   values_(a.values_)
-{
-    eckit::Log::info() << ":: INSERT INTO " << table_ << " (" << columns_ << ") VALUES (" << values_ << ");" << std::endl;
-}
+{}
 
 SQLInsert::~SQLInsert() {}
 

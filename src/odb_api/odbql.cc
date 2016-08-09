@@ -83,7 +83,7 @@ public:
 
     virtual ~StatementImpl() {}
 
-    virtual bool step() = 0;
+    virtual int step() = 0;
     virtual const unsigned char *column_text(int iCol) = 0;
     virtual const char *column_name(int iCol) = 0;
     virtual int column_count() = 0;
@@ -114,7 +114,7 @@ public:
     {} 
     ~SelectImpl() {}
 
-    bool step();
+    int step();
     const unsigned char *column_text(int iCol);
     const char *column_name(int iCol);
     int column_count();
@@ -136,7 +136,6 @@ private:
     std::vector<std::string> columnNameCache_;
 };
 
-
 class SelectAllImpl : public StatementImpl {
 public:
     SelectAllImpl(DataBaseImpl& db, const std::string& path)
@@ -149,7 +148,7 @@ public:
     {} 
     ~SelectAllImpl() {}
 
-    bool step();
+    int step();
     const unsigned char *column_text(int iCol);
     const char *column_name(int iCol);
     int column_count();
@@ -169,6 +168,8 @@ private:
 
     std::vector<std::string> stringCache_;
     std::vector<std::string> columnNameCache_;
+
+    odb::MetaData currentMetaData_;
 };
 
 StatementImpl& statement (odbql_stmt* stmt) { return reinterpret_cast<StatementImpl&>(*stmt); }
@@ -178,7 +179,7 @@ public:
     InsertImpl(DataBaseImpl&, const odb::MetaData& metaData, const std::string& location);
     ~InsertImpl() {}
 
-    bool step();
+    int step();
     const unsigned char *column_text(int iCol) { NOTIMP; }
     const char *column_name(int iCol) { NOTIMP; }
     int column_count(); 
@@ -249,31 +250,32 @@ bool InsertImpl::column_value(int iCol)
     return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
 }
 
-bool InsertImpl::step()
+int InsertImpl::step()
 {
     ++it_;
-    return true;
+    return ODBQL_ROW;
 }
 
 int InsertImpl::column_count() { return it_->columns().size(); }
 
 // SELECT implementation
 
-bool SelectImpl::step()
+int SelectImpl::step()
 {
     if (firstStep)
     {
         firstStep = false;
-        return it_ != end_;
+        return it_ != end_ ? ODBQL_ROW : ODBQL_DONE;
     }
 
-    if ( !(it_ != end_))
-        return false;
+    if (! (it_ != end_)) 
+        return ODBQL_DONE;
     else
     {
         ++it_;
-        return it_ != end_;
+        return it_ != end_ ? ODBQL_ROW : ODBQL_DONE;
     }
+
 }
 
 int SelectImpl::column_count() { return it_->columns().size(); }
@@ -347,21 +349,29 @@ bool SelectImpl::column_value(int iCol)
 
 // 'SELECT ALL *' implementation
 
-bool SelectAllImpl::step()
+int SelectAllImpl::step()
 {
     if (firstStep)
     {
+        currentMetaData_ = it_->columns();
         firstStep = false;
-        return it_ != end_;
+        return it_ != end_ ? ODBQL_ROW : ODBQL_DONE;
     }
 
-    if ( !(it_ != end_))
-        return false;
+    if (! (it_ != end_)) return ODBQL_DONE;
     else
     {
         ++it_;
-        return it_ != end_;
+
+        if (it_->isNewDataset() && currentMetaData_ != it_->columns())
+        {
+            currentMetaData_ = it_->columns();
+            return ODBQL_METADATA_CHANGED;
+        }
+
+        return it_ != end_ ? ODBQL_ROW : ODBQL_DONE;
     }
+
 }
 
 int SelectAllImpl::column_count() { return it_->columns().size(); }
@@ -529,7 +539,9 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
         {
             const std::vector<odb::sql::SQLTable*>& tables (select->tables());
             if (tables.size() != 1)
-                throw UserError("One table required in FROM clause of 'SELECT ALL *'");
+                throw UserError("Only one table required in FROM clause of 'SELECT ALL *'");
+            if (select->where())
+                throw UserError("'SELECT ALL *' cannot have WHERE clause yet");
             const odb::sql::SQLTable& from (*tables[0]);
             const std::string& path (from.path());
             *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), path));
@@ -554,10 +566,7 @@ error_code_t odbql_step(odbql_stmt* stmt)
     if (! stmt) 
         return ODBQL_ERROR;
 
-    if (statement(stmt).step())
-        return ODBQL_ROW;
-
-    return ODBQL_DONE;
+    return statement(stmt).step();
 
     CATCH_ALL
 }

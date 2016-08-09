@@ -46,17 +46,14 @@ int odbql_example_select_data_read_results();
 */
 
 int main() {
-    if (0 == odbql_example_insert_data())
-        fprintf(stderr, "odbql_example_insert_data passed OK\n");
-    else {
+    if (odbql_example_insert_data())
+    {
         fprintf(stderr, "odbql_example_insert_data FAILED\n");
         return 1;
     }
-
     
-    if (0 == odbql_example_select_data_read_results())
-        fprintf(stderr, "odbql_example_select_data_read_results passed OK\n");
-    else {
+    if (odbql_example_select_data_read_results())
+    {
         fprintf(stderr, "odbql_example_select_data_read_results FAILED\n");
         return 1;
     }

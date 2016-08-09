@@ -82,48 +82,62 @@ int odbql_example_select_data_read_results()
 {
     odbql *db;
     odbql_stmt *res;
+    int i, rc, column, number_of_columns;
+    long long number_of_rows = 0, number_of_rows_in_current_dataset = 0;
     
-    int rc = odbql_open("CREATE TABLE foo ON 'new_api_example.odb';", &db);
+    //rc = odbql_open("CREATE TABLE foo ON 'new_api_example.odb';", &db);
+    rc = odbql_open("CREATE TABLE foo ON 'conv_mfb_ofb.odb';", &db);
                            //" ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
     checkRC(rc, "Cannot open database", db);
     
     //rc = odbql_prepare_v2(db, "SELECT x,y,v,status,status.* FROM foo;", -1, &res, 0);
     rc = odbql_prepare_v2(db, "SELECT ALL * FROM foo;", -1, &res, 0);
     checkRC(rc, "Failed to prepare statement", db);
-
-    int number_of_columns = odbql_column_count(res);
-
-    // Print CSV header. Each field is a colon separated pair of column name and type.
-    int i = 0;
-    for ( ; i < number_of_columns; ++i)
-        printf("%s:%d%s", odbql_column_name(res, i), 
-                          odbql_column_type(res, i), 
-                          ((i < number_of_columns - 1) ? "," : ""));
-    printf("\n");
    
     // Print rows of data. 
-    while((rc = odbql_step(res)) != ODBQL_DONE) {
-
-        if (rc == ODBQL_METADATA_CHANGED)
+    while((rc = odbql_step(res)) != ODBQL_DONE) 
+    {
+        if (number_of_rows == 0 || rc == ODBQL_METADATA_CHANGED)
         {
-            // Metadata on file: number, names and types of columns changed.
             number_of_columns = odbql_column_count(res);
+
+            if (number_of_rows_in_current_dataset)
+                printf("Number of rows: %d\n", number_of_rows_in_current_dataset);
+
+            // Print CSV header. Each field is a colon separated pair of column name and type.
+            printf("\nNew dataset. Number of columns: %d\n", number_of_columns);
+            for (i = 0; i < number_of_columns; ++i)
+                printf("%s:%d%s", odbql_column_name(res, i), 
+                                  odbql_column_type(res, i), 
+                                  ((i < number_of_columns - 1) ? "," : ""));
+            printf("\n");
+
+            number_of_rows_in_current_dataset = 0;
         }
 
-        if (rc == ODBQL_ROW) {
-            int column = 0;
+        if (rc == ODBQL_ROW) 
+        {
+            column = 0;
+            /*
             for (; column < number_of_columns; ++column)
                 printf("%s%s", odbql_column_value(res, column) 
                                 ? odbql_column_text(res, column) 
                                 : (unsigned char *) "NULL",
                                ((column < number_of_columns - 1) ? "," : ""));
             printf("\n");
+            */
         }
+        ++ number_of_rows;
+        ++ number_of_rows_in_current_dataset;
     }
+    if (number_of_rows_in_current_dataset)
+        printf("Number of rows: %d\n", number_of_rows_in_current_dataset);
     
     rc = odbql_finalize(res);
     checkRC(rc, "odbql_finalize failed", db);
     rc = odbql_close(db);
     checkRC(rc, "odbql_close failed", db);
+
+    printf("\nProcessed %ld rows.\n", number_of_rows);
     return 0;
 }

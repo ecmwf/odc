@@ -213,8 +213,7 @@ SQLSelect* SQLSelectFactory::create (
     Expressions group_by,
     pair<Expressions,vector<bool> > order_by)
 {
-    //ostream& L(Log::debug());
-    ostream& L(Log::info());
+    ostream& L(Log::debug());
 
 	if (where) L << "SQLSelectFactory::create: where = " << *where << endl;
 
@@ -287,20 +286,19 @@ SQLSelect* SQLSelectFactory::create (
 
 MetaData SQLSelectFactory::toODAColumns(odb::sql::SQLSession& session, const odb::sql::TableDef& tableDef)
 {
-    ostream& L(eckit::Log::info());
+    ostream& L(eckit::Log::debug());
 
-    L << "tableDef_ -> columns_" << endl;
     odb::sql::ColumnDefs columnDefs (tableDef.columns());
-    MetaData md(0); //(columnDefs.size());
+    MetaData md(0); 
     for (size_t i(0); i < columnDefs.size(); ++i)
     {
         odb::sql::ColumnDef& c (columnDefs[i]);
-        L << "   " << c.name() << ":" << c.type() << endl; //"(" << Column::columnTypeName(type) << ")" << endl;
+        L << "   " << c.name() << ":" << c.type() << endl; 
 
         SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());
         if (a.isBitfield(c.name())) {
             const BitfieldDef& bf ( a.getBitfieldTypeDefinition(c.name()) );
-            md.addBitfield(c.name(), bf ); //c.bitfieldDef());
+            md.addBitfield(c.name(), bf ); 
         }
         else {
             ColumnType type (Column::type(c.type()));
@@ -312,7 +310,6 @@ MetaData SQLSelectFactory::toODAColumns(odb::sql::SQLSession& session, const odb
 
         ASSERT( &md[i]->coder() );
     }
-    L << "toODAColumns ==> " << endl << md << endl;
     return md;
 }
 
@@ -329,7 +326,7 @@ SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const string& in
     //    return r = new SQLCallbackOutput(*context);
 
     string outputFile ((config_.outputFormat() == "odb") ? config_.outputFile() : into);
-    Log::info() << "SQLSelectFactory::createOutput: outputFile: '" << outputFile << "'" << endl;
+    Log::debug() << "SQLSelectFactory::createOutput: outputFile: '" << outputFile << "'" << endl;
     if (! outputFile.size())
         return r = session.defaultOutput();
 
