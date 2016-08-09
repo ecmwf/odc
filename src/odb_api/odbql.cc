@@ -136,6 +136,41 @@ private:
     std::vector<std::string> columnNameCache_;
 };
 
+
+class SelectAllImpl : public StatementImpl {
+public:
+    SelectAllImpl(DataBaseImpl& db, const std::string& path)
+    : StatementImpl(db),
+      path_(path),
+      stmt_(path_),
+      it_(stmt_.begin()),
+      end_(stmt_.end()),
+      firstStep(true)
+    {} 
+    ~SelectAllImpl() {}
+
+    bool step();
+    const unsigned char *column_text(int iCol);
+    const char *column_name(int iCol);
+    int column_count();
+    int column_type(int iCol);
+    error_code_t bind_double(int iCol, double v);
+    error_code_t bind_int(int iCol, int);
+    error_code_t bind_text(int iCol, const char*, int);
+    error_code_t bind_null(int iCol);
+    bool column_value(int iCol); 
+ 
+private:
+    bool firstStep;
+    const std::string path_;
+    odb::Reader stmt_;
+    odb::Reader::iterator it_;
+    odb::Reader::iterator end_;
+
+    std::vector<std::string> stringCache_;
+    std::vector<std::string> columnNameCache_;
+};
+
 StatementImpl& statement (odbql_stmt* stmt) { return reinterpret_cast<StatementImpl&>(*stmt); }
 
 class InsertImpl : public StatementImpl {
@@ -158,6 +193,8 @@ private:
     odb::Writer<> writer_;
     odb::Writer<>::iterator it_;
 };
+
+// INSERT implementation
 
 InsertImpl::InsertImpl(DataBaseImpl& db, const odb::MetaData& metaData, const std::string& location)
 : StatementImpl(db),
@@ -219,6 +256,8 @@ bool InsertImpl::step()
 }
 
 int InsertImpl::column_count() { return it_->columns().size(); }
+
+// SELECT implementation
 
 bool SelectImpl::step()
 {
@@ -306,6 +345,95 @@ bool SelectImpl::column_value(int iCol)
     return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
 }
 
+// 'SELECT ALL *' implementation
+
+bool SelectAllImpl::step()
+{
+    if (firstStep)
+    {
+        firstStep = false;
+        return it_ != end_;
+    }
+
+    if ( !(it_ != end_))
+        return false;
+    else
+    {
+        ++it_;
+        return it_ != end_;
+    }
+}
+
+int SelectAllImpl::column_count() { return it_->columns().size(); }
+
+const unsigned char *SelectAllImpl::column_text(int iCol)
+{
+    if (iCol + 1 > stringCache_.size())
+        stringCache_.resize(iCol + 1);
+
+    if (it_->columns()[iCol]->type() == odb::STRING)
+        stringCache_[iCol] = it_->string(iCol);
+    else 
+    {
+        stringstream ss;
+        ss << it_->data(iCol);
+        stringCache_[iCol] = ss.str();
+    }
+
+    typedef const unsigned char * cucp_t;
+    return cucp_t(stringCache_[iCol].c_str());
+}
+
+const char *SelectAllImpl::column_name(int iCol)
+{
+    if (iCol + 1 > columnNameCache_.size())
+        columnNameCache_.resize(iCol + 1);
+
+    columnNameCache_[iCol] = it_->columns()[iCol]->name();
+    return columnNameCache_[iCol].c_str();
+}
+
+int SelectAllImpl::column_type(int iCol)
+{
+//  ODBQL_INTEGER, ODBQL_FLOAT, ODBQL_TEXT, ODBQL_BLOB, or ODBQL_NULL.
+    switch (it_->columns()[iCol]->type())
+    {
+        case STRING:   return ODBQL_TEXT;
+        case INTEGER:  return ODBQL_INTEGER;
+        case BITFIELD: return ODBQL_INTEGER; // TODO?
+        case REAL:     return ODBQL_FLOAT;
+        case DOUBLE:   return ODBQL_FLOAT;
+        default:
+            return ODBQL_NULL; // TODO?
+    }
+}
+
+error_code_t SelectAllImpl::bind_double(int iCol, double v)
+{
+    NOTIMP;
+}
+
+error_code_t SelectAllImpl::bind_int(int iCol, int v)
+{
+    NOTIMP;
+}
+
+error_code_t SelectAllImpl::bind_text(int iCol, const char* s, int n)
+{
+    NOTIMP;
+}
+
+error_code_t SelectAllImpl::bind_null(int iCol)
+{
+    NOTIMP;
+}
+
+bool SelectAllImpl::column_value(int iCol)
+{
+    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
+}
+
+
 #define TRY_WITH_DB(d) do { DataBaseImpl *p (d); try { 
  
 #define CATCH_ALL  \
@@ -370,7 +498,6 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
     TRY_WITH_DB(&database(db))
 
     eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
-    
 
     odb::sql::SQLNonInteractiveSession session;
     odb::sql::SQLOutputConfig config (session.selectFactory().config());
@@ -393,11 +520,26 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
         const std::string& location (tableDef.location());
 
         *ppStmt = stmt_ptr_t (new InsertImpl(database(db), md, location));
-        return ODBQL_OK;
     }
-  
-    // Assume this is SELECT for now 
-    *ppStmt = stmt_ptr_t (new SelectImpl(database(db), zSql));
+    else if (dynamic_cast<odb::sql::SQLSelect*>(statement))
+    {
+        odb::sql::SQLSelect* select (dynamic_cast<odb::sql::SQLSelect*>(statement));
+
+        if (select->all())
+        {
+            const std::vector<odb::sql::SQLTable*>& tables (select->tables());
+            if (tables.size() != 1)
+                throw UserError("One table required in FROM clause of 'SELECT ALL *'");
+            const odb::sql::SQLTable& from (*tables[0]);
+            const std::string& path (from.path());
+            *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), path));
+        }
+        else
+        {
+            // Assume this is a regular SELECT for now 
+            *ppStmt = stmt_ptr_t (new SelectImpl(database(db), zSql));
+        }
+    }
 
     return ODBQL_OK;
 

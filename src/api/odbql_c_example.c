@@ -87,7 +87,8 @@ int odbql_example_select_data_read_results()
                            //" ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
     checkRC(rc, "Cannot open database", db);
     
-    rc = odbql_prepare_v2(db, "SELECT x,y,v,status,status.* FROM foo;", -1, &res, 0);
+    //rc = odbql_prepare_v2(db, "SELECT x,y,v,status,status.* FROM foo;", -1, &res, 0);
+    rc = odbql_prepare_v2(db, "SELECT ALL * FROM foo;", -1, &res, 0);
     checkRC(rc, "Failed to prepare statement", db);
 
     int number_of_columns = odbql_column_count(res);

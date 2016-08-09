@@ -279,7 +279,7 @@ SQLSelect* SQLSelectFactory::create (
 
     if(distinct)              { out = new SQLDistinctOutput(out); }
     if(order_by.first.size()) { out = new SQLOrderOutput(out, order_by); }
-    r = new SQLSelect(select, fromTables, where, out, config_);
+    r = new SQLSelect(select, fromTables, where, out, config_, all);
 
 	maxColumnShift_ = 0;
 	return r;

@@ -42,7 +42,7 @@ class SQLSelect : public SQLStatement {
 	friend class odb::SelectIterator;
 
 public:
-	SQLSelect(const Expressions&, const std::vector<SQLTable*>&, odb::sql::expression::SQLExpression*, SQLOutput*, SQLOutputConfig);
+	SQLSelect(const Expressions&, const std::vector<SQLTable*>&, odb::sql::expression::SQLExpression*, SQLOutput*, SQLOutputConfig, bool all);
 	~SQLSelect(); 
 
 // -- Methods
@@ -68,6 +68,8 @@ public:
 
     std::vector<eckit::PathName> outputFiles() const;
     void outputFiles(const std::vector<eckit::PathName>& files);
+    bool all() const { return all_; }
+    std::vector<SQLTable*>& tables() { return tables_; }
 
 // -- Overridden methods
 	unsigned long long execute(ecml::ExecutionContext*);
@@ -90,14 +92,14 @@ private:
 
 	Stack env;
 
-    std::auto_ptr<SQLOutput>     output_;
+    std::auto_ptr<SQLOutput> output_;
 	Expressions  results_;
 
     typedef std::map<std::vector<std::pair<double,bool> >, expression::Expressions*> AggregatedResults;
 	AggregatedResults aggregatedResults_;
 
     std::map<std::string, std::pair<double,bool> > values_;
-	std::set<SQLTable*>     allTables_;
+	std::set<SQLTable*> allTables_;
 
 	typedef std::map<SQLTable*,SelectOneTable> TableMap;
 	TableMap tablesToFetch_;
@@ -113,6 +115,7 @@ private:
 	std::vector<bool> mixedResultColumnIsAggregated_;
 	SQLOutputConfig outputConfig_;
     std::vector<eckit::PathName> outputFiles_;
+    bool all_;
 
 // -- Methods
 

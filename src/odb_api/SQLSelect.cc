@@ -32,7 +32,8 @@ SQLSelect::SQLSelect(const Expressions& columns,
 	const std::vector<SQLTable*>& tables,
 	SQLExpression* where,
 	SQLOutput* output,
-	SQLOutputConfig cfg)
+	SQLOutputConfig cfg,
+    bool all)
 : select_(columns),
   tables_(tables),
   where_(where),
@@ -42,7 +43,8 @@ SQLSelect::SQLSelect(const Expressions& columns,
   skips_(0),
   aggregate_(false),
   mixedAggregatedAndScalar_(false),
-  outputConfig_(cfg)
+  outputConfig_(cfg),
+  all_(all)
 {
 	output->config(cfg);
 }
