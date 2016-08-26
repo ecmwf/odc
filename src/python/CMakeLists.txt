@@ -2,56 +2,31 @@
 # swig python interface
 
 if( HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
-    list( APPEND python_odb_api_data_files 2000010106.odb )
-    ecbuild_get_test_multidata( TARGET python_odb_api_get_test_data
-                                NAMES ${python_odb_api_data_files}
-                                NOCHECK )
+  join( ECKIT_SELF_INCLUDE_DIRS "', '" _ECKIT_INCLUDES )
+  configure_file( setup.py.in setup.py )
+  file( COPY odb.py pyodbapi.i test_python_odb_api.py odb_api_python_examples.py DESTINATION . )
 
+  set( _odbapi_swig "_pyodbapi${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+  # Build the extension module for use in build tree with RPATH pointing to the build tree
+  add_custom_command( OUTPUT ${_odbapi_swig}
+                      COMMAND ${PYTHON_EXECUTABLE} setup.py build_ext --inplace --force -R ${CMAKE_BINARY_DIR}/lib
+                      DEPENDS pyodbapi.i setup.py.in Odb )
+  add_custom_target(build_swig_wrapper ALL DEPENDS ${_odbapi_swig})
 
-    message("Configured for building Python bindings.")
-    set(CMAKE_SWIG_FLAGS "")
-    include_directories( ${PYTHON_INCLUDE_PATH} )
+  # Call distutils for installation
+  install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} setup.py install --prefix $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
 
-    set_source_files_properties( pyodbapi.i PROPERTIES CPLUSPLUS ON )
-    # set_source_files_properties( pyodbapi.i PROPERTIES SWIG_FLAGS "-includeall")
+  list( APPEND python_odb_api_data_files 2000010106.odb )
+  ecbuild_get_test_multidata( TARGET python_odb_api_get_test_data
+                              NAMES ${python_odb_api_data_files}
+                              NOCHECK )
 
-    file( RELATIVE_PATH relative_rpath "${CMAKE_INSTALL_PREFIX}/${PYTHON_DEST}" "${${PNAME}_FULL_INSTALL_LIB_DIR}" )
-    ecbuild_append_to_rpath( ${relative_rpath} )
-    ecbuild_append_to_rpath( "../../../lib" )        # for ctest to find the libs
-
-    swig_add_module( pyodbapi python pyodbapi.i )
-    set( EXTRA_LIBS eckit ecml )
-    swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} eckit ecml )
-
-    #swig_link_libraries( pyodbapi Odb ${PYTHON_LIBRARIES} )
-
-    #set(PYTHON_DEST "lib/python${PYTHON_VERSION}/site-packages" )
-    set(PYTHON_SITE "${INSTALL_LIB_DIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages" )
-    set(PYTHON_DEST "${PYTHON_SITE}" )
-
-    include_directories( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${PYTHON_INCLUDE_DIRS} )
-
-    set( _swig_py pyodbapi.py )
-    add_custom_command(
-        OUTPUT ${_swig_py}
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${_swig_py_wrapper} ${CMAKE_CURRENT_BINARY_DIR}/${_swig_py}
-        #DEPENDS _pyodbapi
-    )
-
-    ecbuild_add_test ( TARGET       test_python_odb_api.py
-                       TYPE         PYTHON
-                       COMMAND      ${CMAKE_CURRENT_SOURCE_DIR}/test_python_odb_api.py
-                       CONDITION    HAVE_PYTHON
-                       ENVIRONMENT 
-                                    PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:${CMAKE_CURRENT_SOURCE_DIR}:$ENV{PYTHONPATH}
-                                    LD_LIBRARY_PATH=${CMAKE_CURRENT_BINARY_DIR}:${CMAKE_BINARY_DIR}/lib:$ENV{LD_LIBRARY_PATH}
-                                    PYTHON=${PYTHON_EXECUTABLE} 
-                       TEST_DEPENDS python_odb_api_get_test_data
-                     )
-
-    install(TARGETS _pyodbapi                              DESTINATION ${PYTHON_DEST} )
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyodbapi.py  DESTINATION ${PYTHON_DEST})
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/odb.py       DESTINATION ${PYTHON_DEST})
+  ecbuild_add_test ( TARGET       test_python_odb_api.py
+                     TYPE         PYTHON
+                     COMMAND      ${CMAKE_CURRENT_BINARY_DIR}/test_python_odb_api.py
+                     CONDITION    HAVE_PYTHON
+                     TEST_DEPENDS python_odb_api_get_test_data
+                   )
 
 endif()
 
