@@ -82,17 +82,8 @@ endif()
 
 ecbuild_add_option( FEATURE PYTHON
                     DESCRIPTION "whether or not to build the Python interface"
-                    DEFAULT OFF )
-
-###############################################################################
-# find extra packages
-
-ecbuild_find_python( VERSION 2.7 )
-
-find_package( SWIG )
-if( SWIG_FOUND )
-    include( ${SWIG_USE_FILE} )
-endif()
+                    DEFAULT OFF
+                    REQUIRED_PACKAGES "Python VERSION 2.7" SWIG )
 
 ###############################################################################
 # contents
