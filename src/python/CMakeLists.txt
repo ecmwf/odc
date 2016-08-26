@@ -1,7 +1,7 @@
 ###############################################################################
 # swig python interface
 
-if( HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
+if( HAVE_PYTHON AND SWIG_FOUND )
   join( ECKIT_SELF_INCLUDE_DIRS "', '" _ECKIT_INCLUDES )
   configure_file( setup.py.in setup.py )
   file( COPY odb test_python_odb_api.py odb_api_python_examples.py DESTINATION . )
