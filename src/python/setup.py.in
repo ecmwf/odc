@@ -2,8 +2,8 @@
 
 from distutils.core import setup, Extension
 
-pyodbapi = Extension('_pyodbapi',
-                     sources=['@CMAKE_CURRENT_BINARY_DIR@/pyodbapi.i'],
+pyodbapi = Extension('odb._pyodbapi',
+                     sources=['odb/pyodbapi.i'],
                      swig_opts=['-c++', '-I@CMAKE_CURRENT_SOURCE_DIR@/..'],
                      include_dirs=['.', '@CMAKE_CURRENT_BINARY_DIR@/..',
                                    '@CMAKE_CURRENT_SOURCE_DIR@/..',
@@ -22,4 +22,4 @@ setup(name='odb',
       url='https://software.ecmwf.int/wiki/display/ODB/ODB+API',
       download_url='https://software.ecmwf.int/wiki/display/ODB/Releases',
       ext_modules=[pyodbapi],
-      py_modules=['odb', 'pyodbapi'])
+      packages=['odb'])
