@@ -15,18 +15,16 @@
 #ifndef ODBApplication_H
 #define ODBApplication_H
 
+#include "eckit/runtime/Application.h"
 #include "odb_api/CommandLineParser.h"
 
 namespace odb {
 namespace tool {
 
-class ODBApplication {
+class ODBApplication : public eckit::Application {
 public:
 	ODBApplication (int argc, char **argv);
 	virtual ~ODBApplication ();
-
-	virtual void start();
-	virtual void run() = 0;
 
 	CommandLineParser& commandLineParser();
 

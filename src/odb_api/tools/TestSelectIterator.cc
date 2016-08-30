@@ -142,7 +142,7 @@ static void testReaderIteratorForEach()
 	Count<odb::Reader::row> counter1;
 	counter1 = for_each(oda.begin(), oda.end(), counter1);
 
-	//Log::info(Here()) << "for_each ReaderIterator: Read " << counter1.counter << " row(s)." << std::endl;
+	//Log::info() << "for_each ReaderIterator: Read " << counter1.counter << " row(s)." << std::endl;
 
 	ASSERT(counter1.counter == 10);
 }

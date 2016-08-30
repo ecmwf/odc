@@ -12,34 +12,22 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "eckit/runtime/Context.h"
 #include "eckit/config/Resource.h"
 #include "odb_api/ODBApplication.h"
-#include "odb_api/ODBBehavior.h"
 
 using namespace eckit;
 
 namespace odb {
 namespace tool {
 
-ODBApplication::ODBApplication (int argc, char **argv)
-: clp_(argc, argv)
-{
-    Context& c (Context::instance());
-
-    c.setup(argc, argv);
-    c.behavior(new ODBBehavior() );
-    c.debug(Resource<int>(0, "debug;$DEBUG;-debug", 0) );
+ODBApplication::ODBApplication (int argc, char **argv) :
+    Application(argc,argv),
+    clp_(argc, argv) {
 }
 
 ODBApplication::~ODBApplication() {}
 
 CommandLineParser& ODBApplication::commandLineParser() { return clp_; }
-
-void ODBApplication::start()
-{
-	run();
-}
 
 } // namespace tool 
 } // namespace odb 

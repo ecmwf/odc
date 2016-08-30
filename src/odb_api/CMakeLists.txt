@@ -231,8 +231,6 @@ ODBAPIVersion.cc
 ODBAPIVersion.h
 ODBApplication.cc
 ODBApplication.h
-ODBBehavior.cc
-ODBBehavior.h
 Select.cc
 Select.h
 OrderByExpressions.cc
@@ -365,8 +363,6 @@ odb_api.h
 odbcapi.cc
 odbcapi.h
 piconst.h
-ODBFormatBuffer.cc
-ODBFormatBuffer.h
 RowsCounter.h
 RowsCounter.cc
 Block.h

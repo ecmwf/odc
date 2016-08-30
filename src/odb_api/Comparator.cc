@@ -172,7 +172,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 				}
 			}
 			else
-			{
+            {
 				if (column1.missingValue() != column2.missingValue())
 				{
 					Log::warning() << column1.name() << " : " 
@@ -185,7 +185,7 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 			if (column1.hasMissing() && column2.hasMissing())
 				ASSERT(column1.missingValue() == column2.missingValue());
 		} catch (...) {
-			Log::info( Here() ) << "While comparing column " << i << ": "
+            Log::info() << "While comparing column " << i << ": "
 				<< column1.name() << std::endl;
 			throw;
 		}

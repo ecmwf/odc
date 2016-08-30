@@ -14,14 +14,11 @@
 
 #include <sstream>
 
-#include "eckit/runtime/Context.h"
-
 #include "Tool.h"
 #include "TestCase.h"
 #include "ToolFactory.h"
 #include "TestRunnerApplication.h"
 #include "TestRunner.h"
-#include "odb_api/ODBBehavior.h"
 
 namespace odb {
 namespace tool {

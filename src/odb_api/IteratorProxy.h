@@ -38,9 +38,9 @@ struct ODBIndexError : public std::exception {
 	const char* what() const throw() { return "index out of range"; }
 };
 
-extern "C" void python_api_start()
+extern "C" void python_api_start(int argc, char* argv[])
 {
-	odb_start();
+    odb_start(argc, argv);
 }
 
 #endif

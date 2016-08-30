@@ -169,7 +169,7 @@ void SQLSelect::prepareExecute() {
 
 		(*c)->prepare(*this);
 
-		Log::debug(Here()) << "SQLSelect::prepareExecute: '" << *(*c) << "'" << std::endl;
+        Log::debug() << "SQLSelect::prepareExecute: '" << *(*c) << "'" << std::endl;
 	}
 	ASSERT(select_.size() == mixedResultColumnIsAggregated_.size());
 	ASSERT(select_.size() == aggregated_.size() + nonAggregated_.size());

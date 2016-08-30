@@ -86,7 +86,7 @@ TEST(selectAggregatedAndNonAggregated)
 
     double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2];
 
-    Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << std::endl;
+    Log::info() << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << std::endl;
 
     ASSERT(Comparator::same(r0, 1));
     ASSERT(Comparator::same(r1, 0.2));
@@ -98,7 +98,7 @@ TEST(selectAggregatedAndNonAggregated)
     r1 = (*it)[1];
     r2 = (*it)[2];
 
-    Log::info(Here()) << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << std::endl;
+    Log::info() << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << std::endl;
 
     //ASSERT((*it)[0] == 2 && (*it)[1] == 0.1);
     ASSERT(r0 == 2);
@@ -138,9 +138,9 @@ TEST(selectAggregatedAndNonAggregated2)
     for ( ; it != oda.end(); ++it, ++counter)
     {
         //double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2], r3 = (*it)[3];
-        //Log::info(Here()) << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 << std::endl;
+        //Log::info() << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 << std::endl;
     }
-    Log::info(Here()) << "selectAggregatedAndNonAggregated2: counter= " << counter << std::endl;
+    Log::info() << "selectAggregatedAndNonAggregated2: counter= " << counter << std::endl;
     ASSERT(counter == 110);
 }
 
@@ -168,9 +168,9 @@ TEST(selectAggregatedAndNonAggregated3)
     for ( ; it != oda.end(); ++it, ++counter)
     {
         double r0 = (*it)[0], r1 = (*it)[1];
-        Log::info(Here()) << "selectAggregatedAndNonAggregated3: " << r0 << ", " << r1 << std::endl;
+        Log::info() << "selectAggregatedAndNonAggregated3: " << r0 << ", " << r1 << std::endl;
     }
-    Log::info(Here()) << "selectAggregatedAndNonAggregated3: counter= " << counter << std::endl;
+    Log::info() << "selectAggregatedAndNonAggregated3: counter= " << counter << std::endl;
     ASSERT(counter == 2);
 }
 
@@ -202,9 +202,9 @@ TEST(selectAggregatedAndNonAggregatedNULL)
     for ( ; it != oda.end(); ++it, ++counter)
     {
         double r0 = (*it)[0], r1 = (*it)[1];
-        Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: " << r0 << ", " << r1 << std::endl;
+        Log::info() << "selectAggregatedAndNonAggregatedNULL: " << r0 << ", " << r1 << std::endl;
     }
-    Log::info(Here()) << "selectAggregatedAndNonAggregatedNULL: counter= " << counter << std::endl;
+    Log::info() << "selectAggregatedAndNonAggregatedNULL: counter= " << counter << std::endl;
     ASSERT(counter == 3);
 }
 

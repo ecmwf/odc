@@ -103,21 +103,21 @@ static void test()
     odb::Select::iterator it = oda.begin();
     int j = 1;
 
-    Log::info(Here()) << "j = " << j << std::endl;
+    Log::info() << "j = " << j << std::endl;
     const double * data = it->data();
     ASSERT(data);
-    Log::info(Here()) << "data[0] = " << data[0] << std::endl;
-    Log::info(Here()) << "data[1] = " << data[1] << std::endl;
+    Log::info() << "data[0] = " << data[0] << std::endl;
+    Log::info() << "data[1] = " << data[1] << std::endl;
     ASSERT(data[0] == j);
     ASSERT(data[1] == j);
     ++j;
 
     ++it;
-    Log::info(Here()) << "j = " << j << std::endl;
+    Log::info() << "j = " << j << std::endl;
     data = it->data();
     ASSERT(data);
-    Log::info(Here()) << "data[0] = " << data[0] << std::endl;
-    Log::info(Here()) << "data[1] = " << data[1] << std::endl;
+    Log::info() << "data[0] = " << data[0] << std::endl;
+    Log::info() << "data[1] = " << data[1] << std::endl;
     ASSERT(data[0] == j);
     ASSERT(data[1] == j);
     ++j;
@@ -125,21 +125,21 @@ static void test()
     j = 1; // data from file2.oda
 
     ++it;
-    Log::info(Here()) << "j = " << j << std::endl;
+    Log::info() << "j = " << j << std::endl;
     data = it->data();
     ASSERT(data);
-    Log::info(Here()) << "data[0] = " << data[0] << std::endl;
-    Log::info(Here()) << "data[1] = " << data[1] << std::endl;
+    Log::info() << "data[0] = " << data[0] << std::endl;
+    Log::info() << "data[1] = " << data[1] << std::endl;
     ASSERT(data[0] == j * 10);
     ASSERT(data[1] == j * 100);
     ++j;
 
     ++it;
-    Log::info(Here()) << "j = " << j << std::endl;
+    Log::info() << "j = " << j << std::endl;
     data = it->data();
     ASSERT(data);
-    Log::info(Here()) << "data[0] = " << data[0] << std::endl;
-    Log::info(Here()) << "data[1] = " << data[1] << std::endl;
+    Log::info() << "data[0] = " << data[0] << std::endl;
+    Log::info() << "data[1] = " << data[1] << std::endl;
     ASSERT(data[0] == j * 10);
     ASSERT(data[1] == j * 100);
 
@@ -147,21 +147,21 @@ static void test()
     j = 1; // data from file3.oda
 
     ++it;
-    Log::info(Here()) << "j = " << j << std::endl;
+    Log::info() << "j = " << j << std::endl;
     data = it->data();
     ASSERT(data);
-    Log::info(Here()) << "data[0] = " << data[0] << std::endl;
-    Log::info(Here()) << "data[1] = " << data[1] << std::endl;
+    Log::info() << "data[0] = " << data[0] << std::endl;
+    Log::info() << "data[1] = " << data[1] << std::endl;
     ASSERT(data[0] == j * 10);
     ASSERT(data[1] == j * 100);
     ++j;
 
     ++it;
-    Log::info(Here()) << "j = " << j << std::endl;
+    Log::info() << "j = " << j << std::endl;
     data = it->data();
     ASSERT(data);
-    Log::info(Here()) << "data[0] = " << data[0] << std::endl;
-    Log::info(Here()) << "data[1] = " << data[1] << std::endl;
+    Log::info() << "data[0] = " << data[0] << std::endl;
+    Log::info() << "data[1] = " << data[1] << std::endl;
     ASSERT(data[0] == j * 10);
     ASSERT(data[1] == j * 100);
 }
