@@ -15,6 +15,10 @@ module odbql_wrappers
     type(c_ptr) :: this
   end type
 
+  type odbql_value
+    type(c_ptr) :: this
+  end type
+
 contains
 
 
@@ -447,6 +451,42 @@ contains
      
 
     end function odbql_column_count
+
+    
+
+!> double odbql_value_double(odbql_value* vp)
+
+    function odbql_value_double (vp) 
+     use odbql_binding
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_value), value                   :: vp
+     real(kind=C_DOUBLE)                        :: odbql_value_double
+
+     
+
+     
+     odbql_value_double = odbql_value_double_c(vp%this)
+     
+
+    end function odbql_value_double
+
+    
+
+!> int odbql_value_int(odbql_value* vp)
+
+    function odbql_value_int (vp) 
+     use odbql_binding
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_value), value                   :: vp
+     integer(kind=C_INT)                        :: odbql_value_int
+
+     
+
+     
+     odbql_value_int = odbql_value_int_c(vp%this)
+     
+
+    end function odbql_value_int
 
     
 

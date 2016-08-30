@@ -94,7 +94,7 @@ public:
 
     // NULL handling functions:
     virtual error_code_t bind_null(int iCol) = 0;
-    virtual bool column_value(int iCol) = 0; // This could also be called: column_has_value
+    virtual odbql_value* column_value(int iCol) = 0; // This could also be called: column_has_value
 
     DataBaseImpl& database() { return db_; }
 
@@ -123,7 +123,7 @@ public:
     error_code_t bind_int(int iCol, int);
     error_code_t bind_text(int iCol, const char*, int);
     error_code_t bind_null(int iCol);
-    bool column_value(int iCol); 
+    virtual odbql_value* column_value(int iCol); 
  
 private:
     bool firstStep;
@@ -157,7 +157,7 @@ public:
     error_code_t bind_int(int iCol, int);
     error_code_t bind_text(int iCol, const char*, int);
     error_code_t bind_null(int iCol);
-    bool column_value(int iCol); 
+    virtual odbql_value* column_value(int iCol); 
  
 private:
     bool firstStep;
@@ -188,7 +188,7 @@ public:
     error_code_t bind_int(int iCol, int);
     error_code_t bind_text(int iCol, const char*, int);
     error_code_t bind_null(int iCol);
-    bool column_value(int iCol);
+    virtual odbql_value* column_value(int iCol);
 
 private:
     odb::Writer<> writer_;
@@ -245,9 +245,13 @@ error_code_t InsertImpl::bind_null(int iCol)
     return ODBQL_OK;
 }
 
-bool InsertImpl::column_value(int iCol)
+odbql_value* InsertImpl::column_value(int iCol)
 {
-    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
+    if ((*it_)[iCol] == it_->columns()[iCol]->missingValue())
+        return 0;
+
+    typedef odbql_value* odbql_value_p;
+    return odbql_value_p(&(*it_)[iCol]);
 }
 
 int InsertImpl::step()
@@ -342,9 +346,13 @@ error_code_t SelectImpl::bind_null(int iCol)
     NOTIMP;
 }
 
-bool SelectImpl::column_value(int iCol)
+odbql_value* SelectImpl::column_value(int iCol)
 {
-    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
+    if ((*it_)[iCol] == it_->columns()[iCol]->missingValue())
+        return 0;
+
+    typedef odbql_value* odbql_value_p;
+    return odbql_value_p(&(*it_)[iCol]);
 }
 
 // 'SELECT ALL *' implementation
@@ -438,9 +446,13 @@ error_code_t SelectAllImpl::bind_null(int iCol)
     NOTIMP;
 }
 
-bool SelectAllImpl::column_value(int iCol)
+odbql_value* SelectAllImpl::column_value(int iCol)
 {
-    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
+    if ((*it_)[iCol] == it_->columns()[iCol]->missingValue())
+        return 0;
+
+    typedef odbql_value* odbql_value_p;
+    return odbql_value_p(&(*it_)[iCol]);
 }
 
 
@@ -642,13 +654,25 @@ int odbql_column_type(odbql_stmt* stmt, int iCol)
 ///           any other value means the value is not NULL
 odbql_value *odbql_column_value(odbql_stmt* stmt, int iCol)
 {
-    return reinterpret_cast<odbql_value*>( statement(stmt).column_value(iCol) ? -1 : 0);
+    return reinterpret_cast<odbql_value*>( statement(stmt).column_value(iCol) );
 }
 
 // https://www.sqlite.org/c3ref/column_count.html
 int odbql_column_count(odbql_stmt *stmt)
 {
     return statement(stmt).column_count();
+}
+
+double odbql_value_double(odbql_value* vp)
+{
+    typedef double* double_p; 
+    return * double_p(vp);
+}
+
+int odbql_value_int(odbql_value* vp)
+{
+    typedef int* int_p; 
+    return * int_p(vp);
 }
 
 } // extern "C" 

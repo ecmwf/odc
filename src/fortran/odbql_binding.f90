@@ -202,5 +202,27 @@ interface
 
     
 
+!> double odbql_value_double(odbql_value* vp)
+
+    function odbql_value_double_c (vp) bind(C, name="odbql_value_double")
+     use, intrinsic                             :: iso_c_binding
+     type(C_PTR), VALUE                         :: vp
+     real(kind=C_DOUBLE)                        :: odbql_value_double_c
+    end function odbql_value_double_c
+
+
+    
+
+!> int odbql_value_int(odbql_value* vp)
+
+    function odbql_value_int_c (vp) bind(C, name="odbql_value_int")
+     use, intrinsic                             :: iso_c_binding
+     type(C_PTR), VALUE                         :: vp
+     integer(kind=C_INT)                        :: odbql_value_int_c
+    end function odbql_value_int_c
+
+
+    
+
 end interface
 end module odbql_binding
