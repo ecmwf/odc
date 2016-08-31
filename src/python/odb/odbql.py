@@ -4,9 +4,6 @@
 
 
 import os
-os.sys.path.insert(0, '/tmp/build/bundle/debug/odb_api/src/python/odb') #/pyodbapi.py
-
-import unittest, os
 from ctypes import *
 
 apilevel = '2.0' 
@@ -34,7 +31,14 @@ def connect(ddl=''):
     """
     return Connection(ddl)
 
-libodb = CDLL(os.sep.join(__file__.split(os.sep)[:-1] + ['..', '..', '..', 'lib', 'libOdb.so']))
+def __find_libOdb(p):
+    for i in range(len(p.split(os.sep))):
+        path = p.split(os.sep)[:-1]
+        try: return CDLL(os.sep.join(path + ['..'] * i + ['lib', 'libOdb.so']))
+        except OSError: pass
+    raise Exception("Can't find libOdb.so")
+
+libodb = __find_libOdb(__file__)
 
 # odbql prototypes 
 odbql_open = libodb.odbql_open

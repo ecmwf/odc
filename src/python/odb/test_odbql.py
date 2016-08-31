@@ -1,4 +1,4 @@
-from odbql import *
+from odb import *
 import unittest
 
 
