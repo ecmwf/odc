@@ -34,9 +34,7 @@ def connect(ddl=''):
     """
     return Connection(ddl)
 
-
-# TODO: get the path to libOdb.so
-libodb = CDLL('/tmp/build/bundle/debug/lib/libOdb.so')
+libodb = CDLL(os.sep.join(__file__.split(os.sep)[:-1] + ['..', '..', '..', 'lib', 'libOdb.so']))
 
 # odbql prototypes 
 odbql_open = libodb.odbql_open
@@ -102,7 +100,7 @@ class Cursor:
 
     def __column_info(self, name, typ):
         return (name, 
-                typ,   # type_code
+                typ,   # type_code ## TODO
                 None,  # display_size
                 None,  # internal_size
                 None,  # precision
@@ -115,7 +113,6 @@ class Cursor:
         self.stmt = None
 
     def execute(self, operation, parameters = None):
-        print 'execute:', operation, ', parameters: ', parameters
         db, self.stmt, tail = c_voidp(0), c_voidp(), c_char_p()
         rc = odbql_open(self.ddl, byref(db))
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
@@ -128,8 +125,6 @@ class Cursor:
         self.types = [odbql_column_type(self.stmt, i) for i in range(self.number_of_columns)]
 
         self.description = map (self.__column_info, self.names, self.types)
-
-        print '.description: ', self.description
         
     def fetchall(self):
         r = []
