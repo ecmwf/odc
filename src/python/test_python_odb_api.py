@@ -1,7 +1,8 @@
 #!/usr/bin/env python 
 
-from odb import *
 import unittest
+from odb import *
+import odb
 
 
 TEST_DDL = """
@@ -125,7 +126,6 @@ class TestODBQL(unittest.TestCase):
 
 
     def read_with_legacy_api(self, file_name = 'new_api_example_python.odb'):
-        import odb
         f = odb.open(file_name)
         return [r[:] for r in f]
         
@@ -182,6 +182,10 @@ class TestODBQL(unittest.TestCase):
                         REPORTYPE = 16001 "''')
         c = conn.cursor()
         c.execute('SELECT * from foo;')
+        data = c.fetchall()
+        self.assertEqual(len(data), 4438) 
+
+        c.execute('SELECT * from foo')
         data = c.fetchall()
         self.assertEqual(len(data), 4438) 
 

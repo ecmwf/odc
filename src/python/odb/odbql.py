@@ -1,7 +1,8 @@
-# Python Database API (PEP 249) implementation for ODB API
-#
-# @author Piotr Kuchta, ECMWF, August 2016
+"""
+Python Database API (PEP 249) implementation for ODB API
 
+@author Piotr Kuchta, ECMWF, August 2016
+"""
 
 import os
 from ctypes import *
@@ -32,8 +33,8 @@ def connect(ddl=''):
     return Connection(ddl)
 
 def __find_libOdb(p):
-    for i in range(len(p.split(os.sep))):
-        path = p.split(os.sep)[:-1]
+    path = p.split(os.sep)[:-1]
+    for i in range(len(path)):
         try: return CDLL(os.sep.join(path + ['..'] * i + ['lib', 'libOdb.so']))
         except OSError: pass
     raise Exception("Can't find libOdb.so")
@@ -119,6 +120,8 @@ class Cursor:
     def execute(self, operation, parameters = None):
         db, self.stmt, tail = c_voidp(0), c_voidp(), c_char_p()
         rc = odbql_open(self.ddl, byref(db))
+
+        operation = self.__add_semicolon_if_needed(operation)
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
         if rc <> ODBQL_OK:
             raise Exception('execute: prepare failed')
@@ -179,11 +182,12 @@ class Cursor:
         rc = odbql_open(self.ddl, byref(db))
         #self.assertEqual(rc, ODBQL_OK)
 
+        operation = self.__add_semicolon_if_needed(operation)
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
         #self.assertEqual(rc, ODBQL_OK)
 
         for ps in parameters:
-            self._bind(ps)
+            self.__bind(ps)
             rc = odbql_step(self.stmt)
             #self.assertEqual(rc, ODBQL_ROW)
 
@@ -193,7 +197,7 @@ class Cursor:
         #self.assertEqual(rc, ODBQL_OK)
             
 
-    def _bind(self, parameters):
+    def __bind(self, parameters):
         for i in range(len(parameters)):
 
             p = parameters[i]
@@ -213,4 +217,10 @@ class Cursor:
                 #self.assertEqual(rc, ODBQL_OK)
             else:
                 raise "Don't know how to bind parameter " + str(p) + ' of type ' + str(type(p))
+
+    def __add_semicolon_if_needed(self, s):
+        if s.strip().endswith(';'):
+            return s
+        else:
+            return s + ';'
 
