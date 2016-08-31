@@ -153,10 +153,31 @@ threadsafety = 1 # https://www.python.org/dev/peps/pep-0249/#threadsafety
 paramstyle = 'qmark' # https://www.python.org/dev/peps/pep-0249/#paramstyle
 
 class Cursor:
-    def __init__(self, ddl):
+
+    def __init__(self, ddl, connection):
         self.ddl = ddl
         self.stmt = None
         self.number_of_columns = None
+        #https://www.python.org/dev/peps/pep-0249/#id28
+        self.connection = connection
+
+        # https://www.python.org/dev/peps/pep-0249/#description
+        #
+        #  This read-only attribute is a sequence of 7-item sequences.
+        #
+        # Each of these sequences contains information describing one result column:     
+        #   name, type_code, display_size, internal_size, precision, scale, null_ok
+        self.description = []
+
+    def __column_info(self, name, typ):
+        return (name, 
+                typ,   # type_code
+                None,  # display_size
+                None,  # internal_size
+                None,  # precision
+                None,  # scale
+                True   # null_ok
+                )
         
     def close(self):
         rc = odbql_finalize(self.stmt)
@@ -169,9 +190,15 @@ class Cursor:
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
         if rc <> ODBQL_OK:
             raise Exception('execute: prepare failed')
+
         self.number_of_columns = odbql_column_count(self.stmt)
-        self.types = [odbql_column_type(self.stmt, i) for i in range(self.number_of_columns)]
+
         self.names = [odbql_column_name(self.stmt, i) for i in range(self.number_of_columns)]
+        self.types = [odbql_column_type(self.stmt, i) for i in range(self.number_of_columns)]
+
+        self.description = map (self.__column_info, self.names, self.types)
+
+        print '.description: ', self.description
         
     def fetchall(self):
         r = []
@@ -181,6 +208,14 @@ class Cursor:
                 break
             r.append(v)
         return r
+
+    def __iter__(self): return self
+
+    def next(self):
+        r = self.fetchone()
+        if r:
+            return r
+        raise StopIteration()
 
     def fetchone(self):
         if not self.stmt:
@@ -251,17 +286,38 @@ class Cursor:
 
 
 class Connection:
-    def __init__(self, db):
-        self.db = db
+    def __init__(self, ddl):
+        self.ddl = ddl
 
     def close(self): pass
     def commit(self): pass
-    def rollback(self): pass
-    def cursor(self):
-        return Cursor(self.db)
+    # Not supported
+    #def rollback(self): pass
 
-def connect(db):
-    return Connection(db)
+    def cursor(self):
+        return Cursor(self.ddl, self)
+
+
+def connect(ddl=''):
+    """
+    Returns a Connection object. 
+    
+    Keyword arguments:
+
+        ddl  -- (Optional) string with DDL (Data Definition Language)
+
+    Examples:
+
+        >>> conn1 = connect(ddl='''CREATE TABLE bar on "conv.odb";'''
+        >>> conn2 = connect(ddl='''
+            CREATE TABLE foo ON "mars://RETRIEVE,DATABASE=marsod,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160830,TIME=1200,REPORTYPE=16001";''')
+
+    See also:
+    
+        https://www.python.org/dev/peps/pep-0249/#connect 
+    
+    """
+    return Connection(ddl)
 
 class TestODBQL(unittest.TestCase):
 
@@ -299,6 +355,7 @@ class TestODBQL(unittest.TestCase):
                 break
 
             original = self.data [number_of_rows]
+            # Legacy API does not handle bitfields correctly
             #self.assertEqual (original, legacy [number_of_rows])
             self.assertEqual (original, row)
 
@@ -309,10 +366,35 @@ class TestODBQL(unittest.TestCase):
 
 
     def test_select_data_fetchall(self):
+        """"""
         c = self.conn.cursor()
         c.execute(TEST_SELECT)
         rows = c.fetchall()
         self.assertEqual ( len(rows), 4 )
+        self.assertEqual ( rows, self.data )
+
+    def test_select_data_iterate(self):
+        """https://www.python.org/dev/peps/pep-0249/#iter"""
+        c = self.conn.cursor()
+        c.execute(TEST_SELECT)
+        self.assertEqual ( self.data,  [r for r in c] )
+
+    def test_select_data_from_mars(self):
+        conn = connect(ddl = '''
+            CREATE TABLE foo 
+            ON "mars://RETRIEVE,
+                        DATABASE  = marsod,
+                        CLASS     = OD,
+                        TYPE      = MFB,
+                        STREAM    = OPER,
+                        EXPVER    = 0001,
+                        DATE      = 20160830,
+                        TIME      = 1200,
+                        REPORTYPE = 16001 "''')
+        c = conn.cursor()
+        c.execute('SELECT * from foo;')
+        data = c.fetchall()
+        self.assertEqual(len(data), 4438) 
 
 if __name__ == '__main__':
     unittest.main()
