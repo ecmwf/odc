@@ -1,6 +1,8 @@
 # Python Database API (PEP 249) implementation for ODB API
 
 # @author Piotr Kuchta, ECMWF, August 2016
+import os
+os.sys.path.insert(0, '/tmp/build/bundle/debug/odb_api/src/python/odb') #/pyodbapi.py
 
 import unittest, os
 from ctypes import *
@@ -46,7 +48,7 @@ TEST_DDL = """
             
             CREATE TABLE foo AS (
                 x INTEGER, 
-                y REAL, 
+                y DOUBLE, 
                 v STRING, 
                 status bf
             ) ON 'new_api_example_python.odb';
@@ -171,6 +173,15 @@ class Cursor:
         self.types = [odbql_column_type(self.stmt, i) for i in range(self.number_of_columns)]
         self.names = [odbql_column_name(self.stmt, i) for i in range(self.number_of_columns)]
         
+    def fetchall(self):
+        r = []
+        while True:
+            v = self.fetchone()
+            if not v: 
+                break
+            r.append(v)
+        return r
+
     def fetchone(self):
         if not self.stmt:
             raise Exception('fetchone: you must call execute first')
@@ -182,8 +193,7 @@ class Cursor:
 
         def value(column):
             v = odbql_column_value(self.stmt, column)
-            if not v:
-                return None
+            if not v: return None
             else: 
                 t = self.types[column]
                 if t == ODBQL_FLOAT: return odbql_value_double(v)
@@ -253,34 +263,56 @@ class Connection:
 def connect(db):
     return Connection(db)
 
-
 class TestODBQL(unittest.TestCase):
 
-    def test_insert_data(self):
-        conn = connect(TEST_DDL)
-        c = conn.cursor()
-        data = [(1,0.1, 'one', 1),
-                (2,0.2, 'two', 2),
-                (3,0.3, 'three', 3),
-                (4,0.4, 'four', 4),
-               ]
-        c.executemany(TEST_INSERT, data)
+    def setUp(self):
+        self.data = [[1,0.1, '  one   ', 1],
+                     [2,0.2, '  two   ', 2],
+                     [3,0.3, '  three ', 3],
+                     [4,0.4, '  four  ', 4],
+                    ]
+        self.conn = connect(TEST_DDL)
 
-    def test_select_data(self):
-        conn = connect(TEST_DDL)
-        c = conn.cursor()
+    def test_insert_data(self):
+        c = self.conn.cursor()
+        print self.data
+        c.executemany(TEST_INSERT, self.data)
+
+
+    def read_with_legacy_api(self, file_name = 'new_api_example_python.odb'):
+        import odb
+        f = odb.open(file_name)
+        return [r[:] for r in f]
+        
+
+    def test_select_data_fetchone(self):
+
+        legacy = self.read_with_legacy_api()
+        print 'legacy:', legacy
+
+        c = self.conn.cursor()
         c.execute(TEST_SELECT)
         number_of_rows = 0
         while True:
             row = c.fetchone()
             if row is None:
                 break
-            #self.assertEqual ( row, (1, 0.1, 'one', 1) ) # assertion fails due to rounding errors for now
-            self.assertEqual ( len(row), len((1, 0.1, 'one', 1)) )
+
+            original = self.data [number_of_rows]
+            #self.assertEqual (original, legacy [number_of_rows])
+            self.assertEqual (original, row)
+
             print row
             number_of_rows += 1
 
         self.assertEqual ( number_of_rows, 4 )
+
+
+    def test_select_data_fetchall(self):
+        c = self.conn.cursor()
+        c.execute(TEST_SELECT)
+        rows = c.fetchall()
+        self.assertEqual ( len(rows), 4 )
 
 if __name__ == '__main__':
     unittest.main()
