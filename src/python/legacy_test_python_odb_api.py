@@ -5,7 +5,7 @@ print '*** ', __file__, 'CWD:', os.getcwd()
 
 import odb
 import unittest 
-import odb_api_python_examples as examples
+import legacy_odb_api_python_examples as examples
 
 def open_non_existing_file(file_name = 'a_non_existin_file.odb', f = lambda fn: odb.open(fn)):
     didThrow = False

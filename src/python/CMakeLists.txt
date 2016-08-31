@@ -4,7 +4,7 @@
 if( HAVE_PYTHON AND SWIG_FOUND )
   join( ECKIT_INCLUDE_DIRS "', '" _ECKIT_INCLUDES )
   configure_file( setup.py.in setup.py )
-  file( COPY odb test_python_odb_api.py odb_api_python_examples.py DESTINATION . )
+  file( COPY odb test_python_odb_api.py legacy_test_python_odb_api.py legacy_odb_api_python_examples.py DESTINATION . )
 
   set( _odbapi_swig "_pyodbapi${CMAKE_SHARED_LIBRARY_SUFFIX}" )
   # Build the extension module for use in build tree with RPATH pointing to the build tree
@@ -25,8 +25,14 @@ if( HAVE_PYTHON AND SWIG_FOUND )
                      TYPE         PYTHON
                      COMMAND      ${CMAKE_CURRENT_BINARY_DIR}/test_python_odb_api.py
                      CONDITION    HAVE_PYTHON
-                     TEST_DEPENDS python_odb_api_get_test_data
+                     #TEST_DEPENDS python_odb_api_get_test_data
                    )
 
+  ecbuild_add_test ( TARGET       legacy_test_python_odb_api.py
+                     TYPE         PYTHON
+                     COMMAND      ${CMAKE_CURRENT_BINARY_DIR}/legacy_test_python_odb_api.py
+                     CONDITION    HAVE_PYTHON
+                     TEST_DEPENDS python_odb_api_get_test_data
+                   )
 endif()
 
