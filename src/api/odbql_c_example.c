@@ -131,6 +131,15 @@ int odbql_example_select_data_read_results()
     }
     if (number_of_rows_in_current_dataset)
         printf("Number of rows: %d\n", number_of_rows_in_current_dataset);
+
+
+    rc = odbql_prepare_v2(db, " { compare, left = new_api_example.odb, right = new_api_example.odb }; ", -1, &res, 0);
+    checkRC(rc, "Failed to prepare embedded statement", db);
+    // Print rows of data. 
+    while((rc = odbql_step(res)) != ODBQL_DONE) 
+    {
+            printf("\n+++\n");
+    }
     
     rc = odbql_finalize(res);
     checkRC(rc, "odbql_finalize failed", db);

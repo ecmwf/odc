@@ -6,6 +6,7 @@ Python Database API (PEP 249) implementation for ODB API
 
 import os
 from ctypes import *
+import types
 
 apilevel = '2.0' 
 threadsafety = 1 # https://www.python.org/dev/peps/pep-0249/#threadsafety
@@ -32,14 +33,21 @@ def connect(ddl=''):
     """
     return Connection(ddl)
 
-def __find_libOdb(p):
-    path = p.split(os.sep)[:-1]
-    for i in range(len(path)):
-        try: return CDLL(os.sep.join(path + ['..'] * i + ['lib', 'libOdb.so']))
-        except OSError: pass
+def __find_libOdb(*ps):
+    for p in ps:
+        path = p.split(os.sep)[:-1]
+        for i in range(len(path)):
+            pth = os.sep.join(path + ['..'] * i + ['lib', 'libOdb.so'])
+            try: 
+                r = CDLL(pth)
+                #print '__find_libOdb: FOUND', pth
+                return r
+            except OSError: 
+                #print '__find_libOdb: not found: ', pth
+                pass
     raise Exception("Can't find libOdb.so")
 
-libodb = __find_libOdb(__file__)
+libodb = __find_libOdb(__file__, '/tmp/build/bundle/debug/bin')
 
 # odbql prototypes 
 odbql_open = libodb.odbql_open
@@ -64,15 +72,20 @@ odbql_value_double.restype = c_double
 odbql_value_int = libodb.odbql_value_int
 
 # odbql constants
-ODBQL_OK = 0
-ODBQL_ROW = 100
-ODBQL_STATIC = c_voidp(0)
+ODBQL_OK               = 0
+ODBQL_ROW              = 100
+ODBQL_DONE             = 101
+ODBQL_METADATA_CHANGED = 102
 
-ODBQL_INTEGER  = 1
-ODBQL_FLOAT    = 2
-ODBQL_BLOB     = 4
-ODBQL_NULL     = 5
-ODBQL_TEXT     = 3
+ODBQL_STATIC           = c_voidp(0)
+
+ODBQL_INTEGER          = 1
+ODBQL_FLOAT            = 2
+ODBQL_TEXT             = 3
+ODBQL_BLOB             = 4
+ODBQL_NULL             = 5
+
+def type_name(i): return [None, 'INTEGER', 'REAL', 'TEXT'][i]
 
 class Connection:
     def __init__(self, ddl):
@@ -80,7 +93,7 @@ class Connection:
 
     def close(self): pass
     def commit(self): pass
-    # Not supported
+    # Not supported:
     #def rollback(self): pass
 
     def cursor(self):
@@ -92,10 +105,10 @@ class Cursor:
         self.ddl = ddl
         self.stmt = None
         self.number_of_columns = None
-        #https://www.python.org/dev/peps/pep-0249/#id28
+        ## https://www.python.org/dev/peps/pep-0249/#id28
         self.connection = connection
 
-        # https://www.python.org/dev/peps/pep-0249/#description
+        ## https://www.python.org/dev/peps/pep-0249/#description
         #
         #  This read-only attribute is a sequence of 7-item sequences.
         #
@@ -177,6 +190,8 @@ class Cursor:
 
 
     def executemany(self, operation, parameters):
+        """
+        """
         db, self.stmt, tail = c_voidp(), c_voidp(), c_char_p()
 
         rc = odbql_open(self.ddl, byref(db))
@@ -195,7 +210,34 @@ class Cursor:
         #self.assertEqual(rc, ODBQL_OK)
         rc = odbql_close(db)
         #self.assertEqual(rc, ODBQL_OK)
-            
+
+    def callproc(self, procname, *parameters, **keyword_parameters):
+        """
+        Execute ECML verb
+        """
+        db, self.stmt, tail = c_voidp(), c_voidp(), c_char_p()
+        rc = odbql_open(self.ddl, byref(db))
+
+        operation = '{ ' + self.__marsify(procname, keyword_parameters) + ' }; '
+
+        rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
+        rc = odbql_step(self.stmt)
+        rc = odbql_finalize(self.stmt)
+        rc = odbql_close(db)
+        return ODBQL_OK
+
+
+    def __marsify(self, procname, keyword_parameters):
+
+        def marslist(l):
+            if type(l) in (types.GeneratorType, types.ListType, types.TupleType):
+                return '/'.join([str(x) for x in l])
+            else:
+                return str(l)
+                
+        r = procname + "".join ( [ ',' + k + '=' + marslist(v) for k,v in keyword_parameters.iteritems()] )
+        return r
+ 
 
     def __bind(self, parameters):
         for i in range(len(parameters)):

@@ -23,6 +23,7 @@ struct YYSTYPE {
     bool                   bol;
     SelectAST              select_statement;
     InsertAST              insert_statement;
+    EmbeddedAST            embedded_statement;
     std::pair<ColumnDefs, ConstraintDefs> tablemd;             
 };
 #endif

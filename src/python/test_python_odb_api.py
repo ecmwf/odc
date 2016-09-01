@@ -1,8 +1,12 @@
 #!/usr/bin/env python 
 
+import sys
+sys.path.append('/tmp/build/bundle/debug/odb_api/src/python/odb')
+
 import unittest
 from odb import *
 import odb
+
 
 
 TEST_DDL = """
@@ -70,17 +74,15 @@ class TestODBQL(unittest.TestCase):
         rc = odbql_prepare_v2(db, "SELECT ALL * FROM foo;", -1, byref(stmt), byref(tail))
         self.assertEqual(rc, ODBQL_OK)
 
-
         number_of_rows = 0 
         rc = None
         while rc <> ODBQL_DONE:
-            rc = odbql_step(stmt)
 
             if number_of_rows == 0 or rc == ODBQL_METADATA_CHANGED:
                 number_of_columns = odbql_column_count(stmt)
                 print 'number_of_columns=', number_of_columns
                 for i in range(0,number_of_columns):
-                    print i, odbql_column_name(stmt, i) + ':' + odbql_column_type(stmt, i)
+                    print i, odbql_column_name(stmt, i) + ':' + type_name(odbql_column_type(stmt, i))
             else:
                 self.assertEqual(rc, ODBQL_ROW)
 
@@ -97,8 +99,9 @@ class TestODBQL(unittest.TestCase):
                         #ODBQL_TEXT     = 3
                         return odbql_column_text(stmt, column)
 
-                print ','.join([value(column) for column in range(number_of_columns)])
+                print ','.join([str(value(column)) for column in range(number_of_columns)])
             number_of_rows += 1
+            rc = odbql_step(stmt)
 
 
         rc = odbql_finalize(stmt)
@@ -106,10 +109,25 @@ class TestODBQL(unittest.TestCase):
         rc = odbql_close(db)
         self.assertEqual(rc, ODBQL_OK)
 
-        os.remove('new_api_example_python.odb')
+
+    def test_stored_procedure(self):
+        db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
+
+        rc = odbql_open("CREATE TABLE foo ON 'new_api_example_python.odb';", byref(db))
+        self.assertEqual(rc, ODBQL_OK)
+
+        e = """ { compare, left = new_api_example_python.odb, right = new_api_example_python.odb } ; """
+        rc = odbql_prepare_v2(db, e, -1, byref(stmt), byref(tail))
+        self.assertEqual(rc, ODBQL_OK)
+
+        rc = odbql_step(stmt)
+        self.assertEqual(rc, ODBQL_DONE)
+
+        print 'test_stored_procedure: OK!'
 
 
-class TestODBQL(unittest.TestCase):
+
+class TestPEP249(unittest.TestCase):
 
     def setUp(self):
         self.data = [[1,0.1, '  one   ', 1],
@@ -168,6 +186,15 @@ class TestODBQL(unittest.TestCase):
         c.execute(TEST_SELECT)
         self.assertEqual ( self.data,  [r for r in c] )
 
+    def test_callproc(self):
+        """https://www.python.org/dev/peps/pep-0249/#callproc"""
+        c = self.conn.cursor()
+        rc = c.callproc('compare', left = 'new_api_example_python.odb', right = 'new_api_example_python.odb')
+        # TODO: check rc
+
+        
+
+"""
     def test_select_data_from_mars(self):
         conn = connect(ddl = '''
             CREATE TABLE foo 
@@ -188,6 +215,7 @@ class TestODBQL(unittest.TestCase):
         c.execute('SELECT * from foo')
         data = c.fetchall()
         self.assertEqual(len(data), 4438) 
+"""
 
 if __name__ == '__main__':
     unittest.main()
