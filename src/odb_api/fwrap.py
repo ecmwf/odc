@@ -205,10 +205,11 @@ helper_functions = """
       use, intrinsic :: iso_c_binding, only: c_ptr,c_f_pointer,c_char,c_null_char
       type(c_ptr), intent(in)                       :: c_string_pointer
       character(len=:), allocatable                 :: f_string
-      character(kind=c_char), dimension(:), pointer :: char_array_pointer => null()
+      character(kind=c_char), dimension(:), pointer :: char_array_pointer
       character(len=255)                            :: aux_string
       integer                                       :: i,length
 
+      char_array_pointer => null()
       call c_f_pointer(c_string_pointer,char_array_pointer,[255])
       if (.not.associated(char_array_pointer)) then
           allocate(character(len=4)::f_string)

@@ -599,7 +599,6 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
     else if (dynamic_cast<odb::sql::SQLEmbedded*>(statement))
     {
         std::string code ( dynamic_cast<odb::sql::SQLEmbedded&>(*statement).code());
-        fprintf(stderr, "odbql_prepare_v2: EMBEDDED CODE:\n%s\n", code.c_str());
 
         ecml::ExecutionContext context;
         odb::ODBModule odbModule;
@@ -609,9 +608,6 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
         for (ecml::Request e (values); e; e = e->rest())
             if (e->value())
                 descriptors.push_back(e->value()->text());
-
-        eckit::Log::info() << "odbql_prepare_v2: EMBEDDED CODE => " << descriptors << endl;
-
 
         *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), descriptors));
     }
