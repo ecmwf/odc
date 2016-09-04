@@ -8,7 +8,6 @@ from odb import *
 import odb
 
 
-
 TEST_DDL = """
             CREATE TYPE bf AS (f1 bit1, f2 bit2); 
             
@@ -192,9 +191,7 @@ class TestPEP249(unittest.TestCase):
         rc = c.callproc('compare', left = 'new_api_example_python.odb', right = 'new_api_example_python.odb')
         # TODO: check rc
 
-        
 
-"""
     def test_select_data_from_mars(self):
         conn = connect(ddl = '''
             CREATE TABLE foo 
@@ -215,7 +212,6 @@ class TestPEP249(unittest.TestCase):
         c.execute('SELECT * from foo')
         data = c.fetchall()
         self.assertEqual(len(data), 4438) 
-"""
 
 if __name__ == '__main__':
     unittest.main()

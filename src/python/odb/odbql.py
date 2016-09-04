@@ -2,6 +2,31 @@
 Python Database API (PEP 249) implementation for ODB API
 
 @author Piotr Kuchta, ECMWF, August 2016
+
+This module is a Python wrapper for ODB API, ECMWF library for encoding,
+decoding and processing of observational data. 
+
+ODB API includes a streaming SQL engine and a MARS language syntax 
+based embedded scripting language, ECML. ECML verbs can be called using 
+this module as stored procedures via Cursor.callproc method.
+
+
+Examples:
+
+    # Select data from a file
+
+    >>> import odbql
+    >>> con = odbql.connect('''CREATE TABLE conv on 'conv.odb';''')
+    >>> c = con.cursor()
+    >>> c.execute('select * from conv;')
+    >>> c.fetchone()
+        [262, '    0001', 1, 1025, 20160902, 120000, 16001, 3, 13, 11, 4287629, 0, 3, 17, 1, 14, None, '   89324', 20160902, 140000, 1, 0, 0, -80.0, -119.4000015258789, 1.0, 1534.8011474609375, 1530.0, None, 0, 1, 78120.0, 110, 2, 15004.1748046875, None, 1, 4096, 1, 3145728, 0, -200.0, -200.0, 106.85060119628906, 40.43746566772461, 0.44642725586891174, 0.0, 0.0, 53.77234649658203, 53.77234649658203, 19.578968048095703, 28.869945526123047, 80.12548828125]
+    >>> print [d[0] for d in c.description]
+        ['type', 'expver', 'class', 'stream', 'andate', 'antime', 'reportype', 'mxup_traj@desc', 'numtsl@desc', 'timeslot@timeslot_index', 'seqno@hdr', 'bufrtype@hdr', 'subtype@hdr', 'groupid@hdr', 'obstype@hdr', 'codetype@hdr', 'sensor@hdr', 'statid@hdr', 'date@hdr', 'time@hdr', 'report_status@hdr', 'report_event1@hdr', 'report_rdbflag@hdr', 'lat@hdr', 'lon@hdr', 'lsm@modsurf', 'orography@modsurf', 'stalt@hdr', 'sonde_type@conv', 'station_type@conv', 'entryno@body', 'obsvalue@body', 'varno@body', 'vertco_type@body', 'vertco_reference_1@body', 'vertco_reference_2@body', 'ppcode@conv_body', 'datum_anflag@body', 'datum_status@body', 'datum_event1@body', 'datum_rdbflag@body', 'biascorr@body', 'biascorr_fg@body', 'an_depar@body', 'fg_depar@body', 'qc_pge@body', 'fc_sens_obs@body', 'an_sens_obs@body', 'obs_error@errstat', 'final_obs_error@errstat', 'fg_error@errstat', 'eda_spread@errstat', 'hires@update_2']
+
+
+    
+
 """
 
 import os
@@ -23,8 +48,18 @@ def connect(ddl=''):
     Examples:
 
         >>> conn1 = connect(ddl='''CREATE TABLE bar on "conv.odb";'''
+
         >>> conn2 = connect(ddl='''
-            CREATE TABLE foo ON "mars://RETRIEVE,DATABASE=marsod,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160830,TIME=1200,REPORTYPE=16001";''')
+            CREATE TYPE bf AS (f1 bit1, f2 bit2); 
+            CREATE TABLE foo AS (
+                x INTEGER,
+                y DOUBLE,
+                status bf
+            ) ON 'new_api_example_python.odb';
+            ''')
+
+        >>> conn3 = connect(ddl='''
+            CREATE TABLE baz ON "mars://RETRIEVE,DATABASE=marsod,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160830,TIME=1200,REPORTYPE=16001";''')
 
     See also:
     
@@ -179,10 +214,10 @@ class Cursor:
                 t = self.types[column]
                 if t == ODBQL_FLOAT: return odbql_value_double(v)
                 if t == ODBQL_INTEGER: return odbql_value_int(v)
+                if t == ODBQL_TEXT: return odbql_column_text(self.stmt, column)
                 if t == ODBQL_NULL: return None
                 #ODBQL_BLOB     = 4
                 #ODBQL_NULL     = 5
-                #ODBQL_TEXT     = 3
                 return odbql_column_text(self.stmt, column)
 
         r = [value(column) for column in range(self.number_of_columns)]
