@@ -12,9 +12,9 @@ def open_non_existing_file(file_name = 'a_non_existin_file.odb', f = lambda fn: 
     try:
         for row in f(file_name):
             pass
-    except IOError as e:
+    except (IOError, Exception) as e:
         didThrow = True
-        print "I/O error({0}): {1}, e.args: {2}".format(e.errno, e.strerror, e.args)
+        #print "I/O error({0}): {1}, e.args: {2}".format(e.errno, e.strerror, e.args)
     assert didThrow and "Opening of a non existing file was supposed to fail with IOError, see ODB-93" 
 
 def read_non_existing_file(): 

@@ -105,6 +105,8 @@ odbql_column_type = libodb.odbql_column_type
 odbql_value_double = libodb.odbql_value_double
 odbql_value_double.restype = c_double
 odbql_value_int = libodb.odbql_value_int
+odbql_errmsg = libodb.odbql_errmsg
+odbql_errmsg.restype = c_char_p
 
 # odbql constants
 ODBQL_OK               = 0
@@ -133,6 +135,18 @@ class Connection:
 
     def cursor(self):
         return Cursor(self.ddl, self)
+
+
+class fetchall_generator(object):
+    def __init__(self, cursor): 
+        self.cursor = cursor
+    def __iter__(self): return self
+    def __next__(self): return self.next()
+    def next(self):
+        v = self.cursor.fetchone()
+        if not v:
+            raise StopIteration()
+        return v
 
 class Cursor:
 
@@ -172,6 +186,15 @@ class Cursor:
         operation = self.__add_semicolon_if_needed(operation)
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
         if rc <> ODBQL_OK:
+            err_msg = odbql_errmsg(db).strip()
+            #print 'execute: odbql_prepare_v2 failed with error message: "%s"' % err_msg
+            if err_msg == "syntax error":
+                raise SyntaxError()
+
+            if err_msg.startswith('Cannot open ') and err_msg.endswith('(No such file or directory)'):
+                #'Cannot open non_existing.odb  (No such file or directory)'
+                raise IOError("No such file or directory: '" + err_msg.split()[2] + "'") 
+            
             raise Exception('execute: prepare failed')
 
         self.number_of_columns = odbql_column_count(self.stmt)
@@ -182,13 +205,7 @@ class Cursor:
         self.description = map (self.__column_info, self.names, self.types)
         
     def fetchall(self):
-        r = []
-        while True:
-            v = self.fetchone()
-            if not v: 
-                break
-            r.append(v)
-        return r
+        return fetchall_generator(self)
 
     def __iter__(self): return self
 
@@ -207,22 +224,21 @@ class Cursor:
         if rc <> ODBQL_ROW:
             return None
 
-        def value(column):
-            v = odbql_column_value(self.stmt, column)
-            if not v: return None
-            else: 
-                t = self.types[column]
-                if t == ODBQL_FLOAT: return odbql_value_double(v)
-                if t == ODBQL_INTEGER: return odbql_value_int(v)
-                if t == ODBQL_TEXT: return odbql_column_text(self.stmt, column)
-                if t == ODBQL_NULL: return None
-                #ODBQL_BLOB     = 4
-                #ODBQL_NULL     = 5
-                return odbql_column_text(self.stmt, column)
-
-        r = [value(column) for column in range(self.number_of_columns)]
+        r = [self.value(column) for column in range(self.number_of_columns)]
         return r
 
+    def value(self, column):
+        v = odbql_column_value(self.stmt, column)
+        if not v: return None
+        else: 
+            t = self.types[column]
+            if t == ODBQL_FLOAT: return odbql_value_double(v)
+            if t == ODBQL_INTEGER: return odbql_value_int(v)
+            if t == ODBQL_TEXT: return odbql_column_text(self.stmt, column)
+            if t == ODBQL_NULL: return None
+            #ODBQL_BLOB     = 4
+            #ODBQL_NULL     = 5
+            return odbql_column_text(self.stmt, column)
 
     def executemany(self, operation, parameters):
         """
@@ -300,4 +316,104 @@ class Cursor:
             return s
         else:
             return s + ';'
+
+
+class __new_sql_generator:
+    def __init__(self, cursor): self.cursor = cursor
+    def __iter__(self): return self
+    def __next__(self): return self.next()
+    def next(self):
+        v = self.cursor.fetchone()
+        if not v:
+            raise StopIteration()
+        return v
+
+## Support for legacy functions open and sql
+
+class new_sql_row(object):
+
+    def __init__(self, cursor):
+        self.cursor = cursor
+        self.name_to_index = None
+        self.names = None
+
+    def __getitem__(self, *indices):
+        if len(indices) == 1: 
+            if type(indices[0]) == tuple: 
+                return tuple(self.__getitem__(i) for i in indices[0])
+            else:
+                return self.__get_one_item__(indices[0])
+
+        return [self.__get_one_item__(i) for i in indices]
+
+    def columns(self):
+        class column_info:
+            def __init__(self, name, typ):
+                self.__name = name
+                self.__typ = typ
+
+            def name(self): return self.__name
+            def type(self): return self.__typ
+
+        return [column_info(c[0],c[1]) for c in self.cursor.description]
+
+
+    def __get_one_item__(self, index):
+        if type(index) == int: return self.cursor.value(index)
+        if type(index) == str: return self.__value_by_name(index)
+        if type(index) == tuple: return tuple(self.__get_one_item__(i) for i in index)
+        if index == slice(None,None,None):
+            return [self.cursor.value(i) for i in range(len(self.cursor.description))]
+        raise TypeError('__get_one_item__: index == ' + str(index))
+
+    def __value_by_name(self, index):
+        if self.name_to_index is None:
+            self.name_to_index = dict([(self.cursor.description[i][0], i) for i in range(len(self.cursor.description))])
+            self.names = [self.cursor.description[i][0] for i in range(len(self.cursor.description))]
+        try:
+            return self.cursor.value(self.name_to_index[index])
+        except KeyError:
+            simillar_columns = [n for n in self.names if n.startswith(index)]
+
+            if len(simillar_columns) == 1 and simillar_columns[0].startswith(index + '@'):
+                self.name_to_index[index] = self.name_to_index[simillar_columns[0]]
+                return self.cursor.value(self.name_to_index[index])
+
+            msg = simillar_columns and \
+                  'could be: ' + ','.join(simillar_columns) \
+                  or 'should be one of: ' + ','.join(self.names)
+
+            raise KeyError(str(index) + ', ' + msg)
+
+
+class new_sql_generator(object):
+    def __init__(self, cursor): 
+        self.cursor = cursor
+    def __iter__(self): return self
+    def __next__(self): return self.next()
+    def next(self):
+        if not self.cursor.stmt:
+            raise Exception('fetchone: you must call execute first')
+
+        rc = odbql_step(self.cursor.stmt)
+        # TODO: handle ODBQL_CHANGED_METADATA
+        if rc <> ODBQL_ROW:
+            raise StopIteration()
+        return new_sql_row(self.cursor)
+
+def new_sql(s):
+    conn = connect()
+    c = conn.cursor()
+    c.execute(s)
+    return new_sql_generator(c)
+
+def new_open(fn):
+    #try:
+    s = '''select all * from '%s';'''  % str(fn)
+    conn = connect()
+    c = conn.cursor()
+    c.execute(s)
+    #except 'Exception: Cannot open '
+    
+    return new_sql_generator(c)
 

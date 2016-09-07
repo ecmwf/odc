@@ -4,8 +4,7 @@ import sys
 sys.path.append('/tmp/build/bundle/debug/odb_api/src/python/odb')
 
 import unittest
-from odb import *
-import odb
+from odbql import *
 
 
 TEST_DDL = """
@@ -143,9 +142,7 @@ class TestPEP249(unittest.TestCase):
 
 
     def read_with_legacy_api(self, file_name = 'new_api_example_python.odb'):
-        f = odb.open(file_name)
-        return [r[:] for r in f]
-        
+        return  new_open(file_name)
 
     def test_select_data_fetchone(self):
 
@@ -191,7 +188,7 @@ class TestPEP249(unittest.TestCase):
         rc = c.callproc('compare', left = 'new_api_example_python.odb', right = 'new_api_example_python.odb')
         # TODO: check rc
 
-
+"""
     def test_select_data_from_mars(self):
         conn = connect(ddl = '''
             CREATE TABLE foo 
@@ -212,6 +209,7 @@ class TestPEP249(unittest.TestCase):
         c.execute('SELECT * from foo')
         data = c.fetchall()
         self.assertEqual(len(data), 4438) 
+"""
 
 if __name__ == '__main__':
     unittest.main()

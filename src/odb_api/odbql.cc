@@ -491,6 +491,7 @@ odbql_value* SelectAllImpl::column_value(int iCol)
  
 #define CATCH_ALL  \
     } \
+    catch(const odb::sql::SyntaxError &e)  { if (p) p->errmsg("syntax error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::CantOpenFile &e) { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::ShortFile &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::ReadError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \

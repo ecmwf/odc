@@ -9,30 +9,35 @@
 # Python ODB API
 # Piotr Kuchta - ECMWF Nov 2011
 
-import pyodbapi
+from odbql import *
 
-def addSemicolon(s):
-    """ Adds semicolon to the end of SQL statement if it's missing.
-    """
-    if not s.strip().endswith(';'):
-        s += ';'
-    return s;
+try:
+    import pyodbapi
 
-class Select:
-    def __init__(self, sql):
-        if not isinstance(sql, str):
-            raise TypeError('sql must be a string object')
-        self.sql = sql
-		
+    def addSemicolon(s):
+        """ Adds semicolon to the end of SQL statement if it's missing.
+        """
+        if not s.strip().endswith(';'):
+            s += ';'
+        return s;
 
-def sql(statement):
-    if not isinstance(statement, str):
-        raise TypeError('statement must be a string object')
-    statement = addSemicolon(statement)
-    return pyodbapi.Select(statement)
+    class Select:
+        def __init__(self, sql):
+            if not isinstance(sql, str):
+                raise TypeError('sql must be a string object')
+            self.sql = sql
+            
+    def sql(statement):
+        if not isinstance(statement, str):
+            raise TypeError('statement must be a string object')
+        statement = addSemicolon(statement)
+        return pyodbapi.Select(statement)
 
-def open(fileName):
-    if not isinstance(fileName, str):
-        raise TypeError('fileName must be a string object')
-    return pyodbapi.Reader(fileName)
+    def open(fileName):
+        if not isinstance(fileName, str):
+            raise TypeError('fileName must be a string object')
+        return pyodbapi.Reader(fileName)
 
+except ImportError:
+    sql = new_sql
+    open = new_open
