@@ -197,11 +197,12 @@ class Cursor:
             
             raise Exception('execute: prepare failed')
 
-        self.number_of_columns = odbql_column_count(self.stmt)
+        self.__populate_meta_data()
 
+    def __populate_meta_data(self):
+        self.number_of_columns = odbql_column_count(self.stmt)
         self.names = [odbql_column_name(self.stmt, i) for i in range(self.number_of_columns)]
         self.types = [odbql_column_type(self.stmt, i) for i in range(self.number_of_columns)]
-
         self.description = map (self.__column_info, self.names, self.types)
         
     def fetchall(self):
@@ -220,8 +221,11 @@ class Cursor:
             raise Exception('fetchone: you must call execute first')
 
         rc = odbql_step(self.stmt)
-        # TODO: handle ODBQL_CHANGED_METADATA
-        if rc <> ODBQL_ROW:
+
+        if rc == ODBQL_METADATA_CHANGED:
+            self.__populate_meta_data()
+
+        if not rc in (ODBQL_ROW, ODBQL_METADATA_CHANGED):
             return None
 
         r = [self.value(column) for column in range(self.number_of_columns)]
@@ -400,8 +404,7 @@ class new_sql_generator(object):
             raise Exception('fetchone: you must call execute first')
 
         rc = odbql_step(self.cursor.stmt)
-        # TODO: handle ODBQL_CHANGED_METADATA
-        if rc <> ODBQL_ROW:
+        if not rc in (ODBQL_ROW, ODBQL_METADATA_CHANGED):
             raise StopIteration()
         return new_sql_row(self.cursor)
 

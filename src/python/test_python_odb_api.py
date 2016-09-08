@@ -4,7 +4,7 @@ import sys
 sys.path.append('/tmp/build/bundle/debug/odb_api/src/python/odb')
 
 import unittest
-from odbql import *
+from odb import *
 
 
 TEST_DDL = """

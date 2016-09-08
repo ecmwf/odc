@@ -6,7 +6,7 @@ Examples of usage of ODB API Python interface.
 @author Piotr Kuchta, ECMWF, August 2016 
 """
 
-import odbql
+import odb
 
 """ Example 1. Create a new ODB file.
 """
@@ -19,7 +19,7 @@ import odbql
 
     Function connect returns a Connection object.
 """
-conn = odbql.connect('''
+conn = odb.connect('''
     CREATE TYPE bf AS (f1 bit1, f2 bit2); 
 
     CREATE TABLE foo AS 
@@ -83,7 +83,7 @@ print 'numpy array:\n', a
 
 """ Example 5. Load some data from MARS or ODB Server into Pandas DataFrame
 """
-conn = odbql.connect(ddl = '''
+conn = odb.connect(ddl = '''
     CREATE TABLE rt16001
     ON "mars://RETRIEVE,
                 DATABASE  = marsod,
