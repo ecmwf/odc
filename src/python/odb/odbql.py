@@ -364,6 +364,10 @@ class new_sql_row(object):
         if type(index) == tuple: return tuple(self.__get_one_item__(i) for i in index)
         if index == slice(None,None,None):
             return [self.cursor.value(i) for i in range(len(self.cursor.description))]
+
+        if type(index) == slice:
+            return [self.__get_one_item__(i) for i in [t[0] for t in enumerate(self.cursor.description)][index.start : index.stop : index.step]]
+
         raise TypeError('__get_one_item__: index == ' + str(index))
 
     def __value_by_name(self, index):
