@@ -412,12 +412,9 @@ def new_sql(s):
     return new_sql_generator(c)
 
 def new_open(fn):
-    #try:
     s = '''select all * from '%s';'''  % str(fn)
     conn = connect()
     c = conn.cursor()
     c.execute(s)
-    #except 'Exception: Cannot open '
-    
     return new_sql_generator(c)
 
