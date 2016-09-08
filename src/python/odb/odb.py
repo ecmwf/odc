@@ -57,10 +57,9 @@ try:
         return pyodbapi.Reader(fileName)
 
 except ImportError:
-    # In case we cannot use SWIG generated wrappers, use new ctypes based implementation:
+    # In case we cannot import SWIG generated wrappers, use new ctypes based implementation.
     # Note, the functions sql and open are the old, legacy API. It is recommended to
-    # use the new PEP-0249 conformant API, see function connect,
-    # imported here from module odbql. 
+    # use the new PEP-0249 conformant API, see function connect, imported here from module odbql. 
     # See source of odbql.py for dccumentation and examples.
     sql = new_sql
     open = new_open

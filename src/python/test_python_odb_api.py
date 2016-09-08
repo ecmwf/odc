@@ -172,7 +172,7 @@ class TestPEP249(unittest.TestCase):
         """"""
         c = self.conn.cursor()
         c.execute(TEST_SELECT)
-        rows = c.fetchall()
+        rows = [r for r in c.fetchall()]
         self.assertEqual ( len(rows), 4 )
         self.assertEqual ( rows, self.data )
 
