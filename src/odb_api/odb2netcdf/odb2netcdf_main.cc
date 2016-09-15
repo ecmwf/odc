@@ -40,7 +40,7 @@ int runScripts(const vector<string>& params)
 
 int main(int argc, char *argv[])
 {
-    odb_start();
+    odb_start(argc, argv);
 
     CommandLineParser args(argc, argv);
     args.registerOptionWithArgument("-i");
