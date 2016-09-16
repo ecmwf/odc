@@ -21,8 +21,8 @@ namespace tool {
 int import_odb_with_sql_in_file(const char* odb_database, const char* sql_file, const char* output_file)
 {
     try {
-        odb_start();
         const char *argv[] = {"importodb",  odb_database, sql_file, output_file, 0 };
+        odb_start(1, const_cast<char **>(argv));
         ImportODBTool<> importer(4, const_cast<char **>(argv));
         importer.run();
         return 0;
