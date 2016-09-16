@@ -108,6 +108,28 @@ class TestODBQL(unittest.TestCase):
         self.assertEqual(rc, ODBQL_OK)
 
 
+    def test_bitfields(self): # ODB-97
+        db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
+        rc = odbql_open( """create table atovs on 'ATOVS.trimmed.odb';""", byref(db))
+        self.assertEqual(rc, ODBQL_OK)
+        rc = odbql_prepare_v2(db, '''select distinct qcinfo_1dvar, from atovs order by 1;''', -1, byref(stmt), byref(tail))
+        self.assertEqual(rc, ODBQL_OK)
+        
+        rc = None
+        values = []
+        while rc <> ODBQL_DONE:
+            v = odbql_column_value(stmt, 0)
+            values.append(odbql_value_int(v))
+            rc = odbql_step(stmt)
+
+        rc = odbql_finalize(stmt)
+        self.assertEqual(rc, ODBQL_OK)
+        rc = odbql_close(db)
+        self.assertEqual(rc, ODBQL_OK)
+
+        expected = [0,1,4,5,8,9,12,13,130,131,134,135,138,139,142,143,642]
+        self.assertEqual(values, expected)
+
     def test_stored_procedure(self):
         db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
 
@@ -188,6 +210,16 @@ class TestPEP249(unittest.TestCase):
         rc = c.callproc('compare', left = 'new_api_example_python.odb', right = 'new_api_example_python.odb')
         # TODO: check rc
 
+    def test_bitfields(self): # ODB-97
+        # !odb sql select qcflags_info_1dvar    -i ATOVS.trimmed.odb | sort | uniq
+        expected = [0,1,4,5,8,9,12,13,130,131,134,135,138,139,142,143,642]
+
+        conn = odb.connect("""create table atovs on 'ATOVS.trimmed.odb';""")
+        c = conn.cursor()
+        c.execute('''select distinct qcinfo_1dvar, from atovs order by 1''')
+        actual = [r[0] for r in c.fetchall()]
+        self.assertEqual(actual, expected) 
+
 """
     def test_select_data_from_mars(self):
         conn = connect(ddl = '''
@@ -210,6 +242,7 @@ class TestPEP249(unittest.TestCase):
         data = c.fetchall()
         self.assertEqual(len(data), 4438) 
 """
+
 
 if __name__ == '__main__':
     unittest.main()

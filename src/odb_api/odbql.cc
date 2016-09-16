@@ -720,7 +720,8 @@ double odbql_value_double(odbql_value* vp)
 int odbql_value_int(odbql_value* vp)
 {
     typedef double* double_p; 
-    return int( * double_p(vp));
+    //return int( * double_p(vp));
+    return static_cast<unsigned long>( *double_p(vp));
 }
 
 } // extern "C" 

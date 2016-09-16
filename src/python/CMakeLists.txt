@@ -18,7 +18,7 @@ if( HAVE_PYTHON AND SWIG_FOUND )
   # Call distutils for installation
   install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} setup.py install --prefix $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
 
-  list( APPEND python_odb_api_data_files 2000010106.odb )
+  list( APPEND python_odb_api_data_files  2000010106.odb ATOVS.trimmed.odb )
   ecbuild_get_test_multidata( TARGET python_odb_api_get_test_data
                               NAMES ${python_odb_api_data_files}
                               NOCHECK )
