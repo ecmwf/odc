@@ -23,13 +23,20 @@ namespace tool {
 
 class ODBApplication : public eckit::Application {
 public:
-	ODBApplication (int argc, char **argv);
+
+    ODBApplication (int argc, char **argv);
 	virtual ~ODBApplication ();
 
 	CommandLineParser& commandLineParser();
 
 private:
-	CommandLineParser clp_;
+
+    virtual eckit::LogTarget* createInfoLogTarget() const;
+    virtual eckit::LogTarget* createWarningLogTarget() const;
+    virtual eckit::LogTarget* createErrorLogTarget() const;
+    virtual eckit::LogTarget* createDebugLogTarget() const;
+
+    CommandLineParser clp_;
 };
 
 } // namespace tool 
