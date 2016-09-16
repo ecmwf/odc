@@ -33,7 +33,8 @@ subroutine odbql_fortran_example
 
 !!!! Write to a file with SQL INSERT
 
- call odbql_open("CREATE TYPE BF_T AS (f1 bit1, f2 bit2); CREATE TABLE foo AS (x INTEGER, y REAL, v STRING, status BF_T) ON 'fort.odb';", db)
+ call odbql_open("CREATE TYPE BF_T AS (f1 bit1, f2 bit2);&
+ & CREATE TABLE foo AS (x INTEGER, y REAL, v STRING, status BF_T) ON 'fort.odb';", db)
  call odbql_prepare_v2(db, "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", -1, stmt, unparsed_sql)
 
 ! Populate first row with NULLs

@@ -45,18 +45,15 @@ int odbql_example_select_data_read_results();
 }
 */
 
-int main() {
-    if (odbql_example_insert_data())
-    {
-        fprintf(stderr, "odbql_example_insert_data FAILED\n");
-        return 1;
-    }
+int main(int argc, char** argv) {
+    if (odbql_example_insert_data()) 
+        return fprintf(stderr, "odbql_example_insert_data FAILED\n"), 1;
     
-    if (odbql_example_select_data_read_results())
-    {
-        fprintf(stderr, "odbql_example_select_data_read_results FAILED\n");
-        return 1;
-    }
+    if (odbql_example_select_data_read_results()) 
+        return fprintf(stderr, "odbql_example_select_data_read_results FAILED\n"), 1;
+
+    fprintf(stdout, "%s: All done.\n", argv[0]);
+    return 0;
 }
 
 /*

@@ -15,6 +15,10 @@ module odbql_wrappers
     type(c_ptr) :: this
   end type
 
+  type odbql_value
+    type(c_ptr) :: this
+  end type
+
 contains
 
 
@@ -39,10 +43,11 @@ contains
       use, intrinsic :: iso_c_binding, only: c_ptr,c_f_pointer,c_char,c_null_char
       type(c_ptr), intent(in)                       :: c_string_pointer
       character(len=:), allocatable                 :: f_string
-      character(kind=c_char), dimension(:), pointer :: char_array_pointer => null()
+      character(kind=c_char), dimension(:), pointer :: char_array_pointer
       character(len=255)                            :: aux_string
       integer                                       :: i,length
 
+      char_array_pointer => null()
       call c_f_pointer(c_string_pointer,char_array_pointer,[255])
       if (.not.associated(char_array_pointer)) then
           allocate(character(len=4)::f_string)
@@ -447,6 +452,42 @@ contains
      
 
     end function odbql_column_count
+
+    
+
+!> double odbql_value_double(odbql_value* vp)
+
+    function odbql_value_double (vp) 
+     use odbql_binding
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_value), value                   :: vp
+     real(kind=C_DOUBLE)                        :: odbql_value_double
+
+     
+
+     
+     odbql_value_double = odbql_value_double_c(vp%this)
+     
+
+    end function odbql_value_double
+
+    
+
+!> int odbql_value_int(odbql_value* vp)
+
+    function odbql_value_int (vp) 
+     use odbql_binding
+     use, intrinsic                             :: iso_c_binding
+     type(odbql_value), value                   :: vp
+     integer(kind=C_INT)                        :: odbql_value_int
+
+     
+
+     
+     odbql_value_int = odbql_value_int_c(vp%this)
+     
+
+    end function odbql_value_int
 
     
 

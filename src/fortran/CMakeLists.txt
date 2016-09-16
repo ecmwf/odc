@@ -20,9 +20,9 @@ if( HAVE_FORTRAN )
     list( APPEND fortran_tests
 
         # Legacy API examples
-        fortran_api_examples
-        test_fortran_api_open_non_existing_file
-        test_client_lib_fortran_local
+        legacy_fortran_api_examples
+        legacy_test_fortran_api_open_non_existing_file
+        legacy_test_client_lib_fortran_local
     )
 
     foreach( _test ${fortran_tests} )

@@ -15,6 +15,8 @@ def declarations(source_cc = 'odbql.cc'):
          if line.find('odbql_') <> -1 
              and not line.startswith('//')
              and line.find('return') == -1
+             and line.find('virtual') == -1
+             and line.find('::') == -1
              and line.find('typedef') == -1]
     return decls
 
@@ -127,6 +129,8 @@ def translate_type_for_binding(t):
     if t == 'odbql**':               return 'type(C_PTR)'
     if t == 'odbql_stmt*':           return 'type(C_PTR), VALUE'
     if t == 'odbql_stmt**':          return 'type(C_PTR)'
+    if t == 'odbql_value*':          return 'type(C_PTR), VALUE'
+    if t == 'odbql_value**':         return 'type(C_PTR)'
     if t == 'void(*)(void*)':        return 'type(C_PTR), VALUE'
 
     raise Exception("Don't know how to translate '" + t + "'")
@@ -137,6 +141,7 @@ def translate_type_for_binding_return(t):
     if t == 'const char*':           return 'type(C_PTR)'
     if t == 'const unsigned char*':  return 'type(C_PTR)'
     if t == 'int':                   return 'integer(kind=C_INT)'
+    if t == 'double':                return 'real(kind=C_DOUBLE)'
     if t == 'odbql_value*':          return 'type(C_PTR)'
     if t == 'error_code_t':          return 'integer(kind=C_INT)'
 
@@ -153,6 +158,8 @@ def translate_type_for_fortran(t):
     if t == 'odbql**':               return 'type(odbql)'
     if t == 'odbql_stmt*':           return 'type(odbql_stmt), value'
     if t == 'odbql_stmt**':          return 'type(odbql_stmt)'
+    if t == 'odbql_value*':          return 'type(odbql_value), value'
+    if t == 'odbql_value**':         return 'type(odbql_value)'
     if t == 'void(*)(void*)':        return 'type(C_PTR), value'
 
     raise Exception("Don't know how to translate '" + t + "'")
@@ -163,6 +170,7 @@ def translate_type_for_fortran_return(t):
     if t == 'const char*':           return 'character(len=*), intent(out)'
     if t == 'const unsigned char*':  return 'character(len=*), intent(out)' # TODO: think about it
     if t == 'int':                   return 'integer(kind=C_INT)'
+    if t == 'double':                return 'real(kind=C_DOUBLE)'
     if t == 'odbql_value*':          return 'logical'
     if t == 'error_code_t':          return 'integer(kind=C_INT), intent(out), optional'
 
@@ -197,10 +205,11 @@ helper_functions = """
       use, intrinsic :: iso_c_binding, only: c_ptr,c_f_pointer,c_char,c_null_char
       type(c_ptr), intent(in)                       :: c_string_pointer
       character(len=:), allocatable                 :: f_string
-      character(kind=c_char), dimension(:), pointer :: char_array_pointer => null()
+      character(kind=c_char), dimension(:), pointer :: char_array_pointer
       character(len=255)                            :: aux_string
       integer                                       :: i,length
 
+      char_array_pointer => null()
       call c_f_pointer(c_string_pointer,char_array_pointer,[255])
       if (.not.associated(char_array_pointer)) then
           allocate(character(len=4)::f_string)
@@ -242,9 +251,13 @@ def actual_parameter(p):
     if p[0] == 'odbql**': return p[1] + '%this'
     if p[0] == 'odbql_stmt*': return p[1] + '%this'
     if p[0] == 'odbql_stmt**': return p[1] + '%this'
+    if p[0] == 'odbql_value*': return p[1] + '%this'
+    if p[0] == 'odbql_value**': return p[1] + '%this'
     return p[1]
 
 def generateWrapper(signature, comment, template):
+
+    print 'generateWrapper:', signature, comment, template
     global status_handling_code
 
     return_type, function_name, params = signature
@@ -367,6 +380,10 @@ module odbql_wrappers
   end type
 
   type odbql_stmt
+    type(c_ptr) :: this
+  end type
+
+  type odbql_value
     type(c_ptr) :: this
   end type
 

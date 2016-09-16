@@ -15,6 +15,7 @@
 
 #include "odb_api/odb_api.h"
 
+#include "eckit/io/MultiHandle.h"
 #include "eckit/exception/Exceptions.h"
 
 #include "odb_api/FastODA2Request.h"
@@ -35,6 +36,9 @@
 #include "odb_api/SQLNonInteractiveSession.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLDatabase.h"
+#include "odb_api/SQLEmbedded.h"
+#include "ecml/data/DataHandleFactory.h"
+#include "odb_api/ODBModule.h"
 
 #include "odbql.h"
 
@@ -91,7 +95,7 @@ public:
 
     // NULL handling functions:
     virtual error_code_t bind_null(int iCol) = 0;
-    virtual bool column_value(int iCol) = 0; // This could also be called: column_has_value
+    virtual odbql_value* column_value(int iCol) = 0; // This could also be called: column_has_value
 
     DataBaseImpl& database() { return db_; }
 
@@ -120,7 +124,7 @@ public:
     error_code_t bind_int(int iCol, int);
     error_code_t bind_text(int iCol, const char*, int);
     error_code_t bind_null(int iCol);
-    bool column_value(int iCol); 
+    virtual odbql_value* column_value(int iCol); 
  
 private:
     bool firstStep;
@@ -135,15 +139,24 @@ private:
 
 class SelectAllImpl : public StatementImpl {
 public:
-    SelectAllImpl(DataBaseImpl& db, const std::string& path)
+    SelectAllImpl(DataBaseImpl& db, const std::vector<std::string>& descriptors)
     : StatementImpl(db),
-      path_(path),
-      stmt_(path_),
-      it_(stmt_.begin()),
+      dh_(openForRead(descriptors)),
+      stmt_(dh_),
+      it_(stmt_.end()),
       end_(stmt_.end()),
       firstStep(true)
     {} 
+
     ~SelectAllImpl() {}
+
+    static std::vector<eckit::DataHandle*> openForRead(const std::vector<std::string> descriptors)
+    {
+        std::vector<eckit::DataHandle*> r;
+        for (size_t i(0); i < descriptors.size(); ++i)
+            r.push_back( ecml::DataHandleFactory::openForRead(descriptors[i]));
+        return r;
+    }
 
     int step();
     const unsigned char *column_text(int iCol);
@@ -154,11 +167,11 @@ public:
     error_code_t bind_int(int iCol, int);
     error_code_t bind_text(int iCol, const char*, int);
     error_code_t bind_null(int iCol);
-    bool column_value(int iCol); 
+    virtual odbql_value* column_value(int iCol); 
  
 private:
     bool firstStep;
-    const std::string path_;
+    eckit::MultiHandle dh_;
     odb::Reader stmt_;
     odb::Reader::iterator it_;
     odb::Reader::iterator end_;
@@ -185,7 +198,7 @@ public:
     error_code_t bind_int(int iCol, int);
     error_code_t bind_text(int iCol, const char*, int);
     error_code_t bind_null(int iCol);
-    bool column_value(int iCol);
+    virtual odbql_value* column_value(int iCol);
 
 private:
     odb::Writer<> writer_;
@@ -242,9 +255,13 @@ error_code_t InsertImpl::bind_null(int iCol)
     return ODBQL_OK;
 }
 
-bool InsertImpl::column_value(int iCol)
+odbql_value* InsertImpl::column_value(int iCol)
 {
-    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
+    if ((*it_)[iCol] == it_->columns()[iCol]->missingValue())
+        return 0;
+
+    typedef odbql_value* odbql_value_p;
+    return odbql_value_p(&(*it_)[iCol]);
 }
 
 int InsertImpl::step()
@@ -339,9 +356,13 @@ error_code_t SelectImpl::bind_null(int iCol)
     NOTIMP;
 }
 
-bool SelectImpl::column_value(int iCol)
+odbql_value* SelectImpl::column_value(int iCol)
 {
-    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
+    if ((*it_)[iCol] == it_->columns()[iCol]->missingValue())
+        return 0;
+
+    typedef odbql_value* odbql_value_p;
+    return odbql_value_p(&(*it_)[iCol]);
 }
 
 // 'SELECT ALL *' implementation
@@ -350,7 +371,14 @@ int SelectAllImpl::step()
 {
     if (firstStep)
     {
-        currentMetaData_ = it_->columns();
+        if (! (it_ != end_))
+        {
+            dh_.openForRead();
+            if (dh_.estimate() == eckit::Length(0))
+                return ODBQL_DONE;
+            it_ = stmt_.begin();
+            currentMetaData_ = it_->columns();
+        }
         firstStep = false;
         return it_ != end_ ? ODBQL_ROW : ODBQL_DONE;
     }
@@ -371,7 +399,18 @@ int SelectAllImpl::step()
 
 }
 
-int SelectAllImpl::column_count() { return it_->columns().size(); }
+int SelectAllImpl::column_count() 
+{ 
+    if (! (it_ != end_))
+    {
+        dh_.openForRead();
+        if (dh_.estimate() == eckit::Length(0))
+            return 0;
+        it_ = stmt_.begin();
+        currentMetaData_ = it_->columns();
+    }
+    return it_->columns().size(); 
+}
 
 const unsigned char *SelectAllImpl::column_text(int iCol)
 {
@@ -435,9 +474,13 @@ error_code_t SelectAllImpl::bind_null(int iCol)
     NOTIMP;
 }
 
-bool SelectAllImpl::column_value(int iCol)
+odbql_value* SelectAllImpl::column_value(int iCol)
 {
-    return (*it_)[iCol] != it_->columns()[iCol]->missingValue();
+    if ((*it_)[iCol] == it_->columns()[iCol]->missingValue())
+        return 0;
+
+    typedef odbql_value* odbql_value_p;
+    return odbql_value_p(&(*it_)[iCol]);
 }
 
 
@@ -445,6 +488,7 @@ bool SelectAllImpl::column_value(int iCol)
  
 #define CATCH_ALL  \
     } \
+    catch(const odb::sql::SyntaxError &e)  { if (p) p->errmsg("syntax error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::CantOpenFile &e) { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::ShortFile &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::ReadError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
@@ -540,14 +584,30 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
             if (select->where())
                 throw UserError("'SELECT ALL *' cannot have WHERE clause yet");
             const odb::sql::SQLTable& from (*tables[0]);
-            const std::string& path (from.path());
-            *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), path));
+            std::vector<std::string> paths;
+            paths.push_back (from.path());
+            *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), paths));
         }
         else
         {
             // Assume this is a regular SELECT for now 
             *ppStmt = stmt_ptr_t (new SelectImpl(database(db), zSql));
         }
+    }
+    else if (dynamic_cast<odb::sql::SQLEmbedded*>(statement))
+    {
+        std::string code ( dynamic_cast<odb::sql::SQLEmbedded&>(*statement).code());
+
+        ecml::ExecutionContext context;
+        odb::ODBModule odbModule;
+        context.import(odbModule);
+        ecml::Values values (context.execute(code));
+        std::vector<std::string> descriptors;
+        for (ecml::Request e (values); e; e = e->rest())
+            if (e->value())
+                descriptors.push_back(e->value()->text());
+
+        *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), descriptors));
     }
 
     return ODBQL_OK;
@@ -639,13 +699,25 @@ int odbql_column_type(odbql_stmt* stmt, int iCol)
 ///           any other value means the value is not NULL
 odbql_value *odbql_column_value(odbql_stmt* stmt, int iCol)
 {
-    return reinterpret_cast<odbql_value*>( statement(stmt).column_value(iCol) ? -1 : 0);
+    return reinterpret_cast<odbql_value*>( statement(stmt).column_value(iCol) );
 }
 
 // https://www.sqlite.org/c3ref/column_count.html
 int odbql_column_count(odbql_stmt *stmt)
 {
     return statement(stmt).column_count();
+}
+
+double odbql_value_double(odbql_value* vp)
+{
+    typedef double* double_p; 
+    return * double_p(vp);
+}
+
+int odbql_value_int(odbql_value* vp)
+{
+    typedef double* double_p; 
+    return int( * double_p(vp));
 }
 
 } // extern "C" 

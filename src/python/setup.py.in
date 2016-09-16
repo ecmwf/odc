@@ -10,8 +10,7 @@ pyodbapi = Extension('odb._pyodbapi',
                                    '@_ECKIT_INCLUDES@'],
                      library_dirs=['@CMAKE_BINARY_DIR@/lib'],
                      libraries=['Odb'],
-                     extra_objects=[],
-                     extra_link_args=['-Wl,-rpath,@CMAKE_INSTALL_PREFIX@/lib'])
+                     extra_objects=[])
 
 setup(name='odb',
       version='@ODB_API_VERSION_STR@',

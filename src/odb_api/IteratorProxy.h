@@ -145,7 +145,10 @@ public:
 
     Row& operator*() { return row_; }
 
-    bool operator!=(const IteratorProxy&) { return ! iter_->noMore_; /* TODO: iter_ != other.iter_; */ }
+    bool operator!=(const IteratorProxy&) 
+    { 
+        return iter_ != 0 && !iter_->noMore_; 
+    }
 
     IteratorProxy& operator++()
 	{

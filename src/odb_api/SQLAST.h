@@ -229,6 +229,15 @@ struct InsertAST {
     std::vector<std::string> values_;
 };
 
+struct EmbeddedAST {
+    EmbeddedAST() {}
+
+    EmbeddedAST (const std::string& s) : code_ (s) {}
+    EmbeddedAST (const EmbeddedAST& ast) : code_ (ast.code_) {}
+
+    std::string code_;
+};
+
 } // namespace sql
 } // namespace odb
 

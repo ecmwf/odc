@@ -50,34 +50,11 @@ ecml::Values CompareHandler::handle(ExecutionContext& context)
 
     Comparator comparator;
     comparator.compare(leftH, rightH);
-    /*
 
-    if (left.size() != right.size())
-        throw UserError("Sizes of lists differ");
-
-    Comparator comparator;
-    for (size_t i(0); i < left.size(); ++i)
-    {
-        string leftString (left[i]), rightString (right[i]);
-        Log::info() << "Comparing" << endl << " " << leftString << endl << "to" << endl << " " << rightString << endl;
-
-        {
-            //auto_ptr<DataHandle> l (DataHandleFactory::openForRead(leftString)),
-            //                     r (DataHandleFactory::openForRead(rightString));
-            // TODO: fix leak. we probably cannot just use 'delete' here - I get:
-            //    free(): invalid pointer: 0x0000000000670548 ***
-            // on bamboo with the auto_ptr, perhaps because the dataHandle was allocated in a different library???
-            DataHandle* l (DataHandleFactory::openForRead(leftString));
-            DataHandle* r (DataHandleFactory::openForRead(rightString));
-            comparator.compare(*l, *r);
-        }
-    }
-    */
     Log::info() << "No difference found" << endl;
 
-    Request r(new Cell("_list", "", 0, 0));
-
-    return r;
+    List list;
+    return list;
 }
 
 } // namespace odb 
