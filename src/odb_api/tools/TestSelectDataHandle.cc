@@ -35,7 +35,7 @@ static void test()
 	fh.openForRead();
 	odb::Select oda(sql, fh);
 	
-	Log::info(Here()) << "test: Execute '" << sql << "'" << std::endl;
+	Log::info() << "test: Execute '" << sql << "'" << std::endl;
 	long n = 0;
 	{
 		Timer t("test: selecting rows using SQL" );
@@ -46,7 +46,7 @@ static void test()
 		for( ; it != end; ++it)
 			++n;
 	}
-	Log::info(Here()) << "test: selected " << n << " rows." << std::endl;
+	Log::info() << "test: selected " << n << " rows." << std::endl;
 	ASSERT(n == 3134386); 
 	fh.close();
 }

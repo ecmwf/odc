@@ -13,6 +13,9 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/config/Resource.h"
+#include "eckit/log/CodeLocation.h"
+#include "eckit/log/Log.h"
+
 #include "odb_api/StringTool.h"
 #include "TestCase.h"
 #include "ToolFactory.h"

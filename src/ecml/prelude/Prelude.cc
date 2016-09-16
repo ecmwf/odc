@@ -13,7 +13,6 @@
 
 #include <string>
 
-#include "eckit/runtime/Context.h"
 #include "eckit/parser/StringTools.h"
 
 #include "ecml/ecml_config.h"

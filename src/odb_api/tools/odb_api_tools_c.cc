@@ -15,8 +15,6 @@
 
 #include "odb_api/odb_api.h"
 
-#include "eckit/runtime/ContextBehavior.h"
-#include "eckit/runtime/Context.h"
 #include "odb_api/FastODA2Request.h"
 #include "odb_api/MetaData.h"
 #include "odb_api/MetaDataReader.h"
@@ -24,7 +22,6 @@
 #include "odb_api/ODAHandle.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/ODBAPIVersion.h"
-#include "odb_api/ODBBehavior.h"
 #include "odb_api/odbcapi.h"
 #include "odb_api/Select.h"
 #include "odb_api/Reader.h"

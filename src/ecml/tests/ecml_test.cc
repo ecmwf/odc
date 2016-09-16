@@ -12,7 +12,6 @@
 
 #include "eckit/log/Log.h"
 #include "eckit/runtime/Tool.h"
-#include "eckit/runtime/Context.h"
 
 #include "ecml/core/ExecutionContext.h"
 #include "ecml/core/Environment.h"
@@ -36,16 +35,15 @@ protected:
 
 void TestECML::run()
 {
-    int argc = Context::instance().argc();
-    if (argc < 2)
+    if (argc() < 2)
     {
         //throw UserError("Command line required (name(s) of file(s) with ECML script");
         ExecutionContext context;
         REPLHandler::repl(context);
     }
 
-    for (int  i = 1; i < argc; ++i) {
-        runScript(Context::instance().argv(i));
+    for (int  i = 1; i < argc(); ++i) {
+        runScript(argv(i));
     }
 }
 

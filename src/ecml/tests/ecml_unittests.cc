@@ -14,8 +14,6 @@
 #include "eckit/runtime/Tool.h"
 #include "eckit/io/PartFileHandle.h"
 
-#include "eckit/runtime/Context.h"
-
 #include "ecml/core/ExecutionContext.h"
 #include "ecml/core/Environment.h"
 #include "ecml/core/Interpreter.h"

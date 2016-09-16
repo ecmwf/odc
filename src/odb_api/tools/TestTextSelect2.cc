@@ -49,7 +49,7 @@ static void selectStarOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "selectStarOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info() << "selectStarOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
@@ -74,7 +74,7 @@ static void selectSumOneColumn()
 	
 	odb::Select oda(sql, fs, ",");
 	
-	Log::info(Here()) << "selectSumOneColumn: Execute '" << sql << "'" << std::endl;
+	Log::info() << "selectSumOneColumn: Execute '" << sql << "'" << std::endl;
 	odb::Select::iterator it = oda.begin();
 	odb::Select::iterator end = oda.end();
 
