@@ -42,7 +42,8 @@ typedef void oda_writer;
 typedef void oda_write_iterator;
 
 
-void odb_start(int argc, char* argv[]);
+void odb_start();
+void odb_start_with_args(int argc, char* argv[]);
 
 unsigned int odb_get_headerBufferSize();
 void odb_set_headerBufferSize(unsigned int );

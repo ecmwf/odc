@@ -44,7 +44,7 @@ int executeCommand(int argc, char *argv[])
 	Tool::registerTools();
 	if (argc < 2)
 	{
-        odb_start(argc, argv);
+        odb_start_with_args(argc, argv);
 		cerr << "Usage:" << endl
 			<< "        " << argv[0] << " <command> [<command's-parameters>]" << endl 
 			<< "        " << argv[0] << " help <command>" << std::endl << endl
@@ -56,8 +56,8 @@ int executeCommand(int argc, char *argv[])
 
 	const string firstArg(argv[1]);
 
-    if (firstArg == "g")  { odb_start(argc, argv); return gdb(argc, argv); }
-    if (firstArg == "vg") { odb_start(argc, argv); return valgrind(argc, argv); }
+    if (firstArg == "g")  { odb_start_with_args(argc, argv); return gdb(argc, argv); }
+    if (firstArg == "vg") { odb_start_with_args(argc, argv); return valgrind(argc, argv); }
     
 	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
 	if (firstArg == "test")
@@ -82,7 +82,7 @@ int executeCommand(int argc, char *argv[])
 
 	if (firstArg == "help")
 	{
-        odb_start(argc, argv);
+        odb_start_with_args(argc, argv);
 		if (argc == 2)
 			AbstractToolFactory::printToolsHelp(cout);
 		else

@@ -22,7 +22,7 @@ int import_odb_with_sql_in_file(const char* odb_database, const char* sql_file, 
 {
     try {
         const char *argv[] = {"importodb",  odb_database, sql_file, output_file, 0 };
-        odb_start(1, const_cast<char **>(argv));
+        odb_start_with_args(1, const_cast<char **>(argv));
         ImportODBTool<> importer(4, const_cast<char **>(argv));
         importer.run();
         return 0;

@@ -144,8 +144,8 @@ int test_odacapi2(int argc, char* argv[])
 
     int err;
 
-    std::cout << "Calling odb_start..." << std::endl;
-    odb_start(argc, argv);
+    std::cout << "Calling odb_start_with_args..." << std::endl;
+    odb_start_with_args(argc, argv);
 
     std::cout << "Calling odb_create..." << std::endl;
 
@@ -245,7 +245,7 @@ int test_odacapi3(int argc, char* argv[])
 int test_odacapi(int argc, char* argv[])
 {
     std::cout << "Calling odb_init..." << std::endl;
-    odb_start(argc, argv);
+    odb_start_with_args(argc, argv);
     Log::info() << "Log::info initialised properly." << std::endl;
 
     //return test_odacapi_setup()

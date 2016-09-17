@@ -13,7 +13,7 @@ using namespace std;
 int
 main(int argc, char *argv[])
 {
- odb_start(argc, argv);
+ odb_start_with_args(argc, argv);
 
  odb::tool::Odb2Odb1 sodb(argc, argv);
 

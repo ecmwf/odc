@@ -70,7 +70,13 @@ int get_bitfield(T it,
 
 extern "C" {
 
-void odb_start(int argc, char* argv[])
+void odb_start()
+{
+    static const char *argv[2] = {"odb_start", 0};
+    eckit::Main::initialise(1, const_cast<char **>(argv));
+}
+
+void odb_start_with_args(int argc, char* argv[])
 {
     eckit::Main::initialise(argc, argv);
 }

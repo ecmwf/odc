@@ -40,7 +40,7 @@ struct ODBIndexError : public std::exception {
 
 extern "C" void python_api_start(int argc, char* argv[])
 {
-    odb_start(argc, argv);
+    odb_start_with_args(argc, argv);
 }
 
 #endif
