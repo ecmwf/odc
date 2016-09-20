@@ -29,6 +29,7 @@ if( HAVE_PYTHON AND SWIG_FOUND )
                      CONDITION    HAVE_PYTHON
                      #TEST_DEPENDS python_odb_api_get_test_data
                    )
+  set_tests_properties( test_python_odb_api.py PROPERTIES LABELS "odb_api;odb_api_python" )
 
   ecbuild_add_test ( TARGET       legacy_test_python_odb_api.py
                      TYPE         PYTHON
@@ -36,4 +37,6 @@ if( HAVE_PYTHON AND SWIG_FOUND )
                      CONDITION    HAVE_PYTHON
                      TEST_DEPENDS python_odb_api_get_test_data
                    )
+  set_tests_properties( legacy_test_python_odb_api.py PROPERTIES LABELS "odb_api;odb_api_python" )
+
 endif()

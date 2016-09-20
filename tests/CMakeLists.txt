@@ -274,7 +274,8 @@ foreach( _test ${odb_migrator_tests} )
                     CONDITION  HAVE_MIGRATOR
                     ENVIRONMENT ${test_environment} ${ODB_ENVIRONMENT}
                     TEST_DEPENDS ${_prev_test} )
-    set( _prev_test ${_test} )
+  set( _prev_test ${_test} )
+  set_tests_properties( ${_test} PROPERTIES LABELS "odb_api;odb_api_migrator" )
 endforeach()
 
 ### odb2_to_odb1 tests
@@ -289,6 +290,9 @@ ecbuild_add_test( TARGET test_odb2_to_odb1
         ODB_IO_GRPSIZE=160
     TEST_DEPENDS get_odb2_to_odb1_data
     CONDITION HAVE_FORTRAN AND ODB_FOUND AND ODB_HAVE_ECMA)
+if (          HAVE_FORTRAN AND ODB_FOUND AND ODB_HAVE_ECMA) 
+    set_tests_properties( test_odb2_to_odb1 PROPERTIES LABELS "odb_api;odb_api_migrator" )
+endif()
 
 ### odb2netcdf tests
 
@@ -302,12 +306,18 @@ ecbuild_add_test( TARGET test_odb2netcdf_1d
     ENVIRONMENT ${test_environment}
     TEST_DEPENDS get_odb2netcdf_data
     CONDITION HAVE_NETCDF )
+if (          HAVE_NETCDF )
+    set_tests_properties( test_odb2netcdf_1d PROPERTIES LABELS "odb_api;odb_api_netcdf" )
+endif()
 
 ecbuild_add_test( TARGET test_odb2netcdf_2d
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_2d.sh
     ENVIRONMENT ${test_environment}
     TEST_DEPENDS get_odb2netcdf_data
     CONDITION HAVE_NETCDF )
+if (          HAVE_NETCDF )
+    set_tests_properties( test_odb2netcdf_2d PROPERTIES LABELS "odb_api;odb_api_netcdf" )
+endif()
 
 ### odb_api tests
 
@@ -333,6 +343,7 @@ foreach( _test ${odb_api_tests} )
                       ARGS         ${_test}
                       ENVIRONMENT  ${test_environment}
                       TEST_DEPENDS ${_dependencies})
+    set_tests_properties( ${_test} PROPERTIES LABELS "odb_api" )
     set( _prev_test ${_test} )
 endforeach()
 
@@ -384,6 +395,7 @@ foreach( _test ${odb_module_tests} )
                                     test_ec_archiving.ecml
                                     test_mo_archiving.ecml
                        )
+    set_tests_properties( ${_test} PROPERTIES LABELS "odb_api;odb_api_ecml" )
 endforeach()
 
 

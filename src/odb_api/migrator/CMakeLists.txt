@@ -66,6 +66,7 @@ migrator_api.h
       #                ENVIRONMENT  ${test_environment}
       #                TEST_DEPENDS get_odb_migrator_test_data
       #                )
+      # set_tests_properties( test_migrator.ecml PROPERTIES LABELS "odb_api;odb_api_ecml" )
     endif()
 
   if( HAVE_MIGRATOR AND HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )

@@ -40,6 +40,7 @@ if( HAVE_FORTRAN )
                                        test_mo_archiving.ecml
 
                           LINKER_LANGUAGE Fortran )
+       set_tests_properties( ${_test} PROPERTIES LABELS "odb_api;odb_api_fortran" )
     endforeach()
 
 # odbql, the new Fortran API:

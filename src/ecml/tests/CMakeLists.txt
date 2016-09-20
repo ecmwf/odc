@@ -35,6 +35,7 @@ foreach( _ecml_test ${ecml_tests} )
                       ARGS         ${PROJECT_SOURCE_DIR}/src/ecml/tests/${_ecml_test}
                       ENVIRONMENT  ${test_environment}
                       TEST_DEPENDS ${_dependencies} )
+    set_tests_properties( ${_ecml_test} PROPERTIES LABELS "odb_api;odb_api_ecml" )
 endforeach()
 
 # Add C++ unit tests
@@ -42,3 +43,4 @@ ecbuild_add_test( TARGET       ecml_cpptests
                   COMMAND      ${ecml_unittests_bin}
                   ENVIRONMENT  ${test_environment}
                   TEST_DEPENDS ${_dependencies} )
+set_tests_properties( ecml_cpptests PROPERTIES LABELS "odb_api;odb_api_ecml" )
