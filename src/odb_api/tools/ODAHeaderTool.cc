@@ -57,7 +57,8 @@ private:
 class DDLPrinter : public MDPrinter {
 public:
 
-    DDLPrinter(const std::string& path) : path_(path) {}
+    DDLPrinter(const std::string& path, const std::string& tableName)
+    : path_(path), tableName_(tableName) {}
 
 	void print(std::ostream& o, MDReader::iterator &r)
 	{
@@ -71,26 +72,89 @@ public:
 	void printSummary(std::ostream& o) 
     {
         for (size_t i(0); i < md_.size(); ++i)
-            printTable(o, md_[i], "foo", path_);
+            printTable(o, md_[i], tableName_, path_);
     }
 
-    static void printTable(std::ostream& o, const odb::MetaData& md, const std::string& tableName, const std::string& path)
+    static std::string typeName(const odb::Column& c)
     {
-        o << "CREATE TABLE " << tableName << " AS (";
+        switch (c.type())
+        {
+            case STRING:   return "STRING";
+            case INTEGER:  return "INTEGER";
+            case BITFIELD: return "INTEGER";
+            case REAL:     return "REAL";
+            case DOUBLE:   return "DOUBLE";
+            default:
+                throw new Exception("unknown type");
+        }
+    }
+
+    static std::pair<std::string,std::string> typeDefinitionAndName(const std::string& tableName, const odb::Column& c)
+    {
+        std::stringstream definition;
+        std::string type_name (typeName(c));
+
+        if (c.type() == BITFIELD)
+        {
+            const odb::BitfieldDef& bd (c.bitfieldDef());
+            const std::vector<std::string>& fieldNames (bd.first);
+            const std::vector<int>& sizes (bd.second);
+
+            type_name = stripAtTable(tableName, c.name()) + "_at_" + tableName + "_t";
+
+            definition << "CREATE TYPE " << type_name << " AS (";
+            for (size_t i(0); i < sizes.size(); ++i)
+                definition << fieldNames[i] << " bit" << sizes[i] 
+                           << ((i+1 < sizes.size()) ? ", " : "");
+            definition << ");\n";
+        }
+
+        return make_pair(definition.str(), type_name);
+    }
+
+
+    static std::string stripAtTable(const std::string& tableName, const std::string& columnName)
+    {
+        std::string suffix ( std::string("@") + tableName ); 
+
+        if (columnName.size() >= suffix.size()
+            && columnName.compare(columnName.size() - suffix.size(), suffix.size(), suffix) == 0)
+            return columnName.substr(0, columnName.size() - suffix.size());
+
+        return columnName; 
+    }
+
+    static void printTable(std::ostream& s, const odb::MetaData& md, const std::string& tableName, const std::string& path)
+    {
+        std::stringstream create_type, create_table;
+
+        create_table << "CREATE TABLE " << tableName << " AS (\n";
         for (size_t i (0); i < md.size(); ++i)
-            o << md[i]->name() << " integer,\n";
-        o << ") ON '" << path << "';\n";
+        {
+            std::pair<std::string,std::string> p (typeDefinitionAndName(tableName, *md[i]));
+            const std::string& def (p.first), 
+                               type (p.second);
+
+            create_type << def;
+            create_table << "  " << stripAtTable(tableName, md[i]->name()) << " " << type << ",\n";
+        }
+        create_table << ") ON '" << path << "';\n";
+
+        s << create_type.str();
+        s << create_table.str();
     }
 
 private:
 	std::vector<odb::MetaData> md_;
-    const std::string& path_;
+    const std::string path_;
+    const std::string tableName_;
 };
 
 HeaderTool::HeaderTool (int argc, char *argv[]) : Tool(argc, argv) {}
 
 void HeaderTool::run()
 {
+    registerOptionWithArgument("-table");
 	if (parameters().size() < 2)
 	{
 		Log::error() << "Usage: ";
@@ -104,7 +168,7 @@ void HeaderTool::run()
 
 	VerbosePrinter verbosePrinter;
 	OffsetsPrinter offsetsPrinter;
-	DDLPrinter ddlPrinter (db);
+	DDLPrinter ddlPrinter (db, optionArgument("-table", std::string("foo")));
 
 	MDPrinter& printer(* 
         (optionIsSet("-offsets") ? static_cast<MDPrinter*>(&offsetsPrinter) : 

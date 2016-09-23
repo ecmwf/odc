@@ -28,7 +28,7 @@ public:
 
 	static void usage(const std::string& name, std::ostream &o)
 	{
-		o << name << " [-offsets] <file-name>";
+		o << name << " [-offsets] [-ddl] [-table <table-name-in-the-generated-ddl>] <file-name>";
 	}
 
 private:
