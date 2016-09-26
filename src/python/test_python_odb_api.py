@@ -6,6 +6,54 @@ sys.path.append('/tmp/build/bundle/debug/odb_api/src/python/odb')
 import unittest
 from odb import *
 
+class TestODB250_A(unittest.TestCase):
+    """
+    ODB-250 Bitfields were not read correctly
+    """
+    def setUp(self): 
+        self.N = 100000
+        self.db = c_voidp()
+        self.stmt = c_voidp()
+        self.tail = c_char_p()
+        rc = odbql_open("""
+            CREATE TYPE bf AS (f bit31);
+            CREATE TABLE foo AS (bf1 bf) ON 'test_python_bitfields.odb';
+            """, byref(self.db))
+        self.assertEqual(rc, ODBQL_OK)
+
+    def tearDown(self):
+        rc = odbql_close(self.db)
+        self.assertEqual(rc, ODBQL_OK)
+
+    def test_insert_bitfields(self):
+        rc = odbql_prepare_v2(self.db, "INSERT INTO foo VALUES (?);", -1, byref(self.stmt), byref(self.tail))
+        self.assertEqual(rc, ODBQL_OK)
+
+        for i in range(self.N): 
+            rc = odbql_bind_int(self.stmt, 0, i)
+            self.assertEqual(rc, ODBQL_OK)
+
+            rc = odbql_step(self.stmt)
+            self.assertEqual(rc, ODBQL_ROW)
+
+        rc = odbql_finalize(self.stmt)
+        self.assertEqual(rc, ODBQL_OK)
+       
+    def test_select_bitfields(self):
+        rc = odbql_prepare_v2(self.db, "SELECT * FROM foo;", -1, byref(self.stmt), byref(self.tail))
+        for i in range(self.N): 
+            rc = odbql_step(self.stmt)
+            self.assertEqual(rc, ODBQL_ROW)
+
+            v = odbql_column_value(self.stmt, 0)
+            if v == 0:
+                self.assertEqual(i, 0)
+            else:
+                self.assertEqual(i, odbql_value_int(v))
+
+        rc = odbql_step(self.stmt)
+        self.assertEqual(rc, ODBQL_DONE)
+
 
 TEST_DDL = """
             CREATE TYPE bf AS (f1 bit1, f2 bit2); 
@@ -112,22 +160,25 @@ class TestODBQL(unittest.TestCase):
         db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
         rc = odbql_open( """create table atovs on 'ATOVS.trimmed.odb';""", byref(db))
         self.assertEqual(rc, ODBQL_OK)
-        rc = odbql_prepare_v2(db, '''select distinct qcinfo_1dvar, from atovs order by 1;''', -1, byref(stmt), byref(tail))
+        rc = odbql_prepare_v2(db, '''select distinct qcinfo_1dvar from atovs order by 1 asc;''', -1, byref(stmt), byref(tail))
         self.assertEqual(rc, ODBQL_OK)
         
         rc = None
         values = []
-        while rc <> ODBQL_DONE:
+        while True:
+            rc = odbql_step(stmt)
+            if rc == ODBQL_DONE:
+                break
             v = odbql_column_value(stmt, 0)
             values.append(odbql_value_int(v))
-            rc = odbql_step(stmt)
 
         rc = odbql_finalize(stmt)
         self.assertEqual(rc, ODBQL_OK)
         rc = odbql_close(db)
         self.assertEqual(rc, ODBQL_OK)
 
-        expected = [0,1,4,5,8,9,12,13,130,131,134,135,138,139,142,143,642]
+        expected = [4198786,4198806,4202498,4202518,4202626,4202646,4210690,4210710,4210818,4210838,4210946,4211074,4211094,4243458,4243478,4243586,4243606,4243714,4243842,4243862,4264086,4264322,4264342,4268034,4268054,4268162,4268182,4276226,4276246,4276354,4276374,4276482,4276610,4308994,4309014,4309122,4309142,4309250,4309270,4309378,4309398,8404994,8405014,8405122,8405142,8405378,8405398,8458626,8458646,8462338,8462358,8470530,8470550,8470658,8470678]
+        print 'values =', values
         self.assertEqual(values, expected)
 
     def test_stored_procedure(self):
@@ -219,7 +270,7 @@ class TestPEP249(unittest.TestCase):
 
         conn = odb.connect("""create table atovs on 'ATOVS.trimmed.odb';""")
         c = conn.cursor()
-        c.execute('''select distinct qcinfo_1dvar, from atovs order by 1''')
+        c.execute('''select distinct qcinfo_1dvar from atovs order by 1''')
         actual = [r[0] for r in c.fetchall()]
         # TODO: ODB-250
         #self.assertEqual(actual, expected) 
@@ -250,3 +301,6 @@ class TestPEP249(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+
