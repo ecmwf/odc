@@ -15,6 +15,8 @@
 #include "odb_api/MetaDataReader.h"
 #include "odb_api/MetaDataReaderIterator.h"
 #include "odb_api/ODAHandle.h"
+#include "ecml/parser/Request.h"
+#include "ecml/parser/RequestParser.h"
 
 namespace odb {
 
@@ -28,21 +30,20 @@ FastODA2Request<T>::FastODA2Request()
 template <typename T>
 void FastODA2Request<T>::parseConfig(const std::string& s)
 {
-    std::vector<std::string> lines;
-    eckit::Tokenizer(",\n")(s, lines);
+    ecml::Cell* r (ecml::RequestParser::parse(s, true /*debug*/));
+    r = r->value();
 
-    eckit::Tokenizer tokenizer(": \t");
-    for (size_t i = 0; i < lines.size(); ++i)
+    for (ecml::Request elt(r->rest()); elt; elt = elt->rest())
 	{
-		eckit::Log::debug() << "FastODA2Request<T>::parseConfig: " << i << ": '" << lines[i] << "'" << std::endl;
-		std::vector<std::string> words;
-		tokenizer(lines[i], words);
+        std::string key (elt->text());
+        ASSERT(elt->tag() == "");
+        std::string value (elt->value()->str());
 
-		if (words.size() == 0) continue;
+		eckit::Log::info() << "parseConfig: " << key << "=" << value << std::endl;
 
-		ASSERT("Each line of config file should be like: 'MARS_KEYWORD : odb_column_name'" && words.size() == 2);
+		//ASSERT("Each line of config file should be like: 'MARS_KEYWORD : odb_column_name'" && words.size() == 2);
 
-		addColumn(words[0], words[1]);
+		addColumn(key, value);
 	}
 }
 

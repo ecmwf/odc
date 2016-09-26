@@ -20,7 +20,9 @@
 #include "odb_api/FileMapper.h"
 #include "odb_api/Odb2Hub.h"
 #include "odb_api/Archiver.h"
+#include "odb_api/Retriever.h"
 #include "odb_api/FileCollector.h"
+#include "odb_api/StringTool.h"
 
 #include <stdio.h>
 #include <fstream>
@@ -45,10 +47,14 @@ void Archiver::createDirectories(const PathName& path)
 /// Archive single file. File given by path will be moved to target location
 /// according to schema, etc.
 void Archiver::archive(const eckit::PathName& path, 
-                          const std::string& schema, 
-                          const std::string& keywordsConfig,
-                          const std::string& odbServerArchiveRoot)
+                          const std::string& dirtySchema, 
+                          const std::string& dirtyKeywordsConfig,
+                          const std::string& dirtyOdbServerArchiveRoot)
 {
+    const std::string schema (odb::StringTool::unQuote(dirtySchema));
+    const std::string keywordsConfig (odb::StringTool::unQuote(dirtyKeywordsConfig));
+    const std::string odbServerArchiveRoot (odb::StringTool::unQuote(dirtyOdbServerArchiveRoot));
+
     PathName targetPath (odbServerArchiveRoot + "/" + Odb2Hub::getPath(schema, path, keywordsConfig));
 
     createDirectories(targetPath);
@@ -75,7 +81,7 @@ void Archiver::archive(eckit::MultiHandle& h,
                        const std::vector<std::string>& keywords,
                        const std::map<std::string,std::vector<std::string> >& request)
 {
-    std::map<std::string,std::vector<std::string> > r(request);
+    std::map<std::string,std::vector<std::string> > r(Retriever::unquoteValues(request));
 
     vector<string> sources (r["source"]);
     if (sources.size() == 0) throw UserError("ARCHIVE missing SOURCE");
@@ -86,15 +92,7 @@ void Archiver::archive(eckit::MultiHandle& h,
     const string odbServerArchiveRoot (r["odbserverroots"][0]);
     // TODO: this is a resource in dhshome/etc/config/local
     const string odbServerKeywordsConfig (
-    "class:class\n"
-    "stream:stream\n"
-    "expver:expver\n"
-    "date:andate\n"
-    "time:antime\n"
-    "type:type\n"
-    "obsgroup:groupid\n"
-    "reportype:reportype\n"
-    );
+    "let,class=class,stream=stream,expver=expver,date=andate,time=antime,type=type,obsgroup=groupid,reportype=reportype");
 
     PathName targetPath (FileCollector::expandTilde(odbServerArchiveRoot) + "/" + Odb2Hub::getPath(schema, source, odbServerKeywordsConfig));
 

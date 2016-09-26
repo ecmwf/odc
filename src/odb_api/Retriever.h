@@ -27,6 +27,7 @@ public:
     static void retrieve (eckit::MultiHandle&                                    output, 
                           const std::vector<std::string>&                        keywords, 
                           const std::map<std::string,std::vector<std::string> >& request);
+    static std::map<std::string,std::vector<std::string> > unquoteValues(const std::map<std::string,std::vector<std::string> >&);
 private:
     static void sendPartitions(eckit::MultiHandle& output, const eckit::PathName& partitionsInfo, const std::vector<size_t>& partitionNumbers);
     static void sendSavedPartitions(eckit::MultiHandle& output, const eckit::PathName& savedPartitionsListFile, const std::vector<size_t>& partitionNumbers);

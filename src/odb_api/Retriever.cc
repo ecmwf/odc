@@ -54,7 +54,7 @@ void Retriever::retrieve(MultiHandle&                                           
                          const std::vector<std::string>&                        keywords, 
                          const std::map<std::string,std::vector<std::string> >& r)
 {
-    std::map<std::string,std::vector<std::string> > request(r);
+    std::map<std::string,std::vector<std::string> > request(unquoteValues(r));
 
     if (r.count("odbpathnameschema") == 0)
         throw UserError("RETRIEVE: odbpathnameschema not set");
@@ -166,4 +166,21 @@ void Retriever::handleServerSide(MultiHandle& output, const FileCollector& fileC
         Log::info() << "SERVER_SIDE: adding '" << fileName << "' to output" << endl;
         output += PathName(fileName).fileHandle();
     }
+}
+
+std::map<std::string,std::vector<std::string> > Retriever::unquoteValues(const std::map<std::string,std::vector<std::string> >& request)
+{
+    std::map<std::string,std::vector<std::string> > r;
+
+    for ( std::map<std::string,std::vector<std::string> >::const_iterator it (request.begin()); it != request.end(); ++it)
+    {
+        const std::string& key (it->first);
+        const std::vector<std::string>& values (it->second);
+        std::vector<std::string> vs;
+        for (size_t i(0); i < values.size(); ++i)
+            vs.push_back(StringTool::unQuote(values[i]));
+        r[key] = vs;
+    }
+
+    return r;
 }

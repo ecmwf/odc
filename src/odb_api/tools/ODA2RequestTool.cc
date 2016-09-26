@@ -115,7 +115,6 @@ void ODA2RequestTool::parseConfig(const std::string& s)
     Tokenizer tokenizer(": \t");
     for (size_t i = 0; i < lines.size(); ++i)
 	{
-		//Log::debug() << "ODA2RequestTool::readConfig: '" << lines[i] << "'" << std::endl;
 		vector<std::string> words;
 		tokenizer(lines[i], words);
 
@@ -123,7 +122,6 @@ void ODA2RequestTool::parseConfig(const std::string& s)
 			continue;
 
 		ASSERT("Each line of config file should be like: 'MARS_KEYWORD : oda_column_name'" && words.size() == 2);
-		//for (size_t j = 0; j < words.size(); ++j) Log::debug() << "ODA2RequestTool::readConfig: " << j << ": '" << words[j] << "'" << std::endl;
 		columnName2requestKey_[words[1]] = words[0];
 	}
 }

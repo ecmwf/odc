@@ -20,17 +20,7 @@ using namespace std;
 using namespace eckit;
 using namespace odb;
 
-const char * cfg = 
-//"CLASS: class\n"
-"DATE: andate@desc\n"
-"TIME: antime@desc\n"
-"TYPE: type\n"
-//"REPORTYPE: reportype\n"
-//"STREAM: stream\n"
-"EXPVER: expver\n"
-;
-
-const char * cfgFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
+const char * cfg = "let, DATE = 'andate@desc', TIME = 'antime@desc', TYPE = type, EXPVER = expver";
 
 static void test()
 {
@@ -38,8 +28,6 @@ static void test()
 	o.parseConfig(cfg);
 	o.scanFile("2000010106.2.0.odb");
 
-	//o.parseConfig(StringTool::readFile(cfgFile));
-	//o.scanFile("/hugetmp/mondb_conv.17.16001.odb");
 	string r = o.genRequest();
 	unsigned long long n = o.rowsNumber();
 

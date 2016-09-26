@@ -27,6 +27,7 @@
 #include "odb_api/Writer.h"
 #include "odb_api/Retriever.h"
 #include "odb_api/Stager.h"
+#include "odb_api/StringTool.h"
 
 using namespace std;
 using namespace eckit;
@@ -90,8 +91,10 @@ vector<PathName> Stager::writePartitionsToFiles (const Partitions& partitions, c
 
 void Stager::stage(eckit::MultiHandle&                                    output,
                    const std::vector<std::string>&                        keywords,
-                   const std::map<std::string,std::vector<std::string> >& request)
+                   const std::map<std::string,std::vector<std::string> >& req)
 {
+    const std::map<std::string,std::vector<std::string> > request (Retriever::unquoteValues(req));
+
     Log::info() << "STAGE: request: " << request << endl;
 
     Retriever::checkKeywordsHaveValues(request, keywords);

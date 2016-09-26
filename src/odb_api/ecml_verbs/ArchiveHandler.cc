@@ -29,17 +29,7 @@ using namespace ecml;
 
 namespace odb {
 
-// TODO: clean it up!
-const char * cfg_ = 
-"CLASS: class\n"
-"DATE: andate\n"
-"TIME: antime\n"
-"TYPE: type\n"
-"OBSGROUP: groupid\n"
-"REPORTYPE: reportype\n"
-"STREAM: stream\n"
-"EXPVER: expver\n"
-;
+const char * cfg_ = "let, CLASS=class, DATE=andate, TIME=antime, TYPE=type, OBSGROUP=groupid, REPORTYPE=reportype, STREAM=stream, EXPVER=expver";
 
 ArchiveHandler::ArchiveHandler(const string& name) : RequestHandler(name) {}
 
