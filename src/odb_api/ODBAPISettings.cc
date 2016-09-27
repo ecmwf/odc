@@ -11,7 +11,9 @@
 #include <unistd.h>
 
 #include "eckit/config/Resource.h"
-#include "eckit/io/AIOHandle.h"
+#ifdef HAVE_AIO_H    
+# include "eckit/io/AIOHandle.h"
+#endif
 #include "eckit/io/FileHandle.h"
 #include "eckit/thread/ThreadSingleton.h"
 #include "eckit/parser/StringTools.h"
@@ -128,18 +130,26 @@ DataHandle* ODBAPISettings::writeToFile(const PathName& fn, const Length& length
     // ODB-122 Create subdirectories before creating a file
     createDirectories(fn);
 
+#ifdef HAVE_AIO_H    
 	DataHandle* h (useAIO_
                     ? static_cast<DataHandle*>(new AIOHandle(fn))
                     : static_cast<DataHandle*>(new FileHandle(fn)));
+#else
+	DataHandle* h (static_cast<DataHandle*>(new FileHandle(fn)));
+#endif
 	if (openDataHandle) h->openForWrite(length);
 	return h;
 }
 
 DataHandle* ODBAPISettings::appendToFile(const PathName& fn, const Length& length, bool openDataHandle)
 {
+#ifdef HAVE_AIO_H    
 	DataHandle *h (useAIO_ 
                     ? static_cast<DataHandle*>(new AIOHandle(fn))
                     : static_cast<DataHandle*>(new FileHandle(fn)));
+#else
+	DataHandle* h (static_cast<DataHandle*>(new FileHandle(fn)));
+#endif
 	if (openDataHandle) h->openForAppend(length);
 	return h;
 }
