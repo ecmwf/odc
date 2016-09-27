@@ -519,6 +519,9 @@ const char * odbql_libversion(void)
 
 error_code_t odbql_open(const char *filename, odbql **ppDb) 
 {
+    static char* argv[] = { const_cast<char *>("odbql"), 0 };
+    odb_start_with_args(1, argv);
+
     eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
     
     TRY_WITH_DB (0)
