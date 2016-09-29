@@ -35,9 +35,28 @@ SQLOutput* SQLInteractiveSession::defaultOutput()
 void SQLInteractiveSession::statement(SQLStatement *sql)
 {
 	ASSERT(sql);
+    sql_ = sql;
+}
+
+SQLStatement *SQLInteractiveSession::statement()
+{
+    return sql_;
+}
+
+void SQLInteractiveSession::interactive()
+{
+    typedef odb::sql::SQLStatement* P;
+    if (gotSelectAST())
+    {
+        gotSelectAST(false);
+        sql_ = P(selectFactory().create(*this, selectAST()));
+    }
+    
+	ASSERT(sql_);
     ecml::ExecutionContext context; // TODO
-	execute(*sql, &context);
-	delete sql;
+	execute(*sql_, &context);
+	delete sql_;
+    sql_ = 0;
 }
 
 } // namespace sql

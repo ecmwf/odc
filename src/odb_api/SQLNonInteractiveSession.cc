@@ -37,6 +37,12 @@ void SQLNonInteractiveSession::statement(SQLStatement *sql)
 
 SQLStatement * SQLNonInteractiveSession::statement()
 {
+    typedef odb::sql::SQLStatement* P;
+    if (gotSelectAST())
+    {
+        gotSelectAST(false);
+        statement_ = P(selectFactory().create(*this, selectAST()));
+    }
     return statement_;
 }
 

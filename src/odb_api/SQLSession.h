@@ -20,6 +20,7 @@ namespace ecml { class ExecutionContext; }
 
 #include "eckit/eckit.h"
 
+#include "odb_api/SQLAST.h"
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLInsertFactory.h"
 
@@ -54,7 +55,9 @@ public:
 	SQLTable* openDataHandle(eckit::DataHandle &);
     SQLTable* openDataStream(std::istream &, const std::string &);
 
+	virtual void statement(const SelectAST& s);
 	virtual void statement(SQLStatement*) = 0;
+	virtual SQLStatement* statement() = 0;
 	virtual SQLOutput* defaultOutput() = 0;
 	unsigned long long lastExecuteResult() { return lastExecuteResult_; }
 
@@ -63,8 +66,14 @@ public:
 
 	unsigned long long execute(SQLStatement&, ecml::ExecutionContext*);
 
+    virtual void interactive() {}
+
 protected:
 	unsigned long long lastExecuteResult_;
+
+    bool gotSelectAST() const;
+    void gotSelectAST(bool);
+    const SelectAST& selectAST() const;
 
 private:
 // No copy allowed
@@ -77,6 +86,9 @@ private:
     std::map<std::string,SQLDatabase*> databases_;
     SQLSelectFactory selectFactory_;
     SQLInsertFactory insertFactory_;
+
+    SelectAST selectAST_;
+    bool gotSelectAST_;
 };
 
 } // namespace sql

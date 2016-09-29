@@ -33,12 +33,19 @@ void SQLIteratorSession<T>::statement(odb::sql::SQLStatement *sql)
 {
 	ASSERT(sql);	
 	statement_ = sql;
-	//execute(*sql);
-	//delete sql;
 }
 
 template <typename T>
-SQLStatement* SQLIteratorSession<T>::statement() { return statement_; }
+SQLStatement* SQLIteratorSession<T>::statement()
+{
+    typedef odb::sql::SQLStatement* P;
+    if (gotSelectAST())
+    {
+        gotSelectAST(false);
+        statement_ = P(selectFactory().create(*this, selectAST()));
+    }
+    return statement_;
+}
 
 } // namespace sql 
 } // namespace odb 

@@ -23,7 +23,8 @@ namespace sql {
 std::string defaultDB = "default";
 
 SQLSession::SQLSession()
-: currentDatabase_(0)
+: currentDatabase_(0),
+  gotSelectAST_(false)
 {
     currentDatabase_ = new ODADatabase(".", defaultDB); 
     currentDatabase_->open();
@@ -135,6 +136,17 @@ void SQLSession::createIndex(const std::string& column,const std::string& table)
 	currentDatabase_->table(table)->column(column)->createIndex();
 #endif
 }
+
+void SQLSession::statement(const SelectAST& s) 
+{ 
+    selectAST_ = s;
+    gotSelectAST_ = true;
+}
+
+const SelectAST& SQLSession::selectAST() const { return selectAST_; }
+
+bool SQLSession::gotSelectAST() const { return gotSelectAST_; }
+void SQLSession::gotSelectAST(bool b) { gotSelectAST_ = b; }
 
 } // namespace sql
 } // namespace odb

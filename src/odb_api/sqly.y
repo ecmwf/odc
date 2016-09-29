@@ -206,8 +206,8 @@ statements : statement ';'
 		   | statements statement ';'
 		   ;
 
-statement: select_statement        { session->statement(session->selectFactory().create(*session, /*SelectAST* */ ($1))); }
-		 | create_view_statement   { session->statement(session->selectFactory().create(*session, /*SelectAST* */ ($1))); }
+statement: select_statement        { session->statement($1); } 
+		 | create_view_statement   { session->statement($1); } 
 		 | insert_statement        { session->statement(session->insertFactory().create(*session, /*InsertAST* */ ($1))); }
 		 | embedded_statement      { session->statement(new SQLEmbedded($1)); }
 		 | set_statement

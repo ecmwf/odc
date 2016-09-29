@@ -33,7 +33,16 @@ void SQLMATCHSubquerySession::statement(odb::sql::SQLStatement *sql)
 	statement_ = sql;
 }
 
-SQLStatement* SQLMATCHSubquerySession::statement() { return statement_; }
+SQLStatement* SQLMATCHSubquerySession::statement()
+{
+    typedef odb::sql::SQLStatement* P;
+    if (gotSelectAST())
+    {
+        gotSelectAST(false);
+        statement_ = P(selectFactory().create(*this, selectAST()));
+    }
+    return statement_;
+}
 
 } // namespace sql 
 } // namespace odb 

@@ -19,6 +19,7 @@ void DataSelectSession::statement(odb::sql::SQLStatement* sql)
 {
     ASSERT(sql);    
     sql_ = sql;
+    gotSelectAST(false);
 }
 
 odb::sql::SQLOutput* DataSelectSession::defaultOutput()
@@ -28,6 +29,12 @@ odb::sql::SQLOutput* DataSelectSession::defaultOutput()
 
 odb::sql::SQLStatement* DataSelectSession::statement()
 {
+    typedef odb::sql::SQLStatement* P;
+    if (gotSelectAST())
+    {
+        gotSelectAST(false);
+        sql_ = P(selectFactory().create(*this, selectAST()));
+    }
     return sql_;
 }
 

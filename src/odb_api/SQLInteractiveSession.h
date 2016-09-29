@@ -27,15 +27,19 @@ public:
     SQLInteractiveSession(std::ostream & = std::cout);
 	~SQLInteractiveSession(); 
 
+    void interactive();
+
 private:
 // No copy allowed
 	SQLInteractiveSession(const SQLInteractiveSession&);
 	SQLInteractiveSession& operator=(const SQLInteractiveSession&);
 
     std::ostream &out_;
+    SQLStatement* sql_;
 
 // -- Overridden methods
 	void statement(SQLStatement*);
+	SQLStatement* statement();
 	SQLOutput* defaultOutput();
 
 	//friend std::ostream& operator<<(std::ostream& s,const SQLInteractiveSession& p)
