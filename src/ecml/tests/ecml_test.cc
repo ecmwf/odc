@@ -17,6 +17,8 @@
 #include "ecml/core/Environment.h"
 #include "ecml/prelude/REPLHandler.h"
 
+#include "odb_api/odbcapi.h"
+
 using namespace std;
 using namespace eckit;
 
@@ -37,7 +39,6 @@ void TestECML::run()
 {
     if (argc() < 2)
     {
-        //throw UserError("Command line required (name(s) of file(s) with ECML script");
         ExecutionContext context;
         REPLHandler::repl(context);
     }
@@ -58,10 +59,6 @@ void TestECML::runScript(const string& pathName)
 
 int main(int argc,char **argv)
 {
-    //TODO: set a behaviour?
-    //Context::instance().behavior( new odb::ODBBehavior() );
-    // TODO: enable $DEBUG (Log::debug)
-
     ecml::TestECML runner(argc, argv);
     return runner.start();
 }

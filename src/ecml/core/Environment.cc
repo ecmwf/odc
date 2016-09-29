@@ -21,7 +21,7 @@
 #include "ExecutionContext.h"
 
 using namespace std;
-using namespace ecml;  // TODO: eckit/utils/Environment.h should be in namespace ecml I think
+using namespace ecml;
 
 Environment::Environment(const Environment& other)
 : dictionary_(Cell::clone(other.dictionary_)),
@@ -44,9 +44,9 @@ void Environment::print(std::ostream& s) const
     s << dictionary_;
     if (parent_)
     {
-     s << "," << endl << "parent = (";
-     parent_->print(s);
-     s << ")";
+        s << "," << endl << "parent = (";
+        parent_->print(s);
+        s << ")";
     }
 }
 

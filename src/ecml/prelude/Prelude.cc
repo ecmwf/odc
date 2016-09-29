@@ -83,7 +83,8 @@ std::string Prelude::preludePath()
 
 void Prelude::executePrelude(ExecutionContext& context)
 {
-    context.executeScriptFile(preludePath());
+    Values vs (context.executeScriptFile(preludePath()));
+    delete vs;
 }
 
 void Prelude::importInto(ExecutionContext& context)

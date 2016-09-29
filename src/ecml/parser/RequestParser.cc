@@ -44,6 +44,7 @@ struct RequestParserResult { static Cell* result_; };
 Request RequestParser::parse(const std::string& s, bool debug)
 {
     RequestParserMutex mutex;
+
     std::stringstream ss;
     // two zeroes are required by yy_scan_buffer (request__scan_buffer)
     // I add this extra '\0' here in case we move to yy_scan_buffer at a point.
@@ -126,6 +127,7 @@ void reset_parser(FILE* in, bool debug)
     RequestYacc::request_lineno = 0;
     RequestYacc::request_in     = in;
     RequestYacc::request_debug  = debug;
+    RequestYacc::request_restart(in);
 }
 
 void do_parse_request_in_string(const char *s)
@@ -134,13 +136,18 @@ void do_parse_request_in_string(const char *s)
     try { 
         buffer = RequestYacc::request__scan_string(s);
         RequestYacc::request_parse();
+        RequestYacc::request__delete_buffer(buffer);
     }
     catch (RequestParseError& e)
     {
         RequestYacc::request__delete_buffer(buffer);
         throw eckit::UserError(e.what());
     }
-    request__delete_buffer(buffer);
+    catch (...)
+    {
+        RequestYacc::request__delete_buffer(buffer);
+        throw;
+    }
 }
 
 } // namespace ecml 

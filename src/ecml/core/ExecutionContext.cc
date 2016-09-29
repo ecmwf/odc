@@ -39,8 +39,8 @@ ExecutionContext::ExecutionContext(const ExecutionContext& other)
 
 ExecutionContext::~ExecutionContext()
 {
-    for (Environment* e(environment_); e && e != otherEnvironment_; e = e->parent())
-        delete e;
+    if (otherEnvironment_ != environment_)
+        delete environment_;
     delete interpreter_;
 }
 
