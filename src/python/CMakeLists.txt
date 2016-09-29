@@ -11,7 +11,7 @@ if( HAVE_PYTHON AND SWIG_FOUND )
   add_custom_command( OUTPUT ${_odbapi_swig}
                       COMMAND ${PYTHON_EXECUTABLE} setup.py build_ext --inplace --force --rpath ${CMAKE_BINARY_DIR}/lib
                       DEPENDS odb/pyodbapi.i setup.py.in Odb )
-  add_custom_target(build_swig_wrapper ALL DEPENDS ${_odbapi_swig})
+  add_custom_target(odb_api_build_swig_wrapper ALL DEPENDS ${_odbapi_swig})
 
   # Build the extension module for use in install tree with RPATH pointing to install tree
   install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} setup.py build_ext --rpath ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
