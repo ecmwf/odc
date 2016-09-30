@@ -197,7 +197,6 @@ class TestODBQL(unittest.TestCase):
         print 'test_stored_procedure: OK!'
 
 
-
 class TestPEP249(unittest.TestCase):
 
     def setUp(self):
@@ -274,6 +273,20 @@ class TestPEP249(unittest.TestCase):
         actual = [r[0] for r in c.fetchall()]
         # TODO: ODB-250
         #self.assertEqual(actual, expected) 
+
+    def test_sorting_string_columns(self): # ODB-94 
+        conn = odb.connect( """CREATE TABLE foo AS (statid string) ON 'test_sorting_string_columns.odb';""")
+        c = conn.cursor()
+        data = [[w] for w in """12345678 abcdefgh dfgsdfgs DFADSFAD sdffffff aaaaaaaa""".split()]
+        print data
+        c.executemany('INSERT INTO foo (statid,x) VALUES (?,?);', data)
+        conn.commit()
+        c.execute('''select statid from foo order by 1 asc;''')
+        sql_sorted = [r[0] for r in c.fetchall()]
+        c.execute('''select statid from foo;''')
+        python_sorted = sorted([r[0] for r in c.fetchall()])
+        self.assertEqual ( sql_sorted, python_sorted )
+        print "SQL SORTED:", sql_sorted
 
 """
     def test_select_data_from_mars(self):
