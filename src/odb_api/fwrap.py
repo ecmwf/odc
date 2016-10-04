@@ -171,7 +171,7 @@ def translate_type_for_fortran_return(t):
     if t == 'const unsigned char*':  return 'character(len=*), intent(out)' # TODO: think about it
     if t == 'int':                   return 'integer(kind=C_INT)'
     if t == 'double':                return 'real(kind=C_DOUBLE)'
-    if t == 'odbql_value*':          return 'logical'
+    if t == 'odbql_value*':          return 'type(odbql_value)'
     if t == 'error_code_t':          return 'integer(kind=C_INT), intent(out), optional'
 
     raise Exception("Don't know how to translate '" + t + "'")
@@ -184,20 +184,6 @@ def fortranParamTypeDeclaration(p, translate_type = translate_type_for_binding):
 nl_indent = '\n     '
 
 helper_functions = """
-
-!> Helper function to convert C pointer to logical:
-
-    function c_ptr_to_logical(ptr)
-
-      use, intrinsic :: iso_c_binding, only: c_ptr
-
-      type(c_ptr), intent(in)                       :: ptr
-      logical                                       :: c_ptr_to_logical
-
-      c_ptr_to_logical = c_associated(ptr)
-
-    end function c_ptr_to_logical
-
 
 !> Helper function to convert C '\\0' terminated strings to Fortran strings
 
@@ -288,8 +274,9 @@ def generateWrapper(signature, comment, template):
         fortran_params.append( (return_type, output_parameter) )
         call_binding = 'C_to_F_string(' + call_binding  + ')'
 
-    if return_type == 'odbql_value*':
-        call_binding = 'c_ptr_to_logical(' + call_binding  + ')'
+    if return_type == 'odbql_value*': 
+        return_value_tmp = output_parameter + "%this"
+
 
     if return_type == 'error_code_t':
         procedure_keyword = 'subroutine'
