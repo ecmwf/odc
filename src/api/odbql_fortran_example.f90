@@ -27,7 +27,7 @@ subroutine odbql_fortran_example
  type(odbql)                                   :: db
  type(odbql_stmt)                              :: stmt
  type(odbql_value)                             :: val
- integer(kind=C_INT)                           :: status, number_of_columns, column, row_no, int_val
+ integer(kind=C_INT)                           :: status, number_of_columns, column_no, row_no, int_val
  character(len=30)                             :: string_val, column_name
  character(len=1000)                           :: unparsed_sql
  real(kind=C_DOUBLE)                           :: v, real_val
@@ -39,8 +39,8 @@ subroutine odbql_fortran_example
  call odbql_prepare_v2(db, "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", -1, stmt, unparsed_sql)
 
 ! Populate first row with NULLs
- do column = 1,4
-     call odbql_bind_null(stmt, column)
+ do column_no = 1,4
+     call odbql_bind_null(stmt, column_no)
  end do
  call odbql_step(stmt)
 
@@ -76,26 +76,28 @@ subroutine odbql_fortran_example
    if (status /= ODBQL_ROW) stop 
 
    write(6,*) 'Row ', row_no
-   do column = 1,number_of_columns
+   do column_no = 1,number_of_columns
 
-       call odbql_column_name(stmt, column, column_name)
-       val = odbql_column_value(stmt, column)
+       call odbql_column_name(stmt, column_no, column_name)
+       val = odbql_column_value(stmt, column_no)
        if (.not. c_associated(val%this)) then
-           write(6,*) column, ' ', column_name, ': MISSING'
+           write(6,*) column_no, ' ', column_name, ': MISSING'
        else
-           select case (odbql_column_type(stmt, column))
+           select case (odbql_column_type(stmt, column_no))
            case (ODBQL_TEXT)
-               call odbql_column_text(stmt, column, string_val)
+               call odbql_column_text(stmt, column_no, string_val)
            case (ODBQL_INTEGER)
                int_val = odbql_value_int(val)
+               write(6,*) column_no, ' ', column_name, ':integer = ', int_val
            case (ODBQL_FLOAT)
                real_val = odbql_value_double(val)
+               write(6,*) column_no, ' ', column_name, ':float = ', real_val
            
            end select 
 
            ! Note, odbql_column_text can be called for columns of any type
-           call odbql_column_text(stmt, column, string_val)
-           write(6,*) column, ' ', column_name, ': ', string_val
+           call odbql_column_text(stmt, column_no, string_val)
+           write(6,*) column_no, ' ', column_name, ': ', string_val
 
        end if
    end do
