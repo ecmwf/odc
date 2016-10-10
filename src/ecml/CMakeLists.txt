@@ -8,7 +8,7 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-include_directories( ${ECML_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${MARSKIT_INCLUDE_DIRS} )
+include_directories( ${ECML_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${METKIT_INCLUDE_DIRS} )
 
 list( APPEND ecml_srcs
 # Parser
@@ -114,7 +114,7 @@ data/FileHandleFactory.h
 data/FileHandleFactory.cc
 data/PartFileHandleFactory.h
 data/PartFileHandleFactory.cc
-# requires  marskit:
+# requires  metkit
 data/MarsHandleFactory.cc
 data/MarsHandleFactory.h
 
@@ -139,7 +139,7 @@ ecbuild_add_library( TARGET             ecml
                      SOURCES            ${ecml_srcs}
                      LIBS               eckit 
                                         eckit_cmd # for UserInput
-                                        marskit
+                                        metkit
                                         )
 
 ecbuild_add_executable( TARGET  ecml_test

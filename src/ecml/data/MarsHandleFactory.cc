@@ -17,8 +17,8 @@
 #include "ecml/parser/RequestParser.h"
 #include "ecml/core/RequestHandler.h"
 
-#include "marskit/MarsRequestHandle.h"
-#include "marskit/DHSProtocol.h"
+#include "metkit/MarsRequestHandle.h"
+#include "metkit/DHSProtocol.h"
 
 #include "ecml/data/MarsHandleFactory.h"
 
@@ -70,10 +70,10 @@ DataHandle* MarsHandleFactory::makeHandle(const string& r) const
     string host (RequestHandler::database(request));
     long port (RequestHandler::port(request));
 
-    marskit::MarsRequest mr (verb(request)); //, new marskit::DHSProtocol(host, host, port)));
-    ecml::convertToMarsRequest<marskit::MarsRequest> (request, mr);
+    metkit::MarsRequest mr (verb(request));
+    ecml::convertToMarsRequest<metkit::MarsRequest> (request, mr);
 
-    return new marskit::MarsRequestHandle(mr, new marskit::DHSProtocol(host, host, port));
+    return new metkit::MarsRequestHandle(mr, new metkit::DHSProtocol(host, host, port));
 }
 
 static MarsHandleFactory marsHandleFactory;
