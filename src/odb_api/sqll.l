@@ -19,40 +19,6 @@
 #include "odb_api/odblib_lex.h"
 
 // http://flex.sourceforge.net/manual/Multiple-Input-Buffers.html#Multiple-Input-Buffers
-#if 0
-	#undef YY_INPUT
-	#define YY_INPUT(buf,result,max_size) \
-	{ \
-		if (inputEnd - inputText) \
-		{ \
-			memcpy(buf, inputText++, 1); \
-			result = 1; \
-		} else result = YY_NULL; \
-	}
-#endif
-
-#ifdef YYBISON
-/* FLEX */
-/*
-	#undef YY_INPUT
-	#define YY_INPUT(buf,result,max_size) \
-	{ \
-		int n = (max_size < (inputEnd - inputText)) ? max_size : (inputEnd - inputText); \
-		if (n > 0) { \
-			memcpy(buf, inputText, n); \
-			inputText += n; \
-		} \
-		result = (n == 0) ? YY_NULL : n; \
-	}
-*/
-/* LEX */
-#else
-	extern char* inputText;
-	#undef input
-	#undef unput
-	#define input() (*inputText++)
-	#define unput(c) (*--inputText = c)
-#endif
 
 const size_t maxIncludeDepth = 2000;
 YY_BUFFER_STATE includeStack[maxIncludeDepth];
@@ -60,14 +26,8 @@ int includeStackPtr = 0;
 
 void pushInclude(const std::string& sql, const std::string& yypath, YY_BUFFER_STATE state, odblib_scan_t scanner)
 {
-    //cerr << "pushInclude:" << yypath << std::endl;
-    //cerr << "<INCLUDE>" << std::endl;
-    //cerr << sql << std::endl;
-    //cerr << "</INCLUDE>" << std::endl;
-
     if (includeStackPtr > maxIncludeDepth)
         throw eckit::UserError("Includes nested too deeply");
-    //includeStack[includeStackPtr++] = YY_CURRENT_BUFFER;
     includeStack[includeStackPtr++] = state;
 //YY_BUFFER_STATE odblib__scan_bytes (odblib_const char *bytes,odblib__size_t len ,odblib_scan_t odblib_scanner );
 //void odblib__switch_to_buffer (YY_BUFFER_STATE new_buffer ,odblib_scan_t odblib_scanner );
@@ -80,7 +40,6 @@ int popInclude(odblib_scan_t scanner)
 
     if ( includeStackPtr - 1 <= 0 )
     {
-        //cerr << "** lex terminate **" << std::endl;
         return 1;
     }
     else
@@ -178,24 +137,6 @@ SEMICOLON [;]
 
     eckit::PathName fileName(StringTool::unQuote(yytext));
 
-    // TODO: need to pass SQLSession to flex
-
-    /*
-    if (!fileName.exists())
-    {
-        SQLSession& session = SQLSession::current();
-        sql::SQLDatabase& db = session.currentDatabase();
-        for (unsigned i = 0; i < db.includePath().size(); i++)
-        {
-            eckit::PathName path(db.includePath()[i] + "/" + fileName);
-            if (path.exists())
-            {
-                fileName = path;
-                break;
-            }
-        }
-    }
-    */
     //cerr << "Opening " << fileName << std::endl;
     std::string text(StringTool::readFile(fileName));
 
