@@ -1,4 +1,5 @@
 %option reentrant
+%option extra-type="void *"
 %option bison-bridge
 %{
 
@@ -15,47 +16,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
 #include "odb_api/odblib_lex.h"
 
 // http://flex.sourceforge.net/manual/Multiple-Input-Buffers.html#Multiple-Input-Buffers
 
-const size_t maxIncludeDepth = 2000;
-YY_BUFFER_STATE includeStack[maxIncludeDepth];
-int includeStackPtr = 0;
-
-void pushInclude(const std::string& sql, const std::string& yypath, YY_BUFFER_STATE state, odblib_scan_t scanner)
-{
-    if (includeStackPtr > maxIncludeDepth)
-        throw eckit::UserError("Includes nested too deeply");
-    includeStack[includeStackPtr++] = state;
-//YY_BUFFER_STATE odblib__scan_bytes (odblib_const char *bytes,odblib__size_t len ,odblib_scan_t odblib_scanner );
-//void odblib__switch_to_buffer (YY_BUFFER_STATE new_buffer ,odblib_scan_t odblib_scanner );
-    odblib__switch_to_buffer(odblib__scan_bytes(sql.c_str(), sql.size(), scanner), scanner);
-}
-
-int popInclude(odblib_scan_t scanner)
-{
-    YY_BUFFER_STATE currentState (includeStack[includeStackPtr]);
-
-    if ( includeStackPtr - 1 <= 0 )
+class Stack {
+    static const size_t maxIncludeDepth = 2000;
+public:
+    void push(const std::string& sql, const std::string& yypath, YY_BUFFER_STATE state, odblib_scan_t scanner)
     {
-        return 1;
+        if (stack_.size() > maxIncludeDepth)
+            throw eckit::UserError("Includes nested too deeply");
+
+        stack_.push_back(state);
+        odblib__switch_to_buffer(odblib__scan_bytes(sql.c_str(), sql.size(), scanner), scanner);
     }
-    else
+
+    int pop(odblib_scan_t scanner)
     {
-        //odblib__delete_buffer(YY_CURRENT_BUFFER);
-        // FIXME: leak (?)
-        //odblib__delete_buffer(currentState, scanner);
-        odblib__switch_to_buffer(includeStack[--includeStackPtr], scanner);
+        if (stack_.size() <= 1)
+            return 1; 
+
+        YY_BUFFER_STATE currentState (stack_.back());
+        stack_.pop_back();
+
+        odblib__switch_to_buffer(currentState, scanner);
         return 0;
     }
-}
 
+private:
+    std::vector<YY_BUFFER_STATE> stack_;
+};
 
-int wrap(odblib_scan_t scanner) {
-    //Log::info() << "** wrap **" << std::endl;
-    return popInclude(scanner);
+Stack includes_; // TODO: pass it to lexer as an extra parameter (ODB-263)
+
+typedef Stack include_stack;
+
+int wrap(odblib_scan_t scanner) 
+{
+    return includes_.pop(scanner); 
 }
 
 /*
@@ -140,7 +141,8 @@ SEMICOLON [;]
     //cerr << "Opening " << fileName << std::endl;
     std::string text(StringTool::readFile(fileName));
 
-    pushInclude(text, fileName, YY_CURRENT_BUFFER, odblib_scanner);
+    //pushInclude(text, fileName, YY_CURRENT_BUFFER, odblib_scanner);
+    includes_.push(text, fileName, YY_CURRENT_BUFFER, odblib_scanner);
     BEGIN(INITIAL);
 }
 
