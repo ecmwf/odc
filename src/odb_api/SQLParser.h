@@ -52,11 +52,6 @@ public:
     static void parseString(odb::sql::SQLSession&, const std::string&, std::istream*, SQLOutputConfig, const std::string& cvsDelimiter);
 	static void parseString(odb::sql::SQLSession&, const std::string&, SQLDatabase&, SQLOutputConfig);
 
-	//static void include(const eckit::PathName&);
-
-	static void pushInclude(const std::string&, const std::string&, void*, void*);
-	static void popInclude(void*);
-
 	static std::stack<ParseFrame> frames_;
 };
 
