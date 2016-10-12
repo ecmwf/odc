@@ -6,7 +6,7 @@
 ! granted to it by virtue of its status as an intergovernmental organisation nor
 ! does it submit to any jurisdiction.
 !
-! Piotr Kuchta  July 2016
+! Piotr Kuchta, ECMWF, July 2016
 
 
 program example_fortran_api
