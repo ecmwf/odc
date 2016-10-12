@@ -84,18 +84,6 @@ extern "C" int odblib_wrap(void *scanner)
 namespace odb {
 namespace sql {
 
-//int SQLParser::line() { using namespace SQLYacc; return SQLYacc::odblib_lineno; }
-
-void SQLParser::pushInclude(const std::string& sql, const std::string& yypath, void* state, void* scanner) 
-{ 
-    includeStack(scanner).push(sql, yypath, (SQLYacc::YY_BUFFER_STATE) state, (SQLYacc::odblib_scan_t) scanner); 
-}
-
-void SQLParser::popInclude(void* scanner)
-{
-    includeStack(scanner).pop((SQLYacc::odblib_scan_t) scanner);
-}
-
 struct SessionResetter {
     SessionResetter (SQLSession& s) : session_(s) {}
     ~SessionResetter () 
@@ -131,7 +119,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 
     SQLYacc::include_stack stack_;
     SQLYacc::odblib_lex_init_extra(&stack_, &scanner);
-    pushInclude(s, "", scanner /*state*/, scanner);
+    stack_.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
 
     SQLYacc::odblib_parse(scanner, &session);
 
@@ -156,7 +144,8 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 
     SQLYacc::include_stack stack_;
     SQLYacc::odblib_lex_init_extra(&stack_, &scanner);
-    pushInclude(s, "", scanner /*state*/, scanner);
+    stack_.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
+
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
@@ -179,7 +168,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, 
 
     SQLYacc::include_stack stack_;
     SQLYacc::odblib_lex_init_extra(&stack_, &scanner);
-    pushInclude(s, "", scanner /*state*/, scanner);
+    stack_.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
 
     SQLYacc::odblib_parse(scanner, &session);
 
