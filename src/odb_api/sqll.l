@@ -50,14 +50,7 @@ private:
     std::vector<YY_BUFFER_STATE> stack_;
 };
 
-Stack includes_; // TODO: pass it to lexer as an extra parameter (ODB-263)
-
 typedef Stack include_stack;
-
-int wrap(odblib_scan_t scanner) 
-{
-    return includes_.pop(scanner); 
-}
 
 /*
 %option noyywrap
@@ -141,8 +134,9 @@ SEMICOLON [;]
     //cerr << "Opening " << fileName << std::endl;
     std::string text(StringTool::readFile(fileName));
 
-    //pushInclude(text, fileName, YY_CURRENT_BUFFER, odblib_scanner);
-    includes_.push(text, fileName, YY_CURRENT_BUFFER, odblib_scanner);
+    Stack* includeStack (static_cast<Stack*>(((struct SQLYacc::odblib_guts_t*) odblib_scanner)->odblib_extra_r));
+    ASSERT(includeStack);
+    includeStack->push(text, fileName, YY_CURRENT_BUFFER, odblib_scanner);
     BEGIN(INITIAL);
 }
 
