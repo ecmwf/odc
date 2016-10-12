@@ -35,7 +35,7 @@
 
 using namespace eckit;
 
-static Mutex   local_mutex;
+//static Mutex   local_mutex;
 
 #define  YYDEBUG      1
 
@@ -105,7 +105,7 @@ private:
 
 void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, std::istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
 {
-    AutoLock<Mutex> lock(local_mutex);
+    //AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
 
     //SQLYacc::odblib_lineno = 0;
@@ -131,7 +131,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 
 void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, DataHandle* dh, SQLOutputConfig cfg)
 {
-    AutoLock<Mutex> lock(local_mutex);
+    //AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
 
     //SQLYacc::odblib_lineno = 0;
@@ -154,7 +154,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 
 void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
-    AutoLock<Mutex> lock(local_mutex);
+    //AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
 
     //SQLYacc::odblib_lineno = 0;
