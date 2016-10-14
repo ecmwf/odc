@@ -14,13 +14,9 @@
 
 #include "eckit/filesystem/PathName.h"
 
-//#include "odb_api/Tool.h"
-//#include "odb_api/TestCase.h"
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "ToolRunnerApplication.h"
-//#include "odb_api/ODBBehavior.h"
-//#include "odb_api/ODBApplication.h"
+#include "odb_api/tools/Tool.h"
+#include "odb_api/tools/ToolFactory.h"
+#include "odb_api/tools/ToolRunnerApplication.h"
 
 using namespace eckit;
 
@@ -33,7 +29,7 @@ ToolRunnerApplication::ToolRunnerApplication (int argc, char **argv, bool create
   deleteTool_(deleteTool)
 {}
 
-ToolRunnerApplication::ToolRunnerApplication (Tool &tool, int argc, char **argv)
+ToolRunnerApplication::ToolRunnerApplication (odb::tool::Tool &tool, int argc, char **argv)
 : ODBApplication(argc, argv),
   tool_(&tool),
   deleteTool_(false)
@@ -44,7 +40,7 @@ ToolRunnerApplication::~ToolRunnerApplication ()
 	if (deleteTool_) delete tool_;
 }
 
-void ToolRunnerApplication::tool(Tool *tool)
+void ToolRunnerApplication::tool(odb::tool::Tool *tool)
 {
 	tool_ = tool;
 }

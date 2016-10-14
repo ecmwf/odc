@@ -25,15 +25,15 @@ class Tool;
 class ToolRunnerApplication : public ODBApplication {
 public:
 	ToolRunnerApplication (int argc, char **argv, bool createCommandLineTool = true, bool deleteTool=true);
-	ToolRunnerApplication (Tool &tool, int argc, char **argv);
+	ToolRunnerApplication (odb::tool::Tool &tool, int argc, char **argv);
 	~ToolRunnerApplication ();
 
-	void tool(Tool *);
+	void tool(odb::tool::Tool *);
 
 	void run();
 	int printHelp(std::ostream &out);
 private:
-	Tool* tool_;
+	odb::tool::Tool* tool_;
 	bool deleteTool_;
 };
 
