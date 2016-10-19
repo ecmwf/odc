@@ -78,9 +78,9 @@ static void register_extra_data_handle_factories()
 
 void odb_start()
 {
-    register_extra_data_handle_factories();
     static const char *argv[2] = {"odb_start", 0};
-    eckit::Main::initialise(1, const_cast<char **>(argv));
+
+    odb_start_with_args(1, const_cast<char **>(argv));
 }
 
 void odb_start_with_args(int argc, char* argv[])
