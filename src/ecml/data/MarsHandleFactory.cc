@@ -76,6 +76,4 @@ DataHandle* MarsHandleFactory::makeHandle(const string& r) const
     return new metkit::MarsRequestHandle(mr, new metkit::DHSProtocol(host, host, port));
 }
 
-static MarsHandleFactory marsHandleFactory;
-
 } // namespace ecml

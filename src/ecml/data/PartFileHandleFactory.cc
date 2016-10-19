@@ -35,6 +35,4 @@ DataHandle* PartFileHandleFactory::makeHandle(const string& descriptor) const
     return new PartFileHandle(fileName, offset, length);
 }
 
-static PartFileHandleFactory fileHandleFactory;
-
 } // namespace ecml

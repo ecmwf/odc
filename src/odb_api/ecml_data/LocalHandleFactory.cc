@@ -97,5 +97,3 @@ DataHandle* LocalHandleFactory::makeHandle(const string& req) const
     return h;
 }
 
-LocalHandleFactory localHandleFactory;
-

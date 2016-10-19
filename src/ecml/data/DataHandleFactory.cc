@@ -12,6 +12,9 @@
 #include <memory>
 
 #include "ecml/data/DataHandleFactory.h"
+#include "ecml/data/PartFileHandleFactory.h"
+#include "ecml/data/MarsHandleFactory.h"
+#include "ecml/data/FileHandleFactory.h"
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/parser/StringTools.h"
@@ -67,6 +70,7 @@ std::pair<std::string, std::string> DataHandleFactory::splitPrefix(const std::st
 
 void DataHandleFactory::buildMultiHandle(eckit::MultiHandle& mh, const std::string& dataDescriptor)
 {
+    registerFactories();
     std::vector<std::string> ds;
     ds.push_back(dataDescriptor);
     buildMultiHandle(mh, ds);
@@ -74,6 +78,7 @@ void DataHandleFactory::buildMultiHandle(eckit::MultiHandle& mh, const std::stri
 
 void DataHandleFactory::buildMultiHandle(eckit::MultiHandle& mh, const std::vector<std::string>& dataDescriptors)
 {
+    registerFactories();
     std::vector<DataHandle*> handles;
     for (size_t i(0); i < dataDescriptors.size(); ++i)
     {
@@ -84,6 +89,7 @@ void DataHandleFactory::buildMultiHandle(eckit::MultiHandle& mh, const std::vect
 
 DataHandle* DataHandleFactory::openForRead(const std::string& s)
 {
+    registerFactories();
     std::pair<std::string,std::string> p (splitPrefix(s));
     eckit::ScopedPtr<DataHandle> d (makeHandle(p.first, p.second));
     d->openForRead();
@@ -92,10 +98,18 @@ DataHandle* DataHandleFactory::openForRead(const std::string& s)
 
 DataHandle* DataHandleFactory::openForWrite(const std::string& s, const eckit::Length& length)
 {
+    registerFactories();
     std::pair<std::string,std::string> p (splitPrefix(s));
     eckit::ScopedPtr<DataHandle> d (makeHandle(p.first, p.second));
     d->openForWrite(length);
     return d.release();
+}
+
+void DataHandleFactory::registerFactories()
+{
+    static PartFileHandleFactory partFileHandleFactory;
+    static MarsHandleFactory marsHandleFactory;
+    static FileHandleFactory fileHandleFactory;
 }
 
 } //namespace ecml 

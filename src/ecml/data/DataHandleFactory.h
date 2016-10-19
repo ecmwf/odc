@@ -52,6 +52,7 @@ protected:
 private:
     DataHandleFactory();
     static Storage& factories();
+    static void registerFactories();
 
     std::string prefix_;
 };

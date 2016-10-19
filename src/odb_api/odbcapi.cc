@@ -28,6 +28,7 @@
 #include "odb_api/Select.h"
 #include "odb_api/Reader.h"
 #include "odb_api/Writer.h"
+#include "odb_api/ecml_data/LocalHandleFactory.h"
 
 using namespace eckit;
 using namespace odb;
@@ -70,14 +71,21 @@ int get_bitfield(T it,
 
 extern "C" {
 
+static void register_extra_data_handle_factories()
+{
+    static LocalHandleFactory localHandleFactory;
+}
+
 void odb_start()
 {
+    register_extra_data_handle_factories();
     static const char *argv[2] = {"odb_start", 0};
     eckit::Main::initialise(1, const_cast<char **>(argv));
 }
 
 void odb_start_with_args(int argc, char* argv[])
 {
+    register_extra_data_handle_factories();
     eckit::Main::initialise(argc, argv);
 }
 

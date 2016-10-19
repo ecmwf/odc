@@ -27,6 +27,4 @@ eckit::DataHandle* FileHandleFactory::makeHandle(const string& fileName) const
     return new FileHandle(fileName);
 }
 
-static FileHandleFactory fileHandleFactory;
-
 } // namespace ecml
