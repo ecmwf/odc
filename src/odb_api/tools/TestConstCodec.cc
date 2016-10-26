@@ -26,7 +26,6 @@
 #include "odb_api/ReaderIterator.h"
 #include "odb_api/SQLAST.h"
 #include "odb_api/SQLBitfield.h"
-#include "odb_api/SQLIteratorSession.h"
 #include "odb_api/SchemaAnalyzer.h"
 #include "odb_api/SelectIterator.h"
 #include "odb_api/Writer.h"

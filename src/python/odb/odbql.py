@@ -37,36 +37,24 @@ apilevel = '2.0'
 threadsafety = 1 # https://www.python.org/dev/peps/pep-0249/#threadsafety
 paramstyle = 'qmark' # https://www.python.org/dev/peps/pep-0249/#paramstyle
 
-def connect(ddl=''):
+def connect(file_name):
     """
     Returns a Connection object. 
+
+    Parameter: file_name  file to be open or empty string
     
-    Keyword arguments:
-
-        ddl  -- (Optional) string with DDL (Data Definition Language)
-
     Examples:
 
-        >>> conn1 = connect(ddl='''CREATE TABLE bar on "conv.odb";'''
+        >>> conn1 = connect("conv.odb")
 
-        >>> conn2 = connect(ddl='''
-            CREATE TYPE bf AS (f1 bit1, f2 bit2); 
-            CREATE TABLE foo AS (
-                x INTEGER,
-                y DOUBLE,
-                status bf
-            ) ON 'new_api_example_python.odb';
-            ''')
-
-        >>> conn3 = connect(ddl='''
-            CREATE TABLE baz ON "mars://RETRIEVE,DATABASE=marsod,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160830,TIME=1200,REPORTYPE=16001";''')
+        >>> conn2 = connect("mars://RETRIEVE,DATABASE=marsod,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160830,TIME=1200,REPORTYPE=16001")
 
     See also:
     
         https://www.python.org/dev/peps/pep-0249/#connect 
     
     """
-    return Connection(ddl)
+    return Connection(file_name)
 
 def __find_libOdb(*ps):
     for p in ps:
@@ -125,8 +113,12 @@ ODBQL_NULL             = 5
 def type_name(i): return [None, 'INTEGER', 'REAL', 'TEXT'][i]
 
 class Connection:
-    def __init__(self, ddl):
-        self.ddl = ddl
+    def __init__(self, file_name):
+        self.file_name = file_name
+        self.db = c_voidp()
+        rc = odbql_open(self.file_name, byref(self.db))
+        # TODO
+        #self.assertEqual(rc, ODBQL_OK)
 
     def close(self): pass
     def commit(self): pass
@@ -134,7 +126,7 @@ class Connection:
     #def rollback(self): pass
 
     def cursor(self):
-        return Cursor(self.ddl, self)
+        return Cursor(self.file_name, self)
 
 
 class fetchall_generator(object):
@@ -150,9 +142,9 @@ class fetchall_generator(object):
 
 class Cursor:
 
-    def __init__(self, ddl, connection):
-        self.ddl = ddl
-        self.stmt = None
+    def __init__(self, file_name, connection):
+        self.file_name = file_name
+        self.stmt = c_voidp(0)
         self.number_of_columns = None
         ## https://www.python.org/dev/peps/pep-0249/#id28
         self.connection = connection
@@ -180,8 +172,7 @@ class Cursor:
         self.stmt = None
 
     def execute(self, operation, parameters = None):
-        db, self.stmt, tail = c_voidp(0), c_voidp(), c_char_p()
-        rc = odbql_open(self.ddl, byref(db))
+        self.stmt, tail, db = c_voidp(), c_char_p(), self.connection.db
 
         operation = self.__add_semicolon_if_needed(operation)
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
@@ -247,10 +238,9 @@ class Cursor:
     def executemany(self, operation, parameters):
         """
         """
-        db, self.stmt, tail = c_voidp(), c_voidp(), c_char_p()
 
-        rc = odbql_open(self.ddl, byref(db))
-        #self.assertEqual(rc, ODBQL_OK)
+        db = self.connection.db
+        tail = c_char_p()
 
         operation = self.__add_semicolon_if_needed(operation)
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
@@ -271,7 +261,7 @@ class Cursor:
         Execute ECML verb
         """
         db, self.stmt, tail = c_voidp(), c_voidp(), c_char_p()
-        rc = odbql_open(self.ddl, byref(db))
+        rc = odbql_open(self.file_name, byref(db))
 
         operation = '{ ' + self.__marsify(procname, keyword_parameters) + ' }; '
 
@@ -409,14 +399,14 @@ class new_sql_generator(object):
         return new_sql_row(self.cursor)
 
 def new_sql(s):
-    conn = connect()
+    conn = connect("")
     c = conn.cursor()
     c.execute(s)
     return new_sql_generator(c)
 
 def new_open(fn):
     s = '''select all * from '%s';'''  % str(fn)
-    conn = connect()
+    conn = connect("")
     c = conn.cursor()
     c.execute(s)
     return new_sql_generator(c)

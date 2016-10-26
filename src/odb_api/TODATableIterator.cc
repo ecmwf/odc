@@ -24,13 +24,13 @@ namespace sql {
 template <typename T>
 TODATableIterator<T>::TODATableIterator(Table &p, iterator reader, iterator end, double* data, const std::vector<odb::sql::SQLColumn*>& columns)
 : parent(p),
-  reader_(reader),
+  it_(reader),
   end_(end), 
   data_(data),
   columns_(columns),
   firstRow_(true)
 {
-	if (reader_ != end_)
+	if (it_ != end_)
 	{
 		updateMetaData();
 		copyRow();
@@ -48,12 +48,12 @@ bool TODATableIterator<T>::next()
 {
 	if (firstRow_) firstRow_ = false;
 	else
-		++reader_;
+		++it_;
 
-	if (! (reader_ != end_) )
+	if (! (it_ != end_) )
 		return false;
 
-	if (reader_->isNewDataset())
+	if (it_->isNewDataset())
 		updateMetaData();
 
 	copyRow();
@@ -65,7 +65,7 @@ void TODATableIterator<T>::copyRow()
 {
 	size_t n = columns_.size();
 	for(size_t i = 0; i < n; ++i)
-		data_[i] = *static_cast<ODAColumn *>(columns_[i])->value(); //reader_->data()[columns_[i]->index()];
+		data_[i] = *static_cast<ODAColumn *>(columns_[i])->value(); //it_->data()[columns_[i]->index()];
 }
 
 template <typename T>
@@ -79,7 +79,7 @@ void TODATableIterator<T>::updateMetaData()
 	{
 		ODAColumn *odaColumn = dynamic_cast<ODAColumn *>(columns_[i]);
 		//ASSERT(odaColumn);
-		odaColumn->value(const_cast<double*>(reader_->data()) + columns_[i]->index());
+		odaColumn->value(const_cast<double*>(it_->data()) + columns_[i]->index());
 	}
 }
 

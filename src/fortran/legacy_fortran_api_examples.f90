@@ -298,7 +298,7 @@ subroutine example_fortran_api2
 
  write(0,*) 'example_fortran_api2'
 
- odb_handle = odb_read_new(config, cerr)
+ odb_handle = odb_select_new(config, cerr)
  if (cerr /=0) STOP 1
 
  odb_it =  odb_select_iterator_new(odb_handle, sql, cerr);

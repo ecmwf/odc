@@ -34,7 +34,7 @@ public:
 
 	const type::SQLType& type() const { return type_; }
 
-	virtual void rewind()                = 0;
+	virtual void rewind()  = 0;
 	virtual double next(bool& missing)                = 0;
 	virtual void advance(unsigned long) = 0;
 

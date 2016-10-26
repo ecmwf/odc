@@ -34,8 +34,9 @@ subroutine odbql_fortran_example
 
 !!!! Write to a file with SQL INSERT
 
- call odbql_open("CREATE TYPE BF_T AS (f1 bit1, f2 bit2);&
- & CREATE TABLE foo AS (x INTEGER, y REAL, v STRING, status BF_T) ON 'fort.odb';", db)
+ call odbql_open("", db)
+ call odbql_prepare_v2(db, "CREATE TYPE BF_T AS (f1 bit1, f2 bit2);&
+ & CREATE TABLE foo AS (x INTEGER,y REAL,v STRING,status BF_T) ON 'fort.odb';",-1, stmt, unparsed_sql)
  call odbql_prepare_v2(db, "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", -1, stmt, unparsed_sql)
 
 ! Populate first row with NULLs
@@ -62,10 +63,10 @@ subroutine odbql_fortran_example
 !!!! Read from a file with SQL SELECT
 
 ! Associate table with a file name
- call odbql_open("CREATE TABLE foo ON 'fort.odb';", db)
+ call odbql_open("fort.odb", db)
 ! You could as well retrieve some data directly from MARS instead:
-! call odbql_open("CREATE TABLE foo ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", db)
- call odbql_prepare_v2(db, "SELECT * FROM foo;", -1, stmt, unparsed_sql)
+! call odbql_open("mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod", db)
+ call odbql_prepare_v2(db, "SELECT *;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
 

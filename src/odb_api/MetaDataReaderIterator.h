@@ -37,14 +37,10 @@ extern "C" {
 
 namespace odb {
 	namespace codec { class Codec; } 
-	namespace sql {
-		template <typename T> class SQLIteratorSession;
-		class ODATableIterator;
-	}
+	namespace sql { class ODATableIterator; }
 }
 
 namespace odb {
-
 
 class MetaDataReaderIterator 
 {
@@ -84,6 +80,8 @@ public:
     int close();
 
     bool next(ecml::ExecutionContext*);
+
+    eckit::DataHandle* dataHandle();
 protected:
     bool skip(size_t dataSize);
 
@@ -100,7 +98,7 @@ private:
     odb::codec::Codec** codecs_;
     unsigned long long nrows_;
 protected:
-    eckit::DataHandle *f;
+    eckit::DataHandle *f_;
     Properties properties_;
     bool newDataset_;
 public:
@@ -127,8 +125,6 @@ public:
     ecml::ExecutionContext* context_;
 
     friend class MetaDataReader<MetaDataReaderIterator>;
-    //friend class odb::IteratorProxy<odb::MetaDataReaderIterator, Owner>;
-    //friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::MetaDataReaderIterator, Owner, const double> >;
     friend class odb::Header<odb::MetaDataReaderIterator>;
     friend class odb::sql::ODATableIterator;
 };

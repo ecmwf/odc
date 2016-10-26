@@ -52,7 +52,7 @@ public:
 
 	double* data_;
 	typename TODATable<T>::TReader oda_;
-	typename TODATable<T>::TReader::iterator reader_;
+	typename TODATable<T>::TReader::iterator it_;
 	typename TODATable<T>::TReader::iterator end_;
 
 // -- Methods

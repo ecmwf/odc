@@ -47,7 +47,7 @@ public:
 	iterator begin();
 	const iterator end(); 
 
-	eckit::DataHandle* dataHandle() { return dataHandle_; }
+	eckit::DataHandle* dataHandle();
 	// For C API
 	ReaderIterator* createReadIterator(const eckit::PathName&);
 	ReaderIterator* createReadIterator();
@@ -56,6 +56,9 @@ public:
 	iterator __iter__() { return iterator(createReadIterator()); }
 #endif
 
+    // For the iterator to signal all data has been slurped.
+    void noMoreData();
+
 private:
 // No copy allowed
     Reader(const Reader&);
@@ -63,7 +66,6 @@ private:
 
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
-	//const eckit::PathName path_;
 	const std::string path_;
     ecml::ExecutionContext* context_;
 

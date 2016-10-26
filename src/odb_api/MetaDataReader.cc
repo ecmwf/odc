@@ -39,7 +39,6 @@
 #include "odb_api/SQLBitfield.h"
 #include "odb_api/SQLExpression.h"
 #include "odb_api/SQLInteractiveSession.h"
-#include "odb_api/SQLIteratorSession.h"
 #include "odb_api/SQLParser.h"
 #include "odb_api/SQLSelect.h"
 #include "odb_api/SQLTable.h"

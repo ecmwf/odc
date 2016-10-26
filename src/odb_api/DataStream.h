@@ -29,11 +29,6 @@ namespace odb {
 typedef std::map<std::string, std::string> Properties;
 typedef std::vector<double> Flags;
 
-class Column;
-class Reader;
-class HashTable;
-class SQLIteratorSession;
-
 class SameByteOrder {
 public:
 	template<typename T> static void swap(T &) {}

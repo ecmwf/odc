@@ -36,10 +36,6 @@ private:
 // -- Overridden methods
 	void statement(SQLStatement*);
 	SQLOutput* defaultOutput();
-
-	//friend std::ostream& operator<<(std::ostream& s,const SQLNonInteractiveSession& p)
-	//	{ p.print(s); return s; }
-
 };
 
 } // namespace sql 

@@ -85,9 +85,12 @@ namespace odb {
 namespace sql {
 
 struct SessionResetter {
-    SessionResetter (SQLSession& s) : session_(s) {}
+    SessionResetter (SQLSession& s) : session_(s), resetSession_(true) {}
+    SessionResetter (SQLSession& s, bool r) : session_(s), resetSession_(r) {}
     ~SessionResetter () 
     {
+        if (! resetSession_)
+            return;
 #if YY_FLEX_MAJOR_VERSION >= 2
 #if YY_FLEX_MINOR_VERSION >= 5
 #if YY_FLEX_SUBMINOR_VERSION >=33
@@ -101,6 +104,7 @@ struct SessionResetter {
     }
 private:
     SQLSession& session_;
+    bool resetSession_;
 };
 
 void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, std::istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
@@ -129,10 +133,10 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::odblib_lex_init(&scanner); // TODO: handle unwind
 }
 
-void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, DataHandle* dh, SQLOutputConfig cfg)
+void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, DataHandle* dh, SQLOutputConfig cfg, bool resetSession)
 {
     //AutoLock<Mutex> lock(local_mutex);
-    SessionResetter ar (session);
+    SessionResetter ar (session, resetSession);
 
     //SQLYacc::odblib_lineno = 0;
 

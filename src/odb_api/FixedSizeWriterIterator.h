@@ -24,10 +24,6 @@ namespace eckit { class DataHandle; }
 
 namespace odb {
 
-class Codec;
-class HashTable;
-class SQLIteratorSession;
-
 class FixedSizeWriterIterator : public WriterBufferingIterator 
 {
 public:

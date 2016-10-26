@@ -31,7 +31,7 @@ ReaderIterator::ReaderIterator(Reader &owner)
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(0),
+  f_(0),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -39,8 +39,8 @@ ReaderIterator::ReaderIterator(Reader &owner)
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-	f = owner.dataHandle();
-	ASSERT(f);
+	f_ = owner.dataHandle();
+	ASSERT(f_);
 
 	loadHeaderAndBufferData();
 }
@@ -51,7 +51,7 @@ ReaderIterator::ReaderIterator(Reader &owner, ecml::ExecutionContext*)
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(0),
+  f_(0),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -59,10 +59,15 @@ ReaderIterator::ReaderIterator(Reader &owner, ecml::ExecutionContext*)
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-	f = owner.dataHandle();
-	ASSERT(f);
+	f_ = owner.dataHandle();
+	ASSERT(f_);
 
 	loadHeaderAndBufferData();
+}
+
+eckit::DataHandle* ReaderIterator::dataHandle()
+{
+    return f_;
 }
 
 ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
@@ -71,7 +76,7 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(0),
+  f_(0),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -79,8 +84,8 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-    f = ecml::DataHandleFactory::openForRead(pathName);
-	ASSERT(f);
+    f_ = ecml::DataHandleFactory::openForRead(pathName);
+	ASSERT(f_);
 	ownsF_ = true;
 
 	loadHeaderAndBufferData();
@@ -92,7 +97,7 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName, ecml::Ex
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(0),
+  f_(0),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -100,8 +105,8 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName, ecml::Ex
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-	f = ecml::DataHandleFactory::openForRead(pathName);
-	ASSERT(f);
+	f_ = ecml::DataHandleFactory::openForRead(pathName);
+	ASSERT(f_);
 	ownsF_ = true;
 
 	loadHeaderAndBufferData();
@@ -118,9 +123,10 @@ void ReaderIterator::loadHeaderAndBufferData()
 
 	size_t dataSize = header.dataSize();
 	memDataHandle_.size(dataSize);
-	unsigned long bytesRead = f->read(reinterpret_cast<char*>(memDataHandle_.buffer()), dataSize);
+	unsigned long bytesRead = f_->read(reinterpret_cast<char*>(memDataHandle_.buffer()), dataSize);
 
-	ASSERT(bytesRead == dataSize && "Could not read the amount of data indicated by file's header");
+    if (bytesRead != dataSize)
+        throw eckit::SeriousBug("Could not read the amount of data indicated by file's header");
 
     newDataset_ = true;
 }
@@ -164,7 +170,7 @@ size_t ReaderIterator::readBuffer(size_t dataSize)
 	memDataHandle_.size(dataSize);
 
 	unsigned long bytesRead;
-	if( (bytesRead = f->read(memDataHandle_.buffer(), dataSize)) == 0)
+	if( (bytesRead = f_->read(memDataHandle_.buffer(), dataSize)) == 0)
 		return 0;
 	ASSERT(bytesRead == dataSize);
 	return bytesRead;
@@ -172,22 +178,25 @@ size_t ReaderIterator::readBuffer(size_t dataSize)
 
 bool ReaderIterator::next(ecml::ExecutionContext* context)
 {
-	newDataset_ = false;
-	if (noMore_)
-		return false; 
+    newDataset_ = false;
+    if (noMore_)
+        return false; 
 
-	uint16_t c = 0;
-     long bytesRead = 0;
+    uint16_t c = 0;
+    long bytesRead = 0;
 
 	if ( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
 	{
-        if ( (bytesRead = f->read(&c, 2)) <= 0)
+        if ( (bytesRead = f_->read(&c, 2)) <= 0)
+        {
+            owner_.noMoreData();
 			return ! (noMore_ = true);
+        }
 		ASSERT(bytesRead == 2);
 
 		if (c == ODA_MAGIC_NUMBER) 
 		{
-			DataStream<SameByteOrder> ds(f);
+			DataStream<SameByteOrder> ds(f_);
 
 			unsigned char cc;
 			ds.readUChar(cc); ASSERT(cc == 'O');
@@ -202,10 +211,16 @@ bool ReaderIterator::next(ecml::ExecutionContext* context)
 
 			size_t dataSize = header.dataSize();
 			if (! readBuffer(dataSize))
+            {
+                owner_.noMoreData();
 				return ! (noMore_ = true);
+            }
 
             if( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
+            {
+                owner_.noMoreData();
 				return ! (noMore_ = true);
+            }
 			ASSERT(bytesRead == 2);
 
 			newDataset_ = true;
@@ -232,11 +247,11 @@ double& ReaderIterator::data(size_t i)
 
 int ReaderIterator::close()
 {
-	if (ownsF_ && f)
+	if (ownsF_ && f_)
 	{
-		f->close();
-		delete f;
-		f = 0;
+		f_->close();
+		delete f_;
+		f_ = 0;
 	}
 
 	return 0;

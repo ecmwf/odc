@@ -21,8 +21,8 @@ template <typename T>
 TODATable<T>::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name)
 : SQLTable(owner, path, name),
   data_(0),
-  oda_(*ecml::DataHandleFactory::openForRead(path)), // TODO: fix leak
-  reader_(oda_.begin()),
+  oda_(path),
+  it_(oda_.begin()),
   end_(oda_.end())
 {
     populateMetaData();
@@ -39,7 +39,7 @@ TODATable<T>::TODATable(SQLDatabase& owner, eckit::DataHandle &dh)
 : SQLTable(owner, nullPathName, inputTable),
   data_(0),
   oda_(dh),
-  reader_(oda_.begin()),
+  it_(oda_.begin()),
   end_(oda_.end())
 {
     populateMetaData();
@@ -50,7 +50,7 @@ TODATable<T>::TODATable(SQLDatabase& owner, std::istream &is, const std::string 
 : SQLTable(owner, nullPathName, inputTable),
   data_(0),
   oda_(is, delimiter),
-  reader_(oda_.begin()),
+  it_(oda_.begin()),
   end_(oda_.end())
 {
     populateMetaData();
@@ -62,7 +62,7 @@ void TODATable<T>::populateMetaData()
     using eckit::Log;
     
     Log::debug() << "TODATable::populateMetaData:" << std::endl;
-    size_t count = reader_->columns().size();
+    size_t count = it_->columns().size();
 
     delete[] data_;
     data_ = new double[count];
@@ -70,12 +70,12 @@ void TODATable<T>::populateMetaData()
 
     for(size_t i = 0; i < count; i++)
     {
-        Column& column = *reader_->columns()[i];
+        Column& column (*it_->columns()[i]);
 
-        const std::string name = column.name();
-        bool hasMissing = column.hasMissing();
-        double missing = column.missingValue();
-        BitfieldDef bitfieldDef = column.bitfieldDef();
+        const std::string name (column.name());
+        bool hasMissing (column.hasMissing());
+        double missing (column.missingValue());
+        BitfieldDef bitfieldDef (column.bitfieldDef());
 
         std::string sqlType;
         switch(column.type())
@@ -108,7 +108,7 @@ void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
     using eckit::Log;
 
     Log::debug() << "ODATableIterator::updateMetaData: " << endl;
-	MetaData newColumns (reader_->columns());
+	MetaData newColumns (it_->columns());
 	for(size_t i = 0; i < selected.size(); i++)
 	{
 		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);
@@ -176,13 +176,13 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 		return true;
 	}
 
-	std::string colName = name + "@";
+	std::string colName (name + "@");
 
-	int n = 0;
-	std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
+	int n (0);
+	std::map<std::string,SQLColumn*>::iterator it (columnsByName_.begin());
 	for ( ; it != columnsByName_.end(); ++it)
 	{
-		std::string s = it->first;
+		const std::string& s (it->first);
 		if (s.find(colName) == 0)
 		{
 			n++;
@@ -205,13 +205,13 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 template <typename T>
 SQLColumn* TODATable<T>::column(const std::string& name)
 {
-	std::string colName = name + "@";
+	const std::string colName (name + "@");
 
-	SQLColumn * column = 0;
-	std::map<std::string,SQLColumn*>::iterator it = columnsByName_.begin();
+	SQLColumn * column (0);
+	std::map<std::string,SQLColumn*>::iterator it (columnsByName_.begin());
 	for ( ; it != columnsByName_.end(); ++it)
 	{
-		std::string s = it->first;
+		const std::string s (it->first);
 		if (s.find(colName) == 0)
 		{
 			if (column)
@@ -228,7 +228,11 @@ SQLColumn* TODATable<T>::column(const std::string& name)
 template <typename T>
 SQLTableIterator* TODATable<T>::iterator(const std::vector<SQLColumn*>& x) const
 {
-	return new TableIterator(const_cast<TODATable&>(*this), reader_, end_, const_cast<double *>(data_), x);
+    TODATable<T>& self (*const_cast<TODATable<T>*>(this));
+    if (! (self.it_ != self.end_))
+        self.it_ = self.oda_.begin();
+
+    return new TableIterator(const_cast<TODATable&>(*this), it_, end_, const_cast<double *>(data_), x);
 }
 
 } // namespace sql

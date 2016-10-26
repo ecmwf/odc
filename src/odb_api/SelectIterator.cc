@@ -25,10 +25,10 @@ using namespace eckit;
 
 namespace odb {
 
-SelectIterator::SelectIterator(Select &owner)
+SelectIterator::SelectIterator(Select &owner, odb::sql::SQLNonInteractiveSession& s)
 : owner_(owner),
   select_(),
-  session_(*this),
+  session_(*this, s),
   selectStmt_(0),
   metaData_(0),
   data_(0),
@@ -40,10 +40,10 @@ SelectIterator::SelectIterator(Select &owner)
 {
 }
 
-SelectIterator::SelectIterator(Select &owner, const std::string& select, ecml::ExecutionContext* context)
+SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, ecml::ExecutionContext* context, odb::sql::SQLNonInteractiveSession& s)
 : owner_(owner),
   select_(select),
-  session_(*this),
+  session_(*this, s),
   selectStmt_(0),
   metaData_(0),
   data_(0),

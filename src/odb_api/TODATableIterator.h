@@ -28,7 +28,7 @@ public:
 private:
 
 	Table &parent;
-	iterator reader_;
+	iterator it_;
 	iterator end_;
 	double* data_;
 	const std::vector<SQLColumn*>& columns_;

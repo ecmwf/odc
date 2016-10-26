@@ -66,6 +66,11 @@ SQLDatabase& SQLSession::openDatabase(const PathName& path,const std::string& na
     return *currentDatabase_;
 }
 
+void SQLSession::closeDatabase(const std::string& name)
+{
+    // TODO
+}
+
 unsigned long long SQLSession::execute(SQLStatement& sql, ecml::ExecutionContext* context)
 {
     Timer timer("Execute");

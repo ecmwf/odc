@@ -36,7 +36,7 @@ Header<OWNER>::~Header ()
 template <typename OWNER>
 void Header<OWNER>::load()
 {
-	DataStream<SameByteOrder> f(owner_.f);
+	DataStream<SameByteOrder> f(owner_.dataHandle());
 
 	uint16_t c;
 	f.readUInt16(c);
@@ -53,18 +53,18 @@ void Header<OWNER>::load()
 template <typename OWNER>
 void Header<OWNER>::loadAfterMagic()
 {
-	DataStream<SameByteOrder> f(owner_.f);
+	DataStream<SameByteOrder> f(owner_.dataHandle());
 
 	f.readInt32(byteOrder_);
 
 	if (byteOrder_ != BYTE_ORDER_INDICATOR)
 	{
-		DataStream<OtherByteOrder> ds(owner_.f);
+		DataStream<OtherByteOrder> ds(owner_.dataHandle());
 		load(ds);
 	}
 	else
 	{
-		DataStream<SameByteOrder> ds(owner_.f);
+		DataStream<SameByteOrder> ds(owner_.dataHandle());
 		load(ds);
 	}
 }

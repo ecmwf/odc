@@ -38,6 +38,7 @@ subroutine test_fortran_api_non_existing_file
  write(0,*) 'test_fortran_api_non_existing_file: odb_read_iterator_new => ', cerr
  if (cerr == 0) STOP 1
 
+ odb_handle = odb_select_new(config, cerr)
  odb_it = odb_select_iterator_new(odb_handle, sql, cerr);
  if (cerr == 0) STOP 1
 end subroutine test_fortran_api_non_existing_file

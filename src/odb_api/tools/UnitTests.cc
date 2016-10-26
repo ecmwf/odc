@@ -1003,3 +1003,41 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
     odb::tool::ImportTool::importText(data, path);
     Log::info() << "QuestionMarkHandlingWhenSplittingByStringColumn_ODB235: Created file " << "ODB_235.odb" << endl;
 }
+
+TEST(LegacyAPIExecuteSelectTwice)
+{
+    const std::string fn("legacy_execute_select_twice.odb");
+    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    odb::Select o(std::string("SELECT * FROM \"") + fn + "\";");
+
+    int i (0), j (0);
+
+    for (odb::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
+        ++i;
+
+    ASSERT(i == 2);
+
+    for (odb::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
+        ++j;
+
+    ASSERT(j == 2);
+}
+
+TEST(LegacyAPITraverseReaderTwice)
+{
+    const std::string fn("legacy_traverse_reader_twice.odb");
+    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    odb::Reader o(fn);
+
+    int i (0), j (0);
+
+    for (odb::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
+        ++i;
+
+    ASSERT(i == 2);
+
+    for (odb::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
+        ++j;
+
+    ASSERT(j == 2);
+}

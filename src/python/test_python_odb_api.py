@@ -15,10 +15,9 @@ class TestODB250_A(unittest.TestCase):
         self.db = c_voidp()
         self.stmt = c_voidp()
         self.tail = c_char_p()
-        rc = odbql_open("""
-            CREATE TYPE bf AS (f bit31);
-            CREATE TABLE foo AS (bf1 bf) ON 'test_python_bitfields.odb';
-            """, byref(self.db))
+        rc = odbql_open("", byref(self.db))
+        self.assertEqual(rc, ODBQL_OK)
+        rc = odbql_prepare_v2(self.db, """ CREATE TYPE bf AS (f bit31); CREATE TABLE foo AS (bf1 bf) ON 'test_python_bitfields.odb'; """ , -1, byref(self.stmt), byref(self.tail))
         self.assertEqual(rc, ODBQL_OK)
 
     def tearDown(self):
@@ -80,9 +79,11 @@ class TestODBQL(unittest.TestCase):
     def test_insert_data(self):
         db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
 
-        rc = odbql_open(TEST_DDL, byref(db))
+        rc = odbql_open("", byref(db))
         self.assertEqual(rc, ODBQL_OK)
 
+        rc = odbql_prepare_v2(db, TEST_DDL, -1, byref(stmt), byref(tail))
+        self.assertEqual(rc, ODBQL_OK)
         rc = odbql_prepare_v2(db, TEST_INSERT, -1, byref(stmt), byref(tail))
         self.assertEqual(rc, ODBQL_OK)
         
@@ -114,7 +115,10 @@ class TestODBQL(unittest.TestCase):
     def test_select_data(self):
         db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
 
-        rc = odbql_open("CREATE TABLE foo ON 'new_api_example_python.odb';", byref(db))
+        rc = odbql_open("new_api_example_python.odb", byref(db))
+        self.assertEqual(rc, ODBQL_OK)
+
+        rc = odbql_prepare_v2(db, "CREATE TABLE foo on 'new_api_example_python.odb';", -1, byref(stmt), byref(tail))
         self.assertEqual(rc, ODBQL_OK)
 
         rc = odbql_prepare_v2(db, "SELECT ALL * FROM foo;", -1, byref(stmt), byref(tail))
@@ -157,8 +161,11 @@ class TestODBQL(unittest.TestCase):
 
 
     def test_bitfields(self): # ODB-97
+        print "TestODBQL.test_bitfields"
         db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
-        rc = odbql_open( """create table atovs on 'ATOVS.trimmed.odb';""", byref(db))
+        rc = odbql_open( "", byref(db))
+        self.assertEqual(rc, ODBQL_OK)
+        rc = odbql_prepare_v2(db, '''create table atovs on "ATOVS.trimmed.odb";''', -1, byref(stmt), byref(tail))
         self.assertEqual(rc, ODBQL_OK)
         rc = odbql_prepare_v2(db, '''select distinct qcinfo_1dvar from atovs order by 1 asc;''', -1, byref(stmt), byref(tail))
         self.assertEqual(rc, ODBQL_OK)
@@ -184,7 +191,7 @@ class TestODBQL(unittest.TestCase):
     def test_stored_procedure(self):
         db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
 
-        rc = odbql_open("CREATE TABLE foo ON 'new_api_example_python.odb';", byref(db))
+        rc = odbql_open("new_api_example_python.odb", byref(db))
         self.assertEqual(rc, ODBQL_OK)
 
         e = """ { compare, left = new_api_example_python.odb, right = new_api_example_python.odb } ; """
@@ -205,12 +212,14 @@ class TestPEP249(unittest.TestCase):
                      [3,0.3, '  three ', 3],
                      [4,0.4, '  four  ', 4],
                     ]
-        self.conn = connect(TEST_DDL)
+        self.conn = connect("")
+
 
     def test_insert_data(self):
         c = self.conn.cursor()
         print self.data
-        c.executemany(TEST_INSERT, self.data)
+        #c.execute(TEST_DDL)
+        c.executemany(TEST_DDL + TEST_INSERT, self.data)
 
 
     def read_with_legacy_api(self, file_name = 'new_api_example_python.odb'):
@@ -222,6 +231,7 @@ class TestPEP249(unittest.TestCase):
         print 'legacy:', legacy
 
         c = self.conn.cursor()
+        c.execute(TEST_DDL)
         c.execute(TEST_SELECT)
         number_of_rows = 0
         while True:
@@ -243,6 +253,7 @@ class TestPEP249(unittest.TestCase):
     def test_select_data_fetchall(self):
         """"""
         c = self.conn.cursor()
+        c.execute(TEST_DDL)
         c.execute(TEST_SELECT)
         rows = [r for r in c.fetchall()]
         self.assertEqual ( len(rows), 4 )
@@ -251,6 +262,7 @@ class TestPEP249(unittest.TestCase):
     def test_select_data_iterate(self):
         """https://www.python.org/dev/peps/pep-0249/#iter"""
         c = self.conn.cursor()
+        c.execute(TEST_DDL)
         c.execute(TEST_SELECT)
         self.assertEqual ( self.data,  [r for r in c] )
 
@@ -264,29 +276,36 @@ class TestPEP249(unittest.TestCase):
         """
         ODB-97 (old, Swig based API), ODB-250 (new API): Bitfield values read incorrectly.
         """
+        print "TestPEP249.test_bitfields"
         # !odb sql select qcflags_info_1dvar    -i ATOVS.trimmed.odb | sort | uniq
         expected = [0,1,4,5,8,9,12,13,130,131,134,135,138,139,142,143,642]
 
-        conn = odb.connect("""create table atovs on 'ATOVS.trimmed.odb';""")
+        conn = odb.connect("ATOVS.trimmed.odb")
         c = conn.cursor()
-        c.execute('''select distinct qcinfo_1dvar from atovs order by 1''')
+        #c.execute('''create table atovs on "ATOVS.trimmed.odb";''')
+        c.execute('''select distinct qcinfo_1dvar from "ATOVS.trimmed.odb" order by 1''')
         actual = [r[0] for r in c.fetchall()]
         # TODO: ODB-250
         #self.assertEqual(actual, expected) 
 
     def test_sorting_string_columns(self): # ODB-94 
-        conn = odb.connect( """CREATE TABLE foo AS (statid string) ON 'test_sorting_string_columns.odb';""")
+        conn = odb.connect("") 
         c = conn.cursor()
+        c.execute("""CREATE TABLE foo AS (statid string) ON 'test_sorting_string_columns.odb';""")
         data = [[w] for w in """12345678 abcdefgh dfgsdfgs DFADSFAD sdffffff aaaaaaaa""".split()]
         print data
         c.executemany('INSERT INTO foo (statid,x) VALUES (?,?);', data)
         conn.commit()
+
+        ## TODO: the next three lines should not be needed, I think 
+        #conn = odb.connect("") 
+        #c = conn.cursor()
+        #c.execute("""CREATE TABLE foo ON 'test_sorting_string_columns.odb';""")
+
         c.execute('''select statid from foo order by 1 asc;''')
         sql_sorted = [r[0] for r in c.fetchall()]
-        c.execute('''select statid from foo;''')
-        python_sorted = sorted([r[0] for r in c.fetchall()])
+        python_sorted = sorted(sql_sorted)
         self.assertEqual ( sql_sorted, python_sorted )
-        print "SQL SORTED:", sql_sorted
 
 """
     def test_select_data_from_mars(self):
@@ -310,7 +329,6 @@ class TestPEP249(unittest.TestCase):
         data = c.fetchall()
         self.assertEqual(len(data), 4438) 
 """
-
 
 if __name__ == '__main__':
     unittest.main()

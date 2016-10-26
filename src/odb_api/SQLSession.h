@@ -23,6 +23,7 @@ namespace ecml { class ExecutionContext; }
 #include "odb_api/SQLAST.h"
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLInsertFactory.h"
+#include "odb_api/SQLDatabase.h"
 
 namespace odb {
 namespace sql {
@@ -34,42 +35,37 @@ class SQLTable;
 
 class SQLSession {
 public:
-	SQLSession();
-	virtual ~SQLSession(); 
+    SQLSession();
+    virtual ~SQLSession(); 
 
-	SQLDatabase& openDatabase(const eckit::PathName&,const std::string& name = "");
-	void closeDatabase(const std::string& name);
+    virtual SQLDatabase& openDatabase(const eckit::PathName&,const std::string& name = "");
+    virtual void closeDatabase(const std::string& name);
 
-	void createIndex(const std::string&,const std::string&);
+    virtual void createIndex(const std::string&,const std::string&);
 
-	SQLDatabase* getDatabase(const std::string& name);
+    virtual SQLDatabase* getDatabase(const std::string& name);
 
-    SQLSelectFactory& selectFactory();
-    SQLInsertFactory& insertFactory();
+    virtual SQLSelectFactory& selectFactory();
+    virtual SQLInsertFactory& insertFactory();
 
-	//double getParameter(int) const;
-	//void   setParameter(int,double);
+    virtual SQLTable* findTable(const odb::sql::Table&);
 
-	SQLTable* findTable(const odb::sql::Table&);
+    virtual SQLTable* openDataHandle(eckit::DataHandle &);
+    virtual SQLTable* openDataStream(std::istream &, const std::string &);
 
-	SQLTable* openDataHandle(eckit::DataHandle &);
-    SQLTable* openDataStream(std::istream &, const std::string &);
+    virtual void statement(const SelectAST& s);
+    virtual void statement(SQLStatement*) = 0;
+    virtual SQLStatement* statement() = 0;
+    virtual SQLOutput* defaultOutput() = 0;
 
-	virtual void statement(const SelectAST& s);
-	virtual void statement(SQLStatement*) = 0;
-	virtual SQLStatement* statement() = 0;
-	virtual SQLOutput* defaultOutput() = 0;
-	unsigned long long lastExecuteResult() { return lastExecuteResult_; }
+    virtual SQLDatabase& currentDatabase() const;
+    virtual SQLDatabase& currentDatabase(SQLDatabase*);
 
-	SQLDatabase& currentDatabase() const;
-	SQLDatabase& currentDatabase(SQLDatabase*);
-
-	unsigned long long execute(SQLStatement&, ecml::ExecutionContext*);
+    virtual unsigned long long execute(SQLStatement&, ecml::ExecutionContext*);
 
     virtual void interactive() {}
 
-protected:
-	unsigned long long lastExecuteResult_;
+    unsigned long long lastExecuteResult() { return lastExecuteResult_; }
 
     bool gotSelectAST() const;
     void gotSelectAST(bool);
@@ -78,10 +74,10 @@ protected:
 private:
 // No copy allowed
 
-	SQLSession(const SQLSession&);
-	SQLSession& operator=(const SQLSession&);
+    SQLSession(const SQLSession&);
+    SQLSession& operator=(const SQLSession&);
 
-	SQLDatabase* currentDatabase_;
+    SQLDatabase* currentDatabase_;
     //std::map<int,double> params_;
     std::map<std::string,SQLDatabase*> databases_;
     SQLSelectFactory selectFactory_;
@@ -89,6 +85,15 @@ private:
 
     SelectAST selectAST_;
     bool gotSelectAST_;
+    unsigned long long lastExecuteResult_;
+
+
+    friend std::ostream& operator<<(std::ostream& s, const SQLSession& p)
+    {
+        s << "[session@" << &p << ", currentDatabase: " << *(p.currentDatabase_) << " ]";
+        return s;
+    }
+
 };
 
 } // namespace sql

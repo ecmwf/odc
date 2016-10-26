@@ -34,9 +34,10 @@ void ODADatabase::close() { SQLDatabase::close(); }
 
 SQLTable* ODADatabase::table(const Table& t)
 {
-    std::map<std::string,SQLTable*>::iterator j = tablesByName_.find(t.name);
+    std::map<std::string,SQLTable*>::iterator j (tablesByName_.find(t.name));
 
     Log::debug() << "ODADatabase::table(" << t.name << ") tablesByName_.size()==" << tablesByName_.size() << std::endl;
+
     for (std::map<std::string,SQLTable*>::iterator it(tablesByName_.begin()); it != tablesByName_.end(); ++it)
         Log::info() << " : " << it->first << std::endl;
 
@@ -66,7 +67,7 @@ SQLTable* ODADatabase::table(const Table& t)
 
 SQLTable* ODADatabase::openDataHandle(DataHandle& dh, DataFormat dataFormat)
 {
-	std::string name = "dataHandle@";
+	std::string name ("dataHandle@");
 	//name += std::string(&dh);
 
 	if (dataFormat == ODA) return tablesByName_[name] = new TODATable<Reader>(*this, dh);
@@ -79,7 +80,7 @@ SQLTable* ODADatabase::openDataHandle(DataHandle& dh, DataFormat dataFormat)
 
 SQLTable* ODADatabase::openDataStream(std::istream& is, const std::string& delimiter, DataFormat dataFormat) 
 {
-	std::string name = "dataHandle@";
+	std::string name ("dataHandle@");
 	//name += std::string(&dh);
 
 	if (dataFormat == CSV) return tablesByName_[name] = new TODATable<TextReader>(*this, is, delimiter);

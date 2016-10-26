@@ -28,8 +28,6 @@ namespace eckit { class ExecutionContext; }
 
 namespace odb {
 
-class HashTable;
-class SQLIteratorSession;
 class TemplateParameters;
 
 template <typename WRITE_ITERATOR, typename OWNER >

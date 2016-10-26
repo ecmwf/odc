@@ -33,12 +33,19 @@ int odbql_example_insert_data()
     odbql_stmt *stmt;
     int i;
 
-    int rc = odbql_open("CREATE TYPE bf AS (f1 bit1, f2 bit2);\n"
-                        "CREATE TABLE foo AS"
-                        "   (x INTEGER, y REAL, v STRING, status bf)"
-                        " ON 'new_api_c_example.odb';", &db);
+    int rc = odbql_open("", &db);
+
     checkRC(rc, "Cannot open database", db);
     
+    rc = odbql_prepare_v2(db, "CREATE TYPE bf AS (f1 bit1, f2 bit2);\n"
+                              "CREATE TABLE foo AS"
+                              "   (x INTEGER, y REAL, v STRING, status bf)"
+                              " ON 'new_api_c_example.odb';",
+                          -1, 
+                          &stmt, 
+                          0);
+    checkRC(rc, "Failed to prepare DDL statements", db);
+
     rc = odbql_prepare_v2(db, 
             "INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);", 
             -1, 
@@ -85,12 +92,12 @@ int odbql_example_select_data_read_results()
     int i, rc, column, number_of_columns;
     long long number_of_rows = 0, number_of_rows_in_current_dataset = 0;
     
-    rc = odbql_open("CREATE TABLE foo ON 'new_api_c_example.odb';", &db);
+    rc = odbql_open("new_api_c_example.odb", &db);
                            //" ON 'mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod';", &db);
-    checkRC(rc, "Cannot open database", db);
+    checkRC(rc, "Cannot open file", db);
     
     //rc = odbql_prepare_v2(db, "SELECT x,y,v,status,status.* FROM foo;", -1, &res, 0);
-    rc = odbql_prepare_v2(db, "SELECT ALL * FROM foo;", -1, &res, 0);
+    rc = odbql_prepare_v2(db, "SELECT * FROM 'new_api_c_example.odb';", -1, &res, 0);
     checkRC(rc, "Failed to prepare statement", db);
    
     // Print rows of data. 
@@ -191,7 +198,7 @@ int odbql_example_execute_embedded_ecml()
     odbql_stmt *res;
     int rc;
 
-    rc = odbql_open("CREATE TABLE foo ON 'new_api_c_example.odb';", &db);
+    rc = odbql_open("new_api_c_example.odb", &db);
     checkRC(rc, "Cannot open database", db);
 
     rc = odbql_prepare_v2(db, " { compare, left = new_api_c_example.odb, right = new_api_c_example.odb }; ", -1, &res, 0);
@@ -200,7 +207,7 @@ int odbql_example_execute_embedded_ecml()
     // Print rows of data. 
     while((rc = odbql_step(res)) != ODBQL_DONE) 
     {
-            printf("\n+++\n");
+        printf("\n---\n");
     }
     
     rc = odbql_finalize(res);

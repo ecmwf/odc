@@ -24,11 +24,6 @@ namespace eckit { class DataHandle; }
 
 namespace odb {
 
-class Reader;
-class HashTable;
-class SQLIteratorSession;
-class ReaderIterator;
-
 typedef WriterBufferingIterator DefaultWritingIterator;
 
 template <typename ITERATOR = DefaultWritingIterator>

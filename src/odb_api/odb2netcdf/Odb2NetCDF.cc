@@ -158,12 +158,13 @@ void Odb2NetCDF_2D::convert() {
     int * channel = new int [nmaxchannel];
     int i=0;
 
-    for (odb::Select::iterator its = odbs.begin();  its != odbs.end(); ++its, ++i)
-      {
-	if (i==0)
-	  colChannel = dataFile.add_var(its->columns()[0]->name().c_str(), ncInt, yDim);
-	channel[i] = ((*its)[0]);
-      }
+    odb::Select odbs2(sql);
+    for (odb::Select::iterator its = odbs2.begin();  its != odbs2.end(); ++its, ++i)
+    {
+        if (i==0)
+            colChannel = dataFile.add_var(its->columns()[0]->name().c_str(), ncInt, yDim);
+        channel[i] = ((*its)[0]);
+    }
 
     colChannel->put(channel, nmaxchannel);
 
