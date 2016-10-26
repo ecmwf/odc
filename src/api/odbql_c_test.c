@@ -60,21 +60,3 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-/*
-TEST(odbql_example_insert_data) { ASSERT(odbql_example_insert_data() == 0); }
-TEST(odbql_example_select_data_read_results) { ASSERT(odbql_example_select_data_read_results() == 0); }
-
-int main(int argc, char** argv)
-{
-    using namespace odb;
-    using namespace odb::tool;
-    using namespace eckit;
-
-	Tool::registerTools();
-    static ContextBehavior* behavior (0);
-    if (behavior == 0)
-        Context::instance().behavior(behavior = new ODBBehavior());
-    odb::tool::test::TestRunnerApplication testRunner(argc, argv);
-    testRunner.start();
-}
-*/

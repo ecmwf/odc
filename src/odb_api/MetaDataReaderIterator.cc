@@ -28,7 +28,7 @@ MetaDataReaderIterator::MetaDataReaderIterator(DataHandle &handle,bool skipData)
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(&handle),
+  f_(&handle),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -40,8 +40,8 @@ MetaDataReaderIterator::MetaDataReaderIterator(DataHandle &handle,bool skipData)
   refCount_(0),
   fileSize_(0)
 {
-	ASSERT(f);
-	fileSize_ = f->estimate();
+	ASSERT(f_);
+	fileSize_ = f_->estimate();
 }
 
 
@@ -50,7 +50,7 @@ MetaDataReaderIterator::MetaDataReaderIterator(DataHandle *handle,bool skipData)
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(handle),
+  f_(handle),
   newDataset_(false),
   noMore_(false),
   ownsF_(true),
@@ -62,8 +62,8 @@ MetaDataReaderIterator::MetaDataReaderIterator(DataHandle *handle,bool skipData)
   refCount_(0),
   fileSize_(0)
 {
-    ASSERT(f);
-    fileSize_ = f->estimate();
+    ASSERT(f_);
+    fileSize_ = f_->estimate();
 }
 
 MetaDataReaderIterator::MetaDataReaderIterator(const eckit::PathName & path, bool skipData):
@@ -71,7 +71,7 @@ MetaDataReaderIterator::MetaDataReaderIterator(const eckit::PathName & path, boo
   lastValues_(0),
   codecs_(0),
   nrows_(0),
-  f(path.fileHandle()),
+  f_(path.fileHandle()),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
@@ -83,10 +83,10 @@ MetaDataReaderIterator::MetaDataReaderIterator(const eckit::PathName & path, boo
   refCount_(0),
   fileSize_(0)
 {
-	ASSERT(f);
+	ASSERT(f_);
 	ownsF_ = true;
-	f->openForRead();
-	fileSize_ = f->estimate();
+	f_->openForRead();
+	fileSize_ = f_->estimate();
 }
 
 
@@ -102,7 +102,7 @@ void MetaDataReaderIterator::loadHeaderAndBufferData()
 	size_t dataSize = header.dataSize();
 	if (dataSize && !skip(dataSize))
 		ASSERT(0 && "Could not read the amount of data indicated by file's header");
-	blockEndOffset_ = f->position();
+	blockEndOffset_ = f_->position();
 }
 
 MetaDataReaderIterator::~MetaDataReaderIterator ()
@@ -146,10 +146,10 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 	if (skipData_)
 	{
         Log::debug() << "MetaDataReaderIterator::readBuffer: skip(" << dataSize << ")" << std::endl;
-		if (fileSize_ && f->position() + Offset(dataSize) > fileSize_)
+		if (fileSize_ && f_->position() + Offset(dataSize) > fileSize_)
             throw eckit::ShortFile("MetaDataReaderIterator::skip");
 
-        f->skip(dataSize);
+        f_->skip(dataSize);
         return true;
 	}
 
@@ -162,7 +162,7 @@ bool MetaDataReaderIterator::skip(size_t dataSize)
 	}
 	
 	size_t actualNumberOfBytes = 0;
-	if ((actualNumberOfBytes = f->read(encodedData_, dataSize)) != dataSize)
+	if ((actualNumberOfBytes = f_->read(encodedData_, dataSize)) != dataSize)
 	{
 		Log::warning() << "MetaDataReaderIteratorReadingData::skip: expected " << dataSize 
 						<< " could read only " << actualNumberOfBytes << std::endl;
@@ -182,18 +182,18 @@ bool MetaDataReaderIterator::next(ecml::ExecutionContext* context)
 	uint16_t c = 0;
     long bytesRead = 0;
 
-	blockStartOffset_ = f->position();
+	blockStartOffset_ = f_->position();
 
 	if ( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
 	{
 
-        if ( (bytesRead = f->read(&c, 2)) <= 0)
+        if ( (bytesRead = f_->read(&c, 2)) <= 0)
 			return ! (noMore_ = true);
 		ASSERT(bytesRead == 2);
 
 		if (c == ODA_MAGIC_NUMBER) 
 		{
-			DataStream<SameByteOrder> ds(f);
+			DataStream<SameByteOrder> ds(f_);
 
 			unsigned char cc;
 			ds.readUChar(cc); ASSERT(cc == 'O');
@@ -211,10 +211,10 @@ bool MetaDataReaderIterator::next(ecml::ExecutionContext* context)
 
 			size_t dataSize = header.dataSize();
 			if (! skip(dataSize)) {
-				blockEndOffset_ = f->position();
+				blockEndOffset_ = f_->position();
 				return ! (noMore_ = true);
 			} else {
-				blockEndOffset_ = f->position();
+				blockEndOffset_ = f_->position();
 				return true;
 			}
 		}
@@ -234,11 +234,11 @@ const double* MetaDataReaderIterator::data() { return lastValues_; }
 
 int MetaDataReaderIterator::close()
 {
-	if (ownsF_ && f)
+	if (ownsF_ && f_)
 	{
-		f->close();
-		delete f;
-		f = 0;
+		f_->close();
+		delete f_;
+		f_ = 0;
 	}
 
 	return 0;
@@ -262,7 +262,7 @@ const std::string& MetaDataReaderIterator::codecName(unsigned long index) const 
 double MetaDataReaderIterator::columnMissingValue(unsigned long index) { return columns_[index]->missingValue(); }
 const BitfieldDef& MetaDataReaderIterator::bitfieldDef(unsigned long index) { return columns_[index]->bitfieldDef(); }
 
-
+eckit::DataHandle* MetaDataReaderIterator::dataHandle() { return f_; }
 
 
 

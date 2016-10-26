@@ -23,13 +23,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 namespace eckit { class ExecutionContext; }
-
-namespace odb {
-	namespace sql {
-		template <typename T> class SQLIteratorSession;
-		class ODATableIterator;
-	}
-}
+namespace odb { namespace sql { class ODATableIterator; } }
 
 namespace odb {
 
@@ -76,22 +70,16 @@ private:
 	//Properties properties_;
 
 	bool newDataset_;
+public:
 	bool noMore_;
 
 	bool ownsF_;
-public:
 	ecml::ExecutionContext* context_;
-
-	//ReadOnlyMemoryDataHandle memDataHandle_;
+	int refCount_;
 
 protected:
 	// FIXME:
     TextReaderIterator(): owner_(*((TextReader *) 0)), columns_(0) {}
-
-	int refCount_;
-
-	//friend ::oda_write_iterator* ::oda_create_write_iterator(::oda*, const char *,int *); // for next()
-	//friend int ::oda_read_iterator_get_next_row(::oda_read_iterator*, int, double*, int*);
 
 	friend class odb::TextReader;
 	friend class odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double>;

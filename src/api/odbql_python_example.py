@@ -28,19 +28,21 @@ import odb
 #
 #   Function connect returns a Connection object.
 
-conn = odb.connect('''
-    CREATE TYPE bf AS (f1 bit1, f2 bit2); 
-
-    CREATE TABLE foo AS 
-    ( x INTEGER, y DOUBLE, v STRING, status bf) 
-    ON 'new_api_example.odb';
-''')
+conn = odb.connect("")
 
 ### 1.2 Create a Cursor object. """
 c = conn.cursor()
 
 ### 1.3 Populate table with data using SQL INSERT statement 
 #    and method Cursor.executemany. 
+
+c.execute('''
+    CREATE TYPE bf AS (f1 bit1, f2 bit2); 
+
+    CREATE TABLE foo AS 
+    ( x INTEGER, y DOUBLE, v STRING, status bf) 
+    ON 'new_api_example.odb';
+    ''')
 
 c.executemany('INSERT INTO foo (x,y,v,status) VALUES (?,?,?,?);', 
                 [[1,0.1, '  one   ', 1], 
@@ -87,20 +89,17 @@ print 'numpy array:\n', a
 
 
 ### Example 5. Load some data from MARS or ODB Server into Pandas DataFrame
-conn = odb.connect(ddl = '''
-    CREATE TABLE rt16001
-    ON "mars://RETRIEVE,
-                DATABASE  = marsod,
-                CLASS     = OD,
-                TYPE      = MFB,
-                STREAM    = OPER,
-                EXPVER    = 0001,
-                DATE      = 20160830,
-                TIME      = 1200,
-                REPORTYPE = 16001";
-''')
+conn = odb.connect('''mars://RETRIEVE,
+                        DATABASE  = marsod,
+                        CLASS     = OD,
+                        TYPE      = MFB,
+                        STREAM    = OPER,
+                        EXPVER    = 0001,
+                        DATE      = 20160830,
+                        TIME      = 1200,
+                        REPORTYPE = 16001''')
 c = conn.cursor()
-c.execute('select * from rt16001;')
+c.execute('select *;')
 d = pd.DataFrame.from_records(c.fetchall(), 
                               columns = [d[0] for d in c.description],
                               exclude = ['expver','class','stream'])

@@ -8,44 +8,66 @@
  * does it submit to any jurisdiction.
  */
 
+#include "odb_api/SelectIterator.h"
 #include "odb_api/SQLIteratorOutput.h"
+#include "odb_api/SQLIteratorSession.h"
 
 namespace odb {
 namespace sql {
 
-template <typename T>
-SQLIteratorSession<T>::SQLIteratorSession(T &it)
+SQLIteratorSession::SQLIteratorSession(SelectIterator &it, SQLSession& s)
 : statement_(0),
-  iterator_(it)
+  iterator_(it),
+  session_(s)
 {}
 
-template <typename T>
-SQLIteratorSession<T>::~SQLIteratorSession() {}
+SQLIteratorSession::~SQLIteratorSession() {}
 
-template <typename T>
-SQLOutput* SQLIteratorSession<T>::defaultOutput()
-{
-	return new SQLIteratorOutput<T>(iterator_);
-}
+SQLOutput* SQLIteratorSession::defaultOutput() { return new SQLIteratorOutput<>(iterator_); }
 
-template <typename T>
-void SQLIteratorSession<T>::statement(odb::sql::SQLStatement *sql)
+void SQLIteratorSession::statement(odb::sql::SQLStatement *sql)
 {
-	ASSERT(sql);	
+	ASSERT(sql);
 	statement_ = sql;
 }
 
-template <typename T>
-SQLStatement* SQLIteratorSession<T>::statement()
+SQLStatement* SQLIteratorSession::statement()
 {
     typedef odb::sql::SQLStatement* P;
-    if (gotSelectAST())
+
+    if (session_.gotSelectAST())
     {
-        gotSelectAST(false);
-        statement_ = P(selectFactory().create(*this, selectAST()));
+        session_.gotSelectAST(false);
+        statement_ = P(session_.selectFactory().create(*this, session_.selectAST()));
     }
     return statement_;
 }
+
+
+SQLDatabase& SQLIteratorSession::openDatabase(const eckit::PathName& p,const std::string& name) { return session_.openDatabase(p, name); }
+void SQLIteratorSession::closeDatabase(const std::string& name) { session_.closeDatabase(name); }
+
+void SQLIteratorSession::createIndex(const std::string& a, const std::string& b) { session_.createIndex(a,b); }
+
+SQLDatabase* SQLIteratorSession::getDatabase(const std::string& name) { return session_.getDatabase(name); }
+
+SQLSelectFactory& SQLIteratorSession::selectFactory() { return session_.selectFactory(); }
+SQLInsertFactory& SQLIteratorSession::insertFactory() { return session_.insertFactory(); }
+
+SQLTable* SQLIteratorSession::findTable(const odb::sql::Table& t) { return session_.findTable(t); }
+
+SQLTable* SQLIteratorSession::openDataHandle(eckit::DataHandle &h) { return session_.openDataHandle(h); }
+SQLTable* SQLIteratorSession::openDataStream(std::istream &is, const std::string &s) { return session_.openDataStream(is, s); }
+
+void SQLIteratorSession::statement(const SelectAST& s) { session_.statement(s); }
+//void SQLIteratorSession::statement(SQLStatement* s) { session_.statement(s); }
+//SQLStatement* SQLIteratorSession::statement() { return session_.statement(); }
+//SQLOutput* SQLIteratorSession::defaultOutput() { return session_.defaultOutput(); }
+
+SQLDatabase& SQLIteratorSession::currentDatabase() const { return session_.currentDatabase(); }
+SQLDatabase& SQLIteratorSession::currentDatabase(SQLDatabase* s) { return session_.currentDatabase(s); }
+
+unsigned long long SQLIteratorSession::execute(SQLStatement& s, ecml::ExecutionContext* e) { return session_.execute(s,e); }
 
 } // namespace sql 
 } // namespace odb 

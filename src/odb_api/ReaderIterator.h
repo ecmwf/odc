@@ -35,11 +35,7 @@ extern "C" {
 
 namespace odb {
 	namespace codec { class Codec; }
-	namespace sql {
-		template <typename T> class SQLIteratorSession;
-		class ODATableIterator;
-	}
-	template <typename I> class SimpleFilterIterator;
+	namespace sql { class ODATableIterator; }
 	template <typename O> class Header;
 }
 
@@ -83,6 +79,7 @@ public:
 	const BitfieldDef& bitfieldDef(unsigned long index);
 
 	int32_t byteOrder() const { return byteOrder_; }
+    eckit::DataHandle* dataHandle();
 //protected:
 
 	int close();
@@ -105,7 +102,7 @@ private:
 	odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 
-	eckit::DataHandle *f;
+	eckit::DataHandle *f_;
 	Properties properties_;
 
 	bool newDataset_;
@@ -133,7 +130,6 @@ protected:
 
 	friend class odb::Reader;
 	friend class odb::IteratorProxy<odb::ReaderIterator, odb::Reader, const double>;
-	friend class odb::SimpleFilterIterator<odb::IteratorProxy<odb::ReaderIterator, odb::Reader, const double> >;
 	friend class odb::Header<odb::ReaderIterator>;
 	friend class odb::sql::ODATableIterator;
 };

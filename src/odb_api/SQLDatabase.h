@@ -14,6 +14,8 @@
 #ifndef SQLDatabase_H
 #define SQLDatabase_H
 
+#include <map>
+
 #include "eckit/filesystem/PathName.h"
 #include "odb_api/SQLTable.h"
 #include "odb_api/SchemaAnalyzer.h"
@@ -97,8 +99,15 @@ private:
 	void setUpVariablesTable();
 
 // -- Friends
-	//friend std::ostream& operator<<(std::ostream& s,const SQLDatabase& p)
-	//	{ p.print(s); return s; }
+	friend std::ostream& operator<< (std::ostream& s, const odb::sql::SQLDatabase& p)
+	{ 
+        s << "[SQLDatabase@" << &p << " tables: ";
+        for (std::map<std::string,SQLTable*>::const_iterator it (p.tablesByName_.begin()); it != p.tablesByName_.end(); ++it)
+            s << it->first << ",";
+
+        s << "]";
+        return s; 
+    }
 };
 
 } // namespace sql 

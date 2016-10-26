@@ -18,18 +18,41 @@
 
 namespace odb {
 
-class ReaderIterator;
 class SelectIterator;
 
 namespace sql {
 
-template <typename T = SelectIterator>
 class SQLIteratorSession : public SQLSession {
 public:
-	SQLIteratorSession(T &);
+	SQLIteratorSession(odb::SelectIterator &, SQLSession&);
 	~SQLIteratorSession(); 
 
+// -- Overridden methods
+
+	SQLDatabase& openDatabase(const eckit::PathName&,const std::string& name = "");
+	void closeDatabase(const std::string& name);
+
+	void createIndex(const std::string&,const std::string&);
+
+	SQLDatabase* getDatabase(const std::string& name);
+
+    SQLSelectFactory& selectFactory();
+    SQLInsertFactory& insertFactory();
+
+	SQLTable* findTable(const odb::sql::Table&);
+
+	SQLTable* openDataHandle(eckit::DataHandle &);
+    SQLTable* openDataStream(std::istream &, const std::string &);
+
+	void statement(const SelectAST& s);
+	void statement(SQLStatement*);
 	SQLStatement* statement();
+	SQLOutput* defaultOutput();
+
+	SQLDatabase& currentDatabase() const;
+	SQLDatabase& currentDatabase(SQLDatabase*);
+
+	unsigned long long execute(SQLStatement&, ecml::ExecutionContext*);
 
 private:
 // No copy allowed
@@ -37,23 +60,11 @@ private:
 	SQLIteratorSession& operator=(const SQLIteratorSession&);
 
 	SQLStatement* statement_;
-	T& iterator_;
-
-// -- Overridden methods
-
-	void       statement(SQLStatement*);
-	SQLOutput* defaultOutput();
-
-// -- Friends
-
-	//friend std::ostream& operator<<(std::ostream& s,const SQLIteratorSession& p)
-	//	{ p.print(s); return s; }
-
+	odb::SelectIterator& iterator_;
+    SQLSession& session_;
 };
 
 } // namespace sql
 } // namespace odb
-
-#include "odb_api/SQLIteratorSession.cc"
 
 #endif

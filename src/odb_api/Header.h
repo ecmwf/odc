@@ -24,9 +24,6 @@ namespace eckit { class DataHandle; }
 
 namespace odb {
 
-class HashTable;
-class SQLIteratorSession;
-
 const int32_t BYTE_ORDER_INDICATOR = 1;
 const uint16_t ODA_MAGIC_NUMBER = 0xffff;
 

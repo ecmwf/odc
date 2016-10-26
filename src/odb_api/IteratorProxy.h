@@ -48,8 +48,6 @@ extern "C" void python_api_start()
 namespace odb {
 
 class Reader;
-class HashTable;
-class SQLIteratorSession;
 class ReaderIterator;
 class MetaData;
 class MetaDataReaderIterator;
@@ -69,7 +67,7 @@ public:
 	Row_(ITERATOR_PROXY& it) : it_(&it) {}
 
 	DATA& operator[](size_t i) { return (*it_)->data()[i]; }
-	DATA* data() { return ((*it_).iter_)->data(); }
+	DATA* data() { return const_cast<DATA*>(((*it_).iter_)->data()); }
 	DATA& data(size_t i) { return ((*it_).iter_)->data(i); }
 	int integer(size_t i) { return int((*it_)->data()[i]); }
 	std::string string(int i)
@@ -162,7 +160,6 @@ public:
 	PyObject* getitem(const char* s)
 	{
         std::string name(s);
-		size_t i = 0;
 		if (iter_->columns().hasColumn(name))
 			return getitem(iter_->columns().columnIndex(name));
 		else
@@ -194,7 +191,7 @@ public:
 			char *s = buf;
 		
 			B n = d;
-			B mask = 1 << sizeof(B) - 1;
+			B mask = 1 << (sizeof(B) - 1);
 			for(size_t j = 0; j < sizeof(B); ++j)
 			{
 				*s++ = (n & mask) ? '1' : '0';

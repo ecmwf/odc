@@ -34,6 +34,7 @@
 #include "odb_api/InMemoryDataHandle.h"
 #include "odb_api/SQLInteractiveSession.h"
 #include "odb_api/SQLNonInteractiveSession.h"
+#include "odb_api/SQLIteratorSession.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLDatabase.h"
 #include "odb_api/SQLEmbedded.h"
@@ -61,19 +62,41 @@ typedef odbql * p_odbql;
 class DataBaseImpl {
 public:
     DataBaseImpl(const char* filename)
-    : filename_(filename)
-    {}
+    : session_(),
+      filename_(filename),
+      input_( (filename && strlen(filename))
+             ? static_cast<DataHandle*>(ecml::DataHandleFactory::openForRead(filename))
+             : static_cast<DataHandle*>(new odb::InMemoryDataHandle() ))
+    {
+        if (filename && strlen(filename))
+            eckit::Log::info() << "Open file '" << filename << "'" << std::endl;
+    }
 
-    const std::string& filename() const { return filename_; }
+    ~DataBaseImpl() 
+    {
+        input_->close();
+        delete input_;
+    }
+
+    eckit::DataHandle* input() { return input_; }
     const char * errmsg() { return errmsg_.c_str(); }
     void errmsg(const std::string& s) { errmsg_ = s; }
     error_code_t error_code(error_code_t e) { return error_code_ = e; }
     error_code_t error_code() { return error_code_; }
+    odb::sql::SQLNonInteractiveSession& session() { return session_; }
 
 private:
+    odb::sql::SQLNonInteractiveSession session_;
     const std::string filename_;
+    eckit::DataHandle* input_;
     std::string errmsg_;
     error_code_t error_code_;
+
+    friend std::ostream& operator<<(std::ostream& s, const DataBaseImpl& p)
+    {
+        s << "[database@" << &p << ", session: " << p.session_ << "]" << std::endl;
+        return s;
+    }
 };
 
 DataBaseImpl& database (odbql* db) { return reinterpret_cast<DataBaseImpl&>(*db); }
@@ -95,7 +118,7 @@ public:
 
     // NULL handling functions:
     virtual error_code_t bind_null(int iCol) = 0;
-    virtual odbql_value* column_value(int iCol) = 0; // This could also be called: column_has_value
+    virtual odbql_value* column_value(int iCol) = 0; 
 
     DataBaseImpl& database() { return db_; }
 
@@ -108,7 +131,8 @@ public:
     SelectImpl(DataBaseImpl& db, const char* sql)
     : StatementImpl(db),
       sql_(sql),
-      stmt_(db.filename() + ";\n" + sql),
+      stmt_(sql, db.session()),
+      //stmt_(/*db.filename() + ";\n" +*/ sql),
       it_(stmt_.begin()),
       end_(stmt_.end()),
       firstStep(true)
@@ -522,8 +546,6 @@ error_code_t odbql_open(const char *filename, odbql **ppDb)
     static char* argv[] = { const_cast<char *>("odbql"), 0 };
     odb_start_with_args(1, argv);
 
-    eckit::Log::info() << "Open database '" << filename << "'" << std::endl;
-    
     TRY_WITH_DB (0)
 
     (*ppDb) = p_odbql( p = new  DataBaseImpl(filename) );
@@ -551,15 +573,12 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
 {
     TRY_WITH_DB(&database(db))
 
-    eckit::Log::info() << "Prepare statement '" << zSql << "'" << std::endl;
+    eckit::Log::info() << "Prepare statement '" << zSql << "' db = " << database(db) << std::endl;
 
-    odb::sql::SQLNonInteractiveSession session;
-    odb::sql::SQLOutputConfig config (session.selectFactory().config());
     odb::sql::SQLParser parser;
-    // Parse the schema / database
-    odb::InMemoryDataHandle input;
-    input.openForRead();
-    parser.parseString(session, database(db).filename() + ";" + zSql, &input, config);
+    odb::sql::SQLNonInteractiveSession& session (database(db).session());
+    odb::sql::SQLOutputConfig config (session.selectFactory().config());
+    parser.parseString(session, zSql, database(db).input(), config, false);
     odb::sql::SQLStatement* statement (session.statement());
 
     typedef odbql_stmt* stmt_ptr_t; 
@@ -708,7 +727,7 @@ odbql_value *odbql_column_value(odbql_stmt* stmt, int iCol)
 // https://www.sqlite.org/c3ref/column_count.html
 int odbql_column_count(odbql_stmt *stmt)
 {
-    return statement(stmt).column_count();
+    return stmt ? statement(stmt).column_count() : 0;
 }
 
 double odbql_value_double(odbql_value* vp)

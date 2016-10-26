@@ -27,8 +27,6 @@ namespace eckit { class DataHandle; }
 namespace odb {
 
 class DispatchingWriter;
-class HashTable;
-class SQLIteratorSession;
 
 struct TemplateParameter {
 	TemplateParameter(size_t startPos, size_t endPos, size_t columnIndex, std::string name)

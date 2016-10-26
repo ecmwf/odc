@@ -28,8 +28,6 @@ namespace ecml { class ExecutionContext; }
 
 namespace odb {
 
-class HashTable;
-class SQLIteratorSession;
 template <typename I> class Writer;
 namespace sql { class TableDef; }
 

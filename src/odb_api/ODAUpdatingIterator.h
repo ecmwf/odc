@@ -16,16 +16,9 @@
 #ifndef ODAUpdatingIterator_H
 #define ODAUpdatingIterator_H
 
-namespace eckit { class PathName; }
-namespace eckit { class DataHandle; }
 namespace eckit { class ExecutionContext; }
 
 namespace odb {
-
-class Reader;
-class Codec;
-class HashTable;
-class SQLIteratorSession;
 
 template <typename T>
 class ODAUpdatingIterator 

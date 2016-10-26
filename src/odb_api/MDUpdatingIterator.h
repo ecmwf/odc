@@ -16,15 +16,8 @@
 #ifndef MDUpdatingIterator_H
 #define MDUpdatingIterator_H
 
-namespace eckit { class PathName; }
-namespace eckit { class DataHandle; }
-
 namespace odb {
 
-class Reader;
-class Codec;
-class HashTable;
-class SQLIteratorSession;
 class MetaData;
 
 template <typename T>

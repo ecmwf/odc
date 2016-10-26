@@ -1,6 +1,6 @@
 An up to date version of this document can be found at following address:
 
-   https://software.ecmwf.int/wiki/display/ODB/Installation+Guide
+   https://software.ecmwf.int/wiki/display/ODBAPI/ODB+API+Installation
 
 
 Following software packages are required to build ODB API library and command line tool:

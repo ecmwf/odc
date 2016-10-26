@@ -19,6 +19,8 @@ Functions sql and open are a legacy, unsupported API, with limited functionality
 
 from odbql import *
 
+# Disable SWIG based interface for now
+'''
 try:
     import pyodbapi
 
@@ -63,3 +65,6 @@ except ImportError:
     # See source of odbql.py for dccumentation and examples.
     sql = new_sql
     open = new_open
+'''
+sql = new_sql
+open = new_open

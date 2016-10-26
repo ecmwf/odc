@@ -437,7 +437,6 @@ FastODA2Request.cc
 Header.cc
 ODAUpdatingIterator.cc
 SQLIteratorOutput.cc
-SQLIteratorSession.cc
 TODATable.cc
 TODATableIterator.cc
 WriterDispatchingIterator.cc

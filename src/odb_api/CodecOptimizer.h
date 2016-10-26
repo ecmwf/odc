@@ -20,16 +20,7 @@
 #include "odb_api/ColumnType.h"
 #include "odb_api/MetaData.h"
 
-namespace eckit { class PathName; }
-namespace eckit { class DataHandle; }
-
-
 namespace odb {
-
-class HashTable;
-//class MetaData;
-class SQLIteratorSession;
-
 namespace codec {
 
 class Codec;

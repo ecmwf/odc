@@ -89,4 +89,22 @@ Reader::iterator Reader::begin()
 
 const Reader::iterator Reader::end() { return iterator(0); }
 
+void Reader::noMoreData()
+{
+    if (dataHandle_ && deleteDataHandle_)
+    {
+        dataHandle_->close();
+        delete dataHandle_;
+    }
+    dataHandle_ = 0;
+}
+
+eckit::DataHandle* Reader::dataHandle() 
+{
+    // Assume the Reader was constructed with a path, and not a DataHandle*
+    if (! dataHandle_)
+        dataHandle_ = ecml::DataHandleFactory::openForRead(path_);
+    return dataHandle_; 
+}
+
 } // namespace odb

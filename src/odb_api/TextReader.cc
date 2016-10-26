@@ -90,6 +90,6 @@ TextReader::iterator TextReader::begin()
 	return iterator(it);
 }
 
-const TextReader::iterator TextReader::end() { return iterator(0); }
+TextReader::iterator TextReader::end() { return iterator(0); }
 
 } // namespace odb

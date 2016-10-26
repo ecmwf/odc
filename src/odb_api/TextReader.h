@@ -31,7 +31,7 @@ class TextReaderIterator;
 class TextReader
 {
 public:
-	typedef IteratorProxy<TextReaderIterator,TextReader,const double> iterator;
+	typedef IteratorProxy<TextReaderIterator,TextReader,double> iterator;
 	typedef iterator::Row row;
 
 	TextReader(std::istream &, const std::string& delimiter);
@@ -42,7 +42,7 @@ public:
 	virtual ~TextReader();
 
 	iterator begin();
-	const iterator end(); 
+	iterator end(); 
 
     std::istream& stream() { return *in_; }
 	// For C API
@@ -61,12 +61,11 @@ private:
 
     std::istream* in_;
 	bool deleteDataHandle_;
-	//const eckit::PathName path_;
 	const std::string path_;
 	const std::string delimiter_;
     ecml::ExecutionContext* context_;
 
-	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,const double>;
+	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,double>;
 	friend class odb::TextReaderIterator;
 };
 

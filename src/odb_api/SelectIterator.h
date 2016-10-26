@@ -17,7 +17,10 @@
 #define _SelectIterator_H
 
 #include "odb_api/Expressions.h"
+#include "odb_api/SQLSession.h"
+#include "odb_api/SQLNonInteractiveSession.h"
 #include "odb_api/SQLIteratorSession.h"
+#include "odb_api/ColumnType.h"
 
 namespace ecml { class ExecutionContext; }
 
@@ -34,14 +37,14 @@ class MetaData;
 template <typename I, typename O, typename D> class IteratorProxy;
 
 namespace sql {
-	template <typename T> class SQLIteratorSession;
 	template <typename T> class SQLIteratorOutput;
 	class SQLSelect;
 }
 
 class SelectIterator { 
 public:
-    SelectIterator (Select &owner, const std::string&, ecml::ExecutionContext*);
+	
+    SelectIterator (Select &owner, const std::string&, ecml::ExecutionContext*, odb::sql::SQLNonInteractiveSession&);
 	~SelectIterator();
 
 	bool isNewDataset();
@@ -75,8 +78,8 @@ private:
 
 	Select& owner_;
     std::string select_;
-	sql::SQLIteratorSession<SelectIterator> session_;
-	sql::SQLSelect *selectStmt_;
+	odb::sql::SQLIteratorSession session_;
+	odb::sql::SQLSelect *selectStmt_;
 	MetaData *metaData_;
 
 	double* data_;
@@ -89,7 +92,7 @@ private:
 	ecml::ExecutionContext* context_;
 
 protected:
-	SelectIterator (Select &owner);
+	SelectIterator (Select &owner, sql::SQLNonInteractiveSession&);
 
 	int refCount_;
 
