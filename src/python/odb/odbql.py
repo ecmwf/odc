@@ -253,8 +253,6 @@ class Cursor:
 
         rc = odbql_finalize(self.stmt)
         #self.assertEqual(rc, ODBQL_OK)
-        rc = odbql_close(db)
-        #self.assertEqual(rc, ODBQL_OK)
 
     def callproc(self, procname, *parameters, **keyword_parameters):
         """
@@ -268,7 +266,6 @@ class Cursor:
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
         rc = odbql_step(self.stmt)
         rc = odbql_finalize(self.stmt)
-        rc = odbql_close(db)
         return ODBQL_OK
 
 

@@ -573,7 +573,7 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
 {
     TRY_WITH_DB(&database(db))
 
-    eckit::Log::info() << "Prepare statement '" << zSql << "' db = " << database(db) << std::endl;
+    //eckit::Log::info() << "Prepare statement '" << zSql << "' db = " << database(db) << std::endl;
 
     odb::sql::SQLParser parser;
     odb::sql::SQLNonInteractiveSession& session (database(db).session());
