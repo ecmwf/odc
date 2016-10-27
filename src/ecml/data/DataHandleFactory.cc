@@ -15,6 +15,7 @@
 #include "ecml/data/PartFileHandleFactory.h"
 #include "ecml/data/MarsHandleFactory.h"
 #include "ecml/data/FileHandleFactory.h"
+#include "ecml/data/HttpHandleFactory.h"
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/parser/StringTools.h"
@@ -110,6 +111,7 @@ void DataHandleFactory::registerFactories()
     static PartFileHandleFactory partFileHandleFactory;
     static MarsHandleFactory marsHandleFactory;
     static FileHandleFactory fileHandleFactory;
+    static HttpHandleFactory httpHandleFactory;
 }
 
 } //namespace ecml 

@@ -114,6 +114,10 @@ data/FileHandleFactory.h
 data/FileHandleFactory.cc
 data/PartFileHandleFactory.h
 data/PartFileHandleFactory.cc
+data/HttpHandle.h
+data/HttpHandle.cc
+data/HttpHandleFactory.h
+data/HttpHandleFactory.cc
 # requires  metkit
 data/MarsHandleFactory.cc
 data/MarsHandleFactory.h
