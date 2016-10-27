@@ -46,7 +46,7 @@ static void convertToMarsRequest(const Request request, MARSREQUEST& marsRequest
                 ss << v->value(); 
             vs.push_back(ss.str());
         }
-        marsRequest.setValues(key, vs);
+        marsRequest.values(key, vs);
     }
 }
 
