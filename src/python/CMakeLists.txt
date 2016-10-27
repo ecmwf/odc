@@ -16,7 +16,7 @@ if( HAVE_PYTHON AND SWIG_FOUND )
   # Build the extension module for use in install tree with RPATH pointing to install tree
   install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} setup.py build_ext --rpath ${CMAKE_INSTALL_PREFIX}/${INSTALL_LIB_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
   # Call distutils for installation
-  install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} setup.py install --prefix $ENV{DESTDIR}${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
+  install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} setup.py install --prefix \$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})")
 
   list( APPEND python_odb_api_data_files  2000010106.odb ATOVS.trimmed.odb )
   ecbuild_get_test_multidata( TARGET python_odb_api_get_test_data
