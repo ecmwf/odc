@@ -47,8 +47,7 @@ int main(int argc, char *argv[])
 	//ToolRunnerApplication runner(clp, false, false);
 	MigratorTool migrator(clp);
 	runner.tool(&migrator);
-	runner.start();
-	return 0;
+	return runner.start();
 }
 
 #if 0
