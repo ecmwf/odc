@@ -36,7 +36,10 @@ int main(int argc, char *argv[])
 	} catch (std::exception& e) {
 		cerr << argv[0] << ": " << e.what() << std::endl;
 		return 1;
-	}
+	} catch (...) {
+		cerr << argv[0] << ": unknown exception" << std::endl;
+		return 1;
+    }
 }
 
 int executeCommand(int argc, char *argv[])
@@ -104,8 +107,7 @@ int executeCommand(int argc, char *argv[])
 	}
 
 	ToolRunnerApplication runner(argc, argv);
-	runner.start();
-	return 0;
+	return runner.start();
 }
 
 int gdb(int argc, char *argv[])
