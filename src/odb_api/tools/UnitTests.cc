@@ -38,6 +38,8 @@
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/odbql.h"
 
+#include "ecml/data/DataHandleFactory.h"
+
 extern "C" {
 #include "odb_api/odbcapi.h"
 }
@@ -1092,3 +1094,17 @@ TEST(ODB269)
     checkRC(rc, "odbql_close failed", db);
 }
 
+//void buildMultiHandle(eckit::MultiHandle&, const std::vector<std::string>&);
+//void buildMultiHandle(eckit::MultiHandle&, const std::string&);
+TEST(HttpHandle)
+{
+    eckit::DataHandle* in (ecml::DataHandleFactory::openForRead("http://localhost/conv.odb"));
+    //eckit::DataHandle* out (DataHandleFactory::openForWrite(const std::string&, const eckit::Length& = eckit::Length(0)));
+
+    odb::Select o("select *;", *in);
+
+    for (odb::Select::iterator it (o.begin()); it != o.end(); ++it)
+    {
+        Log::info() << "." << std::endl;
+    }
+}

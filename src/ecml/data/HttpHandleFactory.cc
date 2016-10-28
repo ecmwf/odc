@@ -10,17 +10,8 @@
 
 #include <sstream>
 
-#include "eckit/io/FileHandle.h"
-#include "eckit/io/TCPHandle.h"
 
 #include "eckit/parser/StringTools.h"
-
-#include "ecml/parser/Request.h"
-#include "ecml/parser/RequestParser.h"
-#include "ecml/core/RequestHandler.h"
-
-#include "metkit/MarsRequestHandle.h"
-#include "metkit/DHSProtocol.h"
 
 #include "ecml/data/HttpHandle.h"
 #include "ecml/data/HttpHandleFactory.h"

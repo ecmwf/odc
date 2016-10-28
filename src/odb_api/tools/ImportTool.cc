@@ -48,8 +48,8 @@ void ImportTool::run()
 	Log::info() << "ImportTool::run: inFile: " << inFile << ", outFile: " << outFile << std::endl;
 
 	std::string delimiter = StringTools::upper(optionArgument("-d", defaultDelimiter()));
-	if (delimiter == "TAB")
-		delimiter = "\t";
+	if (delimiter == "TAB") delimiter = "\t";
+	if (delimiter == "SPACE") delimiter = " ";
 
     std::string sql(optionArgument("-sql", std::string("select *;")));
 	

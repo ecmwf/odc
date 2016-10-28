@@ -23,8 +23,21 @@ void HttpHandle::encode(Stream& s) const
 	NOTIMP;
 }
 
+std::string HttpHandle::parseHost(const std::string& url)
+{
+    // TODO:
+    return "localhost";
+}
+
+int HttpHandle::parsePort(const std::string& url)
+{
+    // TODO:
+    return 8000;
+}
+
 HttpHandle::HttpHandle(const std::string &url)
-: url_(url)
+: url_(url),
+  tcp_(parseHost(url), parsePort(url))
 {
 }
 

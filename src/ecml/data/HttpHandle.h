@@ -11,10 +11,10 @@
 // @file   HttpHandle.h
 // @author Piotr Kuchta - ECMWF 27 Oct 2016
 
-#ifndef eckit_filesystem_StdFileHandle_h
-#define eckit_filesystem_StdFileHandle_h
+#ifndef eckit_filesystem_HttpFileHandle_h
+#define eckit_filesystem_HttpFileHandle_h
 
-#include "eckit/io/DataHandle.h"
+#include "eckit/io/TCPHandle.h"
 
 namespace eckit {
 
@@ -36,8 +36,12 @@ public:
 	// From Streamable
 	virtual void encode(Stream&) const;
 
+    static std::string parseHost(const std::string&);
+    static int parsePort(const std::string&);
+
 private:
 	const std::string url_;
+    eckit::TCPHandle tcp_;
 };
 
 } // namespace eckit
