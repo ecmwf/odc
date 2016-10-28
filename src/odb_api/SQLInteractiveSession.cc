@@ -52,11 +52,13 @@ void SQLInteractiveSession::interactive()
         sql_ = P(selectFactory().create(*this, selectAST()));
     }
     
-	ASSERT(sql_);
-    ecml::ExecutionContext context; // TODO
-	execute(*sql_, &context);
-	delete sql_;
-    sql_ = 0;
+    if (sql_)
+    {
+        ecml::ExecutionContext context; // TODO
+        execute(*sql_, &context);
+        delete sql_;
+        sql_ = 0;
+    }
 }
 
 } // namespace sql
