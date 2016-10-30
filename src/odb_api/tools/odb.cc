@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 int executeCommand(int argc, char *argv[])
 {
 	odb::tool::Tool::registerTools();
+    register_extra_data_handle_factories();
 	if (argc < 2)
 	{
         odb_start_with_args(argc, argv);

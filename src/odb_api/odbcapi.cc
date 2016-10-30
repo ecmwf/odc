@@ -71,7 +71,7 @@ int get_bitfield(T it,
 
 extern "C" {
 
-static void register_extra_data_handle_factories()
+void register_extra_data_handle_factories()
 {
     static LocalHandleFactory localHandleFactory;
 }
