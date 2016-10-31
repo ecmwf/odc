@@ -36,14 +36,15 @@ if( HAVE_FORTRAN )
                           ENVIRONMENT 
                                     TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
 
-                          TEST_DEPENDS get_odb_api_test_data 
+                          LABELS     odb_api odb_api_fortran
+
+                          TEST_DEPENDS get_odb_api_test_data
                                        get_mars_client_test_data_mo
                                        get_mars_client_test_data_ec
                                        test_ec_archiving.ecml
                                        test_mo_archiving.ecml
 
                           LINKER_LANGUAGE Fortran )
-       set_tests_properties( ${_test} PROPERTIES LABELS "odb_api;odb_api_fortran" )
     endforeach()
 
 # odbql, the new Fortran API:

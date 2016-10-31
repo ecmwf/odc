@@ -64,9 +64,9 @@ migrator_api.h
       #                ARGS         ecml ${CMAKE_CURRENT_SOURCE_DIR}/test_migrator.ecml
       #                CONDITION    HAVE_MIGRATOR
       #                ENVIRONMENT  ${test_environment}
+      #                LABELS       odb_api odb_api_ecml
       #                TEST_DEPENDS get_odb_migrator_test_data
       #                )
-      # set_tests_properties( test_migrator.ecml PROPERTIES LABELS "odb_api;odb_api_ecml" )
     endif()
 
   if( HAVE_MIGRATOR AND HAVE_PYTHON AND SWIG_FOUND AND PYTHONLIBS_FOUND )
