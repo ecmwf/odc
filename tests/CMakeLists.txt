@@ -273,9 +273,9 @@ foreach( _test ${odb_migrator_tests} )
                     ARGS       ${_test}
                     CONDITION  HAVE_MIGRATOR
                     ENVIRONMENT ${test_environment} ${ODB_ENVIRONMENT}
+                    LABELS       odb_api odb_api_migrator
                     TEST_DEPENDS ${_prev_test} )
   set( _prev_test ${_test} )
-  set_tests_properties( ${_test} PROPERTIES LABELS "odb_api;odb_api_migrator" )
 endforeach()
 
 ### odb2_to_odb1 tests
@@ -288,11 +288,9 @@ ecbuild_add_test( TARGET test_odb2_to_odb1
         PATH=${CMAKE_BINARY_DIR}/bin:${odb_BASE_DIR}/bin:$ENV{PATH}
         ODB_IO_METHOD=4
         ODB_IO_GRPSIZE=160
+    LABELS odb_api odb_api_migrator
     TEST_DEPENDS get_odb2_to_odb1_data
     CONDITION HAVE_FORTRAN AND ODB_FOUND AND ODB_HAVE_ECMA)
-if (          HAVE_FORTRAN AND ODB_FOUND AND ODB_HAVE_ECMA) 
-    set_tests_properties( test_odb2_to_odb1 PROPERTIES LABELS "odb_api;odb_api_migrator" )
-endif()
 
 ### odb2netcdf tests
 
@@ -304,20 +302,16 @@ ecbuild_get_test_multidata( TARGET get_odb2netcdf_data
 ecbuild_add_test( TARGET test_odb2netcdf_1d
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_1d.sh
     ENVIRONMENT ${test_environment}
+    LABELS       odb_api odb_api_netcdf
     TEST_DEPENDS get_odb2netcdf_data
     CONDITION HAVE_NETCDF )
-if (          HAVE_NETCDF )
-    set_tests_properties( test_odb2netcdf_1d PROPERTIES LABELS "odb_api;odb_api_netcdf" )
-endif()
 
 ecbuild_add_test( TARGET test_odb2netcdf_2d
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_2d.sh
     ENVIRONMENT ${test_environment}
     TEST_DEPENDS get_odb2netcdf_data
+    LABELS       odb_api odb_api_netcdf
     CONDITION HAVE_NETCDF )
-if (          HAVE_NETCDF )
-    set_tests_properties( test_odb2netcdf_2d PROPERTIES LABELS "odb_api;odb_api_netcdf" )
-endif()
 
 ### odb_api tests
 
@@ -342,8 +336,8 @@ foreach( _test ${odb_api_tests} )
                       COMMAND      ${odb_bin}
                       ARGS         ${_test}
                       ENVIRONMENT  ${test_environment}
+                      LABELS       odb_api
                       TEST_DEPENDS ${_dependencies})
-    set_tests_properties( ${_test} PROPERTIES LABELS "odb_api" )
     set( _prev_test ${_test} )
 endforeach()
 
@@ -388,14 +382,13 @@ foreach( _test ${odb_module_tests} )
                        COMMAND      ${odb_bin}
                        ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/${_test}
                        ENVIRONMENT  ${test_environment} 
-
+                       LABELS       odb_api odb_api_ecml
                        TEST_DEPENDS get_odb_api_test_data 
                                     get_mars_client_test_data_mo
                                     get_mars_client_test_data_ec
                                     test_ec_archiving.ecml
                                     test_mo_archiving.ecml
                        )
-    set_tests_properties( ${_test} PROPERTIES LABELS "odb_api;odb_api_ecml" )
 endforeach()
 
 
