@@ -16,7 +16,8 @@ namespace odb {
 namespace sql {
 
 SQLIteratorSession::SQLIteratorSession(SelectIterator &it, SQLSession& s)
-: statement_(0),
+: SQLSession(s.outputConfig(), s.csvDelimiter()),
+  statement_(0),
   iterator_(it),
   session_(s)
 {}

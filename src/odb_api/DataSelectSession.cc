@@ -4,12 +4,15 @@
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/DataSelectOutput.h"
 #include "odb_api/DataSelectSession.h"
+#include "odb_api/SQLOutputConfig.h"
 
 namespace odb {
 namespace internal {
 
 DataSelectSession::DataSelectSession(DataSelectIterator& it)
-  : it_(it), sql_(0)
+ : SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
+   it_(it), 
+   sql_(0)
 {}
 
 DataSelectSession::~DataSelectSession()

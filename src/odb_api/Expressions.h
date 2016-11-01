@@ -11,11 +11,11 @@
 /// \file Expressions.h
 /// Piotr Kuchta - ECMWF Nov 11
 
-#ifndef Expressions_H
-#define Expressions_H
+#ifndef odb_api_Expressions_H
+#define odb_api_Expressions_H
 
 #include "eckit/exception/Exceptions.h"
-#include "SQLExpression.h"
+#include "odb_api/SQLExpression.h"
 
 namespace odb {
 namespace sql {

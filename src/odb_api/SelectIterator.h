@@ -13,33 +13,29 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#ifndef _SelectIterator_H
-#define _SelectIterator_H
+#ifndef odb_api_SelectIterator_H
+#define odb_api_SelectIterator_H
 
 #include "odb_api/Expressions.h"
-#include "odb_api/SQLSession.h"
-#include "odb_api/SQLNonInteractiveSession.h"
-#include "odb_api/SQLIteratorSession.h"
 #include "odb_api/ColumnType.h"
-
-namespace ecml { class ExecutionContext; }
+#include "odb_api/SQLIteratorSession.h"
 
 extern "C" {
 	typedef void oda_select_iterator;
 	int odb_select_iterator_get_next_row(oda_select_iterator*, int, double*, int*);
 }
 
+namespace ecml { class ExecutionContext; }
+namespace odb { class Select; }
+namespace odb { class MetaData; }
+namespace odb { template <typename I, typename O, typename D> class IteratorProxy; } 
+namespace odb { namespace sql { class SQLSession; } }
+namespace odb { namespace sql { class SQLNonInteractiveSession; }}
+namespace odb { namespace sql { class SQLIteratorSession; }}
+namespace odb { namespace sql { class SQLSelect; } }
+namespace odb { namespace sql { template <typename T> class SQLIteratorOutput; }}
+
 namespace odb {
-
-class Select;
-class MetaData;
-
-template <typename I, typename O, typename D> class IteratorProxy;
-
-namespace sql {
-	template <typename T> class SQLIteratorOutput;
-	class SQLSelect;
-}
 
 class SelectIterator { 
 public:
@@ -78,7 +74,6 @@ private:
 
 	Select& owner_;
     std::string select_;
-	odb::sql::SQLIteratorSession session_;
 	odb::sql::SQLSelect *selectStmt_;
 	MetaData *metaData_;
 
@@ -92,9 +87,10 @@ private:
 	ecml::ExecutionContext* context_;
 
 protected:
-	SelectIterator (Select &owner, sql::SQLNonInteractiveSession&);
+	SelectIterator (Select &owner, odb::sql::SQLNonInteractiveSession&);
 
 	int refCount_;
+	odb::sql::SQLIteratorSession session_;
 
 	friend int ::odb_select_iterator_get_next_row(::oda_select_iterator*, int, double*, int*);
 	friend class odb::Select;

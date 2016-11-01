@@ -21,7 +21,6 @@
 #include "odb_api/SQLDatabase.h"
 #include "odb_api/SQLExpression.h"
 #include "odb_api/SQLParser.h"
-#include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLInsertFactory.h"
 #include "odb_api/SQLSelect.h"
 #include "odb_api/SQLEmbedded.h"

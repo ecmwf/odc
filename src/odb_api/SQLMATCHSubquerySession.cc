@@ -16,7 +16,8 @@ namespace odb {
 namespace sql {
 
 SQLMATCHSubquerySession::SQLMATCHSubquerySession(expression::function::FunctionMATCH& f)
-: statement_(0),
+: SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
+  statement_(0),
   f_(f)
 {}
 

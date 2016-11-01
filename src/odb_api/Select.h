@@ -65,7 +65,8 @@ public:
 	SelectIterator* createSelectIterator(const std::string&, ecml::ExecutionContext*);
 
 private:
-    odb::sql::SQLNonInteractiveSession* ownSession() { return new odb::sql::SQLNonInteractiveSession(); }
+    odb::sql::SQLNonInteractiveSession* ownSession(const std::string& delimiter);
+
 	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 
 	eckit::DataHandle* dataHandle_;

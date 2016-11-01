@@ -86,7 +86,7 @@ vector<PathName> SQLHandler::executeSelect(const string& select, const string& i
     sql = cleanUpSQLText(sql);
     Log::info() << "Executing '" << sql << "'" << endl;
 
-    SQLNonInteractiveSession session;
+    SQLNonInteractiveSession session(odb::sql::SQLOutputConfig::defaultConfig(), ",");
 
     SQLOutputConfig config(session.selectFactory().config());
     config.outputFormat("odb");

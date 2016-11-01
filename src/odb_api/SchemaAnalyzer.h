@@ -11,14 +11,10 @@
 /// @file SchemaAnalyzer.h
 /// @author Piotr Kuchta, ECMWF April 2009
 
-#ifndef SchemaAnalyzer_H
-#define SchemaAnalyzer_H
+#ifndef odb_api_SchemaAnalyzer_H
+#define odb_api_SchemaAnalyzer_H
 
-//#include <set>
-//#include <map>
-
-#include "SQLAST.h"
-//#include "odb_api/SQLBitfield.h"
+#include "odb_api/SQLAST.h"
 
 namespace odb {
 
