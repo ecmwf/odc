@@ -11,12 +11,12 @@
 /// @file SQLAST.h
 /// @author Piotr Kuchta, ECMWF April 2009
 
-#ifndef SQLAST_H
-#define SQLAST_H
+#ifndef odb_api_SQLAST_H
+#define odb_api_SQLAST_H
 
 #include "eckit/eckit.h"
-#include "Types.h"
-#include "Expressions.h"
+#include "odb_api/Types.h"
+#include "odb_api/Expressions.h"
 
 namespace odb {
 namespace sql {

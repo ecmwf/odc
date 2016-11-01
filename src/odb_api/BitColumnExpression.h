@@ -11,8 +11,8 @@
 // File BitColumnExpression.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef BitColumnExpression_H
-#define BitColumnExpression_H
+#ifndef odb_api_BitColumnExpression_H
+#define odb_api_BitColumnExpression_H
 
 #include "odb_api/ColumnExpression.h"
 
@@ -50,7 +50,7 @@ protected:
 };
 
 } // namespace expression 
-} // namespace sql
+} // namespace SQL
 } // namespace odb 
 
 #endif

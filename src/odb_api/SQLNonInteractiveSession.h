@@ -11,18 +11,19 @@
 // File SQLNonInteractiveSession.h
 // Piotr Kuchta - ECMWF May 2015
 
-#ifndef SQLNonInteractiveSession_H
-#define SQLNonInteractiveSession_H
+#ifndef odb_api_SQLNonInteractiveSession_H
+#define odb_api_SQLNonInteractiveSession_H
 
-//#include "odb_api/SQLSession.h"
-#include "SQLSession.h"
+#include "odb_api/SQLSession.h"
 
 namespace odb {
 namespace sql {
 
+class SQLOutputConfig;
+
 class SQLNonInteractiveSession : public SQLSession {
 public:
-    SQLNonInteractiveSession();
+    SQLNonInteractiveSession(const odb::sql::SQLOutputConfig&, const std::string&);
 	~SQLNonInteractiveSession(); 
 
 	SQLStatement* statement();

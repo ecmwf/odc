@@ -13,12 +13,14 @@
 #include "odb_api/SQLNonInteractiveSession.h"
 #include "odb_api/SQLSimpleOutput.h"
 #include "odb_api/SQLStatement.h"
+#include "odb_api/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {
 
-SQLNonInteractiveSession::SQLNonInteractiveSession()
-: statement_(0)
+SQLNonInteractiveSession::SQLNonInteractiveSession(const odb::sql::SQLOutputConfig& config, const std::string& csvDelimiter)
+: SQLSession(config, csvDelimiter),
+  statement_(0)
 {}
 
 SQLNonInteractiveSession::~SQLNonInteractiveSession()

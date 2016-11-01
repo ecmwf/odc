@@ -8,28 +8,26 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef SQLSelectFactory_H
-#define SQLSelectFactory_H
+#ifndef odb_api_SQLSelectFactory_H
+#define odb_api_SQLSelectFactory_H
 
-#include "eckit/thread/ThreadSingleton.h"
-#include "Expressions.h"
-#include "SQLOutputConfig.h"
-#include "SchemaAnalyzer.h"
-#include "SQLAST.h"
+#include "odb_api/Expressions.h"
+#include "odb_api/SchemaAnalyzer.h"
+#include "odb_api/SQLAST.h"
+#include "odb_api/SQLOutputConfig.h"
 
 namespace eckit { class DataHandle; }
 namespace ecml { class ExecutionContext; }
 namespace odb { namespace sql { class DataTable; } }
 namespace odb { namespace sql { class SQLDatabase; } }
+namespace odb { namespace sql { class SQLSession; } }
 
 namespace odb { 
 namespace sql {
 
-class SQLSession;
-
 class SQLSelectFactory {
 public:
-    SQLSelectFactory();
+    SQLSelectFactory(const SQLOutputConfig&, const std::string&);
 
 	SQLSelect* create(odb::sql::SQLSession&, const SelectAST&);
 
@@ -61,12 +59,10 @@ public:
 	void database(SQLDatabase* db) { database_ = db; }
 
 	SQLOutputConfig config() { return config_; }
-	void config(SQLOutputConfig cfg) { config_ = cfg; }
+	void config(const SQLOutputConfig& cfg) { config_ = cfg; }
 
 	std::string csvDelimiter() { return csvDelimiter_; }
 	void csvDelimiter(const std::string& d) { csvDelimiter_ = d; }
-
-    void reset();
 
     static odb::MetaData toODAColumns(odb::sql::SQLSession&, const odb::sql::TableDef&);
 
@@ -98,7 +94,7 @@ private:
     int minColumnShift_;
     std::string csvDelimiter_;
 
-    friend class eckit::NewAlloc0<SQLSelectFactory>;
+    //friend class eckit::NewAlloc0<SQLSelectFactory>;
 };
 
 } // namespace sql

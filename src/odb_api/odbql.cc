@@ -62,7 +62,7 @@ typedef odbql * p_odbql;
 class DataBaseImpl {
 public:
     DataBaseImpl(const char* filename)
-    : session_(),
+    : session_(odb::sql::SQLOutputConfig::defaultConfig(), ","),
       filename_(filename),
       input_( (filename && strlen(filename))
              ? static_cast<DataHandle*>(ecml::DataHandleFactory::openForRead(filename))

@@ -13,11 +13,14 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#include "odb_api/TextReaderIterator.h"
 #include "eckit/parser/StringTools.h"
-#include "odb_api/TextReader.h"
+#include "eckit/utils/Translator.h"
 #include "eckit/types/Types.h"
+
+#include "odb_api/TextReaderIterator.h"
+#include "odb_api/TextReader.h"
 #include "odb_api/StringTool.h"
+#include "odb_api/ColumnType.h"
 
 using namespace eckit;
 
@@ -63,26 +66,26 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 {
     //std::ostream& L( Log::debug() );
 
-	size_t leftBracket (c.find('['));
-	size_t rightBracket (c.find(']'));
+    size_t leftBracket (c.find('['));
+    size_t rightBracket (c.find(']'));
 
-	if ( !(leftBracket != std::string::npos && rightBracket != std::string::npos))
+    if ( !(leftBracket != std::string::npos && rightBracket != std::string::npos))
         throw UserError(std::string("Error parsing bitfield definition. Should be like: bitfield_column_name:BITFIELD[a:1;b:3] was: '") + c + "'");
 
-	std::string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
+    std::string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
 
     //L << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
 
-	odb::FieldNames names;
-	odb::Sizes      sizes;
+    odb::FieldNames names;
+    odb::Sizes      sizes;
 
     size_t numberOfBits = 0;
-	std::vector<std::string> bs(S::split(";", s));
+    std::vector<std::string> bs(S::split(";", s));
 
     //L << "TextReaderIterator::parseBitfields: bs=" << bs << std::endl;
 
-	for (size_t i = 0; i < bs.size(); ++i)
-	{
+    for (size_t i = 0; i < bs.size(); ++i)
+    {
 		std::vector<std::string> v(S::split(":", bs[i]));
 
         //L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << std::endl;
@@ -113,16 +116,16 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 
 void TextReaderIterator::parseHeader()
 {
-	std::string header;
-	std::getline(*in_, header);
-	std::vector<std::string> columns (S::split(owner_.delimiter(), header));
-	//c->missingValue(missingValue);
+    std::string header;
+    std::getline(*in_, header);
+    std::vector<std::string> columns (S::split(owner_.delimiter(), header));
+    //c->missingValue(missingValue);
 
-    std::ostream& L(Log::debug());
+    std::ostream& L(Log::info());
 
-	L << "TextReaderIterator::parseHeader: columns: " << columns << std::endl;
-	L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << std::endl;
-	L << "TextReaderIterator::parseHeader: header: '" << header << "'" << std::endl;
+    L << "TextReaderIterator::parseHeader: columns: " << columns << std::endl;
+    L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << std::endl;
+    L << "TextReaderIterator::parseHeader: header: '" << header << "'" << std::endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
@@ -189,7 +192,19 @@ bool TextReaderIterator::next(ecml::ExecutionContext*)
     for(size_t i = 0; i < nCols; ++i)
     {
         const std::string& v (S::trim(values[i]));
-        lastValues_[i] = S::upper(v) == "NULL" ? columns_[i]->missingValue() : StringTool::translate(v);
+        if (S::upper(v) == "NULL")
+            lastValues_[i] = columns_[i]->missingValue();
+        else 
+        {
+            odb::ColumnType typ ( columns()[i]->type() );
+            lastValues_[i] = typ == odb::STRING ? StringTool::cast_as_double(StringTool::unQuote(v))
+                           : typ == odb::REAL ? Translator<std::string, double>()(v) 
+                           : typ == odb::DOUBLE ? Translator<std::string, double>()(v) 
+                           : typ == odb::INTEGER ? Translator<std::string, int>()(v)
+                           : typ == odb::BITFIELD ? Translator<std::string, int>()(v)
+                           // TODO: signal error
+                           : columns_[i]->missingValue();
+        }
     }
 
     return nCols;

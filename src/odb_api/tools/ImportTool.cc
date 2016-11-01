@@ -34,26 +34,27 @@ ImportTool::ImportTool(int argc, char *parameters[])
 
 void ImportTool::run()
 {
-	if (parameters().size() != 3)
-	{
-		Log::error() << "Usage: ";
-		usage(parameters(0), Log::error());
-		Log::error() << std::endl;
-		return;
-	}
+    if (parameters().size() != 3)
+    {
+        Log::error() << "Usage: ";
+        usage(parameters(0), Log::error());
+        Log::error() << std::endl;
+        return;
+    }
 
-	PathName inFile = parameters(1);
-	PathName outFile = parameters(2);
+    PathName inFile (parameters(1)),
+             outFile (parameters(2));
 
-	Log::info() << "ImportTool::run: inFile: " << inFile << ", outFile: " << outFile << std::endl;
+    Log::info() << "ImportTool::run: inFile: " << inFile << ", outFile: " << outFile << std::endl;
 
-	std::string delimiter = StringTools::upper(optionArgument("-d", defaultDelimiter()));
-	if (delimiter == "TAB")
-		delimiter = "\t";
+    std::string delimiter (StringTools::upper(optionArgument("-d", defaultDelimiter())));
+    delimiter = delimiter == "TAB" ? "\t" 
+              : delimiter == "SPACE" ? " "
+              : delimiter;
 
-    std::string sql(optionArgument("-sql", std::string("select *;")));
-	
-	filterAndImportFile(inFile, outFile, sql, delimiter);
+    std::string sql (optionArgument("-sql", std::string("select *;")));
+
+    filterAndImportFile (inFile, outFile, sql, delimiter);
 }
 
 void ImportTool::importFile(const PathName& in, const PathName& out, const std::string& delimiter)

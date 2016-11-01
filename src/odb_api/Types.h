@@ -8,10 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef odblib_Types_h
-#define odblib_Types_h
-
-#include "eckit/eckit.h"
+#ifndef odb_api_Types_h
+#define odb_api_Types_h
 
 namespace odb {
 
@@ -22,4 +20,4 @@ typedef std::map<std::string, BitfieldDef>   BitfieldDefs;
 
 }
 
-#endif // odblib_Types_h
+#endif 

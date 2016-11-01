@@ -16,6 +16,7 @@
 #include "ecml/data/DataHandleFactory.h"
 #include "odb_api/Select.h"
 #include "eckit/io/DataHandle.h"
+#include "odb_api/SQLOutputConfig.h"
 
 using namespace std;
 using namespace eckit;
@@ -30,7 +31,7 @@ Select::Select(const std::string& selectStatement, DataHandle &dh)
   deleteIStream_(true),
   selectStatement_(selectStatement),
   context_(0),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")),
   outerSession_(ownSession_)
 {}
 
@@ -41,7 +42,7 @@ Select::Select(const std::string& selectStatement, DataHandle &dh, ecml::Executi
   deleteIStream_(true),
   selectStatement_(selectStatement),
   context_(context),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")), // TODO: get csv_delimiter from context
   outerSession_(ownSession_)
 {}
 
@@ -53,7 +54,7 @@ Select::Select(const std::string& selectStatement, std::istream &is, const std::
   selectStatement_(selectStatement),
   delimiter_(delimiter),
   context_(0),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(delimiter)),
   outerSession_(ownSession_)
 {}
 
@@ -65,7 +66,7 @@ Select::Select(const std::string& selectStatement, std::istream &is, const std::
   selectStatement_(selectStatement),
   delimiter_(delimiter),
   context_(context),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(delimiter)),
   outerSession_(ownSession_)
 {}
 
@@ -76,7 +77,7 @@ Select::Select(const std::string& selectStatement)
   deleteIStream_(true),
   selectStatement_(selectStatement),
   context_(0),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")),
   outerSession_(ownSession_)
 {}
 
@@ -87,7 +88,7 @@ Select::Select(const std::string& selectStatement, odb::sql::SQLNonInteractiveSe
   deleteIStream_(true),
   selectStatement_(selectStatement),
   context_(0),
-  ownSession_(0),
+  ownSession_(ownSession(s.csvDelimiter())),
   outerSession_(&s)
 {}
 
@@ -98,7 +99,7 @@ Select::Select(const std::string& selectStatement, ecml::ExecutionContext* conte
   deleteIStream_(true),
   selectStatement_(selectStatement),
   context_(context),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")),  // TODO: get csv_delimiter from context
   outerSession_(ownSession_)
 {}
 
@@ -109,7 +110,7 @@ Select::Select()
   deleteIStream_(true),
   selectStatement_(),
   context_(0),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")),
   outerSession_(ownSession_)
 {}
 
@@ -120,7 +121,7 @@ Select::Select(ecml::ExecutionContext* context)
   deleteIStream_(true),
   selectStatement_(),
   context_(context),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")), // TODO: get csv_delimiter from context
   outerSession_(ownSession_)
 {}
 
@@ -131,7 +132,7 @@ Select::Select(const std::string& selectStatement, const std::string& path)
   deleteIStream_(true),
   selectStatement_(selectStatement),
   context_(0),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")),
   outerSession_(ownSession_)
 {
     //dataHandle_->openForRead();
@@ -144,7 +145,7 @@ Select::Select(const std::string& selectStatement, const std::string& path, ecml
   deleteIStream_(true),
   selectStatement_(selectStatement),
   context_(context),
-  ownSession_(ownSession()),
+  ownSession_(ownSession(",")),  // TODO: get csv_delimiter from context
   outerSession_(ownSession_)
 {
     //dataHandle_->openForRead();
@@ -170,6 +171,11 @@ Select::iterator Select::begin()
     ASSERT(it);
     it->next(context_);
     return iterator(it);
+}
+
+odb::sql::SQLNonInteractiveSession* Select::ownSession(const std::string& delimiter)
+{ 
+    return new odb::sql::SQLNonInteractiveSession(odb::sql::SQLOutputConfig::defaultConfig(), delimiter); 
 }
 
 #ifdef SWIGPYTHON

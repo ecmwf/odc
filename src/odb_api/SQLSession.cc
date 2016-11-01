@@ -14,6 +14,7 @@
 #include "odb_api/SQLNonInteractiveSession.h"
 #include "odb_api/SQLStatement.h"
 #include "odb_api/SQLSelectFactory.h"
+#include "odb_api/SQLOutputConfig.h"
 
 using namespace eckit;
 
@@ -22,9 +23,16 @@ namespace sql {
 
 std::string defaultDB = "default";
 
-SQLSession::SQLSession()
+SQLSession::SQLSession(const odb::sql::SQLOutputConfig& config, const std::string& csvDelimiter)
 : currentDatabase_(0),
-  gotSelectAST_(false)
+  databases_(),
+  selectFactory_(config, csvDelimiter),
+  insertFactory_(),
+  selectAST_(),
+  gotSelectAST_(false),
+  lastExecuteResult_(),
+  config_(config),
+  csvDelimiter_(csvDelimiter)
 {
     currentDatabase_ = new ODADatabase(".", defaultDB); 
     currentDatabase_->open();

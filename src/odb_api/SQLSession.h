@@ -24,6 +24,7 @@ namespace ecml { class ExecutionContext; }
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLInsertFactory.h"
 #include "odb_api/SQLDatabase.h"
+#include "odb_api/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {
@@ -32,10 +33,11 @@ class SQLOutput;
 class SQLDatabase;
 class SQLStatement;
 class SQLTable;
+class SQLOutputConfig;
 
 class SQLSession {
 public:
-    SQLSession();
+    SQLSession(const odb::sql::SQLOutputConfig& config, const std::string& csvDelimiter);
     virtual ~SQLSession(); 
 
     virtual SQLDatabase& openDatabase(const eckit::PathName&,const std::string& name = "");
@@ -71,6 +73,10 @@ public:
     void gotSelectAST(bool);
     const SelectAST& selectAST() const;
 
+    std::string csvDelimiter() { return csvDelimiter_; }
+    const odb::sql::SQLOutputConfig& outputConfig() { return config_; }
+    
+
 private:
 // No copy allowed
 
@@ -87,6 +93,8 @@ private:
     bool gotSelectAST_;
     unsigned long long lastExecuteResult_;
 
+    const odb::sql::SQLOutputConfig config_;
+    const std::string csvDelimiter_;
 
     friend std::ostream& operator<<(std::ostream& s, const SQLSession& p)
     {

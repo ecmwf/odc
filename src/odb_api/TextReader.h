@@ -13,8 +13,8 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#ifndef TextReader_H
-#define TextReader_H
+#ifndef odb_api_TextReader_H
+#define odb_api_TextReader_H
 
 #ifdef SWIGPYTHON
 #include <Python.h>

@@ -14,14 +14,12 @@
 #include "ecml/core/ExecutionContext.h"
 #include "ecml/core/Environment.h"
 
-#include "odb_api/SQLDatabase.h"
+#include "odb_api/SQLSelectFactory.h"
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/FunctionExpression.h"
-#include "odb_api/ShiftedBitColumnExpression.h"
 #include "odb_api/SQLDistinctOutput.h"
 #include "odb_api/SQLODAOutput.h"
 #include "odb_api/SQLOrderOutput.h"
-#include "odb_api/SQLSelectFactory.h"
 #include "odb_api/SQLSelect.h"
 #include "odb_api/SQLSession.h"
 #include "odb_api/TemplateParameters.h"
@@ -29,6 +27,9 @@
 #include "odb_api/SQLCallbackOutput.h"
 #include "odb_api/EmbeddedCodeParser.h"
 #include "odb_api/SQLAST.h"
+#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/BitColumnExpression.h"
+#include "odb_api/ShiftedColumnExpression.h"
 
 using namespace eckit;
 using namespace std;
@@ -36,17 +37,17 @@ using namespace std;
 namespace odb {
 namespace sql {
 
-SQLSelectFactory::SQLSelectFactory()
+SQLSelectFactory::SQLSelectFactory(const odb::sql::SQLOutputConfig& config, const std::string& csvDelimiter)
 : implicitFromTableSource_(0),
   implicitFromTableSourceStream_(0),
   database_(0),
-  config_(SQLOutputConfig::defaultConfig()),
+  config_(config), //SQLOutputConfig::defaultConfig()),
   maxColumnShift_(0),
   minColumnShift_(0),
-  csvDelimiter_(",")
+  csvDelimiter_(csvDelimiter) //",")
 {}
 
-void SQLSelectFactory::reset()
+/*void SQLSelectFactory::reset()
 {
     // TODO> we may need to delete things here...
     implicitFromTableSource_ = 0;
@@ -55,8 +56,9 @@ void SQLSelectFactory::reset()
     config_ = SQLOutputConfig::defaultConfig();
     maxColumnShift_ = 0;
     minColumnShift_ = 0;
-    csvDelimiter_ = ",";
+    //csvDelimiter_ = ",";
 }
+*/
 
 string SQLSelectFactory::index(const string& columnName, const SQLExpression* index)
 {

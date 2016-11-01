@@ -25,10 +25,9 @@ using namespace eckit;
 
 namespace odb {
 
-SelectIterator::SelectIterator(Select &owner, odb::sql::SQLNonInteractiveSession& s)
+SelectIterator::SelectIterator(odb::Select &owner, odb::sql::SQLNonInteractiveSession& s)
 : owner_(owner),
   select_(),
-  session_(*this, s),
   selectStmt_(0),
   metaData_(0),
   data_(0),
@@ -36,14 +35,13 @@ SelectIterator::SelectIterator(Select &owner, odb::sql::SQLNonInteractiveSession
   noMore_(false),
   aggregateResultRead_(false),
   isCachingRows_(false),
-  refCount_(0)
-{
-}
+  refCount_(0),
+  session_(*this, s)
+{}
 
 SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, ecml::ExecutionContext* context, odb::sql::SQLNonInteractiveSession& s)
 : owner_(owner),
   select_(select),
-  session_(*this, s),
   selectStmt_(0),
   metaData_(0),
   data_(0),
@@ -51,7 +49,8 @@ SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, ec
   noMore_(false),
   aggregateResultRead_(false),
   isCachingRows_(false),
-  refCount_(0)
+  refCount_(0),
+  session_(*this, s)
 {
     if (owner.dataIStream())
         parse(session_, owner.dataIStream());
@@ -82,7 +81,6 @@ void SelectIterator::parse(odb::sql::SQLSession& session, std::istream *is)
 	sql::SQLParser p;
 	odb::sql::SQLSelectFactory& factory(session.selectFactory());
 	p.parseString(session, select_, is, factory.config(), factory.csvDelimiter());
-    // TODO: do we really need to pass session here
 	sql::SQLStatement *stmt (session_.statement());
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
 	ASSERT(selectStmt_);

@@ -16,12 +16,14 @@
 #include "odb_api/SQLInteractiveSession.h"
 #include "odb_api/SQLSimpleOutput.h"
 #include "odb_api/SQLStatement.h"
+#include "odb_api/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {
 
 SQLInteractiveSession::SQLInteractiveSession(std::ostream &out)
-: out_(out)
+: SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
+  out_(out)
 {}
 
 SQLInteractiveSession::~SQLInteractiveSession()

@@ -11,42 +11,19 @@
 /// \file SQLOutputConfig.h
 /// Piotr Kuchta - ECMWF Jul 2010
 
-#ifndef SQLOutputConfig_H
-#define SQLOutputConfig_H
+#ifndef odb_api_SQLOutputConfig_H
+#define odb_api_SQLOutputConfig_H
 
-#include "eckit/eckit.h"
-
+#include <string>
 
 namespace odb {
 namespace sql {
 
 class SQLOutputConfig {
 public:
-	SQLOutputConfig(const SQLOutputConfig& that)
-	: doNotWriteColumnNames_(that.doNotWriteColumnNames_),
-	  doNotWriteNULL_(that.doNotWriteNULL_),
-	  fieldDelimiter_(that.fieldDelimiter_),
-	  outputFile_(that.outputFile_),
-	  outputFormat_(that.outputFormat_),
-      displayBitfieldsBinary_(that.displayBitfieldsBinary_),
-      displayBitfieldsHexadecimal_(that.displayBitfieldsHexadecimal_),      
-      disableAlignmentOfColumns_(that.disableAlignmentOfColumns_)
-	{}
 
-	SQLOutputConfig& operator=(const SQLOutputConfig& that)
-	{
-		doNotWriteColumnNames_ = that.doNotWriteColumnNames_;
-		doNotWriteNULL_ = that.doNotWriteNULL_;
-		fieldDelimiter_ = that.fieldDelimiter_;
-		outputFile_ = that.outputFile_;
-		outputFormat_ = that.outputFormat_;
-        displayBitfieldsBinary_ = that.displayBitfieldsBinary_;
-        displayBitfieldsHexadecimal_ = that.displayBitfieldsHexadecimal_;        
-        disableAlignmentOfColumns_ = that.disableAlignmentOfColumns_;
-		return *this;
-	}
-
-
+	SQLOutputConfig(const SQLOutputConfig&);
+	SQLOutputConfig& operator=(const SQLOutputConfig&);
 	SQLOutputConfig(bool cn = false,
                     bool n = false,
                     const std::string& d = defaultDelimiter(),
@@ -54,43 +31,32 @@ public:
                     const std::string& format = defaultFormat(),
                     bool displayBitfieldsBinary = false,
                     bool displayBitfieldsHexadecimal = false,                    
-                    bool disableAlignmentOfColumns = false)
-	: doNotWriteColumnNames_(cn),
-	  doNotWriteNULL_(n),
-	  fieldDelimiter_(d),
-      outputFile_(output),
-      outputFormat_(format),
-      displayBitfieldsBinary_(displayBitfieldsBinary),
-      displayBitfieldsHexadecimal_(displayBitfieldsHexadecimal),
-      disableAlignmentOfColumns_(disableAlignmentOfColumns)
-	{}
+                    bool disableAlignmentOfColumns = false);
+	bool doNotWriteColumnNames () const;
+    void doNotWriteColumnNames(bool b);
 
-	bool doNotWriteColumnNames () const { return doNotWriteColumnNames_; }
-    void doNotWriteColumnNames(bool b) { doNotWriteColumnNames_ = b; }
+	bool doNotWriteNULL () const;
+	void doNotWriteNULL (bool b);
 
-	bool doNotWriteNULL () const { return  doNotWriteNULL_; }
-	void doNotWriteNULL (bool b) { doNotWriteNULL_ = b; }
+    const std::string& fieldDelimiter() const;
+    void fieldDelimiter(const std::string& d);
 
-    const std::string& fieldDelimiter() const { return fieldDelimiter_; }
-    void fieldDelimiter(const std::string& d) { fieldDelimiter_ = d; }
+    const std::string& outputFile () const;
+    void outputFile (const std::string& fn);
 
-    const std::string& outputFile () const { return outputFile_; }
-    void outputFile (const std::string& fn) { outputFile_ = fn; }
+    const std::string& outputFormat () const;
+    void outputFormat (const std::string& s);
 
-    const std::string& outputFormat () const { return outputFormat_; }
-    void outputFormat (const std::string& s) { outputFormat_ = s; }
+    bool displayBitfieldsBinary () const;
+    void displayBitfieldsBinary (bool b);
 
-    bool displayBitfieldsBinary () const { return displayBitfieldsBinary_; }
-    void displayBitfieldsBinary (bool b) { displayBitfieldsBinary_ = b; }
-
-    bool displayBitfieldsHexadecimal () const { return displayBitfieldsHexadecimal_; }
-    void displayBitfieldsHexadecimal (bool b) { displayBitfieldsHexadecimal_ = b; }
+    bool displayBitfieldsHexadecimal () const;
+    void displayBitfieldsHexadecimal (bool b);
     
+    bool disableAlignmentOfColumns () const;
+    void disableAlignmentOfColumns (bool b);
 
-    bool disableAlignmentOfColumns () const { return disableAlignmentOfColumns_; }
-    void disableAlignmentOfColumns (bool b) { disableAlignmentOfColumns_ = b; }
-
-	static const SQLOutputConfig defaultConfig() { return SQLOutputConfig(); }
+	static const SQLOutputConfig defaultConfig();
 
 private:
 	bool doNotWriteColumnNames_;
@@ -102,9 +68,9 @@ private:
     bool displayBitfieldsHexadecimal_; // --hex
     bool disableAlignmentOfColumns_;  // --no_alignment
 
-    static const char* defaultDelimiter() { return "	"; }
-    static const char* defaultOutputFile() { return "output.odb"; }
-    static const char* defaultFormat() { return "default"; }
+    static const char* defaultDelimiter();
+    static const char* defaultOutputFile();
+    static const char* defaultFormat();
 };
 
 } // namespace sql
