@@ -37,7 +37,6 @@
 #include "odb_api/tools/SplitTool.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/odbql.h"
-
 #include "ecml/data/DataHandleFactory.h"
 
 extern "C" {
