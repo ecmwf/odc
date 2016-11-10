@@ -29,6 +29,8 @@
 #include "odb_api/FunctionJULIAN_SECONDS.h"
 #include "odb_api/FunctionMAX.h"
 #include "odb_api/FunctionMIN.h"
+#include "odb_api/FunctionFIRST.h"
+#include "odb_api/FunctionLAST.h"
 #include "odb_api/FunctionNORM.h"
 #include "odb_api/FunctionNOT_IN.h"
 #include "odb_api/FunctionNOT_NULL.h"
@@ -603,6 +605,8 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	new FunctionMaker<FunctionJULIAN_SECONDS> ("julian_seconds",2, "Returns time in Julian calendar expressed in seconds.");
 	new FunctionMaker<FunctionMAX> ("max",1, "");
 	new FunctionMaker<FunctionMIN> ("min",1, "");
+	new FunctionMaker<FunctionFIRST> ("first",1, "");
+	new FunctionMaker<FunctionLAST> ("last",1, "");
 	new FunctionMaker<FunctionNORM> ("norm",2, "");
 	new FunctionMaker<FunctionNOT_IN> ("not_in", -1, "");
 	new FunctionMaker<FunctionNOT_NULL> ("not_null",1, "");
@@ -630,7 +634,8 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 }
 
 
-FunctionExpression* ast(const std::string& s, SQLExpression* e) { return FunctionFactory::instance().build(s, e); }
+FunctionExpression* ast(const std::string& s, SQLExpression* e) 
+{ return FunctionFactory::instance().build(s, e); }
 
 FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2)
 { return FunctionFactory::instance().build(s, e1, e2); }
@@ -638,12 +643,11 @@ FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* 
 FunctionExpression* ast(const std::string& s, SQLExpression* e1, SQLExpression* e2, SQLExpression* e3)
 { return FunctionFactory::instance().build(s, e1, e2, e3); }
 
-FunctionExpression* ast(const std::string& s, const expression::Expressions& e) { return FunctionFactory::instance().build(s, e); }
+FunctionExpression* ast(const std::string& s, const expression::Expressions& e) 
+{ return FunctionFactory::instance().build(s, e); }
 
 FunctionExpression* ast(const std::string& s, const expression::Expressions& matchList, const SelectAST& selectAST) 
-{ 
-    return FunctionFactory::instance().build(s, matchList, selectAST);
-}
+{ return FunctionFactory::instance().build(s, matchList, selectAST); }
 
 } // namespace function
 } // namespace expression

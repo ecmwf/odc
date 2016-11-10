@@ -157,6 +157,10 @@ FunctionMAX.cc
 FunctionMAX.h
 FunctionMIN.cc
 FunctionMIN.h
+FunctionFIRST.cc
+FunctionFIRST.h
+FunctionLAST.cc
+FunctionLAST.h
 FunctionNORM.cc
 FunctionNORM.h
 FunctionNOT_IN.cc
