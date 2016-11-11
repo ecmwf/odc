@@ -32,8 +32,8 @@ typedef Cell* Request;
 template <typename MARSREQUEST>
 static void convertToMarsRequest(const Request request, MARSREQUEST& marsRequest)
 {
-    //marsRequest.name(verb(request));
-    marsRequest.verb(request->text());
+    marsRequest.name(request->text());
+//    marsRequest.verb(request->text());
     std::cerr << "convertToMarsRequest: verb is " << request->text() << std::endl;
     for (ecml::Request r(request->rest()); r; r = r->rest())
     {
@@ -46,7 +46,8 @@ static void convertToMarsRequest(const Request request, MARSREQUEST& marsRequest
                 ss << v->value(); 
             vs.push_back(ss.str());
         }
-        marsRequest.values(key, vs);
+          marsRequest.setValues(key, vs);
+//        marsRequest.values(key, vs);
     }
 }
 
