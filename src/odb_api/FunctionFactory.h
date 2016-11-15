@@ -11,8 +11,8 @@
 // File FunctionFactory.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef FunctionFactory_H
-#define FunctionFactory_H
+#ifndef odb_api_FunctionFactory_H
+#define odb_api_FunctionFactory_H
 
 #include "odb_api/FunctionExpression.h"
 #include "odb_api/SQLAST.h"
