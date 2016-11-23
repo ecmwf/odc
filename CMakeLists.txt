@@ -34,6 +34,9 @@ ecbuild_declare_project()
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
 
+ecbuild_dont_pack(REGEX "*.odb")
+ecbuild_dont_pack(REGEX ".gdbinit")
+
 ###############################################################################
 # some variables/options of this project
 
