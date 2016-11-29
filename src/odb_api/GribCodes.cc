@@ -84,7 +84,7 @@ GribCodesBase::GribCodesBase(const PathName& fileName)
   numericIndex_(0),
   alphanumericIndex_(1)
 {
-    Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
+    Log::debug() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
     readConfig(configFileName_);
 }
 
@@ -95,7 +95,7 @@ GribCodesBase::GribCodesBase(const PathName& fileName, const std::string& fieldD
   numericIndex_(numericIndex),
   alphanumericIndex_(alphanumericIndex)
 {
-    Log::info() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
+    Log::debug() << "GribCodesBase::GribCodesBase: configFileName_:" << configFileName_ << std::endl;
     readConfig(configFileName_);
 }
 

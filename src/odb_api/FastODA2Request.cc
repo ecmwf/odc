@@ -39,9 +39,7 @@ void FastODA2Request<T>::parseConfig(const std::string& s)
         ASSERT(elt->tag() == "");
         std::string value (elt->value()->str());
 
-		eckit::Log::info() << "parseConfig: " << key << "=" << value << std::endl;
-
-		//ASSERT("Each line of config file should be like: 'MARS_KEYWORD : odb_column_name'" && words.size() == 2);
+		eckit::Log::debug() << "parseConfig: " << key << "=" << value << std::endl;
 
 		addColumn(key, value);
 	}
