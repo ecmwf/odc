@@ -1,7 +1,49 @@
 %option reentrant
 %option extra-type="void *"
 %option bison-bridge
+%option yylineno
 %{
+
+// %option noyywrap // few lines higher!
+// #define YY_USER_ACTION yyset_column(yyget_column(yyscanner) + yyget_leng(yyscanner), yyscanner);
+//#define YY_USER_ACTION \
+//    printf("yyget_column(yyscanner): %i, yyget_leng(yyscanner): %i\n", yyget_column(yyscanner), yyget_leng(yyscanner)); \
+//    yyset_column(yyget_column(yyscanner) + yyget_leng(yyscanner), yyscanner);
+/*
+static void update_loc(void* yyscanner)
+{
+    struct ::yyguts_t * yyg ((struct yyguts_t*) yyscanner);
+
+    int curr_line = 1;
+    int curr_col  = 1;
+
+    yyg->yylloc.first_line = 1;
+
+    yylloc.first_line   = curr_line;
+    yylloc.first_column = curr_col;
+
+    {
+        char * s; 
+        for(s = yytext; *s != '\0'; s++)
+        {
+            if(*s == '\n') {
+                curr_line++;
+                curr_col = 1;
+            } else {
+                curr_col++;
+            }
+        }
+    }
+
+    yylloc.last_line   = curr_line;
+    yylloc.last_column = curr_col-1;
+}
+*/
+
+#define YY_USER_ACTION do { \
+        struct yyguts_t * yyg ((struct yyguts_t*) yyscanner); \
+        /* fprintf(stderr, "location <%d,%d>,<%d,%d>\n", yyg->yylloc_r.first_line, yyg->yylloc_r.first_column, yyg->yylloc_r.last_line, yyg->yylloc_r.last_column); */ \
+    } while (0);
 
 /*
  * (C) Copyright 1996-2012 ECMWF.
@@ -152,9 +194,11 @@ SEMICOLON [;]
             while ((c = yyinput(yyscanner)) && c != end)
             {
                 yytext[yyleng++] = (c == '\\') ? yyinput(yyscanner) : c;
-                // TODO: FIXME:
-                //if (c == '\n') 
-                //    ++SQLYacc::odblib_lineno;
+                if (c == '\n')
+                {
+                    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+                    ++ yyg->yylineno_r;
+                }
             }
 
             yytext[yyleng++] = 0;
@@ -169,9 +213,11 @@ SEMICOLON [;]
             while ((c = yyinput(yyscanner)) && c != end)
             {
                 yytext[yyleng++] = (c == '\\') ? yyinput(yyscanner) : c;
-                // TODO: FIXME:
-                //if (c == '\n') 
-                //    ++SQLYacc::odblib_lineno;
+                if (c == '\n') 
+                {
+                    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+                    ++ yyg->yylineno_r;
+                }
             }
 
             yytext[yyleng++] = 0;
@@ -202,7 +248,10 @@ SEMICOLON [;]
 "//".*  ;
 
 [ \t]*  ;
-\n      ; //++SQLYacc::odblib_lineno;
+\n      {
+            struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
+            ++ yyg->yylineno_r;
+        }
 
 "="       return EQ;
 "=="      return EQ;

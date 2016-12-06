@@ -254,6 +254,7 @@ integer, parameter :: ODBQL_INTEGER = 1 !
 integer, parameter :: ODBQL_FLOAT = 2 ! 
 integer, parameter :: ODBQL_BLOB = 4 ! 
 integer, parameter :: ODBQL_NULL = 5 ! 
+integer, parameter :: ODBQL_BITFIELD = 6 ! 
 integer, parameter :: ODBQL_TEXT = 3 ! 
 integer, parameter :: ODBQL_UTF8 = 1 !  IMP: R-37514-35566 
 integer, parameter :: ODBQL_UTF16LE = 2 !  IMP: R-03371-37637 

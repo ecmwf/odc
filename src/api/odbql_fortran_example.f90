@@ -63,9 +63,9 @@ subroutine odbql_fortran_example
 !!!! Read from a file with SQL SELECT
 
 ! Associate table with a file name
- call odbql_open("fort.odb", db)
+! call odbql_open("fort.odb", db)
 ! You could as well retrieve some data directly from MARS instead:
-! call odbql_open("mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod", db)
+ call odbql_open("mars://RETRIEVE,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160720,TIME=1200,DATABASE=marsod", db)
  call odbql_prepare_v2(db, "SELECT *;", -1, stmt, unparsed_sql)
  number_of_columns = odbql_column_count(stmt)
  write(0,*) "Number of columns: ", number_of_columns 
@@ -87,6 +87,8 @@ subroutine odbql_fortran_example
            select case (odbql_column_type(stmt, column_no))
            case (ODBQL_TEXT)
                call odbql_column_text(stmt, column_no, string_val)
+           case (ODBQL_BITFIELD)
+                
            case (ODBQL_INTEGER)
                int_val = odbql_value_int(val)
                write(6,*) column_no, ' ', column_name, ':integer = ', int_val

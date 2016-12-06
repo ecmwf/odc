@@ -109,8 +109,10 @@ ODBQL_FLOAT            = 2
 ODBQL_TEXT             = 3
 ODBQL_BLOB             = 4
 ODBQL_NULL             = 5
+ODBQL_BITFIELD         = 6
 
-def type_name(i): return [None, 'INTEGER', 'REAL', 'TEXT'][i]
+def type_name(i): 
+    return [None, 'INTEGER', 'REAL', 'TEXT', 'BLOB', 'NULL', 'BITFIELD'][i]
 
 class Connection:
     def __init__(self, file_name):
@@ -231,8 +233,8 @@ class Cursor:
             if t == ODBQL_INTEGER: return odbql_value_int(v)
             if t == ODBQL_TEXT: return odbql_column_text(self.stmt, column)
             if t == ODBQL_NULL: return None
+            if t == ODBQL_BITFIELD: return odbql_value_int(v)
             #ODBQL_BLOB     = 4
-            #ODBQL_NULL     = 5
             return odbql_column_text(self.stmt, column)
 
     def executemany(self, operation, parameters):

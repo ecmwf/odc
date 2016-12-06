@@ -352,7 +352,7 @@ int SelectImpl::column_type(int iCol)
     {
         case STRING:   return ODBQL_TEXT;
         case INTEGER:  return ODBQL_INTEGER;
-        case BITFIELD: return ODBQL_INTEGER; // TODO?
+        case BITFIELD: return ODBQL_BITFIELD;
         case REAL:     return ODBQL_FLOAT;
         case DOUBLE:   return ODBQL_FLOAT;
         default:

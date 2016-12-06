@@ -30,18 +30,18 @@ namespace sql {
 class SQLDatabase;
 class SQLSession;
 
-class SyntaxError : public eckit::SeriousBug {
+class SyntaxError : public eckit::Exception {
 public:
-	SyntaxError(const std::string& s): eckit::SeriousBug(s) {}
+	SyntaxError(const std::string& s): eckit::Exception(s) {}
 };
 
 struct ParseFrame {
-	ParseFrame(const std::string& sql, const std::string& yypath);
+    ParseFrame(const std::string& sql, const std::string& yypath);
 
-	std::string inputString_;
-	std::string yypath_;
-	char* inputText_;
-	char* inputEnd_;
+    std::string inputString_;
+    std::string yypath_;
+    char* inputText_;
+    char* inputEnd_;
 };
 
 class SQLParser {

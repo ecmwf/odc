@@ -433,7 +433,7 @@ ODBQL_API int ODBQL_STDCALL odbql_exec(
 #define ODBQL_WARNING     28   /* Warnings from odbql_log() */
 #define ODBQL_ROW         100  /* odbql_step() has another row ready */
 #define ODBQL_DONE        101  /* odbql_step() has finished executing */
-///////// ECMWF specific:
+///////// ODB API specific:
 #define ODBQL_METADATA_CHANGED        102  /* odbql_step(): metadata has changed */
 /* end-of-error-codes */
 
@@ -3969,6 +3969,9 @@ ODBQL_API int ODBQL_STDCALL odbql_data_count(odbql_stmt *pStmt);
 #define ODBQL_FLOAT    2
 #define ODBQL_BLOB     4
 #define ODBQL_NULL     5
+
+///////// ODB API specific type:
+#define ODBQL_BITFIELD     6
 #ifdef ODBQL_TEXT
 # undef ODBQL_TEXT
 #else

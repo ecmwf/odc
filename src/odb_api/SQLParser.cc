@@ -61,8 +61,15 @@ using namespace odb::sql::expression::function;
 void odblib_error(odblib_scan_t scanner, odb::sql::SQLSession*, const char* msg)
 {
     std::stringstream os;
-    // TODO: FIXME
-	//os << msg << " line " << odblib_lineno; // TODO: << " of " << yypath;
+
+    struct odblib_guts_t * odblib_g = (struct odblib_guts_t*) scanner;
+    // internally we count the lines from 0...
+    int lineNumber (1 + odblib_g->odblib_lineno_r);
+
+    os << "SQL "
+	<< (msg ? msg : "syntax error") 
+    << ", line " << lineNumber // << " of " << yypath;
+    << ". See https://software.ecmwf.int/wiki/display/ODBAPI/SQL";
 	throw SyntaxError(os.str()); 
 }
 
@@ -110,8 +117,6 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 {
     //AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
-
-    //SQLYacc::odblib_lineno = 0;
 
     session.selectFactory().implicitFromTableSourceStream(is);
     session.selectFactory().config(cfg);
