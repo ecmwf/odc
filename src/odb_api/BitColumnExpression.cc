@@ -29,7 +29,7 @@ BitColumnExpression::BitColumnExpression(const std::string& name, const std::str
   field_(field),
   name_(name)
 {
-	Log::info() << "BitColumnExpression::BitColumnExpression: name=" << name
+	Log::debug() << "BitColumnExpression::BitColumnExpression: name=" << name
 		<< ", field=" << field << ", table->name() =" << table->name()
 		<< ": name_=" << name_
 		<< std::endl;
@@ -42,7 +42,7 @@ BitColumnExpression::BitColumnExpression(const std::string& name, const std::str
   field_(field),
   name_(name)
 {
-	Log::info() << "BitColumnExpression::BitColumnExpression: name=" << name
+	Log::debug() << "BitColumnExpression::BitColumnExpression: name=" << name
 		<< ", field=" << field << ", tableReference=" << tableReference
 		<< ": name_=" << name_
 		<< std::endl;
@@ -101,7 +101,7 @@ void BitColumnExpression::expandStars(const std::vector<SQLTable*>& tables, expr
     using namespace eckit;
     using namespace std;
 
-    Log::info() << "BitColumnExpression::expandStars: " << e << endl;
+    Log::debug() << "BitColumnExpression::expandStars: " << e << endl;
 	// TODO: regex
 	if(field_ != "*")
 	{

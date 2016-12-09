@@ -69,7 +69,7 @@ void odblib_error(odblib_scan_t scanner, odb::sql::SQLSession*, const char* msg)
     os << "SQL "
 	<< (msg ? msg : "syntax error") 
     << ", line " << lineNumber // << " of " << yypath;
-    << ". See https://software.ecmwf.int/wiki/display/ODBAPI/SQL";
+    << ". See https://software.ecmwf.int/wiki/display/ODBAPI/SQL\n";
 	throw SyntaxError(os.str()); 
 }
 
