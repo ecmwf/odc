@@ -13,6 +13,7 @@
 #include "eckit/log/Log.h"
 #include "odb_api/HashTable.h"
 
+
 using namespace eckit;
 
 namespace odb {
@@ -67,18 +68,23 @@ HashTable::~HashTable()
 		delete table[i];
 }
 
+int64_t msb(int64_t x) { return (*reinterpret_cast<uint64_t*>(&x)) & 0xffffffff; }
+
 int HashTable::hash(const char *name)
 {
-	int32_t n = 0;
+    ASSERT(name);
 
-	while(*name)
-		n +=  (*name++ - 'A') + (n << 5);
+	int64_t n (0);
 
-	if(n < 0)
+	while (*name)
+		n = msb(n + msb(int64_t(*name++ - 'A') + int64_t(msb(n << 5))));
+
+	if (n < 0)
 	{
-		int32_t m = -n / SIZE;
-		n += (m + 1) * SIZE;
+		int64_t m (int64_t(-n) / SIZE);
+		n = msb(n + msb(msb((m + 1)) * SIZE));
 	}
+
 	return n % SIZE;
 }
 
