@@ -62,8 +62,6 @@ HashTable* HashTable::clone() {
 
 HashTable::~HashTable()
 {
-	//Log::info() << "HashTable@" << this << "::~HashTable()" << std::endl;
-
 	for (size_t i = 0; i < sizeof(table) / sizeof(hashrec *); i++)
 		delete table[i];
 }
@@ -81,7 +79,7 @@ int HashTable::hash(const char *name)
 
 	if (n < 0)
 	{
-		int64_t m (int64_t(-n) / SIZE);
+		int64_t m (int64_t( -n ) / SIZE);
 		n = msb(n + msb(msb((m + 1)) * SIZE));
 	}
 
