@@ -18,74 +18,78 @@
 namespace odb {
 namespace sql {
 
-template<typename ITERATOR>
-SQLODAOutput<ITERATOR>::SQLODAOutput(ITERATOR writer, const MetaData& columns)
-: writer_(writer), count_(0), metaData_(0)
+template<typename WRITER>
+SQLODAOutput<WRITER>::SQLODAOutput(WRITER* writer, const MetaData& columns)
+: writer_(writer), it_(writer->begin()), count_(0), metaData_(0)
 {
     metaData_ = columns;
 }
 
-template<typename ITERATOR>
-SQLODAOutput<ITERATOR>::SQLODAOutput(ITERATOR writer)
-: writer_(writer), count_(0), metaData_(0)
+template<typename WRITER>
+SQLODAOutput<WRITER>::SQLODAOutput(WRITER* writer)
+: writer_(writer), it_(writer->begin()), count_(0), metaData_(0)
 {}
 
-template<typename ITERATOR>
-SQLODAOutput<ITERATOR>::~SQLODAOutput() {}
-
-template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::print(std::ostream& s) const
-{ 
-    s << "SQLODAOutput: writer: " << writer_ << " metaData_: " <<  metaData_ << std::endl;;
-}
-
-template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::size(int) {}
-
-template<typename ITERATOR>
-unsigned long long SQLODAOutput<ITERATOR>::count() { return count_; }
-
-template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::reset() { count_ = 0; }
-
-template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::flush(ecml::ExecutionContext*) {}
-
-template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::cleanup(SQLSelect& sql) { sql.outputFiles((**writer_).outputFiles()); }
-
-template<typename ITERATOR>
-bool SQLODAOutput<ITERATOR>::output(const expression::Expressions& results, ecml::ExecutionContext* context)
+template<typename WRITER>
+SQLODAOutput<WRITER>::~SQLODAOutput()
 {
-	size_t nCols = results.size();
-    for(size_t i = 0; i < nCols; i++)
-	{
-		bool missing = false;
-        // TODO: pass the context to writer_
-		(*writer_)[i] = results[i]->eval(missing);
-	}
-
-	++writer_;
-	++count_;
-	return true;
+    delete writer_;
 }
 
-template<typename ITERATOR>
-void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql) {
-	const expression::Expressions& columns (sql.output());
-    size_t n = columns.size();
+template<typename WRITER>
+void SQLODAOutput<WRITER>::print(std::ostream& s) const
+{ 
+    s << "SQLODAOutput: iterator: " << it_ << " metaData_: " <<  metaData_ << std::endl;;
+}
+
+template<typename WRITER>
+void SQLODAOutput<WRITER>::size(int) {}
+
+template<typename WRITER>
+unsigned long long SQLODAOutput<WRITER>::count() { return count_; }
+
+template<typename WRITER>
+void SQLODAOutput<WRITER>::reset() { count_ = 0; }
+
+template<typename WRITER>
+void SQLODAOutput<WRITER>::flush(ecml::ExecutionContext*) {}
+
+template<typename WRITER>
+void SQLODAOutput<WRITER>::cleanup(SQLSelect& sql) { sql.outputFiles((**it_).outputFiles()); }
+
+template<typename WRITER>
+bool SQLODAOutput<WRITER>::output(const expression::Expressions& results, ecml::ExecutionContext* context)
+{
+    size_t nCols (results.size());
+    for(size_t i (0); i < nCols; ++i)
+    {
+        bool missing = false;
+        // TODO: pass the context to it_
+        (*it_)[i] = results[i]->eval(missing);
+    }
+
+    ++it_;
+    ++count_;
+    return true;
+}
+
+template<typename WRITER>
+void SQLODAOutput<WRITER>::prepare(SQLSelect& sql) 
+{
+    const expression::Expressions& columns (sql.output());
+    size_t n (columns.size());
 
     std::ostream& L(eckit::Log::debug());
 
     if (metaData_.size()) {
         L << "SQLODAOutput: Using meta of INTO table" << std::endl;
         ASSERT(metaData_.size() == n);
-        const_cast<MetaData&>(writer_->columns()) = metaData_;
+        const_cast<MetaData&>(it_->columns()) = metaData_;
     }
     else
     {
-        const_cast<MetaData&>(writer_->columns()).setSize(n);
-        for(size_t i = 0; i < n; i++)
+        const_cast<MetaData&>(it_->columns()).setSize(n);
+        for(size_t i (0); i < n; i++)
         {
             SQLExpression& c(*columns[i]);
             std::string name(c.title());
@@ -100,22 +104,22 @@ void SQLODAOutput<ITERATOR>::prepare(SQLSelect& sql) {
                 : IGNORE;
 
             if (! (typ == BITFIELD))
-                (**writer_).setColumn(i, name, typ);
+                (**it_).setColumn(i, name, typ);
             else
-                (**writer_).setBitfieldColumn(i, name, typ, c.bitfieldDef());
+                (**it_).setBitfieldColumn(i, name, typ, c.bitfieldDef());
 
-            (**writer_).missingValue(i, c.missingValue());
+            (**it_).missingValue(i, c.missingValue());
         }
     }
-    (**writer_).writeHeader();
-    L << " => SQLODAOutput: " << std::endl << (**writer_).columns() << std::endl;
+    (**it_).writeHeader();
+    L << " => SQLODAOutput: " << std::endl << (**it_).columns() << std::endl;
 }
 
 
 // Explicit template instantiations.
 
-template class SQLODAOutput<Writer<>::iterator>;
-template class SQLODAOutput<DispatchingWriter::iterator>;
+template class SQLODAOutput<Writer<> >;
+template class SQLODAOutput<DispatchingWriter>;
 
 } // namespace sql
 } // namespace odb

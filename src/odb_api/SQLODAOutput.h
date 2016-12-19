@@ -11,8 +11,8 @@
 /// \file SQLODAOutput.h
 /// Piotr Kuchta - ECMWF Jan 09
 
-#ifndef SQLODAOutput_H
-#define SQLODAOutput_H
+#ifndef odb_api_SQLODAOutput_H
+#define odb_api_SQLODAOutput_H
 
 #include "eckit/exception/Exceptions.h"
 
@@ -25,11 +25,11 @@ namespace sql {
 
 class Reader;
 
-template<typename ITERATOR>
+template<typename WRITER>
 class SQLODAOutput : public SQLOutput {
 public:
-	SQLODAOutput(ITERATOR);
-	SQLODAOutput(ITERATOR, const MetaData&);
+	SQLODAOutput(WRITER*);
+	SQLODAOutput(WRITER*, const MetaData&);
 	virtual ~SQLODAOutput(); // Change to virtual if base class
 
 protected:
@@ -40,7 +40,8 @@ private:
 	SQLODAOutput& operator=(const SQLODAOutput&);
 
 // -- Members
-	ITERATOR writer_;
+	WRITER* writer_;
+	typename WRITER::iterator it_;
     MetaData metaData_;
 
 	unsigned long long count_;

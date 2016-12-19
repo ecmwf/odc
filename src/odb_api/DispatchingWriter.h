@@ -13,8 +13,8 @@
 ///
 /// @author Piotr Kuchta, June 2009
 
-#ifndef DispatchingWriter_H
-#define DispatchingWriter_H
+#ifndef odb_api_DispatchingWriter_H
+#define odb_api_DispatchingWriter_H
 
 #include "odb_api/WriterBufferingIterator.h"
 #include "odb_api/WriterDispatchingIterator.h"
