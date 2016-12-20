@@ -14,6 +14,8 @@
 #include "odb_api/SQLSelect.h"
 #include "odb_api/SQLSimpleOutput.h"
 
+#include <limits>
+
 namespace odb {
 namespace sql {
 
@@ -57,10 +59,19 @@ bool SQLSimpleOutput::output(const expression::Expressions& results, ecml::Execu
 template <typename T> void SQLSimpleOutput::outputValue(double x, bool missing) 
 {
     format(out_, currentColumn_);
+
     if (missing && !config_.doNotWriteNULL())
         out_ << "NULL";
     else
-        out_ << static_cast<T>(x);
+    {
+        if (config_.fullPrecision())
+        {
+            out_.precision(std::numeric_limits<T>::digits10 + 2);
+            out_ << std::fixed << static_cast<T>(x);
+        }
+        else
+            out_ << static_cast<T>(x);
+    }
 }
 
 void SQLSimpleOutput::outputReal(double x, bool missing) { outputValue<double>(x, missing); }

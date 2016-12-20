@@ -336,19 +336,18 @@ SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const string& in
     TemplateParameters::parse(outputFile, templateParameters);
     if (templateParameters.size())
     {
-        DispatchingWriter writer(outputFile, orderBySize ? 1 : maxOpenFiles);
-        r = new SQLODAOutput<DispatchingWriter::iterator>(writer.begin());
+        r = new SQLODAOutput<DispatchingWriter>(new DispatchingWriter(outputFile, orderBySize ? 1 : maxOpenFiles));
     } 
     else 
     {
         SchemaAnalyzer& a (session.currentDatabase().schemaAnalyzer());
         if (! a.tableKnown(outputFile)) 
-            r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin());
+            r = new SQLODAOutput<Writer<> >(new Writer<>(outputFile));
         else
         {
             Log::info() << "Table in the INTO clause known (" << outputFile << ")" << endl;
             const odb::sql::TableDef* tableDef (&a.findTable(outputFile));
-            r = new SQLODAOutput<Writer<>::iterator>(Writer<>(outputFile).begin(), toODAColumns(session, *tableDef));
+            r = new SQLODAOutput<Writer<> >(new Writer<>(outputFile), toODAColumns(session, *tableDef));
         } 
     }
     return r;

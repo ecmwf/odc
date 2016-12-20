@@ -13,8 +13,8 @@
 ///
 /// @author Piotr Kuchta, June 2009
 
-#ifndef WriterDispatchingIterator_H
-#define WriterDispatchingIterator_H
+#ifndef odb_api_WriterDispatchingIterator_H
+#define odb_api_WriterDispatchingIterator_H
 
 #include "eckit/eckit.h"
 #include "odb_api/ColumnType.h"

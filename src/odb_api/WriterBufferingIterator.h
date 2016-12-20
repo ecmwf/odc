@@ -13,8 +13,8 @@
 ///
 /// @author Piotr Kuchta, August 2009
 
-#ifndef WriterBufferingIterator_H
-#define WriterBufferingIterator_H
+#ifndef odb_api_WriterBufferingIterator_H
+#define odb_api_WriterBufferingIterator_H
 
 #include "odb_api/Array.h"
 #include "odb_api/CodecOptimizer.h"
@@ -140,7 +140,7 @@ private:
 template<typename T>
 void WriterBufferingIterator::pass1init(T& it, const T& end)
 {
-	eckit::Log::info() << "WriterBufferingIterator::pass1init" << std::endl;
+	eckit::Log::debug() << "WriterBufferingIterator::pass1init" << std::endl;
 
 	// Copy columns from the input iterator.
 	columns(columnsBuffer_ = it->columns());
@@ -157,7 +157,7 @@ void WriterBufferingIterator::pass1init(T& it, const T& end)
 template<typename T>
 unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 {
-	eckit::Log::info() << "WriterBufferingIterator::pass1" << std::endl;
+	eckit::Log::debug() << "WriterBufferingIterator::pass1" << std::endl;
 
 	pass1init(it, end);
 
@@ -166,7 +166,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	{
 		if (it->isNewDataset() && it->columns() != columnsBuffer_)
 		{
-			eckit::Log::info() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
+			eckit::Log::debug() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
 			flush();
 			pass1init(it, end);
 			writeHeader();
@@ -188,7 +188,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	eckit::Log::debug() << "Flushing rest of the buffer..." << std::endl;
 	flush();
 
-	eckit::Log::info() << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << std::endl;
+	eckit::Log::debug() << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << std::endl;
 	ASSERT(close() == 0);
 	return nrows;
 }

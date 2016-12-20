@@ -58,6 +58,8 @@ SQLTool::SQLTool(int argc,char **argv)
     sqlOutputConfig_.displayBitfieldsHexadecimal(optionIsSet("--hex") || optionIsSet("--hexadecimal"));
     sqlOutputConfig_.disableAlignmentOfColumns(optionIsSet("--no_alignment"));
 
+    sqlOutputConfig_.fullPrecision(optionIsSet("--full_precision"));
+
 	offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
 	length_ = optionArgument("-length", (long) 0);
 }
@@ -86,7 +88,7 @@ void SQLTool::run()
     std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
     SQLInteractiveSession session(out);
     session.selectFactory().config(sqlOutputConfig_);
-    SQLOutputConfig config(session.selectFactory().config());
+    SQLOutputConfig config (session.selectFactory().config());
     PathName inputFile(inputFile_);
     SQLParser parser;
     runSQL(sql, inputFile, session, parser, config, offset_, length_);

@@ -11,8 +11,8 @@
 /// \file SQLSimpleOutput.h
 /// Baudouin Raoult - ECMWF Dec 03
 
-#ifndef SQLSimpleOutput_H
-#define SQLSimpleOutput_H
+#ifndef odb_api_SQLSimpleOutput_H
+#define odb_api_SQLSimpleOutput_H
 
 #include "odb_api/SQLOutput.h"
 

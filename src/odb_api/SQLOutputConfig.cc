@@ -34,6 +34,7 @@ SQLOutputConfig& SQLOutputConfig::operator=(const SQLOutputConfig& that)
     displayBitfieldsBinary_ = that.displayBitfieldsBinary_;
     displayBitfieldsHexadecimal_ = that.displayBitfieldsHexadecimal_;        
     disableAlignmentOfColumns_ = that.disableAlignmentOfColumns_;
+    fullPrecision_ = that.fullPrecision_;
     return *this;
 }
 
@@ -44,7 +45,8 @@ SQLOutputConfig::SQLOutputConfig(bool cn,
                 const std::string& format,
                 bool displayBitfieldsBinary,
                 bool displayBitfieldsHexadecimal,                    
-                bool disableAlignmentOfColumns)
+                bool disableAlignmentOfColumns,
+                bool fullPrecision)
 : doNotWriteColumnNames_(cn),
   doNotWriteNULL_(n),
   fieldDelimiter_(d),
@@ -52,7 +54,8 @@ SQLOutputConfig::SQLOutputConfig(bool cn,
   outputFormat_(format),
   displayBitfieldsBinary_(displayBitfieldsBinary),
   displayBitfieldsHexadecimal_(displayBitfieldsHexadecimal),
-  disableAlignmentOfColumns_(disableAlignmentOfColumns)
+  disableAlignmentOfColumns_(disableAlignmentOfColumns),
+  fullPrecision_(fullPrecision)
 {}
 
 bool SQLOutputConfig::doNotWriteColumnNames () const { return doNotWriteColumnNames_; }
@@ -76,9 +79,11 @@ void SQLOutputConfig::displayBitfieldsBinary (bool b) { displayBitfieldsBinary_ 
 bool SQLOutputConfig::displayBitfieldsHexadecimal () const { return displayBitfieldsHexadecimal_; }
 void SQLOutputConfig::displayBitfieldsHexadecimal (bool b) { displayBitfieldsHexadecimal_ = b; }
 
-
 bool SQLOutputConfig::disableAlignmentOfColumns () const { return disableAlignmentOfColumns_; }
 void SQLOutputConfig::disableAlignmentOfColumns (bool b) { disableAlignmentOfColumns_ = b; }
+
+bool SQLOutputConfig::fullPrecision() const { return fullPrecision_; }
+void SQLOutputConfig::fullPrecision(bool b) { fullPrecision_ = b; }
 
 const SQLOutputConfig SQLOutputConfig::defaultConfig() { return SQLOutputConfig(); }
 const char* SQLOutputConfig::defaultDelimiter() { return "	"; }

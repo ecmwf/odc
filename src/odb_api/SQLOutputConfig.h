@@ -31,7 +31,8 @@ public:
                     const std::string& format = defaultFormat(),
                     bool displayBitfieldsBinary = false,
                     bool displayBitfieldsHexadecimal = false,                    
-                    bool disableAlignmentOfColumns = false);
+                    bool disableAlignmentOfColumns = false,
+                    bool fullPrecision = false);
 	bool doNotWriteColumnNames () const;
     void doNotWriteColumnNames(bool b);
 
@@ -56,6 +57,9 @@ public:
     bool disableAlignmentOfColumns () const;
     void disableAlignmentOfColumns (bool b);
 
+    bool fullPrecision () const;
+    void fullPrecision (bool);
+
 	static const SQLOutputConfig defaultConfig();
 
 private:
@@ -67,6 +71,7 @@ private:
     bool displayBitfieldsBinary_;     // --binary
     bool displayBitfieldsHexadecimal_; // --hex
     bool disableAlignmentOfColumns_;  // --no_alignment
+    bool fullPrecision_;              // --full_precision
 
     static const char* defaultDelimiter();
     static const char* defaultOutputFile();

@@ -66,7 +66,7 @@ HashTable::~HashTable()
 		delete table[i];
 }
 
-int64_t msb(int64_t x) { return (*reinterpret_cast<uint64_t*>(&x)) & 0xffffffff; }
+int64_t lsb(int64_t x) { return (*reinterpret_cast<uint64_t*>(&x)) & 0xffffffff; }
 
 int HashTable::hash(const char *name)
 {
@@ -75,12 +75,12 @@ int HashTable::hash(const char *name)
 	int64_t n (0);
 
 	while (*name)
-		n = msb(n + msb(int64_t(*name++ - 'A') + int64_t(msb(n << 5))));
+		n = lsb(n + lsb(int64_t(*name++ - 'A') + int64_t(lsb(n << 5))));
 
 	if (n < 0)
 	{
 		int64_t m (int64_t( -n ) / SIZE);
-		n = msb(n + msb(msb((m + 1)) * SIZE));
+		n = lsb(n + lsb(lsb((m + 1)) * SIZE));
 	}
 
 	return n % SIZE;

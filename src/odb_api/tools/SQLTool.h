@@ -43,8 +43,10 @@ public:
 												<< " bitfields definitions in header)" << std::endl;
         o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << std::endl; 
         o << "                                   delim can be any character or string" << std::endl;
-        o << "             [--binary]            Print bitfields in binary notation" << std::endl;
+        o << "             [--binary|--bin]      Print bitfields in binary notation" << std::endl;
+        o << "             [--hexadecimal|--hex] Print bitfields in hexadecimal notation" << std::endl;
         o << "             [--no_alignment]      Do not align columns" << std::endl;
+        o << "             [--full_precision]    Print with full precision" << std::endl;
 	}
 
 private:
@@ -63,12 +65,6 @@ private:
                 const eckit::Length& length);
 
     sql::SQLOutputConfig sqlOutputConfig_;
-
-	//bool doNotWriteColumnNames_; // -T
-	//bool doNotWriteNULL_;        // -N
-	//std::string delimiter_;           // -delimiter
-	//std::string outputFile_;          // -o
-	//std::string outputFormat_;        // default is ascii
 
 	std::string inputFile_;           // -i
 	eckit::Offset offset_;       // -offset

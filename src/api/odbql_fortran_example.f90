@@ -87,15 +87,16 @@ subroutine odbql_fortran_example
            select case (odbql_column_type(stmt, column_no))
            case (ODBQL_TEXT)
                call odbql_column_text(stmt, column_no, string_val)
+               write(6,*) column_no, ' ', column_name, ':string = ', string_val
            case (ODBQL_BITFIELD)
-                
+               int_val = odbql_value_int(val)
+               write(6,*) column_no, ' ', column_name, ':integer = ', int_val
            case (ODBQL_INTEGER)
                int_val = odbql_value_int(val)
                write(6,*) column_no, ' ', column_name, ':integer = ', int_val
            case (ODBQL_FLOAT)
                real_val = odbql_value_double(val)
                write(6,*) column_no, ' ', column_name, ':float = ', real_val
-           
            end select 
 
            ! Note, odbql_column_text can be called for columns of any type
