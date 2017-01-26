@@ -3,9 +3,9 @@
 list( APPEND test_migrator_data_files
 2000010106.old.ECMA.tar.gz )
 
-ecbuild_get_test_multidata( TARGET get_migrator_test_data 
-                            #DIRNAME odb_api/tests 
-                            NAMES ${test_migrator_data_files} 
+ecbuild_get_test_multidata( TARGET get_migrator_test_data
+                            #DIRNAME odb_api/tests
+                            NAMES ${test_migrator_data_files}
                             NOCHECK )
 
 list( APPEND test_data_files
@@ -31,8 +31,8 @@ dribu.odb
 TestAggregateFunctions3.odb )
 
 ecbuild_get_test_multidata( TARGET get_odb_api_test_data
-                            #DIRNAME odb_api/tests 
-                            NAMES ${test_data_files} 
+                            #DIRNAME odb_api/tests
+                            NAMES ${test_data_files}
                             NOCHECK )
 
 ### list tests
@@ -258,9 +258,9 @@ set( test_environment
   ODB_API_HOME=${PROJECT_SOURCE_DIR}
   ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
   PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-  ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc 
+  ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc
 
-  TEST_DHSHOME=${CMAKE_CURRENT_SOURCE_DIR}/dhshome/
+  TEST_DHSHOME=${CMAKE_CURRENT_BINARY_DIR}/dhshome/
   TEST_DATA_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}
   )
 
@@ -365,25 +365,25 @@ list( APPEND odb_module_tests
 ecbuild_add_test ( TARGET       test_ec_archiving.ecml
                    COMMAND      ${odb_bin}
                    ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_ec_archiving.ecml
-                   ENVIRONMENT  ${test_environment} 
-                   TEST_DEPENDS get_odb_api_test_data 
+                   ENVIRONMENT  ${test_environment}
+                   TEST_DEPENDS get_odb_api_test_data
                                 get_mars_client_test_data_ec )
 
 
 ecbuild_add_test ( TARGET       test_mo_archiving.ecml
                    COMMAND      ${odb_bin}
                    ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_mo_archiving.ecml
-                   ENVIRONMENT  ${test_environment} 
-                   TEST_DEPENDS get_odb_api_test_data 
+                   ENVIRONMENT  ${test_environment}
+                   TEST_DEPENDS get_odb_api_test_data
                                 get_mars_client_test_data_mo)
 
 foreach( _test ${odb_module_tests} )
     ecbuild_add_test ( TARGET       ${_test}
                        COMMAND      ${odb_bin}
                        ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/${_test}
-                       ENVIRONMENT  ${test_environment} 
+                       ENVIRONMENT  ${test_environment}
                        LABELS       odb_api odb_api_ecml
-                       TEST_DEPENDS get_odb_api_test_data 
+                       TEST_DEPENDS get_odb_api_test_data
                                     get_mars_client_test_data_mo
                                     get_mars_client_test_data_ec
                                     test_ec_archiving.ecml
@@ -403,13 +403,13 @@ ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_ec
 ecbuild_add_executable( TARGET      test_client_lib_fortran
                         CONDITION   HAVE_FORTRAN AND HAVE_ODB
                         SOURCES     test_client_lib_fortran.f90
-                        LIBS        Odb_fortran ${ODB_LIBS} 
+                        LIBS        Odb_fortran ${ODB_LIBS}
                         LINKER_LANGUAGE Fortran)
 
 ecbuild_add_executable( TARGET      test_client_lib_fortran_server_side_ecml
                         CONDITION   HAVE_FORTRAN AND HAVE_ODB
                         SOURCES     test_client_lib_fortran_server_side_ecml.f90
-                        LIBS        Odb_fortran ${ODB_LIBS} 
+                        LIBS        Odb_fortran ${ODB_LIBS}
                         LINKER_LANGUAGE Fortran)
 
 ecbuild_add_executable( TARGET      test_client_lib_cpp
