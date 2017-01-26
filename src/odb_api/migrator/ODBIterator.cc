@@ -45,7 +45,7 @@ ODBIterator::ODBIterator(const std::string& db, const std::string& sql)
   odbHandle_(0),
   noOfColumns_(0),
   ci_(0),
-  columns_(0),
+  columns_(new odb::MetaData(0, (odb::Column *) 0)),
   data_(0),
   nd_(0),
   schemaParsed_(false),

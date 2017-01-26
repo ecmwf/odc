@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef OldODBReader_H
-#define OldODBReader_H
+#ifndef odb_api_OldODBReader_H
+#define odb_api_OldODBReader_H
 
 #include "odb_api/migrator/TSQLReader.h"
 #include "odb_api/migrator/ODBIterator.h"

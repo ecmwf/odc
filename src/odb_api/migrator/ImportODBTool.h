@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef ImportODBTool_H
-#define ImportODBTool_H
+#ifndef odb_api_ImportODBTool_H
+#define odb_api_ImportODBTool_H
 
 #include <eckit/eckit.h>
 

@@ -223,7 +223,7 @@ unsigned long long ImportODBTool<IN>::saveData(OUT_ITERATOR w, eckit::PathName o
 		// Unfortunately we don't get any info about bitfields definitions from ODB directly, so:
 		//w->columns() = it.columns();
 		//schema.updateBitfieldsDefs(w->columns());
-		if ( &(begin->columns()) == 0 )
+		if (begin->columns().empty())
 		{
 			Log::warning() << "ImportODBTool<IN>::saveData: empty input data set." << std::endl;
 			return 0;
