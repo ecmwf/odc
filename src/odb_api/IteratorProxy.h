@@ -220,11 +220,11 @@ public:
 		}
 		if (PyList_Check(i))
 		{
-			Py_ssize_t n = PyList_Size(i);
-			PyObject* l = PyTuple_New(n);
-			for(size_t j=0; j < n; ++j)
+			Py_ssize_t n (PyList_Size(i));
+			PyObject* l (PyTuple_New(n));
+			for(ssize_t j (0); j < n; ++j)
 			{
-				PyObject* o = PyList_GetItem(i, j);
+				PyObject* o (PyList_GetItem(i, j));
 				PyTuple_SetItem(l, j, __getitem__(o));
 			}
 			return l;
@@ -255,7 +255,7 @@ public:
 
 	PyObject* getslice(Py_ssize_t start, Py_ssize_t stop, Py_ssize_t step, Py_ssize_t slicelength)
 	{
-		size_t maxIndex = __len__();
+		ssize_t maxIndex = __len__();
 		if (start < 0 || start > maxIndex) throw ODBIndexError();
 		if (stop < 0 || stop > maxIndex) throw ODBIndexError();
 
