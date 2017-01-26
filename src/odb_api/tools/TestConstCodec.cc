@@ -71,7 +71,7 @@ public:
 	double* data() { return data_; }
 	
 	MockReaderIterator& operator++() { next(0); return *this; }
-	bool operator!=(const MockReaderIterator& o) { ASSERT(&o == 0); return nRows_ > 0; }
+	bool operator!=(const MockReaderIterator& o) { return nRows_ > 0; }
 	const MockReaderIterator& end() { return *reinterpret_cast<MockReaderIterator*>(0); }
 
 	bool next(ecml::ExecutionContext*) { bool r = nRows_-- > 0; noMore_ = !r; return r; }

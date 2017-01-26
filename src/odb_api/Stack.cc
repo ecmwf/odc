@@ -26,6 +26,7 @@ const SortedTables::iterator& Stack::tablesIterator()
 }
 
 SelectOneTable& Stack::table() { return *(top()->table()); }
+SelectOneTable* Stack::tablePtr() { return top()->table(); }
 
 void Stack::table(SelectOneTable *p) { top()->table() = p; ASSERT(top()->table()); }
 

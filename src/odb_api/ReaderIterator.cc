@@ -143,7 +143,7 @@ ReaderIterator::~ReaderIterator ()
 
 bool ReaderIterator::operator!=(const ReaderIterator& other)
 {
-	ASSERT(&other == 0);
+	//ASSERT(&other == 0);
 	return noMore_;
 }
 

@@ -38,7 +38,7 @@ public:
 
 	const ODBIterator& end() { return *reinterpret_cast<ODBIterator*>(0); }
 
-	bool operator!=(const ODBIterator& o) { ASSERT(&o == 0); return hasNext_; }
+	bool operator!=(const ODBIterator& o) { return hasNext_; }
 
 	ODBIterator& operator++() { next(context_); return *this; }
 

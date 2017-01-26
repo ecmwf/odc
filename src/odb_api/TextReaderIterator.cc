@@ -161,7 +161,6 @@ TextReaderIterator::~TextReaderIterator ()
 
 bool TextReaderIterator::operator!=(const TextReaderIterator& other)
 {
-	ASSERT(&other == 0);
 	return noMore_;
 }
 

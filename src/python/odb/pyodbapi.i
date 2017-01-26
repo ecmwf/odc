@@ -1,4 +1,11 @@
 %module pyodbapi
+%warnfilter(503) operator<<;
+%warnfilter(389) operator[];
+%warnfilter(383) operator++;
+%warnfilter(362) operator=;
+%warnfilter(508) operator->;
+%rename(_print) print;
+
 #include <cstddef>
 %include "std_string.i"
 %include "std_vector.i"

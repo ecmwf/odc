@@ -117,7 +117,6 @@ MetaDataReaderIterator::~MetaDataReaderIterator ()
 
 bool MetaDataReaderIterator::operator!=(const MetaDataReaderIterator& other)
 {
-	ASSERT(&other == 0);
 	return noMore_;
 }
 

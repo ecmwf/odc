@@ -108,7 +108,7 @@ int odbql_example_select_data_read_results()
             number_of_columns = odbql_column_count(res);
 
             if (number_of_rows_in_current_dataset)
-                printf("Number of rows: %d\n", number_of_rows_in_current_dataset);
+                printf("Number of rows: %lld\n", number_of_rows_in_current_dataset);
 /*
             // Print CSV header. Each field is a colon separated pair of column name and type.
             printf("\nNew dataset. Number of columns: %d\n", number_of_columns);
@@ -147,14 +147,14 @@ int odbql_example_select_data_read_results()
                 odbql_value* pv = odbql_column_value(res, 0);
                 if ( pv == 0 )
                 {
-                    fprintf (stderr, "\nUnexpected NULL in column %ld of row %ld\n", 0L, number_of_rows);
+                    fprintf (stderr, "\nUnexpected NULL in column %ld of row %lld\n", 0L, number_of_rows);
                     return 101;
                 }
 
                 int iv = odbql_value_int(pv);
                 if ( iv != number_of_rows - 1)
                 {
-                    fprintf (stderr, "\nUnexpected value in column %ld of row %ld\n", 0L, number_of_rows);
+                    fprintf (stderr, "\nUnexpected value in column %ld of row %lld\n", 0L, number_of_rows);
                     return 102;
                 }
 
@@ -167,14 +167,14 @@ int odbql_example_select_data_read_results()
                     pv = odbql_column_value(res, 3);
                     if ( pv == 0 )
                     {
-                        fprintf (stderr, "\nUnexpected NULL in column %ld of row %ld\n", 3L, number_of_rows);
+                        fprintf (stderr, "\nUnexpected NULL in column %ld of row %lld\n", 3L, number_of_rows);
                         return 103;
                     }
 
                     iv = odbql_value_int(pv);
                     if ( iv != 3 * (number_of_rows - 1))
                     {
-                        fprintf (stderr, "\nUnexpected value in column %ld of row %ld\n", 3L, number_of_rows);
+                        fprintf (stderr, "\nUnexpected value in column %ld of row %lld\n", 3L, number_of_rows);
                         return 104;
                     }
                 }
@@ -186,9 +186,9 @@ int odbql_example_select_data_read_results()
         ++ number_of_rows_in_current_dataset;
     }
     if (number_of_rows_in_current_dataset)
-        printf("Number of rows: %d\n", number_of_rows_in_current_dataset);
+        printf("Number of rows: %lld\n", number_of_rows_in_current_dataset);
 
-    printf("\nProcessed %ld rows.\n", number_of_rows);
+    printf("\nProcessed %lld rows.\n", number_of_rows);
     return 0;
 }
 

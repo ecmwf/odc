@@ -471,8 +471,8 @@ bool SQLSelect::output(SQLExpression* where, ecml::ExecutionContext* context)
 	bool missing = false;
     double value;
 	if ( (where == 0)
-        || ((value = where->eval(missing)) || !value) // !value for the 'WHERE 0' case, ODB-106 
-        && !missing)
+        || (((value = where->eval(missing)) || !value) // !value for the 'WHERE 0' case, ODB-106 
+            && !missing))
 	{
 		if (! aggregate_)
 			newRow = resultsOut(context);
@@ -532,7 +532,7 @@ bool SQLSelect::processOneRow(ecml::ExecutionContext* context) {
 				return true;
 		}
 
-		if (&env.table() == 0)
+		if (env.tablePtr() == 0)
 		{
 			env.table( *(env.tablesIterator()) );
 

@@ -211,7 +211,7 @@ public:
 		{
 			Py_ssize_t n = PyTuple_Size(i);
 			PyObject* l = PyTuple_New(n);
-			for(size_t j=0; j < n; ++j)
+			for(int j (0); j < n; ++j)
 			{
 				PyObject* o = PyTuple_GetItem(i, j);
 				PyTuple_SetItem(l, j, __getitem__(o));

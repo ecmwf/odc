@@ -35,6 +35,7 @@ struct Stack : private std::stack<Environment*> {
 	const SortedTables::iterator& tablesIterator(); 
 
 	SelectOneTable& table();
+	SelectOneTable* tablePtr();
 	void table(SelectOneTable *);
 
 	SQLTableIterator& cursor();

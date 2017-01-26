@@ -95,7 +95,7 @@ namespace odb {
 
 ODBAPISettings& ODBAPISettings::instance()
 {
-	ASSERT( &instance_.instance() != 0 );
+	//ASSERT( &instance_.instance() != 0 );
 	return instance_.instance();
 }
 
