@@ -32,6 +32,8 @@ private:
     virtual void writePrefix();
     virtual void writeSuffix();
 
+    void print(std::ostream& s) const;
+
 private:
 
     const char* tag_;

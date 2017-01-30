@@ -40,6 +40,12 @@ void ODBTarget::writePrefix() {
     target_->write(p, p + s.size());
 }
 
+void ODBTarget::print(std::ostream& s) const
+{
+    s << "ODBTarget(";
+    if(target_) { s<< "target=" << *target_ << ")"; }
+    s << ")";
+}
 
 void ODBTarget::writeSuffix() {} 
 
