@@ -589,7 +589,8 @@ FunctionFactory::FunctionFactory() : FunctionFactoryBase("FunctionFactory", -1, 
 	DEFINE_MATH_FUNC_5(rad, "");
 
 	new FunctionMaker<FunctionAND> ("and",2, "");
-	new FunctionMaker<FunctionAVG> ("avg",1, "");
+	new FunctionMaker<FunctionAVG> ("avg",1, "Average (aggregate function)");
+	new FunctionMaker<FunctionAVG> ("mean",1, "alias for avg (average)");
 	new FunctionMaker<FunctionCOUNT> ("count",1, "");
 	new FunctionMaker<FunctionDOTP> ("dotp",2, "");
 	new FunctionMaker<FunctionEQ> ("=",2, "");
