@@ -60,7 +60,13 @@ void CountTool::run()
 
 	unsigned long long n (0);
     for (size_t i (1); i < parameters().size(); ++i)
-        n += fastRowCount(parameters(1));
+    {
+        const std::string fileName (parameters(i));
+
+        Log::debug() << "CountTool: counting " << fileName << endl;
+
+        n += fastRowCount(fileName);
+    }
 	
 	std::cout << n << std::endl;
 }
