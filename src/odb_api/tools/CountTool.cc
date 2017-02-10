@@ -58,8 +58,9 @@ void CountTool::run()
 		return;
 	}
 
-	//unsigned long long n = rowCount(parameters(1));
-	unsigned long long n = fastRowCount(parameters(1));
+	unsigned long long n (0);
+    for (size_t i (1); i < parameters().size(); ++i)
+        n += fastRowCount(parameters(1));
 	
 	std::cout << n << std::endl;
 }

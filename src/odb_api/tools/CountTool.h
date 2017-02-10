@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef CountTool_H
-#define CountTool_H
+#ifndef odb_api_CountTool_H
+#define odb_api_CountTool_H
 
 #include "odb_api/tools/Tool.h"
 
@@ -18,7 +18,6 @@ namespace tool {
 
 class CountTool : public Tool {
 public:
-    
 	CountTool (int argc, char *argv[]); 
 
 	static unsigned long long rowCount(const eckit::PathName &);
@@ -28,7 +27,7 @@ public:
 
 	static void help(std::ostream &o)
 	{
-		o << "Counts number of rows";
+		o << "Counts number of rows in files";
 	}
 
 	static void usage(const std::string& name, std::ostream &o)
@@ -37,9 +36,7 @@ public:
 	}
 
 private:
-
 // No copy allowed
-
     CountTool(const CountTool&);
     CountTool& operator=(const CountTool&);
 };
