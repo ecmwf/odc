@@ -1,5 +1,10 @@
 configure_file( ODBAPIVersionSHA1.cc.in ODBAPIVersionSHA1.cc @ONLY )
 
+if ( ODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
+    add_definitions ( -DODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
+endif()
+
+
 list( APPEND odblib_src_files
 odbql.cc
 odbql.h
