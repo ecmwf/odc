@@ -32,10 +32,10 @@ public:
 	static void usage(const std::string& name, std::ostream &o)
 	{
 		o << name << " [-maxopenfiles <N>] <input.odb> <output_template.odb>";
-		//o << name << " [-sort] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
+		//o << name << " [-sort] [-no_verification] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 	}
 
-	static void split(const eckit::PathName&, const std::string&, size_t);
+	static void split(const eckit::PathName&, const std::string&, size_t, bool verify=true);
 	static void presortAndSplit(const eckit::PathName&, const std::string&);
 
     static std::vector<std::pair<eckit::Offset,eckit::Length> > getChunks(const eckit::PathName&, size_t maxExpandedSize = 100*1024*1024);

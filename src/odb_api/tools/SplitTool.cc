@@ -46,8 +46,9 @@ void SplitTool::run()
 	}
 
 	if (optionIsSet("-sort")) sort_ = true;
+   
 	maxOpenFiles_ = optionArgument("-maxopenfiles", maxOpenFiles_);
-	Log::info() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
+	Log::debug() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
 
 	PathName inFile (parameters(1));
 	string outFileTemplate (parameters(2));
@@ -55,7 +56,7 @@ void SplitTool::run()
 	if (sort_)
 		presortAndSplit(inFile, outFileTemplate);
 	else
-		split(inFile, outFileTemplate, maxOpenFiles_);
+		split(inFile, outFileTemplate, maxOpenFiles_, !optionIsSet("-no_verification"));
 }
 
 /**
@@ -136,7 +137,7 @@ void SplitTool::presortAndSplit(const PathName& inFile, const std::string& outFi
     } 
 }
 
-void SplitTool::split(const PathName& inFile, const std::string& outFileTemplate, size_t maxOpenFiles)
+void SplitTool::split(const PathName& inFile, const std::string& outFileTemplate, size_t maxOpenFiles, bool verify)
 {
 	odb::Reader in(inFile);
 	odb::DispatchingWriter out(outFileTemplate, maxOpenFiles);
@@ -148,7 +149,7 @@ void SplitTool::split(const PathName& inFile, const std::string& outFileTemplate
 	odb::Reader::iterator begin(input.begin());
 	odb::Reader::iterator end(input.end());
 	outIt->close();
-	(**outIt).verify(begin, end);
+    if (verify) (**outIt).verify(begin, end);
 }
 
 } // namespace tool 
