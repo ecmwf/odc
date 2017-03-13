@@ -84,7 +84,7 @@ void ODB2ODATool::run()
             << "\t[-reptypecfg <reptype-generation-config-file>]" << std::endl
             << "\t[-addcolumns <list-of-assignments>]" << std::endl
             << "\t[-mdi <type1:MDI1,type2:MDI2,...>]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << std::endl
-            << "\t[-no_verification]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << std::endl
+            << "\t[-no_verification]                              Do not verify the conversion" << std::endl
 
 			<< std::endl;
 		return;
