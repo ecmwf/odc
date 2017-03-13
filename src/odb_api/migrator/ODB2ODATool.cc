@@ -84,6 +84,7 @@ void ODB2ODATool::run()
             << "\t[-reptypecfg <reptype-generation-config-file>]" << std::endl
             << "\t[-addcolumns <list-of-assignments>]" << std::endl
             << "\t[-mdi <type1:MDI1,type2:MDI2,...>]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << std::endl
+            << "\t[-no_verification]              Provide values of missing data indicators, e.g.: -mdi REAL:2147483647,INTEGER:2147483647" << std::endl
 
 			<< std::endl;
 		return;
@@ -93,12 +94,12 @@ void ODB2ODATool::run()
     if (nonDefaultMDIS.size())
         Log::info() << "Using non default missing data indicators: " << nonDefaultMDIS << std::endl;
 
-	bool addColumns = optionIsSet("-addcolumns");
+	bool addColumns (optionIsSet("-addcolumns"));
 	if (addColumns)
 		FakeODBIterator::ConstParameters::instance().add(Assignments(optionArgument<std::string>("-addcolumns", "")));
  
-	bool genReptype = optionIsSet("-genreptype");
-	bool reptypeCfg = optionIsSet("-reptypecfg");
+	bool genReptype (optionIsSet("-genreptype"));
+	bool reptypeCfg (optionIsSet("-reptypecfg"));
     if (optionIsSet("-mdi"))
         resetMDI(optionArgument<std::string>("-mdi", ""));
 

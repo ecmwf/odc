@@ -146,7 +146,7 @@ template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName,
 const double* values, unsigned long count)
 {
-    std::ostream& L(eckit::Log::info());
+    std::ostream& L(eckit::Log::debug());
 
     int iteratorIndex (iterators_.size());
     if (iterators_.size() >= maxOpenFiles_)
@@ -422,7 +422,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 		ASSERT(rc == 0);
 	}
 
-	eckit::Log::info() << "Split: processed " << nrows_ << " row(s)." << std::endl;
+	eckit::Log::debug() << "Split: processed " << nrows_ << " row(s)." << std::endl;
 	return nrows_;
 }
 
@@ -437,7 +437,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
     vector<Reader*> readers;
     vector<pair<Reader::iterator, Reader::iterator> > iterators;
     for (size_t i (0); i < files_.size(); ++i) {
-        Log::info() << "Opening '" << files_[i] << "'" << endl;
+        Log::debug() << "Opening '" << files_[i] << "'" << endl;
         Reader* reader(new Reader(files_[i]));
         readers.push_back(reader);
         iterators.push_back(make_pair(reader->begin(), reader->end()));

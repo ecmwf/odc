@@ -22,7 +22,6 @@ class ODBIterator;
 class CommandLineParser;
 
 
-
 namespace odb {
 namespace tool {
 
@@ -55,6 +54,8 @@ private:
 
 	bool isECFSPathName(const eckit::PathName fileName);
 	eckit::PathName readFromECFS(const eckit::PathName fileName);
+
+    bool noVerification_;
 };
 
 } // namespace tool 

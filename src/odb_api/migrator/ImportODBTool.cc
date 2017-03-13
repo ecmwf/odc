@@ -44,12 +44,14 @@ typedef std::string str;   // string is a typedef in an ODB header.
 
 template <typename IN>
 ImportODBTool<IN>::ImportODBTool (int argc, char *argv[])
-: Tool(argc, argv)
+: Tool(argc, argv),
+  noVerification_ (optionIsSet("-no_verification"))
 {}
 
 template <typename IN>
 ImportODBTool<IN>::ImportODBTool (const CommandLineParser& clp)
-: Tool(clp)
+: Tool(clp),
+  noVerification_ (optionIsSet("-no_verification"))
 {}
 
 //ToolFactory<ImportODBTool> importODB("importodb");
@@ -181,25 +183,26 @@ void ImportODBTool<IN>::run()
 		unsigned long long importedRowsNumber = r.first;
         const std::vector<eckit::PathName>& outFiles = r.second;
 
-		Timer verification("Verification");
-		validateRowsNumber(importedRowsNumber, outFiles);
-
-		if(0) archiveFiles(outFiles);
+        if (! noVerification_ )
+        {
+            Timer verification("Verification");
+            validateRowsNumber(importedRowsNumber, outFiles);
+        }
 	}
 	else
 	{
-
 		odb::Writer<> writer(dumpFile);
 		odb::Writer<>::iterator w = writer.begin();
 
-		unsigned long long importedRowsNumber = saveData<>(w, db, sql); //, schema);
+		unsigned long long importedRowsNumber (saveData<>(w, db, sql)); 
 		Log::info() << "Imported " << BigNum(importedRowsNumber) << " row(s)." << std::endl;
 
 		Timer verification("Verification");
 		Log::info() << "Verifying." << std::endl;
 		Log::info() << "Comparing data from: 1) ODB, and 2) ODA" << std::endl;
 
-		if (importedRowsNumber) validate(db, sql, dumpFile);
+		if (importedRowsNumber && ! noVerification_) 
+            validate(db, sql, dumpFile);
 	}
 	Log::info() << "ImportODBTool: Finished OK" << std::endl;
 }

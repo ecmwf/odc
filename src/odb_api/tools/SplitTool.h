@@ -31,8 +31,7 @@ public:
 
 	static void usage(const std::string& name, std::ostream &o)
 	{
-		o << name << " [-maxopenfiles <N>] <input.odb> <output_template.odb>";
-		//o << name << " [-sort] [-no_verification] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
+		o << name << " [-no_verification] [-maxopenfiles <N>] <input.odb> <output_template.odb>";
 	}
 
 	static void split(const eckit::PathName&, const std::string&, size_t, bool verify=true);
