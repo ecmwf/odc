@@ -23,7 +23,8 @@ namespace sql {
 
 SQLInteractiveSession::SQLInteractiveSession(std::ostream &out)
 : SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
-  out_(out)
+  out_(out),
+  sql_(0)
 {}
 
 SQLInteractiveSession::~SQLInteractiveSession()

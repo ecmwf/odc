@@ -220,7 +220,7 @@ PathName ODBIterator::schemaFile(const PathName db)
 	return d + s + ".sch";
 }
 
-const odb::sql::SchemaAnalyzer& ODBIterator::getSchema(const PathName db)
+const odb::sql::SchemaAnalyzer& ODBIterator::getSchema(const PathName& db)
 {
 	//odb::sql::SQLSelectFactory::instance().config(); //odb::sql::SQLOutputConfig());
 	// FIXME: this is not good cause when you call the method several times with different db it will fail...
@@ -240,7 +240,7 @@ const odb::sql::SchemaAnalyzer& ODBIterator::getSchema(const PathName db)
 			.schemaAnalyzer();
 }
 
-std::string ODBIterator::defaultSQL(const PathName db)
+std::string ODBIterator::defaultSQL(const PathName& db)
 {
 	return getSchema(db).generateSELECT();
 }

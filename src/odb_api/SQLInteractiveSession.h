@@ -14,7 +14,6 @@
 #ifndef SQLInteractiveSession_H
 #define SQLInteractiveSession_H
 
-//#include "odb_api/SQLSession.h"
 #include "SQLSession.h"
 
 namespace eckit { class ExecutionContext; }

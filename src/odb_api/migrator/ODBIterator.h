@@ -29,58 +29,54 @@ namespace tool {
 class ODBIterator 
 {
 public:
+    ODBIterator(const std::string& db, const std::string& sql); 
+    ~ODBIterator ();
 
-	//ODBIterator(const eckit::PathName& db, const std::string& sql); 
-	ODBIterator(const std::string& db, const std::string& sql); 
-	~ODBIterator ();
+    void destroy();
 
-	void destroy();
+    const ODBIterator& end() { return *reinterpret_cast<ODBIterator*>(0); }
 
-	const ODBIterator& end() { return *reinterpret_cast<ODBIterator*>(0); }
+    bool operator!=(const ODBIterator& o) { return hasNext_; }
 
-	bool operator!=(const ODBIterator& o) { return hasNext_; }
+    ODBIterator& operator++() { next(context_); return *this; }
 
-	ODBIterator& operator++() { next(context_); return *this; }
+    odb::MetaData& columns();
 
-	odb::MetaData& columns();
+    virtual bool isNewDataset();
+    virtual double* data();
 
-	virtual bool isNewDataset();
-	virtual double* data();
+    static eckit::PathName schemaFile(const eckit::PathName db);
 
-	static eckit::PathName schemaFile(const eckit::PathName db);
-
-	virtual bool next(eckit::ExecutionContext*);
+    virtual bool next(eckit::ExecutionContext*);
 
 protected:
-	int setColumn(unsigned long index, std::string& name, odb::ColumnType type, double missingValue);
-	//virtual bool next();
+    int setColumn(unsigned long index, std::string& name, odb::ColumnType type, double missingValue);
 
 private:
-	void createColumns();
+    void createColumns();
 
-	eckit::PathName db_;
+    eckit::PathName db_;
 
-	void *odbHandle_;
-	int noOfColumns_;
-	//colinfo_t *ci_;
-	void *ci_;
-	odb::MetaData *columns_;
-	int newDataset_;
-	double* data_;
-	int nd_;
-	unsigned long long count_;
-	bool hasNext_;
+    void *odbHandle_;
+    int noOfColumns_;
+    //colinfo_t *ci_;
+    void *ci_;
+    odb::MetaData *columns_;
+    int newDataset_;
+    double* data_;
+    int nd_;
+    unsigned long long count_;
+    bool hasNext_;
 
-	std::string defaultSQL(const eckit::PathName db);
-	const odb::sql::SchemaAnalyzer& getSchema(const eckit::PathName db);
-	bool schemaParsed_;
-	odb::sql::SQLInteractiveSession session_;
+    std::string defaultSQL(const eckit::PathName& db);
+    const odb::sql::SchemaAnalyzer& getSchema(const eckit::PathName& db);
+    bool schemaParsed_;
+    odb::sql::SQLInteractiveSession session_;
 
-	friend class FakeODBIterator;
-	//friend class ReptypeGenIterator;
+    friend class FakeODBIterator;
 public:
-	int refCount_;
-	bool noMore_;
+    int refCount_;
+    bool noMore_;
     eckit::ExecutionContext* context_;
 };
 

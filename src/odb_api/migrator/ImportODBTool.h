@@ -40,9 +40,9 @@ protected:
 	
     typedef std::pair<unsigned long long, const std::vector<eckit::PathName> > DispatchResult;
 
-	DispatchResult importDispatching(eckit::PathName db, const std::string& sql, const std::string& dumpFile);
+	DispatchResult importDispatching(const eckit::PathName& db, const std::string& sql, const std::string& dumpFile);
 
-    void validate(eckit::PathName db, const std::string& sql, const eckit::PathName& file);
+    void validate(const eckit::PathName& db, const std::string& sql, const eckit::PathName& file);
     void validateRowsNumber(unsigned long long, const std::vector<eckit::PathName>&);
 
     void archiveFiles(const std::vector<eckit::PathName>&);
