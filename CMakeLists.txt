@@ -64,6 +64,7 @@ ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
 
 if( HAVE_FORTRAN OR HAVE_MIGRATOR )
 
+    set( Fortran Fortran )
     ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )
     ecbuild_find_fortranlibs( REQUIRED )
     message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
@@ -85,6 +86,18 @@ endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   ecbuild_add_cxx_flags("-fPIC -Wl,--as-needed")
+endif()
+
+### OMP ...
+
+ecbuild_add_option( FEATURE OMP
+                    DESCRIPTION "Support for OpenMP threaded parallelism"
+                    REQUIRED_PACKAGES "OMP COMPONENTS CXX ${Fortran}" )
+
+if( HAVE_OMP )
+  ecbuild_enable_omp()
+else()
+  ecbuild_enable_ompstubs()
 endif()
 
 ecbuild_add_option( FEATURE PYTHON

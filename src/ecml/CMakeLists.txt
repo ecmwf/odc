@@ -2,12 +2,6 @@
 set( ECML_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/.. ${CMAKE_CURRENT_BINARY_DIR}/.. )
 set( ECML_LIBRARIES      ecml )
 
-find_package(OpenMP)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
-
 include_directories( ${ECML_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} ${METKIT_INCLUDE_DIRS} )
 
 list( APPEND ecml_srcs
