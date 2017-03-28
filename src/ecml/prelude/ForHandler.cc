@@ -49,7 +49,6 @@ ForHandler::ForHandler(const string& name)
 Request ForHandler::handle(const Request r, ExecutionContext& context)
 {
     Cell* loopVariable (r->rest());
-
     if (! loopVariable)
         throw eckit::UserError("for: first parameter must be name and values of loop variable");
 
@@ -57,15 +56,13 @@ Request ForHandler::handle(const Request r, ExecutionContext& context)
     Cell* values (context.interpreter().eval(loopVariable->value(), context));
 
     Cell* loopBody (loopVariable->rest());
-
     if (! loopBody || eckit::StringTools::lower(loopBody->text()) != "do" )
         throw eckit::UserError("for: second parameter must be 'do' (body of the loop)");
 
     Cell* loopBodyCode (loopBody->value()->value());
     ASSERT(loopBodyCode->tag() == "_requests");
 
-    vector<Cell*> vvalues;
-    vector<Cell*> vresult;
+    vector<Cell*> vvalues, vresult;
 
     for (Cell* v (values); v; v = v->rest())
     {
@@ -88,18 +85,21 @@ Request ForHandler::handle(const Request r, ExecutionContext& context)
             frame->append(new Cell("", var, Cell::clone(vvalues[i]), 0));
             ctx.pushEnvironmentFrame(frame);
 
-            vresult[i] = ctx.interpreter().evalRequests(loopBodyCode, ctx);
+            try { vresult[i] = ctx.interpreter().evalRequests(loopBodyCode, ctx);
+            } catch (eckit::Exception e) {
+                vresult[i] = exceptionValue(e.what());
+            } catch (std::exception e) {
+                vresult[i] = exceptionValue(e.what());
+            } catch (...) {
+                vresult[i] = exceptionValue("exception");
+            }
         }
     }
 
     List result;
-    for (size_t i(0); i < vresult.size(); ++i)
-    {
+    for (size_t i(0); i < vresult.size(); ++i) {
         Cell* elt (vresult[i]);
-        //Log::info() << " elt[" << i << "] = " << elt->str() << endl;
-
-        if (! elt->value())
-        {
+        if (! elt->value()) {
             result.append(elt);
             continue;
         }
@@ -108,16 +108,14 @@ Request ForHandler::handle(const Request r, ExecutionContext& context)
             result.append(elt);
         else
         {
-            for (Values l (elt); l; l = l->rest())
-            {
+            for (Values l (elt); l; l = l->rest()) {
                 Values sublist (l->value());
                 if (sublist == 0) continue;
 
                 if (sublist->tag() != "_list")
                     result.append(sublist);
                 else
-                    for (Request e(sublist); e; e = e->rest())
-                    {
+                    for (Request e(sublist); e; e = e->rest()) {
                         ASSERT(e->tag() == "_list");
                         result.append(e->value());
                     }
@@ -126,6 +124,14 @@ Request ForHandler::handle(const Request r, ExecutionContext& context)
     }
 
     return result;
+}
+
+/// This is returning a value encoding exception.
+/// For now it is only a string. 
+/// TODO: return something that can be detected as being an exception rather then just ordinary value.
+ecml::Cell* ForHandler::exceptionValue(const std::string& s)
+{
+    return new ecml::Cell("_list", "", new ecml::Cell("", s, 0, 0), 0);
 }
 
 } // namespace ecml

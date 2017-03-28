@@ -25,7 +25,8 @@ public:
     ForHandler(const std::string&);
     virtual ecml::Request handle(const ecml::Request, ExecutionContext&);
 
-    static void repl(ExecutionContext&);
+private:
+    static ecml::Cell* exceptionValue(const std::string&);
 };
 
 } // namespace ecml
