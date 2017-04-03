@@ -2,7 +2,8 @@
 # Examples / tests of C API.
 ecbuild_add_executable( TARGET    odbql_c_example
                         SOURCES   odbql_c_example.c odbql_c_test.c
-                        LIBS      Odb )
+                        LIBS      Odb 
+                        LINKER_LANGUAGE CXX ) # ODB-325
 
 
 # Examples / tests of Fortran API.
