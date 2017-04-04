@@ -38,6 +38,7 @@
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/odbql.h"
 #include "ecml/data/DataHandleFactory.h"
+#include "odb_api/DispatchingWriter.h"
 
 extern "C" {
 #include "odb_api/odbcapi.h"
@@ -994,16 +995,31 @@ TEST(SELECT_WHERE_0)
 
 TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
 {
-    const char *path ("ODB_235.odb");
+    const char *inFile ("ODB_235.odb");
     const char *data (
             "a:INTEGER,b:INTEGER,expver:STRING\n"
             "1,1,'?'\n"
             "2,2,'?'\n"
             "3,3,'?'\n"
             );
+    const char* outFileTemplate ("ODB_235_{a}_{expver}.odb");
 
-    odb::tool::ImportTool::importText(data, path);
-    Log::info() << "QuestionMarkHandlingWhenSplittingByStringColumn_ODB235: Created file " << "ODB_235.odb" << endl;
+    odb::tool::ImportTool::importText(data, inFile);
+
+	odb::Reader in(inFile);
+	odb::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
+
+	odb::DispatchingWriter::iterator outIt (out.begin());
+	outIt->pass1(in.begin(), in.end());
+
+    ASSERT(PathName("ODB_235_1_?.odb").exists());
+    ASSERT(PathName("ODB_235_2_?.odb").exists());
+    ASSERT(PathName("ODB_235_3_?.odb").exists());
+
+    PathName("ODB_235_1_?.odb").unlink();
+    PathName("ODB_235_2_?.odb").unlink();
+    PathName("ODB_235_3_?.odb").unlink();
+    PathName("ODB_235.odb").unlink();
 }
 
 TEST(LegacyAPIExecuteSelectTwice)
@@ -1107,3 +1123,4 @@ TEST(HttpHandle)
         Log::info() << "." << std::endl;
     }
 }
+

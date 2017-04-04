@@ -234,6 +234,7 @@ Test_stringInWhere
 Test_windSpeedWindDirection
 Test_IndexTool
 Test_BufferedHandle_ODB80
+Test_QuestionMarkHandlingWhenSplittingByStringColumn_ODB235
 
 #Examples.cc
 Test_example_select_data_read_results
