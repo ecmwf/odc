@@ -12,6 +12,7 @@
 #include "odb_api/MetaData.h"
 #include "odb_api/SchemaAnalyzer.h"
 #include "odb_api/StringTool.h"
+#include "eckit/parser/StringTools.h"
 
 using namespace eckit;
 
@@ -245,6 +246,21 @@ const TableDef& SchemaAnalyzer::findTable(const std::string& name) const
             return it->second;
     }
     throw eckit::UserError(std::string("Table '" + name + "' not found"));
+}
+
+std::string SchemaAnalyzer::findColumnType(const std::string& columnName)
+{
+    std::vector<std::string> ps (StringTools::split("@", columnName));
+    if (ps.size() != 2)
+        throw eckit::UserError(std::string("Expected fully qualified column name (<name>@<table>), got: " + columnName));
+
+    std::string name (ps[0]), table (ps[1]);
+    const TableDef& tableDef (findTable(table));
+    ColumnDefs columnDefs (tableDef.columns());
+    for (ColumnDefs::const_iterator it (columnDefs.begin()); it != columnDefs.end(); ++it)
+        if (it->name() == columnName)
+            return it->type();
+    throw eckit::UserError(std::string("Column " + columnName + " not found"));
 }
 
 } // namespace sql

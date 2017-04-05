@@ -42,6 +42,7 @@ public:
     void skipTable(std::string tableName);
     std::string generateSELECT() const;
     Definitions generateDefinitions();
+    std::string findColumnType(const std::string&);
 
 private:
     std::string currentSchema_;

@@ -167,6 +167,9 @@ SEMICOLON [;]
 [qQ][uU][eE][rR][yY]              return QUERY;
 [lL][iI][kK][eE]                  return LIKE;
 [rR][lL][iI][kK][eE]              return RLIKE;
+[aA][lL][iI][gG][nN]              return ALIGN;
+[rR][eE][sS][eE][tT]              return RESET;
+[oO][nN][eE][lL][oO][oO][pP][eE][rR] return ONELOOPER;
 <incl>[ \t]*                      /* eat the whitespace */
 <incl>[^ \t\n]+ {                 /* name of the file to be included */
     //cerr << "include " << yytext << std::endl;

@@ -119,6 +119,9 @@ Expressions emptyExpressionList;
 %token RLIKE
 %token MATCH
 %token QUERY
+%token ALIGN
+%token RESET
+%token ONELOOPER
 
 %type <exp>column;
 %type <exp>vector_index;
@@ -220,6 +223,9 @@ statement: select_statement        { session->statement($1); }
 		 | noreorder_statement
 		 | safeguard_statement
 		 | exit_statement
+		 | align_statement
+		 | reset_statement
+		 | onelooper_statement
 		 | error
 		 | empty
 	;
@@ -238,6 +244,11 @@ noreorder_statement: NOREORDER
 
 safeguard_statement: SAFEGUARD
 	;
+
+align_statement: ALIGN '(' IDENT ',' IDENT ')' ;
+onelooper_statement: ONELOOPER '(' IDENT ',' IDENT ')' ;
+reset_statement: RESET ALIGN ;
+reset_statement: RESET ONELOOPER ;
 
 create_schema_statement: CREATE SCHEMA schema_name schema_element_list
         {
@@ -425,7 +436,14 @@ column_name: IDENT { $$ = $1; }
 
 data_type: IDENT                 { $$ = $1; }
          | LINK                  { $$ = "@LINK"; } 
-         | TYPEOF '(' column ')' { $$ = ($3)->type()->name(); }
+         | TYPEOF '(' column ')' {
+                                    std::stringstream ss;
+                                    ss << *($3);
+                                    std::string columnName (ss.str());
+                                    std::string type (session->currentDatabase().schemaAnalyzer().findColumnType(columnName));
+                                    Log::debug() << "TYPEOF(" << *($3) << ") => " << type << std::endl;
+                                    $$ = type;
+                                 }
          ;
 
 default_value: DEFAULT expression { SQLExpression* e($2); $$ = e->title(); }
