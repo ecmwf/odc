@@ -11,8 +11,8 @@
 // File ODADatabase.h
 // Baudouin Raoult - ECMWF Oct 04
 
-#ifndef ODADatabase_H
-#define ODADatabase_H
+#ifndef odb_api_ODADatabase_H
+#define odb_api_ODADatabase_H
 
 namespace eckit { class PathName; }
 
@@ -30,9 +30,6 @@ private:
 // No copy allowed
 	ODADatabase(const ODADatabase&);
 	ODADatabase& operator=(const ODADatabase&);
-
-// -- Methods
-	// None
 
 // -- Overridden methods
 	// From SQLDatabase

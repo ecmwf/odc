@@ -240,11 +240,8 @@ bool SchemaAnalyzer::tableKnown(const std::string& name) const
 const TableDef& SchemaAnalyzer::findTable(const std::string& name) const
 {
     for (TableDefs::const_iterator it(tableDefs_.begin()); it != tableDefs_.end(); ++it)
-    {
-        //Log::info() << "SchemaAnalyzer::findTable: " << it->first << std::endl;
         if (it->first == name)
             return it->second;
-    }
     throw eckit::UserError(std::string("Table '" + name + "' not found"));
 }
 

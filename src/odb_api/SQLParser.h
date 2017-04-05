@@ -11,11 +11,10 @@
 // File SQLParser.h
 // Baudouin Raoult - ECMWF Mar 98
 
-#ifndef SQLParser_H
-#define SQLParser_H
+#ifndef odb_api_SQLParser_H
+#define odb_api_SQLParser_H
 
 #include "eckit/exception/Exceptions.h"
-//#include "odb_api/SQLOutputConfig.h"
 #include "SQLOutputConfig.h"
 
 namespace eckit { class PathName; }
@@ -51,6 +50,8 @@ public:
 	static void parseString(odb::sql::SQLSession&, const std::string&, eckit::DataHandle*, SQLOutputConfig, bool resetSession = true);
     static void parseString(odb::sql::SQLSession&, const std::string&, std::istream*, SQLOutputConfig, const std::string& cvsDelimiter);
 	static void parseString(odb::sql::SQLSession&, const std::string&, SQLDatabase&, SQLOutputConfig);
+
+    static std::string schemaFile();
 
 	static std::stack<ParseFrame> frames_;
 };

@@ -31,20 +31,13 @@
 #include "odb_api/EmbeddedCodeParser.h"
 #include "odb_api/FunctionMATCH.h"
 #include "odb_api/SQLAST.h"
+#include "eckit/config/Resource.h"
 
 using namespace eckit;
-
-//static Mutex   local_mutex;
 
 #define  YYDEBUG      1
 
 namespace SQLYacc {
-
-// Original lex defines odblib_lineno, but it's not documented, so flex does not define it (thank you, RMS).
-//#ifndef AIX
-//	extern
-//#endif
-//extern int odblib_lineno;
 
 typedef void * odblib_scan_t;
 
@@ -115,7 +108,6 @@ private:
 
 void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, std::istream* is, SQLOutputConfig cfg, const std::string& csvDelimiter)
 {
-    //AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
 
     session.selectFactory().implicitFromTableSourceStream(is);
@@ -125,10 +117,10 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::odblib_scan_t scanner;
     SQLYacc::odblib_lex_init(&scanner);
 
-    SQLYacc::include_stack stack_;
-    SQLYacc::odblib_lex_init_extra(&stack_, &scanner);
-    stack_.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
+    SQLYacc::include_stack stack;
+    SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
+    stack.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
@@ -139,10 +131,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 
 void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s, DataHandle* dh, SQLOutputConfig cfg, bool resetSession)
 {
-    //AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session, resetSession);
-
-    //SQLYacc::odblib_lineno = 0;
 
     session.selectFactory().implicitFromTableSource(dh);
     session.selectFactory().config(cfg);
@@ -150,10 +139,10 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::odblib_scan_t scanner;
     SQLYacc::odblib_lex_init(&scanner);
 
-    SQLYacc::include_stack stack_;
-    SQLYacc::odblib_lex_init_extra(&stack_, &scanner);
-    stack_.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
+    SQLYacc::include_stack stack;
+    SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
+    stack.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
@@ -162,10 +151,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
 
 void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, SQLDatabase& db, SQLOutputConfig cfg)
 {
-    //AutoLock<Mutex> lock(local_mutex);
     SessionResetter ar (session);
-
-    //SQLYacc::odblib_lineno = 0;
 
     session.currentDatabase(&db);
     session.selectFactory().database(&db);
@@ -174,14 +160,20 @@ void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, 
     SQLYacc::odblib_scan_t scanner;
     SQLYacc::odblib_lex_init(&scanner);
 
-    SQLYacc::include_stack stack_;
-    SQLYacc::odblib_lex_init_extra(&stack_, &scanner);
-    stack_.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
+    SQLYacc::include_stack stack;
+    SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
+    stack.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
     session.interactive();
+}
+
+std::string SQLParser::schemaFile()
+{
+    static std::string pathName (Resource<std::string>("$ODB_API_SCHEMA", ""));
+    return pathName;
 }
 
 } // namespace sql
