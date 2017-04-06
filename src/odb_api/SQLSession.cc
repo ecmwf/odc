@@ -173,7 +173,7 @@ void SQLSession::loadDefaultSchema()
     if (schemaPathName.empty())
         return;
 
-    Log::info() << "Loading schema " << schemaPathName << std::endl;
+    Log::debug() << "Loading schema " << schemaPathName << std::endl;
     
     std::string schema (StringTool::readFile(schemaPathName));
     SQLOutputConfig config (selectFactory().config());
@@ -184,7 +184,16 @@ void SQLSession::loadDefaultSchema()
 
 std::string SQLSession::schemaFile()
 {
-    static std::string pathName (Resource<std::string>("$ODB_API_SCHEMA", ""));
+    const char* pn = 
+#ifdef ODB_API_SCHEMA_PATH
+# define STR_VALUE(s)                #s
+# define STRING(s)                   STR_VALUE(s)
+# define ODB_API_SCHEMA_PATH_STRING  STRING(ODB_API_SCHEMA_PATH) 
+    STRING(ODB_API_SCHEMA_PATH_STRING)
+#endif
+    "";
+
+    static std::string pathName (StringTool::unQuote(Resource<std::string>("$ODB_API_SCHEMA_PATH", pn)));
     return pathName;
 }
 

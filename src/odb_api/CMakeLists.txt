@@ -4,6 +4,10 @@ if ( ODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
     add_definitions ( -DODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
 endif()
 
+if ( ODB_API_SCHEMA_PATH )
+    add_definitions ( -DODB_API_SCHEMA_PATH=${ODB_API_SCHEMA_PATH} )
+endif()
+
 
 list( APPEND odblib_src_files
 odbql.cc

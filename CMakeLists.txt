@@ -62,6 +62,8 @@ ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
                     DESCRIPTION "ODB Server uses four digits format of time"
                     DEFAULT OFF )
 
+SET(ODB_API_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
+
 if( HAVE_FORTRAN OR HAVE_MIGRATOR )
 
     set( Fortran Fortran )
