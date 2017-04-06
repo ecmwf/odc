@@ -61,7 +61,6 @@ void TODATable<T>::populateMetaData()
 {
     using eckit::Log;
     
-    Log::debug() << "TODATable::populateMetaData:" << std::endl;
     size_t count = it_->columns().size();
 
     delete[] data_;
@@ -107,7 +106,6 @@ void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
 {
     using eckit::Log;
 
-    Log::debug() << "ODATableIterator::updateMetaData: " << endl;
 	MetaData newColumns (it_->columns());
 	for(size_t i = 0; i < selected.size(); i++)
 	{
@@ -169,10 +167,7 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
     if (SQLTable::hasColumn(name))
 	{
 		if (fullName)
-		{
 			*fullName = name;
-			Log::debug() << "TODATable<T>::hasColumn: name='" << name << "', fullName='" << *fullName << "'" << std::endl;
-		}
 		return true;
 	}
 
@@ -187,10 +182,7 @@ bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
 		{
 			n++;
 			if (fullName)
-			{
 				*fullName = s;
-				Log::debug() << "TODATable<T>::hasColumn: colName='" << colName << "', fullName='" << *fullName << "'" << std::endl;
-			}
 		}
 	}
 

@@ -31,9 +31,7 @@ SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const std::stri
 	missingValue_(missingValue),
 	isBitfield_(false),
 	bitfieldDef_()
-{
-	Log::debug() << "SQLColumn@" << this << std::endl; //" [name=" << name << ",type=" << type << "]" << std::endl;
-}
+{}
 
 SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const std::string& name, int index, bool hasMissingValue, double missingValue, 
                      const BitfieldDef& bitfieldDef):
@@ -50,9 +48,7 @@ SQLColumn::SQLColumn(const type::SQLType& type, SQLTable& owner, const std::stri
 	missingValue_(missingValue),
 	isBitfield_(true),
 	bitfieldDef_(bitfieldDef)
-{
-	Log::debug() << "SQLColumn@" << this << std::endl; //" [name=" << name << ",type=" << type << "]" << std::endl;
-}
+{}
 
 SQLColumn::SQLColumn(const SQLColumn& other):
 	SQLIterator(other.type()),
@@ -68,14 +64,10 @@ SQLColumn::SQLColumn(const SQLColumn& other):
 	missingValue_(other.missingValue_),
 	isBitfield_(other.isBitfield_),
 	bitfieldDef_(other.bitfieldDef_)
-{
-	Log::debug() << "SQLColumn@" << this << std::endl; // "[name=" << name << ",type=" << type << "]" << std::endl;
-}
+{}
 
 SQLColumn::~SQLColumn()
-{
-	Log::debug() << "~SQLColumn@" << this << std::endl;;
-}
+{}
 
 void SQLColumn::rewind()
 {

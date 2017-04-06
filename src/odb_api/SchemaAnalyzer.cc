@@ -78,7 +78,6 @@ void SchemaAnalyzer::endSchema()
 
 void SchemaAnalyzer::addTable(TableDef& table) 
 {
-    Log::debug() << "SchemaAnalyzer::addTable:" << table.name() << std::endl;
     std::string schemaName = "";
 
     if (StringTool::isInQuotes(table.name())) 
@@ -181,35 +180,21 @@ Definitions SchemaAnalyzer::generateDefinitions()
 
 void SchemaAnalyzer::addBitfieldType(const std::string& name, const FieldNames& fields, const Sizes& sizes, const std::string& typeSignature)
 {
-	//Log::debug() << "SchemaAnalyzer::addBitfieldType: " << name << "(" << typeSignature << ")" << std::endl;
 	bitfieldTypes_[name] = make_pair(fields, sizes);
 }
 
 bool SchemaAnalyzer::isBitfield(const std::string& columnName) const
 {
-    std::ostream& L( Log::debug() );
-    L << "SchemaAnalyzer::isBitfield: columnName=" << columnName << std::endl;
-
     for (std::map<std::string,std::string>::const_iterator it(columnTypes_.begin()); it != columnTypes_.end(); ++it)
     {
-        L << "SchemaAnalyzer::isBitfield: columnTypes_: " << it->first << " : " << it->second << std::endl;
-
         if (it->first == columnName)
         {
             std::string columnType (it->second);
-            L << "SchemaAnalyzer::isBitfield: columnType='" << columnType << "'" << std::endl;
             for (std::map<std::string, BitfieldDef>::const_iterator it(bitfieldTypes_.begin()); it != bitfieldTypes_.end(); ++it)
-            {
-                L << "SchemaAnalyzer::isBitfield: bitfieldTypes_: '" << it->first  << "'" /*<< " : " << it->second */ << std::endl;
                 if (it->first == columnType)
-                {
-                    L << "SchemaAnalyzer::isBitfield => true" << std::endl;
                     return true;
-                }
-            }
         }
     }
-    L << "SchemaAnalyzer::isBitfield => false" << std::endl;
     return false;
 }
 
@@ -225,10 +210,8 @@ void SchemaAnalyzer::updateBitfieldsDefs(MetaData &md, std::map<std::string,std:
 	for (size_t i = 0; i < md.size(); i++)
 	{
 		Column &c (*md[i]);
-		if (c.type() == BITFIELD) {
-            //Log::info() << "colname = " << c.name() << " truename = " << truenames[c.name()] << std::endl;
+		if (c.type() == BITFIELD)
 			c.bitfieldDef(const_cast<SchemaAnalyzer*>(this)->getBitfieldTypeDefinition(truenames[c.name()]));
-        }
 	}
 }
 

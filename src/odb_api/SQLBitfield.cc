@@ -29,15 +29,11 @@ SQLBitfield::SQLBitfield(const std::string& name, const FieldNames& fields, cons
 : SQLType(name, ddlName),
   bitfieldDef_(make_pair(fields, sizes))
 {
-	Log::debug() << "SQLBitfield::SQLBitfield@" << this << "(name=" << name << ", fields=" << fields
-		<< ", sizes=" << sizes << ", ddlName=" << ddlName << ")" << std::endl;
-
 	int shift = 0;
 	for(size_t i = 0; i < fields.size(); i++ )
 	{
 		shift_[fields[i]] = shift;
 		mask_[fields[i]]  = Decoder::makeMask(sizes[i]) << shift;
-		//cout << fields[i] << " " << sizes_[i] << " mask=" << hex << mask << dec << " shift=" << shift << std::endl;
 		shift += sizes[i];
 	}
 	width_ = shift;

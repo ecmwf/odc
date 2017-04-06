@@ -28,8 +28,6 @@ static std::set<SQLType*>* dynamicallyCreatedTypes_ = 0;
 
 SQLType* DynamicallyCreatedTypesDestroyer::registerType(SQLType* t)
 {
-	Log::debug() << "DynamicallyCreatedTypesDestroyer::registerType: " << *t << std::endl;
-
 	if (! dynamicallyCreatedTypes_) dynamicallyCreatedTypes_ = new std::set<SQLType*>();
 
 	ASSERT(dynamicallyCreatedTypes_->find(t) == dynamicallyCreatedTypes_->end());
