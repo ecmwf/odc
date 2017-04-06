@@ -25,7 +25,9 @@ SQLInteractiveSession::SQLInteractiveSession(std::ostream &out)
 : SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
   out_(out),
   sql_(0)
-{}
+{
+    loadDefaultSchema();
+}
 
 SQLInteractiveSession::~SQLInteractiveSession()
 {}

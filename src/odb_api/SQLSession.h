@@ -75,13 +75,17 @@ public:
 
     std::string csvDelimiter() { return csvDelimiter_; }
     const odb::sql::SQLOutputConfig& outputConfig() { return config_; }
-    
+
+protected:
+    void loadDefaultSchema();
 
 private:
 // No copy allowed
 
     SQLSession(const SQLSession&);
     SQLSession& operator=(const SQLSession&);
+
+    std::string schemaFile();
 
     SQLDatabase* currentDatabase_;
     //std::map<int,double> params_;

@@ -9,12 +9,16 @@
  */
 
 #include "eckit/log/Timer.h"
+#include "eckit/config/Resource.h"
+
 #include "odb_api/ODADatabase.h"
 #include "odb_api/SQLDatabase.h"
 #include "odb_api/SQLNonInteractiveSession.h"
 #include "odb_api/SQLStatement.h"
 #include "odb_api/SQLSelectFactory.h"
+#include "odb_api/SQLParser.h"
 #include "odb_api/SQLOutputConfig.h"
+#include "odb_api/StringTool.h"
 
 using namespace eckit;
 
@@ -160,6 +164,27 @@ const SelectAST& SQLSession::selectAST() const { return selectAST_; }
 
 bool SQLSession::gotSelectAST() const { return gotSelectAST_; }
 void SQLSession::gotSelectAST(bool b) { gotSelectAST_ = b; }
+
+
+void SQLSession::loadDefaultSchema()
+{
+    std::string schemaPathName (schemaFile());
+    if (schemaPathName.empty())
+        return;
+
+    Log::info() << "Loading schema " << schemaPathName << std::endl;
+    
+    std::string schema (StringTool::readFile(schemaPathName));
+    SQLOutputConfig config (selectFactory().config());
+    SQLParser parser;
+    parser.parseString(*this, schema, static_cast<DataHandle*>(0), config);
+}
+
+std::string SQLSession::schemaFile()
+{
+    static std::string pathName (Resource<std::string>("$ODB_API_SCHEMA", ""));
+    return pathName;
+}
 
 } // namespace sql
 } // namespace odb

@@ -10,6 +10,7 @@
 
 // File SQLParser.h
 // Baudouin Raoult - ECMWF Mar 98
+// Piotr Kuchta - ECMWF Mar 2012
 
 #ifndef odb_api_SQLParser_H
 #define odb_api_SQLParser_H
@@ -50,8 +51,6 @@ public:
 	static void parseString(odb::sql::SQLSession&, const std::string&, eckit::DataHandle*, SQLOutputConfig, bool resetSession = true);
     static void parseString(odb::sql::SQLSession&, const std::string&, std::istream*, SQLOutputConfig, const std::string& cvsDelimiter);
 	static void parseString(odb::sql::SQLSession&, const std::string&, SQLDatabase&, SQLOutputConfig);
-
-    static std::string schemaFile();
 
 	static std::stack<ParseFrame> frames_;
 };

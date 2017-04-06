@@ -31,7 +31,6 @@
 #include "odb_api/EmbeddedCodeParser.h"
 #include "odb_api/FunctionMATCH.h"
 #include "odb_api/SQLAST.h"
-#include "eckit/config/Resource.h"
 
 using namespace eckit;
 
@@ -168,12 +167,6 @@ void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, 
 
     session.statement();
     session.interactive();
-}
-
-std::string SQLParser::schemaFile()
-{
-    static std::string pathName (Resource<std::string>("$ODB_API_SCHEMA", ""));
-    return pathName;
 }
 
 } // namespace sql
