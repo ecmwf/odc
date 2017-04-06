@@ -177,7 +177,7 @@ SEMICOLON [;]
     eckit::PathName fileName(StringTool::unQuote(yytext));
 
     //cerr << "Opening " << fileName << std::endl;
-    std::string text(StringTool::readFile(fileName));
+    std::string text (SQLSession::readIncludeFile(fileName));
 
     Stack* includeStack (static_cast<Stack*>(((struct SQLYacc::odblib_guts_t*) odblib_scanner)->odblib_extra_r));
     ASSERT(includeStack);

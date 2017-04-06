@@ -26,23 +26,6 @@
 
 #include <iostream>
 
-//#include "odb_api/odblib_lex.h"
-
-#ifdef YYBISON
-//#define YYSTYPE_IS_DECLARED
-//int yylex(); 
-//int yylex(YYSTYPE*, void*);
-//int yylex ( YYSTYPE * lvalp, YYLTYPE * llocp, yyscan_t scanner );
-
-/// # define YYLEX odblib_lex (&odblib_lval, scanner, session)
-
-//#define YY_DECL int odblib_lex (YYSTYPE *, yyscan_t, odb::sql::SQLSession*);
-
-//int yylex ( void * lvalp, void * llocp, void* scanner );
-//int yydebug;
-extern "C" int isatty(int);
-#endif
-
 Expressions emptyExpressionList;
 
 %}

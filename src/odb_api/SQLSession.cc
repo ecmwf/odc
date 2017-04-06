@@ -19,6 +19,7 @@
 #include "odb_api/SQLParser.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/StringTool.h"
+#include <libgen.h>
 
 using namespace eckit;
 
@@ -177,6 +178,7 @@ void SQLSession::loadDefaultSchema()
     std::string schema (StringTool::readFile(schemaPathName));
     SQLOutputConfig config (selectFactory().config());
     SQLParser parser;
+    // TODO: update include path
     parser.parseString(*this, schema, static_cast<DataHandle*>(0), config);
 }
 
@@ -184,6 +186,30 @@ std::string SQLSession::schemaFile()
 {
     static std::string pathName (Resource<std::string>("$ODB_API_SCHEMA", ""));
     return pathName;
+}
+
+std::string SQLSession::readIncludeFile(const std::string& fileName)
+{
+    std::vector<std::string> dirs (includePathName());
+    Log::debug() << "read include: " << fileName << std::endl;
+
+    for (size_t i(0); i < dirs.size(); ++i)
+    {
+        std::string pathName (dirs[i] + "/" + fileName);
+        if (! PathName(pathName).exists())
+            continue;
+        return StringTool::readFile(pathName);
+    }
+    throw eckit::UserError(std::string("Include file '") + fileName + "' not found");
+}
+
+std::vector<std::string> SQLSession::includePathName()
+{
+    std::vector<std::string> r;
+    r.push_back(".");
+    std::string s (schemaFile());
+    r.push_back(std::string(dirname(const_cast<char *>(s.c_str()))));
+    return r;
 }
 
 } // namespace sql

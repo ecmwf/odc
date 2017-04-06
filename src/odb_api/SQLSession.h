@@ -76,6 +76,8 @@ public:
     std::string csvDelimiter() { return csvDelimiter_; }
     const odb::sql::SQLOutputConfig& outputConfig() { return config_; }
 
+    static std::string readIncludeFile(const std::string&);
+
 protected:
     void loadDefaultSchema();
 
@@ -85,7 +87,8 @@ private:
     SQLSession(const SQLSession&);
     SQLSession& operator=(const SQLSession&);
 
-    std::string schemaFile();
+    static std::string schemaFile();
+    static std::vector<std::string> includePathName();
 
     SQLDatabase* currentDatabase_;
     //std::map<int,double> params_;
