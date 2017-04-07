@@ -307,6 +307,22 @@ class TestPEP249(unittest.TestCase):
         python_sorted = sorted(sql_sorted)
         self.assertEqual ( sql_sorted, python_sorted )
 
+    def test_sql_variables(self): # ODB-127
+        conn = odb.connect("") 
+        c = conn.cursor()
+        c.execute("""CREATE TABLE test_sql_variables AS (varno integer, obsvalue real) ON 'test_sql_variables.odb';""")
+        def cast(s):
+            vals = s.split(',')
+            return int(vals[0]), float(vals[1])
+        data = [cast(w) for w in """1,0.1 2,0.2 3,0.3 4,0.4 1,0.11""".split()]
+        print data
+        c.executemany('INSERT INTO test_sql_variables (varno,obsvalue) VALUES (?,?);', data)
+        conn.commit()
+
+        c.execute('''select varno,obsvalue from test_sql_variables where varno = $z;''')
+        result = [r[0] for r in c.fetchall()]
+        self.assertEqual ( result, [1,1] )
+
 """
     def test_select_data_from_mars(self):
         conn = connect(ddl = '''
