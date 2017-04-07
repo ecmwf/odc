@@ -28,7 +28,22 @@ TestMetaDataReader.odb
 a1to10twice.odb
 TestAggregateFunctions2.odb
 dribu.odb
-TestAggregateFunctions3.odb )
+TestAggregateFunctions3.odb 
+
+# MetOffice schema for testing ODB-127
+ECMA.ddl
+ECMATMP.ddl
+cma.hh
+bitfields.hh
+group_id.hh
+mdi.hh
+ops_obsgroups.hh
+ops_subtypes.hh
+report_types.hh
+sensor.hh
+varno.hh
+vertco_type.hh
+)
 
 ecbuild_get_test_multidata( TARGET get_odb_api_test_data
                             #DIRNAME odb_api/tests
@@ -255,6 +270,7 @@ Test_c_api_example_write_data
 get_target_property( odb_bin odb LOCATION )
 
 set( test_environment
+  ODB_API_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/cma.hh
   ODB_API_CODES=${PROJECT_SOURCE_DIR}/etc
   ODB_API_HOME=${PROJECT_SOURCE_DIR}
   ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
@@ -344,12 +360,12 @@ endforeach()
 
 #### ECML ODB Module verbs tests
 
-#list( APPEND ecml_test_data_files  2000010106.odb)
 #ecbuild_get_test_multidata( TARGET ecml_get_odb_api_test_data DIRNAME odb_api/tests NAMES ${ecml_test_data_files} NOCHECK )
 
 list( APPEND odb_module_tests
     #test_odb_governance.ecml
     test_sql_splitting.ecml
+    test_sql_variables.ecml
     test_chunk.ecml
     test_chunk2.ecml
     test_embedded_ecml_in_from_clause.ecml

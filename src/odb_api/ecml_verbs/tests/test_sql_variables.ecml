@@ -1,0 +1,15 @@
+sql_test, 
+    label = "Check variables defined in schema can be used in queries , ODB-127",
+
+    input = "varno:INTEGER,obsvalue:REAL
+             1,0.1
+             2,0.2
+             3,0.3
+            ",
+
+    sql = "select * where varno = $z;",
+
+    expect = "varno:INTEGER,obsvalue:REAL
+             1,0.1
+            "
+

@@ -90,7 +90,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   ecbuild_add_cxx_flags("-fPIC -Wl,--as-needed")
 endif()
 
-### OMP ...
 
 ecbuild_add_option( FEATURE OMP
                     DESCRIPTION "Support for OpenMP threaded parallelism"

@@ -21,7 +21,9 @@ namespace sql {
 SQLNonInteractiveSession::SQLNonInteractiveSession(const odb::sql::SQLOutputConfig& config, const std::string& csvDelimiter)
 : SQLSession(config, csvDelimiter),
   statement_(0)
-{}
+{
+    loadDefaultSchema();
+}
 
 SQLNonInteractiveSession::~SQLNonInteractiveSession()
 {}

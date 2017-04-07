@@ -19,7 +19,9 @@ SQLMATCHSubquerySession::SQLMATCHSubquerySession(expression::function::FunctionM
 : SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
   statement_(0),
   f_(f)
-{}
+{
+    loadDefaultSchema();
+}
 
 SQLMATCHSubquerySession::~SQLMATCHSubquerySession() {}
 

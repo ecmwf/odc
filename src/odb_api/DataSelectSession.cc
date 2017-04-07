@@ -13,7 +13,9 @@ DataSelectSession::DataSelectSession(DataSelectIterator& it)
  : SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
    it_(it), 
    sql_(0)
-{}
+{
+    loadDefaultSchema();
+}
 
 DataSelectSession::~DataSelectSession()
 {}
