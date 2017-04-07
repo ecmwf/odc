@@ -23,8 +23,12 @@ if( HAVE_PYTHON AND SWIG_FOUND )
                               NAMES ${python_odb_api_data_files}
                               NOCHECK )
 
+  set( test_environment_python
+         ODB_API_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/../../tests/cma.hh)
+
   ecbuild_add_test ( TARGET       test_python_odb_api.py
                      TYPE         PYTHON
+                     ENVIRONMENT  ${test_environment_python} 
                      COMMAND      ${CMAKE_CURRENT_BINARY_DIR}/test_python_odb_api.py
                      CONDITION    HAVE_PYTHON
                      LABELS       odb_api odb_api_python
