@@ -215,9 +215,12 @@ std::string SQLSession::readIncludeFile(const std::string& fileName)
 std::vector<std::string> SQLSession::includePathName()
 {
     std::vector<std::string> r;
-    r.push_back(".");
     std::string s (schemaFile());
-    r.push_back(std::string(dirname(const_cast<char *>(s.c_str()))));
+    char a [s.size() + 1];
+    strncpy(a, s.c_str(), s.size() + 1);
+    const std::string dir (dirname(const_cast<char *>(a)));
+    r.push_back(dir);
+    r.push_back(".");
     return r;
 }
 
