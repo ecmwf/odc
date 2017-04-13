@@ -19,7 +19,7 @@ SQLOrderOutput::SQLOrderOutput(SQLOutput* output, const std::pair<Expressions,st
 : output_(output),
   by_(by)
 {
-	eckit::Log::info() << *this << std::endl;
+	eckit::Log::debug() << *this << std::endl;
 }
 
 SQLOrderOutput::~SQLOrderOutput()

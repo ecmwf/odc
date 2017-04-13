@@ -170,11 +170,14 @@ class Cursor:
                 )
         
     def close(self):
-        rc = odbql_finalize(self.stmt)
-        self.stmt = None
+        if self.stmt is not None:
+            rc = odbql_finalize(self.stmt)
+            assert rc == ODBQL_OK
+            self.stmt = None
 
     def execute(self, operation, parameters = None):
-        self.stmt, tail, db = c_voidp(), c_char_p(), self.connection.db
+        self.close()
+        self.stmt, tail, db = c_voidp(0), c_char_p(0), self.connection.db
 
         operation = self.__add_semicolon_if_needed(operation)
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
@@ -215,7 +218,7 @@ class Cursor:
 
         rc = odbql_step(self.stmt)
 
-        if rc == ODBQL_METADATA_CHANGED:
+        if rc == ODBQL_METADATA_CHANGED or not self.description:
             self.__populate_meta_data()
 
         if not rc in (ODBQL_ROW, ODBQL_METADATA_CHANGED):
@@ -241,8 +244,8 @@ class Cursor:
         """
         """
 
-        db = self.connection.db
-        tail = c_char_p()
+        self.close()
+        self.stmt, tail, db = c_voidp(0), c_char_p(0), self.connection.db
 
         operation = self.__add_semicolon_if_needed(operation)
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
@@ -253,7 +256,7 @@ class Cursor:
             rc = odbql_step(self.stmt)
             #self.assertEqual(rc, ODBQL_ROW)
 
-        rc = odbql_finalize(self.stmt)
+        #rc = odbql_finalize(self.stmt)
         #self.assertEqual(rc, ODBQL_OK)
 
     def callproc(self, procname, *parameters, **keyword_parameters):
@@ -267,7 +270,7 @@ class Cursor:
 
         rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
         rc = odbql_step(self.stmt)
-        rc = odbql_finalize(self.stmt)
+        #rc = odbql_finalize(self.stmt)
         return ODBQL_OK
 
 
@@ -353,7 +356,8 @@ class new_sql_row(object):
 
     def __get_one_item__(self, index):
         if type(index) == int: return self.cursor.value(index)
-        if type(index) == str: return self.__value_by_name(index)
+        if type(index) == str:
+            return self.__value_by_name(index)
         if type(index) == tuple: return tuple(self.__get_one_item__(i) for i in index)
         if index == slice(None,None,None):
             return [self.cursor.value(i) for i in range(len(self.cursor.description))]
@@ -390,7 +394,7 @@ class new_sql_generator(object):
     def __next__(self): return self.next()
     def next(self):
         if not self.cursor.stmt:
-            raise Exception('fetchone: you must call execute first')
+            raise Exception('execute must be called first')
 
         rc = odbql_step(self.cursor.stmt)
         if not rc in (ODBQL_ROW, ODBQL_METADATA_CHANGED):
@@ -404,7 +408,7 @@ def new_sql(s):
     return new_sql_generator(c)
 
 def new_open(fn):
-    s = '''select all * from '%s';'''  % str(fn)
+    s = '''select all * from "{}";'''.format(fn)
     conn = connect("")
     c = conn.cursor()
     c.execute(s)

@@ -210,8 +210,8 @@ StatementImpl& statement (odbql_stmt* stmt) { return reinterpret_cast<StatementI
 
 class InsertImpl : public StatementImpl {
 public:
-    InsertImpl(DataBaseImpl&, const odb::MetaData& metaData, const std::string& location);
-    ~InsertImpl() {}
+    InsertImpl(DataBaseImpl&, const odb::MetaData& metaData, const std::string& into);
+    ~InsertImpl();
 
     int step();
     const unsigned char *column_text(int iCol) { NOTIMP; }
@@ -225,19 +225,27 @@ public:
     virtual odbql_value* column_value(int iCol);
 
 private:
+    FileHandle* fileHandle_;
     odb::Writer<> writer_;
     odb::Writer<>::iterator it_;
 };
 
 // INSERT implementation
 
-InsertImpl::InsertImpl(DataBaseImpl& db, const odb::MetaData& metaData, const std::string& location)
+InsertImpl::InsertImpl(DataBaseImpl& db, const odb::MetaData& metaData, const std::string& into)
 : StatementImpl(db),
-  writer_(location),
+  fileHandle_(new FileHandle(into)),
+  writer_(fileHandle_, true, true),
   it_(writer_.begin())
 {
     it_->columns(metaData);
     it_->writeHeader();
+}
+
+InsertImpl::~InsertImpl()
+{
+    it_->close();
+    fileHandle_->close();
 }
 
 error_code_t InsertImpl::bind_double(int iCol, double v) 
@@ -698,6 +706,9 @@ const unsigned char *odbql_column_text(odbql_stmt* stmt, int iCol)
 //ODBQL_API int ODBQL_STDCALL odbql_finalize(odbql_stmt *pStmt);
 error_code_t odbql_finalize(odbql_stmt *stmt)
 {
+    if (stmt == 0)
+        return ODBQL_OK;
+  
     TRY_WITH_DB(&statement(stmt).database())
     delete &statement(stmt);
     return ODBQL_OK;

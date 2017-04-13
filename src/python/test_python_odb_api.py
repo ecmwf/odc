@@ -220,13 +220,15 @@ class TestPEP249(unittest.TestCase):
         print self.data
         #c.execute(TEST_DDL)
         c.executemany(TEST_DDL + TEST_INSERT, self.data)
+        c.close()
 
 
     def read_with_legacy_api(self, file_name = 'new_api_example_python.odb'):
-        return  new_open(file_name)
+        return new_open(file_name)
 
     def test_select_data_fetchone(self):
 
+        print 'calling legacy API:'
         legacy = self.read_with_legacy_api()
         print 'legacy:', legacy
 
@@ -291,7 +293,7 @@ class TestPEP249(unittest.TestCase):
     def test_sorting_string_columns(self): # ODB-94 
         conn = odb.connect("") 
         c = conn.cursor()
-        c.execute("""CREATE TABLE foo AS (statid string) ON 'test_sorting_string_columns.odb';""")
+        c.execute("""CREATE TABLE foo AS (statid string,x integer) ON 'test_sorting_string_columns.odb';""")
         data = [[w] for w in """12345678 abcdefgh dfgsdfgs DFADSFAD sdffffff aaaaaaaa""".split()]
         print data
         c.executemany('INSERT INTO foo (statid,x) VALUES (?,?);', data)
@@ -323,6 +325,29 @@ class TestPEP249(unittest.TestCase):
         result = [r[0] for r in c.fetchall()]
         self.assertEqual ( result, [1,1] )
 
+    def test_closing_files_after_reading(self): # ODB-331
+        conn = odb.connect("")
+        c = conn.cursor()
+        c.execute("""CREATE TABLE foo AS (statid string) ON 'ODB-331.reading.odb';""")
+        c.executemany('INSERT INTO foo (statid) VALUES (?);', [['foo-bar!']])
+        c.close()
+        conn.commit()
+        for i in range(1500):
+            conn = odb.connect("")
+            c = conn.cursor()
+            c.execute("""select * from 'ODB-331.reading.odb';""")
+            for r in c.fetchall(): pass
+            c.close()
+            conn.commit()
+
+    def test_closing_files_after_writing(self): # ODB-331
+        for i in range(1500):
+            conn = odb.connect("")
+            c = conn.cursor()
+            c.execute("""CREATE TABLE foo AS (statid string) ON 'ODB-331.{}.odb';""".format(i))
+            c.executemany('INSERT INTO foo (statid) VALUES (?);', [['foo-bar!']])
+            c.close()
+            conn.commit()
 """
     def test_select_data_from_mars(self):
         conn = connect(ddl = '''
