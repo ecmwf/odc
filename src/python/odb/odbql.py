@@ -16,8 +16,9 @@ Examples:
     # Select data from a file
 
     >>> import odbql
-    >>> con = odbql.connect('''CREATE TABLE conv on 'conv.odb';''')
+    >>> con = odbql.connect('')
     >>> c = con.cursor()
+    >>> c.execute('''CREATE TABLE conv on 'conv.odb';''')
     >>> c.execute('select * from conv;')
     >>> c.fetchone()
         [262, '    0001', 1, 1025, 20160902, 120000, 16001, 3, 13, 11, 4287629, 0, 3, 17, 1, 14, None, '   89324', 20160902, 140000, 1, 0, 0, -80.0, -119.4000015258789, 1.0, 1534.8011474609375, 1530.0, None, 0, 1, 78120.0, 110, 2, 15004.1748046875, None, 1, 4096, 1, 3145728, 0, -200.0, -200.0, 106.85060119628906, 40.43746566772461, 0.44642725586891174, 0.0, 0.0, 53.77234649658203, 53.77234649658203, 19.578968048095703, 28.869945526123047, 80.12548828125]
@@ -32,6 +33,7 @@ Examples:
 import os
 from ctypes import *
 import types
+from sys import platform
 
 apilevel = '2.0' 
 threadsafety = 1 # https://www.python.org/dev/peps/pep-0249/#threadsafety
@@ -56,11 +58,18 @@ def connect(file_name):
     """
     return Connection(file_name)
 
-def __find_libOdb(*ps):
-    for p in ps:
+def lib_extension():
+    if 'win' in platform: return '.DLL'
+    if 'linux' in platform: return '.so'
+    if 'darwin' in platform: return '.dylib'
+    raise Exception("Don't know lib extension for platform " + platform)
+
+def __find_lib(paths, lib='libOdb', extension = lib_extension()):
+    file_name = lib + extension
+    for p in paths:
         path = p.split(os.sep)[:-1]
         for i in range(len(path)):
-            pth = os.sep.join(path + ['..'] * i + ['lib', 'libOdb.so'])
+            pth = os.sep.join(path + ['..'] * i + ['lib', file_name])
             try: 
                 r = CDLL(pth)
                 #print '__find_libOdb: FOUND', pth
@@ -68,9 +77,9 @@ def __find_libOdb(*ps):
             except OSError: 
                 #print '__find_libOdb: not found: ', pth
                 pass
-    raise Exception("Can't find libOdb.so")
+    raise Exception("Can't find " + file_name)
 
-libodb = __find_libOdb(__file__, '/tmp/build/bundle/debug/bin')
+libodb = __find_lib([__file__, '/tmp/build/bundle/debug/bin'])
 
 # odbql prototypes 
 odbql_open = libodb.odbql_open
@@ -356,12 +365,10 @@ class new_sql_row(object):
 
     def __get_one_item__(self, index):
         if type(index) == int: return self.cursor.value(index)
-        if type(index) == str:
-            return self.__value_by_name(index)
+        if type(index) == str: return self.__value_by_name(index)
         if type(index) == tuple: return tuple(self.__get_one_item__(i) for i in index)
         if index == slice(None,None,None):
             return [self.cursor.value(i) for i in range(len(self.cursor.description))]
-
         if type(index) == slice:
             return [self.__get_one_item__(i) for i in [t[0] for t in enumerate(self.cursor.description)][index.start : index.stop : index.step]]
 
