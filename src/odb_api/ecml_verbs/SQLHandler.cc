@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Piotr Kuchta, February 2015
+
 #include <sstream>
 
 #include "SQLHandler.h"
@@ -71,10 +73,18 @@ vector<PathName> SQLHandler::executeSelect(const string& select, DataHandle& inp
     return executeSelect(select, "", input, into, context);
 }
 
+class WithOpenForRead {
+public:
+    WithOpenForRead (eckit::DataHandle& h) : h_(h) { h_.openForRead(); }
+    ~WithOpenForRead () { h_.close(); }
+private:
+    DataHandle& h_;
+};
+
 vector<PathName> SQLHandler::executeSelect(const string& select, const string& inc, DataHandle& input, const string& into, ExecutionContext* context)
 {
     // We don't call saveInto here so have to open the handle explicitly:
-    input.openForRead();
+    WithOpenForRead scope (input);
 
     string sql(select);
     if (! sql.size())
@@ -84,7 +94,7 @@ vector<PathName> SQLHandler::executeSelect(const string& select, const string& i
     }
 
     sql = cleanUpSQLText(sql);
-    Log::info() << "Executing '" << sql << "'" << endl;
+    Log::debug() << "Executing '" << sql << "'" << endl;
 
     SQLNonInteractiveSession session(odb::sql::SQLOutputConfig::defaultConfig(), ",");
 
@@ -118,7 +128,7 @@ vector<PathName> SQLHandler::executeSelect(const string& select, const string& i
 
     delete sqlSelect;
 
-    Log::info() << "Processed " << numberOfRows << " row(s)." << endl;
+    Log::debug() << "Processed " << numberOfRows << " row(s)." << endl;
 
     return r;
 }
