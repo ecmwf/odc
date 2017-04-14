@@ -4,10 +4,10 @@ Python Database API (PEP 249) implementation for ODB API
 @author Piotr Kuchta, ECMWF, August 2016
 
 This module is a Python wrapper for ODB API, ECMWF library for encoding,
-decoding and processing of observational data. 
+decoding and processing of observational data.
 
-ODB API includes a streaming SQL engine and a MARS language syntax 
-based embedded scripting language, ECML. ECML verbs can be called using 
+ODB API includes a streaming SQL engine and a MARS language syntax
+based embedded scripting language, ECML. ECML verbs can be called using
 this module as stored procedures via Cursor.callproc method.
 
 
@@ -26,7 +26,7 @@ Examples:
         ['type', 'expver', 'class', 'stream', 'andate', 'antime', 'reportype', 'mxup_traj@desc', 'numtsl@desc', 'timeslot@timeslot_index', 'seqno@hdr', 'bufrtype@hdr', 'subtype@hdr', 'groupid@hdr', 'obstype@hdr', 'codetype@hdr', 'sensor@hdr', 'statid@hdr', 'date@hdr', 'time@hdr', 'report_status@hdr', 'report_event1@hdr', 'report_rdbflag@hdr', 'lat@hdr', 'lon@hdr', 'lsm@modsurf', 'orography@modsurf', 'stalt@hdr', 'sonde_type@conv', 'station_type@conv', 'entryno@body', 'obsvalue@body', 'varno@body', 'vertco_type@body', 'vertco_reference_1@body', 'vertco_reference_2@body', 'ppcode@conv_body', 'datum_anflag@body', 'datum_status@body', 'datum_event1@body', 'datum_rdbflag@body', 'biascorr@body', 'biascorr_fg@body', 'an_depar@body', 'fg_depar@body', 'qc_pge@body', 'fc_sens_obs@body', 'an_sens_obs@body', 'obs_error@errstat', 'final_obs_error@errstat', 'fg_error@errstat', 'eda_spread@errstat', 'hires@update_2']
 
 
-    
+
 
 """
 
@@ -35,16 +35,16 @@ from ctypes import *
 import types
 from sys import platform
 
-apilevel = '2.0' 
+apilevel = '2.0'
 threadsafety = 1 # https://www.python.org/dev/peps/pep-0249/#threadsafety
 paramstyle = 'qmark' # https://www.python.org/dev/peps/pep-0249/#paramstyle
 
 def connect(file_name):
     """
-    Returns a Connection object. 
+    Returns a Connection object.
 
     Parameter: file_name  file to be open or empty string
-    
+
     Examples:
 
         >>> conn1 = connect("conv.odb")
@@ -52,16 +52,16 @@ def connect(file_name):
         >>> conn2 = connect("mars://RETRIEVE,DATABASE=marsod,CLASS=OD,TYPE=MFB,STREAM=OPER,EXPVER=0001,DATE=20160830,TIME=1200,REPORTYPE=16001")
 
     See also:
-    
-        https://www.python.org/dev/peps/pep-0249/#connect 
-    
+
+        https://www.python.org/dev/peps/pep-0249/#connect
+
     """
     return Connection(file_name)
 
 def lib_extension():
-    if 'win' in platform: return '.DLL'
     if 'linux' in platform: return '.so'
     if 'darwin' in platform: return '.dylib'
+    if 'win' in platform: return '.DLL'
     raise Exception("Don't know lib extension for platform " + platform)
 
 def __find_lib(paths, lib='libOdb', extension = lib_extension()):
@@ -70,18 +70,18 @@ def __find_lib(paths, lib='libOdb', extension = lib_extension()):
         path = p.split(os.sep)[:-1]
         for i in range(len(path)):
             pth = os.sep.join(path + ['..'] * i + ['lib', file_name])
-            try: 
+            try:
                 r = CDLL(pth)
                 #print '__find_libOdb: FOUND', pth
                 return r
-            except OSError: 
+            except OSError:
                 #print '__find_libOdb: not found: ', pth
                 pass
     raise Exception("Can't find " + file_name)
 
 libodb = __find_lib([__file__, '/tmp/build/bundle/debug/bin'])
 
-# odbql prototypes 
+# odbql prototypes
 odbql_open = libodb.odbql_open
 odbql_prepare_v2 = libodb.odbql_prepare_v2
 odbql_step = libodb.odbql_step
@@ -120,7 +120,7 @@ ODBQL_BLOB             = 4
 ODBQL_NULL             = 5
 ODBQL_BITFIELD         = 6
 
-def type_name(i): 
+def type_name(i):
     return [None, 'INTEGER', 'REAL', 'TEXT', 'BLOB', 'NULL', 'BITFIELD'][i]
 
 class Connection:
@@ -141,7 +141,7 @@ class Connection:
 
 
 class fetchall_generator(object):
-    def __init__(self, cursor): 
+    def __init__(self, cursor):
         self.cursor = cursor
     def __iter__(self): return self
     def __next__(self): return self.next()
@@ -164,12 +164,12 @@ class Cursor:
         #
         #  This read-only attribute is a sequence of 7-item sequences.
         #
-        # Each of these sequences contains information describing one result column:     
+        # Each of these sequences contains information describing one result column:
         #   name, type_code, display_size, internal_size, precision, scale, null_ok
         self.description = []
 
     def __column_info(self, name, typ):
-        return (name, 
+        return (name,
                 typ,   # type_code ## TODO
                 None,  # display_size
                 None,  # internal_size
@@ -177,7 +177,7 @@ class Cursor:
                 None,  # scale
                 True   # null_ok
                 )
-        
+
     def close(self):
         if self.stmt is not None:
             rc = odbql_finalize(self.stmt)
@@ -198,8 +198,8 @@ class Cursor:
 
             if err_msg.startswith('Cannot open ') and err_msg.endswith('(No such file or directory)'):
                 #'Cannot open non_existing.odb  (No such file or directory)'
-                raise IOError("No such file or directory: '" + err_msg.split()[2] + "'") 
-            
+                raise IOError("No such file or directory: '" + err_msg.split()[2] + "'")
+
             raise Exception('execute: prepare failed')
 
         self.__populate_meta_data()
@@ -209,7 +209,7 @@ class Cursor:
         self.names = [odbql_column_name(self.stmt, i) for i in range(self.number_of_columns)]
         self.types = [odbql_column_type(self.stmt, i) for i in range(self.number_of_columns)]
         self.description = map (self.__column_info, self.names, self.types)
-        
+
     def fetchall(self):
         return fetchall_generator(self)
 
@@ -239,7 +239,7 @@ class Cursor:
     def value(self, column):
         v = odbql_column_value(self.stmt, column)
         if not v: return None
-        else: 
+        else:
             t = self.types[column]
             if t == ODBQL_FLOAT: return odbql_value_double(v)
             if t == ODBQL_INTEGER: return odbql_value_int(v)
@@ -290,10 +290,10 @@ class Cursor:
                 return '/'.join([str(x) for x in l])
             else:
                 return str(l)
-                
+
         r = procname + "".join ( [ ',' + k + '=' + marslist(v) for k,v in keyword_parameters.iteritems()] )
         return r
- 
+
 
     def __bind(self, parameters):
         for i in range(len(parameters)):
@@ -307,10 +307,10 @@ class Cursor:
             if type(p) == str:
                 rc = odbql_bind_text(self.stmt, i, p, len(p), ODBQL_STATIC)
                 #self.assertEqual(rc, ODBQL_OK)
-            elif type(p) == int: 
+            elif type(p) == int:
                 rc = odbql_bind_int(self.stmt, i, p)
                 #self.assertEqual(rc, ODBQL_OK)
-            elif type(p) == float: 
+            elif type(p) == float:
                 rc = odbql_bind_double(self.stmt, i, c_double(p))
                 #self.assertEqual(rc, ODBQL_OK)
             else:
@@ -343,8 +343,8 @@ class new_sql_row(object):
         self.names = None
 
     def __getitem__(self, *indices):
-        if len(indices) == 1: 
-            if type(indices[0]) == tuple: 
+        if len(indices) == 1:
+            if type(indices[0]) == tuple:
                 return tuple(self.__getitem__(i) for i in indices[0])
             else:
                 return self.__get_one_item__(indices[0])
@@ -395,7 +395,7 @@ class new_sql_row(object):
 
 
 class new_sql_generator(object):
-    def __init__(self, cursor): 
+    def __init__(self, cursor):
         self.cursor = cursor
     def __iter__(self): return self
     def __next__(self): return self.next()
@@ -420,4 +420,3 @@ def new_open(fn):
     c = conn.cursor()
     c.execute(s)
     return new_sql_generator(c)
-
