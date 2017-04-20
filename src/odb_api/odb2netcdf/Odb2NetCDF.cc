@@ -18,7 +18,8 @@ using namespace eckit;
 string patchName(const string& s)
 {
     string r (s);
-    replace(r.begin(), r.end(), '@', '_');
+    // ODB-334 
+    //replace(r.begin(), r.end(), '@', '_');
     return r;
 }
 
