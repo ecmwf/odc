@@ -15,6 +15,11 @@ ecbuild_add_library(TARGET		Odb_fortran
 
                     LIBS		Odb )
 
+set( test_environment_fortran
+     TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
+     ODB_API_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/../../tests/cma.hh
+)
+
 if( HAVE_FORTRAN )
 
     list( APPEND fortran_tests
@@ -26,6 +31,7 @@ if( HAVE_FORTRAN )
         # an ODB Server test (in MARS server source). I need to make sure legacy_test_client_lib_fortran_local
         # can work on its own, not just as a part of ODB Server bundle.
         #legacy_test_client_lib_fortran_local
+        test_regression
     )
 
     foreach( _test ${fortran_tests} )
@@ -33,8 +39,7 @@ if( HAVE_FORTRAN )
                           CONDITION  HAVE_FORTRAN
                           SOURCES    ${_test}.f90
                           LIBS       Odb_fortran ${ODB_LIBS} 
-                          ENVIRONMENT 
-                                    TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
+                          ENVIRONMENT  ${test_environment_fortran} 
 
                           LABELS     odb_api odb_api_fortran
 
