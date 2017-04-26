@@ -88,7 +88,7 @@ private:
     SQLSession& operator=(const SQLSession&);
 
     static std::string schemaFile();
-    static std::vector<std::string> includePathName();
+    static std::vector<std::string> includePaths();
 
     SQLDatabase* currentDatabase_;
     //std::map<int,double> params_;

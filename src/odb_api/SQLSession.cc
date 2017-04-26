@@ -199,12 +199,13 @@ std::string SQLSession::schemaFile()
 
 std::string SQLSession::readIncludeFile(const std::string& fileName)
 {
-    std::vector<std::string> dirs (includePathName());
+    std::vector<std::string> dirs (includePaths());
     Log::debug() << "read include: " << fileName << std::endl;
 
     for (size_t i(0); i < dirs.size(); ++i)
     {
-        std::string pathName (dirs[i] + "/" + fileName);
+        std::string pathName (dirs[i] + fileName);
+        Log::debug() << "Looking for include file " << fileName << " in " << dirs[i] << std::endl;
         if (! PathName(pathName).exists())
             continue;
         return StringTool::readFile(pathName);
@@ -212,15 +213,17 @@ std::string SQLSession::readIncludeFile(const std::string& fileName)
     throw eckit::UserError(std::string("Include file '") + fileName + "' not found");
 }
 
-std::vector<std::string> SQLSession::includePathName()
+std::vector<std::string> SQLSession::includePaths()
 {
     std::vector<std::string> r;
     std::string s (schemaFile());
     char a [s.size() + 1];
     strncpy(a, s.c_str(), s.size() + 1);
     const std::string dir (dirname(const_cast<char *>(a)));
-    r.push_back(dir);
-    r.push_back(".");
+
+    r.push_back("");
+    r.push_back(dir + "/");
+    r.push_back("./");
     return r;
 }
 
