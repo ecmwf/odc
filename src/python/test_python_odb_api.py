@@ -348,6 +348,20 @@ class TestPEP249(unittest.TestCase):
             c.executemany('INSERT INTO foo (statid) VALUES (?);', [['foo-bar!']])
             c.close()
             conn.commit()
+
+    def test_embedded_ecml_in_the_from_clause(self): # ODB-83
+        for i in range(3):
+            conn = odb.connect("")
+            c = conn.cursor()
+            c.execute("""CREATE TABLE foo AS (statid string) ON 'ODB-83.{}.odb';""".format(i))
+            c.executemany('INSERT INTO foo (statid) VALUES (?);', [['foo-bar!']])
+            c.close()
+            conn.commit()
+        
+        c.execute('''SELECT count(*) FROM { sequence,values = "ODB-83.0.odb" / "ODB-83.1.odb" / "ODB-83.2.odb" }''')
+        result = [r[0] for r in c.fetchall()]
+        self.assertEqual ( result, [3] )
+
 """
     def test_select_data_from_mars(self):
         conn = connect(ddl = '''
