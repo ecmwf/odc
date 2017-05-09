@@ -11,6 +11,7 @@
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/MultiHandle.h"
 
 #include "ecml/core/ExecutionContext.h"
 #include "ecml/data/DataHandleFactory.h"
@@ -33,19 +34,26 @@ std::vector<odb::sql::SQLTable*> EmbeddedCodeParser::getFromTables(const string&
 
     ecml::Values values (context->execute(text));
 
+    Log::debug() << "EmbeddedCodeParser: values: " << values->str() <<  std::endl;
+
     std::vector<odb::sql::SQLTable*> tables;
+
+    eckit::MultiHandle* mh (new eckit::MultiHandle);
 
     for (ecml::Request e (values); e; e = e->rest())
     {
         string descriptor (e->value()->text());
 
+        Log::debug() << "EmbeddedCodeParser: descriptor: " << descriptor << std::endl;
+
         if (e->value()->rest()) 
             throw UserError("element on the list returned by embedded code is not a single value");
 
-        DataHandle* dh (ecml::DataHandleFactory::openForRead(descriptor));
-        odb::sql::SQLTable* t (session.openDataHandle(*dh));
-        tables.push_back(t);
+        (*mh) += ecml::DataHandleFactory::openForRead(descriptor);
     }
+    mh->openForRead();
+    odb::sql::SQLTable* t (session.openDataHandle(*mh));
+    tables.push_back(t);
     return tables;
 }
 
