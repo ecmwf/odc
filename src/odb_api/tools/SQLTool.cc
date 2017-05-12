@@ -81,7 +81,7 @@ void SQLTool::run()
     std::string sql(StringTool::isSelectStatement(params[0])
                 ? StringTools::join(" ",  params) + ";"
                 // FIXME:
-                : StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]));
+                : StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]) + ";");
     std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o")
                                 ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
                                 : 0);
