@@ -1,6 +1,7 @@
 
 
 !!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!    See fwrap.py
 
 module odbql_binding
   use iso_c_binding
