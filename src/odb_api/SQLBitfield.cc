@@ -73,7 +73,7 @@ std::string SQLBitfield::make(const std::string& name, const FieldNames& fields,
 	std::string typeName = s.str();
 
 	if(! exists(typeName))
-		DynamicallyCreatedTypesDestroyer::registerType(new SQLBitfield(typeName, fields, sizes, ddlName));
+		SQLType::registerType(new SQLBitfield(typeName, fields, sizes, ddlName));
 	else
 		SQLType::createAlias(typeName, ddlName);
 
@@ -108,7 +108,7 @@ const SQLType* SQLBitfield::subType(const std::string& name) const
 	if(exists(full))
 		return &lookup(full);
 
-	return DynamicallyCreatedTypesDestroyer::registerType(new SQLBit(full, mask(field), shift(field)));
+	return SQLType::registerType(new SQLBit(full, mask(field), shift(field)));
 }
 
 } // namespace type 

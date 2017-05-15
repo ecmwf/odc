@@ -16,6 +16,7 @@
 #include "odb_api/SQLSession.h"
 #include "odb_api/SQLDatabase.h"
 #include "odb_api/SQLDataTable.h"
+#include "odb_api/SQLType.h"
 
 using namespace eckit;
 
@@ -24,7 +25,6 @@ namespace sql {
 
 void SQLDatabase::setUpVariablesTable()
 {
-	//tablesByName_["variables"] = new VariablesTable(*this, "variables");
 	tablesByName_["dual"] = dualTable();
 }
 

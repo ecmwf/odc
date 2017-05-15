@@ -56,8 +56,8 @@ public:
 	virtual manipulator format() const;
 
 	static const SQLType& lookup(const std::string&);
-
 	static void createAlias(const std::string&, const std::string&);
+    static SQLType* registerType(SQLType*);
 
 protected:
     virtual void print(std::ostream&) const;
@@ -69,8 +69,6 @@ private:
 	SQLType& operator=(const SQLType&);
 
 	std::string name_;
-
-	static void registerStaticTypes();
 
     friend std::ostream& operator<<(std::ostream& s,const SQLType& p)
 		{ p.print(s); return s; }
