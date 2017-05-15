@@ -185,33 +185,33 @@ nl_indent = '\n     '
 
 helper_functions = """
 
-!> Helper function to convert C '\\0' terminated strings to Fortran strings
+!> Helper routine to convert C '\\0' terminated strings to Fortran strings
 
-    function C_to_F_string(c_string_pointer) result(f_string)
+    subroutine C_to_F_string(c_string_pointer, out_string)
+
       use, intrinsic :: iso_c_binding, only: c_ptr,c_f_pointer,c_char,c_null_char
+
       type(c_ptr), intent(in)                       :: c_string_pointer
-      character(len=:), allocatable                 :: f_string
+      character(len=*), intent(out)                 :: out_string
       character(kind=c_char), dimension(:), pointer :: char_array_pointer
-      character(len=255)                            :: aux_string
       integer                                       :: i,length
 
       char_array_pointer => null()
       call c_f_pointer(c_string_pointer,char_array_pointer,[255])
+
       if (.not.associated(char_array_pointer)) then
-          allocate(character(len=4)::f_string)
-          f_string = "NULL"
+          out_string = "NULL"
           return
       end if
-      aux_string = " "
-      do i=1,255
-        if (char_array_pointer(i)==c_null_char) then
-          length=i-1; exit
-        end if
-        aux_string(i:i)=char_array_pointer(i)
+
+      out_string = " "
+      do i = 1, len(out_string)
+        if (char_array_pointer(i) == c_null_char) exit
+        out_string(i:i) = char_array_pointer(i)
       end do
-      allocate(character(len=length)::f_string)
-      f_string = aux_string(1:length)
-    end function C_to_F_string
+
+    end subroutine
+
 
 """
 
@@ -268,12 +268,6 @@ def generateWrapper(signature, comment, template):
     error_handling = ''
     return_value_tmp = None
 
-    if return_type == 'const char*' or return_type == 'const unsigned char*':
-        procedure_keyword = 'subroutine'
-        output_parameter = 'return_value'
-        fortran_params.append( (return_type, output_parameter) )
-        call_binding = 'C_to_F_string(' + call_binding  + ')'
-
     if return_type == 'odbql_value*': 
         return_value_tmp = output_parameter + "%this"
 
@@ -288,7 +282,18 @@ def generateWrapper(signature, comment, template):
         fortran_params.append( (return_type, output_parameter) )
         error_handling = status_handling_code % locals()
 
-    return_value_assignment = (return_value_tmp or output_parameter) + ' = ' + call_binding
+    if return_type == 'const char*' or return_type == 'const unsigned char*':
+        procedure_keyword = 'subroutine'
+        output_parameter = 'return_value'
+        fortran_params.append( (return_type, output_parameter) )
+
+        # For C to F string, we call a subroutine rather than make an assignment
+        return_value_assignment = "call C_to_F_string(%s, %s)" % (call_binding, (return_value_tmp or output_parameter))
+
+    else:
+
+        # Normal assignment
+        return_value_assignment = (return_value_tmp or output_parameter) + ' = ' + call_binding
 
     binding_parameters_declarations = nl_indent.join([fortranParamTypeDeclaration(p) for p in params])
     binding_return_type_declaration = formatParameter(translate_type_for_binding_return(return_type), function_name + '_c')
@@ -329,6 +334,7 @@ def generateBindings(source_cc = '../odb_api/odbql.cc',
         f.write(generateWrappers(decls, header = """
 
 !!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!    See fwrap.py
 
 module odbql_binding
   use iso_c_binding
@@ -356,6 +362,7 @@ end module odbql_binding
         f.write(generateWrappers(decls, header = """
 
 !!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!    See fwrap.py
 
 module odbql_wrappers
   use odbql_binding

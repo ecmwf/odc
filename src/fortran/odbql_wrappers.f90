@@ -1,6 +1,7 @@
 
 
 !!!!! THIS FILE WAS AUTOMATICALLY GENERATED. DO NOT EDIT MANUALLY !!!!!
+!!    See fwrap.py
 
 module odbql_wrappers
   use odbql_binding
@@ -23,33 +24,33 @@ contains
 
 
 
-!> Helper function to convert C '\0' terminated strings to Fortran strings
+!> Helper routine to convert C '\0' terminated strings to Fortran strings
 
-    function C_to_F_string(c_string_pointer) result(f_string)
+    subroutine C_to_F_string(c_string_pointer, out_string)
+
       use, intrinsic :: iso_c_binding, only: c_ptr,c_f_pointer,c_char,c_null_char
+
       type(c_ptr), intent(in)                       :: c_string_pointer
-      character(len=:), allocatable                 :: f_string
+      character(len=*), intent(out)                 :: out_string
       character(kind=c_char), dimension(:), pointer :: char_array_pointer
-      character(len=255)                            :: aux_string
       integer                                       :: i,length
 
       char_array_pointer => null()
       call c_f_pointer(c_string_pointer,char_array_pointer,[255])
+
       if (.not.associated(char_array_pointer)) then
-          allocate(character(len=4)::f_string)
-          f_string = "NULL"
+          out_string = "NULL"
           return
       end if
-      aux_string = " "
-      do i=1,255
-        if (char_array_pointer(i)==c_null_char) then
-          length=i-1; exit
-        end if
-        aux_string(i:i)=char_array_pointer(i)
+
+      out_string = " "
+      do i = 1, len(out_string)
+        if (char_array_pointer(i) == c_null_char) exit
+        out_string(i:i) = char_array_pointer(i)
       end do
-      allocate(character(len=length)::f_string)
-      f_string = aux_string(1:length)
-    end function C_to_F_string
+
+    end subroutine
+
 
 
 
@@ -65,7 +66,7 @@ contains
      
 
      
-     return_value = C_to_F_string(odbql_errmsg_c(db%this))
+     call C_to_F_string(odbql_errmsg_c(db%this), return_value)
      
 
     end subroutine odbql_errmsg
@@ -83,7 +84,7 @@ contains
      
 
      
-     return_value = C_to_F_string(odbql_libversion_c())
+     call C_to_F_string(odbql_libversion_c(), return_value)
      
 
     end subroutine odbql_libversion
@@ -332,7 +333,7 @@ contains
      
 
      
-     return_value = C_to_F_string(odbql_column_text_c(stmt%this,iCol-1))
+     call C_to_F_string(odbql_column_text_c(stmt%this,iCol-1), return_value)
      
 
     end subroutine odbql_column_text
@@ -378,7 +379,7 @@ contains
      
 
      
-     return_value = C_to_F_string(odbql_column_name_c(stmt%this,iCol-1))
+     call C_to_F_string(odbql_column_name_c(stmt%this,iCol-1), return_value)
      
 
     end subroutine odbql_column_name
