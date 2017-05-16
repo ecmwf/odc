@@ -1,0 +1,15 @@
+test, label = check SQL is thread safe,
+do = ( 
+
+  let, results = 
+    (for, task = (let, q = "select lat", target = lat.odb)
+                / (let, q = "select lon", target = lon.odb)
+                / (let, q = "select obsvalue", target = obsvalue.odb),
+          do = (sql,
+                   filter = ($, _ = task/q),
+                   target = ($, _ = task/target),
+                   source = 2000010106.odb))
+
+    results
+),
+expect = lat.odb / lon.odb / obsvalue.odb

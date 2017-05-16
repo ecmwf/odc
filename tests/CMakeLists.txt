@@ -281,6 +281,11 @@ set( test_environment
   TEST_DATA_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}
   )
 
+set( test_environment_multithreaded 
+    ${test_environment}
+    OMP_NUM_THREADS=16
+)
+
 ### migrator tests
 
 set( _prev_test get_migrator_test_data )
@@ -378,6 +383,10 @@ list( APPEND odb_module_tests
     test_stage.ecml
 )
 
+list( APPEND odb_module_multithreaded_tests
+    test_multithreaded_sql.ecml
+)
+
 # tests moved from ODB Server that populate ODB Server root - that data is used by other tests
 ecbuild_add_test ( TARGET       test_ec_archiving.ecml
                    COMMAND      ${odb_bin}
@@ -408,6 +417,19 @@ foreach( _test ${odb_module_tests} )
                        )
 endforeach()
 
+foreach( _test ${odb_module_multithreaded_tests} )
+    ecbuild_add_test ( TARGET       ${_test}
+                       COMMAND      ${odb_bin}
+                       ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/${_test}
+                       ENVIRONMENT  ${test_environment_multithreaded}
+                       LABELS       odb_api odb_api_ecml
+                       TEST_DEPENDS get_odb_api_test_data
+                                    get_mars_client_test_data_mo
+                                    get_mars_client_test_data_ec
+                                    test_ec_archiving.ecml
+                                    test_mo_archiving.ecml
+                       )
+endforeach()
 
 ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_mo
                             DIRNAME odb_api/tests
