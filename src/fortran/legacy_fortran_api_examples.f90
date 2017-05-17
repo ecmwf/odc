@@ -290,7 +290,7 @@ subroutine example_fortran_api2
  character(len=max_varlen)                     :: bitfield_names
  character(len=max_varlen)                     :: bitfield_sizes
  integer(kind=4)                               :: i
- character(kind=C_CHAR, len=128)               :: sql='select * from "test.odb";'//achar(0)
+ character(kind=C_CHAR, len=128)               :: sql='select * from "test.odb"'//achar(0)
  integer(kind=C_INT)                           :: itype, newdataset, c_ncolumns=3, size_name 
  integer(kind=C_INT)                           :: bitfield_names_size, bitfield_sizes_size
  real(kind=C_DOUBLE), dimension(:), allocatable:: one_row

@@ -31,6 +31,7 @@
 #include "odb_api/EmbeddedCodeParser.h"
 #include "odb_api/FunctionMATCH.h"
 #include "odb_api/SQLAST.h"
+#include "odb_api/ecml_verbs/SQLHandler.h"
 
 using namespace eckit;
 
@@ -119,7 +120,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::include_stack stack;
     SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
-    stack.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
+    stack.push(SQLHandler::cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
@@ -141,7 +142,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::include_stack stack;
     SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
-    stack.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
+    stack.push(SQLHandler::cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
@@ -162,7 +163,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, 
     SQLYacc::include_stack stack;
     SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
-    stack.push(s, "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
+    stack.push(SQLHandler::cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner); 
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
