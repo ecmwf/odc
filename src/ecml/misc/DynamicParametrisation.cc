@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "eckit/utils/Translator.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "ecml/core/ExecutionContext.h"
 #include "ecml/core/Environment.h"
@@ -102,6 +103,16 @@ bool DynamicParametrisation::get(const std::string& name, std::vector<double>& v
     }
     return r;
 }
+
+
+
+bool DynamicParametrisation::get(const std::string& name, int& value) const { NOTIMP; return false; }
+bool DynamicParametrisation::get(const std::string& name, float& value) const { NOTIMP; return false; }
+bool DynamicParametrisation::get(const std::string& name, std::vector<int>& value) const { NOTIMP; return false; }
+bool DynamicParametrisation::get(const std::string& name, std::vector<size_t>& value) const { NOTIMP; return false; }
+bool DynamicParametrisation::get(const std::string& name, std::vector<float>& value) const { NOTIMP; return false; }
+bool DynamicParametrisation::get(const std::string& name, std::vector<std::string>& value) const { NOTIMP; return false; }
+
 
 } // namespace ecml
 
