@@ -40,11 +40,6 @@ ecbuild_dont_pack(REGEX ".gdbinit")
 ###############################################################################
 # some variables/options of this project
 
-ecbuild_add_option( FEATURE MIGRATOR
-                    DESCRIPTION "whether or not to build the ODB migrator tool"
-                    DEFAULT OFF
-                    REQUIRED_PACKAGES "PROJECT odb VERSION 1.0 QUIET" )
-
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
                     DEFAULT OFF )
@@ -64,7 +59,7 @@ ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
 
 SET(ODB_API_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
 
-if( HAVE_FORTRAN OR HAVE_MIGRATOR )
+if( HAVE_FORTRAN )
 
     set( Fortran Fortran )
     ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )
@@ -72,15 +67,6 @@ if( HAVE_FORTRAN OR HAVE_MIGRATOR )
     message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
 
 endif()
-
-#if( HAVE_MIGRATOR )
-    #if(CMAKE_Fortran_COMPILER_ID STREQUAL "PGI")
-    #    ecbuild_add_fortran_flags("-r8")
-    #    elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-    #    # NOTE that if we add -fdefault-real-8 then we NEED -fdefault-double-8 to avoid quadmath
-    #    ecbuild_add_fortran_flags("-fdefault-real-8 -fdefault-double-8")
-    #endif()
-#endif()
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
   ecbuild_add_fortran_flags("-fPIC -ffree-line-length-none")
