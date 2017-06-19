@@ -8,10 +8,6 @@ if(ODB_FOUND)
   message( STATUS "     DL  lib      : [${DL_LIBRARIES}]" )
 endif()
 
-if( FORTRAN_LIBRARIES )
-  message( STATUS " FORTRAN_LIBRARIES: [${FORTRAN_LIBRARIES}]" )
-endif()
-
 #string( TOUPPER ${PROJECT_NAME} PNAME )
 #foreach( _tpl ${${PNAME}_TPLS} )
 #	string( TOUPPER ${_tpl} TPL )

@@ -63,8 +63,6 @@ if( HAVE_FORTRAN )
 
     set( Fortran Fortran )
     ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )
-    ecbuild_find_fortranlibs( REQUIRED )
-    message( "Fortran libraries: [${FORTRAN_LIBRARIES}]" )
 
 endif()
 
