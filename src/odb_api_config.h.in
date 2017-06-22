@@ -13,4 +13,6 @@
 #define ODB_API_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@"
 #define ODB_API_BINARY_DIR     "@CMAKE_BINARY_DIR@"
 
+#define ODB_API_GIT_SHA1       "@ODB_API_GIT_SHA1@"
+
 #endif // odb_api_config_h
