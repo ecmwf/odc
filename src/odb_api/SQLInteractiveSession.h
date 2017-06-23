@@ -37,9 +37,9 @@ private:
     SQLStatement* sql_;
 
 // -- Overridden methods
-	void statement(SQLStatement*);
-	SQLStatement* statement();
-	SQLOutput* defaultOutput();
+    virtual void statement(SQLStatement*);
+    virtual SQLStatement* statement();
+    virtual SQLOutput* defaultOutput();
 
 	//friend std::ostream& operator<<(std::ostream& s,const SQLInteractiveSession& p)
 	//	{ p.print(s); return s; }
