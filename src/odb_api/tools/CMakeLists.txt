@@ -52,8 +52,6 @@ list( APPEND odbtest_src_files
 Examples.cc
 CAPIExamples.cc
 UnitTests.cc
-TestAAAImportODB.cc
-TestAAAImportODBDispatching.cc
 TestAggregateFunctions.cc
 TestAggregateFunctions.sql
 TestAggregateFunctions2.cc

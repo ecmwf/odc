@@ -1,12 +1,5 @@
 ### test data files
 
-list( APPEND test_migrator_data_files
-2000010106.old.ECMA.tar.gz )
-
-ecbuild_get_test_multidata( TARGET get_migrator_test_data
-                            #DIRNAME odb_api/tests
-                            NAMES ${test_migrator_data_files}
-                            NOCHECK )
 
 list( APPEND test_data_files
 2000010106.odb.gz
@@ -51,11 +44,6 @@ ecbuild_get_test_multidata( TARGET get_odb_api_test_data
                             NOCHECK )
 
 ### list tests
-
-list( APPEND odb_migrator_tests
-#Test_AAAImportODB
-#Test_AAAImportODBDispatching
-)
 
 list( APPEND odb_api_tests
 Test_AggregateFunctions
@@ -286,34 +274,6 @@ set( test_environment_multithreaded
     OMP_NUM_THREADS=16
 )
 
-### migrator tests
-
-set( _prev_test get_migrator_test_data )
-foreach( _test ${odb_migrator_tests} )
-  ecbuild_add_test( TARGET     ${_test}
-                    COMMAND    ${odb_bin}
-                    ARGS       ${_test}
-                    CONDITION  HAVE_MIGRATOR
-                    ENVIRONMENT ${test_environment} ${ODB_ENVIRONMENT}
-                    LABELS       odb_api odb_api_migrator
-                    TEST_DEPENDS ${_prev_test} )
-  set( _prev_test ${_test} )
-endforeach()
-
-### odb2_to_odb1 tests
-
-ecbuild_get_test_multidata( TARGET get_odb2_to_odb1_data NAMES odb2_to_odb1.ECMA.conv.tar.gz NOCHECK )
-
-ecbuild_add_test( TARGET test_odb2_to_odb1
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2_to_odb1.sh
-    ENVIRONMENT ${test_environment} ${ODB_ENVIRONMENT}
-        PATH=${CMAKE_BINARY_DIR}/bin:${odb_BASE_DIR}/bin:$ENV{PATH}
-        ODB_IO_METHOD=4
-        ODB_IO_GRPSIZE=160
-    LABELS odb_api odb_api_migrator
-    TEST_DEPENDS get_odb2_to_odb1_data
-    CONDITION HAVE_FORTRAN AND ODB_FOUND AND ODB_HAVE_ECMA)
-
 ### odb2netcdf tests
 
 ecbuild_get_test_multidata( TARGET get_odb2netcdf_data
@@ -337,23 +297,10 @@ ecbuild_add_test( TARGET test_odb2netcdf_2d
 
 ### odb_api tests
 
-# remove dependency on migrator tests if migrator not enabled
-if( NOT HAVE_MIGRATOR )
-  unset( odb_migrator_tests )
-endif()
-
-if( HAVE_MIGRATOR )
-    set( _prev_test get_migrator_test_data  )
-else()
-    set( _prev_test get_odb_api_test_data  )
-endif()
+set( _prev_test get_odb_api_test_data  )
 
 foreach( _test ${odb_api_tests} )
-    if( HAVE_MIGRATOR )
-        set( _dependencies ${odb_migrator_tests} ${_prev_test} )
-    else()
-        set( _dependencies ${_prev_test} )
-    endif()
+    set( _dependencies ${_prev_test} )
     ecbuild_add_test( TARGET       ${_test}
                       COMMAND      ${odb_bin}
                       ARGS         ${_test}

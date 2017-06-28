@@ -211,6 +211,8 @@ Header.h
 InMemoryDataHandle.cc
 InMemoryDataHandle.h
 IteratorProxy.h
+LibOdbApi.cc
+LibOdbApi.h
 MD5.cc
 MD5.h
 MDSetter.cc

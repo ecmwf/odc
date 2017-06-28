@@ -40,6 +40,15 @@ public:
     virtual bool get(const std::string& name, std::vector<long>& value) const;
     virtual bool get(const std::string& name, std::vector<double>& value) const;
 
+// -- Not Implemented
+
+    virtual bool get(const std::string& name, int& value) const;
+    virtual bool get(const std::string& name, float& value) const;
+    virtual bool get(const std::string& name, std::vector<int>& value) const;
+    virtual bool get(const std::string& name, std::vector<float>& value) const;
+    virtual bool get(const std::string& name, std::vector<size_t>& value) const;
+    virtual bool get(const std::string& name, std::vector<std::string>& value) const;
+
 private:
     ExecutionContext& context_;
 };
