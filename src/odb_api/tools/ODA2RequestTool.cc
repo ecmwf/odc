@@ -87,8 +87,7 @@ void ODA2RequestTool::run()
 
 PathName ODA2RequestTool::config()
 {
-	string ODB_API_HOME = Resource<std::string>("$ODB_API_HOME", "/usr/local/lib/metaps/lib/odalib/current");
-	return optionArgument("-c", ODB_API_HOME + "//etc//ODA2RequestTool.cfg");
+    return optionArgument("-c", std::string("~odb_api/codes/ODA2RequestTool.cfg"));
 }
 
 void ODA2RequestTool::readConfig() { readConfig(config()); }
