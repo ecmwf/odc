@@ -21,10 +21,9 @@ namespace sql {
 
 // Forward declarations
 
-class Environment;
-
 struct Stack : private std::stack<Environment*> {
-	Stack();
+
+    Stack();
 	~Stack();
 
 	void pushFrame(const SortedTables::iterator);
@@ -34,12 +33,14 @@ struct Stack : private std::stack<Environment*> {
 
 	const SortedTables::iterator& tablesIterator(); 
 
-	SelectOneTable& table();
-	SelectOneTable* tablePtr();
-	void table(SelectOneTable *);
+    SelectOneTable& table()    { return *(top()->table()); }
+    SelectOneTable* tablePtr() { return top()->table(); }
 
-	SQLTableIterator& cursor();
-	void cursor(SQLTableIterator *);
+    void table(SelectOneTable* p) { ASSERT(p); top()->table(p); }
+
+
+    SQLTableIterator& cursor() { return *(top()->cursor()); }
+    void cursor(SQLTableIterator* c) { top()->cursor(c); }
 };
 
 

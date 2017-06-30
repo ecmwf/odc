@@ -14,6 +14,8 @@
 #ifndef TReadOnlyMemoryDataHandle_H
 #define TReadOnlyMemoryDataHandle_H
 
+#include <algorithm>
+
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
@@ -71,12 +73,19 @@ public:
 
     long read(void* p, long n)
 	{
-		char *dst = reinterpret_cast<char *>(p);
-		long i = 0;
-		for ( ; i < n && it_ != end_; ++i, ++it_)
-			dst[i] = *it_;
-		return i;
+//        char *dst = reinterpret_cast<char *>(p);
+//        long i = 0;
+//        for ( ; i < n && it_ != end_; ++i, ++it_)
+//            dst[i] = *it_;
+//        return i;
+
+        long len = std::min(n, end_ - it_);
+        ::memcpy(p, it_, len);
+        it_ += len;
+        return len;
 	}
+
+
 
     long write(const void* pd, long n) { NOTIMP; }
 
