@@ -96,7 +96,6 @@ TestIntegerValues.cc
 TestMetaData.cc
 TestMetaDataReader.cc
 TestMetaDataReader.ksh
-TestMinMax.cc
 TestMissingValue.cc
 TestOdaCAPI.cc
 TestOdaCAPI.h

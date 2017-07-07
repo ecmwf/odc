@@ -312,11 +312,18 @@ endforeach()
 
 ### New style odb_api tests (using lest)
 
-ecbuild_add_test(
-    TARGET   test_minmax
-    SOURCES  test_minmax.cc
-    INCLUDES ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
-    LIBS     eckit Odb )
+list( APPEND odb_api_lest_tests
+    test_minmax
+    test_select_iterator
+)
+
+foreach( _test ${odb_Api_lest_tests} )
+    ecbuild_add_test(
+        TARGET   ${_test}
+        SOURCES  ${_test}.cc
+        INCLUDES ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
+        LIBS     eckit Odb )
+endforeach()
 
 #### ECML ODB Module verbs tests
 
