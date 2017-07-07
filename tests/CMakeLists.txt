@@ -201,7 +201,6 @@ Test_SelectWhere_ReturnsExpectedNumberOfResults
 Test_SelectWhere_ReturnsExpectedResults
 Test_Setvbuffer
 Test_Star
-Test_TEMPLATE
 Test_TextReaderIterator_parseBitfields
 Test_TextReaderIterator_parseBitfields_32bits_limit
 Test_TextSelect

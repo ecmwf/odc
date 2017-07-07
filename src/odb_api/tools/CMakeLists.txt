@@ -106,7 +106,6 @@ TestSelectStarAt.cc
 TestSelectTwoFiles.cc
 TestSetvbuffer.cc
 TestStar.cc
-TestTEMPLATE.cc
 TestTextSelect.cc
 TestTextSelect.txt
 TestTextSelect2.cc
