@@ -21,25 +21,14 @@ class TemporaryODB {
 
 public: // methods
 
-    TemporaryODB() : path_(eckit::PathName::unique("_temporary_select.odb")) {
+    template <typename InitFunc>
+    TemporaryODB(InitFunc f) :
+        path_(eckit::PathName::unique("_temporary_select.odb")) {
 
         eckit::Timer t("Writing test.odb");
         odb::Writer<> oda(path_);
-
         odb::Writer<>::iterator writer = oda.begin();
-        writer->setNumberOfColumns(3);
-
-        writer->setColumn(0, "ifoo", odb::INTEGER);
-        writer->setColumn(1, "nbar", odb::REAL);
-        writer->setColumn(2, "string", odb::STRING);
-
-        writer->writeHeader();
-
-        for (size_t i = 1; i <= 10; i++) {
-            writer->data()[0] = i; // col 0
-            writer->data()[1] = i; // col 1
-            ++writer;
-        }
+        f(writer);
     }
 
     ~TemporaryODB() {
@@ -60,11 +49,25 @@ const LestTest specification[] = {
     SETUP("An odb file containing some pre-prepared data") {
 
         // Write (and clean up) a temporary ODB file
-        TemporaryODB tmpODB;
+        TemporaryODB tmpODB([](odb::Writer<>::iterator& writer) {
+            writer->setNumberOfColumns(3);
+
+            writer->setColumn(0, "ifoo", odb::INTEGER);
+            writer->setColumn(1, "nbar", odb::REAL);
+            writer->setColumn(2, "string", odb::STRING);
+
+            writer->writeHeader();
+
+            for (size_t i = 1; i <= 10; i++) {
+                writer->data()[0] = i; // col 0
+                writer->data()[1] = i; // col 1
+                ++writer;
+            }
+        });
 
         SECTION("Test select iterator for each") {
 
-            odb::Select oda(std::string("select * from \"" + tmpODB.path() + "\";"), tmpODB.path());
+            odb::Select oda("select * from \"" + tmpODB.path() + "\";", tmpODB.path());
 
             long count = 0;
             std::for_each(oda.begin(), oda.end(), [&](odb::Select::row& row) {
@@ -81,7 +84,7 @@ const LestTest specification[] = {
 
         SECTION("Test select data in explicit loop") {
 
-            odb::Select oda(std::string("select * from \"" + tmpODB.path() + "\";"), tmpODB.path());
+            odb::Select oda("select * from \"" + tmpODB.path() + "\";", tmpODB.path());
 
             int count = 0;
             for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it) {
@@ -126,6 +129,7 @@ const LestTest specification[] = {
         }
     }},
 
+
     CASE("Test bugfix 01, quote <<UnitTets problem fixed with p4 change 23687>>") {
 
         unsigned char REF_DATA[] = {
@@ -168,14 +172,41 @@ const LestTest specification[] = {
         odb::Select oda("select obsvalue from \"2000010106.odb\";");
 
         size_t count = 0;
-        for (odb::Select::iterator it = oda.begin();
-            it != oda.end() && count < (sizeof(REF_DATA) / sizeof(double));
-            ++it, ++count) {
+        for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++count) {
 //            Log::info() << "testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << OBSVALUE[i] << std::endl;
-            ASSERT( (*it)[0] == OBSVALUE[count] );
+            EXPECT((*it)[0] == OBSVALUE[count] );
         }
 
         EXPECT(count == 22);
+    },
+
+
+    CASE("Test bugfix 20, quote <<UnitTest problem fixed with p4 change 23687>>") {
+
+        const std::vector<double> VALUE{1, 2, 3};
+
+        // Write (and clean up) a temporary ODB file
+        TemporaryODB tmpODB([&](odb::Writer<>::iterator& writer) {
+            writer->setNumberOfColumns(1);
+
+            writer->setColumn(0, "value", odb::INTEGER);
+            writer->writeHeader();
+
+            for (size_t i = 0; i < VALUE.size(); ++i) {
+                (*writer)[0] = VALUE[i];
+                ++writer;
+            }
+        });
+
+        odb::Select oda("select * from \"" + tmpODB.path() + "\";", tmpODB.path());
+
+        size_t count = 0;
+        for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++count) {
+//            Log::info() << "testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << std::endl;
+            EXPECT((*it)[0] == VALUE[count]);
+        }
+
+        EXPECT(count == 3);
     }
 };
 
