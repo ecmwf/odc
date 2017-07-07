@@ -171,17 +171,19 @@ const LestTest specification[] = {
 
         odb::Select oda("select obsvalue from \"2000010106.odb\";");
 
+        // Only consider the first section of the file...
         size_t count = 0;
-        for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++count) {
-//            Log::info() << "testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << OBSVALUE[i] << std::endl;
+        for (odb::Select::iterator it = oda.begin();
+            it != oda.end() && count < sizeof(REF_DATA)/sizeof(double);
+            ++it, ++count) {
+
+//            eckit::Log::info() << "testBug01: it[" << count << "]=" << (*it)[0] << ", should be " << OBSVALUE[count] << std::endl;
             EXPECT((*it)[0] == OBSVALUE[count] );
         }
-
-        EXPECT(count == 22);
     },
 
 
-    CASE("Test bugfix 20, quote <<UnitTest problem fixed with p4 change 23687>>") {
+    CASE("Test bugfix 02, quote <<UnitTest problem fixed with p4 change 23687>>") {
 
         const std::vector<double> VALUE{1, 2, 3};
 
@@ -202,7 +204,7 @@ const LestTest specification[] = {
 
         size_t count = 0;
         for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++count) {
-//            Log::info() << "testBug01: it[" << i << "]=" << (*it)[0] << ", should be " << VALUE[i] << std::endl;
+//            eckit::Log::info() << "testBug02: it[" << count << "]=" << (*it)[0] << ", should be " << VALUE[count] << std::endl;
             EXPECT((*it)[0] == VALUE[count]);
         }
 
