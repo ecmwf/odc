@@ -172,7 +172,6 @@ Test_LinkedTables_DataJoinReturnsExpectedNumberOfResults
 Test_LinkedTables_DataJoinReturnsExpectedValues
 Test_MetaData
 Test_MetaDataReader
-Test_MinMax
 Test_MissingValue
 Test_OrderBy
 Test_Ordinals_CopiedDataRowHasExpectedFlags
@@ -309,6 +308,15 @@ foreach( _test ${odb_api_tests} )
                       TEST_DEPENDS ${_dependencies})
     set( _prev_test ${_test} )
 endforeach()
+
+
+### New style odb_api tests (using lest)
+
+ecbuild_add_test(
+    TARGET   test_minmax
+    SOURCES  test_minmax.cc
+    INCLUDES ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
+    LIBS     eckit Odb )
 
 #### ECML ODB Module verbs tests
 
