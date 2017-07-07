@@ -193,7 +193,6 @@ Test_SelectAll_ReturnsExpectedNumberOfColumns
 Test_SelectAll_ReturnsExpectedNumberOfResults
 Test_SelectAll_ReturnsExpectedResults
 Test_SelectDataHandle
-Test_SelectIterator
 Test_SelectIterator2
 Test_SelectIterator3
 Test_SelectStarAt
@@ -317,12 +316,13 @@ list( APPEND odb_api_lest_tests
     test_select_iterator
 )
 
-foreach( _test ${odb_Api_lest_tests} )
+foreach( _test ${odb_api_lest_tests} )
     ecbuild_add_test(
-        TARGET   ${_test}
-        SOURCES  ${_test}.cc
-        INCLUDES ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
-        LIBS     eckit Odb )
+        TARGET       ${_test}
+        SOURCES      ${_test}.cc
+        TEST_DEPENDS get_odb_api_test_data
+        INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
+        LIBS         eckit Odb )
 endforeach()
 
 #### ECML ODB Module verbs tests

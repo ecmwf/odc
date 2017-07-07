@@ -102,7 +102,6 @@ TestOdaCAPI.h
 TestOrderBy.cc
 TestSQLFunctionsInfo.cc
 TestSelectDataHandle.cc
-TestSelectIterator.cc
 TestSelectIterator2.cc
 TestSelectIterator3.cc
 TestSelectStarAt.cc
