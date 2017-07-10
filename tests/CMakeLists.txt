@@ -209,7 +209,6 @@ Test_ThreeColumnTable_LineByLineInitialization
 Test_ThreeColumnTable_MultiLineInitialization
 Test_UnInitializedDataRowHasExpectedFlags
 Test_UnInitializedDataRowHasExpectedSize
-Test_WriteCatFiles
 Test_bitfieldsLength
 Test_bitfields_hash_operator
 Test_blocksSizes
@@ -311,12 +310,13 @@ endforeach()
 list( APPEND odb_api_lest_tests
     test_minmax
     test_select_iterator
+    test_concatenated_odbs
 )
 
 foreach( _test ${odb_api_lest_tests} )
     ecbuild_add_test(
         TARGET       ${_test}
-        SOURCES      ${_test}.cc TemporaryODB.h
+        SOURCES      ${_test}.cc TemporaryFiles.h
         TEST_DEPENDS get_odb_api_test_data
         INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
         LIBS         eckit Odb )

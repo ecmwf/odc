@@ -111,7 +111,6 @@ TestTextSelect.txt
 TestTextSelect2.cc
 TestTextSelect2.txt
 TestTextSelect3.cc
-TestWriteCatFiles.cc
 MockReader.h
 MockReader.cc
 TestODBModule.cc
