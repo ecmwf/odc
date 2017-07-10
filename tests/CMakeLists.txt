@@ -316,7 +316,7 @@ list( APPEND odb_api_lest_tests
 foreach( _test ${odb_api_lest_tests} )
     ecbuild_add_test(
         TARGET       ${_test}
-        SOURCES      ${_test}.cc
+        SOURCES      ${_test}.cc TemporaryODB.h
         TEST_DEPENDS get_odb_api_test_data
         INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
         LIBS         eckit Odb )

@@ -2,44 +2,16 @@
 
 #include "eckit/eckit_config.h"
 #include "eckit/filesystem/PathName.h"
-#include "eckit/log/Timer.h"
 #include "eckit/testing/Test.h"
 
-#include "odb_api/Writer.h"
 #include "odb_api/Select.h"
 #include "odb_api/Reader.h"
+
+#include "TemporaryODB.h"
 
 #include <algorithm>
 
 using namespace eckit::testing;
-
-
-// ------------------------------------------------------------------------------------------------------
-
-// A fixture to create a temporary ODB file.
-
-class TemporaryODB {
-
-    eckit::PathName path_;
-
-public: // methods
-
-    template <typename InitFunc>
-    TemporaryODB(InitFunc f) :
-        path_(eckit::PathName::unique("_temporary_select.odb")) {
-
-        eckit::Timer t("Writing test.odb");
-        odb::Writer<> oda(path_);
-        odb::Writer<>::iterator writer = oda.begin();
-        f(writer);
-    }
-
-    ~TemporaryODB() {
-        path_.unlink();
-    }
-
-    const eckit::PathName& path() const { return path_; }
-};
 
 
 // ------------------------------------------------------------------------------------------------------
