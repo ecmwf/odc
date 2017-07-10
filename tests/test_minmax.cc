@@ -3,7 +3,7 @@
 
 #include "odb_api/Reader.h"
 
-#include "TemporaryODB.h"
+#include "TemporaryFiles.h"
 
 #include <cstdint>
 

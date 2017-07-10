@@ -21,22 +21,18 @@
 /// initialisation function, and then ensures that it is correctly cleaned up at the
 /// end of the test.
 
-class TemporaryODB {
+
+class TemporaryFile {
 
 public: // methods
 
-    template <typename InitFunc>
-    TemporaryODB(InitFunc f) :
-        path_(eckit::PathName::unique("_temporary_select.odb")) {
+    TemporaryFile() :
+        path_(eckit::PathName::unique("_temporary_testing_file")) {}
 
-//        eckit::Timer t("Writing test.odb");
-        odb::Writer<> oda(path_);
-        odb::Writer<>::iterator writer = oda.begin();
-        f(writer);
-    }
-
-    ~TemporaryODB() {
-        path_.unlink();
+    virtual ~TemporaryFile() {
+        if (path_.exists()) {
+            path_.unlink();
+        }
     }
 
     const eckit::PathName& path() const { return path_; }
@@ -44,6 +40,21 @@ public: // methods
 private: // members
 
     eckit::PathName path_;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class TemporaryODB : public TemporaryFile {
+
+public: // methods
+
+    template <typename InitFunc>
+    TemporaryODB(InitFunc f) {
+//        eckit::Timer t("Writing test.odb");
+        odb::Writer<> oda(path());
+        odb::Writer<>::iterator writer = oda.begin();
+        f(writer);
+    }
 };
 
 
