@@ -53,7 +53,7 @@ private: // method
 
 // ------------------------------------------------------------------------------------------------------
 
-const LestTest specification[] = {
+const Test specification[] = {
 
     CASE("Test that the numeric limits are what we expect") {
         EXPECT(std::numeric_limits<std::int32_t>::max() == 2147483647);
@@ -88,6 +88,6 @@ const LestTest specification[] = {
 // ------------------------------------------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
-    return runTests(specification, argc, argv);
+    return run_tests(specification, argc, argv);
 }
 

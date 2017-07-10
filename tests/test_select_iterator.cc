@@ -1,3 +1,4 @@
+#include "eckit/eckit_config.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Timer.h"
 #include "eckit/testing/Test.h"
@@ -43,7 +44,7 @@ public: // methods
 
 // TODO: Test with WHERE clause?
 
-const LestTest specification[] = {
+const Test specification[] = {
 
     CASE("Test reading with iterators") {
     SETUP("An odb file containing some pre-prepared data") {
@@ -130,7 +131,7 @@ const LestTest specification[] = {
     }},
 
 
-    CASE("Test bugfix 01, quote <<UnitTets problem fixed with p4 change 23687>>") {
+    CASE("Test bugfix 01, quote <<UnitTest problem fixed with p4 change 23687>>") {
 
         unsigned char REF_DATA[] = {
             0x0,0x0,0x0,0x60,0x9b,0x5e,0x41,0x40,  // 34.7391
@@ -157,7 +158,7 @@ const LestTest specification[] = {
             0x0,0x0,0x0,0x40,0xa3,0x22,0x36,0x40   // 22.1353
         };
 
-#if defined(AIX) || defined(_HPUX_SOURCE)
+#ifdef EC_BIG_ENDIAN
         // Swap the data on this big-endian box.
         for (int i = 0; i < sizeof(REF_DATA) / 8; i++)
         {
@@ -215,6 +216,6 @@ const LestTest specification[] = {
 // ------------------------------------------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
-    return runTests(specification, argc, argv);
+    return run_tests(specification, argc, argv);
 }
 
