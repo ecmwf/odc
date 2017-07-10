@@ -53,41 +53,38 @@ private: // method
 
 // ------------------------------------------------------------------------------------------------------
 
-const Test specification[] = {
+CASE("Test that the numeric limits are what we expect") {
+    EXPECT(std::numeric_limits<std::int32_t>::max() == 2147483647);
+    EXPECT(std::numeric_limits<std::int32_t>::min() == -2147483648);
+}
 
-    CASE("Test that the numeric limits are what we expect") {
-        EXPECT(std::numeric_limits<std::int32_t>::max() == 2147483647);
-        EXPECT(std::numeric_limits<std::int32_t>::min() == -2147483648);
-    },
+CASE("Test reading min, max and intermediate values") {
 
-    CASE("Test reading min, max and intermediate values") {
+    SETUP("An odb file containing min/max/intermediate values") {
 
-        SETUP("An odb file containing min/max/intermediate values") {
+        MinMaxODBWriter writer;
 
-            MinMaxODBWriter writer;
+        SECTION("Read the values back in") {
 
-            SECTION("Read the values back in") {
+            odb::Reader oda(writer.path());
+            odb::Reader::iterator it = oda.begin();
 
-                odb::Reader oda(writer.path());
-                odb::Reader::iterator it = oda.begin();
+            EXPECT((*it)[0] == std::numeric_limits<std::int32_t>::min());
+            ++it;
 
-                EXPECT((*it)[0] == std::numeric_limits<std::int32_t>::min());
-                ++it;
+            EXPECT((*it)[0] == std::numeric_limits<std::int32_t>::max());
+            ++it;
 
-                EXPECT((*it)[0] == std::numeric_limits<std::int32_t>::max());
-                ++it;
-
-                EXPECT((*it)[0] == std::numeric_limits<std::int32_t>::max() +
-                                   std::numeric_limits<std::int32_t>::min());
-                ++it;
-            }
+            EXPECT((*it)[0] == std::numeric_limits<std::int32_t>::max() +
+                               std::numeric_limits<std::int32_t>::min());
+            ++it;
         }
     }
-};
+}
 
 // ------------------------------------------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
-    return run_tests(specification, argc, argv);
+    return run_tests(argc, argv);
 }
 
