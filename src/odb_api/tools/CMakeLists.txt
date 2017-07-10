@@ -72,7 +72,6 @@ TestDataRow.cc
 TestDataSelect.cc
 TestDataSet.cc
 TestDataTable.cc
-TestDecoding.cc
 TestDispatchingWriter.cc
 TestDistinct.cc
 TestFastODA2Request.cc

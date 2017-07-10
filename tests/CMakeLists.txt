@@ -67,7 +67,6 @@ Test_DataRowCanSetStrings
 Test_DataRowInitializedFromColumnsHasExpectedFlags
 Test_DataRowInitializedFromColumnsHasExpectedSize
 Test_DataRowInitializedFromColumnsHasExpectedValues
-Test_Decoding
 Test_DispatchingWriter
 Test_Distinct
 Test_EmptyPageWithFillMark_PushBackRowsToEmptyPageWithFillMark
@@ -311,6 +310,7 @@ list( APPEND odb_api_lest_tests
     test_minmax
     test_select_iterator
     test_concatenated_odbs
+    test_decode_odb
 )
 
 foreach( _test ${odb_api_lest_tests} )

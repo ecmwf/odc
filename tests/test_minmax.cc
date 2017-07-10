@@ -1,5 +1,4 @@
 #include "eckit/testing/Test.h"
-#include "eckit/log/Timer.h"
 
 #include "odb_api/Reader.h"
 
