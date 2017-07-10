@@ -179,7 +179,7 @@ CASE("Test bugfix 01, quote <<UnitTest problem fixed with p4 change 23687>>") {
         ++it, ++count) {
 
 //            eckit::Log::info() << "testBug01: it[" << count << "]=" << (*it)[0] << ", should be " << OBSVALUE[count] << std::endl;
-            EXPECT((*it)[0] == OBSVALUE[count] );
+        EXPECT((*it)[0] == OBSVALUE[count] );
     }
 }
 
@@ -206,10 +206,10 @@ CASE("Test bugfix 02, quote <<UnitTest problem fixed with p4 change 23687>>") {
     size_t count = 0;
     for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++count) {
 //            eckit::Log::info() << "testBug02: it[" << count << "]=" << (*it)[0] << ", should be " << VALUE[count] << std::endl;
-            EXPECT((*it)[0] == VALUE[count]);
+        EXPECT((*it)[0] == VALUE[count]);
     }
 
-        EXPECT(count == 3);
+    EXPECT(count == 3);
 }
 
 // ------------------------------------------------------------------------------------------------------
