@@ -67,9 +67,14 @@ public:
 	Row_(ITERATOR_PROXY& it) : it_(&it) {}
 
 	DATA& operator[](size_t i) { return (*it_)->data()[i]; }
-	DATA* data() { return const_cast<DATA*>(((*it_).iter_)->data()); }
+
+    DATA* data() { return ((*it_).iter_)->data(); }
 	DATA& data(size_t i) { return ((*it_).iter_)->data(i); }
-	int integer(size_t i) { return int((*it_)->data()[i]); }
+
+    const DATA* data() const { return ((*it_).iter_)->data(); }
+    const DATA& data(size_t i) const { return ((*it_).iter_)->data(i); }
+
+    int integer(size_t i) { return int((*it_)->data()[i]); }
 	std::string string(int i)
 	{
 		const char *s = reinterpret_cast<const char *>(&data()[i]);

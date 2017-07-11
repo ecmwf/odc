@@ -44,7 +44,8 @@ public:
 	~SelectIterator();
 
 	bool isNewDataset();
-	const double* data();
+    const double* data() const { return data_; }
+    double* data() { return data_; }
 
 	const MetaData& columns();
 	const MetaData& columns(const MetaData&) { NOTIMP; }

@@ -36,7 +36,8 @@ class DataSelectIterator
 {
 public:
    ~DataSelectIterator();
-    double* const data() { return row_.data(); }
+    const double* data() const { return row_.data(); }
+    double* data() { return row_.data(); }
 private:
     DataSelectIterator(const DataSelect& select, bool begin, ecml::ExecutionContext*);
     // DataSelectIterator(const DataSelect& select);

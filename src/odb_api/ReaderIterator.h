@@ -55,6 +55,7 @@ public:
 
 	bool isNewDataset();
     const double* data() const { return lastValues_; }
+    double* data() { return lastValues_; }
 
 	bool operator!=(const ReaderIterator& other);
 
