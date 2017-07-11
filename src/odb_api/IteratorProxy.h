@@ -79,7 +79,7 @@ public:
 		return std::string(s, j);
 	}
 
-	const MetaData& columns() { return ((*it_).iter_)->columns(); }
+    const MetaData& columns() const { return ((*it_).iter_)->columns(); }
     void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
 	const MetaData& columns(const MetaData& md) { return ((*it_).iter_)->columns(md); }
 	bool isNewDataset() { return ((*it_).iter_)->isNewDataset(); }
@@ -140,8 +140,10 @@ public:
 	}
 
 	Row* operator->() { return &row_; }
+    const Row* operator->() const { return &row_; }
 
     Row& operator*() { return row_; }
+    const Row& operator*() const { return row_; }
 
     bool operator!=(const IteratorProxy&) 
     { 
