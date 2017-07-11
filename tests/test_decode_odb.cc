@@ -1,3 +1,13 @@
+/*
+ * (C) Copyright 1996-2012 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
 #include "eckit/testing/Test.h"
 #include "eckit/value/Value.h"
 #include "eckit/types/FloatCompare.h"
@@ -12,10 +22,11 @@ using eckit::types::is_approximately_equal;
 
 struct CellData {
     template <typename T>
-    CellData(const std::string n, const T& v) : name(n), value(v) {}
+    CellData(const std::string n, const T& v, bool m=false) : name(n), value(v), missing(m) {}
 
     std::string name;
     eckit::Value value;
+    bool missing;
 };
 
 
@@ -48,13 +59,13 @@ public: // methods
         rowData.push_back(CellData("status@hdr",              4));
         rowData.push_back(CellData("event1@hdr",              512));
         rowData.push_back(CellData("blacklist@hdr",           0));
-        rowData.push_back(CellData("sortbox@hdr",             2147483647));
+        rowData.push_back(CellData("sortbox@hdr",             2147483647,                 true));
         rowData.push_back(CellData("sitedep@hdr",             0));
         rowData.push_back(CellData("statid@hdr",              std::string("MR413SRA")));
         rowData.push_back(CellData("ident@hdr",               0));
         rowData.push_back(CellData("lat@hdr",                 0.831300));
         rowData.push_back(CellData("lon@hdr",                 -2.057394));
-        rowData.push_back(CellData("stalt@hdr",               -2147483647.000000));
+        rowData.push_back(CellData("stalt@hdr",               -2147483647.000000,         true));
         rowData.push_back(CellData("modoro@hdr",              717.562744));
         rowData.push_back(CellData("trlat@hdr",               0.831300));
         rowData.push_back(CellData("trlon@hdr",               4.225791));
@@ -74,7 +85,7 @@ public: // methods
         rowData.push_back(CellData("blacklist@body",          0));
         rowData.push_back(CellData("entryno@body",            1));
         rowData.push_back(CellData("press@body",              23840.000000));
-        rowData.push_back(CellData("press_rl@body",           -2147483647.000000));
+        rowData.push_back(CellData("press_rl@body",           -2147483647.000000,         true));
         rowData.push_back(CellData("obsvalue@body",           34.739117));
         rowData.push_back(CellData("aux1@body",               35.000000));
         rowData.push_back(CellData("event2@body",             0));
@@ -83,8 +94,8 @@ public: // methods
         rowData.push_back(CellData("biascorr@body",           0.000000));
         rowData.push_back(CellData("final_obs_error@errstat", 2.920646));
         rowData.push_back(CellData("obs_error@errstat",       2.920646));
-        rowData.push_back(CellData("repres_error@errstat",    -2147483647.000000));
-        rowData.push_back(CellData("pers_error@errstat",      -2147483647.000000));
+        rowData.push_back(CellData("repres_error@errstat",    -2147483647.000000,         true));
+        rowData.push_back(CellData("pers_error@errstat",      -2147483647.000000,         true));
         rowData.push_back(CellData("fg_error@errstat",        3.002484));
 
         data_[0] = rowData;
@@ -103,8 +114,8 @@ public: // methods
         rowData.push_back(CellData("status@hdr",              44));
         rowData.push_back(CellData("event1@hdr",              2));
         rowData.push_back(CellData("blacklist@hdr",           16777223));
-        rowData.push_back(CellData("sortbox@hdr",             2147483647));
-        rowData.push_back(CellData("sitedep@hdr",             2147483647));
+        rowData.push_back(CellData("sortbox@hdr",             2147483647,                 true));
+        rowData.push_back(CellData("sitedep@hdr",             2147483647,                 true));
         rowData.push_back(CellData("statid@hdr",              std::string("     203")));
         rowData.push_back(CellData("ident@hdr",               203));
         rowData.push_back(CellData("lat@hdr",                 -0.933479));
@@ -129,16 +140,16 @@ public: // methods
         rowData.push_back(CellData("blacklist@body",          0));
         rowData.push_back(CellData("entryno@body",            6));
         rowData.push_back(CellData("press@body",              6.000000));
-        rowData.push_back(CellData("press_rl@body",           -2147483647.000000));
+        rowData.push_back(CellData("press_rl@body",           -2147483647.000000,         true));
         rowData.push_back(CellData("obsvalue@body",           243.490005));
-        rowData.push_back(CellData("aux1@body",               -2147483647.000000));
+        rowData.push_back(CellData("aux1@body",               -2147483647.000000,         true));
         rowData.push_back(CellData("event2@body",             0));
         rowData.push_back(CellData("ppcode@body",             0));
         rowData.push_back(CellData("level@body",              0));
         rowData.push_back(CellData("biascorr@body",           0.493023));
         rowData.push_back(CellData("final_obs_error@errstat", 0.600000));
         rowData.push_back(CellData("obs_error@errstat",       0.600000));
-        rowData.push_back(CellData("repres_error@errstat",    -2147483647.000000));
+        rowData.push_back(CellData("repres_error@errstat",    -2147483647.000000,         true));
         rowData.push_back(CellData("pers_error@errstat",      0.958788));
         rowData.push_back(CellData("fg_error@errstat",        0.269232));
 
@@ -173,6 +184,9 @@ public: // methods
                     // We don't want unknown data types slipping in here!!!
                     EXPECT(false);
                 }
+
+                // Check that the missing values are reported correctly
+                EXPECT(reference[i].missing == (row->data()[i] == row->columns()[i]->missingValue()));
             }
         }
     }
@@ -238,6 +252,8 @@ CASE("The correct data is present in a selection of random rows") {
     }
 }
 
+// TODO: Test missing values
+// TODO: Test reading a randomly created ODB.
 
 // ------------------------------------------------------------------------------------------------------
 
