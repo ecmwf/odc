@@ -54,7 +54,7 @@ public:
 	~ReaderIterator ();
 
 	bool isNewDataset();
-	const double* data();
+    const double* data() const { return lastValues_; }
 
 	bool operator!=(const ReaderIterator& other);
 
