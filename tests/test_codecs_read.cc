@@ -93,9 +93,8 @@ CASE("Constant values are constant") {
     unsigned char data[] = {
         0x08, 0x00, 0x00, 0x00,                         // 8 chars in name
         'c', 'o', 'n', 's', 't', 'a', 'n', 't',         // constant
-        0x01, 0x00, 0x00, 0x00,                         // 1 = hasMissing
+        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
         0xb7, 0xe6, 0x87, 0xb4, 0x80, 0x65, 0xd2, 0x41, // min (little-endian: 1234567890.1234567)
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // = min
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // = max
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // = missingValue
     };
@@ -147,7 +146,80 @@ CASE("Constant values are constant") {
     EXPECT(dh2.position() == eckit::Offset(40));
 }
 
-// constant_string
+
+CASE("constant strings are constant") {
+
+    // NOTE that strings are NOT swapped around when things are in the
+    // reverse byte order.
+    // --> Here we supply the data in BIG endian format, just to be perverse.
+
+    // Big endian data
+
+    unsigned char data[] = {
+        0x00, 0x00, 0x00, 0x0F,                         // 15 chars in name
+        'c', 'o', 'n', 's', 't', 'a', 'n', 't', '_', 's', 't', 'r', 'i', 'n', 'g', // constant_string
+        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
+         'h',  'i',  '-',  't',  'h',  'e',  'r',  'e', // min (big-endian: "hi-there")
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // = max
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // = missingValue
+    };
+
+    // Construct codec directly
+
+    MockReadDataHandle dh(data+19, sizeof(data)-19); // Skip name of codec
+
+    eckit::ScopedPtr<Codec> c1;
+    if (!is_big_endian()) {
+        c1.reset(new CodecConstantString<OtherByteOrder>);
+        static_cast<CodecConstantString<OtherByteOrder>*>(c1.get())->load(&dh);
+    } else {
+        c1.reset(new CodecConstantString<SameByteOrder>);
+        static_cast<CodecConstantString<SameByteOrder>*>(c1.get())->load(&dh);
+    }
+
+    EXPECT(dh.position() == eckit::Offset(28));
+
+    double val = c1->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+    val = c1->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+    val = c1->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+    val = c1->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+
+    // No further data should have been consumed from the data handle.
+    EXPECT(dh.position() == eckit::Offset(28));
+
+    // --
+    // Construct codec from factory
+
+    MockReadDataHandle dh2(data, sizeof(data));
+    odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh2);
+    odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh2);
+
+    eckit::ScopedPtr<Codec> c2;
+    if (!is_big_endian()) {
+        c2.reset(Codec::loadCodec(ds_other));
+    } else {
+        c2.reset(Codec::loadCodec(ds_same));
+    }
+
+    EXPECT(dh2.position() == eckit::Offset(47));
+
+    val = c2->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+    val = c2->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+    val = c2->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+    val = c2->decode();
+    EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
+
+    EXPECT(dh2.position() == eckit::Offset(47));
+
+}
+
 // constant_or_missing
 // real_constant
 // chars
