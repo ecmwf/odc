@@ -40,7 +40,6 @@ public: // methods
     }
 
     virtual long read(void *p, long n) {
-//        eckit::Log::info() << "READ: " << n << ", " << position_ << std::endl;
         ASSERT(n >= 0);
         ASSERT(position_ + n <= buffer_.size());
         ::memcpy(p, &buffer_[position_], static_cast<size_t>(n));
@@ -83,6 +82,33 @@ bool is_big_endian() {
 }
 
 
+// Given the codec-initialising data, add the header on that is used to construct the
+// codec.
+
+size_t construct_full_header(std::vector<unsigned char>& header,
+                           const std::string& codec_name,
+                           const std::vector<unsigned char>& data,
+                           bool bigEndian=false) {
+
+    ASSERT(codec_name.size() < 255);
+
+    // Include space for codec_name string, and the minmax data
+    header.resize(4 + codec_name.length() + data.size());
+
+    header[0] = 0;
+    header[1] = 0;
+    header[2] = 0;
+    header[3] = 0;
+    header[bigEndian ? 3 : 0] = static_cast<unsigned char>(codec_name.size());
+
+    ::memcpy(&header[4], codec_name.c_str(), codec_name.length());
+
+    ::memcpy(&header[4+codec_name.length()], &data[0], data.size());
+
+    return 4 + codec_name.length();
+}
+
+
 // TODO: Test missing values
 
 CASE("Constant values are constant") {
@@ -91,8 +117,6 @@ CASE("Constant values are constant") {
     // "min" value is used for constants
 
     unsigned char data[] = {
-        0x08, 0x00, 0x00, 0x00,                         // 8 chars in name
-        'c', 'o', 'n', 's', 't', 'a', 'n', 't',         // constant
         0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
         0xb7, 0xe6, 0x87, 0xb4, 0x80, 0x65, 0xd2, 0x41, // min (little-endian: 1234567890.1234567)
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // = max
@@ -101,7 +125,7 @@ CASE("Constant values are constant") {
 
     // Construct codec directly
 
-    MockReadDataHandle dh(data+12, sizeof(data)-12); // Skip name of codec
+    MockReadDataHandle dh(data, sizeof(data)); // Skip name of codec
 
     eckit::ScopedPtr<Codec> c1;
     if (is_big_endian()) {
@@ -125,7 +149,10 @@ CASE("Constant values are constant") {
     // --
     // Construct codec from factory
 
-    MockReadDataHandle dh2(data, sizeof(data));
+    std::vector<unsigned char> buffer;
+    construct_full_header(buffer, "constant", std::vector<unsigned char>(data, data+sizeof(data)));
+
+    MockReadDataHandle dh2(&buffer[0], buffer.size());
     odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh2);
     odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh2);
 
@@ -156,8 +183,6 @@ CASE("constant strings are constant") {
     // Big endian data
 
     unsigned char data[] = {
-        0x00, 0x00, 0x00, 0x0F,                         // 15 chars in name
-        'c', 'o', 'n', 's', 't', 'a', 'n', 't', '_', 's', 't', 'r', 'i', 'n', 'g', // constant_string
         0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
          'h',  'i',  '-',  't',  'h',  'e',  'r',  'e', // min (big-endian: "hi-there")
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // = max
@@ -166,7 +191,7 @@ CASE("constant strings are constant") {
 
     // Construct codec directly
 
-    MockReadDataHandle dh(data+19, sizeof(data)-19); // Skip name of codec
+    MockReadDataHandle dh(data, sizeof(data)); // Skip name of codec
 
     eckit::ScopedPtr<Codec> c1;
     if (!is_big_endian()) {
@@ -194,7 +219,10 @@ CASE("constant strings are constant") {
     // --
     // Construct codec from factory
 
-    MockReadDataHandle dh2(data, sizeof(data));
+    std::vector<unsigned char> buffer;
+    construct_full_header(buffer, "constant_string", std::vector<unsigned char>(data, data+sizeof(data)), true);
+
+    MockReadDataHandle dh2(&buffer[0], buffer.size());
     odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh2);
     odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh2);
 
@@ -220,8 +248,94 @@ CASE("constant strings are constant") {
 
 }
 
+
+CASE("Constant integer or missing value") {
+
+    EXPECT(odb::MDI::integerMDI() == 2147483647);
+
+    // little endian
+
+    // Note that there is absolutely NOTHING that enforces that these are integers...
+    // --> This test tests the generic case, with a double, which is odd
+    // --> TODO: Really we ought to enforce integers for an integer case...
+
+    unsigned char header_data[] = {
+        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
+//        0x00, 0x00, 0x80, 0x58, 0x34, 0x6f, 0xcd, 0x41, // min (little-endian: 987654321)
+//        0x00, 0x00, 0x80, 0x58, 0x34, 0x6f, 0xcd, 0x41, // max == min
+        0xad, 0x69, 0xfe, 0x58, 0x34, 0x6f, 0xcd, 0x41, // 987654321.9876
+        0xad, 0x69, 0xfe, 0x58, 0x34, 0x6f, 0xcd, 0x41,
+        0x00, 0x00, 0xc0, 0xff, 0xff, 0xff, 0xdf, 0x41  // missingValue = 2147483647
+    };
+
+    std::vector<unsigned char> data(header_data, header_data+sizeof(header_data));
+    data.push_back(0);
+    for (size_t i = 0; i < 255; i++) {
+        data.push_back(static_cast<unsigned char>(i));
+    }
+
+    // Construct codec directly
+
+    MockReadDataHandle dh(&data[0], data.size()); // Skip name of codec
+
+    eckit::ScopedPtr<Codec> c1;
+    if (is_big_endian()) {
+        c1.reset(new CodecConstantOrMissing<OtherByteOrder>);
+        static_cast<CodecConstantOrMissing<OtherByteOrder>*>(c1.get())->load(&dh);
+    } else {
+        c1.reset(new CodecConstantOrMissing<SameByteOrder>);
+        static_cast<CodecConstantOrMissing<SameByteOrder>*>(c1.get())->load(&dh);
+    }
+    c1->dataHandle(&dh);
+
+    EXPECT(dh.position() == eckit::Offset(28));
+
+    double baseValue = 987654321.9876;
+//    double baseValue = 987654321;
+    double decoded = c1->decode();
+    EXPECT(baseValue == decoded);
+    for (size_t i = 0; i < 255; i++) {
+        double b = baseValue + i;
+        double v = c1->decode();
+        EXPECT(b == v);
+    }
+
+    // No further data should have been consumed from the data handle.
+    EXPECT(dh.position() == eckit::Offset(28 + 256));
+
+    // --
+    // Construct codec from factory
+
+    std::vector<unsigned char> buffer;
+    size_t hdrSize = construct_full_header(buffer, "constant_or_missing", data);
+
+    MockReadDataHandle dh2(&buffer[0], buffer.size());
+    odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh2);
+    odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh2);
+
+    eckit::ScopedPtr<Codec> c2;
+    if (is_big_endian()) {
+        c2.reset(Codec::loadCodec(ds_other));
+    } else {
+        c2.reset(Codec::loadCodec(ds_same));
+    }
+    c2->dataHandle(&dh2);
+
+    EXPECT(dh2.position() == eckit::Offset(hdrSize+28));
+
+    decoded = c2->decode();
+    EXPECT(baseValue == decoded);
+    for (size_t i = 0; i < 255; i++) {
+        double b = baseValue + i;
+        double v = c2->decode();
+        EXPECT(b == v);
+    }
+
+    EXPECT(dh2.position() == eckit::Offset(hdrSize + 28 + 256));
+}
+
 // constant_or_missing
-// real_constant
+// real_constant_or_missing
 // chars
 // long_real
 // short_real
