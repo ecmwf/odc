@@ -249,7 +249,7 @@ CASE("constant strings are constant") {
 }
 
 
-CASE("Constant integer or missing value") {
+CASE("Constant integer or missing value behaves a bit oddly") {
 
     EXPECT(odb::MDI::integerMDI() == 2147483647);
 
@@ -263,16 +263,18 @@ CASE("Constant integer or missing value") {
         0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
 //        0x00, 0x00, 0x80, 0x58, 0x34, 0x6f, 0xcd, 0x41, // min (little-endian: 987654321)
 //        0x00, 0x00, 0x80, 0x58, 0x34, 0x6f, 0xcd, 0x41, // max == min
-        0xad, 0x69, 0xfe, 0x58, 0x34, 0x6f, 0xcd, 0x41, // 987654321.9876
+        0xad, 0x69, 0xfe, 0x58, 0x34, 0x6f, 0xcd, 0x41, // 987654321.9876 (big-endian)
         0xad, 0x69, 0xfe, 0x58, 0x34, 0x6f, 0xcd, 0x41,
         0x00, 0x00, 0xc0, 0xff, 0xff, 0xff, 0xdf, 0x41  // missingValue = 2147483647
     };
 
     std::vector<unsigned char> data(header_data, header_data+sizeof(header_data));
     data.push_back(0);
+    data.push_back(0xff); // missing
     for (size_t i = 0; i < 255; i++) {
         data.push_back(static_cast<unsigned char>(i));
     }
+    data.push_back(0xff); // missing
 
     // Construct codec directly
 
@@ -294,14 +296,16 @@ CASE("Constant integer or missing value") {
 //    double baseValue = 987654321;
     double decoded = c1->decode();
     EXPECT(baseValue == decoded);
+    EXPECT(c1->decode() == odb::MDI::integerMDI()); // missing
     for (size_t i = 0; i < 255; i++) {
         double b = baseValue + i;
         double v = c1->decode();
         EXPECT(b == v);
     }
+    EXPECT(c1->decode() == odb::MDI::integerMDI()); // missing
 
     // No further data should have been consumed from the data handle.
-    EXPECT(dh.position() == eckit::Offset(28 + 256));
+    EXPECT(dh.position() == eckit::Offset(28 + 258));
 
     // --
     // Construct codec from factory
@@ -325,17 +329,106 @@ CASE("Constant integer or missing value") {
 
     decoded = c2->decode();
     EXPECT(baseValue == decoded);
+    EXPECT(c2->decode() == odb::MDI::integerMDI()); // missing
     for (size_t i = 0; i < 255; i++) {
         double b = baseValue + i;
         double v = c2->decode();
         EXPECT(b == v);
     }
+    EXPECT(c2->decode() == odb::MDI::integerMDI()); // missing
 
-    EXPECT(dh2.position() == eckit::Offset(hdrSize + 28 + 256));
+    EXPECT(dh2.position() == eckit::Offset(hdrSize + 28 + 258));
 }
 
-// constant_or_missing
-// real_constant_or_missing
+
+CASE("real constant or missing value is not quite constant") {
+
+    EXPECT(odb::MDI::realMDI() == -2147483647);
+
+    // little endian
+
+    // TODO: Really something labelled constant ought to be actually constant...
+    // Do this one big-endian just because.
+
+    unsigned char header_data[] = {
+        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
+        0x41, 0xcd, 0x6f, 0x34, 0x58, 0xfe, 0x69, 0xad, // min = 987654321.9876 (big-endian)
+        0x41, 0xcd, 0x6f, 0x34, 0x58, 0xfe, 0x69, 0xad, // max = 987654321.9876 (big-endian)
+        0xc1, 0xdf, 0xff, 0xff, 0xff, 0xc0, 0x00, 0x00  // missingValue = -2147483647
+    };
+
+    std::vector<unsigned char> data(header_data, header_data+sizeof(header_data));
+    data.push_back(0);
+    data.push_back(0xff); // missing
+    for (size_t i = 0; i < 255; i++) {
+        data.push_back(static_cast<unsigned char>(i));
+    }
+    data.push_back(0xff); // missing
+
+    // Construct codec directly
+
+    MockReadDataHandle dh(&data[0], data.size()); // Skip name of codec
+
+    eckit::ScopedPtr<Codec> c1;
+    if (!is_big_endian()) {
+        c1.reset(new CodecRealConstantOrMissing<OtherByteOrder>);
+        static_cast<CodecRealConstantOrMissing<OtherByteOrder>*>(c1.get())->load(&dh);
+    } else {
+        c1.reset(new CodecRealConstantOrMissing<SameByteOrder>);
+        static_cast<CodecRealConstantOrMissing<SameByteOrder>*>(c1.get())->load(&dh);
+    }
+    c1->dataHandle(&dh);
+
+    EXPECT(dh.position() == eckit::Offset(28));
+
+    double baseValue = 987654321.9876;
+//    double baseValue = 987654321;
+    double decoded = c1->decode();
+    EXPECT(baseValue == decoded);
+    EXPECT(c1->decode() == odb::MDI::realMDI()); // missing
+    for (size_t i = 0; i < 255; i++) {
+        double b = baseValue + i;
+        double v = c1->decode();
+        EXPECT(b == v);
+    }
+    EXPECT(c1->decode() == odb::MDI::realMDI()); // missing
+
+    // No further data should have been consumed from the data handle.
+    EXPECT(dh.position() == eckit::Offset(28 + 258));
+
+    // --
+    // Construct codec from factory
+
+    std::vector<unsigned char> buffer;
+    size_t hdrSize = construct_full_header(buffer, "real_constant_or_missing", data, true);
+
+    MockReadDataHandle dh2(&buffer[0], buffer.size());
+    odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh2);
+    odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh2);
+
+    eckit::ScopedPtr<Codec> c2;
+    if (!is_big_endian()) {
+        c2.reset(Codec::loadCodec(ds_other));
+    } else {
+        c2.reset(Codec::loadCodec(ds_same));
+    }
+    c2->dataHandle(&dh2);
+
+    EXPECT(dh2.position() == eckit::Offset(hdrSize+28));
+
+    decoded = c2->decode();
+    EXPECT(baseValue == decoded);
+    EXPECT(c2->decode() == odb::MDI::realMDI()); // missing
+    for (size_t i = 0; i < 255; i++) {
+        double b = baseValue + i;
+        double v = c2->decode();
+        EXPECT(b == v);
+    }
+    EXPECT(c2->decode() == odb::MDI::realMDI()); // missing
+
+    EXPECT(dh2.position() == eckit::Offset(hdrSize + 28 + 258));
+}
+
 // chars
 // long_real
 // short_real
