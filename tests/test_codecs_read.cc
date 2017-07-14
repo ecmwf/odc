@@ -260,7 +260,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
     // --> TODO: Really we ought to enforce integers for an integer case...
 
     unsigned char header_data[] = {
-        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
+        0x01, 0x00, 0x00, 0x00,                         // 0 = hasMissing
 //        0x00, 0x00, 0x80, 0x58, 0x34, 0x6f, 0xcd, 0x41, // min (little-endian: 987654321)
 //        0x00, 0x00, 0x80, 0x58, 0x34, 0x6f, 0xcd, 0x41, // max == min
         0xad, 0x69, 0xfe, 0x58, 0x34, 0x6f, 0xcd, 0x41, // 987654321.9876 (big-endian)
@@ -351,7 +351,7 @@ CASE("real constant or missing value is not quite constant") {
     // Do this one big-endian just because.
 
     unsigned char header_data[] = {
-        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
+        0x00, 0x00, 0x00, 0x01,                         // 0 = hasMissing
         0x41, 0xcd, 0x6f, 0x34, 0x58, 0xfe, 0x69, 0xad, // min = 987654321.9876 (big-endian)
         0x41, 0xcd, 0x6f, 0x34, 0x58, 0xfe, 0x69, 0xad, // max = 987654321.9876 (big-endian)
         0xc1, 0xdf, 0xff, 0xff, 0xff, 0xc0, 0x00, 0x00  // missingValue = -2147483647
@@ -429,7 +429,109 @@ CASE("real constant or missing value is not quite constant") {
     EXPECT(dh2.position() == eckit::Offset(hdrSize + 28 + 258));
 }
 
-// chars
+
+CASE("Character strings are 8-byte sequences coerced into being treated as doubles") {
+
+    // n.b. there are no missing values for CodecChars
+
+    // The values here are unused, and endianness is ignored for chars.
+
+    unsigned char header_data[] = {
+        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // min = 987654321.9876 (big-endian)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // max = 987654321.9876 (big-endian)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // missingValue = -2147483647
+        0x00, 0x00, 0x00, 0x00                          // Unused 0 value required by chars codec
+    };
+
+    std::vector<unsigned char> data(header_data, header_data+sizeof(header_data));
+
+    const char* s1 = "\0\0\0\0\0\0\0\0";
+    const char* s2 = "hi-there";
+    const char* s3 = "\0\xff\0\xff\0\xff\0\xff";
+    const char* s4 = "a-string";
+    const char* s5 = "\xff\xff\xff\xff\xff\xff\xff\xff";
+
+    data.insert(data.end(), s1, s1+8);
+    data.insert(data.end(), s2, s2+8);
+    data.insert(data.end(), s3, s3+8);
+    data.insert(data.end(), s4, s4+8);
+    data.insert(data.end(), s5, s5+8);
+
+    // The characters codec is independent of endianness, so test both.
+    // 0 --> SameByteOrder,
+    // 1 --> OtherByteOrder
+
+    for (int i = 0; i < 2; i++) {
+
+        // Construct codec directly
+
+        MockReadDataHandle dh(&data[0], data.size()); // Skip name of codec
+
+        eckit::ScopedPtr<Codec> c1;
+        if (i == 0) {
+            c1.reset(new CodecChars<SameByteOrder>);
+            static_cast<CodecChars<SameByteOrder>*>(c1.get())->load(&dh);
+        } else {
+            c1.reset(new CodecChars<OtherByteOrder>);
+            static_cast<CodecChars<OtherByteOrder>*>(c1.get())->load(&dh);
+        }
+        c1->dataHandle(&dh);
+
+        EXPECT(dh.position() == eckit::Offset(32));
+
+        eckit::Log::info() << "Take 2" << std::endl;
+
+        double val = c1->decode();
+        EXPECT(::memcmp(&val, s1, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s2, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s3, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s4, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s5, 8) == 0);
+
+        // No further data should have been consumed from the data handle.
+        EXPECT(dh.position() == eckit::Offset(32 + (8 * 5)));
+
+        // --
+        // Construct codec from factory
+
+        // n.b. constrcut a different codec header depending on big/little endian
+        std::vector<unsigned char> buffer;
+        size_t hdrSize = construct_full_header(buffer, "chars", data, i != 0);
+
+        MockReadDataHandle dh2(&buffer[0], buffer.size());
+        odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh2);
+        odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh2);
+
+        eckit::ScopedPtr<Codec> c2;
+        if (i == 0) {
+            c2.reset(Codec::loadCodec(ds_same));
+        } else {
+            c2.reset(Codec::loadCodec(ds_other));
+        }
+        c2->dataHandle(&dh2);
+
+        EXPECT(dh2.position() == eckit::Offset(hdrSize+32));
+
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s1, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s2, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s3, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s4, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s5, 8) == 0);
+
+        EXPECT(dh2.position() == eckit::Offset(hdrSize + 32 + (8 * 5)));
+    }
+}
+
 // long_real
 // short_real
 // short_real2
