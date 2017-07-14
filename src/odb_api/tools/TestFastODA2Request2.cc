@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
+#include <sys/wait.h>
+
 #include "odb_api/FastODA2Request.h"
 #include "odb_api/ODAHandle.h"
 
