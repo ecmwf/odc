@@ -726,8 +726,10 @@ double CodecLongReal<BYTEORDER>::decode()
 template<typename BYTEORDER>
 unsigned char* CodecChars<BYTEORDER>::encode(unsigned char* p, double s)
 {
-	memcpy(p, &s, sizeof(s));
-	return p + sizeof(s);
+    double tmp = s;
+    BYTEORDER::swap(tmp);
+    memcpy(p, &tmp, sizeof(tmp));
+    return p + sizeof(tmp);
 }
 
 template<typename BYTEORDER>
@@ -735,6 +737,7 @@ double CodecChars<BYTEORDER>::decode()
 {
 	double s;
 	ds().readDouble(s);
+    BYTEORDER::swap(s);
 	return s;
 }
 
