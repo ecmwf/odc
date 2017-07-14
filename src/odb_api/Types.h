@@ -11,6 +11,8 @@
 #ifndef odb_api_Types_h
 #define odb_api_Types_h
 
+#include <stdint.h>
+
 namespace odb {
 
 typedef std::vector<std::string>             FieldNames;
