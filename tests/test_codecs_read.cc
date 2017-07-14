@@ -18,6 +18,17 @@
 #include <time.h>
 #include <stdlib.h>
 
+// Some of the math.h/cmath functions are not clean when switching to C++11
+#if __cplusplus <= 199711L
+#include <math.h>
+#else
+#include <cmath>
+#define fpclassify(x) std::fpclassify((x))
+#define isinf(x) std::isinf((x))
+#define isnan(x) std::isnan((x))
+#define signbit(x) std::signbit((x))
+#endif
+
 using namespace eckit::testing;
 using namespace odb::codec;
 using odb::SameByteOrder;
@@ -107,6 +118,28 @@ size_t construct_full_header(std::vector<unsigned char>& header,
 
     return 4 + codec_name.length();
 }
+
+
+size_t prepend_codec_selection_header(std::vector<unsigned char>& data,
+                                    const std::string& codec_name,
+                                    bool bigEndian=false) {
+
+    data.insert(data.begin(), 4, 0);
+    data[bigEndian ? 3 : 0] = static_cast<unsigned char>(codec_name.size());
+
+    data.insert(data.begin() + 4, codec_name.begin(), codec_name.end());
+
+    return 4 + codec_name.length();
+}
+
+
+struct CharReverse {
+    CharReverse(const char* s, size_t len);
+    ~CharReverse();
+
+
+};
+
 
 
 // TODO: Test missing values
@@ -438,9 +471,9 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
     unsigned char header_data[] = {
         0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // min = 987654321.9876 (big-endian)
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // max = 987654321.9876 (big-endian)
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // missingValue = -2147483647
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // min
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // max
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // missingValue
         0x00, 0x00, 0x00, 0x00                          // Unused 0 value required by chars codec
     };
 
@@ -479,8 +512,6 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
         c1->dataHandle(&dh);
 
         EXPECT(dh.position() == eckit::Offset(32));
-
-        eckit::Log::info() << "Take 2" << std::endl;
 
         double val = c1->decode();
         EXPECT(::memcmp(&val, s1, 8) == 0);
@@ -532,7 +563,219 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
     }
 }
 
-// long_real
+
+CASE("Character strings are 8-byte sequences coerced into being treated as doubles") {
+
+    // n.b. there are no missing values for CodecChars
+
+    // The values here are unused, and endianness is ignored for chars.
+
+    unsigned char header_data[] = {
+        0x00, 0x00, 0x00, 0x00,                         // 0 = hasMissing
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // min = 987654321.9876 (big-endian)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // max = 987654321.9876 (big-endian)
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // missingValue = -2147483647
+        0x00, 0x00, 0x00, 0x00                          // Unused 0 value required by chars codec
+    };
+
+    std::vector<unsigned char> data(header_data, header_data+sizeof(header_data));
+
+    const char* s1 = "\0\0\0\0\0\0\0\0";
+    const char* s2 = "hi-there";
+    const char* s3 = "\0\xff\0\xff\0\xff\0\xff";
+    const char* s4 = "a-string";
+    const char* s5 = "\xff\xff\xff\xff\xff\xff\xff\xff";
+
+    data.insert(data.end(), s1, s1+8);
+    data.insert(data.end(), s2, s2+8);
+    data.insert(data.end(), s3, s3+8);
+    data.insert(data.end(), s4, s4+8);
+    data.insert(data.end(), s5, s5+8);
+
+    // The characters codec is independent of endianness, so test both.
+    // 0 --> SameByteOrder,
+    // 1 --> OtherByteOrder
+
+    for (int i = 0; i < 2; i++) {
+
+        // Construct codec directly
+
+        MockReadDataHandle dh(&data[0], data.size()); // Skip name of codec
+
+        eckit::ScopedPtr<Codec> c1;
+        if (i == 0) {
+            c1.reset(new CodecChars<SameByteOrder>);
+            static_cast<CodecChars<SameByteOrder>*>(c1.get())->load(&dh);
+        } else {
+            c1.reset(new CodecChars<OtherByteOrder>);
+            static_cast<CodecChars<OtherByteOrder>*>(c1.get())->load(&dh);
+        }
+        c1->dataHandle(&dh);
+
+        EXPECT(dh.position() == eckit::Offset(32));
+
+        double val = c1->decode();
+        EXPECT(::memcmp(&val, s1, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s2, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s3, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s4, 8) == 0);
+        val = c1->decode();
+        EXPECT(::memcmp(&val, s5, 8) == 0);
+
+        // No further data should have been consumed from the data handle.
+        EXPECT(dh.position() == eckit::Offset(32 + (8 * 5)));
+
+        // --
+        // Construct codec from factory
+
+        // n.b. constrcut a different codec header depending on big/little endian
+        std::vector<unsigned char> buffer;
+        size_t hdrSize = construct_full_header(buffer, "chars", data, i != 0);
+
+        MockReadDataHandle dh2(&buffer[0], buffer.size());
+        odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh2);
+        odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh2);
+
+        eckit::ScopedPtr<Codec> c2;
+        if (i == 0) {
+            c2.reset(Codec::loadCodec(ds_same));
+        } else {
+            c2.reset(Codec::loadCodec(ds_other));
+        }
+        c2->dataHandle(&dh2);
+
+        EXPECT(dh2.position() == eckit::Offset(hdrSize+32));
+
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s1, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s2, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s3, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s4, 8) == 0);
+        val = c2->decode();
+        EXPECT(::memcmp(&val, s5, 8) == 0);
+
+        EXPECT(dh2.position() == eckit::Offset(hdrSize + 32 + (8 * 5)));
+    }
+}
+
+
+CASE("long floating point values can include the missing data value") {
+
+    // n.b. there are no missing values for CodecChars
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                  // no missing value
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // minimum unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // missing value unspecified
+
+        // data to encode
+        "\x00\x00\x00\x00\x00\x00\x00\x00",   // 0.0
+        "\x53\xa4\x0c\x54\x34\x6f\x9d\x41",   // 123456789.0123456
+        "\x9b\xe6\x57\xb7\x80\x65\x02\xc2",   // -9876543210.9876
+        "\x00\x00\x00\x00\x00\x00\xf0\x7f",   // +inf
+        "\x00\x00\x00\x00\x00\x00\xf0\xff",   // -inf
+        "\x7f\xf7\xff\xff\xff\xff\xff\xff",   // NaN (signalling)
+        "\x7f\xff\xff\xff\xff\xff\xff\xff",   // NaN (quiet)
+        "\x00\x00\xc0\xff\xff\xff\xdf\xc1"    // -2147483647 (otherwise the missing value)
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 2; i++) {
+
+        bool bigEndianSource = (i == 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : 8;
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+            if (bigEndianSource)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Construct codec directly
+
+        {
+            MockReadDataHandle dh(&data[0], data.size()); // Skip name of codec
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == is_big_endian()) {
+                c.reset(new CodecLongReal<SameByteOrder>);
+                static_cast<CodecLongReal<SameByteOrder>*>(c.get())->load(&dh);
+            } else {
+                c.reset(new CodecLongReal<OtherByteOrder>);
+                static_cast<CodecLongReal<OtherByteOrder>*>(c.get())->load(&dh);
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(28));
+
+            EXPECT(c->decode() == 0);
+            EXPECT(c->decode() == 123456789.0123456);
+            EXPECT(c->decode() == -9876543210.9876);
+            double val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val > 0);
+            val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val < 0);
+            EXPECT(isnan(c->decode()));
+            EXPECT(isnan(c->decode()));
+            EXPECT(c->decode() == -2147483647);
+
+            // No further data should have been consumed from the data handle.
+            EXPECT(dh.position() == eckit::Offset(28 + (8 * 8)));
+        }
+
+        // --
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, "long_real", bigEndianSource);
+
+        {
+            MockReadDataHandle dh(&data[0], data.size());
+
+            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == is_big_endian()) {
+                c.reset(Codec::loadCodec(ds_same));
+            } else {
+                c.reset(Codec::loadCodec(ds_other));
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+
+            EXPECT(c->decode() == 0);
+            EXPECT(c->decode() == 123456789.0123456);
+            EXPECT(c->decode() == -9876543210.9876);
+            double val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val > 0);
+            val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val < 0);
+            EXPECT(isnan(c->decode()));
+            EXPECT(isnan(c->decode()));
+            EXPECT(c->decode() == -2147483647);
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + (8 * 8)));
+        }
+    }
+}
+
 // short_real
 // short_real2
 // int32
