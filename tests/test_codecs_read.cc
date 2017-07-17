@@ -96,30 +96,6 @@ bool is_big_endian() {
 // Given the codec-initialising data, add the header on that is used to construct the
 // codec.
 
-size_t construct_full_header(std::vector<unsigned char>& header,
-                           const std::string& codec_name,
-                           const std::vector<unsigned char>& data,
-                           bool bigEndian=false) {
-
-    ASSERT(codec_name.size() < 255);
-
-    // Include space for codec_name string, and the minmax data
-    header.resize(4 + codec_name.length() + data.size());
-
-    header[0] = 0;
-    header[1] = 0;
-    header[2] = 0;
-    header[3] = 0;
-    header[bigEndian ? 3 : 0] = static_cast<unsigned char>(codec_name.size());
-
-    ::memcpy(&header[4], codec_name.c_str(), codec_name.length());
-
-    ::memcpy(&header[4+codec_name.length()], &data[0], data.size());
-
-    return 4 + codec_name.length();
-}
-
-
 size_t prepend_codec_selection_header(std::vector<unsigned char>& data,
                                     const std::string& codec_name,
                                     bool bigEndian=false) {
@@ -131,15 +107,6 @@ size_t prepend_codec_selection_header(std::vector<unsigned char>& data,
 
     return 4 + codec_name.length();
 }
-
-
-struct CharReverse {
-    CharReverse(const char* s, size_t len);
-    ~CharReverse();
-
-
-};
-
 
 
 // TODO: Test missing values
@@ -399,7 +366,6 @@ CASE("Constant integer or missing value behaves a bit oddly") {
             }
             EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28 + 258));
         }
 
@@ -511,7 +477,6 @@ CASE("real constant or missing value is not quite constant") {
             }
             EXPECT(c->decode() == odb::MDI::realMDI()); // missing
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28 + 258));
         }
 
@@ -619,7 +584,6 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
             val = c->decode();
             EXPECT(::memcmp(&val, source_data[9], 8) == 0);
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(32 + (8 * 5)));
         }
 
@@ -726,7 +690,6 @@ CASE("long floating point values can include the missing data value") {
             EXPECT(isnan(c->decode()));
             EXPECT(c->decode() == -2147483647);
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28 + (8 * 8)));
         }
 
@@ -855,7 +818,6 @@ CASE("short floating point values can include the missing data value") {
             EXPECT(isnan(c->decode()));
             EXPECT(isnan(c->decode()));
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28 + (8 * 4)));
         }
 
@@ -962,7 +924,6 @@ CASE("32bit integers are as-is") {
             EXPECT(c->decode() == -2147483648);
             EXPECT(c->decode() == -6543210);
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28 + (5 * 4)));
         }
 
@@ -1074,7 +1035,6 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
             EXPECT(c->decode() == (double(-123.45) + 32768));
             EXPECT(c->decode() == (double(-123.45) + 12345));
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28 + (5 * 2)));
         }
 
@@ -1140,7 +1100,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
         std::vector<unsigned char> data;
 
         for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
-            size_t len = (j == 0) ? 4 : (j > 3) ? 2 : 8;
+            size_t len = (j == 0) ? 4 : 8;
             data.insert(data.end(), source_data[j], source_data[j] + len);
             if (bigEndianSource)
                 std::reverse(data.end()-len, data.end());
@@ -1148,8 +1108,8 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         // Add all of the data values
 
-        for (int i = 0; i < 256; i++) {
-            data.push_back(static_cast<unsigned char>(i));
+        for (int n = 0; n < 256; n++) {
+            data.push_back(static_cast<unsigned char>(n));
         }
 
         // Construct codec directly
@@ -1179,13 +1139,12 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
             EXPECT(dh.position() == eckit::Offset(28));
 
-            for (int i = 0; i < 255; i++) {
-                EXPECT(c->decode() == (double(-5000.5) + i));
+            for (int n = 0; n < 255; n++) {
+                EXPECT(c->decode() == (double(-5000.5) + n));
             }
 
             EXPECT(c->decode() == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
 
-            // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28 + 256));
         }
 
@@ -1209,13 +1168,136 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
-            for (int i = 0; i < 255; i++) {
-                EXPECT(c->decode() == (double(-5000.5) + i));
+            for (int n = 0; n < 255; n++) {
+                EXPECT(c->decode() == (double(-5000.5) + n));
             }
 
             EXPECT(c->decode() == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 256));
+        }
+    }
+}
+
+
+CASE("Character strings can be stored in a flat list, and indexed") {
+
+    // n.b. no missing values
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                         // 0 = hasMissing
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // min unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // max unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // missingValue unspecified
+
+        // How many strings are there in the table?
+        "\x06\x00\x00\x00",
+
+        // String data (prepended with lengths)
+        // length, data, "cnt (discarded)", index
+
+        "\x02\x00\x00\x00", "ab",           "\x00\x00\x00\x00", "\x03\x00\x00\x00", // This string is too short
+        "\x06\x00\x00\x00", "ghijkl",       "\x00\x00\x00\x00", "\x04\x00\x00\x00",
+        "\x08\x00\x00\x00", "mnopqrst",     "\x00\x00\x00\x00", "\x05\x00\x00\x00", // 8-byte length
+        "\x0c\x00\x00\x00", "uvwxyzabcdef", "\x00\x00\x00\x00", "\x01\x00\x00\x00", // too long
+        "\x08\x00\x00\x00", "ghijklmn",     "\x00\x00\x00\x00", "\x00\x00\x00\x00",
+        "\x08\x00\x00\x00", "opqrstuv",     "\x00\x00\x00\x00", "\x02\x00\x00\x00"
+    };
+
+    // Loop throumgh endiannesses for the source data
+
+    for (int i = 0; i < 2; i++) {
+
+        bool bigEndianSource = (i == 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len =
+                    (j < 5) ? ((j == 0 || j == 4) ? 4 : 8)
+                            : ((j+2) % 4 == 0 ? ::strlen(source_data[j]) : 4);
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+
+            // n.b. Don't reverse the endianness of the string data.
+            if (bigEndianSource && !((j > 5) && ((j+2) % 4 == 0)))
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Which strings do we wish to decode (look at them in reverse. nb refers to index column)
+
+        for (int n = 5; n >= 0; n--) {
+            data.push_back(static_cast<unsigned char>(n));
+        }
+
+        // Construct codec directly
+
+        {
+            MockReadDataHandle dh(data); // Skip name of codec
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == is_big_endian()) {
+                c.reset(new CodecInt8String<SameByteOrder>);
+                static_cast<CodecInt8String<SameByteOrder>*>(c.get())->load(&dh);
+            } else {
+                c.reset(new CodecInt8String<OtherByteOrder>);
+                static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->load(&dh);
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(148));
+
+            double val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "mnopqrst");
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 6) == "ghijkl"); // silently works for shorter strings
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 2) == "ab"); // silently works for shorter strings
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "opqrstuv");
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "uvwxyzab"); // gets truncated to 8
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
+
+            EXPECT(dh.position() == eckit::Offset(148 + (6 * 1)));
+        }
+
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, "int8_string", bigEndianSource);
+
+        {
+            MockReadDataHandle dh(data);
+
+            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == is_big_endian()) {
+                c.reset(Codec::loadCodec(ds_same));
+            } else {
+                c.reset(Codec::loadCodec(ds_other));
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 148));
+
+            double val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "mnopqrst");
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 6) == "ghijkl"); // silently works for shorter strings
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 2) == "ab"); // silently works for shorter strings
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "opqrstuv");
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "uvwxyzab"); // gets truncated to 8
+            val = c->decode();
+            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 148 + (6 * 1)));
         }
     }
 }

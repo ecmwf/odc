@@ -519,7 +519,7 @@ HashTable* CodecChars<BYTEORDER>::giveHashTable()
 template<typename BYTEORDER>
 void CodecChars<BYTEORDER>::load(eckit::DataHandle *dh)
 {
-	Codec::loadBasics<BYTEORDER>(dh);
+    Codec::loadBasics<BYTEORDER>(dh);
 	DataStream<BYTEORDER> ds(dh);
 	hashTable_->load(ds);
 }
