@@ -573,6 +573,7 @@ double CodecShortReal2<BYTEORDER>::decode()
     float s;
     ds().readFloat(s);
 
+    // The result of this is a bit pattern of 0xff7fffff
     const uint32_t maxFloatAsInt ( 0x7f7fffff );
     return s == - *reinterpret_cast<const float*>( &maxFloatAsInt ) ? missingValue_ : s;
 }

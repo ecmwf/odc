@@ -662,8 +662,6 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
 CASE("long floating point values can include the missing data value") {
 
-    // n.b. there are no missing values for CodecChars
-
     const char* source_data[] = {
 
         // Codec header
@@ -770,8 +768,141 @@ CASE("long floating point values can include the missing data value") {
     }
 }
 
-// short_real
-// short_real2
+
+CASE("short floating point values can include the missing data value") {
+
+    // Use a curious, custom missingValue to show it is being used.
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                  // no missing value
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // minimum unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
+        "\x04\x4f\xab\xa0\xe4\x4e\x91\x26",  // missing value = 6.54565456545599971850917315786e-123
+
+        // data to encode
+        "\x00\x00\x00\x00",   // 0.0
+        "\x12\xbf\x1f\x49",   // 654321.123
+        "\x00\x00\x80\x00",   // Smallest available, missing value for short_real (1.17549435082229e-38)
+        "\xff\xff\x7f\xff",   // Lowest available, missing value for short_real2 (-3.40282346638529e+38)
+        "\x00\x00\x80\x7f",   // +inf
+        "\x00\x00\x80\xff",   // -inf
+        "\xff\xff\xbf\x7f",   // NaN (signalling)
+        "\xff\xff\xff\x7f",   // NaN (quiet)
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 4; i++) {
+
+        bool bigEndianSource = (i % 2 == 0);
+        bool secondCodec = (i > 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0 || j > 3) ? 4 : 8;
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+            if (bigEndianSource)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Construct codec directly
+
+        {
+            MockReadDataHandle dh(data); // Skip name of codec
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == is_big_endian()) {
+                if (secondCodec) {
+                    c.reset(new CodecShortReal2<SameByteOrder>);
+                    static_cast<CodecShortReal2<SameByteOrder>*>(c.get())->load(&dh);
+                } else {
+                    c.reset(new CodecShortReal<SameByteOrder>);
+                    static_cast<CodecShortReal<SameByteOrder>*>(c.get())->load(&dh);
+                }
+            } else {
+                if (secondCodec) {
+                    c.reset(new CodecShortReal2<OtherByteOrder>);
+                    static_cast<CodecShortReal2<OtherByteOrder>*>(c.get())->load(&dh);
+                } else {
+                    c.reset(new CodecShortReal<OtherByteOrder>);
+                    static_cast<CodecShortReal<OtherByteOrder>*>(c.get())->load(&dh);
+                }
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(28));
+
+            // n.b. == comparisons for floats as we are testing BIT reproducability of decoding
+            EXPECT(c->decode() == 0);
+            EXPECT(c->decode() == float(654321.123));
+            // Each of the two codecs has a different internal missing value. Check it is correctly recognised.
+            if (secondCodec) {
+                EXPECT(c->decode() == float(1.17549435082229e-38));
+                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+            } else {
+                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+                EXPECT(c->decode() == float(-3.40282346638529e+38));
+            }
+            double val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val > 0);
+            val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val < 0);
+            EXPECT(isnan(c->decode()));
+            EXPECT(isnan(c->decode()));
+
+            // No further data should have been consumed from the data handle.
+            EXPECT(dh.position() == eckit::Offset(28 + (8 * 4)));
+        }
+
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, secondCodec ? "short_real2" : "short_real", bigEndianSource);
+
+        {
+            MockReadDataHandle dh(data);
+
+            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == is_big_endian()) {
+                c.reset(Codec::loadCodec(ds_same));
+            } else {
+                c.reset(Codec::loadCodec(ds_other));
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+
+            EXPECT(c->decode() == 0);
+            EXPECT(c->decode() == float(654321.123));
+            // Each of the two codecs has a different internal missing value. Check it is correctly recognised.
+            if (secondCodec) {
+                EXPECT(c->decode() == float(1.17549435082229e-38));
+                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+            } else {
+                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+                EXPECT(c->decode() == float(-3.40282346638529e+38));
+            }
+            double val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val > 0);
+            val = c->decode();
+            EXPECT(isinf(val));
+            EXPECT(val < 0);
+            EXPECT(isnan(c->decode()));
+            EXPECT(isnan(c->decode()));
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + (8 * 4)));
+        }
+    }
+}
+
 // int32
 // int16
 // int8
