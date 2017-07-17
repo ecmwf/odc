@@ -109,8 +109,6 @@ size_t prepend_codec_selection_header(std::vector<unsigned char>& data,
 }
 
 
-// TODO: Test missing values
-
 CASE("Constant values are constant") {
 
     // Data in little endian format.
@@ -1322,7 +1320,5 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
 int main(int argc, char* argv[]) {
 
-
-    srand(time(NULL));
     return run_tests(argc, argv);
 }
