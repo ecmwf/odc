@@ -57,8 +57,18 @@ public: // methods
         return n;
     }
 
-    const void* get() const {
+    unsigned char* get() {
+        return &buffer_[position_];
+    }
+
+    const unsigned char* getBuffer() const {
         return &buffer_[0];
+    }
+
+    void set(unsigned char* p) {
+        ASSERT(p >= &buffer_[0]);
+        ASSERT(p - &buffer_[0] < static_cast<long>(buffer_.size()));
+        position_ = static_cast<size_t>(p - &buffer_[0]);
     }
 
     virtual long read(void*, long) { NOTIMP; }
@@ -80,10 +90,11 @@ private:
 
 // TODO with codecs:
 //
-// i) Make them templated on the stream/datahandle directly
-// ii) Construct them with a specific data handle/stream
+//   i) Make them templated on the stream/datahandle directly
+//  ii) Construct them with a specific data handle/stream
 // iii) Why are we casting data handles via a void* ???
-// iv) Why are load/save not virtual functions?
+//  iv) Why are load/save not virtual functions?
+//   v) We should ASSERT() that encoded data is constant for constant codecs. Currently it is just ignored.
 
 // A quick helper function, to minimised #ifdefs
 bool is_big_endian() {
@@ -183,7 +194,7 @@ CASE("Constant values consume no space in the output data buffer") {
         }
 
         EXPECT(dh.position() == eckit::Offset(28));
-        EXPECT(::memcmp(&data[0], dh.get(), data.size()) == 0);
+        EXPECT(::memcmp(&data[0], dh.getBuffer(), data.size()) == 0);
 
         // Encode the data to wherever we want it (in reality would be after the header, via a buffer.).
 
@@ -195,219 +206,198 @@ CASE("Constant values consume no space in the output data buffer") {
         EXPECT(c->encode(&buf[0], 1234567890.1234567) == &buf[0]);
         EXPECT(c->encode(&buf[0], 1234567890.1234567) == &buf[0]);
         EXPECT(c->encode(&buf[0], 1234567890.1234567) == &buf[0]);
+
+        for (size_t n = 0; n < buf.size(); n++)
+            EXPECT(buf[n] == 0);
     }
 }
 
-//
-//CASE("constant strings are constant") {
-//
-//    // Data in little endian format.
-//    // "min" value is used for constants
-//
-//    // NOTE that strings are NOT swapped around when things are in the
-//    // reverse byte order.
-//
-//    const char* expected_data[] = {
-//
-//        // Codec header
-//        "\x00\x00\x00\x00",                  // no missing value
-//        "hi-there",                          // minimum supplies string
-//        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
-//        "\x00\x00\x00\x00\x00\x00\x00\x00",  // missing value unspecified
-//    };
-//
-//    // Loop through endiannesses for the source data
-//
-//    for (int i = 0; i < 2; i++) {
-//
-//        bool bigEndianOutput = (i == 1);
-//
-//        std::vector<unsigned char> data;
-//
-//        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
-//            size_t len = (j == 0) ? 4 : 8;
-//            data.insert(data.end(), expected_data[j], expected_data[j] + len);
-//
-//            // n.b. Don't swap string data around with endianness
-//            if (bigEndianOutput && j != 1)
-//                std::reverse(data.end()-len, data.end());
-//        }
-//
-//        // Construct codec directly
-//
-//        {
-//            MockWriteDataHandle dh(data); // Skip name of codec
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                c.reset(new CodecConstantString<SameByteOrder>);
-//                static_cast<CodecConstantString<SameByteOrder>*>(c.get())->load(&dh);
-//            } else {
-//                c.reset(new CodecConstantString<OtherByteOrder>);
-//                static_cast<CodecConstantString<OtherByteOrder>*>(c.get())->load(&dh);
-//            }
-//
-//            EXPECT(dh.position() == eckit::Offset(28));
-//
-//            double val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//            val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//            val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//            val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//
-//            // No further data should have been consumed from the data handle.
-//            EXPECT(dh.position() == eckit::Offset(28));
-//        }
-//
-//        // Construct codec from factory
-//
-//        size_t hdrSize = prepend_codec_selection_header(data, "constant_string", bigEndianOutput);
-//
-//        {
-//            MockWriteDataHandle dh(data);
-//            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-//            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                c.reset(Codec::loadCodec(ds_same));
-//            } else {
-//                c.reset(Codec::loadCodec(ds_other));
-//            }
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
-//
-//            double val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//            val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//            val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//            val = c->decode();
-//            EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
-//        }
-//    }
-//}
-//
-//
-//CASE("Constant integer or missing value behaves a bit oddly") {
-//
-//    EXPECT(odb::MDI::integerMDI() == 2147483647);
-//
-//    // Note that there is absolutely NOTHING that enforces that these are integers...
-//    // --> This test tests the generic case, with a double, which is odd
-//    // --> TODO: Really we ought to enforce integers for an integer case...
-//
-//    // little
-//
-//    const char* expected_data[] = {
-//
-//        // Codec header
-//        "\x01\x00\x00\x00",                  // has missing value
-////        "\x00\x00\x80\x58\x34\x6f\xcd\x41, // min (little-endian: 987654321)
-////        "\x00\x00\x80\x58\x34\x6f\xcd\x41, // max == min
-//        "\xad\x69\xfe\x58\x34\x6f\xcd\x41", // minimum value = 987654321.9876
-//        "\xad\x69\xfe\x58\x34\x6f\xcd\x41", // maximum value
-//        "\x00\x00\xc0\xff\xff\xff\xdf\x41"  // missingValue = 2147483647
-//    };
-//
-//    // Loop through endiannesses for the source data
-//
-//    for (int i = 0; i < 2; i++) {
-//
-//        bool bigEndianOutput = (i == 1);
-//
-//        std::vector<unsigned char> data;
-//
-//        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
-//            size_t len = (j == 0) ? 4 : 8;
-//            data.insert(data.end(), expected_data[j], expected_data[j] + len);
-//            if (bigEndianOutput)
-//                std::reverse(data.end()-len, data.end());
-//        }
-//
-//        // Insert the sequence of test values
-//
-//        data.push_back(0);
-//        data.push_back(0xff); // missing
-//        for (size_t i = 0; i < 255; i++) {
-//            data.push_back(static_cast<unsigned char>(i));
-//        }
-//        data.push_back(0xff); // missing
-//
-//        // Construct codec directly
-//
-//        {
-//            MockWriteDataHandle dh(data); // Skip name of codec
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                c.reset(new CodecConstantOrMissing<SameByteOrder>);
-//                static_cast<CodecConstantOrMissing<SameByteOrder>*>(c.get())->load(&dh);
-//            } else {
-//                c.reset(new CodecConstantOrMissing<OtherByteOrder>);
-//                static_cast<CodecConstantOrMissing<OtherByteOrder>*>(c.get())->load(&dh);
-//            }
-//            c->dataHandle(&dh);
-//
-//            EXPECT(dh.position() == eckit::Offset(28));
-//
-//            double baseValue = 987654321.9876;
-//        //    double baseValue = 987654321;
-//            double decoded = c->decode();
-//            EXPECT(baseValue == decoded);
-//            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
-//            for (size_t i = 0; i < 255; i++) {
-//                double b = baseValue + i;
-//                double v = c->decode();
-//                EXPECT(b == v);
-//            }
-//            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
-//
-//            EXPECT(dh.position() == eckit::Offset(28 + 258));
-//        }
-//
-//        // Construct codec from factory
-//
-//        size_t hdrSize = prepend_codec_selection_header(data, "constant_or_missing", bigEndianOutput);
-//
-//        {
-//            MockWriteDataHandle dh(data);
-//
-//            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-//            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                c.reset(Codec::loadCodec(ds_same));
-//            } else {
-//                c.reset(Codec::loadCodec(ds_other));
-//            }
-//            c->dataHandle(&dh);
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize+28));
-//
-//            double baseValue = 987654321.9876;
-//            double decoded = c->decode();
-//            EXPECT(baseValue == decoded);
-//            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
-//            for (size_t i = 0; i < 255; i++) {
-//                double b = baseValue + i;
-//                double v = c->decode();
-//                EXPECT(b == v);
-//            }
-//            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 258));
-//        }
-//    }
-//}
-//
+
+CASE("constant strings consume no output data space") {
+
+    // Data in little endian format.
+    // "min" value is used for constants
+
+    // NOTE that strings are NOT swapped around when things are in the
+    // reverse byte order.
+
+    const char* expected_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                  // no missing value
+        "hi-there",                          // minimum supplies string
+        "hi-there",                          // maximum unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // missing value unspecified
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 2; i++) {
+
+        bool bigEndianOutput = (i == 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : 8;
+            data.insert(data.end(), expected_data[j], expected_data[j] + len);
+            // n.b. Don't swap string data around with endianness
+        }
+
+        MockWriteDataHandle dh(data); // Skip name of codec
+
+        // Initialise codecs
+
+        eckit::ScopedPtr<Codec> c;
+        if (bigEndianOutput == is_big_endian()) {
+            c.reset(new CodecConstantString<SameByteOrder>);
+        } else {
+            c.reset(new CodecConstantString<OtherByteOrder>);
+        }
+
+        c->hasMissing(false);
+        c->missingValue(0.0);
+
+        // Statistics in writing order
+
+        const char* str = "hi-there";
+        c->gatherStats(*reinterpret_cast<const double*>(str));
+        c->gatherStats(*reinterpret_cast<const double*>(str));
+        c->gatherStats(*reinterpret_cast<const double*>(str));
+        c->gatherStats(*reinterpret_cast<const double*>(str));
+
+        // Encode the header to the data stream
+
+        if (bigEndianOutput == is_big_endian()) {
+            static_cast<CodecConstantString<SameByteOrder>*>(c.get())->save(&dh);
+        } else {
+            static_cast<CodecConstantString<OtherByteOrder>*>(c.get())->save(&dh);
+        }
+
+        EXPECT(dh.position() == eckit::Offset(28));
+        EXPECT(::memcmp(&data[0], dh.getBuffer(), data.size()) == 0);
+
+        // Encode the data to wherever we want it (in reality would be after the header, via a buffer.).
+
+        // n.b. We don't produce any data when encoding with this codec
+
+        std::vector<unsigned char> buf(1024, 0);
+        EXPECT(c->encode(&buf[0], *reinterpret_cast<const double*>(str)) == &buf[0]);
+        EXPECT(c->encode(&buf[0], *reinterpret_cast<const double*>(str)) == &buf[0]);
+        EXPECT(c->encode(&buf[0], *reinterpret_cast<const double*>(str)) == &buf[0]);
+        EXPECT(c->encode(&buf[0], *reinterpret_cast<const double*>(str)) == &buf[0]);
+
+        for (size_t n = 0; n < buf.size(); n++)
+            EXPECT(buf[n] == 0);
+    }
+}
+
+
+CASE("Constant integer or missing value behaves a bit oddly") {
+
+    EXPECT(odb::MDI::integerMDI() == 2147483647);
+
+    // Note that there is absolutely NOTHING that enforces that these are integers...
+    // --> This test tests the generic case, with a double, which is odd
+    // --> TODO: Really we ought to enforce integers for an integer case...
+
+    // little
+
+    const char* expected_data[] = {
+
+        // Codec header
+        "\x01\x00\x00\x00",                  // has missing value
+//        "\x00\x00\x80\x58\x34\x6f\xcd\x41, // min (little-endian: 987654321)
+//        "\x00\x00\x80\x58\x34\x6f\xcd\x41, // max == min
+        "\xad\x69\xfe\x58\x34\x6f\xcd\x41", // minimum value = 987654321.9876
+        "\xad\x69\xfe\xd7\x34\x6f\xcd\x41", // maximum value = 987654321.9876 + 254
+        "\x00\x00\xc0\xff\xff\xff\xdf\x41"  // missingValue = 2147483647
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 2; i++) {
+
+        bool bigEndianOutput = (i == 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : 8;
+            data.insert(data.end(), expected_data[j], expected_data[j] + len);
+            if (bigEndianOutput)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Insert the sequence of test values
+
+        data.push_back(0);
+        data.push_back(0xff); // missing
+        for (size_t n = 0; n < 255; n++) {
+            data.push_back(static_cast<unsigned char>(n));
+        }
+        data.push_back(0xff); // missing
+
+        MockWriteDataHandle dh(data); // Skip name of codec
+
+        // Initialise codecs
+
+        eckit::ScopedPtr<Codec> c;
+        if (bigEndianOutput == is_big_endian()) {
+            c.reset(new CodecConstantOrMissing<SameByteOrder>);
+        } else {
+            c.reset(new CodecConstantOrMissing<OtherByteOrder>);
+        }
+
+        c->hasMissing(true);
+        c->missingValue(odb::MDI::integerMDI());
+
+        // Statistics in writing order
+
+        c->gatherStats(987654321.9876 + 0);
+        c->gatherStats(odb::MDI::integerMDI()); // missing
+        for (size_t n = 0; n < 255; n++) {
+            c->gatherStats(987654321.9876 + n);
+        }
+        c->gatherStats(odb::MDI::integerMDI()); // missing
+
+        // Encode the header to the data stream
+
+        if (bigEndianOutput == is_big_endian()) {
+            static_cast<CodecConstantOrMissing<SameByteOrder>*>(c.get())->save(&dh);
+        } else {
+            static_cast<CodecConstantOrMissing<OtherByteOrder>*>(c.get())->save(&dh);
+        }
+
+        EXPECT(dh.position() == eckit::Offset(28));
+
+        // Encode the data to wherever we want it (in reality would be after the header, via a buffer.).
+        // Expect one byte per element.
+
+        unsigned char* posNext;
+
+        EXPECT((posNext = c->encode(dh.get(), 987654321.9876 + 0)) == (dh.get() + 1));
+        dh.set(posNext);
+        EXPECT((posNext = c->encode(dh.get(), odb::MDI::integerMDI())) == (dh.get() + 1));
+        dh.set(posNext);
+
+        for (size_t n = 0; n < 255; n++) {
+            EXPECT((posNext = c->encode(dh.get(), 987654321.9876 + n)) == (dh.get() + 1));
+            dh.set(posNext);
+        }
+
+        EXPECT((posNext = c->encode(dh.get(), odb::MDI::integerMDI())) == (dh.get() + 1));
+        dh.set(posNext);
+
+        // Check we have the data we expect
+
+        size_t nelem = 258;
+        EXPECT(dh.position() == eckit::Offset(28 + nelem));
+
+        EXPECT(::memcmp(&data[0], dh.getBuffer(), 28 + nelem) == 0);
+    }
+}
+
 //
 //CASE("real constant or missing value is not quite constant") {
 //

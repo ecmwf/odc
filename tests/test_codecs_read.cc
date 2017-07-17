@@ -330,8 +330,8 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
         data.push_back(0);
         data.push_back(0xff); // missing
-        for (size_t i = 0; i < 255; i++) {
-            data.push_back(static_cast<unsigned char>(i));
+        for (size_t n = 0; n < 255; n++) {
+            data.push_back(static_cast<unsigned char>(n));
         }
         data.push_back(0xff); // missing
 
@@ -357,8 +357,8 @@ CASE("Constant integer or missing value behaves a bit oddly") {
             double decoded = c->decode();
             EXPECT(baseValue == decoded);
             EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
-            for (size_t i = 0; i < 255; i++) {
-                double b = baseValue + i;
+            for (size_t n = 0; n < 255; n++) {
+                double b = baseValue + n;
                 double v = c->decode();
                 EXPECT(b == v);
             }
