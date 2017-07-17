@@ -607,6 +607,7 @@ double CodecInt16<BYTEORDER>::decode()
 {
 	uint16_t s;
 	ds().readUInt16(s);
+
 	return s + min_;
 }
 
@@ -639,6 +640,7 @@ double CodecInt8<BYTEORDER>::decode()
 {
 	unsigned char s;
 	ds().readUChar(s);
+
 	return s + min_;
 }
 
