@@ -1210,7 +1210,9 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
     for (int i = 0; i < 2; i++) {
 
-        bool bigEndianSource = (i == 1);
+        bool bigEndianSource = (i % 2 == 0);
+
+        bool bits16 = (i > 1);
 
         std::vector<unsigned char> data;
 
@@ -1228,7 +1230,11 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // Which strings do we wish to decode (look at them in reverse. nb refers to index column)
 
         for (int n = 5; n >= 0; n--) {
+            if (bits16 && bigEndianSource)
+                data.push_back(0);
             data.push_back(static_cast<unsigned char>(n));
+            if (bits16 && !bigEndianSource)
+                data.push_back(0);
         }
 
         // Construct codec directly
@@ -1238,11 +1244,21 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == is_big_endian()) {
-                c.reset(new CodecInt8String<SameByteOrder>);
-                static_cast<CodecInt8String<SameByteOrder>*>(c.get())->load(&dh);
+                if (bits16) {
+                    c.reset(new CodecInt16String<SameByteOrder>);
+                    static_cast<CodecInt16String<SameByteOrder>*>(c.get())->load(&dh);
+                } else {
+                    c.reset(new CodecInt8String<SameByteOrder>);
+                    static_cast<CodecInt8String<SameByteOrder>*>(c.get())->load(&dh);
+                }
             } else {
-                c.reset(new CodecInt8String<OtherByteOrder>);
-                static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->load(&dh);
+                if (bits16) {
+                    c.reset(new CodecInt16String<OtherByteOrder>);
+                    static_cast<CodecInt16String<OtherByteOrder>*>(c.get())->load(&dh);
+                } else {
+                    c.reset(new CodecInt8String<OtherByteOrder>);
+                    static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->load(&dh);
+                }
             }
             c->dataHandle(&dh);
 
@@ -1261,12 +1277,12 @@ CASE("Character strings can be stored in a flat list, and indexed") {
             val = c->decode();
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
 
-            EXPECT(dh.position() == eckit::Offset(148 + (6 * 1)));
+            EXPECT(dh.position() == eckit::Offset(148 + (6 * (bits16 ? 2 : 1))));
         }
 
         // Construct codec from factory
 
-        size_t hdrSize = prepend_codec_selection_header(data, "int8_string", bigEndianSource);
+        size_t hdrSize = prepend_codec_selection_header(data, bits16 ? "1nt16_string" : "int8_string", bigEndianSource);
 
         {
             MockReadDataHandle dh(data);
@@ -1297,13 +1313,10 @@ CASE("Character strings can be stored in a flat list, and indexed") {
             val = c->decode();
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
 
-            EXPECT(dh.position() == eckit::Offset(hdrSize + 148 + (6 * 1)));
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 148 + (6 * (bits16 ? 2 : 1))));
         }
     }
 }
-
-// int16_string
-// int8_string
 
 // ------------------------------------------------------------------------------------------------------
 
