@@ -583,6 +583,7 @@ template<typename BYTEORDER>
 unsigned char* CodecInt32<BYTEORDER>::encode(unsigned char* p, double d)
 {
 	int32_t s = d;
+    BYTEORDER::swap(s);
 	memcpy(p, &s, sizeof(s));
 	return p + sizeof(s);
 }
