@@ -730,7 +730,6 @@ template<typename BYTEORDER>
 unsigned char* CodecChars<BYTEORDER>::encode(unsigned char* p, double s)
 {
     double tmp = s;
-    BYTEORDER::swap(tmp);
     memcpy(p, &tmp, sizeof(tmp));
     return p + sizeof(tmp);
 }
