@@ -600,7 +600,8 @@ template<typename BYTEORDER>
 unsigned char* CodecInt16<BYTEORDER>::encode(unsigned char* p, double d)
 {
 	unsigned short s = d - min_;
-	memcpy(p, &s, sizeof(s));
+    BYTEORDER::swap(s);
+    memcpy(p, &s, sizeof(s));
 	return p + sizeof(s);
 }
 
@@ -617,6 +618,7 @@ template<typename BYTEORDER>
 unsigned char* CodecInt16Missing<BYTEORDER>::encode(unsigned char* p, double d)
 {
 	uint16_t s = (d == missingValue_) ? 0xffff : d - min_;
+    BYTEORDER::swap(s);
 	memcpy(p, &s, sizeof(s));
 	return p + sizeof(s);
 }
