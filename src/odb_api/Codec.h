@@ -541,8 +541,8 @@ template<typename BYTEORDER>
 unsigned char* CodecShortReal<BYTEORDER>::encode(unsigned char* p, double d)
 {
     const uint32_t minFloatAsInt ( 0x800000 );
-
     float s = (d == missingValue_) ? *reinterpret_cast<const float*>( &minFloatAsInt ) : d;
+    BYTEORDER::swap(s);
     memcpy(p, &s, sizeof(s));
     return p + sizeof(s);
 }
@@ -563,6 +563,7 @@ unsigned char* CodecShortReal2<BYTEORDER>::encode(unsigned char* p, double d)
 {
     const uint32_t maxFloatAsInt ( 0x7f7fffff );
     float s = (d == missingValue_) ? - *reinterpret_cast<const float*>( &maxFloatAsInt ) : d;
+    BYTEORDER::swap(s);
     memcpy(p, &s, sizeof(s));
     return p + sizeof(s);
 }
@@ -714,6 +715,7 @@ double CodecInt16String<BYTEORDER>::decode()
 template<typename BYTEORDER>
 unsigned char* CodecLongReal<BYTEORDER>::encode(unsigned char* p,double s)
 {
+    BYTEORDER::swap(s);
 	memcpy(p, &s, sizeof(s));
 	return p + sizeof(s);
 }
