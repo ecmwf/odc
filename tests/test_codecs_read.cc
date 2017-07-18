@@ -1206,7 +1206,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
     // Loop throumgh endiannesses for the source data
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 4; i++) {
 
         bool bigEndianSource = (i % 2 == 0);
 
@@ -1280,7 +1280,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         // Construct codec from factory
 
-        size_t hdrSize = prepend_codec_selection_header(data, bits16 ? "1nt16_string" : "int8_string", bigEndianSource);
+        size_t hdrSize = prepend_codec_selection_header(data, bits16 ? "int16_string" : "int8_string", bigEndianSource);
 
         {
             MockReadDataHandle dh(data);
