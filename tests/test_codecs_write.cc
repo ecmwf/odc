@@ -624,7 +624,7 @@ CASE("long floating point values can include the missing data value") {
     const char* expected_data[] = {
 
         // Codec header
-        "\x01\x00\x00\x00",                  // no missing value
+        "\x01\x00\x00\x00",                  // has missing value
         "\x00\x00\x00\x00\x00\x00\xf0\xff",  // minimum (-inf)
         "\x00\x00\x00\x00\x00\x00\xf0\x7f",  // maximum (+inf)
         "\x00\x00\xc0\x71\x8d\x8e\xe0\x41",  // missingValue = 2222222222
@@ -762,7 +762,7 @@ CASE("short floating point values can include the missing data value") {
     const char* expected_data[] = {
 
         // Codec header
-        "\x01\x00\x00\x00",                  // no missing value
+        "\x01\x00\x00\x00",                  // has missing value
         "\x00\x00\x00\x00\x00\x00\xf0\xff",  // minimum (-inf)
         "\x00\x00\x00\x00\x00\x00\xf0\x7f",  // maximum (+inf)
         "\x00\x00\x38\xce\x30\xb2\x14\xc2",  // missingValue = -22222222222
@@ -869,7 +869,7 @@ CASE("short floating point values can include the missing data value") {
         // Encode the data to wherever we want it
         // Expect 4 bytes per element
 
-        // n.b. If we directly supply the float that is equivalent to the interval missing value, it
+        // n.b. If we directly supply the float that is equivalent to the internal missing value, it
         //      is just treated as missing on read, without flagging hasMissing(). We do this here
         //      just to demonstrate. See ODB-367
 
@@ -918,7 +918,7 @@ CASE("32bit integers are as-is") {
     const char* expected_data[] = {
 
         // Codec header
-        "\x01\x00\x00\x00",                  // no missing value
+        "\x01\x00\x00\x00",                  // has missing value
         "\x00\x00\x00\x00\x00\x00\xe0\xc1",  // minimum = -2147483648
         "\x00\x00\xc0\xff\xff\xff\xdf\x41",  // maximum = 2147483647
         "\x00\x00\x00\x1c\xaf\x7d\xaa\x41",  // missing value = 222222222
@@ -1017,227 +1017,289 @@ CASE("32bit integers are as-is") {
 }
 
 
-//CASE("16bit integers are stored with an offset. This need not (strictly) be integral!!") {
-//
-//    // n.b. we use a non-standard, non-integral minimum to demonstrate the offset behaviour.
-//
-//    // Use a curious, custom missingValue to show it is being used.
-//
-//    const char* expected_data[] = {
-//
-//        // Codec header
-//        "\x00\x00\x00\x00",                  // no missing value
-//        "\xcd\xcc\xcc\xcc\xcc\xdc\x5e\xc0",  // minimum = -123.45
-//        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
-//        "\x04\x4f\xab\xa0\xe4\x4e\x91\x26",  // missing value = 6.54565456545599971850917315786e-123
-//
-//        // data to encode
-//        "\x00\x00",   // 0.0
-//        "\xff\xff",   // 65535 and the missing value
-//        "\xff\x7f",   // 32767 (no negatives)
-//        "\x00\x80",   // 32768 (no negatives)
-//        "\x39\x30"    // 12345
-//    };
-//
-//    // Loop through endiannesses for the source data
-//
-//    for (int i = 0; i < 4; i++) {
-//
-//        bool bigEndianOutput = (i % 2 == 0);
-//
-//        bool withMissing = (i > 1);
-//
-//        std::vector<unsigned char> data;
-//
-//        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
-//            size_t len = (j == 0) ? 4 : (j > 3) ? 2 : 8;
-//            data.insert(data.end(), expected_data[j], expected_data[j] + len);
-//            if (bigEndianOutput)
-//                std::reverse(data.end()-len, data.end());
+CASE("16bit integers are stored with an offset. This need not (strictly) be integral!!") {
+
+    // n.b. we use a non-standard, non-integral minimum to demonstrate the offset behaviour.
+
+    // Use a curious, custom missingValue to show it is being used.
+
+    const double customMissingValue = 6.54565456545599971850917315786e-123;
+    const double baseVal = -123.45;
+    const size_t expectedHdrSize = 28;
+
+    const char* expected_data[] = {
+
+        // Codec header
+        "\x01\x00\x00\x00",                  // has missing value
+        "\xcd\xcc\xcc\xcc\xcc\xdc\x5e\xc0",  // minimum = -123.45
+        "\x9a\x99\x99\x99\x71\xf0\xef\x40",  // maximum = -123.45 + 65535
+        "\x04\x4f\xab\xa0\xe4\x4e\x91\x26",  // missing value = 6.54565456545599971850917315786e-123
+
+        // data to encode
+        "\x00\x00",   // 0.0
+        "\xff\xff",   // 65535 and the missing value
+        "\xff\x7f",   // 32767 (no negatives)
+        "\x00\x80",   // 32768 (no negatives)
+        "\x39\x30"    // 12345
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 4; i++) {
+
+        bool bigEndianOutput = (i % 2 == 0);
+
+        bool withMissing = (i > 1);
+
+//        eckit::Log::info() << "---------------------------------------------------------" << std::endl;
+//        eckit::Log::info() << "ITERATION: " << i << std::endl;
+//        eckit::Log::info() << "big endian: " << (bigEndianOutput ? "T" : "F") << std::endl;
+//        eckit::Log::info() << "with missing: " << (withMissing ? "T" : "F") << std::endl;
+//        eckit::Log::info() << "---------------------------------------------------------" << std::endl;
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : (j > 3) ? 2 : 8;
+            data.insert(data.end(), expected_data[j], expected_data[j] + len);
+            if (bigEndianOutput)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // The missing value is odd. It should be handled properly for the Missing codec, but things are just mangled
+        // if we do the direct codec.
+        // See ODB-370 and ODB-371
+        uint16_t mv = withMissing ? 0xffff : 0x007b;
+        data.insert(data.end(), reinterpret_cast<const unsigned char*>(&mv), reinterpret_cast<const unsigned char*>(&mv) + 2);
+        if (bigEndianOutput)
+            std::reverse(data.end()-2, data.end());
+
+        MockWriteDataHandle dh(data); // Skip name of codec
+
+        // Initialise codecs
+
+        eckit::ScopedPtr<Codec> c;
+        if (bigEndianOutput == is_big_endian()) {
+            if (withMissing) {
+                c.reset(new CodecInt16Missing<SameByteOrder>);
+            } else {
+                c.reset(new CodecInt16<SameByteOrder>);
+            }
+        } else {
+            if (withMissing) {
+                c.reset(new CodecInt16Missing<OtherByteOrder>);
+            } else {
+                c.reset(new CodecInt16<OtherByteOrder>);
+            }
+        }
+
+        c->missingValue(customMissingValue);
+        EXPECT(!c->hasMissing());
+
+        // Statistics in writing order
+
+        c->gatherStats(baseVal + 0.0);
+        c->gatherStats(baseVal + 65535); // n.b. This triggers a missingValue in Int16Missing. See ODB-369
+        c->gatherStats(baseVal + 32767);
+        c->gatherStats(baseVal + 32768);
+        c->gatherStats(baseVal + 12345);
+        EXPECT(!c->hasMissing());
+        c->gatherStats(customMissingValue);
+        EXPECT(c->hasMissing()); // See ODB-371
+
+        // Encode the header to the data stream
+
+        if (bigEndianOutput == is_big_endian()) {
+            if (withMissing) {
+                static_cast<CodecInt16<SameByteOrder>*>(c.get())->save(&dh);
+            } else {
+                static_cast<CodecInt16Missing<SameByteOrder>*>(c.get())->save(&dh);
+            }
+        } else {
+            if (withMissing) {
+                static_cast<CodecInt16<OtherByteOrder>*>(c.get())->save(&dh);
+            } else {
+                static_cast<CodecInt16Missing<OtherByteOrder>*>(c.get())->save(&dh);
+            }
+        }
+
+        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+
+        // Encode the data to wherever we want it
+        // Expect 2 bytes per element
+
+        // n.b. If we directly supply the value that is equivalent to the internal missing value, it
+        //      is just treated as missing on read, without flagging hasMissing(). We do this here
+        //      just to demonstrate. See ODB-369
+
+        unsigned char* posNext;
+
+        EXPECT((posNext = c->encode(dh.get(), baseVal + 0.0)) == (dh.get() + 2));
+        dh.set(posNext);
+        EXPECT((posNext = c->encode(dh.get(), baseVal + 65535)) == (dh.get() + 2));
+        dh.set(posNext);
+        EXPECT((posNext = c->encode(dh.get(), baseVal + 32767)) == (dh.get() + 2));
+        dh.set(posNext);
+        EXPECT((posNext = c->encode(dh.get(), baseVal + 32768)) == (dh.get() + 2));
+        dh.set(posNext);
+        EXPECT((posNext = c->encode(dh.get(), baseVal + 12345)) == (dh.get() + 2));
+        dh.set(posNext);
+        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 2));
+        dh.set(posNext);
+
+        // Check we have the data we expect
+
+        size_t data_size = (6 * 2);
+        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+
+//        eckit::Log::info() << "DATA: " << std::endl;
+//        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
+//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//               eckit::Log::info() << "******************************" << std::endl;
 //        }
-//
-//        // Construct codec directly
-//
-//        {
-//            MockWriteDataHandle dh(data); // Skip name of codec
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                if (withMissing) {
-//                    c.reset(new CodecInt16Missing<SameByteOrder>);
-//                    static_cast<CodecInt16Missing<SameByteOrder>*>(c.get())->load(&dh);
-//                } else {
-//                    c.reset(new CodecInt16<SameByteOrder>);
-//                    static_cast<CodecInt16<SameByteOrder>*>(c.get())->load(&dh);
-//                }
-//            } else {
-//                if (withMissing) {
-//                    c.reset(new CodecInt16Missing<OtherByteOrder>);
-//                    static_cast<CodecInt16Missing<OtherByteOrder>*>(c.get())->load(&dh);
-//                } else {
-//                    c.reset(new CodecInt16<OtherByteOrder>);
-//                    static_cast<CodecInt16<OtherByteOrder>*>(c.get())->load(&dh);
-//                }
-//            }
-//            c->dataHandle(&dh);
-//
-//            EXPECT(dh.position() == eckit::Offset(28));
-//
-//            EXPECT(c->decode() == (double(-123.45) + 0));
-//            if (withMissing) {
-//                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
-//            } else {
-//                EXPECT(c->decode() == (double(-123.45) + 65535));
-//            }
-//            EXPECT(c->decode() == (double(-123.45) + 32767));
-//            EXPECT(c->decode() == (double(-123.45) + 32768));
-//            EXPECT(c->decode() == (double(-123.45) + 12345));
-//
-//            EXPECT(dh.position() == eckit::Offset(28 + (5 * 2)));
+
+        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+    }
+}
+
+
+CASE("8bit integers are stored with an offset. This need not (strictly) be integral!!") {
+
+    // n.b. we use a non-standard, non-integral minimum to demonstrate the offset behaviour.
+
+    // Use a curious, custom missingValue to show it is being used.
+
+    const double customMissingValue = 6.54565456545599971850917315786e-123;
+    const double baseVal = -5000.5;
+    const size_t expectedHdrSize = 28;
+
+    const char* expected_data[] = {
+
+        // Codec header
+        "\x01\x00\x00\x00",                  // has missing value
+        "\x00\x00\x00\x00\x80\x88\xb3\xc0",  // minimum = -5000.5
+        "\x00\x00\x00\x00\x80\x89\xb2\xc0",  // maximum = -5000.5 + 255
+        "\x04\x4f\xab\xa0\xe4\x4e\x91\x26",  // missing value = 6.54565456545599971850917315786e-123
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 4; i++) {
+
+        bool bigEndianOutput = (i % 2 == 0);
+
+        bool withMissing = (i > 1);
+
+//        eckit::Log::info() << "---------------------------------------------------------" << std::endl;
+//        eckit::Log::info() << "ITERATION: " << i << std::endl;
+//        eckit::Log::info() << "big endian: " << (bigEndianOutput ? "T" : "F") << std::endl;
+//        eckit::Log::info() << "with missing: " << (withMissing ? "T" : "F") << std::endl;
+//        eckit::Log::info() << "---------------------------------------------------------" << std::endl;
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : 8;
+            data.insert(data.end(), expected_data[j], expected_data[j] + len);
+            if (bigEndianOutput)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Add all of the data values
+
+        for (int n = 0; n < 256; n++) {
+            data.push_back(static_cast<unsigned char>(n));
+        }
+
+        // n.b. we can end up with garbage for the missing value... in this case it will be 0x88...
+        //      See ODB-371 ODB-370
+
+        data.push_back(withMissing ? 0xff : 0x88);
+
+        MockWriteDataHandle dh(data); // Skip name of codec
+
+        // Initialise the codecs
+
+        eckit::ScopedPtr<Codec> c;
+        if (bigEndianOutput == is_big_endian()) {
+            if (withMissing) {
+                c.reset(new CodecInt8Missing<SameByteOrder>);
+            } else {
+                c.reset(new CodecInt8<SameByteOrder>);
+            }
+        } else {
+            if (withMissing) {
+                c.reset(new CodecInt8Missing<OtherByteOrder>);
+            } else {
+                c.reset(new CodecInt8<OtherByteOrder>);
+            }
+        }
+
+        c->missingValue(customMissingValue);
+        EXPECT(!c->hasMissing());
+
+        // Statistics in writing order
+
+        // n.b. n == 255 will be silently promoted to missing if using Int8Missing. See ODB-369
+        for (size_t n = 0; n < 256; n++) {
+            c->gatherStats(baseVal + n);
+        }
+        EXPECT(!c->hasMissing());
+        c->gatherStats(customMissingValue);
+        EXPECT(c->hasMissing()); // See ODB-71
+
+        // Encode the header to the data stream
+
+        if (bigEndianOutput == is_big_endian()) {
+            if (withMissing) {
+                static_cast<CodecInt8<SameByteOrder>*>(c.get())->save(&dh);
+            } else {
+                static_cast<CodecInt8Missing<SameByteOrder>*>(c.get())->save(&dh);
+            }
+        } else {
+            if (withMissing) {
+                static_cast<CodecInt8<OtherByteOrder>*>(c.get())->save(&dh);
+            } else {
+                static_cast<CodecInt8Missing<OtherByteOrder>*>(c.get())->save(&dh);
+            }
+        }
+
+        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+
+        // Encode the data to wherever we want it
+        // Expect 1 bytes per element
+
+        // n.b. If we directly supply the value that is equivalent to the internal missing value, it
+        //      is just treated as missing on read, without flagging hasMissing(). We do this here
+        //      just to demonstrate. See ODB-369
+
+        unsigned char* posNext;
+
+        for (size_t n = 0; n < 256; n++) {
+            EXPECT((posNext = c->encode(dh.get(), baseVal + n)) == (dh.get() + 1));
+            dh.set(posNext);
+        }
+        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
+        dh.set(posNext);
+
+        // Check we have the data we expect
+
+        size_t data_size = (257 * 1);
+        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+
+//        eckit::Log::info() << "DATA: " << std::endl;
+//        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
+//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//               eckit::Log::info() << "******************************" << std::endl;
 //        }
-//
-//        // Construct codec from factory
-//
-//        size_t hdrSize = prepend_codec_selection_header(data, withMissing ? "int16_missing" : "int16", bigEndianOutput);
-//
-//        {
-//            MockWriteDataHandle dh(data);
-//
-//            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-//            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                c.reset(Codec::loadCodec(ds_same));
-//            } else {
-//                c.reset(Codec::loadCodec(ds_other));
-//            }
-//            c->dataHandle(&dh);
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
-//
-//            EXPECT(c->decode() == (double(-123.45) + 0));
-//            if (withMissing) {
-//                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
-//            } else {
-//                EXPECT(c->decode() == (double(-123.45) + 65535));
-//            }
-//            EXPECT(c->decode() == (double(-123.45) + 32767));
-//            EXPECT(c->decode() == (double(-123.45) + 32768));
-//            EXPECT(c->decode() == (double(-123.45) + 12345));
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + (5 * 2)));
-//        }
-//    }
-//}
-//
-//
-//CASE("8bit integers are stored with an offset. This need not (strictly) be integral!!") {
-//
-//    // n.b. we use a non-standard, non-integral minimum to demonstrate the offset behaviour.
-//
-//    // Use a curious, custom missingValue to show it is being used.
-//
-//    const char* expected_data[] = {
-//
-//        // Codec header
-//        "\x00\x00\x00\x00",                  // no missing value
-//        "\x00\x00\x00\x00\x80\x88\xb3\xc0",  // minimum = -5000.5
-//        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
-//        "\x04\x4f\xab\xa0\xe4\x4e\x91\x26",  // missing value = 6.54565456545599971850917315786e-123
-//    };
-//
-//    // Loop through endiannesses for the source data
-//
-//    for (int i = 0; i < 4; i++) {
-//
-//        bool bigEndianOutput = (i % 2 == 0);
-//
-//        bool withMissing = (i > 1);
-//
-//        std::vector<unsigned char> data;
-//
-//        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
-//            size_t len = (j == 0) ? 4 : 8;
-//            data.insert(data.end(), expected_data[j], expected_data[j] + len);
-//            if (bigEndianOutput)
-//                std::reverse(data.end()-len, data.end());
-//        }
-//
-//        // Add all of the data values
-//
-//        for (int n = 0; n < 256; n++) {
-//            data.push_back(static_cast<unsigned char>(n));
-//        }
-//
-//        // Construct codec directly
-//
-//        {
-//            MockWriteDataHandle dh(data); // Skip name of codec
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                if (withMissing) {
-//                    c.reset(new CodecInt8Missing<SameByteOrder>);
-//                    static_cast<CodecInt8Missing<SameByteOrder>*>(c.get())->load(&dh);
-//                } else {
-//                    c.reset(new CodecInt8<SameByteOrder>);
-//                    static_cast<CodecInt8<SameByteOrder>*>(c.get())->load(&dh);
-//                }
-//            } else {
-//                if (withMissing) {
-//                    c.reset(new CodecInt8Missing<OtherByteOrder>);
-//                    static_cast<CodecInt8Missing<OtherByteOrder>*>(c.get())->load(&dh);
-//                } else {
-//                    c.reset(new CodecInt8<OtherByteOrder>);
-//                    static_cast<CodecInt8<OtherByteOrder>*>(c.get())->load(&dh);
-//                }
-//            }
-//            c->dataHandle(&dh);
-//
-//            EXPECT(dh.position() == eckit::Offset(28));
-//
-//            for (int n = 0; n < 255; n++) {
-//                EXPECT(c->decode() == (double(-5000.5) + n));
-//            }
-//
-//            EXPECT(c->decode() == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
-//
-//            EXPECT(dh.position() == eckit::Offset(28 + 256));
-//        }
-//
-//        // Construct codec from factory
-//
-//        size_t hdrSize = prepend_codec_selection_header(data, withMissing ? "int8_missing" : "int8", bigEndianOutput);
-//
-//        {
-//            MockWriteDataHandle dh(data);
-//
-//            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-//            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
-//
-//            eckit::ScopedPtr<Codec> c;
-//            if (bigEndianOutput == is_big_endian()) {
-//                c.reset(Codec::loadCodec(ds_same));
-//            } else {
-//                c.reset(Codec::loadCodec(ds_other));
-//            }
-//            c->dataHandle(&dh);
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
-//
-//            for (int n = 0; n < 255; n++) {
-//                EXPECT(c->decode() == (double(-5000.5) + n));
-//            }
-//
-//            EXPECT(c->decode() == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
-//
-//            EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 256));
-//        }
-//    }
-//}
-//
-//
+
+        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+    }
+}
+
+
 //CASE("Character strings can be stored in a flat list, and indexed") {
 //
 //    // n.b. no missing values
