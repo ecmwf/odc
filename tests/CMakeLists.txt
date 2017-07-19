@@ -310,6 +310,7 @@ list( APPEND odb_api_lest_tests
     test_minmax
     test_select_iterator
     test_concatenated_odbs
+    test_encode_odb
     test_decode_odb
     test_codecs_write
     test_codecs_read
