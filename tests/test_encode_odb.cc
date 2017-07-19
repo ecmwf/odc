@@ -21,7 +21,7 @@ using namespace eckit::testing;
 
 // ------------------------------------------------------------------------------------------------------
 
-CASE("Data of all available types is encoded correctly") {
+CASE("Columns are initialised correctly for writing") {
 
     eckit::Buffer buf(4096);
     eckit::MemoryHandle dh(buf);
@@ -45,6 +45,45 @@ CASE("Data of all available types is encoded correctly") {
     writer->setColumn(7, "str2", odb::STRING);
     writer->setColumn(8, "bitf2", odb::BITFIELD);
     writer->setColumn(9, "dbl2", odb::DOUBLE);
+
+    // Check that the columns are correctly created
+
+    EXPECT(writer->columns()[0]->type() == odb::INTEGER);
+    EXPECT(writer->columns()[1]->type() == odb::REAL);
+    EXPECT(writer->columns()[2]->type() == odb::STRING);
+    EXPECT(writer->columns()[3]->type() == odb::BITFIELD);
+    EXPECT(writer->columns()[4]->type() == odb::DOUBLE);
+    EXPECT(writer->columns()[5]->type() == odb::INTEGER);
+    EXPECT(writer->columns()[6]->type() == odb::REAL);
+    EXPECT(writer->columns()[7]->type() == odb::STRING);
+    EXPECT(writer->columns()[8]->type() == odb::BITFIELD);
+    EXPECT(writer->columns()[9]->type() == odb::DOUBLE);
+
+    // ... with the correct name
+
+    EXPECT(writer->columns()[0]->name() == "int");
+    EXPECT(writer->columns()[1]->name() == "real");
+    EXPECT(writer->columns()[2]->name() == "str");
+    EXPECT(writer->columns()[3]->name() == "bitf");
+    EXPECT(writer->columns()[4]->name() == "dbl");
+    EXPECT(writer->columns()[5]->name() == "int2");
+    EXPECT(writer->columns()[6]->name() == "real2");
+    EXPECT(writer->columns()[7]->name() == "str2");
+    EXPECT(writer->columns()[8]->name() == "bitf2");
+    EXPECT(writer->columns()[9]->name() == "dbl2");
+
+    // ... and the correct default codecs
+
+    EXPECT(writer->columns()[0]->coder().name() == "int32");
+    EXPECT(writer->columns()[1]->coder().name() == "long_real");
+    EXPECT(writer->columns()[2]->coder().name() == "chars");
+    EXPECT(writer->columns()[3]->coder().name() == "int32");
+    EXPECT(writer->columns()[4]->coder().name() == "long_real");
+    EXPECT(writer->columns()[5]->coder().name() == "int32");
+    EXPECT(writer->columns()[6]->coder().name() == "long_real");
+    EXPECT(writer->columns()[7]->coder().name() == "chars");
+    EXPECT(writer->columns()[8]->coder().name() == "int32");
+    EXPECT(writer->columns()[9]->coder().name() == "long_real");
 }
 
 CASE("If out-of range columns are created, exceptions are thrown") {
