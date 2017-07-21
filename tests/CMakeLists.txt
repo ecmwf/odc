@@ -314,12 +314,13 @@ list( APPEND odb_api_lest_tests
     test_decode_odb
     test_codecs_write
     test_codecs_read
+    test_reencode_string_table
 )
 
 foreach( _test ${odb_api_lest_tests} )
     ecbuild_add_test(
         TARGET       ${_test}
-        SOURCES      ${_test}.cc TemporaryFiles.h
+        SOURCES      ${_test}.cc TemporaryFiles.h MockDataHandles.h
         TEST_DEPENDS get_odb_api_test_data
         INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
         LIBS         eckit Odb )

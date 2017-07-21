@@ -15,6 +15,8 @@
 
 #include "odb_api/Codec.h"
 
+#include "MockDataHandles.h"
+
 #include <time.h>
 #include <stdlib.h>
 
@@ -33,45 +35,6 @@ using namespace eckit::testing;
 using namespace odb::codec;
 using odb::SameByteOrder;
 using odb::OtherByteOrder;
-
-// ------------------------------------------------------------------------------------------------------
-
-class MockReadDataHandle : public eckit::DataHandle {
-
-public: // methods
-
-    MockReadDataHandle(const std::vector<unsigned char>& buffer) :
-        buffer_(buffer),
-        position_(0) {}
-    virtual ~MockReadDataHandle() {}
-
-    virtual eckit::Length openForRead() {
-        position_ = 0;
-        return static_cast<long long>(buffer_.size());
-    }
-
-    virtual long read(void *p, long n) {
-        ASSERT(n >= 0);
-        ASSERT(position_ + n <= buffer_.size());
-        ::memcpy(p, &buffer_[position_], static_cast<size_t>(n));
-        position_ += n;
-        return n;
-    }
-
-    virtual long write(const void*, long) { NOTIMP; }
-    virtual void close() {}
-    virtual void rewind() { NOTIMP; }
-    virtual eckit::Length estimate() { NOTIMP; }
-    virtual void openForWrite(const eckit::Length&) { NOTIMP; }
-    virtual void openForAppend(const eckit::Length&) { NOTIMP; }
-    virtual eckit::Offset position() { return eckit::Offset(position_); }
-    virtual void print(std::ostream& s) const { s << "MockReadDataHandle()"; }
-
-private:
-
-    const std::vector<unsigned char>& buffer_;
-    size_t position_;
-};
 
 // ------------------------------------------------------------------------------------------------------
 

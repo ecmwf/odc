@@ -15,6 +15,8 @@
 
 #include "odb_api/Codec.h"
 
+#include "MockDataHandles.h"
+
 #include <time.h>
 #include <stdlib.h>
 
@@ -33,58 +35,6 @@ using namespace eckit::testing;
 using namespace odb::codec;
 using odb::SameByteOrder;
 using odb::OtherByteOrder;
-
-// ------------------------------------------------------------------------------------------------------
-
-class MockWriteDataHandle : public eckit::DataHandle {
-
-public: // methods
-
-    MockWriteDataHandle(const std::vector<unsigned char>& buffer) :
-        buffer_(1024),
-        position_(0) {}
-    virtual ~MockWriteDataHandle() {}
-
-    virtual void openForWrite(const eckit::Length&) {
-        position_ = 0;
-    }
-
-    virtual long write(const void* p, long n) {
-        ASSERT(n >= 0);
-        ASSERT(position_ + n <= buffer_.size());
-        ::memcpy(&buffer_[position_], p, static_cast<size_t>(n));
-        position_ += n;
-        return n;
-    }
-
-    unsigned char* get() {
-        return &buffer_[position_];
-    }
-
-    const unsigned char* getBuffer() const {
-        return &buffer_[0];
-    }
-
-    void set(unsigned char* p) {
-        ASSERT(p >= &buffer_[0]);
-        ASSERT(p - &buffer_[0] < static_cast<long>(buffer_.size()));
-        position_ = static_cast<size_t>(p - &buffer_[0]);
-    }
-
-    virtual long read(void*, long) { NOTIMP; }
-    virtual void close() {}
-    virtual void rewind() { NOTIMP; }
-    virtual eckit::Length estimate() { NOTIMP; }
-    virtual eckit::Length openForRead() { NOTIMP; }
-    virtual void openForAppend(const eckit::Length&) { NOTIMP; }
-    virtual eckit::Offset position() { return eckit::Offset(position_); }
-    virtual void print(std::ostream& s) const { s << "MockWriteDataHandle()"; }
-
-private:
-
-    std::vector<unsigned char> buffer_;
-    size_t position_;
-};
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -163,7 +113,7 @@ CASE("Constant values consume no space in the output data buffer") {
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -245,7 +195,7 @@ CASE("constant strings consume no output data space") {
             // n.b. Don't swap string data around with endianness
         }
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -342,7 +292,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
         }
         data.push_back(0xff); // missing
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -450,7 +400,7 @@ CASE("real constant or missing value is not quite constant") {
         }
         data.push_back(0xff); // missing
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -523,7 +473,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
     // n.b. there are no missing values for CodecChars
 
-    const size_t expectedHdrSize = 28;
+    const size_t expectedHdrSize = 32;
 
     const char* expected_data[] = {
 
@@ -559,7 +509,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -656,7 +606,7 @@ CASE("long floating point values can include the missing data value") {
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -801,7 +751,7 @@ CASE("short floating point values can include the missing data value") {
         if (bigEndianOutput)
             std::reverse(data.end()-4, data.end());
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -947,7 +897,7 @@ CASE("32bit integers are as-is") {
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -1074,7 +1024,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
         if (bigEndianOutput)
             std::reverse(data.end()-2, data.end());
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
@@ -1217,7 +1167,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         data.push_back(withMissing ? 0xff : 0x88);
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise the codecs
 
@@ -1368,7 +1318,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
                 data.push_back(0);
         }
 
-        MockWriteDataHandle dh(data); // Skip name of codec
+        MockWriteDataHandle dh; // Skip name of codec
 
         // Initialise codecs
 
