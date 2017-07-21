@@ -114,6 +114,7 @@ if( HAVE_FORTRAN )
 endif()
 
 add_subdirectory( src )
+add_subdirectory( regressions )
 add_subdirectory( tests )
 
 ############################################################################################
