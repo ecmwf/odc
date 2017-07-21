@@ -42,22 +42,6 @@ private: // members
     eckit::PathName path_;
 };
 
-//----------------------------------------------------------------------------------------------------------------------
-
-class TemporaryODB : public TemporaryFile {
-
-public: // methods
-
-    template <typename InitFunc>
-    TemporaryODB(InitFunc f) {
-//        eckit::Timer t("Writing test.odb");
-        odb::Writer<> oda(path());
-        odb::Writer<>::iterator writer = oda.begin();
-        f(writer);
-    }
-};
-
-
 
 //----------------------------------------------------------------------------------------------------------------------
 

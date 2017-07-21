@@ -12,6 +12,7 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/testing/Test.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/eckit_config.h"
 
 #include "odb_api/Writer.h"
 #include "odb_api/Reader.h"
@@ -19,6 +20,13 @@
 
 using namespace eckit::testing;
 
+#if __cplusplus <= 199711L
+const float float_lowest = -std::numeric_limits<float>::max();
+const double double_lowest = -std::numeric_limits<double>::max();
+#else
+const float float_lowest = std::numeric_limits<float>::lowest();
+const double double_lowest = std::numeric_limits<double>::lowest();
+#endif
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -169,7 +177,7 @@ CASE("Data is encoded and read back correctly") {
 
     const float f1 = std::numeric_limits<float>::min();
     const float f2 = std::numeric_limits<float>::max();
-    const float f3 = std::numeric_limits<float>::lowest();
+    const float f3 = float_lowest;
     const float f4 = 0.0;
     const float f5 = static_cast<float>(654321.123);
     const float f6 = static_cast<float>(-123456.789e-21);
@@ -190,7 +198,7 @@ CASE("Data is encoded and read back correctly") {
 
     const double d1 = std::numeric_limits<double>::min();
     const double d2 = std::numeric_limits<double>::max();
-    const double d3 = std::numeric_limits<double>::lowest();
+    const double d3 = double_lowest;
     const double d4 = 0.0;
     const double d5 = -123456789.0123;
     const double d6 = 987654321.987e-56;

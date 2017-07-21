@@ -38,7 +38,7 @@ class ODBChecker {
 
 public: // types
 
-    typedef std::map<size_t, std::vector<CellData>> RowStore;
+    typedef std::map<size_t, std::vector<CellData> > RowStore;
 
 public: // methods
 

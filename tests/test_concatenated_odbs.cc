@@ -18,7 +18,7 @@
 #include "odb_api/Writer.h"
 #include "odb_api/Comparator.h"
 
-#include <cstdint>
+#include <stdint.h>
 
 using namespace eckit::testing;
 
@@ -31,75 +31,100 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
         // Construct four ODBs, with differing characteristics
 
-        TemporaryODB tmpODB1([](odb::Writer<>::iterator& writer) {
+        class TemporaryODB1 : public TemporaryFile {
+        public:
+            TemporaryODB1() {
+                odb::Writer<> oda(path());
+                odb::Writer<>::iterator writer = oda.begin();
 
-            writer->setNumberOfColumns(3);
-            writer->setColumn(0, "x", odb::REAL);
-            writer->setColumn(1, "y", odb::REAL);
-            writer->setColumn(2, "z", odb::INTEGER);
-            writer->writeHeader();
+                writer->setNumberOfColumns(3);
+                writer->setColumn(0, "x", odb::REAL);
+                writer->setColumn(1, "y", odb::REAL);
+                writer->setColumn(2, "z", odb::INTEGER);
+                writer->writeHeader();
 
-            for (size_t i = 1; i <= 2; i++) {
-                (*writer)[0] = i; // col 0
-                (*writer)[1] = i; // col 1
-                (*writer)[2] = i; // col 2
-                ++writer;
+                for (size_t i = 1; i <= 2; i++) {
+                    (*writer)[0] = i; // col 0
+                    (*writer)[1] = i; // col 1
+                    (*writer)[2] = i; // col 2
+                    ++writer;
+                }
             }
-        });
+        };
 
         // Change column names
 
-        TemporaryODB tmpODB2([](odb::Writer<>::iterator& writer) {
+        class TemporaryODB2 : public TemporaryFile {
+        public:
+            TemporaryODB2() {
+                odb::Writer<> oda(path());
+                odb::Writer<>::iterator writer = oda.begin();
 
-            writer->setNumberOfColumns(3);
-            writer->setColumn(0, "x", odb::REAL);
-            writer->setColumn(1, "y", odb::INTEGER);
-            writer->setColumn(2, "v", odb::REAL);
-            writer->writeHeader();
+                writer->setNumberOfColumns(3);
+                writer->setColumn(0, "x", odb::REAL);
+                writer->setColumn(1, "y", odb::INTEGER);
+                writer->setColumn(2, "v", odb::REAL);
+                writer->writeHeader();
 
-            for (size_t i = 1; i <= 2; i++) {
-                (*writer)[0] = i * 10; // col 0
-                (*writer)[1] = i * 100; // col 1
-                (*writer)[2] = i * 1000; // col 2
-                ++writer;
+                for (size_t i = 1; i <= 2; i++) {
+                    (*writer)[0] = i * 10; // col 0
+                    (*writer)[1] = i * 100; // col 1
+                    (*writer)[2] = i * 1000; // col 2
+                    ++writer;
+                }
             }
-        });
+        };
 
         // Increase number of columns
 
-        TemporaryODB tmpODB3([](odb::Writer<>::iterator& writer) {
+        class TemporaryODB3 : public TemporaryFile {
+        public:
+            TemporaryODB3() {
+                odb::Writer<> oda(path());
+                odb::Writer<>::iterator writer = oda.begin();
 
-            writer->setNumberOfColumns(4);
-            writer->setColumn(0, "x", odb::INTEGER);
-            writer->setColumn(1, "v", odb::REAL);
-            writer->setColumn(2, "y", odb::REAL);
-            writer->setColumn(3, "z", odb::REAL);
-            writer->writeHeader();
+                writer->setNumberOfColumns(4);
+                writer->setColumn(0, "x", odb::INTEGER);
+                writer->setColumn(1, "v", odb::REAL);
+                writer->setColumn(2, "y", odb::REAL);
+                writer->setColumn(3, "z", odb::REAL);
+                writer->writeHeader();
 
-            for (size_t i = 1; i <= 2; i++) {
-                (*writer)[0] = i * 10; // col 0
-                (*writer)[1] = i * 1000; // col 1
-                (*writer)[2] = i * 100; // col 2
-                (*writer)[3] = 13;     // col 3
-                ++writer;
+                for (size_t i = 1; i <= 2; i++) {
+                    (*writer)[0] = i * 10; // col 0
+                    (*writer)[1] = i * 1000; // col 1
+                    (*writer)[2] = i * 100; // col 2
+                    (*writer)[3] = 13;     // col 3
+                    ++writer;
+                }
             }
-        });
+        };
 
         // Decrease number of columns
 
-        TemporaryODB tmpODB4([](odb::Writer<>::iterator& writer) {
+        class TemporaryODB4 : public TemporaryFile {
+        public:
+            TemporaryODB4() {
+                odb::Writer<> oda(path());
+                odb::Writer<>::iterator writer = oda.begin();
 
-            writer->setNumberOfColumns(2);
-            writer->setColumn(0, "x", odb::REAL);
-            writer->setColumn(1, "v", odb::REAL);
-            writer->writeHeader();
+                writer->setNumberOfColumns(2);
+                writer->setColumn(0, "x", odb::REAL);
+                writer->setColumn(1, "v", odb::REAL);
+                writer->writeHeader();
 
-            for (size_t i = 1; i <= 2; i++) {
-                (*writer)[0] = i * 5; // col 0
-                (*writer)[1] = i * 7; // col 1
-                ++writer;
+                for (size_t i = 1; i <= 2; i++) {
+                    (*writer)[0] = i * 5; // col 0
+                    (*writer)[1] = i * 7; // col 1
+                    ++writer;
+                }
             }
-        });
+        };
+
+        TemporaryODB1 tmpODB1;
+        TemporaryODB2 tmpODB2;
+        TemporaryODB3 tmpODB3;
+        TemporaryODB4 tmpODB4;
 
         // Directly concatenate files (append them to the first one)
 

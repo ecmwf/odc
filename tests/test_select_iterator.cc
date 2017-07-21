@@ -32,22 +32,29 @@ CASE("Test reading with iterators") {
 SETUP("An odb file containing some pre-prepared data") {
 
     // Write (and clean up) a temporary ODB file
-    TemporaryODB tmpODB([](odb::Writer<>::iterator& writer) {
-        writer->setNumberOfColumns(3);
+    class TemporaryODB  : public TemporaryFile {
+    public:
+        TemporaryODB() {
+            odb::Writer<> oda(path());
+            odb::Writer<>::iterator writer = oda.begin();
 
-        writer->setColumn(0, "ifoo", odb::INTEGER);
-        writer->setColumn(1, "nbar", odb::REAL);
-        writer->setColumn(2, "string", odb::STRING);
+            writer->setNumberOfColumns(3);
+            writer->setColumn(0, "ifoo", odb::INTEGER);
+            writer->setColumn(1, "nbar", odb::REAL);
+            writer->setColumn(2, "string", odb::STRING);
+            writer->writeHeader();
 
-        writer->writeHeader();
-
-        for (size_t i = 1; i <= 10; i++) {
-            writer->data()[0] = i; // col 0
-            writer->data()[1] = i; // col 1
-            ++writer;
+            for (size_t i = 1; i <= 10; i++) {
+                writer->data()[0] = i; // col 0
+                writer->data()[1] = i; // col 1
+                ++writer;
+            }
         }
-    });
+    };
 
+    TemporaryODB tmpODB;
+
+#if __cplusplus > 199711L // C++11
     SECTION("Test select iterator for each") {
 
         odb::Select oda("select * from \"" + tmpODB.path() + "\";", tmpODB.path());
@@ -65,20 +72,6 @@ SETUP("An odb file containing some pre-prepared data") {
     }
 
 
-    SECTION("Test select data in explicit loop") {
-
-        odb::Select oda("select * from \"" + tmpODB.path() + "\";", tmpODB.path());
-
-        int count = 0;
-        for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it) {
-            ++count;
-            EXPECT((*it)[0] == count);
-            EXPECT((*it)[1] == count);
-        }
-        EXPECT(count == 10);
-    }
-
-
     SECTION("Test read iterator for_each") {
 
         odb::Reader oda(tmpODB.path());
@@ -92,6 +85,21 @@ SETUP("An odb file containing some pre-prepared data") {
             EXPECT(int(n) == count);
         });
 
+        EXPECT(count == 10);
+    }
+#endif
+
+
+    SECTION("Test select data in explicit loop") {
+
+        odb::Select oda("select * from \"" + tmpODB.path() + "\";", tmpODB.path());
+
+        int count = 0;
+        for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it) {
+            ++count;
+            EXPECT((*it)[0] == count);
+            EXPECT((*it)[1] == count);
+        }
         EXPECT(count == 10);
     }
 
@@ -168,20 +176,30 @@ CASE("Test bugfix 01, quote <<UnitTest problem fixed with p4 change 23687>>") {
 
 CASE("Test bugfix 02, quote <<UnitTest problem fixed with p4 change 23687>>") {
 
-    const std::vector<double> VALUE{1, 2, 3};
+    std::vector<double> VALUE;
+    VALUE.push_back(1);
+    VALUE.push_back(2);
+    VALUE.push_back(3);
+
+    class TemporaryODB : public TemporaryFile {
+    public:
+        TemporaryODB(const std::vector<double>& values) {
+            odb::Writer<> oda(path());
+            odb::Writer<>::iterator writer = oda.begin();
+
+            writer->setNumberOfColumns(1);
+            writer->setColumn(0, "value", odb::INTEGER);
+            writer->writeHeader();
+
+            for (size_t i = 0; i < values.size(); ++i) {
+                (*writer)[0] = values[i];
+                ++writer;
+            }
+        }
+    };
 
     // Write (and clean up) a temporary ODB file
-    TemporaryODB tmpODB([&](odb::Writer<>::iterator& writer) {
-        writer->setNumberOfColumns(1);
-
-        writer->setColumn(0, "value", odb::INTEGER);
-        writer->writeHeader();
-
-        for (size_t i = 0; i < VALUE.size(); ++i) {
-            (*writer)[0] = VALUE[i];
-            ++writer;
-        }
-    });
+    TemporaryODB tmpODB(VALUE);
 
     odb::Select oda("select * from \"" + tmpODB.path() + "\";", tmpODB.path());
 
