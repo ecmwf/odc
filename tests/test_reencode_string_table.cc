@@ -89,12 +89,12 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // String data (prepended with lengths)
         // length, data, "cnt (discarded)", index
 
+        "\x08\x00\x00\x00", "ghijklmn",     "\x00\x00\x00\x00", "\x00\x00\x00\x00",
+        "\x0c\x00\x00\x00", "uvwxyzabcdef", "\x00\x00\x00\x00", "\x01\x00\x00\x00", // too long
+        "\x08\x00\x00\x00", "opqrstuv",     "\x00\x00\x00\x00", "\x02\x00\x00\x00",
         "\x02\x00\x00\x00", "ab",           "\x00\x00\x00\x00", "\x03\x00\x00\x00", // This string is too short
         "\x06\x00\x00\x00", "ghijkl",       "\x00\x00\x00\x00", "\x04\x00\x00\x00",
         "\x08\x00\x00\x00", "mnopqrst",     "\x00\x00\x00\x00", "\x05\x00\x00\x00", // 8-byte length
-        "\x0c\x00\x00\x00", "uvwxyzabcdef", "\x00\x00\x00\x00", "\x01\x00\x00\x00", // too long
-        "\x08\x00\x00\x00", "ghijklmn",     "\x00\x00\x00\x00", "\x00\x00\x00\x00",
-        "\x08\x00\x00\x00", "opqrstuv",     "\x00\x00\x00\x00", "\x02\x00\x00\x00"
     };
 
     // Loop throumgh endiannesses for the source data
@@ -173,7 +173,22 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         // Check that the data is the same both times!
 
-        EXPECT(::memcmp(dh_write.getBuffer(), &data[0], data.size()) == 0);
+        EXPECT(dh_write.position() == eckit::Offset(148));
+
+//        eckit::Log::info() << "DATA: " << std::endl;
+//        for (size_t n = 0; n < data.size(); n++) {
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh_write.getBuffer()[n]) << std::endl;
+//           if (int(data[n]) != int(dh_write.getBuffer()[n]))
+//               eckit::Log::info() << "******************************" << std::endl;
+//        }
+
+        // The header should be correctly re-encoded.
+        EXPECT(::memcmp(dh_write.getBuffer(), &data[0], 148) == 0);
+
+        // We haven't encoded the data itself
+        for (size_t i = 148; i < 154; i++) {
+            EXPECT(dh_write.getBuffer()[i] == 0);
+        }
     }
 }
 
