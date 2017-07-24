@@ -338,9 +338,9 @@ CASE("Pathological data for integral codecs is correctly encoded") {
         bool withMissing = (i % 2 == 1);
         bool bits16 = (i > 1);
 
-        eckit::Log::info() << "iteration: " << i
-                           << (withMissing ? "T":"F")
-                           << (bits16 ? "T":"F") << std::endl;
+//        eckit::Log::info() << "iteration: " << i
+//                           << (withMissing ? "T":"F")
+//                           << (bits16 ? "T":"F") << std::endl;
 
         int32_t i1 = 12345;
         int32_t i2 = 12345 + (bits16 ? 0xffff : 0xff);
