@@ -14,6 +14,15 @@
 
 #include "odb_api/Reader.h"
 
+// Some of the math.h/cmath functions are not clean when switching to C++11
+#if __cplusplus <= 199711L
+#include <math.h>
+#else
+#include <cmath>
+#define fabs(x) std::fabs((x))
+#define modf(x) std::modf((x))
+#endif
+
 using namespace eckit::testing;
 using eckit::types::is_approximately_equal;
 
@@ -158,7 +167,7 @@ public: // methods
 
     ~ODBChecker() {}
 
-    void checkRow(lest::env& lest_env, size_t num, const odb::Reader::iterator& row) {
+    void checkRow(size_t num, const odb::Reader::iterator& row) {
 
         if (data_.find(num) != data_.end()) {
             std::vector<CellData>& reference(data_[num]);
@@ -175,7 +184,7 @@ public: // methods
                     EXPECT(reference[i].value == s);
                 } else if (reference[i].value.isNumber()) {
                     double intpart;
-                    EXPECT(std::modf(row->data()[i], &intpart) == 0.0);
+                    EXPECT(modf(row->data()[i], &intpart) == 0.0);
                     EXPECT(static_cast<long long>(reference[i].value) == static_cast<long long>(intpart));
                 } else if (reference[i].value.isDouble()) {
                     EXPECT(is_approximately_equal(static_cast<double>(reference[i].value), row->data()[i],
@@ -247,7 +256,7 @@ CASE("The correct data is present in a selection of random rows") {
     size_t count = 0;
 
     for (; it != in.end() && count <= biggestRow; ++it) {
-        checker.checkRow(lest_env, count, it);
+        checker.checkRow(count, it);
         count++;
     }
 }

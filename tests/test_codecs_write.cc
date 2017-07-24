@@ -479,9 +479,9 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         // Codec header
         "\x00\x00\x00\x00",                         // 0 = hasMissing
-        "\x00\x00\x00\x00\x00\x00\x00\x00",         // min = 987654321.9876 (big-endian)
-        "\x00\x00\x00\x00\x00\x00\x00\x00",         // max = 987654321.9876 (big-endian)
-        "\x00\x00\x00\x00\x00\x00\x00\x00",         // missingValue = -2147483647
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // min = 987654321.9876 (big-endian) // UNUSED
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // max = 987654321.9876 (big-endian) // UNUSED
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // missingValue = -2147483647        // UNUSED
         "\x00\x00\x00\x00",                         // Unused 0 value required by chars codec
 
         // String data
@@ -554,9 +554,15 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         // Check we have the data we expect
 
+        // n.b. We exclude the min/max/missing section of the header. This is not used for reading
+        //      CodecChars (at the moment), and the existing codec does odd things. We don't want
+        //      to code this behaviour into a test, as that would be weird.
+
         size_t dataSize = (8 * 5);
+
         EXPECT(dh.position() == eckit::Offset(expectedHdrSize + dataSize));
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + dataSize) == 0);
+        EXPECT(::memcmp(&data[0], dh.getBuffer(), 4) == 0);
+        EXPECT(::memcmp(&data[28], &dh.getBuffer()[28], expectedHdrSize + dataSize - 28) == 0);
     }
 }
 
@@ -1273,12 +1279,12 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // The order of these is a matter of implementation detail of the internal "hash table"
         // This is what happens to happen in current ODB-API
 
-        "\x02\x00\x00\x00", "ab",           "\x01\x00\x00\x00", "\x00\x00\x00\x00", // This string is too short
-        "\x08\x00\x00\x00", "opqrstuv",     "\x01\x00\x00\x00", "\x05\x00\x00\x00",
-        "\x08\x00\x00\x00", "ghijklmn",     "\x01\x00\x00\x00", "\x04\x00\x00\x00",
-        "\x06\x00\x00\x00", "ghijkl",       "\x01\x00\x00\x00", "\x01\x00\x00\x00",
-        "\x08\x00\x00\x00", "uvwxyzab",     "\x01\x00\x00\x00", "\x03\x00\x00\x00", // n.b. truncated.
-        "\x08\x00\x00\x00", "mnopqrst",     "\x01\x00\x00\x00", "\x02\x00\x00\x00", // 8-byte length
+        "\x02\x00\x00\x00", "ab",           "\x00\x00\x00\x00", "\x00\x00\x00\x00", // This string is too short
+        "\x06\x00\x00\x00", "ghijkl",       "\x00\x00\x00\x00", "\x01\x00\x00\x00",
+        "\x08\x00\x00\x00", "mnopqrst",     "\x00\x00\x00\x00", "\x02\x00\x00\x00", // 8-byte length
+        "\x08\x00\x00\x00", "uvwxyzab",     "\x00\x00\x00\x00", "\x03\x00\x00\x00", // n.b. truncated.
+        "\x08\x00\x00\x00", "ghijklmn",     "\x00\x00\x00\x00", "\x04\x00\x00\x00",
+        "\x08\x00\x00\x00", "opqrstuv",     "\x00\x00\x00\x00", "\x05\x00\x00\x00",
     };
 
     // Loop through endiannesses for the source data

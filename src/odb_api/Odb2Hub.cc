@@ -13,7 +13,6 @@
 #include "odb_api/odbcapi.h"
 #include "odb_api/SQLBitfield.h"
 #include "odb_api/DataStream.h"
-#include "odb_api/HashTable.h"
 #include "odb_api/Codec.h"
 #include "odb_api/Column.h"
 #include "odb_api/MetaData.h"

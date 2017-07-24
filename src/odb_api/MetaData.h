@@ -105,9 +105,12 @@ template<typename DATASTREAM>
 void MetaData::save(DATASTREAM &f) const
 {
 	int32_t count = size();
-	f.writeInt32(count);
-	for(size_t i = 0; i < size(); i++)
-		at(i)->save(f);
+    eckit::Log::info() << "Saving MetaData, " << count << " columns" << std::endl;
+    f.writeInt32(count);
+    for(size_t i = 0; i < size(); i++) {
+        eckit::Log::info() << "COLUMN: " << i << ", " << at(i)->name() << ", " << at(i)->coder().name() << std::endl;
+        at(i)->save(f);
+    }
 }
 
 template<typename DATASTREAM>

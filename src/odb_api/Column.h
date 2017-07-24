@@ -20,7 +20,6 @@ namespace eckit { class DataHandle; }
 namespace odb {
 
 class Reader;
-class HashTable;
 class MetaData;
 
 class Column {

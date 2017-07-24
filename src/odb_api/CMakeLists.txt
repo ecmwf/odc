@@ -204,8 +204,6 @@ FunctionVAR.cc
 FunctionVAR.h
 GribCodes.cc
 GribCodes.h
-HashTable.cc
-HashTable.h
 Header.cc
 Header.h
 InMemoryDataHandle.cc

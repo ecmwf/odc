@@ -78,7 +78,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 
 			case STRING:
 				{
-					n = col.coder().name() == "constant_string" ? 1 : col.coder().hashTable().nextIndex();
+                    n = col.coder().numStrings();
 					if(n == 1)
 						codec = "constant_string";
 					else if(n < 256)
@@ -86,9 +86,11 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 					else if(n < 65536)
 						codec = "int16_string";
 
+
 					Codec * newCodec = Codec::findCodec<DATASTREAM>(codec, false);
-					if (n > 1)
-						newCodec->hashTable(col.coder().giveHashTable());
+                    if (n > 1) {
+                        newCodec->copyStrings(col.coder());
+                    }
 					col.coder(newCodec);
 					col.hasMissing(hasMissing);
 					col.missingValue(missing);

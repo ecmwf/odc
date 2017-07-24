@@ -15,7 +15,6 @@
 #include <limits>
 
 #include "odb_api/CodecFactory.h"
-#include "odb_api/HashTable.h"
 #include "odb_api/MDI.h"
 
 namespace eckit { class DataHandle; }
@@ -25,7 +24,6 @@ namespace odb {
 class Reader;
 class SameByteOrder;
 class OtherByteOrder;
-class HashTable;
 
 namespace codec {
 
@@ -69,14 +67,9 @@ public:
 	void missingValue(double v); 
 	double missingValue() const { return missingValue_; } 
 
-	// Use it if you KNOW the codec encodes a std::string type column.
-	virtual HashTable& hashTable();
-
-	// Use it if you KNOW the codec encodes a std::string type column.
-	virtual HashTable* giveHashTable();
-
-	// Use it if you KNOW the codec encodes a std::string type column.
-	virtual void hashTable(HashTable *);
+    // Some special functions for string handling inside the CodecOptimizer
+    virtual size_t numStrings() { NOTIMP; }
+    virtual void copyStrings(Codec& rhs) { NOTIMP; }
 
 	virtual void print(std::ostream& s) const;
 
@@ -162,6 +155,8 @@ public:
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
 	virtual void print(std::ostream& s) const;
+
+    virtual size_t numStrings() { return 1; }
 
 	void load(eckit::DataHandle *dh)
 	{
@@ -262,26 +257,33 @@ public:
 
 	virtual void print(std::ostream& s) const;
 
-	virtual HashTable& hashTable();
-	virtual void hashTable(HashTable *ht);
-	virtual HashTable* giveHashTable();
-
 	void gatherStats(double v);
 	void load(eckit::DataHandle *dh);
 	void save(eckit::DataHandle *dh);
+
+    virtual size_t numStrings() { return strings_.size(); }
+    virtual void copyStrings(Codec& rhs) {
+        CodecChars<BYTEORDER>* c = dynamic_cast<CodecChars<BYTEORDER>*>(&rhs);
+        ASSERT(c != 0);
+        strings_ = c->strings_;
+        stringLookup_ = c->stringLookup_;
+    }
 
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
 protected:
-	HashTable *hashTable_;
+    std::map<std::string, size_t> stringLookup_;
+    std::vector<std::string> strings_;
+    bool storeStringTable_;
 };
 
 template<typename BYTEORDER>
 Codec* CodecChars<BYTEORDER>::clone()
 {
 	CodecChars* c = static_cast<CodecChars*>(this->Codec::clone());
-	*(c->hashTable_) = *hashTable_;
+    c->stringLookup_ = stringLookup_;
+    c->strings_ = strings_;
 	ASSERT(c->min() == this->min());
 	ASSERT(c->max() == this->max());
 	//hashTable_->dumpTable(eckit::Log::info());
@@ -410,8 +412,11 @@ private:
 template<typename BYTEORDER>
 class CodecInt16String : public CodecChars<BYTEORDER> {
 public:
-	CodecInt16String() : CodecChars<BYTEORDER>(), intCodec()
+    CodecInt16String() :
+        CodecChars<BYTEORDER>(),
+        intCodec()
 	{
+        this->storeStringTable_ = true;
 		this->name_ = "int16_string";
 		this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI();
 		intCodec.min(0);
@@ -448,8 +453,10 @@ Codec* CodecInt16String<BYTEORDER>::clone()
 template<typename BYTEORDER>
 class CodecInt8String : public CodecChars<BYTEORDER> {
 public:
-	CodecInt8String() : CodecChars<BYTEORDER>(), intCodec() 
-	{
+    CodecInt8String() :
+        CodecChars<BYTEORDER>(),
+        intCodec() {
+        this->storeStringTable_ = true;
 		this->name_ = "int8_string";
 		this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI();
 		intCodec.min(0);
@@ -487,41 +494,61 @@ Codec* CodecInt8String<BYTEORDER>::clone()
 template<typename BYTEORDER>
 void CodecChars<BYTEORDER>::gatherStats(double v) 
 {
+    size_t len = ::strnlen(reinterpret_cast<const char*>(&v), 8);
+    std::string s(reinterpret_cast<const char*>(&v), len);
+
 	char buf[255];
 	memcpy(buf, &v, sizeof(double));
 	buf[sizeof(double)] = 0;
-	hashTable_->store(buf);
+
+    if (stringLookup_.find(s) == stringLookup_.end()) {
+        size_t index = strings_.size();
+        strings_.push_back(s);
+        stringLookup_[s] = index;
+    }
 
 	// In case the column is const, the const value will be copied and used by the optimized codec.
 	min_ = v;
 }
 
 template<typename BYTEORDER>
-CodecChars<BYTEORDER>::CodecChars() : Codec("chars"), hashTable_(new HashTable) {}
+CodecChars<BYTEORDER>::CodecChars() :
+    Codec("chars"),
+    storeStringTable_(false) {}
 
 template<typename BYTEORDER>
-CodecChars<BYTEORDER>::~CodecChars() { delete hashTable_; }
-
-template<typename BYTEORDER>
-HashTable& CodecChars<BYTEORDER>::hashTable() { return *hashTable_; }
-
-template<typename BYTEORDER>
-void CodecChars<BYTEORDER>::hashTable(HashTable *ht) { delete hashTable_; hashTable_ = ht; }
-
-template<typename BYTEORDER>
-HashTable* CodecChars<BYTEORDER>::giveHashTable()
-{
-	HashTable *ret = hashTable_;
-	hashTable_ = 0;
-	return ret;
-}
+CodecChars<BYTEORDER>::~CodecChars() {}
 
 template<typename BYTEORDER>
 void CodecChars<BYTEORDER>::load(eckit::DataHandle *dh)
 {
     Codec::loadBasics<BYTEORDER>(dh);
 	DataStream<BYTEORDER> ds(dh);
-	hashTable_->load(ds);
+
+    // Load the table of strings
+    // This is based on the old-style hash-table storage, so it isn't a trivial list of strings
+    int32_t numStrings;
+    ds.readInt32(numStrings);
+    ASSERT(numStrings >= 0);
+
+    strings_.resize(numStrings);
+
+    for (size_t i = 0; i < size_t(numStrings); i++) {
+        std::string s;
+        ds.readString(s);
+
+        int32_t cnt;
+        ds.readInt32(cnt);
+
+        int32_t index;
+        ds.readInt32(index);
+
+        ASSERT(index < numStrings);
+        strings_[index] = s;
+    }
+
+    // Ensure that the string lookup is EMPTY. We don't use it after reading
+    ASSERT(stringLookup_.size() == 0);
 }
 
 template<typename BYTEORDER>
@@ -529,7 +556,24 @@ void CodecChars<BYTEORDER>::save(eckit::DataHandle *dh)
 {
 	Codec::saveBasics<BYTEORDER>(dh);
 	DataStream<BYTEORDER> ds(dh);
-	hashTable_->save(ds);
+
+    if (storeStringTable_) {
+
+        int32_t numStrings = strings_.size();
+        ds.writeInt32(numStrings);
+
+        for (size_t i = 0; i < strings_.size(); i++) {
+            ds.writeString(strings_[i]);
+            ds.writeInt32(0); // "cnt" field is not used.
+            ds.writeInt32(i);
+        }
+
+    } else {
+
+        // Note that there are zero strings to follow
+        int32_t zeroStrings = 0;
+        ds.writeInt32(zeroStrings);
+    }
 }
 
 //template<> Codec* Codec::findCodec<SameByteOrder>(const std::string& name) { findCodec(name, false); }
@@ -665,54 +709,55 @@ double CodecInt8Missing<BYTEORDER>::decode()
 }
 
 template<typename BYTEORDER>
-unsigned char* CodecInt8String<BYTEORDER>::encode(unsigned char* p,double d)
-{
-	char buf[255];
-	memcpy(buf, &d, sizeof(double));
-	buf[sizeof(double)] = 0;
-	return intCodec.encode(p, this->hashTable_->findIndex(buf));
+unsigned char* CodecInt8String<BYTEORDER>::encode(unsigned char* p, double d) {
+
+    size_t len = ::strnlen(reinterpret_cast<const char*>(&d), 8);
+    std::string s(reinterpret_cast<const char*>(&d), len);
+
+    std::map<std::string, size_t>::const_iterator it = this->stringLookup_.find(s);
+    ASSERT(it != this->stringLookup_.end());
+
+    return intCodec.encode(p, it->second);
 }
 
 template<typename BYTEORDER>
-double CodecInt8String<BYTEORDER>::decode()
-{
-	int i    = intCodec.decode();
-	double d;
-	char buf[255] = {0,};
+double CodecInt8String<BYTEORDER>::decode() {
 
-	ASSERT(i < this->hashTable_->nextIndex());
-	
-	const char* s = this->hashTable_->strings()[i].c_str();
-	strncpy(buf, s, sizeof(d));
+    int i = intCodec.decode();
 
-	memcpy(&d, buf, sizeof(d));
+    ASSERT(i < this->strings_.size());
+    const std::string& s(this->strings_[i]);
+
+    double d = 0;
+
+    ::memcpy(reinterpret_cast<char*>(&d), &s[0], std::min(s.length(), sizeof(d)));
 	return d;
-
 }
 
 template<typename BYTEORDER>
-unsigned char* CodecInt16String<BYTEORDER>::encode(unsigned char* p,double d)
-{
-	char buf[255];
-	memcpy(buf, &d, sizeof(double));
-	buf[sizeof(double)] = 0;
-	return intCodec.encode(p, this->hashTable_->findIndex(buf));
+unsigned char* CodecInt16String<BYTEORDER>::encode(unsigned char* p, double d) {
+
+    size_t len = ::strnlen(reinterpret_cast<const char*>(&d), 8);
+    std::string s(reinterpret_cast<const char*>(&d), len);
+
+    std::map<std::string, size_t>::const_iterator it = this->stringLookup_.find(s);
+    ASSERT(it != this->stringLookup_.end());
+
+    return intCodec.encode(p, it->second);
 }
 
 template<typename BYTEORDER>
-double CodecInt16String<BYTEORDER>::decode()
-{
-	int i = intCodec.decode();
-	double d;
-	char buf[255] = {0,};
+double CodecInt16String<BYTEORDER>::decode() {
 
-	ASSERT(i < this->hashTable_->nextIndex());
-	
-	const char* s = this->hashTable_->strings()[i].c_str();
-	strncpy(buf, s, sizeof(d));
+    int i = intCodec.decode();
 
-	memcpy(&d, buf, sizeof(d));
-	return d;
+    ASSERT(i < this->strings_.size());
+    const std::string& s(this->strings_[i]);
+
+    double d = 0;
+
+    ::memcpy(reinterpret_cast<char*>(&d), &s[0], std::min(s.length(), sizeof(d)));
+    return d;
 }
 
 template<typename BYTEORDER>
@@ -779,7 +824,7 @@ template<typename BYTEORDER>
 void CodecChars<BYTEORDER>::print(std::ostream& s) const
 {
 	s << this->name()
-	<< ", #words=" << this->hashTable_->nextIndex();
+    << ", #words=" << this->strings_.size();
 }
 
 template<typename BYTEORDER>
