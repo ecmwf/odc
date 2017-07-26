@@ -835,10 +835,22 @@ CASE("short floating point values can include the missing data value") {
         dh.set(posNext);
         EXPECT((posNext = c->encode(dh.get(), 654321.123)) == (dh.get() + 4));
         dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), 1.17549435082229e-38)) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), -3.40282346638529e+38)) == (dh.get() + 4));
-        dh.set(posNext);
+
+        size_t offsetMissing = 0;
+        if (secondCodec) {
+            EXPECT((posNext = c->encode(dh.get(), 1.17549435082229e-38)) == (dh.get() + 4));
+            dh.set(posNext);
+            EXPECT_THROWS_AS(c->encode(dh.get(), -3.40282346638529e+38), eckit::AssertionFailed);
+            offsetMissing = dh.position();
+            dh.set(dh.get() + 4);
+        } else {
+            EXPECT_THROWS_AS(c->encode(dh.get(), 1.17549435082229e-38), eckit::AssertionFailed);
+            offsetMissing = dh.position();
+            dh.set(dh.get() + 4);
+            EXPECT((posNext = c->encode(dh.get(), -3.40282346638529e+38)) == (dh.get() + 4));
+            dh.set(posNext);
+        }
+
         EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&inf_bits))) == (dh.get() + 4));
         dh.set(posNext);
         EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&neg_inf_bits))) == (dh.get() + 4));
@@ -862,7 +874,13 @@ CASE("short floating point values can include the missing data value") {
 //                eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+        // The missing values won't be encoded when they are hit, so skip them in the data test
+
+        EXPECT(offsetMissing != 0);
+        EXPECT(::memcmp(&data[0], dh.getBuffer(), offsetMissing) == 0);
+        EXPECT(::memcmp(&data[0] + offsetMissing + 4,
+                        dh.getBuffer() + offsetMissing + 4,
+                        expectedHdrSize + data_size - offsetMissing - 4) == 0);
     }
 }
 
@@ -1248,6 +1266,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
         } else {
             EXPECT((posNext = c->encode(dh.get(), baseVal + 255)) == (dh.get() + 1));
         }
+        dh.set(posNext);
 
         EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
         dh.set(posNext);
