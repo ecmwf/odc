@@ -57,7 +57,11 @@ public:
 	int close();
 
 	const MetaData& columns() { return columns_; }
-	const MetaData& columns(const MetaData& md) { return columns_ = md; }
+    const MetaData& columns(const MetaData& md) {
+        columns_ = md;
+        initialisedColumns_ = columns_.allColumnsInitialised();
+        return columns_;
+    }
 
     void setNumberOfColumns(size_t n) { columns_.setSize(n); }
 

@@ -62,6 +62,7 @@ public:
 	template<typename DATASTREAM>
 	MetaData& addColumnPrivate(const std::string& name, const std::string& type);
 
+    bool allColumnsInitialised() const;
 
 	MetaData& addBitfield(const std::string& name, const BitfieldDef&);
 	template<typename DATASTREAM> MetaData& addBitfieldPrivate(const std::string& name, const BitfieldDef&);
