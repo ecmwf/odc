@@ -708,7 +708,13 @@ double CodecInt16<BYTEORDER>::decode()
 template<typename BYTEORDER>
 unsigned char* CodecInt16Missing<BYTEORDER>::encode(unsigned char* p, double d)
 {
-	uint16_t s = (d == missingValue_) ? 0xffff : d - min_;
+    uint16_t s;
+    if (d == missingValue_) {
+        s = 0xffff;
+    } else {
+        s = d - min_;
+        ASSERT(s != 0xffff);
+    }
     BYTEORDER::swap(s);
 	memcpy(p, &s, sizeof(s));
 	return p + sizeof(s);
@@ -742,7 +748,13 @@ double CodecInt8<BYTEORDER>::decode()
 template<typename BYTEORDER>
 unsigned char* CodecInt8Missing<BYTEORDER>::encode(unsigned char* p, double d)
 {
-	unsigned char s = (d == missingValue_) ? 0xff : d - min_;
+    unsigned char s;
+    if (d == missingValue_) {
+        s = 0xff;
+    } else {
+        s = d - min_;
+        ASSERT(s != 0xff);
+    }
 	memcpy(p, &s, sizeof(s));
 	return p + sizeof(s);
 }
