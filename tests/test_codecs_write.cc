@@ -1092,7 +1092,12 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
         EXPECT((posNext = c->encode(dh.get(), baseVal + 0.0)) == (dh.get() + 2));
         dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), baseVal + 65535)) == (dh.get() + 2));
+        if (withMissing) {
+            EXPECT_THROWS_AS(c->encode(dh.get(), baseVal + 65535), eckit::AssertionFailed);
+            EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 2)); // Ensure data is the same
+        } else {
+            EXPECT((posNext = c->encode(dh.get(), baseVal + 65535)) == (dh.get() + 2));
+        }
         dh.set(posNext);
         EXPECT((posNext = c->encode(dh.get(), baseVal + 32767)) == (dh.get() + 2));
         dh.set(posNext);
@@ -1232,10 +1237,18 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         unsigned char* posNext;
 
-        for (size_t n = 0; n < 256; n++) {
+        for (size_t n = 0; n < 255; n++) {
             EXPECT((posNext = c->encode(dh.get(), baseVal + n)) == (dh.get() + 1));
             dh.set(posNext);
         }
+
+        if (withMissing) {
+            EXPECT_THROWS_AS(c->encode(dh.get(), baseVal + 255), eckit::AssertionFailed);
+            EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1)); // Ensure data is the same
+        } else {
+            EXPECT((posNext = c->encode(dh.get(), baseVal + 255)) == (dh.get() + 1));
+        }
+
         EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
         dh.set(posNext);
 
