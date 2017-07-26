@@ -65,7 +65,7 @@ public:
 	double max() const { return max_; }
 
 	void missingValue(double v); 
-	double missingValue() const { return missingValue_; } 
+    double missingValue() const { return missingValue_; }
 
     // Some special functions for string handling inside the CodecOptimizer
     virtual size_t numStrings() { NOTIMP; }
@@ -293,9 +293,15 @@ Codec* CodecChars<BYTEORDER>::clone()
 template<typename BYTEORDER>
 class CodecLongReal : public Codec {
 public:
-	CodecLongReal() : Codec("long_real") {}
+    CodecLongReal() :
+        Codec("long_real"),
+        hasShortRealInternalMissing_(false),
+        hasShortReal2InternalMissing_(false) {}
 	virtual unsigned char* encode(unsigned char* p, double d);
 	virtual double decode();
+    virtual void gatherStats(double v);
+    bool hasShortRealInternalMissing() { return hasShortRealInternalMissing_; }
+    bool hasShortReal2InternalMissing() { return hasShortReal2InternalMissing_; }
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -304,6 +310,9 @@ public:
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
 	DataStream<BYTEORDER> ds_;
+
+    bool hasShortRealInternalMissing_;
+    bool hasShortReal2InternalMissing_;
 };
 
 
@@ -320,7 +329,7 @@ public:
 	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
-	DataStream<BYTEORDER> ds_;
+    DataStream<BYTEORDER> ds_;
 };
 
 template<typename BYTEORDER>
@@ -336,7 +345,7 @@ public:
 	void save(eckit::DataHandle *dh) { Codec::saveBasics<BYTEORDER>(dh); }
 private:
 	DataStream<BYTEORDER>& ds() { return ds_; }
-	DataStream<BYTEORDER> ds_;
+    DataStream<BYTEORDER> ds_;
 };
 
 /*
@@ -555,7 +564,7 @@ template<typename BYTEORDER>
 void CodecChars<BYTEORDER>::save(eckit::DataHandle *dh)
 {
 	Codec::saveBasics<BYTEORDER>(dh);
-	DataStream<BYTEORDER> ds(dh);
+    DataStream<BYTEORDER> ds(dh);
 
     if (storeStringTable_) {
 
@@ -582,10 +591,39 @@ void CodecChars<BYTEORDER>::save(eckit::DataHandle *dh)
 //template<typename DATASTREAM> void Codec::save(DATASTREAM &f) { f.writeString(name_); AbstractCodecFactory::save(this, f); }
 
 template<typename BYTEORDER>
+void CodecLongReal<BYTEORDER>::gatherStats(double v) {
+
+    Codec::gatherStats(v);
+
+    const uint32_t minFloatAsInt ( 0x800000 );
+    const float internalMissing = *reinterpret_cast<const float*>(&minFloatAsInt);
+
+    const uint32_t maxFloatAsInt ( 0x7f7fffff );
+    const float internalMissing2 = -*reinterpret_cast<const float*>(&maxFloatAsInt);
+
+    if (v == internalMissing) {
+        this->hasShortRealInternalMissing_ = true;
+    }
+    if (v == internalMissing2) {
+        this->hasShortReal2InternalMissing_ = true;
+    }
+}
+
+
+template<typename BYTEORDER>
 unsigned char* CodecShortReal<BYTEORDER>::encode(unsigned char* p, double d)
 {
     const uint32_t minFloatAsInt ( 0x800000 );
-    float s = (d == missingValue_) ? *reinterpret_cast<const float*>( &minFloatAsInt ) : d;
+    const float internalMissing = *reinterpret_cast<const float*>(&minFloatAsInt);
+
+    float s;
+    if (d == missingValue_) {
+        s = internalMissing;
+    } else {
+        s = d;
+        ASSERT(s != internalMissing);
+    }
+
     BYTEORDER::swap(s);
     memcpy(p, &s, sizeof(s));
     return p + sizeof(s);
@@ -606,7 +644,16 @@ template<typename BYTEORDER>
 unsigned char* CodecShortReal2<BYTEORDER>::encode(unsigned char* p, double d)
 {
     const uint32_t maxFloatAsInt ( 0x7f7fffff );
-    float s = (d == missingValue_) ? - *reinterpret_cast<const float*>( &maxFloatAsInt ) : d;
+    const float internalMissing = -*reinterpret_cast<const float*>(&maxFloatAsInt);
+
+    float s;
+    if (d == missingValue_) {
+        s = internalMissing;
+    } else {
+        s = d;
+        ASSERT(s != internalMissing);
+    }
+
     BYTEORDER::swap(s);
     memcpy(p, &s, sizeof(s));
     return p + sizeof(s);
@@ -637,7 +684,7 @@ double CodecInt32<BYTEORDER>::decode()
 {
 	int32_t s;
 	ds().readInt32(s);
-	return s;
+    return s;
 }
 
 template<typename BYTEORDER>

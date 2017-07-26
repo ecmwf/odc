@@ -50,11 +50,24 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 		std::string codec(defaultCodec_[col.type()]);
 		switch(col.type())
 		{
-			case REAL:
-				if(max == min)
+            case REAL: {
+
+                // Currently the real data is (whist in the column) encoded using the LongReal codec.
+                // n.b. CodecOptimizer doesn't currently support OtherByteOrder.
+                CodecLongReal<SameByteOrder>* codec_long = dynamic_cast<CodecLongReal<SameByteOrder>*>(&col.coder());
+                ASSERT(codec_long != 0);
+
+                if (max == min) {
 					codec = col.hasMissing() ? "real_constant_or_missing" : "constant";
+                } else if (codec_long->hasShortRealInternalMissing()) {
+                    ASSERT(!codec_long->hasShortReal2InternalMissing());
+                    codec = "short_real2";
+                } else if (codec_long->hasShortReal2InternalMissing()) {
+                    codec = "short_real";
+                }
+
 				col.coder(Codec::findCodec<DATASTREAM>(codec, false));
-				col.hasMissing(hasMissing);
+                col.hasMissing(hasMissing);
 				col.missingValue(missing);
 				col.min(min);
 				col.max(max);
@@ -62,6 +75,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				//	<< ">. Codec: "  << col.coder()
 				//	<< std::endl;
 				break;
+            }
 
 			case DOUBLE:
 				if(max == min)
