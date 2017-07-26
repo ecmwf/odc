@@ -112,6 +112,7 @@ private:
 
 	int doWriteRow(const double*, unsigned long);
 
+    bool initialisedColumns_;
 	Properties properties_;
 
 	Array<unsigned char> blockBuffer_;

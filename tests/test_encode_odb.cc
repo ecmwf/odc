@@ -108,11 +108,7 @@ CASE("If out-of range columns are created, exceptions are thrown") {
 
     // If we create columns out of range, it throws exceptions
 
-    std::cout << std::endl;
-    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv EXPECTED EXCEPTIONS vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" << std::endl;
     EXPECT_THROWS_AS(writer->setColumn(11, "badnum", odb::INTEGER), eckit::AssertionFailed);
-    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ DONE EXCEPTIONS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
-    std::cout << std::endl;
 }
 
 CASE("If columns are created with invalid types, exceptions are thrown") {
@@ -130,12 +126,8 @@ CASE("If columns are created with invalid types, exceptions are thrown") {
 
     // We cannot create a column of "IGNORE" type, or any type that is not listed in the enum
 
-    std::cout << std::endl;
-    std::cout << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv EXPECTED EXCEPTIONS vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" << std::endl;
     EXPECT_THROWS_AS(writer->setColumn(0, "ignore", odb::IGNORE), eckit::AssertionFailed);
     EXPECT_THROWS_AS(writer->setColumn(0, "ignore", static_cast<odb::ColumnType>(123)), eckit::AssertionFailed);
-    std::cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ DONE EXCEPTIONS ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << std::endl;
-    std::cout << std::endl;
 }
 
 CASE("Columns names must be unique") {
@@ -158,11 +150,11 @@ CASE("Columns names must be unique") {
     writer->setColumn(3, "bitf", odb::BITFIELD);
     writer->setColumn(4, "dbl", odb::DOUBLE);
 
-    EXPECT_THROWS_AS(writer->setColumn(5, "int", odb::INTEGER), eckit::AssertionFailed);
-    EXPECT_THROWS_AS(writer->setColumn(6, "real", odb::REAL), eckit::AssertionFailed);
-    EXPECT_THROWS_AS(writer->setColumn(7, "str", odb::STRING), eckit::AssertionFailed);
-    EXPECT_THROWS_AS(writer->setColumn(8, "bitf", odb::BITFIELD), eckit::AssertionFailed);
-    EXPECT_THROWS_AS(writer->setColumn(9, "dbl", odb::DOUBLE), eckit::AssertionFailed);
+    EXPECT_THROWS_AS(writer->setColumn(5, "int", odb::INTEGER), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(6, "real", odb::REAL), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(7, "str", odb::STRING), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(8, "bitf", odb::BITFIELD), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(9, "dbl", odb::DOUBLE), eckit::SeriousBug);
 }
 
 
@@ -177,8 +169,8 @@ CASE("Data is encoded and read back correctly") {
 
     const float f1 = std::numeric_limits<float>::min();
     const float f2 = std::numeric_limits<float>::max();
-    const float f3 = float_lowest;
-    const float f4 = 0.0;
+    const float f3 = 0.0;
+    const float f4 = float_lowest;
     const float f5 = static_cast<float>(654321.123);
     const float f6 = static_cast<float>(-123456.789e-21);
 
@@ -189,12 +181,12 @@ CASE("Data is encoded and read back correctly") {
     const char* const s5 = "string-5";
     const char* const s6 = "string-6";
 
-    const uint32_t b1 = std::numeric_limits<uint32_t>::min();
-    const uint32_t b2 = std::numeric_limits<uint32_t>::max();
-    const uint32_t b3 = 0;
-    const uint32_t b4 = 0xff00ff00;
-    const uint32_t b5 = 0x00ff00ff;
-    const uint32_t b6 = 0xfedcba98;
+    const int32_t b1 = static_cast<int32_t>((uint32_t)std::numeric_limits<uint32_t>::min());
+    const int32_t b2 = static_cast<int32_t>((uint32_t)std::numeric_limits<uint32_t>::max());
+    const int32_t b3 = static_cast<int32_t>((uint32_t)0);
+    const int32_t b4 = static_cast<int32_t>((uint32_t)0xff00ff00);
+    const int32_t b5 = static_cast<int32_t>((uint32_t)0x00ff00ff);
+    const int32_t b6 = static_cast<int32_t>((uint32_t)0xfedcba98);
 
     const double d1 = std::numeric_limits<double>::min();
     const double d2 = std::numeric_limits<double>::max();
@@ -274,12 +266,6 @@ CASE("Data is encoded and read back correctly") {
         odb::Reader oda(dh);
         odb::Reader::iterator reader = oda.begin();
 
-        eckit::Log::info() << "Cols: " << reader->columns().size() << std::endl;
-
-        for (size_t n = 0; n < reader->columns().size(); n++) {
-            eckit::Log::info() << "N: " << n << ", " << reader->columns()[n]->coder().name() << std::endl;
-        }
-
         EXPECT(reader->columns().size() == size_t(10));
 
         EXPECT((*reader)[0] == i1);
@@ -316,8 +302,61 @@ CASE("Data is encoded and read back correctly") {
         EXPECT((*reader)[7] == *reinterpret_cast<const double*>(s6));
         EXPECT((*reader)[8] == b6);
         EXPECT((*reader)[9] == d6);
-        ++reader;
     }
+}
+
+CASE("We cannot encode short_real with both possible internal missing values") {
+
+    const float f1 = std::numeric_limits<float>::min();
+    const float f2 = float_lowest;
+
+    eckit::Buffer buf(4096);
+
+    EXPECT_THROWS_AS({
+        eckit::MemoryHandle dh(buf);
+        odb::Writer<> oda(dh);
+        odb::Writer<>::iterator writer = oda.begin();
+
+        // Set up the columns
+
+        writer->setNumberOfColumns(1);
+        writer->setColumn(0, "real", odb::REAL);
+        writer->writeHeader();
+
+        // Append 3 rows of data (in two different ways)
+
+        (*writer)[0] = f1;
+        ++writer;
+
+        (*writer)[0] = f2;
+        ++writer;
+
+    }, eckit::AssertionFailed);
+
+}
+
+CASE("We ASSERT on cases where we try and use an incompletely configured writer") {
+
+    eckit::Buffer buf(4096);
+
+    // Illegal to flush an incompletely finished writer
+
+    eckit::MemoryHandle dh(buf);
+    odb::Writer<> oda(dh);
+    odb::Writer<>::iterator writer = oda.begin();
+
+    // Set up the columns
+
+    writer->setNumberOfColumns(2);
+    writer->setColumn(0, "real", odb::REAL);
+
+    // Cannot writeHeader until all the columns are initialised
+    EXPECT_THROWS_AS(writer->writeHeader(), eckit::AssertionFailed);
+
+    (*writer)[0] = 1234.56;
+
+    // Cannot increment an incomplete row
+    EXPECT_THROWS_AS(++writer, eckit::AssertionFailed);
 }
 
 CASE("Data is automitacally written after a configurable number of rows") {
