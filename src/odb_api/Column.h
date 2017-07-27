@@ -20,7 +20,6 @@ namespace eckit { class DataHandle; }
 namespace odb {
 
 class Reader;
-class HashTable;
 class MetaData;
 
 class Column {
@@ -54,6 +53,7 @@ public:
 	void type(ColumnType t) { type_ = t; }
 	ColumnType type() const { return ColumnType(type_); }
 
+    bool hasInitialisedCoder() const { return coder_ != 0; }
 	bool isConstant();
 
 	/// Delegations to Codec:

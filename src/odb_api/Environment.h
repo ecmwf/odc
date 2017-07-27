@@ -24,14 +24,23 @@ struct Environment {
 	Environment (const SortedTables::iterator);
 	~Environment ();
 
-	SelectOneTable*& table();
-	SQLTableIterator*& cursor();
+    // these functions **must** be inline for performance reasons
+    // see ODB-357
+    SelectOneTable*   table()  { return table_; }
+    void              table(SelectOneTable* t)  { table_ = t; }
+
+    // these functions **must** be inline for performance reasons
+    // see ODB-357
+    SQLTableIterator* cursor() { return cursor_; }
+    void              cursor(SQLTableIterator* c) { cursor_ = c; }
 
 	void print(std::ostream& s) const;
 
 	const SortedTables::iterator tablesIterator_;
+
 private:
-	SelectOneTable* table_;
+
+    SelectOneTable* table_;
 	SQLTableIterator* cursor_;
 };
 

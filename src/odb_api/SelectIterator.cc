@@ -163,8 +163,6 @@ bool SelectIterator::next(ecml::ExecutionContext* context)
 
 bool SelectIterator::isNewDataset() { return newDataset_; }
 
-const double* SelectIterator::data() { return data_; }
-
 double& SelectIterator::data(size_t i)
 {
 	ASSERT(i >= 0 && i < columns().size());

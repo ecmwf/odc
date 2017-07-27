@@ -211,8 +211,6 @@ bool TextReaderIterator::next(ecml::ExecutionContext*)
 
 bool TextReaderIterator::isNewDataset() { return newDataset_; }
 
-const double* TextReaderIterator::data() { return lastValues_; }
-
 int TextReaderIterator::close()
 {
 	//if (ownsF_ && f) { f->close(); delete f; f = 0; }

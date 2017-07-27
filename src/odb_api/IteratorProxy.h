@@ -67,9 +67,14 @@ public:
 	Row_(ITERATOR_PROXY& it) : it_(&it) {}
 
 	DATA& operator[](size_t i) { return (*it_)->data()[i]; }
-	DATA* data() { return const_cast<DATA*>(((*it_).iter_)->data()); }
+
+    DATA* data() { return ((*it_).iter_)->data(); }
 	DATA& data(size_t i) { return ((*it_).iter_)->data(i); }
-	int integer(size_t i) { return int((*it_)->data()[i]); }
+
+    const DATA* data() const { return ((*it_).iter_)->data(); }
+    const DATA& data(size_t i) const { return ((*it_).iter_)->data(i); }
+
+    int integer(size_t i) { return int((*it_)->data()[i]); }
 	std::string string(int i)
 	{
 		const char *s = reinterpret_cast<const char *>(&data()[i]);
@@ -79,7 +84,7 @@ public:
 		return std::string(s, j);
 	}
 
-	const MetaData& columns() { return ((*it_).iter_)->columns(); }
+    const MetaData& columns() const { return ((*it_).iter_)->columns(); }
     void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
 	const MetaData& columns(const MetaData& md) { return ((*it_).iter_)->columns(md); }
 	bool isNewDataset() { return ((*it_).iter_)->isNewDataset(); }
@@ -140,8 +145,10 @@ public:
 	}
 
 	Row* operator->() { return &row_; }
+    const Row* operator->() const { return &row_; }
 
     Row& operator*() { return row_; }
+    const Row& operator*() const { return row_; }
 
     bool operator!=(const IteratorProxy&) 
     { 

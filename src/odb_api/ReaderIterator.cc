@@ -238,7 +238,6 @@ bool ReaderIterator::next(ecml::ExecutionContext* context)
 
 bool ReaderIterator::isNewDataset() { return newDataset_; }
 
-const double* ReaderIterator::data() { return lastValues_; }
 double& ReaderIterator::data(size_t i)
 {
 	ASSERT(i >= 0 && i < columns().size());

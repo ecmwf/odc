@@ -54,15 +54,16 @@ public:
 	~ReaderIterator ();
 
 	bool isNewDataset();
-	const double* data();
+    const double* data() const { return lastValues_; }
+    double* data() { return lastValues_; }
 
 	bool operator!=(const ReaderIterator& other);
 
 	void property(std::string, std::string);
 	std::string property(std::string);
 
-	const MetaData& columns() { return columns_; }
-	const MetaData& columns(const MetaData& md) { return columns_ = md; }
+    const MetaData& columns() const { return columns_; }
+    const MetaData& columns(const MetaData& md) { return columns_ = md; }
     void setNumberOfColumns(size_t n) { columns_.setSize(n); }
 
 #ifdef SWIGPYTHON

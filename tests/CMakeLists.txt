@@ -67,7 +67,6 @@ Test_DataRowCanSetStrings
 Test_DataRowInitializedFromColumnsHasExpectedFlags
 Test_DataRowInitializedFromColumnsHasExpectedSize
 Test_DataRowInitializedFromColumnsHasExpectedValues
-Test_Decoding
 Test_DispatchingWriter
 Test_Distinct
 Test_EmptyPageWithFillMark_PushBackRowsToEmptyPageWithFillMark
@@ -172,7 +171,6 @@ Test_LinkedTables_DataJoinReturnsExpectedNumberOfResults
 Test_LinkedTables_DataJoinReturnsExpectedValues
 Test_MetaData
 Test_MetaDataReader
-Test_MinMax
 Test_MissingValue
 Test_OrderBy
 Test_Ordinals_CopiedDataRowHasExpectedFlags
@@ -194,9 +192,6 @@ Test_SelectAll_ReturnsExpectedNumberOfColumns
 Test_SelectAll_ReturnsExpectedNumberOfResults
 Test_SelectAll_ReturnsExpectedResults
 Test_SelectDataHandle
-Test_SelectIterator
-Test_SelectIterator2
-Test_SelectIterator3
 Test_SelectStarAt
 Test_SelectTwoFiles
 Test_SelectWhere_ReturnsExpectedColumns
@@ -205,7 +200,6 @@ Test_SelectWhere_ReturnsExpectedNumberOfResults
 Test_SelectWhere_ReturnsExpectedResults
 Test_Setvbuffer
 Test_Star
-Test_TEMPLATE
 Test_TextReaderIterator_parseBitfields
 Test_TextReaderIterator_parseBitfields_32bits_limit
 Test_TextSelect
@@ -214,7 +208,6 @@ Test_ThreeColumnTable_LineByLineInitialization
 Test_ThreeColumnTable_MultiLineInitialization
 Test_UnInitializedDataRowHasExpectedFlags
 Test_UnInitializedDataRowHasExpectedSize
-Test_WriteCatFiles
 Test_bitfieldsLength
 Test_bitfields_hash_operator
 Test_blocksSizes
@@ -308,6 +301,29 @@ foreach( _test ${odb_api_tests} )
                       LABELS       odb_api
                       TEST_DEPENDS ${_dependencies})
     set( _prev_test ${_test} )
+endforeach()
+
+
+### New style odb_api tests (using lest)
+
+list( APPEND odb_api_lest_tests
+    test_minmax
+    test_select_iterator
+    test_concatenated_odbs
+    test_encode_odb
+    test_decode_odb
+    test_codecs_write
+    test_codecs_read
+    test_reencode_string_table
+)
+
+foreach( _test ${odb_api_lest_tests} )
+    ecbuild_add_test(
+        TARGET       ${_test}
+        SOURCES      ${_test}.cc TemporaryFiles.h MockDataHandles.h
+        TEST_DEPENDS get_odb_api_test_data
+        INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
+        LIBS         eckit Odb )
 endforeach()
 
 #### ECML ODB Module verbs tests

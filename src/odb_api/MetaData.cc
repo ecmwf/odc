@@ -264,6 +264,19 @@ MetaData& MetaData::addColumn(const std::string& name, const std::string& type)
     return addColumnPrivate<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(name, type);
 }
 
+bool MetaData::allColumnsInitialised() const {
+
+    if (empty())
+        return false;
+
+    for (size_t i = 0; i < size(); i++) {
+        if (!(*this)[i]->hasInitialisedCoder())
+            return false;
+    }
+
+    return true;
+}
+
 MetaData& MetaData::addBitfield(const std::string& name, const BitfieldDef& bf)
 {
     return addBitfieldPrivate<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(name, bf);

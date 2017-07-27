@@ -25,14 +25,12 @@ const SortedTables::iterator& Stack::tablesIterator()
 	return top()->tablesIterator_;
 }
 
-SelectOneTable& Stack::table() { return *(top()->table()); }
-SelectOneTable* Stack::tablePtr() { return top()->table(); }
 
-void Stack::table(SelectOneTable *p) { top()->table() = p; ASSERT(top()->table()); }
 
-SQLTableIterator& Stack::cursor() { return *(top()->cursor()); }
 
-void Stack::cursor(SQLTableIterator *p) { top()->cursor() = p; }
+
+
+
 
 void Stack::pushFrame(const SortedTables::iterator ti) 
 {
