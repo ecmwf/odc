@@ -15,7 +15,12 @@
 #include "odb_api/Reader.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/Tracer.h"
- #include <string.h>
+
+#include <string.h>
+
+#if __cplusplus >= 199711L
+#define isnan(x) std::isnan(x)
+#endif
 
 using namespace std;
 using namespace eckit;

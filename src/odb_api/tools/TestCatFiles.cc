@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include <sys/wait.h>
+
 #include "odb_api/MetaData.h"
 #include "odb_api/Select.h"
 
