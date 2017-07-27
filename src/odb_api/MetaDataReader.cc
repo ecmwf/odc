@@ -28,7 +28,6 @@
 #include "odb_api/Column.h"
 #include "odb_api/DataStream.h"
 #include "odb_api/FixedSizeWriterIterator.h"
-#include "odb_api/HashTable.h"
 #include "odb_api/Header.h"
 #include "odb_api/IteratorProxy.h"
 #include "odb_api/MemoryBlock.h"

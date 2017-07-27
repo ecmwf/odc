@@ -62,6 +62,7 @@ public:
 	template<typename DATASTREAM>
 	MetaData& addColumnPrivate(const std::string& name, const std::string& type);
 
+    bool allColumnsInitialised() const;
 
 	MetaData& addBitfield(const std::string& name, const BitfieldDef&);
 	template<typename DATASTREAM> MetaData& addBitfieldPrivate(const std::string& name, const BitfieldDef&);
@@ -105,9 +106,10 @@ template<typename DATASTREAM>
 void MetaData::save(DATASTREAM &f) const
 {
 	int32_t count = size();
-	f.writeInt32(count);
-	for(size_t i = 0; i < size(); i++)
-		at(i)->save(f);
+    f.writeInt32(count);
+    for(size_t i = 0; i < size(); i++) {
+        at(i)->save(f);
+    }
 }
 
 template<typename DATASTREAM>

@@ -19,7 +19,6 @@
 #include "odb_api/Codec.h"
 #include "odb_api/Column.h"
 #include "odb_api/DataStream.h"
-#include "odb_api/HashTable.h"
 #include "odb_api/Header.h"
 #include "odb_api/MetaData.h"
 #include "odb_api/Reader.h"
@@ -58,11 +57,15 @@ public:
 		col->type<DataStream<SameByteOrder, DataHandle> >(odb::STRING, false);
 		col->hasMissing(false);
 		//col->missingValue(0);
-		odb::codec::HashTable *ht = new odb::codec::HashTable;
+
+
+        /* SDS DISABLE. Got rid of hashtable ...
+        odb::codec::HashTable *ht = new odb::codec::HashTable;
 		ht->store("pies");
 		odb::codec::CodecChars<odb::SameByteOrder> *codec = new odb::codec::CodecChars<odb::SameByteOrder>;
 		codec->hashTable(ht);
-		col->coder(codec);
+
+        col->coder(codec);*/
 	}
 
 	odb::MetaData& columns() { return columns_; }

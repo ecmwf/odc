@@ -48,7 +48,8 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() ),
   tableDef_(tableDef),
   path_(owner.path()),
-  openDataHandle_(openDataHandle)
+  openDataHandle_(openDataHandle),
+  initialisedColumns_(false)
 {
 	if (openDataHandle)	
 		open();
@@ -69,8 +70,9 @@ unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigne
 
 	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "gatherStats: columns_[" << i << "]=" << *columns_[i] << std::endl;
 
-	for(size_t i = 0; i < count; i++)
+    for(size_t i = 0; i < count; i++) {
 		columns_[i]->coder().gatherStats(values[i]);
+    }
 
 	return 0;
 } 
@@ -89,7 +91,7 @@ int WriterBufferingIterator::setOptimalCodecs()
 
 void WriterBufferingIterator::allocBuffers()
 {
-	delete [] lastValues_;
+    delete [] lastValues_;
 	delete [] nextRow_;
 	int32_t colSize = columns().size();
 	double* last = new double [colSize];
@@ -97,8 +99,13 @@ void WriterBufferingIterator::allocBuffers()
 	nextRow_ = new double [colSize];
 	ASSERT(last);
 
-	for (int i = 0; i < colSize; ++i)
+    for (int i = 0; i < colSize; ++i) {
+
+        // If we are trying to do anything before the writer is properly initialised ...
+        ASSERT(columns_[i]->hasInitialisedCoder());
+
 		nextRow_[i] = last[i] = columns_[i]->missingValue();
+    }
 
 	nrows_ = 0;
 
@@ -119,8 +126,14 @@ void WriterBufferingIterator::allocRowsBuffer()
 void WriterBufferingIterator::writeHeader()
 {
 	allocBuffers();
-	for (size_t i = 0; i < columns_.size(); ++i)
+    for (size_t i = 0; i < columns_.size(); ++i) {
+
+        // If we haven't configured a row, then this is bad
+        ASSERT(columns_[i]->hasInitialisedCoder());
+
 		columns_[i]->coder().resetStats();
+    }
+    initialisedColumns_ = true;
 	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "writeHeader: columns_[" << i << "]=" << *columns_[i] << std::endl;
 }
 
@@ -139,6 +152,7 @@ double& WriterBufferingIterator::data(size_t i)
 int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 {
 	ASSERT(nCols == columns().size());
+    ASSERT(initialisedColumns_);
 
 	if (rowsBuffer_ == 0)
 		allocRowsBuffer();
@@ -216,6 +230,17 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnTyp
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
 	ASSERT(col);
+
+    // Ensure that this column is unique!
+    for (size_t i = 0; i < columns_.size(); i++) {
+        if (index != i && columns_[i] != 0) {
+            if (columns_[i]->name() == name) {
+                std::stringstream ss;
+                ss << "Attempting to create multiple columns with the same name: " << name;
+                throw SeriousBug(name, Here());
+            }
+        }
+    }
 
 	col->name(name); 
 	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);

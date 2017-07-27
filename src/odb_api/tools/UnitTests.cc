@@ -486,19 +486,6 @@ TEST(windSpeedWindDirection)
 //	odb::tool::test::test_odacapi3(0,0);
 //}
 
-TEST(HashTable_clone)
-{
-    using namespace odb::codec;
-    odb::codec::HashTable *h = new odb::codec::HashTable;
-    h->store("BUFRDATA");
-    h->store("OTHER_ST");
-
-    odb::codec::HashTable *c = h->clone();
-
-    //ASSERT(*h == *c);
-    delete h;
-    delete c;
-}
 
 static void SplitTool_chunks()
 {

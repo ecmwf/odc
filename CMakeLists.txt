@@ -57,6 +57,14 @@ ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
                     DESCRIPTION "ODB Server uses four digits format of time"
                     DEFAULT OFF )
 
+if( HAVE_CXX11 )
+    ecbuild_add_cxx11_flags()
+else()
+    if ( CMAKE_VERSION VERSION_GREATER "3.1.0" )
+        set( CMAKE_CXX_STANDARD 98 )
+    endif()
+endif()
+
 SET(ODB_API_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
 
 if( HAVE_FORTRAN )
@@ -106,6 +114,7 @@ if( HAVE_FORTRAN )
 endif()
 
 add_subdirectory( src )
+add_subdirectory( regressions )
 add_subdirectory( tests )
 
 ############################################################################################

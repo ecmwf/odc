@@ -47,10 +47,6 @@ void Codec::missingValue(double v)
     min_ = max_ = missingValue_ = v;
 }
 
-HashTable& Codec::hashTable() { NOTIMP; }
-HashTable* Codec::giveHashTable() { NOTIMP; }
-void Codec::hashTable(HashTable *) { NOTIMP; }
-
 void Codec::gatherStats(double v)
 {
     if(v == missingValue_)

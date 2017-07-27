@@ -68,10 +68,8 @@ using namespace eckit;
 %include "odb_api/SQLBitfield.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/DataStream.h"
-%include "odb_api/HashTable.h"
 %include "odb_api/Codec.h"
 %include "odb_api/Column.h"
-#include "odb_api/HashTable.h"
 #include "odb_api/SQLIteratorSession.h"
 
 using namespace odb;
