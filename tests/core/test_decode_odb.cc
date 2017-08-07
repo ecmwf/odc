@@ -8,9 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/config/Resource.h"
 #include "eckit/testing/Test.h"
-#include "eckit/value/Value.h"
 #include "eckit/types/FloatCompare.h"
+#include "eckit/value/Value.h"
 
 #include "odb_api/Reader.h"
 
@@ -216,9 +217,11 @@ private: // members
 
 // ------------------------------------------------------------------------------------------------------
 
+eckit::Resource<eckit::PathName> testDataPath("$TEST_DATA_DIRECTORY", "..");
+
 CASE("The correct number of rows are decoded") {
 
-    eckit::PathName filename("2000010106.odb");
+    eckit::PathName filename = testDataPath / "2000010106.odb";
 
     odb::Reader in(filename);
     odb::Reader::iterator it = in.begin();
@@ -245,7 +248,7 @@ CASE("The correct number of rows are decoded") {
 
 CASE("The correct data is present in a selection of random rows") {
 
-    eckit::PathName filename("2000010106.odb");
+    eckit::PathName filename = testDataPath / "2000010106.odb";
 
     odb::Reader in(filename);
     odb::Reader::iterator it = in.begin();

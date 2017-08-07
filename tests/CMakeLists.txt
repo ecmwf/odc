@@ -304,28 +304,6 @@ foreach( _test ${odb_api_tests} )
 endforeach()
 
 
-### New style odb_api tests (using lest)
-
-list( APPEND odb_api_lest_tests
-    test_minmax
-    test_select_iterator
-    test_concatenated_odbs
-    test_encode_odb
-    test_decode_odb
-    test_codecs_write
-    test_codecs_read
-    test_reencode_string_table
-)
-
-foreach( _test ${odb_api_lest_tests} )
-    ecbuild_add_test(
-        TARGET       ${_test}
-        SOURCES      ${_test}.cc TemporaryFiles.h MockDataHandles.h
-        TEST_DEPENDS get_odb_api_test_data
-        INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
-        LIBS         eckit Odb )
-endforeach()
-
 #### ECML ODB Module verbs tests
 
 #ecbuild_get_test_multidata( TARGET ecml_get_odb_api_test_data DIRNAME odb_api/tests NAMES ${ecml_test_data_files} NOCHECK )
@@ -419,3 +397,7 @@ ecbuild_add_executable( TARGET      test_client_lib_cpp
                         SOURCES     test_client_lib_cpp.cc
                         INCLUDES    ${ODB_API_INCLUDE_DIRS}
                         LIBS        Odb odbtools )
+
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
+
+add_subdirectory( core )
