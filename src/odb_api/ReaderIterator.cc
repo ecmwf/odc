@@ -224,7 +224,13 @@ bool ReaderIterator::next(ecml::ExecutionContext* context)
 			ASSERT(bytesRead == 2);
 
 			newDataset_ = true;
-		}
+
+        } else {
+            std::stringstream ss;
+            ss << "Unexpected data found in ODB file \"" << f_->name()
+               << "\" at position " << (static_cast<long long>(f_->position())-2);
+            throw SeriousBug(ss.str());
+        }
 	}
 	c = ntohs(c);
 
