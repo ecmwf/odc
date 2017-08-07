@@ -4,6 +4,7 @@ list( APPEND _core_odb_tests
     test_decode_odb
     test_codecs_write
     test_codecs_read
+    test_constant_codecs
     test_reencode_string_table
     test_concatenated_odbs
     test_minmax
