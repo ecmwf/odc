@@ -226,6 +226,14 @@ bool ReaderIterator::next(ecml::ExecutionContext* context)
 			newDataset_ = true;
 
         } else {
+
+            // memDataHandle_ is preloaded with all of the data associated with an ODB table according
+            // to its header. If we have read data beyond the full table without finding the magic for
+            // a new table, then this is a corrupt file, and we should report it as such, rather than
+            // just treating this as more row data.
+
+            // See ODB-376
+
             std::stringstream ss;
             ss << "Unexpected data found in ODB file \"" << f_->name()
                << "\" at position " << (static_cast<long long>(f_->position())-2);
