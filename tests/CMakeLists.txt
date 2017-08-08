@@ -59,8 +59,6 @@ Test_ChildTable_DataLoaderReturnsExpectedNumberOfChildTableRows
 Test_Codec
 Test_CodecOptimization
 Test_CommandLineParsing
-Test_ConstCodec
-Test_ConstIntegerCodec
 Test_DataRowCanSetDoubles
 Test_DataRowCanSetIntegers
 Test_DataRowCanSetStrings

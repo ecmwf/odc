@@ -62,8 +62,6 @@ TestCatFiles.cc
 TestCodec.cc
 TestCodecOptimization.cc
 TestCommandLineParsing.cc
-TestConstCodec.cc
-TestConstIntegerCodec.cc
 TestDataJoin.cc
 TestDataLink.cc
 TestDataLoader.cc

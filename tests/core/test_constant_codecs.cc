@@ -84,6 +84,26 @@ namespace {
             columns_[0]->coder(new odb::codec::CodecInt32<odb::SameByteOrder>);
         }
     };
+
+    // A constant string value (the full 8 bytes)
+
+    const char* const_string_1 = "a-string";
+
+    struct MockReadIteratorConstString1 : public MockReadIterator {
+        MockReadIteratorConstString1() : MockReadIterator(odb::STRING, *reinterpret_cast<const double*>(const_string_1)) {
+            columns_[0]->coder(new odb::codec::CodecChars<odb::SameByteOrder>);
+        }
+    };
+
+    // A constant string value (shorter than 8 bytes)
+
+    const char* const_string_2 = "pies\0\0\0\0";
+
+    struct MockReadIteratorConstString2 : public MockReadIterator {
+        MockReadIteratorConstString2() : MockReadIterator(odb::STRING, *reinterpret_cast<const double*>(const_string_2)) {
+            columns_[0]->coder(new odb::codec::CodecChars<odb::SameByteOrder>);
+        }
+    };
 }
 
 
@@ -128,6 +148,93 @@ CASE("The constant integer codec stores a constant integer") {
         EXPECT(it->columns()[0]->coder().name() == "constant");
     }
 }
+
+
+CASE("The constant codec can also store strings") {
+
+    // Construct the encoded stuff
+
+    eckit::Buffer buf(4096);
+
+    eckit::MemoryHandle writeDH(buf);
+
+    {
+        odb::Writer<> oda(writeDH);
+        odb::Writer<>::iterator outit = oda.begin();
+
+        odb::tool::MockReader<MockReadIteratorConstString1> reader;
+        outit->pass1(reader.begin(), reader.end());
+    }
+
+    // And test that this decodes correctly
+
+    {
+        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
+        dh.openForRead();
+        odb::Reader oda(dh);
+
+        odb::Reader::iterator it = oda.begin();
+        odb::Reader::iterator end = oda.end();
+
+        EXPECT(it->columns()[0]->name() == "a-col");
+
+        size_t count = 0;
+        for ( ; it != end; ++it) {
+            double val = (*it)[0];
+            EXPECT(::memcmp(const_string_1, &val, sizeof(val)) == 0);
+            count++;
+        }
+
+        EXPECT(count == num_rows_to_write);
+
+        // Check that this has used the constant codec.
+        EXPECT(it->columns()[0]->coder().name() == "constant_string");
+    }
+}
+
+
+CASE("The constant codec can also store strings shorter than 8 bytes") {
+
+    // Construct the encoded stuff
+
+    eckit::Buffer buf(4096);
+
+    eckit::MemoryHandle writeDH(buf);
+
+    {
+        odb::Writer<> oda(writeDH);
+        odb::Writer<>::iterator outit = oda.begin();
+
+        odb::tool::MockReader<MockReadIteratorConstString2> reader;
+        outit->pass1(reader.begin(), reader.end());
+    }
+
+    // And test that this decodes correctly
+
+    {
+        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
+        dh.openForRead();
+        odb::Reader oda(dh);
+
+        odb::Reader::iterator it = oda.begin();
+        odb::Reader::iterator end = oda.end();
+
+        EXPECT(it->columns()[0]->name() == "a-col");
+
+        size_t count = 0;
+        for ( ; it != end; ++it) {
+            double val = (*it)[0];
+            EXPECT(::memcmp(const_string_2, &val, sizeof(val)) == 0);
+            count++;
+        }
+
+        EXPECT(count == num_rows_to_write);
+
+        // Check that this has used the constant codec.
+        EXPECT(it->columns()[0]->coder().name() == "constant_string");
+    }
+}
+
 
 // ------------------------------------------------------------------------------------------------------
 
