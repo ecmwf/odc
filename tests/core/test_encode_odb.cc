@@ -287,7 +287,7 @@ CASE("Data is encoded and read back correctly") {
         EXPECT(reader->data()[4] == d3);
         EXPECT(reader->data()[5] == i4);
         EXPECT(reader->data()[6] == static_cast<double>(f4));
-        EXPECT(reader->data()[7] == *reinterpret_cast<const double*>(s6));
+        EXPECT(reader->data()[7] == *reinterpret_cast<const double*>(s4));
         EXPECT(reader->data()[8] == b4);
         EXPECT(reader->data()[9] == d4);
         ++reader;
