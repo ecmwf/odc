@@ -153,6 +153,7 @@ CASE("The constant integer codec stores a constant integer") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant");
+        EXPECT(it->columns()[0]->type() == odb::INTEGER);
     }
 }
 
@@ -196,6 +197,7 @@ CASE("The constant codec can also store strings") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant_string");
+        EXPECT(it->columns()[0]->type() == odb::STRING);
     }
 }
 
@@ -239,6 +241,68 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant_string");
+        EXPECT(it->columns()[0]->type() == odb::STRING);
+    }
+}
+
+
+CASE("The constant codec can also store doubles") {
+
+    const double constant_value = -987654321.4321e-34;
+
+    // Don't use the pass1 mechanism here. Build a writer explicitly to show that we can
+
+    odb::ColumnType types[] = { odb::REAL, odb::DOUBLE };
+
+    for (size_t i = 0; i < 2; i++) {
+
+        odb::ColumnType type = types[i];
+
+        // Construct the encoded stuff
+
+        eckit::Buffer buf(4096);
+
+        eckit::MemoryHandle writeDH(buf);
+
+        {
+            odb::Writer<> oda(writeDH);
+            odb::Writer<>::iterator outit = oda.begin();
+
+            outit->setNumberOfColumns(1);
+            outit->setColumn(0, "abcdefg", type);
+            outit->writeHeader();
+
+            for (size_t i = 0; i < num_rows_to_write; i++) {
+                (*outit)[0] = constant_value;
+                ++outit;
+            }
+        }
+
+        // And test that this decodes correctly
+
+        {
+            eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
+            dh.openForRead();
+            odb::Reader oda(dh);
+
+            odb::Reader::iterator it = oda.begin();
+            odb::Reader::iterator end = oda.end();
+
+            EXPECT(it->columns()[0]->name() == "abcdefg");
+
+            size_t count = 0;
+            for ( ; it != end; ++it) {
+                double val = (*it)[0];
+                EXPECT(val == constant_value);
+                count++;
+            }
+
+            EXPECT(count == num_rows_to_write);
+
+            // Check that this has used the constant codec.
+            EXPECT(it->columns()[0]->coder().name() == "constant");
+            EXPECT(it->columns()[0]->type() == type);
+        }
     }
 }
 
