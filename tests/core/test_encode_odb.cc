@@ -198,10 +198,10 @@ CASE("Data is encoded and read back correctly") {
     // See issue ODB-372
 
     eckit::Buffer buf(4096);
+    eckit::MemoryHandle dhWrite(buf);
 
     {
-        eckit::MemoryHandle dh(buf);
-        odb::Writer<> oda(dh);
+        odb::Writer<> oda(dhWrite);
         odb::Writer<>::iterator writer = oda.begin();
 
         // Set up the columns
@@ -261,7 +261,7 @@ CASE("Data is encoded and read back correctly") {
     // Read everything back
 
     {
-        eckit::MemoryHandle dh(buf);
+        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(dhWrite.position()));
         dh.openForRead();
         odb::Reader oda(dh);
         odb::Reader::iterator reader = oda.begin();
@@ -287,7 +287,7 @@ CASE("Data is encoded and read back correctly") {
         EXPECT(reader->data()[4] == d3);
         EXPECT(reader->data()[5] == i4);
         EXPECT(reader->data()[6] == static_cast<double>(f4));
-        EXPECT(reader->data()[7] == *reinterpret_cast<const double*>(s4));
+        EXPECT(reader->data()[7] == *reinterpret_cast<const double*>(s6));
         EXPECT(reader->data()[8] == b4);
         EXPECT(reader->data()[9] == d4);
         ++reader;
@@ -359,7 +359,7 @@ CASE("We ASSERT on cases where we try and use an incompletely configured writer"
     EXPECT_THROWS_AS(++writer, eckit::AssertionFailed);
 }
 
-CASE("Data is automitacally written after a configurable number of rows") {
+CASE("Data is automatically written after a configurable number of rows") {
     EXPECT(true);
 }
 

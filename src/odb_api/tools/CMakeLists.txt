@@ -58,7 +58,6 @@ TestAggregateFunctions2.cc
 TestAggregateFunctions3.cc
 TestAtTableInTheOutput.cc
 TestBitfields.cc
-TestCodec.cc
 TestCodecOptimization.cc
 TestCommandLineParsing.cc
 TestDataJoin.cc

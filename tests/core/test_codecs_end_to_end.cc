@@ -11,6 +11,7 @@
 #include "eckit/io/Buffer.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/MemoryHandle.h"
+#include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
 
 #include "odb_api/MetaData.h"
@@ -22,6 +23,12 @@ using namespace eckit::testing;
 
 // Constant codecs are a little different from the others, as they can store multiple
 // different types within the same codec...
+
+
+/// Encoding/decoding using codecs and the reader/writer are tested elsewhere.
+/// This file is for miscelaneous tests, in case the edge cases elsewhere are insufficient.
+///
+/// @note This is mainly SDS being paranoid about removing apparently duplicate tests when restructuring
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -232,6 +239,55 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant_string");
+    }
+}
+
+
+CASE("Missing values are encoded and decoded correctly") {
+
+    // Create a mapping between the codecs, their associated missing values, and encoded data sizes
+
+    typedef std::map<std::string, std::pair<double, int> > MapType;
+    MapType codec_value_map;
+
+    codec_value_map["short_real"]    = std::make_pair(odb::MDI::realMDI(), sizeof(float));
+    codec_value_map["short_real2"]   = std::make_pair(odb::MDI::realMDI(), sizeof(float));
+    codec_value_map["long_real"]     = std::make_pair(odb::MDI::realMDI(), sizeof(double));
+    codec_value_map["int8_missing"]  = std::make_pair(odb::MDI::integerMDI(), sizeof(int8_t));
+    codec_value_map["int16_missing"]  = std::make_pair(odb::MDI::integerMDI(), sizeof(int16_t));
+
+    for (MapType::const_iterator it = codec_value_map.begin(); it != codec_value_map.end(); ++it) {
+
+        const std::string& codec_name(it->first);
+        double missing_value = it->second.first;
+        int encoded_size = it->second.second;
+
+        // Get the appropriate codec
+
+        eckit::ScopedPtr<odb::codec::Codec> c(
+                    odb::codec::Codec::findCodec<
+                            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(codec_name, false));
+
+        EXPECT(c->name() == codec_name);
+
+        // Write data into a buffer
+
+        unsigned char buffer[256];
+
+        unsigned char* next_pos = c->encode(buffer, missing_value);
+
+        EXPECT((next_pos - buffer) == encoded_size);
+
+        // And check that we can decode it again!
+
+        eckit::MemoryHandle dh(buffer, sizeof(buffer));
+        dh.openForRead();
+        c->dataHandle(&dh);
+
+        double decoded = c->decode();
+
+        ASSERT(dh.position() == eckit::Offset(encoded_size));
+        ASSERT(decoded == missing_value);
     }
 }
 
