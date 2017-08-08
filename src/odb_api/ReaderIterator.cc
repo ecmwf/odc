@@ -185,61 +185,80 @@ bool ReaderIterator::next(ecml::ExecutionContext* context)
     uint16_t c = 0;
     long bytesRead = 0;
 
-	if ( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
-	{
-        if ( (bytesRead = f_->read(&c, 2)) <= 0)
-        {
-            owner_.noMoreData();
-			return ! (noMore_ = true);
-        }
-		ASSERT(bytesRead == 2);
+    if ( (bytesRead = memDataHandle_.read(&c, 2)) == 0) {
 
-		if (c == ODA_MAGIC_NUMBER) 
-		{
-			DataStream<SameByteOrder> ds(f_);
+        // Keep going until we find a valid header, or run out of data
+        // n.b. an empty table is legit, so we need a loop.
 
-			unsigned char cc;
-			ds.readUChar(cc); ASSERT(cc == 'O');
-			ds.readUChar(cc); ASSERT(cc == 'D');
-			ds.readUChar(cc); ASSERT(cc == 'A');
+        bool found = false;
+        do {
 
-			Header<ReaderIterator> header(*this);
-			header.loadAfterMagic();
-			byteOrder_ = header.byteOrder();
-			++headerCounter_;
-			initRowBuffer();
-
-			size_t dataSize = header.dataSize();
-			if (! readBuffer(dataSize))
-            {
+            // If we are at the end of the data, we are done.
+            if ( (bytesRead = f_->read(&c, 2)) <= 0) {
                 owner_.noMoreData();
-				return ! (noMore_ = true);
+                return ! (noMore_ = true);
+            }
+            ASSERT(bytesRead == 2);
+
+            // The only legit thing to follow a table, is another table
+
+            if (c != ODA_MAGIC_NUMBER)  {
+                // memDataHandle_ is preloaded with all of the data associated with an ODB table according
+                // to its header. If we have read data beyond the full table without finding the magic for
+                // a new table, then this is a corrupt file, and we should report it as such, rather than
+                // just treating this as more row data.
+
+                // See ODB-376
+
+                std::stringstream ss;
+                ss << "Unexpected data found in ODB file \"" << f_->name()
+                   << "\" at position " << (static_cast<long long>(f_->position())-2);
+                throw BadValue(ss.str());
             }
 
-            if( (bytesRead = memDataHandle_.read(&c, 2)) == 0)
-            {
-                owner_.noMoreData();
-				return ! (noMore_ = true);
+            // Read in the rest of the header
+
+            DataStream<SameByteOrder> ds(f_);
+
+            unsigned char cc;
+            ds.readUChar(cc); ASSERT(cc == 'O');
+            ds.readUChar(cc); ASSERT(cc == 'D');
+            ds.readUChar(cc); ASSERT(cc == 'A');
+
+            Header<ReaderIterator> header(*this);
+            header.loadAfterMagic();
+            byteOrder_ = header.byteOrder();
+            ++headerCounter_;
+            initRowBuffer();
+
+            size_t dataSize = header.dataSize();
+
+            // If there are no rows in this table, loop around again to read the _next_ table
+
+            if (dataSize == 0) {
+                ASSERT(header.rowsNumber() == 0);
+            } else {
+
+                // We are now expecting rows. Read the data into the rows buffer, and continue with row reading
+
+                ASSERT(header.rowsNumber() != 0);
+                ASSERT(dataSize >= 2);
+
+                if (!readBuffer(dataSize)) {
+                    // See ODB-376
+                    throw SeriousBug("Expected row data to follow table header");
+                }
+
+                bytesRead = memDataHandle_.read(&c, 2);
+                ASSERT(bytesRead == 2);
+
+                // We have found a new, valid table. Break out of the loop.
+                found = true;
+                newDataset_ = true;
             }
-			ASSERT(bytesRead == 2);
 
-			newDataset_ = true;
-
-        } else {
-
-            // memDataHandle_ is preloaded with all of the data associated with an ODB table according
-            // to its header. If we have read data beyond the full table without finding the magic for
-            // a new table, then this is a corrupt file, and we should report it as such, rather than
-            // just treating this as more row data.
-
-            // See ODB-376
-
-            std::stringstream ss;
-            ss << "Unexpected data found in ODB file \"" << f_->name()
-               << "\" at position " << (static_cast<long long>(f_->position())-2);
-            throw SeriousBug(ss.str());
-        }
-	}
+        } while(!found);
+    }
 	c = ntohs(c);
 
 	size_t nCols = columns().size();
