@@ -59,11 +59,11 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 
                 if (max == min) {
 					codec = col.hasMissing() ? "real_constant_or_missing" : "constant";
-                } else if (codec_long->hasShortRealInternalMissing()) {
-                    ASSERT(!codec_long->hasShortReal2InternalMissing());
-                    codec = "short_real2";
                 } else if (codec_long->hasShortReal2InternalMissing()) {
+                    ASSERT(!codec_long->hasShortRealInternalMissing());
                     codec = "short_real";
+                } else if (codec_long->hasShortRealInternalMissing()) {
+                    codec = "short_real2";
                 }
 
 				col.coder(Codec::findCodec<DATASTREAM>(codec, false));
