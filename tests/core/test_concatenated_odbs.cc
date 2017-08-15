@@ -311,7 +311,7 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
 
     // The header size is 320 bytes. Copy the data from the start...
 
-    writeDH.write(buf.data(), 320);
+    writeDH.write(buf.data(), 322);
 
     // Now read the data. We should get the data back, and then an error...
 
