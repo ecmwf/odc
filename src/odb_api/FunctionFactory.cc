@@ -59,7 +59,7 @@ namespace function {
 //--------------------------------------------------------------
 
 const double R_Earth_km   = 180*60 / piconst::pi * 1.852;
-const double R_Earth      = 180*60 / piconst::pi * 1.852*100.0;
+const double R_Earth      = 180*60 / piconst::pi * 1.852 * 1000.0;
 const double EPS          = 1e-7;
 const double D2R          = piconst::pi/180.0;
 const double R2D          = 180.0/piconst::pi;
