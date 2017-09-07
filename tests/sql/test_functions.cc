@@ -174,8 +174,6 @@ CASE("Inside or outside detection works for circles") {
 
     TemporaryFile f;
 
-    // Write some data with a latitude and longitude.
-
     {
         odb::Writer<> oda(f.path());
         odb::Writer<>::iterator row = oda.begin();
@@ -252,6 +250,53 @@ CASE("Inside or outside detection works for circles") {
         EXPECT((*it)[4] == 0);
         EXPECT((*it)[5] == 1);
         EXPECT((*it)[6] == 1);
+    }
+}
+
+
+CASE("Norms are correctly calculated") {
+
+    TemporaryFile f;
+
+    {
+        odb::Writer<> oda(f.path());
+        odb::Writer<>::iterator row = oda.begin();
+
+        row->setNumberOfColumns(2);
+        row->setColumn(0, "x", odb::REAL);
+        row->setColumn(1, "y", odb::REAL);
+        row->writeHeader();
+
+        (*row)[0] = 3.0;
+        (*row)[1] = 16.0;
+        ++row;
+
+        (*row)[0] = 4.0;
+        (*row)[1] = 12.0;
+        ++row;
+
+        (*row)[0] = 2.0;
+        (*row)[1] = 24.0;
+        ++row;
+    }
+
+    // And test that the SQL functions get the right data out!!!
+
+    // See ODB-382 for buggy behaviour.
+
+    const std::string sql = std::string("select ") +
+                                        "norm(x, y) "
+                                        "from \"" + f.path() + "\";";
+
+    {
+        odb::Select oda(sql);
+        odb::Select::iterator it = oda.begin();
+
+        // Norm is an aggregate function that calculates sqrt(x . y) for the
+        // entire columns of data
+
+        EXPECT(is_approximately_equal((*it)[0], 12.));
+        ++it;
     }
 }
 

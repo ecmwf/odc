@@ -136,7 +136,6 @@ Test_FullPage_SplitFullPage
 Test_FunctionDateAndTime
 Test_FunctionDotp
 Test_FunctionEqBox
-Test_FunctionNorm
 Test_FunctionRggBox
 Test_FunctionTdiff
 Test_FunctionThin
