@@ -72,7 +72,6 @@ TestDistinct.cc
 TestFastODA2Request.cc
 TestFastODA2Request2.cc
 TestFastODA2Request3.cc
-TestFunctionCircle.cc
 TestFunctionDateAndTime.cc
 TestFunctionDotp.cc
 TestFunctionEqBox.cc

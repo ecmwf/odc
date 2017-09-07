@@ -169,6 +169,46 @@ CASE("Various distance measuring functions return sensible things") {
     }
 }
 
+
+CASE("Inside or outside detection works for circrles") {
+
+    TemporaryFile f;
+
+    // Write some data with a latitude and longitude.
+
+    {
+        odb::Writer<> oda(f.path());
+        odb::Writer<>::iterator row = oda.begin();
+
+        row->setNumberOfColumns(2);
+
+        row->setColumn(0, "lat", odb::REAL);
+        row->setColumn(1, "lon", odb::REAL);
+
+        row->writeHeader();
+
+        // Include some extreme values
+
+        (*row)[0] = 45.0;
+        (*row)[1] = 10.0;
+        ++row;
+    }
+
+    // And test that the SQL functions get the right data out!!!
+
+    const std::string sql = std::string("select circle(lat,46.0, lon,11.0,1.0), ") +
+                                        "circle(lat,46.0, lon,11.0,1.5) " +
+                                        "from \"" + f.path() + "\";";
+
+    {
+        odb::Select oda(sql);
+        odb::Select::iterator it = oda.begin();
+
+        EXPECT((*it)[0] == 0);                                  // Inside relevant great-circle
+        EXPECT((*it)[1] == 1);
+    }
+}
+
 // ------------------------------------------------------------------------------------------------------
 
 int main(int argc, char* argv[]) {
