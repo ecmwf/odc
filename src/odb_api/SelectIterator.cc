@@ -69,12 +69,6 @@ void SelectIterator::parse(odb::sql::SQLSession& session, typename DATASTREAM::D
     if (! selectStmt_)
         throw UserError(std::string("Expected SELECT, got: ") + select_);
 
-    eckit::Log::info() << "tables: " << std::endl;
-    odb::sql::SortedTables::const_iterator it = selectStmt_->sortedTables_.begin();
-    for (; it != selectStmt_->sortedTables_.end(); ++it) {
-        eckit::Log::info() << ".." << std::endl;
-    }
-
     selectStmt_->prepareExecute();
 	
     populateMetaData<DATASTREAM>();
