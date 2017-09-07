@@ -135,7 +135,6 @@ Test_FullPage_PushingBackRowsToTheFullPage
 Test_FullPage_SplitFullPage
 Test_FunctionCircle
 Test_FunctionDateAndTime
-Test_FunctionDistance
 Test_FunctionDotp
 Test_FunctionEqBox
 Test_FunctionNorm
