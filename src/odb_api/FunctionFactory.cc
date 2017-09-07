@@ -347,7 +347,6 @@ inline double rad(double reflat, double reflon, double refdeg, double obslat, do
     double v (Func_cos(reflat) * Func_cos(obslat) * Func_cos(obslon-reflon) + Func_sin(reflat) * Func_sin(obslat) );
 
     int digs ( 3 + DBL_MANT_DIG - DBL_MIN_EXP ); 
-    printf("===> acos( %.*e )\n", digs, v);
 
   return (double)(acos(Func_cos(reflat) * Func_cos(obslat) * Func_cos(obslon-reflon) +
                Func_sin(reflat) * Func_sin(obslat) ) <= D2R*refdeg);
