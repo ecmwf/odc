@@ -170,7 +170,7 @@ CASE("Various distance measuring functions return sensible things") {
 }
 
 
-CASE("Inside or outside detection works for circrles") {
+CASE("Inside or outside detection works for circles") {
 
     TemporaryFile f;
 
@@ -181,31 +181,77 @@ CASE("Inside or outside detection works for circrles") {
         odb::Writer<>::iterator row = oda.begin();
 
         row->setNumberOfColumns(2);
-
-        row->setColumn(0, "lat", odb::REAL);
-        row->setColumn(1, "lon", odb::REAL);
-
+        row->setColumn(0, "x", odb::REAL);
+        row->setColumn(1, "y", odb::REAL);
         row->writeHeader();
-
-        // Include some extreme values
 
         (*row)[0] = 45.0;
         (*row)[1] = 10.0;
+        ++row;
+
+        (*row)[0] = 0.0;
+        (*row)[1] = 0.0;
+        ++row;
+
+        (*row)[0] = -45.5;
+        (*row)[1] = 37.4;
+        ++row;
+
+        (*row)[0] = 45.5;
+        (*row)[1] = -37.4;
         ++row;
     }
 
     // And test that the SQL functions get the right data out!!!
 
-    const std::string sql = std::string("select circle(lat,46.0, lon,11.0,1.0), ") +
-                                        "circle(lat,46.0, lon,11.0,1.5) " +
+    const std::string sql = std::string("select ") +
+                                        "circle(x, 46.0, y, 11.0, 1.0), "
+                                        "circle(x, 46.0, y, 11.0, 1.5), "
+                                        "circle(x, 0.0, y, 0.0, 1.0), "
+                                        "circle(x, 0.0, y, 0.0, -1.0), "
+                                        "circle(x, 0.0, y, 0.0, 0.0), "         // If we are on a point, a radius of zero is OK!
+                                        "circle(x, 45.5, y, -37.4, 117.7966), "
+                                        "circle(x, 45.5, y, -37.4, 117.7967) "
                                         "from \"" + f.path() + "\";";
 
     {
         odb::Select oda(sql);
         odb::Select::iterator it = oda.begin();
 
-        EXPECT((*it)[0] == 0);                                  // Inside relevant great-circle
+        EXPECT((*it)[0] == 0);
         EXPECT((*it)[1] == 1);
+        EXPECT((*it)[2] == 0);
+        EXPECT((*it)[3] == 0);
+        EXPECT((*it)[4] == 0);
+        EXPECT((*it)[5] == 1);
+        EXPECT((*it)[6] == 1);
+        ++it;
+
+        EXPECT((*it)[0] == 0);
+        EXPECT((*it)[1] == 0);
+        EXPECT((*it)[2] == 1);
+        EXPECT((*it)[3] == 1);
+        EXPECT((*it)[4] == 1);
+        EXPECT((*it)[5] == 1);
+        EXPECT((*it)[6] == 1);
+        ++it;
+
+        EXPECT((*it)[0] == 0);
+        EXPECT((*it)[1] == 0);
+        EXPECT((*it)[2] == 0);
+        EXPECT((*it)[3] == 0);
+        EXPECT((*it)[4] == 0);
+        EXPECT((*it)[5] == 0);
+        EXPECT((*it)[6] == 1);
+        ++it;
+
+        EXPECT((*it)[0] == 0);
+        EXPECT((*it)[1] == 0);
+        EXPECT((*it)[2] == 0);
+        EXPECT((*it)[3] == 0);
+        EXPECT((*it)[4] == 0);
+        EXPECT((*it)[5] == 1);
+        EXPECT((*it)[6] == 1);
     }
 }
 
