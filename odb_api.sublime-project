@@ -1,0 +1,78 @@
+{
+	"SublimeLinter":
+	{
+		"linters":
+		{
+			"cpplint":
+			{
+				"filter": "-whitespace/line_length,-whitespace/blank_line,-runtime/references"
+			}
+		}
+	},
+	"build_systems":
+	[
+		{
+			"file_regex": "([/\\w\\-\\.]+):(\\d+):(\\d+:)?",
+			"name": "odb_api",
+			"shell_cmd": "make",
+			"syntax": "Packages/CMakeBuilder/Syntax/Make.sublime-syntax",
+			"variants":
+			[
+				{
+					"name": "clean",
+					"shell_cmd": "make clean"
+				}
+			],
+			"working_dir": "${project_path}/../../build/odb_api"
+		},
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"python\" -u \"$file\""
+		},
+		{
+			"file_regex": "(.+[^:]):(\\d+):(\\d+): (?:fatal )?((?:error|warning): .+)$",
+			"name": "odb_api (OSX)",
+			"shell_cmd": "make -j4",
+			"syntax": "Packages/CMakeBuilder/Syntax/Make.sublime-syntax",
+			"variants":
+			[
+			],
+			"working_dir": "${project_path}/../../build/odb_lib"
+		},
+		{
+			"file_regex": "(.+[^:]):(\\d+):(\\d+): (?:fatal )?((?:error|warning): .+)$",
+			"name": "odb_lib (Linux)",
+			"shell_cmd": "make -j8",
+			"syntax": "Packages/CMakeBuilder/Syntax/Make.sublime-syntax",
+			"variants": null,
+			"working_dir": "${project_path}/../../build/odb_lib"
+		}
+	],
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				".tags",
+				".tags_sorted_by_file",
+				".gemtags",
+				"CMakeLists.txt.user*"
+			],
+			"follow_symlinks": true,
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"cmake":
+		{
+			"build_folder": "${project_path}/../../build/odb_lib",
+			"command_line_overrides":
+			{
+				"DEVELOPER_MODE": 1
+			}
+		}
+	}
+}
