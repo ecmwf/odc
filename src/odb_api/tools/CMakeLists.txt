@@ -58,12 +58,7 @@ TestAggregateFunctions2.cc
 TestAggregateFunctions3.cc
 TestAtTableInTheOutput.cc
 TestBitfields.cc
-TestCatFiles.cc
-TestCodec.cc
-TestCodecOptimization.cc
 TestCommandLineParsing.cc
-TestConstCodec.cc
-TestConstIntegerCodec.cc
 TestDataJoin.cc
 TestDataLink.cc
 TestDataLoader.cc
@@ -77,12 +72,9 @@ TestDistinct.cc
 TestFastODA2Request.cc
 TestFastODA2Request2.cc
 TestFastODA2Request3.cc
-TestFunctionCircle.cc
 TestFunctionDateAndTime.cc
-TestFunctionDistance.cc
 TestFunctionDotp.cc
 TestFunctionEqBox.cc
-TestFunctionNorm.cc
 TestFunctionRggBox.cc
 TestFunctionTdiff.cc
 TestFunctionThin.cc

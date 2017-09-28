@@ -37,9 +37,7 @@ SQLTestHandler::SQLTestHandler(const string& name)
 
 PathName SQLTestHandler::generatePathName(const string& testLabel, const string& parameterName)
 {
-    // TODO: remove spaces and funny characters from label and use it as a prefix of the file name
-   //return testLabel + "_" + parameterName + ".odb";
-   return parameterName + ".odb";
+   return testLabel + "_" + parameterName + ".odb";
 }
 
 

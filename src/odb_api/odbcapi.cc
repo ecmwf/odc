@@ -315,11 +315,12 @@ int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* 
 	else
 		*new_dataset = 0;
 
+    ASSERT(count >= 0);
+
 	if (count != static_cast<int>(iter->columns().size()))
 		return 2; // TDOO: define error codes
 
-	for (int i (0); i < count; ++i)
-		data[i] = iter->data()[i];
+    ::memcpy(data, iter->data(), count * sizeof(data[0]));
 
 	return 0;
 }

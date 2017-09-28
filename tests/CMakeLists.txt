@@ -52,15 +52,10 @@ Test_AggregateFunctions3
 Test_AtTableInTheOutput
 Test_Bitfields
 Test_CREATE_TABLE_and_SELECT_INTO
-Test_CatFiles
 Test_ChildTable_DataLoaderReturnsExpectedChildTableRows
 Test_ChildTable_DataLoaderReturnsExpectedNumberOfChildTableColumns
 Test_ChildTable_DataLoaderReturnsExpectedNumberOfChildTableRows
-Test_Codec
-Test_CodecOptimization
 Test_CommandLineParsing
-Test_ConstCodec
-Test_ConstIntegerCodec
 Test_DataRowCanSetDoubles
 Test_DataRowCanSetIntegers
 Test_DataRowCanSetStrings
@@ -138,12 +133,9 @@ Test_FullPage_IteratorReturnsExpectedNumberOfRows
 Test_FullPage_IteratorReturnsExpectedRows
 Test_FullPage_PushingBackRowsToTheFullPage
 Test_FullPage_SplitFullPage
-Test_FunctionCircle
 Test_FunctionDateAndTime
-Test_FunctionDistance
 Test_FunctionDotp
 Test_FunctionEqBox
-Test_FunctionNorm
 Test_FunctionRggBox
 Test_FunctionTdiff
 Test_FunctionThin
@@ -304,28 +296,6 @@ foreach( _test ${odb_api_tests} )
 endforeach()
 
 
-### New style odb_api tests (using lest)
-
-list( APPEND odb_api_lest_tests
-    test_minmax
-    test_select_iterator
-    test_concatenated_odbs
-    test_encode_odb
-    test_decode_odb
-    test_codecs_write
-    test_codecs_read
-    test_reencode_string_table
-)
-
-foreach( _test ${odb_api_lest_tests} )
-    ecbuild_add_test(
-        TARGET       ${_test}
-        SOURCES      ${_test}.cc TemporaryFiles.h MockDataHandles.h
-        TEST_DEPENDS get_odb_api_test_data
-        INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
-        LIBS         eckit Odb )
-endforeach()
-
 #### ECML ODB Module verbs tests
 
 #ecbuild_get_test_multidata( TARGET ecml_get_odb_api_test_data DIRNAME odb_api/tests NAMES ${ecml_test_data_files} NOCHECK )
@@ -419,3 +389,8 @@ ecbuild_add_executable( TARGET      test_client_lib_cpp
                         SOURCES     test_client_lib_cpp.cc
                         INCLUDES    ${ODB_API_INCLUDE_DIRS}
                         LIBS        Odb odbtools )
+
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
+
+add_subdirectory( core )
+add_subdirectory( sql )

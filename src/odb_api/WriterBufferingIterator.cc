@@ -285,7 +285,7 @@ void WriterBufferingIterator::flush()
 	InMemoryDataHandle bufferForHeader;
 	doWriteHeader(bufferForHeader, memoryDataHandle_.position(), rowsWritten);
 
-	Log::debug() << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << std::endl;
+    Log::debug() << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << std::endl;
 
 	MemoryBlock buff(bufferForHeader.position());
 	bufferForHeader.openForRead();

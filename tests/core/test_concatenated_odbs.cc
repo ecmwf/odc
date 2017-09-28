@@ -10,6 +10,7 @@
 
 #include "eckit/testing/Test.h"
 #include "eckit/io/FileHandle.h"
+#include "eckit/io/MemoryHandle.h"
 #include "eckit/io/MultiHandle.h"
 
 #include "TemporaryFiles.h"
@@ -222,6 +223,119 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
         }
     }
 }
+
+
+CASE("If corrupt data follows a valid ODB this should not be treated as a new ODB") {
+
+    // See ODB-376
+
+    // Construct a valid ODB in a buffer, followed by some invalid data
+
+    eckit::Buffer buf(4096);
+
+    eckit::MemoryHandle writeDH(buf);
+
+    {
+        odb::Writer<> oda(writeDH);
+        odb::Writer<>::iterator writer = oda.begin();
+
+        writer->setNumberOfColumns(3);
+        writer->setColumn(0, "x", odb::REAL);
+        writer->setColumn(1, "y", odb::REAL);
+        writer->setColumn(2, "z", odb::INTEGER);
+        writer->writeHeader();
+
+        for (size_t i = 1; i <= 2; i++) {
+            (*writer)[0] = i; // col 0
+            (*writer)[1] = i; // col 1
+            (*writer)[2] = i; // col 2
+            ++writer;
+        }
+    }
+
+    // And write some invalid data on the end of the buffer
+
+    const uint32_t invalid_data = 0xBAADF00D;
+    writeDH.write(&invalid_data, sizeof(invalid_data));
+
+    // Now read the data. We should get the data back, and then an error...
+
+    eckit::MemoryHandle readDH(buf);
+    readDH.openForRead();
+
+    odb::Reader in(readDH);
+    odb::Reader::iterator it = in.begin();
+
+    EXPECT(static_cast<long>(it->data()[0]) == 1);
+    EXPECT(static_cast<long>(it->data()[1]) == 1);
+    EXPECT(static_cast<long>(it->data()[2]) == 1);
+    ++it;
+
+    EXPECT(static_cast<long>(it->data()[0]) == 2);
+    EXPECT(static_cast<long>(it->data()[1]) == 2);
+    EXPECT(static_cast<long>(it->data()[2]) == 2);
+
+    // Where we would expect an EOF, or a new table, we now have corrupt data. This increment should
+    // NOT succeed, but should complain vociferously!!!
+
+    EXPECT_THROWS_AS(++it, eckit::BadValue);
+}
+
+CASE("If a corrupted ODB (with no row data following the header) then report an error") {
+
+    // See ODB-376
+
+    // Construct a valid ODB in a buffer, followed by some invalid data
+
+    eckit::Buffer buf(4096);
+
+    eckit::MemoryHandle writeDH(buf);
+
+    {
+        odb::Writer<> oda(writeDH);
+        odb::Writer<>::iterator writer = oda.begin();
+
+        writer->setNumberOfColumns(3);
+        writer->setColumn(0, "x", odb::REAL);
+        writer->setColumn(1, "y", odb::REAL);
+        writer->setColumn(2, "z", odb::INTEGER);
+        writer->writeHeader();
+
+        for (size_t i = 1; i <= 2; i++) {
+            (*writer)[0] = i; // col 0
+            (*writer)[1] = i; // col 1
+            (*writer)[2] = i; // col 2
+            ++writer;
+        }
+    }
+
+    // The header size is 320 bytes. Copy the data from the start...
+
+    writeDH.write(buf.data(), 322);
+
+    // Now read the data. We should get the data back, and then an error...
+
+    eckit::MemoryHandle readDH(buf.data(), static_cast<size_t>(writeDH.position()));
+    readDH.openForRead();
+
+    odb::Reader in(readDH);
+    odb::Reader::iterator it = in.begin();
+
+    EXPECT(static_cast<long>(it->data()[0]) == 1);
+    EXPECT(static_cast<long>(it->data()[1]) == 1);
+    EXPECT(static_cast<long>(it->data()[2]) == 1);
+    ++it;
+
+    EXPECT(static_cast<long>(it->data()[0]) == 2);
+    EXPECT(static_cast<long>(it->data()[1]) == 2);
+    EXPECT(static_cast<long>(it->data()[2]) == 2);
+
+    // Where we would expect an EOF, or a new table, we now have corrupt data. This increment should
+    // NOT succeed, but should complain vociferously!!!
+
+    EXPECT_THROWS_AS(++it, eckit::SeriousBug);
+}
+
 
 // ------------------------------------------------------------------------------------------------------
 

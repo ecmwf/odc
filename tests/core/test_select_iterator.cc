@@ -10,6 +10,7 @@
 
 #include "odb_api_ecbuild_config.h"
 
+#include "eckit/config/Resource.h"
 #include "eckit/eckit_config.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/testing/Test.h"
@@ -160,7 +161,11 @@ CASE("Test bugfix 01, quote <<UnitTest problem fixed with p4 change 23687>>") {
 
     const double *OBSVALUE = reinterpret_cast<const double*>(REF_DATA);
 
-    odb::Select oda("select obsvalue from \"2000010106.odb\";");
+    eckit::Resource<eckit::PathName> testDataPath("$TEST_DATA_DIRECTORY", "..");
+    std::stringstream ss_select;
+    ss_select << "select obsvalue from \"" << (testDataPath / "2000010106.odb") << "\";";
+
+    odb::Select oda(ss_select.str());
 
     // Only consider the first section of the file...
     size_t count = 0;
