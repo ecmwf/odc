@@ -102,6 +102,8 @@ public:
 	void writeHeader() { (*((*it_).iter_)).writeHeader(); }
 	void close() { ((*it_).iter_)->close(); }
 
+    const std::map<std::string, std::string>& properties() const { return it_->iter_->properties(); }
+
 	template <typename T> unsigned long pass1(T b, const T e) { return ((*it_).iter_)->pass1(b, e); }
 
 	ITERATOR& operator*() { return *((*it_).iter_); }

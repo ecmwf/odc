@@ -59,6 +59,8 @@ public:
 	void property(std::string, std::string);
 	std::string property(std::string);
 
+    const Properties& properties() const { return properties_; }
+
 	const MetaData& columns() { return columns_; }
 	const MetaData& columns(MetaData& md) { return columns_ = md; }
 
