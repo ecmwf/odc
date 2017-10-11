@@ -12,8 +12,6 @@
 
 #include "ChunkHandler.h"
 
-#include "odb_api/Comparator.h"
-
 #include "eckit/types/Types.h"
 
 #include "ecml/parser/Request.h"
