@@ -67,7 +67,7 @@ void CompareTool::run()
 	if (excludedColumnsTypes.size())
 		Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << std::endl;
 
-    if (excludedColumnsTypes.size())
+    if (excludedColumns.size())
         Log::info() << "excludedColumns:" << excludedColumns << std::endl;
 
 	bool checkMissing = ! optionIsSet("-dontCheckMissing");
