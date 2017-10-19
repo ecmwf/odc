@@ -21,7 +21,7 @@
 #else
 #include <cmath>
 #define fabs(x) std::fabs((x))
-#define modf(x) std::modf((x))
+#define modf(x,y) std::modf((x),(y))
 #endif
 
 using namespace eckit::testing;
