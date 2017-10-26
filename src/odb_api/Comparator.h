@@ -38,18 +38,42 @@ public:
 	void run(); 
 
 	template <typename T1, typename T2>
-		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2);
+        bool compare(T1& it1, const T1& end1,
+                     T2& it2, const T2& end2,
+                     const std::string& desc1, const std::string& desc2);
 
 	template <typename T1, typename T2>
-		bool compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2,
-					const std::vector<std::string>& excludedColumnsTypes);
+        bool compare(T1& it1, const T1& end1,
+                     T2& it2, const T2& end2,
+                     const std::string& desc1, const std::string& desc2,
+                     const std::vector<std::string>& excludedColumnsTypes,
+                     const std::vector<std::string>& excludedColumns);
 
 	void compare(eckit::DataHandle&, eckit::DataHandle&);
 	void compare(const eckit::PathName&, const eckit::PathName&);
-	void compare(const eckit::PathName&, const eckit::PathName&, const std::vector<std::string>& excludedColumnsTypes);
 
-	void compare(const MetaData&, const MetaData&, const std::vector<std::string>&);
-	void compare(int nCols, const double *data1, const double *data2, const MetaData&, const MetaData&);
+    void compare(const eckit::PathName& pathName1,
+                 const eckit::PathName& pathName2,
+                 const std::vector<std::string>& excludedColumnsTypes,
+                 const std::vector<std::string>& excludedcolumns);
+
+    void compare(const MetaData& metaData1, const MetaData& metaData2,
+                 const std::set<std::string>& excludedColumnsTypes,
+                 const std::set<std::string>& excludedColumns,
+                 std::vector<int>& skipCols);
+
+    void compare(int nCols,
+                 const double *data1,
+                 const double *data2,
+                 const MetaData& metaData1,
+                 const MetaData& metaData2);
+
+    void compare(int nCols,
+                 const double *data1,
+                 const double *data2,
+                 const MetaData& metaData1,
+                 const MetaData& metaData2,
+                 const std::vector<int>& skipCols);
 
 	void checkMissingFlag(bool v) { checkMissingFlag_ = v; }
 
@@ -79,30 +103,41 @@ private:
 template<typename T1, typename T2>
 bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2)
 {
-	std::vector<std::string> noExcludedColumns;
-	return compare(it1, end1, it2, end2, desc1, desc2, noExcludedColumns);
+    std::vector<std::string> noExcludedColumnsTypes;
+    std::vector<std::string> noExcludedColumns;
+    return compare(it1, end1, it2, end2, desc1, desc2, noExcludedColumnsTypes, noExcludedColumns);
 }
 
 template<typename T1, typename T2>
-bool Comparator::compare(T1& it1, const T1& end1, T2& it2, const T2& end2, const std::string& desc1, const std::string& desc2,
-						const std::vector<std::string>& excludedColumnsTypes)
+bool Comparator::compare(T1& it1, const T1& end1,
+                         T2& it2, const T2& end2,
+                         const std::string& desc1, const std::string& desc2,
+                         const std::vector<std::string>& excludedColumnsTypes,
+                         const std::vector<std::string>& excludedColumns)
 {
 	eckit::Log::info() << "Comparator::compare: (1) " << desc1 << " to (2) " << desc2 << std::endl;
 
 	nRow_ = 0;
 
-	compare(it1->columns(), it2->columns(), excludedColumnsTypes);
+    // The columns to skip are filled in by the column comparator function
+    std::vector<int> skipCols;
+
+    // Convert the excluded columns/types into sets, for more efficient lookups
+    std::set<std::string> excludedColumnsTypesSet(excludedColumnsTypes.begin(), excludedColumnsTypes.end());
+    std::set<std::string> excludedColumnsSet(excludedColumns.begin(), excludedColumns.end());
+
+    compare(it1->columns(), it2->columns(), excludedColumnsTypesSet, excludedColumnsSet, skipCols);
 
 	for (; it1 != end1 && it2 != end2; ++it1, ++it2)
 	{
 		++nRow_;
 
-		if (it1->isNewDataset())
-			compare(it1->columns(), it2->columns(), excludedColumnsTypes);
+        if (it1->isNewDataset())
+            compare(it1->columns(), it2->columns(), excludedColumnsTypesSet, excludedColumnsSet, skipCols);
 		if (it2->isNewDataset())
-			compare(it1->columns(), it2->columns(), excludedColumnsTypes);
+            compare(it1->columns(), it2->columns(), excludedColumnsTypesSet, excludedColumnsSet, skipCols);
 
-		compare(it1->columns().size(), it1->data(), it2->data(), it1->columns(), it2->columns());
+        compare(it1->columns().size(), it1->data(), it2->data(), it1->columns(), it2->columns(), skipCols);
 	}
 
 	ASSERT("First file has more rows!"  && ! (it1 != end1));

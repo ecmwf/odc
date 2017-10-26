@@ -32,7 +32,7 @@ public:
 
 	static void usage(const std::string& name, std::ostream &o)
 	{
-		o << name << " [-excludeColumnsTypes <list-of-columns>] [-dontCheckMissing] <file1.odb> <file2.odb>";
+        o << name << " [-excludeColumns <list-of-columns>] [-excludeColumnsTypes <list-of-columns>] [-dontCheckMissing] <file1.odb> <file2.odb>";
 	}
 
 private:
@@ -43,8 +43,8 @@ private:
 
 	static char* dummyArgv_[];
 
-	eckit::PathName* file1;
-	eckit::PathName* file2;
+    eckit::PathName* file1_;
+    eckit::PathName* file2_;
 
 	odb::RowsReaderIterator* reader1_;
 	odb::RowsReaderIterator* reader2_;

@@ -43,13 +43,15 @@ Comparator::Comparator(bool checkMissingFlag)
 void Comparator::compare(const PathName& p1, const PathName& p2)
 {
 	std::vector<std::string> noExcludedColumnTypes;
-	compare(p1, p2, noExcludedColumnTypes);
+    std::vector<std::string> noExcludedColumns;
+    compare(p1, p2, noExcludedColumnTypes, noExcludedColumns);
 }
 
 void Comparator::compare(eckit::DataHandle& l, eckit::DataHandle& r)
 {
 	std::vector<std::string> noExcludedColumnTypes;
-	odb::Reader oda1(l);
+    std::vector<std::string> noExcludedColumns;
+    odb::Reader oda1(l);
 	odb::Reader oda2(r);
 
 	odb::Reader::iterator it1(oda1.begin());
@@ -57,10 +59,12 @@ void Comparator::compare(eckit::DataHandle& l, eckit::DataHandle& r)
 	odb::Reader::iterator it2(oda2.begin());
 	odb::Reader::iterator end2(oda2.end());
 	
-	compare(it1, end1, it2, end2, "left", "right", noExcludedColumnTypes);
+    compare(it1, end1, it2, end2, "left", "right", noExcludedColumnTypes, noExcludedColumns);
 }
 
-void Comparator::compare(const PathName& p1, const PathName& p2, const std::vector<std::string>& excludedColumnsTypes)
+void Comparator::compare(const PathName& p1, const PathName& p2,
+                         const std::vector<std::string>& excludedColumnsTypes,
+                         const std::vector<std::string>& excludedColumns)
 {
     Tracer t(Log::debug(), std::string("Comparator::compare: ") + p1 + ", " + p2);
 
@@ -72,7 +76,7 @@ void Comparator::compare(const PathName& p1, const PathName& p2, const std::vect
 	odb::Reader::iterator it2(oda2.begin());
 	odb::Reader::iterator end2(oda2.end());
 	
-	compare(it1, end1, it2, end2, p1, p2, excludedColumnsTypes);
+    compare(it1, end1, it2, end2, p1, p2, excludedColumnsTypes, excludedColumns);
 }
 
 void Comparator::raiseNotEqual(const Column& column, double d1, double d2) {
@@ -83,10 +87,34 @@ void Comparator::raiseNotEqual(const Column& column, double d1, double d2) {
     throw ValuesDifferent(ss.str());
 }
 
-void Comparator::compare(int nCols, const double *data1, const double *data2, const MetaData& md1, const MetaData& md2)
-{
+void Comparator::compare(int nCols,
+                         const double *data1,
+                         const double *data2,
+                         const MetaData& md1,
+                         const MetaData& md2) {
+
+    std::vector<int> skipColsUnused;
+    compare(nCols, data1, data2, md1, md2, skipColsUnused);
+}
+
+void Comparator::compare(int nCols,
+                         const double *data1,
+                         const double *data2,
+                         const MetaData& md1,
+                         const MetaData& md2,
+                         const std::vector<int>& skipCols) {
+
+    std::vector<int>::const_iterator nextSkipCol = skipCols.begin();
+
     unsigned long long numberOfDifferences (0);
-    for (int i=0; i < nCols; i++)
+    for (int i=0; i < nCols; i++) {
+
+        // Skip the specified columns
+        if (nextSkipCol != skipCols.end() && (*nextSkipCol) == i) {
+            ++nextSkipCol;
+            continue;
+        }
+
         try {
             const Column& column(*md1[i]);
             ColumnType type(column.type());
@@ -128,6 +156,8 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
             //TODO: make it an option to stop when an error found
             //throw;
         }
+    }
+
     if (numberOfDifferences)
     {
         stringstream ss;
@@ -137,11 +167,15 @@ void Comparator::compare(int nCols, const double *data1, const double *data2, co
 }
 
 
-void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, const std::vector<std::string>& exColumnsTypes)
-{
+void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2,
+                         const std::set<std::string>& excludedColumnsTypes,
+                         const std::set<std::string>& excludedColumns,
+                         std::vector<int>& skipCols) {
+
 	ASSERT("Number of columns must be the same" && (metaData1.size() == metaData2.size()));
 
-	std::set<std::string> excludedColumnsTypes(exColumnsTypes.begin(), exColumnsTypes.end());
+    // We keep track of which columns are skipped in this routine.
+    skipCols.clear();
 
 	size_t size = metaData1.size();
 	for (size_t i = 0; i < size; i++)
@@ -151,6 +185,12 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2, c
 
 		try {
 			ASSERT(column1.name() == column2.name());
+
+            // If we are skipping a column, then we should check nothing for it.
+            if (excludedColumns.find(column1.name()) != excludedColumns.end()) {
+                skipCols.push_back(i);
+                continue;
+            }
 
 			if (excludedColumnsTypes.find(column1.name()) == excludedColumnsTypes.end())
 			{

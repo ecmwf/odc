@@ -27,14 +27,14 @@ CompareTool::CompareTool (int argc, char *argv[])
 : Tool(argc, argv) 
 {
 	registerOptionWithArgument("-excludeColumnsTypes");
-	if (parameters().size() != 3)
+    registerOptionWithArgument("-excludeColumns");
+    if (parameters().size() != 3)
 	{
 		Log::error() << "Usage:";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
 		throw Exception("Wrong number of parameters.");
 	}
-
 
 	PathName p;
 	if (! (p = PathName(parameters()[1])).exists()
@@ -45,16 +45,16 @@ CompareTool::CompareTool (int argc, char *argv[])
 		throw Exception(s.str());
 	}
 
-	file1 = new PathName(parameters()[1]);
-	file2 = new PathName(parameters()[2]);
+    file1_ = new PathName(parameters()[1]);
+    file2_ = new PathName(parameters()[2]);
 }
 
 
 void CompareTool::run()
 {
-	Timer t(std::string("Comparing files ") + *file1 + " and " + *file2);
-	odb::Reader oda1(*file1);
-	odb::Reader oda2(*file2);
+    Timer t(std::string("Comparing files ") + *file1_ + " and " + *file2_);
+    odb::Reader oda1(*file1_);
+    odb::Reader oda2(*file2_);
 
 	odb::Reader::iterator it1(oda1.begin());
 	odb::Reader::iterator end1(oda1.end());
@@ -62,12 +62,16 @@ void CompareTool::run()
 	odb::Reader::iterator end2(oda2.end());
 
 	std::vector<std::string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", std::string("")));
+    std::vector<std::string> excludedColumns = StringTools::split(",", optionArgument("-excludeColumns", std::string("")));
 
 	if (excludedColumnsTypes.size())
 		Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << std::endl;
-	
+
+    if (excludedColumns.size())
+        Log::info() << "excludedColumns:" << excludedColumns << std::endl;
+
 	bool checkMissing = ! optionIsSet("-dontCheckMissing");
-	odb::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1, *file2, excludedColumnsTypes);
+    odb::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1_, *file2_, excludedColumnsTypes, excludedColumns);
 }
 
 } // namespace tool 
