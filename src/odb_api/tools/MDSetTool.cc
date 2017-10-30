@@ -78,20 +78,19 @@ void MDSetTool::run()
         }
 
 		size_t sizeOfEncodedData = (**it).sizeOfEncodedData(); 
-		Properties props;
 	    // See if the file was created on a different order architecture
 		if ((**it).byteOrder() == BYTE_ORDER_INDICATOR)
 		{
 			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << std::endl;
 
-			serializeHeader<SameByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
+            serializeHeader<SameByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), it->properties(), md);
 			DataStream<SameByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
 		}
 		else
 		{
 			Log::info() << "MDSetTool::run: OTHER ORDER " << sizeOfEncodedData << std::endl;
 			
-			serializeHeader<OtherByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), props, md);
+            serializeHeader<OtherByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), it->properties(), md);
 			DataStream<OtherByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
 		}
 	}

@@ -62,6 +62,8 @@ public:
 	void property(std::string, std::string);
 	std::string property(std::string);
 
+    const Properties& properties() const { return properties_; }
+
     const MetaData& columns() const { return columns_; }
     const MetaData& columns(const MetaData& md) { return columns_ = md; }
     void setNumberOfColumns(size_t n) { columns_.setSize(n); }

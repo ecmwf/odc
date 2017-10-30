@@ -51,7 +51,9 @@ public:
 	const MetaData& columns(const MetaData&) { NOTIMP; }
     void setNumberOfColumns(size_t) { NOTIMP; }
 
-	int close() { NOTIMP; }
+    const std::map<std::string, std::string>& properties() const { NOTIMP; }
+
+    int close() { NOTIMP; }
     int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
 	void writeHeader() { NOTIMP; }
     int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
