@@ -9,6 +9,7 @@ foreach( _test ${_sql_odb_tests} )
         SOURCES      ${_test}.cc ../TemporaryFiles.h ../MockDataHandles.h
         INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
         ENVIRONMENT  ${test_environment}
+        TEST_DEPENDS get_odb_api_test_data
         LIBS         eckit Odb )
 endforeach()
 
