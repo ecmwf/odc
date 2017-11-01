@@ -80,7 +80,10 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 
 	typedef MetaDataReader<MetaDataReaderIterator> MDR;
 
-	MDR mdReader(fileName);
+    const bool buffered = true;
+    const bool skipData = true;
+    MDR mdReader(fileName, skipData, buffered);
+
 	MDR::iterator it = mdReader.begin(), end = mdReader.end();
 
     std::auto_ptr<MetaData> currentMD(it->columns().clone());

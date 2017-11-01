@@ -24,6 +24,8 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/FileHandle.h"
+#include "eckit/io/BufferedHandle.h"
+
 #include "odb_api/Codec.h"
 #include "odb_api/Column.h"
 #include "odb_api/DataStream.h"
@@ -58,11 +60,11 @@ MetaDataReader<T>::MetaDataReader()
 {} 
 
 template <typename T>
-MetaDataReader<T>::MetaDataReader(const eckit::PathName& path, bool skipData)
-: dataHandle_(path.fileHandle()),
-  deleteDataHandle_(true),
-  path_(path),
-  skipData_(skipData)
+MetaDataReader<T>::MetaDataReader(const eckit::PathName& path, bool skipData, bool buffered) :
+    dataHandle_(buffered ? new eckit::BufferedHandle(path.fileHandle()) : path.fileHandle()),
+    deleteDataHandle_(true),
+    path_(path),
+    skipData_(skipData)
 {
 	dataHandle_->openForRead();
 } 

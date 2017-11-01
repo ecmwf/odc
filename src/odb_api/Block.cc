@@ -8,18 +8,16 @@
  * does it submit to any jurisdiction.
  */
 
+#include <ostream>
+
 #include "eckit/eckit.h"
-#include "odb_api/MetaData.h"
-#include "odb_api/MetaDataReader.h"
-#include "odb_api/MetaDataReaderIterator.h"
-#include "odb_api/Reader.h"
-#include "odb_api/Select.h"
-#include "odb_api/Block.h"
-#include "eckit/io/PartFileHandle.h"
 #include "eckit/io/Offset.h"
 #include "eckit/io/Length.h"
 
-#include <ostream>
+#include "odb_api/MetaData.h"
+#include "odb_api/Reader.h"
+#include "odb_api/Select.h"
+#include "odb_api/Block.h"
 
 using namespace eckit;
 using namespace std;
