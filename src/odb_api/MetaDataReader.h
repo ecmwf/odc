@@ -36,7 +36,7 @@ public:
 	typedef IteratorProxy<T,MetaDataReader,const double> iterator;
 	//typedef typename iterator::Row row;
 
-	MetaDataReader(const eckit::PathName &path, bool skipData = true);
+    MetaDataReader(const eckit::PathName &path, bool skipData = true, bool buffered = false);
 	MetaDataReader();
 
 	virtual ~MetaDataReader();
