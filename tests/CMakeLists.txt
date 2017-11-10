@@ -313,7 +313,9 @@ list( APPEND odb_module_tests
 
 # Disabled till ODB-215 fixed as it fails in Bamboo
     test_server_side_processing.ecml
-    test_stage.ecml
+
+    ## DISABLED according to ODB-394
+    ## test_stage.ecml
 )
 
 list( APPEND odb_module_multithreaded_tests
@@ -325,6 +327,7 @@ ecbuild_add_test ( TARGET       test_ec_archiving.ecml
                    COMMAND      ${odb_bin}
                    ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_ec_archiving.ecml
                    ENVIRONMENT  ${test_environment}
+                   ENABLED      OFF
                    TEST_DEPENDS get_odb_api_test_data
                                 get_mars_client_test_data_ec )
 
@@ -333,6 +336,7 @@ ecbuild_add_test ( TARGET       test_mo_archiving.ecml
                    COMMAND      ${odb_bin}
                    ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_mo_archiving.ecml
                    ENVIRONMENT  ${test_environment}
+                   ENABLED      OFF
                    TEST_DEPENDS get_odb_api_test_data
                                 get_mars_client_test_data_mo)
 
