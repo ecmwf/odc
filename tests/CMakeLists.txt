@@ -312,7 +312,7 @@ list( APPEND odb_module_tests
     test_create_partitions.ecml
 
 # Disabled till ODB-215 fixed as it fails in Bamboo
-    test_server_side_processing.ecml
+    # test_server_side_processing.ecml
 
     ## DISABLED according to ODB-394
     ## test_stage.ecml
