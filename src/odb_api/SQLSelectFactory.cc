@@ -24,7 +24,6 @@
 #include "odb_api/SQLSession.h"
 #include "odb_api/TemplateParameters.h"
 #include "odb_api/Writer.h"
-#include "odb_api/SQLCallbackOutput.h"
 #include "odb_api/EmbeddedCodeParser.h"
 #include "odb_api/SQLAST.h"
 #include "odb_api/SQLOutputConfig.h"
@@ -323,9 +322,6 @@ SQLOutput* SQLSelectFactory::createOutput (SQLSession& session, const string& in
     //TODO: pass parameter into to defaultFormat
     SQLOutput *r (NULL);
     //if (config_.outputFormat() == "callback") return session.defaultOutput();
-    // TODO: FIXME
-    //if (context && context->environment().lookupNoThrow("callback") )
-    //    return r = new SQLCallbackOutput(*context);
 
     string outputFile ((config_.outputFormat() == "odb") ? config_.outputFile() : into);
     Log::debug() << "SQLSelectFactory::createOutput: outputFile: '" << outputFile << "'" << endl;

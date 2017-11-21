@@ -12,7 +12,6 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "ECMLTool.h"
 #include "CompactTool.h"
 #include "CompareTool.h"
 #include "CountTool.h"
@@ -46,7 +45,6 @@ Tool::Tool(const CommandLineParser& clp)
 
 void Tool::registerTools()
 {
-	static ToolFactory<ECMLTool> ecml("ecml");
 	static ToolFactory<CompactTool> compact("compact");
 	static ToolFactory<CompareTool> compare("compare");
 	static ToolFactory<CountTool> countTool("count");

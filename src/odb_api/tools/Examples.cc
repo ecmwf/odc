@@ -90,6 +90,11 @@ TEST(example_write_data)
     }
 }
 
+/*
+ * These have all been disabled as part of the elimination of ECML functionality
+ * TODO: (SDS) Check if this really is to do with ecml
+ *
+ *
 class ExampleCallback : public ecml::RequestHandler {
 public:
     ExampleCallback(): ecml::RequestHandler("example_callback") {}
@@ -217,6 +222,7 @@ TEST(example_sql_select_and_a_mars_verb_as_a_callback)
     "  callback = example_mars_language_callback"
     );
 }
+*/
 
 } // namespace
 

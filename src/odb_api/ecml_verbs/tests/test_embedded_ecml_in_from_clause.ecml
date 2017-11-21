@@ -1,9 +1,0 @@
-# This stuff is experimental.
-# The test is a bit silly, as embedded ECML in FROM clause of a SQL embedded in ECML makes little sense
-# (the SQL verb requires SOURCE, which should be used as implicit FROM)
-# but it's OK as a test for now, at least we know this can be parsed.
-
-sql,
-filter = "select count(*) from { println, values = \"file://2000010106.odb\" }",
-source = 2000010106.odb,
-target = 2000010106_count.odb

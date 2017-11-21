@@ -36,9 +36,6 @@
 #include "ecml/core/RequestHandler.h"
 #include "ecml/parser/RequestParser.h"
 #include "ecml/parser/Cell.h"
-#include "odb_api/ODBModule.h"
-#include "odb_api/ecml_data/ResultSet.h"
-#include "odb_api/ecml_data/ResultSetStore.h"
 
 // Exceptions.
 #include "eckit/exception/Exceptions.h"

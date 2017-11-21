@@ -294,8 +294,6 @@ SQLInteractiveSession.cc
 SQLInteractiveSession.h
 SQLNonInteractiveSession.cc
 SQLNonInteractiveSession.h
-SQLCallbackOutput.cc
-SQLCallbackOutput.h
 SQLIterator.h
 SQLIteratorOutput.cc
 SQLIteratorOutput.h
@@ -404,41 +402,6 @@ Stager.h
 Stager.cc
 ODBTarget.cc
 ODBTarget.h
-
-
-# ECML interface
-ODBModule.h
-ODBModule.cc
-# * ECML verbs
-ecml_verbs/ArchiveHandler.h
-ecml_verbs/ArchiveHandler.cc
-ecml_verbs/RetrieveHandler.h
-ecml_verbs/RetrieveHandler.cc
-ecml_verbs/StageHandler.h
-ecml_verbs/StageHandler.cc
-ecml_verbs/CompareHandler.h
-ecml_verbs/CompareHandler.cc
-ecml_verbs/SQLHandler.h
-ecml_verbs/SQLHandler.cc
-ecml_verbs/ChunkHandler.h
-ecml_verbs/ChunkHandler.cc
-ecml_verbs/SQLTestHandler.h
-ecml_verbs/SQLTestHandler.cc
-ecml_verbs/ImportTextHandler.h
-ecml_verbs/ImportTextHandler.cc
-ecml_verbs/CreatePartitionsHandler.h
-ecml_verbs/CreatePartitionsHandler.cc
-ecml_verbs/CreateIndexHandler.h
-ecml_verbs/CreateIndexHandler.cc
-# * ECML data
-ecml_data/ResultSet.cc
-ecml_data/ResultSet.h
-ecml_data/Matrix.cc
-ecml_data/Matrix.h
-ecml_data/ResultSetStore.cc
-ecml_data/ResultSetStore.h
-ecml_data/LocalHandleFactory.h
-ecml_data/LocalHandleFactory.cc
 )
 
 # templates

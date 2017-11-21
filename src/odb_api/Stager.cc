@@ -14,13 +14,11 @@
 #include "eckit/config/Resource.h"
 #include "eckit/parser/StringTools.h"
 
-#include "ecml/core/Interpreter.h"
 #include "ecml/core/ExecutionContext.h"
 
 #include "odb_api/FileCollector.h"
 #include "odb_api/FileMapper.h"
 #include "odb_api/InMemoryDataHandle.h"
-#include "odb_api/ODBModule.h"
 #include "odb_api/Partition.h"
 #include "odb_api/Indexer.h"
 #include "odb_api/Partitioner.h"

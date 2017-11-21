@@ -49,10 +49,6 @@ ecbuild_add_option( FEATURE NETCDF
                     DEFAULT OFF
                     REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
-ecbuild_add_option( FEATURE ODB_API_SERVER_SIDE
-                    DESCRIPTION "Support for keyword SERVER_SIDE"
-                    DEFAULT OFF )
-
 ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
                     DESCRIPTION "ODB Server uses four digits format of time"
                     DEFAULT OFF )

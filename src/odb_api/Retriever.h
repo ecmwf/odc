@@ -31,7 +31,6 @@ public:
 private:
     static void sendPartitions(eckit::MultiHandle& output, const eckit::PathName& partitionsInfo, const std::vector<size_t>& partitionNumbers);
     static void sendSavedPartitions(eckit::MultiHandle& output, const eckit::PathName& savedPartitionsListFile, const std::vector<size_t>& partitionNumbers);
-    static void handleServerSide(eckit::MultiHandle&, const FileCollector&, const std::vector<std::string>&);
 };
 
 #endif

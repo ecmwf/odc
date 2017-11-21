@@ -1,6 +1,4 @@
 list( APPEND odbtools_src_files
-ECMLTool.cc
-ECMLTool.h
 TestCase.h 
 TestCase.cc 
 TestRunner.cc 
@@ -104,7 +102,6 @@ TestTextSelect2.txt
 TestTextSelect3.cc
 MockReader.h
 MockReader.cc
-TestODBModule.cc
 )
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odb_api )

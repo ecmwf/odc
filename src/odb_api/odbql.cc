@@ -39,7 +39,6 @@
 #include "odb_api/SQLDatabase.h"
 #include "odb_api/SQLEmbedded.h"
 #include "ecml/data/DataHandleFactory.h"
-#include "odb_api/ODBModule.h"
 
 #include "odbql.h"
 
@@ -624,21 +623,9 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
             *ppStmt = stmt_ptr_t (new SelectImpl(database(db), zSql));
         }
     }
-    else if (dynamic_cast<odb::sql::SQLEmbedded*>(statement))
-    {
-        std::string code ( dynamic_cast<odb::sql::SQLEmbedded&>(*statement).code());
 
-        ecml::ExecutionContext context;
-        odb::ODBModule odbModule;
-        context.import(odbModule);
-        ecml::Values values (context.execute(code));
-        std::vector<std::string> descriptors;
-        for (ecml::Request e (values); e; e = e->rest())
-            if (e->value())
-                descriptors.push_back(e->value()->text());
-
-        *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), descriptors));
-    }
+    // We have removed ECML.
+    ASSERT(!dynamic_cast<odb::sql::SQLEmbedded*>(statement));
 
     return ODBQL_OK;
 

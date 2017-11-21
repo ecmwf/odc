@@ -22,7 +22,6 @@
 
 #include "odb_api/FileCollector.h"
 #include "odb_api/FileMapper.h"
-#include "odb_api/ODBModule.h"
 #include "odb_api/InMemoryDataHandle.h"
 #include "odb_api/Partition.h"
 #include "odb_api/Writer.h"
@@ -88,19 +87,8 @@ void Retriever::retrieve(MultiHandle&                                           
         vector<string> serverSide (request ["server_side"]);
         if (serverSide.size()) 
         {
-#ifdef HAVE_ODB_API_SERVER_SIDE
-            MultiHandle mh;
-            FileCollector fileCollector (mapper, mh);
-            fileCollector.findFiles(keywords, request);
-
-            if(mh.estimate() == Length(0)) 
-                Log::userWarning() << "Data not found" << endl;
-
-            handleServerSide(output, fileCollector, serverSide);
-#else
-            Log::error() << "RETRIEVE: SERVER_SIDE Server side processing disabled at compile time" << endl;
-            throw UserError("SERVER_SIDE Server side processing disabled at compile time");
-#endif
+            Log::error() << "ODB API server side no longer exists" << endl;
+            throw UserError("ODB API server side no longer exists");
         } 
         else 
         {
@@ -139,34 +127,6 @@ void Retriever::sendPartitions(MultiHandle& output, const PathName& partitionsIn
     }
 }
 
-void Retriever::handleServerSide(MultiHandle& output, const FileCollector& fileCollector, const vector<string>& serverSide)
-{
-    if (serverSide.size() > 1)
-        throw UserError("Currently SERVER_SIDE can have only one value");
-
-    const string foundFiles ( StringTools::join("\"/\"", fileCollector.foundFiles()) );
-    string code (string() 
-        + "apply, closure=" + serverSide[0] + ","
-          "       args=(let,source=\"" + foundFiles + "\")");
-
-    Log::info() << "server_side: '" << endl << code << endl << "'" << endl;
-
-    ecml::ExecutionContext context;
-    odb::ODBModule odbModule;
-    context.import(odbModule);
-
-    // server_side should return a list of files
-    ecml::Values result (context.execute(code));
-    Log::info() << "server_side result: " << result << endl;
-
-    for (ecml::Cell* v (result); v; v = v->rest())
-    {
-        ASSERT(v->value());
-        string fileName (v->value()->text());
-        Log::info() << "SERVER_SIDE: adding '" << fileName << "' to output" << endl;
-        output += PathName(fileName).fileHandle();
-    }
-}
 
 std::map<std::string,std::vector<std::string> > Retriever::unquoteValues(const std::map<std::string,std::vector<std::string> >& request)
 {
