@@ -316,8 +316,6 @@ SQLSelect.cc
 SQLSelect.h
 SQLInsert.cc
 SQLInsert.h
-SQLEmbedded.h
-SQLEmbedded.cc
 SQLSelectFactory.cc
 SQLSelectFactory.h
 SQLInsertFactory.cc

@@ -23,7 +23,6 @@
 #include "odb_api/SQLParser.h"
 #include "odb_api/SQLInsertFactory.h"
 #include "odb_api/SQLSelect.h"
-#include "odb_api/SQLEmbedded.h"
 #include "odb_api/SQLSession.h"
 #include "odb_api/StringExpression.h"
 #include "odb_api/EmbeddedCodeExpression.h"

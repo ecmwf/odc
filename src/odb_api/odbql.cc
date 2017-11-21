@@ -37,7 +37,6 @@
 #include "odb_api/SQLIteratorSession.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLEmbedded.h"
 #include "ecml/data/DataHandleFactory.h"
 
 #include "odbql.h"
@@ -623,9 +622,6 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
             *ppStmt = stmt_ptr_t (new SelectImpl(database(db), zSql));
         }
     }
-
-    // We have removed ECML.
-    ASSERT(!dynamic_cast<odb::sql::SQLEmbedded*>(statement));
 
     return ODBQL_OK;
 

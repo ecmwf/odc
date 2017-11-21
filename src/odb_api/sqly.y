@@ -181,7 +181,6 @@ Expressions emptyExpressionList;
 %type <select_statement>select_statement;
 %type <insert_statement>insert_statement;
 %type <select_statement>create_view_statement;
-%type <embedded_statement>embedded_statement;
 
 %%
 
@@ -195,7 +194,6 @@ statements : statement ';'
 statement: select_statement        { session->statement($1); } 
 		 | create_view_statement   { session->statement($1); } 
 		 | insert_statement        { session->statement(session->insertFactory().create(*session, /*InsertAST* */ ($1))); }
-		 | embedded_statement      { session->statement(new SQLEmbedded($1)); }
 		 | set_statement
 		 | create_schema_statement
 		 | create_index_statement 
@@ -435,9 +433,6 @@ default_value: DEFAULT expression { SQLExpression* e($2); $$ = e->title(); }
 
 create_view_statement: CREATE VIEW IDENT AS select_statement { $$ = $5; }
 	;
-
-embedded_statement: EMBEDDED_CODE { $$ = EmbeddedAST($1); }
-    ;
 
 select_statement: SELECT distinct all select_list into from where group_by order_by
                 {   

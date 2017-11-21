@@ -188,21 +188,6 @@ class TestODBQL(unittest.TestCase):
         print 'values =', values
         self.assertEqual(values, expected)
 
-    def test_stored_procedure(self):
-        db, stmt, tail = c_voidp(), c_voidp(), c_char_p()
-
-        rc = odbql_open("new_api_example_python.odb", byref(db))
-        self.assertEqual(rc, ODBQL_OK)
-
-        e = """ { compare, left = new_api_example_python.odb, right = new_api_example_python.odb } ; """
-        rc = odbql_prepare_v2(db, e, -1, byref(stmt), byref(tail))
-        self.assertEqual(rc, ODBQL_OK)
-
-        rc = odbql_step(stmt)
-        self.assertEqual(rc, ODBQL_DONE)
-
-        print 'test_stored_procedure: OK!'
-
 
 class TestPEP249(unittest.TestCase):
 
@@ -291,7 +276,7 @@ class TestPEP249(unittest.TestCase):
         #self.assertEqual(actual, expected) 
 
     def test_sorting_string_columns(self): # ODB-94 
-        conn = odb.connect("") 
+        conn = odb.connect("")
         c = conn.cursor()
         c.execute("""CREATE TABLE foo AS (statid string,x integer) ON 'test_sorting_string_columns.odb';""")
         data = [[w] for w in """12345678 abcdefgh dfgsdfgs DFADSFAD sdffffff aaaaaaaa""".split()]
@@ -310,7 +295,7 @@ class TestPEP249(unittest.TestCase):
         self.assertEqual ( sql_sorted, python_sorted )
 
     def test_sql_variables(self): # ODB-127
-        conn = odb.connect("") 
+        conn = odb.connect("")
         c = conn.cursor()
         c.execute("""CREATE TABLE test_sql_variables AS (varno integer, obsvalue real) ON 'test_sql_variables.odb';""")
         def cast(s):
@@ -348,19 +333,6 @@ class TestPEP249(unittest.TestCase):
             c.executemany('INSERT INTO foo (statid) VALUES (?);', [['foo-bar!']])
             c.close()
             conn.commit()
-
-    def test_embedded_ecml_in_the_from_clause(self): # ODB-83
-        for i in range(3):
-            conn = odb.connect("")
-            c = conn.cursor()
-            c.execute("""CREATE TABLE foo AS (statid string) ON 'ODB-83.{}.odb';""".format(i))
-            c.executemany('INSERT INTO foo (statid) VALUES (?);', [['foo-bar!']])
-            c.close()
-            conn.commit()
-        
-        c.execute('''SELECT count(*) FROM { sequence,values = "ODB-83.0.odb" / "ODB-83.1.odb" / "ODB-83.2.odb" }''')
-        result = [r[0] for r in c.fetchall()]
-        self.assertEqual ( result, [3] )
 
 """
     def test_select_data_from_mars(self):
