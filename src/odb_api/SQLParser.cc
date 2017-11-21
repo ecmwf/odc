@@ -119,9 +119,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::include_stack stack;
     SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
-    // TODO: Fix in absence of ecml
-//    stack.push(SQLHandler::cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner);
-    NOTIMP;
+    stack.push(cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner);
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
@@ -143,9 +141,7 @@ void SQLParser::parseString(odb::sql::SQLSession& session, const std::string& s,
     SQLYacc::include_stack stack;
     SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
-    // TODO: Fix in absence of ecml
-//    stack.push(SQLHandler::cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner);
-    NOTIMP;
+    stack.push(cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner);
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
@@ -166,13 +162,30 @@ void SQLParser::parseString(odb::sql::SQLSession& session,const std::string& s, 
     SQLYacc::include_stack stack;
     SQLYacc::odblib_lex_init_extra(&stack, &scanner);
 
-    // TODO: Fix in absence of ecml
-//    stack.push(SQLHandler::cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner);
-    NOTIMP;
+    stack.push(cleanUpSQLText(s), "", (SQLYacc::YY_BUFFER_STATE) scanner, (SQLYacc::odblib_scan_t) scanner);
     SQLYacc::odblib_parse(scanner, &session);
 
     session.statement();
     session.interactive();
+}
+
+std::string SQLParser::cleanUpSQLText(const std::string& sql) {
+
+    if (sql.empty()) return sql;
+
+    std::string s(sql);
+
+    StringTool::trimInPlace(s);
+    if (StringTool::isInQuotes(s)) {
+        s = StringTool::unQuote(s);
+    }
+    StringTool::trimInPlace(s);
+
+    if (!s.empty() && *s.rbegin() != ';') {
+        s.push_back(';');
+    }
+
+    return s;
 }
 
 } // namespace sql

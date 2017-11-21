@@ -53,6 +53,11 @@ public:
 	static void parseString(odb::sql::SQLSession&, const std::string&, SQLDatabase&, SQLOutputConfig);
 
 	static std::stack<ParseFrame> frames_;
+
+private:
+
+    // Migrated from SQLHandler (ecml verb) as part of removal of ecml.
+    static std::string cleanUpSQLText(const std::string&);
 };
 
 } // namespace sql
