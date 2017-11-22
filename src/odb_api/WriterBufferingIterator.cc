@@ -137,7 +137,7 @@ void WriterBufferingIterator::writeHeader()
 	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "writeHeader: columns_[" << i << "]=" << *columns_[i] << std::endl;
 }
 
-bool WriterBufferingIterator::next(ecml::ExecutionContext* context)
+bool WriterBufferingIterator::next()
 {
     return writeRow(nextRow_, columns().size()) == 0;
 }

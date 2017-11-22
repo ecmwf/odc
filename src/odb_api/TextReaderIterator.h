@@ -22,7 +22,6 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace eckit { class ExecutionContext; }
 namespace odb { namespace sql { class ODATableIterator; } }
 
 namespace odb {
@@ -51,7 +50,7 @@ public:
 	int close();
 
 // next() is public cause it needs to be used by the C API functions - normally client code should not use it
-	bool next(ecml::ExecutionContext*);
+    bool next();
 
 private:
 // No copy allowed.
@@ -75,7 +74,6 @@ public:
 	bool noMore_;
 
 	bool ownsF_;
-	ecml::ExecutionContext* context_;
 	int refCount_;
 
 protected:

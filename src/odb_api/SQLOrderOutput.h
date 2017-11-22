@@ -18,8 +18,6 @@
 #include "odb_api/OrderByExpressions.h"
 #include "odb_api/SQLOutput.h"
 
-namespace eckit { class ExecutionContext; }
-
 namespace odb {
 namespace sql {
 
@@ -48,8 +46,8 @@ private:
 // -- Overridden methods
 	virtual void size(int);
 	virtual void reset();
-	virtual void flush(ecml::ExecutionContext*);
-	virtual bool output(const Expressions&, ecml::ExecutionContext*);
+    virtual void flush();
+    virtual bool output(const Expressions&);
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 	virtual unsigned long long count();

@@ -213,7 +213,7 @@ oda_select_iterator_ptr odb_create_select_iterator(oda_ptr co, const char *sql, 
 {
     Select *o (reinterpret_cast<Select*>(co));
     try { 
-        SelectIterator* iter (o->createSelectIterator(sql, /*ExecutionContext*/ 0));
+        SelectIterator* iter (o->createSelectIterator(sql));
         *err = !iter;
         return oda_select_iterator_ptr(iter);
     }
@@ -235,7 +235,7 @@ oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr co, const c
 
     std::string full_sql (std::string(sql) + " from \"" + std::string(filename) + "\"");
 
-    SelectIterator* iter (o->createSelectIterator(full_sql, /*ExecutionContext*/ 0));
+    SelectIterator* iter (o->createSelectIterator(full_sql));
     *err = !iter;
     return oda_select_iterator_ptr(iter);
 }
@@ -300,7 +300,7 @@ int odb_select_iterator_get_column_name(oda_select_iterator_ptr it, int n, char 
 int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* data, int *new_dataset)
 {
 	ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
-	if (! iter->next(/*ExecutionContext*/ 0))
+    if (! iter->next())
 		return 1;
 
 	if (iter->isNewDataset())
@@ -321,7 +321,7 @@ int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* 
 int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, double* data, int *new_dataset)
 {
 	SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
-	if (! iter->next(/*ExecutionContext*/ 0))
+    if (! iter->next())
 		return 1;
 
 	if (iter->isNewDataset())

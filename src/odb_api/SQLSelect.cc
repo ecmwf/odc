@@ -138,9 +138,9 @@ static bool compareTables(SelectOneTable* a,SelectOneTable *b)
 //#endif
 }
 
-inline bool SQLSelect::resultsOut(ecml::ExecutionContext* context)
+inline bool SQLSelect::resultsOut()
 {
-	return output_->output(results_, context);
+    return output_->output(results_);
 }
 
 SQLExpression* SQLSelect::findAliasedExpression(const std::string& alias)
@@ -375,15 +375,15 @@ void SQLSelect::prepareExecute() {
 	}
 }
 
-unsigned long long SQLSelect::execute(ecml::ExecutionContext* context)
+unsigned long long SQLSelect::execute()
 {
 	prepareExecute();
-	unsigned long long n = process(simplifiedWhere_, sortedTables_.begin(), context);
-	postExecute(context);
+    unsigned long long n = process(simplifiedWhere_, sortedTables_.begin());
+    postExecute();
 	return n;
 }
 
-void SQLSelect::postExecute(ecml::ExecutionContext* context)
+void SQLSelect::postExecute()
 {
 	if (mixedAggregatedAndScalar_)
 	{
@@ -407,16 +407,16 @@ void SQLSelect::postExecute(ecml::ExecutionContext* context)
 				}
 			}
 
-			output_->output(results, context);
+            output_->output(results);
 			results.release();
 		}
 	}
 	else if (aggregate_)
 	{
-		resultsOut(context);
+        resultsOut();
 	}
 
-	output_->flush(context);
+    output_->flush();
 	output_->cleanup(*this);
 	if(simplifiedWhere_) simplifiedWhere_->cleanup(*this);
 	
@@ -463,7 +463,7 @@ void SQLSelect::reset()
 
 
 
-bool SQLSelect::output(SQLExpression* where, ecml::ExecutionContext* context)
+bool SQLSelect::output(SQLExpression* where)
 {
 	//if (where) Log::info() << "SQLSelect::output: where: " << *where << std::endl;
 
@@ -475,7 +475,7 @@ bool SQLSelect::output(SQLExpression* where, ecml::ExecutionContext* context)
             && !missing))
 	{
 		if (! aggregate_)
-			newRow = resultsOut(context);
+            newRow = resultsOut();
 		else
 		{
 			size_t n = results_.size();
@@ -506,18 +506,18 @@ bool SQLSelect::output(SQLExpression* where, ecml::ExecutionContext* context)
 }
 
 
-unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterator j, ecml::ExecutionContext* context) {
+unsigned long long SQLSelect::process(SQLExpression* where, SortedTables::iterator j) {
 	simplifiedWhere_ = where;
 	env.pushFrame(j);
 
 	unsigned long long n = 0;
-	while (processOneRow(context))
+    while (processOneRow())
 		++n;
 	return n;
 }
 
 
-bool SQLSelect::processOneRow(ecml::ExecutionContext* context) { 
+bool SQLSelect::processOneRow() {
 	++count_;
 	//Log::info() << "SQLSelect::processOneRow: count = " << count_ << std::endl;
 	bool recursiveCall;
@@ -526,7 +526,7 @@ bool SQLSelect::processOneRow(ecml::ExecutionContext* context) {
 		recursiveCall = false;
 		if(sortedTables_.size() == 0 || env.tablesIterator() == sortedTables_.end())
 		{
-			bool rowProduced = output(simplifiedWhere_, context);
+            bool rowProduced = output(simplifiedWhere_);
 			env.popFrame();
 			if (rowProduced)
 				return true;

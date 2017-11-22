@@ -22,7 +22,6 @@
 #include "SQLInsert.h"
 
 namespace eckit { class DataHandle; }
-namespace ecml { class ExecutionContext; }
 namespace odb { namespace sql { class DataTable; } }
 namespace odb { namespace sql { class SQLDatabase; } }
 

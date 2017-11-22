@@ -12,8 +12,7 @@ using namespace odb;
 namespace odb {
 namespace internal {
 
-DataSelectIterator::DataSelectIterator(const DataSelect& query, bool begin, ecml::ExecutionContext* context)
-  : context_(context),
+DataSelectIterator::DataSelectIterator(const DataSelect& query, bool begin) :
     query_(query),
     session_(begin ? createSession() : 0),
     select_(begin ? dynamic_cast<sql::SQLSelect*>(session_->statement()) : 0),
@@ -79,7 +78,7 @@ void DataSelectIterator::increment()
         return;
     }
 
-    bool ok = select_->processOneRow(context_);
+    bool ok = select_->processOneRow();
 
     if (!ok)
     {
@@ -90,7 +89,7 @@ void DataSelectIterator::increment()
         else
             noMore_ = true;
 
-        select_->postExecute(context_);
+        select_->postExecute();
     }
 }
 

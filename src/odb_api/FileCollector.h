@@ -17,8 +17,6 @@
 #include "eckit/memory/NonCopyable.h"
 #include "eckit/io/MultiHandle.h"
 
-#include "ecml/core/ExecutionContext.h"
-
 class FileMapper;
 
 class FileCollector : private eckit::NonCopyable {

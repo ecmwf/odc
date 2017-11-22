@@ -14,8 +14,6 @@
 #ifndef SQLStatement_H
 #define SQLStatement_H
 
-#include "ecml/core/ExecutionContext.h"
-
 #include "odb_api/Expressions.h"
 
 namespace odb {
@@ -29,7 +27,7 @@ public:
 	SQLStatement();
 	virtual ~SQLStatement(); 
 
-	virtual unsigned long long execute(ecml::ExecutionContext*) = 0;
+    virtual unsigned long long execute() = 0;
 	virtual expression::Expressions output() const = 0;
 
 protected:

@@ -172,7 +172,7 @@ void TextReaderIterator::initRowBuffer()
 		lastValues_[i] = columns()[i]->missingValue(); 
 }
 
-bool TextReaderIterator::next(ecml::ExecutionContext*)
+bool TextReaderIterator::next()
 {
     newDataset_ = false;
     if (noMore_)

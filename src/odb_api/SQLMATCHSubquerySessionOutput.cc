@@ -46,9 +46,9 @@ void SQLMATCHSubquerySessionOutput::size(int) {}
 
 void SQLMATCHSubquerySessionOutput::reset() { }
 
-void SQLMATCHSubquerySessionOutput::flush(ecml::ExecutionContext*) {}
+void SQLMATCHSubquerySessionOutput::flush() {}
 
-bool SQLMATCHSubquerySessionOutput::output(const expression::Expressions& results, ecml::ExecutionContext* context)
+bool SQLMATCHSubquerySessionOutput::output(const expression::Expressions& results)
 {
 	const size_t nCols (results.size());
     vector<double> v(nCols);

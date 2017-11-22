@@ -272,7 +272,7 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-bool WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::next(eckit::ExecutionContext*)
+bool WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::next()
 {
     return writeRow(nextRow_, columns().size()) == 0;
 }

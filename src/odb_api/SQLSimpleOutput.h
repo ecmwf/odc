@@ -45,8 +45,8 @@ private:
 // -- Overridden methods
 	virtual void size(int);
 	virtual void reset();
-	virtual void flush(ecml::ExecutionContext*);
-	virtual bool output(const expression::Expressions&, ecml::ExecutionContext*);
+    virtual void flush();
+    virtual bool output(const expression::Expressions&);
 	virtual void prepare(SQLSelect&);
 	virtual void cleanup(SQLSelect&);
 	virtual unsigned long long count();

@@ -49,7 +49,7 @@ void FunctionMATCH::prepare(SQLSelect& sql)
 
     SQLMATCHSubquerySession session(*this);
     SQLSelect* select(session.selectFactory().create(session, subquery_));
-    session.execute(dynamic_cast<SQLStatement&>(*select), (ecml::ExecutionContext*) 0);
+    session.execute(dynamic_cast<SQLStatement&>(*select));
 
     std::stable_sort(subqueryResult_.begin(), subqueryResult_.end());
 }

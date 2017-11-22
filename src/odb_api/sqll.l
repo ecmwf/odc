@@ -209,24 +209,7 @@ SEMICOLON [;]
             return STRING;
         }
 
-\{      {
-            int c, end = '}';
-
-            yyleng = 0;
-            while ((c = yyinput(yyscanner)) && c != end)
-            {
-                yytext[yyleng++] = (c == '\\') ? yyinput(yyscanner) : c;
-                if (c == '\n') 
-                {
-                    struct yyguts_t * yyg = (struct yyguts_t*) yyscanner;
-                    ++ yyg->yylineno_r;
-                }
-            }
-
-            yytext[yyleng++] = 0;
-            yylval->val = yytext;
-            return EMBEDDED_CODE;
-        }
+\{
 
 {IDENT}	{ 
 			char *p = yytext; while(*p) { *p = tolower(*p); p++; }

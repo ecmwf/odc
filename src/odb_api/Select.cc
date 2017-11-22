@@ -30,19 +30,7 @@ Select::Select(const std::string& selectStatement, DataHandle &dh)
   istream_(0),
   deleteIStream_(true),
   selectStatement_(selectStatement),
-  context_(0),
   ownSession_(ownSession(",")),
-  outerSession_(ownSession_)
-{}
-
-Select::Select(const std::string& selectStatement, DataHandle &dh, ecml::ExecutionContext* context)
-: dataHandle_(&dh),
-  deleteDataHandle_(false),
-  istream_(0),
-  deleteIStream_(true),
-  selectStatement_(selectStatement),
-  context_(context),
-  ownSession_(ownSession(",")), // TODO: get csv_delimiter from context
   outerSession_(ownSession_)
 {}
 
@@ -53,19 +41,6 @@ Select::Select(const std::string& selectStatement, std::istream &is, const std::
   deleteIStream_(false),
   selectStatement_(selectStatement),
   delimiter_(delimiter),
-  context_(0),
-  ownSession_(ownSession(delimiter)),
-  outerSession_(ownSession_)
-{}
-
-Select::Select(const std::string& selectStatement, std::istream &is, const std::string& delimiter, ecml::ExecutionContext* context)
-: dataHandle_(0),
-  deleteDataHandle_(true),
-  istream_(&is),
-  deleteIStream_(false),
-  selectStatement_(selectStatement),
-  delimiter_(delimiter),
-  context_(context),
   ownSession_(ownSession(delimiter)),
   outerSession_(ownSession_)
 {}
@@ -76,7 +51,6 @@ Select::Select(const std::string& selectStatement)
   istream_(0),
   deleteIStream_(true),
   selectStatement_(selectStatement),
-  context_(0),
   ownSession_(ownSession(",")),
   outerSession_(ownSession_)
 {}
@@ -87,20 +61,8 @@ Select::Select(const std::string& selectStatement, odb::sql::SQLNonInteractiveSe
   istream_(0),
   deleteIStream_(true),
   selectStatement_(selectStatement),
-  context_(0),
   ownSession_(ownSession(s.csvDelimiter())),
   outerSession_(&s)
-{}
-
-Select::Select(const std::string& selectStatement, ecml::ExecutionContext* context)
-: dataHandle_(0),
-  deleteDataHandle_(true),
-  istream_(0),
-  deleteIStream_(true),
-  selectStatement_(selectStatement),
-  context_(context),
-  ownSession_(ownSession(",")),  // TODO: get csv_delimiter from context
-  outerSession_(ownSession_)
 {}
 
 Select::Select()
@@ -109,19 +71,7 @@ Select::Select()
   istream_(0),
   deleteIStream_(true),
   selectStatement_(),
-  context_(0),
   ownSession_(ownSession(",")),
-  outerSession_(ownSession_)
-{}
-
-Select::Select(ecml::ExecutionContext* context)
-: dataHandle_(0),
-  deleteDataHandle_(true),
-  istream_(0),
-  deleteIStream_(true),
-  selectStatement_(),
-  context_(context),
-  ownSession_(ownSession(",")), // TODO: get csv_delimiter from context
   outerSession_(ownSession_)
 {}
 
@@ -131,21 +81,7 @@ Select::Select(const std::string& selectStatement, const std::string& path)
   istream_(0),
   deleteIStream_(true),
   selectStatement_(selectStatement),
-  context_(0),
   ownSession_(ownSession(",")),
-  outerSession_(ownSession_)
-{
-    //dataHandle_->openForRead();
-}
-
-Select::Select(const std::string& selectStatement, const std::string& path, ecml::ExecutionContext* context)
-: dataHandle_(DataHandleFactory::openForRead(path)),
-  deleteDataHandle_(true),
-  istream_(0),
-  deleteIStream_(true),
-  selectStatement_(selectStatement),
-  context_(context),
-  ownSession_(ownSession(",")),  // TODO: get csv_delimiter from context
   outerSession_(ownSession_)
 {
     //dataHandle_->openForRead();
@@ -158,18 +94,18 @@ Select::~Select()
     delete ownSession_;
 }
 
-SelectIterator* Select::createSelectIterator(const std::string& sql, ecml::ExecutionContext* context)
+SelectIterator* Select::createSelectIterator(const std::string& sql)
 {
-    return new SelectIterator(*this, sql, context, *outerSession_);
+    return new SelectIterator(*this, sql, *outerSession_);
 }
 
 const Select::iterator Select::end() { return iterator(0); }
 
 Select::iterator Select::begin()
 {
-    SelectIterator* it = new SelectIterator(*this, selectStatement_, context_, *outerSession_);
+    SelectIterator* it = new SelectIterator(*this, selectStatement_, *outerSession_);
     ASSERT(it);
-    it->next(context_);
+    it->next();
     return iterator(it);
 }
 

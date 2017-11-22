@@ -6,8 +6,6 @@
 
 #include "eckit/eckit.h"
 
-#include "ecml/core/ExecutionContext.h"
-
 #include "odb_api/DataColumns.h"
 #include "odb_api/SharedIterator.h"
 
@@ -53,10 +51,10 @@ public:
     typedef SharedIterator<internal::DataSelectIterator> iterator;
 
     /// Creates new query on the given @em dataset.
-    DataSelect(const std::string& statement, const DataSet& dataset, ecml::ExecutionContext*);
+    DataSelect(const std::string& statement, const DataSet& dataset);
 
     /// Creates new query on the given @em table.
-    DataSelect(const std::string& statement, const DataTable& table, ecml::ExecutionContext*);
+    DataSelect(const std::string& statement, const DataTable& table);
 
     /// Frees the query from memory.
     ~DataSelect();
@@ -85,7 +83,6 @@ private:
     const DataTable* const table_;
     std::auto_ptr<internal::DataSelectIterator> begin_;
     DataColumns columns_;
-    ecml::ExecutionContext* context_;
 
     friend class internal::DataSelectIterator;
 };

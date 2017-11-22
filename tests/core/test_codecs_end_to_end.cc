@@ -46,8 +46,7 @@ namespace {
             data_(data),
             nRows_(num_rows_to_write),
             refCount_(0),
-            noMore_(false),
-            context_(0) {
+            noMore_(false) {
 
             columns_[0] = new odb::Column(columns_);
             ASSERT(columns_[0]);
@@ -61,7 +60,7 @@ namespace {
         bool isNewDataset()      { return false; }
         double* data()           { return &data_; }
 
-        bool next(ecml::ExecutionContext*) {
+        bool next() {
             if (nRows_ == 0) return false;
             nRows_--;
             if (nRows_ == 0) noMore_ = true;
@@ -77,7 +76,6 @@ namespace {
     public: // Required for IteratorProxy
         int refCount_;
         bool noMore_;
-        ecml::ExecutionContext* context_;
     };
 
     // n.b. Cannot use local classes as template arguments until c++11, so declare it here.

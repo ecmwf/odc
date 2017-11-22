@@ -6,7 +6,6 @@
 
 #include "odb_api/DataRow.h"
 #include "odb_api/IteratorFacade.h"
-#include "ecml/core/ExecutionContext.h"
 
 namespace odb
 {
@@ -39,7 +38,7 @@ public:
     const double* data() const { return row_.data(); }
     double* data() { return row_.data(); }
 private:
-    DataSelectIterator(const DataSelect& select, bool begin, ecml::ExecutionContext*);
+    DataSelectIterator(const DataSelect& select, bool begin);
     // DataSelectIterator(const DataSelect& select);
 
     DataSelectIterator(const DataSelectIterator&);
@@ -53,7 +52,6 @@ private:
     void increment();
     bool equal(const DataSelectIterator&) const;
 
-    ecml::ExecutionContext* context_;
     const DataSelect& query_;
     DataSelectSession* session_;
     odb::sql::SQLSelect* select_;

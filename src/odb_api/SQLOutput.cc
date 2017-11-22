@@ -10,6 +10,8 @@
 
 #include "odb_api/SQLOutput.h"
 
+#include <ostream>
+
 namespace odb {
 namespace sql {
 

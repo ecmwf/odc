@@ -52,7 +52,7 @@ public:
 	SQLDatabase& currentDatabase() const;
 	SQLDatabase& currentDatabase(SQLDatabase*);
 
-	unsigned long long execute(SQLStatement&, ecml::ExecutionContext*);
+    unsigned long long execute(SQLStatement&);
 
 private:
 // No copy allowed

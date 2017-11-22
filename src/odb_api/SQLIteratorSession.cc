@@ -68,7 +68,7 @@ void SQLIteratorSession::statement(const SelectAST& s) { session_.statement(s); 
 SQLDatabase& SQLIteratorSession::currentDatabase() const { return session_.currentDatabase(); }
 SQLDatabase& SQLIteratorSession::currentDatabase(SQLDatabase* s) { return session_.currentDatabase(s); }
 
-unsigned long long SQLIteratorSession::execute(SQLStatement& s, ecml::ExecutionContext* e) { return session_.execute(s,e); }
+unsigned long long SQLIteratorSession::execute(SQLStatement& s) { return session_.execute(s); }
 
 } // namespace sql 
 } // namespace odb 

@@ -11,8 +11,6 @@
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "ecml/core/ExecutionContext.h"
-
 #include "odb_api/SQLInteractiveSession.h"
 #include "odb_api/SQLSimpleOutput.h"
 #include "odb_api/SQLStatement.h"
@@ -59,8 +57,7 @@ void SQLInteractiveSession::interactive()
     
     if (sql_)
     {
-        ecml::ExecutionContext context; // TODO
-        execute(*sql_, &context);
+        execute(*sql_);
         delete sql_;
         sql_ = 0;
     }

@@ -84,12 +84,12 @@ void SQLSession::closeDatabase(const std::string& name)
     // TODO
 }
 
-unsigned long long SQLSession::execute(SQLStatement& sql, ecml::ExecutionContext* context)
+unsigned long long SQLSession::execute(SQLStatement& sql)
 {
     Timer timer("Execute");
     ASSERT(currentDatabase_);	
 
-    unsigned long long n = sql.execute(context);
+    unsigned long long n = sql.execute();
     return lastExecuteResult_ = n;
 }
 

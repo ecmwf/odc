@@ -23,42 +23,19 @@ namespace odb {
 
 Reader::Reader(DataHandle &dh)
 : dataHandle_(&dh),
-  deleteDataHandle_(false),
-  context_(0)
-{}
-
-Reader::Reader(DataHandle &dh, ecml::ExecutionContext* context)
-: dataHandle_(&dh),
-  deleteDataHandle_(false),
-  context_(context)
+  deleteDataHandle_(false)
 {}
 
 Reader::Reader()
 : dataHandle_(0),
   deleteDataHandle_(true),
-  path_(""),
-  context_(0)
-{}
-
-Reader::Reader(ecml::ExecutionContext* context)
-: dataHandle_(0),
-  deleteDataHandle_(true),
-  path_(""),
-  context_(context)
-{}
-
-Reader::Reader(const std::string& path, ecml::ExecutionContext* context)
-: dataHandle_(ecml::DataHandleFactory::openForRead(path)),
-  deleteDataHandle_(true),
-  path_(path),
-  context_(context)
+  path_("")
 {}
 
 Reader::Reader(const std::string& path)
 : dataHandle_(ecml::DataHandleFactory::openForRead(path)),
   deleteDataHandle_(true),
-  path_(path),
-  context_(0)
+  path_(path)
 {}
 
 Reader::~Reader()
@@ -83,7 +60,7 @@ return createReadIterator(path_);
 Reader::iterator Reader::begin()
 {
     ReaderIterator * it = new ReaderIterator(*this);
-    it->next(context_);
+    it->next();
     return iterator(it);
 }
 

@@ -16,6 +16,7 @@
 
 #include "ecml/parser/Request.h"
 #include "ecml/core/RequestHandler.h"
+#include "ecml/core/ExecutionContext.h"
 
 namespace ecml {
 

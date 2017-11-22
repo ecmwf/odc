@@ -24,7 +24,6 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace eckit { class ExecutionContext; }
 
 namespace odb {
 
@@ -78,7 +77,7 @@ public:
 	int writeRow(const double* values, unsigned long count);
 
 protected:
-	bool next(eckit::ExecutionContext*);
+    bool next();
 
 	/// Find iterator data should be dispatched to.
 	WRITE_ITERATOR& dispatch(const double* values, unsigned long count);
@@ -107,7 +106,6 @@ protected:
 	int lastIndex_;
 	bool initialized_;
 	bool append_;
-    eckit::ExecutionContext* context_;
 
 private:
 // No copy allowed.

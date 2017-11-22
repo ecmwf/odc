@@ -52,13 +52,13 @@ template<typename WRITER>
 void SQLODAOutput<WRITER>::reset() { count_ = 0; }
 
 template<typename WRITER>
-void SQLODAOutput<WRITER>::flush(ecml::ExecutionContext*) {}
+void SQLODAOutput<WRITER>::flush() {}
 
 template<typename WRITER>
 void SQLODAOutput<WRITER>::cleanup(SQLSelect& sql) { sql.outputFiles((**it_).outputFiles()); }
 
 template<typename WRITER>
-bool SQLODAOutput<WRITER>::output(const expression::Expressions& results, ecml::ExecutionContext* context)
+bool SQLODAOutput<WRITER>::output(const expression::Expressions& results)
 {
     size_t nCols (results.size());
     for(size_t i (0); i < nCols; ++i)

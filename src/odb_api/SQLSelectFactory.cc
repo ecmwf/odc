@@ -11,7 +11,6 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/types/Types.h"
 
-#include "ecml/core/ExecutionContext.h"
 #include "ecml/core/Environment.h"
 
 #include "odb_api/SQLSelectFactory.h"
@@ -24,7 +23,6 @@
 #include "odb_api/SQLSession.h"
 #include "odb_api/TemplateParameters.h"
 #include "odb_api/Writer.h"
-#include "odb_api/EmbeddedCodeParser.h"
 #include "odb_api/SQLAST.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/BitColumnExpression.h"
@@ -234,14 +232,7 @@ SQLSelect* SQLSelectFactory::create (
     {
         Table& t (from[i]);
 
-        if (! t.embeddedCode)
-            fromTables.push_back(session.findTable(t));
-        else
-        {
-            ecml::ExecutionContext context; // TODO: get it from session, don't pass it to getFromTables
-            std::vector<SQLTable*> computed (EmbeddedCodeParser::getFromTables(t.name, t.database, session, &context));
-            fromTables.insert(fromTables.begin(), computed.begin(), computed.end());
-        }
+        ASSERT(! t.embeddedCode);
     }
 
 	Expressions select;

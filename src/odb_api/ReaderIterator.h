@@ -23,7 +23,6 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace ecml { class ExecutionContext; }
 
 extern "C" {
 	typedef void oda;
@@ -47,9 +46,7 @@ class ReaderIterator
 {
 public:
 	ReaderIterator (Reader &owner);
-	ReaderIterator (Reader &owner, ecml::ExecutionContext* context);
 	ReaderIterator (Reader &owner, const eckit::PathName&);
-	ReaderIterator (Reader &owner, const eckit::PathName&, ecml::ExecutionContext*);
 
 	~ReaderIterator ();
 
@@ -87,7 +84,7 @@ public:
 
 	int close();
 
-	bool next(ecml::ExecutionContext*);
+    bool next();
 protected:
 	size_t readBuffer(size_t dataSize);
 
@@ -120,7 +117,6 @@ private:
 
 	unsigned long headerCounter_;
 	int32_t byteOrder_;
-    ecml::ExecutionContext* context_;
 
 public:
 	int refCount_;

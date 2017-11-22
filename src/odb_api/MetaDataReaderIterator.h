@@ -81,7 +81,7 @@ public:
 
     int close();
 
-    bool next(ecml::ExecutionContext*);
+    bool next();
 
     eckit::DataHandle* dataHandle();
 protected:
@@ -124,7 +124,6 @@ protected:
 
 public:
     int refCount_;
-    ecml::ExecutionContext* context_;
 
     friend class MetaDataReader<MetaDataReaderIterator>;
     friend class odb::Header<odb::MetaDataReaderIterator>;

@@ -25,7 +25,6 @@ extern "C" {
 	int odb_select_iterator_get_next_row(oda_select_iterator*, int, double*, int*);
 }
 
-namespace ecml { class ExecutionContext; }
 namespace odb { class Select; }
 namespace odb { class MetaData; }
 namespace odb { template <typename I, typename O, typename D> class IteratorProxy; } 
@@ -40,7 +39,7 @@ namespace odb {
 class SelectIterator { 
 public:
 	
-    SelectIterator (Select &owner, const std::string&, ecml::ExecutionContext*, odb::sql::SQLNonInteractiveSession&);
+    SelectIterator (Select &owner, const std::string&, odb::sql::SQLNonInteractiveSession&);
 	~SelectIterator();
 
 	bool isNewDataset();
@@ -64,7 +63,7 @@ public:
 	double& data(size_t i);
 
 protected:
-	bool next(ecml::ExecutionContext*);
+    bool next();
 
 private:
 // No copy allowed.
@@ -87,7 +86,6 @@ private:
 	bool aggregateResultRead_;
 	bool isCachingRows_;
 	std::list<std::vector<double> > rowCache_;
-	ecml::ExecutionContext* context_;
 
 protected:
 	SelectIterator (Select &owner, odb::sql::SQLNonInteractiveSession&);

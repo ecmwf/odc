@@ -40,11 +40,11 @@ void SQLDistinctOutput::reset()
 	seen_.clear();
 }
 
-void SQLDistinctOutput::flush(ecml::ExecutionContext* context) { output_->flush(context); }
+void SQLDistinctOutput::flush() { output_->flush(); }
 
 unsigned long long SQLDistinctOutput::count() { return output_->count(); }
 
-bool SQLDistinctOutput::output(const expression::Expressions& results, ecml::ExecutionContext* context)
+bool SQLDistinctOutput::output(const expression::Expressions& results)
 {
 	for(size_t i = 0; i < results.size(); i++)
 	{
@@ -56,7 +56,7 @@ bool SQLDistinctOutput::output(const expression::Expressions& results, ecml::Exe
 	if(seen_.find(tmp_) == seen_.end())
 	{
 		seen_.insert(tmp_);
-		output_->output(results, context);
+        output_->output(results);
 		return true;
 	}
 	return false;

@@ -14,16 +14,15 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "ecml/parser/Request.h"
+#include "ecml/core/ExecutionContext.h"
 
 namespace eckit { class MultiHandle; }
 
 namespace ecml { 
 
-class ExecutionContext;
-
 class RequestHandler {
 public:
-    virtual ecml::Values handle(ecml::ExecutionContext&) = 0;
+    virtual ecml::Values handle(ExecutionContext&) = 0;
 
     virtual std::string name() const;
 

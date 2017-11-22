@@ -25,9 +25,7 @@
 #include "odb_api/SQLSelect.h"
 #include "odb_api/SQLSession.h"
 #include "odb_api/StringExpression.h"
-#include "odb_api/EmbeddedCodeExpression.h"
 #include "odb_api/StringTool.h"
-#include "odb_api/EmbeddedCodeParser.h"
 #include "odb_api/FunctionMATCH.h"
 #include "odb_api/SQLAST.h"
 

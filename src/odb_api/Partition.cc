@@ -68,15 +68,14 @@ Partition::Partition(const PathName& fileName, size_t partitionNumber)
 
         Request requests (RequestParser::parse(blockDescription));
 
-        ecml::ExecutionContext context;
-        context.pushEnvironmentFrame(requests->value());
+        // TODO: Check that this has been updated correctly on the removal of ecml ExecutionContexts
 
         if (part == partitionNumber)
-            add( Block (eckit::PathName(context.getValueAsList("file")[0]), //eckit::PathName(fs[1]),
-                        eckit::Offset(atol(context.getValueAsList("start")[0].c_str())),//eckit::Offset(atol(fs[2].c_str())),
-                        eckit::Offset(atol(context.getValueAsList("end")[0].c_str())),//eckit::Offset(atol(fs[3].c_str())),
-                        atol(context.getValueAsList("firstRow")[0].c_str()),//atol(fs[4].c_str()),
-                        atol(context.getValueAsList("lastRow")[0].c_str()))); //atol(fs[5].c_str())));
+            add( Block (eckit::PathName(fs[1]),
+                        eckit::Offset(atol(fs[2].c_str())),
+                        eckit::Offset(atol(fs[3].c_str())),
+                        atol(fs[4].c_str()),
+                        atol(fs[5].c_str())));
     }
 }
 

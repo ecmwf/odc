@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-#include "ecml/core/ExecutionContext.h"
 #include "eckit/types/Types.h"
 
 #include "odb_api/SQLInsert.h"
@@ -26,7 +25,7 @@ SQLInsert::~SQLInsert() {}
 
 void SQLInsert::print(std::ostream& s) const {}
 
-unsigned long long SQLInsert::execute(ecml::ExecutionContext* context)
+unsigned long long SQLInsert::execute()
 {
     NOTIMP;
     return 0; // TODO:

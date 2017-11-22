@@ -17,7 +17,6 @@
 #include "odb_api/SQLOutputConfig.h"
 
 namespace eckit { class DataHandle; }
-namespace ecml { class ExecutionContext; }
 namespace odb { namespace sql { class DataTable; } }
 namespace odb { namespace sql { class SQLDatabase; } }
 namespace odb { namespace sql { class SQLSession; } }

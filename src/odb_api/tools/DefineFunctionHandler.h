@@ -16,7 +16,6 @@
 
 #include "ecml/parser/Request.h"
 #include "ecml/SpecialFormHandler.h"
-#include "ecml/ExecutionContext.h"
 
 namespace odb { 
 namespace tool {
@@ -24,7 +23,7 @@ namespace tool {
 class DefineFunctionHandler : public ecml::SpecialFormHandler {
 public:
     DefineFunctionHandler(const std::string&);
-    virtual ecml::Request handle(const ecml::Request, ecml::ExecutionContext&);
+    virtual ecml::Request handle(const ecml::Request);
 };
 
 } // namespace tool

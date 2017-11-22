@@ -16,8 +16,6 @@
 
 #include "SQLSession.h"
 
-namespace eckit { class ExecutionContext; }
-
 namespace odb {
 namespace sql {
 

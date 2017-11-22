@@ -98,10 +98,10 @@ TEST(example_write_data)
 class ExampleCallback : public ecml::RequestHandler {
 public:
     ExampleCallback(): ecml::RequestHandler("example_callback") {}
-    virtual ecml::Values handle(ecml::ExecutionContext&);
+    virtual ecml::Values handle();
 };
 
-ecml::Values ExampleCallback::handle(ecml::ExecutionContext& context)
+ecml::Values ExampleCallback::handle()
 {
     // result_set is a variable SQL engine left in the environment for the callback
     std::string resultSetId (context.environment().lookup("result_set", "", context));

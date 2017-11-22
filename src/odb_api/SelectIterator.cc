@@ -39,7 +39,7 @@ SelectIterator::SelectIterator(odb::Select &owner, odb::sql::SQLNonInteractiveSe
   session_(*this, s)
 {}
 
-SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, ecml::ExecutionContext* context, odb::sql::SQLNonInteractiveSession& s)
+SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, odb::sql::SQLNonInteractiveSession& s)
 : owner_(owner),
   select_(select),
   selectStmt_(0),
@@ -108,7 +108,7 @@ void SelectIterator::cacheRow(const Expressions& results)
     rowCache_.push_back(v);
 }
 
-bool SelectIterator::next(ecml::ExecutionContext* context)
+bool SelectIterator::next()
 {
 	newDataset_ = false;
 	if (noMore_) return false;
@@ -134,7 +134,7 @@ bool SelectIterator::next(ecml::ExecutionContext* context)
 
 	if (aggregateResultRead_) return noMore_ = true;
 
-	bool rc = selectStmt_->processOneRow(context);
+    bool rc = selectStmt_->processOneRow();
 
 	if (!rc)
 	{
@@ -144,7 +144,7 @@ bool SelectIterator::next(ecml::ExecutionContext* context)
 			noMore_ = true;
 
 		isCachingRows_ = true;
-		selectStmt_->postExecute(context);
+        selectStmt_->postExecute();
 		//isCachingRows_ = false; // this would be needed if we reuse the same iterator for several queries. 
 		
 		if (rowCache_.size())

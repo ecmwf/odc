@@ -16,8 +16,6 @@
 
 #include "eckit/filesystem/PathName.h"
 
-#include "ecml/core/ExecutionContext.h"
-
 #include "odb_api/SelectOneTable.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLStatement.h"
@@ -47,11 +45,9 @@ public:
 
 // -- Methods
 	void prepareExecute(); //SQLExpression*& where);
-	unsigned long long process(odb::sql::expression::SQLExpression*,SortedTables::iterator, ecml::ExecutionContext*);
-	bool processOneRow() { return processOneRow(0); }
-	bool processOneRow(ecml::ExecutionContext*);
-	void postExecute() { postExecute(0); }
-	void postExecute(ecml::ExecutionContext*);
+    unsigned long long process(odb::sql::expression::SQLExpression*,SortedTables::iterator);
+    bool processOneRow();
+    void postExecute();
 
 	void pushFirstFrame();
 
@@ -73,7 +69,7 @@ public:
     odb::sql::expression::SQLExpression* where() { return where_.get(); }
 
 // -- Overridden methods
-	unsigned long long execute(ecml::ExecutionContext*);
+    unsigned long long execute();
 
 protected:
 	virtual void print(std::ostream&) const; 	
@@ -121,8 +117,8 @@ private:
 // -- Methods
 
 	void reset();
-	bool resultsOut(ecml::ExecutionContext*);
-	bool output(odb::sql::expression::SQLExpression*, ecml::ExecutionContext*);
+    bool resultsOut();
+    bool output(odb::sql::expression::SQLExpression*);
     SQLExpression* findAliasedExpression(const std::string& alias);
 
 	friend class odb::sql::expression::function::FunctionROWNUMBER; // needs access to count_

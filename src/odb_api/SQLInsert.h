@@ -14,8 +14,6 @@
 #ifndef SQLInsert_H
 #define SQLInsert_H
 
-#include "ecml/core/ExecutionContext.h"
-
 #include "odb_api/Expressions.h"
 #include "odb_api/SQLStatement.h"
 #include "odb_api/SQLAST.h"
@@ -31,7 +29,7 @@ public:
 	SQLInsert(const InsertAST&);
 	virtual ~SQLInsert(); 
 
-	virtual unsigned long long execute(ecml::ExecutionContext*);
+    virtual unsigned long long execute();
 	virtual expression::Expressions output() const;
 
 

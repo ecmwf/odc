@@ -13,7 +13,6 @@
 #include "eckit/parser/StringTools.h"
 #include "ecml/parser/Request.h"
 
-#include "ecml/ExecutionContext.h"
 #include "ecml/Environment.h"
 #include "ecml/Interpreter.h"
 
@@ -29,7 +28,7 @@ DefineFunctionHandler::DefineFunctionHandler(const string& name)
 : SpecialFormHandler(name)
 {}
 
-Request DefineFunctionHandler::handle(const Request request, ExecutionContext& context)
+Request DefineFunctionHandler::handle(const Request request)
 {
     ASSERT(request->tag() == "_verb" && request->text() == "function");
     Request r (request->rest());
@@ -51,8 +50,6 @@ Request DefineFunctionHandler::handle(const Request request, ExecutionContext& c
     Request function (new Cell("_function", name, params, code));
     Request frame (new Cell("_frame", "definition", 0, 0));
     frame->append(new Cell("", name, function, 0));
-
-    context.pushEnvironmentFrame(frame);
 
     return Cell::clone(function);
 }

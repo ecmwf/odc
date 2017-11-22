@@ -29,7 +29,7 @@ class MockReaderIterator3
 {
 public:
 	MockReaderIterator3()
-    : noMore_(false), refCount_(0), columns_(1), nRows_(0), min_(23), data_(0), context_(0) 
+    : noMore_(false), refCount_(0), columns_(1), nRows_(0), min_(23), data_(0)
 	{
 		odb::Column* col = columns_[0] = new odb::Column(columns_);
 		ASSERT(col);
@@ -37,7 +37,7 @@ public:
 		col->name("column_name"); 
 		col->type<DataStream<SameByteOrder, DataHandle> >(odb::INTEGER, false);
 		col->hasMissing(true);
-		next(context_);
+        next();
 	}
 
 	odb::MetaData& columns() { return columns_; }
@@ -49,7 +49,7 @@ public:
 
 	const MockReaderIterator3& end() { return *reinterpret_cast<MockReaderIterator3*>(0); }
 
-	bool next(ecml::ExecutionContext*)
+    bool next()
 	{
 		if (noMore_) return noMore_;
 		switch (nRows_++)
@@ -75,7 +75,6 @@ public:
 	
 	bool noMore_;
 	int refCount_;
-    ecml::ExecutionContext* context_;
 
 private:
 	odb::MetaData columns_;

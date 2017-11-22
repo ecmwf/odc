@@ -14,8 +14,6 @@
 #ifndef odb_api_SQLOutput_H
 #define odb_api_SQLOutput_H
 
-#include "ecml/core/ExecutionContext.h"
-
 #include "odb_api/SQLOutputConfig.h"
 
 namespace odb {
@@ -38,9 +36,9 @@ public:
 	virtual void cleanup(SQLSelect&) = 0;
 
 	virtual void reset() = 0;
-	virtual void flush(ecml::ExecutionContext*) = 0;
+    virtual void flush() = 0;
 
-	virtual bool output(const expression::Expressions&, ecml::ExecutionContext*) = 0;
+    virtual bool output(const expression::Expressions&) = 0;
 
 	virtual void outputReal(double, bool) = 0;
 	virtual void outputDouble(double, bool) = 0;

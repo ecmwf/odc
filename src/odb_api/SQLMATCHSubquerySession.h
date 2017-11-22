@@ -16,7 +16,6 @@
 
 #include "odb_api/SQLSession.h"
 
-namespace eckit { class ExecutionContext; }
 namespace odb { class ReaderIterator; }
 namespace odb { class SelectIterator; }
 namespace odb { namespace sql { namespace expression { namespace function { class FunctionMATCH; } } } }

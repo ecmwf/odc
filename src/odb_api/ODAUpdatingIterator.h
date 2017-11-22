@@ -16,8 +16,6 @@
 #ifndef ODAUpdatingIterator_H
 #define ODAUpdatingIterator_H
 
-namespace eckit { class ExecutionContext; }
-
 namespace odb {
 
 template <typename T>
@@ -39,7 +37,7 @@ public:
 	bool operator!=(const ODAUpdatingIterator& o) { ASSERT(&o == 0); return ii_ != end_; }
 
 //protected:
-	bool next(eckit::ExecutionContext*);
+    bool next();
 
 private:
 // No copy allowed.
@@ -61,7 +59,6 @@ private:
 public:
 	int refCount_;
 	bool noMore_;
-    eckit::ExecutionContext* context_;
 };
 
 } // namespace odb 

@@ -28,16 +28,9 @@ namespace odb {
 TextReader::TextReader(std::istream& input, const std::string& delimiter)
 : in_(&input),
   deleteDataHandle_(false),
-  delimiter_(delimiter),
-  context_(0)
+  delimiter_(delimiter)
 {}
 
-TextReader::TextReader(std::istream& input, const std::string& delimiter, ecml::ExecutionContext* context)
-: in_(&input),
-  deleteDataHandle_(false),
-  delimiter_(delimiter),
-  context_(context)
-{}
 
 /*
 TextReader::TextReader()
@@ -51,18 +44,7 @@ TextReader::TextReader(const std::string& path, const std::string& delimiter)
 : in_(new std::ifstream(path.c_str())),
   deleteDataHandle_(true),
   path_(path),
-  delimiter_(delimiter),
-  context_(0)
-{
-	//dataHandle_->openForRead();
-}
-
-TextReader::TextReader(const std::string& path, const std::string& delimiter, ecml::ExecutionContext* context)
-: in_(new std::ifstream(path.c_str())),
-  deleteDataHandle_(true),
-  path_(path),
-  delimiter_(delimiter),
-  context_(context)
+  delimiter_(delimiter)
 {
 	//dataHandle_->openForRead();
 }
@@ -86,7 +68,7 @@ TextReaderIterator* TextReader::createReadIterator(const PathName& pathName)
 TextReader::iterator TextReader::begin()
 {
 	TextReaderIterator * it = new TextReaderIterator(*this);
-	it->next(context_);
+    it->next();
 	return iterator(it);
 }
 

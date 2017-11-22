@@ -342,10 +342,6 @@ Stack.cc
 Stack.h
 StringExpression.cc
 StringExpression.h
-EmbeddedCodeExpression.cc
-EmbeddedCodeExpression.h
-EmbeddedCodeParser.cc
-EmbeddedCodeParser.h
 TODATable.cc
 TODATable.h
 TODATableIterator.cc

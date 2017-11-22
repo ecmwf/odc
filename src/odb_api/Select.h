@@ -26,7 +26,6 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace ecml { class ExecutionContext; }
 
 namespace odb {
 
@@ -39,21 +38,16 @@ public:
 	typedef iterator::Row row;
 
 	Select(const std::string& selectStatement, eckit::DataHandle &);
-	Select(const std::string& selectStatement, eckit::DataHandle &, ecml::ExecutionContext*);
 	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter);
-	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter, ecml::ExecutionContext*);
     Select(const std::string& selectStatement, const std::string& path);
-    Select(const std::string& selectStatement, const std::string& path, ecml::ExecutionContext*);
 	Select(const std::string& selectStatement);
-	Select(const std::string& selectStatement, ecml::ExecutionContext*);
 	Select(const std::string& selectStatement, odb::sql::SQLNonInteractiveSession&);
 	Select();
-	Select(ecml::ExecutionContext*);
 
 	virtual ~Select();
 
 #ifdef SWIGPYTHON
-	iterator __iter__() { return iterator(createSelectIterator(selectStatement_, context_)); }
+    iterator __iter__() { return iterator(createSelectIterator(selectStatement_)); }
 #endif
 
 	iterator begin();
@@ -62,7 +56,7 @@ public:
 	eckit::DataHandle* dataHandle() { return dataHandle_; };
 	std::istream* dataIStream() { return istream_; }
 
-	SelectIterator* createSelectIterator(const std::string&, ecml::ExecutionContext*);
+    SelectIterator* createSelectIterator(const std::string&);
 
 private:
     odb::sql::SQLNonInteractiveSession* ownSession(const std::string& delimiter);
@@ -78,7 +72,6 @@ private:
 	std::string selectStatement_;
 	std::string delimiter_;
 
-    ecml::ExecutionContext* context_;
     odb::sql::SQLNonInteractiveSession* ownSession_;
     odb::sql::SQLNonInteractiveSession* outerSession_;
 };

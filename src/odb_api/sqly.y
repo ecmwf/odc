@@ -31,7 +31,6 @@ Expressions emptyExpressionList;
 %}
 
 %token <val>STRING
-%token <val>EMBEDDED_CODE
 %token <val>IDENT
 %token <val>VAR
 
@@ -464,12 +463,6 @@ into: INTO IDENT   { $$ = $2; }
     ;
 
 from : FROM table_list   { $$ = $2; }
-     | FROM EMBEDDED_CODE 
-        { 
-            std::cerr << "FROM EMBEDDED_CODE: " << $2 << std::endl;
-            $$ = std::vector<Table>();
-            $$.push_back(Table($2, "", true));
-        } 
      | empty             { $$ = std::vector<Table>(); }
 	 ;
 
@@ -641,7 +634,6 @@ atom_or_number : '(' expression ')'           { $$ = $2; }
                     $$ = ast("count", new NumberExpression(1.0));
 				}
 			   | STRING                       { $$ = new StringExpression($1); }
-			   | EMBEDDED_CODE                { $$ = new EmbeddedCodeExpression($1); }
 			   ;
 
 

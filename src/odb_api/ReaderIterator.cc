@@ -45,26 +45,6 @@ ReaderIterator::ReaderIterator(Reader &owner)
 	loadHeaderAndBufferData();
 }
 
-ReaderIterator::ReaderIterator(Reader &owner, ecml::ExecutionContext*)
-: owner_(owner),
-  columns_(0),
-  lastValues_(0),
-  codecs_(0),
-  nrows_(0),
-  f_(0),
-  newDataset_(false),
-  noMore_(false),
-  ownsF_(false),
-  headerCounter_(0),
-  byteOrder_(BYTE_ORDER_INDICATOR),
-  refCount_(0)
-{
-	f_ = owner.dataHandle();
-	ASSERT(f_);
-
-	loadHeaderAndBufferData();
-}
-
 eckit::DataHandle* ReaderIterator::dataHandle()
 {
     return f_;
@@ -85,27 +65,6 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   refCount_(0)
 {
     f_ = ecml::DataHandleFactory::openForRead(pathName);
-	ASSERT(f_);
-	ownsF_ = true;
-
-	loadHeaderAndBufferData();
-}
-
-ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName, ecml::ExecutionContext*)
-: owner_(owner),
-  columns_(0),
-  lastValues_(0),
-  codecs_(0),
-  nrows_(0),
-  f_(0),
-  newDataset_(false),
-  noMore_(false),
-  ownsF_(false),
-  headerCounter_(0),
-  byteOrder_(BYTE_ORDER_INDICATOR),
-  refCount_(0)
-{
-	f_ = ecml::DataHandleFactory::openForRead(pathName);
 	ASSERT(f_);
 	ownsF_ = true;
 
@@ -176,7 +135,7 @@ size_t ReaderIterator::readBuffer(size_t dataSize)
 	return bytesRead;
 }
 
-bool ReaderIterator::next(ecml::ExecutionContext* context)
+bool ReaderIterator::next()
 {
     newDataset_ = false;
     if (noMore_)
