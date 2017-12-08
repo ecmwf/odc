@@ -6,11 +6,6 @@ Python Database API (PEP 249) implementation for ODB API
 This module is a Python wrapper for ODB API, ECMWF library for encoding,
 decoding and processing of observational data.
 
-ODB API includes a streaming SQL engine and a MARS language syntax
-based embedded scripting language, ECML. ECML verbs can be called using
-this module as stored procedures via Cursor.callproc method.
-
-
 Examples:
 
     # Select data from a file
