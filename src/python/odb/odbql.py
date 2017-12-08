@@ -268,21 +268,6 @@ class Cursor:
         #rc = odbql_finalize(self.stmt)
         #self.assertEqual(rc, ODBQL_OK)
 
-    def callproc(self, procname, *parameters, **keyword_parameters):
-        """
-        Execute ECML verb
-        """
-        db, self.stmt, tail = c_voidp(), c_voidp(), c_char_p()
-        rc = odbql_open(self.file_name, byref(db))
-
-        operation = '{ ' + self.__marsify(procname, keyword_parameters) + ' }; '
-
-        rc = odbql_prepare_v2(db, operation, -1, byref(self.stmt), byref(tail))
-        rc = odbql_step(self.stmt)
-        #rc = odbql_finalize(self.stmt)
-        return ODBQL_OK
-
-
     def __marsify(self, procname, keyword_parameters):
 
         def marslist(l):

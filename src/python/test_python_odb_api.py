@@ -253,12 +253,6 @@ class TestPEP249(unittest.TestCase):
         c.execute(TEST_SELECT)
         self.assertEqual ( self.data,  [r for r in c] )
 
-    def test_callproc(self):
-        """https://www.python.org/dev/peps/pep-0249/#callproc"""
-        c = self.conn.cursor()
-        rc = c.callproc('compare', left = 'new_api_example_python.odb', right = 'new_api_example_python.odb')
-        # TODO: check rc
-
     def test_bitfields(self): 
         """
         ODB-97 (old, Swig based API), ODB-250 (new API): Bitfield values read incorrectly.
