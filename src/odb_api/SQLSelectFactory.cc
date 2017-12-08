@@ -233,6 +233,7 @@ SQLSelect* SQLSelectFactory::create (
         Table& t (from[i]);
 
         ASSERT(! t.embeddedCode);
+        fromTables.push_back(session.findTable(t));
     }
 
 	Expressions select;
