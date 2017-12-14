@@ -32,7 +32,7 @@ if( HAVE_PYTHON AND SWIG_FOUND )
                      COMMAND      ${CMAKE_CURRENT_BINARY_DIR}/test_python_odb_api.py
                      CONDITION    HAVE_PYTHON
                      LABELS       odb_api odb_api_python
-                     TEST_DEPENDS python_odb_api_get_test_data
+                     TEST_DEPENDS python_odb_api_get_test_data get_odb_api_test_data
                    )
 
   ecbuild_add_test ( TARGET       legacy_test_python_odb_api.py
@@ -40,7 +40,7 @@ if( HAVE_PYTHON AND SWIG_FOUND )
                      COMMAND      ${CMAKE_CURRENT_BINARY_DIR}/legacy_test_python_odb_api.py
                      CONDITION    HAVE_PYTHON
                      LABELS       odb_api odb_api_python
-                     TEST_DEPENDS python_odb_api_get_test_data
+                     TEST_DEPENDS python_odb_api_get_test_data get_odb_api_test_data
                    )
 
 endif()

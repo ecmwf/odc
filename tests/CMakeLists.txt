@@ -314,20 +314,23 @@ list( APPEND odb_module_tests
 # Disabled till ODB-215 fixed as it fails in Bamboo
     # test_server_side_processing.ecml
 
-    ## DISABLED according to ODB-394
-    ## test_stage.ecml
+    # n.b. ODB-394
+    test_stage.ecml
 )
 
 list( APPEND odb_module_multithreaded_tests
     test_multithreaded_sql.ecml
 )
 
+# n.b. Old behaviour (c.f. ODB-394) re-enabled with ODB_PATCH_TIME_ENCODE_RELATIVE.
+# This is a bit of a hack...
+
 # tests moved from ODB Server that populate ODB Server root - that data is used by other tests
 ecbuild_add_test ( TARGET       test_ec_archiving.ecml
                    COMMAND      ${odb_bin}
                    ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_ec_archiving.ecml
-                   ENVIRONMENT  ${test_environment}
-                   ENABLED      OFF
+                   ENVIRONMENT  ${test_environment} ODB_PATCH_TIME_ENCODE_RELATIVE=true
+                   ENABLED      ON
                    TEST_DEPENDS get_odb_api_test_data
                                 get_mars_client_test_data_ec )
 
@@ -335,8 +338,8 @@ ecbuild_add_test ( TARGET       test_ec_archiving.ecml
 ecbuild_add_test ( TARGET       test_mo_archiving.ecml
                    COMMAND      ${odb_bin}
                    ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/test_mo_archiving.ecml
-                   ENVIRONMENT  ${test_environment}
-                   ENABLED      OFF
+                   ENVIRONMENT  ${test_environment} ODB_PATCH_TIME_ENCODE_RELATIVE=true
+                   ENABLED      ON
                    TEST_DEPENDS get_odb_api_test_data
                                 get_mars_client_test_data_mo)
 
@@ -344,7 +347,7 @@ foreach( _test ${odb_module_tests} )
     ecbuild_add_test ( TARGET       ${_test}
                        COMMAND      ${odb_bin}
                        ARGS         ecml ${PROJECT_SOURCE_DIR}/src/odb_api/ecml_verbs/tests/${_test}
-                       ENVIRONMENT  ${test_environment}
+                       ENVIRONMENT  ${test_environment} ODB_PATCH_TIME_ENCODE_RELATIVE=true
                        LABELS       odb_api odb_api_ecml
                        TEST_DEPENDS get_odb_api_test_data
                                     get_mars_client_test_data_mo
