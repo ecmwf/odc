@@ -9,8 +9,6 @@
 #include "odb_api/CommandLineParser.h"
 #include "odb_api/ODBModule.h"
 
-#include "ecml/core/ExecutionContext.h"
-
 #include "Odb2NetCDF.h"
 #include "Odb2NetcdfModule.h"
 
@@ -22,21 +20,6 @@ using namespace odb;
 using namespace odb::tool;
 
 static const string usage = "Usage: odb2netcdf -i [odb_filename|odb_filename_prefix] [-2d] -o netcdf_filename";
-
-int runScripts(const vector<string>& params)
-{
-    ecml::ExecutionContext context;
-    ODBModule odbModule;
-    Odb2NetcdfModule odb2NetcdfModule;
-    context.import(odbModule);
-    context.import(odb2NetcdfModule);
-
-    for (size_t i(0); i < params.size(); ++i)
-    {
-        context.executeScriptFile(params[i]);
-    }
-    return 0;
-}
 
 int main(int argc, char *argv[])
 {
@@ -64,13 +47,6 @@ int main(int argc, char *argv[])
             converter.convert();
         }
         return 0;
-    }
-
-    if (ecml)
-    {
-        std::vector<std::string> params(args.parameters());
-        params.erase(params.begin());
-        return runScripts(params);
     }
 
     cerr << usage << endl;
