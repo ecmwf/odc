@@ -30,12 +30,6 @@
 // For importing data from text - used by examples and tests
 #include "odb_api/tools/ImportTool.h"
 
-// For ECML support
-#include "ecml/core/Environment.h"
-#include "ecml/core/RequestHandler.h"
-#include "ecml/parser/RequestParser.h"
-#include "ecml/parser/Cell.h"
-
 // Exceptions.
 #include "eckit/exception/Exceptions.h"
 
