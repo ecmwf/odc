@@ -21,12 +21,9 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/StringTools.h"
 
-#include "ecml/parser/RequestParser.h"
-
 #include "odb_api/WriterBufferingIterator.h"
 
 using namespace eckit;
-using namespace ecml;
 using namespace std;
 
 namespace odb {
@@ -64,9 +61,6 @@ Partition::Partition(const PathName& fileName, size_t partitionNumber)
         ASSERT(fs.size() == 2);
 
         size_t part (atol(fs[0].c_str()));
-        string blockDescription (fs[1]);
-
-        Request requests (RequestParser::parse(blockDescription));
 
         // TODO: Check that this has been updated correctly on the removal of ecml ExecutionContexts
 
