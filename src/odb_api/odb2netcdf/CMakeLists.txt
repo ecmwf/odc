@@ -1,10 +1,6 @@
 list( APPEND odb2netcdf_src_files
             Odb2NetCDF.cc 
             Odb2NetCDF.h 
-            Odb2NetcdfModule.h
-            Odb2NetcdfModule.cc
-            ecml_verbs/Odb2NetcdfHandler.cc
-            ecml_verbs/Odb2NetcdfHandler.h
 )
 
 ecbuild_add_executable(TARGET odb2netcdf.x
