@@ -101,20 +101,6 @@ prelude/TryHandler.cc
 prelude/ThrowHandler.h
 prelude/ThrowHandler.cc
 
-# Data types' support
-data/DataHandleFactory.h
-data/DataHandleFactory.cc
-data/FileHandleFactory.h
-data/FileHandleFactory.cc
-data/PartFileHandleFactory.h
-data/PartFileHandleFactory.cc
-data/HttpHandle.h
-data/HttpHandle.cc
-data/HttpHandleFactory.h
-data/HttpHandleFactory.cc
-# requires  metkit
-data/MarsHandleFactory.cc
-data/MarsHandleFactory.h
 
 # Miscellaneous
 # Adapter for eckit::Parametrisation
@@ -142,10 +128,6 @@ ecbuild_add_library( TARGET             ecml
 
 ecbuild_add_executable( TARGET  ecml_test
                         SOURCES tests/ecml_test.cc
-                        LIBS    ecml )
-
-ecbuild_add_executable( TARGET  ecml_unittests
-                        SOURCES tests/ecml_unittests.cc
                         LIBS    ecml )
 
 add_subdirectory( tests )

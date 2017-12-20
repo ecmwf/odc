@@ -20,12 +20,15 @@
 #include "metkit/MarsRequestHandle.h"
 #include "metkit/DHSProtocol.h"
 
-#include "ecml/data/MarsHandleFactory.h"
+#include "odb_api/data/MarsHandleFactory.h"
 
 using namespace eckit;
 using namespace std;
 
-namespace ecml {
+/// @note This file is the only reason that metkit is required in odb_api
+///       If MarsRequestHandle functionality is not required, that dependency can be dropped.
+
+namespace odb {
 
 MarsHandleFactory::MarsHandleFactory()
 : DataHandleFactory("mars")
@@ -56,19 +59,19 @@ DataHandle* MarsHandleFactory::makeHandle(const string& r) const
 {
     Log::debug() << "MarsHandleFactory::makeHandle: parsing " << r << endl;
 
-    Request requests (ecml::RequestParser::parse(r));
+    ecml::Request requests (ecml::RequestParser::parse(r));
 
     Log::debug() << "MarsHandleFactory::makeHandle: requests = " << requests << endl;
 
-    Request request (requests->value());
+    ecml::Request request (requests->value());
 
     Log::debug() << "MarsHandleFactory::makeHandle: request = " << request << endl;
 
     if (requests->rest())
         Log::warning() << "MarsHandleFactory: Only " << request << " used, skipped rest of " << requests << endl;
 
-    string host (RequestHandler::database(request));
-    long port (RequestHandler::port(request));
+    string host (ecml::RequestHandler::database(request));
+    long port (ecml::RequestHandler::port(request));
 
     metkit::MarsRequest mr (verb(request));
     ecml::convertToMarsRequest<metkit::MarsRequest> (request, mr);
@@ -76,4 +79,4 @@ DataHandle* MarsHandleFactory::makeHandle(const string& r) const
     return new metkit::MarsRequestHandle(mr, new metkit::DHSProtocol(host, host, port));
 }
 
-} // namespace ecml
+} // namespace odb

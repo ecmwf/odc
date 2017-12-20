@@ -23,8 +23,8 @@
 #include "ecml/parser/RequestParser.h"
 #include "ecml/ast/FunctionDefinition.h"
 #include "ecml/ast/Closure.h"
-#include "ecml/data/DataHandleFactory.h"
-#include "ecml/data/PartFileHandleFactory.h"
+#include "odb_api/data/DataHandleFactory.h"
+#include "odb_api/data/PartFileHandleFactory.h"
 
 using namespace std;
 using namespace eckit;
@@ -164,7 +164,7 @@ void ECMLUnitTests::runTests()
 
     context.execute("system, values = 'echo some test data for your testing pleasure > test_data_for_ecml_part_file_testing.txt'");
     string descriptor ("partfile://test_data_for_ecml_part_file_testing.txt:0,10");
-    DataHandle* dh (DataHandleFactory::openForRead(descriptor));
+    DataHandle* dh (odb::DataHandleFactory::openForRead(descriptor));
     Log::info () << "partfile: " << dh << endl;
     PartFileHandle* pfh (dynamic_cast<PartFileHandle*>(dh));
     ASSERT(pfh);

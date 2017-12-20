@@ -10,13 +10,13 @@
 
 #include <sstream>
 
-#include "ecml/data/FileHandleFactory.h"
+#include "odb_api/data/FileHandleFactory.h"
 #include "eckit/io/FileHandle.h"
 
 using namespace eckit;
 using namespace std;
 
-namespace ecml {
+namespace odb {
 
 FileHandleFactory::FileHandleFactory()
 : DataHandleFactory("file")
@@ -27,4 +27,4 @@ eckit::DataHandle* FileHandleFactory::makeHandle(const string& fileName) const
     return new FileHandle(fileName);
 }
 
-} // namespace ecml
+} // namespace odb

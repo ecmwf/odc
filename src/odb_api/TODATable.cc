@@ -10,7 +10,6 @@
 
 #include <sstream>
 #include "odb_api/SQLBitfield.h"
-#include "ecml/data/DataHandleFactory.h"
 
 using namespace std;
 

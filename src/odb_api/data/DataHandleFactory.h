@@ -16,7 +16,6 @@
 #include <map>
 
 #include "eckit/filesystem/PathName.h"
-#include "ecml/parser/Request.h"
 
 namespace eckit { 
     class DataHandle;
@@ -24,7 +23,7 @@ namespace eckit {
     class Length; 
 }
 
-namespace ecml { 
+namespace odb {
 
 class DataHandleFactory {
 public:  // Types
@@ -57,6 +56,6 @@ private:
     std::string prefix_;
 };
 
-} // namespace ecml
+} // namespace odb
 
 #endif

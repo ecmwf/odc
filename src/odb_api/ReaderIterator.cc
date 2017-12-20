@@ -15,7 +15,7 @@
 
 #include <arpa/inet.h>
 
-#include "ecml/data/DataHandleFactory.h"
+#include "odb_api/data/DataHandleFactory.h"
 
 #include "odb_api/Header.h"
 #include "odb_api/Reader.h"
@@ -64,7 +64,7 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-    f_ = ecml::DataHandleFactory::openForRead(pathName);
+    f_ = odb::DataHandleFactory::openForRead(pathName);
 	ASSERT(f_);
 	ownsF_ = true;
 

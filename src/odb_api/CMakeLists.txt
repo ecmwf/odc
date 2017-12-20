@@ -396,6 +396,21 @@ Stager.h
 Stager.cc
 ODBTarget.cc
 ODBTarget.h
+
+# Data types' support
+data/DataHandleFactory.h
+data/DataHandleFactory.cc
+data/FileHandleFactory.h
+data/FileHandleFactory.cc
+data/PartFileHandleFactory.h
+data/PartFileHandleFactory.cc
+data/HttpHandle.h
+data/HttpHandle.cc
+data/HttpHandleFactory.h
+data/HttpHandleFactory.cc
+# requires  metkit
+data/MarsHandleFactory.cc
+data/MarsHandleFactory.h
 )
 
 # templates
@@ -420,12 +435,13 @@ ShiftedColumnExpression.cc
 ecbuild_add_library( TARGET             Odb
                      INSTALL_HEADERS    LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api
+                     PRIVATE_INCLUDES   ${METKIT_INCLUDE_DIRS}         # Only for MarsRequestHandle
                      COMPONENT          server
                      SOURCES            ${odblib_src_files}
                      GENERATED          ODBAPIVersionSHA1.cc
                      TEMPLATES          ${odblib_templates}
                      LINKER_LANGUAGE    CXX
-                     LIBS               ecml )
+                     LIBS               ecml metkit )
 
 ecbuild_generate_yy( YYPREFIX           odblib_
                      YACC               sqly

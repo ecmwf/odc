@@ -9,9 +9,12 @@
  */
 
 
-#include "ecml/data/HttpHandle.h"
+#include "odb_api/data/HttpHandle.h"
 
-namespace eckit {
+using eckit::Length;
+using eckit::Stream;
+
+namespace odb {
 
 void HttpHandle::print(std::ostream& s) const
 {
@@ -76,5 +79,5 @@ void HttpHandle::close()
 {
 }
 
-} // namespace ecml
+} // namespace odb
 

@@ -37,7 +37,7 @@
 #include "odb_api/SQLIteratorSession.h"
 #include "odb_api/SQLOutputConfig.h"
 #include "odb_api/SQLDatabase.h"
-#include "ecml/data/DataHandleFactory.h"
+#include "odb_api/data/DataHandleFactory.h"
 
 #include "odbql.h"
 
@@ -63,7 +63,7 @@ public:
     : session_(odb::sql::SQLOutputConfig::defaultConfig(), ","),
       filename_(filename),
       input_( (filename && strlen(filename))
-             ? static_cast<DataHandle*>(ecml::DataHandleFactory::openForRead(filename))
+             ? static_cast<DataHandle*>(odb::DataHandleFactory::openForRead(filename))
              : static_cast<DataHandle*>(new odb::InMemoryDataHandle() ))
     {
         if (filename && strlen(filename))
@@ -176,7 +176,7 @@ public:
     {
         std::vector<eckit::DataHandle*> r;
         for (size_t i(0); i < descriptors.size(); ++i)
-            r.push_back( ecml::DataHandleFactory::openForRead(descriptors[i]));
+            r.push_back( odb::DataHandleFactory::openForRead(descriptors[i]));
         return r;
     }
 

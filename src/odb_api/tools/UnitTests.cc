@@ -37,7 +37,7 @@
 #include "odb_api/tools/SplitTool.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/odbql.h"
-#include "ecml/data/DataHandleFactory.h"
+#include "odb_api/data/DataHandleFactory.h"
 #include "odb_api/DispatchingWriter.h"
 
 extern "C" {
@@ -1100,7 +1100,7 @@ TEST(ODB269)
 //void buildMultiHandle(eckit::MultiHandle&, const std::string&);
 TEST(HttpHandle)
 {
-    eckit::DataHandle* in (ecml::DataHandleFactory::openForRead("http://localhost/conv.odb"));
+    eckit::DataHandle* in (odb::DataHandleFactory::openForRead("http://localhost/conv.odb"));
     //eckit::DataHandle* out (DataHandleFactory::openForWrite(const std::string&, const eckit::Length& = eckit::Length(0)));
 
     odb::Select o("select *;", *in);

@@ -11,11 +11,11 @@
 #include <sstream>
 #include <memory>
 
-#include "ecml/data/DataHandleFactory.h"
-#include "ecml/data/PartFileHandleFactory.h"
-#include "ecml/data/MarsHandleFactory.h"
-#include "ecml/data/FileHandleFactory.h"
-#include "ecml/data/HttpHandleFactory.h"
+#include "odb_api/data/DataHandleFactory.h"
+#include "odb_api/data/PartFileHandleFactory.h"
+#include "odb_api/data/MarsHandleFactory.h"
+#include "odb_api/data/FileHandleFactory.h"
+#include "odb_api/data/HttpHandleFactory.h"
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/parser/StringTools.h"
@@ -23,7 +23,7 @@
 
 using namespace eckit;
 
-namespace ecml {
+namespace odb {
 
 DataHandleFactory::DataHandleFactory(const std::string& prefix)
 : prefix_(prefix)

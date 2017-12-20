@@ -16,17 +16,17 @@
 
 #include "eckit/io/TCPHandle.h"
 
-namespace eckit {
+namespace odb {
 
-class HttpHandle : public DataHandle {
+class HttpHandle : public eckit::DataHandle {
 public:
 	HttpHandle(const std::string& url);
 	~HttpHandle();
 // -- Overridden methods
 	// From DataHandle
-    virtual Length openForRead();
-    virtual void openForWrite(const Length&);
-    virtual void openForAppend(const Length&);
+    virtual eckit::Length openForRead();
+    virtual void openForWrite(const eckit::Length&);
+    virtual void openForAppend(const eckit::Length&);
 
 	virtual long read(void*,long);
 	virtual long write(const void*,long);
@@ -34,7 +34,7 @@ public:
 	virtual void print(std::ostream&) const;
 
 	// From Streamable
-	virtual void encode(Stream&) const;
+    virtual void encode(eckit::Stream&) const;
 
     static std::string parseHost(const std::string&);
     static int parsePort(const std::string&);
@@ -44,6 +44,6 @@ private:
     eckit::TCPHandle tcp_;
 };
 
-} // namespace eckit
+} // namespace odb
 
 #endif

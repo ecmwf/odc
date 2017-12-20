@@ -10,14 +10,14 @@
 
 #include <sstream>
 
-#include "ecml/data/PartFileHandleFactory.h"
+#include "odb_api/data/PartFileHandleFactory.h"
 #include "eckit/io/PartFileHandle.h"
 #include "eckit/parser/StringTools.h"
 
 using namespace eckit;
 using namespace std;
 
-namespace ecml {
+namespace odb {
 
 PartFileHandleFactory::PartFileHandleFactory()
 : DataHandleFactory("partfile")
@@ -35,4 +35,4 @@ DataHandle* PartFileHandleFactory::makeHandle(const string& descriptor) const
     return new PartFileHandle(fileName, offset, length);
 }
 
-} // namespace ecml
+} // namespace odb

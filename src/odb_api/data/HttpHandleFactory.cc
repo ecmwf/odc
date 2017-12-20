@@ -7,23 +7,27 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-/// @author Piotr Kuchta, October 2016
 
-#ifndef ecml_mars_HttpHandleFactory_H
-#define ecml_mars_HttpHandleFactory_H
+#include <sstream>
 
-#include "ecml/data/DataHandleFactory.h"
 
-namespace ecml {
+#include "eckit/parser/StringTools.h"
 
-class HttpHandleFactory : public ecml::DataHandleFactory
+#include "odb_api/data/HttpHandle.h"
+#include "odb_api/data/HttpHandleFactory.h"
+
+using namespace eckit;
+using namespace std;
+
+namespace odb {
+
+HttpHandleFactory::HttpHandleFactory()
+: DataHandleFactory("http")
+{}
+
+eckit::DataHandle* HttpHandleFactory::makeHandle(const std::string& r) const
 {
-public:
-    HttpHandleFactory();
-protected:
-    eckit::DataHandle* makeHandle(const std::string&) const;
-};
+    return new HttpHandle(r);
+}
 
-} // namespace ecml
-
-#endif
+} // namespace odb

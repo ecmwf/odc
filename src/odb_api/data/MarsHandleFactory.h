@@ -12,11 +12,11 @@
 #ifndef ecml_mars_MarsHandleFactory_H
 #define ecml_mars_MarsHandleFactory_H
 
-#include "ecml/data/DataHandleFactory.h"
+#include "odb_api/data/DataHandleFactory.h"
 
-namespace ecml {
+namespace odb {
 
-class MarsHandleFactory : public ecml::DataHandleFactory
+class MarsHandleFactory : public DataHandleFactory
 {
 public:
     MarsHandleFactory();
@@ -24,6 +24,6 @@ protected:
     eckit::DataHandle* makeHandle(const std::string&) const;
 };
 
-} // namespace ecml
+} // namespace odb
 
 #endif
