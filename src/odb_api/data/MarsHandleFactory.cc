@@ -57,24 +57,36 @@ std::string verb(const ecml::Request request)
 
 DataHandle* MarsHandleFactory::makeHandle(const string& r) const
 {
-    Log::debug() << "MarsHandleFactory::makeHandle: parsing " << r << endl;
+    //Log::debug() << "MarsHandleFactory::makeHandle: parsing " << r << endl;
 
-    ecml::Request requests (ecml::RequestParser::parse(r));
+    //ecml::Request requests (ecml::RequestParser::parse(r));
 
-    Log::debug() << "MarsHandleFactory::makeHandle: requests = " << requests << endl;
+    //Log::debug() << "MarsHandleFactory::makeHandle: requests = " << requests << endl;
 
-    ecml::Request request (requests->value());
+    //ecml::Request request (requests->value());
 
-    Log::debug() << "MarsHandleFactory::makeHandle: request = " << request << endl;
+    //Log::debug() << "MarsHandleFactory::makeHandle: request = " << request << endl;
 
-    if (requests->rest())
-        Log::warning() << "MarsHandleFactory: Only " << request << " used, skipped rest of " << requests << endl;
+    //if (requests->rest())
+    //    Log::warning() << "MarsHandleFactory: Only " << request << " used, skipped rest of " << requests << endl;
 
-    string host (ecml::RequestHandler::database(request));
-    long port (ecml::RequestHandler::port(request));
+    //string host (ecml::RequestHandler::database(request));
+    //long port (ecml::RequestHandler::port(request));
 
-    metkit::MarsRequest mr (verb(request));
-    ecml::convertToMarsRequest<metkit::MarsRequest> (request, mr);
+    //metkit::MarsRequest mr (verb(request));
+    //ecml::convertToMarsRequest<metkit::MarsRequest> (request, mr);
+
+    metkit::MarsRequest mr(metkit::MarsRequest::parse(r));
+
+    std::vector<std::string> hostVector;
+    mr.getValues("database", hostVector);
+
+    if (hostVector.size() != 1) {
+        throw BadValue("Must specify database= value explicitly", Here());
+    }
+
+    std::string host(hostVector[0]);
+    long port(9000);
 
     return new metkit::MarsRequestHandle(mr, new metkit::DHSProtocol(host, host, port));
 }

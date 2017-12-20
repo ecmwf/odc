@@ -114,4 +114,4 @@ void DataHandleFactory::registerFactories()
     static HttpHandleFactory httpHandleFactory;
 }
 
-} //namespace ecml 
+} //namespace odb

@@ -9,8 +9,8 @@
  */
 /// @author Piotr Kuchta, May 2015
 
-#ifndef ecml_mars_MarsHandleFactory_H
-#define ecml_mars_MarsHandleFactory_H
+#ifndef odb_mars_MarsHandleFactory_H
+#define odb_mars_MarsHandleFactory_H
 
 #include "odb_api/data/DataHandleFactory.h"
 

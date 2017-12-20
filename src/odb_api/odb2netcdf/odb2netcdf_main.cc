@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
     args.registerOptionWithArgument("-o");
 
     bool twoD (args.optionIsSet("-2d"));
-    bool ecml (args.optionIsSet("-ecml"));
     string input (args.optionArgument<string>("-i", "")),
            output (args.optionArgument<string>("-o", ""));
 

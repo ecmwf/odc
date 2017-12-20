@@ -11,8 +11,6 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/types/Types.h"
 
-#include "ecml/core/Environment.h"
-
 #include "odb_api/SQLSelectFactory.h"
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/FunctionExpression.h"

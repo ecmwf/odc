@@ -17,8 +17,6 @@
 #include "eckit/parser/StringTools.h"
 #include "eckit/io/PartFileHandle.h"
 
-#include "ecml/core/Interpreter.h"
-
 #include "odb_api/FileCollector.h"
 #include "odb_api/FileMapper.h"
 #include "odb_api/InMemoryDataHandle.h"
