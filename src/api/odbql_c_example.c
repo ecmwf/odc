@@ -192,28 +192,3 @@ int odbql_example_select_data_read_results()
     return 0;
 }
 
-int odbql_example_execute_embedded_ecml()
-{
-    odbql *db;
-    odbql_stmt *res;
-    int rc;
-
-    rc = odbql_open("new_api_c_example.odb", &db);
-    checkRC(rc, "Cannot open database", db);
-
-    rc = odbql_prepare_v2(db, " { compare, left = new_api_c_example.odb, right = new_api_c_example.odb }; ", -1, &res, 0);
-    checkRC(rc, "Failed to prepare embedded statement", db);
-
-    // Print rows of data. 
-    while((rc = odbql_step(res)) != ODBQL_DONE) 
-    {
-        printf("\n---\n");
-    }
-    
-    rc = odbql_finalize(res);
-    checkRC(rc, "odbql_finalize failed", db);
-    rc = odbql_close(db);
-    checkRC(rc, "odbql_close failed", db);
-
-    return 0;
-}

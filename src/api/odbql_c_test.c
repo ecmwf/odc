@@ -41,7 +41,6 @@ extern "C" {
 
 int odbql_example_insert_data();
 int odbql_example_select_data_read_results();
-int odbql_example_execute_embedded_ecml();
 /*
 }
 */
@@ -52,9 +51,6 @@ int main(int argc, char** argv) {
     
     if (odbql_example_select_data_read_results()) 
         return fprintf(stderr, "odbql_example_select_data_read_results FAILED\n"), 1;
-
-    if (odbql_example_execute_embedded_ecml()) 
-        return fprintf(stderr, "odbql_example_execute_embedded_ecml FAILED\n"), 1;
 
     fprintf(stdout, "%s: All done.\n", argv[0]);
     return 0;
