@@ -13,10 +13,6 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/parser/StringTools.h"
 
-#include "ecml/parser/Request.h"
-#include "ecml/parser/RequestParser.h"
-#include "ecml/core/RequestHandler.h"
-
 #include "metkit/MarsRequestHandle.h"
 #include "metkit/DHSProtocol.h"
 
@@ -41,19 +37,19 @@ bool shortName(const std::string& prefix, const std::string& s)
     return std::equal(prefix.begin(), prefix.end(), s.begin());
 }
 
-std::string verb(const ecml::Request request)
-{
-    std::string v (eckit::StringTools::lower(request->text()));
-
-    const char* verbs[] = {"retrieve", "stage", "list", "archive", 0};
-
-    for (size_t i (0); verbs[i]; ++i)
-        if (shortName(v, verbs[i])) 
-            return verbs[i];
-
-    throw eckit::UserError(std::string("Unknown request '") + v + "'");
-    return v;
-}
+//std::string verb(const ecml::Request request)
+//{
+//    std::string v (eckit::StringTools::lower(request->text()));
+//
+//    const char* verbs[] = {"retrieve", "stage", "list", "archive", 0};
+//
+//    for (size_t i (0); verbs[i]; ++i)
+//        if (shortName(v, verbs[i]))
+//            return verbs[i];
+//
+//    throw eckit::UserError(std::string("Unknown request '") + v + "'");
+//    return v;
+//}
 
 DataHandle* MarsHandleFactory::makeHandle(const string& r) const
 {

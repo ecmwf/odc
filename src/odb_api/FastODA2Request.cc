@@ -15,8 +15,9 @@
 #include "odb_api/MetaDataReader.h"
 #include "odb_api/MetaDataReaderIterator.h"
 #include "odb_api/ODAHandle.h"
-#include "ecml/parser/Request.h"
-#include "ecml/parser/RequestParser.h"
+
+#include <algorithm>
+#include <string>
 
 namespace odb {
 
@@ -30,19 +31,35 @@ FastODA2Request<T>::FastODA2Request()
 template <typename T>
 void FastODA2Request<T>::parseConfig(const std::string& s)
 {
-    ecml::Cell* r (ecml::RequestParser::parse(s, true /*debug*/));
-    r = r->value();
+    // We don't want to do ECML any more.
+    // This is a bit of a hack to do something that works...
 
-    for (ecml::Request elt(r->rest()); elt; elt = elt->rest())
-	{
-        std::string key (elt->text());
-        ASSERT(elt->tag() == "");
-        std::string value (elt->value()->str());
+    eckit::Tokenizer tokenizer(",= ':\n", false);
 
-		eckit::Log::debug() << "parseConfig: " << key << "=" << value << std::endl;
+    std::vector<std::string> tokens;
+    tokenizer(s, tokens);
 
-		addColumn(key, value);
-	}
+
+    // We support both an old ECML-style parsing (let, DATE=..., TIME=...) and a newer format
+    // (DATE: ...\nTIME: ...\n)
+
+    ASSERT(tokens.size() > 1);
+
+    std::string vrb = tokens[0];
+    std::transform(vrb.begin(), vrb.end(), vrb.begin(), ::tolower);
+    size_t startIndex = 0;
+
+    if (vrb == "let") {
+        ASSERT((tokens.size() - 1) % 2 == 0);
+        startIndex = 1;
+    } else {
+        ASSERT(tokens.size() % 2 == 0);
+    }
+
+    for (size_t i = startIndex; i < tokens.size(); i += 2) {
+        eckit::Log::debug() << "parseConfig: " << tokens[i] << "=" << tokens[i+1] << std::endl;
+        addColumn(tokens[i], tokens[i+1]);
+    }
 }
 
 template <typename T>
