@@ -82,7 +82,7 @@ void SQLTool::run()
                 ? StringTools::join(" ",  params) + ";"
                 // FIXME:
                 : StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]) + ";");
-    std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o")
+    std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o") && (sqlOutputConfig_.outputFormat() != "odb")
                                 ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
                                 : 0);
     std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
