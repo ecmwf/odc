@@ -9,16 +9,24 @@ ecbuild_get_test_multidata( TARGET get_odb_api_regressions_data
                             NAMES ${regressions_data_files}
                             NOCHECK )
 
-ecbuild_add_test(
-    TYPE script
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/ODB-374.sh
-    ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-    TEST_DEPENDS get_odb_api_regressions_data
-)
+set(regressions_scripts
 
-ecbuild_add_test(
-    TYPE script
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/ODB-387-and-388.sh
-    ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-    TEST_DEPENDS get_odb_api_regressions_data
+    ODB-374.sh
+    ODB-387-and-388.sh)
+
+foreach( _script ${regressions_scripts})
+    ecbuild_add_test(
+        TYPE script
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
+        ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
+        TEST_DEPENDS get_odb_api_regressions_data
+    )
+endforeach()
+
+
+# Add a custom target to make these files visible in qtcreator
+
+add_custom_target(
+    regressions_file_visibility
+    SOURCES ${regressions_scripts}
 )
