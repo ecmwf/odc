@@ -22,14 +22,8 @@ public:
 
 	void run(); 
 
-	static void help(std::ostream &o)
-	{ o << "Imports data from a text file"; }
-
-	static void usage(const std::string& name, std::ostream &o)
-	{
-		o << name << " [-d delimiter] <input.file> <output.file>" << std::endl;
-		o << " delimiter can be a single character (e.g.: ',') or TAB";
-	}
+    static void help(std::ostream &o);
+    static void usage(const std::string& name, std::ostream &o);
 
 	static void importFile(const eckit::PathName& in, const eckit::PathName& out, const std::string& delimiter = defaultDelimiter());
 	static void filterAndImportFile(const eckit::PathName& in, const eckit::PathName& out, const std::string& sql, const std::string& delimiter = defaultDelimiter());

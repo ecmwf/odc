@@ -20,6 +20,19 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
+void MergeTool::help(std::ostream &o) {
+    o << "Merges rows from files";
+}
+
+void MergeTool::usage(const std::string& name, std::ostream &o)
+{
+    o << name << " -o <output-file.odb> <input1.odb> <input2.odb> ..." << std::endl
+              << ""                                                    << std::endl
+              << "\t or "                                                << std::endl
+              << ""                                                    << std::endl
+      << name << "\t -S -o <output-file.odb> <input1.odb> <sql-select1> <input2.odb> <sql-select2> ..." << std::endl;
+}
+
 MergeTool::MergeTool (int ac, char *av[])
 : Tool(ac, av),
   inputFiles_(),

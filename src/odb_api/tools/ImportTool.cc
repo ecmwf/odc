@@ -32,6 +32,22 @@ ImportTool::ImportTool(int argc, char *parameters[])
 	registerOptionWithArgument("-sql"); // SQL to filter input CSV with
 }
 
+void ImportTool::help(std::ostream &o) {
+    o << "Imports data from a text file";
+}
+
+void ImportTool::usage(const std::string& name, std::ostream &o) {
+    o << name
+      << "\t[-d delimiter] <input.file> <output.file>" << std::endl
+      << std::endl
+      << "\tdelimiter can be a single character (e.g.: ',') or TAB. As a data example:" << std::endl
+      << std::endl
+      << "\tcol1:INTEGER,col2:REAL" << std::endl
+      << "\t1,2.0" << std::endl
+      << "\t3,4.0" << std::endl;
+}
+
+
 void ImportTool::run()
 {
     if (parameters().size() != 3)

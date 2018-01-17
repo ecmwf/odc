@@ -27,6 +27,21 @@ typedef eckit::StringTools S;
 namespace odb {
 namespace tool {
 
+void MDSetTool::help(std::ostream &o) {
+    o << "Creates a new file resetting types or values (constants only) of columns.";
+}
+
+
+void MDSetTool::usage(const std::string& name, std::ostream &o) {
+    o << name << " <update-list> <input.odb> <output.odb>" << endl << endl
+
+      << "\t<update-list> is a comma separated list of expressions of the form:" << endl
+      << "\t  <column-name> : <type> = <value>" << endl << endl
+      << "\t<type> can be one of: integer, real, double, string. If ommited, the existing type of the column will not be changed." << endl
+      << "\tBoth type and value are optional; at least one of the two should be present. For example:" << endl
+      << "\t  odb mdset \"expver='    0008'\" input.odb patched.odb " << endl;
+}
+
 MDSetTool::MDSetTool (int argc, char *parameters[]) : Tool(argc, parameters) { }
 
 void MDSetTool::run()
