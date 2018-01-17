@@ -7,7 +7,7 @@
 #       -DCMAKE_MODULE_PATH=/path/to/ecbuild/cmake
 #
 #       -DCMAKE_C_COMPILER=gcc
-#       -DCMAKE_C_COMPILER=g++
+#       -DCMAKE_CXX_COMPILER=g++
 #
 #       -DCMAKE_PREFIX_PATH=/path/to/any/package/out/of/place
 #       -DBUILD_SHARED_LIBS=ON
@@ -78,16 +78,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   ecbuild_add_cxx_flags("-fPIC -Wl,--as-needed")
 endif()
 
-
-ecbuild_add_option( FEATURE OMP
-                    DESCRIPTION "Support for OpenMP threaded parallelism"
-                    REQUIRED_PACKAGES "OMP COMPONENTS CXX ${Fortran}" )
-
-if( HAVE_OMP )
-  ecbuild_enable_omp()
-else()
-  ecbuild_enable_ompstubs()
-endif()
 
 ecbuild_add_option( FEATURE PYTHON
                     DESCRIPTION "whether or not to build the Python interface"

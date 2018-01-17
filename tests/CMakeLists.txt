@@ -254,11 +254,6 @@ set( test_environment
   TEST_DATA_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}
   )
 
-set( test_environment_multithreaded 
-    ${test_environment}
-    OMP_NUM_THREADS=16
-)
-
 ### odb2netcdf tests
 
 ecbuild_get_test_multidata( TARGET get_odb2netcdf_data
@@ -316,10 +311,6 @@ list( APPEND odb_module_tests
 
     # n.b. ODB-394
     test_stage.ecml
-)
-
-list( APPEND odb_module_multithreaded_tests
-    test_multithreaded_sql.ecml
 )
 
 # n.b. Old behaviour (c.f. ODB-394) re-enabled with ODB_PATCH_TIME_ENCODE_RELATIVE.
