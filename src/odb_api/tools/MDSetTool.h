@@ -29,19 +29,13 @@ public:
 	{ 
         using namespace std;
 
-        o << "Creates a new file resetting types or values (constants only) of columns." << endl << endl
+        o << name << " <update-list> <input.odb> <output.odb>" << endl << endl
 
-          << "Syntax:" << endl
-          << name << " <update-list> <input.odb> <output.odb>" << endl << endl
-
-          << "Syntax of the <update-list> is a comma separated list of expressions of the form:" << endl
+          << "<update-list> is a comma separated list of expressions of the form:" << endl
           << "  <column-name> : <type> = <value>" << endl << endl
           << "<type> can be one of: integer, real, double, string. If ommited, the existing type of the column will not be changed." << endl
           << "Both type and value are optional; at least one of the two should be present. For example:" << endl
-          << "  odb mdset \"expver='    0008'\" input.odb patched.odb " << endl
-          << "" << endl
-          << "" << endl
-          ;
+          << "  odb mdset \"expver='    0008'\" input.odb patched.odb " << endl;
     }
 
 private:
