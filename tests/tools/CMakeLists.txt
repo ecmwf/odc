@@ -10,7 +10,9 @@ ecbuild_get_test_multidata( TARGET get_odb_api_tools_data
 
 list( APPEND tools_tests_scripts
     test_odb_split.sh
-    test_odb_sql_split.sh )
+    test_odb_sql_split.sh
+    test_odb_sql_variables.sh
+    test_odb_import.sh )
 
 
 foreach( _script ${tools_tests_scripts} )
