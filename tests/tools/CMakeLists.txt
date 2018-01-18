@@ -12,6 +12,7 @@ list( APPEND tools_tests_scripts
     test_odb_split.sh
     test_odb_sql_split.sh
     test_odb_sql_variables.sh
+    test_odb_sql_match_in.sh
     test_odb_import.sh )
 
 
