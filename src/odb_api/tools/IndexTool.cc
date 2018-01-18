@@ -28,6 +28,21 @@ namespace tool {
 
 IndexTool::IndexTool (int argc, char *argv[]) : Tool(argc, argv) { }
 
+void IndexTool::help(std::ostream &o) {
+    o << "Creates index of reports for a given file";
+}
+
+
+void IndexTool::usage(const std::string& name, std::ostream &o) {
+    o << name
+      << " <file.odb> [<file.odb.idx>] " << std::endl
+      << std::endl
+      << "\tSpecifically the index file is an ODB file with (INTEGER) columns: block_begin, block_length, seqno, n_rows"
+      << std::endl
+      << "\tOne entry is made for each unique seqno - block pair within the source ODB file." << std::endl;
+}
+
+
 void IndexTool::run()
 {
 	if (! (parameters().size() == 2 || parameters().size() == 3))

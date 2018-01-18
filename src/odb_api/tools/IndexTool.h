@@ -28,15 +28,9 @@ public:
 
 	void run(); 
 
-	static void help(std::ostream &o)
-	{
-		o << "Creates index of reports for a given file";
-	}
+    static void help(std::ostream &o);
 
-	static void usage(const std::string& name, std::ostream &o)
-	{
-		o << name << " <file.odb> [<file.odb.idx>] ";
-	}
+    static void usage(const std::string& name, std::ostream &o);
 
 private:
 // No copy allowed
