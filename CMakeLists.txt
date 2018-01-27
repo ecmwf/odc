@@ -14,19 +14,19 @@
 
 cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
 
-project( odb_api CXX Fortran )
+project( odb_api C CXX )
 
 # Add path for custom modules
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 1.9 )
+ecbuild_requires_macro_version( 2.6 )
 
 ###############################################################################
 # local project
 
-ecbuild_use_package( PROJECT eckit VERSION 0.9 REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION 0.9 REQUIRED )
 ecbuild_use_package( PROJECT metkit VERSION 0.3 REQUIRED )
 
 ecbuild_declare_project()
