@@ -44,10 +44,10 @@ ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
                     DEFAULT OFF )
 
-ecbuild_add_option( FEATURE NETCDF
-                    DESCRIPTION "whether or not to build the odb2netcdf tool"
-                    DEFAULT OFF
-                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
+#ecbuild_add_option( FEATURE NETCDF
+#                    DESCRIPTION "whether or not to build the odb2netcdf tool"
+#                    DEFAULT OFF
+#                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
 ecbuild_add_option( FEATURE ODB_API_SERVER_SIDE
                     DESCRIPTION "Support for keyword SERVER_SIDE"
