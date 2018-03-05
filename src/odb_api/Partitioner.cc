@@ -41,7 +41,7 @@ Partitions Partitioner::createPartitions(const std::vector<eckit::PathName>& fil
     ullong totalRowsNumber (countRows (files, indices));
     ullong rowsPerPartition ((totalRowsNumber / numberOfPartitions));
 
-    //Log::info() << "*** createPartitions: numberOfPartitions: " << numberOfPartitions << ", totalRowsNumber: " << totalRowsNumber << ", rowsPerPartition: " << rowsPerPartition <<  endl;
+    Log::info() << "*** createPartitions: numberOfPartitions: " << numberOfPartitions << ", totalRowsNumber: " << totalRowsNumber << ", rowsPerPartition: " << rowsPerPartition <<  endl;
     for (size_t i(0); i < indices.size(); ++i)
     {
         odb::Select in("select block_begin, block_length, seqno, n_rows;", indices[i]); 
