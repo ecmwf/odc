@@ -12,7 +12,7 @@
 #       -DCMAKE_PREFIX_PATH=/path/to/any/package/out/of/place
 #       -DBUILD_SHARED_LIBS=ON
 
-cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
 
 project( odb_api C CXX )
 
@@ -21,13 +21,16 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 2.6 )
+ecbuild_requires_macro_version( 2.7 )
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ###############################################################################
 # local project
 
-ecbuild_use_package( PROJECT eckit  VERSION 0.9 REQUIRED )
-ecbuild_use_package( PROJECT metkit VERSION 0.3 REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION 0.21 REQUIRED )
+ecbuild_use_package( PROJECT metkit VERSION 0.11 REQUIRED )
 
 ecbuild_declare_project()
 
