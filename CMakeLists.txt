@@ -1,38 +1,25 @@
-############################################################################################
-# cmake options:
-#
-#       -DCMAKE_BUILD_TYPE=Debug|RelWithDebInfo|Release|Production
-#       -DCMAKE_INSTALL_PREFIX=/path/to/install
-#
-#       -DCMAKE_MODULE_PATH=/path/to/ecbuild/cmake
-#
-#       -DCMAKE_C_COMPILER=gcc
-#       -DCMAKE_C_COMPILER=g++
-#
-#       -DCMAKE_PREFIX_PATH=/path/to/any/package/out/of/place
-#       -DBUILD_SHARED_LIBS=ON
-
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
 
 project( odb_api C CXX )
 
-# Add path for custom modules
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 2.7 )
+ecbuild_requires_macro_version( 2.9 )
+
+ecbuild_declare_project()
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-###############################################################################
-# local project
+ecbuild_declare_project()
+
+########################################################################################################################
+### dependencies and options
 
 ecbuild_use_package( PROJECT eckit  VERSION 0.21 REQUIRED )
 ecbuild_use_package( PROJECT metkit VERSION 0.11 REQUIRED )
-
-ecbuild_declare_project()
 
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
