@@ -237,7 +237,7 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnTyp
             if (columns_[i]->name() == name) {
                 std::stringstream ss;
                 ss << "Attempting to create multiple columns with the same name: " << name;
-                throw SeriousBug(name, Here());
+                throw SeriousBug(ss.str(), Here());
             }
         }
     }
