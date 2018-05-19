@@ -9,6 +9,7 @@
  */
 
 #include "eckit/testing/Test.h"
+#include "eckit/system/SystemInfo.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/eckit_ecbuild_config.h"
 
@@ -42,18 +43,6 @@ using odb::OtherByteOrder;
 // i) Make them templated on the stream/datahandle directly
 // ii) Construct them with a specific data handle/stream
 // iii) Why are we casting data handles via a void* ???
-
-// A quick helper function, to minimised #ifdefs
-bool is_big_endian() {
-#ifdef EC_BIG_ENDIAN
-    return true;
-#endif
-#ifdef EC_LITTLE_ENDIAN
-    return false;
-#endif
-    ASSERT(false);
-}
-
 
 // Given the codec-initialising data, add the header on that is used to construct the
 // codec.
@@ -133,7 +122,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         MockReadDataHandle dh(data); // Skip name of codec
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianSource == is_big_endian()) {
+        if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
                 c.reset(new CodecInt16String<SameByteOrder>);
                 static_cast<CodecInt16String<SameByteOrder>*>(c.get())->load(&dh);
@@ -157,7 +146,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         MockWriteDataHandle dh_write;
 
-        if (bigEndianSource == is_big_endian()) {
+        if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
                 static_cast<CodecInt16String<SameByteOrder>*>(c.get())->save(&dh_write);
             } else {
