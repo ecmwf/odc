@@ -69,7 +69,7 @@ endif()
 ecbuild_add_option( FEATURE PYTHON
                     DESCRIPTION "whether or not to build the Python interface"
                     DEFAULT OFF
-                    REQUIRED_PACKAGES "Python VERSION 2.7 NO_LIBS" SWIG )
+                    REQUIRED_PACKAGES "Python VERSION 2.7" SWIG )
 
 ###############################################################################
 # contents
