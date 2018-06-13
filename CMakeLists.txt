@@ -55,14 +55,6 @@ if( HAVE_FORTRAN )
 
 endif()
 
-if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
-  ecbuild_add_fortran_flags("-fPIC -ffree-line-length-none")
-endif()
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  ecbuild_add_cxx_flags("-fPIC -Wl,--as-needed")
-endif()
-
 
 ecbuild_add_option( FEATURE OMP
                     DESCRIPTION "Support for OpenMP threaded parallelism"
