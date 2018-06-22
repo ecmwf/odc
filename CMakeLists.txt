@@ -1,35 +1,23 @@
-############################################################################################
-# cmake options:
-#
-#       -DCMAKE_BUILD_TYPE=Debug|RelWithDebInfo|Release|Production
-#       -DCMAKE_INSTALL_PREFIX=/path/to/install
-#
-#       -DCMAKE_MODULE_PATH=/path/to/ecbuild/cmake
-#
-#       -DCMAKE_C_COMPILER=gcc
-#       -DCMAKE_CXX_COMPILER=g++
-#
-#       -DCMAKE_PREFIX_PATH=/path/to/any/package/out/of/place
-#       -DBUILD_SHARED_LIBS=ON
+cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
 
-cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
+project( odb_api C CXX )
 
-project( odb_api CXX Fortran )
-
-# Add path for custom modules
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 1.9 )
-
-###############################################################################
-# local project
-
-ecbuild_use_package( PROJECT eckit VERSION 0.9 REQUIRED )
-ecbuild_use_package( PROJECT metkit VERSION 0.3 REQUIRED )
+ecbuild_requires_macro_version( 2.9 )
 
 ecbuild_declare_project()
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+########################################################################################################################
+### dependencies and options
+
+ecbuild_use_package( PROJECT eckit  VERSION 0.21 REQUIRED )
+ecbuild_use_package( PROJECT metkit VERSION 0.11 REQUIRED )
 
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
@@ -44,22 +32,15 @@ ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
                     DEFAULT OFF )
 
-ecbuild_add_option( FEATURE NETCDF
-                    DESCRIPTION "whether or not to build the odb2netcdf tool"
-                    DEFAULT OFF
-                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
+#ecbuild_add_option( FEATURE NETCDF
+#                    DESCRIPTION "whether or not to build the odb2netcdf tool"
+#                    DEFAULT OFF
+#                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
 ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
                     DESCRIPTION "ODB Server uses four digits format of time"
                     DEFAULT OFF )
 
-if( HAVE_CXX11 )
-    ecbuild_add_cxx11_flags()
-else()
-    if ( CMAKE_VERSION VERSION_GREATER "3.1.0" )
-        set( CMAKE_CXX_STANDARD 98 )
-    endif()
-endif()
 
 SET(ODB_API_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
 
@@ -82,7 +63,7 @@ endif()
 ecbuild_add_option( FEATURE PYTHON
                     DESCRIPTION "whether or not to build the Python interface"
                     DEFAULT OFF
-                    REQUIRED_PACKAGES "Python VERSION 2.7 NO_LIBS" SWIG )
+                    REQUIRED_PACKAGES "Python VERSION 2.7" SWIG )
 
 ###############################################################################
 # contents

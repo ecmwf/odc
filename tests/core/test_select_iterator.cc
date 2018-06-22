@@ -10,8 +10,9 @@
 
 #include "odb_api_ecbuild_config.h"
 
-#include "eckit/config/Resource.h"
 #include "eckit/eckit_config.h"
+#include "eckit/config/Resource.h"
+#include "eckit/system/SystemInfo.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/testing/Test.h"
 
@@ -149,15 +150,14 @@ CASE("Test bugfix 01, quote <<UnitTest problem fixed with p4 change 23687>>") {
         0x0,0x0,0x0,0x40,0xa3,0x22,0x36,0x40   // 22.1353
     };
 
-#ifdef EC_BIG_ENDIAN
-    // Swap the data on this big-endian box.
-    for (int i = 0; i < sizeof(REF_DATA) / 8; i++)
-    {
-        for (int j = 0; j < 4; j++)
-            swap(REF_DATA[i * 8 + j], REF_DATA[(i + 1) * 8 - 1 - j]);
-        //cout << *(reinterpret_cast<double *>(&REF_DATA[i * 8])) << std::endl;
+    if(eckit::system::SystemInfo::isBigEndian()) {  // Swap the data on this big-endian box.
+        for (int i = 0; i < sizeof(REF_DATA) / 8; i++)
+        {
+            for (int j = 0; j < 4; j++)
+                std::swap(REF_DATA[i * 8 + j], REF_DATA[(i + 1) * 8 - 1 - j]);
+            //cout << *(reinterpret_cast<double *>(&REF_DATA[i * 8])) << std::endl;
+        }
     }
-#endif
 
     const double *OBSVALUE = reinterpret_cast<const double*>(REF_DATA);
 

@@ -9,6 +9,7 @@
  */
 
 #include "eckit/testing/Test.h"
+#include "eckit/system/SystemInfo.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/eckit_ecbuild_config.h"
@@ -45,18 +46,6 @@ using odb::OtherByteOrder;
 // iii) Why are we casting data handles via a void* ???
 //  iv) Why are load/save not virtual functions?
 //   v) We should ASSERT() that encoded data is constant for constant codecs. Currently it is just ignored.
-
-// A quick helper function, to minimised #ifdefs
-bool is_big_endian() {
-#ifdef EC_BIG_ENDIAN
-    return true;
-#endif
-#ifdef EC_LITTLE_ENDIAN
-    return false;
-#endif
-    ASSERT(false);
-}
-
 
 // Given the codec-initialising data, add the header on that is used to construct the
 // codec.
@@ -118,7 +107,7 @@ CASE("Constant values consume no space in the output data buffer") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecConstant<SameByteOrder>);
         } else {
             c.reset(new CodecConstant<OtherByteOrder>);
@@ -138,7 +127,7 @@ CASE("Constant values consume no space in the output data buffer") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             static_cast<CodecConstant<SameByteOrder>*>(c.get())->save(&dh);
         } else {
             static_cast<CodecConstant<OtherByteOrder>*>(c.get())->save(&dh);
@@ -200,7 +189,7 @@ CASE("constant strings consume no output data space") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecConstantString<SameByteOrder>);
         } else {
             c.reset(new CodecConstantString<OtherByteOrder>);
@@ -220,7 +209,7 @@ CASE("constant strings consume no output data space") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             static_cast<CodecConstantString<SameByteOrder>*>(c.get())->save(&dh);
         } else {
             static_cast<CodecConstantString<OtherByteOrder>*>(c.get())->save(&dh);
@@ -297,7 +286,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecConstantOrMissing<SameByteOrder>);
         } else {
             c.reset(new CodecConstantOrMissing<OtherByteOrder>);
@@ -320,7 +309,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             static_cast<CodecConstantOrMissing<SameByteOrder>*>(c.get())->save(&dh);
         } else {
             static_cast<CodecConstantOrMissing<OtherByteOrder>*>(c.get())->save(&dh);
@@ -405,7 +394,7 @@ CASE("real constant or missing value is not quite constant") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecRealConstantOrMissing<SameByteOrder>);
         } else {
             c.reset(new CodecRealConstantOrMissing<OtherByteOrder>);
@@ -428,7 +417,7 @@ CASE("real constant or missing value is not quite constant") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             static_cast<CodecRealConstantOrMissing<SameByteOrder>*>(c.get())->save(&dh);
         } else {
             static_cast<CodecRealConstantOrMissing<OtherByteOrder>*>(c.get())->save(&dh);
@@ -514,7 +503,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecChars<SameByteOrder>);
         } else {
             c.reset(new CodecChars<OtherByteOrder>);
@@ -535,7 +524,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             static_cast<CodecChars<SameByteOrder>*>(c.get())->save(&dh);
         } else {
             static_cast<CodecChars<OtherByteOrder>*>(c.get())->save(&dh);
@@ -617,7 +606,7 @@ CASE("long floating point values can include the missing data value") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecLongReal<SameByteOrder>);
         } else {
             c.reset(new CodecLongReal<OtherByteOrder>);
@@ -653,7 +642,7 @@ CASE("long floating point values can include the missing data value") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             static_cast<CodecLongReal<SameByteOrder>*>(c.get())->save(&dh);
         } else {
             static_cast<CodecLongReal<OtherByteOrder>*>(c.get())->save(&dh);
@@ -762,7 +751,7 @@ CASE("short floating point values can include the missing data value") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (secondCodec) {
                 c.reset(new CodecShortReal2<SameByteOrder>);
             } else {
@@ -806,7 +795,7 @@ CASE("short floating point values can include the missing data value") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (secondCodec) {
                 static_cast<CodecShortReal2<SameByteOrder>*>(c.get())->save(&dh);
             } else {
@@ -926,7 +915,7 @@ CASE("32bit integers are as-is") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecInt32<SameByteOrder>);
         } else {
             c.reset(new CodecInt32<OtherByteOrder>);
@@ -948,7 +937,7 @@ CASE("32bit integers are as-is") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             static_cast<CodecInt32<SameByteOrder>*>(c.get())->save(&dh);
         } else {
             static_cast<CodecInt32<OtherByteOrder>*>(c.get())->save(&dh);
@@ -1053,7 +1042,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
                 c.reset(new CodecInt16Missing<SameByteOrder>);
             } else {
@@ -1083,7 +1072,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
                 static_cast<CodecInt16<SameByteOrder>*>(c.get())->save(&dh);
             } else {
@@ -1201,7 +1190,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
         // Initialise the codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
                 c.reset(new CodecInt8Missing<SameByteOrder>);
             } else {
@@ -1230,7 +1219,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
                 static_cast<CodecInt8<SameByteOrder>*>(c.get())->save(&dh);
             } else {
@@ -1361,7 +1350,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // Initialise codecs
 
         eckit::ScopedPtr<Codec> c;
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
                 c.reset(new CodecInt16String<SameByteOrder>);
             } else {
@@ -1399,7 +1388,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == is_big_endian()) {
+        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
                 static_cast<CodecInt16String<SameByteOrder>*>(c.get())->save(&dh);
             } else {

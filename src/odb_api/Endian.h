@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -15,11 +15,12 @@
 #define Endian_H
 
 #include "odb_api_config.h"
+#include "eckit/eckit_config.h"
 
 namespace odb {
 
 template<class T> struct Swap {
-	
+
 	static const int half = sizeof(T) >> 1;
 	static const int last = sizeof(T) - 1;
 	T operator()(T v)
@@ -40,7 +41,7 @@ template<class T> const int Swap<T>::last = sizeof(T) - 1;
 class Endian {
 public:
 
-#ifdef EC_LITTLE_ENDIAN
+#ifdef ECKIT_LITTLE_ENDIAN
 	template<class T> static T transform(T x)  { return Swap<T>()(x); }
 #else
 	template<class T> static T transform(T x)  { return x; }
@@ -48,6 +49,6 @@ public:
 
 };
 
-} // namespace odb 
+} // namespace odb
 
 #endif

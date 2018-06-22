@@ -4,17 +4,17 @@ list( APPEND odb2netcdf_src_files
 )
 
 ecbuild_add_executable(TARGET odb2netcdf.x
-    SOURCES 
+    SOURCES
             odb2netcdf_main.cc
             ${odb2netcdf_src_files}
 
-    INCLUDES 
-            ${NETCDF_INCLUDE_DIRS} 
+    INCLUDES
+            ${NETCDF_INCLUDE_DIRS}
             ${ODB_API_INCLUDE_DIRS}
             ${ECKIT_INCLUDE_DIRS}
 
-    LIBS    
-            ${NETCDF_LIBRARIES} 
+    LIBS
+            ${NETCDF_LIBRARIES}
             ${ODB_API_LIBRARIES}
             ${ECKIT_LIBRARIES}
 
