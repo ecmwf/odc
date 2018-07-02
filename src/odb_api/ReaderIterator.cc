@@ -222,7 +222,7 @@ bool ReaderIterator::next()
 
 	size_t nCols = columns().size();
 	for(size_t i = c; i < nCols; i++)
-		lastValues_[i] = codecs_[i]->decode();
+        codecs_[i]->decode(&lastValues_[i]);
 
 	++nrows_ ;
 	return nCols;

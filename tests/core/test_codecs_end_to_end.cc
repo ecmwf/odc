@@ -346,7 +346,8 @@ CASE("Missing values are encoded and decoded correctly") {
         dh.openForRead();
         c->dataHandle(&dh);
 
-        double decoded = c->decode();
+        double decoded;
+        c->decode(&decoded);
 
         ASSERT(dh.position() == eckit::Offset(encoded_size));
         ASSERT(decoded == missing_value);

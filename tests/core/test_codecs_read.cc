@@ -107,10 +107,15 @@ CASE("Constant values are constant") {
 
             EXPECT(dh.position() == eckit::Offset(28));
 
-            EXPECT(c->decode() == 1234567890.1234567);
-            EXPECT(c->decode() == 1234567890.1234567);
-            EXPECT(c->decode() == 1234567890.1234567);
-            EXPECT(c->decode() == 1234567890.1234567);
+            double tmp;
+            c->decode(&tmp);
+            EXPECT(tmp == 1234567890.1234567);
+            c->decode(&tmp);
+            EXPECT(tmp == 1234567890.1234567);
+            c->decode(&tmp);
+            EXPECT(tmp == 1234567890.1234567);
+            c->decode(&tmp);
+            EXPECT(tmp == 1234567890.1234567);
 
             // No further data should have been consumed from the data handle.
             EXPECT(dh.position() == eckit::Offset(28));
@@ -135,10 +140,12 @@ CASE("Constant values are constant") {
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
-            EXPECT(c->decode() == 1234567890.1234567);
-            EXPECT(c->decode() == 1234567890.1234567);
-            EXPECT(c->decode() == 1234567890.1234567);
-            EXPECT(c->decode() == 1234567890.1234567);
+            double tmp;
+            c->decode(&tmp);
+            EXPECT(tmp == 1234567890.1234567);
+            EXPECT(tmp == 1234567890.1234567);
+            EXPECT(tmp == 1234567890.1234567);
+            EXPECT(tmp == 1234567890.1234567);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
         }
@@ -196,13 +203,14 @@ CASE("constant strings are constant") {
 
             EXPECT(dh.position() == eckit::Offset(28));
 
-            double val = c->decode();
+            double val;
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
 
             // No further data should have been consumed from the data handle.
@@ -227,13 +235,14 @@ CASE("constant strings are constant") {
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
-            double val = c->decode();
+            double val;
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "hi-there");
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
@@ -306,15 +315,18 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
             double baseValue = 987654321.9876;
         //    double baseValue = 987654321;
-            double decoded = c->decode();
+            double decoded;
+            c->decode(&decoded);
             EXPECT(baseValue == decoded);
-            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::integerMDI()); // missing
             for (size_t n = 0; n < 255; n++) {
                 double b = baseValue + n;
-                double v = c->decode();
-                EXPECT(b == v);
+                c->decode(&decoded);
+                EXPECT(b == decoded);
             }
-            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::integerMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(28 + 258));
         }
@@ -340,15 +352,18 @@ CASE("Constant integer or missing value behaves a bit oddly") {
             EXPECT(dh.position() == eckit::Offset(hdrSize+28));
 
             double baseValue = 987654321.9876;
-            double decoded = c->decode();
+            double decoded;
+            c->decode(&decoded);
             EXPECT(baseValue == decoded);
-            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::integerMDI()); // missing
             for (size_t i = 0; i < 255; i++) {
                 double b = baseValue + i;
-                double v = c->decode();
-                EXPECT(b == v);
+                c->decode(&decoded);
+                EXPECT(b == decoded);
             }
-            EXPECT(c->decode() == odb::MDI::integerMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::integerMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 258));
         }
@@ -417,15 +432,18 @@ CASE("real constant or missing value is not quite constant") {
 
             double baseValue = 987654321.9876;
         //    double baseValue = 987654321;
-            double decoded = c->decode();
+            double decoded;
+            c->decode(&decoded);
             EXPECT(baseValue == decoded);
-            EXPECT(c->decode() == odb::MDI::realMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::realMDI()); // missing
             for (size_t i = 0; i < 255; i++) {
                 double b = baseValue + i;
-                double v = c->decode();
-                EXPECT(b == v);
+                c->decode(&decoded);
+                EXPECT(b == decoded);
             }
-            EXPECT(c->decode() == odb::MDI::realMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::realMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(28 + 258));
         }
@@ -450,15 +468,18 @@ CASE("real constant or missing value is not quite constant") {
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
             double baseValue = 987654321.9876;
-            double decoded = c->decode();
+            double decoded;
+            c->decode(&decoded);
             EXPECT(baseValue == decoded);
-            EXPECT(c->decode() == odb::MDI::realMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::realMDI()); // missing
             for (size_t i = 0; i < 255; i++) {
                 double b = baseValue + i;
-                double v = c->decode();
-                EXPECT(b == v);
+                c->decode(&decoded);
+                EXPECT(b == decoded);
             }
-            EXPECT(c->decode() == odb::MDI::realMDI()); // missing
+            c->decode(&decoded);
+            EXPECT(decoded == odb::MDI::realMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 258));
         }
@@ -523,15 +544,16 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
             EXPECT(dh.position() == eckit::Offset(32));
 
-            double val = c->decode();
+            double val;
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[5], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[6], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[7], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[8], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[9], 8) == 0);
 
             EXPECT(dh.position() == eckit::Offset(32 + (8 * 5)));
@@ -557,15 +579,16 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 32));
 
-            double val = c->decode();
+            double val;
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[5], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[6], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[7], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[8], 8) == 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(::memcmp(&val, source_data[9], 8) == 0);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 32 + (8 * 5)));
@@ -627,18 +650,25 @@ CASE("long floating point values can include the missing data value") {
 
             EXPECT(dh.position() == eckit::Offset(28));
 
-            EXPECT(c->decode() == 0);
-            EXPECT(c->decode() == 123456789.0123456);
-            EXPECT(c->decode() == -9876543210.9876);
-            double val = c->decode();
+            double val;
+            c->decode(&val);
+            EXPECT(val == 0);
+            c->decode(&val);
+            EXPECT(val == 123456789.0123456);
+            c->decode(&val);
+            EXPECT(val == -9876543210.9876);
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val > 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val < 0);
-            EXPECT(isnan(c->decode()));
-            EXPECT(isnan(c->decode()));
-            EXPECT(c->decode() == -2147483647);
+            c->decode(&val);
+            EXPECT(isnan(val));
+            c->decode(&val);
+            EXPECT(isnan(val));
+            c->decode(&val);
+            EXPECT(val == -2147483647);
 
             EXPECT(dh.position() == eckit::Offset(28 + (8 * 8)));
         }
@@ -663,18 +693,25 @@ CASE("long floating point values can include the missing data value") {
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
-            EXPECT(c->decode() == 0);
-            EXPECT(c->decode() == 123456789.0123456);
-            EXPECT(c->decode() == -9876543210.9876);
-            double val = c->decode();
+            double val;
+            c->decode(&val);
+            EXPECT(val == 0);
+            c->decode(&val);
+            EXPECT(val == 123456789.0123456);
+            c->decode(&val);
+            EXPECT(val == -9876543210.9876);
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val > 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val < 0);
-            EXPECT(isnan(c->decode()));
-            EXPECT(isnan(c->decode()));
-            EXPECT(c->decode() == -2147483647);
+            c->decode(&val);
+            EXPECT(isnan(val));
+            c->decode(&val);
+            EXPECT(isnan(val));
+            c->decode(&val);
+            EXPECT(val == -2147483647);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + (8 * 8)));
         }
@@ -749,24 +786,33 @@ CASE("short floating point values can include the missing data value") {
             EXPECT(dh.position() == eckit::Offset(28));
 
             // n.b. == comparisons for floats as we are testing BIT reproducability of decoding
-            EXPECT(c->decode() == 0);
-            EXPECT(c->decode() == float(654321.123));
+            double val;
+            c->decode(&val);
+            EXPECT(val == 0);
+            c->decode(&val);
+            EXPECT(val == float(654321.123));
             // Each of the two codecs has a different internal missing value. Check it is correctly recognised.
             if (secondCodec) {
-                EXPECT(c->decode() == float(1.17549435082229e-38));
-                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+                c->decode(&val);
+                EXPECT(val == float(1.17549435082229e-38));
+                c->decode(&val);
+                EXPECT(val == 6.54565456545599971850917315786e-123);
             } else {
-                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
-                EXPECT(c->decode() == float(-3.40282346638529e+38));
+                c->decode(&val);
+                EXPECT(val == 6.54565456545599971850917315786e-123);
+                c->decode(&val);
+                EXPECT(val == float(-3.40282346638529e+38));
             }
-            double val = c->decode();
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val > 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val < 0);
-            EXPECT(isnan(c->decode()));
-            EXPECT(isnan(c->decode()));
+            c->decode(&val);
+            EXPECT(isnan(val));
+            c->decode(&val);
+            EXPECT(isnan(val));
 
             EXPECT(dh.position() == eckit::Offset(28 + (8 * 4)));
         }
@@ -791,24 +837,33 @@ CASE("short floating point values can include the missing data value") {
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
-            EXPECT(c->decode() == 0);
-            EXPECT(c->decode() == float(654321.123));
+            double val;
+            c->decode(&val);
+            EXPECT(val == 0);
+            c->decode(&val);
+            EXPECT(val == float(654321.123));
             // Each of the two codecs has a different internal missing value. Check it is correctly recognised.
             if (secondCodec) {
-                EXPECT(c->decode() == float(1.17549435082229e-38));
-                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+                c->decode(&val);
+                EXPECT(val == float(1.17549435082229e-38));
+                c->decode(&val);
+                EXPECT(val == 6.54565456545599971850917315786e-123);
             } else {
-                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
-                EXPECT(c->decode() == float(-3.40282346638529e+38));
+                c->decode(&val);
+                EXPECT(val == 6.54565456545599971850917315786e-123);
+                c->decode(&val);
+                EXPECT(val == float(-3.40282346638529e+38));
             }
-            double val = c->decode();
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val > 0);
-            val = c->decode();
+            c->decode(&val);
             EXPECT(isinf(val));
             EXPECT(val < 0);
-            EXPECT(isnan(c->decode()));
-            EXPECT(isnan(c->decode()));
+            c->decode(&val);
+            EXPECT(isnan(val));
+            c->decode(&val);
+            EXPECT(isnan(val));
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + (8 * 4)));
         }
@@ -868,11 +923,17 @@ CASE("32bit integers are as-is") {
 
             EXPECT(dh.position() == eckit::Offset(28));
 
-            EXPECT(c->decode() == 0);
-            EXPECT(c->decode() == -1);
-            EXPECT(c->decode() == 2147483647);
-            EXPECT(c->decode() == -2147483648);
-            EXPECT(c->decode() == -6543210);
+            double val;
+            c->decode(&val);
+            EXPECT(val == 0);
+            c->decode(&val);
+            EXPECT(val == -1);
+            c->decode(&val);
+            EXPECT(val == 2147483647);
+            c->decode(&val);
+            EXPECT(val == -2147483648);
+            c->decode(&val);
+            EXPECT(val == -6543210);
 
             EXPECT(dh.position() == eckit::Offset(28 + (5 * 4)));
         }
@@ -897,11 +958,17 @@ CASE("32bit integers are as-is") {
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
-            EXPECT(c->decode() == 0);
-            EXPECT(c->decode() == -1);
-            EXPECT(c->decode() == 2147483647);
-            EXPECT(c->decode() == -2147483648);
-            EXPECT(c->decode() == -6543210);
+            double val;
+            c->decode(&val);
+            EXPECT(val == 0);
+            c->decode(&val);
+            EXPECT(val == -1);
+            c->decode(&val);
+            EXPECT(val == 2147483647);
+            c->decode(&val);
+            EXPECT(val == -2147483648);
+            c->decode(&val);
+            EXPECT(val == -6543210);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + (5 * 4)));
         }
@@ -975,15 +1042,21 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
             EXPECT(dh.position() == eckit::Offset(28));
 
-            EXPECT(c->decode() == (double(-123.45) + 0));
+            double val;
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 0));
+            c->decode(&val);
             if (withMissing) {
-                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+                EXPECT(val == 6.54565456545599971850917315786e-123);
             } else {
-                EXPECT(c->decode() == (double(-123.45) + 65535));
+                EXPECT(val == (double(-123.45) + 65535));
             }
-            EXPECT(c->decode() == (double(-123.45) + 32767));
-            EXPECT(c->decode() == (double(-123.45) + 32768));
-            EXPECT(c->decode() == (double(-123.45) + 12345));
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 32767));
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 32768));
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 12345));
 
             EXPECT(dh.position() == eckit::Offset(28 + (5 * 2)));
         }
@@ -1008,15 +1081,21 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
-            EXPECT(c->decode() == (double(-123.45) + 0));
+            double val;
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 0));
+            c->decode(&val);
             if (withMissing) {
-                EXPECT(c->decode() == 6.54565456545599971850917315786e-123);
+                EXPECT(val == 6.54565456545599971850917315786e-123);
             } else {
-                EXPECT(c->decode() == (double(-123.45) + 65535));
+                EXPECT(val == (double(-123.45) + 65535));
             }
-            EXPECT(c->decode() == (double(-123.45) + 32767));
-            EXPECT(c->decode() == (double(-123.45) + 32768));
-            EXPECT(c->decode() == (double(-123.45) + 12345));
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 32767));
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 32768));
+            c->decode(&val);
+            EXPECT(val == (double(-123.45) + 12345));
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + (5 * 2)));
         }
@@ -1089,11 +1168,14 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
             EXPECT(dh.position() == eckit::Offset(28));
 
+            double val;
             for (int n = 0; n < 255; n++) {
-                EXPECT(c->decode() == (double(-5000.5) + n));
+                c->decode(&val);
+                EXPECT(val == (double(-5000.5) + n));
             }
 
-            EXPECT(c->decode() == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
+            c->decode(&val);
+            EXPECT(val == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
 
             EXPECT(dh.position() == eckit::Offset(28 + 256));
         }
@@ -1118,11 +1200,14 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
 
+            double val;
             for (int n = 0; n < 255; n++) {
-                EXPECT(c->decode() == (double(-5000.5) + n));
+                c->decode(&val);
+                EXPECT(val == (double(-5000.5) + n));
             }
 
-            EXPECT(c->decode() == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
+            c->decode(&val);
+            EXPECT(val == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 256));
         }
@@ -1214,17 +1299,18 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
             EXPECT(dh.position() == eckit::Offset(148));
 
-            double val = c->decode();
+            double val;
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "mnopqrst");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 6) == "ghijkl"); // silently works for shorter strings
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 2) == "ab"); // silently works for shorter strings
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "opqrstuv");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "uvwxyzab"); // gets truncated to 8
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
 
             EXPECT(dh.position() == eckit::Offset(148 + (6 * (bits16 ? 2 : 1))));
@@ -1250,17 +1336,18 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 148));
 
-            double val = c->decode();
+            double val;
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "mnopqrst");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 6) == "ghijkl"); // silently works for shorter strings
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 2) == "ab"); // silently works for shorter strings
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "opqrstuv");
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "uvwxyzab"); // gets truncated to 8
-            val = c->decode();
+            c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 148 + (6 * (bits16 ? 2 : 1))));

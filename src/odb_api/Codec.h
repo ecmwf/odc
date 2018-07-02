@@ -39,7 +39,7 @@ public:
 	const std::string& name() const { return name_; }
 
 	virtual unsigned char* encode(unsigned char* p, double d) = 0;
-	virtual double decode() = 0;
+    virtual void decode(double* out) = 0;
 	virtual void dataHandle(void *) = 0;
 
 	template <typename DATASTREAM> static Codec* findCodec(const std::string& name, bool differentByteOrder);
@@ -132,7 +132,7 @@ class CodecConstant : public Codec {
 public:
 	CodecConstant() : Codec("constant") {}
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -150,7 +150,7 @@ class CodecConstantString : public CodecConstant<BYTEORDER> {
 public:
 	CodecConstantString() : CodecConstant<BYTEORDER>() { this->name_ = "constant_string"; }
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -181,7 +181,7 @@ class CodecInt8 : public Codec {
 public:
 	CodecInt8() : Codec("int8") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d); 
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -197,7 +197,7 @@ class CodecInt8Missing : public Codec {
 public:
 	CodecInt8Missing() : Codec("int8_missing") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -214,7 +214,7 @@ class CodecConstantOrMissing : public CodecInt8Missing<BYTEORDER> {
 public:
 	CodecConstantOrMissing() : CodecInt8Missing<BYTEORDER>() { this->name_ = "constant_or_missing"; }
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { CodecInt8Missing<BYTEORDER>::dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -251,7 +251,7 @@ public:
 	virtual Codec* clone();
 
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -298,7 +298,7 @@ public:
         hasShortRealInternalMissing_(false),
         hasShortReal2InternalMissing_(false) {}
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
     virtual void gatherStats(double v);
     bool hasShortRealInternalMissing() { return hasShortRealInternalMissing_; }
     bool hasShortReal2InternalMissing() { return hasShortReal2InternalMissing_; }
@@ -321,7 +321,7 @@ class CodecShortReal : public Codec {
 public:
 	CodecShortReal() : Codec("short_real") {}
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -337,7 +337,7 @@ class CodecShortReal2 : public Codec {
 public:
 	CodecShortReal2() : Codec("short_real2") {}
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -374,7 +374,7 @@ class CodecInt32 : public Codec {
 public:
 	CodecInt32() : Codec("int32") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -390,7 +390,7 @@ class CodecInt16 : public Codec {
 public:
 	CodecInt16() : Codec("int16") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -406,7 +406,7 @@ class CodecInt16Missing : public Codec {
 public:
 	CodecInt16Missing() : Codec("int16_missing") { this->missingValue_ = this->min_ = this->max_ = odb::MDI::integerMDI(); }
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { ds_.dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -434,7 +434,7 @@ public:
 	virtual Codec* clone();
 
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	virtual void dataHandle(void *p) { intCodec.ds().dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -474,7 +474,7 @@ public:
 	virtual Codec* clone();
 
 	virtual unsigned char* encode(unsigned char* p, double d);
-	virtual double decode();
+    virtual void decode(double* out);
 
 	void dataHandle(void *p) { intCodec.ds().dataHandle(static_cast<eckit::DataHandle*>(p)); }
 
@@ -630,13 +630,13 @@ unsigned char* CodecShortReal<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecShortReal<BYTEORDER>::decode()
+void CodecShortReal<BYTEORDER>::decode(double* out)
 {
     float s;
     ds().readFloat(s);
 
     const uint32_t minFloatAsInt ( 0x800000 );
-    return s == *reinterpret_cast<const float*>( &minFloatAsInt ) ? missingValue_ : s;
+    (*out) = (s == *reinterpret_cast<const float*>( &minFloatAsInt ) ? missingValue_ : s);
 }
 
 
@@ -660,14 +660,14 @@ unsigned char* CodecShortReal2<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecShortReal2<BYTEORDER>::decode()
+void CodecShortReal2<BYTEORDER>::decode(double* out)
 {
     float s;
     ds().readFloat(s);
 
     // The result of this is a bit pattern of 0xff7fffff
     const uint32_t maxFloatAsInt ( 0x7f7fffff );
-    return s == - *reinterpret_cast<const float*>( &maxFloatAsInt ) ? missingValue_ : s;
+    (*out) = (s == - *reinterpret_cast<const float*>( &maxFloatAsInt ) ? missingValue_ : s);
 }
 
 template<typename BYTEORDER>
@@ -680,11 +680,11 @@ unsigned char* CodecInt32<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecInt32<BYTEORDER>::decode()
+void CodecInt32<BYTEORDER>::decode(double* out)
 {
 	int32_t s;
 	ds().readInt32(s);
-    return s;
+    (*out) = s;
 }
 
 template<typename BYTEORDER>
@@ -697,12 +697,12 @@ unsigned char* CodecInt16<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecInt16<BYTEORDER>::decode()
+void CodecInt16<BYTEORDER>::decode(double* out)
 {
 	uint16_t s;
 	ds().readUInt16(s);
 
-	return s + min_;
+    (*out) = s + min_;
 }
 
 template<typename BYTEORDER>
@@ -721,11 +721,11 @@ unsigned char* CodecInt16Missing<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecInt16Missing<BYTEORDER>::decode()
+void CodecInt16Missing<BYTEORDER>::decode(double* out)
 {
 	uint16_t s;
 	ds().readUInt16(s);
-	return s == 0xffff ? missingValue_ : (s + min_);
+    (*out) = (s == 0xffff ? missingValue_ : (s + min_));
 }
 
 template<typename BYTEORDER>
@@ -737,12 +737,12 @@ unsigned char* CodecInt8<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecInt8<BYTEORDER>::decode()
+void CodecInt8<BYTEORDER>::decode(double* out)
 {
 	unsigned char s;
 	ds().readUChar(s);
 
-	return s + min_;
+    (*out) = s + min_;
 }
 
 template<typename BYTEORDER>
@@ -760,11 +760,11 @@ unsigned char* CodecInt8Missing<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecInt8Missing<BYTEORDER>::decode()
+void CodecInt8Missing<BYTEORDER>::decode(double* out)
 {
 	unsigned char s;
 	ds().readUChar(s);
-	return s == 0xff ? missingValue_ : (s + min_);
+    (*out) = (s == 0xff ? missingValue_ : (s + min_));
 }
 
 template<typename BYTEORDER>
@@ -780,17 +780,17 @@ unsigned char* CodecInt8String<BYTEORDER>::encode(unsigned char* p, double d) {
 }
 
 template<typename BYTEORDER>
-double CodecInt8String<BYTEORDER>::decode() {
+void CodecInt8String<BYTEORDER>::decode(double* out) {
 
-    int i = intCodec.decode();
+    double tmp_i;
+    intCodec.decode(&tmp_i);
+    int i = static_cast<int>(tmp_i);
 
     ASSERT(i < this->strings_.size());
     const std::string& s(this->strings_[i]);
 
-    double d = 0;
-
-    ::memcpy(reinterpret_cast<char*>(&d), &s[0], std::min(s.length(), sizeof(d)));
-	return d;
+    (*out) = 0;
+    ::memcpy(reinterpret_cast<char*>(out), &s[0], std::min(s.length(), sizeof(double)));
 }
 
 template<typename BYTEORDER>
@@ -806,17 +806,17 @@ unsigned char* CodecInt16String<BYTEORDER>::encode(unsigned char* p, double d) {
 }
 
 template<typename BYTEORDER>
-double CodecInt16String<BYTEORDER>::decode() {
+void CodecInt16String<BYTEORDER>::decode(double* out) {
 
-    int i = intCodec.decode();
+    double tmp_i;
+    intCodec.decode(&tmp_i);
+    int i = static_cast<int>(tmp_i);
 
     ASSERT(i < this->strings_.size());
     const std::string& s(this->strings_[i]);
 
-    double d = 0;
-
-    ::memcpy(reinterpret_cast<char*>(&d), &s[0], std::min(s.length(), sizeof(d)));
-    return d;
+    (*out) = 0;
+    ::memcpy(reinterpret_cast<char*>(out), &s[0], std::min(s.length(), sizeof(double)));
 }
 
 template<typename BYTEORDER>
@@ -828,11 +828,9 @@ unsigned char* CodecLongReal<BYTEORDER>::encode(unsigned char* p,double s)
 }
 
 template<typename BYTEORDER>
-double CodecLongReal<BYTEORDER>::decode()
+void CodecLongReal<BYTEORDER>::decode(double* out)
 {
-	double s;
-	ds().readDouble(s);
-	return s;
+    ds().readDouble(*out);
 }
 
 template<typename BYTEORDER>
@@ -844,12 +842,10 @@ unsigned char* CodecChars<BYTEORDER>::encode(unsigned char* p, double s)
 }
 
 template<typename BYTEORDER>
-double CodecChars<BYTEORDER>::decode()
+void CodecChars<BYTEORDER>::decode(double* out)
 {
-	double s;
-	ds().readDouble(s);
-    BYTEORDER::swap(s);
-	return s;
+    ds().readDouble(*out);
+    BYTEORDER::swap(*out);
 }
 
 template<typename BYTEORDER>
@@ -859,9 +855,9 @@ unsigned char* CodecConstant<BYTEORDER>::encode(unsigned char* p, double d)
 }
 
 template<typename BYTEORDER>
-double CodecConstant<BYTEORDER>::decode()
+void CodecConstant<BYTEORDER>::decode(double* out)
 {
-	return min_;
+    (*out) = min_;
 }
 
 template<typename BYTEORDER>
@@ -872,11 +868,10 @@ unsigned char* CodecConstantOrMissing<BYTEORDER>::encode(unsigned char* p, doubl
 }
 
 template<typename BYTEORDER>
-double CodecConstantOrMissing<BYTEORDER>::decode()
+void CodecConstantOrMissing<BYTEORDER>::decode(double* out)
 {
-	double n = CodecInt8Missing<BYTEORDER>::decode();
+    CodecInt8Missing<BYTEORDER>::decode(out);
 	//return n ? this->min_ : this->missingValue_;
-	return n;
 }
 
 template<typename BYTEORDER>
@@ -923,9 +918,9 @@ unsigned char* CodecConstantString<BYTEORDER>::encode(unsigned char* p, double d
 }
 
 template<typename BYTEORDER>
-double CodecConstantString<BYTEORDER>::decode()
+void CodecConstantString<BYTEORDER>::decode(double* out)
 {
-	return this->min_;
+    (*out) = this->min_;
 }
 
 
