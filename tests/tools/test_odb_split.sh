@@ -17,7 +17,7 @@ odb split ../2000010106.odb "2000010106_varno_{varno}.odb"
 
 nfiles=$(ls -lh *.odb | wc -l)
 
-if [[ $nfiles -ne 17 ]]; then
+if [[ $nfiles -ne 16 ]]; then
     echo "Got $nfiles output files. Expected 17"
     exit -1
 fi
