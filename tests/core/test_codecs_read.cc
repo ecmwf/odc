@@ -106,6 +106,7 @@ CASE("Constant values are constant") {
             }
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double tmp;
             c->decode(&tmp);
@@ -139,6 +140,7 @@ CASE("Constant values are constant") {
             }
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double tmp;
             c->decode(&tmp);
@@ -202,6 +204,7 @@ CASE("constant strings are constant") {
             }
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -234,6 +237,7 @@ CASE("constant strings are constant") {
             }
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -312,6 +316,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double baseValue = 987654321.9876;
         //    double baseValue = 987654321;
@@ -350,6 +355,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize+28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double baseValue = 987654321.9876;
             double decoded;
@@ -429,6 +435,7 @@ CASE("real constant or missing value is not quite constant") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double baseValue = 987654321.9876;
         //    double baseValue = 987654321;
@@ -466,6 +473,7 @@ CASE("real constant or missing value is not quite constant") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double baseValue = 987654321.9876;
             double decoded;
@@ -543,6 +551,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(32));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -578,6 +587,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 32));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -649,6 +659,7 @@ CASE("long floating point values can include the missing data value") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -692,6 +703,7 @@ CASE("long floating point values can include the missing data value") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -784,6 +796,7 @@ CASE("short floating point values can include the missing data value") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             // n.b. == comparisons for floats as we are testing BIT reproducability of decoding
             double val;
@@ -836,6 +849,7 @@ CASE("short floating point values can include the missing data value") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -922,6 +936,7 @@ CASE("32bit integers are as-is") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -957,6 +972,7 @@ CASE("32bit integers are as-is") {
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -1041,6 +1057,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -1080,6 +1097,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -1167,6 +1185,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             for (int n = 0; n < 255; n++) {
@@ -1199,6 +1218,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
             c->dataHandle(&dh);
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             for (int n = 0; n < 255; n++) {
@@ -1236,7 +1256,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         "\x02\x00\x00\x00", "ab",           "\x00\x00\x00\x00", "\x03\x00\x00\x00", // This string is too short
         "\x06\x00\x00\x00", "ghijkl",       "\x00\x00\x00\x00", "\x04\x00\x00\x00",
         "\x08\x00\x00\x00", "mnopqrst",     "\x00\x00\x00\x00", "\x05\x00\x00\x00", // 8-byte length
-        "\x0c\x00\x00\x00", "uvwxyzabcdef", "\x00\x00\x00\x00", "\x01\x00\x00\x00", // too long
+        "\x08\x00\x00\x00", "uvwxyzab",     "\x00\x00\x00\x00", "\x01\x00\x00\x00", // too long
         "\x08\x00\x00\x00", "ghijklmn",     "\x00\x00\x00\x00", "\x00\x00\x00\x00",
         "\x08\x00\x00\x00", "opqrstuv",     "\x00\x00\x00\x00", "\x02\x00\x00\x00"
     };
@@ -1297,7 +1317,8 @@ CASE("Character strings can be stored in a flat list, and indexed") {
             }
             c->dataHandle(&dh);
 
-            EXPECT(dh.position() == eckit::Offset(148));
+            EXPECT(dh.position() == eckit::Offset(144));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -1313,7 +1334,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
             c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
 
-            EXPECT(dh.position() == eckit::Offset(148 + (6 * (bits16 ? 2 : 1))));
+            EXPECT(dh.position() == eckit::Offset(144 + (6 * (bits16 ? 2 : 1))));
         }
 
         // Construct codec from factory
@@ -1334,7 +1355,8 @@ CASE("Character strings can be stored in a flat list, and indexed") {
             }
             c->dataHandle(&dh);
 
-            EXPECT(dh.position() == eckit::Offset(hdrSize + 148));
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 144));
+            EXPECT(c->dataSizeDoubles() == 1);
 
             double val;
             c->decode(&val);
@@ -1350,7 +1372,156 @@ CASE("Character strings can be stored in a flat list, and indexed") {
             c->decode(&val);
             EXPECT(std::string(reinterpret_cast<const char*>(&val), 8) == "ghijklmn");
 
-            EXPECT(dh.position() == eckit::Offset(hdrSize + 148 + (6 * (bits16 ? 2 : 1))));
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 144 + (6 * (bits16 ? 2 : 1))));
+        }
+    }
+}
+
+
+CASE("Character strings can be stored in a flat list, and indexed, and be longer than 8 bytes") {
+
+    // n.b. no missing values
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                         // 0 = hasMissing
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // min unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // max unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",         // missingValue unspecified
+
+        // How many strings are there in the table?
+        "\x06\x00\x00\x00",
+
+        // String data (prepended with lengths)
+        // length, data, "cnt (discarded)", index
+
+        "\x02\x00\x00\x00", "ab",               "\x00\x00\x00\x00", "\x03\x00\x00\x00", // This string is too short
+        "\x06\x00\x00\x00", "ghijkl",           "\x00\x00\x00\x00", "\x04\x00\x00\x00",
+        "\x08\x00\x00\x00", "mnopqrst",         "\x00\x00\x00\x00", "\x05\x00\x00\x00", // 8-byte length
+        "\x0c\x00\x00\x00", "uvwxyzabcdef",     "\x00\x00\x00\x00", "\x01\x00\x00\x00", // 12-byte
+        "\x10\x00\x00\x00", "ghijklmnopqrstuv", "\x00\x00\x00\x00", "\x00\x00\x00\x00", // 16-byte
+        "\x08\x00\x00\x00", "opqrstuv",         "\x00\x00\x00\x00", "\x02\x00\x00\x00"
+    };
+
+    // Loop throumgh endiannesses for the source data
+
+    for (int i = 0; i < 4; i++) {
+
+        bool bigEndianSource = (i % 2 == 0);
+
+        bool bits16 = (i > 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len =
+                    (j < 5) ? ((j == 0 || j == 4) ? 4 : 8)
+                            : ((j+2) % 4 == 0 ? ::strlen(source_data[j]) : 4);
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+
+            // n.b. Don't reverse the endianness of the string data.
+            if (bigEndianSource && !((j > 5) && ((j+2) % 4 == 0)))
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Which strings do we wish to decode (look at them in reverse. nb refers to index column)
+
+        for (int n = 5; n >= 0; n--) {
+            if (bits16 && bigEndianSource)
+                data.push_back(0);
+            data.push_back(static_cast<unsigned char>(n));
+            if (bits16 && !bigEndianSource)
+                data.push_back(0);
+        }
+
+        // Construct codec directly
+
+        {
+            MockReadDataHandle dh(data); // Skip name of codec
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                if (bits16) {
+                    c.reset(new CodecInt16String<SameByteOrder>);
+                    static_cast<CodecInt16String<SameByteOrder>*>(c.get())->load(&dh);
+                } else {
+                    c.reset(new CodecInt8String<SameByteOrder>);
+                    static_cast<CodecInt8String<SameByteOrder>*>(c.get())->load(&dh);
+                }
+            } else {
+                if (bits16) {
+                    c.reset(new CodecInt16String<OtherByteOrder>);
+                    static_cast<CodecInt16String<OtherByteOrder>*>(c.get())->load(&dh);
+                } else {
+                    c.reset(new CodecInt8String<OtherByteOrder>);
+                    static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->load(&dh);
+                }
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(156));
+
+            // n.b. This is different. 16 bytes possible!!!
+            EXPECT(c->dataSizeDoubles() == 2);
+
+            double val[2];
+            const char* val_c = reinterpret_cast<const char*>(val);
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "mnopqrst");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "ghijkl");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "ab");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "opqrstuv");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "uvwxyzabcdef");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "ghijklmnopqrstuv");
+
+            EXPECT(dh.position() == eckit::Offset(156 + (6 * (bits16 ? 2 : 1))));
+        }
+
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, bits16 ? "int16_string" : "int8_string", bigEndianSource);
+
+        {
+            MockReadDataHandle dh(data);
+
+            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+
+            eckit::ScopedPtr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                c.reset(Codec::loadCodec(ds_same));
+            } else {
+                c.reset(Codec::loadCodec(ds_other));
+            }
+            c->dataHandle(&dh);
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 156));
+
+            // n.b. This is different. 16 bytes possible!!!
+            EXPECT(c->dataSizeDoubles() == 2);
+
+            double val[2];
+            const char* val_c = reinterpret_cast<const char*>(val);
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "mnopqrst");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "ghijkl");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "ab");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "opqrstuv");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "uvwxyzabcdef");
+            c->decode(val);
+            EXPECT(std::string(val_c, ::strnlen(val_c, 16)) == "ghijklmnopqrstuv");
+
+            EXPECT(dh.position() == eckit::Offset(hdrSize + 156 + (6 * (bits16 ? 2 : 1))));
         }
     }
 }
