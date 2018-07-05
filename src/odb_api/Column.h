@@ -45,6 +45,9 @@ public:
 	codec::Codec& coder() const { return *coder_; }
 	void coder(codec::Codec *c) { delete coder_; coder_ = c; }
 
+    size_t dataSizeDoubles() const { return coder_->dataSizeDoubles(); }
+    void dataSizeDoubles(size_t count) { coder_->dataSizeDoubles(count); }
+
 	void name(const std::string name) { name_ = name; }
 	const std::string &name() const { return name_; }
 

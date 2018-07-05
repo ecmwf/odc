@@ -64,11 +64,13 @@ void CompareTool::run()
 	std::vector<std::string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", std::string("")));
     std::vector<std::string> excludedColumns = StringTools::split(",", optionArgument("-excludeColumns", std::string("")));
 
-	if (excludedColumnsTypes.size())
+    if (excludedColumnsTypes.size()) {
 		Log::info() << "excludedColumnsTypes:" << excludedColumnsTypes << std::endl;
+    }
 
-    if (excludedColumns.size())
+    if (excludedColumns.size()) {
         Log::info() << "excludedColumns:" << excludedColumns << std::endl;
+    }
 
 	bool checkMissing = ! optionIsSet("-dontCheckMissing");
     odb::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1_, *file2_, excludedColumnsTypes, excludedColumns);

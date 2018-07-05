@@ -44,7 +44,8 @@ public:
 
 	bool isNewDataset() { return false; } 
 	double* data() { return &data_; }
-	
+    double& data(size_t) { return data_; }
+
 	//MockReaderIterator3& operator++() { next(); return *this; }
 
 	const MockReaderIterator3& end() { return *reinterpret_cast<MockReaderIterator3*>(0); }

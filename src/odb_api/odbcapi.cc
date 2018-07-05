@@ -260,6 +260,22 @@ int odb_read_iterator_get_no_of_columns(oda_read_iterator_ptr it, int *numberOfC
 	return 0;
 }
 
+int odb_read_iterator_get_column_size(oda_read_iterator_ptr it, int n, int* sizes)
+{
+    ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
+    NOTIMP;
+//	*numberOfColumns = iter->columns().size();
+    return 0;
+}
+
+int odb_read_iterator_get_column_offset(oda_read_iterator_ptr it, int n, int* offsets)
+{
+    ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
+    NOTIMP;
+//	*numberOfColumns = iter->columns().size();
+    return 0;
+}
+
 int odb_select_iterator_get_no_of_columns(oda_select_iterator_ptr it, int *numberOfColumns)
 {
 	SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));

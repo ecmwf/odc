@@ -66,7 +66,7 @@ public:
 #endif
 	Row_(ITERATOR_PROXY& it) : it_(&it) {}
 
-	DATA& operator[](size_t i) { return (*it_)->data()[i]; }
+    DATA& operator[](size_t i) { return (*it_)->data(i); }
 
     DATA* data() { return ((*it_).iter_)->data(); }
 	DATA& data(size_t i) { return ((*it_).iter_)->data(i); }
@@ -74,10 +74,10 @@ public:
     const DATA* data() const { return ((*it_).iter_)->data(); }
     const DATA& data(size_t i) const { return ((*it_).iter_)->data(i); }
 
-    int integer(size_t i) { return int((*it_)->data()[i]); }
+    int integer(size_t i) { return int((*it_)->data(i)); }
 	std::string string(int i)
 	{
-		const char *s = reinterpret_cast<const char *>(&data()[i]);
+        const char *s = reinterpret_cast<const char *>(&data(i));
 		size_t j = 0;
 		for (; j < sizeof(double) && s[j]; ++j)
 			; 
@@ -88,7 +88,7 @@ public:
     void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
 	const MetaData& columns(const MetaData& md) { return ((*it_).iter_)->columns(md); }
 	bool isNewDataset() { return ((*it_).iter_)->isNewDataset(); }
-	bool isMissing(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data()[i]; }
+    bool isMissing(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data(i); }
 	double missingValue(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue(); }
 
 	int setColumn(size_t index, const std::string& name, ColumnType type)
@@ -178,7 +178,7 @@ public:
 	PyObject* getitem(int i)
 	{
 		Column& column = *iter_->columns()[i];
-		double d = iter_->data()[i];
+        double d = iter_->data(i);
 		if (d == column.missingValue())
 			Py_RETURN_NONE;
 
@@ -302,7 +302,7 @@ public:
 	friend class MetaDataReaderIterator;
     friend std::ostream& operator<<(std::ostream &o, const IteratorProxy& it) {
 		for (size_t i = 0; i < it.iter_->columns().size(); ++i)
-			o << it.iter_->data()[i] << "\t";
+            o << it.iter_->data(i) << "\t";
 		return o;
 	}
 };

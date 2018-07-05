@@ -42,6 +42,7 @@ public:
 	int open();
 
 	double* data();
+    double& data(size_t i);
 
 	int setColumn(size_t index, std::string name, ColumnType type);
 	int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b);
@@ -59,7 +60,7 @@ public:
     const std::string& codecName(size_t index) const;
 	double columnMissingValue(size_t index);
 
-	const MetaData& columns() { return columns_; }
+    const MetaData& columns() const { return columns_; }
 	const MetaData& columns(const MetaData& md); 
 
 	OWNER& owner() { return owner_; }
@@ -70,6 +71,8 @@ public:
 	//std::vector<eckit::PathName> getFiles();
     std::vector<eckit::PathName> outputFiles();
 	TemplateParameters& templateParameters() { return templateParameters_; }
+
+    size_t rowDataSizeDoubles() const;
 
 //protected:
 	void writeHeader();
@@ -86,12 +89,12 @@ protected:
 
 	std::string generateFileName(const double* values, unsigned long count);
 
-	unsigned char *buffer_;
 	OWNER& owner_;
 	Writer<WRITE_ITERATOR> iteratorsOwner_;
 	MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;
+    size_t* columnOffsets_;
 	unsigned long long nrows_;
 	std::string outputFileTemplate_;
 

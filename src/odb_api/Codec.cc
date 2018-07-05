@@ -47,7 +47,7 @@ void Codec::missingValue(double v)
     min_ = max_ = missingValue_ = v;
 }
 
-void Codec::gatherStats(double v)
+void Codec::gatherStats(const double& v)
 {
     if(v == missingValue_)
         hasMissing_ = 1;

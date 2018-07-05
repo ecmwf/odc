@@ -23,8 +23,7 @@ namespace odb {
 
 template <typename WRITE_ITERATOR, typename OWNER>
 WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNER &owner, int maxOpenFiles, bool append)
-: buffer_(0),
-  owner_(owner),
+: owner_(owner),
   iteratorsOwner_(),
   columns_(0),
   lastValues_(0),
@@ -239,7 +238,7 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::~WriterDispatchingIterator()
     //eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::~WriterDispatchingIterator()" << std::endl;
     delete [] lastValues_;
     delete [] nextRow_;
-    delete [] buffer_;
+    delete [] columnOffsets_;
     for (size_t i = 0; i < iterators_.size(); ++i)
         delete iterators_[i];
 }
@@ -257,18 +256,23 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
 
     delete [] lastValues_;
     delete [] nextRow_;
-    int32_t count (columns().size());
-    double* last (lastValues_ = new double [count]);
-    nextRow_ = new double [count];
-    ASSERT(last);
+    delete [] columnOffsets_;
 
-    for (int i (0); i < count; i++)
-        nextRow_[i] = last[i] = columns_[i]->missingValue();
+    int32_t numDoubles = rowDataSizeDoubles();
+    int32_t count = columns().size();
+
+    lastValues_ = new double [numDoubles];
+    nextRow_ = new double [numDoubles];
+    ASSERT(lastValues_);
+
+    size_t offset = 0;
+    for (int i (0); i < count; i++) {
+        nextRow_[i] = lastValues_[i] = columns_[i]->missingValue();
+        columnOffsets_[i] = offset;
+        offset += columns_[i]->dataSizeDoubles();
+    }
 
     nrows_ = 0;
-
-    delete [] buffer_;
-    buffer_ = new unsigned char[(count + 1) * sizeof(double)];
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
@@ -296,6 +300,22 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::parseTemplateParameters()
 
 template <typename WRITE_ITERATOR, typename OWNER>
 double* WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::data() { return nextRow_; }
+
+template <typename WRITE_ITERATOR, typename OWNER>
+double& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::data(size_t i) {
+    return nextRow_[columnOffsets_[i]];
+}
+
+template <typename WRITE_ITERATOR, typename OWNER>
+size_t WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::rowDataSizeDoubles() const {
+
+    size_t total;
+    for (const auto& column : columns()) {
+        total += column->dataSizeDoubles();
+    }
+    return total;
+}
+
 
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeRow(const double* values, unsigned long count)

@@ -56,8 +56,8 @@ public:
 
 	bool operator!=(const ReaderIterator& other);
 
-	void property(std::string, std::string);
-	std::string property(std::string);
+    void property(std::string, std::string);
+    std::string property(std::string);
 
     const Properties& properties() const { return properties_; }
 

@@ -55,7 +55,7 @@ public:
 
 	int close();
 
-	const MetaData& columns() { return columns_; }
+    const MetaData& columns() const { return columns_; }
     const MetaData& columns(const MetaData& md) {
         columns_ = md;
         initialisedColumns_ = columns_.allColumnsInitialised();
@@ -78,6 +78,8 @@ public:
 
 	int writeRow(const double* values, unsigned long count);
 
+    size_t rowDataSizeDoubles() const;
+
 	size_t rowsBufferSize() { return rowsBufferSize_; }
 	void rowsBufferSize(size_t n) { rowsBufferSize_ = n; }
 
@@ -91,6 +93,7 @@ protected:
 	MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;
+    size_t* columnOffsets_;
 	unsigned long long nrows_;
 
 	eckit::DataHandle *f;

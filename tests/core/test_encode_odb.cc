@@ -210,6 +210,7 @@ CASE("Data is encoded and read back correctly") {
         writer->setColumn(0, "int", odb::INTEGER);
         writer->setColumn(1, "real", odb::REAL);
         writer->setColumn(2, "str", odb::STRING);
+        writer->columns().back()->dataSizeDoubles(3);
         writer->setColumn(3, "bitf", odb::BITFIELD);
         writer->setColumn(4, "dbl", odb::DOUBLE);
         writer->setColumn(5, "int2", odb::INTEGER);

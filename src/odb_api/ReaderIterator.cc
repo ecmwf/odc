@@ -249,11 +249,6 @@ int ReaderIterator::close()
 }
 
 
-void ReaderIterator::property(std::string key, std::string value)
-{
-	properties_[key] = value;
-}
-
 std::string ReaderIterator::property(std::string key)
 {
 	return properties_[key];

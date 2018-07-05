@@ -60,6 +60,7 @@ WriterBufferingIterator::~WriterBufferingIterator()
 	close();
 	delete [] lastValues_;
 	delete [] nextRow_;
+    delete [] columnOffsets_;
 	if (! openDataHandle_)	
         delete f;
 }
@@ -93,18 +94,24 @@ void WriterBufferingIterator::allocBuffers()
 {
     delete [] lastValues_;
 	delete [] nextRow_;
-	int32_t colSize = columns().size();
-	double* last = new double [colSize];
-	lastValues_ = last;
-	nextRow_ = new double [colSize];
-	ASSERT(last);
+    delete [] columnOffsets_;
 
+    int32_t numDoubles = rowDataSizeDoubles();
+	int32_t colSize = columns().size();
+
+    lastValues_ = new double [numDoubles];
+    nextRow_ = new double [numDoubles];
+    ASSERT(lastValues_);
+
+    size_t offset = 0;
     for (int i = 0; i < colSize; ++i) {
 
         // If we are trying to do anything before the writer is properly initialised ...
         ASSERT(columns_[i]->hasInitialisedCoder());
 
-		nextRow_[i] = last[i] = columns_[i]->missingValue();
+        nextRow_[i] = lastValues_[i] = columns_[i]->missingValue();
+        columnOffsets_[i] = offset;
+        offset += columns_[i]->dataSizeDoubles();
     }
 
 	nrows_ = 0;
@@ -115,6 +122,7 @@ void WriterBufferingIterator::allocBuffers()
 void WriterBufferingIterator::allocRowsBuffer()
 {
 	size_t nCols = columns().size();
+    NOTIMP;
 	const size_t maxEncodedRowSize (sizeof(uint16_t) + nCols * sizeof(double));
 	blockBuffer_.size(maxAnticipatedHeaderSize_ + rowsBufferSize_ * maxEncodedRowSize);
 	rowsBuffer_.share(blockBuffer_ + maxAnticipatedHeaderSize_, rowsBufferSize_ * maxEncodedRowSize);
@@ -146,7 +154,7 @@ double* WriterBufferingIterator::data() { return nextRow_; }
 double& WriterBufferingIterator::data(size_t i)
 {
 	ASSERT(i >= 0 && i < columns().size());
-	return nextRow_[i];
+    return nextRow_[columnOffsets_[i]];
 }
 
 int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
@@ -167,7 +175,16 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 	if (nextRowInBuffer_ == rowsBuffer_ + rowsBuffer_.size())
 		flush();
 
-	return 0;
+    return 0;
+}
+
+size_t WriterBufferingIterator::rowDataSizeDoubles() const {
+
+    size_t total;
+    for (const auto& column : columns()) {
+        total += column->dataSizeDoubles();
+    }
+    return total;
 }
 
 inline bool equal(const double* const v1, const double* const v2)
