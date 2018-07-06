@@ -74,6 +74,9 @@ public:
 
     size_t rowDataSizeDoubles() const;
 
+    /// The offset of a given column in the doubles[] data array
+    size_t dataOffset(size_t i) const { ASSERT(columnOffsets_); return columnOffsets_[i]; }
+
 //protected:
 	void writeHeader();
 

@@ -102,6 +102,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 
 
 					Codec * newCodec = Codec::findCodec<DATASTREAM>(codec, false);
+                    newCodec->dataSizeDoubles(col.coder().dataSizeDoubles());
                     if (n > 1) {
                         newCodec->copyStrings(col.coder());
                     }

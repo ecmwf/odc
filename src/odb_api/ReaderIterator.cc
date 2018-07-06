@@ -29,6 +29,8 @@ ReaderIterator::ReaderIterator(Reader &owner)
 : owner_(owner),
   columns_(0),
   lastValues_(0),
+  columnOffsets_(0),
+  rowDataSizeDoubles_(0),
   codecs_(0),
   nrows_(0),
   f_(0),
@@ -54,6 +56,8 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
 : owner_(owner),
   columns_(0),
   lastValues_(0),
+  columnOffsets_(0),
+  rowDataSizeDoubles_(0),
   codecs_(0),
   nrows_(0),
   f_(0),
@@ -76,7 +80,8 @@ void ReaderIterator::loadHeaderAndBufferData()
 	Header<ReaderIterator> header(*this);
 	header.load();
 	byteOrder_ = header.byteOrder();
-	++headerCounter_;
+    rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
+    ++headerCounter_;
 
 	initRowBuffer();
 
@@ -97,6 +102,7 @@ ReaderIterator::~ReaderIterator ()
 	close();
 	delete [] lastValues_;
 	delete [] codecs_;
+    delete [] columnOffsets_;
 }
 
 
@@ -108,19 +114,26 @@ bool ReaderIterator::operator!=(const ReaderIterator& other)
 
 void ReaderIterator::initRowBuffer()
 {
-	size_t nCols = columns().size();
+    int32_t numDoubles = rowDataSizeDoubles();
+    size_t nCols = columns().size();
 
 	delete [] lastValues_;
-	lastValues_ = new double [nCols];
+    lastValues_ = new double [numDoubles];
 
 	delete [] codecs_;
 	codecs_ = new odb::codec::Codec* [nCols];
 
+    delete [] columnOffsets_;
+    columnOffsets_ = new size_t[nCols];
+
+    size_t offset = 0;
 	for(size_t i = 0; i < nCols; i++)
 	{
 		codecs_[i] = &columns()[i]->coder();
 		lastValues_[i] = codecs_[i]->missingValue(); 
 		codecs_[i]->dataHandle(&memDataHandle_);
+        columnOffsets_[i] = offset;
+        offset += columns()[i]->dataSizeDoubles();
 	}
 }
 
@@ -187,6 +200,7 @@ bool ReaderIterator::next()
             Header<ReaderIterator> header(*this);
             header.loadAfterMagic();
             byteOrder_ = header.byteOrder();
+            rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
             ++headerCounter_;
             initRowBuffer();
 
@@ -221,19 +235,30 @@ bool ReaderIterator::next()
 	c = ntohs(c);
 
 	size_t nCols = columns().size();
-	for(size_t i = c; i < nCols; i++)
-        codecs_[i]->decode(&lastValues_[i]);
+    for(size_t i = c; i < nCols; i++) {
+        codecs_[i]->decode(&lastValues_[columnOffsets_[i]]);
+    }
 
 	++nrows_ ;
 	return nCols;
 }
+
+size_t ReaderIterator::rowDataSizeDoublesInternal() const {
+
+    size_t total;
+    for (const auto& column : columns()) {
+        total += column->dataSizeDoubles();
+    }
+    return total;
+}
+
 
 bool ReaderIterator::isNewDataset() { return newDataset_; }
 
 double& ReaderIterator::data(size_t i)
 {
 	ASSERT(i >= 0 && i < columns().size());
-	return lastValues_[i];
+    return lastValues_[columnOffsets_[i]];
 }
 
 int ReaderIterator::close()

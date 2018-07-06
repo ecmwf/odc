@@ -526,7 +526,6 @@ void CodecChars<BYTEORDER>::gatherStats(const double& v)
 
     if (stringLookup_.find(s) == stringLookup_.end()) {
         size_t index = strings_.size();
-        eckit::Log::error() << "adding: " << s << std::endl;
         strings_.push_back(s);
         stringLookup_[s] = index;
     }
@@ -796,8 +795,6 @@ unsigned char* CodecInt8String<BYTEORDER>::encode(unsigned char* p, const double
 
     size_t len = ::strnlen(reinterpret_cast<const char*>(&d), this->decodedSizeDoubles_*sizeof(double));
     std::string s(reinterpret_cast<const char*>(&d), len);
-
-    eckit::Log::error() << "enc: " << s << std::endl;
 
     std::map<std::string, size_t>::const_iterator it = this->stringLookup_.find(s);
     ASSERT(it != this->stringLookup_.end());

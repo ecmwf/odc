@@ -84,6 +84,8 @@ public:
 		return std::string(s, j);
 	}
 
+    size_t dataOffset(size_t i) const { return it_->iter_->dataOffset(i); }
+
     const MetaData& columns() const { return ((*it_).iter_)->columns(); }
     void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
 	const MetaData& columns(const MetaData& md) { return ((*it_).iter_)->columns(md); }

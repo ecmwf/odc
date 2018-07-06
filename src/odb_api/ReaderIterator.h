@@ -53,6 +53,7 @@ public:
 	bool isNewDataset();
     const double* data() const { return lastValues_; }
     double* data() { return lastValues_; }
+	double& data(size_t);
 
 	bool operator!=(const ReaderIterator& other);
 
@@ -85,8 +86,16 @@ public:
 	int close();
 
     bool next();
+
+    /// The offset of a given column in the doubles[] data array
+    size_t dataOffset(size_t i) const { ASSERT(columnOffsets_); return columnOffsets_[i]; }
+
+    // Get the number of doubles per row.
+    size_t rowDataSizeDoubles() const { return rowDataSizeDoubles_; }
+
 protected:
 	size_t readBuffer(size_t dataSize);
+    size_t rowDataSizeDoublesInternal() const;
 
 private:
 // No copy allowed.
@@ -99,7 +108,9 @@ private:
 	Reader& owner_;
 	MetaData columns_;
 	double* lastValues_;
-	odb::codec::Codec** codecs_;
+    size_t* columnOffsets_; // in doubles
+    size_t rowDataSizeDoubles_;
+    odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 
 	eckit::DataHandle *f_;
@@ -120,7 +131,6 @@ private:
 
 public:
 	int refCount_;
-	double& data(size_t);
 
 protected:
 

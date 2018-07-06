@@ -70,6 +70,9 @@ public:
 
 	void property(std::string key, std::string value) { properties_[key] = value; }
 
+    /// The offset of a given column in the doubles[] data array
+    size_t dataOffset(size_t i) const { ASSERT(columnOffsets_); return columnOffsets_[i]; }
+
 //protected:
 
 	template <typename DATASTREAM> int setOptimalCodecs();
@@ -78,7 +81,8 @@ public:
 
 	int writeRow(const double* values, unsigned long count);
 
-    size_t rowDataSizeDoubles() const;
+    // Get the number of doubles per row.
+    size_t rowDataSizeDoubles() const { return rowDataSizeDoubles_; }
 
 	size_t rowsBufferSize() { return rowsBufferSize_; }
 	void rowsBufferSize(size_t n) { rowsBufferSize_ = n; }
@@ -88,12 +92,16 @@ public:
     std::vector<eckit::PathName> outputFiles();
 	int refCount_;
     bool next();
+
+private:
+    size_t rowDataSizeDoublesInternal() const;
 protected:
 	Owner& owner_;
 	MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;
-    size_t* columnOffsets_;
+    size_t* columnOffsets_; // in doubles
+    size_t* columnByteSizes_;
 	unsigned long long nrows_;
 
 	eckit::DataHandle *f;
@@ -128,6 +136,7 @@ private:
 	MetaData columnsBuffer_;
 
 	size_t rowsBufferSize_;
+    size_t rowDataSizeDoubles_;;
 	MemoryBlock setvBuffer_;
 	size_t maxAnticipatedHeaderSize_;
 

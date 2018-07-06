@@ -47,6 +47,7 @@ CASE("Columns are initialised correctly for writing") {
     writer->setColumn(0, "int", odb::INTEGER);
     writer->setColumn(1, "real", odb::REAL);
     writer->setColumn(2, "str", odb::STRING);
+    writer->columns()[2]->dataSizeDoubles(3);
     writer->setColumn(3, "bitf", odb::BITFIELD);
     writer->setColumn(4, "dbl", odb::DOUBLE);
     writer->setColumn(5, "int2", odb::INTEGER);
@@ -93,6 +94,19 @@ CASE("Columns are initialised correctly for writing") {
     EXPECT(writer->columns()[7]->coder().name() == "chars");
     EXPECT(writer->columns()[8]->coder().name() == "int32");
     EXPECT(writer->columns()[9]->coder().name() == "long_real");
+
+    // ... and the correct expected data sizes
+
+    EXPECT(writer->columns()[0]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[1]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[2]->coder().dataSizeDoubles() == 3);
+    EXPECT(writer->columns()[3]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[4]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[5]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[6]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[7]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[8]->coder().dataSizeDoubles() == 1);
+    EXPECT(writer->columns()[9]->coder().dataSizeDoubles() == 1);
 }
 
 CASE("If out-of range columns are created, exceptions are thrown") {
@@ -174,11 +188,11 @@ CASE("Data is encoded and read back correctly") {
     const float f5 = static_cast<float>(654321.123);
     const float f6 = static_cast<float>(-123456.789e-21);
 
-    const char* const s1 = "a-string";
+    const char* const s1 = "a-string-longstrvvvvlong";
     const char* const s2 = "string-2";
-    const char* const s3 = "string-3";
+    const char* const s3 = "string-3-LLong";
     const char* const s4 = "string-4";
-    const char* const s5 = "string-5";
+    const char* const s5 = "string-5-LLong";
     const char* const s6 = "string-6";
 
     const int32_t b1 = static_cast<int32_t>((uint32_t)std::numeric_limits<uint32_t>::min());
@@ -210,7 +224,7 @@ CASE("Data is encoded and read back correctly") {
         writer->setColumn(0, "int", odb::INTEGER);
         writer->setColumn(1, "real", odb::REAL);
         writer->setColumn(2, "str", odb::STRING);
-        writer->columns().back()->dataSizeDoubles(3);
+        writer->columns()[2]->dataSizeDoubles(3);
         writer->setColumn(3, "bitf", odb::BITFIELD);
         writer->setColumn(4, "dbl", odb::DOUBLE);
         writer->setColumn(5, "int2", odb::INTEGER);
@@ -220,11 +234,24 @@ CASE("Data is encoded and read back correctly") {
         writer->setColumn(9, "dbl2", odb::DOUBLE);
         writer->writeHeader();
 
+        // Test that the data offsets are correct
+
+        EXPECT(writer->dataOffset(0) == 0);
+        EXPECT(writer->dataOffset(1) == 1);
+        EXPECT(writer->dataOffset(2) == 2);
+        EXPECT(writer->dataOffset(3) == 5);
+        EXPECT(writer->dataOffset(4) == 6);
+        EXPECT(writer->dataOffset(5) == 7);
+        EXPECT(writer->dataOffset(6) == 8);
+        EXPECT(writer->dataOffset(7) == 9);
+        EXPECT(writer->dataOffset(8) == 10);
+        EXPECT(writer->dataOffset(9) == 11);
+
         // Append 3 rows of data (in two different ways)
 
         (*writer)[0] = i1;
         (*writer)[1] = static_cast<double>(f1);
-        (*writer)[2] = *reinterpret_cast<const double*>(s1);
+        ::strncpy(reinterpret_cast<char*>(&(*writer)[2]), s1, 24); // strncpy pads with \0
         (*writer)[3] = b1;
         (*writer)[4] = d1;
         (*writer)[5] = i2;
@@ -234,28 +261,28 @@ CASE("Data is encoded and read back correctly") {
         (*writer)[9] = d2;
         ++writer;
 
-        writer->data()[0] = i3;
-        writer->data()[1] = static_cast<double>(f3);
-        writer->data()[2] = *reinterpret_cast<const double*>(s3);
-        writer->data()[3] = b3;
-        writer->data()[4] = d3;
-        writer->data()[5] = i4;
-        writer->data()[6] = static_cast<double>(f4);
-        writer->data()[7] = *reinterpret_cast<const double*>(s4);
-        writer->data()[8] = b4;
-        writer->data()[9] = d4;
+        writer->data()[writer->dataOffset(0)] = i3;
+        writer->data()[writer->dataOffset(1)] = static_cast<double>(f3);
+        ::strncpy(reinterpret_cast<char*>(&writer->data()[writer->dataOffset(2)]), s3, 24); // strncpy pads with \0
+        writer->data()[writer->dataOffset(3)] = b3;
+        writer->data()[writer->dataOffset(4)] = d3;
+        writer->data()[writer->dataOffset(5)] = i4;
+        writer->data()[writer->dataOffset(6)] = static_cast<double>(f4);
+        writer->data()[writer->dataOffset(7)] = *reinterpret_cast<const double*>(s4);
+        writer->data()[writer->dataOffset(8)] = b4;
+        writer->data()[writer->dataOffset(9)] = d4;
         ++writer;
 
-        (*writer)[0] = i5;
-        (*writer)[1] = static_cast<double>(f5);
-        (*writer)[2] = *reinterpret_cast<const double*>(s5);
-        (*writer)[3] = b5;
-        (*writer)[4] = d5;
-        (*writer)[5] = i6;
-        (*writer)[6] = static_cast<double>(f6);
-        (*writer)[7] = *reinterpret_cast<const double*>(s6);
-        (*writer)[8] = b6;
-        (*writer)[9] = d6;
+        writer->data(0) = i5;
+        writer->data(1) = static_cast<double>(f5);
+        ::strncpy(reinterpret_cast<char*>(&writer->data(2)), s5, 24); // strncpy pads with \0
+        writer->data(3) = b5;
+        writer->data(4) = d5;
+        writer->data(5) = i6;
+        writer->data(6) = static_cast<double>(f6);
+        writer->data(7) = *reinterpret_cast<const double*>(s6);
+        writer->data(8) = b6;
+        writer->data(9) = d6;
         ++writer;
     }
 
@@ -269,9 +296,20 @@ CASE("Data is encoded and read back correctly") {
 
         EXPECT(reader->columns().size() == size_t(10));
 
+        EXPECT(reader->columns()[0]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[1]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[2]->dataSizeDoubles() == 3);
+        EXPECT(reader->columns()[3]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[4]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[5]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[6]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[7]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[8]->dataSizeDoubles() == 1);
+        EXPECT(reader->columns()[9]->dataSizeDoubles() == 1);
+
         EXPECT((*reader)[0] == i1);
         EXPECT((*reader)[1] == static_cast<double>(f1));
-        EXPECT((*reader)[2] == *reinterpret_cast<const double*>(s1));
+        EXPECT(::strncmp(reinterpret_cast<const char*>(&(*reader)[2]), s1, 24) == 0);
         EXPECT((*reader)[3] == b1);
         EXPECT((*reader)[4] == d1);
         EXPECT((*reader)[5] == i2);
@@ -281,28 +319,28 @@ CASE("Data is encoded and read back correctly") {
         EXPECT((*reader)[9] == d2);
         ++reader;
 
-        EXPECT(reader->data()[0] == i3);
-        EXPECT(reader->data()[1] == static_cast<double>(f3));
-        EXPECT(reader->data()[2] == *reinterpret_cast<const double*>(s3));
-        EXPECT(reader->data()[3] == b3);
-        EXPECT(reader->data()[4] == d3);
-        EXPECT(reader->data()[5] == i4);
-        EXPECT(reader->data()[6] == static_cast<double>(f4));
-        EXPECT(reader->data()[7] == *reinterpret_cast<const double*>(s4));
-        EXPECT(reader->data()[8] == b4);
-        EXPECT(reader->data()[9] == d4);
+        EXPECT(reader->data()[reader->dataOffset(0)] == i3);
+        EXPECT(reader->data()[reader->dataOffset(1)] == static_cast<double>(f3));
+        EXPECT(::strncmp(reinterpret_cast<const char*>(&reader->data()[reader->dataOffset(2)]),s3, 24) == 0);
+        EXPECT(reader->data()[reader->dataOffset(3)] == b3);
+        EXPECT(reader->data()[reader->dataOffset(4)] == d3);
+        EXPECT(reader->data()[reader->dataOffset(5)] == i4);
+        EXPECT(reader->data()[reader->dataOffset(6)] == static_cast<double>(f4));
+        EXPECT(reader->data()[reader->dataOffset(7)] == *reinterpret_cast<const double*>(s4));
+        EXPECT(reader->data()[reader->dataOffset(8)] == b4);
+        EXPECT(reader->data()[reader->dataOffset(9)] == d4);
         ++reader;
 
-        EXPECT((*reader)[0] == i5);
-        EXPECT((*reader)[1] == static_cast<double>(f5));
-        EXPECT((*reader)[2] == *reinterpret_cast<const double*>(s5));
-        EXPECT((*reader)[3] == b5);
-        EXPECT((*reader)[4] == d5);
-        EXPECT((*reader)[5] == i6);
-        EXPECT((*reader)[6] == static_cast<double>(f6));
-        EXPECT((*reader)[7] == *reinterpret_cast<const double*>(s6));
-        EXPECT((*reader)[8] == b6);
-        EXPECT((*reader)[9] == d6);
+        EXPECT(reader->data(0) == i5);
+        EXPECT(reader->data(1) == static_cast<double>(f5));
+        EXPECT(::strncmp(reinterpret_cast<const char*>(&reader->data(2)), s5, 24) == 0);
+        EXPECT(reader->data(3) == b5);
+        EXPECT(reader->data(4) == d5);
+        EXPECT(reader->data(5) == i6);
+        EXPECT(reader->data(6) == static_cast<double>(f6));
+        EXPECT(reader->data(7) == *reinterpret_cast<const double*>(s6));
+        EXPECT(reader->data(8) == b6);
+        EXPECT(reader->data(9) == d6);
     }
 }
 
@@ -359,7 +397,8 @@ CASE("We ASSERT on cases where we try and use an incompletely configured writer"
     // Cannot writeHeader until all the columns are initialised
     EXPECT_THROWS_AS(writer->writeHeader(), eckit::AssertionFailed);
 
-    (*writer)[0] = 1234.56;
+    // Cannot write to an uninitialised writer
+    EXPECT_THROWS_AS((*writer)[0] = 1234.56, eckit::AssertionFailed);
 
     // Cannot increment an incomplete row
     EXPECT_THROWS_AS(++writer, eckit::AssertionFailed);

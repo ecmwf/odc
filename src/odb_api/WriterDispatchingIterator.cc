@@ -28,6 +28,7 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
   columns_(0),
   lastValues_(0),
   nextRow_(0),
+  columnOffsets_(0),
   nrows_(0),
   outputFileTemplate_(owner_.outputFileTemplate()),
   properties_(),
@@ -263,12 +264,14 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
 
     lastValues_ = new double [numDoubles];
     nextRow_ = new double [numDoubles];
+    columnOffsets_ = new size_t[count];
     ASSERT(lastValues_);
 
     size_t offset = 0;
     for (int i (0); i < count; i++) {
         nextRow_[i] = lastValues_[i] = columns_[i]->missingValue();
         columnOffsets_[i] = offset;
+        eckit::Log::info() << "offset: " << offset << std::endl;
         offset += columns_[i]->dataSizeDoubles();
     }
 
