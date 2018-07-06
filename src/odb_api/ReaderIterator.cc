@@ -130,11 +130,11 @@ void ReaderIterator::initRowBuffer()
 	for(size_t i = 0; i < nCols; i++)
 	{
 		codecs_[i] = &columns()[i]->coder();
-		lastValues_[i] = codecs_[i]->missingValue(); 
-		codecs_[i]->dataHandle(&memDataHandle_);
+        lastValues_[offset] = codecs_[i]->missingValue();
+        codecs_[i]->dataHandle(&memDataHandle_);
         columnOffsets_[i] = offset;
         offset += columns()[i]->dataSizeDoubles();
-	}
+    }
 }
 
 size_t ReaderIterator::readBuffer(size_t dataSize)

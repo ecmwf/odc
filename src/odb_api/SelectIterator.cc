@@ -31,6 +31,8 @@ SelectIterator::SelectIterator(odb::Select &owner, odb::sql::SQLNonInteractiveSe
   selectStmt_(0),
   metaData_(0),
   data_(0),
+  columnOffsets_(0),
+  rowDataSizeDoubles_(0),
   newDataset_(true),
   noMore_(false),
   aggregateResultRead_(false),
@@ -45,6 +47,8 @@ SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, od
   selectStmt_(0),
   metaData_(0),
   data_(0),
+  columnOffsets_(0),
+  rowDataSizeDoubles_(0),
   newDataset_(true),
   noMore_(false),
   aggregateResultRead_(false),
@@ -68,8 +72,6 @@ void SelectIterator::parse(odb::sql::SQLSession& session, typename DATASTREAM::D
     selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
     if (! selectStmt_)
         throw UserError(std::string("Expected SELECT, got: ") + select_);
-
-    selectStmt_->prepareExecute();
 	
     populateMetaData<DATASTREAM>();
 
@@ -94,6 +96,7 @@ void SelectIterator::parse(odb::sql::SQLSession& session, std::istream *is)
 SelectIterator::~SelectIterator()
 {
     delete [] data_;
+    delete [] columnOffsets_;
     delete selectStmt_;
     delete metaData_ ;
 }
@@ -165,11 +168,12 @@ bool SelectIterator::isNewDataset() { return newDataset_; }
 
 double& SelectIterator::data(size_t i)
 {
+    ASSERT(data_ && columnOffsets_);
 	ASSERT(i >= 0 && i < columns().size());
-	return data_[i];
+    return data_[columnOffsets_[i]];
 }
 
-const MetaData& SelectIterator::columns()
+const MetaData& SelectIterator::columns() const
 {
 	ASSERT(metaData_);
 	return *metaData_;
@@ -220,10 +224,21 @@ void SelectIterator::populateMetaData()
 		col->missingValue(exp->missingValue());
 		col->bitfieldDef(exp->bitfieldDef());
 	}
+
+    rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
+
 	delete [] data_;
-	data_ = new double[metaData_->size()];
-	for (size_t i = 0; i < metaData_->size(); ++i)
-		data_[i] = (*metaData_)[i]->missingValue();
+    data_ = new double[rowDataSizeDoubles()];
+
+    delete [] columnOffsets_;
+    columnOffsets_ = new size_t[metaData_->size()];
+
+    size_t offset = 0;
+    for (size_t i = 0; i < metaData_->size(); ++i) {
+        data_[offset] = (*metaData_)[i]->missingValue();
+        columnOffsets_[i] = offset;
+        offset += (*metaData_)[i]->dataSizeDoubles();
+    }
 	newDataset_ = true;
 }
 

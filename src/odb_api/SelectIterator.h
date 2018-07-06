@@ -45,8 +45,9 @@ public:
 	bool isNewDataset();
     const double* data() const { return data_; }
     double* data() { return data_; }
+    double& data(size_t i);
 
-	const MetaData& columns();
+    const MetaData& columns() const;
 	const MetaData& columns(const MetaData&) { NOTIMP; }
     void setNumberOfColumns(size_t) { NOTIMP; }
 
@@ -60,10 +61,17 @@ public:
 	
 	bool isCachingRows() { return isCachingRows_; }
 	void cacheRow(const Expressions& results);
-	double& data(size_t i);
+
+    /// The offset of a given column in the doubles[] data array
+    size_t dataOffset(size_t i) const { ASSERT(columnOffsets_); return columnOffsets_[i]; }
+
+    // Get the number of doubles per row.
+    size_t rowDataSizeDoubles() const { return rowDataSizeDoubles_; }
+
 
 protected:
     bool next();
+    size_t rowDataSizeDoublesInternal() const;
 
 private:
 // No copy allowed.
@@ -80,7 +88,9 @@ private:
 	MetaData *metaData_;
 
 	double* data_;
-	bool newDataset_;
+    size_t* columnOffsets_; // in doubles
+    size_t rowDataSizeDoubles_;
+    bool newDataset_;
 
 	bool noMore_;
 	bool aggregateResultRead_;

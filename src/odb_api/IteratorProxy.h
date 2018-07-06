@@ -77,14 +77,13 @@ public:
     int integer(size_t i) { return int((*it_)->data(i)); }
 	std::string string(int i)
 	{
+        size_t maxlen = sizeof(double) * dataSizeDoubles(i);
         const char *s = reinterpret_cast<const char *>(&data(i));
-		size_t j = 0;
-		for (; j < sizeof(double) && s[j]; ++j)
-			; 
-		return std::string(s, j);
+        return std::string(s, ::strnlen(s, maxlen));
 	}
 
     size_t dataOffset(size_t i) const { return it_->iter_->dataOffset(i); }
+    size_t dataSizeDoubles(size_t i) const { return columns()[i]->dataSizeDoubles(); }
 
     const MetaData& columns() const { return ((*it_).iter_)->columns(); }
     void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
