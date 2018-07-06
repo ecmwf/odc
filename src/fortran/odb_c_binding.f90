@@ -286,6 +286,35 @@ interface
      integer(kind=C_INT)                  :: odb_write_set_missing_value
    end function odb_write_set_missing_value
 
+   function odb_write_set_column_size_doubles(odb_iterator, n, sz) &
+                     result(cerr) &
+                     bind(C, name="odb_write_iterator_set_column_size_doubles")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int), value           :: sz
+     integer(kind=c_int)                  :: cerr
+   end function
+
+   function odb_write_get_row_buffer_size_doubles(odb_iterator, sz) &
+                     result(cerr) &
+                     bind(C, name="odb_write_iterator_get_row_buffer_size_doubles")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int)                  :: sz
+     integer(kind=c_int)                  :: cerr
+   end function
+
+   function odb_write_get_column_offset(odb_iterator, n, offset) &
+                     result(cerr) &
+                     bind(C, name="odb_write_iterator_get_column_offset")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: offset
+     integer(kind=c_int)                  :: cerr
+   end function
+
    function odb_write_set_next_row(odb_iterator, data, count) bind(C, name="odb_write_iterator_set_next_row")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: odb_iterator

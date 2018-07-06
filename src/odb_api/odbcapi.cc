@@ -437,6 +437,27 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
 	return rc;
 }
 
+int odb_write_iterator_set_column_size_doubles(oda_write_iterator_ptr wi, int n, int size) {
+
+    Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
+    w->columns()[n]->dataSizeDoubles(size);
+    return 0;
+}
+
+int odb_write_iterator_get_row_buffer_size_doubles(oda_write_iterator_ptr wi, int* size) {
+
+    Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
+    *size = w->rowDataSizeDoubles();
+    return 0;
+}
+
+int odb_write_iterator_get_column_offset(oda_write_iterator_ptr wi, int n, int* offset) {
+
+    Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
+    *offset = w->dataOffset(n);
+    return 0;
+}
+
 int odb_read_iterator_get_missing_value(oda_read_iterator_ptr ri, int index, double* value)
 {
     ReaderIterator* r (reinterpret_cast<ReaderIterator*>(ri));

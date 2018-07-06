@@ -105,6 +105,9 @@ void WriterBufferingIterator::allocBuffers()
 
     for (const Column* column : columns_) ASSERT(column->hasInitialisedCoder());
 
+    // Initialise this value
+    rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
+
     // Allocate arrays
 
     int32_t numDoubles = rowDataSizeDoubles();
@@ -138,9 +141,6 @@ void WriterBufferingIterator::allocBuffers()
 void WriterBufferingIterator::allocRowsBuffer()
 {
 	size_t nCols = columns().size();
-
-    // Initialise this value
-    rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
 
     size_t rowByteSize = (sizeof(uint16_t) + rowDataSizeDoubles()*sizeof(double));
     blockBuffer_.size(maxAnticipatedHeaderSize_ + rowsBufferSize_ * rowByteSize);
@@ -354,7 +354,7 @@ void WriterBufferingIterator::flush()
 template <typename T>
 void WriterBufferingIterator::doWriteHeader(T& dataHandle, size_t dataSize, size_t rowsNumber)
 {
-	//Log::debug() << "WriterBufferingIterator::doWriteHeader: dataSize=" << dataSize << ", rowsNumber=" << rowsNumber << std::endl;
+    //Log::debug() << "WriterBufferingIterator::doWriteHeader: dataSize=" << dataSize << ", rowsNumber=" << rowsNumber << std::endl;
 
 	allocBuffers();
 

@@ -38,7 +38,7 @@ private:
 template <typename DATASTREAM>
 int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 {
-	//ostream &LOG = eckit::Log::debug();
+        //std::ostream &LOG = eckit::Log::error();
 	for (size_t i = 0; i < columns.size(); i++) {
 		Column& col = *columns[i];
 		long long n;
@@ -46,7 +46,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 		double max = col.max();
 		bool hasMissing = col.hasMissing();
 		double missing = col.missingValue();
-		//LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << std::endl;
+                //LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << std::endl;
 		std::string codec(defaultCodec_[col.type()]);
 		switch(col.type())
 		{
@@ -71,9 +71,9 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				col.missingValue(missing);
 				col.min(min);
 				col.max(max);
-				//LOG << " REAL has values in range <" << col.min() << ", " << col.max()
-				//	<< ">. Codec: "  << col.coder()
-				//	<< std::endl;
+                                //LOG << " REAL has values in range <" << col.min() << ", " << col.max()
+                                //        << ">. Codec: "  << col.coder()
+                                //        << std::endl;
 				break;
             }
 
@@ -85,15 +85,15 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				col.missingValue(missing);
 				col.min(min);
 				col.max(max);
-				//LOG << " DOUBLE has values in range <" << col.min() << ", " << col.max()
-				//	<< ">. Codec: "  << col.coder()
-				//	<< std::endl;
+                                //LOG << " DOUBLE has values in range <" << col.min() << ", " << col.max()
+                                //        << ">. Codec: "  << col.coder()
+                                //        << std::endl;
 				break;
 
 			case STRING:
 				{
                     n = col.coder().numStrings();
-					if(n == 1)
+                                        if (n == 1 && col.coder().dataSizeDoubles() == 1)
 						codec = "constant_string";
 					else if(n < 256)
 						codec = "int8_string";
@@ -102,8 +102,10 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 
 
 					Codec * newCodec = Codec::findCodec<DATASTREAM>(codec, false);
-                    newCodec->dataSizeDoubles(col.coder().dataSizeDoubles());
-                    if (n > 1) {
+                    if (codec == "constant_string") {
+                        ASSERT(col.coder().dataSizeDoubles() == 1);
+                    } else {
+                        newCodec->dataSizeDoubles(col.coder().dataSizeDoubles());
                         newCodec->copyStrings(col.coder());
                     }
 					col.coder(newCodec);
@@ -111,8 +113,8 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 					col.missingValue(missing);
 					col.min(min);
 					col.max(max);
-					//LOG << " STRING has " << n << " different value(s). Codec: " << codec
-					//	<< std::endl;
+                                        //LOG << " STRING has " << n << " different value(s). Codec: " << codec
+                                        //        << std::endl;
 				}
 				break;
 

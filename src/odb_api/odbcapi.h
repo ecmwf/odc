@@ -92,6 +92,10 @@ int odb_write_iterator_set_no_of_columns(oda_write_iterator_ptr, int);
 
 int odb_write_iterator_set_column(oda_write_iterator_ptr, int, int, const char *);
 int odb_write_iterator_set_bitfield(oda_write_iterator_ptr, int, int, const char *, const char*, const char *);
+int odb_write_iterator_set_column_size_doubles(oda_write_iterator_ptr, int, int);
+
+int odb_write_iterator_get_row_buffer_size_doubles(oda_write_iterator_ptr, int*);
+int odb_write_iterator_get_column_offset(oda_write_iterator_ptr, int, int*);
 
 int odb_write_iterator_set_missing_value(oda_write_iterator_ptr, int, double);
 

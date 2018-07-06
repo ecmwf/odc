@@ -242,4 +242,15 @@ void SelectIterator::populateMetaData()
 	newDataset_ = true;
 }
 
+size_t SelectIterator::rowDataSizeDoublesInternal() const {
+
+    size_t total;
+    for (const auto& column : columns()) {
+        total += column->dataSizeDoubles();
+    }
+    return total;
+}
+
+
+
 } // namespace odb 

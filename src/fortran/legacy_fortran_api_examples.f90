@@ -13,16 +13,21 @@ program example_fortran_api
   implicit none
 
   integer, parameter :: max_varlen = 128
-  integer(kind=4)    :: ncolumns = 5
+  integer(kind=4)    :: ncolumns = 6
 
   write(0,*) "Calling odb_start..."
 
   call odb_start()
 
+  write(0,*) 'A'
   call example_fortran_api_setup()
+  write(0,*) 'B'
   call example_fortran_api1()
+  write(0,*) 'C'
   call example_fortran_api2()
+  write(0,*) 'D'
   call example_fortran_api_append()
+  write(0,*) 'E'
 
 contains
 
@@ -35,7 +40,10 @@ subroutine example_fortran_api_append
  integer(kind=4)                               :: i
  integer(kind=C_INT)                           :: itype, c_ncolumns 
  real(kind=C_DOUBLE), dimension(:), allocatable:: one_row
+ integer(kind=c_int)                           :: offsets(ncolumns)
+ integer(kind=c_int)                           :: row_length_doubles
  character(len=100)                            :: expver="fihn"//achar(0)
+ character(len=100)                            :: wigos="this-is-a-long-string"//achar(0)
 
  write(0,*) 'example_fortran_api_append'
  c_ncolumns = ncolumns
@@ -43,57 +51,92 @@ subroutine example_fortran_api_append
  odb_it = odb_write_iterator_new(odb_handle, outputfile, cerr);
  
  cerr = odb_write_set_no_of_columns(odb_it, ncolumns)
- cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
- cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
- cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
-                                     "active:passive:blacklisted:"//achar(0), &
-                                     "1:1:4:"//achar(0))
- cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "expver"//achar(0))
- cerr = odb_write_set_column(odb_it, 4, ODB_DOUBLE, "dbar"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
+                                              "active:passive:blacklisted:"//achar(0), &
+                                              "1:1:4:"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "wigos"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column_size_doubles(odb_it, 3, 4);
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 4, ODB_STRING, "expver"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 5, ODB_DOUBLE, "dbar"//achar(0))
 
- cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
- cerr = odb_write_header(odb_it)
+ if (cerr == 0) cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
+ if (cerr == 0) cerr = odb_write_header(odb_it)
 
- allocate(one_row(ncolumns))
+ if (cerr == 0) cerr = odb_write_get_row_buffer_size_doubles(odb_it, row_length_doubles)
+ do i = 1, ncolumns
+     if (cerr == 0) cerr = odb_write_get_column_offset(odb_it, i-1, offsets(i))
+ enddo
+ if (cerr /= 0) stop 1
+
+ ! Sanity check!
+ if (row_length_doubles /= 9) stop 1
+ if (any(offsets /= (/1, 1, 1, 4, 1, 1/))) stop 1
+
+ ! Fortran array indexes are from 1, not zero
+ offsets = offsets + 1
+
+ allocate(one_row(row_length_doubles))
  do i=1,10
-   one_row(1) = i
-   one_row(2) = i 
-   one_row(3) = 5 
-   one_row(4) = transfer(expver, one_row(4))
-   one_row(5) = 5
+   one_row(offsets(1)) = i
+   one_row(offsets(2)) = i
+   one_row(offsets(3)) = 5
+   one_row(offsets(4):offsets(4)+3) = transfer(wigos, one_row(offsets(4):offsets(4)+3))
+   one_row(offsets(5)) = transfer(expver, one_row(5))
+   one_row(offsets(6)) = 5
    cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
+   if (cerr /= 0) stop 1
  enddo
  deallocate(one_row)
 
  cerr = odb_write_iterator_delete(odb_it)
 
- odb_it = odb_append_iterator_new(odb_handle, outputfile, cerr);
+ if (cerr == 0) odb_it = odb_append_iterator_new(odb_handle, outputfile, cerr);
  
- cerr = odb_write_set_no_of_columns(odb_it, ncolumns)
- cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
- cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
- cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
+ if (cerr == 0) cerr = odb_write_set_no_of_columns(odb_it, ncolumns)
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
                                      "active:passive:blacklisted:"//achar(0), &
                                      "1:1:4:"//achar(0))
- cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "expver"//achar(0))
- cerr = odb_write_set_column(odb_it, 4, ODB_DOUBLE, "dbar"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "wigos"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column_size_doubles(odb_it, 3, 4);
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 4, ODB_STRING, "expver"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 5, ODB_DOUBLE, "dbar"//achar(0))
 
- cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
- cerr = odb_write_header(odb_it)
+ if (cerr == 0) cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
+ if (cerr == 0) cerr = odb_write_header(odb_it)
 
- allocate(one_row(ncolumns))
+ if (cerr == 0) cerr = odb_write_get_row_buffer_size_doubles(odb_it, row_length_doubles)
+ do i = 1, ncolumns
+     if (cerr == 0) cerr = odb_write_get_column_offset(odb_it, i-1, offsets(i))
+ enddo
+ if (cerr /= 0) stop 1
+
+ ! Sanity check!
+ if (row_length_doubles /= 9) stop 1
+ if (any(offsets /= (/1, 1, 1, 4, 1, 1/))) stop 1
+
+ ! Fortran array indexes are from 1, not zero
+ offsets = offsets + 1
+
+ allocate(one_row(row_length_doubles))
  do i=1,10
-   one_row(1) = i
-   one_row(2) = i 
-   one_row(3) = 5 
-   one_row(4) = transfer(expver, one_row(4))
-   one_row(5) = 5 
+   one_row(offsets(1)) = i
+   one_row(offsets(2)) = i
+   one_row(offsets(3)) = 5
+   one_row(offsets(4):offsets(4)+3) = transfer(wigos, one_row(offsets(4):offsets(4)+3))
+   one_row(offsets(5)) = transfer(expver, one_row(5))
+   one_row(offsets(6)) = 5
    cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
+   if (cerr /= 0) stop 1
  enddo
  deallocate(one_row)
 
  cerr = odb_write_iterator_delete(odb_it)
- cerr = odb_write_delete(odb_handle)
+ if (cerr == 0) cerr = odb_write_delete(odb_handle)
+ if (cerr /= 0) stop 1
 
 end subroutine example_fortran_api_append
 
@@ -106,7 +149,10 @@ subroutine example_fortran_api_setup
  integer(kind=4)                               :: i
  integer(kind=C_INT)                           :: itype, c_ncolumns 
  real(kind=C_DOUBLE), dimension(:), allocatable:: one_row
+ integer(kind=c_int)                           :: offsets(ncolumns)
+ integer(kind=c_int)                           :: row_length_doubles
  character(len=100)                            :: expver="fihn"//achar(0)
+ character(len=100)                            :: wigos="this-is-a-long-string"//achar(0)
 
  write(0,*) 'example_fortran_api_setup'
  c_ncolumns = ncolumns
@@ -114,30 +160,48 @@ subroutine example_fortran_api_setup
  odb_it = odb_write_iterator_new(odb_handle, outputfile, cerr);
  
  cerr = odb_write_set_no_of_columns(odb_it, ncolumns)
- cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
- cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
- cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
-                                     "active:passive:blacklisted:"//achar(0), &
-                                     "1:1:4:"//achar(0))
- cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "expver"//achar(0))
- cerr = odb_write_set_column(odb_it, 4, ODB_DOUBLE, "dbar"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 0, ODB_INTEGER, "ifoo"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 1, ODB_REAL, "nbar"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_bitfield(odb_it, 2, ODB_BITFIELD, "status"//achar(0), &
+                                              "active:passive:blacklisted:"//achar(0), &
+                                              "1:1:4:"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 3, ODB_STRING, "wigos"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column_size_doubles(odb_it, 3, 4);
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 4, ODB_STRING, "expver"//achar(0))
+ if (cerr == 0) cerr = odb_write_set_column(odb_it, 5, ODB_DOUBLE, "dbar"//achar(0))
 
- cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
- cerr = odb_write_header(odb_it)
+ if (cerr == 0) cerr = odb_write_set_missing_value(odb_it, 0, 1.0_8)
+ if (cerr == 0) cerr = odb_write_header(odb_it)
 
- allocate(one_row(ncolumns))
+ if (cerr == 0) cerr = odb_write_get_row_buffer_size_doubles(odb_it, row_length_doubles)
+ do i = 1, ncolumns
+     if (cerr == 0) cerr = odb_write_get_column_offset(odb_it, i-1, offsets(i))
+ enddo
+ if (cerr /= 0) stop 1
+
+ ! Sanity check!
+ if (row_length_doubles /= 9) stop 1
+ if (any(offsets /= (/0, 1, 2, 3, 7, 8/))) stop 1
+
+ ! Fortran array indexes are from 1, not zero
+ offsets = offsets + 1
+
+ allocate(one_row(row_length_doubles))
  do i=1,10
-   one_row(1) = i
-   one_row(2) = i 
-   one_row(3) = 5 
-   one_row(4) = transfer(expver, one_row(4))
-   one_row(5) = 5 
+   one_row(offsets(1)) = i
+   one_row(offsets(2)) = i
+   one_row(offsets(3)) = 5
+   one_row(offsets(4):offsets(4)+3) = transfer(wigos, one_row(offsets(4):offsets(4)+3))
+   one_row(offsets(5)) = transfer(expver, one_row(5))
+   one_row(offsets(6)) = 5
    cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
+   if (cerr /= 0) stop 1
  enddo
  deallocate(one_row)
 
  cerr = odb_write_iterator_delete(odb_it)
- cerr = odb_write_delete(odb_handle)
+ if (cerr == 0) cerr = odb_write_delete(odb_handle)
+ if (cerr /= 0) stop 1
 
 end subroutine example_fortran_api_setup
 
