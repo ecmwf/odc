@@ -63,13 +63,14 @@ int odb_destroy(oda_ptr); // Compatibility
 oda_read_iterator_ptr odb_create_read_iterator(oda_ptr, const char *, int *);
 int odb_read_iterator_destroy(oda_read_iterator_ptr);
 int odb_read_iterator_get_no_of_columns(oda_read_iterator_ptr, int*);
-int odb_read_iterator_get_column_size(oda_read_iterator_ptr, int, int*);
+int odb_read_iterator_get_column_size_doubles(oda_read_iterator_ptr, int, int*);
 int odb_read_iterator_get_column_offset(oda_read_iterator_ptr, int, int*);
 int odb_read_iterator_get_column_type(oda_read_iterator_ptr, int, int*);
 int odb_read_iterator_get_column_name(oda_read_iterator_ptr, int, char**, int*);
 int odb_read_iterator_get_bitfield(oda_read_iterator_ptr, int, char**, char**, int*, int*);
 int odb_read_iterator_get_next_row(oda_read_iterator_ptr, int, double*, int*);
 int odb_read_iterator_get_missing_value(oda_read_iterator_ptr, int, double*);
+int odb_read_iterator_get_row_buffer_size_doubles(oda_read_iterator_ptr, int*);
 
 oda_ptr odb_select_create(const char *, int *);
 int odb_select_destroy(oda_ptr);

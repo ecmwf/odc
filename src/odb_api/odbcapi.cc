@@ -260,19 +260,17 @@ int odb_read_iterator_get_no_of_columns(oda_read_iterator_ptr it, int *numberOfC
 	return 0;
 }
 
-int odb_read_iterator_get_column_size(oda_read_iterator_ptr it, int n, int* sizes)
+int odb_read_iterator_get_column_size_doubles(oda_read_iterator_ptr it, int n, int* size)
 {
     ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
-    NOTIMP;
-//	*numberOfColumns = iter->columns().size();
+    *size = iter->columns()[n]->dataSizeDoubles();
     return 0;
 }
 
-int odb_read_iterator_get_column_offset(oda_read_iterator_ptr it, int n, int* offsets)
+int odb_read_iterator_get_column_offset(oda_read_iterator_ptr it, int n, int* offset)
 {
     ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
-    NOTIMP;
-//	*numberOfColumns = iter->columns().size();
+    *offset = iter->dataOffset(n);
     return 0;
 }
 
@@ -329,7 +327,8 @@ int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* 
 	if (count != static_cast<int>(iter->columns().size()))
 		return 2; // TDOO: define error codes
 
-    ::memcpy(data, iter->data(), count * sizeof(data[0]));
+//    ::memcpy(data, iter->data(), count * sizeof(data[0]));
+    ::memcpy(data, iter->data(), iter->rowDataSizeDoubles()*sizeof(double));
 
 	return 0;
 }
@@ -469,6 +468,13 @@ int odb_read_iterator_get_missing_value(oda_read_iterator_ptr ri, int index, dou
         throw UserError(ss.str());
     }
     *value = r->columns()[index]->missingValue();
+    return 0;
+}
+
+int odb_read_iterator_get_row_buffer_size_doubles(oda_read_iterator_ptr ri, int* size) {
+
+    ReaderIterator* r = reinterpret_cast<ReaderIterator*>(ri);
+    *size = r->rowDataSizeDoubles();
     return 0;
 }
 

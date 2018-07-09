@@ -145,7 +145,36 @@ interface
      integer(kind=C_INT)                  :: odb_read_get_missing_value
    end function odb_read_get_missing_value
 
-  
+   function odb_read_get_row_buffer_size_doubles(odb_iterator, sz) &
+                     result(cerr) &
+                     bind(C, name="odb_read_iterator_get_row_buffer_size_doubles")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int)                  :: sz
+     integer(kind=c_int)                  :: cerr
+   end function
+
+   function odb_read_get_column_offset_internal(odb_iterator, n, offset) &
+                     result(cerr) &
+                     bind(C, name="odb_read_iterator_get_column_offset")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: offset
+     integer(kind=c_int)                  :: cerr
+   end function
+
+   function odb_read_get_column_size_doubles(odb_iterator, n, sz) &
+                     result(cerr) &
+                     bind(C, name="odb_read_iterator_get_column_size_doubles")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: sz
+     integer(kind=c_int)                  :: cerr
+   end function
+
+
 ! SELECT ITERATOR
    function odb_select_iterator_new(odb, sql, err) bind(C, name="odb_create_select_iterator")
      use, intrinsic                       :: iso_c_binding
@@ -305,7 +334,7 @@ interface
      integer(kind=c_int)                  :: cerr
    end function
 
-   function odb_write_get_column_offset(odb_iterator, n, offset) &
+   function odb_write_get_column_offset_internal(odb_iterator, n, offset) &
                      result(cerr) &
                      bind(C, name="odb_write_iterator_get_column_offset")
      use, intrinsic                       :: iso_c_binding
@@ -330,4 +359,30 @@ interface
    end function odb_write_header
 
 end interface
+
+contains
+
+   function odb_read_get_column_offset(odb_iterator, n, offset) result(cerr)
+     ! Map between C (0-index) and Fortran (1-index) offsets
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: offset
+     integer(kind=c_int)                  :: cerr
+     cerr = odb_read_get_column_offset_internal(odb_iterator, n, offset)
+     offset = offset + 1
+   end function
+
+
+   function odb_write_get_column_offset(odb_iterator, n, offset) result(cerr)
+     ! Map between C (0-index) and Fortran (1-index) offsets
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: offset
+     integer(kind=c_int)                  :: cerr
+     cerr = odb_write_get_column_offset_internal(odb_iterator, n, offset)
+     offset = offset + 1
+   end function
+
 end module odb_c_binding
