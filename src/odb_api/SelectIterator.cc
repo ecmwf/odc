@@ -244,7 +244,7 @@ void SelectIterator::populateMetaData()
 
 size_t SelectIterator::rowDataSizeDoublesInternal() const {
 
-    size_t total;
+    size_t total = 0;
     for (const auto& column : columns()) {
         total += column->dataSizeDoubles();
     }

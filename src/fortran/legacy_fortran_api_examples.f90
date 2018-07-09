@@ -19,9 +19,7 @@ program example_fortran_api
 
   call odb_start()
 
-  write(0,*) 'A'
   call example_fortran_api_setup()
-  write(0,*) 'B'
   call example_fortran_api1()
   write(0,*) 'C'
   call example_fortran_api2()
@@ -391,7 +389,7 @@ subroutine example_fortran_api2
  cerr = odb_select_get_no_of_columns(odb_it, c_ncolumns)
  if (cerr /=0) STOP 1
  write(6,*) 'ncols: ', c_ncolumns
- if (c_ncolumns /= ncolumns) STOP "Error number of columns is not 4"
+ if (c_ncolumns /= ncolumns) STOP "Error number of columns is not 6"
  
  cerr = odb_select_get_column_type(odb_it, 0, itype)
  if (cerr /=0) STOP 1

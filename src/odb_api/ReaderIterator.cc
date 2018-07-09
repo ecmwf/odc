@@ -245,7 +245,7 @@ bool ReaderIterator::next()
 
 size_t ReaderIterator::rowDataSizeDoublesInternal() const {
 
-    size_t total;
+    size_t total = 0;
     for (const auto& column : columns()) {
         total += column->dataSizeDoubles();
     }

@@ -200,7 +200,7 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 
 size_t WriterBufferingIterator::rowDataSizeDoublesInternal() const {
 
-    size_t total;
+    size_t total = 0;
     for (const auto& column : columns()) {
         total += column->dataSizeDoubles();
     }
