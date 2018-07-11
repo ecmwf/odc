@@ -281,7 +281,21 @@ int odb_select_iterator_get_no_of_columns(oda_select_iterator_ptr it, int *numbe
 	return 0;
 }
 
-int odb_read_iterator_get_column_type(oda_read_iterator_ptr it, int n, int *type)
+int odb_select_iterator_get_column_size_doubles(oda_select_iterator_ptr it, int n, int* size)
+{
+    SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
+    *size = iter->columns()[n]->dataSizeDoubles();
+    return 0;
+}
+
+int odb_select_iterator_get_column_offset(oda_select_iterator_ptr it, int n, int* offset)
+{
+    SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
+    *offset = iter->dataOffset(n);
+    return 0;
+}
+
+int odb_read_iterator_get_column_type(oda_select_iterator_ptr it, int n, int *type)
 {
 	ReaderIterator* iter (reinterpret_cast<ReaderIterator*>(it));
 	*type = iter->columns()[n]->type();
@@ -474,6 +488,13 @@ int odb_read_iterator_get_missing_value(oda_read_iterator_ptr ri, int index, dou
 int odb_read_iterator_get_row_buffer_size_doubles(oda_read_iterator_ptr ri, int* size) {
 
     ReaderIterator* r = reinterpret_cast<ReaderIterator*>(ri);
+    *size = r->rowDataSizeDoubles();
+    return 0;
+}
+
+int odb_select_iterator_get_row_buffer_size_doubles(oda_select_iterator_ptr ri, int* size) {
+
+    SelectIterator* r = reinterpret_cast<SelectIterator*>(ri);
     *size = r->rowDataSizeDoubles();
     return 0;
 }

@@ -205,6 +205,35 @@ interface
      integer(kind=C_INT)                  :: odb_select_get_no_of_columns ! return an error code
    end function odb_select_get_no_of_columns
 
+   function odb_select_get_row_buffer_size_doubles(odb_iterator, sz) &
+                     result(cerr) &
+                     bind(C, name="odb_select_iterator_get_row_buffer_size_doubles")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int)                  :: sz
+     integer(kind=c_int)                  :: cerr
+   end function
+
+   function odb_select_get_column_offset_internal(odb_iterator, n, offset) &
+                     result(cerr) &
+                     bind(C, name="odb_select_iterator_get_column_offset")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: offset
+     integer(kind=c_int)                  :: cerr
+   end function
+
+   function odb_select_get_column_size_doubles(odb_iterator, n, sz) &
+                     result(cerr) &
+                     bind(C, name="odb_select_iterator_get_column_size_doubles")
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: sz
+     integer(kind=c_int)                  :: cerr
+   end function
+
    function odb_select_get_column_type(odb_iterator, n, type) bind(C, name="odb_select_iterator_get_column_type")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: odb_iterator
@@ -373,6 +402,16 @@ contains
      offset = offset + 1
    end function
 
+   function odb_select_get_column_offset(odb_iterator, n, offset) result(cerr)
+     ! Map between C (0-index) and Fortran (1-index) offsets
+     use, intrinsic                       :: iso_c_binding
+     type(c_ptr), value                   :: odb_iterator
+     integer(kind=c_int), value           :: n
+     integer(kind=c_int)                  :: offset
+     integer(kind=c_int)                  :: cerr
+     cerr = odb_select_get_column_offset_internal(odb_iterator, n, offset)
+     offset = offset + 1
+   end function
 
    function odb_write_get_column_offset(odb_iterator, n, offset) result(cerr)
      ! Map between C (0-index) and Fortran (1-index) offsets

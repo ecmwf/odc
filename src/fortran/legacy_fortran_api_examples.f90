@@ -15,6 +15,26 @@ program example_fortran_api
   integer, parameter            :: max_varlen = 128
   integer(kind=4), parameter    :: ncolumns = 6
 
+  ! Correct values for checking
+
+  integer(c_int), dimension(ncolumns), parameter:: column_types = (/ODB_INTEGER, ODB_REAL, ODB_BITFIELD, &
+                                                                    ODB_STRING, ODB_STRING, ODB_DOUBLE/)
+
+  character(8), dimension(ncolumns), parameter  :: column_names = (/'ifoo    ', 'nbar    ', 'status  ', 'wigos   ', &
+                                                                    'expver  ', 'dbar    '/)
+
+  integer(c_int), dimension(ncolumns), parameter:: column_offsets = (/1, 2, 3, 4, 7, 8/)
+  integer(c_int), dimension(ncolumns), parameter:: column_sizes = (/1, 1, 1, 3, 1, 1/)
+  integer, parameter                            :: row_size_doubles = 8
+
+  interface
+    function strlen(s) result(l) bind(c, name='strlen')
+      use, intrinsic    :: iso_c_binding
+      character(c_char) :: s
+      integer(c_int)    :: l
+    end function
+  end interface
+
   write(0,*) "Calling odb_start..."
 
   call odb_start()
@@ -222,30 +242,10 @@ subroutine example_fortran_api1
  character(len=8)                              :: tmp_str2
  integer                                       :: col
 
- ! Correct values for checking
-
- integer(c_int), dimension(ncolumns), parameter:: column_types = (/ODB_INTEGER, ODB_REAL, ODB_BITFIELD, &
-                                                                   ODB_STRING, ODB_STRING, ODB_DOUBLE/)
-
- character(8), dimension(ncolumns), parameter  :: column_names = (/'ifoo    ', 'nbar    ', 'status  ', 'wigos   ', &
-                                                                   'expver  ', 'dbar    '/)
-
- integer(c_int), dimension(ncolumns), parameter:: column_offsets = (/1, 2, 3, 4, 7, 8/)
- integer(c_int), dimension(ncolumns), parameter:: column_sizes = (/1, 1, 1, 3, 1, 1/)
- integer, parameter                            :: row_size_doubles = 8
-
- interface
-   function strlen(s) result(l) bind(c, name='strlen')
-     use, intrinsic    :: iso_c_binding
-     character(c_char) :: s
-     integer(c_int)    :: l
-   end function
- end interface
-
  write(0,*) 'example_fortran_api1'
  odb_handle = odb_read_new(config, cerr)
  odb_it = odb_read_iterator_new(odb_handle, inputfile, cerr);
- if (cerr /=0) STOP 1
+ if (cerr /= 0) STOP 1
 
  ! Total number of columns
  
@@ -374,69 +374,70 @@ subroutine example_fortran_api2
  integer(kind=4)                               :: i
  character(kind=C_CHAR, len=128)               :: sql='select * from "test.odb"'//achar(0)
  integer(kind=C_INT)                           :: itype, newdataset, c_ncolumns=3, size_name 
- integer(kind=C_INT)                           :: bitfield_names_size, bitfield_sizes_size
+ integer(kind=C_INT)                           :: bitfield_names_size, bitfield_sizes_size, ioffset, isize
  real(kind=C_DOUBLE), dimension(:), allocatable:: one_row
- character(len=64)                 :: tmp_str
+ character(len=64)                             :: tmp_str1, tmp_str2
+ integer                                       :: col
 
  write(0,*) 'example_fortran_api2'
 
  odb_handle = odb_select_new(config, cerr)
- if (cerr /=0) STOP 1
+ if (cerr == 0) odb_it = odb_select_iterator_new(odb_handle, sql, cerr);
+ if (cerr /= 0) STOP 25
 
- odb_it =  odb_select_iterator_new(odb_handle, sql, cerr);
- if (cerr /=0) STOP 1
- 
+ ! Total number of columns
+
  cerr = odb_select_get_no_of_columns(odb_it, c_ncolumns)
- if (cerr /=0) STOP 1
- write(6,*) 'ncols: ', c_ncolumns
- if (c_ncolumns /= ncolumns) STOP "Error number of columns is not 6"
- 
- cerr = odb_select_get_column_type(odb_it, 0, itype)
- if (cerr /=0) STOP 1
- if (itype /= ODB_INTEGER) STOP "Error type of column 1 is not integer!"
+ if (cerr /=0) STOP 26
+ if (c_ncolumns /= ncolumns) stop 27
 
- cerr = odb_select_get_column_type(odb_it, 1, itype)
- if (cerr /=0) STOP 1
- if (itype /= ODB_REAL) STOP "Error type of column 2 is not real!"
+ ! Total amount of data
 
- cerr = odb_select_get_column_type(odb_it, 2, itype)
- if (cerr /=0) STOP 1
- if (itype /= ODB_BITFIELD) STOP "Error type of column 3 is not bitfield!"
+ cerr = odb_select_get_row_buffer_size_doubles(odb_it, isize)
+ if (cerr /= 0) stop 28
+ if (isize /= row_size_doubles) stop 29 ! n.b. 9 in writer, but only needed 3 columns to encode strings!
 
- cerr = odb_select_get_column_type(odb_it, 3, itype)
- if (cerr /=0) STOP 1
- if (itype /= ODB_STRING) STOP "Error type of column 4 is not string!"
+ ! Check the values reported per column ...
 
- cerr = odb_select_get_column_type(odb_it, 4, itype)
- if (cerr /=0) STOP 1
- if (itype /= ODB_DOUBLE) STOP "Error type of column 5 is not double!"
+ do col = 1, ncolumns
 
- cerr = odb_select_get_column_name(odb_it, 0, ptr_colname,size_name)
- if (cerr /=0) STOP 1
- call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, size_name 
-    colname(i:i)  = f_ptr_colname(i)
+     cerr = odb_select_get_column_name(odb_it, col-1, ptr_colname,size_name)
+     if (cerr == 0) cerr = odb_select_get_column_type(odb_it, col-1, itype)
+     if (cerr == 0) cerr = odb_select_get_column_offset(odb_it, col-1, ioffset)
+     if (cerr == 0) cerr = odb_select_get_column_size_doubles(odb_it, col-1, isize)
+     if (cerr /= 0) stop 30
+
+     ! Check the column names
+
+     call c_f_pointer(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
+     do i=1, size_name
+        colname(i:i)  = f_ptr_colname(i)
+     end do
+     write(0,'(a,i1,3a,i1,a,i1,a)') 'column name ', col, ' : ', colname(1:size_name), &
+                                    ' [', ioffset, ', ', isize, ']'
+
+     ! Do we get the expected values
+
+     write(9,*) itype, column_types(col)
+     if (colname(1:size_name) /= trim(column_names(col))) stop 31
+     if (itype /= column_types(col)) stop 32
+     if (ioffset /= column_offsets(col)) stop 33
+     if (isize /= column_sizes(col)) stop 34
+
  end do
- write(0,*) 'column name 1 : ', colname(1:i)
 
- cerr = odb_select_get_column_name(odb_it, 1, ptr_colname, size_name)
- if (cerr /=0) STOP 1
- call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, size_name
-    colname(i:i)  = f_ptr_colname(i)
- end do
- write(0,*) 'column name 2 : ', colname(1:i)
+ ! Test the contents of the bitfields
 
  cerr = odb_select_get_bitfield(odb_it, 2, ptr_bitfield_names, ptr_bitfield_sizes, bitfield_names_size, bitfield_sizes_size)
  write(0,*) 'odb_select_get_bitfield column 2 => ', cerr
- if (cerr /=0) STOP 191
+ if (cerr /=0) STOP 35
  write(0,*) 'column 2 bitfield_names_size: ', bitfield_names_size
  call C_F_POINTER(CPTR=ptr_bitfield_names, FPTR=f_ptr_bitfield_names, shape=(/bitfield_names_size/));
  do i=1, bitfield_names_size
     bitfield_names(i:i) = f_ptr_bitfield_names(i)
  end do
  write(0,*) 'column 2 bitfield_names: ', bitfield_names(1:bitfield_names_size)
- if (bitfield_names(1:bitfield_names_size) /= 'active:passive:blacklisted:') STOP 192
+ if (bitfield_names(1:bitfield_names_size) /= 'active:passive:blacklisted:') STOP 36
 
  write(0,*) 'column 2 bitfield_sizes_size: ', bitfield_sizes_size
  call C_F_POINTER(CPTR=ptr_bitfield_sizes, FPTR=f_ptr_bitfield_sizes, shape=(/bitfield_sizes_size/));
@@ -444,43 +445,43 @@ subroutine example_fortran_api2
     bitfield_sizes(i:i) = f_ptr_bitfield_sizes(i)
  end do
  write(0,*) 'column 2 bitfield_sizes: ', bitfield_sizes(1:bitfield_sizes_size)
- if (bitfield_sizes(1:bitfield_sizes_size) /= '1:1:4:') STOP 193
+ if (bitfield_sizes(1:bitfield_sizes_size) /= '1:1:4:') STOP 37
 
- cerr = odb_select_get_column_name(odb_it, 2, ptr_colname, size_name)
- if (cerr /=0) STOP 1
- call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, size_name
-    colname(i:i)  = f_ptr_colname(i)
- end do
- write(0,*) 'column name 3 : ', colname(1:i)
+ ! Test the contents of the data section!
 
- cerr = odb_select_get_column_name(odb_it, 3, ptr_colname, size_name)
- if (cerr /=0) STOP 1
- call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, size_name
-    colname(i:i)  = f_ptr_colname(i)
- end do
- write(0,*) 'column name 4 : ', colname(1:i)
+ allocate(one_row(row_size_doubles))
+ do i = 1, 100
 
- cerr = odb_select_get_column_name(odb_it, 4, ptr_colname, size_name)
- if (cerr /=0) STOP 1
- call C_F_POINTER(CPTR=ptr_colname, FPTR=f_ptr_colname, shape=(/size_name/));
- do i=1, size_name
-    colname(i:i)  = f_ptr_colname(i)
- end do
- write(0,*) 'column name 5 : ', colname(1:i)
-
- allocate(one_row(c_ncolumns))
- cerr=0
- i = 1
- do 
    cerr = odb_select_get_next_row(odb_it, c_ncolumns,  one_row, newdataset)
    if ( cerr /= 0) exit
-   tmp_str = transfer(one_row(4), tmp_str)
-   write(0,*) i, ":",  one_row(1), one_row(2), one_row(3), tmp_str
-   i = i + 1
+
+   ! Extract the strings
+
+   tmp_str1(1:24) = transfer(one_row(column_offsets(4):column_offsets(5)-1), tmp_str1(1:24))
+   tmp_str2(1:8) = transfer(one_row(column_offsets(5)), tmp_str2(1:8))
+
+   write(0,*) i, ":", one_row(column_offsets(1)), &
+                      one_row(column_offsets(2)), &
+                      one_row(column_offsets(3)), &
+                      tmp_str1(1:24), " ", &
+                      tmp_str2(1:8), &
+                      one_row(column_offsets(6))
+
+   if (one_row(column_offsets(1)) /= i) stop 39
+   if (one_row(column_offsets(2)) /= i) stop 40
+   if (one_row(column_offsets(3)) /= 5) stop 41
+   if (trim(tmp_str1(1:strlen(tmp_str1))) /= 'this-is-a-long-string') stop 42
+   if (trim(tmp_str2(1:strlen(tmp_str2))) /= 'fihn') stop 43
+   if (one_row(column_offsets(6)) /= 5) stop 44
+
  enddo
  deallocate(one_row)
+
+ ! Did we get the correct number of rows?
+
+ if (i /= 11) stop 24
+
+ ! Clean up
 
  cerr = odb_select_iterator_delete(odb_it)
  cerr = odb_read_delete(odb_handle)

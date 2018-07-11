@@ -78,10 +78,13 @@ oda_select_iterator_ptr odb_create_select_iterator(oda_ptr, const char *, int *)
 oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr, const char *, const char *, int *);
 int odb_select_iterator_destroy(oda_select_iterator_ptr);
 int odb_select_iterator_get_no_of_columns(oda_select_iterator_ptr, int*);
+int odb_select_iterator_get_column_size_doubles(oda_read_iterator_ptr, int, int*);
+int odb_select_iterator_get_column_offset(oda_read_iterator_ptr, int, int*);
 int odb_select_iterator_get_column_type(oda_select_iterator_ptr, int, int *);
 int odb_select_iterator_get_column_name(oda_select_iterator_ptr, int, char **, int*);
 int odb_select_iterator_get_bitfield(oda_select_iterator_ptr, int, char**, char**, int*, int*);
 int odb_select_iterator_get_next_row(oda_select_iterator_ptr, int, double*, int*);
+int odb_select_iterator_get_row_buffer_size_doubles(oda_read_iterator_ptr, int*);
 
 oda_writer_ptr odb_writer_create(const char *, int *);
 int odb_writer_destroy(oda_writer_ptr);
