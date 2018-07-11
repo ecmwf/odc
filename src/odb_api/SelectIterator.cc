@@ -72,6 +72,8 @@ void SelectIterator::parse(odb::sql::SQLSession& session, typename DATASTREAM::D
     selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
     if (! selectStmt_)
         throw UserError(std::string("Expected SELECT, got: ") + select_);
+
+    selectStmt_->prepareExecute();
 	
     populateMetaData<DATASTREAM>();
 
