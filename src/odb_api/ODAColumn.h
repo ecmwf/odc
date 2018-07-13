@@ -26,6 +26,9 @@ public:
 	ODAColumn(const type::SQLType&, SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue, double*);
 	~ODAColumn();
 
+    // BUYER BEWARE
+    // value(double*) is used to override the double* passed into the constructor.
+
 	void value(double* p) { value_ = p; }
 	double * value() const { return value_; }
 
