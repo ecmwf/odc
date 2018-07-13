@@ -18,7 +18,7 @@
 #include <set>
 
 #include "odb_api/FunctionExpression.h"
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 #include "odb_api/sql/SQLAST.h"
 
 namespace odb {

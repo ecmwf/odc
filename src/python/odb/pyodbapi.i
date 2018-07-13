@@ -61,11 +61,9 @@ using namespace std;
 using namespace eckit;
 
 %include "odb_api/Select.h"
-%include "odb_api/sql/SQLType.h"
 
 %include "odb_api/ColumnType.h"
 %include "odb_api/Types.h"
-%include "odb_api/sql/SQLBitfield.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/DataStream.h"
 %include "odb_api/Codec.h"
@@ -102,7 +100,6 @@ using namespace odb;
 %include "odb_api/SelectIterator.h"
 #include "odb_api/FixedSizeWriterIterator.h"
 
-#include "odb_api/sql/SQLType.h"
 #include "odb_api/sql/SQLInteractiveSession.h"
 #include "odb_api/sql/SQLIteratorSession.h"
 #include "odb_api/sql/SQLTable.h"

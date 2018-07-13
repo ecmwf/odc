@@ -11,7 +11,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/sql/SQLExpression.h"
 #include "odb_api/NumberExpression.h"
-//#include "odb_api/sql/SQLType.h"
+//#include "odb_api/sql/type/SQLType.h"
 #include "odb_api/sql/SQLOutput.h"
 #include "odb_api/Expressions.h"
 

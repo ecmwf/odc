@@ -8,42 +8,47 @@
  * does it submit to any jurisdiction.
  */
 
-// File SQLInt.h
+// File SQLBit.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef SQLInt_H
-#define SQLInt_H
+#ifndef SQLBit_H
+#define SQLBit_H
 
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 
 namespace odb {
 namespace sql {
-
-class SQLOutput;
-
 namespace type {
 
-class SQLInt : public SQLType {
+class SQLBit : public SQLType {
 public:
-	SQLInt(const std::string& );
-	~SQLInt(); 
+	SQLBit(const std::string& ,unsigned long ,unsigned long );
+	~SQLBit(); 
+
+	unsigned long mask()  const { return mask_; }
+	unsigned long shift() const { return shift_; }
 
 private:
 // No copy allowed
-	SQLInt(const SQLInt&);
-	SQLInt& operator=(const SQLInt&);
+	SQLBit(const SQLBit&);
+	SQLBit& operator=(const SQLBit&);
+
+	unsigned long mask_;
+	unsigned long shift_;
+
+// -- Overridden methods
+	// None
 
 	virtual size_t size() const;
-	virtual void output(SQLOutput& s, double, bool) const;
+	void output(SQLOutput&, double, bool) const;
 	virtual int getKind() const { return integerType; }
 
-	//friend std::ostream& operator<<(std::ostream& s,const SQLInt& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLBit& p)
 	//	{ p.print(s); return s; }
-
 };
 
-} // namespace type 
-} // namespace sql
-} // namespace odb
+} // namespace type
+} // namespace sql 
+} // namespace odb 
 
 #endif

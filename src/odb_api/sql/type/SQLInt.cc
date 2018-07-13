@@ -8,24 +8,21 @@
  * does it submit to any jurisdiction.
  */
 
+
+#include "odb_api/sql/type/SQLInt.h"
 #include "odb_api/sql/SQLOutput.h"
-#include "odb_api/sql/SQLString.h"
 
 namespace odb {
 namespace sql {
 namespace type {
 
-SQLString::SQLString(const std::string& name) : SQLType(name) {} 
+SQLInt::SQLInt(const std::string& name): SQLType(name) {} 
 
-SQLString::~SQLString() {}
+SQLInt::~SQLInt() {}
 
-size_t SQLString::size() const { return sizeof(double); }
+size_t SQLInt::size() const { return sizeof(long); }
 
-void SQLString::output(SQLOutput& o, double d, bool missing) const { o.outputString(d, missing); }
-
-SQLType::manipulator SQLString::format() const { return &std::left; }
-
-size_t SQLString::width() const { return 10; }
+void SQLInt::output(SQLOutput& o, double d, bool missing) const { o.outputInt(d, missing); }
 
 } // namespace type 
 } // namespace sql

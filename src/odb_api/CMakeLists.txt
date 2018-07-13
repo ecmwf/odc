@@ -342,12 +342,8 @@ sql/SQLMATCHSubquerySessionOutput.h
 sql/SQLMATCHSubquerySessionOutput.cc
 sql/SQLAST.cc
 sql/SQLAST.h
-sql/SQLBit.cc
-sql/SQLBit.h
 sql/SQLBitColumn.cc
 sql/SQLBitColumn.h
-sql/SQLBitfield.cc
-sql/SQLBitfield.h
 sql/SQLColumn.cc
 sql/SQLColumn.h
 sql/SQLDataColumn.cc
@@ -362,16 +358,12 @@ sql/SQLDatabase.cc
 sql/SQLDatabase.h
 sql/SQLDistinctOutput.cc
 sql/SQLDistinctOutput.h
-sql/SQLDouble.cc
-sql/SQLDouble.h
 sql/SQLExpression.cc
 sql/SQLExpression.h
 sql/SQLExpressionEvaluated.cc
 sql/SQLExpressionEvaluated.h
 sql/SQLIndex.cc
 sql/SQLIndex.h
-sql/SQLInt.cc
-sql/SQLInt.h
 sql/SQLInteractiveSession.cc
 sql/SQLInteractiveSession.h
 sql/SQLNonInteractiveSession.cc
@@ -391,8 +383,6 @@ sql/SQLOutputConfig.cc
 sql/SQLOutputConfig.h
 sql/SQLParser.cc
 sql/SQLParser.h
-sql/SQLReal.cc
-sql/SQLReal.h
 sql/SQLSelect.cc
 sql/SQLSelect.h
 sql/SQLInsert.cc
@@ -407,12 +397,23 @@ sql/SQLSimpleOutput.cc
 sql/SQLSimpleOutput.h
 sql/SQLStatement.cc
 sql/SQLStatement.h
-sql/SQLString.cc
-sql/SQLString.h
 sql/SQLTable.cc
 sql/SQLTable.h
-sql/SQLType.cc
-sql/SQLType.h
+
+sql/type/SQLBit.cc
+sql/type/SQLBit.h
+sql/type/SQLBitfield.cc
+sql/type/SQLBitfield.h
+sql/type/SQLDouble.cc
+sql/type/SQLDouble.h
+sql/type/SQLInt.cc
+sql/type/SQLInt.h
+sql/type/SQLReal.cc
+sql/type/SQLReal.h
+sql/type/SQLString.cc
+sql/type/SQLString.h
+sql/type/SQLType.cc
+sql/type/SQLType.h
 )
 
 # templates

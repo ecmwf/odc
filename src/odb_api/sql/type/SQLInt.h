@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-// File SQLString.h
+// File SQLInt.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef SQLString_H
-#define SQLString_H
+#ifndef SQLInt_H
+#define SQLInt_H
 
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 
 namespace odb {
 namespace sql {
@@ -23,30 +23,27 @@ class SQLOutput;
 
 namespace type {
 
-class SQLString : public SQLType {
+class SQLInt : public SQLType {
 public:
-	SQLString(const std::string& );
-	~SQLString(); 
+	SQLInt(const std::string& );
+	~SQLInt(); 
 
 private:
 // No copy allowed
-	SQLString(const SQLString&);
-	SQLString& operator=(const SQLString&);
+	SQLInt(const SQLInt&);
+	SQLInt& operator=(const SQLInt&);
 
-// -- Overridden methods
 	virtual size_t size() const;
-	virtual void output(SQLOutput&, double, bool) const;
-	virtual int getKind() const { return stringType; }
-	virtual manipulator format() const;
+	virtual void output(SQLOutput& s, double, bool) const;
+	virtual int getKind() const { return integerType; }
 
-	size_t width() const;
-
-	//friend std::ostream& operator<<(std::ostream& s,const SQLString& p)
+	//friend std::ostream& operator<<(std::ostream& s,const SQLInt& p)
 	//	{ p.print(s); return s; }
+
 };
 
 } // namespace type 
-} // namespace sql 
-} // namespace odb 
+} // namespace sql
+} // namespace odb
 
 #endif

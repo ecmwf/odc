@@ -14,7 +14,7 @@
 #ifndef SQLReal_H
 #define SQLReal_H
 
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 
 namespace odb {
 namespace sql {

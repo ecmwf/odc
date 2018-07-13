@@ -16,7 +16,7 @@
 #include "odb_api/sql/SQLSession.h"
 #include "odb_api/sql/SQLDatabase.h"
 #include "odb_api/sql/SQLDataTable.h"
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 
 using namespace eckit;
 

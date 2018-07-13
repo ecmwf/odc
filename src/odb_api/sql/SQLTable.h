@@ -16,7 +16,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/memory/NonCopyable.h"
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 #include "odb_api/Types.h"
 
 namespace odb {

@@ -12,7 +12,7 @@
 #include "eckit/eckit.h"
 #include "eckit/filesystem/PathName.h"
 #include "odb_api/BitColumnExpression.h"
-#include "odb_api/sql/SQLBit.h"
+#include "odb_api/sql/type/SQLBit.h"
 #include "odb_api/sql/SQLSelect.h"
 #include "odb_api/sql/SQLTable.h"
 

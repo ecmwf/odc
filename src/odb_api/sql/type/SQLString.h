@@ -8,13 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
-// File SQLDouble.h
+// File SQLString.h
 // Baudouin Raoult - ECMWF Dec 03
 
-#ifndef SQLDouble_H
-#define SQLDouble_H
+#ifndef SQLString_H
+#define SQLString_H
 
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 
 namespace odb {
 namespace sql {
@@ -23,30 +23,30 @@ class SQLOutput;
 
 namespace type {
 
-class SQLDouble : public SQLType {
+class SQLString : public SQLType {
 public:
-	SQLDouble(const std::string& );
-	~SQLDouble(); 
-
-// -- Overridden methods
-	virtual void output(SQLOutput&, double, bool) const;
+	SQLString(const std::string& );
+	~SQLString(); 
 
 private:
 // No copy allowed
-	SQLDouble(const SQLDouble&);
-	SQLDouble& operator=(const SQLDouble&);
+	SQLString(const SQLString&);
+	SQLString& operator=(const SQLString&);
 
+// -- Overridden methods
 	virtual size_t size() const;
-	virtual int getKind() const { return doubleType; }
+	virtual void output(SQLOutput&, double, bool) const;
+	virtual int getKind() const { return stringType; }
+	virtual manipulator format() const;
 
-// -- Friends
-	//friend std::ostream& operator<<(std::ostream& s,const SQLDouble& p)
+	size_t width() const;
+
+	//friend std::ostream& operator<<(std::ostream& s,const SQLString& p)
 	//	{ p.print(s); return s; }
-
 };
 
 } // namespace type 
-} // namespace sql
-} // namespace odb
+} // namespace sql 
+} // namespace odb 
 
 #endif

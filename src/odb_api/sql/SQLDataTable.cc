@@ -7,7 +7,7 @@
 
 #include "odb_api/sql/SQLDataColumn.h"
 #include "odb_api/sql/SQLDataTableIterator.h"
-#include "odb_api/sql/SQLBitfield.h"
+#include "odb_api/sql/type/SQLBitfield.h"
 
 
 using namespace std;

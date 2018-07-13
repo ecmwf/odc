@@ -11,7 +11,7 @@
 #include "eckit/eckit.h"
 #include "eckit/log/Log.h"
 #include "odb_api/sql/SQLBitColumn.h"
-#include "odb_api/sql/SQLBitfield.h"
+#include "odb_api/sql/type/SQLBitfield.h"
 
 using namespace eckit;
 

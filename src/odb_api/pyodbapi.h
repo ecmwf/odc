@@ -8,7 +8,6 @@
 #include "odb_api/sql/SQLParser.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/Select.h"
-#include "odb_api/sql/SQLBitfield.h"
 #include "odb_api/MetaData.h"
 #include "odb_api/Reader.h"
 #include "odb_api/TextReader.h"

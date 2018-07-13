@@ -9,7 +9,7 @@
  */
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/sql/SQLBit.h"
+#include "odb_api/sql/type/SQLBit.h"
 #include "odb_api/sql/SQLOutput.h"
 
 namespace odb {

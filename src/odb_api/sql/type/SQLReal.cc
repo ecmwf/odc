@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odb_api/sql/SQLReal.h"
+#include "odb_api/sql/type/SQLReal.h"
 #include "odb_api/sql/SQLOutput.h"
 
 namespace odb {

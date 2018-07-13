@@ -9,7 +9,7 @@
  */
 
 #include "odb_api/Expressions.h"
-#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/type/SQLType.h"
 
 namespace odb {
 namespace sql {

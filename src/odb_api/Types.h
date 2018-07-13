@@ -12,6 +12,9 @@
 #define odb_api_Types_h
 
 #include <stdint.h>
+#include <vector>
+#include <string>
+#include <map>
 
 namespace odb {
 
