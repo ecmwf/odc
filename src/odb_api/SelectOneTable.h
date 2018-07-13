@@ -30,14 +30,14 @@ struct SelectOneTable {
 
 	const SQLTable*               table_;
 	std::vector<SQLColumn*>            fetch_;
-    std::vector<std::pair<double,bool>*>    values_;
+    std::vector<std::pair<double*,bool&>>    values_;
 
 	Expressions check_;
 	Expressions index_;
 
 	// For links
-	std::pair<double,bool>*   offset_;
-	std::pair<double,bool>*   length_;
+    std::pair<double*,bool&>   offset_;
+    std::pair<double*,bool&>   length_;
 	SQLColumn*           column_; // Reference column
 
 	// For checking/debugging

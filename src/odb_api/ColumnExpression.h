@@ -30,14 +30,14 @@ public:
 	~ColumnExpression(); 
 
 	SQLTable* table() { return table_; }
-	double* current() { return &(value_->first); }
+    double* current() { return value_.first; }
 	SQLExpression* clone() const;
 
 	SQLExpression* nominalShift(int n) { nominalShift_ = n; return this; }
 
 protected:
 	const type::SQLType*   type_;
-    std::pair<double,bool>*     value_;
+    std::pair<double*,bool&>    value_;
 	std::string                 columnName_;
 	SQLTable*              table_;
 	std::string                 tableReference_;

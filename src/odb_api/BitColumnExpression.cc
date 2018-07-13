@@ -91,8 +91,8 @@ void BitColumnExpression::prepare(SQLSelect& sql)
 
 double BitColumnExpression::eval(bool& missing) const
 {
-	if(value_->second) missing = true;
-	unsigned long x = static_cast<unsigned long>(value_->first);
+    if (value_.second) missing = true;
+    unsigned long x = static_cast<unsigned long>(*value_.first);
 	return (x & mask_) >> bitShift_;
 }
 

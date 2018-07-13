@@ -91,15 +91,18 @@ SQLTable* SQLSelect::findTable(const std::string& name,
 	return *names.begin();
 }
 
-std::pair<double,bool>* SQLSelect::column(const std::string& name, SQLTable* table)
+std::pair<double*, bool&> SQLSelect::column(const std::string& name, SQLTable* table)
 {
 
 	if(!table) table = findTable(name);
 	SQLColumn* column = table->column(name);
 
 	std::string full = column->fullName();
-	if(values_.find(full) != values_.end())
-		return &values_[full];
+
+    auto it = values_.find(full);
+    if(it != values_.end()) {
+        return std::pair<double*, bool&>(&it->second.first[0], it->second.second);
+    }
 
 	allTables_.insert(table);
 
@@ -110,11 +113,17 @@ std::pair<double,bool>* SQLSelect::column(const std::string& name, SQLTable* tab
 		tablesToFetch_[master] = SelectOneTable(master);
 
 	tablesToFetch_[master].fetch_.push_back(column);
-	tablesToFetch_[master].values_.push_back(&values_[full]);
+
+    std::pair<std::vector<double>, bool>& newValue(values_[full]);
+    newValue.first.resize(column->dataSizeDoubles());
+
+    std::pair<double*, bool&> referenceValue(&newValue.first[0], newValue.second);
+
+    tablesToFetch_[master].values_.push_back(referenceValue);
 
 	Log::debug() << "Accessing column " << full << std::endl;
 
-	return &values_[full];
+    return referenceValue;
 
 }
 
@@ -239,16 +248,19 @@ void SQLSelect::prepareExecute() {
 
 					//
 				std::string o                  = name2 + ".offset";
-				std::pair<double,bool>* offset = column(o,table1);
+                std::pair<double*,bool&> offset = column(o,table1);
 
 				std::string l                  = name2 + ".length";
-				std::pair<double,bool>* length = column(l,table1);
+                std::pair<double*,bool&> length = column(l,table1);
 
 				// There should not be 2 tables with a link on the same table
 				
-				ASSERT(x.offset_ == 0);
-				ASSERT(x.length_ == 0);
-				ASSERT(x.column_ == 0);
+                // TODO: Test and fixme
+//				ASSERT(x.offset_ == 0);
+//				ASSERT(x.length_ == 0);
+                ASSERT(x.offset_.first == 0);
+                ASSERT(x.length_.second == 0);
+                ASSERT(x.column_ == 0);
 
 				x.offset_ = offset;
 				x.length_ = length;
@@ -553,8 +565,8 @@ bool SQLSelect::processOneRow() {
 				SQLColumn &fetchColumn = *env.table().fetch_[i];
 				//Log::info() << "SQLSelect::processOneRow: fetchColumn.name() => " << fetchColumn.name() << std::endl;
 				//Log::info() << "SQLSelect::processOneRow: fetchColumn.type() => " << fetchColumn.type() << std::endl;
-				bool &missing = env.table().values_[i]->second;
-				env.table().values_[i]->first = fetchColumn.next(missing);
+                bool& missing{env.table().values_[i].second};
+                *(env.table().values_[i].first) = fetchColumn.next(missing);
 			}
 			bool ok = true;
 			n = env.table().check_.size();

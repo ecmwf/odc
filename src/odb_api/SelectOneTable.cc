@@ -16,10 +16,12 @@
 namespace odb {
 namespace sql {
 
+static bool nullBool = false;
+
 SelectOneTable::SelectOneTable(const SQLTable* table)
 : table_(table),
-  offset_(0),
-  length_(0),
+  offset_(0, nullBool),
+  length_(0, nullBool),
   column_(0),
   table1_(0),
   table2_(0),

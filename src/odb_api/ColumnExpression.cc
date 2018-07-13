@@ -23,11 +23,14 @@ namespace odb {
 namespace sql {
 namespace expression {
 
-static std::pair<double,bool> zero_(0,false);
+
+static double dzero = 0;
+static bool mzero = false;
+static std::pair<double*,bool&> zero_(&dzero, mzero);
 
 ColumnExpression::ColumnExpression(const std::string& name, SQLTable* table, int begin, int end)
 : type_(0),
-  value_(&zero_),
+  value_(zero_),
   columnName_(name),
   table_(table),
   tableReference_(),
@@ -38,7 +41,7 @@ ColumnExpression::ColumnExpression(const std::string& name, SQLTable* table, int
 
 ColumnExpression::ColumnExpression(const std::string& name, const std::string& tableReference, int begin, int end)
 : type_(0),
-  value_(&zero_),
+  value_(zero_),
   columnName_(name),
   table_(0),
   tableReference_(tableReference),
@@ -64,9 +67,8 @@ ColumnExpression::~ColumnExpression() {}
 
 double ColumnExpression::eval(bool& missing) const
 {
-	if(value_->second)
-		missing = true;
-	return value_->first;
+    if (value_.second) missing = true;
+    return *value_.first;
 }
 
 void ColumnExpression::prepare(SQLSelect& sql)
@@ -100,7 +102,7 @@ void ColumnExpression::prepare(SQLSelect& sql)
 
 void ColumnExpression::cleanup(SQLSelect& sql)
 {
-	value_ = &zero_;
+    value_ = zero_;
 	type_  = 0;
 }
 

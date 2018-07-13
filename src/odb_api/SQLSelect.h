@@ -36,6 +36,7 @@ namespace expression {
 
 class SQLTableIterator;
 
+
 class SQLSelect : public SQLStatement {
 	friend class odb::SelectIterator;
 
@@ -53,7 +54,7 @@ public:
 
 	bool isAggregate() { return aggregate_; }
 
-	std::pair<double,bool>* column(const std::string& name, SQLTable*);
+    std::pair<double*,bool&> column(const std::string& name, SQLTable*);
 	const type::SQLType* typeOf(const std::string& name, SQLTable*) const;
 	// FIXME: do we really need all these optional parameters?
 	SQLTable* findTable(const std::string& name, std::string *fullName = 0, bool *hasMissingValue=0, double *missingValue=0, bool* isBitfield=0, BitfieldDef* =0) const;
@@ -95,8 +96,11 @@ private:
     typedef std::map<std::vector<std::pair<double,bool> >, expression::Expressions*> AggregatedResults;
 	AggregatedResults aggregatedResults_;
 
-    std::map<std::string, std::pair<double,bool> > values_;
-	std::set<SQLTable*> allTables_;
+    // n.b. we don't use std::vector<bool> as you cannot take a reference to a single element.
+
+    std::map<std::string, std::pair<std::vector<double>, bool>> values_;
+
+    std::set<SQLTable*> allTables_;
 
 	typedef std::map<SQLTable*,SelectOneTable> TableMap;
 	TableMap tablesToFetch_;

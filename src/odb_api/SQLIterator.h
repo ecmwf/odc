@@ -41,6 +41,8 @@ public:
 	virtual void load()   {}
 	virtual void unload() {}
 
+    virtual size_t dataSizeDoubles() const { return 1; }
+
 protected:
 	const type::SQLType& type_;
 	
