@@ -9,7 +9,7 @@
  */
 
 #include "odb_api/ParameterExpression.h"
-#include "odb_api/SQLSession.h"
+#include "odb_api/sql/SQLSession.h"
 
 namespace odb {
 namespace sql {

@@ -11,12 +11,12 @@
 #include "eckit/types/Types.h"
 
 
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLInsertFactory.h"
-#include "odb_api/SQLSession.h"
+#include "odb_api/sql/SQLDatabase.h"
+#include "odb_api/sql/SQLInsertFactory.h"
+#include "odb_api/sql/SQLSession.h"
 #include "odb_api/Writer.h"
-#include "odb_api/SQLAST.h"
-#include "odb_api/SQLInsert.h"
+#include "odb_api/sql/SQLAST.h"
+#include "odb_api/sql/SQLInsert.h"
 
 using namespace eckit;
 using namespace std;

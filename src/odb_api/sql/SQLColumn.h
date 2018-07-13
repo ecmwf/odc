@@ -16,7 +16,7 @@
 
 namespace eckit { class PathName; }
 
-#include "odb_api/SQLIterator.h"
+#include "odb_api/sql/SQLIterator.h"
 #include "odb_api/Types.h"
 
 namespace odb {

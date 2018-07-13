@@ -9,9 +9,9 @@
  */
 
 #include "eckit/parser/Tokenizer.h"
-#include "odb_api/SQLBitColumn.h"
-#include "odb_api/SQLColumn.h"
-#include "odb_api/SQLDatabase.h"
+#include "odb_api/sql/SQLBitColumn.h"
+#include "odb_api/sql/SQLColumn.h"
+#include "odb_api/sql/SQLDatabase.h"
 
 using namespace eckit;
 

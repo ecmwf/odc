@@ -61,16 +61,16 @@ using namespace std;
 using namespace eckit;
 
 %include "odb_api/Select.h"
-%include "odb_api/SQLType.h"
+%include "odb_api/sql/SQLType.h"
 
 %include "odb_api/ColumnType.h"
 %include "odb_api/Types.h"
-%include "odb_api/SQLBitfield.h"
+%include "odb_api/sql/SQLBitfield.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/DataStream.h"
 %include "odb_api/Codec.h"
 %include "odb_api/Column.h"
-#include "odb_api/SQLIteratorSession.h"
+#include "odb_api/sql/SQLIteratorSession.h"
 
 using namespace odb;
 
@@ -102,13 +102,13 @@ using namespace odb;
 %include "odb_api/SelectIterator.h"
 #include "odb_api/FixedSizeWriterIterator.h"
 
-#include "odb_api/SQLType.h"
-#include "odb_api/SQLInteractiveSession.h"
-#include "odb_api/SQLIteratorSession.h"
-#include "odb_api/SQLTable.h"
-#include "odb_api/SQLSelect.h"
-#include "odb_api/SQLParser.h"
-#include "odb_api/SQLExpression.h"
+#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/SQLInteractiveSession.h"
+#include "odb_api/sql/SQLIteratorSession.h"
+#include "odb_api/sql/SQLTable.h"
+#include "odb_api/sql/SQLSelect.h"
+#include "odb_api/sql/SQLParser.h"
+#include "odb_api/sql/SQLExpression.h"
 
 #include "odb_api/odbcapi.h"
 %init %{

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odb_api/SQLAST.h"
+#include "odb_api/sql/SQLAST.h"
 
 using namespace std;
 

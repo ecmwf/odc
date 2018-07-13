@@ -17,7 +17,7 @@
 #include <map>
 
 #include "eckit/filesystem/PathName.h"
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLTable.h"
 #include "odb_api/SchemaAnalyzer.h"
 
 namespace eckit { class DataHandle; }

@@ -10,10 +10,10 @@
 
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/SQLNonInteractiveSession.h"
-#include "odb_api/SQLSimpleOutput.h"
-#include "odb_api/SQLStatement.h"
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLNonInteractiveSession.h"
+#include "odb_api/sql/SQLSimpleOutput.h"
+#include "odb_api/sql/SQLStatement.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {

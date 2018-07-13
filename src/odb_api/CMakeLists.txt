@@ -423,7 +423,7 @@ DataStream.cc
 FastODA2Request.cc
 Header.cc
 ODAUpdatingIterator.cc
-SQLIteratorOutput.cc
+sql/SQLIteratorOutput.cc
 TODATable.cc
 TODATableIterator.cc
 WriterDispatchingIterator.cc
@@ -446,8 +446,8 @@ ecbuild_add_library( TARGET             Odb
                      LIBS               metkit )
 
 ecbuild_generate_yy( YYPREFIX           odblib_
-                     YACC               sqly
-                     LEX                sqll
+                     YACC               sql/sqly
+                     LEX                sql/sqll
                      FLEX_FLAGS         "-d"
-                     DEPENDANT          SQLParser.cc )
+                     DEPENDANT          sql/SQLParser.cc )
 

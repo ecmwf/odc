@@ -13,9 +13,9 @@
 #include "eckit/eckit.h"
 #include "eckit/utils/Translator.h"
 #include "odb_api/ColumnExpression.h"
-#include "odb_api/SQLColumn.h"
-#include "odb_api/SQLSelect.h"
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLColumn.h"
+#include "odb_api/sql/SQLSelect.h"
+#include "odb_api/sql/SQLTable.h"
 
 using namespace eckit;
 

@@ -15,7 +15,7 @@
 #define SQLBitfield_H
 
 #include "odb_api/Types.h"
-#include "odb_api/SQLType.h"
+#include "odb_api/sql/SQLType.h"
 
 namespace odb {
 namespace sql {

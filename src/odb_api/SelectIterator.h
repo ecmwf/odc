@@ -18,7 +18,7 @@
 
 #include "odb_api/Expressions.h"
 #include "odb_api/ColumnType.h"
-#include "odb_api/SQLIteratorSession.h"
+#include "odb_api/sql/SQLIteratorSession.h"
 
 extern "C" {
 	typedef void oda_select_iterator;

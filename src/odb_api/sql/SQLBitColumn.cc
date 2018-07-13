@@ -10,8 +10,8 @@
 
 #include "eckit/eckit.h"
 #include "eckit/log/Log.h"
-#include "odb_api/SQLBitColumn.h"
-#include "odb_api/SQLBitfield.h"
+#include "odb_api/sql/SQLBitColumn.h"
+#include "odb_api/sql/SQLBitfield.h"
 
 using namespace eckit;
 

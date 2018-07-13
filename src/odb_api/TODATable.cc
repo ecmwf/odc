@@ -9,7 +9,7 @@
  */
 
 #include <sstream>
-#include "odb_api/SQLBitfield.h"
+#include "odb_api/sql/SQLBitfield.h"
 
 using namespace std;
 

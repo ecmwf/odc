@@ -14,7 +14,7 @@
 #ifndef VariablesTable_H
 #define VariablesTable_H
 
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLTable.h"
 
 namespace odb {
 namespace sql {

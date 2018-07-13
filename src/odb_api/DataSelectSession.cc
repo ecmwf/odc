@@ -4,7 +4,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/DataSelectOutput.h"
 #include "odb_api/DataSelectSession.h"
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 
 namespace odb {
 namespace internal {

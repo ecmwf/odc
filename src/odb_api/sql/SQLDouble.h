@@ -14,7 +14,7 @@
 #ifndef SQLDouble_H
 #define SQLDouble_H
 
-#include "odb_api/SQLType.h"
+#include "odb_api/sql/SQLType.h"
 
 namespace odb {
 namespace sql {

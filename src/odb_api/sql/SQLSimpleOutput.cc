@@ -11,8 +11,8 @@
 #include "eckit/eckit.h"
 #include "odb_api/Decoder.h"
 #include "odb_api/Expressions.h"
-#include "odb_api/SQLSelect.h"
-#include "odb_api/SQLSimpleOutput.h"
+#include "odb_api/sql/SQLSelect.h"
+#include "odb_api/sql/SQLSimpleOutput.h"
 
 #include <limits>
 

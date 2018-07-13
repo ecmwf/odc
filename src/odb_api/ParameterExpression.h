@@ -14,7 +14,7 @@
 #ifndef ParameterExpression_H
 #define ParameterExpression_H
 
-#include "odb_api/SQLExpression.h"
+#include "odb_api/sql/SQLExpression.h"
 
 namespace odb {
 namespace sql {

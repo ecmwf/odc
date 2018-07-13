@@ -15,9 +15,9 @@
 #define SQLInsertFactory_H
 
 #include "eckit/thread/ThreadSingleton.h"
-#include "Expressions.h"
+#include "odb_api/Expressions.h"
 #include "SQLOutputConfig.h"
-#include "SchemaAnalyzer.h"
+#include "odb_api/SchemaAnalyzer.h"
 #include "SQLAST.h"
 #include "SQLInsert.h"
 

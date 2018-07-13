@@ -14,7 +14,7 @@
 #ifndef SQLMATCHSubquerySession_H
 #define SQLMATCHSubquerySession_H
 
-#include "odb_api/SQLSession.h"
+#include "odb_api/sql/SQLSession.h"
 
 namespace odb { class ReaderIterator; }
 namespace odb { class SelectIterator; }

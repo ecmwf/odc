@@ -19,11 +19,11 @@ namespace eckit { class DataHandle; }
 
 #include "eckit/eckit.h"
 
-#include "odb_api/SQLAST.h"
-#include "odb_api/SQLSelectFactory.h"
-#include "odb_api/SQLInsertFactory.h"
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLAST.h"
+#include "odb_api/sql/SQLSelectFactory.h"
+#include "odb_api/sql/SQLInsertFactory.h"
+#include "odb_api/sql/SQLDatabase.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 
 namespace odb {
 namespace sql {

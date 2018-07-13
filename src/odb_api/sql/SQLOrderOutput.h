@@ -16,7 +16,7 @@
 
 #include "odb_api/Expressions.h"
 #include "odb_api/OrderByExpressions.h"
-#include "odb_api/SQLOutput.h"
+#include "odb_api/sql/SQLOutput.h"
 
 namespace odb {
 namespace sql {

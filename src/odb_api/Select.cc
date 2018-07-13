@@ -16,7 +16,7 @@
 #include "odb_api/data/DataHandleFactory.h"
 #include "odb_api/Select.h"
 #include "eckit/io/DataHandle.h"
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 
 using namespace std;
 using namespace eckit;

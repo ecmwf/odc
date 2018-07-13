@@ -16,8 +16,8 @@
 
 #include "eckit/exception/Exceptions.h"
 
-#include "odb_api/SQLOutput.h"
-#include "odb_api/SQLBitfield.h"
+#include "odb_api/sql/SQLOutput.h"
+#include "odb_api/sql/SQLBitfield.h"
 #include "odb_api/MetaData.h"
 
 namespace odb {

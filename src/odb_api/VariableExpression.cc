@@ -10,12 +10,12 @@
 
 //#include "eckit/log/Log.h"
 
-//#include "odb_api/SQLAST.h"
-//#include "odb_api/SQLBitfield.h"
+//#include "odb_api/sql/SQLAST.h"
+//#include "odb_api/sql/SQLBitfield.h"
 //#include "odb_api/SchemaAnalyzer.h"
 #include "odb_api/VariableExpression.h"
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLSession.h"
+#include "odb_api/sql/SQLDatabase.h"
+#include "odb_api/sql/SQLSession.h"
 
 namespace odb {
 namespace sql {

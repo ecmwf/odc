@@ -10,7 +10,7 @@
 
 #include "eckit/types/Types.h"
 
-#include "odb_api/SQLInsert.h"
+#include "odb_api/sql/SQLInsert.h"
 
 namespace odb {
 namespace sql {

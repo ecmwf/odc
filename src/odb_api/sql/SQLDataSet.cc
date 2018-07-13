@@ -1,7 +1,7 @@
 /// @file SQLDataSet.cc
 /// @author Tomas Kral
 
-#include "odb_api/SQLDataSet.h"
+#include "odb_api/sql/SQLDataSet.h"
 
 using namespace std;
 using namespace eckit;

@@ -17,8 +17,8 @@
 #include "eckit/filesystem/PathName.h"
 
 #include "odb_api/SelectOneTable.h"
-#include "odb_api/SQLOutputConfig.h"
-#include "odb_api/SQLStatement.h"
+#include "odb_api/sql/SQLOutputConfig.h"
+#include "odb_api/sql/SQLStatement.h"
 #include "odb_api/Stack.h"
 
 namespace odb {

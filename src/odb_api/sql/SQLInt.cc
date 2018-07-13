@@ -9,8 +9,8 @@
  */
 
 
-#include "odb_api/SQLInt.h"
-#include "odb_api/SQLOutput.h"
+#include "odb_api/sql/SQLInt.h"
+#include "odb_api/sql/SQLOutput.h"
 
 namespace odb {
 namespace sql {

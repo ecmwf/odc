@@ -15,7 +15,7 @@
 #define SQLExpression_H
 
 #include "SQLType.h"
-#include "Types.h"
+#include "odb_api/Types.h"
 
 namespace odb {
 namespace sql {

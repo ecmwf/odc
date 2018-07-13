@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odb_api/SQLColumn.h"
-#include "odb_api/SQLIndex.h"
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLColumn.h"
+#include "odb_api/sql/SQLIndex.h"
+#include "odb_api/sql/SQLTable.h"
 
 using namespace eckit;
 

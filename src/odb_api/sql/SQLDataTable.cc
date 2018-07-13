@@ -1,13 +1,13 @@
-//#include "odb_api/SQLDataTable.h"
+//#include "odb_api/sql/SQLDataTable.h"
 
 //#include <map>
 
-#include "odb_api/SQLDataTable.h"
+#include "odb_api/sql/SQLDataTable.h"
 #include "odb_api/DataTable.h"
 
-#include "odb_api/SQLDataColumn.h"
-#include "odb_api/SQLDataTableIterator.h"
-#include "odb_api/SQLBitfield.h"
+#include "odb_api/sql/SQLDataColumn.h"
+#include "odb_api/sql/SQLDataTableIterator.h"
+#include "odb_api/sql/SQLBitfield.h"
 
 
 using namespace std;

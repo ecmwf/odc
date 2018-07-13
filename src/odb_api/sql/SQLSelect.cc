@@ -12,11 +12,11 @@
 #include "eckit/log/Log.h"
 #include "odb_api/ConstantExpression.h"
 #include "odb_api/Expressions.h"
-#include "odb_api/SQLColumn.h"
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLOutput.h"
-#include "odb_api/SQLSelect.h"
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLColumn.h"
+#include "odb_api/sql/SQLDatabase.h"
+#include "odb_api/sql/SQLOutput.h"
+#include "odb_api/sql/SQLSelect.h"
+#include "odb_api/sql/SQLTable.h"
 
 using namespace eckit;
 using namespace std;

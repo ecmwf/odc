@@ -9,8 +9,8 @@
  */
 
 #include "odb_api/SelectIterator.h"
-#include "odb_api/SQLIteratorOutput.h"
-#include "odb_api/SQLIteratorSession.h"
+#include "odb_api/sql/SQLIteratorOutput.h"
+#include "odb_api/sql/SQLIteratorSession.h"
 
 namespace odb {
 namespace sql {

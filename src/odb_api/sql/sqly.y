@@ -21,8 +21,8 @@
 #include <unistd.h>
 
 #include "eckit/eckit.h"
-#include "odb_api/SQLSession.h"
-#include "odb_api/SQLStatement.h"
+#include "odb_api/sql/SQLSession.h"
+#include "odb_api/sql/SQLStatement.h"
 
 #include <iostream>
 

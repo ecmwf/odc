@@ -15,7 +15,7 @@
 #define SQLIteratorOutput_H
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/SQLOutput.h"
+#include "odb_api/sql/SQLOutput.h"
 
 namespace odb {
 
@@ -69,6 +69,6 @@ private:
 } // namespace sql
 } // namespace odb
 
-#include "odb_api/SQLIteratorOutput.cc"
+#include "odb_api/sql/SQLIteratorOutput.cc"
 
 #endif

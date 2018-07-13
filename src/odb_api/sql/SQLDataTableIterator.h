@@ -2,7 +2,7 @@
 #define SQLDATATABLEITERATOR_H_
 
 #include "odb_api/DataTable.h"
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLTable.h"
 
 namespace odb { namespace sql { class SQLColumn; } }
 

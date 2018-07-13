@@ -12,12 +12,12 @@
 #include "eckit/config/Resource.h"
 
 #include "odb_api/ODADatabase.h"
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLNonInteractiveSession.h"
-#include "odb_api/SQLStatement.h"
-#include "odb_api/SQLSelectFactory.h"
-#include "odb_api/SQLParser.h"
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLDatabase.h"
+#include "odb_api/sql/SQLNonInteractiveSession.h"
+#include "odb_api/sql/SQLStatement.h"
+#include "odb_api/sql/SQLSelectFactory.h"
+#include "odb_api/sql/SQLParser.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 #include "odb_api/StringTool.h"
 #include <libgen.h>
 

@@ -11,7 +11,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/ColumnExpression.h"
 #include "odb_api/Expressions.h"
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLTable.h"
 #include "odb_api/StringExpression.h"
 #include "odb_api/StringTool.h"
 

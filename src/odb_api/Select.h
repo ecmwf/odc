@@ -21,8 +21,8 @@
 #endif
 
 #include "odb_api/IteratorProxy.h"
-#include "odb_api/SQLNonInteractiveSession.h"
-#include "odb_api/SQLIteratorSession.h"
+#include "odb_api/sql/SQLNonInteractiveSession.h"
+#include "odb_api/sql/SQLIteratorSession.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

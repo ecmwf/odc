@@ -14,7 +14,7 @@
 #ifndef odb_api_SQLSimpleOutput_H
 #define odb_api_SQLSimpleOutput_H
 
-#include "odb_api/SQLOutput.h"
+#include "odb_api/sql/SQLOutput.h"
 
 namespace odb {
 namespace sql {

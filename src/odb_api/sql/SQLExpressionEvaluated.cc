@@ -9,7 +9,7 @@
  */
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/SQLExpressionEvaluated.h"
+#include "odb_api/sql/SQLExpressionEvaluated.h"
 
 namespace odb {
 namespace sql {

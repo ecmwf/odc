@@ -15,7 +15,7 @@
 #define SQLDistinctOutput_H
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/SQLOutput.h"
+#include "odb_api/sql/SQLOutput.h"
 
 namespace odb {
 namespace sql {

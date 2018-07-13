@@ -12,7 +12,7 @@
 /// Piotr Kuchta - (C) ECMWF July 2009
 
 #include "odb_api/FunctionROWNUMBER.h"
-#include "odb_api/SQLSelect.h"
+#include "odb_api/sql/SQLSelect.h"
 
 namespace odb {
 namespace sql {

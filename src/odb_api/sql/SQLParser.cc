@@ -16,18 +16,18 @@
 #include "odb_api/FunctionFactory.h"
 #include "odb_api/NumberExpression.h"
 #include "odb_api/ParameterExpression.h"
-#include "odb_api/SQLAST.h"
-#include "odb_api/SQLBitfield.h"
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLExpression.h"
-#include "odb_api/SQLParser.h"
-#include "odb_api/SQLInsertFactory.h"
-#include "odb_api/SQLSelect.h"
-#include "odb_api/SQLSession.h"
+#include "odb_api/sql/SQLAST.h"
+#include "odb_api/sql/SQLBitfield.h"
+#include "odb_api/sql/SQLDatabase.h"
+#include "odb_api/sql/SQLExpression.h"
+#include "odb_api/sql/SQLParser.h"
+#include "odb_api/sql/SQLInsertFactory.h"
+#include "odb_api/sql/SQLSelect.h"
+#include "odb_api/sql/SQLSession.h"
 #include "odb_api/StringExpression.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/FunctionMATCH.h"
-#include "odb_api/SQLAST.h"
+#include "odb_api/sql/SQLAST.h"
 
 using namespace eckit;
 
@@ -45,7 +45,7 @@ using namespace odb::sql::expression;
 using namespace odb::sql::expression::function;
 
 #include "odb_api/odblib_lex.h"
-#include "odb_api/sqly.c"
+#include "odb_api/sql/sqly.c"
 
 void odblib_error(odblib_scan_t scanner, odb::sql::SQLSession*, const char* msg)
 {

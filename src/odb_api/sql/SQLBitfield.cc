@@ -14,9 +14,9 @@
 #include "eckit/types/Types.h"
 #include "eckit/parser/Tokenizer.h"
 #include "odb_api/Decoder.h"
-#include "odb_api/SQLBitfield.h"
-#include "odb_api/SQLBit.h"
-#include "odb_api/SQLOutput.h"
+#include "odb_api/sql/SQLBitfield.h"
+#include "odb_api/sql/SQLBit.h"
+#include "odb_api/sql/SQLOutput.h"
 #include "odb_api/Types.h"
 
 using namespace eckit;

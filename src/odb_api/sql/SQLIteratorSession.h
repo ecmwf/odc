@@ -14,7 +14,7 @@
 #ifndef SQLIteratorSession_H
 #define SQLIteratorSession_H
 
-#include "odb_api/SQLSession.h"
+#include "odb_api/sql/SQLSession.h"
 
 namespace odb {
 

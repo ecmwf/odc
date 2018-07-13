@@ -12,12 +12,12 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
-#include "odb_api/SQLSelectFactory.h"
+#include "odb_api/sql/SQLSelectFactory.h"
 #include "odb_api/Select.h"
 #include "odb_api/SelectIterator.h"
 #include "odb_api/Writer.h"
 #include "odb_api/tools/ImportTool.h"
-#include "odb_api/SQLInteractiveSession.h"
+#include "odb_api/sql/SQLInteractiveSession.h"
 
 using namespace std;
 using namespace eckit;

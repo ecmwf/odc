@@ -11,18 +11,18 @@
 #include "odb_api/VariablesTable.h"
 //#include "eckit/parser/Tokenizer.h"
 
-//#include "odb_api/SQLAST.h"
-//#include "odb_api/SQLBitColumn.h"
-//#include "odb_api/SQLBitfield.h"
-//#include "odb_api/SQLColumn.h"
-#include "odb_api/SQLSession.h"
-#include "odb_api/SQLDatabase.h"
+//#include "odb_api/sql/SQLAST.h"
+//#include "odb_api/sql/SQLBitColumn.h"
+//#include "odb_api/sql/SQLBitfield.h"
+//#include "odb_api/sql/SQLColumn.h"
+#include "odb_api/sql/SQLSession.h"
+#include "odb_api/sql/SQLDatabase.h"
 //#include "odb_api/VariablesTable.h"
-//#include "odb_api/SQLType.h"
-#include "odb_api/SQLColumn.h"
+//#include "odb_api/sql/SQLType.h"
+#include "odb_api/sql/SQLColumn.h"
 //#include "odb_api/SchemaAnalyzer.h"
 #include "odb_api/StringTool.h"
-#include "odb_api/SQLExpression.h"
+#include "odb_api/sql/SQLExpression.h"
 
 using namespace eckit;
 

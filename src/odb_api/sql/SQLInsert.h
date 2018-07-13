@@ -15,8 +15,8 @@
 #define SQLInsert_H
 
 #include "odb_api/Expressions.h"
-#include "odb_api/SQLStatement.h"
-#include "odb_api/SQLAST.h"
+#include "odb_api/sql/SQLStatement.h"
+#include "odb_api/sql/SQLAST.h"
 
 namespace odb {
 namespace sql {

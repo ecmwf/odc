@@ -14,7 +14,7 @@
 #ifndef SQLMATCHSubquerySessionOutput_H
 #define SQLMATCHSubquerySessionOutput_H
 
-#include "odb_api/SQLOutput.h"
+#include "odb_api/sql/SQLOutput.h"
 
 class SelectIterator;
 namespace odb { namespace sql { namespace expression { namespace function { class FunctionMATCH; } } } } 

@@ -13,10 +13,10 @@
 #include "odb_api/DataColumns.h"
 #include "odb_api/DataTable.h"
 
-#include "odb_api/SQLSession.h"
-#include "odb_api/SQLDatabase.h"
-#include "odb_api/SQLDataTable.h"
-#include "odb_api/SQLType.h"
+#include "odb_api/sql/SQLSession.h"
+#include "odb_api/sql/SQLDatabase.h"
+#include "odb_api/sql/SQLDataTable.h"
+#include "odb_api/sql/SQLType.h"
 
 using namespace eckit;
 

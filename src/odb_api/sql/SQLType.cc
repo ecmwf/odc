@@ -11,11 +11,11 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/thread/ThreadSingleton.h"
 #include "eckit/log/Log.h"
-#include "odb_api/SQLDouble.h"
-#include "odb_api/SQLInt.h"
-#include "odb_api/SQLReal.h"
-#include "odb_api/SQLString.h"
-#include "odb_api/SQLType.h"
+#include "odb_api/sql/SQLDouble.h"
+#include "odb_api/sql/SQLInt.h"
+#include "odb_api/sql/SQLReal.h"
+#include "odb_api/sql/SQLString.h"
+#include "odb_api/sql/SQLType.h"
 
 using namespace eckit;
 

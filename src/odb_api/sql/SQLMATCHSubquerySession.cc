@@ -8,9 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odb_api/SQLMATCHSubquerySession.h"
+#include "odb_api/sql/SQLMATCHSubquerySession.h"
 #include "odb_api/FunctionMATCH.h"
-#include "odb_api/SQLMATCHSubquerySessionOutput.h"
+#include "odb_api/sql/SQLMATCHSubquerySessionOutput.h"
 
 namespace odb {
 namespace sql {

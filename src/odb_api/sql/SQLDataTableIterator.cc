@@ -1,6 +1,6 @@
 
-#include "odb_api/SQLDataTableIterator.h"
-//#include "odb_api/SQLDataColumn.h"
+#include "odb_api/sql/SQLDataTableIterator.h"
+//#include "odb_api/sql/SQLDataColumn.h"
 
 namespace odb {
 

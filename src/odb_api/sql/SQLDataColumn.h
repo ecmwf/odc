@@ -3,7 +3,7 @@
 
 //#include <string>
 
-#include "odb_api/SQLColumn.h"
+#include "odb_api/sql/SQLColumn.h"
 
 namespace odb {
 

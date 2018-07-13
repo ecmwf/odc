@@ -9,8 +9,8 @@
  */
 
 #include "odb_api/Expressions.h"
-#include "odb_api/SQLExpressionEvaluated.h"
-#include "odb_api/SQLOrderOutput.h"
+#include "odb_api/sql/SQLExpressionEvaluated.h"
+#include "odb_api/sql/SQLOrderOutput.h"
 
 namespace odb {
 namespace sql {

@@ -13,8 +13,8 @@
 
 #include "odb_api/Expressions.h"
 #include "odb_api/SchemaAnalyzer.h"
-#include "odb_api/SQLAST.h"
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLAST.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 
 namespace eckit { class DataHandle; }
 namespace odb { namespace sql { class DataTable; } }

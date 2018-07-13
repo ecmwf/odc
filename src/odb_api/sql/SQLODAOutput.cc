@@ -11,8 +11,8 @@
 #include "odb_api/ColumnType.h"
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/Expressions.h"
-#include "odb_api/SQLODAOutput.h"
-#include "odb_api/SQLSelect.h"
+#include "odb_api/sql/SQLODAOutput.h"
+#include "odb_api/sql/SQLSelect.h"
 #include "odb_api/Writer.h"
 
 namespace odb {

@@ -9,7 +9,7 @@
  */
 
 #include "odb_api/Environment.h"
-#include "odb_api/SQLTable.h"
+#include "odb_api/sql/SQLTable.h"
 
 namespace odb {
 namespace sql {
