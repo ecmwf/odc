@@ -12,9 +12,9 @@
 
 #include "odb_api/FunctionEQ.h"
 #include "odb_api/FunctionMATCH.h"
-#include "odb_api/sql/SQLMATCHSubquerySession.h"
-#include "odb_api/sql/SQLStatement.h"
-#include "odb_api/sql/SQLSelect.h"
+#include "eckit/sql/SQLMATCHSubquerySession.h"
+#include "eckit/sql/SQLStatement.h"
+#include "eckit/sql/SQLSelect.h"
 
 #include <vector>
 #include <algorithm>

@@ -4,8 +4,8 @@
 #include "odb_api/DataSelect.h"
 #include "odb_api/DataSelectIterator.h"
 #include "odb_api/DataSelectSession.h"
-#include "odb_api/sql/SQLParser.h"
-#include "odb_api/sql/SQLSelect.h"
+#include "eckit/sql/SQLParser.h"
+#include "eckit/sql/SQLSelect.h"
 
 using namespace odb;
 

@@ -14,7 +14,7 @@
 #ifndef odb_api_SchemaAnalyzer_H
 #define odb_api_SchemaAnalyzer_H
 
-#include "odb_api/sql/SQLAST.h"
+#include "eckit/sql/SQLAST.h"
 
 namespace odb {
 

@@ -4,7 +4,7 @@
 #ifndef DataSelectOutput_H
 #define DataSelectOutput_H
 
-#include "odb_api/sql/SQLOutput.h"
+#include "eckit/sql/SQLOutput.h"
 
 namespace odb {
 namespace internal {

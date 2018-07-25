@@ -11,7 +11,7 @@
 #include "odb_api/ColumnExpression.h"
 #include "odb_api/FunctionRLIKE.h"
 #include "odb_api/FunctionFactory.h"
-#include "odb_api/sql/type/SQLType.h"
+#include "eckit/sql/type/SQLType.h"
 #include "eckit/utils/Regex.h"
 #include "eckit/exception/Exceptions.h"
 

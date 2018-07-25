@@ -3,7 +3,7 @@
 
 #include "odb_api/DataSelectIterator.h"
 #include "odb_api/DataSelectOutput.h"
-#include "odb_api/Expressions.h"
+#include "eckit/sql/expression/SQLExpressions.h"
 
 using namespace odb;
 

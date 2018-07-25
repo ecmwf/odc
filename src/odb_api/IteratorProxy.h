@@ -18,7 +18,7 @@
 
 #include "odb_api/ColumnType.h"
 #include "odb_api/SelectIterator.h"
-#include "odb_api/Types.h"
+#include "eckit/sql/SQLTypedefs.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

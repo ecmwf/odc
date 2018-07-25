@@ -11,8 +11,8 @@
 //#include "odb_api/odb_api.h"
 
 #include "odb_api/ODAColumn.h"
-//#include "odb_api/sql/SQLDatabase.h"
-//#include "odb_api/sql/SQLType.h"
+//#include "eckit/sql/SQLDatabase.h"
+//#include "eckit/sql/SQLType.h"
 //#include "odb_api/TODATable.h"
 //#include "odb_api/TODATableIterator.h"
 

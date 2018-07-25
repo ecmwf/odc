@@ -12,7 +12,7 @@
 /// (C) ECMWF July 2010
 
 #include "odb_api/FunctionTHIN.h"
-#include "odb_api/sql/SQLSelect.h"
+#include "eckit/sql/SQLSelect.h"
 
 namespace odb {
 namespace sql {

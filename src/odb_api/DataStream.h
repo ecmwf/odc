@@ -19,7 +19,7 @@
 #include <stdint.h>
 
 #include "eckit/eckit.h"
-#include "odb_api/Types.h"
+#include "eckit/sql/SQLTypedefs.h"
 
 namespace eckit { class DataHandle; }
 class MemoryBlock;

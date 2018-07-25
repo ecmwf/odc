@@ -8,48 +8,45 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file SQLIteratorOutput.h
-/// Piotr Kuchta - ECMWF Feb 09
+/// \file SQLODAOutput.h
+/// Piotr Kuchta - ECMWF Jan 09
 
-#ifndef SQLIteratorOutput_H
-#define SQLIteratorOutput_H
+#ifndef odb_api_SQLODAOutput_H
+#define odb_api_SQLODAOutput_H
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/sql/SQLOutput.h"
+
+#include "eckit/sql/SQLOutput.h"
+#include "eckit/sql/type/SQLBitfield.h"
+#include "odb_api/MetaData.h"
 
 namespace odb {
-
-class SelectIterator;
-
 namespace sql {
 
-class ReaderIterator;
+class Reader;
 
-template <typename T = odb::SelectIterator>
-class SQLIteratorOutput : public SQLOutput {
+template<typename WRITER>
+class SQLODAOutput : public SQLOutput {
 public:
-	SQLIteratorOutput(T &);
-	virtual ~SQLIteratorOutput(); 
+	SQLODAOutput(WRITER*);
+	SQLODAOutput(WRITER*, const MetaData&);
+	virtual ~SQLODAOutput(); // Change to virtual if base class
 
 protected:
-
 	virtual void print(std::ostream&) const; 	
 
 private:
-// No copy allowed
-	SQLIteratorOutput(const SQLIteratorOutput&);
-	SQLIteratorOutput& operator=(const SQLIteratorOutput&);
+	SQLODAOutput(const SQLODAOutput&);
+	SQLODAOutput& operator=(const SQLODAOutput&);
 
 // -- Members
-	T& iterator_;
-	//bool headerSaved = true;
+	WRITER* writer_;
+	typename WRITER::iterator it_;
+    MetaData metaData_;
+
 	unsigned long long count_;
 
-// -- Methods
-	// None
-
 // -- Overridden methods
-
 	virtual void size(int);
 	virtual void reset();
     virtual void flush();
@@ -68,7 +65,5 @@ private:
 
 } // namespace sql
 } // namespace odb
-
-#include "odb_api/sql/SQLIteratorOutput.cc"
 
 #endif

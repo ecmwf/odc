@@ -12,7 +12,7 @@
 #define _SQLTool_H
 
 #include "odb_api/tools/Tool.h"
-#include "odb_api/sql/SQLOutputConfig.h"
+#include "eckit/sql/SQLOutputConfig.h"
 
 namespace odb {
 

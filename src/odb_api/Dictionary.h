@@ -15,7 +15,7 @@
 #define Dictionary_H
 
 #include "eckit/exception/Exceptions.h"
-#include "odb_api/sql/SQLExpression.h"
+#include "eckit/sql/expression/SQLExpression.h"
 
 namespace odb {
 namespace sql {
@@ -66,7 +66,7 @@ public:
 
 	virtual void output(SQLOutput&) const { return NOTIMP; }
 	virtual void partialResult() {}
-	virtual void expandStars(const std::vector<SQLTable*>&,expression::Dictionary&) { NOTIMP; }
+    virtual void expandStars(const std::vector<std::reference_wrapper<SQLTable>>&,expression::Dictionary&) { NOTIMP; }
 //////////////////////////////////////////////////////////////////////////////////////
 };
 

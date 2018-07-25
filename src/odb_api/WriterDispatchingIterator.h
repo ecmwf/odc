@@ -19,7 +19,7 @@
 #include "eckit/eckit.h"
 #include "odb_api/ColumnType.h"
 #include "odb_api/TemplateParameters.h"
-#include "odb_api/Types.h"
+#include "eckit/sql/SQLTypedefs.h"
 #include "odb_api/Writer.h"
 
 namespace eckit { class PathName; }

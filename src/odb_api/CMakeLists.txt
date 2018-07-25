@@ -17,8 +17,6 @@ ODBAPIVersionSHA1.cc
 StringTool.cc
 StringTool.h
 Array.h
-BitColumnExpression.cc
-BitColumnExpression.h
 ShiftedBitColumnExpression.cc
 ShiftedBitColumnExpression.h
 Codec.cc
@@ -29,17 +27,11 @@ CodecOptimizer.cc
 CodecOptimizer.h
 Column.cc
 Column.h
-ColumnExpression.cc
-ColumnExpression.h
-ShiftedColumnExpression.cc
-ShiftedColumnExpression.h
 ColumnType.h
 CommandLineParser.cc
 CommandLineParser.h
 Comparator.cc
 Comparator.h
-ConstantExpression.cc
-ConstantExpression.h
 ConstantSetter.cc
 ConstantSetter.h
 DataColumn.cc
@@ -114,12 +106,8 @@ DirectAccessIterator.h
 Duration.cc
 Duration.h
 Endian.h
-Environment.cc
-Environment.h
 EqRegionCache.cc
 EqRegionCache.h
-Expressions.cc
-Expressions.h
 FastODA2Request.cc
 FastODA2Request.h
 FixedSizeWriterIterator.cc
@@ -142,8 +130,6 @@ FunctionEQ_BOXLON.cc
 FunctionEQ_BOXLON.h
 FunctionMATCH.h
 FunctionMATCH.cc
-FunctionExpression.cc
-FunctionExpression.h
 FunctionFactory.cc
 FunctionFactory.h
 MDI.cc
@@ -221,8 +207,6 @@ MetaDataReader.cc
 MetaDataReader.h
 MetaDataReaderIterator.cc
 MetaDataReaderIterator.h
-NumberExpression.cc
-NumberExpression.h
 ODAColumn.cc
 ODAColumn.h
 NullColumn.cc
@@ -254,15 +238,10 @@ RegionCache.cc
 RegionCache.h
 RggRegionCache.cc
 RggRegionCache.h
-odblib_lex.h
 SchemaAnalyzer.cc
 SchemaAnalyzer.h
 SelectIterator.cc
 SelectIterator.h
-SelectOneTable.cc
-SelectOneTable.h
-Stack.cc
-Stack.h
 StringExpression.cc
 StringExpression.h
 TODATable.cc
@@ -279,7 +258,6 @@ TextReaderIterator.cc
 TextReaderIterator.h
 Tracer.cc
 Tracer.h
-Types.h
 UnsafeInMemoryDataHandle.h
 Writer.cc
 Writer.h
@@ -317,6 +295,8 @@ Retriever.h
 Retriever.cc
 Stager.h
 Stager.cc
+SQLODAOutput.cc
+SQLODAOutput.h
 ODBTarget.cc
 ODBTarget.h
 
@@ -334,86 +314,6 @@ data/HttpHandleFactory.cc
 # requires  metkit
 data/MarsHandleFactory.cc
 data/MarsHandleFactory.h
-
-
-sql/SQLMATCHSubquerySession.h
-sql/SQLMATCHSubquerySession.cc
-sql/SQLMATCHSubquerySessionOutput.h
-sql/SQLMATCHSubquerySessionOutput.cc
-sql/SQLAST.cc
-sql/SQLAST.h
-sql/SQLBitColumn.cc
-sql/SQLBitColumn.h
-sql/SQLColumn.cc
-sql/SQLColumn.h
-sql/SQLDataColumn.cc
-sql/SQLDataColumn.h
-sql/SQLDataSet.cc
-sql/SQLDataSet.h
-sql/SQLDataTable.cc
-sql/SQLDataTable.h
-sql/SQLDataTableIterator.cc
-sql/SQLDataTableIterator.h
-sql/SQLDatabase.cc
-sql/SQLDatabase.h
-sql/SQLDistinctOutput.cc
-sql/SQLDistinctOutput.h
-sql/SQLExpression.cc
-sql/SQLExpression.h
-sql/SQLExpressionEvaluated.cc
-sql/SQLExpressionEvaluated.h
-sql/SQLIndex.cc
-sql/SQLIndex.h
-sql/SQLInteractiveSession.cc
-sql/SQLInteractiveSession.h
-sql/SQLNonInteractiveSession.cc
-sql/SQLNonInteractiveSession.h
-sql/SQLIterator.h
-sql/SQLIteratorOutput.cc
-sql/SQLIteratorOutput.h
-sql/SQLIteratorSession.cc
-sql/SQLIteratorSession.h
-sql/SQLODAOutput.cc
-sql/SQLODAOutput.h
-sql/SQLOrderOutput.cc
-sql/SQLOrderOutput.h
-sql/SQLOutput.cc
-sql/SQLOutput.h
-sql/SQLOutputConfig.cc
-sql/SQLOutputConfig.h
-sql/SQLParser.cc
-sql/SQLParser.h
-sql/SQLSelect.cc
-sql/SQLSelect.h
-sql/SQLInsert.cc
-sql/SQLInsert.h
-sql/SQLSelectFactory.cc
-sql/SQLSelectFactory.h
-sql/SQLInsertFactory.cc
-sql/SQLInsertFactory.h
-sql/SQLSession.cc
-sql/SQLSession.h
-sql/SQLSimpleOutput.cc
-sql/SQLSimpleOutput.h
-sql/SQLStatement.cc
-sql/SQLStatement.h
-sql/SQLTable.cc
-sql/SQLTable.h
-
-sql/type/SQLBit.cc
-sql/type/SQLBit.h
-sql/type/SQLBitfield.cc
-sql/type/SQLBitfield.h
-sql/type/SQLDouble.cc
-sql/type/SQLDouble.h
-sql/type/SQLInt.cc
-sql/type/SQLInt.h
-sql/type/SQLReal.cc
-sql/type/SQLReal.h
-sql/type/SQLString.cc
-sql/type/SQLString.h
-sql/type/SQLType.cc
-sql/type/SQLType.h
 )
 
 # templates
@@ -424,13 +324,11 @@ DataStream.cc
 FastODA2Request.cc
 Header.cc
 ODAUpdatingIterator.cc
-sql/SQLIteratorOutput.cc
 TODATable.cc
 TODATableIterator.cc
 WriterDispatchingIterator.cc
 MDUpdatingIterator.cc
 MetaDataReader.cc
-ShiftedColumnExpression.cc
 )
 
 # define Odb library
@@ -446,9 +344,4 @@ ecbuild_add_library( TARGET             Odb
                      LINKER_LANGUAGE    CXX
                      LIBS               metkit )
 
-ecbuild_generate_yy( YYPREFIX           odblib_
-                     YACC               sql/sqly
-                     LEX                sql/sqll
-                     FLEX_FLAGS         "-d"
-                     DEPENDANT          sql/SQLParser.cc )
 

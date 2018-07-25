@@ -11,7 +11,7 @@
 #define MDSetTool_H
 
 #include "odb_api/tools/Tool.h"
-#include "odb_api/Types.h"
+#include "eckit/sql/SQLTypedefs.h"
 
 namespace odb {
 namespace tool {

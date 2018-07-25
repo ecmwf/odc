@@ -15,7 +15,7 @@
 #define odb_api_FunctionFactory_H
 
 #include "odb_api/FunctionExpression.h"
-#include "odb_api/sql/SQLAST.h"
+#include "eckit/sql/SQLAST.h"
 
 namespace odb { namespace sql { class SelectAST; } }
 

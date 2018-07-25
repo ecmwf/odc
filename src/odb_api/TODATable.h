@@ -14,7 +14,7 @@
 #ifndef TODATable_H
 #define TODATable_H
 
-#include "odb_api/sql/SQLTable.h"
+#include "eckit/sql/SQLTable.h"
 #include "odb_api/TODATableIterator.h"
 
 namespace odb {

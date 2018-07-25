@@ -63,12 +63,12 @@ using namespace eckit;
 %include "odb_api/Select.h"
 
 %include "odb_api/ColumnType.h"
-%include "odb_api/Types.h"
+%include "eckit/sql/SQLTypedefs.h"
 #include "odb_api/StringTool.h"
 #include "odb_api/DataStream.h"
 %include "odb_api/Codec.h"
 %include "odb_api/Column.h"
-#include "odb_api/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLIteratorSession.h"
 
 using namespace odb;
 
@@ -100,12 +100,12 @@ using namespace odb;
 %include "odb_api/SelectIterator.h"
 #include "odb_api/FixedSizeWriterIterator.h"
 
-#include "odb_api/sql/SQLInteractiveSession.h"
-#include "odb_api/sql/SQLIteratorSession.h"
-#include "odb_api/sql/SQLTable.h"
-#include "odb_api/sql/SQLSelect.h"
-#include "odb_api/sql/SQLParser.h"
-#include "odb_api/sql/SQLExpression.h"
+#include "eckit/sql/SQLInteractiveSession.h"
+#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLTable.h"
+#include "eckit/sql/SQLSelect.h"
+#include "eckit/sql/SQLParser.h"
+#include "eckit/sql/expression/SQLExpression.h"
 
 #include "odb_api/odbcapi.h"
 %init %{

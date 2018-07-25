@@ -11,7 +11,7 @@
 #include "odb_api/ColumnExpression.h"
 #include "odb_api/FunctionEQ.h"
 #include "odb_api/FunctionFactory.h"
-#include "odb_api/sql/type/SQLType.h"
+#include "eckit/sql/type/SQLType.h"
 
 namespace odb {
 namespace sql {
@@ -102,18 +102,6 @@ SQLExpression* FunctionEQ::simplify(bool& changed)
         std::swap(args_[0],args_[1]);
 
 	return 0;
-}
-
-bool FunctionEQ::useIndex()
-{
-	return args_[0]->indexed() && args_[1]->isConstant();
-}
-
-SQLIndex* FunctionEQ::getIndex(double*)
-{
-	bool missing = false;
-	tmp_ = args_[1]->eval(missing);
-	return args_[0]->getIndex(&tmp_);
 }
 
 } // namespace function

@@ -10,8 +10,8 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/ColumnExpression.h"
-#include "odb_api/Expressions.h"
-#include "odb_api/sql/SQLTable.h"
+#include "eckit/sql/expression/SQLExpressions.h"
+#include "eckit/sql/SQLTable.h"
 #include "odb_api/StringExpression.h"
 #include "odb_api/StringTool.h"
 
@@ -43,7 +43,7 @@ StringExpression::StringExpression(const StringExpression& o)
 : name_(o.name_), value_(o.value_)
 {}
 
-void StringExpression::expandStars(const std::vector<SQLTable*>& tables, expression::Expressions& e)
+void StringExpression::expandStars(const std::vector<std::reference_wrapper<SQLTable>>& tables, expression::Expressions& e)
 {
     std::ostream& L(Log::info());
 

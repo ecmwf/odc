@@ -17,9 +17,9 @@
 #include "odb_api/MetaData.h"
 #include "odb_api/Select.h"
 #include "odb_api/SelectIterator.h"
-#include "odb_api/sql/SQLParser.h"
-#include "odb_api/sql/SQLSelectFactory.h"
-#include "odb_api/sql/SQLSelect.h"
+#include "eckit/sql/SQLParser.h"
+#include "eckit/sql/SQLSelectFactory.h"
+#include "eckit/sql/SQLSelect.h"
 
 using namespace eckit;
 

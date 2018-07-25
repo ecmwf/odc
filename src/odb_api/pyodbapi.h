@@ -5,7 +5,7 @@
 #include "odb_api/ODBAPIVersion.h"
 #include "odb_api/Column.h"
 #include "odb_api/IteratorProxy.h"
-#include "odb_api/sql/SQLParser.h"
+#include "eckit/sql/SQLParser.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/Select.h"
 #include "odb_api/MetaData.h"

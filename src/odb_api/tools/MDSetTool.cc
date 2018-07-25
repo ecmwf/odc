@@ -17,7 +17,7 @@
 #include "odb_api/MetaDataReader.h"
 #include "odb_api/MetaDataReaderIterator.h"
 #include "odb_api/ODBAPISettings.h"
-#include "odb_api/Types.h"
+#include "eckit/sql/SQLTypedefs.h"
 #include "odb_api/tools/MDSetTool.h"
 
 using namespace eckit;

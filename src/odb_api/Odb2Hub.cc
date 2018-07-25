@@ -11,7 +11,7 @@
 #include "eckit/config/Resource.h"
 
 #include "odb_api/odbcapi.h"
-#include "odb_api/sql/type/SQLBitfield.h"
+#include "eckit/sql/type/SQLBitfield.h"
 #include "odb_api/DataStream.h"
 #include "odb_api/Codec.h"
 #include "odb_api/Column.h"

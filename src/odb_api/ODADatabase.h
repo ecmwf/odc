@@ -16,7 +16,7 @@
 
 namespace eckit { class PathName; }
 
-#include "odb_api/sql/SQLDatabase.h"
+#include "eckit/sql/SQLDatabase.h"
 
 namespace odb {
 namespace sql {

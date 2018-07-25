@@ -14,7 +14,7 @@
 #ifndef VariableExpression_H
 #define VariableExpression_H
 
-#include "odb_api/sql/SQLExpression.h"
+#include "eckit/sql/expression/SQLExpression.h"
 
 namespace odb {
 namespace sql {

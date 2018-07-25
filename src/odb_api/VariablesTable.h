@@ -14,13 +14,12 @@
 #ifndef VariablesTable_H
 #define VariablesTable_H
 
-#include "odb_api/sql/SQLTable.h"
+#include "eckit/sql/SQLTable.h"
 
 namespace odb {
 namespace sql {
 
 //class SQLFile;
-class SQLPool;
 class SQLColumn;
 class SQLDatabase;
 namespace expression {

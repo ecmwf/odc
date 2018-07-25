@@ -1,6 +1,6 @@
 
-list( APPEND _odb_server_tests
-    test_partition )
+#list( APPEND _odb_server_tests
+#    test_partition )
 
 foreach( _test ${_odb_server_tests} )
     ecbuild_add_test(

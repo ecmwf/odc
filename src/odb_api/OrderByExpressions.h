@@ -16,7 +16,7 @@
 
 #include "eckit/eckit.h"
 //#include <vector>
-#include "odb_api/Expressions.h"
+#include "eckit/sql/expression/SQLExpressions.h"
 
 namespace odb {
 namespace sql {

@@ -10,7 +10,7 @@
 
 #include "eckit/eckit.h"
 #include "odb_api/OrderByExpressions.h"
-#include "odb_api/sql/SQLExpression.h"
+#include "eckit/sql/expression/SQLExpression.h"
 #include "odb_api/StringTool.h"
 
 namespace odb {

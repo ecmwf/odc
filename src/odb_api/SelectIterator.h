@@ -16,9 +16,9 @@
 #ifndef odb_api_SelectIterator_H
 #define odb_api_SelectIterator_H
 
-#include "odb_api/Expressions.h"
+#include "eckit/sql/expression/SQLExpressions.h"
 #include "odb_api/ColumnType.h"
-#include "odb_api/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLIteratorSession.h"
 
 extern "C" {
 	typedef void oda_select_iterator;

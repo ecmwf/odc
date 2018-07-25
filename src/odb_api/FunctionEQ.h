@@ -41,8 +41,6 @@ private:
 	virtual const odb::sql::type::SQLType* type() const;
 	virtual double eval(bool& missing) const;
 	virtual SQLExpression* simplify(bool&);
-	virtual bool useIndex();
-	virtual SQLIndex* getIndex(double*);
 
 // -- Friends
 	//friend std::ostream& operator<<(std::ostream& s,const FunctionEQ& p)

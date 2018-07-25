@@ -6,7 +6,7 @@
 
 #include "eckit/eckit.h"
 #include "odb_api/ColumnType.h"
-#include "odb_api/Types.h"
+#include "eckit/sql/SQLTypedefs.h"
 
 namespace odb {
 

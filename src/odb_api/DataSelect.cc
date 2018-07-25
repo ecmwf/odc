@@ -5,9 +5,9 @@
 #include "odb_api/DataSelectIterator.h"
 #include "odb_api/DataSet.h"
 #include "odb_api/DataTable.h"
-#include "odb_api/Expressions.h"
-#include "odb_api/sql/SQLDataSet.h"
-#include "odb_api/sql/SQLDataTable.h"
+#include "eckit/sql/expression/SQLExpressions.h"
+#include "eckit/sql/SQLDataSet.h"
+#include "eckit/sql/SQLDataTable.h"
 
 using namespace odb;
 using namespace eckit;

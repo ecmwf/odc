@@ -14,7 +14,7 @@
 #ifndef StringExpression_H
 #define StringExpression_H
 
-#include "odb_api/sql/SQLExpression.h"
+#include "eckit/sql/expression/SQLExpression.h"
 
 namespace odb {
 namespace sql {
@@ -37,7 +37,7 @@ private:
 
 // -- Overridden methods
 	virtual void print(std::ostream& s) const;
-	virtual void expandStars(const std::vector<SQLTable*>&, expression::Expressions&);
+    virtual void expandStars(const std::vector<std::reference_wrapper<SQLTable>>&, expression::Expressions&);
 	virtual void prepare(SQLSelect& sql);
 	virtual void cleanup(SQLSelect& sql);
 
