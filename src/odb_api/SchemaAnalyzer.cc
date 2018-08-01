@@ -190,7 +190,7 @@ bool SchemaAnalyzer::isBitfield(const std::string& columnName) const
         if (it->first == columnName)
         {
             std::string columnType (it->second);
-            for (std::map<std::string, BitfieldDef>::const_iterator it(bitfieldTypes_.begin()); it != bitfieldTypes_.end(); ++it)
+            for (std::map<std::string, eckit::sql::BitfieldDef>::const_iterator it(bitfieldTypes_.begin()); it != bitfieldTypes_.end(); ++it)
                 if (it->first == columnType)
                     return true;
         }
@@ -198,7 +198,7 @@ bool SchemaAnalyzer::isBitfield(const std::string& columnName) const
     return false;
 }
 
-const BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const std::string& columnName) 
+const eckit::sql::BitfieldDef& SchemaAnalyzer::getBitfieldTypeDefinition(const std::string& columnName)
 {
 	ASSERT(isBitfield(columnName));
 	std::string columnType = columnTypes_.find(columnName)->second;
@@ -220,9 +220,9 @@ bool SchemaAnalyzer::tableKnown(const std::string& name) const
     return tableDefs_.find(name) != tableDefs_.end();
 }
 
-const TableDef& SchemaAnalyzer::findTable(const std::string& name) const
+const eckit::sql::TableDef& SchemaAnalyzer::findTable(const std::string& name) const
 {
-    for (TableDefs::const_iterator it(tableDefs_.begin()); it != tableDefs_.end(); ++it)
+    for (eckit::sql::TableDefs::const_iterator it(tableDefs_.begin()); it != tableDefs_.end(); ++it)
         if (it->first == name)
             return it->second;
     throw eckit::UserError(std::string("Table '" + name + "' not found"));
@@ -236,8 +236,8 @@ std::string SchemaAnalyzer::findColumnType(const std::string& columnName)
 
     std::string name (ps[0]), table (ps[1]);
     const TableDef& tableDef (findTable(table));
-    ColumnDefs columnDefs (tableDef.columns());
-    for (ColumnDefs::const_iterator it (columnDefs.begin()); it != columnDefs.end(); ++it)
+    eckit::sql::ColumnDefs columnDefs (tableDef.columns());
+    for (eckit::sql::ColumnDefs::const_iterator it (columnDefs.begin()); it != columnDefs.end(); ++it)
         if (it->name() == columnName)
             return it->type();
     throw eckit::UserError(std::string("Column " + columnName + " not found"));

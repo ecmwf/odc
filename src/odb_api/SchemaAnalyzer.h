@@ -14,7 +14,6 @@
 #ifndef odb_api_SchemaAnalyzer_H
 #define odb_api_SchemaAnalyzer_H
 
-#include "eckit/sql/SQLAST.h"
 
 namespace odb {
 
@@ -35,20 +34,20 @@ public:
 
     void addBitfieldType(const std::string& name, const FieldNames& fields, const Sizes& sizes, const std::string& typeSignature);
     bool isBitfield(const std::string& columnName) const; 
-    const BitfieldDef& getBitfieldTypeDefinition(const std::string& columnName); 
+    const eckit::sql::BitfieldDef& getBitfieldTypeDefinition(const std::string& columnName);
     void updateBitfieldsDefs(MetaData &, std::map<std::string, std::string> &) const;
     bool tableKnown(const std::string& name) const;
-    const TableDef& findTable(const std::string& name) const;
+    const eckit::sql::TableDef& findTable(const std::string& name) const;
     void skipTable(std::string tableName);
     std::string generateSELECT() const;
-    Definitions generateDefinitions();
+    eckit::sql::Definitions generateDefinitions();
     std::string findColumnType(const std::string&);
 
 private:
     std::string currentSchema_;
-    SchemaDefs schemas_;
-    TableDefs tableDefs_;
-    BitfieldDefs bitfieldTypes_;
+    eckit::sql::SchemaDefs schemas_;
+    eckit::sql::TableDefs tableDefs_;
+    eckit::sql::BitfieldDefs bitfieldTypes_;
     std::set<std::string> tablesToSkip_;
     std::map<std::string,std::string> columnTypes_;
 

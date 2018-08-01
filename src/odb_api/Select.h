@@ -21,8 +21,7 @@
 #endif
 
 #include "odb_api/IteratorProxy.h"
-#include "eckit/sql/SQLNonInteractiveSession.h"
-#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLSession.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -41,7 +40,7 @@ public:
 	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter);
     Select(const std::string& selectStatement, const std::string& path);
 	Select(const std::string& selectStatement);
-	Select(const std::string& selectStatement, odb::sql::SQLNonInteractiveSession&);
+    Select(const std::string& selectStatement, eckit::sql::SQLSession&);
 	Select();
 
 	virtual ~Select();
@@ -59,7 +58,7 @@ public:
     SelectIterator* createSelectIterator(const std::string&);
 
 private:
-    odb::sql::SQLNonInteractiveSession* ownSession(const std::string& delimiter);
+    eckit::sql::SQLSession* ownSession(const std::string& delimiter);
 
 	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 
@@ -72,8 +71,8 @@ private:
 	std::string selectStatement_;
 	std::string delimiter_;
 
-    odb::sql::SQLNonInteractiveSession* ownSession_;
-    odb::sql::SQLNonInteractiveSession* outerSession_;
+    eckit::sql::SQLSession* ownSession_;
+    eckit::sql::SQLSession* outerSession_;
 };
 
 } // namespace odb 

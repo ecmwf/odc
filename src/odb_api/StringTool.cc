@@ -137,28 +137,6 @@ bool StringTool::match(const std::string& regex, const std::string& s)
 	return Regex(regex).match(s);
 }
 
-bool StringTool::matchEx(const std::string& regex, const std::string& s)
-{
-	bool negated = false;	
-	std::string rx = regex;
-	if (rx[0] == '~')
-	{
-		rx.erase(0, 0);
-		negated = true;
-	}
-
-	// TODO: remove '/' 
-
-	bool matches = Regex(rx).match(s);
-	return (negated && !matches) || (!negated && matches);
-}
-
-bool StringTool::isColumnRegex(const std::string& s)
-{
-    return ( s[0] == '/' && s[s.size() - 1] == '/' )
-        || ( s[0] == '~' && s[1] == '/' && s[s.size() - 1] == '/' );
-}
-
 bool StringTool::matchAny(const std::vector<std::string>& regs, const std::string& s)
 {
 	for (size_t i = 0; i < regs.size(); ++i)

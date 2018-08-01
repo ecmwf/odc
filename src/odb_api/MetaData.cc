@@ -277,7 +277,7 @@ bool MetaData::allColumnsInitialised() const {
     return true;
 }
 
-MetaData& MetaData::addBitfield(const std::string& name, const BitfieldDef& bf)
+MetaData& MetaData::addBitfield(const std::string& name, const eckit::sql::BitfieldDef& bf)
 {
     return addBitfieldPrivate<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(name, bf);
 }

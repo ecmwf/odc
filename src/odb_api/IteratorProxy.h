@@ -95,7 +95,7 @@ public:
 	int setColumn(size_t index, const std::string& name, ColumnType type)
 	{ return (*((*it_).iter_)).setColumn(index, name, type); }
 
-	int setBitfieldColumn(size_t index, const std::string& name, ColumnType type, BitfieldDef b)
+    int setBitfieldColumn(size_t index, const std::string& name, ColumnType type, eckit::sql::BitfieldDef b)
 	{ return ((*it_).iter_)->setBitfieldColumn(index, name, type, b); }
 
 	void missingValue(size_t index, double v) { ((*it_).iter_)->missingValue(index, v); }

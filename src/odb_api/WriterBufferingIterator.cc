@@ -276,7 +276,7 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnTyp
 	return 0;
 }
 
-int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
+int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b)
 {
 	//Log::debug() << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
 	ASSERT(index < columns().size());

@@ -54,7 +54,7 @@ Select::Select(const std::string& selectStatement)
   outerSession_(ownSession_)
 {}
 
-Select::Select(const std::string& selectStatement, odb::sql::SQLNonInteractiveSession& s)
+Select::Select(const std::string& selectStatement, eckit::sql::SQLSession& s)
 : dataHandle_(0),
   deleteDataHandle_(true),
   istream_(0),
@@ -108,9 +108,9 @@ Select::iterator Select::begin()
     return iterator(it);
 }
 
-odb::sql::SQLNonInteractiveSession* Select::ownSession(const std::string& delimiter)
+eckit::sql::SQLSession* Select::ownSession(const std::string& delimiter)
 { 
-    return new odb::sql::SQLNonInteractiveSession(odb::sql::SQLOutputConfig::defaultConfig(), delimiter); 
+    return new eckit::sql::SQLSession(eckit::sql::SQLOutputConfig::defaultConfig(), delimiter);
 }
 
 #ifdef SWIGPYTHON

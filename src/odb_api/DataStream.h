@@ -100,8 +100,8 @@ public:
 	void readFlags(Flags &);
 	void writeFlags(const Flags &);
 
-	void readBitfieldDef(BitfieldDef &);
-	void writeBitfieldDef(const BitfieldDef &);
+    void readBitfieldDef(eckit::sql::BitfieldDef &);
+    void writeBitfieldDef(const eckit::sql::BitfieldDef &);
 private:
 	D * f;
 

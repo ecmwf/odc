@@ -25,7 +25,7 @@ using namespace eckit;
 
 namespace odb {
 
-SelectIterator::SelectIterator(odb::Select &owner, odb::sql::SQLNonInteractiveSession& s)
+SelectIterator::SelectIterator(odb::Select &owner, eckit::sql::SQLSession& s)
 : owner_(owner),
   select_(),
   selectStmt_(0),
@@ -38,10 +38,10 @@ SelectIterator::SelectIterator(odb::Select &owner, odb::sql::SQLNonInteractiveSe
   aggregateResultRead_(false),
   isCachingRows_(false),
   refCount_(0),
-  session_(*this, s)
+  session_(s)
 {}
 
-SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, odb::sql::SQLNonInteractiveSession& s)
+SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, eckit::sql::SQLSession& s)
 : owner_(owner),
   select_(select),
   selectStmt_(0),
@@ -54,7 +54,7 @@ SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, od
   aggregateResultRead_(false),
   isCachingRows_(false),
   refCount_(0),
-  session_(*this, s)
+  session_(s)
 {
     if (owner.dataIStream())
         parse(session_, owner.dataIStream());
@@ -63,7 +63,7 @@ SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, od
 }
 
 template <typename DATASTREAM> 
-void SelectIterator::parse(odb::sql::SQLSession& session, typename DATASTREAM::DataHandleType *dh)
+void SelectIterator::parse(eckit::sql::SQLSession& session, typename DATASTREAM::DataHandleType *dh)
 {
     sql::SQLParser p;
     p.parseString(session, select_, dh, session.selectFactory().config());
@@ -80,10 +80,10 @@ void SelectIterator::parse(odb::sql::SQLSession& session, typename DATASTREAM::D
     selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
 }
 
-void SelectIterator::parse(odb::sql::SQLSession& session, std::istream *is)
+void SelectIterator::parse(eckit::sql::SQLSession& session, std::istream *is)
 {
 	sql::SQLParser p;
-	odb::sql::SQLSelectFactory& factory(session.selectFactory());
+    eckit::sql::SQLSelectFactory& factory(session.selectFactory());
 	p.parseString(session, select_, is, factory.config(), factory.csvDelimiter());
 	sql::SQLStatement *stmt (session_.statement());
 	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);

@@ -8,10 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-///
-/// \file Reader.h
-///
-/// @author Piotr Kuchta, Feb 2009
+/// @author Piotr Kuchta
+/// @author Simon Smart
+/// @date Feb 2009
 
 #ifndef Reader_H
 #define Reader_H

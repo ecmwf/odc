@@ -18,7 +18,7 @@
 
 #include "eckit/sql/expression/SQLExpressions.h"
 #include "odb_api/ColumnType.h"
-#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLSession.h"
 
 extern "C" {
 	typedef void oda_select_iterator;
@@ -28,18 +28,15 @@ extern "C" {
 namespace odb { class Select; }
 namespace odb { class MetaData; }
 namespace odb { template <typename I, typename O, typename D> class IteratorProxy; } 
-namespace odb { namespace sql { class SQLSession; } }
-namespace odb { namespace sql { class SQLNonInteractiveSession; }}
-namespace odb { namespace sql { class SQLIteratorSession; }}
-namespace odb { namespace sql { class SQLSelect; } }
-namespace odb { namespace sql { template <typename T> class SQLIteratorOutput; }}
+namespace eckit { namespace sql { class SQLSelect; } }
+namespace eckit { namespace sql { template <typename T> class SQLIteratorOutput; }}
 
 namespace odb {
 
 class SelectIterator { 
 public:
 	
-    SelectIterator (Select &owner, const std::string&, odb::sql::SQLNonInteractiveSession&);
+    SelectIterator (Select &owner, const std::string&, eckit::sql::SQLSession&);
 	~SelectIterator();
 
 	bool isNewDataset();
@@ -56,7 +53,7 @@ public:
     int close() { NOTIMP; }
     int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
 	void writeHeader() { NOTIMP; }
-    int setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b) { NOTIMP; }
+    int setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b) { NOTIMP; }
 	void missingValue(size_t, double) { NOTIMP; }
 	
 	bool isCachingRows() { return isCachingRows_; }
@@ -79,12 +76,12 @@ private:
 	SelectIterator& operator=(const SelectIterator&);
 
 	template <typename DATASTREAM> void populateMetaData();
-	template <typename DATASTREAM> void parse(odb::sql::SQLSession&, typename DATASTREAM::DataHandleType *);
-	void parse(odb::sql::SQLSession&, std::istream *);
+    template <typename DATASTREAM> void parse(eckit::sql::SQLSession&, typename DATASTREAM::DataHandleType *);
+    void parse(eckit::sql::SQLSession&, std::istream *);
 
 	Select& owner_;
     std::string select_;
-	odb::sql::SQLSelect *selectStmt_;
+    eckit::sql::SQLSelect *selectStmt_;
 	MetaData *metaData_;
 
 	double* data_;
@@ -98,14 +95,14 @@ private:
 	std::list<std::vector<double> > rowCache_;
 
 protected:
-	SelectIterator (Select &owner, odb::sql::SQLNonInteractiveSession&);
+    SelectIterator (Select &owner, eckit::sql::SQLSession&);
 
 	int refCount_;
-	odb::sql::SQLIteratorSession session_;
+    eckit::sql::SQLSession& session_;
 
 	friend int ::odb_select_iterator_get_next_row(::oda_select_iterator*, int, double*, int*);
 	friend class odb::Select;
-	friend class odb::sql::SQLIteratorOutput<SelectIterator>;
+    friend class eckit::sql::SQLIteratorOutput<SelectIterator>;
 	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 };
 

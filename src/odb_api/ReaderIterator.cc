@@ -284,7 +284,7 @@ ColumnType ReaderIterator::columnType(unsigned long index) { return columns_[ind
 const std::string& ReaderIterator::columnName(unsigned long index) const { return columns_[index]->name(); }
 const std::string& ReaderIterator::codecName(unsigned long index) const { return columns_[index]->coder().name(); }
 double ReaderIterator::columnMissingValue(unsigned long index) { return columns_[index]->missingValue(); }
-const BitfieldDef& ReaderIterator::bitfieldDef(unsigned long index) { return columns_[index]->bitfieldDef(); }
+const eckit::sql::BitfieldDef& ReaderIterator::bitfieldDef(unsigned long index) { return columns_[index]->bitfieldDef(); }
 
 } // namespace odb
 

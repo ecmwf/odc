@@ -69,7 +69,7 @@ public:
 #ifdef SWIGPYTHON
     int setColumn(size_t, const std::string&, ColumnType) { NOTIMP; }
 	void writeHeader() { NOTIMP; }
-    int setBitfieldColumn(size_t, const std::string&, ColumnType, BitfieldDef) { NOTIMP; }
+    int setBitfieldColumn(size_t, const std::string&, ColumnType, eckit::sql::BitfieldDef) { NOTIMP; }
 	void missingValue(size_t, double) { NOTIMP; }
 #endif
 
@@ -77,7 +77,7 @@ public:
     const std::string& columnName(unsigned long index) const;
     const std::string& codecName(unsigned long index) const;
 	double columnMissingValue(unsigned long index);
-	const BitfieldDef& bitfieldDef(unsigned long index);
+    const eckit::sql::BitfieldDef& bitfieldDef(unsigned long index);
 
 	int32_t byteOrder() const { return byteOrder_; }
     eckit::DataHandle* dataHandle();

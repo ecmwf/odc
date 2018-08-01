@@ -39,7 +39,7 @@
 #include "odb_api/SelectIterator.h"
 #include "eckit/sql/type/SQLBitfield.h"
 #include "eckit/sql/expression/SQLExpression.h"
-#include "eckit/sql/SQLInteractiveSession.h"
+#include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelect.h"
 #include "eckit/sql/SQLTable.h"

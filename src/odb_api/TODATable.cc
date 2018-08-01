@@ -9,66 +9,60 @@
  */
 
 #include <sstream>
-#include "eckit/sql/type/SQLBitfield.h"
 
-using namespace std;
+#include "eckit/sql/type/SQLBitfield.h"
+#include "eckit/parser/StringTools.h"
+
+#include "odb_api/TODATable.h"
+#include "odb_api/TODATableIterator.h"
+
+using namespace eckit;
+using namespace eckit::sql;
+
 
 namespace odb {
 namespace sql {
 
-template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name)
-: SQLTable(owner, path, name),
-  data_(0),
-  oda_(path),
-  it_(oda_.begin()),
-  end_(oda_.end())
-{
+//----------------------------------------------------------------------------------------------------------------------
+
+TODATable::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name) :
+    SQLTable(owner, path, name),
+    oda_(path) {
+
     populateMetaData();
 }
 
-template <typename T>
-TODATable<T>::~TODATable() { delete[] data_; }
 
 static const std::string nullPathName("<>");
 static const std::string inputTable("input");
 
-template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, eckit::DataHandle &dh)
-: SQLTable(owner, nullPathName, inputTable),
-  data_(0),
-  oda_(dh),
-  it_(oda_.begin()),
-  end_(oda_.end())
-{
+
+TODATable::TODATable(SQLDatabase& owner, DataHandle &dh) :
+    SQLTable(owner, nullPathName, inputTable),
+    oda_(dh) {
+
     populateMetaData();
 }
 
-template <typename T>
-TODATable<T>::TODATable(SQLDatabase& owner, std::istream &is, const std::string &delimiter)
-: SQLTable(owner, nullPathName, inputTable),
-  data_(0),
-  oda_(is, delimiter),
-  it_(oda_.begin()),
-  end_(oda_.end())
-{
+TODATable::TODATable(SQLDatabase& owner, std::istream &is, const std::string &delimiter) :
+    SQLTable(owner, nullPathName, inputTable),
+    oda_(is, delimiter) {
+
     populateMetaData();
 }
 
-template <typename T>
-void TODATable<T>::populateMetaData()
-{
-    using eckit::Log;
-    
-    size_t count = it_->columns().size();
+TODATable::~TODATable() {}
 
-    delete[] data_;
-    data_ = new double[count];
-    ASSERT(data_);
+
+void TODATable::populateMetaData()
+{
+    auto it = oda_.begin();
+
+    size_t count = it->columns().size();
 
     for(size_t i = 0; i < count; i++)
     {
-        Column& column (*it_->columns()[i]);
+        Column& column (*it->columns()[i]);
 
         const std::string name (column.name());
         bool hasMissing (column.hasMissing());
@@ -76,154 +70,130 @@ void TODATable<T>::populateMetaData()
         BitfieldDef bitfieldDef (column.bitfieldDef());
 
         std::string sqlType;
-        switch(column.type())
-        {
+        size_t typeSizeDoubles = it->dataSizeDoubles(i);
+
+        switch(column.type()) {
             case INTEGER: sqlType = "integer"; break;
             case STRING:  sqlType = "string"; break;
             case REAL:    sqlType = "real"; break;
             case DOUBLE:  sqlType = "double"; break;
-            case BITFIELD:
-                {
-                    std::string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
-                    addColumn(name, i, type::SQLType::lookup(typeSignature), hasMissing, missing, true, bitfieldDef);
-                    continue;
-                }
-                break;
-            default:
-            ASSERT("Unknown type" && 1==0);
-            break;
-        }
-        SQLColumn *c = column.type() == BITFIELD
-                ? new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, bitfieldDef, &data_[i])
-                : new ODAColumn(type::SQLType::lookup(sqlType), *this, name, i, hasMissing, missing, &data_[i]);
-        addColumn(c, name, i);
-	}
-}
-
-template <typename T>
-void TODATable<T>::updateMetaData(const std::vector<SQLColumn*>& selected)
-{
-    using eckit::Log;
-
-	MetaData newColumns (it_->columns());
-	for(size_t i = 0; i < selected.size(); i++)
-	{
-		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);
-		ASSERT(c);
-		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name()) 
-		{
-			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl
-			               << "Was: " << c->index() << "." << endl;
-			bool newIndexFound = false;
-			for (size_t j = 0; j < newColumns.size(); ++j)
-			{
-				Column &other(*newColumns[j]);
-				if (other.name() == c->name() || other.name() == c->fullName())
-				{
-					newIndexFound = true;
-					Log::warning() << "New index: " << j << endl;
-					c->index(j);
-					break;
-				}
-			}
-            if (! newIndexFound)
-            {
-                // TODO: if user specified MAYBE keyword, then use a constant NULL column.
-                //if (maybe_) {
-                //    Log::warning() << "Column '" << c->name() << "' not found." << endl;
-                //    selected[i] = new NullColumn(*selected[i]);
-                //} else {
-                    stringstream ss;
-                    ss << "One of selected columns, '" << c->name() << "', does not exist in new data set.";
-                    throw eckit::UserError(ss.str());
-                //}
+            case BITFIELD: {
+                std::string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
+                addColumn(name, i, type::SQLType::lookup(typeSignature), hasMissing, missing, true, bitfieldDef);
+                continue;
             }
-		}
-		//c->value(&data_[i]);
+            default:
+                throw SeriousBug("Unknown type: " + Translator<int, std::string>()(column.type()), Here());
+        }
+
+        addColumn(name, i, type::SQLType::lookup(sqlType, typeSizeDoubles), hasMissing, missing, column.type() == BITFIELD, bitfieldDef);
 	}
 }
 
-template <typename T>
-SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double
-missingValue)
+void TODATable::updateMetaData(const std::vector<SQLColumn*>& selected)
 {
-	return new ODAColumn(type, *this, name, index, hasMissingValue, missingValue, &data_[index]);
+    // TODO: Whoah! whoah! whoah!
+    // n.b. we don't really want to modify the table. We should probabyl deal with this in the iterator...
+    NOTIMP;
+
+//	MetaData newColumns (it_->columns());
+//	for(size_t i = 0; i < selected.size(); i++)
+//	{
+//		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);
+//		ASSERT(c);
+//		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name())
+//		{
+//			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl
+//			               << "Was: " << c->index() << "." << endl;
+//			bool newIndexFound = false;
+//			for (size_t j = 0; j < newColumns.size(); ++j)
+//			{
+//				Column &other(*newColumns[j]);
+//				if (other.name() == c->name() || other.name() == c->fullName())
+//				{
+//					newIndexFound = true;
+//					Log::warning() << "New index: " << j << endl;
+//					c->index(j);
+//					break;
+//				}
+//			}
+//            if (! newIndexFound)
+//            {
+//                // TODO: if user specified MAYBE keyword, then use a constant NULL column.
+//                //if (maybe_) {
+//                //    Log::warning() << "Column '" << c->name() << "' not found." << endl;
+//                //    selected[i] = new NullColumn(*selected[i]);
+//                //} else {
+//                    stringstream ss;
+//                    ss << "One of selected columns, '" << c->name() << "', does not exist in new data set.";
+//                    throw UserError(ss.str());
+//                //}
+//            }
+//		}
+//		//c->value(&data_[i]);
+//	}
 }
 
-template <typename T>
-SQLColumn* TODATable<T>::createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double
-missingValue, const BitfieldDef& bitfieldDef)
-{
-	return new ODAColumn(type, *this, name, index, hasMissingValue, missingValue, bitfieldDef, &data_[index]);
-}
 
+bool TODATable::hasColumn(const std::string& name, std::string* fullName) {
 
-template <typename T>
-bool TODATable<T>::hasColumn(const std::string& name, std::string* fullName)
-{
-    using eckit::Log;
+    // If the column is simply in the table, then use it.
 
-    if (SQLTable::hasColumn(name))
-	{
+    if (SQLTable::hasColumn(name)) {
 		if (fullName)
 			*fullName = name;
 		return true;
 	}
 
-	std::string colName (name + "@");
+    // Find columns that also have an (unspecified) section name
 
-	int n (0);
-	std::map<std::string,SQLColumn*>::iterator it (columnsByName_.begin());
-	for ( ; it != columnsByName_.end(); ++it)
-	{
-		const std::string& s (it->first);
-		if (s.find(colName) == 0)
-		{
-			n++;
-			if (fullName)
-				*fullName = s;
-		}
+	std::string colName (name + "@");
+    int n = 0;
+
+    for (const auto& column : columnsByName_) {
+        const std::string& s (column.first);
+        if (StringTools::startsWith(s, colName)) {
+            n++;
+            if (fullName) *fullName = s;
+        }
 	}
 
 	if (n == 0) return false;
 	if (n == 1) return true;
 
-	throw eckit::UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+    throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
 
 	return false;
 }
 
-template <typename T>
-SQLColumn* TODATable<T>::column(const std::string& name)
-{
-	const std::string colName (name + "@");
+SQLColumn& TODATable::column(const std::string& name) {
 
-	SQLColumn * column (0);
-	std::map<std::string,SQLColumn*>::iterator it (columnsByName_.begin());
-	for ( ; it != columnsByName_.end(); ++it)
-	{
-		const std::string s (it->first);
-		if (s.find(colName) == 0)
-		{
-			if (column)
-				throw eckit::UserError(std::string("TODATable::column: \"") + name + "\": ambiguous name.");
-			else 
-				column = it->second;
-		}
-	}
-	if (column) return column;
+    // If the column is simply in the table, then use it.
 
-	return SQLTable::column(name);
+    if (SQLTable::hasColumn(name)) {
+        return SQLTable::column(name);
+    }
+
+    // Find columns that also have an (unspecified) section name
+
+    const std::string colName (name + "@");
+    SQLColumn* column = 0;
+
+    for (const auto& col : columnsByName_) {
+        const std::string& s (col.first);
+        if (StringTools::startsWith(s, colName)) {
+            if (col) throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+            column = col.second;
+        }
+    }
+
+    if (!col) throw SeriousBug("Requesting column \"" + name + "\": not found", Here());
+
+    return *col;
 }
 
-template <typename T>
-SQLTableIterator* TODATable<T>::iterator(const std::vector<SQLColumn*>& x) const
-{
-    TODATable<T>& self (*const_cast<TODATable<T>*>(this));
-    if (! (self.it_ != self.end_))
-        self.it_ = self.oda_.begin();
-
-    return new TableIterator(const_cast<TODATable&>(*this), it_, end_, const_cast<double *>(data_), x);
+SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns) const {
+    return new TODATableIterator(*this, columns);
 }
 
 } // namespace sql

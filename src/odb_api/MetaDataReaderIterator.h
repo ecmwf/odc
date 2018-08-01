@@ -73,7 +73,7 @@ public:
 	const std::string& columnName(unsigned long index) const;
 	const std::string& codecName(unsigned long index) const;
 	double columnMissingValue(unsigned long index);
-	const BitfieldDef& bitfieldDef(unsigned long index);
+    const eckit::sql::BitfieldDef& bitfieldDef(unsigned long index);
 	
 	char *encodedData() { return encodedData_; }
 	size_t sizeOfEncodedData() { return sizeOfEncodedData_; }

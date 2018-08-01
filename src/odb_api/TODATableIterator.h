@@ -8,40 +8,57 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef TODATableIterator_H
-#define TODATableIterator_H
+/// @author Piotr Kuchta
+/// @author Simon Smart
+/// ECMWF Oct 2010
+
+#ifndef odb_api_sql_TODATableIterator_H
+#define odb_api_sql_TODATableIterator_H
+
+#include "eckit/sql/SQLTable.h"
+#include "odb_api/Reader.h"
+
 
 namespace odb {
 namespace sql {
 
-template <typename T>
-class TODATableIterator : public SQLTableIterator {
-	typedef T Table;
-	typedef typename Table::TReader::iterator iterator;
+class TODATable;
 
-public:
-	TODATableIterator(Table&, iterator, iterator, double*, const std::vector<odb::sql::SQLColumn*>&);
+//----------------------------------------------------------------------------------------------------------------------
+
+class TODATableIterator : public eckit::sql::SQLTableIterator {
+
+public: // methods
+
+    TODATableIterator(Table& parent, const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns);
 	virtual ~TODATableIterator();
-	virtual void rewind();
-	virtual bool next();
 
-private:
+private: // methods (override>
 
-	Table &parent;
-	iterator it_;
-	iterator end_;
-	double* data_;
-	const std::vector<SQLColumn*>& columns_;
+    virtual void rewind() override;
+    virtual bool next() override;
+
+    virtual std::vector<size_t> columnOffsets() const override = 0;
+    virtual double* data() override = 0;
+
+private: // methods
+
+    void updateMetaData();
+
+private: // members
+
+    TODATable& parent_;
+    Reader::iterator it_;
+    Reader::iterator end_;
+    const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns_;
+    std::vector<size_t> columnOffsets_;
 
 	bool firstRow_;
-
-	void updateMetaData();
-	void copyRow();
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
 } // namespace odb
-
-#include "odb_api/TODATableIterator.cc"
 
 #endif

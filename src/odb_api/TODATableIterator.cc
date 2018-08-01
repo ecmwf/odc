@@ -10,7 +10,8 @@
 
 //#include "odb_api/odb_api.h"
 
-#include "odb_api/ODAColumn.h"
+#include "odb_api/TODATableIterator.h"
+
 //#include "eckit/sql/SQLDatabase.h"
 //#include "eckit/sql/SQLType.h"
 //#include "odb_api/TODATable.h"
@@ -21,67 +22,72 @@
 namespace odb {
 namespace sql {
 
-template <typename T>
-TODATableIterator<T>::TODATableIterator(Table &p, iterator reader, iterator end, double* data, const std::vector<odb::sql::SQLColumn*>& columns)
-: parent(p),
-  it_(reader),
-  end_(end), 
-  data_(data),
-  columns_(columns),
-  firstRow_(true)
-{
-	if (it_ != end_)
-	{
-		updateMetaData();
-		copyRow();
-	}
+//----------------------------------------------------------------------------------------------------------------------
+
+TODATableIterator::TODATableIterator(TODATable& parent, const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns) :
+    parent_(p),
+    it_(p.oda().begin()),
+    end_(p.oda().end()),
+    columns_(columns),
+    firstRow_(true) {
+
+    if (it_ != end_) updateMetaData();
 }
 
-template <typename T>
-void TODATableIterator<T>::rewind() {}
+void TODATableIterator::rewind() {
+    it_ = parent_.oda().begin();
+    end_ = parent_.oda().end();
+}
 
-template <typename T>
-TODATableIterator<T>::~TODATableIterator() {}
+TODATableIterator::~TODATableIterator() {}
 
-template <typename T>
-bool TODATableIterator<T>::next()
-{
-	if (firstRow_) firstRow_ = false;
-	else
+bool TODATableIterator::next() {
+
+    // We don't need to increment pointer on first row. begin() just called.
+
+    if (firstRow_) {
+        firstRow_ = false;
+    } else {
 		++it_;
+    }
 
-	if (! (it_ != end_) )
-		return false;
+    if (it_ == end_) return false;
 
-	if (it_->isNewDataset())
-		updateMetaData();
+    if (it_->isNewDataset()) {
+        // TODO: Need to update the column pointers in the SQLSelect. AARGH.
+        NOTIMP;
+        updateMetaData();
+    }
 
-	copyRow();
 	return true;
 }
 
-template <typename T>
-void TODATableIterator<T>::copyRow()
-{
-	size_t n = columns_.size();
-	for(size_t i = 0; i < n; ++i)
-		data_[i] = *static_cast<ODAColumn *>(columns_[i])->value(); //it_->data()[columns_[i]->index()];
+
+void TODATableIterator::updateMetaData() {
+
+    const MetaData& md = it_->columns();
+
+    for (const SQLColumn& col : columns_) {
+
+        if (!md.hasColumn(col.name())) {
+            throw UserError("Column \"" + col.name() + "\" not found in table, but required in SQL request", Here());
+        }
+
+        size_t idx = md.columnIndex(col.name());
+        columnOffsets_.push_back(it_->dataOffset(idx));
+    }
 }
 
-template <typename T>
-void TODATableIterator<T>::updateMetaData()
-{
-	parent.updateMetaData(columns_);
-	data_ = parent.data_;
-
-	size_t n = columns_.size();
-	for(size_t i = 0; i < n; i++)
-	{
-		ODAColumn *odaColumn = dynamic_cast<ODAColumn *>(columns_[i]);
-		//ASSERT(odaColumn);
-		odaColumn->value(const_cast<double*>(it_->data()) + columns_[i]->index());
-	}
+std::vector<size_t> TODATableIterator::columnOffsets() const {
+    ASSERT(columnOffsets_.size() == columns_.size());
+    return columnOffsets_;
 }
+
+double* TODATableIterator::data() {
+    return it_->data();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
 } // namespace odb

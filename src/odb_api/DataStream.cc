@@ -264,10 +264,10 @@ void DataStream<T,D>::writeFlags(const Flags &v)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::readBitfieldDef(BitfieldDef &v)
+void DataStream<T,D>::readBitfieldDef(eckit::sql::BitfieldDef &v)
 {
-	FieldNames& names = v.first;
-	Sizes& sizes = v.second;
+    eckit::sql::FieldNames& names = v.first;
+    eckit::sql::Sizes& sizes = v.second;
 	
 	names.clear();
 	sizes.clear();
@@ -296,10 +296,10 @@ void DataStream<T,D>::readBitfieldDef(BitfieldDef &v)
 }
 
 template <typename T, typename D>
-void DataStream<T,D>::writeBitfieldDef(const BitfieldDef &v)
+void DataStream<T,D>::writeBitfieldDef(const eckit::sql::BitfieldDef &v)
 {
-	const FieldNames& names = v.first;
-	const Sizes& sizes = v.second;
+    const eckit::sql::FieldNames& names = v.first;
+    const eckit::sql::Sizes& sizes = v.second;
 
 	writeInt32(names.size());
 	for (size_t i = 0; i < names.size(); i++)

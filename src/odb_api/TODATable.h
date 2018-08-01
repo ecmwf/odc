@@ -8,59 +8,48 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TODATable.h
-/// Piotr Kuchta - ECMWF Oct 2010
+/// @author Piotr Kuchta
+/// @author Simon Smart
+/// ECMWF Oct 2010
 
 #ifndef TODATable_H
 #define TODATable_H
 
 #include "eckit/sql/SQLTable.h"
-#include "odb_api/TODATableIterator.h"
+#include "odb_api/Reader.h"
+
 
 namespace odb {
 namespace sql {
 
-template <typename T>
-class TODATable : public SQLTable {
+//----------------------------------------------------------------------------------------------------------------------
+
+class TODATable : public eckit::sql::SQLTable {
 public:
-	typedef T TReader;
-	typedef TODATableIterator<TODATable> TableIterator;
 
 	TODATable(SQLDatabase&, const std::string&, const std::string&);
 	TODATable(SQLDatabase&, eckit::DataHandle&);
     TODATable(SQLDatabase&, std::istream&, const std::string& delimiter);
 
-	~TODATable(); 
+    virtual ~TODATable();
 
-	double value(long);
+private: // methods
 
-// -- Overridden methods
-	bool hasColumn(const std::string&, std::string* fullName = 0);
-	SQLColumn* column(const std::string&);
+    void populateMetaData();
+    void updateMetaData(const std::vector<SQLColumn*>&);
 
-protected:
-	// void print(std::ostream&) const;
-	SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue, const BitfieldDef&);
-	SQLColumn* createSQLColumn(const type::SQLType& type, const std::string& name, int index, bool hasMissingValue, double missingValue);
+private: // methods (overrides)
 
-private:
-// No copy allowed
-	TODATable(const TODATable&);
-	TODATable& operator=(const TODATable&);
+    virtual bool hasColumn(const std::string&, std::string* fullName = 0) override;
+    virtual eckit::sql::SQLColumn& column(const std::string&) override;
+
+    virtual eckit::sql::SQLTableIterator* iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>&) const override;
+
+    virtual void print(std::ostream& s) const override;
 
 public:
 
-	double* data_;
-	typename TODATable<T>::TReader oda_;
-	typename TODATable<T>::TReader::iterator it_;
-	typename TODATable<T>::TReader::iterator end_;
-
-// -- Methods
-
-	void populateMetaData();
-	void updateMetaData(const std::vector<SQLColumn*>&);
-
-	virtual SQLTableIterator* iterator(const std::vector<SQLColumn*>&) const;
+    Reader oda_;
 };
 
 } // namespace sql 

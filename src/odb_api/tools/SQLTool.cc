@@ -14,7 +14,7 @@
 #include "eckit/io/FileDescHandle.h"
 #include "eckit/parser/StringTools.h"
 
-#include "eckit/sql/SQLInteractiveSession.h"
+#include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLParser.h"
 #include "odb_api/odb_api.h"
 #include "eckit/sql/SQLSelectFactory.h"
@@ -22,7 +22,6 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb::sql;
 
 namespace odb {
 namespace tool {
@@ -86,7 +85,7 @@ void SQLTool::run()
                                 ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
                                 : 0);
     std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
-    SQLInteractiveSession session(out);
+    eckit::sql::SQLSession session(out);
     session.selectFactory().config(sqlOutputConfig_);
     SQLOutputConfig config (session.selectFactory().config());
     PathName inputFile(inputFile_);
@@ -96,12 +95,12 @@ void SQLTool::run()
 
 void SQLTool::execute(const string& sql)
 {
-    execute(sql, cout);
+    execute(sql, eckit::Log::info());
 }
 
 void SQLTool::execute(const string& sql, ostream& out)
 {
-    SQLInteractiveSession session(out);
+    eckit::sql::SQLSession session(out);
     SQLParser parser;
     SQLOutputConfig config(session.selectFactory().config());
     runSQL(sql, "", session, parser, config);

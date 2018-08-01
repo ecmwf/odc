@@ -18,12 +18,11 @@
 namespace odb {
 namespace sql {
 
-class SQLTable;
 
-class ODAColumn : public SQLColumn {
+class ODAColumn : public eckit::sql::SQLColumn {
 public:
-	ODAColumn(const type::SQLType&, SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue, const BitfieldDef&, double*);
-	ODAColumn(const type::SQLType&, SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue, double*);
+    ODAColumn(const eckit::sql::type::SQLType&, eckit::sql::SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue, const BitfieldDef&, double*);
+    ODAColumn(const eckit::sql::type::SQLType&, eckit::sql::SQLTable&, const std::string&, int, bool hasMissingValue, double missingValue, double*);
 	~ODAColumn();
 
     // BUYER BEWARE

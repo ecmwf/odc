@@ -259,7 +259,7 @@ ColumnType MetaDataReaderIterator::columnType(unsigned long index) { return colu
 const std::string& MetaDataReaderIterator::columnName(unsigned long index) const { return columns_[index]->name(); }
 const std::string& MetaDataReaderIterator::codecName(unsigned long index) const { return columns_[index]->coder().name(); }
 double MetaDataReaderIterator::columnMissingValue(unsigned long index) { return columns_[index]->missingValue(); }
-const BitfieldDef& MetaDataReaderIterator::bitfieldDef(unsigned long index) { return columns_[index]->bitfieldDef(); }
+const eckit::sql::BitfieldDef& MetaDataReaderIterator::bitfieldDef(unsigned long index) { return columns_[index]->bitfieldDef(); }
 
 eckit::DataHandle* MetaDataReaderIterator::dataHandle() { return f_; }
 

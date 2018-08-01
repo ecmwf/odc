@@ -75,8 +75,8 @@ public:
 
 	void resetStats() { coder_->resetStats(); }
 
-	void bitfieldDef(const BitfieldDef& b) { bitfieldDef_ = b; }
-	const BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
+    void bitfieldDef(const eckit::sql::BitfieldDef& b) { bitfieldDef_ = b; }
+    const eckit::sql::BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
 
 	virtual void print(std::ostream& s) const;
 
@@ -102,7 +102,7 @@ private:
 	int32_t type_;
 	codec::Codec* coder_;
 	/// bitfieldDef_ is not empty if type_ == BITFIELD.
-	BitfieldDef bitfieldDef_;
+    eckit::sql::BitfieldDef bitfieldDef_;
 	//std::string typeSignature_;
 
 };
@@ -113,8 +113,8 @@ template<typename DATASTREAM> void Column::load(DATASTREAM &f)
 	f.readInt32(type_);
 	if (type_ == BITFIELD)
 	{
-		FieldNames names;
-		Sizes sizes;
+        eckit::sql::FieldNames names;
+        eckit::sql::Sizes sizes;
 		bitfieldDef_ = make_pair(names, sizes);
 		f.readBitfieldDef(bitfieldDef_);
 	}

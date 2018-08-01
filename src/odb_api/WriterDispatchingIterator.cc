@@ -13,11 +13,30 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odb_api/FunctionEQ.h"
 #include "odb_api/Comparator.h"
 #include "odb_api/Reader.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/Translator.h"
+
+
+namespace {
+// n.b. Duplicated from eckit::sql::expression::function::FunctionEQ::trimStringInDouble.
+//      TODO: Put somewhere better.
+void trimStringInDouble(char* &p, size_t& len)
+{
+    len = 0;
+    for(; len < sizeof(double) && isprint(p[len]); ++len)
+        ;
+    for(; len > 0 && isspace(p[len - 1]); --len)
+        ;
+    size_t plen = len;
+    for (char *pp = p; isspace(*p) && p < pp + plen;)
+    {
+        ++p;
+        --len;
+    }
+}
+}
 
 namespace odb {
 
@@ -62,7 +81,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b)
 {
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
@@ -93,7 +112,7 @@ std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(c
         {
             char* sp (reinterpret_cast<char *>(&d));
             size_t len (0);
-            odb::sql::expression::function::FunctionEQ::trimStringInDouble(sp, len);
+            trimStringInDouble(sp, len);
             s = std::string(sp, len);
             while (s.find("/") != std::string::npos)
             {
@@ -361,7 +380,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, BitfieldDef b)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b)
 {
     //eckit::Log::info() << "WriterDispatchingIterator::setBitfieldColumn: " << std::endl;
 

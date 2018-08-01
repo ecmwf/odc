@@ -110,8 +110,8 @@ void Column::print(std::ostream& s) const
 
 	if (type_ == BITFIELD)
 	{
-		FieldNames names = bitfieldDef_.first;
-		Sizes sizes = bitfieldDef_.second;
+        eckit::sql::FieldNames names = bitfieldDef_.first;
+        eckit::sql::Sizes sizes = bitfieldDef_.second;
 		ASSERT(names.size() == sizes.size());
 		s << " [";
 		for (size_t i = 0; i < names.size(); ++i)

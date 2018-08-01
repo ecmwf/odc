@@ -12,6 +12,7 @@
 #define MetaData_H
 
 #include "odb_api/Column.h"
+#include "eckit/sql/SQLTypedefs.h"
 
 #ifdef SWIGPYTHON
 #include "odb_api/IteratorProxy.h"
@@ -64,8 +65,8 @@ public:
 
     bool allColumnsInitialised() const;
 
-	MetaData& addBitfield(const std::string& name, const BitfieldDef&);
-	template<typename DATASTREAM> MetaData& addBitfieldPrivate(const std::string& name, const BitfieldDef&);
+    MetaData& addBitfield(const std::string& name, const eckit::sql::BitfieldDef&);
+    template<typename DATASTREAM> MetaData& addBitfieldPrivate(const std::string& name, const eckit::sql::BitfieldDef&);
 
 	bool hasColumn(const std::string&) const;
 	Column* columnByName(const std::string&) const;
@@ -144,7 +145,7 @@ MetaData& MetaData::addColumnPrivate(const std::string& name, const std::string&
 }
 
 template<typename DATASTREAM> 
-MetaData& MetaData::addBitfieldPrivate(const std::string& name, const BitfieldDef& bd)
+MetaData& MetaData::addBitfieldPrivate(const std::string& name, const eckit::sql::BitfieldDef& bd)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);

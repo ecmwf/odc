@@ -32,9 +32,7 @@
 #include "odb_api/ColumnType.h"
 #include "eckit/sql/SQLParser.h"
 #include "odb_api/InMemoryDataHandle.h"
-#include "eckit/sql/SQLInteractiveSession.h"
-#include "eckit/sql/SQLNonInteractiveSession.h"
-#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLOutputConfig.h"
 #include "eckit/sql/SQLDatabase.h"
 #include "odb_api/data/DataHandleFactory.h"
@@ -60,7 +58,7 @@ typedef odbql * p_odbql;
 class DataBaseImpl {
 public:
     DataBaseImpl(const char* filename)
-    : session_(odb::sql::SQLOutputConfig::defaultConfig(), ","),
+    : session_(eckit::sql::SQLOutputConfig::defaultConfig(), ","),
       filename_(filename),
       input_( (filename && strlen(filename))
              ? static_cast<DataHandle*>(odb::DataHandleFactory::openForRead(filename))
@@ -81,10 +79,10 @@ public:
     void errmsg(const std::string& s) { errmsg_ = s; }
     error_code_t error_code(error_code_t e) { return error_code_ = e; }
     error_code_t error_code() { return error_code_; }
-    odb::sql::SQLNonInteractiveSession& session() { return session_; }
+    eckit::sql::SQLSession& session() { return session_; }
 
 private:
-    odb::sql::SQLNonInteractiveSession session_;
+    eckit::sql::SQLSession session_;
     const std::string filename_;
     eckit::DataHandle* input_;
     std::string errmsg_;
@@ -518,7 +516,7 @@ odbql_value* SelectAllImpl::column_value(int iCol)
  
 #define CATCH_ALL  \
     } \
-    catch(const odb::sql::SyntaxError &e)  { if (p) p->errmsg("syntax error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
+    catch(const eckit::sql::SyntaxError &e)  { if (p) p->errmsg("syntax error"); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::CantOpenFile &e) { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::ShortFile &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
     catch(const eckit::ReadError &e)    { if (p) p->errmsg(e.what()); return p ? p->error_code(ODBQL_ERROR) : ODBQL_ERROR; } \
@@ -581,37 +579,37 @@ error_code_t odbql_prepare_v2(odbql *db, const char *zSql, int nByte, odbql_stmt
 
     //eckit::Log::info() << "Prepare statement '" << zSql << "' db = " << database(db) << std::endl;
 
-    odb::sql::SQLParser parser;
-    odb::sql::SQLNonInteractiveSession& session (database(db).session());
-    odb::sql::SQLOutputConfig config (session.selectFactory().config());
+    eckit::sql::SQLParser parser;
+    eckit::sql::SQLSession& session (database(db).session());
+    eckit::sql::SQLOutputConfig config (session.selectFactory().config());
     parser.parseString(session, zSql, database(db).input(), config, false);
-    odb::sql::SQLStatement* statement (session.statement());
+    eckit::sql::SQLStatement* statement (session.statement());
 
     typedef odbql_stmt* stmt_ptr_t; 
 
-    if (dynamic_cast<odb::sql::SQLInsert*>(statement))
+    if (dynamic_cast<eckit::sql::SQLInsert*>(statement))
     {
-        odb::sql::SQLInsert& sqlInsert (dynamic_cast<odb::sql::SQLInsert&>(*statement));
-        const odb::sql::Table& table (sqlInsert.table());
-        const odb::sql::TableDef& tableDef (session.currentDatabase().schemaAnalyzer().findTable(table.name));
+        eckit::sql::SQLInsert& sqlInsert (dynamic_cast<eckit::sql::SQLInsert&>(*statement));
+        const eckit::sql::Table& table (sqlInsert.table());
+        const eckit::sql::TableDef& tableDef (session.currentDatabase().schemaAnalyzer().findTable(table.name));
 
-        const MetaData md (odb::sql::SQLSelectFactory::toODAColumns(session, tableDef));
+        const MetaData md (eckit::sql::SQLSelectFactory::toODAColumns(session, tableDef));
         const std::string& location (tableDef.location());
 
         *ppStmt = stmt_ptr_t (new InsertImpl(database(db), md, location));
     }
-    else if (dynamic_cast<odb::sql::SQLSelect*>(statement))
+    else if (dynamic_cast<eckit::sql::SQLSelect*>(statement))
     {
-        odb::sql::SQLSelect* select (dynamic_cast<odb::sql::SQLSelect*>(statement));
+        eckit::sql::SQLSelect* select (dynamic_cast<eckit::sql::SQLSelect*>(statement));
 
         if (select->all())
         {
-            const std::vector<odb::sql::SQLTable*>& tables (select->tables());
+            const std::vector<eckit::sql::SQLTable*>& tables (select->tables());
             if (tables.size() != 1)
                 throw UserError("Only one table required in FROM clause of 'SELECT ALL *'");
             if (select->where())
                 throw UserError("'SELECT ALL *' cannot have WHERE clause yet");
-            const odb::sql::SQLTable& from (*tables[0]);
+            const eckit::sql::SQLTable& from (*tables[0]);
             std::vector<std::string> paths;
             paths.push_back (from.path());
             *ppStmt = stmt_ptr_t (new SelectAllImpl(database(db), paths));

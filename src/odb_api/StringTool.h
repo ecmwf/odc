@@ -35,9 +35,7 @@ public:
 
     static void trimInPlace(std::string &);
 
-    static bool isColumnRegex(const std::string&);
 	static bool match(const std::string& regex, const std::string&);
-	static bool matchEx(const std::string& regex, const std::string&);
 	static bool matchAny(const std::vector<std::string>& regs, const std::string&);
 
     static bool check(const std::string&, ctypeFun);
