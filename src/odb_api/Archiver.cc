@@ -16,13 +16,11 @@
 #include "eckit/io/MultiHandle.h"
 
 #include "odb_api/odb_api.h"
-#include "odb_api/StringTool.h"
 #include "odb_api/FileMapper.h"
 #include "odb_api/Odb2Hub.h"
 #include "odb_api/Archiver.h"
-#include "odb_api/Retriever.h"
 #include "odb_api/FileCollector.h"
-#include "odb_api/StringTool.h"
+#include "odb_api/RequestUtils.h"
 
 #include <stdio.h>
 #include <fstream>
@@ -51,9 +49,9 @@ void Archiver::archive(const eckit::PathName& path,
                           const std::string& dirtyKeywordsConfig,
                           const std::string& dirtyOdbServerArchiveRoot)
 {
-    const std::string schema (odb::StringTool::unQuote(dirtySchema));
-    const std::string keywordsConfig (odb::StringTool::unQuote(dirtyKeywordsConfig));
-    const std::string odbServerArchiveRoot (odb::StringTool::unQuote(dirtyOdbServerArchiveRoot));
+    const std::string schema (StringTools::unQuote(dirtySchema));
+    const std::string keywordsConfig (StringTools::unQuote(dirtyKeywordsConfig));
+    const std::string odbServerArchiveRoot (StringTools::unQuote(dirtyOdbServerArchiveRoot));
 
     PathName targetPath (odbServerArchiveRoot + "/" + Odb2Hub::getPath(schema, path, keywordsConfig));
 
@@ -81,7 +79,7 @@ void Archiver::archive(eckit::MultiHandle& h,
                        const std::vector<std::string>& keywords,
                        const std::map<std::string,std::vector<std::string> >& request)
 {
-    std::map<std::string,std::vector<std::string> > r(Retriever::unquoteValues(request));
+    odb::RequestDict r(odb::unquoteRequestValues(request));
 
     vector<string> sources (r["source"]);
     if (sources.size() == 0) throw UserError("ARCHIVE missing SOURCE");

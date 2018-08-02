@@ -33,7 +33,7 @@
 #include "odb_api/Writer.h"
 #include "TestCase.h"
 #include "odb_api/tools/CountTool.h"
-#include "odb_api/tools/ImportTool.h"
+//#include "odb_api/tools/ImportTool.h"
 #include "odb_api/tools/SplitTool.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/odbql.h"
@@ -77,7 +77,8 @@ static void createDataForMixedAggregated()
             "2,2,0.1\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
+    NOTIMP;
+//    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
 }
 
 TEST(selectAggregatedAndNonAggregated)
@@ -871,7 +872,7 @@ TEST(TextReaderIterator_parseBitfields_32bits_limit)
     TextReader reader("dummy_path",",");
     TextReaderIterator it(reader);
     try {
-        odb::BitfieldDef def (it.parseBitfields(bitfieldDefinition));
+        eckit::sql::BitfieldDef def (it.parseBitfields(bitfieldDefinition));
         ASSERT("TextReaderIterator::parseBitfields should throw UserError");
     }
     catch (UserError e) {
@@ -885,7 +886,7 @@ TEST(TextReaderIterator_parseBitfields)
     string bitfieldDefinition ( "en4_level_flag@hdr:bitfield[TempLevelReject:1;SaltLevelReject:1;LevelVertStability:1;IncreasingDepthCheck:1;NotUsed1:1;NotUsed2:1;NotUsed3:1;NotUsed4:1;NotUsed5:1;TempLevelStatList:1;TempLevelArgoQC:1;TempLevelOutOfRangeSetToMDI:1;TempLevelEN3List:1;TempLevelVertCheck:1;TempLevelNoBckgrnd:1;TempLevelBays:1;TempLevelBaysBud:1;TempLevelBaysBudReinstate:1;TempLevelWaterfallCheck:1;NotUsed6:1;NotUsed7:1;SaltLevelStatList:1;SaltLevelArgoQC:1;SaltLevelOutOfRangeSetToMDI:1;SaltLevelEN3List:1;SaltLevelVertCheck:1;SaltLevelNoBckgrnd:1;SaltLevelBays:1;SaltLevelBaysBud:1;SaltLevelBaysBudReinstate:1;SaltLevelWaterfallCheck:1]" );
     TextReader reader("dummy_path",",");
     TextReaderIterator it(reader);
-    odb::BitfieldDef def (it.parseBitfields(bitfieldDefinition));
+    eckit::sql::BitfieldDef def (it.parseBitfields(bitfieldDefinition));
     FieldNames names(def.first);
     Sizes sizes(def.second);
 

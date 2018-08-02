@@ -39,10 +39,11 @@ public:
 
 	virtual ~Reader();
 
-	iterator begin();
-	const iterator end(); 
+    // TODO: begin() should be const.
+    iterator begin();
+    const iterator end() const;
 
-	eckit::DataHandle* dataHandle();
+    eckit::DataHandle* dataHandle();
 	// For C API
 	ReaderIterator* createReadIterator(const eckit::PathName&);
 	ReaderIterator* createReadIterator();

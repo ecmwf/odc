@@ -96,7 +96,7 @@ public:
 
         if (c.type() == BITFIELD)
         {
-            const odb::BitfieldDef& bd (c.bitfieldDef());
+            const eckit::sql::BitfieldDef& bd (c.bitfieldDef());
             const std::vector<std::string>& fieldNames (bd.first);
             const std::vector<int>& sizes (bd.second);
 

@@ -110,7 +110,7 @@ Select::iterator Select::begin()
 
 eckit::sql::SQLSession* Select::ownSession(const std::string& delimiter)
 { 
-    return new eckit::sql::SQLSession(eckit::sql::SQLOutputConfig::defaultConfig(), delimiter);
+    return new eckit::sql::SQLSession(delimiter);
 }
 
 #ifdef SWIGPYTHON

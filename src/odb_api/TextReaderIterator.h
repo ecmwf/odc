@@ -44,7 +44,7 @@ public:
 
 	MetaData& columns() { return columns_; }
 
-	static odb::BitfieldDef parseBitfields(const std::string&);
+	static eckit::sql::BitfieldDef parseBitfields(const std::string&);
 //protected:
 
 	int close();
@@ -83,7 +83,6 @@ protected:
 	friend class odb::TextReader;
 	friend class odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double>;
 	friend class odb::Header<odb::TextReaderIterator>;
-	friend class odb::sql::ODATableIterator;
 };
 
 } // namespace odb

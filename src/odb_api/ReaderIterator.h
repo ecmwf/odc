@@ -45,8 +45,8 @@ class Reader;
 class ReaderIterator
 {
 public:
-	ReaderIterator (Reader &owner);
-	ReaderIterator (Reader &owner, const eckit::PathName&);
+    ReaderIterator (Reader &owner);
+    ReaderIterator (Reader &owner, const eckit::PathName&);
 
 	~ReaderIterator ();
 
@@ -105,7 +105,7 @@ private:
 	void initRowBuffer();
 	void loadHeaderAndBufferData();
 
-	Reader& owner_;
+    Reader& owner_;
 	MetaData columns_;
 	double* lastValues_;
     size_t* columnOffsets_; // in doubles

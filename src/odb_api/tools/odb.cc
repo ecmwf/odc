@@ -10,7 +10,7 @@
 
 #include "eckit/io/FileHandle.h"
 
-#include "odb_api/FunctionFactory.h"
+#include "eckit/sql/expression/function/FunctionFactory.h"
 #include "odb_api/ODBAPIVersion.h"
 #include "odb_api/odbcapi.h"
 
@@ -62,7 +62,8 @@ int executeCommand(int argc, char *argv[])
     if (firstArg == "g")  { odb_start_with_args(argc, argv); return gdb(argc, argv); }
     if (firstArg == "vg") { odb_start_with_args(argc, argv); return valgrind(argc, argv); }
     
-	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
+    /// TODO: reenable
+//	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
 	if (firstArg == "test")
 	{
 		if (argc == 2) //no args => test all
@@ -155,8 +156,8 @@ int valgrind(int argc, char *argv[])
 
 int sqlhelp(int argc, char *argv[])
 {
-	typedef odb::sql::expression::function::FunctionFactory::FunctionInfo FI;
-	FI& fi = odb::sql::expression::function::FunctionFactory::instance().functionsInfo();
+    typedef eckit::sql::expression::function::FunctionFactory::FunctionInfo FI;
+    FI& fi = eckit::sql::expression::function::FunctionFactory::instance().functionsInfo();
 	for (FI::iterator i = fi.begin(); i != fi.end(); ++i)
 	{
 		if (i->first.first == "FunctionFactory")

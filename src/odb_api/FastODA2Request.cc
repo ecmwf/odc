@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <string>
+#include <memory>
 
 namespace odb {
 
@@ -103,7 +104,7 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 
 	MDR::iterator it = mdReader.begin(), end = mdReader.end();
 
-    std::auto_ptr<MetaData> currentMD(it->columns().clone());
+    std::unique_ptr<MetaData> currentMD(it->columns().clone());
 	rowsNumber_ = currentMD->rowsNumber();
 
     values_ = std::vector<std::set<std::string> >(currentMD->size(), std::set<std::string>());

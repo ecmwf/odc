@@ -17,7 +17,7 @@
 #include "CountTool.h"
 #include "IndexTool.h"
 #include "FixedSizeRowTool.h"
-#include "ImportTool.h"
+//#include "ImportTool.h"
 #include "LSTool.h"
 #include "MDSetTool.h"
 #include "MergeTool.h"
@@ -50,7 +50,7 @@ void Tool::registerTools()
 	static ToolFactory<CountTool> countTool("count");
 	static ToolFactory<IndexTool> indexTool("index");
 	static ToolFactory<FixedSizeRowTool> fixedSizeRow("fixrowsize");
-	static ToolFactory<ImportTool> import("import");
+//	static ToolFactory<ImportTool> import("import");
 	static ToolFactory<LSTool> lsTool("ls");
 	static ToolFactory<MDSetTool> mdset("mdset");
 	static ToolFactory<MergeTool> mergeTool("merge");

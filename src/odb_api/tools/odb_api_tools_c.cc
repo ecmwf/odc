@@ -35,7 +35,9 @@ extern "C" {
 int import_text(const char* text, const char* output_file)
 {
     try {
-        odb::tool::ImportTool::importText(text, output_file);
+        NOTIMP;
+        // TODO: Fix this.
+//        odb::tool::ImportTool::importText(text, output_file);
         return 0;
     } catch (Exception e) {
         return 1;

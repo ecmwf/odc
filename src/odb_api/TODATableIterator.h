@@ -30,7 +30,7 @@ class TODATableIterator : public eckit::sql::SQLTableIterator {
 
 public: // methods
 
-    TODATableIterator(Table& parent, const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns);
+    TODATableIterator(const TODATable& parent, const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns);
 	virtual ~TODATableIterator();
 
 private: // methods (override>
@@ -38,8 +38,8 @@ private: // methods (override>
     virtual void rewind() override;
     virtual bool next() override;
 
-    virtual std::vector<size_t> columnOffsets() const override = 0;
-    virtual double* data() override = 0;
+    virtual std::vector<size_t> columnOffsets() const override;
+    virtual const double* data() const override;
 
 private: // methods
 
@@ -47,7 +47,7 @@ private: // methods
 
 private: // members
 
-    TODATable& parent_;
+    const TODATable& parent_;
     Reader::iterator it_;
     Reader::iterator end_;
     const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns_;

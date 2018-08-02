@@ -20,7 +20,6 @@
 #include <arpa/inet.h>
 
 #include "odb_api/ODBAPISettings.h"
-#include "eckit/sql/SQLAST.h"
 
 inline size_t MEGA(size_t n) { return n*1024*1204; }
 

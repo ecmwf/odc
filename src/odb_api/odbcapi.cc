@@ -45,9 +45,9 @@ int get_bitfield(T it,
 	int* sSize)
 {
 	I* iter = reinterpret_cast<I*>(it);
-	const BitfieldDef& bitfieldDef(iter->columns()[index]->bitfieldDef());
-	FieldNames fieldNames(bitfieldDef.first);
-	Sizes sizes(bitfieldDef.second);
+    const eckit::sql::BitfieldDef& bitfieldDef(iter->columns()[index]->bitfieldDef());
+    eckit::sql::FieldNames fieldNames(bitfieldDef.first);
+    eckit::sql::Sizes sizes(bitfieldDef.second);
 
     std::stringstream ns, ss;
 	for (size_t i = 0; i < fieldNames.size(); ++i)
@@ -414,8 +414,8 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
 {
 	std::string bnames (bitfieldNames);
     std::string bsizes (bitfieldSizes);
-    odb::FieldNames    (bitfield_names);
-    odb::Sizes         (bitfield_sizes);
+    eckit::sql::FieldNames    (bitfield_names);
+    eckit::sql::Sizes         (bitfield_sizes);
  
 //	std::cout << " columnName = " << name << " " << bnames << " " << bsizes << std::endl;
 	size_t iprev (0);
@@ -441,7 +441,7 @@ int odb_write_iterator_set_bitfield(oda_write_iterator_ptr wi, int index, int ty
 		}
 	}
 
-    odb::BitfieldDef bitfieldType(make_pair(bitfield_names, bitfield_sizes));
+    eckit::sql::BitfieldDef bitfieldType(make_pair(bitfield_names, bitfield_sizes));
 
 	Writer<>::iterator_class * w (reinterpret_cast<Writer<>::iterator_class *>(wi));
 	std::string columnName(name);

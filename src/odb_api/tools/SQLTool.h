@@ -8,26 +8,41 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef _SQLTool_H
-#define _SQLTool_H
+/// @author Piotr Kuchta
+/// @author Simon Smart
+/// @date Aug 2018
+
+#ifndef odb_api_SQLTool_H
+#define odb_api_SQLTool_H
 
 #include "odb_api/tools/Tool.h"
 #include "eckit/sql/SQLOutputConfig.h"
 
+namespace eckit {
+    class Offset;
+    class Length;
+    namespace sql {
+        class SQLSession;
+        class SQLParser;
+        class SQLOutputConfig;
+    }
+}
+
 namespace odb {
 
-namespace sql { class SQLSession; class SQLParser; class SQLOutputConfig; }
+class SQLOutputConfig;
 
 namespace tool {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class SQLTool : public Tool {
 
 public:
 	SQLTool(int argc, char **argv);
-	~SQLTool();
+    virtual ~SQLTool();
+
 	virtual void run();
-    static void execute(const std::string&);
-    static void execute(const std::string&, std::ostream&);
 
 	static void help(std::ostream &o) { o << "Executes SQL statement"; }
 	static void usage(const std::string& name, std::ostream &o)
@@ -44,32 +59,21 @@ public:
         o << "             [-delimiter <delim>]  Changes the default values' delimiter (TAB by default)" << std::endl; 
         o << "                                   delim can be any character or string" << std::endl;
         o << "             [--binary|--bin]      Print bitfields in binary notation" << std::endl;
-        o << "             [--hexadecimal|--hex] Print bitfields in hexadecimal notation" << std::endl;
+//        o << "             [--hexadecimal|--hex] Print bitfields in hexadecimal notation" << std::endl;
         o << "             [--no_alignment]      Do not align columns" << std::endl;
         o << "             [--full_precision]    Print with full precision" << std::endl;
 	}
 
 private:
-	static void runSQL(const std::string&,
-                const eckit::PathName&,
-                odb::sql::SQLSession&,
-                odb::sql::SQLParser&,
-                const odb::sql::SQLOutputConfig&);
 
-	static void runSQL(const std::string&,
-                const eckit::PathName&,
-                odb::sql::SQLSession&,
-                odb::sql::SQLParser&,
-                const odb::sql::SQLOutputConfig&,
-                const eckit::Offset& offset,
-                const eckit::Length& length);
-
-    sql::SQLOutputConfig sqlOutputConfig_;
+    std::unique_ptr<SQLOutputConfig> sqlOutputConfig_;
 
 	std::string inputFile_;           // -i
 	eckit::Offset offset_;       // -offset
 	eckit::Length length_;       // -length
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace tool 
 } // namespace odb 

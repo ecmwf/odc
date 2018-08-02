@@ -64,7 +64,9 @@ Reader::iterator Reader::begin()
     return iterator(it);
 }
 
-const Reader::iterator Reader::end() { return iterator(0); }
+const Reader::iterator Reader::end() const {
+    return iterator(0);
+}
 
 void Reader::noMoreData()
 {
@@ -76,7 +78,7 @@ void Reader::noMoreData()
     dataHandle_ = 0;
 }
 
-eckit::DataHandle* Reader::dataHandle() 
+eckit::DataHandle* Reader::dataHandle()
 {
     // Assume the Reader was constructed with a path, and not a DataHandle*
     if (! dataHandle_)

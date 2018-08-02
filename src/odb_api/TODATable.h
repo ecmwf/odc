@@ -27,16 +27,18 @@ namespace sql {
 class TODATable : public eckit::sql::SQLTable {
 public:
 
-	TODATable(SQLDatabase&, const std::string&, const std::string&);
-	TODATable(SQLDatabase&, eckit::DataHandle&);
-    TODATable(SQLDatabase&, std::istream&, const std::string& delimiter);
+    TODATable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name);
+    TODATable(eckit::sql::SQLDatabase& owner, eckit::DataHandle& dh);
+//    TODATable(eckit::sql::SQLDatabase&, std::istream&, const std::string& delimiter);
 
     virtual ~TODATable();
+
+    const Reader& oda() const;
 
 private: // methods
 
     void populateMetaData();
-    void updateMetaData(const std::vector<SQLColumn*>&);
+//    void updateMetaData(const std::vector<SQLColumn*>&);
 
 private: // methods (overrides)
 
@@ -54,7 +56,5 @@ public:
 
 } // namespace sql 
 } // namespace odb 
-
-#include "odb_api/TODATable.cc"
 
 #endif

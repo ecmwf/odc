@@ -93,8 +93,6 @@ ConstantSetter.h
 ####DataView.h
 DateTime.cc
 DateTime.h
-Decoder.cc
-Decoder.h
 ####Dictionary.cc
 ####Dictionary.h
 DispatchingWriter.cc
@@ -164,6 +162,8 @@ ReaderIterator.h
 ###>>>#SchemaAnalyzer.h
 SelectIterator.cc
 SelectIterator.h
+SQLOutputConfig.cc
+SQLOutputConfig.h
 TODATable.cc
 TODATable.h
 TODATableIterator.cc
@@ -208,12 +208,14 @@ FileMapper.h
 FileMapper.cc
 Odb2Hub.h
 Odb2Hub.cc
-Archiver.h 
+RequestUtils.h
+RequestUtils.cc
+Archiver.h
 Archiver.cc 
 Stager.h
 Stager.cc
-SQLODAOutput.cc
-SQLODAOutput.h
+##...##SQLODAOutput.cc
+##...##SQLODAOutput.h
 ODBTarget.cc
 ODBTarget.h
 

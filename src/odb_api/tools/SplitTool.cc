@@ -15,7 +15,6 @@
 #include "odb_api/MetaDataReaderIterator.h"
 #include "odb_api/Reader.h"
 #include "odb_api/Select.h"
-#include "odb_api/Stack.h"
 #include "odb_api/TemplateParameters.h"
 #include "SplitTool.h"
 

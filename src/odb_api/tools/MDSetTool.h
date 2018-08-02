@@ -36,7 +36,7 @@ private:
                          std::vector<std::string>& columns,
                          std::vector<std::string>& types,
                          std::vector<std::string>& values,
-                         std::vector<BitfieldDef>& bitfieldDefs);
+                         std::vector<eckit::sql::BitfieldDef>& bitfieldDefs);
 };
 
 } // namespace tool 

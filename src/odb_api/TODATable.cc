@@ -12,6 +12,7 @@
 
 #include "eckit/sql/type/SQLBitfield.h"
 #include "eckit/parser/StringTools.h"
+#include "eckit/utils/Translator.h"
 
 #include "odb_api/TODATable.h"
 #include "odb_api/TODATableIterator.h"
@@ -44,14 +45,18 @@ TODATable::TODATable(SQLDatabase& owner, DataHandle &dh) :
     populateMetaData();
 }
 
-TODATable::TODATable(SQLDatabase& owner, std::istream &is, const std::string &delimiter) :
-    SQLTable(owner, nullPathName, inputTable),
-    oda_(is, delimiter) {
-
-    populateMetaData();
-}
+//TODATable::TODATable(SQLDatabase& owner, std::istream &is, const std::string &delimiter) :
+//    SQLTable(owner, nullPathName, inputTable),
+//    oda_(is, delimiter) {
+//
+//    populateMetaData();
+//}
 
 TODATable::~TODATable() {}
+
+const Reader& TODATable::oda() const {
+    return oda_;
+}
 
 
 void TODATable::populateMetaData()
@@ -90,49 +95,49 @@ void TODATable::populateMetaData()
 	}
 }
 
-void TODATable::updateMetaData(const std::vector<SQLColumn*>& selected)
-{
-    // TODO: Whoah! whoah! whoah!
-    // n.b. we don't really want to modify the table. We should probabyl deal with this in the iterator...
-    NOTIMP;
-
-//	MetaData newColumns (it_->columns());
-//	for(size_t i = 0; i < selected.size(); i++)
-//	{
-//		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);
-//		ASSERT(c);
-//		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name())
-//		{
-//			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl
-//			               << "Was: " << c->index() << "." << endl;
-//			bool newIndexFound = false;
-//			for (size_t j = 0; j < newColumns.size(); ++j)
-//			{
-//				Column &other(*newColumns[j]);
-//				if (other.name() == c->name() || other.name() == c->fullName())
-//				{
-//					newIndexFound = true;
-//					Log::warning() << "New index: " << j << endl;
-//					c->index(j);
-//					break;
-//				}
-//			}
-//            if (! newIndexFound)
-//            {
-//                // TODO: if user specified MAYBE keyword, then use a constant NULL column.
-//                //if (maybe_) {
-//                //    Log::warning() << "Column '" << c->name() << "' not found." << endl;
-//                //    selected[i] = new NullColumn(*selected[i]);
-//                //} else {
-//                    stringstream ss;
-//                    ss << "One of selected columns, '" << c->name() << "', does not exist in new data set.";
-//                    throw UserError(ss.str());
-//                //}
-//            }
-//		}
-//		//c->value(&data_[i]);
-//	}
-}
+//void TODATable::updateMetaData(const std::vector<SQLColumn*>& selected)
+//{
+//    // TODO: Whoah! whoah! whoah!
+//    // n.b. we don't really want to modify the table. We should probabyl deal with this in the iterator...
+//    NOTIMP;
+//
+////	MetaData newColumns (it_->columns());
+////	for(size_t i = 0; i < selected.size(); i++)
+////	{
+////		ODAColumn *c = dynamic_cast<ODAColumn *>(selected[i]);
+////		ASSERT(c);
+////		if (newColumns.size() <= c->index() || newColumns[c->index()]->name() != c->name())
+////		{
+////			Log::warning() << "Column '" << c->fullName() << "': index has changed in new dataset." << endl
+////			               << "Was: " << c->index() << "." << endl;
+////			bool newIndexFound = false;
+////			for (size_t j = 0; j < newColumns.size(); ++j)
+////			{
+////				Column &other(*newColumns[j]);
+////				if (other.name() == c->name() || other.name() == c->fullName())
+////				{
+////					newIndexFound = true;
+////					Log::warning() << "New index: " << j << endl;
+////					c->index(j);
+////					break;
+////				}
+////			}
+////            if (! newIndexFound)
+////            {
+////                // TODO: if user specified MAYBE keyword, then use a constant NULL column.
+////                //if (maybe_) {
+////                //    Log::warning() << "Column '" << c->name() << "' not found." << endl;
+////                //    selected[i] = new NullColumn(*selected[i]);
+////                //} else {
+////                    stringstream ss;
+////                    ss << "One of selected columns, '" << c->name() << "', does not exist in new data set.";
+////                    throw UserError(ss.str());
+////                //}
+////            }
+////		}
+////		//c->value(&data_[i]);
+////	}
+//}
 
 
 bool TODATable::hasColumn(const std::string& name, std::string* fullName) {
@@ -182,18 +187,22 @@ SQLColumn& TODATable::column(const std::string& name) {
     for (const auto& col : columnsByName_) {
         const std::string& s (col.first);
         if (StringTools::startsWith(s, colName)) {
-            if (col) throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+            if (column) throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
             column = col.second;
         }
     }
 
-    if (!col) throw SeriousBug("Requesting column \"" + name + "\": not found", Here());
+    if (!column) throw SeriousBug("Requesting column \"" + name + "\": not found", Here());
 
-    return *col;
+    return *column;
 }
 
 SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns) const {
     return new TODATableIterator(*this, columns);
+}
+
+void TODATable::print(std::ostream& s) const {
+    s << "TODATable(" << path_ << ")";
 }
 
 } // namespace sql

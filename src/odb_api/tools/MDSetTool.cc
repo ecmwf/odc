@@ -58,7 +58,7 @@ void MDSetTool::run()
     std::auto_ptr<DataHandle> outHandle(ODBAPISettings::instance().writeToFile(outFile));
 
     std::vector<std::string> columns, types, values;
-    std::vector<BitfieldDef> bitfieldDefs;
+    std::vector<eckit::sql::BitfieldDef> bitfieldDefs;
     parseUpdateList(parameters(1), columns, types, values, bitfieldDefs);
 
     typedef odb::MetaDataReader<odb::MetaDataReaderIterator> R;
@@ -118,7 +118,7 @@ void MDSetTool::parseUpdateList(const std::string& s,
                                 std::vector<std::string>& columns,
                                 std::vector<std::string>& types,
                                 std::vector<std::string>& values,
-                                std::vector<BitfieldDef>& bitfieldDefs)
+                                std::vector<eckit::sql::BitfieldDef>& bitfieldDefs)
 {
     std::vector<std::string> assignments(S::split(",", s));
 	for (size_t i = 0; i < assignments.size(); ++i)
@@ -129,7 +129,7 @@ void MDSetTool::parseUpdateList(const std::string& s,
         string type (columnNameAndType.size() == 2 ? columnNameAndType[1] : "NONE");
         string column (assignment[0]);
 	
-        BitfieldDef bf; 
+        eckit::sql::BitfieldDef bf;
         if (type.size() && type[0] == '[' && type[type.size() - 1] == ']')
         {
             std::vector<std::string> parts(StringTools::split(";", type.substr(1, type.size() - 2)));

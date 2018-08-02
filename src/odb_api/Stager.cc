@@ -21,9 +21,8 @@
 #include "odb_api/Indexer.h"
 #include "odb_api/Partitioner.h"
 #include "odb_api/Writer.h"
-#include "odb_api/Retriever.h"
 #include "odb_api/Stager.h"
-#include "odb_api/StringTool.h"
+#include "odb_api/RequestUtils.h"
 
 using namespace std;
 using namespace eckit;
@@ -89,11 +88,11 @@ void Stager::stage(eckit::MultiHandle&                                    output
                    const std::vector<std::string>&                        keywords,
                    const std::map<std::string,std::vector<std::string> >& req)
 {
-    const std::map<std::string,std::vector<std::string> > request (Retriever::unquoteValues(req));
+    odb::RequestDict request (odb::unquoteRequestValues(req));
 
     Log::info() << "STAGE: request: " << request << endl;
 
-    Retriever::checkKeywordsHaveValues(request, keywords);
+    odb::checkKeywordsHaveValues(request, keywords);
     const string partitionsInfoFile (FileCollector::expandTilde(request.at("partitionsinfo")[0]));
 
     FileMapper mapper (request.at("odbpathnameschema")[0]);

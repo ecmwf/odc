@@ -16,8 +16,8 @@ IndexTool.cc
 IndexTool.h
 FixedSizeRowTool.cc
 FixedSizeRowTool.h
-ImportTool.cc
-ImportTool.h
+##...##ImportTool.cc
+##...##ImportTool.h
 LSTool.cc
 LSTool.h
 MDSetTool.cc
@@ -120,6 +120,8 @@ ecbuild_add_library( TARGET     odbtest
                      TEMPLATES  ${odbtest_templates}
                      LIBS       Odb odbtools )
 
+## TODO: Re-enable odbtest
+
 ecbuild_add_executable( TARGET    odb
                         SOURCES   odb.cc
-                        LIBS      Odb odbtools odbtest )
+                        LIBS      Odb odbtools ) ### odbtest )

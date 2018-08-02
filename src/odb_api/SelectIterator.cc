@@ -66,10 +66,13 @@ template <typename DATASTREAM>
 void SelectIterator::parse(eckit::sql::SQLSession& session, typename DATASTREAM::DataHandleType *dh)
 {
     sql::SQLParser p;
-    p.parseString(session, select_, dh, session.selectFactory().config());
-    sql::SQLStatement *stmt (session_.statement());
+    NOTIMP;
+    // TODO: Add implicit table
+//    p.parseString(session, select_, dh, session.selectFactory().config());
+    p.parseString(session, select_);
+    sql::SQLStatement& stmt (session_.statement());
 
-    selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
+    selectStmt_ = dynamic_cast<sql::SQLSelect*>(&stmt);
     if (! selectStmt_)
         throw UserError(std::string("Expected SELECT, got: ") + select_);
 
@@ -77,22 +80,27 @@ void SelectIterator::parse(eckit::sql::SQLSession& session, typename DATASTREAM:
 	
     populateMetaData<DATASTREAM>();
 
-    selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
+    NOTIMP;
+//    selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
 }
 
 void SelectIterator::parse(eckit::sql::SQLSession& session, std::istream *is)
 {
 	sql::SQLParser p;
-    eckit::sql::SQLSelectFactory& factory(session.selectFactory());
-	p.parseString(session, select_, is, factory.config(), factory.csvDelimiter());
-	sql::SQLStatement *stmt (session_.statement());
-	selectStmt_ = dynamic_cast<sql::SQLSelect*>(stmt);
+//    eckit::sql::SQLSelectFactory& factory(session.selectFactory());
+//	p.parseString(session, select_, is, factory.config(), factory.csvDelimiter());
+    // TODO: Add implicit table
+    NOTIMP;
+    p.parseString(session, select_);
+    sql::SQLStatement& stmt (session_.statement());
+    selectStmt_ = dynamic_cast<sql::SQLSelect*>(&stmt);
 	ASSERT(selectStmt_);
 	selectStmt_->prepareExecute();
 	
 	populateMetaData<DataStream<SameByteOrder, DataHandle> >();
 
-	selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
+    NOTIMP;
+//	selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
 }
 
 SelectIterator::~SelectIterator()
@@ -184,14 +192,14 @@ const MetaData& SelectIterator::columns() const
 template <typename DATASTREAM>
 void SelectIterator::populateMetaData()
 {
-	Expressions &results_ = selectStmt_->results_;
+    Expressions results = selectStmt_->output();
 	delete metaData_;
-	metaData_ = new MetaData(results_.size());
-	for (size_t i = 0; i < results_.size(); i++)
+    metaData_ = new MetaData(results.size());
+    for (size_t i = 0; i < results.size(); i++)
 	{
 		Column* col = new Column(*metaData_);
 		(*metaData_)[i] = col;
-		sql::expression::SQLExpression *exp = results_[i];
+        std::shared_ptr<sql::expression::SQLExpression> exp = results[i];
 		std::string title = exp->title();
 		col->name(title);
 

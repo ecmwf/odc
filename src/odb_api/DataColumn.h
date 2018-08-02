@@ -58,10 +58,10 @@ public:
     void defaultValue(double value) { defaultValue_ = value; }
 
     /// Returns the column's bitfield definition.
-    const odb::BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
+    const eckit::sql::BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
 
     /// Sets the column's bitfield definition.
-    void bitfieldDef(const odb::BitfieldDef& def) { bitfieldDef_ = def; }
+    void bitfieldDef(const eckit::sql::BitfieldDef& def) { bitfieldDef_ = def; }
 
     /// Compares two columns for equality.
     /// Returns @c true if the name, type, missing and default values of the
@@ -82,7 +82,7 @@ private:
     ColumnType type_;
     double missingValue_;
     double defaultValue_;
-    odb::BitfieldDef bitfieldDef_;
+    eckit::sql::BitfieldDef bitfieldDef_;
 };
 
 } // namespace odb

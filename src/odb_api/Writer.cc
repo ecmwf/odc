@@ -39,7 +39,6 @@ using namespace std;
 #include "odb_api/WriterBufferingIterator.h"
 #include "odb_api/WriterBufferingIterator.h"
 #include "odb_api/ODBAPISettings.h"
-#include "eckit/sql/SQLAST.h"
 
 namespace odb {
 

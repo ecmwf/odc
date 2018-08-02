@@ -34,7 +34,7 @@ static void setUp()
 	it->setColumn(1, "lon@hdr", odb::REAL);
 	it->setColumn(2, "obsvalue", odb::REAL);
 
-    odb::BitfieldDef bfDef;
+    eckit::sql::BitfieldDef bfDef;
 	bfDef.first.push_back("x");
 	bfDef.second.push_back(1);
 	bfDef.first.push_back("y");

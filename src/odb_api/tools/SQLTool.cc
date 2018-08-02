@@ -14,10 +14,14 @@
 #include "eckit/io/FileDescHandle.h"
 #include "eckit/parser/StringTools.h"
 
-#include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLParser.h"
-#include "odb_api/odb_api.h"
 #include "eckit/sql/SQLSelectFactory.h"
+#include "eckit/sql/SQLSession.h"
+#include "eckit/sql/SQLStatement.h"
+
+#include "odb_api/odb_api.h"
+#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/TODATable.h"
 #include "odb_api/tools/SQLTool.h"
 
 using namespace std;
@@ -26,13 +30,11 @@ using namespace eckit;
 namespace odb {
 namespace tool {
 
-SQLTool::SQLTool(int argc,char **argv)
-: Tool(argc,argv),
-  sqlOutputConfig_(),
-  inputFile_(),
-  offset_(),
-  length_()
-{
+//----------------------------------------------------------------------------------------------------------------------
+
+SQLTool::SQLTool(int argc,char **argv) :
+    Tool(argc, argv) {
+
 	registerOptionWithArgument("-o");
 	registerOptionWithArgument("-i");
 	registerOptionWithArgument("-I");
@@ -41,39 +43,49 @@ SQLTool::SQLTool(int argc,char **argv)
 	registerOptionWithArgument("-offset"); 
 	registerOptionWithArgument("-length");
 
-	sqlOutputConfig_.doNotWriteColumnNames(optionIsSet("-T"));
-	sqlOutputConfig_.doNotWriteNULL(optionIsSet("-N"));
-	sqlOutputConfig_.fieldDelimiter(optionArgument("-delimiter", std::string("\t")));
-
     if ((inputFile_ = optionArgument("-i", std::string(""))) == "-")
-		inputFile_ = "/dev/stdin";
+        inputFile_ = "/dev/stdin";
 
-    sqlOutputConfig_.outputFile(optionArgument("-o", std::string("")));
-    if (sqlOutputConfig_.outputFile() == "-")
-		sqlOutputConfig_.outputFile("/dev/stdout");
+    offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
+    length_ = optionArgument("-length", (long) 0);
 
-    sqlOutputConfig_.outputFormat(optionArgument("-f", std::string("default")));
-    sqlOutputConfig_.displayBitfieldsBinary(optionIsSet("--bin") || optionIsSet("--binary"));
-    sqlOutputConfig_.displayBitfieldsHexadecimal(optionIsSet("--hex") || optionIsSet("--hexadecimal"));
-    sqlOutputConfig_.disableAlignmentOfColumns(optionIsSet("--no_alignment"));
+    // Configure the output
 
-    sqlOutputConfig_.fullPrecision(optionIsSet("--full_precision"));
+    bool noColumnNames = optionIsSet("-T");
+    bool noNULL = optionIsSet("-N");
+    std::string fieldDelimiter = optionArgument("-delimiter", std::string("\t"));
+    std::string outputFormat =  optionArgument("-f", std::string(eckit::sql::SQLOutputConfig::defaultOutputFormat));
+    bool bitfieldsBinary = optionIsSet("--bin") || optionIsSet("--binary");
+//    bool bitfieldsHex = optionIsSet("--hex") || optionIsSet("--hexadecimal");
+    bool noColumnAlignment = optionIsSet("--no_alignment");
+    bool fullPrecision = optionIsSet("--full_precision") || optionIsSet("--full-precision");
 
-	offset_ = optionArgument("-offset", (long) 0); // FIXME@ optionArgument should accept unsigned long etc
-	length_ = optionArgument("-length", (long) 0);
+
+    sqlOutputConfig_.reset(new odb::SQLOutputConfig(noColumnNames, noNULL, fieldDelimiter, outputFormat,
+                                                    bitfieldsBinary, noColumnAlignment, fullPrecision));
+
+    // Configure the output file
+
+    std::string outputFile = optionArgument("-o", std::string(""));
+    if (outputFile == "-")
+        outputFile = "/dev/stdout";
+
+    if (!outputFile.empty()) {
+        sqlOutputConfig_->setOutputFile(outputFile);
+    }
 }
 
 SQLTool::~SQLTool() {}
 
 void SQLTool::run()
 {
-    if (parameters().size() < 2)
-    {
+    if (parameters().size() < 2) {
         Log::error() << "Usage: ";
         usage(parameters(0), Log::error());
         Log::error() << std::endl;
         return;// 1;
     }
+
     std::vector<std::string> params(parameters());
     params.erase(params.begin());
 
@@ -81,66 +93,45 @@ void SQLTool::run()
                 ? StringTools::join(" ",  params) + ";"
                 // FIXME:
                 : StringTool::readFile(params[0] == "-" ? "/dev/tty" : params[0]) + ";");
-    std::auto_ptr<std::ofstream> foutPtr(optionIsSet("-o") && (sqlOutputConfig_.outputFormat() != "odb")
-                                ? new std::ofstream(optionArgument("-o", std::string("")).c_str())
-                                : 0);
-    std::ostream& out(foutPtr.get() ? *foutPtr : std::cout);
-    eckit::sql::SQLSession session(out);
-    session.selectFactory().config(sqlOutputConfig_);
-    SQLOutputConfig config (session.selectFactory().config());
-    PathName inputFile(inputFile_);
-    SQLParser parser;
-    runSQL(sql, inputFile, session, parser, config, offset_, length_);
-}
 
-void SQLTool::execute(const string& sql)
-{
-    execute(sql, eckit::Log::info());
-}
 
-void SQLTool::execute(const string& sql, ostream& out)
-{
-    eckit::sql::SQLSession session(out);
-    SQLParser parser;
-    SQLOutputConfig config(session.selectFactory().config());
-    runSQL(sql, "", session, parser, config);
-}
-
-void SQLTool::runSQL(const string& sql, const PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config)
-{
-    if (inputFile.path().size() == eckit::Length(0)) {
-        parser.parseString(session, sql, static_cast<DataHandle*>(0), config);
-    } else if (inputFile == "/dev/stdin" || inputFile == "stdin") {
-        Log::info() << "Reading from standard input" << std::endl;
-        FileDescHandle fh(0);
-        fh.openForRead();
-        parser.parseString(session, sql, &fh, config);
-    } else {
-        FileHandle fh(inputFile);
-        fh.openForRead();
-        parser.parseString(session, sql, &fh, config);
-    }
-}
-
-void SQLTool::runSQL(const string& sql, const PathName& inputFile, SQLSession& session, SQLParser& parser, const SQLOutputConfig& config, const Offset& offset, const Length& length)
-{
-    if (offset == Offset(0) && length == Length(0))
-    {
-        runSQL(sql, inputFile, session, parser, config);
-        return;
+    std::unique_ptr<std::ofstream> outStream;
+    if (optionIsSet("-o") && sqlOutputConfig_->outputFormat() != "odb") {
+        outStream.reset(new std::ofstream(optionArgument("-o", std::string("")).c_str()));
+        sqlOutputConfig_->setOutputStream(*outStream);
     }
 
-    if (inputFile.path().size() == eckit::Length(0))
-        parser.parseString(session, sql, static_cast<DataHandle*>(0), config);
-    else
-    {
-        Log::info() << "Selecting " << length << " bytes from offset " << offset << " of " << inputFile << std::endl;
-        PartFileHandle fh(inputFile, offset, length); 
-        fh.openForRead();
-        parser.parseString(session, sql, &fh, config);
-    } 
+    // Configure the session to include any specified ODB file
+
+    eckit::sql::SQLSession session(std::move(sqlOutputConfig_)); // n.b. invalidates sqlOutputConfig_
+    std::unique_ptr<eckit::DataHandle> implicitTableDH;
+
+    if (!inputFile_.empty()) {
+        if (inputFile_ == "/dev/stdin" || inputFile_ == "stdin") {
+            Log::info() << "Reading table from standard input" << std::endl;
+            implicitTableDH.reset(new FileDescHandle(0));
+            NOTIMP; // Is this working?
+            /// parser.parseString(session, sql, &fh, config);
+        } else if (offset_ == eckit::Offset(0)) {
+            implicitTableDH.reset(new FileHandle(inputFile_));
+        } else {
+            implicitTableDH.reset(new PartFileHandle(inputFile_, offset_, length_));
+        }
+
+        implicitTableDH->openForRead();
+
+        eckit::sql::SQLDatabase& db(session.currentDatabase());
+        session.currentDatabase().addImplicitTable(new odb::sql::TODATable(db, *implicitTableDH));
+    }
+
+    // And actually do the SQL!
+
+    eckit::sql::SQLParser parser;
+    parser.parseString(session, sql);
+    session.statement().execute();
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace tool 
 } // namespace odb 

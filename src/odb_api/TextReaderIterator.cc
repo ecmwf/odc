@@ -62,7 +62,7 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 	parseHeader();
 }
 
-odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
+eckit::sql::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 {
     //std::ostream& L( Log::debug() );
 
@@ -76,8 +76,8 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 
     //L << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
 
-    odb::FieldNames names;
-    odb::Sizes      sizes;
+    eckit::sql::FieldNames names;
+    eckit::sql::Sizes      sizes;
 
     size_t numberOfBits = 0;
     std::vector<std::string> bs(S::split(";", s));
@@ -108,10 +108,11 @@ odb::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 	}
     //L << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << std::endl;
 
-    if (numberOfBits > 31)
+    if (numberOfBits > 31) {
         throw UserError("Bitfields can have up to 31 bits only currently");
+    }
 
-	return odb::BitfieldDef(make_pair(names, sizes));
+	return eckit::sql::BitfieldDef(make_pair(names, sizes));
 }
 
 void TextReaderIterator::parseHeader()

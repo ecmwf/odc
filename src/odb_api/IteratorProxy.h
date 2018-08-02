@@ -153,10 +153,9 @@ public:
     Row& operator*() { return row_; }
     const Row& operator*() const { return row_; }
 
-    bool operator!=(const IteratorProxy&) 
-    { 
-        return iter_ != 0 && !iter_->noMore_; 
-    }
+    // TODO: This will _ONLY_ work for testing against end(). AAAAAARGH.
+    bool operator!=(const IteratorProxy&)  {  return iter_ != 0 && !iter_->noMore_;  }
+    bool operator==(const IteratorProxy& other)  {  return !(*this != other); }
 
     IteratorProxy& operator++()
 	{
