@@ -103,7 +103,7 @@ public:
     void readBitfieldDef(eckit::sql::BitfieldDef &);
     void writeBitfieldDef(const eckit::sql::BitfieldDef &);
 private:
-	D * f;
+    D * f;
 
 // No copy allowed.
     DataStream(const DataStream&);

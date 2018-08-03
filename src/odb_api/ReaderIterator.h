@@ -113,14 +113,13 @@ private:
     odb::codec::Codec** codecs_;
 	unsigned long long nrows_;
 
-	eckit::DataHandle *f_;
+    std::unique_ptr<eckit::DataHandle> f_;
 	Properties properties_;
 
 	bool newDataset_;
 
 public:
 	bool noMore_;
-	bool ownsF_;
 private:
 
 	//PrettyFastInMemoryDataHandle

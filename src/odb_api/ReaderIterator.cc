@@ -33,23 +33,23 @@ ReaderIterator::ReaderIterator(Reader &owner)
   rowDataSizeDoubles_(0),
   codecs_(0),
   nrows_(0),
-  f_(0),
+  f_(owner_.dataHandle()->clone()),
   newDataset_(false),
   noMore_(false),
-  ownsF_(false),
   headerCounter_(0),
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-	f_ = owner.dataHandle();
 	ASSERT(f_);
+    f_->openForRead();
 
 	loadHeaderAndBufferData();
 }
 
 eckit::DataHandle* ReaderIterator::dataHandle()
 {
-    return f_;
+    ASSERT(f_);
+    return f_.get();
 }
 
 ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
@@ -60,17 +60,14 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   rowDataSizeDoubles_(0),
   codecs_(0),
   nrows_(0),
-  f_(0),
+  f_(odb::DataHandleFactory::openForRead(pathName)),
   newDataset_(false),
   noMore_(false),
-  ownsF_(false),
   headerCounter_(0),
   byteOrder_(BYTE_ORDER_INDICATOR),
   refCount_(0)
 {
-    f_ = odb::DataHandleFactory::openForRead(pathName);
 	ASSERT(f_);
-	ownsF_ = true;
 
 	loadHeaderAndBufferData();
 }
@@ -190,7 +187,7 @@ bool ReaderIterator::next()
 
             // Read in the rest of the header
 
-            DataStream<SameByteOrder> ds(f_);
+            DataStream<SameByteOrder> ds(f_.get());
 
             unsigned char cc;
             ds.readUChar(cc); ASSERT(cc == 'O');
@@ -263,13 +260,7 @@ double& ReaderIterator::data(size_t i)
 
 int ReaderIterator::close()
 {
-	if (ownsF_ && f_)
-	{
-		f_->close();
-		delete f_;
-		f_ = 0;
-	}
-
+    f_.reset();
 	return 0;
 }
 
