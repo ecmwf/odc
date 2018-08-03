@@ -197,8 +197,9 @@ SQLColumn& TODATable::column(const std::string& name) {
     return *column;
 }
 
-SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns) const {
-    return new TODATableIterator(*this, columns);
+SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns,
+                                      std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const {
+    return new TODATableIterator(*this, columns, metadataUpdateCallback);
 }
 
 void TODATable::print(std::ostream& s) const {

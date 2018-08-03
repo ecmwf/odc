@@ -45,7 +45,8 @@ private: // methods (overrides)
     virtual bool hasColumn(const std::string&, std::string* fullName = 0) override;
     virtual eckit::sql::SQLColumn& column(const std::string&) override;
 
-    virtual eckit::sql::SQLTableIterator* iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>&) const override;
+    virtual eckit::sql::SQLTableIterator* iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>&,
+                                                   std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const override;
 
     virtual void print(std::ostream& s) const override;
 

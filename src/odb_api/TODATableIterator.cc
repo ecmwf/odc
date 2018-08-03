@@ -24,11 +24,14 @@ namespace sql {
 //       Not entirely clear how to resolve this. But there is no reason for us intrinsically
 //       to be modifying the parent. Perhaps we should take a copy of somethnig (oda, dh?)
 
-TODATableIterator::TODATableIterator(const TODATable& parent, const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns) :
+TODATableIterator::TODATableIterator(const TODATable& parent,
+                                     const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns,
+                                     std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) :
     parent_(parent),
     it_(const_cast<Reader&>(parent_.oda()).begin()),
     end_(parent_.oda().end()),
     columns_(columns),
+    metadataUpdateCallback_(metadataUpdateCallback),
     firstRow_(true) {
 
     if (it_ != end_) updateMetaData();
@@ -55,8 +58,8 @@ bool TODATableIterator::next() {
 
     if (it_->isNewDataset()) {
         // TODO: Need to update the column pointers in the SQLSelect. AARGH.
-        NOTIMP;
         updateMetaData();
+        metadataUpdateCallback_(*this);
     }
 
 	return true;
@@ -67,6 +70,7 @@ void TODATableIterator::updateMetaData() {
 
     const MetaData& md = it_->columns();
 
+    columnOffsets_.clear();
     for (const eckit::sql::SQLColumn& col : columns_) {
 
         if (!md.hasColumn(col.name())) {
