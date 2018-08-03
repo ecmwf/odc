@@ -20,15 +20,26 @@
 
 namespace odb {
 
-inline void checkRead(int code, const char *msg, const eckit::CodeLocation& loc)
+// Can't use eckti::DataHandle&, as Currently "NonVirtual" is the baseclass of
+// UnsafeInMemoryDataHandle... Wonderful...
+template <typename DH>
+inline void checkRead(int code, const char *msg, const DH& dh, const eckit::CodeLocation& loc)
 {
     if(code != 0)
     {
-        throw eckit::ReadError("DataStream");
+        std::stringstream ss;
+        ss << "DatStream(" << dh << ") failed check: " << msg;
+        throw eckit::ReadError(ss.str(), loc);
     }
 }
 
-#define CHECK_READ(a)     ::odb::checkRead(!(a),#a,Here())
+#define CHECK_READ(d, a) \
+{ \
+    long _v; \
+    if (!(_v = (a))) { \
+        ::odb::checkRead(_v, #a, d, Here()); \
+    } \
+}
 
 template <typename T, typename D>
 DataStream<T,D>::DataStream() : f() {}
@@ -49,14 +60,14 @@ long DataStream<T,D>::read(void* p, long l) { return f->read(p, l);
 template <typename T, typename D>
 void DataStream<T,D>::readInt32(int32_t& i)
 {
-	CHECK_READ(f->read(&i, sizeof(int32_t)) == sizeof(int32_t));
+    CHECK_READ(*f, f->read(&i, sizeof(int32_t)) == sizeof(int32_t));
 	T::swap(i);
 }
 
 template <typename T, typename D>
 void DataStream<T,D>::readInt64(int64_t& i)
 {
-	CHECK_READ(f->read(&i, sizeof(int64_t)) == sizeof(int64_t));
+    CHECK_READ(*f, f->read(&i, sizeof(int64_t)) == sizeof(int64_t));
 	T::swap(i);
 }
 
@@ -77,7 +88,7 @@ void DataStream<T,D>::writeInt64(int64_t i)
 template <typename T, typename D>
 void DataStream<T,D>::readInt16(int16_t& i)
 {
-	CHECK_READ(f->read(&i, sizeof(int16_t)) == sizeof(int16_t));
+    CHECK_READ(*f, f->read(&i, sizeof(int16_t)) == sizeof(int16_t));
 	T::swap(i);
 }
 
@@ -91,7 +102,7 @@ void DataStream<T,D>::writeInt16(int16_t i)
 template <typename T, typename D>
 void DataStream<T,D>::readUInt16(uint16_t& i)
 {
-	CHECK_READ(f->read(&i, sizeof(uint16_t)) == sizeof(uint16_t));
+    CHECK_READ(*f, f->read(&i, sizeof(uint16_t)) == sizeof(uint16_t));
 	T::swap(i);
 }
 
@@ -108,7 +119,7 @@ void DataStream<T,D>::readBuffer(MemoryBlock &buffer)
 	int32_t size;
 	readInt32(size);
 	buffer.size(size);
-	CHECK_READ(f->read(buffer, size) == size);
+    CHECK_READ(*f, f->read(buffer, size) == size);
 }
 
 template <typename T, typename D>
@@ -131,7 +142,7 @@ void DataStream<T,D>::readString(std::string &s)
 #else
 	char buff[len];
 #endif
-	CHECK_READ(f->read(&buff, len) == len);
+    CHECK_READ(*f, f->read(&buff, len) == len);
 	
 	std::string r(buff, len);
 
@@ -149,7 +160,7 @@ void DataStream<T,D>::writeString(const std::string &s)
 template <typename T, typename D>
 void DataStream<T,D>::readChar(char &c)
 {
-	CHECK_READ(f->read(&c, sizeof(char)) == sizeof(char));
+    CHECK_READ(*f, f->read(&c, sizeof(char)) == sizeof(char));
 }
 
 template <typename T, typename D>
@@ -175,7 +186,7 @@ void DataStream<T,D>::writeUChar(const unsigned char c)
 template <typename T, typename D>
 void DataStream<T,D>::readBytes(char *buff, size_t &len)
 {
-	CHECK_READ(f->read(buff, len) == static_cast<long>(len));
+    CHECK_READ(*f, f->read(buff, len) == static_cast<long>(len));
 }
 
 template <typename T, typename D>
@@ -187,7 +198,7 @@ void DataStream<T,D>::writeBytes(const char *buff, size_t len)
 template <typename T, typename D>
 void DataStream<T,D>::readDouble(double &d)
 {
-	CHECK_READ(f->read(&d, sizeof(double)) == sizeof(double));
+    CHECK_READ(*f, f->read(&d, sizeof(double)) == sizeof(double));
 	T::swap(d);
 }
 
@@ -201,7 +212,7 @@ void DataStream<T,D>::writeDouble(double d)
 template <typename T, typename D>
 void DataStream<T,D>::readFloat(float &d)
 {
-	CHECK_READ(f->read(&d, sizeof(float)) == sizeof(float));
+    CHECK_READ(*f, f->read(&d, sizeof(float)) == sizeof(float));
 	T::swap(d);
 }
 
