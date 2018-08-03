@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/sql/SQLSimpleOutput.h"
+
 #include "odb_api/SQLOutputConfig.h"
 
 namespace odb {
@@ -24,11 +26,14 @@ SQLOutputConfig::SQLOutputConfig(bool noColumnNames,
                                  bool fullPrecision) :
     eckit::sql::SQLOutputConfig(noColumnNames, noNULL, delimiter, format,
                                 bitfieldsBinary, noColumnAlignment, fullPrecision),
-    outStream_(eckit::Log::info()) {}
+    outStream_(std::cout) {}
 
 SQLOutputConfig::~SQLOutputConfig() {}
 
 eckit::sql::SQLOutput* SQLOutputConfig::buildOutput() const {
+    if (outputFormat_ == "default" || outputFormat_ == "wide") {
+        return new eckit::sql::SQLSimpleOutput(*this, outStream_.get());
+    }
     NOTIMP;
 }
 

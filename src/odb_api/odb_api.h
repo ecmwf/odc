@@ -24,11 +24,9 @@
 #include "odb_api/TextReader.h"
 #include "odb_api/Writer.h"
 
+// TODO: reenable
 // For importing data from text - used by examples and tests
-#include "odb_api/tools/ImportTool.h"
-
-// For importing data from text - used by examples and tests
-#include "odb_api/tools/ImportTool.h"
+//#include "odb_api/tools/ImportTool.h"
 
 // Exceptions.
 #include "eckit/exception/Exceptions.h"
