@@ -49,7 +49,7 @@ public:
 
 	bool equalsIncludingConstants(const MetaData&, const std::vector<std::string>& constColumns) const; 
 
-	bool operator!=(const MetaData& other) const { return ! (self == other); }
+    bool operator!=(const MetaData& other) const { return ! (*this == other); }
 
 	void operator|=(const MetaData& other);
 
@@ -99,7 +99,6 @@ public:
 private:
 	unsigned long long rowsNumber_;
 	unsigned long long dataSize_;
-	MetaData& self;
 };
 
 

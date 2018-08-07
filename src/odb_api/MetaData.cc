@@ -18,11 +18,11 @@ using namespace eckit;
 
 namespace odb {
 
-MetaData::MetaData() : std::vector<Column*>(), rowsNumber_(0), self(*this) {}
-MetaData::MetaData(int i) : std::vector<Column*>(i), rowsNumber_(0), self(*this) {}
-MetaData::MetaData(int i, Column *p) : std::vector<Column*>(i, p), rowsNumber_(0), self(*this) {}
-MetaData::MetaData(const MetaData& md) : std::vector<Column*>(0), rowsNumber_(0), self(*this)
-{ self += md; }
+MetaData::MetaData() : std::vector<Column*>(), rowsNumber_(0) {}
+MetaData::MetaData(int i) : std::vector<Column*>(i), rowsNumber_(0) {}
+MetaData::MetaData(int i, Column *p) : std::vector<Column*>(i, p), rowsNumber_(0) {}
+MetaData::MetaData(const MetaData& md) : std::vector<Column*>(0), rowsNumber_(0)
+{ *this += md; }
 
 odb::ColumnType MetaData::convertType(const std::string& t)
 {
@@ -47,10 +47,9 @@ odb::ColumnType MetaData::convertType(const std::string& t)
 }
 
 MetaData* MetaData::clone() const {
-	const MetaData& self(*this);
 	MetaData* md = new MetaData(*this);
 	for (size_t i = 0; i < size(); ++i)
-		(*md)[i]->coder(self[i]->coder().clone());
+        (*md)[i]->coder((*this)[i]->coder().clone());
 	return md;
 }
 
@@ -137,25 +136,25 @@ size_t MetaData::columnIndex(const std::string& name) const
 MetaData& MetaData::operator=(const MetaData& other)
 {
 	if(this == &other)
-		return self;
+        return *this;
 
-	if (self.size() != other.size())
+    if (size() != other.size())
 	{
-		for (size_type i=0; i < self.size(); i++)
-			delete self[i];
-		self.clear();
+        for (size_type i=0; i < size(); i++)
+            delete (*this)[i];
+        clear();
 
 		typedef Column* PColumn;
-		self.resize(other.size(), PColumn(0));
+        resize(other.size(), PColumn(0));
 
-		for (size_type i=0; i < self.size(); i++)
-			self[i] = new Column(self);
+        for (size_type i=0; i < size(); i++)
+            (*this)[i] = new Column(*this);
 	}
 	
-	for (size_type i=0; i < self.size(); i++)
-		*self[i] = *other[i];
+    for (size_type i=0; i < size(); i++)
+        *(*this)[i] = *other[i];
 
-	return self;
+    return *this;
 }
 
 MetaData& MetaData::operator+=(const MetaData& rhs)
@@ -178,11 +177,11 @@ void MetaData::operator|=(const MetaData& other)
 	ASSERT(size() == other.size());
 	for (size_t i = 0; i < size(); ++i)
 	{
-		ASSERT(self[i]->name() == other[i]->name());
-		ASSERT(self[i]->type() == other[i]->type());
+        ASSERT((*this)[i]->name() == other[i]->name());
+        ASSERT((*this)[i]->type() == other[i]->type());
 
-		self[i]->coder().gatherStats(other[i]->max());
-		self[i]->coder().gatherStats(other[i]->min());
+        (*this)[i]->coder().gatherStats(other[i]->max());
+        (*this)[i]->coder().gatherStats(other[i]->min());
 	}
 }
 
@@ -201,10 +200,10 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
 		const std::string& columnName = constColumns[i];
 		L << "MetaData::equalsIncludingConstants: check " << columnName << std::endl;
 
-		if ( !self.hasColumn(columnName) && !other.hasColumn(columnName))
+        if ( !hasColumn(columnName) && !other.hasColumn(columnName))
 			continue;
 
-		Column& c1 = *(self.columnByName(columnName));
+        Column& c1 = *(columnByName(columnName));
 		Column& c2 = *(other.columnByName(columnName));
 
 		if ( ! c1.isConstant() || ! c2.isConstant())
@@ -236,11 +235,11 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
 
 bool MetaData::operator==(const MetaData& other) const
 {
-	if (self.size() != other.size())
+    if (size() != other.size())
 		return false;
 
-	for (size_t i = 0; i < self.size(); ++i)
-		if (*self[i] != *other[i])
+    for (size_t i = 0; i < size(); ++i)
+        if (*(*this)[i] != *other[i])
 			return false;
 
 	return true;
