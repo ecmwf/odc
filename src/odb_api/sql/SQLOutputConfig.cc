@@ -10,9 +10,10 @@
 
 #include "eckit/sql/SQLSimpleOutput.h"
 
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 
 namespace odb {
+namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -44,4 +45,5 @@ void SQLOutputConfig::setOutputStream(std::ostream& s) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+} // namespace sql
 } // namespace odb

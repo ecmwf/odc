@@ -162,8 +162,6 @@ ReaderIterator.h
 ###>>>#SchemaAnalyzer.h
 SelectIterator.cc
 SelectIterator.h
-SQLOutputConfig.cc
-SQLOutputConfig.h
 TODATable.cc
 TODATable.h
 TODATableIterator.cc
@@ -218,6 +216,11 @@ Stager.cc
 ##...##SQLODAOutput.h
 ODBTarget.cc
 ODBTarget.h
+
+sql/SQLOutputConfig.cc
+sql/SQLOutputConfig.h
+sql/SQLSelectOutput.cc
+sql/SQLSelectOutput.h
 
 # Data types' support
 data/DataHandleFactory.h

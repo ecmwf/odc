@@ -10,8 +10,10 @@
 
 #include <sstream>
 
-#include "eckit/sql/type/SQLBitfield.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/parser/StringTools.h"
+#include "eckit/sql/SQLTableFactory.h"
+#include "eckit/sql/type/SQLBitfield.h"
 #include "eckit/utils/Translator.h"
 
 #include "odb_api/TODATable.h"
@@ -20,9 +22,37 @@
 using namespace eckit;
 using namespace eckit::sql;
 
-
 namespace odb {
 namespace sql {
+
+//----------------------------------------------------------------------------------------------------------------------
+
+namespace {
+
+// Provide a factory such that when a table is specified in a from statement, the SQLParser
+// can construct an appropriate table!
+
+class TODAFactory : public eckit::sql::SQLTableFactoryBase {
+    virtual SQLTable* build(SQLDatabase& owner, const std::string& name, const std::string& location) const override {
+
+        PathName path(location);
+        if (!path.exists()) return 0;
+
+        // Check that this is an ODB file
+        FileHandle fh(path, false);
+        fh.openForRead();
+
+        char buf[5];
+        char oda[5] {'\xff', '\xff', 'O', 'D', 'A'};
+        if (fh.read(buf, 5) != 5 || ::memcmp(buf, oda, 5) != 0) return 0;
+
+        return new odb::sql::TODATable(owner, location, name);
+    }
+};
+
+TODAFactory todaFactoryInstance;
+
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +68,7 @@ static const std::string nullPathName("<>");
 static const std::string inputTable("input");
 
 
-TODATable::TODATable(SQLDatabase& owner, DataHandle &dh) :
+TODATable::TODATable(SQLDatabase& owner, DataHandle& dh) :
     SQLTable(owner, nullPathName, inputTable),
     oda_(dh) {
 
@@ -205,6 +235,8 @@ SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<e
 void TODATable::print(std::ostream& s) const {
     s << "TODATable(" << path_ << ")";
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
 } // namespace odb

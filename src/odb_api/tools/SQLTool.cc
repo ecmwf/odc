@@ -20,7 +20,7 @@
 #include "eckit/sql/SQLStatement.h"
 
 #include "odb_api/odb_api.h"
-#include "odb_api/SQLOutputConfig.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 #include "odb_api/TODATable.h"
 #include "odb_api/tools/SQLTool.h"
 
@@ -61,8 +61,8 @@ SQLTool::SQLTool(int argc,char **argv) :
     bool fullPrecision = optionIsSet("--full_precision") || optionIsSet("--full-precision");
 
 
-    sqlOutputConfig_.reset(new odb::SQLOutputConfig(noColumnNames, noNULL, fieldDelimiter, outputFormat,
-                                                    bitfieldsBinary, noColumnAlignment, fullPrecision));
+    sqlOutputConfig_.reset(new odb::sql::SQLOutputConfig(noColumnNames, noNULL, fieldDelimiter, outputFormat,
+                                                         bitfieldsBinary, noColumnAlignment, fullPrecision));
 
     // Configure the output file
 
@@ -121,7 +121,7 @@ void SQLTool::run()
         implicitTableDH->openForRead();
 
         eckit::sql::SQLDatabase& db(session.currentDatabase());
-        session.currentDatabase().addImplicitTable(new odb::sql::TODATable(db, *implicitTableDH));
+        db.addImplicitTable(new odb::sql::TODATable(db, *implicitTableDH));
     }
 
     // And actually do the SQL!

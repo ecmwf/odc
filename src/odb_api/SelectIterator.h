@@ -8,43 +8,51 @@
  * does it submit to any jurisdiction.
  */
 
-///
-/// \file SelectIterator.h
-///
-/// @author Piotr Kuchta, Feb 2009
+/// @author Piotr Kuchta
+/// @author Simon Smart
+/// @date Feb 2009
 
 #ifndef odb_api_SelectIterator_H
 #define odb_api_SelectIterator_H
 
 #include "eckit/sql/expression/SQLExpressions.h"
 #include "odb_api/ColumnType.h"
+#include "odb_api/sql/SQLSelectOutput.h"
 #include "eckit/sql/SQLSession.h"
 
-extern "C" {
-	typedef void oda_select_iterator;
-	int odb_select_iterator_get_next_row(oda_select_iterator*, int, double*, int*);
+
+// Forward declarations
+
+namespace odb {
+    class Select;
+    class MetaData;
+    template <typename I, typename O, typename D> class IteratorProxy;
 }
 
-namespace odb { class Select; }
-namespace odb { class MetaData; }
-namespace odb { template <typename I, typename O, typename D> class IteratorProxy; } 
-namespace eckit { namespace sql { class SQLSelect; } }
-namespace eckit { namespace sql { template <typename T> class SQLIteratorOutput; }}
+namespace eckit {
+    namespace SQL {
+        class SQLSelect;
+    }
+}
+
 
 namespace odb {
 
-class SelectIterator { 
+//----------------------------------------------------------------------------------------------------------------------
+
+class SelectIterator : private eckit::NonCopyable {
 public:
 	
-    SelectIterator (Select &owner, const std::string&, eckit::sql::SQLSession&);
+    SelectIterator (const std::string& select, eckit::sql::SQLSession& session, sql::SQLSelectOutput& output);
 	~SelectIterator();
 
-	bool isNewDataset();
-    const double* data() const { return data_; }
-    double* data() { return data_; }
-    double& data(size_t i);
+    // TODO: New dataset
+    bool isNewDataset() { return false; }
+    const double* data() const { return output_.data(); }
+//    double* data() { return data_; }
+    double& data(size_t i) { return output_.data(i); }
 
-    const MetaData& columns() const;
+    const MetaData& columns() const { return output_.metadata(); }
 	const MetaData& columns(const MetaData&) { NOTIMP; }
     void setNumberOfColumns(size_t) { NOTIMP; }
 
@@ -56,55 +64,42 @@ public:
     int setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b) { NOTIMP; }
 	void missingValue(size_t, double) { NOTIMP; }
 	
-	bool isCachingRows() { return isCachingRows_; }
-	void cacheRow(const Expressions& results);
+    /// Set an output buffer for retrieving the next row(s)
+    void setOutputRowBuffer(double* data, size_t count=0);
 
     /// The offset of a given column in the doubles[] data array
-    size_t dataOffset(size_t i) const { ASSERT(columnOffsets_); return columnOffsets_[i]; }
+    size_t dataOffset(size_t i) const { return output_.dataOffset(i); }
 
     // Get the number of doubles per row.
-    size_t rowDataSizeDoubles() const { return rowDataSizeDoubles_; }
+    size_t rowDataSizeDoubles() const { return output_.rowDataSizeDoubles(); }
 
-
-protected:
     bool next();
-    size_t rowDataSizeDoublesInternal() const;
 
 private:
-// No copy allowed.
-	SelectIterator(const SelectIterator&);
-	SelectIterator& operator=(const SelectIterator&);
 
-	template <typename DATASTREAM> void populateMetaData();
-    template <typename DATASTREAM> void parse(eckit::sql::SQLSession&, typename DATASTREAM::DataHandleType *);
-    void parse(eckit::sql::SQLSession&, std::istream *);
+    void parse();
 
-	Select& owner_;
     std::string select_;
-    eckit::sql::SQLSelect *selectStmt_;
-	MetaData *metaData_;
 
-	double* data_;
-    size_t* columnOffsets_; // in doubles
-    size_t rowDataSizeDoubles_;
-    bool newDataset_;
+    sql::SQLSelectOutput& output_;
 
-	bool noMore_;
-	bool aggregateResultRead_;
-	bool isCachingRows_;
-	std::list<std::vector<double> > rowCache_;
+    eckit::sql::SQLSelect* selectStmt_; // n.b. non-owning
 
-protected:
-    SelectIterator (Select &owner, eckit::sql::SQLSession&);
-
-	int refCount_;
     eckit::sql::SQLSession& session_;
 
-	friend int ::odb_select_iterator_get_next_row(::oda_select_iterator*, int, double*, int*);
-	friend class odb::Select;
-    friend class eckit::sql::SQLIteratorOutput<SelectIterator>;
-	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
+    // Just for integration with IteratorProxy. Yeaurgh.
+    // TODO: Remove this hack
+    bool noMore_;
+
+protected:
+    int refCount_;
+
+    // This is a bit yucky, but the IteratorProxy essentially reimplements SharedPtr
+    // but not in a threadsafe way.
+    friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace odb 
 

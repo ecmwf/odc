@@ -155,7 +155,9 @@ oda_ptr odb_create(const char *config, int *err)
 /// @param config  ignored for now.
 oda_ptr odb_select_create(const char *config, int *err)
 {
-	Select* o = new Select;
+    // n.b. We will provide the output buffer --> don't get the Select to
+    // allocate its own internally
+	Select* o = new Select("", /* manageOwnBuffer */ false);
 	*err = !o;
 	return oda_ptr(o);
 }
@@ -350,19 +352,16 @@ int odb_read_iterator_get_next_row(oda_read_iterator_ptr it, int count, double* 
 int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, double* data, int *new_dataset)
 {
 	SelectIterator* iter (reinterpret_cast<SelectIterator*>(it));
-    if (! iter->next())
-		return 1;
+
+    iter->setOutputRowBuffer(data);
+
+    if (!iter->next())
+        return 1;
 
 	if (iter->isNewDataset())
 		*new_dataset = 1;
 	else
 		*new_dataset = 0;
-
-	if (count != static_cast<int>(iter->columns().size()))
-		return 2; // TDOO: define error codes
-
-	for (int i (0); i < count; ++i)
-		data[i] = iter->data()[i];
 
 	return 0;
 }

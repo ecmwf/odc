@@ -4,11 +4,6 @@ ecbuild_add_library(TARGET		Odb_fortran
                     CONDITION   HAVE_FORTRAN
 
                     SOURCES		
-                                # The new Fortran API:
-                                odbql_binding.f90 
-                                odbql_constants.f90
-                                odbql_wrappers.f90 
-
                                 # Legacy:
 
                                 odb_c_binding.f90

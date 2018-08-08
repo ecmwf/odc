@@ -8,104 +8,67 @@
  * does it submit to any jurisdiction.
  */
 
-///
-/// \file SelectIterator.cc
-///
-/// @author Piotr Kuchta, Feb 2009
+#include "eckit/sql/SQLParser.h"
+#include "eckit/sql/SQLSelectFactory.h"
+#include "eckit/sql/SQLSelect.h"
 
 #include "odb_api/DataStream.h"
 #include "odb_api/MetaData.h"
 #include "odb_api/Select.h"
 #include "odb_api/SelectIterator.h"
-#include "eckit/sql/SQLParser.h"
-#include "eckit/sql/SQLSelectFactory.h"
-#include "eckit/sql/SQLSelect.h"
+#include "odb_api/sql/SQLSelectOutput.h"
+
 
 using namespace eckit;
 
 namespace odb {
 
-SelectIterator::SelectIterator(odb::Select &owner, eckit::sql::SQLSession& s)
-: owner_(owner),
-  select_(),
-  selectStmt_(0),
-  metaData_(0),
-  data_(0),
-  columnOffsets_(0),
-  rowDataSizeDoubles_(0),
-  newDataset_(true),
-  noMore_(false),
-  aggregateResultRead_(false),
-  isCachingRows_(false),
-  refCount_(0),
-  session_(s)
-{}
+//----------------------------------------------------------------------------------------------------------------------
 
-SelectIterator::SelectIterator(odb::Select& owner, const std::string& select, eckit::sql::SQLSession& s)
-: owner_(owner),
-  select_(select),
-  selectStmt_(0),
-  metaData_(0),
-  data_(0),
-  columnOffsets_(0),
-  rowDataSizeDoubles_(0),
-  newDataset_(true),
-  noMore_(false),
-  aggregateResultRead_(false),
-  isCachingRows_(false),
-  refCount_(0),
-  session_(s)
-{
-    if (owner.dataIStream())
-        parse(session_, owner.dataIStream());
-    else
-        parse<DataStream<SameByteOrder, DataHandle> >(session_, owner.dataHandle());
+SelectIterator::SelectIterator(const std::string& select, eckit::sql::SQLSession& s, sql::SQLSelectOutput& output) :
+    select_(select),
+    output_(output),
+    session_(s),
+    refCount_(0),
+    noMore_(false) {
+
+    parse();
 }
 
-template <typename DATASTREAM> 
-void SelectIterator::parse(eckit::sql::SQLSession& session, typename DATASTREAM::DataHandleType *dh)
-{
-    sql::SQLParser p;
-    NOTIMP;
-    // TODO: Add implicit table
-//    p.parseString(session, select_, dh, session.selectFactory().config());
-    p.parseString(session, select_);
-    sql::SQLStatement& stmt (session_.statement());
+SelectIterator::~SelectIterator() {}
 
-    selectStmt_ = dynamic_cast<sql::SQLSelect*>(&stmt);
+
+void SelectIterator::parse() {
+
+    eckit::sql::SQLParser p;
+    p.parseString(session_, select_);
+    eckit::sql::SQLStatement& stmt (session_.statement());
+
+    // n.b. non-owning
+    selectStmt_ = dynamic_cast<eckit::sql::SQLSelect*>(&stmt);
     if (! selectStmt_)
         throw UserError(std::string("Expected SELECT, got: ") + select_);
 
     selectStmt_->prepareExecute();
-	
-    populateMetaData<DATASTREAM>();
-
-    NOTIMP;
-//    selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
 }
 
-void SelectIterator::parse(eckit::sql::SQLSession& session, std::istream *is)
-{
-	sql::SQLParser p;
-//    eckit::sql::SQLSelectFactory& factory(session.selectFactory());
-//	p.parseString(session, select_, is, factory.config(), factory.csvDelimiter());
-    // TODO: Add implicit table
-    NOTIMP;
-    p.parseString(session, select_);
-    sql::SQLStatement& stmt (session_.statement());
-    selectStmt_ = dynamic_cast<sql::SQLSelect*>(&stmt);
-	ASSERT(selectStmt_);
-	selectStmt_->prepareExecute();
-	
-	populateMetaData<DataStream<SameByteOrder, DataHandle> >();
 
-    NOTIMP;
-//	selectStmt_->env.pushFrame(selectStmt_->sortedTables_.begin());
+bool SelectIterator::next() {
+    bool ret;
+    if (!(ret = selectStmt_->processOneRow())) noMore_ = true;
+    return ret;
 }
 
+
+void SelectIterator::setOutputRowBuffer(double* data, size_t count) {
+    output_.resetBuffer(data, count);
+}
+
+
+#if 0
 SelectIterator::~SelectIterator()
 {
-    delete [] data_;
+    if (ownData_) delete [] data_;
     delete [] columnOffsets_;
     delete selectStmt_;
     delete metaData_ ;
@@ -183,12 +146,6 @@ double& SelectIterator::data(size_t i)
     return data_[columnOffsets_[i]];
 }
 
-const MetaData& SelectIterator::columns() const
-{
-	ASSERT(metaData_);
-	return *metaData_;
-}
-
 template <typename DATASTREAM>
 void SelectIterator::populateMetaData()
 {
@@ -260,7 +217,8 @@ size_t SelectIterator::rowDataSizeDoublesInternal() const {
     }
     return total;
 }
+#endif
 
-
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace odb 

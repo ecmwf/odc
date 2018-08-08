@@ -41,11 +41,8 @@ program example_fortran_api
 
   call example_fortran_api_setup()
   call example_fortran_api1()
-  write(0,*) 'C'
   call example_fortran_api2()
-  write(0,*) 'D'
   call example_fortran_api_append()
-  write(0,*) 'E'
 
 contains
 

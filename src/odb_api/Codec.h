@@ -80,7 +80,8 @@ public:
 
     virtual size_t dataSizeDoubles() const { return 1; }
     virtual void dataSizeDoubles(size_t count) {
-        throw eckit::SeriousBug("Data size cannot be changed from 1x8 bytes", Here());
+        if (count != 1)
+            throw eckit::SeriousBug("Data size cannot be changed from 1x8 bytes", Here());
     }
 
 protected:

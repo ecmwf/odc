@@ -8,13 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-///
-/// \file Select.h
-///
-/// @author Piotr Kuchta, April 2010
+/// @author Piotr Kuchta
+/// @author
+/// @date April 2010
 
-#ifndef ODBSELECT_H
-#define ODBSELECT_H
+#ifndef odb_api_Select_H
+#define odb_api_Select_H
 
 #ifdef SWIGPYTHON
 #include <Python.h>
@@ -28,6 +27,8 @@ namespace eckit { class DataHandle; }
 
 namespace odb {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 class SelectIterator;
 
 class Select
@@ -36,12 +37,9 @@ public:
 	typedef IteratorProxy<SelectIterator,Select,const double> iterator;
 	typedef iterator::Row row;
 
-	Select(const std::string& selectStatement, eckit::DataHandle &);
-	Select(const std::string& selectStatement, std::istream &, const std::string& delimiter);
-    Select(const std::string& selectStatement, const std::string& path);
-	Select(const std::string& selectStatement);
-    Select(const std::string& selectStatement, eckit::sql::SQLSession&);
-	Select();
+    Select(const std::string& selectStatement="", bool manageOwnBuffer=true);
+    Select(const std::string& selectStatement, eckit::DataHandle& dh, bool manageOwnBuffer=true);
+    Select(const std::string& selectStatement, const std::string& path, bool manageOwnBuffer=true);
 
 	virtual ~Select();
 
@@ -52,29 +50,25 @@ public:
 	iterator begin();
 	const iterator end();
 
-	eckit::DataHandle* dataHandle() { return dataHandle_; };
-	std::istream* dataIStream() { return istream_; }
-
     SelectIterator* createSelectIterator(const std::string&);
 
 private:
-    eckit::sql::SQLSession* ownSession(const std::string& delimiter);
 
-	friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 
-	eckit::DataHandle* dataHandle_;
-	bool deleteDataHandle_;
+    friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
 
-	std::istream* istream_;
-	bool deleteIStream_;
+    std::unique_ptr<eckit::DataHandle> ownDH_;
+
+//	std::istream* istream_;
 
 	std::string selectStatement_;
 	std::string delimiter_;
 
-    eckit::sql::SQLSession* ownSession_;
-    eckit::sql::SQLSession* outerSession_;
+    eckit::sql::SQLSession session_;
 };
 
-} // namespace odb 
+//----------------------------------------------------------------------------------------------------------------------
+
+} // namespace odb
 
 #endif

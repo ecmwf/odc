@@ -9,12 +9,18 @@
  */
 
 ///
-/// \file IteratorProxy.h
-///
-/// @author Piotr Kuchta, Feb 2009
+/// @author Piotr Kuchta
+/// @author Simon Smart
+/// @date Feb 2009
 
-#ifndef IteratorProxy_H
-#define IteratorProxy_H
+/// @note (SDS, Aug 2018); IteratorProxy is a handle to various iterator objects
+/// (Select,Read,Write,MetaData,...) that essentially implements the intrusive shared pointer
+/// functionality of SharedPtr, without the thread safety or any other niceties.
+///
+/// TODO: Remove it. It is really horrible.
+
+#ifndef odb_api_IteratorProxy_H
+#define odb_api_IteratorProxy_H
 
 #include "odb_api/ColumnType.h"
 #include "odb_api/SelectIterator.h"
@@ -46,6 +52,8 @@ extern "C" void python_api_start()
 #endif
 
 namespace odb {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class Reader;
 class ReaderIterator;
@@ -306,6 +314,9 @@ public:
 		return o;
 	}
 };
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
 } // namespace odb 
 
