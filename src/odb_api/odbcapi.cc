@@ -60,6 +60,7 @@ int get_bitfield(T it,
 	std::string ssizes(ss.str());
 
 	//FIXME: the memory allocated by strdup should be freed on Fortran side
+    // TODO: This is a memory leak!!!
 	*bitfield_names = strdup(names.c_str());
 	*bitfield_sizes = strdup(ssizes.c_str());
 

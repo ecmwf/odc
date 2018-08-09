@@ -25,7 +25,7 @@ namespace sql {
 //       to be modifying the parent. Perhaps we should take a copy of somethnig (oda, dh?)
 
 TODATableIterator::TODATableIterator(const TODATable& parent,
-                                     const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns,
+                                     const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
                                      std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) :
     parent_(parent),
     it_(const_cast<Reader&>(parent_.oda()).begin()),

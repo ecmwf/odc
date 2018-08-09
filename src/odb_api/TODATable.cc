@@ -15,6 +15,7 @@
 #include "eckit/sql/SQLTableFactory.h"
 #include "eckit/sql/type/SQLBitfield.h"
 #include "eckit/utils/Translator.h"
+#include "eckit/sql/SQLColumn.h"
 
 #include "odb_api/TODATable.h"
 #include "odb_api/TODATableIterator.h"
@@ -170,13 +171,11 @@ void TODATable::populateMetaData()
 //}
 
 
-bool TODATable::hasColumn(const std::string& name, std::string* fullName) {
+bool TODATable::hasColumn(const std::string& name) const {
 
     // If the column is simply in the table, then use it.
 
     if (SQLTable::hasColumn(name)) {
-		if (fullName)
-			*fullName = name;
 		return true;
 	}
 
@@ -189,19 +188,18 @@ bool TODATable::hasColumn(const std::string& name, std::string* fullName) {
         const std::string& s (column.first);
         if (StringTools::startsWith(s, colName)) {
             n++;
-            if (fullName) *fullName = s;
         }
 	}
 
-	if (n == 0) return false;
 	if (n == 1) return true;
-
-    throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+    if (n > 1) {
+        throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+    }
 
 	return false;
 }
 
-SQLColumn& TODATable::column(const std::string& name) {
+const SQLColumn& TODATable::column(const std::string& name) const {
 
     // If the column is simply in the table, then use it.
 
@@ -227,7 +225,7 @@ SQLColumn& TODATable::column(const std::string& name) {
     return *column;
 }
 
-SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<eckit::sql::SQLColumn>>& columns,
+SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
                                       std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const {
     return new TODATableIterator(*this, columns, metadataUpdateCallback);
 }
