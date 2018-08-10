@@ -152,8 +152,6 @@ ODBApplication.cc
 ODBApplication.h
 Select.cc
 Select.h
-###>>>#OrderByExpressions.cc
-###>>>#OrderByExpressions.h
 Reader.cc
 Reader.h
 ReaderIterator.cc
