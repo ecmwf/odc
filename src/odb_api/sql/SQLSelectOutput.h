@@ -70,7 +70,6 @@ private: // methods (overrides)
 
     virtual void print(std::ostream&) const;
 
-	virtual void size(int);
 	virtual void reset();
     virtual void flush();
     virtual bool output(const eckit::sql::expression::Expressions&);

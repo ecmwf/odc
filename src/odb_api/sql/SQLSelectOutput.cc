@@ -62,7 +62,6 @@ void SQLSelectOutput::print(std::ostream& s) const {
 }
 
 
-void SQLSelectOutput::size(int) {}
 void SQLSelectOutput::reset() { pos_ = out_; }
 void SQLSelectOutput::flush() {}
 
