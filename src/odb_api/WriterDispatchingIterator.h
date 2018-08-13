@@ -88,7 +88,7 @@ protected:
 	/// Find iterator data should be dispatched to.
 	WRITE_ITERATOR& dispatch(const double* values, unsigned long count);
 	int dispatchIndex(const double* values, unsigned long count);
-    int createIterator(const Values& dispatchedValues, const std::string& fileName, const double* values, unsigned long count);
+    int createIterator(const Values& dispatchedValues, const std::string& fileName);
 
 	std::string generateFileName(const double* values, unsigned long count);
 

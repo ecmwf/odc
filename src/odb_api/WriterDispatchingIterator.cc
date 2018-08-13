@@ -153,7 +153,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatchIndex(const double
     Values2IteratorIndex::iterator p (values2iteratorIndex_.find(dispatchedValues));
     size_t iteratorIndex ((p != values2iteratorIndex_.end())
                            ? p->second
-                           : createIterator(dispatchedValues, generateFileName(values, count), values, count));
+                           : createIterator(dispatchedValues, generateFileName(values, count)));
 
     lastDispatchedValues_ = dispatchedValues;
     lastIndex_ = iteratorIndex;
@@ -162,8 +162,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatchIndex(const double
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName,
-const double* values, unsigned long count)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName)
 {
     std::ostream& L(eckit::Log::debug());
 
@@ -236,9 +235,7 @@ const double* values, unsigned long count)
 
     // Prop. metadata
     iterators_[iteratorIndex]->columns(columns());
-    //iterators_[iteratorIndex]->writeHeader();
-    //iterators_[iteratorIndex]->allocBuffers();
-    //iterators_[iteratorIndex]->gatherStats(values, count);
+    iterators_[iteratorIndex]->writeHeader();
 
     return iteratorIndex;
 }
@@ -290,7 +287,6 @@ void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
     for (int i (0); i < count; i++) {
         nextRow_[i] = lastValues_[i] = columns_[i]->missingValue();
         columnOffsets_[i] = offset;
-        eckit::Log::info() << "offset: " << offset << std::endl;
         offset += columns_[i]->dataSizeDoubles();
     }
 
@@ -331,7 +327,7 @@ double& WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::data(size_t i) {
 template <typename WRITE_ITERATOR, typename OWNER>
 size_t WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::rowDataSizeDoubles() const {
 
-    size_t total;
+    size_t total = 0;
     for (const auto& column : columns()) {
         total += column->dataSizeDoubles();
     }
