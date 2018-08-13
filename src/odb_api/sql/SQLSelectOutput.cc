@@ -16,10 +16,9 @@
 
 #include "eckit/sql/SQLSelect.h"
 #include "eckit/sql/expression/SQLExpression.h"
-#include "eckit/sql/type/SQLType.h"
-#include "eckit/utils/Translator.h"
 
 #include "odb_api/sql/SQLSelectOutput.h"
+#include "odb_api/sql/Types.h"
 
 
 using namespace eckit;
@@ -108,38 +107,15 @@ void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
     pos_ += columnSizesDoubles_[currentColumn_];
 }
 
-// TODO: What happens here if the metadata/columns change during an odb?
-// --> We need to update this allocation as we go.
-
-odb::ColumnType sqlToOdbType(const type::SQLType& t) {
-
-    switch(t.getKind()) {
-    case type::SQLType::realType:
-        return odb::REAL;
-    case type::SQLType::integerType:
-        return odb::INTEGER;
-    case type::SQLType::stringType:
-        return odb::STRING;
-    case type::SQLType::bitmapType:
-        return odb::BITFIELD;
-    case type::SQLType::doubleType:
-        return odb::DOUBLE;
-    case type::SQLType::blobType:
-        throw SeriousBug("SQL blob type not supported in odb_api", Here());
-    default:
-        throw SeriousBug("Unrecognised type found: " + Translator<int, std::string>()(t.getKind()), Here());
-    };
-
-    ASSERT(false);
-    return odb::IGNORE;
-}
-
 
 void SQLSelectOutput::prepare(SQLSelect& sql) {
 
     size_t offset = 0;
     expression::Expressions output(sql.output());
     metaData_.setSize(output.size());
+
+    // TODO: What happens here if the metadata/columns change during an odb?
+    // --> We need to update this allocation as we go.
 
     for (size_t i = 0; i < output.size(); i++) {
 

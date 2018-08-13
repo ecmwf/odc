@@ -42,7 +42,7 @@ public:
 
 	iterator begin(bool openDataHandle=true);
 
-	eckit::DataHandle& dataHandle() { return *dataHandle_; };
+    eckit::DataHandle& dataHandle() { return *dataHandle_; }
 
 	ITERATOR* createWriteIterator(eckit::PathName, bool append = false);
 

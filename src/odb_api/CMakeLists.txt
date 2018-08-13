@@ -210,8 +210,6 @@ Archiver.h
 Archiver.cc 
 Stager.h
 Stager.cc
-##...##SQLODAOutput.cc
-##...##SQLODAOutput.h
 ODBTarget.cc
 ODBTarget.h
 
@@ -219,6 +217,10 @@ sql/SQLOutputConfig.cc
 sql/SQLOutputConfig.h
 sql/SQLSelectOutput.cc
 sql/SQLSelectOutput.h
+sql/ODAOutput.cc
+sql/ODAOutput.h
+sql/Types.cc
+sql/Types.h
 
 # Data types' support
 data/DataHandleFactory.h

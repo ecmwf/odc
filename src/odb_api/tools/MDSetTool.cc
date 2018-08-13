@@ -55,7 +55,7 @@ void MDSetTool::run()
     }
 
     PathName inFile = parameters(2), outFile = parameters(3);
-    std::auto_ptr<DataHandle> outHandle(ODBAPISettings::instance().writeToFile(outFile));
+    std::unique_ptr<DataHandle> outHandle(ODBAPISettings::instance().writeToFile(outFile));
 
     std::vector<std::string> columns, types, values;
     std::vector<eckit::sql::BitfieldDef> bitfieldDefs;

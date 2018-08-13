@@ -10,7 +10,11 @@
 
 #include "eckit/sql/SQLSimpleOutput.h"
 
+#include "odb_api/DispatchingWriter.h"
+#include "odb_api/sql/ODAOutput.h"
 #include "odb_api/sql/SQLOutputConfig.h"
+#include "odb_api/TemplateParameters.h"
+#include "odb_api/Writer.h"
 
 namespace odb {
 namespace sql {
@@ -32,8 +36,23 @@ SQLOutputConfig::SQLOutputConfig(bool noColumnNames,
 SQLOutputConfig::~SQLOutputConfig() {}
 
 eckit::sql::SQLOutput* SQLOutputConfig::buildOutput() const {
+
+    // TODO: maxOpenFiles configuration for output. Was disabled in Feb 2016
+    const size_t maxOpenFiles = 100;
+
     if (outputFormat_ == "default" || outputFormat_ == "wide") {
         return new eckit::sql::SQLSimpleOutput(*this, outStream_.get());
+    } else if (outputFormat_ == "odb") {
+        ASSERT(outputFile_.asString().size());
+        TemplateParameters templateParameters;
+        TemplateParameters::parse(outputFile_, templateParameters);
+        if (templateParameters.size()) {
+            return new odb::sql::ODAOutput<DispatchingWriter>(new DispatchingWriter(outputFile_, maxOpenFiles));
+        } else {
+            return new odb::sql::ODAOutput<Writer<>>(new Writer<>(outputFile_));
+            // TODO: toODAColumns
+        }
+
     }
     NOTIMP;
 }

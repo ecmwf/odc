@@ -30,7 +30,7 @@ namespace eckit {
 
 namespace odb {
 
-class SQLOutputConfig;
+namespace sql { class SQLOutputConfig; }
 
 namespace tool {
 
@@ -66,7 +66,7 @@ public:
 
 private:
 
-    std::unique_ptr<SQLOutputConfig> sqlOutputConfig_;
+    std::unique_ptr<odb::sql::SQLOutputConfig> sqlOutputConfig_;
 
 	std::string inputFile_;           // -i
 	eckit::Offset offset_;       // -offset
