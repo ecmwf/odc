@@ -13,6 +13,9 @@
 
 #include "odb_api/TODATableIterator.h"
 #include "odb_api/TODATable.h"
+#include "odb_api/Reader.h"
+#include "odb_api/csv/TextReader.h"
+#include "odb_api/csv/TextReaderIterator.h"
 
 
 namespace odb {
@@ -24,11 +27,12 @@ namespace sql {
 //       Not entirely clear how to resolve this. But there is no reason for us intrinsically
 //       to be modifying the parent. Perhaps we should take a copy of somethnig (oda, dh?)
 
-TODATableIterator::TODATableIterator(const TODATable& parent,
-                                     const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
-                                     std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) :
+template <typename READER>
+TODATableIterator<READER>::TODATableIterator(const TODATable<READER>& parent,
+                                             const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
+                                             std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) :
     parent_(parent),
-    it_(const_cast<Reader&>(parent_.oda()).begin()),
+    it_(const_cast<READER&>(parent_.oda()).begin()),
     end_(parent_.oda().end()),
     columns_(columns),
     metadataUpdateCallback_(metadataUpdateCallback),
@@ -37,14 +41,17 @@ TODATableIterator::TODATableIterator(const TODATable& parent,
     if (it_ != end_) updateMetaData();
 }
 
-void TODATableIterator::rewind() {
-    it_ = const_cast<Reader&>(parent_.oda()).begin();
+template <typename READER>
+void TODATableIterator<READER>::rewind() {
+    it_ = const_cast<READER&>(parent_.oda()).begin();
     end_ = parent_.oda().end();
 }
 
-TODATableIterator::~TODATableIterator() {}
+template <typename READER>
+TODATableIterator<READER>::~TODATableIterator() {}
 
-bool TODATableIterator::next() {
+template <typename READER>
+bool TODATableIterator<READER>::next() {
 
     // We don't need to increment pointer on first row. begin() just called.
 
@@ -66,7 +73,8 @@ bool TODATableIterator::next() {
 }
 
 
-void TODATableIterator::updateMetaData() {
+template <typename READER>
+void TODATableIterator<READER>::updateMetaData() {
 
     const MetaData& md = it_->columns();
 
@@ -82,14 +90,21 @@ void TODATableIterator::updateMetaData() {
     }
 }
 
-std::vector<size_t> TODATableIterator::columnOffsets() const {
+template <typename READER>
+std::vector<size_t> TODATableIterator<READER>::columnOffsets() const {
     ASSERT(columnOffsets_.size() == columns_.size());
     return columnOffsets_;
 }
 
-const double* TODATableIterator::data() const {
+template <typename READER>
+const double* TODATableIterator<READER>::data() const {
     return it_->data();
 }
+
+// Explicit instantiation
+
+template class TODATableIterator<Reader>;
+template class TODATableIterator<TextReader>;
 
 //----------------------------------------------------------------------------------------------------------------------
 

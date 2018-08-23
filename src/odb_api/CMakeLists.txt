@@ -168,10 +168,6 @@ TReadOnlyMemoryDataHandle.cc
 TReadOnlyMemoryDataHandle.h
 TemplateParameters.cc
 TemplateParameters.h
-TextReader.cc
-TextReader.h
-TextReaderIterator.cc
-TextReaderIterator.h
 Tracer.cc
 Tracer.h
 UnsafeInMemoryDataHandle.h
@@ -212,6 +208,11 @@ Stager.h
 Stager.cc
 ODBTarget.cc
 ODBTarget.h
+
+csv/TextReader.cc
+csv/TextReader.h
+csv/TextReaderIterator.cc
+csv/TextReaderIterator.h
 
 sql/SQLOutputConfig.cc
 sql/SQLOutputConfig.h

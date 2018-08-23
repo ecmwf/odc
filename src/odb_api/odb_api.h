@@ -21,7 +21,6 @@
 #include "odb_api/Select.h"
 #include "odb_api/ColumnType.h"
 #include "odb_api/Reader.h"
-#include "odb_api/TextReader.h"
 #include "odb_api/Writer.h"
 
 // TODO: reenable

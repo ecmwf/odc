@@ -27,7 +27,7 @@ namespace eckit { class DataHandle; }
 
 namespace odb {
 
-class Reader
+class Reader : public eckit::NonCopyable
 {
 public:
 	typedef IteratorProxy<ReaderIterator,Reader,const double> iterator;
@@ -36,6 +36,9 @@ public:
 	Reader(eckit::DataHandle &);
     Reader(const std::string& path);
 	Reader();
+
+    Reader(Reader&& rhs);
+    Reader& operator=(Reader&& rhs);
 
 	virtual ~Reader();
 
@@ -56,13 +59,10 @@ public:
     void noMoreData();
 
 private:
-// No copy allowed
-    Reader(const Reader&);
-    Reader& operator=(const Reader&);
 
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
-	const std::string path_;
+    std::string path_;
 
 	friend class IteratorProxy<ReaderIterator,Reader,const double>;
 	friend class ReaderIterator;

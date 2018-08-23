@@ -34,6 +34,8 @@ public: // methods
                     bool noColumnAlignment=false,
                     bool fullPrecision=false);
 
+    SQLOutputConfig(const std::string& odbFilename);
+
     virtual ~SQLOutputConfig();
 
     virtual eckit::sql::SQLOutput* buildOutput() const;

@@ -32,6 +32,22 @@ Reader::Reader()
   path_("")
 {}
 
+Reader::Reader(Reader&& rhs) :
+    dataHandle_(rhs.dataHandle_),
+    deleteDataHandle_(rhs.deleteDataHandle_),
+    path_(std::move(rhs.path_)) {
+
+    rhs.dataHandle_ = 0;
+    rhs.deleteDataHandle_ = false;
+}
+
+Reader& Reader::operator=(Reader&& rhs) {
+    std::swap(dataHandle_, rhs.dataHandle_);
+    std::swap(deleteDataHandle_, rhs.deleteDataHandle_);
+    std::swap(path_, rhs.path_);
+    return *this;
+}
+
 Reader::Reader(const std::string& path)
 : dataHandle_(DataHandleFactory::openForRead(path)),
   deleteDataHandle_(true),

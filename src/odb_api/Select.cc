@@ -35,7 +35,7 @@ Select::Select(const std::string& selectStatement, DataHandle& dh, bool manageOw
 
     dh.openForRead();
     eckit::sql::SQLDatabase& db(session_.currentDatabase());
-    db.addImplicitTable(new odb::sql::TODATable(db, dh));
+    db.addImplicitTable(new odb::sql::ODATable(db, dh));
 }
 
 
@@ -45,7 +45,7 @@ Select::Select(const std::string& selectStatement, const std::string& path, bool
     ownDH_.reset(DataHandleFactory::openForRead(path));
     ownDH_->openForRead();
     eckit::sql::SQLDatabase& db(session_.currentDatabase());
-    db.addImplicitTable(new odb::sql::TODATable(db, *ownDH_));
+    db.addImplicitTable(new odb::sql::ODATable(db, *ownDH_));
 }
 
 

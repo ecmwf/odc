@@ -33,6 +33,12 @@ SQLOutputConfig::SQLOutputConfig(bool noColumnNames,
                                 bitfieldsBinary, noColumnAlignment, fullPrecision),
     outStream_(std::cout) {}
 
+SQLOutputConfig::SQLOutputConfig(const std::string& odbFilename) :
+    SQLOutputConfig() {
+    outputFormat_ = "odb";
+    outputFile_ = odbFilename;
+}
+
 SQLOutputConfig::~SQLOutputConfig() {}
 
 eckit::sql::SQLOutput* SQLOutputConfig::buildOutput() const {

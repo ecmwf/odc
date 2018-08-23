@@ -38,12 +38,17 @@ unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
 		if (md != it->columns())
 		{
 			md = it->columns();
-			for (size_t i = 0; i < md.size(); ++i)
-				out << md[i]->name() << "\t";
+            const char* spacer = "";
+            for (size_t i = 0; i < md.size(); ++i) {
+                out << spacer << md[i]->name();
+                spacer = "\t";
+            }
 			out << std::endl;
 		}
-		for (size_t i = 0; i < md.size(); ++i)
+        const char* spacer = "";
+        for (size_t i = 0; i < md.size(); ++i)
 		{
+            out << spacer;
 			switch(md[i]->type())
 			{
 				case odb::INTEGER:
@@ -62,7 +67,7 @@ unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
 					ASSERT("Unknown type" && false);
 					break;
 			}
-			out << "\t";
+            spacer = "\t";
 		}
 		out << std::endl;
 	}
@@ -81,7 +86,7 @@ void LSTool::run()
 
     std::string db = parameters(1);
 
-    std::auto_ptr<std::ofstream> foutPtr;
+    std::unique_ptr<std::ofstream> foutPtr;
 	if (optionIsSet("-o"))
         foutPtr.reset(new std::ofstream(optionArgument("-o", std::string("")).c_str()));
     std::ostream& out = optionIsSet("-o") ? *foutPtr : std::cout;

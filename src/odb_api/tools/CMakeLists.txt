@@ -16,8 +16,8 @@ IndexTool.cc
 IndexTool.h
 FixedSizeRowTool.cc
 FixedSizeRowTool.h
-##...##ImportTool.cc
-##...##ImportTool.h
+ImportTool.cc
+ImportTool.h
 LSTool.cc
 LSTool.h
 MDSetTool.cc

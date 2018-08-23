@@ -10,20 +10,33 @@
 
 #include "eckit/eckit.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/MemoryHandle.h"
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
+#include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
+#include "eckit/sql/SQLSession.h"
+#include "eckit/sql/SQLStatement.h"
+
+#include "odb_api/csv/TextReader.h"
+#include "odb_api/csv/TextReaderIterator.h"
+#include "odb_api/sql/SQLOutputConfig.h"
 #include "odb_api/Select.h"
 #include "odb_api/SelectIterator.h"
-#include "odb_api/Writer.h"
+#include "odb_api/TODATable.h"
 #include "odb_api/tools/ImportTool.h"
-#include "eckit/sql/SQLSession.h"
+#include "odb_api/Writer.h"
+
 
 using namespace std;
 using namespace eckit;
 
 namespace odb {
 namespace tool {
+
+// TODO: A test with wide strings
+// TODO: A test with SQL filtering
+// TODO: A test with non-comma delimiters
 
 ImportTool::ImportTool(int argc, char *parameters[])
 : Tool(argc, parameters)
@@ -80,31 +93,31 @@ void ImportTool::importFile(const PathName& in, const PathName& out, const std::
 
 void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, const std::string& sql, const std::string& delimiter)
 {
-    eckit::sql::SQLSession session;
-	session.selectFactory().csvDelimiter(delimiter);
+    // TODO: Why are we not using the ODAOutput directly, rather than going via a Select, Writer combination?
 
-	ifstream fs( in.asString().c_str() );
-	odb::Select input(sql, fs, delimiter);
+    eckit::sql::SQLSession session(std::unique_ptr<odb::sql::SQLOutputConfig>(new odb::sql::SQLOutputConfig(out)));
 
-	odb::Writer<> writer(out);
-	odb::Writer<>::iterator output(writer.begin());
-	unsigned long long n = output->pass1(input.begin(), input.end());
+    eckit::sql::SQLDatabase& db(session.currentDatabase());
+    db.addImplicitTable(new odb::sql::ODBCSVTable(db, in, in, delimiter));
+    session.currentDatabase();
+
+    eckit::sql::SQLParser().parseString(session, sql);
+    size_t n = session.statement().execute();
 
     Log::info() << "ImportTool::importFile: Copied " << n << " rows." << std::endl;
 }
 
 void ImportTool::importText(const std::string& s, const PathName& out, const std::string& delimiter)
 {
-    eckit::sql::SQLSession session;
-	session.selectFactory().csvDelimiter(delimiter);
+    // TODO: There is no reason to be doing an SQL select * here! Just parse the damn file!
 
-	stringstream fs(s);
-	odb::Select input("select *;", fs, delimiter);
+    std::stringstream ss(s);
+    odb::TextReader reader(ss, delimiter);
 
 	odb::Writer<> writer(out);
 	odb::Writer<>::iterator output(writer.begin());
 
-	unsigned long long n = output->pass1(input.begin(), input.end());
+    unsigned long long n = output->pass1(reader.begin(), reader.end());
 
     Log::info() << "ImportTool::importText: Copied " << n << " rows." << std::endl;
 }

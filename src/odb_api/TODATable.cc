@@ -19,6 +19,9 @@
 
 #include "odb_api/TODATable.h"
 #include "odb_api/TODATableIterator.h"
+#include "odb_api/Reader.h"
+#include "odb_api/csv/TextReader.h"
+#include "odb_api/csv/TextReaderIterator.h"
 
 using namespace eckit;
 using namespace eckit::sql;
@@ -33,7 +36,7 @@ namespace {
 // Provide a factory such that when a table is specified in a from statement, the SQLParser
 // can construct an appropriate table!
 
-class TODAFactory : public eckit::sql::SQLTableFactoryBase {
+class ODAFactory : public eckit::sql::SQLTableFactoryBase {
     virtual SQLTable* build(SQLDatabase& owner, const std::string& name, const std::string& location) const override {
 
         PathName path(location);
@@ -47,50 +50,37 @@ class TODAFactory : public eckit::sql::SQLTableFactoryBase {
         char oda[5] {'\xff', '\xff', 'O', 'D', 'A'};
         if (fh.read(buf, 5) != 5 || ::memcmp(buf, oda, 5) != 0) return 0;
 
-        return new odb::sql::TODATable(owner, location, name);
+        return new odb::sql::ODATable(owner, location, name);
     }
 };
 
-TODAFactory todaFactoryInstance;
+ODAFactory odaFactoryInstance;
 
 }
 
-//----------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
-TODATable::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name) :
+
+template <typename READER>
+TODATable<READER>::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name, READER&& oda) :
     SQLTable(owner, path, name),
-    oda_(path) {
+    oda_(std::move(oda)) {
 
     populateMetaData();
 }
 
 
-static const std::string nullPathName("<>");
-static const std::string inputTable("input");
+template <typename READER>
+TODATable<READER>::~TODATable() {}
 
-
-TODATable::TODATable(SQLDatabase& owner, DataHandle& dh) :
-    SQLTable(owner, nullPathName, inputTable),
-    oda_(dh) {
-
-    populateMetaData();
-}
-
-//TODATable::TODATable(SQLDatabase& owner, std::istream &is, const std::string &delimiter) :
-//    SQLTable(owner, nullPathName, inputTable),
-//    oda_(is, delimiter) {
-//
-//    populateMetaData();
-//}
-
-TODATable::~TODATable() {}
-
-const Reader& TODATable::oda() const {
+template <typename READER>
+const READER& TODATable<READER>::oda() const {
     return oda_;
 }
 
 
-void TODATable::populateMetaData()
+template <typename READER>
+void TODATable<READER>::populateMetaData()
 {
     auto it = oda_.begin();
 
@@ -126,7 +116,7 @@ void TODATable::populateMetaData()
 	}
 }
 
-//void TODATable::updateMetaData(const std::vector<SQLColumn*>& selected)
+//void TODATable<READER>::updateMetaData(const std::vector<SQLColumn*>& selected)
 //{
 //    // TODO: Whoah! whoah! whoah!
 //    // n.b. we don't really want to modify the table. We should probabyl deal with this in the iterator...
@@ -171,7 +161,8 @@ void TODATable::populateMetaData()
 //}
 
 
-bool TODATable::hasColumn(const std::string& name) const {
+template <typename READER>
+bool TODATable<READER>::hasColumn(const std::string& name) const {
 
     // If the column is simply in the table, then use it.
 
@@ -199,7 +190,8 @@ bool TODATable::hasColumn(const std::string& name) const {
 	return false;
 }
 
-const SQLColumn& TODATable::column(const std::string& name) const {
+template <typename READER>
+const SQLColumn& TODATable<READER>::column(const std::string& name) const {
 
     // If the column is simply in the table, then use it.
 
@@ -225,14 +217,22 @@ const SQLColumn& TODATable::column(const std::string& name) const {
     return *column;
 }
 
-SQLTableIterator* TODATable::iterator(const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
-                                      std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const {
-    return new TODATableIterator(*this, columns, metadataUpdateCallback);
+template <typename READER>
+SQLTableIterator* TODATable<READER>::iterator(const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
+                                              std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const {
+    return new TODATableIterator<READER>(*this, columns, metadataUpdateCallback);
 }
 
-void TODATable::print(std::ostream& s) const {
+template <typename READER>
+void TODATable<READER>::print(std::ostream& s) const {
     s << "TODATable(" << path_ << ")";
 }
+
+
+// Explicit instantiation
+
+template class TODATable<Reader>;
+template class TODATable<TextReader>;
 
 //----------------------------------------------------------------------------------------------------------------------
 

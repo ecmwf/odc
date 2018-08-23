@@ -16,21 +16,24 @@
 #define odb_api_sql_TODATableIterator_H
 
 #include "eckit/sql/SQLTable.h"
+
 #include "odb_api/Reader.h"
+#include "odb_api/csv/TextReader.h"
 
 
 namespace odb {
 namespace sql {
 
-class TODATable;
+template <typename READER> class TODATable;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+template <typename READER>
 class TODATableIterator : public eckit::sql::SQLTableIterator {
 
 public: // methods
 
-    TODATableIterator(const TODATable& parent,
+    TODATableIterator(const TODATable<READER>& parent,
                       const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
                       std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback);
 	virtual ~TODATableIterator();
@@ -49,9 +52,9 @@ private: // methods
 
 private: // members
 
-    const TODATable& parent_;
-    Reader::iterator it_;
-    Reader::iterator end_;
+    const TODATable<READER>& parent_;
+    typename READER::iterator it_;
+    typename READER::iterator end_;
 
     const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns_;
     std::vector<size_t> columnOffsets_;
@@ -60,6 +63,9 @@ private: // members
 
 	bool firstRow_;
 };
+
+extern template class TODATableIterator<Reader>;
+extern template class TODATableIterator<TextReader>;
 
 //----------------------------------------------------------------------------------------------------------------------
 

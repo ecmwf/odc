@@ -26,13 +26,15 @@ namespace odb { namespace sql { class ODATableIterator; } }
 
 namespace odb {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 class TextReader;
 
-class TextReaderIterator 
+class TextReaderIterator : private eckit::NonCopyable
 {
 public:
-	TextReaderIterator (TextReader &owner);
-	TextReaderIterator (TextReader &owner, const eckit::PathName&);
+    TextReaderIterator (TextReader& owner);
+    TextReaderIterator (TextReader& owner, const eckit::PathName&);
 	~TextReaderIterator ();
 
 	bool isNewDataset();
@@ -52,6 +54,12 @@ public:
 // next() is public cause it needs to be used by the C API functions - normally client code should not use it
     bool next();
 
+    /// The offset of a given column in the doubles[] data array
+    size_t dataOffset(size_t i) const { ASSERT(columnOffsets_); return columnOffsets_[i]; }
+
+    // Get the number of doubles per row.
+    size_t rowDataSizeDoubles() const { return rowDataSizeDoubles_; }
+
 private:
 // No copy allowed.
     TextReaderIterator(const TextReaderIterator&);
@@ -60,30 +68,34 @@ private:
 	void initRowBuffer();
 	void parseHeader();
 
-	TextReader& owner_;
 	MetaData columns_;
 	double* lastValues_;
+    size_t* columnOffsets_;
+    size_t rowDataSizeDoubles_;
 	unsigned long long nrows_;
+    std::string delimiter_;
 
-	std::istream* in_;
-	//eckit::DataHandle *f;
-	//Properties properties_;
+    std::istream* in_;
+    //eckit::DataHandle *f;
+    //Properties properties_;
 
 	bool newDataset_;
 public:
 	bool noMore_;
 
-	bool ownsF_;
-	int refCount_;
+    bool ownsF_;
+    int refCount_;
 
 protected:
 	// FIXME:
-    TextReaderIterator(): owner_(*((TextReader *) 0)), columns_(0) {}
+    TextReaderIterator(): columns_(0) {}
 
 	friend class odb::TextReader;
 	friend class odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double>;
 	friend class odb::Header<odb::TextReaderIterator>;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace odb
 

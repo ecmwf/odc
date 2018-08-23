@@ -17,9 +17,8 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/types/Types.h"
 
-#include "odb_api/TextReaderIterator.h"
-#include "odb_api/TextReader.h"
-#include "odb_api/StringTool.h"
+#include "odb_api/csv/TextReaderIterator.h"
+#include "odb_api/csv/TextReader.h"
 #include "odb_api/ColumnType.h"
 
 using namespace eckit;
@@ -29,37 +28,41 @@ typedef StringTools S;
 namespace odb {
 
 TextReaderIterator::TextReaderIterator(TextReader &owner)
-: owner_(owner),
-  columns_(0),
+: columns_(0),
   lastValues_(0),
+  columnOffsets_(0),
   nrows_(0),
+  delimiter_(owner.delimiter()),
   in_(0),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
   refCount_(0)
 {
-	in_ = &owner.stream();
-	ASSERT(in_);
+    in_ = &owner.stream();
+    ASSERT(in_);
 
-	parseHeader();
+    parseHeader();
+    next();
 }
 
 TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathName)
-: owner_(owner),
-  columns_(0),
+: columns_(0),
   lastValues_(0),
+  columnOffsets_(0),
   nrows_(0),
+  delimiter_(owner.delimiter()),
   in_(0),
   newDataset_(false),
   noMore_(false),
   ownsF_(false),
   refCount_(0)
 {
-	in_ = new std::ifstream(pathName.localPath());
-	ASSERT(in_);
-	ownsF_ = true;
-	parseHeader();
+    in_ = new std::ifstream(pathName.localPath());
+    ASSERT(in_);
+    ownsF_ = true;
+    parseHeader();
+    next();
 }
 
 eckit::sql::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
@@ -119,13 +122,13 @@ void TextReaderIterator::parseHeader()
 {
     std::string header;
     std::getline(*in_, header);
-    std::vector<std::string> columns (S::split(owner_.delimiter(), header));
+    std::vector<std::string> columns (S::split(delimiter_, header));
     //c->missingValue(missingValue);
 
     std::ostream& L(Log::info());
 
     L << "TextReaderIterator::parseHeader: columns: " << columns << std::endl;
-    L << "TextReaderIterator::parseHeader: delimiter: '" << owner_.delimiter() << "'" << std::endl;
+    L << "TextReaderIterator::parseHeader: delimiter: '" << delimiter_ << "'" << std::endl;
     L << "TextReaderIterator::parseHeader: header: '" << header << "'" << std::endl;
 
 	for (size_t i = 0; i < columns.size(); ++i)
@@ -155,22 +158,32 @@ void TextReaderIterator::parseHeader()
 
 TextReaderIterator::~TextReaderIterator ()
 {
-	close();
+    close();
 	delete [] lastValues_;
+    delete [] columnOffsets_;
 }
 
 
 bool TextReaderIterator::operator!=(const TextReaderIterator& other)
 {
-	return noMore_;
+    return noMore_;
 }
 
 void TextReaderIterator::initRowBuffer()
 {
-	delete [] lastValues_;
-	lastValues_ = new double [columns().size()];
+    delete [] lastValues_;
+    delete [] columnOffsets_;
+
+    rowDataSizeDoubles_ = 0;
+    columnOffsets_ = new size_t[columns().size()];
+    for (size_t i = 0; i < columns().size(); i++) {
+        columnOffsets_[i] = rowDataSizeDoubles_;
+        rowDataSizeDoubles_ += columns()[i]->dataSizeDoubles();
+    }
+
+    lastValues_ = new double [rowDataSizeDoubles_];
 	for(size_t i = 0; i < columns().size(); i++)
-		lastValues_[i] = columns()[i]->missingValue(); 
+        lastValues_[columnOffsets_[i]] = columns()[i]->missingValue();
 }
 
 bool TextReaderIterator::next()
@@ -181,8 +194,8 @@ bool TextReaderIterator::next()
 
     std::string line;
     std::getline(*in_, line);
-    StringTool::trimInPlace(line);
-    std::vector<std::string> values(S::split(owner_.delimiter(), line));
+    line = S::trim(line);
+    std::vector<std::string> values(S::split(delimiter_, line));
 
     size_t nCols = values.size();
     if (nCols == 0)
@@ -192,18 +205,57 @@ bool TextReaderIterator::next()
     for(size_t i = 0; i < nCols; ++i)
     {
         const std::string& v (S::trim(values[i]));
-        if (S::upper(v) == "NULL")
-            lastValues_[i] = columns_[i]->missingValue();
-        else 
-        {
+        if (S::upper(v) == "NULL") {
+            lastValues_[columnOffsets_[i]] = columns_[i]->missingValue();
+        } else  {
             odb::ColumnType typ ( columns()[i]->type() );
-            lastValues_[i] = typ == odb::STRING ? StringTool::cast_as_double(StringTool::unQuote(v))
-                           : typ == odb::REAL ? Translator<std::string, double>()(v) 
-                           : typ == odb::DOUBLE ? Translator<std::string, double>()(v) 
-                           : typ == odb::INTEGER ? Translator<std::string, int>()(v)
-                           : typ == odb::BITFIELD ? Translator<std::string, int>()(v)
-                           // TODO: signal error
-                           : columns_[i]->missingValue();
+
+            switch (typ) {
+
+            case odb::STRING: {
+                std::string unquoted = S::unQuote(v);
+                size_t charlen = unquoted.length();
+                size_t lenDoubles = charlen > 0 ? (((charlen - 1) / 8) + 1): 1;
+
+                // If the string is bigger than any we have come across before, we need to
+                // resize the buffers to cope for this
+                // TODO: Adjust the writer to be able to easily continue if all we have changed is a column size.
+                if (lenDoubles > columns_[i]->dataSizeDoubles()) {
+
+                    newDataset_ = true;
+                    columns_[i]->dataSizeDoubles(lenDoubles);
+
+                    Log::info() << "Resizing column: " << i << std::endl;
+
+                    // Allocate a new buffer, but keep the old data around
+                    double* oldData = lastValues_;
+                    lastValues_ = 0;
+                    initRowBuffer();
+                    ASSERT(oldData);
+                    ::memcpy(lastValues_, oldData, columnOffsets_[i]*sizeof(double));
+                    delete oldData;
+                }
+
+                char* buf = reinterpret_cast<char*>(&lastValues_[columnOffsets_[i]]);
+                lenDoubles = columns_[i]->dataSizeDoubles();
+
+                ::memcpy(buf, &unquoted[0], charlen);
+                ::memset(buf + charlen, 0, (lenDoubles * sizeof(double)) - charlen);
+            }
+
+            case odb::REAL:
+            case odb::DOUBLE:
+                lastValues_[columnOffsets_[i]] = Translator<std::string, double>()(v);
+                break;
+
+            case odb::INTEGER:
+            case odb::BITFIELD:
+                lastValues_[columnOffsets_[i]] = static_cast<double>(Translator<std::string, long>()(v));
+                break;
+
+            default:
+                throw SeriousBug("Unexpected type in column", Here());
+            }
         }
     }
 
@@ -214,15 +266,15 @@ bool TextReaderIterator::isNewDataset() { return newDataset_; }
 
 int TextReaderIterator::close()
 {
-	//if (ownsF_ && f) { f->close(); delete f; f = 0; }
+    //if (ownsF_ && f) { f->close(); delete f; f = 0; }
 
-	if (ownsF_ && in_)
-	{
-		delete in_;
-		in_ = 0;
-	}
+    if (ownsF_ && in_)
+    {
+        delete in_;
+        in_ = 0;
+    }
 
-	return 0;
+    return 0;
 }
 
 } // namespace odb

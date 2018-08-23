@@ -121,7 +121,7 @@ void SQLTool::run()
         implicitTableDH->openForRead();
 
         eckit::sql::SQLDatabase& db(session.currentDatabase());
-        db.addImplicitTable(new odb::sql::TODATable(db, *implicitTableDH));
+        db.addImplicitTable(new odb::sql::ODATable(db, *implicitTableDH));
     }
 
     // And actually do the SQL!

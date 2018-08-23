@@ -16,7 +16,9 @@
 #define TODATable_H
 
 #include "eckit/sql/SQLTable.h"
+
 #include "odb_api/Reader.h"
+#include "odb_api/csv/TextReader.h"
 
 
 namespace odb {
@@ -24,21 +26,25 @@ namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+template <typename READER>
 class TODATable : public eckit::sql::SQLTable {
 public:
 
     TODATable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name);
     TODATable(eckit::sql::SQLDatabase& owner, eckit::DataHandle& dh);
-//    TODATable(eckit::sql::SQLDatabase&, std::istream&, const std::string& delimiter);
 
     virtual ~TODATable();
 
-    const Reader& oda() const;
+    const READER& oda() const;
 
 private: // methods
 
     void populateMetaData();
 //    void updateMetaData(const std::vector<SQLColumn*>&);
+
+protected: // methods
+
+    TODATable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name, READER&& oda);
 
 private: // methods (overrides)
 
@@ -52,8 +58,29 @@ private: // methods (overrides)
 
 public:
 
-    Reader oda_;
+    READER oda_;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Specific cases for Reader and TextReader
+
+extern template class TODATable<Reader>;
+extern template class TODATable<TextReader>;
+
+struct ODATable : public TODATable<Reader> {
+    ODATable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name) :
+        TODATable(owner, path, name, Reader(path)) {}
+    ODATable(eckit::sql::SQLDatabase& owner, eckit::DataHandle& dh) :
+        TODATable(owner, "<>", "input", Reader(dh)) {}
+};
+
+
+struct ODBCSVTable : public TODATable<TextReader> {
+    ODBCSVTable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name, const std::string& delimiter) :
+        TODATable(owner, path, name, TextReader(path, delimiter)) {}
+};
+
 
 //----------------------------------------------------------------------------------------------------------------------
 

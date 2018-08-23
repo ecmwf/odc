@@ -9,9 +9,9 @@
  */
 
 ///
-/// \file TextReader.h
-///
-/// @author Piotr Kuchta, Oct 2010
+/// @author Piotr Kuchta
+/// @author Simon Smart
+/// @date Oct 2010
 
 #ifndef odb_api_TextReader_H
 #define odb_api_TextReader_H
@@ -26,25 +26,31 @@ namespace eckit { class PathName; }
 
 namespace odb {
 
+//----------------------------------------------------------------------------------------------------------------------
+
 class TextReaderIterator;
 
-class TextReader
+class TextReader : private eckit::NonCopyable
 {
 public:
 	typedef IteratorProxy<TextReaderIterator,TextReader,double> iterator;
 	typedef iterator::Row row;
 
-	TextReader(std::istream &, const std::string& delimiter);
+    TextReader(std::istream &, const std::string& delimiter);
     TextReader(const std::string& path, const std::string& delimiter);
+
+    TextReader(TextReader&&);
+    TextReader& operator=(TextReader&&);
 
 	virtual ~TextReader();
 
 	iterator begin();
-	iterator end(); 
+    iterator end() const;
 
     std::istream& stream() { return *in_; }
-	// For C API
-	TextReaderIterator* createReadIterator(const eckit::PathName&);
+
+    // For C API
+//	TextReaderIterator* createReadIterator(const eckit::PathName&);
 
 #ifdef SWIGPYTHON
 	iterator __iter__() { return begin(); }
@@ -52,19 +58,21 @@ public:
 
 	const std::string& delimiter() { return delimiter_; }
 private:
-// No copy allowed
-    TextReader(const TextReader&);
-    TextReader& operator=(const TextReader&);
-	TextReader();
 
     std::istream* in_;
-	bool deleteDataHandle_;
-	const std::string path_;
-	const std::string delimiter_;
+    bool deleteDataHandle_;
+    std::string delimiter_;
+
+    // This is a bit nasty. The TextReader currently assumes that the data will only be
+    // iterated _once_ (hence initiated by an istream). Therefore only create the iterator
+    // once so that the MetaData doesn't get read from the stream multiple times.
+    iterator iteratorSingleton_;
 
 	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,double>;
 	friend class odb::TextReaderIterator;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace odb
 
