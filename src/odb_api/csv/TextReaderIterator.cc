@@ -241,9 +241,13 @@ bool TextReaderIterator::next()
 
                 ::memcpy(buf, &unquoted[0], charlen);
                 ::memset(buf + charlen, 0, (lenDoubles * sizeof(double)) - charlen);
+                break;
             }
 
             case odb::REAL:
+                lastValues_[columnOffsets_[i]] = static_cast<double>(Translator<std::string, float>()(v));
+                break;
+
             case odb::DOUBLE:
                 lastValues_[columnOffsets_[i]] = Translator<std::string, double>()(v);
                 break;
@@ -263,6 +267,12 @@ bool TextReaderIterator::next()
 }
 
 bool TextReaderIterator::isNewDataset() { return newDataset_; }
+
+double& TextReaderIterator::data(size_t i)
+{
+    ASSERT(i >= 0 && i < columns().size());
+    return lastValues_[columnOffsets_[i]];
+}
 
 int TextReaderIterator::close()
 {

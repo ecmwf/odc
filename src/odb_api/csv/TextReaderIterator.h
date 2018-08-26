@@ -40,6 +40,7 @@ public:
 	bool isNewDataset();
     const double* data () const { return lastValues_; }
     double* data () { return lastValues_; }
+    double& data(size_t);
     //long integer(int i);
 
 	bool operator!=(const TextReaderIterator& other);

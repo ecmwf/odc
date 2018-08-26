@@ -10,6 +10,7 @@ list( APPEND _core_odb_tests
     test_minmax
 
     test_select_iterator
+    test_text_reader
 )
 
 foreach( _test ${_core_odb_tests} )
