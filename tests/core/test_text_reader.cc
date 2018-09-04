@@ -107,7 +107,6 @@ CASE("Starting with long strings") {
         ++count;
 
         // Only resize on new, longer string
-        eckit::Log::info() << "SZ : " << count << ", " << (it->isNewDataset() ? "T":"F") << ", " << it->dataSizeDoubles(0) << std::endl;
         EXPECT(it->isNewDataset());
         EXPECT(it->dataSizeDoubles(0) == (count == 1 ? 2 : 5));
         EXPECT(::strncmp(STRINGS[count-1].c_str(), (char*)&it->data(0), it->dataSizeDoubles(0) * sizeof(double)) == 0);
@@ -118,6 +117,37 @@ CASE("Starting with long strings") {
     }
 
     EXPECT(count == 2);
+}
+
+CASE("Test parsing bitfields") {
+
+    std::string bitfieldDefinition = "en4_level_flag@hdr:bitfield[TempLevelReject:1;SaltLevelReject:1;LevelVertStability:1;IncreasingDepthCheck:1;NotUsed1:1;NotUsed2:1;NotUsed3:1;NotUsed4:1;NotUsed5:1;TempLevelStatList:1;TempLevelArgoQC:1;TempLevelOutOfRangeSetToMDI:1;TempLevelEN3List:1;TempLevelVertCheck:1;TempLevelNoBckgrnd:1;TempLevelBays:1;TempLevelBaysBud:1;TempLevelBaysBudReinstate:1;TempLevelWaterfallCheck:1;NotUsed6:1;NotUsed7:1;SaltLevelStatList:1;SaltLevelArgoQC:1;SaltLevelOutOfRangeSetToMDI:1;SaltLevelEN3List:1;SaltLevelVertCheck:1;SaltLevelNoBckgrnd:1;SaltLevelBays:1;SaltLevelBaysBud:1;SaltLevelBaysBudReinstate:1;SaltLevelWaterfallCheck:1]";
+
+    eckit::sql::BitfieldDef def (odb::TextReaderIterator::parseBitfields(bitfieldDefinition));
+    eckit::sql::FieldNames names(def.first);
+    eckit::sql::Sizes sizes(def.second);
+
+    std::vector<std::string> FIELD_NAMES {
+        "TempLevelReject", "SaltLevelReject", "LevelVertStability", "IncreasingDepthCheck",
+        "NotUsed1", "NotUsed2", "NotUsed3", "NotUsed4", "NotUsed5", "TempLevelStatList",
+        "TempLevelArgoQC", "TempLevelOutOfRangeSetToMDI", "TempLevelEN3List",
+        "TempLevelVertCheck", "TempLevelNoBckgrnd", "TempLevelBays", "TempLevelBaysBud",
+        "TempLevelBaysBudReinstate", "TempLevelWaterfallCheck", "NotUsed6", "NotUsed7",
+        "SaltLevelStatList", "SaltLevelArgoQC", "SaltLevelOutOfRangeSetToMDI",
+        "SaltLevelEN3List", "SaltLevelVertCheck", "SaltLevelNoBckgrnd", "SaltLevelBays",
+        "SaltLevelBaysBud", "SaltLevelBaysBudReinstate", "SaltLevelWaterfallCheck" };
+
+    ASSERT(names.size() == 31);
+    ASSERT(sizes.size() == 31);
+
+    EXPECT(names == FIELD_NAMES);
+    EXPECT(std::all_of(sizes.begin(), sizes.end(), [](int x){return x == 1;}));
+}
+
+
+CASE("Test parsing bitfields - 32bit limit") {
+    std::string bitfieldDefinition = "en4_level_flag@hdr:bitfield[TempLevelReject:1;SaltLevelReject:1;LevelVertStability:1;IncreasingDepthCheck:1;NotUsed1:1;NotUsed2:1;NotUsed3:1;NotUsed4:1;NotUsed5:1;TempLevelStatList:1;TempLevelArgoQC:1;TempLevelOutOfRangeSetToMDI:1;TempLevelEN3List:1;TempLevelVertCheck:1;TempLevelNoBckgrnd:1;TempLevelBays:1;TempLevelBaysBud:1;TempLevelBaysBudReinstate:1;TempLevelWaterfallCheck:1;NotUsed6:1;NotUsed7:1;SaltLevelStatList:1;SaltLevelArgoQC:1;SaltLevelOutOfRangeSetToMDI:1;SaltLevelEN3List:1;SaltLevelVertCheck:1;SaltLevelNoBckgrnd:1;SaltLevelBays:1;SaltLevelBaysBud:1;SaltLevelBaysBudReinstate:1;SaltLevelWaterfallCheck:1;NotUsed8:1;NotUsed9:1]";
+    EXPECT_THROWS_AS(odb::TextReaderIterator::parseBitfields(bitfieldDefinition), eckit::UserError);
 }
 
 // ------------------------------------------------------------------------------------------------------
