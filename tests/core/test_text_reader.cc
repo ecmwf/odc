@@ -47,44 +47,78 @@ CASE("Read columnar data from CSV") {
     std::vector<std::string> STRINGS {"a-string", "b-string", "string-c", "testing", "12345678", "this-is-a-longer-string", "short"};
     std::vector<long> BITFIELDS {0, 2, 4, 7, 8, 11, 0};
 
-    ASSERT(it->columns().size() == 5);
+    EXPECT(it->columns().size() == 5);
 
-    ASSERT(it->columns()[0]->name() == "col1");
-    ASSERT(it->columns()[1]->name() == "col2");
-    ASSERT(it->columns()[2]->name() == "col3");
-    ASSERT(it->columns()[3]->name() == "col4");
-    ASSERT(it->columns()[4]->name() == "col5");
+    EXPECT(it->columns()[0]->name() == "col1");
+    EXPECT(it->columns()[1]->name() == "col2");
+    EXPECT(it->columns()[2]->name() == "col3");
+    EXPECT(it->columns()[3]->name() == "col4");
+    EXPECT(it->columns()[4]->name() == "col5");
 
-    ASSERT(it->columns()[0]->type() == odb::INTEGER);
-    ASSERT(it->columns()[1]->type() == odb::REAL);
-    ASSERT(it->columns()[2]->type() == odb::DOUBLE);
-    ASSERT(it->columns()[3]->type() == odb::STRING);
-    ASSERT(it->columns()[4]->type() == odb::BITFIELD);
+    EXPECT(it->columns()[0]->type() == odb::INTEGER);
+    EXPECT(it->columns()[1]->type() == odb::REAL);
+    EXPECT(it->columns()[2]->type() == odb::DOUBLE);
+    EXPECT(it->columns()[3]->type() == odb::STRING);
+    EXPECT(it->columns()[4]->type() == odb::BITFIELD);
 
     size_t count = 0;
     for (; it != reader.end(); ++it) {
         ++count;
 
         // Only resize on new, longer string
-        ASSERT(it->isNewDataset() == (count == 6));
+        EXPECT(it->isNewDataset() == (count == 6));
 
-        ASSERT(it->data(0) == INTEGERS[count-1]);
-        ASSERT(it->data(1) == double(REALS[count-1]) || (std::isnan(it->data(1)) && std::isnan(REALS[count-1])));
-        ASSERT(it->data(2) == DOUBLES[count-1] || (std::isnan(it->data(2)) && std::isnan(DOUBLES[count-1])));
-        ASSERT(it->dataSizeDoubles(3) == ((count >= 6) ? 3 : 1));
-        ASSERT(::strncmp(STRINGS[count-1].c_str(), (char*)&it->data(3), it->dataSizeDoubles(3) * sizeof(double)) == 0);
-        ASSERT(it->data(4) == BITFIELDS[count-1]);
+        EXPECT(it->data(0) == INTEGERS[count-1]);
+        EXPECT(it->data(1) == double(REALS[count-1]) || (std::isnan(it->data(1)) && std::isnan(REALS[count-1])));
+        EXPECT(it->data(2) == DOUBLES[count-1] || (std::isnan(it->data(2)) && std::isnan(DOUBLES[count-1])));
+        EXPECT(it->dataSizeDoubles(3) == ((count >= 6) ? 3 : 1));
+        EXPECT(::strncmp(STRINGS[count-1].c_str(), (char*)&it->data(3), it->dataSizeDoubles(3) * sizeof(double)) == 0);
+        EXPECT(it->data(4) == BITFIELDS[count-1]);
+
+        for (const auto& col : it->columns()) {
+            EXPECT(!col->hasMissing());
+        }
     }
 
-    ASSERT(count == 7);
+    EXPECT(count == 7);
 }
 
-CASE("Missing values detected") {}
+CASE("Starting with long strings") {
 
-CASE("Duplicate column names result in an error") {}
+    // n.b. have the first long string not be in the first row, which will force the mechanism
+    // to resize.
 
-CASE("BITFIELD out of range (i.e. unspecified bits set)") {}
+    std::stringstream data;
+    data << "col4:STRING\n";
+    data << "a-string-is-long\n";
+    data << "b-string-is-very-long-indeed-whoah\n";
 
+    odb::TextReader reader(data, ",");
+    odb::TextReader::iterator it = reader.begin();
+
+    std::vector<std::string> STRINGS {"a-string-is-long", "b-string-is-very-long-indeed-whoah"};
+
+    EXPECT(it->columns().size() == 1);
+    EXPECT(it->columns()[0]->name() == "col4");
+    EXPECT(it->columns()[0]->type() == odb::STRING);
+
+    size_t count = 0;
+    for (; it != reader.end(); ++it) {
+        ++count;
+
+        // Only resize on new, longer string
+        eckit::Log::info() << "SZ : " << count << ", " << (it->isNewDataset() ? "T":"F") << ", " << it->dataSizeDoubles(0) << std::endl;
+        EXPECT(it->isNewDataset());
+        EXPECT(it->dataSizeDoubles(0) == (count == 1 ? 2 : 5));
+        EXPECT(::strncmp(STRINGS[count-1].c_str(), (char*)&it->data(0), it->dataSizeDoubles(0) * sizeof(double)) == 0);
+
+        for (const auto& col : it->columns()) {
+            EXPECT(!col->hasMissing());
+        }
+    }
+
+    EXPECT(count == 2);
+}
 
 // ------------------------------------------------------------------------------------------------------
 
