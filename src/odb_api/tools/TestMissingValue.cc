@@ -12,6 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include "eckit/sql/SQLTypedefs.h"
+
 #include "odb_api/Comparator.h"
 #include "odb_api/Select.h"
 #include "odb_api/Reader.h"
@@ -35,7 +37,7 @@ static void setUp()
 	it->setColumn(0, "lat@hdr", odb::REAL);
 	it->missingValue(0, 1);
 
-	BitfieldDef bfDef;
+    eckit::sql::BitfieldDef bfDef;
 	bfDef.first.push_back("x");
 	bfDef.second.push_back(1);
 	bfDef.first.push_back("y");

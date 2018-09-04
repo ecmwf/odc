@@ -14,12 +14,12 @@
 
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/BufferedHandle.h"
+#include "eckit/log/Number.h"
 #include "eckit/log/Timer.h"
 #include "eckit/exception/Exceptions.h"
 
 #include "odb_api/Comparator.h"
 #include "odb_api/DateTime.h"
-//#include "odb_api/MapReduce.h"
 #include "odb_api/MetaDataReader.h"
 #include "odb_api/MetaDataReaderIterator.h"
 #include "odb_api/Reader.h"
@@ -29,7 +29,7 @@
 #include "odb_api/Writer.h"
 #include "TestCase.h"
 #include "odb_api/tools/CountTool.h"
-//#include "odb_api/tools/ImportTool.h"
+#include "odb_api/tools/ImportTool.h"
 #include "odb_api/tools/SplitTool.h"
 #include "odb_api/ODBAPISettings.h"
 #include "odb_api/odbql.h"
@@ -273,7 +273,7 @@ TEST(vector_syntax)
 
 TEST(bitfieldsLength)
 {
-    Log::info() << "sizeof(Decoder::W)" << sizeof(Decoder::W) << std::endl;
+    Log::info() << "sizeof(eckit::log::Number::W)" << sizeof(eckit::log::Number::W) << std::endl;
     Log::info() << "sizeof(double)" << sizeof(double) << std::endl;
 
     //>>> int('0b11100110011',2)
@@ -282,27 +282,27 @@ TEST(bitfieldsLength)
     //13
     //>>>
     //stringstream s;
-    //Decoder::printBinary(s, 1843);
+    //eckit::log::Number::printBinary(s, 1843);
     //string r = s.str();
     //Log::info() << "r: " << r << std::endl;
 
-    ASSERT(Decoder::printBinary(1843).size() == 11);
-    ASSERT(Decoder::printBinary(1843) == "11100110011");
+    ASSERT(eckit::log::Number::printBinary(1843).size() == 11);
+    ASSERT(eckit::log::Number::printBinary(1843) == "11100110011");
 
-    ASSERT(Decoder::printBinary(0).size() == 1);
-    ASSERT(Decoder::printBinary(0) == "0");
+    ASSERT(eckit::log::Number::printBinary(0).size() == 1);
+    ASSERT(eckit::log::Number::printBinary(0) == "0");
 }
 
 /// ODB-85
 TEST(bitfieldsPrintHexadecimal) 
 {
-    ASSERT(Decoder::printHexadecimal(1843) == std::string("733"));
+    ASSERT(eckit::log::Number::printHexadecimal(1843) == std::string("733"));
 
-    //eckit::Log::info() << Decoder::printHexadecimal(15)  << std::endl;
-    ASSERT(Decoder::printHexadecimal(10) == std::string("a"));
-    ASSERT(Decoder::printHexadecimal(11) == std::string("b"));
-    ASSERT(Decoder::printHexadecimal(15) == std::string("f"));
-    ASSERT(Decoder::printHexadecimal(255) == std::string("ff"));
+    //eckit::Log::info() << eckit::log::Number::printHexadecimal(15)  << std::endl;
+    ASSERT(eckit::log::Number::printHexadecimal(10) == std::string("a"));
+    ASSERT(eckit::log::Number::printHexadecimal(11) == std::string("b"));
+    ASSERT(eckit::log::Number::printHexadecimal(15) == std::string("f"));
+    ASSERT(eckit::log::Number::printHexadecimal(255) == std::string("ff"));
 }
 
 static void create_stringInWhere_file()
@@ -331,10 +331,8 @@ TEST(stringInWhere)
 TEST(vector_syntax2)
 {
     const char* sql = "set $y = 100; set $x = [$y, 'a', 'b', [1, 2]];";
-    odb::sql::SQLInteractiveSession session;
-    odb::sql::SQLParser p;
-    //p.parseString(sql, static_cast<DataHandle*>(0), odb::sql::SQLSelectFactory::instance().config());
-
+    eckit::sql::SQLSession session;
+    eckit::sql::SQLParser::parseString(session, sql);
 }
 
 TEST(blocksSizes)

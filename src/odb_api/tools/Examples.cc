@@ -8,17 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file Examples.cc
-///
 /// This file contains examples of usage of public APIs.
-///
-/// @author Piotr Kuchta, ECMWF, June 2015
 
 #include <string>
 #include <iostream>
 #include <vector>
 
-#include "odb_api/odb_api.h"
+#include "eckit/filesystem/PathName.h"
+
+#include "odb_api/tools/ImportTool.h"
+#include "odb_api/Select.h"
+#include "odb_api/Reader.h"
+#include "odb_api/Writer.h"
 
 #include "TestCase.h"
 
@@ -27,8 +28,8 @@ namespace {
 TEST(example_select_data_read_results)
 {
     // Prepare input data
-    const char *data= "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
-    odb::tool::ImportTool::importText(data, "example_select_data_read_results.odb");
+    const std::string data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
+    odb::tool::ImportTool::importText(data, std::string("example_select_data_read_results.odb"));
 
     odb::Select select("select x,min(v),max(v);", "example_select_data_read_results.odb");
 
@@ -49,8 +50,8 @@ TEST(example_select_data_read_results)
 TEST(example_read_data)
 {
     // Prepare input data
-    const char *data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
-    odb::tool::ImportTool::importText(data, "example_read_data.odb");
+    const std::string data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
+    odb::tool::ImportTool::importText(data, std::string("example_read_data.odb"));
 
     odb::Reader o("example_read_data.odb");
     for (odb::Reader::iterator it (o.begin()),

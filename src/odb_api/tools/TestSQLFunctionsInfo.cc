@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odb_api/FunctionFactory.h"
+#include "eckit/sql/expression/function/FunctionFactory.h"
 
 #include "TestCase.h"
 
@@ -23,9 +23,9 @@ using namespace odb;
 
 static void test()
 {
-	typedef odb::sql::expression::function::FunctionFactory::FunctionInfo FI;
+    typedef eckit::sql::expression::function::FunctionFactory::FunctionInfo FI;
 
-	FI& functionsInfo = odb::sql::expression::function::FunctionFactory::instance().functionsInfo();
+    FI& functionsInfo = eckit::sql::expression::function::FunctionFactory::instance().functionsInfo();
 
 	Log::info() << "FunctionFactory::functionsInfo().size() == " << functionsInfo.size() << std::endl;
 	for (FI::iterator i = functionsInfo.begin(); i != functionsInfo.end(); ++i)

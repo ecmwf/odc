@@ -16,7 +16,7 @@ const double EPS = 7e-6;
 
 #include "eckit/log/Timer.h"
 #include "odb_api/Select.h"
-#include "odb_api/piconst.h"
+#include "eckit/sql/expression/function/piconst.h"
 
 #include "odb_api/Writer.h"
 #include "TestCase.h"
@@ -25,6 +25,7 @@ using namespace std;
 using namespace eckit;
 using namespace odb;
 
+using namespace eckit::sql::expression::function;
 
 
 static void setUp()
@@ -40,7 +41,7 @@ static void setUp()
 	
 	row->writeHeader();
 
-	(*row)[0] = piconst::pi;
+    (*row)[0] = piconst::pi;
 	(*row)[1] = 180.0e0;
 	++row;
 
@@ -48,7 +49,7 @@ static void setUp()
 	(*row)[1] = 0.0e0;
 	++row;
 
-	(*row)[0] = piconst::pi/4.0e0;
+    (*row)[0] = piconst::pi/4.0e0;
 	(*row)[1] = 45.0e0;
 	++row;
 }
@@ -69,11 +70,11 @@ static void test()
 
 // because stored as single real precision; we loose some accuracy
 	ASSERT(fabs((*it)[0] - 180) < EPS); // 
-	ASSERT(fabs((*it)[1] - piconst::pi) < EPS); //
+    ASSERT(fabs((*it)[1] - piconst::pi) < EPS); //
 	ASSERT(fabs((*it)[2] - 180.0) < EPS); // 
-	ASSERT(fabs((*it)[3] - piconst::pi) < EPS);    // 
+    ASSERT(fabs((*it)[3] - piconst::pi) < EPS);    //
 
-	ASSERT(fabs((*it)[4] - piconst::pi) < EPS); // 
+    ASSERT(fabs((*it)[4] - piconst::pi) < EPS); //
 	ASSERT(fabs((*it)[5] - 180.0e0) < EPS);    //
 
     ++it;
@@ -89,9 +90,9 @@ static void test()
     ASSERT(fabs((*it)[0] - 45) < EPS); // 
     ASSERT(fabs((*it)[1] - piconst::pi/4.0) < EPS); //
     ASSERT(fabs((*it)[2] - 45.0) < EPS); // 
-    ASSERT(fabs((*it)[3] - piconst::pi/4.0) < EPS);    // 
+    ASSERT(fabs((*it)[3] - piconst::pi/4.0) < EPS);    //
 
-    ASSERT(fabs((*it)[4] - piconst::pi/4.0) < EPS); // 
+    ASSERT(fabs((*it)[4] - piconst::pi/4.0) < EPS); //
     ASSERT(fabs((*it)[5] - 45.0e0) < EPS);    //
 
 
