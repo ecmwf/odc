@@ -47,6 +47,8 @@ public:
     iterator __iter__() { return iterator(createSelectIterator(selectStatement_)); }
 #endif
 
+    eckit::sql::SQLDatabase& database();
+
 	iterator begin();
 	const iterator end();
 
@@ -65,6 +67,11 @@ private:
 	std::string delimiter_;
 
     eckit::sql::SQLSession session_;
+
+    // This is horrible, but the TextReader, and any stream based iteraton, can only
+    // iterate once, so we MUST NOT create two iterators if begin() is called twice.
+    bool initted_;
+    iterator it_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

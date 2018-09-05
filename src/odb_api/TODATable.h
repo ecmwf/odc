@@ -79,6 +79,8 @@ struct ODATable : public TODATable<Reader> {
 struct ODBCSVTable : public TODATable<TextReader> {
     ODBCSVTable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name, const std::string& delimiter) :
         TODATable(owner, path, name, TextReader(path, delimiter)) {}
+    ODBCSVTable(eckit::sql::SQLDatabase& owner, std::istream& is, const std::string& name, const std::string& delimiter) :
+        TODATable(owner, "<none>", name, TextReader(is, delimiter)) {}
 };
 
 

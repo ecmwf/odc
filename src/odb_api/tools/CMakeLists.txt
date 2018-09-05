@@ -95,11 +95,6 @@ TestSelectStarAt.cc
 TestSelectTwoFiles.cc
 TestSetvbuffer.cc
 TestStar.cc
-TestTextSelect.cc
-TestTextSelect.txt
-TestTextSelect2.cc
-TestTextSelect2.txt
-TestTextSelect3.cc
 MockReader.h
 MockReader.cc
 )

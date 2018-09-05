@@ -66,8 +66,8 @@ void SQLSelectOutput::flush() {}
 
 bool SQLSelectOutput::output(const expression::Expressions& results)
 {
-    ASSERT(pos_ == out_);
     ASSERT(results.size() == columnSizesDoubles_.size());
+    pos_ = out_;
     for (currentColumn_ = 0; currentColumn_ < columnSizesDoubles_.size(); currentColumn_++) {
         results[currentColumn_]->output(*this);
     }

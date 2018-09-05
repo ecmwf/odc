@@ -356,13 +356,13 @@ int odb_select_iterator_get_next_row(oda_select_iterator_ptr it, int count, doub
 
     iter->setOutputRowBuffer(data);
 
-    if (!iter->next())
-        return 1;
+    if (!iter->next()) return 1;
 
-	if (iter->isNewDataset())
+    if (iter->isNewDataset()) {
 		*new_dataset = 1;
-	else
+    } else {
 		*new_dataset = 0;
+    }
 
 	return 0;
 }

@@ -225,8 +225,6 @@ bool TextReaderIterator::next()
                     newDataset_ = true;
                     columns_[i]->dataSizeDoubles(lenDoubles);
 
-                    Log::info() << "Resizing column: " << i << std::endl;
-
                     // Allocate a new buffer, but keep the old data around
                     double* oldData = lastValues_;
                     lastValues_ = 0;

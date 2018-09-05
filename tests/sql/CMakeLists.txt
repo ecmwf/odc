@@ -1,6 +1,7 @@
 
 list( APPEND _sql_odb_tests
     test_functions
+    test_text_reader_select
 )
 
 foreach( _test ${_sql_odb_tests} )

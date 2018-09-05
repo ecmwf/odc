@@ -23,20 +23,14 @@ TextReader::TextReader(std::istream& input, const std::string& delimiter) :
     in_(&input),
     deleteDataHandle_(false),
     delimiter_(delimiter),
-    iteratorSingleton_(new TextReaderIterator(*this)) {
-
-    Log::info() << "Constructor: " << this << std::endl;
-}
+    iteratorSingleton_(new TextReaderIterator(*this)) {}
 
 
 TextReader::TextReader(const std::string& path, const std::string& delimiter) :
     in_(new std::ifstream(path.c_str())),
     deleteDataHandle_(true),
     delimiter_(delimiter),
-    iteratorSingleton_(new TextReaderIterator(*this)) {
-
-    Log::info() << "Constructor: " << this << std::endl;
-}
+    iteratorSingleton_(new TextReaderIterator(*this)) {}
 
 TextReader::TextReader(TextReader&& rhs) :
     in_(rhs.in_),
@@ -44,13 +38,11 @@ TextReader::TextReader(TextReader&& rhs) :
     delimiter_(rhs.delimiter_),
     iteratorSingleton_(rhs.iteratorSingleton_) {
 
-    Log::info() << "MOVE const: " << this << std::endl;
     rhs.in_ = 0;
     rhs.deleteDataHandle_ = false;
 }
 
 TextReader& TextReader::operator=(TextReader&& rhs) {
-    Log::info() << "MOVE assign: " << this << std::endl;
     std::swap(in_, rhs.in_);
     std::swap(deleteDataHandle_, rhs.deleteDataHandle_);
     std::swap(delimiter_, rhs.delimiter_);
