@@ -20,5 +20,4 @@ add_subdirectory( odb_api/tools )
 add_subdirectory( odb_api/odb2netcdf )
 add_subdirectory( fortran )
 add_subdirectory( python )
-add_subdirectory( api )
 

@@ -22,11 +22,6 @@ if( HAVE_FORTRAN )
         # Legacy API examples
         legacy_fortran_api_examples
         legacy_test_fortran_api_open_non_existing_file
-        # TODO: This test needs some data which is, presumebly, created/downloaded by
-        # an ODB Server test (in MARS server source). I need to make sure legacy_test_client_lib_fortran_local
-        # can work on its own, not just as a part of ODB Server bundle.
-        #legacy_test_client_lib_fortran_local
-        test_regression
     )
 
     foreach( _test ${fortran_tests} )
