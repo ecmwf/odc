@@ -174,6 +174,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	eckit::Log::debug() << "WriterBufferingIterator::pass1" << std::endl;
 
 	pass1init(it, end);
+    writeHeader();
 
 	unsigned long nrows = 0;
 	for ( ; it != end; ++it, ++nrows)
@@ -183,8 +184,8 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 			eckit::Log::debug() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
 			flush();
 			pass1init(it, end);
-			writeHeader();
-		}
+            writeHeader();
+        }
 
 		const double *data = it->data();
 		size_t nCols = it->columns().size();

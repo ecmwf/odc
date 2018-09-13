@@ -55,6 +55,7 @@ void SelectIterator::parse() {
 
 bool SelectIterator::next() {
     bool ret;
+    if (noMore_) return false;
     if (!(ret = selectStmt_->processOneRow())) {
         selectStmt_->postExecute();
         noMore_ = true;

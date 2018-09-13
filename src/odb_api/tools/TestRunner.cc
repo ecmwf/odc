@@ -50,8 +50,8 @@ void TestRunner::run()
 	ASSERT(getenv("ODB_API_TEST_DATA_PATH") && "ODB_API_TEST_DATA_PATH must be set");
 
 	stringstream totalRunningTime;
-	auto_ptr<Timer> allTestsTimer(new Timer("Total", totalRunningTime));
-	auto_ptr<TestCases> tests(0);
+    unique_ptr<Timer> allTestsTimer(new Timer("Total", totalRunningTime));
+    unique_ptr<TestCases> tests;
 	
 	failed_.clear();
 
@@ -73,7 +73,7 @@ void TestRunner::run()
 			string suiteName = clp_.parameters()[i];
 			ASSERT("Suite does not exist" && suites_.find(suiteName) != suites_.end());
 			vector<string>& suite = suites_[suiteName];
-			auto_ptr<vector<TestCase*> > tsts(AbstractToolFactory::testCases(suite));
+            unique_ptr<vector<TestCase*> > tsts(AbstractToolFactory::testCases(suite));
 
 			runTests(*tsts);
 			tests->insert(tests->end(), tsts->begin(), tsts->end());
@@ -126,7 +126,7 @@ void TestRunner::runTests(const TestCases& tests)
 		smslabel(name);
 
 		stringstream runningTime;
-		auto_ptr<Timer> timer(new Timer(name, runningTime));
+        unique_ptr<Timer> timer(new Timer(name, runningTime));
 		try {
 			tst->setUp();
 			tst->test();
