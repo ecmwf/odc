@@ -230,6 +230,11 @@ oda_select_iterator_ptr odb_create_select_iterator(oda_ptr co, const char *sql, 
 		*err = 2; 
 		return 0;
     }
+    catch (eckit::Exception& e) {
+        *err = 3;
+        eckit::Log::error() << "Caught exception: " << e << std::endl;
+        return 0;
+    }
 }
 
 oda_select_iterator_ptr odb_create_select_iterator_from_file(oda_ptr co, const char *sql, const char *filename, int *err)
