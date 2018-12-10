@@ -17,7 +17,7 @@
 #include "odb_api_config.h"
 #include "eckit/eckit_config.h"
 
-namespace odb {
+namespace odc {
 
 template<class T> struct Swap {
 
@@ -49,6 +49,6 @@ public:
 
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 DataPage::DataPage(DataTable& table)
@@ -233,4 +233,4 @@ size_t DataPage::optimizeFillMark(const DataTable& table)
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

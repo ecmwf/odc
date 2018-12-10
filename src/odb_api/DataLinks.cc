@@ -5,7 +5,7 @@
 #include "odb_api/DataLink.h"
 #include "odb_api/DataLinks.h"
 
-namespace odb {
+namespace odc {
 
 DataLinks::DataLinks(DataSet& owner)
   : owner_(owner),
@@ -36,4 +36,4 @@ DataLinks::iterator DataLinks::find(const DataTable* parent,
     return links_.end();
 }
 
-} // namespace odb
+} // namespace odc

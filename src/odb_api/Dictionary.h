@@ -17,11 +17,11 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/sql/expression/SQLExpression.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 namespace expression {
 
-typedef std::map<std::string,odb::sql::expression::SQLExpression*> Map;
+typedef std::map<std::string,odc::sql::expression::SQLExpression*> Map;
 
 class Dictionary : public SQLExpression, public Map
 {
@@ -42,7 +42,7 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////////////
 	
-	virtual const odb::sql::type::SQLType* type() const;
+	virtual const odc::sql::type::SQLType* type() const;
 
 	virtual void prepare(SQLSelect&)  { NOTIMP; }
 	virtual void cleanup(SQLSelect&)  { NOTIMP; }
@@ -72,6 +72,6 @@ public:
 
 } // namespace expression
 } // namespace sql
-} // namespace odb
+} // namespace odc
 
 #endif

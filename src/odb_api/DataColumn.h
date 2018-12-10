@@ -8,7 +8,7 @@
 #include "odb_api/ColumnType.h"
 #include "eckit/sql/SQLTypedefs.h"
 
-namespace odb {
+namespace odc {
 
 class Column;
 
@@ -36,8 +36,8 @@ public:
     DataColumn(const std::string& name, ColumnType type, double missingValue,
             double defaultValue);
 
-    /// Creates a new column copying all the properties from an odb::Column.
-    DataColumn(const odb::Column& column);
+    /// Creates a new column copying all the properties from an odc::Column.
+    DataColumn(const odc::Column& column);
 
     /// Returns the column's name.
     const std::string& name() const { return name_; }
@@ -85,6 +85,6 @@ private:
     eckit::sql::BitfieldDef bitfieldDef_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATACOLUMN_H_

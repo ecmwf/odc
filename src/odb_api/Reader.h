@@ -25,7 +25,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 class Reader : public eckit::NonCopyable
 {
@@ -68,6 +68,6 @@ private:
 	friend class ReaderIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

@@ -15,7 +15,7 @@
 #define odb_api_SchemaAnalyzer_H
 
 
-namespace odb {
+namespace odc {
 
 class MetaData;
 
@@ -54,7 +54,7 @@ private:
 };
 
 } // namespace sql
-} // namespace odb
+} // namespace odc
 
 #endif
 

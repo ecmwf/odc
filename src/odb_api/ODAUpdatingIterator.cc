@@ -15,7 +15,7 @@
 
 #include "odb_api/MetaData.h"
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 ODAUpdatingIterator<T>::ODAUpdatingIterator (T& ii, const T& end, const std::vector<std::string>& columns, const std::vector<double>& values)
@@ -93,5 +93,5 @@ bool ODAUpdatingIterator<T>::next()
 	return r;
 }
 
-} // namespace odb
+} // namespace odc
 

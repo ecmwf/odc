@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 DataSet::DataSet(const std::string& name)
   : name_(name),
@@ -29,4 +29,4 @@ void DataSet::clear()
     for_each(links_.begin(), links_.end(), mem_fun(&DataLink::clear));
 }
 
-} // namespace odb
+} // namespace odc

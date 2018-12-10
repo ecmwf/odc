@@ -20,7 +20,7 @@
 #include "eckit/sql/SQLOutput.h"
 #include "odb_api/MetaData.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -84,6 +84,6 @@ extern template class sql::ODAOutput<DispatchingWriter>;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odb
+} // namespace odc
 
 #endif

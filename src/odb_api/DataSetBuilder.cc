@@ -13,7 +13,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 namespace {
 
@@ -28,16 +28,16 @@ struct Token
 {
     TokenType type;
     std::string columnName;
-    odb::ColumnType columnType;
+    odc::ColumnType columnType;
     std::string tableName;
     std::string parentTableName;
     std::string childTableName;
 };
 
 typedef std::vector<Token> TokenVector;
-TokenVector tokenize(const odb::MetaData& metaData);
+TokenVector tokenize(const odc::MetaData& metaData);
 
-TokenVector tokenize(const odb::MetaData& metaData)
+TokenVector tokenize(const odc::MetaData& metaData)
 {
     TokenVector tokens;
 
@@ -45,7 +45,7 @@ TokenVector tokenize(const odb::MetaData& metaData)
     {
         size_t pos;
         Token token;
-        odb::Column& column = *metaData[i];
+        odc::Column& column = *metaData[i];
 
         token.columnName = column.name();
         token.columnType = column.type();
@@ -79,16 +79,16 @@ TokenVector tokenize(const odb::MetaData& metaData)
     return tokens;
 }
 
-ColumnType convertColumnType(odb::ColumnType type)
+ColumnType convertColumnType(odc::ColumnType type)
 {
     switch (type)
     {
-        case odb::INTEGER:  return INTEGER;
-        case odb::REAL:     return REAL;
-        case odb::DOUBLE:   return DOUBLE;
-        case odb::STRING:   return STRING;
-        case odb::BITFIELD: return BITFIELD;
-        default: ASSERT(!"Unexpected odb::ColumnType.");
+        case odc::INTEGER:  return INTEGER;
+        case odc::REAL:     return REAL;
+        case odc::DOUBLE:   return DOUBLE;
+        case odc::STRING:   return STRING;
+        case odc::BITFIELD: return BITFIELD;
+        default: ASSERT(!"Unexpected odc::ColumnType.");
     };
 
     return ColumnType(0); // never reached
@@ -96,13 +96,13 @@ ColumnType convertColumnType(odb::ColumnType type)
 
 } // namespace
 
-DataSetBuilder::DataSetBuilder(const odb::MetaData& metadata, bool buildLinks)
+DataSetBuilder::DataSetBuilder(const odc::MetaData& metadata, bool buildLinks)
   : metadata_(metadata),
     mapping_(),
     buildLinks_(buildLinks)
 {}
 
-DataSetBuilder::DataSetBuilder(const odb::MetaData& metadata,
+DataSetBuilder::DataSetBuilder(const odc::MetaData& metadata,
         const DataTableMappings& mapping, bool buildLinks)
   : metadata_(metadata),
     mapping_(mapping),
@@ -238,4 +238,4 @@ void DataSetBuilder::buildLinks(DataSet& dataset) const
     }
 }
 
-} // namespace odb
+} // namespace odc

@@ -6,9 +6,9 @@
 
 #include "odb_api/DataColumn.h"
 
-namespace odb { class MetaData; }
+namespace odc { class MetaData; }
 
-namespace odb {
+namespace odc {
 
 /*! Represents a collection of table columns.
  *
@@ -40,7 +40,7 @@ public:
     DataColumns();
 
     /// Creates and populates a new collection of columns.
-    DataColumns(const odb::MetaData& metadata);
+    DataColumns(const odc::MetaData& metadata);
 
     /// Creates and populates a new collection of columns.
     DataColumns(const DataColumns& other);
@@ -74,9 +74,9 @@ public:
 
     /// Assigns columns from ODB metadata.
     /// This method is provided for inter-operability with ODB library.
-    DataColumns& operator=(const odb::MetaData& metadata);
+    DataColumns& operator=(const odc::MetaData& metadata);
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // ODBLIB_DATACOLUMNS_H_

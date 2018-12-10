@@ -19,7 +19,7 @@
 
 //
 
-namespace odb {
+namespace odc {
 namespace codec {
 
 CodecOptimizer::CodecOptimizer()
@@ -43,4 +43,4 @@ CodecOptimizer::CodecOptimizer()
 }
 
 } // namespace codec 
-} // namespace odb 
+} // namespace odc 

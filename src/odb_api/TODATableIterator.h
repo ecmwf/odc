@@ -21,7 +21,7 @@
 #include "odb_api/csv/TextReader.h"
 
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 template <typename READER> class TODATable;
@@ -70,6 +70,6 @@ extern template class TODATableIterator<TextReader>;
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc
 
 #endif

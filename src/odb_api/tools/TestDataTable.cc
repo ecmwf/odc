@@ -8,7 +8,7 @@
 #include "odb_api/DataTable.h"
 
 using namespace std;
-using namespace odb;
+using namespace odc;
 
 namespace {
 

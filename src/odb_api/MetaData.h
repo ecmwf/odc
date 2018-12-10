@@ -20,7 +20,7 @@
 
 namespace eckit { class PathName; }
 
-namespace odb {
+namespace odc {
 
 typedef std::vector<Column*> MetaDataBase;
 
@@ -72,7 +72,7 @@ public:
 	Column* columnByName(const std::string&) const;
 	size_t columnIndex(const std::string&) const;
 
-    static odb::ColumnType convertType(const std::string&);
+    static odc::ColumnType convertType(const std::string&);
 #ifdef SWIGPYTHON
 	std::string __str__()
 	{
@@ -137,7 +137,7 @@ MetaData& MetaData::addColumnPrivate(const std::string& name, const std::string&
 	ASSERT(c);
 
 	c->name(name);
-	c->type<DATASTREAM>(odb::Column::type(type), false);
+	c->type<DATASTREAM>(odc::Column::type(type), false);
 
 	push_back(c);
 	return *this;
@@ -156,7 +156,7 @@ MetaData& MetaData::addBitfieldPrivate(const std::string& name, const eckit::sql
 	return *this;
 }
 
-} // namespace odb
+} // namespace odc
 
 #endif
 

@@ -14,10 +14,10 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
-typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
+typedef odc::MetaDataReader<odc::MetaDataReaderIterator> MDReader;
 
 class MDPrinter {
 public:
@@ -75,7 +75,7 @@ public:
             printTable(o, md_[i], tableName_, path_);
     }
 
-    static std::string typeName(const odb::Column& c)
+    static std::string typeName(const odc::Column& c)
     {
         switch (c.type())
         {
@@ -89,7 +89,7 @@ public:
         }
     }
 
-    static std::pair<std::string,std::string> typeDefinitionAndName(const std::string& tableName, const odb::Column& c)
+    static std::pair<std::string,std::string> typeDefinitionAndName(const std::string& tableName, const odc::Column& c)
     {
         std::stringstream definition;
         std::string type_name (typeName(c));
@@ -124,7 +124,7 @@ public:
         return columnName; 
     }
 
-    static void printTable(std::ostream& s, const odb::MetaData& md, const std::string& tableName, const std::string& path)
+    static void printTable(std::ostream& s, const odc::MetaData& md, const std::string& tableName, const std::string& path)
     {
         std::stringstream create_type, create_table;
 
@@ -145,7 +145,7 @@ public:
     }
 
 private:
-	std::vector<odb::MetaData> md_;
+	std::vector<odc::MetaData> md_;
     const std::string path_;
     const std::string tableName_;
 };
@@ -179,7 +179,7 @@ void HeaderTool::run()
 	MDReader::iterator r(oda.begin());
 	MDReader::iterator end(oda.end());
 
-	odb::MetaData metaData(r->columns());
+	odc::MetaData metaData(r->columns());
 	for(; r != end; ++r)
 	{
 		ASSERT (r->isNewDataset());
@@ -190,5 +190,5 @@ void HeaderTool::run()
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

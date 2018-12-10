@@ -20,18 +20,18 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 static void setUp()
 {
 	Timer t("Test TypeConversion function");
-	odb::Writer<> oda("test_type_conversion.odb");
+	odc::Writer<> oda("test_type_conversion.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(1);
 
-	row->setColumn(0, "obsvalue", odb::REAL);
+	row->setColumn(0, "obsvalue", odc::REAL);
 	
 	row->writeHeader();
 
@@ -51,8 +51,8 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select oda(sql);
-	odb::Select::iterator it = oda.begin();
+	odc::Select oda(sql);
+	odc::Select::iterator it = oda.begin();
 
 	ASSERT((*it)[0] == 248); // 
 	ASSERT((*it)[1] == 247); // 

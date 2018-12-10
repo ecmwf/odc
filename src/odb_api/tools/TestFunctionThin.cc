@@ -24,18 +24,18 @@ const double EPS =   7e-6;
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 static void setUp()
 {
 	Timer t("Test thin function");
-	odb::Writer<> oda("test_thin.odb");
+	odc::Writer<> oda("test_thin.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(1);
 
-	row->setColumn(0, "lat", odb::REAL);
+	row->setColumn(0, "lat", odc::REAL);
 	
 	row->writeHeader();
 
@@ -59,8 +59,8 @@ static void test()
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
     int i=0;
-	odb::Select oda(sql);
-    for(odb::Select::iterator it = oda.begin(); it != oda.end(); ++it) {
+	odc::Select oda(sql);
+    for(odc::Select::iterator it = oda.begin(); it != oda.end(); ++it) {
       if (i % 2 == 1) 
 	    ASSERT(fabs((*it)[0] - 0.0e0) < EPS); // 
       else

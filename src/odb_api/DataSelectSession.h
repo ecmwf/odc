@@ -6,31 +6,31 @@
 
 #include "eckit/sql/SQLSession.h"
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 class DataSelectIterator;
 
-class DataSelectSession : public odb::sql::SQLSession
+class DataSelectSession : public odc::sql::SQLSession
 {
 public:
     DataSelectSession(DataSelectIterator& it);
    ~DataSelectSession();
 
-    odb::sql::SQLStatement* statement();
+    odc::sql::SQLStatement* statement();
 
 private:
     DataSelectSession(const DataSelectSession&);
     DataSelectSession& operator=(const DataSelectSession&);
 
-    void statement(odb::sql::SQLStatement* sql);
-    odb::sql::SQLOutput* defaultOutput();
+    void statement(odc::sql::SQLStatement* sql);
+    odc::sql::SQLOutput* defaultOutput();
 
     DataSelectIterator& it_;
-    odb::sql::SQLStatement* sql_;
+    odc::sql::SQLStatement* sql_;
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATASELECTSESSION_H_

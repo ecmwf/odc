@@ -16,7 +16,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 MetaData::MetaData() : std::vector<Column*>(), rowsNumber_(0) {}
 MetaData::MetaData(int i) : std::vector<Column*>(i), rowsNumber_(0) {}
@@ -24,26 +24,26 @@ MetaData::MetaData(int i, Column *p) : std::vector<Column*>(i, p), rowsNumber_(0
 MetaData::MetaData(const MetaData& md) : std::vector<Column*>(0), rowsNumber_(0)
 { *this += md; }
 
-odb::ColumnType MetaData::convertType(const std::string& t)
+odc::ColumnType MetaData::convertType(const std::string& t)
 {
     std::string type(t);
     transform(type.begin(), type.end(), type.begin(), ::toupper);
 
-    if      (type == "INTEGER")  return odb::INTEGER;
-    else if (type == "YYYYMMDD") return odb::INTEGER;
-    else if (type == "HHMMSS")   return odb::INTEGER;
-    else if (type == "PK1INT")   return odb::INTEGER;
-    else if (type == "PK9INT")   return odb::INTEGER;
-    else if (type == "@LINK")    return odb::INTEGER;
-    else if (type == "REAL")     return odb::REAL;
-    else if (type == "FLOAT")    return odb::REAL;
-    else if (type == "DOUBLE")   return odb::DOUBLE;
-    else if (type == "PK9REAL")  return odb::DOUBLE;
-    else if (type == "STRING")   return odb::STRING;
-    else if (type.find("BITFIELD") != string::npos) return odb::BITFIELD;
+    if      (type == "INTEGER")  return odc::INTEGER;
+    else if (type == "YYYYMMDD") return odc::INTEGER;
+    else if (type == "HHMMSS")   return odc::INTEGER;
+    else if (type == "PK1INT")   return odc::INTEGER;
+    else if (type == "PK9INT")   return odc::INTEGER;
+    else if (type == "@LINK")    return odc::INTEGER;
+    else if (type == "REAL")     return odc::REAL;
+    else if (type == "FLOAT")    return odc::REAL;
+    else if (type == "DOUBLE")   return odc::DOUBLE;
+    else if (type == "PK9REAL")  return odc::DOUBLE;
+    else if (type == "STRING")   return odc::STRING;
+    else if (type.find("BITFIELD") != string::npos) return odc::BITFIELD;
     else throw eckit::UserError("Unsupported column type: " + type);
 
-    return odb::IGNORE; // never reached
+    return odc::IGNORE; // never reached
 }
 
 MetaData* MetaData::clone() const {
@@ -215,8 +215,8 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
 		}
 		else
 		{
-			odb::codec::Codec& codec1 = c1.coder();
-			odb::codec::Codec& codec2 = c2.coder();
+			odc::codec::Codec& codec1 = c1.coder();
+			odc::codec::Codec& codec2 = c2.coder();
 			if ( codec1.min() != codec2.min() )
 			{
 				L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
@@ -260,7 +260,7 @@ void MetaData::print(std::ostream& s) const
 
 MetaData& MetaData::addColumn(const std::string& name, const std::string& type)
 {
-    return addColumnPrivate<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(name, type);
+    return addColumnPrivate<odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(name, type);
 }
 
 bool MetaData::allColumnsInitialised() const {
@@ -278,8 +278,8 @@ bool MetaData::allColumnsInitialised() const {
 
 MetaData& MetaData::addBitfield(const std::string& name, const eckit::sql::BitfieldDef& bf)
 {
-    return addBitfieldPrivate<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(name, bf);
+    return addBitfieldPrivate<odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(name, bf);
 }
 
-} // namespace odb
+} // namespace odc
 

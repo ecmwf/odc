@@ -35,8 +35,8 @@ CASE("Columns are initialised correctly for writing") {
     eckit::Buffer buf(4096);
     eckit::MemoryHandle dh(buf);
 
-    odb::Writer<> oda(dh);
-    odb::Writer<>::iterator writer = oda.begin();
+    odc::Writer<> oda(dh);
+    odc::Writer<>::iterator writer = oda.begin();
 
     // Set up the columns
 
@@ -44,30 +44,30 @@ CASE("Columns are initialised correctly for writing") {
 
     // Now we create the columns
 
-    writer->setColumn(0, "int", odb::INTEGER);
-    writer->setColumn(1, "real", odb::REAL);
-    writer->setColumn(2, "str", odb::STRING);
+    writer->setColumn(0, "int", odc::INTEGER);
+    writer->setColumn(1, "real", odc::REAL);
+    writer->setColumn(2, "str", odc::STRING);
     writer->columns()[2]->dataSizeDoubles(3);
-    writer->setColumn(3, "bitf", odb::BITFIELD);
-    writer->setColumn(4, "dbl", odb::DOUBLE);
-    writer->setColumn(5, "int2", odb::INTEGER);
-    writer->setColumn(6, "real2", odb::REAL);
-    writer->setColumn(7, "str2", odb::STRING);
-    writer->setColumn(8, "bitf2", odb::BITFIELD);
-    writer->setColumn(9, "dbl2", odb::DOUBLE);
+    writer->setColumn(3, "bitf", odc::BITFIELD);
+    writer->setColumn(4, "dbl", odc::DOUBLE);
+    writer->setColumn(5, "int2", odc::INTEGER);
+    writer->setColumn(6, "real2", odc::REAL);
+    writer->setColumn(7, "str2", odc::STRING);
+    writer->setColumn(8, "bitf2", odc::BITFIELD);
+    writer->setColumn(9, "dbl2", odc::DOUBLE);
 
     // Check that the columns are correctly created
 
-    EXPECT(writer->columns()[0]->type() == odb::INTEGER);
-    EXPECT(writer->columns()[1]->type() == odb::REAL);
-    EXPECT(writer->columns()[2]->type() == odb::STRING);
-    EXPECT(writer->columns()[3]->type() == odb::BITFIELD);
-    EXPECT(writer->columns()[4]->type() == odb::DOUBLE);
-    EXPECT(writer->columns()[5]->type() == odb::INTEGER);
-    EXPECT(writer->columns()[6]->type() == odb::REAL);
-    EXPECT(writer->columns()[7]->type() == odb::STRING);
-    EXPECT(writer->columns()[8]->type() == odb::BITFIELD);
-    EXPECT(writer->columns()[9]->type() == odb::DOUBLE);
+    EXPECT(writer->columns()[0]->type() == odc::INTEGER);
+    EXPECT(writer->columns()[1]->type() == odc::REAL);
+    EXPECT(writer->columns()[2]->type() == odc::STRING);
+    EXPECT(writer->columns()[3]->type() == odc::BITFIELD);
+    EXPECT(writer->columns()[4]->type() == odc::DOUBLE);
+    EXPECT(writer->columns()[5]->type() == odc::INTEGER);
+    EXPECT(writer->columns()[6]->type() == odc::REAL);
+    EXPECT(writer->columns()[7]->type() == odc::STRING);
+    EXPECT(writer->columns()[8]->type() == odc::BITFIELD);
+    EXPECT(writer->columns()[9]->type() == odc::DOUBLE);
 
     // ... with the correct name
 
@@ -114,15 +114,15 @@ CASE("If out-of range columns are created, exceptions are thrown") {
     eckit::Buffer buf(4096);
     eckit::MemoryHandle dh(buf);
 
-    odb::Writer<> oda(dh);
-    odb::Writer<>::iterator writer = oda.begin();
+    odc::Writer<> oda(dh);
+    odc::Writer<>::iterator writer = oda.begin();
 
     writer->setNumberOfColumns(10);
-    writer->setColumn(2, "str", odb::STRING); // This is fine
+    writer->setColumn(2, "str", odc::STRING); // This is fine
 
     // If we create columns out of range, it throws exceptions
 
-    EXPECT_THROWS_AS(writer->setColumn(11, "badnum", odb::INTEGER), eckit::AssertionFailed);
+    EXPECT_THROWS_AS(writer->setColumn(11, "badnum", odc::INTEGER), eckit::AssertionFailed);
 }
 
 CASE("If columns are created with invalid types, exceptions are thrown") {
@@ -130,18 +130,18 @@ CASE("If columns are created with invalid types, exceptions are thrown") {
     eckit::Buffer buf(4096);
     eckit::MemoryHandle dh(buf);
 
-    odb::Writer<> oda(dh);
-    odb::Writer<>::iterator writer = oda.begin();
+    odc::Writer<> oda(dh);
+    odc::Writer<>::iterator writer = oda.begin();
 
     // Set up the columns
 
     writer->setNumberOfColumns(10);
-    writer->setColumn(6, "real", odb::REAL); // This is fine
+    writer->setColumn(6, "real", odc::REAL); // This is fine
 
     // We cannot create a column of "IGNORE" type, or any type that is not listed in the enum
 
-    EXPECT_THROWS_AS(writer->setColumn(0, "ignore", odb::IGNORE), eckit::AssertionFailed);
-    EXPECT_THROWS_AS(writer->setColumn(0, "ignore", static_cast<odb::ColumnType>(123)), eckit::AssertionFailed);
+    EXPECT_THROWS_AS(writer->setColumn(0, "ignore", odc::IGNORE), eckit::AssertionFailed);
+    EXPECT_THROWS_AS(writer->setColumn(0, "ignore", static_cast<odc::ColumnType>(123)), eckit::AssertionFailed);
 }
 
 CASE("Columns names must be unique") {
@@ -151,24 +151,24 @@ CASE("Columns names must be unique") {
     eckit::Buffer buf(4096);
     eckit::MemoryHandle dh(buf);
 
-    odb::Writer<> oda(dh);
-    odb::Writer<>::iterator writer = oda.begin();
+    odc::Writer<> oda(dh);
+    odc::Writer<>::iterator writer = oda.begin();
 
     // Set up the columns
 
     writer->setNumberOfColumns(10);
 
-    writer->setColumn(0, "int", odb::INTEGER);
-    writer->setColumn(1, "real", odb::REAL);
-    writer->setColumn(2, "str", odb::STRING);
-    writer->setColumn(3, "bitf", odb::BITFIELD);
-    writer->setColumn(4, "dbl", odb::DOUBLE);
+    writer->setColumn(0, "int", odc::INTEGER);
+    writer->setColumn(1, "real", odc::REAL);
+    writer->setColumn(2, "str", odc::STRING);
+    writer->setColumn(3, "bitf", odc::BITFIELD);
+    writer->setColumn(4, "dbl", odc::DOUBLE);
 
-    EXPECT_THROWS_AS(writer->setColumn(5, "int", odb::INTEGER), eckit::SeriousBug);
-    EXPECT_THROWS_AS(writer->setColumn(6, "real", odb::REAL), eckit::SeriousBug);
-    EXPECT_THROWS_AS(writer->setColumn(7, "str", odb::STRING), eckit::SeriousBug);
-    EXPECT_THROWS_AS(writer->setColumn(8, "bitf", odb::BITFIELD), eckit::SeriousBug);
-    EXPECT_THROWS_AS(writer->setColumn(9, "dbl", odb::DOUBLE), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(5, "int", odc::INTEGER), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(6, "real", odc::REAL), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(7, "str", odc::STRING), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(8, "bitf", odc::BITFIELD), eckit::SeriousBug);
+    EXPECT_THROWS_AS(writer->setColumn(9, "dbl", odc::DOUBLE), eckit::SeriousBug);
 }
 
 
@@ -215,23 +215,23 @@ CASE("Data is encoded and read back correctly") {
     eckit::MemoryHandle dhWrite(buf);
 
     {
-        odb::Writer<> oda(dhWrite);
-        odb::Writer<>::iterator writer = oda.begin();
+        odc::Writer<> oda(dhWrite);
+        odc::Writer<>::iterator writer = oda.begin();
 
         // Set up the columns
 
         writer->setNumberOfColumns(10);
-        writer->setColumn(0, "int", odb::INTEGER);
-        writer->setColumn(1, "real", odb::REAL);
-        writer->setColumn(2, "str", odb::STRING);
+        writer->setColumn(0, "int", odc::INTEGER);
+        writer->setColumn(1, "real", odc::REAL);
+        writer->setColumn(2, "str", odc::STRING);
         writer->columns()[2]->dataSizeDoubles(3);
-        writer->setColumn(3, "bitf", odb::BITFIELD);
-        writer->setColumn(4, "dbl", odb::DOUBLE);
-        writer->setColumn(5, "int2", odb::INTEGER);
-        writer->setColumn(6, "real2", odb::REAL);
-        writer->setColumn(7, "str2", odb::STRING);
-        writer->setColumn(8, "bitf2", odb::BITFIELD);
-        writer->setColumn(9, "dbl2", odb::DOUBLE);
+        writer->setColumn(3, "bitf", odc::BITFIELD);
+        writer->setColumn(4, "dbl", odc::DOUBLE);
+        writer->setColumn(5, "int2", odc::INTEGER);
+        writer->setColumn(6, "real2", odc::REAL);
+        writer->setColumn(7, "str2", odc::STRING);
+        writer->setColumn(8, "bitf2", odc::BITFIELD);
+        writer->setColumn(9, "dbl2", odc::DOUBLE);
         writer->writeHeader();
 
         // Test that the data offsets are correct
@@ -291,8 +291,8 @@ CASE("Data is encoded and read back correctly") {
     {
         eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(dhWrite.position()));
         dh.openForRead();
-        odb::Reader oda(dh);
-        odb::Reader::iterator reader = oda.begin();
+        odc::Reader oda(dh);
+        odc::Reader::iterator reader = oda.begin();
 
         EXPECT(reader->columns().size() == size_t(10));
 
@@ -356,13 +356,13 @@ CASE("We cannot encode short_real with both possible internal missing values") {
 
     EXPECT_THROWS_AS({
         eckit::MemoryHandle dh(buf);
-        odb::Writer<> oda(dh);
-        odb::Writer<>::iterator writer = oda.begin();
+        odc::Writer<> oda(dh);
+        odc::Writer<>::iterator writer = oda.begin();
 
         // Set up the columns
 
         writer->setNumberOfColumns(1);
-        writer->setColumn(0, "real", odb::REAL);
+        writer->setColumn(0, "real", odc::REAL);
         writer->writeHeader();
 
         // Append 3 rows of data (in two different ways)
@@ -386,13 +386,13 @@ CASE("We ASSERT on cases where we try and use an incompletely configured writer"
     // Illegal to flush an incompletely finished writer
 
     eckit::MemoryHandle dh(buf);
-    odb::Writer<> oda(dh);
-    odb::Writer<>::iterator writer = oda.begin();
+    odc::Writer<> oda(dh);
+    odc::Writer<>::iterator writer = oda.begin();
 
     // Set up the columns
 
     writer->setNumberOfColumns(2);
-    writer->setColumn(0, "real", odb::REAL);
+    writer->setColumn(0, "real", odc::REAL);
 
     // Cannot writeHeader until all the columns are initialised
     EXPECT_THROWS_AS(writer->writeHeader(), eckit::AssertionFailed);
@@ -431,13 +431,13 @@ CASE("Pathological data for integral codecs is correctly encoded") {
 
         {
             eckit::MemoryHandle dh(buf);
-            odb::Writer<> oda(dh);
-            odb::Writer<>::iterator writer = oda.begin();
+            odc::Writer<> oda(dh);
+            odc::Writer<>::iterator writer = oda.begin();
 
             // Set up the columns
 
             writer->setNumberOfColumns(1);
-            writer->setColumn(0, "int", odb::INTEGER);
+            writer->setColumn(0, "int", odc::INTEGER);
             writer->writeHeader();
 
             // Append 3 rows of data (in two different ways)
@@ -449,12 +449,12 @@ CASE("Pathological data for integral codecs is correctly encoded") {
             ++writer;
 
             if (withMissing) {
-                (*writer)[0] = odb::MDI::integerMDI();
+                (*writer)[0] = odc::MDI::integerMDI();
                 ++writer;
             }
 
             // We have not supplied missing values
-            EXPECT(writer->columns()[0]->missingValue() == odb::MDI::integerMDI());
+            EXPECT(writer->columns()[0]->missingValue() == odc::MDI::integerMDI());
             EXPECT(writer->columns()[0]->hasMissing() == withMissing);
         }
 
@@ -463,12 +463,12 @@ CASE("Pathological data for integral codecs is correctly encoded") {
         {
             eckit::MemoryHandle dh(buf);
             dh.openForRead();
-            odb::Reader oda(dh);
-            odb::Reader::iterator reader = oda.begin();
+            odc::Reader oda(dh);
+            odc::Reader::iterator reader = oda.begin();
 
             // We have not supplied missing values
             EXPECT(reader->columns().size() == size_t(1));
-            EXPECT(reader->columns()[0]->missingValue() == odb::MDI::integerMDI());
+            EXPECT(reader->columns()[0]->missingValue() == odc::MDI::integerMDI());
             EXPECT(reader->columns()[0]->hasMissing() == withMissing);
 
             // Promotion to int32 occurs to
@@ -490,7 +490,7 @@ CASE("Pathological data for integral codecs is correctly encoded") {
 
             if (withMissing) {
                 ++reader;
-                EXPECT((*reader)[0] == odb::MDI::integerMDI());
+                EXPECT((*reader)[0] == odc::MDI::integerMDI());
             }
         }
     }

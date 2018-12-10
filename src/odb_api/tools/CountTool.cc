@@ -17,7 +17,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 CountTool::CountTool (int argc, char *argv[]) : Tool(argc, argv) { }
@@ -38,9 +38,9 @@ unsigned long long CountTool::fastRowCount(const PathName &db)
 
 unsigned long long CountTool::rowCount(const PathName &db)
 {
-	odb::Reader oda(db);
-	odb::Reader::iterator i = oda.begin();
-	odb::Reader::iterator end = oda.end();
+	odc::Reader oda(db);
+	odc::Reader::iterator i = oda.begin();
+	odc::Reader::iterator end = oda.end();
 
 	unsigned long long n = 0;
 	for ( ; i != end; ++i)
@@ -72,5 +72,5 @@ void CountTool::run()
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

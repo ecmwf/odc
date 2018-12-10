@@ -9,9 +9,9 @@
 #include "odb_api/DataColumns.h"
 #include "odb_api/SharedIterator.h"
 
-namespace odb { namespace sql { class SQLDatabase; } }
+namespace odc { namespace sql { class SQLDatabase; } }
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 class DataTable;
@@ -25,7 +25,7 @@ namespace internal { class DataSelectIterator; }
  * can be either a standalone table or a table which is part of a DataSet.
  *
  * The primary advantage of using DataSelect over other SQL querying methods
- * (e.g.  odb::Select) is that it operates purely on in-memory data and thus
+ * (e.g.  odc::Select) is that it operates purely on in-memory data and thus
  * eliminates any overhead that might be incurred by reading data direcly from
  * disk devices.  This becomes increasingly relevant if you want to perform
  * more than one SQL query on the same table during the execution of your
@@ -75,7 +75,7 @@ private:
     DataSelect(const DataSelect&);
     DataSelect& operator=(const DataSelect&);
 
-    odb::sql::SQLDatabase* database() const;
+    odc::sql::SQLDatabase* database() const;
     void populateColumns();
 
     const std::string statement_;
@@ -87,6 +87,6 @@ private:
     friend class internal::DataSelectIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // ODBLIB_DATASELECT_H_

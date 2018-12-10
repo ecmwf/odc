@@ -17,7 +17,7 @@
 
 #include "odb_api/ODBApplication.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -31,6 +31,6 @@ public:
 
 } // namespace test
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif

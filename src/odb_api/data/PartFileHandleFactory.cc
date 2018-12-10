@@ -17,7 +17,7 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 PartFileHandleFactory::PartFileHandleFactory()
 : DataHandleFactory("partfile")
@@ -35,4 +35,4 @@ DataHandle* PartFileHandleFactory::makeHandle(const string& descriptor) const
     return new PartFileHandle(fileName, offset, length);
 }
 
-} // namespace odb
+} // namespace odc

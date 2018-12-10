@@ -13,7 +13,7 @@
 #include "odb_api/tools/Tool.h"
 #include "eckit/sql/SQLTypedefs.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class MDSetTool : public Tool {
@@ -40,7 +40,7 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 
 

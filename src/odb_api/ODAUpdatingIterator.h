@@ -16,7 +16,7 @@
 #ifndef ODAUpdatingIterator_H
 #define ODAUpdatingIterator_H
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 class ODAUpdatingIterator 
@@ -61,7 +61,7 @@ public:
 	bool noMore_;
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #include "odb_api/ODAUpdatingIterator.cc"
 

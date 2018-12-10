@@ -22,7 +22,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 typedef WriterBufferingIterator DefaultWritingIterator;
 
@@ -64,6 +64,6 @@ private:
 	bool deleteDataHandle_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

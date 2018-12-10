@@ -32,13 +32,13 @@ extern "C" {
 	int odb_read_iterator_get_next_row(oda_read_iterator*, int, double*, int*);
 }
 
-namespace odb {
+namespace odc {
 	namespace codec { class Codec; }
 	namespace sql { class ODATableIterator; }
 	template <typename O> class Header;
 }
 
-namespace odb {
+namespace odc {
 
 class Reader;
 
@@ -110,7 +110,7 @@ private:
 	double* lastValues_;
     size_t* columnOffsets_; // in doubles
     size_t rowDataSizeDoubles_;
-    odb::codec::Codec** codecs_;
+    odc::codec::Codec** codecs_;
 	unsigned long long nrows_;
 
     std::unique_ptr<eckit::DataHandle> f_;
@@ -136,12 +136,12 @@ protected:
 	friend ::oda_write_iterator* ::odb_create_write_iterator(::oda*, const char *,int *); // for next()
 	friend int ::odb_read_iterator_get_next_row(::oda_read_iterator*, int, double*, int*);
 
-	friend class odb::Reader;
-	friend class odb::IteratorProxy<odb::ReaderIterator, odb::Reader, const double>;
-	friend class odb::Header<odb::ReaderIterator>;
-	friend class odb::sql::ODATableIterator;
+	friend class odc::Reader;
+	friend class odc::IteratorProxy<odc::ReaderIterator, odc::Reader, const double>;
+	friend class odc::Header<odc::ReaderIterator>;
+	friend class odc::sql::ODATableIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

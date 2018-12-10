@@ -13,7 +13,7 @@
 
 #include "odb_api/IteratorProxy.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 template <typename T>
@@ -21,7 +21,7 @@ class MockReader
 {
 public:
 	typedef T iterator_class;
-	typedef odb::IteratorProxy<T, MockReader, const double> iterator;
+	typedef odc::IteratorProxy<T, MockReader, const double> iterator;
 
 	iterator begin() { return iterator(new T); }
 	const iterator end() { return iterator(0); }
@@ -30,7 +30,7 @@ public:
 #include "MockReader.cc"
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

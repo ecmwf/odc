@@ -49,7 +49,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 MetaDataReader<T>::MetaDataReader()
@@ -96,4 +96,4 @@ typename MetaDataReader<T>::iterator MetaDataReader<T>::begin()
 template <typename T>
 const typename MetaDataReader<T>::iterator MetaDataReader<T>::end() { return iterator(0); }
 
-} // namespace odb 
+} // namespace odc 

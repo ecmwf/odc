@@ -6,7 +6,7 @@
 
 #include <iterator>
 
-namespace odb {
+namespace odc {
 
 template <typename I, typename C, typename V, typename R, typename P>
 class IteratorFacade;
@@ -179,6 +179,6 @@ class RandomIteratorFacade
            Value, Reference, Pointer>
 {};
 
-} // namespace odb
+} // namespace odc
 
 #endif // ODBLIB_ITERATORFACADE_H_

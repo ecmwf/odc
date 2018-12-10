@@ -6,13 +6,13 @@
 
 #include "eckit/sql/SQLOutput.h"
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 class DataSelectIterator;
 
 class DataSelectOutput
-  : public odb::sql::SQLOutput
+  : public odc::sql::SQLOutput
 {
 public:
 	DataSelectOutput(DataSelectIterator& it);
@@ -31,9 +31,9 @@ private:
 	virtual void size(int) {}
 	virtual void reset() { count_ = 0; }
     virtual void flush() {}
-    virtual bool output(const odb::sql::expression::Expressions&);
-	virtual void prepare(odb::sql::SQLSelect&) {}
-	virtual void cleanup(odb::sql::SQLSelect&) {}
+    virtual bool output(const odc::sql::expression::Expressions&);
+	virtual void prepare(odc::sql::SQLSelect&) {}
+	virtual void cleanup(odc::sql::SQLSelect&) {}
 	virtual unsigned long long count() { return count_; }
 
 	virtual void outputReal(double, bool) {}
@@ -45,6 +45,6 @@ private:
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DataSelectOutput_H

@@ -23,7 +23,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DataHandleFactory::DataHandleFactory(const std::string& prefix)
 : prefix_(prefix)
@@ -114,4 +114,4 @@ void DataHandleFactory::registerFactories()
     static HttpHandleFactory httpHandleFactory;
 }
 
-} //namespace odb
+} //namespace odc

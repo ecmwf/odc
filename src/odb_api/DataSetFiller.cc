@@ -10,10 +10,10 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
-DataSetFiller::DataSetFiller(DataSet& dataset, const odb::MetaData& metadata)
+DataSetFiller::DataSetFiller(DataSet& dataset, const odc::MetaData& metadata)
   : dataset_(dataset),
     tableFillers_(),
     linkFillers_()
@@ -38,7 +38,7 @@ DataSetFiller::~DataSetFiller()
     }
 }
 
-void DataSetFiller::buildFillers(const odb::MetaData& metadata)
+void DataSetFiller::buildFillers(const odc::MetaData& metadata)
 {
     for (DataTables::iterator it = dataset_.tables().begin();
             it != dataset_.tables().end(); ++it)
@@ -136,4 +136,4 @@ DataSetFillerIterator& DataSetFillerIterator::operator++()
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

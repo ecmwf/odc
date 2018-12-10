@@ -10,7 +10,7 @@
 #include "odb_api/DataLink.h"
 
 using namespace std;
-using namespace odb;
+using namespace odc;
 
 namespace {
 

@@ -7,7 +7,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/DataRow.h"
 
-namespace odb {
+namespace odc {
 
 class DataTable;
 
@@ -163,6 +163,6 @@ private:
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATAPAGE_H_

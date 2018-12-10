@@ -24,9 +24,9 @@ extern "C" {
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -42,8 +42,8 @@ int test_odacapi_setup_in_C(int argc, char* argv[])
     ASSERT(wi);
 
     ASSERT(0 == odb_write_iterator_set_no_of_columns(wi, 2));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odb::INTEGER, "ifoo"));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odb::REAL, "nbar"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::INTEGER, "ifoo"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::REAL, "nbar"));
 
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
@@ -64,13 +64,13 @@ int test_odacapi_setup_in_C(int argc, char* argv[])
 int test_odacapi_setup(int argc, char* argv[])
 {
     Timer t("Writing test.odb");
-    odb::Writer<> oda("test.odb");
+    odc::Writer<> oda("test.odb");
 
-    odb::Writer<>::iterator writer = oda.begin();
+    odc::Writer<>::iterator writer = oda.begin();
     writer->setNumberOfColumns(2);
 
-    writer->setColumn(0, "ifoo", odb::INTEGER);
-    writer->setColumn(1, "nbar", odb::REAL);
+    writer->setColumn(0, "ifoo", odc::INTEGER);
+    writer->setColumn(1, "nbar", odc::REAL);
 
     writer->writeHeader();
 
@@ -217,8 +217,8 @@ int test_odacapi3(int argc, char* argv[])
     ASSERT(0 != wi);
 
     ASSERT(0 == odb_write_iterator_set_no_of_columns(wi, 2));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odb::INTEGER, "ifoo"));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odb::REAL, "nbar"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::INTEGER, "ifoo"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::REAL, "nbar"));
 
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
@@ -257,5 +257,5 @@ int test_odacapi(int argc, char* argv[])
 
 } // namespace test 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

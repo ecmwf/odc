@@ -10,7 +10,7 @@
 #include "odb_api/DataColumns.h"
 #include "odb_api/DataTableIterator.h"
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 class DataTables;
@@ -358,6 +358,6 @@ private:
     friend class DataTables;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // odb_sql_DataTable_H

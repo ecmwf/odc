@@ -20,7 +20,7 @@
 #include "TestRunnerApplication.h"
 #include "TestRunner.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -38,5 +38,5 @@ void TestRunnerApplication::run()
 
 } // namespace test
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

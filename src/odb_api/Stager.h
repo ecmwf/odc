@@ -31,9 +31,9 @@ private:
                               const std::map<std::string,std::vector<std::string> >& request);
 
     static void createIndices(const std::vector<eckit::PathName>&);
-    static void sendPartitionsInfo(eckit::MultiHandle&, const odb::Partitions&);
+    static void sendPartitionsInfo(eckit::MultiHandle&, const odc::Partitions&);
     static size_t numberOfPartitions(const std::map<std::string,std::vector<std::string> >&);
-    static std::vector<eckit::PathName> writePartitionsToFiles (const odb::Partitions&, const std::string& pathNamePrefix, const std::string& fileListPath);
+    static std::vector<eckit::PathName> writePartitionsToFiles (const odc::Partitions&, const std::string& pathNamePrefix, const std::string& fileListPath);
 };
 
 #endif

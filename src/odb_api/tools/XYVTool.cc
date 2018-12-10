@@ -16,7 +16,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 XYVTool::XYVTool(int argc,char **argv): Tool(argc, argv) {}
@@ -49,8 +49,8 @@ void XYVTool::run()
 	std::string select = std::string("select lat, lon, ") + valueColumn + " from \"" + inputFile + "\";";
 	Log::info() << select << std::endl;
 
-	odb::Select oda(select);
-	for (odb::Select::iterator it = oda.begin();
+	odc::Select oda(select);
+	for (odc::Select::iterator it = oda.begin();
 		it != oda.end();
 		++it) 
 	{
@@ -60,5 +60,5 @@ void XYVTool::run()
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

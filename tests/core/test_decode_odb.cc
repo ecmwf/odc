@@ -168,7 +168,7 @@ public: // methods
 
     ~ODBChecker() {}
 
-    void checkRow(size_t num, const odb::Reader::iterator& row) {
+    void checkRow(size_t num, const odc::Reader::iterator& row) {
 
         if (data_.find(num) != data_.end()) {
             std::vector<CellData>& reference(data_[num]);
@@ -223,8 +223,8 @@ CASE("The correct number of rows are decoded") {
 
     eckit::PathName filename = testDataPath / "2000010106.odb";
 
-    odb::Reader in(filename);
-    odb::Reader::iterator it = in.begin();
+    odc::Reader in(filename);
+    odc::Reader::iterator it = in.begin();
 
     // Each table in the ODB will contain a maximum of 10000 rows!
     EXPECT(it->columns().rowsNumber() == 10000);
@@ -250,8 +250,8 @@ CASE("The correct data is present in a selection of random rows") {
 
     eckit::PathName filename = testDataPath / "2000010106.odb";
 
-    odb::Reader in(filename);
-    odb::Reader::iterator it = in.begin();
+    odc::Reader in(filename);
+    odc::Reader::iterator it = in.begin();
 
     ODBChecker checker;
 

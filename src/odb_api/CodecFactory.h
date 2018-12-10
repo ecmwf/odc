@@ -20,7 +20,7 @@ namespace eckit {
 class DataHandle;
 }
 
-namespace odb {
+namespace odc {
 namespace codec {
 
 class Codec;

@@ -24,17 +24,17 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 static void setUp()
 {
 	Tracer t(Log::debug(), "setUp");
 
-	odb::Writer<> f("TestMissingValue.odb");
-	odb::Writer<>::iterator it = f.begin();
+	odc::Writer<> f("TestMissingValue.odb");
+	odc::Writer<>::iterator it = f.begin();
 
     it->setNumberOfColumns(2);
 
-	it->setColumn(0, "lat@hdr", odb::REAL);
+	it->setColumn(0, "lat@hdr", odc::REAL);
 	it->missingValue(0, 1);
 
     eckit::sql::BitfieldDef bfDef;
@@ -43,7 +43,7 @@ static void setUp()
 	bfDef.first.push_back("y");
 	bfDef.second.push_back(2);
 
-	it->setBitfieldColumn(1, "bf", odb::BITFIELD, bfDef);
+	it->setBitfieldColumn(1, "bf", odc::BITFIELD, bfDef);
 
 	it->writeHeader();
 
@@ -63,8 +63,8 @@ static void selectIntoSecondFile()
     string sql = "select lat,bf into \"TestMissingValue.odb\"";
     sql += " from \"" + fileName + "\" ;";
 
-    odb::Select f(sql); //, fileName);
-    odb::Select::iterator it = f.begin();
+    odc::Select f(sql); //, fileName);
+    odc::Select::iterator it = f.begin();
 
     ++it; // this is needed to push the second row to the INTO file
     ++it; // this is needed to push the third row to the INTO file
@@ -75,24 +75,24 @@ static void test()
 {
 	selectIntoSecondFile();
 
-	odb::Comparator().compare("TestMissingValue.odb", "TestMissingValue.odb");
+	odc::Comparator().compare("TestMissingValue.odb", "TestMissingValue.odb");
 
 	{
-		odb::Reader f("TestMissingValue.odb");
-		odb::Reader::iterator fbegin(f.begin());
-		odb::Reader::iterator fend(f.end());
+		odc::Reader f("TestMissingValue.odb");
+		odc::Reader::iterator fbegin(f.begin());
+		odc::Reader::iterator fend(f.end());
 
-		odb::Select s("select * from \"TestMissingValue.odb\";");
-		odb::Select::iterator sbegin(s.begin());
-		odb::Select::iterator send(s.end());
+		odc::Select s("select * from \"TestMissingValue.odb\";");
+		odc::Select::iterator sbegin(s.begin());
+		odc::Select::iterator send(s.end());
 
-		odb::Comparator().compare(fbegin, fend, sbegin, send, "TestMissingValue.odb", "SELECT TestMissingValue.odb");
+		odc::Comparator().compare(fbegin, fend, sbegin, send, "TestMissingValue.odb", "SELECT TestMissingValue.odb");
 	}
 
 	{
-		odb::Reader f("TestMissingValue.odb");
-		odb::Reader::iterator it = f.begin();
-		odb::Reader::iterator end = f.end();
+		odc::Reader f("TestMissingValue.odb");
+		odc::Reader::iterator it = f.begin();
+		odc::Reader::iterator end = f.end();
 
         Column& column = *it->columns()[0];
 		codec::Codec& codec = column.coder();
@@ -116,9 +116,9 @@ static void test()
 
 	{
 		// Check the isMissing and missingValue API of SelectIterator
-		odb::Select s("select * from \"TestMissingValue.odb\";"); //, fileName);
-		odb::Select::iterator i = s.begin();
-		odb::Select::iterator e = s.end();
+		odc::Select s("select * from \"TestMissingValue.odb\";"); //, fileName);
+		odc::Select::iterator i = s.begin();
+		odc::Select::iterator e = s.end();
 		for (; i != e; ++i)
 		{
 			ASSERT( (*i).missingValue(0) == 1 );

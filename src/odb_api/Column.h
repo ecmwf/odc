@@ -17,7 +17,7 @@
 
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 class Reader;
 class MetaData;
@@ -84,7 +84,7 @@ public:
 	const std::string __repr__()
 	{
 		return //std::string("<") + 
-			name_ + ":" + columnTypeName(odb::ColumnType(type_))
+			name_ + ":" + columnTypeName(odc::ColumnType(type_))
 		 //+ ">" 
 			;
 	}
@@ -157,6 +157,6 @@ void Column::type(ColumnType t, bool differentByteOrder)
     if (type_ == BITFIELD) missingValue(MDI::bitfieldMDI());
 }
 
-} // namespace odb {
+} // namespace odc {
 
 #endif

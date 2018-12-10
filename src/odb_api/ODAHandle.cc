@@ -13,7 +13,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 
 

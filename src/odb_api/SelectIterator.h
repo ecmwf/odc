@@ -23,7 +23,7 @@
 
 // Forward declarations
 
-namespace odb {
+namespace odc {
     class Select;
     class MetaData;
     template <typename I, typename O, typename D> class IteratorProxy;
@@ -36,7 +36,7 @@ namespace eckit {
 }
 
 
-namespace odb {
+namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -96,11 +96,11 @@ protected:
 
     // This is a bit yucky, but the IteratorProxy essentially reimplements SharedPtr
     // but not in a threadsafe way.
-    friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
+    friend class odc::IteratorProxy<odc::SelectIterator, odc::Select, const double>;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odb 
+} // namespace odc 
 
 #endif

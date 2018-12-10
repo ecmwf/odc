@@ -12,7 +12,7 @@
 /// This file will be updated autmatically by the make.sms script
 ///
 
-namespace odb {
+namespace odc {
 
 class ODBAPIVersion {
 public:
@@ -25,5 +25,5 @@ public:
 	static const char *buildDirectory();
 };
 
-} // namespace odb
+} // namespace odc
 

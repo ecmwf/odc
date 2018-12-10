@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void test()
 {
@@ -30,20 +30,20 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select oda(sql);
-	odb::Select::iterator it = oda.begin();
+	odc::Select oda(sql);
+	odc::Select::iterator it = oda.begin();
 
 	ASSERT(it->columns().size() == 1);
 	ASSERT((*it)[0] == 10); 
 
-	odb::Select sel(sql);
-	odb::Select::iterator it2 = sel.begin();
-	odb::Select::iterator end2 = sel.end();
+	odc::Select sel(sql);
+	odc::Select::iterator it2 = sel.begin();
+	odc::Select::iterator end2 = sel.end();
 
 	FILE *fout = fopen("TestAggregateFunctions2.odb", "w");
 	StdFileHandle fhout(fout);
-	odb::Writer<> writer(fhout);
-	odb::Writer<>::iterator outit = writer.begin();
+	odc::Writer<> writer(fhout);
+	odc::Writer<>::iterator outit = writer.begin();
 
 	//outit->pass1(it2, end2);
 	size_t i = 0;
@@ -61,7 +61,7 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
 		s << i << std::endl;
-    odb::tool::ImportTool::importText(s.str().c_str(), "TestAggregateFunctions2.odb");
+    odc::tool::ImportTool::importText(s.str().c_str(), "TestAggregateFunctions2.odb");
 }
 
 

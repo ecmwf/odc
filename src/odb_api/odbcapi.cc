@@ -30,7 +30,7 @@
 #include "odb_api/Writer.h"
 
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };
 
@@ -134,11 +134,11 @@ void odb_set_headerBufferSize(unsigned int n) { ODBAPISettings::instance().heade
 unsigned int odb_get_setvbufferSize() { return ODBAPISettings::instance().setvbufferSize(); } 
 void odb_set_setvbufferSize(unsigned int n) { ODBAPISettings::instance().setvbufferSize(n); }
 
-const char* odb_api_version() { return odb::ODBAPIVersion::version(); }
-const char* odb_api_git_sha1() { return odb::ODBAPIVersion::gitsha1(); }
+const char* odb_api_version() { return odc::ODBAPIVersion::version(); }
+const char* odb_api_git_sha1() { return odc::ODBAPIVersion::gitsha1(); }
 
-unsigned int odb_api_format_version_major() { return odb::ODBAPIVersion::formatVersionMajor(); }
-unsigned int odb_api_format_version_minor() { return odb::ODBAPIVersion::formatVersionMinor(); }
+unsigned int odb_api_format_version_major() { return odc::ODBAPIVersion::formatVersionMajor(); }
+unsigned int odb_api_format_version_minor() { return odc::ODBAPIVersion::formatVersionMinor(); }
 
 /// @param config  ignored for now.
 oda_ptr odb_read_create(const char *config, int *err)

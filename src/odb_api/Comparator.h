@@ -21,7 +21,7 @@ namespace eckit {
     class DataHandle;
 }
 
-namespace odb {
+namespace odc {
 
 class MetaData;
 class Column;
@@ -145,6 +145,6 @@ bool Comparator::compare(T1& it1, const T1& end1,
 	return true; // ?
 }
 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

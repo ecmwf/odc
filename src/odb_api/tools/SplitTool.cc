@@ -21,10 +21,10 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
-typedef odb::MetaDataReader<odb::MetaDataReaderIterator> MDReader;
+typedef odc::MetaDataReader<odc::MetaDataReaderIterator> MDReader;
 
 SplitTool::SplitTool (int argc, char *argv[])
 : Tool(argc, argv),
@@ -121,8 +121,8 @@ std::string SplitTool::genOrderBySelect(const std::string& inFile, const std::st
 
 void SplitTool::presortAndSplit(const PathName& inFile, const std::string& outFileTemplate)
 {
-	odb::DispatchingWriter out(outFileTemplate, 1); 
-	odb::DispatchingWriter::iterator outIt (out.begin());
+	odc::DispatchingWriter out(outFileTemplate, 1); 
+	odc::DispatchingWriter::iterator outIt (out.begin());
 
 	string sql(genOrderBySelect(inFile, outFileTemplate));
 	
@@ -131,26 +131,26 @@ void SplitTool::presortAndSplit(const PathName& inFile, const std::string& outFi
     {   
 		PartFileHandle h(inFile, chunks[i].first, chunks[i].second);
 		h.openForRead();
-		odb::Select in(sql, h);
+		odc::Select in(sql, h);
 		outIt->pass1(in.begin(), in.end());
     } 
 }
 
 void SplitTool::split(const PathName& inFile, const std::string& outFileTemplate, size_t maxOpenFiles, bool verify)
 {
-	odb::Reader in(inFile);
-	odb::DispatchingWriter out(outFileTemplate, maxOpenFiles);
+	odc::Reader in(inFile);
+	odc::DispatchingWriter out(outFileTemplate, maxOpenFiles);
 
-	odb::DispatchingWriter::iterator outIt (out.begin());
+	odc::DispatchingWriter::iterator outIt (out.begin());
 	outIt->pass1(in.begin(), in.end());
 
-	odb::Reader input(inFile);
-	odb::Reader::iterator begin(input.begin());
-	odb::Reader::iterator end(input.end());
+	odc::Reader input(inFile);
+	odc::Reader::iterator begin(input.begin());
+	odc::Reader::iterator end(input.end());
 	outIt->close();
     if (verify) (**outIt).verify(begin, end);
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

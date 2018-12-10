@@ -22,9 +22,9 @@
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
-namespace odb { namespace sql { class ODATableIterator; } }
+namespace odc { namespace sql { class ODATableIterator; } }
 
-namespace odb {
+namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -91,13 +91,13 @@ protected:
 	// FIXME:
     TextReaderIterator(): columns_(0) {}
 
-	friend class odb::TextReader;
-	friend class odb::IteratorProxy<odb::TextReaderIterator, odb::TextReader, const double>;
-	friend class odb::Header<odb::TextReaderIterator>;
+	friend class odc::TextReader;
+	friend class odc::IteratorProxy<odc::TextReaderIterator, odc::TextReader, const double>;
+	friend class odc::Header<odc::TextReaderIterator>;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odb
+} // namespace odc
 
 #endif

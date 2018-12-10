@@ -5,9 +5,9 @@
 #include "odb_api/DataSelectOutput.h"
 #include "eckit/sql/expression/SQLExpressions.h"
 
-using namespace odb;
+using namespace odc;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 DataSelectOutput::DataSelectOutput(DataSelectIterator& it)
@@ -33,4 +33,4 @@ bool DataSelectOutput::output(const Expressions& results)
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

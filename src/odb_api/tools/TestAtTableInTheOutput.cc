@@ -22,17 +22,17 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void setUp()
 {
-	odb::Writer<> f("TestAtTableInTheOutput_A.odb");
-	odb::Writer<>::iterator it = f.begin();
+	odc::Writer<> f("TestAtTableInTheOutput_A.odb");
+	odc::Writer<>::iterator it = f.begin();
 
     it->setNumberOfColumns(4);
-    it->setColumn(0, "lat@hdr", odb::REAL);
-	it->setColumn(1, "lon@hdr", odb::REAL);
-	it->setColumn(2, "obsvalue", odb::REAL);
+    it->setColumn(0, "lat@hdr", odc::REAL);
+	it->setColumn(1, "lon@hdr", odc::REAL);
+	it->setColumn(2, "obsvalue", odc::REAL);
 
     eckit::sql::BitfieldDef bfDef;
 	bfDef.first.push_back("x");
@@ -40,7 +40,7 @@ static void setUp()
 	bfDef.first.push_back("y");
 	bfDef.second.push_back(2);
 
-	it->setBitfieldColumn(3, "bf", odb::BITFIELD, bfDef);
+	it->setBitfieldColumn(3, "bf", odc::BITFIELD, bfDef);
 
 	it->writeHeader();
 
@@ -59,8 +59,8 @@ static void selectIntoSecondFile()
 	string sql = "select lat,lon,obsvalue,bf into \"TestAtTableInTheOutput_B.odb\"";
 	sql += " from \"" + fileName + "\" ;";
 
-	odb::Select f(sql); //, fileName);
-	odb::Select::iterator it = f.begin();
+	odc::Select f(sql); //, fileName);
+	odc::Select::iterator it = f.begin();
 
 	//string c0 = it.columns()[0]->name();
 	//string c1 = it.columns()[1]->name();
@@ -74,15 +74,15 @@ static void selectIntoSecondFile()
 
 static void compareFiles()
 {
-	odb::Reader oda1("TestAtTableInTheOutput_A.odb");
-	odb::Reader oda2("TestAtTableInTheOutput_B.odb");
+	odc::Reader oda1("TestAtTableInTheOutput_A.odb");
+	odc::Reader oda2("TestAtTableInTheOutput_B.odb");
 
-	odb::Reader::iterator it1(oda1.begin());
-	odb::Reader::iterator end1(oda1.end());
-	odb::Reader::iterator it2(oda2.begin());
-	odb::Reader::iterator end2(oda2.end());
+	odc::Reader::iterator it1(oda1.begin());
+	odc::Reader::iterator end1(oda1.end());
+	odc::Reader::iterator it2(oda2.begin());
+	odc::Reader::iterator end2(oda2.end());
 	
-	odb::Comparator().compare(it1, end1, it2, end2, "TestAtTableInTheOutput_A.odb", "TestAtTableInTheOutput_B.odb");
+	odc::Comparator().compare(it1, end1, it2, end2, "TestAtTableInTheOutput_A.odb", "TestAtTableInTheOutput_B.odb");
 }
 
 

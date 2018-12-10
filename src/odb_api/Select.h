@@ -25,7 +25,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ public:
 private:
 
 
-    friend class odb::IteratorProxy<odb::SelectIterator, odb::Select, const double>;
+    friend class odc::IteratorProxy<odc::SelectIterator, odc::Select, const double>;
 
     std::unique_ptr<eckit::DataHandle> ownDH_;
 
@@ -76,6 +76,6 @@ private:
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odb
+} // namespace odc
 
 #endif

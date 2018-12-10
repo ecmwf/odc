@@ -22,20 +22,20 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 
 static void setUp()
 {
 	Timer t("Test tdiff function");
-	odb::Writer<> oda("test_tdiff.odb");
+	odc::Writer<> oda("test_tdiff.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
-	row->setColumn(0, "date", odb::INTEGER);
-	row->setColumn(1, "time", odb::INTEGER);
+	row->setColumn(0, "date", odc::INTEGER);
+	row->setColumn(1, "time", odc::INTEGER);
 	
 	row->writeHeader();
 
@@ -56,8 +56,8 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select oda(sql);
-	odb::Select::iterator it = oda.begin();
+	odc::Select oda(sql);
+	odc::Select::iterator it = oda.begin();
 
 	ASSERT((*it)[0] == -10731); // 
 

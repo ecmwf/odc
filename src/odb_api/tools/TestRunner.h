@@ -18,7 +18,7 @@
 #include "odb_api/CommandLineParser.h"
 #include "eckit/filesystem/PathName.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -53,6 +53,6 @@ private:
 
 } // namespace test
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif

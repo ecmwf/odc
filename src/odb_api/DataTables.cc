@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 DataTables::DataTables(DataSet& owner)
   : owner_(owner)
@@ -51,4 +51,4 @@ const DataTable* const DataTables::operator[](const std::string& name) const
     return const_cast<const DataTables&>(*this)[name];
 }
 
-} // namespace odb
+} // namespace odc

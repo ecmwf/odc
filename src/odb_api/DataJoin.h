@@ -7,7 +7,7 @@
 #include "odb_api/DataJoinIterator.h"
 #include "odb_api/SharedIterator.h"
 
-namespace odb {
+namespace odc {
 
 class DataTable;
 class DataLink;
@@ -77,6 +77,6 @@ private:
     friend class internal::DataJoinIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATAJOIN_H_

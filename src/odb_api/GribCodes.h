@@ -20,7 +20,7 @@
 namespace eckit { class PathName; }
 
 
-namespace odb {
+namespace odc {
 
 class GribCodesBase {
 public:
@@ -77,7 +77,7 @@ private:
 };
 
 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

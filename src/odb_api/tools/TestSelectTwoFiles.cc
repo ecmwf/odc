@@ -20,25 +20,25 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void setUp()
 {
 	Tracer t(Log::debug(), "setUp");
 	{
-		odb::Writer<> f("TestSelectTwoFiles1.odb");
-		odb::Writer<>::iterator it = f.begin();
+		odc::Writer<> f("TestSelectTwoFiles1.odb");
+		odc::Writer<>::iterator it = f.begin();
         it->setNumberOfColumns(1);
-		it->setColumn(0, "a", odb::REAL);
+		it->setColumn(0, "a", odc::REAL);
 		it->writeHeader();
 		(*it)[0] = 1;
 		++it;
 	}
 	{
-		odb::Writer<> f("TestSelectTwoFiles2.odb");
-		odb::Writer<>::iterator it = f.begin();
+		odc::Writer<> f("TestSelectTwoFiles2.odb");
+		odc::Writer<>::iterator it = f.begin();
         it->setNumberOfColumns(1);
-		it->setColumn(0, "b", odb::REAL);
+		it->setColumn(0, "b", odc::REAL);
 		it->writeHeader();
 		(*it)[0] = 2;
 		++it;
@@ -49,9 +49,9 @@ static void test()
 {
 	Tracer t(Log::debug(), "test");
 
-    odb::Select s("select * from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\";");
-	odb::Select::iterator it = s.begin();
-	odb::Select::iterator end = s.end();
+    odc::Select s("select * from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\";");
+	odc::Select::iterator it = s.begin();
+	odc::Select::iterator end = s.end();
 
     ASSERT(it->columns().size() == 2);
 

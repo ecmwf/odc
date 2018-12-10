@@ -24,7 +24,7 @@
 namespace eckit { class DataHandle; }
 class MemoryBlock;
 
-namespace odb {
+namespace odc {
 
 typedef std::map<std::string, std::string> Properties;
 typedef std::vector<double> Flags;
@@ -110,7 +110,7 @@ private:
     DataStream& operator=(const DataStream&);
 };
 
-} // namespace odb {
+} // namespace odc {
 
 #include "odb_api/DataStream.cc"
 

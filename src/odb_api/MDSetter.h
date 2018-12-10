@@ -11,14 +11,14 @@
 #ifndef MDSetter_H
 #define MDSetter_H
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 class MDSetter
 {
 public:
-	typedef typename odb::MDUpdatingIterator<T> iterator_class;
-	typedef typename odb::IteratorProxy<iterator_class, MDSetter, const double> iterator;
+	typedef typename odc::MDUpdatingIterator<T> iterator_class;
+	typedef typename odc::IteratorProxy<iterator_class, MDSetter, const double> iterator;
 
 	MDSetter(const T& b, const T& e, const std::vector<std::string>& columns, const std::vector<std::string>& types)
 	: ii_(b), end_(e), columns_(columns), types_(types)
@@ -36,7 +36,7 @@ private:
 	const std::vector<std::string> types_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #include "odb_api/MDSetter.cc"
 

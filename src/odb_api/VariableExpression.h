@@ -16,7 +16,7 @@
 
 #include "eckit/sql/expression/SQLExpression.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 namespace expression {
 
@@ -49,6 +49,6 @@ private:
 
 } // namespace expression
 } // namespace sql
-} // namespace odb
+} // namespace odc
 
 #endif

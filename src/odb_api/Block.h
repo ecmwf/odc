@@ -22,7 +22,7 @@
 
 #include <vector>
 
-namespace odb {
+namespace odc {
 
 typedef unsigned long long ullong;
 
@@ -80,6 +80,6 @@ public:
 
 std::ostream& operator<<(std::ostream&, const Block&);
 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

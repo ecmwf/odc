@@ -22,7 +22,7 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 std::string Block::str() const
 {
@@ -42,5 +42,5 @@ ostream& operator<< (ostream& o, const Block& b)
     return o;
 }
 
-} // namespace odb 
+} // namespace odc 
 

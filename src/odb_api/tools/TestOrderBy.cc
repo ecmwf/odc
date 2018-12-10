@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 ///
 static void test()
@@ -31,9 +31,9 @@ static void test()
 		string sql = "select distinct a from \"TestOrderBy_a1to10twice.odb\" order by a;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-		odb::Select sel(sql);
-		odb::Select::iterator it = sel.begin();
-		odb::Select::iterator end = sel.end();
+		odc::Select sel(sql);
+		odc::Select::iterator it = sel.begin();
+		odc::Select::iterator end = sel.end();
 
 		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 0;
@@ -51,9 +51,9 @@ static void test()
 		string sql = "select a from \"TestOrderBy_a1to10twice.odb\" order by a;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-		odb::Select sel(sql);
-		odb::Select::iterator it = sel.begin();
-		odb::Select::iterator end = sel.end();
+		odc::Select sel(sql);
+		odc::Select::iterator it = sel.begin();
+		odc::Select::iterator end = sel.end();
 
 		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 0, j = 0;
@@ -73,9 +73,9 @@ static void test()
 		string sql = "select distinct a from \"TestOrderBy_a1to10twice.odb\" order by a desc;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-		odb::Select sel(sql);
-		odb::Select::iterator it = sel.begin();
-		odb::Select::iterator end = sel.end();
+		odc::Select sel(sql);
+		odc::Select::iterator it = sel.begin();
+		odc::Select::iterator end = sel.end();
 
 		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 10, j = 0;
@@ -97,14 +97,14 @@ static void test()
 		"1,20,'two'\n"
 		"2,30,'three'\n"
 		"2,40,'four'\n";
-        odb::tool::ImportTool::importText(in, "TestOrderBy.odb");
+        odc::tool::ImportTool::importText(in, "TestOrderBy.odb");
 
 		string sql = "select distinct a,b,c from \"TestOrderBy.odb\" order by a desc, b asc;";
 		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-		odb::Select sel(sql);
-		odb::Select::iterator it = sel.begin();
-		odb::Select::iterator end = sel.end();
+		odc::Select sel(sql);
+		odc::Select::iterator it = sel.begin();
+		odc::Select::iterator end = sel.end();
 
 		Log::info()  << "test: entering the loop" << std::endl;
         int i = 0, v1 = 0 , v2 = 0;
@@ -129,7 +129,7 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
-    odb::tool::ImportTool::importText(s.str().c_str(), "TestOrderBy_a1to10twice.odb");
+    odc::tool::ImportTool::importText(s.str().c_str(), "TestOrderBy_a1to10twice.odb");
 }
 static void tearDown(){}
 

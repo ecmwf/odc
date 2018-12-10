@@ -21,7 +21,7 @@
 
 namespace eckit { class PathName; }
 
-namespace odb {
+namespace odc {
 
 class DispatchingWriter
 {
@@ -49,6 +49,6 @@ private:
 	bool append_;
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif

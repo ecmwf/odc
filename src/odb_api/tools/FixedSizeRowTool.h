@@ -13,7 +13,7 @@
 
 #include "odb_api/tools/Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class FixedSizeRowTool : public Tool {
@@ -38,6 +38,6 @@ private:
 template <> struct ExperimentalTool<FixedSizeRowTool> { enum { experimental = true }; };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

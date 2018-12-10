@@ -32,7 +32,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 class MetaData;
 
@@ -173,6 +173,6 @@ private:
     friend class DirectAccessIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

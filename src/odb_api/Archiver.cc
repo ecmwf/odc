@@ -79,7 +79,7 @@ void Archiver::archive(eckit::MultiHandle& h,
                        const std::vector<std::string>& keywords,
                        const std::map<std::string,std::vector<std::string> >& request)
 {
-    odb::RequestDict r(odb::unquoteRequestValues(request));
+    odc::RequestDict r(odc::unquoteRequestValues(request));
 
     vector<string> sources (r["source"]);
     if (sources.size() == 0) throw UserError("ARCHIVE missing SOURCE");

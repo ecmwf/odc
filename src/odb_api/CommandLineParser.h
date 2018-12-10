@@ -17,7 +17,7 @@
 
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class CommandLineParser {
@@ -68,7 +68,7 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

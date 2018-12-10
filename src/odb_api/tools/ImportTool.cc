@@ -31,7 +31,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 // TODO: A test with wide strings
@@ -95,10 +95,10 @@ void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, co
 {
     // TODO: Why are we not using the ODAOutput directly, rather than going via a Select, Writer combination?
 
-    eckit::sql::SQLSession session(std::unique_ptr<odb::sql::SQLOutputConfig>(new odb::sql::SQLOutputConfig(out)));
+    eckit::sql::SQLSession session(std::unique_ptr<odc::sql::SQLOutputConfig>(new odc::sql::SQLOutputConfig(out)));
 
     eckit::sql::SQLDatabase& db(session.currentDatabase());
-    db.addImplicitTable(new odb::sql::ODBCSVTable(db, in, in, delimiter));
+    db.addImplicitTable(new odc::sql::ODBCSVTable(db, in, in, delimiter));
     session.currentDatabase();
 
     eckit::sql::SQLParser().parseString(session, sql);
@@ -112,10 +112,10 @@ void ImportTool::importText(const std::string& s, const PathName& out, const std
     // TODO: There is no reason to be doing an SQL select * here! Just parse the damn file!
 
     std::stringstream ss(s);
-    odb::TextReader reader(ss, delimiter);
+    odc::TextReader reader(ss, delimiter);
 
-	odb::Writer<> writer(out);
-	odb::Writer<>::iterator output(writer.begin());
+	odc::Writer<> writer(out);
+	odc::Writer<>::iterator output(writer.begin());
 
     unsigned long long n = output->pass1(reader.begin(), reader.end());
 
@@ -123,5 +123,5 @@ void ImportTool::importText(const std::string& s, const PathName& out, const std
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

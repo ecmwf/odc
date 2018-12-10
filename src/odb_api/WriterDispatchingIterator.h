@@ -25,7 +25,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 class TemplateParameters;
 
@@ -133,7 +133,7 @@ private:
 	friend class IteratorProxy<WriterDispatchingIterator<WRITE_ITERATOR,DispatchingWriter>, DispatchingWriter>;
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #include "odb_api/WriterDispatchingIterator.cc"
 

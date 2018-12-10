@@ -13,7 +13,7 @@
 
 #include "Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class XYVTool : public Tool {
@@ -34,7 +34,7 @@ public:
 template <> struct ExperimentalTool<XYVTool> { enum { experimental = true }; };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

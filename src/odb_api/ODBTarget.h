@@ -18,7 +18,7 @@
 
 #include "eckit/log/WrapperTarget.h"
 
-namespace odb {
+namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -40,6 +40,6 @@ private:
 
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

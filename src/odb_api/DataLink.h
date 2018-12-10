@@ -6,7 +6,7 @@
 
 #include "odb_api/DataLinkIterator.h"
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 class DataLinks;
@@ -156,6 +156,6 @@ private:
     template <typename R, typename T> friend class internal::DataLinkIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATALINK_H_

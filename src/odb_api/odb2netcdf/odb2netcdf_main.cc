@@ -16,8 +16,8 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
-using namespace odb::tool;
+using namespace odc;
+using namespace odc::tool;
 
 static const string usage = "Usage: odb2netcdf -i [odb_filename|odb_filename_prefix] [-2d] -o netcdf_filename";
 

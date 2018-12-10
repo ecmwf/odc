@@ -21,7 +21,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 char * static_argv[] = { const_cast<char *>("oda2request") };
@@ -160,14 +160,14 @@ void ODA2RequestTool::gatherStats(const PathName& inputFile)
 	Log::info() << "Executing '" << select << "'" << std::endl;
 
 	Translator<double, string> double2string;
-	odb::Select oda(select, inputFile);
-	odb::Select::iterator end = oda.end();
-	for (odb::Select::iterator row = oda.begin(); row != end; ++row) 
+	odc::Select oda(select, inputFile);
+	odc::Select::iterator end = oda.end();
+	for (odc::Select::iterator row = oda.begin(); row != end; ++row) 
 		for (size_t i = 0; i < n; ++i)
 		{
-			odb::ColumnType type = row->columns()[i]->type();
-			Value v = type == odb::STRING ? (*row).string(i)
-					: type == odb::INTEGER ? int_as_double2string((*row)[i])
+			odc::ColumnType type = row->columns()[i]->type();
+			Value v = type == odc::STRING ? (*row).string(i)
+					: type == odc::INTEGER ? int_as_double2string((*row)[i])
 					: double2string((*row)[i]);
 			values_[i].insert(v);
 		}
@@ -230,5 +230,5 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

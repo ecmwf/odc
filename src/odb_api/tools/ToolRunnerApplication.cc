@@ -20,7 +20,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 ToolRunnerApplication::ToolRunnerApplication (int argc, char **argv, bool createCommandLineTool, bool deleteTool)
@@ -29,7 +29,7 @@ ToolRunnerApplication::ToolRunnerApplication (int argc, char **argv, bool create
   deleteTool_(deleteTool)
 {}
 
-ToolRunnerApplication::ToolRunnerApplication (odb::tool::Tool &tool, int argc, char **argv)
+ToolRunnerApplication::ToolRunnerApplication (odc::tool::Tool &tool, int argc, char **argv)
 : ODBApplication(argc, argv),
   tool_(&tool),
   deleteTool_(false)
@@ -40,7 +40,7 @@ ToolRunnerApplication::~ToolRunnerApplication ()
 	if (deleteTool_) delete tool_;
 }
 
-void ToolRunnerApplication::tool(odb::tool::Tool *tool)
+void ToolRunnerApplication::tool(odc::tool::Tool *tool)
 {
 	tool_ = tool;
 }
@@ -75,5 +75,5 @@ int ToolRunnerApplication::printHelp(std::ostream &out)
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

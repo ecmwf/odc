@@ -12,7 +12,7 @@
 
 //#include "TestCase.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
     namespace test { class TestCase; }
@@ -25,7 +25,7 @@ public:
 	static void printToolHelp(const std::string&, std::ostream &);
 	static void printToolUsage(const std::string& name, std::ostream &);
 	static void printToolsHelp(std::ostream &);
-    static std::vector<odb::tool::test::TestCase*>* testCases(const std::vector<std::string>& = matchAll);
+    static std::vector<odc::tool::test::TestCase*>* testCases(const std::vector<std::string>& = matchAll);
 
 	static void listTools(std::ostream&);
 
@@ -55,11 +55,11 @@ public:
 
 	void help(std::ostream &o) { T::help(o); }
 	void usage(const std::string &name, std::ostream &o) { T::usage(name, o); }
-	bool experimental() { return odb::tool::ExperimentalTool<T>::experimental; }
+	bool experimental() { return odc::tool::ExperimentalTool<T>::experimental; }
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

@@ -17,7 +17,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 void MergeTool::help(std::ostream &o) {
@@ -82,8 +82,8 @@ void MergeTool::run()
 template <typename T, typename I>
 void doMerge(std::vector<std::pair<I, I> >& iterators, const PathName& outputFile)
 {
-	odb::Writer<> writer(outputFile);
-	odb::Writer<>::iterator out(writer.begin());
+	odc::Writer<> writer(outputFile);
+	odc::Writer<>::iterator out(writer.begin());
 
 	for (size_t i = 0; i < iterators.size(); ++i)
 	{
@@ -128,7 +128,7 @@ struct AutoR : public std::vector<T*> { ~AutoR() { for (size_t i = 0; i < this->
 
 void MergeTool::merge(const std::vector<PathName>& inputFiles, const PathName& outputFile)
 {
-	typedef odb::Reader R;
+	typedef odc::Reader R;
 	typedef R::iterator I;
 
     AutoR<R>  readers;
@@ -136,7 +136,7 @@ void MergeTool::merge(const std::vector<PathName>& inputFiles, const PathName& o
 
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
-		readers.push_back(new odb::Reader(inputFiles[i]));
+		readers.push_back(new odc::Reader(inputFiles[i]));
         iterators.push_back(std::make_pair(readers[i]->begin(), readers[i]->end()));
 	}
     doMerge<R, I>(iterators, outputFile);
@@ -144,7 +144,7 @@ void MergeTool::merge(const std::vector<PathName>& inputFiles, const PathName& o
 
 void MergeTool::merge(const std::vector<PathName>& inputFiles, const std::vector<std::string>& sqls, const PathName& outputFile)
 {
-    typedef odb::Select S;
+    typedef odc::Select S;
     AutoR<S> readers;
     AutoR<eckit::FileHandle> fhs;
     std::vector<std::pair<S::iterator, S::iterator> > iterators;
@@ -160,5 +160,5 @@ void MergeTool::merge(const std::vector<PathName>& inputFiles, const std::vector
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

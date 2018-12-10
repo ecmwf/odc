@@ -17,7 +17,7 @@
 #include "eckit/io/DataHandle.h"
 #include "odb_api/MemoryBlock.h"
 
-namespace odb {
+namespace odc {
 
 class InMemoryDataHandle : public eckit::DataHandle {
 public:
@@ -76,6 +76,6 @@ private:
 		{ handle.print(s); return s;}
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif

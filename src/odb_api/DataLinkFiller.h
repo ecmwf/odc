@@ -6,7 +6,7 @@
 
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 
 class DataLink;
 
@@ -64,6 +64,6 @@ private:
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATALINKFILLER_H_

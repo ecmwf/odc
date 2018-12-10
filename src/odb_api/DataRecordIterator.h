@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include "odb_api/IteratorFacade.h"
 
-namespace odb {
+namespace odc {
 
 class DataRecord;
 
@@ -57,12 +57,12 @@ private:
     R* record_;
     unsigned int index_;
 
-    friend class odb::DataRecord;
-    friend class odb::IteratorFacadeAccess;
+    friend class odc::DataRecord;
+    friend class odc::IteratorFacadeAccess;
     template <typename T, typename U> friend class DataRecordIterator;
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // ODBLIB_DATARECORDITERATOR_H_

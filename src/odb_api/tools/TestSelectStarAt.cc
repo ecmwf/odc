@@ -19,7 +19,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 /// UnitTest expansion of '*@hdr' into a list of columns of the hdr ODB table.
 ///
@@ -32,10 +32,10 @@ static void test()
 
     const string SELECT = "select *@hdr from \"2000010106.odb\";";
 
-    odb::Select oda(SELECT);
+    odc::Select oda(SELECT);
 
     Log::info() << "Executing: '" << SELECT << "'" << std::endl;
-    odb::Select::iterator it = oda.begin();
+    odc::Select::iterator it = oda.begin();
 
     Log::info() << "it->columns().size() => " << it->columns().size() << std::endl;
     ASSERT(it->columns().size() == 27);

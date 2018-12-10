@@ -11,7 +11,7 @@
 #include "eckit/eckit.h"
 #include "odb_api/Dictionary.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 namespace expression {
 
@@ -53,5 +53,5 @@ void Dictionary::print(std::ostream& o) const
 
 } // namespace expression
 } // namespace sql
-} // namespace odb
+} // namespace odc
 

@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 class MockReaderIterator3 
@@ -31,16 +31,16 @@ public:
 	MockReaderIterator3()
     : noMore_(false), refCount_(0), columns_(1), nRows_(0), min_(23), data_(0)
 	{
-		odb::Column* col = columns_[0] = new odb::Column(columns_);
+		odc::Column* col = columns_[0] = new odc::Column(columns_);
 		ASSERT(col);
 
 		col->name("column_name"); 
-		col->type<DataStream<SameByteOrder, DataHandle> >(odb::INTEGER, false);
+		col->type<DataStream<SameByteOrder, DataHandle> >(odc::INTEGER, false);
 		col->hasMissing(true);
         next();
 	}
 
-	odb::MetaData& columns() { return columns_; }
+	odc::MetaData& columns() { return columns_; }
 
 	bool isNewDataset() { return false; } 
 	double* data() { return &data_; }
@@ -78,7 +78,7 @@ public:
 	int refCount_;
 
 private:
-	odb::MetaData columns_;
+	odc::MetaData columns_;
 	unsigned int nRows_;
 	double min_;
 	double data_;
@@ -87,22 +87,22 @@ private:
 static void setUp()
 {
 	Timer t("Writing test_int16_missing.odb");
-	odb::Writer<> oda("test_int16_missing.odb");
+	odc::Writer<> oda("test_int16_missing.odb");
 
 	typedef tool::MockReader<MockReaderIterator3> M;
 	M reader;
 	M::iterator b = reader.begin();
 	const M::iterator e = reader.end();
 
-	odb::Writer<>::iterator outit = oda.begin();
+	odc::Writer<>::iterator outit = oda.begin();
 	outit->pass1(b, e);
 }
 
 static void test()
 {
-	odb::Reader oda("test_int16_missing.odb");
-	odb::Reader::iterator it = oda.begin();
-	odb::Reader::iterator end = oda.end();
+	odc::Reader oda("test_int16_missing.odb");
+	odc::Reader::iterator it = oda.begin();
+	odc::Reader::iterator end = oda.end();
 
 	typedef tool::MockReader<MockReaderIterator3> M;
 	M reader;
@@ -117,7 +117,7 @@ static void test()
 		ASSERT((*it)[0] == (*originalIt)[0]);
 	}
 
-	odb::codec::Codec& coder ( it->columns()[0]->coder() );
+	odc::codec::Codec& coder ( it->columns()[0]->coder() );
 
 	string name = coder.name();
 

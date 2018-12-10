@@ -37,33 +37,33 @@ Odb2NetCDF_1D::Odb2NetCDF_1D(const string & inputfile, const string & outputfile
     Log::info() << "Output NetCDF filename = " << outputfile << endl;
 }
 
-vector<NcVar*> Odb2NetCDF_1D::createVariables(NcFile& dataFile, const odb::MetaData& columns, NcDim* xDim)
+vector<NcVar*> Odb2NetCDF_1D::createVariables(NcFile& dataFile, const odc::MetaData& columns, NcDim* xDim)
 {
     vector<NcVar*> vars;
     for (size_t i(0); i < columns.size(); ++i)
     {
-        const odb::Column& column (*(columns[i]));
+        const odc::Column& column (*(columns[i]));
         NcVar* v;
         switch (column.type())
         {
-            case odb::INTEGER:
-            case odb::BITFIELD:
+            case odc::INTEGER:
+            case odc::BITFIELD:
                 v = dataFile.add_var(patchName(column.name()).c_str(), ncInt, xDim);
                 v->add_att(_FillValue, int (column.missingValue()));
                 break;
-            case odb::REAL:
+            case odc::REAL:
                 v = dataFile.add_var(patchName(column.name()).c_str(), ncFloat, xDim);
                 v->add_att(_FillValue, float (column.missingValue()));
                 break;
-            case odb::DOUBLE:
+            case odc::DOUBLE:
                 v = dataFile.add_var(patchName(column.name()).c_str(), ncDouble, xDim);
                 v->add_att(_FillValue, double (column.missingValue()));
                 break;
-            case odb::STRING:
+            case odc::STRING:
                 v = dataFile.add_var(patchName(column.name()).c_str(), ncChar, xDim);
                 //v->add_att(_FillValue, ""); // TODO: missing value for strings ????
                 break;
-            case odb::IGNORE:
+            case odc::IGNORE:
             default:
                 Log::error() << "Unknown column type: name=" << column.name() << ", type=" << column.type() << endl;
                 ASSERT("Unknown type" && false);
@@ -90,8 +90,8 @@ void Odb2NetCDF_1D::convert() {
     NcDim* xDim (dataFile.add_dim("hdrlen"));
     dataFile.add_att("Conventions", "CF-1.6"); 
 
-    odb::Reader odb(inputfile());
-    odb::Reader::iterator it (odb.begin());
+    odc::Reader odb(inputfile());
+    odc::Reader::iterator it (odb.begin());
 
     vector<NcVar*> vars (createVariables(dataFile, it->columns(), xDim));
 
@@ -105,7 +105,7 @@ void Odb2NetCDF_1D::convert() {
             buffer.n = ((*it)[i]);
             switch (it->columns()[i]->type()) 
             {
-                case odb::STRING:
+                case odc::STRING:
                     vars[i]->put_rec(buffer.b, nrows);
                     break;
                 default:
@@ -143,9 +143,9 @@ void Odb2NetCDF_2D::convert() {
     Log::info() << "Conversion to NetCDF 2D" << endl;
     // Check how many channel/bodylen
     string sql = "select distinct vertco_reference_1 from \"" + fileNameBody_ + "\" order by vertco_reference_1;";
-    odb::Select odbs(sql);
+    odc::Select odbs(sql);
     int nmaxchannel = 0;
-    for (odb::Select::iterator its = odbs.begin();  its != odbs.end(); ++its, ++nmaxchannel);
+    for (odc::Select::iterator its = odbs.begin();  its != odbs.end(); ++its, ++nmaxchannel);
 
     Log::info() << " There are  = " <<  nmaxchannel << " channels" << endl;
 
@@ -159,8 +159,8 @@ void Odb2NetCDF_2D::convert() {
     int * channel = new int [nmaxchannel];
     int i=0;
 
-    odb::Select odbs2(sql);
-    for (odb::Select::iterator its = odbs2.begin();  its != odbs2.end(); ++its, ++i)
+    odc::Select odbs2(sql);
+    for (odc::Select::iterator its = odbs2.begin();  its != odbs2.end(); ++its, ++i)
     {
         if (i==0)
             colChannel = dataFile.add_var(its->columns()[0]->name().c_str(), ncInt, yDim);
@@ -171,28 +171,28 @@ void Odb2NetCDF_2D::convert() {
 
     //////////////////////////////           HDR             //////////////////////////////
 
-    odb::Reader odb_hdr(fileNameHdr_);
-    odb::Reader::iterator it_hdr = odb_hdr.begin();
+    odc::Reader odb_hdr(fileNameHdr_);
+    odc::Reader::iterator it_hdr = odb_hdr.begin();
     NcVar **colHdr;
     colHdr = new NcVar * [it_hdr->columns().size()];
 
     for (int i=0;i<it_hdr->columns().size();++i) {
       switch(it_hdr->columns()[i]->type())
 	{
-	case odb::INTEGER:
-	case odb::BITFIELD:
+	case odc::INTEGER:
+	case odc::BITFIELD:
 	  colHdr[i] = dataFile.add_var(it_hdr->columns()[i]->name().c_str(), ncInt, xDim);
 	  colHdr[i]->add_att(_FillValue,(int)it_hdr->columns()[i]->missingValue());
 	  break;
-	case odb::REAL:
+	case odc::REAL:
 	  colHdr[i] = dataFile.add_var(it_hdr->columns()[i]->name().c_str(), ncFloat, xDim);
 	  colHdr[i]->add_att(_FillValue, (float)it_hdr->columns()[i]->missingValue());
 	  break;
-	case odb::STRING:
+	case odc::STRING:
 	  //        colHdr[i] = dataFile.add_var(it_hdr->columns()[i]->name().c_str(), ncInt, xDim);
 	  //        colHdr[i]->add_att();
 	  break;
-	case odb::IGNORE:
+	case odc::IGNORE:
 	default:
 	  ASSERT("Unknown type" && false);
 	  break;
@@ -214,8 +214,8 @@ void Odb2NetCDF_2D::convert() {
     //////////////////////////////           BODY             //////////////////////////////
 
 
-    odb::Reader odb_body(fileNameBody_);
-    odb::Reader::iterator it_body = odb_body.begin();
+    odc::Reader odb_body(fileNameBody_);
+    odc::Reader::iterator it_body = odb_body.begin();
     NcVar **colBody;
     colBody = new NcVar * [it_body->columns().size()];
 
@@ -237,19 +237,19 @@ void Odb2NetCDF_2D::convert() {
         (it_body->columns()[i]->name() != "seqno@hdr" && it_body->columns()[i]->name() != "vertco_reference_1@body")) {
 	  switch(it_body->columns()[i]->type())
 	    {
-	    case odb::INTEGER:
-	    case odb::BITFIELD:
+	    case odc::INTEGER:
+	    case odc::BITFIELD:
 	      colBody[i] = dataFile.add_var(it_body->columns()[i]->name().c_str(), ncInt, xDim, yDim);
 	      colBody[i]->add_att(_FillValue,(int)it_body->columns()[i]->missingValue());
 	      break;
-	    case odb::REAL:
+	    case odc::REAL:
 	      colBody[i] = dataFile.add_var(it_body->columns()[i]->name().c_str(), ncFloat, xDim, yDim);
 	      colBody[i]->add_att(_FillValue,(float) it_body->columns()[i]->missingValue());
 	      break;
-	    case odb::STRING:
+	    case odc::STRING:
 	      //            colBody[i] = dataFile.add_var(it_body->columns()[i]->name().c_str(), ncInt, xDim, yDim);
 	      break;
-	    case odb::IGNORE:
+	    case odc::IGNORE:
 	    default:
 	      ASSERT("Unknown type" && false);
 	      break;

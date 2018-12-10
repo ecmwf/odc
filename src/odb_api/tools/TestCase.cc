@@ -21,7 +21,7 @@ using namespace std;
 #include "TestCase.h"
 #include "ToolFactory.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -44,5 +44,5 @@ void TestCase::tearDown() {}
 
 } // namespace test 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

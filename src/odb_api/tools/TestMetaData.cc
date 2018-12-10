@@ -19,7 +19,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void test()
 {

@@ -19,7 +19,7 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 HttpHandleFactory::HttpHandleFactory()
 : DataHandleFactory("http")
@@ -30,4 +30,4 @@ eckit::DataHandle* HttpHandleFactory::makeHandle(const std::string& r) const
     return new HttpHandle(r);
 }
 
-} // namespace odb
+} // namespace odc

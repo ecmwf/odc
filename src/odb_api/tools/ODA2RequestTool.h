@@ -13,7 +13,7 @@
 
 #include "odb_api/tools/Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class ODA2RequestTool : public Tool {
@@ -50,7 +50,7 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

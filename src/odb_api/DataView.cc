@@ -8,7 +8,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DataViewFiller::DataViewFiller(DataView& view, const DataLink& link)
   : view_(&view),
@@ -246,4 +246,4 @@ DataViewIterator& DataViewIterator::operator++()
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

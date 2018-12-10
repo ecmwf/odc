@@ -16,7 +16,7 @@
 
 #include "eckit/io/TCPHandle.h"
 
-namespace odb {
+namespace odc {
 
 class HttpHandle : public eckit::DataHandle {
 public:
@@ -44,6 +44,6 @@ private:
     eckit::TCPHandle tcp_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

@@ -27,8 +27,8 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
-using namespace odb::tool;
+using namespace odc;
+using namespace odc::tool;
 
 void Retriever::checkKeywordsHaveValues(const std::map<std::string,std::vector<std::string> >& request, const vector<string>& keywords)
 {

@@ -23,7 +23,7 @@
 using namespace std;
 using namespace eckit;
 
-using namespace odb::tool;
+using namespace odc::tool;
 
 int executeCommand(int argc, char *argv[]);
 int gdb(int argc, char *argv[]);
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
 int executeCommand(int argc, char *argv[])
 {
-	odb::tool::Tool::registerTools();
+	odc::tool::Tool::registerTools();
 	if (argc < 2)
 	{
         odb_start_with_args(argc, argv);
@@ -63,7 +63,7 @@ int executeCommand(int argc, char *argv[])
     if (firstArg == "vg") { odb_start_with_args(argc, argv); return valgrind(argc, argv); }
     
     /// TODO: reenable
-//	if (firstArg == "testodbcapi") return odb::tool::test::test_odacapi(argc, argv);
+//	if (firstArg == "testodbcapi") return odc::tool::test::test_odacapi(argc, argv);
 	if (firstArg == "test")
 	{
 		if (argc == 2) //no args => test all
@@ -78,7 +78,7 @@ int executeCommand(int argc, char *argv[])
 
 		std::cout << std::endl << "Running tests." << std::endl;
 
-		odb::tool::test::TestRunnerApplication testRunner(argc - 1, argv + 1);
+		odc::tool::test::TestRunnerApplication testRunner(argc - 1, argv + 1);
 		testRunner.start();
 		// It never really gets here.
 		return 0;
@@ -102,8 +102,8 @@ int executeCommand(int argc, char *argv[])
 
 	if (firstArg == "-V" || firstArg == "-v" || firstArg == "--version")
 	{
-		std::cout << "ODBAPI Version: " << odb::ODBAPIVersion::version() << std::endl;
-		std::cout << "File format version: " << odb::ODBAPIVersion::formatVersionMajor() << "." << odb::ODBAPIVersion::formatVersionMinor() <<  std::endl;
+		std::cout << "ODBAPI Version: " << odc::ODBAPIVersion::version() << std::endl;
+		std::cout << "File format version: " << odc::ODBAPIVersion::formatVersionMajor() << "." << odc::ODBAPIVersion::formatVersionMinor() <<  std::endl;
 		return 0;
 	}
 

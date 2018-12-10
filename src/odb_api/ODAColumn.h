@@ -15,7 +15,7 @@
 
 #include "eckit/sql/SQLColumn.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 
@@ -48,6 +48,6 @@ private:
 };
 
 } // namespace sql 
-} // namespace odb 
+} // namespace odc 
 
 #endif

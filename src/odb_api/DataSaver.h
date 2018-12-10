@@ -7,7 +7,7 @@
 #include "eckit/eckit.h"
 #include "odb_api/Writer.h"
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 class DataTable;
@@ -52,6 +52,6 @@ private:
     Writer<>::iterator target_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATASAVER_H_

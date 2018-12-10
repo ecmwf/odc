@@ -19,7 +19,7 @@
 
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 
 class MetaData;
 
@@ -42,6 +42,6 @@ private:
 
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

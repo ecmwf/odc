@@ -17,7 +17,7 @@
 #include "odb_api/Partitions.h"
 #include "odb_api/Indexer.h"
 
-namespace odb {
+namespace odc {
 
 class Partitioner {
 public:
@@ -28,6 +28,6 @@ private:
     static ullong countRows(const std::vector<eckit::PathName>& files, const std::vector<eckit::PathName>& indices);
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

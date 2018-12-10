@@ -15,7 +15,7 @@
 #include "eckit/io/Offset.h"
 #include "odb_api/MetaData.h"
 
-namespace odb {
+namespace odc {
 
 class ODAHandle;
 
@@ -87,7 +87,7 @@ struct ODA2RequestClientTraits {
 	{ eckit::Log::error() << errorMessage << std::endl; return false; }
 };
 
-} // namespace odb
+} // namespace odc
 
 #include "odb_api/FastODA2Request.cc"
 

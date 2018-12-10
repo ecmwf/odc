@@ -22,7 +22,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 Partitions Partitioner::createPartitions(const std::vector<eckit::PathName>& files, size_t numberOfPartitions)
 {
@@ -44,8 +44,8 @@ Partitions Partitioner::createPartitions(const std::vector<eckit::PathName>& fil
     Log::info() << "*** createPartitions: numberOfPartitions: " << numberOfPartitions << ", totalRowsNumber: " << totalRowsNumber << ", rowsPerPartition: " << rowsPerPartition <<  endl;
     for (size_t i(0); i < indices.size(); ++i)
     {
-        odb::Select in("select block_begin, block_length, seqno, n_rows;", indices[i]); 
-        for (odb::Select::iterator it (in.begin()), end (in.end()); it != end; ++it)
+        odc::Select in("select block_begin, block_length, seqno, n_rows;", indices[i]); 
+        for (odc::Select::iterator it (in.begin()), end (in.end()); it != end; ++it)
         {
             const ullong blockStart ((*it)[0]),
                          blockLength ((*it)[1]),
@@ -83,5 +83,5 @@ ullong Partitioner::countRows(const std::vector<eckit::PathName>& files, const s
     return n;
 }
 
-} // namespace odb 
+} // namespace odc 
 

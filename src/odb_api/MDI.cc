@@ -10,10 +10,10 @@
 
 #include "odb_api/MDI.h"
 
-namespace odb {
+namespace odc {
 
 double MDI::realMDI_ = -2147483647;
 double MDI::integerMDI_ = 2147483647;
 
-} // namespace odb
+} // namespace odc
 

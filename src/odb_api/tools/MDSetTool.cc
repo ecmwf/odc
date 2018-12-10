@@ -24,7 +24,7 @@ using namespace eckit;
 using namespace std;
 typedef eckit::StringTools S;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 void MDSetTool::help(std::ostream &o) {
@@ -61,7 +61,7 @@ void MDSetTool::run()
     std::vector<eckit::sql::BitfieldDef> bitfieldDefs;
     parseUpdateList(parameters(1), columns, types, values, bitfieldDefs);
 
-    typedef odb::MetaDataReader<odb::MetaDataReaderIterator> R;
+    typedef odc::MetaDataReader<odc::MetaDataReaderIterator> R;
     R reader(inFile, false);
 
     for (R::iterator it = reader.begin(), end = reader.end();
@@ -79,7 +79,7 @@ void MDSetTool::run()
             if (bitfieldDefs[i].first.size()) c.bitfieldDef(bitfieldDefs[i]);
             if (values[i].size() && values[i] != "NONE")
             {
-                odb::codec::Codec& codec (c.coder());
+                odc::codec::Codec& codec (c.coder());
                 if (codec.name().find("constant") == std::string::npos)
                 {
                     stringstream ss;
@@ -154,5 +154,5 @@ void MDSetTool::parseUpdateList(const std::string& s,
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

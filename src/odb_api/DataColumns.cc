@@ -8,20 +8,20 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DataColumns::DataColumns()
   : std::vector<DataColumn>()
 {}
 
-DataColumns::DataColumns(const odb::MetaData& metadata)
+DataColumns::DataColumns(const odc::MetaData& metadata)
   : std::vector<DataColumn>()
 {
     reserve(metadata.size());
 
     for (size_t i = 0; i < metadata.size(); i++)
     {
-        odb::Column& column = *metadata[i];
+        odc::Column& column = *metadata[i];
         push_back(DataColumn(column));
     }
 }
@@ -78,14 +78,14 @@ void DataColumns::add(const std::string& name, const std::string& typeName)
     push_back(DataColumn(name, type));
 }
 
-DataColumns& DataColumns::operator=(const odb::MetaData& metadata)
+DataColumns& DataColumns::operator=(const odc::MetaData& metadata)
 {
     clear();
     reserve(metadata.size());
 
     for (size_t i = 0; i < metadata.size(); i++)
     {
-        odb::Column& column = *metadata[i];
+        odc::Column& column = *metadata[i];
         push_back(DataColumn(column));
     }
 
@@ -109,4 +109,4 @@ bool DataColumns::operator==(const DataColumns& other) const
     return true;
 }
 
-} // namespace odb
+} // namespace odc

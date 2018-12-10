@@ -18,7 +18,7 @@
 #include "eckit/log/CodeLocation.h"
 #include "odb_api/MemoryBlock.h"
 
-namespace odb {
+namespace odc {
 
 // Can't use eckti::DataHandle&, as Currently "NonVirtual" is the baseclass of
 // UnsafeInMemoryDataHandle... Wonderful...
@@ -37,7 +37,7 @@ inline void checkRead(int code, const char *msg, const DH& dh, const eckit::Code
 { \
     long _v; \
     if (!(_v = (a))) { \
-        ::odb::checkRead(_v, #a, d, Here()); \
+        ::odc::checkRead(_v, #a, d, Here()); \
     } \
 }
 
@@ -323,5 +323,5 @@ void DataStream<T,D>::writeBitfieldDef(const eckit::sql::BitfieldDef &v)
 
 #undef CHECK_READ
 
-} // namespace odb
+} // namespace odc
 

@@ -8,7 +8,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 DataJoinIterator::DataJoinIterator(const DataJoin& join, bool begin)
@@ -185,4 +185,4 @@ void DataJoinIterator::initialize()
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

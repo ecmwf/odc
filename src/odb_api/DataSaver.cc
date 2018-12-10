@@ -9,7 +9,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DataSaver::DataSaver(const std::string& path)
   : writer_(path),
@@ -31,14 +31,14 @@ void DataSaver::save(const DataSet& dataset, const DataTable& master)
 void DataSaver::save(const DataSet& dataset, const std::string& master)
 {
     DataView view(dataset, master, true);
-    odb::MetaData metadata(0);
+    odc::MetaData metadata(0);
 
     for (size_t i = 0; i < view.columns().size(); ++i)
     {
-        typedef odb::DataStream<odb::SameByteOrder, DataHandle> DataStream;
+        typedef odc::DataStream<odc::SameByteOrder, DataHandle> DataStream;
 
         DataColumn& column = view.columns()[i];
-        odb::Column* c = new odb::Column(metadata);
+        odc::Column* c = new odc::Column(metadata);
 
         ASSERT(c);
 
@@ -64,4 +64,4 @@ void DataSaver::close()
     target_->close();
 }
 
-} // namespace odb
+} // namespace odc

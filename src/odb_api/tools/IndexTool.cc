@@ -23,7 +23,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 IndexTool::IndexTool (int argc, char *argv[]) : Tool(argc, argv) { }
@@ -62,5 +62,5 @@ void IndexTool::run()
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

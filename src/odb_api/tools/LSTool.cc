@@ -13,7 +13,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 LSTool::LSTool (int argc, char *argv[]) : Tool(argc, argv)
@@ -25,11 +25,11 @@ const std::string LSTool::nullString;
 
 unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
 {
-	odb::Reader f(db);
-	odb::Reader::iterator it = f.begin();
-	odb::Reader::iterator end = f.end();
+	odc::Reader f(db);
+	odc::Reader::iterator it = f.begin();
+	odc::Reader::iterator end = f.end();
 
-	odb::MetaData md(0);
+	odc::MetaData md(0);
 	// Formatting of real values:
     out << std::fixed;
 	unsigned long long n = 0;
@@ -51,18 +51,18 @@ unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
             out << spacer;
 			switch(md[i]->type())
 			{
-				case odb::INTEGER:
-				case odb::BITFIELD:
+				case odc::INTEGER:
+				case odc::BITFIELD:
 					out << static_cast<int>((*it)[i]);
 					break;
-				case odb::REAL:
-				case odb::DOUBLE:
+				case odc::REAL:
+				case odc::DOUBLE:
 					out << (*it)[i];
 					break;
-				case odb::STRING:
+				case odc::STRING:
 					out << "'" << (*it).string(i) << "'";
 					break;
-				case odb::IGNORE:
+				case odc::IGNORE:
 				default:
 					ASSERT("Unknown type" && false);
 					break;
@@ -97,5 +97,5 @@ void LSTool::run()
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

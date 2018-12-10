@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 
@@ -34,8 +34,8 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 
 	ODBAPISettings::instance().setvbufferSize(setvbufferSize);
 
-	odb::Writer<> oda("TestSetvbuffer.odb");
-	odb::Writer<>::iterator row = oda.begin();
+	odc::Writer<> oda("TestSetvbuffer.odb");
+	odc::Writer<>::iterator row = oda.begin();
 
     row->setNumberOfColumns(numberOfColumns);
 
@@ -43,7 +43,7 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 	{
 		stringstream name;
 		name << "Column" << i;
-		row->setColumn(i, name.str().c_str(), odb::REAL);
+		row->setColumn(i, name.str().c_str(), odc::REAL);
 	}
 	row->writeHeader();
 

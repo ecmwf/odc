@@ -30,7 +30,7 @@
 #include "ToolFactory.h"
 #include "XYVTool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 Tool::~Tool() {}
@@ -63,5 +63,5 @@ void Tool::registerTools()
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

@@ -22,7 +22,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 const int32_t BYTE_ORDER_INDICATOR = 1;
 const uint16_t ODA_MAGIC_NUMBER = 0xffff;
@@ -66,7 +66,7 @@ private:
 	int32_t byteOrder_;
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #include "odb_api/Header.cc"
 

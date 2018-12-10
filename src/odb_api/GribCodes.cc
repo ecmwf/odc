@@ -21,7 +21,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 
 ClassCodes* GribCodes::classCodes_ = 0; //ClassCodes();
@@ -143,5 +143,5 @@ std::string GribCodesBase::alphanumeric(const std::string& numeric) {
 // TODO:
 //std::string alphanumeric(int);
 
-} // namespace odb 
+} // namespace odc 
 

@@ -7,7 +7,7 @@
 #include "odb_api/DataTableMappings.h"
 #include "odb_api/MetaData.h"
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 class DataTable;
@@ -24,10 +24,10 @@ class DataSetBuilder
 {
 public:
     /// Creates a new dataset builder.
-    DataSetBuilder(const odb::MetaData& metadata, bool buildLinks);
+    DataSetBuilder(const odc::MetaData& metadata, bool buildLinks);
 
     /// Creates a new dataset builder providing the table mappings.
-    DataSetBuilder(const odb::MetaData& metadata,
+    DataSetBuilder(const odc::MetaData& metadata,
             const DataTableMappings& mapping, bool buildLinks);
 
     /// Builds dataset tables and links.
@@ -44,11 +44,11 @@ private:
     DataSetBuilder(const DataSetBuilder&);
     DataSetBuilder& operator=(const DataSetBuilder&);
 
-    odb::MetaData metadata_;
+    odc::MetaData metadata_;
     DataTableMappings mapping_;
     bool buildLinks_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATASETBUILDER_H_

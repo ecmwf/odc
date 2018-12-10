@@ -6,7 +6,7 @@
 
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 
 class DataTable;
 
@@ -74,6 +74,6 @@ private:
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATATABLEFILLER_H_

@@ -26,8 +26,8 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
-using namespace odb::tool;
+using namespace odc;
+using namespace odc::tool;
 
 void Stager::prepareMapper(FileMapper&                                            mapper,
                            const std::vector<std::string>&                        keywords,
@@ -88,11 +88,11 @@ void Stager::stage(eckit::MultiHandle&                                    output
                    const std::vector<std::string>&                        keywords,
                    const std::map<std::string,std::vector<std::string> >& req)
 {
-    odb::RequestDict request (odb::unquoteRequestValues(req));
+    odc::RequestDict request (odc::unquoteRequestValues(req));
 
     Log::info() << "STAGE: request: " << request << endl;
 
-    odb::checkKeywordsHaveValues(request, keywords);
+    odc::checkKeywordsHaveValues(request, keywords);
     const string partitionsInfoFile (FileCollector::expandTilde(request.at("partitionsinfo")[0]));
 
     FileMapper mapper (request.at("odbpathnameschema")[0]);

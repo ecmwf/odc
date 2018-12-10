@@ -13,7 +13,7 @@
 
 #include "Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class SetTool : public Tool {
@@ -38,7 +38,7 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 
 

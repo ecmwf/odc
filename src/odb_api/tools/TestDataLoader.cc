@@ -15,12 +15,12 @@
 #include "odb_api/DataSet.h"
 
 using namespace std;
-using namespace odb;
+using namespace odc;
 using namespace eckit;
 
 namespace {
 
-typedef odb::DataStream<odb::SameByteOrder, odb::PrettyFastInMemoryDataHandle> DataStream;
+typedef odc::DataStream<odc::SameByteOrder, odc::PrettyFastInMemoryDataHandle> DataStream;
 
 struct Fixture
 {
@@ -38,8 +38,8 @@ Fixture::Fixture()
   : input(),
     output()
 {
-    odb::Writer<> writer(input);
-    odb::Writer<>::iterator it = writer.begin();
+    odc::Writer<> writer(input);
+    odc::Writer<>::iterator it = writer.begin();
 
     MetaData md (it->columns());
     md.addColumn /*<DataStream> */("parent_id@parent", "INTEGER");

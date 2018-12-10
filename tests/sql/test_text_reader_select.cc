@@ -28,11 +28,11 @@ CASE("Simple select on CSV (one column) data") {
     }
 
     SECTION("Select with where condition") {
-        odb::Select select("select * where a > 4");
-        select.database().addImplicitTable(new odb::sql::ODBCSVTable(select.database(), DATA, "input", ","));
+        odc::Select select("select * where a > 4");
+        select.database().addImplicitTable(new odc::sql::ODBCSVTable(select.database(), DATA, "input", ","));
 
         size_t count = 0;
-        for (odb::Select::iterator it = select.begin(); it != select.end(); ++it) {
+        for (odc::Select::iterator it = select.begin(); it != select.end(); ++it) {
             count++;
             EXPECT((*it)[0] == count+4);
         }
@@ -42,10 +42,10 @@ CASE("Simple select on CSV (one column) data") {
 
 
     SECTION("Sum one column") {
-        odb::Select select("select sum(a), count(a), count(*);");
-        select.database().addImplicitTable(new odb::sql::ODBCSVTable(select.database(), DATA, "input", ","));
+        odc::Select select("select sum(a), count(a), count(*);");
+        select.database().addImplicitTable(new odc::sql::ODBCSVTable(select.database(), DATA, "input", ","));
 
-        odb::Select::iterator it = select.begin();
+        odc::Select::iterator it = select.begin();
 
         // TODO: Is this really the right behaviour? Surely it should appear as one row?
         EXPECT(!(it != select.end()));
@@ -55,17 +55,17 @@ CASE("Simple select on CSV (one column) data") {
     }
 
     SECTION("Mixed output and aggregate") {
-        odb::Select select("select a, sum(a), count(a)");
-        select.database().addImplicitTable(new odb::sql::ODBCSVTable(select.database(), DATA, "input", ","));
+        odc::Select select("select a, sum(a), count(a)");
+        select.database().addImplicitTable(new odc::sql::ODBCSVTable(select.database(), DATA, "input", ","));
 
-        odb::Select::iterator it = select.begin();
+        odc::Select::iterator it = select.begin();
 
         EXPECT(it != select.end());
 
         // n.b. as all values of a are different, we get counts of 1
 
         size_t count = 0;
-        for (odb::Select::iterator it = select.begin(); it != select.end(); ++it) {
+        for (odc::Select::iterator it = select.begin(); it != select.end(); ++it) {
             count++;
             EXPECT(it->data(0) == count);
             EXPECT(it->data(1) == count);
@@ -90,11 +90,11 @@ CASE("Simple select on CSV (two columns) data") {
     }
 
     SECTION("Select with where condition") {
-        odb::Select select("select * where a > 4");
-        select.database().addImplicitTable(new odb::sql::ODBCSVTable(select.database(), DATA, "input", ","));
+        odc::Select select("select * where a > 4");
+        select.database().addImplicitTable(new odc::sql::ODBCSVTable(select.database(), DATA, "input", ","));
 
         size_t count = 0;
-        for (odb::Select::iterator it = select.begin(); it != select.end(); ++it) {
+        for (odc::Select::iterator it = select.begin(); it != select.end(); ++it) {
             count++;
             std::stringstream colb;
             colb << "a-long-" << (count+4) << "-str****";
@@ -109,10 +109,10 @@ CASE("Simple select on CSV (two columns) data") {
 
 
     SECTION("Sum one column") {
-        odb::Select select("select sum(a), count(a), count(*), sum(c), count(c), count(b);");
-        select.database().addImplicitTable(new odb::sql::ODBCSVTable(select.database(), DATA, "input", ","));
+        odc::Select select("select sum(a), count(a), count(*), sum(c), count(c), count(b);");
+        select.database().addImplicitTable(new odc::sql::ODBCSVTable(select.database(), DATA, "input", ","));
 
-        odb::Select::iterator it = select.begin();
+        odc::Select::iterator it = select.begin();
 
         EXPECT(!(it != select.end()));
         EXPECT(it->data(0) == 55);
@@ -124,14 +124,14 @@ CASE("Simple select on CSV (two columns) data") {
     }
 
     SECTION("Mixed output and aggregate") {
-        odb::Select select("select d, sum(a), count(c)");
-        select.database().addImplicitTable(new odb::sql::ODBCSVTable(select.database(), DATA, "input", ","));
+        odc::Select select("select d, sum(a), count(c)");
+        select.database().addImplicitTable(new odc::sql::ODBCSVTable(select.database(), DATA, "input", ","));
 
-        odb::Select::iterator it = select.begin();
+        odc::Select::iterator it = select.begin();
 
         EXPECT(it != select.end());
         bool found[4] = {false, false, false, false};
-        for (odb::Select::iterator it = select.begin(); it != select.end(); ++it) {
+        for (odc::Select::iterator it = select.begin(); it != select.end(); ++it) {
             EXPECT(0 <= it->data(0) && 3 >= it->data(0));
             found[int(it->data(0))] = true;
             switch(int(it->data(0))) {

@@ -25,9 +25,9 @@ inline size_t MEGA(size_t n) { return n*1024*1204; }
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
-WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odb::sql::TableDef* tableDef)
+WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odc::sql::TableDef* tableDef)
 : owner_(owner),
   columns_(0),
   lastValues_(0),
@@ -380,5 +380,5 @@ std::vector<eckit::PathName> WriterBufferingIterator::outputFiles()
     return r;
 }
 
-} // namespace odb 
+} // namespace odc 
 

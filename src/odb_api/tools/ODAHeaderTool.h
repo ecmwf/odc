@@ -12,7 +12,7 @@
 
 #include "Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class HeaderTool : public Tool {
@@ -40,6 +40,6 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

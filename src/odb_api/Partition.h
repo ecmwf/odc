@@ -19,7 +19,7 @@
 
 namespace eckit { class PathName; }
 
-namespace odb {
+namespace odc {
 
 class Partition {
 public:
@@ -57,6 +57,6 @@ private:
     friend std::ostream& operator<< (std::ostream&, const Partition&);
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

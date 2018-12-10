@@ -16,7 +16,7 @@
 #ifndef MDUpdatingIterator_H
 #define MDUpdatingIterator_H
 
-namespace odb {
+namespace odc {
 
 class MetaData;
 
@@ -64,7 +64,7 @@ public:
 	bool noMore_;
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #include "odb_api/MDUpdatingIterator.cc"
 

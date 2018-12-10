@@ -20,7 +20,7 @@
 #include <string>
 #include <memory>
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 FastODA2Request<T>::FastODA2Request()
@@ -165,12 +165,12 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 		Column* column = md.hasColumn(columnName) ? md.columnByName(columnName) : 0;
 		std::string v = ! column ? columnNotFound(columnName)
 				: ! column->isConstant() ? columnIsNotConstant(*column)
-				: column->type() == odb::STRING ? StringTool::double_as_string(column->min())
-				: column->type() == odb::INTEGER ? StringTool::int_as_double2string(column->min())
+				: column->type() == odc::STRING ? StringTool::double_as_string(column->min())
+				: column->type() == odc::INTEGER ? StringTool::int_as_double2string(column->min())
 				: eckit::Translator<double, std::string>()(column->min());
 		values_[i].insert(v);
 		currentValues.push_back(v);
-		double dv = !column ? odb::MDI::realMDI() : column->min();
+		double dv = !column ? odc::MDI::realMDI() : column->min();
 
 		L << "FastODA2Request@" << this << "::collectValues: columnName: " << columnName << ": " << v << "(" << dv << ")" << endl;
 
@@ -296,5 +296,5 @@ std::map<std::string, double> FastODA2Request<T>::getUniqueValues()
 	return r;
 }
 
-} // namespace odb
+} // namespace odc
 

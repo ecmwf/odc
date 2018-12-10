@@ -20,7 +20,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 ///
 static void test()
@@ -29,9 +29,9 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select sel(sql);
-	odb::Select::iterator it2 = sel.begin();
-	odb::Select::iterator end2 = sel.end();
+	odc::Select sel(sql);
+	odc::Select::iterator it2 = sel.begin();
+	odc::Select::iterator end2 = sel.end();
 
 	int i = 0;
 	for (; it2 != end2; ++it2)
@@ -46,7 +46,7 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
-    odb::tool::ImportTool::importText(s.str().c_str(), "TestDistinct_a1to10twice.odb");
+    odc::tool::ImportTool::importText(s.str().c_str(), "TestDistinct_a1to10twice.odb");
 }
 
 

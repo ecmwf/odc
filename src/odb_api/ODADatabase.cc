@@ -17,7 +17,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 ODADatabase::ODADatabase(const PathName& path,const std::string& name)
@@ -93,5 +93,5 @@ SQLTable* ODADatabase::openDataStream(std::istream& is, const std::string& delim
 
 
 } // namespace sql
-} // namespace odb
+} // namespace odc
 

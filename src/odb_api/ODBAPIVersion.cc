@@ -16,7 +16,7 @@
 #include "odb_api/Header.h"
 #include "odb_api/ODBAPIVersion.h"
 
-namespace odb {
+namespace odc {
 
     const char *ODBAPIVersion::version() { return ODB_API_VERSION_STR; }
     const char *gitsha1() { return ODB_API_GIT_SHA1; }
@@ -26,5 +26,5 @@ namespace odb {
 	const char *ODBAPIVersion::installPrefix()       { return ODB_API_INSTALL_PREFIX; }
 	const char *ODBAPIVersion::buildDirectory()      { return ODB_API_BINARY_DIR; }
 
-} // namespace odb
+} // namespace odc
 

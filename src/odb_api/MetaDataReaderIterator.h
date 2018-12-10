@@ -35,12 +35,12 @@ extern "C" {
 	int oda_read_iterator_get_next_row(oda_read_iterator*, int, double*, int*);
 }
 
-namespace odb {
+namespace odc {
 	namespace codec { class Codec; } 
 	namespace sql { class ODATableIterator; }
 }
 
-namespace odb {
+namespace odc {
 
 class MetaDataReaderIterator 
 {
@@ -97,7 +97,7 @@ private:
 
     MetaData columns_;
     double* lastValues_;
-    odb::codec::Codec** codecs_;
+    odc::codec::Codec** codecs_;
     unsigned long long nrows_;
 protected:
     eckit::DataHandle *f_;
@@ -126,10 +126,10 @@ public:
     int refCount_;
 
     friend class MetaDataReader<MetaDataReaderIterator>;
-    friend class odb::Header<odb::MetaDataReaderIterator>;
-    friend class odb::sql::ODATableIterator;
+    friend class odc::Header<odc::MetaDataReaderIterator>;
+    friend class odc::sql::ODATableIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

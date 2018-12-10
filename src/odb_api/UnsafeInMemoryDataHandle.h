@@ -18,7 +18,7 @@
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
 
-namespace odb {
+namespace odc {
 
 class NonVirtual {};
 
@@ -93,6 +93,6 @@ private:
 typedef UnsafeInMemoryDataHandle<NonVirtual> FastInMemoryDataHandle;
 typedef UnsafeInMemoryDataHandle<eckit::DataHandle> PrettyFastInMemoryDataHandle;
 
-} // namespace odb
+} // namespace odc
 
 #endif

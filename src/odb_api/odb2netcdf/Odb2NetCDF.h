@@ -7,7 +7,7 @@
 
 /// @author Anne Fouilloux
 
-namespace odb { class MetaData; }
+namespace odc { class MetaData; }
 
 class Odb2NetCDF {
 public:
@@ -27,7 +27,7 @@ public:
     ~Odb2NetCDF_1D() {};
     virtual void convert();
 private:
-    std::vector<NcVar*> createVariables(NcFile& dataFile, const odb::MetaData& columns, NcDim*);
+    std::vector<NcVar*> createVariables(NcFile& dataFile, const odc::MetaData& columns, NcDim*);
 };
 
 class Odb2NetCDF_2D : public Odb2NetCDF {

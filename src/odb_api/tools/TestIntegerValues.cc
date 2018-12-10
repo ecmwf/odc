@@ -25,7 +25,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void setUp()
 {
@@ -34,7 +34,7 @@ static void setUp()
 	"20101130\n"
 	"20101201\n"
 	"20101202\n";
-    odb::tool::ImportTool::importText(data, "TestIntegerValues.odb");
+    odc::tool::ImportTool::importText(data, "TestIntegerValues.odb");
 }
 
 
@@ -45,8 +45,8 @@ static void test()
 
     const std::string fileNameOdb="TestIntegerValues.odb";
 
-	odb::Reader odb(fileNameOdb);
-	odb::Reader::iterator it = odb.begin();
+	odc::Reader odb(fileNameOdb);
+	odc::Reader::iterator it = odb.begin();
 
 	for (unsigned int i=0; i < it->columns().size(); ++i) {
 		std::cout << "Name = " << it->columns()[i]->name() << " " ;
@@ -63,15 +63,15 @@ static void test()
 			double nr = ((*it)[i]);
 			switch(it->columns()[i]->type())
 			{
-			case odb::INTEGER:
-			case odb::BITFIELD:
+			case odc::INTEGER:
+			case odc::BITFIELD:
 				std::cout <<  static_cast<int>(nr) << " ";
 				//cout <<  "* should be: " << it->integer(i) << " ";
 				break;
-			case odb::REAL:
+			case odc::REAL:
 				std::cout <<  nr << " ";
 				break;
-			case odb::IGNORE:
+			case odc::IGNORE:
 			default:
 				ASSERT("Unknown type" && false);
 				break;

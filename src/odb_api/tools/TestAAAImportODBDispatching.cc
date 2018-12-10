@@ -21,15 +21,15 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void test()
 {
 	if (getenv("ODB_ROOT"))
-        odb::StringTool::shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
+        odc::StringTool::shell("MALLOC_CHECK_=2 ODB_COMPILER_FLAGS=`pwd`/2000010106/ECMA/ECMA.flags odb_migrator 2000010106/ECMA . 2000010106.{obstype}.{sensor}.odb", Here());
 	else {
 		Log::warning() << "UnitTest: ODB_ROOT not set, skipping testing of odb_migrator" << std::endl;
-        odb::StringTool::shell("odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
+        odc::StringTool::shell("odb split 2000010106.odb 2000010106.{obstype}.{sensor}.odb", Here());
 	}
 }
 static void setUp(){}

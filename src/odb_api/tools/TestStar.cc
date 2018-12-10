@@ -20,7 +20,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 /// UnitTest syntax: select *@odb_table from "file.oda";
 ///
@@ -28,9 +28,9 @@ static void test()
 {
     const std::string SELECT = "select *@hdr from \"2000010106.odb\";";
 
-	odb::Select oda(SELECT);
+	odc::Select oda(SELECT);
 
-	odb::Select::iterator it = oda.begin();
+	odc::Select::iterator it = oda.begin();
 	ASSERT("hdr has 27 columns excluding @LINKs." && it->columns().size() == 27);
 }
 

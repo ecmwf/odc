@@ -25,12 +25,12 @@ using namespace std;
 
 inline size_t MEGA(size_t n) { return n*1024*1204; }
 
-template class eckit::ThreadSingleton<odb::ODBAPISettings>;
-static ThreadSingleton<odb::ODBAPISettings> instance_;
+template class eckit::ThreadSingleton<odc::ODBAPISettings>;
+static ThreadSingleton<odc::ODBAPISettings> instance_;
 
-bool odb::ODBAPISettings::debug = false;
+bool odc::ODBAPISettings::debug = false;
 
-void odb::ODBAPISettings::setHome(const char *argv0)
+void odc::ODBAPISettings::setHome(const char *argv0)
 {
     const char* env(getenv("ODB_API_HOME"));
     if (env) {
@@ -79,7 +79,7 @@ void odb::ODBAPISettings::setHome(const char *argv0)
     }
 }
 
-string odb::ODBAPISettings::fileInHome(const string& fileName)
+string odc::ODBAPISettings::fileInHome(const string& fileName)
 {
     ASSERT(fileName[0] == '~');
     ASSERT(fileName[1] == '/');
@@ -88,10 +88,10 @@ string odb::ODBAPISettings::fileInHome(const string& fileName)
 
 void debugMeNow() {
 	Log::info() << "Debug me now" << endl;
-	odb::ODBAPISettings::debug = true;
+	odc::ODBAPISettings::debug = true;
 }
 
-namespace odb {
+namespace odc {
 
 ODBAPISettings& ODBAPISettings::instance()
 {
@@ -154,4 +154,4 @@ DataHandle* ODBAPISettings::appendToFile(const PathName& fn, const Length& lengt
 	return h;
 }
 
-} // namespace odb
+} // namespace odc

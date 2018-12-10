@@ -20,7 +20,7 @@
 #include <vector>
 
 
-namespace odb {
+namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -32,6 +32,6 @@ void checkKeywordsHaveValues(const RequestDict& request, const std::vector<std::
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odb
+} // namespace odc
 
 #endif

@@ -33,9 +33,9 @@
 #endif
 
 using namespace eckit::testing;
-using namespace odb::codec;
-using odb::SameByteOrder;
-using odb::OtherByteOrder;
+using namespace odc::codec;
+using odc::SameByteOrder;
+using odc::OtherByteOrder;
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -129,8 +129,8 @@ CASE("Constant values are constant") {
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -226,8 +226,8 @@ CASE("constant strings are constant") {
 
         {
             MockReadDataHandle dh(data);
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -257,7 +257,7 @@ CASE("constant strings are constant") {
 
 CASE("Constant integer or missing value behaves a bit oddly") {
 
-    EXPECT(odb::MDI::integerMDI() == 2147483647);
+    EXPECT(odc::MDI::integerMDI() == 2147483647);
 
     // Note that there is absolutely NOTHING that enforces that these are integers...
     // --> This test tests the generic case, with a double, which is odd
@@ -324,14 +324,14 @@ CASE("Constant integer or missing value behaves a bit oddly") {
             c->decode(&decoded);
             EXPECT(baseValue == decoded);
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::integerMDI()); // missing
+            EXPECT(decoded == odc::MDI::integerMDI()); // missing
             for (size_t n = 0; n < 255; n++) {
                 double b = baseValue + n;
                 c->decode(&decoded);
                 EXPECT(b == decoded);
             }
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::integerMDI()); // missing
+            EXPECT(decoded == odc::MDI::integerMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(28 + 258));
         }
@@ -343,8 +343,8 @@ CASE("Constant integer or missing value behaves a bit oddly") {
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -362,14 +362,14 @@ CASE("Constant integer or missing value behaves a bit oddly") {
             c->decode(&decoded);
             EXPECT(baseValue == decoded);
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::integerMDI()); // missing
+            EXPECT(decoded == odc::MDI::integerMDI()); // missing
             for (size_t i = 0; i < 255; i++) {
                 double b = baseValue + i;
                 c->decode(&decoded);
                 EXPECT(b == decoded);
             }
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::integerMDI()); // missing
+            EXPECT(decoded == odc::MDI::integerMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 258));
         }
@@ -379,7 +379,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
 CASE("real constant or missing value is not quite constant") {
 
-    EXPECT(odb::MDI::realMDI() == -2147483647);
+    EXPECT(odc::MDI::realMDI() == -2147483647);
 
     // TODO: Really something labelled constant ought to be actually constant...
     // Do this one big-endian just because.
@@ -443,14 +443,14 @@ CASE("real constant or missing value is not quite constant") {
             c->decode(&decoded);
             EXPECT(baseValue == decoded);
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::realMDI()); // missing
+            EXPECT(decoded == odc::MDI::realMDI()); // missing
             for (size_t i = 0; i < 255; i++) {
                 double b = baseValue + i;
                 c->decode(&decoded);
                 EXPECT(b == decoded);
             }
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::realMDI()); // missing
+            EXPECT(decoded == odc::MDI::realMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(28 + 258));
         }
@@ -461,8 +461,8 @@ CASE("real constant or missing value is not quite constant") {
 
         {
             MockReadDataHandle dh(data);
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -480,14 +480,14 @@ CASE("real constant or missing value is not quite constant") {
             c->decode(&decoded);
             EXPECT(baseValue == decoded);
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::realMDI()); // missing
+            EXPECT(decoded == odc::MDI::realMDI()); // missing
             for (size_t i = 0; i < 255; i++) {
                 double b = baseValue + i;
                 c->decode(&decoded);
                 EXPECT(b == decoded);
             }
             c->decode(&decoded);
-            EXPECT(decoded == odb::MDI::realMDI()); // missing
+            EXPECT(decoded == odc::MDI::realMDI()); // missing
 
             EXPECT(dh.position() == eckit::Offset(hdrSize + 28 + 258));
         }
@@ -575,8 +575,8 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -691,8 +691,8 @@ CASE("long floating point values can include the missing data value") {
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -837,8 +837,8 @@ CASE("short floating point values can include the missing data value") {
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -960,8 +960,8 @@ CASE("32bit integers are as-is") {
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1085,8 +1085,8 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1206,8 +1206,8 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1344,8 +1344,8 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1490,8 +1490,8 @@ CASE("Character strings can be stored in a flat list, and indexed, and be longer
         {
             MockReadDataHandle dh(data);
 
-            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> ds_same(dh);
-            odb::DataStream<odb::OtherByteOrder, eckit::DataHandle> ds_other(dh);
+            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> ds_same(dh);
+            odc::DataStream<odc::OtherByteOrder, eckit::DataHandle> ds_other(dh);
 
             eckit::ScopedPtr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {

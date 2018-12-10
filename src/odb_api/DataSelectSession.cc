@@ -6,11 +6,11 @@
 #include "odb_api/DataSelectSession.h"
 #include "eckit/sql/SQLOutputConfig.h"
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 DataSelectSession::DataSelectSession(DataSelectIterator& it)
- : SQLSession(odb::sql::SQLOutputConfig::defaultConfig(), ","),
+ : SQLSession(odc::sql::SQLOutputConfig::defaultConfig(), ","),
    it_(it), 
    sql_(0)
 {
@@ -20,21 +20,21 @@ DataSelectSession::DataSelectSession(DataSelectIterator& it)
 DataSelectSession::~DataSelectSession()
 {}
 
-void DataSelectSession::statement(odb::sql::SQLStatement* sql)
+void DataSelectSession::statement(odc::sql::SQLStatement* sql)
 {
     ASSERT(sql);    
     sql_ = sql;
     gotSelectAST(false);
 }
 
-odb::sql::SQLOutput* DataSelectSession::defaultOutput()
+odc::sql::SQLOutput* DataSelectSession::defaultOutput()
 {
     return new DataSelectOutput(it_);
 }
 
-odb::sql::SQLStatement* DataSelectSession::statement()
+odc::sql::SQLStatement* DataSelectSession::statement()
 {
-    typedef odb::sql::SQLStatement* P;
+    typedef odc::sql::SQLStatement* P;
     if (gotSelectAST())
     {
         gotSelectAST(false);
@@ -44,4 +44,4 @@ odb::sql::SQLStatement* DataSelectSession::statement()
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

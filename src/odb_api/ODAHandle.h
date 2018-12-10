@@ -17,7 +17,7 @@
 #include "eckit/io/Offset.h"
 #include "odb_api/ODATranslator.h"
 
-namespace odb {
+namespace odc {
 
 
 class ODAHandle {

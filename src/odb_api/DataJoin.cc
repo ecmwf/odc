@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 DataJoin::DataJoin(const DataTable& left, const DataTable& right,
         const std::string& primaryKey, const std::string& foreignKey, Type type)
@@ -37,4 +37,4 @@ DataJoin::iterator DataJoin::end() const
     return iterator(new internal::DataJoinIterator(*this, false));
 }
 
-} // namespace odb
+} // namespace odc

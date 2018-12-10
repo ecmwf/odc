@@ -22,7 +22,7 @@
 
 namespace eckit { class PathName; class CodeLocation; }
 
-namespace odb {
+namespace odc {
 
 class StringTool {
 
@@ -62,7 +62,7 @@ public:
 
 std::ostream& operator<<(std::ostream&, const std::vector<std::string>&);
 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

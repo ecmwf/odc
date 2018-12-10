@@ -19,7 +19,7 @@
 #include "odb_api/MetaData.h"
 #include "odb_api/UnsafeInMemoryDataHandle.h"
 
-namespace odb {
+namespace odc {
 
 template <typename OWNER>
 Header<OWNER>::Header(OWNER& owner)
@@ -184,5 +184,5 @@ void serializeHeader(DATAHANDLE &dh, size_t dataSize, size_t rowsNumber, const P
 	ff.writeBuffer(buffer);
 }
 
-} //namespace odb 
+} //namespace odc 
 

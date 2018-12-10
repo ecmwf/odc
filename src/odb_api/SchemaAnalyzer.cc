@@ -16,7 +16,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 SchemaAnalyzer::SchemaAnalyzer()
@@ -244,5 +244,5 @@ std::string SchemaAnalyzer::findColumnType(const std::string& columnName)
 }
 
 } // namespace sql
-} // namespace odb 
+} // namespace odc 
 

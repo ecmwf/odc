@@ -19,7 +19,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DataLoader::DataLoader(const std::string& path)
   : query_(""),
@@ -187,4 +187,4 @@ void DataLoader::close()
     open_ = false;
 }
 
-} // namespace odb
+} // namespace odc

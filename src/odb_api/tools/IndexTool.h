@@ -16,7 +16,7 @@
 #include "odb_api/Partition.h"
 #include "odb_api/Partitions.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 typedef std::vector<std::pair<eckit::Offset,eckit::Length> > BlockOffsets;
@@ -39,6 +39,6 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

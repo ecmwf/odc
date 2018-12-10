@@ -3,7 +3,7 @@
 
 #include "odb_api/DataRecord.h"
 
-namespace odb {
+namespace odc {
 
 DataRecord::DataRecord(DataRow& row, const DataColumns& columns)
   : row_(row),
@@ -29,4 +29,4 @@ std::ostream& operator<<(std::ostream& stream, const DataRecord& record)
     return stream << "\b\b)";
 }
 
-} // namespace odb
+} // namespace odc

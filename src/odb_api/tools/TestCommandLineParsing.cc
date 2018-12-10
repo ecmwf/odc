@@ -19,11 +19,11 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
-struct TestTool : public odb::tool::Tool {
+struct TestTool : public odc::tool::Tool {
 
-    TestTool(int argc, char **argv) : odb::tool::Tool(argc, argv)
+    TestTool(int argc, char **argv) : odc::tool::Tool(argc, argv)
 	{
 		registerOptionWithArgument("-foo");
 		registerOptionWithArgument("-intOpt");

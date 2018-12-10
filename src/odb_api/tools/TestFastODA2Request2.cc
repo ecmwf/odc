@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static Length size1;
 static Length size2;
@@ -30,12 +30,12 @@ static Length size2;
 Length createFile(const std::string& fileName, unsigned int andate, unsigned int antime, unsigned int reportype)
 {
 	{
-		odb::Writer<> oda(fileName);
-		odb::Writer<>::iterator row = oda.begin();
+		odc::Writer<> oda(fileName);
+		odc::Writer<>::iterator row = oda.begin();
 		row->setNumberOfColumns(3);
-		row->setColumn(0, "antime", odb::INTEGER);
-		row->setColumn(1, "andate", odb::INTEGER);
-		row->setColumn(2, "reportype", odb::INTEGER);
+		row->setColumn(0, "antime", odc::INTEGER);
+		row->setColumn(1, "andate", odc::INTEGER);
+		row->setColumn(2, "reportype", odc::INTEGER);
 		row->writeHeader();
 		for (size_t i = 0; i < 1; ++i, ++row)
 		{

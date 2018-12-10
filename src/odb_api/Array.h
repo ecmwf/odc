@@ -17,7 +17,7 @@
 
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 class Array {
@@ -69,7 +69,7 @@ private:
     bool owner_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif 
 

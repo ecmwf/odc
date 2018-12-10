@@ -19,7 +19,7 @@ class PathName;
 class DataHandle;
 }
 
-namespace odb {
+namespace odc {
 
 class ODBAPISettings : private eckit::NonCopyable {
 public:
@@ -54,6 +54,6 @@ private:
     std::string home_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

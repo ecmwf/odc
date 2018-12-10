@@ -20,7 +20,7 @@
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
 
-namespace odb {
+namespace odc {
 
 class NonVirtualBase {};
 
@@ -108,6 +108,6 @@ private:
 
 typedef TReadOnlyMemoryDataHandle<eckit::DataHandle> ReadOnlyMemoryDataHandle;
 
-} // namespace odb 
+} // namespace odc 
 
 #endif

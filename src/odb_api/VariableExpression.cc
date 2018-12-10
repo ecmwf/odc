@@ -17,11 +17,11 @@
 #include "odb_api/sql/SQLDatabase.h"
 #include "odb_api/sql/SQLSession.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 namespace expression {
 
-const odb::sql::type::SQLType* VariableExpression::type() const { return &odb::sql::type::SQLType::lookup("real"); }
+const odc::sql::type::SQLType* VariableExpression::type() const { return &odc::sql::type::SQLType::lookup("real"); }
 
 VariableExpression::VariableExpression(const std::string& name)
 : value_(0),
@@ -59,4 +59,4 @@ bool VariableExpression::isVector() const { return value_->isVector(); }
 
 } // namespace expression
 } // namespace sql
-} // namespace odb
+} // namespace odc

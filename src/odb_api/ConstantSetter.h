@@ -14,14 +14,14 @@
 #include "odb_api/IteratorProxy.h"
 #include "odb_api/ODAUpdatingIterator.h"
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 class ConstantSetter
 {
 public:
-	typedef typename odb::ODAUpdatingIterator<T> iterator_class;
-	typedef typename odb::IteratorProxy<iterator_class, ConstantSetter, const double> iterator;
+	typedef typename odc::ODAUpdatingIterator<T> iterator_class;
+	typedef typename odc::IteratorProxy<iterator_class, ConstantSetter, const double> iterator;
 
 	ConstantSetter(const T& b, const T& e, const std::vector<std::string>& columns, const std::vector<double>& values)
 	: ii_(b), end_(e), columns_(columns), values_(values)
@@ -39,7 +39,7 @@ private:
 	const std::vector<double> values_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #include "odb_api/ConstantSetter.cc"
 

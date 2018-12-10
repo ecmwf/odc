@@ -18,7 +18,7 @@
 #include "eckit/runtime/Tool.h"
 #include "odb_api/CommandLineParser.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class ODBApplication : public eckit::Tool {
@@ -40,6 +40,6 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif

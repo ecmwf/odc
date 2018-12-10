@@ -20,7 +20,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 /// UnitTest problem fixed with p4 change 23687
 ///
@@ -34,10 +34,10 @@ static void test()
 
 	Log::info() << "Executing '" << SELECT << "'" << std::endl;
 
-	odb::Select oda(SELECT);
+	odc::Select oda(SELECT);
 	long int i=0;
 
-	odb::Select::iterator it = oda.begin();
+	odc::Select::iterator it = oda.begin();
 
 	Log::debug() << "test: it->columns().size() == " << it->columns().size() << std::endl;
 

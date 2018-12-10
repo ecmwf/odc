@@ -11,7 +11,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/ODAColumn.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 ODAColumn::ODAColumn(const type::SQLType& type, SQLTable& owner, const std::string& name, int index, bool hasMissingValue, double
@@ -39,5 +39,5 @@ double ODAColumn::next(bool& missing)
 void ODAColumn::advance(unsigned long) { NOTIMP; }
 
 } // namespace sql 
-} // namespace odb 
+} // namespace odc 
 

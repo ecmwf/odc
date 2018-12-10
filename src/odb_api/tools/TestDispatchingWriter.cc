@@ -21,7 +21,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 /// UnitTest DispatchingWriter
 ///
@@ -29,13 +29,13 @@ static void test()
 {
 	const string fileName = "2000010106.odb";
 
-	odb::Reader oda(fileName);
-	odb::Reader::iterator it = oda.begin();
-	const odb::Reader::iterator end = oda.end();
+	odc::Reader oda(fileName);
+	odc::Reader::iterator it = oda.begin();
+	const odc::Reader::iterator end = oda.end();
 	ASSERT(it->columns().size() > 0);
 
-	odb::DispatchingWriter writer("disp.{obstype}.{sensor}.odb");
-	odb::DispatchingWriter::iterator wi = writer.begin();
+	odc::DispatchingWriter writer("disp.{obstype}.{sensor}.odb");
+	odc::DispatchingWriter::iterator wi = writer.begin();
 	unsigned long long n1 = wi->pass1(it, end);
 	wi->close();
 	
@@ -43,13 +43,13 @@ static void test()
 	vector<PathName> files = (**wi).outputFiles();
 	for (size_t i = 0; i < files.size(); ++i)
 	{
-        unsigned long long n = odb::tool::CountTool::rowCount(files[i]);
+        unsigned long long n = odc::tool::CountTool::rowCount(files[i]);
 		Log::info() << i << ". " << files[i] << ": " << n << std::endl;
 		sum += n;
 	}
 
 	ASSERT(n1 == sum);
-    odb::StringTool::shell("ls -l disp.*.*.odb", Here());
+    odc::StringTool::shell("ls -l disp.*.*.odb", Here());
 }
 
 

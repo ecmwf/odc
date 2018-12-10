@@ -25,7 +25,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 class MetaDataReaderIterator;
 
@@ -68,7 +68,7 @@ private:
 	friend class MetaDataReaderIterator;
 };
 
-} // namespace odb
+} // namespace odc
 
 #include "odb_api/MetaDataReader.cc"
 

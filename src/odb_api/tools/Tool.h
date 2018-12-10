@@ -21,7 +21,7 @@
 namespace eckit { class PathName; }
 class Application;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class Tool : public StringTool, public CommandLineParser {
@@ -49,7 +49,7 @@ private:
 template <typename T> struct ExperimentalTool { enum { experimental = false }; };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

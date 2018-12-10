@@ -23,7 +23,7 @@ namespace eckit {
     class Length; 
 }
 
-namespace odb {
+namespace odc {
 
 class DataHandleFactory {
 public:  // Types
@@ -56,6 +56,6 @@ private:
     std::string prefix_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

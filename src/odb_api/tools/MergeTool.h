@@ -14,7 +14,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "odb_api/tools/Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class MergeTool : public Tool {
@@ -45,6 +45,6 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

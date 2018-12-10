@@ -6,7 +6,7 @@
 
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 
 class DataTableMappings : private std::map<std::string, std::string>
 {
@@ -25,6 +25,6 @@ public:
     void add(const std::string& source, const std::string& target);
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATATABLEMAPPINGS_H_

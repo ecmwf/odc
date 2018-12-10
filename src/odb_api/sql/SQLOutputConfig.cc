@@ -16,7 +16,7 @@
 #include "odb_api/TemplateParameters.h"
 #include "odb_api/Writer.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -53,9 +53,9 @@ eckit::sql::SQLOutput* SQLOutputConfig::buildOutput() const {
         TemplateParameters templateParameters;
         TemplateParameters::parse(outputFile_, templateParameters);
         if (templateParameters.size()) {
-            return new odb::sql::ODAOutput<DispatchingWriter>(new DispatchingWriter(outputFile_, maxOpenFiles));
+            return new odc::sql::ODAOutput<DispatchingWriter>(new DispatchingWriter(outputFile_, maxOpenFiles));
         } else {
-            return new odb::sql::ODAOutput<Writer<>>(new Writer<>(outputFile_));
+            return new odc::sql::ODAOutput<Writer<>>(new Writer<>(outputFile_));
             // TODO: toODAColumns
         }
 
@@ -71,4 +71,4 @@ void SQLOutputConfig::setOutputStream(std::ostream& s) {
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc

@@ -18,7 +18,7 @@
 #include "Tool.h"
 #include "ToolFactory.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -46,32 +46,32 @@ struct Test_##F : public TestCase { Test_##F(int argc, char **argv) : TestCase(a
 ToolFactory<Test_##F> test_##F(std::string("Test_") + #F); 
 
 #define TEST_FIXTURE(F, T) \
-struct Test_##F##_##T : public F, public odb::tool::test::TestCase \
+struct Test_##F##_##T : public F, public odc::tool::test::TestCase \
 { \
-    Test_##F##_##T(int argc, char **argv) : F(), odb::tool::test::TestCase(argc, argv) {} \
+    Test_##F##_##T(int argc, char **argv) : F(), odc::tool::test::TestCase(argc, argv) {} \
     void test(); \
 }; \
-odb::tool::ToolFactory<Test_##F##_##T> test_##F##_##T(std::string("Test_") + #F + std::string("_") + #T); \
+odc::tool::ToolFactory<Test_##F##_##T> test_##F##_##T(std::string("Test_") + #F + std::string("_") + #T); \
 void Test_##F##_##T::test()
 
 #define TEST(T) \
-struct Test_##T : public odb::tool::test::TestCase \
+struct Test_##T : public odc::tool::test::TestCase \
 { \
-    Test_##T(int argc, char **argv) : odb::tool::test::TestCase(argc, argv) {} \
+    Test_##T(int argc, char **argv) : odc::tool::test::TestCase(argc, argv) {} \
     void test(); \
 }; \
-odb::tool::ToolFactory<Test_##T> test_##T(std::string("Test_") + #T); \
+odc::tool::ToolFactory<Test_##T> test_##T(std::string("Test_") + #T); \
 void Test_##T::test()
 
 #define SIMPLE_TEST(name) \
-struct Test_##name : public odb::tool::test::TestCase \
+struct Test_##name : public odc::tool::test::TestCase \
 { \
-    Test_##name(int argc, char **argv) : odb::tool::test::TestCase(argc, argv) {} \
+    Test_##name(int argc, char **argv) : odc::tool::test::TestCase(argc, argv) {} \
     void setUp() { ::setUp(); } \
     void tearDown() { ::tearDown(); } \
     void test() { ::test(); } \
 }; \
-odb::tool::ToolFactory<Test_##name> test_##name(std::string("Test_") + #name);
+odc::tool::ToolFactory<Test_##name> test_##name(std::string("Test_") + #name);
 
 #define CHECK(expected) ASSERT(expected)
 #define CHECK_EQUAL(expected, actual) ASSERT((expected) == (actual))
@@ -86,11 +86,11 @@ bool CheckArrayEqual(const Expected& expected, const Actual& actual, const int c
 }
 
 #define CHECK_ARRAY_EQUAL(expected, actual, count) \
-ASSERT(odb::tool::test::CheckArrayEqual(expected, actual, count))
+ASSERT(odc::tool::test::CheckArrayEqual(expected, actual, count))
 
 } // namespace test 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif
 

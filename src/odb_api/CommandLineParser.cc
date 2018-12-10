@@ -15,7 +15,7 @@
 #include "eckit/utils/Translator.h"
 #include "odb_api/CommandLineParser.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 CommandLineParser::~CommandLineParser() {}
@@ -156,5 +156,5 @@ template long CommandLineParser::optionArgument(const std::string&, long);
 template double CommandLineParser::optionArgument(const std::string&, double);
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

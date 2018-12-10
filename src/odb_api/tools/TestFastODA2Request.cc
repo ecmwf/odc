@@ -18,13 +18,13 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 const char * cfg = "let, DATE = 'andate@desc', TIME = 'antime@desc', TYPE = type, EXPVER = expver";
 
 static void test()
 {
-    odb::FastODA2Request<odb::ODA2RequestClientTraits> o;
+    odc::FastODA2Request<odc::ODA2RequestClientTraits> o;
 	o.parseConfig(cfg);
 	o.scanFile("2000010106.2.0.odb");
 
@@ -44,7 +44,7 @@ static void test()
 	ASSERT(*o.getValues("TYPE").begin() == "MISSING");
 
 	map<string, double> m = o.getUniqueValues();
-	ASSERT(m["TYPE"] == odb::MDI::realMDI());
+	ASSERT(m["TYPE"] == odc::MDI::realMDI());
 	ASSERT(m["DATE"] == 20000101);
 	ASSERT(m["TIME"] == 60000);
 }

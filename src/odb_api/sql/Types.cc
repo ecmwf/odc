@@ -17,24 +17,24 @@
 using namespace eckit;
 using namespace eckit::sql::type;
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-odb::ColumnType sqlToOdbType(const SQLType& t) {
+odc::ColumnType sqlToOdbType(const SQLType& t) {
 
     switch(t.getKind()) {
     case SQLType::realType:
-        return odb::REAL;
+        return odc::REAL;
     case SQLType::integerType:
-        return odb::INTEGER;
+        return odc::INTEGER;
     case SQLType::stringType:
-        return odb::STRING;
+        return odc::STRING;
     case SQLType::bitmapType:
-        return odb::BITFIELD;
+        return odc::BITFIELD;
     case SQLType::doubleType:
-        return odb::DOUBLE;
+        return odc::DOUBLE;
     case SQLType::blobType:
         throw SeriousBug("SQL blob type not supported in odb_api", Here());
     default:
@@ -42,11 +42,11 @@ odb::ColumnType sqlToOdbType(const SQLType& t) {
     };
 
     ASSERT(false);
-    return odb::IGNORE;
+    return odc::IGNORE;
 }
 
 
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc

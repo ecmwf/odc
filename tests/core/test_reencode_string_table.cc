@@ -32,9 +32,9 @@
 #endif
 
 using namespace eckit::testing;
-using namespace odb::codec;
-using odb::SameByteOrder;
-using odb::OtherByteOrder;
+using namespace odc::codec;
+using odc::SameByteOrder;
+using odc::OtherByteOrder;
 
 // ------------------------------------------------------------------------------------------------------
 

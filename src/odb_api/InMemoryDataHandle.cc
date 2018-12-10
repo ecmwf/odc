@@ -10,7 +10,7 @@
 
 #include "odb_api/InMemoryDataHandle.h"
 
-namespace odb {
+namespace odc {
 
 InMemoryDataHandle::InMemoryDataHandle()
 : buf_(), readIterator_(buf_.begin())
@@ -31,5 +31,5 @@ void InMemoryDataHandle::buffer(const MemoryBlock& buffer)
 InMemoryDataHandle::~InMemoryDataHandle()
 {}
 
-} // namespace odb
+} // namespace odc
 

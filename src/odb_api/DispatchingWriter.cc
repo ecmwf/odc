@@ -18,7 +18,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DispatchingWriter::DispatchingWriter(const std::string& outputFileTemplate, int maxOpenFiles, bool append)
 : outputFileTemplate_(outputFileTemplate),
@@ -40,5 +40,5 @@ DispatchingWriter::iterator DispatchingWriter::begin()
 	return iterator(new iterator_class(*this, maxOpenFiles_, append_));
 }
 
-} // namespace odb
+} // namespace odc
 

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 void DataRowBase::initialize(const DataColumns& columns)
@@ -95,4 +95,4 @@ void DataRow::set(size_t index, const std::string& value)
     for (; j < sizeof(double); ++j) d[j] = ' ';
 }
 
-} // namespace odb
+} // namespace odc

@@ -16,7 +16,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 Column::Column(MetaData &owner)
 : owner_(owner),
@@ -106,7 +106,7 @@ bool Column::operator==(const Column& other) const
 void Column::print(std::ostream& s) const
 {
 	s << "name: " << name_ << ", ";
-	s << "type: " << columnTypeName(odb::ColumnType(type_));
+	s << "type: " << columnTypeName(odc::ColumnType(type_));
 
 	if (type_ == BITFIELD)
 	{
@@ -127,5 +127,5 @@ void Column::print(std::ostream& s) const
 	else s << "NONE";
 }
 
-} // namespace odb 
+} // namespace odc 
 

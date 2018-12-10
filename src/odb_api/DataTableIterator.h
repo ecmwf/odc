@@ -9,7 +9,7 @@
 #include "odb_api/DataPage.h"
 #include "odb_api/IteratorFacade.h"
 
-namespace odb {
+namespace odc {
 
 class DataTable;
 class DataRow;
@@ -81,12 +81,12 @@ private:
     row_proxy_type* row_;
 
     friend class DataPage;
-    friend class odb::DataTable;
-    friend class odb::IteratorFacadeAccess;
+    friend class odc::DataTable;
+    friend class odc::IteratorFacadeAccess;
     template <typename R, typename T> friend class DataTableIterator;
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATATABLEITERATOR_H_

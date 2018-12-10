@@ -12,7 +12,7 @@
 /// @date Aug 2018
 
 /// @note This output is designed to generalise and standardise the output mechanism for the
-/// odb::Select class. Prior to this, the class had two problems:
+/// odc::Select class. Prior to this, the class had two problems:
 ///
 /// i) It invasively used the internals of the SQLSelect and TableIterators, accessing their
 ///    internal data buffers, and the results objects directly. This is nasty and results in
@@ -39,7 +39,7 @@
 #include "odb_api/MetaData.h"
 
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -112,6 +112,6 @@ private: // members
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc
 
 #endif

@@ -23,7 +23,7 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 std::ostream& operator<< (std::ostream& o, const Partitions& p)
 {
@@ -129,5 +129,5 @@ void Partitions::addReport(const PathName& fileName, ullong blockStart, ullong b
     }
 }
 
-} // namespace odb 
+} // namespace odc 
 

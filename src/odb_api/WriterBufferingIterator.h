@@ -25,7 +25,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 template <typename I> class Writer;
 namespace sql { class TableDef; }
@@ -36,7 +36,7 @@ public:
 	typedef Writer<WriterBufferingIterator> Owner;
 
 	//WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle=true);
-	WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle, const odb::sql::TableDef* tableDef=0);
+	WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle, const odc::sql::TableDef* tableDef=0);
 
 	~WriterBufferingIterator();
 
@@ -142,7 +142,7 @@ private:
 
 	codec::CodecOptimizer codecOptimizer_;
 
-    const odb::sql::TableDef* tableDef_;
+    const odc::sql::TableDef* tableDef_;
 
 private:
     bool openDataHandle_;
@@ -208,6 +208,6 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	return nrows;
 }
 
-} // namespace odb 
+} // namespace odc 
 
 #endif

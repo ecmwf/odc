@@ -22,7 +22,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 SetTool::SetTool (int argc, char *parameters[]) : Tool(argc, parameters) { }
@@ -43,17 +43,17 @@ void SetTool::run()
 	PathName inFile = parameters(2);
 	PathName outFile = parameters(3);
 
-	odb::Reader in(inFile);
-	odb::Writer<> out(outFile);
+	odc::Reader in(inFile);
+	odc::Writer<> out(outFile);
 
-	odb::Writer<>::iterator writer(out.begin());
+	odc::Writer<>::iterator writer(out.begin());
 
-	odb::Reader::iterator sourceIt = in.begin();
-	const odb::Reader::iterator sourceEnd = in.end();
+	odc::Reader::iterator sourceIt = in.begin();
+	const odc::Reader::iterator sourceEnd = in.end();
 
 	parseUpdateList(parameters(1), columns, values);
 
-	typedef odb::ConstantSetter<odb::Reader::iterator> Setter;
+	typedef odc::ConstantSetter<odc::Reader::iterator> Setter;
 	Setter setter(sourceIt, sourceEnd, columns, values);
 	Setter::iterator begin = setter.begin();
 	const Setter::iterator end = setter.end();
@@ -106,5 +106,5 @@ void SetTool::parseUpdateList(std::string s, std::vector<std::string>& columns, 
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

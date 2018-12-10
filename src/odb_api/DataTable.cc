@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 using namespace internal;
 
@@ -275,4 +275,4 @@ std::ostream& operator<<(std::ostream& os, DataTable& table)
     return os;
 }
 
-} // namespace odb
+} // namespace odc

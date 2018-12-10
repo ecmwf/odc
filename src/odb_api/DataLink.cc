@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 DataLink::DataLink(DataTable& parent, DataTable& child)
   : owner_(0),
@@ -101,4 +101,4 @@ void DataLink::build(const std::string& primaryKey, const std::string& foreignKe
     }
 }
 
-} // namespace odb
+} // namespace odc

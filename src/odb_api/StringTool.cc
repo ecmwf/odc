@@ -24,7 +24,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 std::vector<std::string> StringTool::readLines(const PathName fileName, bool logging)
 {
@@ -189,5 +189,5 @@ std::string StringTool::patchTimeForMars(const std::string& ss)
 
 bool StringTool::isSelectStatement(const std::string& s) { return StringTool::match("select", eckit::StringTools::lower(eckit::StringTools::trim(s))); }
 
-} // namespace odb 
+} // namespace odc 
 

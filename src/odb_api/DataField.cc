@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 DataField::DataField(DataRow& row, const DataColumn& column, size_t index)
   : row_(&row),
@@ -36,4 +36,4 @@ std::ostream& operator<<(std::ostream& stream, const DataField& field)
     return stream;
 }
 
-} // namespace odb
+} // namespace odc

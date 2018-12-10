@@ -6,7 +6,7 @@
 
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 class DataTable;
@@ -90,6 +90,6 @@ private:
     friend class DataSet;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATATABLES_H_

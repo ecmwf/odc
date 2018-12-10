@@ -20,7 +20,7 @@
 
 namespace eckit { class PathName; }
 
-namespace odb {
+namespace odc {
 
 typedef std::vector<Partition> PartitionsBase;
 
@@ -40,6 +40,6 @@ private:
     friend std::ostream& operator<< (std::ostream&, const Partitions&);
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

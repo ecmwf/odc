@@ -24,20 +24,20 @@ const double EPS =   7e-6;
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 
 static void setUp()
 {
 	Timer t("Test eq_boxlat and eq_boxlon functions");
-	odb::Writer<> oda("test_eq_box.odb");
+	odc::Writer<> oda("test_eq_box.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
-	row->setColumn(0, "lat", odb::REAL);
-	row->setColumn(1, "lon", odb::REAL);
+	row->setColumn(0, "lat", odc::REAL);
+	row->setColumn(1, "lon", odc::REAL);
 	
 	row->writeHeader();
 
@@ -58,8 +58,8 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select oda(sql);
-	odb::Select::iterator it = oda.begin();
+	odc::Select oda(sql);
+	odc::Select::iterator it = oda.begin();
 
 	ASSERT(fabs((*it)[0] - 47.134066345052e0)<EPS); // 
 	ASSERT((*it)[1] == 0); // 

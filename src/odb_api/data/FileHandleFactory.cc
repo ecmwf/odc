@@ -16,7 +16,7 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 FileHandleFactory::FileHandleFactory()
 : DataHandleFactory("file")
@@ -27,4 +27,4 @@ eckit::DataHandle* FileHandleFactory::makeHandle(const string& fileName) const
     return new FileHandle(fileName);
 }
 
-} // namespace odb
+} // namespace odc

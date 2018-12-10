@@ -17,7 +17,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 TemplateParameters::TemplateParameters()
 : std::vector<TemplateParameter*>()
@@ -65,4 +65,4 @@ TemplateParameters& TemplateParameters::parse(const std::string& fileNameTemplat
 	return params;
 }
 
-} // namespace odb
+} // namespace odc

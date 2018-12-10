@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 DataTableFiller::DataTableFiller(DataTable& table)
@@ -116,4 +116,4 @@ void DataTableFillerIterator::fillRow(const double* const data)
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

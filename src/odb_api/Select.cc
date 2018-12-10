@@ -21,7 +21,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ Select::Select(const std::string& selectStatement, DataHandle& dh, bool manageOw
 
     dh.openForRead();
     eckit::sql::SQLDatabase& db(session_.currentDatabase());
-    db.addImplicitTable(new odb::sql::ODATable(db, dh));
+    db.addImplicitTable(new odc::sql::ODATable(db, dh));
 }
 
 
@@ -49,7 +49,7 @@ Select::Select(const std::string& selectStatement, const std::string& path, bool
     ownDH_.reset(DataHandleFactory::openForRead(path));
     ownDH_->openForRead();
     eckit::sql::SQLDatabase& db(session_.currentDatabase());
-    db.addImplicitTable(new odb::sql::ODATable(db, *ownDH_));
+    db.addImplicitTable(new odc::sql::ODATable(db, *ownDH_));
 }
 
 
@@ -86,9 +86,9 @@ Select::iterator Select::begin()
 
 
 #ifdef SWIGPYTHON
-template odb::IteratorProxy< odb::SelectIterator,odb::Select,double const >; 
+template odc::IteratorProxy< odc::SelectIterator,odc::Select,double const >; 
 #endif
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odb
+} // namespace odc

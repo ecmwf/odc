@@ -32,7 +32,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DirectAccessBlock::~DirectAccessBlock()
 {
@@ -251,4 +251,4 @@ DirectAccess::~DirectAccess()
 }
 
 
-} // namespace odb
+} // namespace odc

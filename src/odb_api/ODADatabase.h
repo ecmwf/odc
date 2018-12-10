@@ -18,7 +18,7 @@ namespace eckit { class PathName; }
 
 #include "eckit/sql/SQLDatabase.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 class ODADatabase : public SQLDatabase {
@@ -46,6 +46,6 @@ private:
 };
 
 } // namespace sql 
-} // namespace odb 
+} // namespace odc 
 
 #endif

@@ -19,11 +19,11 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void setUp()
 {
-    odb::tool::ImportTool::importText("x:REAL\n1\n2\n3\n", "TestMetaDataReader.odb");
+    odc::tool::ImportTool::importText("x:REAL\n1\n2\n3\n", "TestMetaDataReader.odb");
 }
 
 

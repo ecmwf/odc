@@ -11,7 +11,7 @@
 #include "odb_api/DataSelectIterator.h"
 
 using namespace std;
-using namespace odb;
+using namespace odc;
 
 namespace {
     /*

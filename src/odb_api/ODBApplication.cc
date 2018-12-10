@@ -22,7 +22,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 ODBApplication::ODBApplication (int argc, char **argv)
@@ -43,5 +43,5 @@ eckit::LogTarget* ODBApplication::createWarningLogTarget() const { return new OD
 
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

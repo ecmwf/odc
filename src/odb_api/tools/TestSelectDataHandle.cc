@@ -20,7 +20,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 /// UnitTest syntax 'select lat, lon' (no file name)
 ///
@@ -33,15 +33,15 @@ static void test()
 	const string fileName = "2000010106.odb";
 	FileHandle fh(fileName);
 	fh.openForRead();
-	odb::Select oda(sql, fh);
+	odc::Select oda(sql, fh);
 	
 	Log::info() << "test: Execute '" << sql << "'" << std::endl;
 	long n = 0;
 	{
 		Timer t("test: selecting rows using SQL" );
 
-		odb::Select::iterator it = oda.begin();
-		odb::Select::iterator end = oda.end();
+		odc::Select::iterator it = oda.begin();
+		odc::Select::iterator end = oda.end();
 
 		for( ; it != end; ++it)
 			++n;

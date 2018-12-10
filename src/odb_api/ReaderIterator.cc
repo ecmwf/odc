@@ -23,7 +23,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 ReaderIterator::ReaderIterator(Reader &owner)
 : owner_(owner),
@@ -60,7 +60,7 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   rowDataSizeDoubles_(0),
   codecs_(0),
   nrows_(0),
-  f_(odb::DataHandleFactory::openForRead(pathName)),
+  f_(odc::DataHandleFactory::openForRead(pathName)),
   newDataset_(false),
   noMore_(false),
   headerCounter_(0),
@@ -118,7 +118,7 @@ void ReaderIterator::initRowBuffer()
     lastValues_ = new double [numDoubles];
 
 	delete [] codecs_;
-	codecs_ = new odb::codec::Codec* [nCols];
+	codecs_ = new odc::codec::Codec* [nCols];
 
     delete [] columnOffsets_;
     columnOffsets_ = new size_t[nCols];
@@ -277,5 +277,5 @@ const std::string& ReaderIterator::codecName(unsigned long index) const { return
 double ReaderIterator::columnMissingValue(unsigned long index) { return columns_[index]->missingValue(); }
 const eckit::sql::BitfieldDef& ReaderIterator::bitfieldDef(unsigned long index) { return columns_[index]->bitfieldDef(); }
 
-} // namespace odb
+} // namespace odc
 

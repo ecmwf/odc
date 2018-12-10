@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 DataLinkFiller::DataLinkFiller(DataLink& link)
@@ -57,4 +57,4 @@ void DataLinkFillerIterator::updateRowsToSkip(const double* data)
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

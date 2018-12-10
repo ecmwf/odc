@@ -4,7 +4,7 @@
 #ifndef ODBLIB_SHAREDITERATOR_H_
 #define ODBLIB_SHAREDITERATOR_H_
 
-namespace odb {
+namespace odc {
 
 /*! @brief Represents a smart iterator.
  *
@@ -172,6 +172,6 @@ private:
     long* useCount_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // ODBLIB_SHAREDITERATOR_H_

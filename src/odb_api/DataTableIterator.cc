@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 template <typename Row, typename Traits>
@@ -157,4 +157,4 @@ template ptrdiff_t
 DataTableIterator<const DataRow>::distance(const DataTableIterator<const DataRow>&) const;
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

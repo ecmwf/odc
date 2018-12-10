@@ -24,7 +24,7 @@ using namespace std;
 /// @note This file is the only reason that metkit is required in odb_api
 ///       If MarsRequestHandle functionality is not required, that dependency can be dropped.
 
-namespace odb {
+namespace odc {
 
 MarsHandleFactory::MarsHandleFactory()
 : DataHandleFactory("mars")
@@ -87,4 +87,4 @@ DataHandle* MarsHandleFactory::makeHandle(const string& r) const
     return new metkit::MarsRequestHandle(mr, new metkit::DHSProtocol(host, host, port));
 }
 
-} // namespace odb
+} // namespace odc

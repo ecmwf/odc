@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 DataColumn::DataColumn(const std::string& name, ColumnType type)
   : name_(name),
@@ -33,7 +33,7 @@ DataColumn::DataColumn(const std::string& name, ColumnType type, double missingV
     bitfieldDef_()
 {}
 
-DataColumn::DataColumn(const odb::Column& column)
+DataColumn::DataColumn(const odc::Column& column)
   : name_(column.name()),
     type_(column.type()),
     missingValue_(defaultMissingValue(type_)),
@@ -45,12 +45,12 @@ double DataColumn::defaultMissingValue(ColumnType type)
 {
     switch (type)
     {
-        case INTEGER:  return odb::MDI::integerMDI();
-        case REAL:     return odb::MDI::realMDI();
-        case DOUBLE:   return odb::MDI::realMDI();
+        case INTEGER:  return odc::MDI::integerMDI();
+        case REAL:     return odc::MDI::realMDI();
+        case DOUBLE:   return odc::MDI::realMDI();
         case STRING:   return *reinterpret_cast<const double*>("        ");
         case BITFIELD: return 0;
-        default: ASSERT(!"Unexpected odb::ColumnType.");
+        default: ASSERT(!"Unexpected odc::ColumnType.");
     };
 
     return 0;
@@ -72,4 +72,4 @@ bool DataColumn::operator!=(const DataColumn& other) const
         || (defaultValue_ != other.defaultValue_);
 }
 
-} // namespace odb
+} // namespace odc

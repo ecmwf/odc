@@ -21,7 +21,7 @@
 using namespace eckit;
 using namespace eckit::sql;
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -131,4 +131,4 @@ template class ODAOutput<DispatchingWriter>;
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc

@@ -26,7 +26,7 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 
 std::ostream& operator<< (std::ostream& o, const Partition& p)
 {
@@ -148,8 +148,8 @@ void Partition::add(const PathName& fileName, ullong start, ullong length, ullon
 
 ullong writeBlock(DataHandle& in, const Block& block, Writer<>::iterator& out)
 {
-    odb::Reader reader(in);
-    odb::Reader::iterator it (reader.begin()), end (reader.end());
+    odc::Reader reader(in);
+    odc::Reader::iterator it (reader.begin()), end (reader.end());
 
     ullong rowNumber (0);
     for (size_t r(0); r < block.lastRow; ++r, ++it)
@@ -230,5 +230,5 @@ ullong Partition::write(const PathName& fileName) const
     return rowNumber;
 }
 
-} // namespace odb
+} // namespace odc
 

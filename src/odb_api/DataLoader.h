@@ -8,7 +8,7 @@
 
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 
@@ -85,6 +85,6 @@ private:
     bool open_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATALOADER_H_

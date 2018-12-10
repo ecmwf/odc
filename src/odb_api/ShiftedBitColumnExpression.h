@@ -17,7 +17,7 @@
 #include "odb_api/BitColumnExpression.h"
 #include "odb_api/ShiftedColumnExpression.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 namespace expression {
 
@@ -25,6 +25,6 @@ typedef ShiftedColumnExpression<BitColumnExpression> ShiftedBitColumnExpression;
 
 } // namespace expression 
 } // namespace sql
-} // namespace odb 
+} // namespace odc 
 
 #endif

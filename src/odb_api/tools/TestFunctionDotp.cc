@@ -24,20 +24,20 @@ const double EPS =     4e-5;
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 
 static void setUp()
 {
 	Timer t("Test Dotp function");
-	odb::Writer<> oda("test_dotp.odb");
+	odc::Writer<> oda("test_dotp.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
-	row->setColumn(0, "x", odb::REAL);
-	row->setColumn(1, "y", odb::REAL);
+	row->setColumn(0, "x", odc::REAL);
+	row->setColumn(1, "y", odc::REAL);
 	
 	row->writeHeader();
 
@@ -63,8 +63,8 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select oda(sql);
-	odb::Select::iterator it = oda.begin();
+	odc::Select oda(sql);
+	odc::Select::iterator it = oda.begin();
 
 	ASSERT(fabs((*it)[0] - 1998.51e0)<EPS); // 
 

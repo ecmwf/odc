@@ -10,8 +10,8 @@
 #include "odb_api/DataPage.h"
 
 using namespace std;
-using namespace odb;
-using namespace odb::internal;
+using namespace odc;
+using namespace odc::internal;
 
 namespace {
 

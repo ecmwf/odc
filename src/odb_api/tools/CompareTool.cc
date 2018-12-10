@@ -20,7 +20,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 CompareTool::CompareTool (int argc, char *argv[])
@@ -53,13 +53,13 @@ CompareTool::CompareTool (int argc, char *argv[])
 void CompareTool::run()
 {
     Timer t(std::string("Comparing files ") + *file1_ + " and " + *file2_);
-    odb::Reader oda1(*file1_);
-    odb::Reader oda2(*file2_);
+    odc::Reader oda1(*file1_);
+    odc::Reader oda2(*file2_);
 
-	odb::Reader::iterator it1(oda1.begin());
-	odb::Reader::iterator end1(oda1.end());
-	odb::Reader::iterator it2(oda2.begin());
-	odb::Reader::iterator end2(oda2.end());
+	odc::Reader::iterator it1(oda1.begin());
+	odc::Reader::iterator end1(oda1.end());
+	odc::Reader::iterator it2(oda2.begin());
+	odc::Reader::iterator end2(oda2.end());
 
 	std::vector<std::string> excludedColumnsTypes = StringTools::split(",", optionArgument("-excludeColumnsTypes", std::string("")));
     std::vector<std::string> excludedColumns = StringTools::split(",", optionArgument("-excludeColumns", std::string("")));
@@ -73,9 +73,9 @@ void CompareTool::run()
     }
 
 	bool checkMissing = ! optionIsSet("-dontCheckMissing");
-    odb::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1_, *file2_, excludedColumnsTypes, excludedColumns);
+    odc::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1_, *file2_, excludedColumnsTypes, excludedColumns);
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

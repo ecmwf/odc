@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, March 2012
 
-namespace odb {
+namespace odc {
 
 template <typename T>
 MDUpdatingIterator<T>::MDUpdatingIterator (T& ii, const T& end, const std::vector<std::string>& columns, const std::vector<std::string>& types)
@@ -104,5 +104,5 @@ bool MDUpdatingIterator<T>::next()
 	return r;
 }
 
-} // namespace odb
+} // namespace odc
 

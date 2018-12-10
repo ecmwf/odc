@@ -9,6 +9,6 @@
  */
 
 
-namespace odb {
+namespace odc {
 
-} // namespace odb
+} // namespace odc

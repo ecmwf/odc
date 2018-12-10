@@ -38,7 +38,7 @@ void trimStringInDouble(char* &p, size_t& len)
 }
 }
 
-namespace odb {
+namespace odc {
 
 template <typename WRITE_ITERATOR, typename OWNER>
 WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNER &owner, int maxOpenFiles, bool append)
@@ -108,7 +108,7 @@ std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(c
         // code updated for std::string [19/07/2011] AF
         double d (values[p.columnIndex]);
         std::string s;
-        if ( columns_[p.columnIndex]->type() == odb::STRING)
+        if ( columns_[p.columnIndex]->type() == odc::STRING)
         {
             char* sp (reinterpret_cast<char *>(&d));
             size_t len (0);
@@ -549,5 +549,5 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::close()
 	return rc;
 }
 
-} // namespace odb
+} // namespace odc
 

@@ -13,7 +13,7 @@
 
 #include "odb_api/tools/Tool.h"
 
-namespace odb {
+namespace odc {
 
 class RowsReaderIterator;
 
@@ -46,12 +46,12 @@ private:
     eckit::PathName* file1_;
     eckit::PathName* file2_;
 
-	odb::RowsReaderIterator* reader1_;
-	odb::RowsReaderIterator* reader2_;
+	odc::RowsReaderIterator* reader1_;
+	odc::RowsReaderIterator* reader2_;
 
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

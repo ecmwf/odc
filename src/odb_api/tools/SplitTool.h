@@ -15,7 +15,7 @@
 #include "eckit/io/Offset.h"
 #include "Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class SplitTool : public Tool {
@@ -50,6 +50,6 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

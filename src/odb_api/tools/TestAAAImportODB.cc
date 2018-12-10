@@ -22,7 +22,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void test()
 {
@@ -42,7 +42,7 @@ static void test()
 
 		cmd = std::string("rm -rf 2000010106 && gzip -d <") + testDataPath + "/2000010106.odb.gz >2000010106.odb";
 	}
-    odb::StringTool::shell(cmd.c_str(), Here());
+    odc::StringTool::shell(cmd.c_str(), Here());
 }
 
 static void setUp(){}

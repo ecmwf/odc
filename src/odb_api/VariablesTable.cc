@@ -26,7 +26,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 class VariablesColumn : public SQLColumn {
@@ -94,5 +94,5 @@ VariablesTableIterator::VariablesTableIterator(std::map<std::string,SQLExpressio
 
 
 } // namespace sql 
-} // namespace odb 
+} // namespace odc 
 

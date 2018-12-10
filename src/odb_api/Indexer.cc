@@ -22,7 +22,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 BlockOffsets Indexer::offsetsOfBlocks(const PathName &db)
 {
@@ -61,15 +61,15 @@ void Indexer::createIndex(const PathName &dataFile, const PathName& indexFile)
 {
     BlockOffsets offsets (offsetsOfBlocks(dataFile));
 
-    odb::MetaData metaData;
+    odc::MetaData metaData;
     metaData
         .addColumn("block_begin", "INTEGER")
         .addColumn("block_length", "INTEGER")
         .addColumn("seqno", "INTEGER")
         .addColumn("n_rows", "INTEGER");
 
-    odb::Writer<> write (indexFile);
-    odb::Writer<>::iterator writer (write.begin());
+    odc::Writer<> write (indexFile);
+    odc::Writer<>::iterator writer (write.begin());
     writer->columns(metaData);
     writer->writeHeader();
 
@@ -84,8 +84,8 @@ void Indexer::createIndex(const PathName &dataFile, const PathName& indexFile)
         int prevSeqno (-1);
         int nRows (0);
 
-        odb::Select in("select seqno;", h); 
-        for (odb::Select::iterator it (in.begin()), end (in.end()); 
+        odc::Select in("select seqno;", h); 
+        for (odc::Select::iterator it (in.begin()), end (in.end()); 
              it != end; 
              ++it)
         {
@@ -119,5 +119,5 @@ void Indexer::createIndex(const PathName &dataFile, const PathName& indexFile)
     }
 }
 
-} // namespace odb 
+} // namespace odc 
 

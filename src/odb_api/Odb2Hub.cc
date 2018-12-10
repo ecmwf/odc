@@ -25,8 +25,8 @@
 #include "Odb2Hub.h"
 
 using namespace eckit;
-using namespace odb;
-using namespace odb::tool;
+using namespace odc;
+using namespace odc::tool;
 
 PathName Odb2Hub::getPath(const string& schema, const string& pathName, const string& keywordToColumnMapping)
 {

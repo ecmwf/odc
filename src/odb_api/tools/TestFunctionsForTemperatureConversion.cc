@@ -20,21 +20,21 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 
 
 static void setUp()
 {
 	Timer t("Test various functions to convert temperatures");
-	odb::Writer<> oda("test_tempconv.odb");
+	odc::Writer<> oda("test_tempconv.odb");
 
-	odb::Writer<>::iterator row = oda.begin();
+	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(3);
 
-	row->setColumn(0, "kelvin_col", odb::REAL);
-	row->setColumn(1, "celsius_col", odb::REAL);
-	row->setColumn(2, "fahrenheit_col", odb::REAL);
+	row->setColumn(0, "kelvin_col", odc::REAL);
+	row->setColumn(1, "celsius_col", odc::REAL);
+	row->setColumn(2, "fahrenheit_col", odc::REAL);
 	
 	row->writeHeader();
 
@@ -55,8 +55,8 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select oda(sql);
-	odb::Select::iterator it = oda.begin();
+	odc::Select oda(sql);
+	odc::Select::iterator it = oda.begin();
 
 	ASSERT((*it)[0] == 0.0); // celsius(273.15) = 0.0
 	ASSERT((*it)[1] == 32); // farhenheit(273.15) = 31.73

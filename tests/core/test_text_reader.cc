@@ -36,8 +36,8 @@ CASE("Read columnar data from CSV") {
     data << "0,+inf,-inf,this-is-a-longer-string,11\n";
     data << "0,-inf,0,short,0\n";
 
-    odb::TextReader reader(data, ",");
-    odb::TextReader::iterator it = reader.begin();
+    odc::TextReader reader(data, ",");
+    odc::TextReader::iterator it = reader.begin();
 
     std::vector<long> INTEGERS {1, 1234, -5432, -2147483648, 2147483647, 0, 0};
     std::vector<float> REALS {1.001, 0.0, -6.543210, 6.543210, std::numeric_limits<float>::quiet_NaN(),
@@ -55,11 +55,11 @@ CASE("Read columnar data from CSV") {
     EXPECT(it->columns()[3]->name() == "col4");
     EXPECT(it->columns()[4]->name() == "col5");
 
-    EXPECT(it->columns()[0]->type() == odb::INTEGER);
-    EXPECT(it->columns()[1]->type() == odb::REAL);
-    EXPECT(it->columns()[2]->type() == odb::DOUBLE);
-    EXPECT(it->columns()[3]->type() == odb::STRING);
-    EXPECT(it->columns()[4]->type() == odb::BITFIELD);
+    EXPECT(it->columns()[0]->type() == odc::INTEGER);
+    EXPECT(it->columns()[1]->type() == odc::REAL);
+    EXPECT(it->columns()[2]->type() == odc::DOUBLE);
+    EXPECT(it->columns()[3]->type() == odc::STRING);
+    EXPECT(it->columns()[4]->type() == odc::BITFIELD);
 
     size_t count = 0;
     for (; it != reader.end(); ++it) {
@@ -93,14 +93,14 @@ CASE("Starting with long strings") {
     data << "a-string-is-long\n";
     data << "b-string-is-very-long-indeed-whoah\n";
 
-    odb::TextReader reader(data, ",");
-    odb::TextReader::iterator it = reader.begin();
+    odc::TextReader reader(data, ",");
+    odc::TextReader::iterator it = reader.begin();
 
     std::vector<std::string> STRINGS {"a-string-is-long", "b-string-is-very-long-indeed-whoah"};
 
     EXPECT(it->columns().size() == 1);
     EXPECT(it->columns()[0]->name() == "col4");
-    EXPECT(it->columns()[0]->type() == odb::STRING);
+    EXPECT(it->columns()[0]->type() == odc::STRING);
 
     size_t count = 0;
     for (; it != reader.end(); ++it) {
@@ -123,7 +123,7 @@ CASE("Test parsing bitfields") {
 
     std::string bitfieldDefinition = "en4_level_flag@hdr:bitfield[TempLevelReject:1;SaltLevelReject:1;LevelVertStability:1;IncreasingDepthCheck:1;NotUsed1:1;NotUsed2:1;NotUsed3:1;NotUsed4:1;NotUsed5:1;TempLevelStatList:1;TempLevelArgoQC:1;TempLevelOutOfRangeSetToMDI:1;TempLevelEN3List:1;TempLevelVertCheck:1;TempLevelNoBckgrnd:1;TempLevelBays:1;TempLevelBaysBud:1;TempLevelBaysBudReinstate:1;TempLevelWaterfallCheck:1;NotUsed6:1;NotUsed7:1;SaltLevelStatList:1;SaltLevelArgoQC:1;SaltLevelOutOfRangeSetToMDI:1;SaltLevelEN3List:1;SaltLevelVertCheck:1;SaltLevelNoBckgrnd:1;SaltLevelBays:1;SaltLevelBaysBud:1;SaltLevelBaysBudReinstate:1;SaltLevelWaterfallCheck:1]";
 
-    eckit::sql::BitfieldDef def (odb::TextReaderIterator::parseBitfields(bitfieldDefinition));
+    eckit::sql::BitfieldDef def (odc::TextReaderIterator::parseBitfields(bitfieldDefinition));
     eckit::sql::FieldNames names(def.first);
     eckit::sql::Sizes sizes(def.second);
 
@@ -147,7 +147,7 @@ CASE("Test parsing bitfields") {
 
 CASE("Test parsing bitfields - 32bit limit") {
     std::string bitfieldDefinition = "en4_level_flag@hdr:bitfield[TempLevelReject:1;SaltLevelReject:1;LevelVertStability:1;IncreasingDepthCheck:1;NotUsed1:1;NotUsed2:1;NotUsed3:1;NotUsed4:1;NotUsed5:1;TempLevelStatList:1;TempLevelArgoQC:1;TempLevelOutOfRangeSetToMDI:1;TempLevelEN3List:1;TempLevelVertCheck:1;TempLevelNoBckgrnd:1;TempLevelBays:1;TempLevelBaysBud:1;TempLevelBaysBudReinstate:1;TempLevelWaterfallCheck:1;NotUsed6:1;NotUsed7:1;SaltLevelStatList:1;SaltLevelArgoQC:1;SaltLevelOutOfRangeSetToMDI:1;SaltLevelEN3List:1;SaltLevelVertCheck:1;SaltLevelNoBckgrnd:1;SaltLevelBays:1;SaltLevelBaysBud:1;SaltLevelBaysBudReinstate:1;SaltLevelWaterfallCheck:1;NotUsed8:1;NotUsed9:1]";
-    EXPECT_THROWS_AS(odb::TextReaderIterator::parseBitfields(bitfieldDefinition), eckit::UserError);
+    EXPECT_THROWS_AS(odc::TextReaderIterator::parseBitfields(bitfieldDefinition), eckit::UserError);
 }
 
 // ------------------------------------------------------------------------------------------------------

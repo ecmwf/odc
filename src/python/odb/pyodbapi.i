@@ -18,7 +18,7 @@
 
 %exception {
 	using namespace ::odb;
-	using namespace ::odb::sql;
+	using namespace ::odc::sql;
     try {
         $action
     } catch (const ODBStopIteration& e) {
@@ -30,7 +30,7 @@
 	} catch (const eckit::FileError& e) {
 		PyErr_SetString(PyExc_IOError, e.what());
 		return NULL;
-	} catch (const ::odb::sql::SyntaxError& e) {
+	} catch (const ::odc::sql::SyntaxError& e) {
 		PyErr_SetString(PyExc_SyntaxError, e.what());
 		return NULL;
 	}  catch (const eckit::Exception& e) {
@@ -70,7 +70,7 @@ using namespace eckit;
 %include "odb_api/Column.h"
 #include "eckit/sql/SQLIteratorSession.h"
 
-using namespace odb;
+using namespace odc;
 
 %template(MetaDataBase) std::vector<Column*>;
 %include "odb_api/MetaData.h"
@@ -80,11 +80,11 @@ using namespace odb;
 %include "exception.i"
 
 %include "odb_api/IteratorProxy.h"
-%template(ReaderIteratorProxy) odb::IteratorProxy<odb::ReaderIterator,odb::Reader,const double>;
-%template(ReaderIteratorRow) odb::Row_<odb::ReaderIterator,odb::Reader,const double,odb::IteratorProxy<odb::ReaderIterator,odb::Reader,const double> >;
+%template(ReaderIteratorProxy) odc::IteratorProxy<odc::ReaderIterator,odc::Reader,const double>;
+%template(ReaderIteratorRow) odc::Row_<odc::ReaderIterator,odc::Reader,const double,odc::IteratorProxy<odc::ReaderIterator,odc::Reader,const double> >;
 
-%template(SelectIteratorProxy) odb::IteratorProxy<odb::SelectIterator,odb::Select,const double>;
-%template(SelectIteratorRow) odb::Row_<odb::SelectIterator,odb::Select,const double,odb::IteratorProxy<odb::SelectIterator,odb::Select,const double> >;
+%template(SelectIteratorProxy) odc::IteratorProxy<odc::SelectIterator,odc::Select,const double>;
+%template(SelectIteratorRow) odc::Row_<odc::SelectIterator,odc::Select,const double,odc::IteratorProxy<odc::SelectIterator,odc::Select,const double> >;
 
 #include "odb_api/TemplateParameters.h"
 %include "odb_api/Reader.h"

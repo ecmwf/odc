@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-namespace odb {
+namespace odc {
 namespace sql {
 namespace expression {
 /*
@@ -24,5 +24,5 @@ void ShiftedBitColumnExpression::print(std::ostream& s) const { s << columnName_
 
 } // namespace expression
 } // namespace sql
-} // namespace odb
+} // namespace odc
 

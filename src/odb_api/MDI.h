@@ -14,7 +14,7 @@
 #ifndef MDI_H
 #define MDI_H
 
-namespace odb {
+namespace odc {
 
 class MDI {
 public:
@@ -32,6 +32,6 @@ private:
     static double integerMDI_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

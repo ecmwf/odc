@@ -24,7 +24,7 @@
 
 namespace eckit { class PathName; }
 
-namespace odb {
+namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -68,12 +68,12 @@ private:
     // once so that the MetaData doesn't get read from the stream multiple times.
     iterator iteratorSingleton_;
 
-	friend class odb::IteratorProxy<odb::TextReaderIterator,odb::TextReader,double>;
-	friend class odb::TextReaderIterator;
+	friend class odc::IteratorProxy<odc::TextReaderIterator,odc::TextReader,double>;
+	friend class odc::TextReaderIterator;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odb
+} // namespace odc
 
 #endif

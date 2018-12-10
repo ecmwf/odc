@@ -24,7 +24,7 @@
 using namespace eckit;
 using namespace eckit::sql;
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -162,4 +162,4 @@ unsigned long long SQLSelectOutput::count() { return count_; }
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc

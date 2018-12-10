@@ -14,7 +14,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace codec {
 
 template<> std::map<std::string, AbstractCodecFactory<DataHandle>* > AbstractCodecFactory<DataHandle>::codecFactories = std::map<std::string, AbstractCodecFactory<DataHandle>* >();
@@ -24,7 +24,7 @@ template<> std::map<std::string, AbstractCodecFactory<PrettyFastInMemoryDataHand
 Codec::Codec(const std::string& name)
 : name_(name),
   hasMissing_(false),
-  missingValue_(odb::MDI::realMDI()),
+  missingValue_(odc::MDI::realMDI()),
   min_(missingValue_),
   max_(missingValue_)
 {}
@@ -140,5 +140,5 @@ void Codec::loadCodecs() {
 }
 
 } // namespace codec
-} // namespace odb
+} // namespace odc
 

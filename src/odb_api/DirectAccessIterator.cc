@@ -18,7 +18,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 DirectAccessIterator::DirectAccessIterator(DirectAccess& owner):
     owner_(owner),
@@ -39,5 +39,5 @@ double &DirectAccessIterator::data(size_t n) {
     return *(owner_.block_->data() + i + n);
 }
 
-} // namespace odb
+} // namespace odc
 

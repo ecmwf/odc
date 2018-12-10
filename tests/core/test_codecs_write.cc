@@ -33,9 +33,9 @@
 #endif
 
 using namespace eckit::testing;
-using namespace odb::codec;
-using odb::SameByteOrder;
-using odb::OtherByteOrder;
+using namespace odc::codec;
+using odc::SameByteOrder;
+using odc::OtherByteOrder;
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -236,7 +236,7 @@ CASE("constant strings consume no output data space") {
 
 CASE("Constant integer or missing value behaves a bit oddly") {
 
-    EXPECT(odb::MDI::integerMDI() == 2147483647);
+    EXPECT(odc::MDI::integerMDI() == 2147483647);
 
     // Note that there is absolutely NOTHING that enforces that these are integers...
     // --> This test tests the generic case, with a double, which is odd
@@ -347,7 +347,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
 CASE("real constant or missing value is not quite constant") {
 
-    EXPECT(odb::MDI::realMDI() == -2147483647);
+    EXPECT(odc::MDI::realMDI() == -2147483647);
 
     // TODO: Really something labelled constant ought to be actually constant...
     // Do this one big-endian just because.

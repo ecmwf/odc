@@ -31,7 +31,7 @@ public:
 };
 
 
-namespace odb {
+namespace odc {
 
 Comparator::Comparator(bool checkMissingFlag)
 : nRow_(0),
@@ -51,13 +51,13 @@ void Comparator::compare(eckit::DataHandle& l, eckit::DataHandle& r)
 {
 	std::vector<std::string> noExcludedColumnTypes;
     std::vector<std::string> noExcludedColumns;
-    odb::Reader oda1(l);
-	odb::Reader oda2(r);
+    odc::Reader oda1(l);
+	odc::Reader oda2(r);
 
-	odb::Reader::iterator it1(oda1.begin());
-	odb::Reader::iterator end1(oda1.end());
-	odb::Reader::iterator it2(oda2.begin());
-	odb::Reader::iterator end2(oda2.end());
+	odc::Reader::iterator it1(oda1.begin());
+	odc::Reader::iterator end1(oda1.end());
+	odc::Reader::iterator it2(oda2.begin());
+	odc::Reader::iterator end2(oda2.end());
 	
     compare(it1, end1, it2, end2, "left", "right", noExcludedColumnTypes, noExcludedColumns);
 }
@@ -68,13 +68,13 @@ void Comparator::compare(const PathName& p1, const PathName& p2,
 {
     Tracer t(Log::debug(), std::string("Comparator::compare: ") + p1 + ", " + p2);
 
-	odb::Reader oda1(p1);
-	odb::Reader oda2(p2);
+	odc::Reader oda1(p1);
+	odc::Reader oda2(p2);
 
-	odb::Reader::iterator it1(oda1.begin());
-	odb::Reader::iterator end1(oda1.end());
-	odb::Reader::iterator it2(oda2.begin());
-	odb::Reader::iterator end2(oda2.end());
+	odc::Reader::iterator it1(oda1.begin());
+	odc::Reader::iterator end1(oda1.end());
+	odc::Reader::iterator it2(oda2.begin());
+	odc::Reader::iterator end2(oda2.end());
 	
     compare(it1, end1, it2, end2, p1, p2, excludedColumnsTypes, excludedColumns);
 }
@@ -237,5 +237,5 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2,
 	}
 }
 
-} // namespace odb
+} // namespace odc
 

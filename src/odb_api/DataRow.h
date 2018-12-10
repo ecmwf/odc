@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include "eckit/eckit.h"
 
-namespace odb {
+namespace odc {
 
 class DataTable;
 class DataColumns;
@@ -97,7 +97,7 @@ protected:
 
     double* data_;
 
-    friend class odb::internal::DataSelectIterator;
+    friend class odc::internal::DataSelectIterator;
 };
 
 } // namespace internal
@@ -219,6 +219,6 @@ private:
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATAROW_H_

@@ -14,7 +14,7 @@
 
 #include "odb_api/ODBTarget.h"
 
-namespace odb {
+namespace odc {
 
 ODBTarget::ODBTarget(const char* tag, eckit::LogTarget* target)
 : eckit::WrapperTarget(target),
@@ -47,4 +47,4 @@ void ODBTarget::print(std::ostream& s) const
 
 void ODBTarget::writeSuffix() {} 
 
-} // namespace odb
+} // namespace odc

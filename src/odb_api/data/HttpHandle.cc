@@ -14,7 +14,7 @@
 using eckit::Length;
 using eckit::Stream;
 
-namespace odb {
+namespace odc {
 
 void HttpHandle::print(std::ostream& s) const
 {
@@ -79,5 +79,5 @@ void HttpHandle::close()
 {
 }
 
-} // namespace odb
+} // namespace odc
 

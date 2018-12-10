@@ -11,7 +11,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "odb_api/NullColumn.h"
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 NullColumn::NullColumn(const type::SQLType& type, SQLTable& owner, const std::string& name, int index, bool hasMissingValue, double
@@ -39,5 +39,5 @@ double NullColumn::next(bool& missing)
 void NullColumn::advance(unsigned long) { NOTIMP; }
 
 } // namespace sql 
-} // namespace odb 
+} // namespace odc 
 

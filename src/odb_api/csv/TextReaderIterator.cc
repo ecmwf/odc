@@ -25,7 +25,7 @@ using namespace eckit;
 
 typedef StringTools S;
 
-namespace odb {
+namespace odc {
 
 TextReaderIterator::TextReaderIterator(TextReader &owner)
 : columns_(0),
@@ -208,11 +208,11 @@ bool TextReaderIterator::next()
         if (S::upper(v) == "NULL") {
             lastValues_[columnOffsets_[i]] = columns_[i]->missingValue();
         } else  {
-            odb::ColumnType typ ( columns()[i]->type() );
+            odc::ColumnType typ ( columns()[i]->type() );
 
             switch (typ) {
 
-            case odb::STRING: {
+            case odc::STRING: {
                 std::string unquoted = S::unQuote(v);
                 size_t charlen = unquoted.length();
                 size_t lenDoubles = charlen > 0 ? (((charlen - 1) / 8) + 1): 1;
@@ -242,16 +242,16 @@ bool TextReaderIterator::next()
                 break;
             }
 
-            case odb::REAL:
+            case odc::REAL:
                 lastValues_[columnOffsets_[i]] = static_cast<double>(Translator<std::string, float>()(v));
                 break;
 
-            case odb::DOUBLE:
+            case odc::DOUBLE:
                 lastValues_[columnOffsets_[i]] = Translator<std::string, double>()(v);
                 break;
 
-            case odb::INTEGER:
-            case odb::BITFIELD:
+            case odc::INTEGER:
+            case odc::BITFIELD:
                 lastValues_[columnOffsets_[i]] = static_cast<double>(Translator<std::string, long>()(v));
                 break;
 
@@ -285,5 +285,5 @@ int TextReaderIterator::close()
     return 0;
 }
 
-} // namespace odb
+} // namespace odc
 

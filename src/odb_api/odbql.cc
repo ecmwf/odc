@@ -40,7 +40,7 @@
 #include "odbql.h"
 
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 /////////////////////////////////////////////////////////////
 // #     #                            #    ######    ###   
@@ -61,8 +61,8 @@ public:
     : session_(eckit::sql::SQLOutputConfig::defaultConfig(), ","),
       filename_(filename),
       input_( (filename && strlen(filename))
-             ? static_cast<DataHandle*>(odb::DataHandleFactory::openForRead(filename))
-             : static_cast<DataHandle*>(new odb::InMemoryDataHandle() ))
+             ? static_cast<DataHandle*>(odc::DataHandleFactory::openForRead(filename))
+             : static_cast<DataHandle*>(new odc::InMemoryDataHandle() ))
     {
         if (filename && strlen(filename))
             eckit::Log::info() << "Open file '" << filename << "'" << std::endl;
@@ -149,9 +149,9 @@ public:
 private:
     bool firstStep;
     const std::string sql_;
-    odb::Select stmt_;
-    odb::Select::iterator it_;
-    odb::Select::iterator end_;
+    odc::Select stmt_;
+    odc::Select::iterator it_;
+    odc::Select::iterator end_;
 
     std::vector<std::string> stringCache_;
     std::vector<std::string> columnNameCache_;
@@ -174,7 +174,7 @@ public:
     {
         std::vector<eckit::DataHandle*> r;
         for (size_t i(0); i < descriptors.size(); ++i)
-            r.push_back( odb::DataHandleFactory::openForRead(descriptors[i]));
+            r.push_back( odc::DataHandleFactory::openForRead(descriptors[i]));
         return r;
     }
 
@@ -192,21 +192,21 @@ public:
 private:
     bool firstStep;
     eckit::MultiHandle dh_;
-    odb::Reader stmt_;
-    odb::Reader::iterator it_;
-    odb::Reader::iterator end_;
+    odc::Reader stmt_;
+    odc::Reader::iterator it_;
+    odc::Reader::iterator end_;
 
     std::vector<std::string> stringCache_;
     std::vector<std::string> columnNameCache_;
 
-    odb::MetaData currentMetaData_;
+    odc::MetaData currentMetaData_;
 };
 
 StatementImpl& statement (odbql_stmt* stmt) { return reinterpret_cast<StatementImpl&>(*stmt); }
 
 class InsertImpl : public StatementImpl {
 public:
-    InsertImpl(DataBaseImpl&, const odb::MetaData& metaData, const std::string& into);
+    InsertImpl(DataBaseImpl&, const odc::MetaData& metaData, const std::string& into);
     ~InsertImpl();
 
     int step();
@@ -222,13 +222,13 @@ public:
 
 private:
     FileHandle* fileHandle_;
-    odb::Writer<> writer_;
-    odb::Writer<>::iterator it_;
+    odc::Writer<> writer_;
+    odc::Writer<>::iterator it_;
 };
 
 // INSERT implementation
 
-InsertImpl::InsertImpl(DataBaseImpl& db, const odb::MetaData& metaData, const std::string& into)
+InsertImpl::InsertImpl(DataBaseImpl& db, const odc::MetaData& metaData, const std::string& into)
 : StatementImpl(db),
   fileHandle_(new FileHandle(into)),
   writer_(fileHandle_, true, true),
@@ -327,7 +327,7 @@ const unsigned char *SelectImpl::column_text(int iCol)
     if (iCol + 1 > stringCache_.size())
         stringCache_.resize(iCol + 1);
 
-    if (it_->columns()[iCol]->type() == odb::STRING)
+    if (it_->columns()[iCol]->type() == odc::STRING)
         stringCache_[iCol] = it_->string(iCol);
     else 
     {
@@ -445,7 +445,7 @@ const unsigned char *SelectAllImpl::column_text(int iCol)
     if (iCol + 1 > stringCache_.size())
         stringCache_.resize(iCol + 1);
 
-    if (it_->columns()[iCol]->type() == odb::STRING)
+    if (it_->columns()[iCol]->type() == odc::STRING)
         stringCache_[iCol] = it_->string(iCol);
     else 
     {
@@ -537,7 +537,7 @@ const char * odbql_errmsg(odbql* db)
 //ODBQL_API const char *ODBQL_STDCALL odbql_libversion(void);
 const char * odbql_libversion(void)
 {
-    return odb::ODBAPIVersion::version();
+    return odc::ODBAPIVersion::version();
 }
 
 //ODBQL_API int ODBQL_STDCALL odbql_open(

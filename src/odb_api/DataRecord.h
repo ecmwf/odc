@@ -9,7 +9,7 @@
 #include "odb_api/DataField.h"
 #include "odb_api/DataRecordIterator.h"
 
-namespace odb {
+namespace odc {
 
 class DataRow;
 
@@ -107,6 +107,6 @@ private:
 
 std::ostream& operator<<(std::ostream& stream, const DataRecord& record);
 
-} // namespace odb
+} // namespace odc
 
 #endif // ODBLIB_DATARECORD_H_

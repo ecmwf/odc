@@ -21,7 +21,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 MetaDataReaderIterator::MetaDataReaderIterator(DataHandle &handle,bool skipData):
   columns_(0),
@@ -128,7 +128,7 @@ void MetaDataReaderIterator::initRowBuffer()
 	lastValues_ = new double [nCols];
 
 	delete [] codecs_;
-	codecs_ = new odb::codec::Codec* [nCols];
+	codecs_ = new odc::codec::Codec* [nCols];
 
 	for(size_t i = 0; i < nCols; i++)
 	{
@@ -265,5 +265,5 @@ eckit::DataHandle* MetaDataReaderIterator::dataHandle() { return f_; }
 
 
 
-} // namespace odb
+} // namespace odc
 

@@ -8,7 +8,7 @@
 #include "odb_api/DataRow.h"
 #include "odb_api/DataTable.h"
 
-namespace odb {
+namespace odc {
 
 class DataLink;
 
@@ -107,8 +107,8 @@ private:
     entry_iterator_type entry_;
     table_iterator_type begin_;
 
-    friend class odb::DataLink;
-    friend class odb::IteratorFacadeAccess;
+    friend class odc::DataLink;
+    friend class odc::IteratorFacadeAccess;
     template <typename R, typename T> friend class DataLinkIterator;
 };
 
@@ -120,6 +120,6 @@ DataLinkIterator<Row, Traits>::DataLinkIterator(const DataLinkIterator<R, T>& ot
 {}
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATALINKITERATOR_H_

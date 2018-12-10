@@ -30,13 +30,13 @@ CASE("Various distance measuring functions return sensible things") {
     // Write some data with a latitude and longitude.
 
     {
-        odb::Writer<> oda(f.path());
-        odb::Writer<>::iterator row = oda.begin();
+        odc::Writer<> oda(f.path());
+        odc::Writer<>::iterator row = oda.begin();
 
         row->setNumberOfColumns(2);
 
-        row->setColumn(0, "lat", odb::REAL);
-        row->setColumn(1, "lon", odb::REAL);
+        row->setColumn(0, "lat", odc::REAL);
+        row->setColumn(1, "lon", odc::REAL);
 
         row->writeHeader();
 
@@ -72,8 +72,8 @@ CASE("Various distance measuring functions return sensible things") {
     const double eps = 7.e-6;
 
     {
-        odb::Select oda(sql);
-        odb::Select::iterator it = oda.begin();
+        odc::Select oda(sql);
+        odc::Select::iterator it = oda.begin();
 
         EXPECT((*it)[0] == 1);                                  // Inside relevant great-circle
         EXPECT((*it)[1] == 0);
@@ -122,8 +122,8 @@ CASE("Various distance measuring functions return sensible things") {
                                          "from \"") + f.path() + "\";";
 
     {
-        odb::Select oda(sql2);
-        odb::Select::iterator it = oda.begin();
+        odc::Select oda(sql2);
+        odc::Select::iterator it = oda.begin();
 
         // pi/4 * R_e
         EXPECT(is_approximately_equal((*it)[0], 5000400., eps));
@@ -175,12 +175,12 @@ CASE("Inside or outside detection works for circles") {
     TemporaryFile f;
 
     {
-        odb::Writer<> oda(f.path());
-        odb::Writer<>::iterator row = oda.begin();
+        odc::Writer<> oda(f.path());
+        odc::Writer<>::iterator row = oda.begin();
 
         row->setNumberOfColumns(2);
-        row->setColumn(0, "x", odb::REAL);
-        row->setColumn(1, "y", odb::REAL);
+        row->setColumn(0, "x", odc::REAL);
+        row->setColumn(1, "y", odc::REAL);
         row->writeHeader();
 
         (*row)[0] = 45.0;
@@ -213,8 +213,8 @@ CASE("Inside or outside detection works for circles") {
                                         "from \"" + f.path() + "\";";
 
     {
-        odb::Select oda(sql);
-        odb::Select::iterator it = oda.begin();
+        odc::Select oda(sql);
+        odc::Select::iterator it = oda.begin();
 
         EXPECT((*it)[0] == 0);
         EXPECT((*it)[1] == 1);
@@ -259,12 +259,12 @@ CASE("Norms are correctly calculated") {
     TemporaryFile f;
 
     {
-        odb::Writer<> oda(f.path());
-        odb::Writer<>::iterator row = oda.begin();
+        odc::Writer<> oda(f.path());
+        odc::Writer<>::iterator row = oda.begin();
 
         row->setNumberOfColumns(2);
-        row->setColumn(0, "x", odb::REAL);
-        row->setColumn(1, "y", odb::REAL);
+        row->setColumn(0, "x", odc::REAL);
+        row->setColumn(1, "y", odc::REAL);
         row->writeHeader();
 
         (*row)[0] = 3.0;
@@ -289,8 +289,8 @@ CASE("Norms are correctly calculated") {
                                         "from \"" + f.path() + "\";";
 
     {
-        odb::Select oda(sql);
-        odb::Select::iterator it = oda.begin();
+        odc::Select oda(sql);
+        odc::Select::iterator it = oda.begin();
 
         // Norm is an aggregate function that calculates sqrt(x . y) for the
         // entire columns of data

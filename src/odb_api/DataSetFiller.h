@@ -7,9 +7,9 @@
 #include "odb_api/DataLinkFiller.h"
 #include "odb_api/DataTableFiller.h"
 
-namespace odb { class MetaData; }
+namespace odc { class MetaData; }
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 
@@ -29,13 +29,13 @@ class DataSetFiller
 public:
     typedef DataSetFillerIterator iterator;
 
-    DataSetFiller(DataSet& dataset, const odb::MetaData& metadata);
+    DataSetFiller(DataSet& dataset, const odc::MetaData& metadata);
     ~DataSetFiller();
 
     iterator begin();
 
 private:
-    void buildFillers(const odb::MetaData& metadata);
+    void buildFillers(const odc::MetaData& metadata);
 
 private:
     DataSetFiller(const DataSetFiller&);
@@ -68,6 +68,6 @@ private:
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATASETFILLER_H_

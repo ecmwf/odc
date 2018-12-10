@@ -18,16 +18,16 @@
 
 namespace eckit { namespace sql { namespace type { class SQLType; }}}
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-odb::ColumnType sqlToOdbType(const eckit::sql::type::SQLType& t);
+odc::ColumnType sqlToOdbType(const eckit::sql::type::SQLType& t);
 
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc
 
 #endif

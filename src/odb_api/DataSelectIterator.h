@@ -7,7 +7,7 @@
 #include "odb_api/DataRow.h"
 #include "odb_api/IteratorFacade.h"
 
-namespace odb
+namespace odc
 {
     namespace sql
     {
@@ -18,7 +18,7 @@ namespace odb
     }
 }
 
-namespace odb {
+namespace odc {
 
 class DataSelect;
 
@@ -46,7 +46,7 @@ private:
 
     DataSelectSession* createSession();
     void prepare();
-    const odb::sql::expression::Expressions& results() const;
+    const odc::sql::expression::Expressions& results() const;
 
     const DataRow& dereference() const { return row_; }
     void increment();
@@ -54,16 +54,16 @@ private:
 
     const DataSelect& query_;
     DataSelectSession* session_;
-    odb::sql::SQLSelect* select_;
+    odc::sql::SQLSelect* select_;
     DataRow row_;
     bool aggregateResult_;
     bool noMore_;
 
-    friend class odb::DataSelect;
-    friend class odb::IteratorFacadeAccess;
+    friend class odc::DataSelect;
+    friend class odc::IteratorFacadeAccess;
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // ODBLIB_DATASELECTITERATOR_H_

@@ -17,7 +17,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 unsigned long long RowsCounter::fastRowCount(const PathName &db)
 {
@@ -35,9 +35,9 @@ unsigned long long RowsCounter::fastRowCount(const PathName &db)
 
 unsigned long long RowsCounter::rowCount(const PathName &db)
 {
-	odb::Reader oda(db);
-	odb::Reader::iterator i = oda.begin();
-	odb::Reader::iterator end = oda.end();
+	odc::Reader oda(db);
+	odc::Reader::iterator i = oda.begin();
+	odc::Reader::iterator end = oda.end();
 
 	unsigned long long n = 0;
 	for ( ; i != end; ++i)
@@ -45,5 +45,5 @@ unsigned long long RowsCounter::rowCount(const PathName &db)
 	return n;
 }
 
-} // namespace odb 
+} // namespace odc 
 

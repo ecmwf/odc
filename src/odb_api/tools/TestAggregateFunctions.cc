@@ -21,7 +21,7 @@
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
+using namespace odc;
 
 static void test()
 {
@@ -53,8 +53,8 @@ static void test()
 
 	Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odb::Select oda(sql);
-	odb::Select::iterator it = oda.begin();
+	odc::Select oda(sql);
+	odc::Select::iterator it = oda.begin();
 
 	//Log::info() << "it->columns().size() => " << it->columns().size() << std::endl;
 	ASSERT(it->columns().size() == 14);

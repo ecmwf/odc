@@ -11,7 +11,7 @@
 #ifndef RowsCounter_H
 #define RowsCounter_H
 
-namespace odb {
+namespace odc {
 
 class RowsCounter {
 public:
@@ -24,6 +24,6 @@ private:
     RowsCounter& operator=(const RowsCounter&);
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

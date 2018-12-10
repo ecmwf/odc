@@ -42,8 +42,8 @@ extern "C" {
 
 using namespace std;
 using namespace eckit;
-using namespace odb;
-using namespace odb::sql;
+using namespace odc;
+using namespace odc::sql;
 
 
 typedef long long llong;
@@ -74,15 +74,15 @@ static void createDataForMixedAggregated()
             ;
 
     NOTIMP;
-//    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
+//    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
 }
 
 TEST(selectAggregatedAndNonAggregated)
 {
     createDataForMixedAggregated();
 
-    odb::Select oda("select x,min(v),max(v) from \"selectAggregatedAndNonAggregated.odb\";");
-    odb::Select::iterator it = oda.begin();
+    odc::Select oda("select x,min(v),max(v) from \"selectAggregatedAndNonAggregated.odb\";");
+    odc::Select::iterator it = oda.begin();
 
     double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2];
 
@@ -132,8 +132,8 @@ static void createDataForMixedAggregated2()
 TEST(selectAggregatedAndNonAggregated2)
 {
     createDataForMixedAggregated2();
-    odb::Select oda("select x,min(v),y,max(v) from \"selectAggregatedAndNonAggregated2.odb\";");
-    odb::Select::iterator it = oda.begin();
+    odc::Select oda("select x,min(v),y,max(v) from \"selectAggregatedAndNonAggregated2.odb\";");
+    odc::Select::iterator it = oda.begin();
     unsigned long counter = 0;
     for ( ; it != oda.end(); ++it, ++counter)
     {
@@ -155,15 +155,15 @@ static void createDataForMixedAggregated3()
             "'B',2,0.1\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated3.odb");
+    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated3.odb");
 }
 
 TEST(selectAggregatedAndNonAggregated3)
 {
     createDataForMixedAggregated3();
 
-    odb::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregated3.odb\";");
-    odb::Select::iterator it = oda.begin();
+    odc::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregated3.odb\";");
+    odc::Select::iterator it = oda.begin();
     unsigned long counter = 0;
     for ( ; it != oda.end(); ++it, ++counter)
     {
@@ -189,15 +189,15 @@ static void createDataForMixedAggregatedNULL()
             "NULL,3,0.3\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregatedNULL.odb");
+    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregatedNULL.odb");
 }
 
 TEST(selectAggregatedAndNonAggregatedNULL)
 {
     createDataForMixedAggregatedNULL();
 
-    odb::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregatedNULL.odb\";");
-    odb::Select::iterator it = oda.begin();
+    odc::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregatedNULL.odb\";");
+    odc::Select::iterator it = oda.begin();
     unsigned long counter = 0;
     for ( ; it != oda.end(); ++it, ++counter)
     {
@@ -222,14 +222,14 @@ static void createDataForRegex1()
             "11,22,33,44\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "regex1.odb");
+    odc::tool::ImportTool::importText(data, "regex1.odb");
 }
 
 static void regex1()
 {
     //createDataForRegex1();
-    odb::Select oda("select \"/a.*/\" from \"regex1.odb\";");
-    odb::Select::iterator it = oda.begin();
+    odc::Select oda("select \"/a.*/\" from \"regex1.odb\";");
+    odc::Select::iterator it = oda.begin();
 
     Log::info() << "regex1: " << it->columns() << std::endl;
 
@@ -254,16 +254,16 @@ TEST(vector_syntax)
             "10,10\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "vector_syntax.odb");
+    odc::tool::ImportTool::importText(data, "vector_syntax.odb");
 
     const char *sql =
             "set $X = [1,2,3,4,5];"
             "select * from \"vector_syntax.odb\" where a in $X;"
             ;
 
-    odb::Select oda(sql);
-    odb::Select::iterator it = oda.begin();
-    odb::Select::iterator end = oda.end();
+    odc::Select oda(sql);
+    odc::Select::iterator it = oda.begin();
+    odc::Select::iterator end = oda.end();
     unsigned long counter = 0;
     for ( ; it != oda.end(); ++it, ++counter)
         ;
@@ -314,16 +314,16 @@ static void create_stringInWhere_file()
             "'bbb',2\n"
             "'bbbc',2\n"
             ;
-    odb::tool::ImportTool::importText(data, "stringInWhere.odb");
+    odc::tool::ImportTool::importText(data, "stringInWhere.odb");
 }
 
 TEST(stringInWhere)
 {
     create_stringInWhere_file();
-    odb::Select oda("select * from 'stringInWhere.odb' where a = 'aaa';");
+    odc::Select oda("select * from 'stringInWhere.odb' where a = 'aaa';");
 
     unsigned long counter = 0;
-    for (odb::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++counter)
+    for (odc::Select::iterator it = oda.begin(); it != oda.end(); ++it, ++counter)
         ;
     ASSERT(counter == 1);
 }
@@ -362,12 +362,12 @@ TEST(rownumber1)
 	const char *inputData = "a:INTEGER,b:INTEGER\n" "1,1\n" "2,2\n" "3,3\n" "4,4\n" "5,5\n" "6,6\n" "7,7\n" "8,8\n" "9,9\n" "10,10\n";
 
     string path("Test_rownumber1.odb");
-	odb::tool::ImportTool::importText(inputData, path);
+	odc::tool::ImportTool::importText(inputData, path);
     string query("SELECT rownumber() from \"" + path + "\";");
 
-    odb::Select select(query);
-    odb::Select::iterator it = select.begin();
-    odb::Select::iterator end = select.end();
+    odc::Select select(query);
+    odc::Select::iterator it = select.begin();
+    odc::Select::iterator end = select.end();
 
     llong i = 0;
     for (; it != end; ++it)
@@ -394,7 +394,7 @@ TEST(sqlOutputFormatting)
 
     const char* testFile("sqlOutputFormatting.odb");
 
-    odb::tool::ImportTool::importText(data, testFile);
+    odc::tool::ImportTool::importText(data, testFile);
 
     bool doNotWriteColumnNames(false); // -T
     bool doNotWriteNULL(false);        // -N
@@ -403,17 +403,17 @@ TEST(sqlOutputFormatting)
     string outputFile;          // -o
     string outputFormat;        // default is ascii
 
-    odb::sql::SQLSelectFactory::instance()
-            .config(odb::sql::SQLOutputConfig(doNotWriteColumnNames, doNotWriteNULL, delimiter, outputFile, outputFormat));
+    odc::sql::SQLSelectFactory::instance()
+            .config(odc::sql::SQLOutputConfig(doNotWriteColumnNames, doNotWriteNULL, delimiter, outputFile, outputFormat));
 
     ostream& out = cout;
-    odb::sql::SQLInteractiveSession session(out);
-    odb::sql::SQLParser p;
+    odc::sql::SQLInteractiveSession session(out);
+    odc::sql::SQLParser p;
 
     FileHandle fh(inputFile);
     fh.openForRead();
-    //p.parseString(StringTool::readFile(fileName), &fh, odb::sql::SQLSelectFactory::instance().config());
-    p.parseString("select x,y,v;", &fh, odb::sql::SQLSelectFactory::instance().config());
+    //p.parseString(StringTool::readFile(fileName), &fh, odc::sql::SQLSelectFactory::instance().config());
+    p.parseString("select x,y,v;", &fh, odc::sql::SQLSelectFactory::instance().config());
     */
 
 }
@@ -452,7 +452,7 @@ static void createDataForWindSpeedWindDirection()
             "5.4,0.0\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "uv.odb");
+    odc::tool::ImportTool::importText(data, "uv.odb");
 }
 
 TEST(windSpeedWindDirection)
@@ -461,9 +461,9 @@ TEST(windSpeedWindDirection)
     string path("uv.odb");
     string query("SELECT ff(u,v), dd(u,v), speed(u,v),dir(u,v), sqrt(u*u+v*v), fmod(atan2(-u,-v)+360.,360.) from \"" + path + "\";");
 
-    odb::Select select(query);
-    odb::Select::iterator it = select.begin();
-    odb::Select::iterator end = select.end();
+    odc::Select select(query);
+    odc::Select::iterator it = select.begin();
+    odc::Select::iterator end = select.end();
 
     llong i = 0;
     for (; it != end; ++it)
@@ -477,16 +477,16 @@ TEST(windSpeedWindDirection)
 
 //TEST(odbcapi)
 //{
-//	odb::tool::test::test_odacapi_setup_in_C(0,0);
-//	odb::tool::test::test_odacapi3(0,0);
+//	odc::tool::test::test_odacapi_setup_in_C(0,0);
+//	odc::tool::test::test_odacapi3(0,0);
 //}
 
 
 static void SplitTool_chunks()
 {
     const char * fn = "selectAggregatedAndNonAggregated.odb";
-    unsigned long long n = odb::tool::CountTool::fastRowCount(fn);
-    vector<pair<Offset,Length> > chunks = odb::tool::SplitTool::getChunks(fn);
+    unsigned long long n = odc::tool::CountTool::fastRowCount(fn);
+    vector<pair<Offset,Length> > chunks = odc::tool::SplitTool::getChunks(fn);
 
     Log::info() << "chunks.size():" << chunks.size() << std::endl;
     ASSERT(chunks.size() == 1 && chunks[0].first == Offset(0) && chunks[0].second == Length(357));
@@ -565,12 +565,12 @@ TEST(hash_operator_on_select_list)
             ;
 
     ScratchFile f("hash_operator_on_select_list.odb");
-    odb::tool::ImportTool::importText(data, f);
+    odc::tool::ImportTool::importText(data, f);
 
     string sql("select x,x#-1,x#1 from \"" + f + "\";");
-    odb::Select select(sql);
-    odb::Select::iterator it = select.begin();
-    odb::Select::iterator end = select.end();
+    odc::Select select(sql);
+    odc::Select::iterator it = select.begin();
+    odc::Select::iterator end = select.end();
     for (; it != end; ++it)
     {
         Log::info() << it << std::endl;
@@ -597,12 +597,12 @@ TEST(hash_operator_in_where)
             ;
 
     ScratchFile f("hash_operator_in_where.odb");
-    odb::tool::ImportTool::importText(data, f);
+    odc::tool::ImportTool::importText(data, f);
 
     string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
-    odb::Select select(sql);
-    odb::Select::iterator it = select.begin();
-    odb::Select::iterator end = select.end();
+    odc::Select select(sql);
+    odc::Select::iterator it = select.begin();
+    odc::Select::iterator end = select.end();
     for (; it != end; ++it)
     {
         Log::info() << it << std::endl;
@@ -612,10 +612,10 @@ TEST(hash_operator_in_where)
 TEST(bitfields_hash_operator)
 {
     PathName f("2000010106.4.0.odb");
-    //odb::Select select("select lat,lat#1 from \"" + f + "\"");
-    odb::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\";");
-    odb::Select::iterator it = select.begin();
-    odb::Select::iterator end = select.end();
+    //odc::Select select("select lat,lat#1 from \"" + f + "\"");
+    odc::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\";");
+    odc::Select::iterator it = select.begin();
+    odc::Select::iterator end = select.end();
     for (; it != end; ++it)
     {
         Log::info() << it << std::endl;
@@ -630,10 +630,10 @@ TEST(select_constant_value)
             "select $foo;"
             ;
 
-    odb::Select o(sql);
+    odc::Select o(sql);
 
-    odb::Select::iterator it = o.begin();
-    odb::Select::iterator end = o.end();
+    odc::Select::iterator it = o.begin();
+    odc::Select::iterator end = o.end();
     unsigned long counter = 0;
     for ( ; it != o.end(); ++it, ++counter)
     {
@@ -659,8 +659,8 @@ TEST(include)
             ;
 
     unsigned long counter = 0;
-    odb::Select o(sql);
-    for (odb::Select::iterator it(o.begin()), end(o.end());
+    odc::Select o(sql);
+    for (odc::Select::iterator it(o.begin()), end(o.end());
          it != o.end();
          ++it, ++counter)
     {
@@ -686,8 +686,8 @@ TEST(create_table_using_variable)
     ;
 
     unsigned long counter = 0;
-    odb::Select o(sql);
-    for (odb::Select::iterator it(o.begin()), end(o.end());
+    odc::Select o(sql);
+    for (odc::Select::iterator it(o.begin()), end(o.end());
         it != o.end();
         ++it, ++counter)
     {
@@ -740,11 +740,11 @@ TEST(operator_ge)
             "10,10\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "1to10.odb");
+    odc::tool::ImportTool::importText(data, "1to10.odb");
 
-    odb::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
+    odc::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
     unsigned long counter = 0;
-    for (odb::Select::iterator it = odb.begin(), end = odb.end();
+    for (odc::Select::iterator it = odb.begin(), end = odb.end();
          it != end;
          ++it, ++counter)
         ;
@@ -767,7 +767,7 @@ static void create_1to10()
             "10,10\n"
             ;
 
-    odb::tool::ImportTool::importText(data, "1to10.odb");
+    odc::tool::ImportTool::importText(data, "1to10.odb");
 }
 
 /* FIXME
@@ -776,8 +776,8 @@ TEST(Select_isNewDataset)
     create_1to10();
     size_t blocks (0);
 
-    odb::Select odb("select * from \"1to10.odb\";");
-    for (odb::Select::iterator it = odb.begin(), end = odb.end();
+    odc::Select odb("select * from \"1to10.odb\";");
+    for (odc::Select::iterator it = odb.begin(), end = odb.end();
         it != end;
         ++it)
         if (it->isNewDataset())
@@ -817,7 +817,7 @@ TEST(Gabor)
     ;
     const string fileName("/tmp/gabor/massaged.odb");
 
-    odb::FastODA2Request<odb::ODA2RequestClientTraits> o2r;
+    odc::FastODA2Request<odc::ODA2RequestClientTraits> o2r;
     o2r.parseConfig(cfg);
 
     eckit::OffsetList offsets;
@@ -844,7 +844,7 @@ TEST(Gabor)
 // FIXME
 TEST(Reader_isNewDataset) { test_isNewDataset<Reader>(); }
 // FIXME
-TEST(MetaDataReader_isNewDataset) { test_isNewDataset<odb::MetaDataReader<MetaDataReaderIterator> >(); }
+TEST(MetaDataReader_isNewDataset) { test_isNewDataset<odc::MetaDataReader<MetaDataReaderIterator> >(); }
 
 TEST(create_temporary_table)
 {
@@ -854,8 +854,8 @@ TEST(create_temporary_table)
 
     cout << "Trying to execute: '" << sql << "'" << std::endl;
 
-    odb::Select o(sql);
-    odb::tool::SQLTool::execute(sql);
+    odc::Select o(sql);
+    odc::tool::SQLTool::execute(sql);
 
 }
 */
@@ -863,7 +863,7 @@ TEST(create_temporary_table)
 
 TEST(JULIAN_SECONDS)
 {
-    ASSERT(1 == (*odb::Select("select julian_seconds(19750311,0) < julian_seconds(20140210,0) from dual;").begin())[0]);
+    ASSERT(1 == (*odc::Select("select julian_seconds(19750311,0) < julian_seconds(20140210,0) from dual;").begin())[0]);
 }
 
 TEST(CREATE_TABLE_and_SELECT_INTO)
@@ -882,7 +882,7 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
 	"10,10\n"
 	;
 
-	odb::tool::ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
+	odc::tool::ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
     const char* sql =
     "CREATE TYPE mybitfield AS ( "
     "codetype bit9,"
@@ -901,8 +901,8 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
     ;
 
     {
-        odb::Select o(sql);
-        odb::Select::iterator it = o.begin();
+        odc::Select o(sql);
+        odc::Select::iterator it = o.begin();
         unsigned long counter = 0;
         for ( ; it != o.end(); ++it, ++counter)
             ;
@@ -916,13 +916,13 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
 TEST(SELECT_ALL)
 {
     ostream& L(eckit::Log::info());
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
+    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
+    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
     system("cat select_all_1.odb select_all_2.odb >select_all.odb");
 
     L << "--- Test_SELECT_ALL: open select_all.odb" << endl;
-    odb::Select o("SELECT ALL * FROM \"select_all.odb\";");
-    odb::Select::iterator it (o.begin()), end (o.end());
+    odc::Select o("SELECT ALL * FROM \"select_all.odb\";");
+    odc::Select::iterator it (o.begin()), end (o.end());
     L << "--- Test_SELECT_ALL: row #0" << endl;
     ++it;
     ASSERT(it->columns().size() == 2);
@@ -935,9 +935,9 @@ TEST(SELECT_ALL)
 // ODB-106
 TEST(SELECT_WHERE_0)
 {
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", "select_where_0.odb");
-    odb::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
-    odb::Select::iterator it (o.begin()), end (o.end());
+    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", "select_where_0.odb");
+    odc::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
+    odc::Select::iterator it (o.begin()), end (o.end());
     ++it;
 }
 
@@ -952,12 +952,12 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
             );
     const char* outFileTemplate ("ODB_235_{a}_{expver}.odb");
 
-    odb::tool::ImportTool::importText(data, inFile);
+    odc::tool::ImportTool::importText(data, inFile);
 
-	odb::Reader in(inFile);
-	odb::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
+	odc::Reader in(inFile);
+	odc::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
 
-	odb::DispatchingWriter::iterator outIt (out.begin());
+	odc::DispatchingWriter::iterator outIt (out.begin());
 	outIt->pass1(in.begin(), in.end());
 
     ASSERT(PathName("ODB_235_1_?.odb").exists());
@@ -973,17 +973,17 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
 TEST(LegacyAPIExecuteSelectTwice)
 {
     const std::string fn("legacy_execute_select_twice.odb");
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
-    odb::Select o(std::string("SELECT * FROM \"") + fn + "\";");
+    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    odc::Select o(std::string("SELECT * FROM \"") + fn + "\";");
 
     int i (0), j (0);
 
-    for (odb::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
         ++i;
 
     ASSERT(i == 2);
 
-    for (odb::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
         ++j;
 
     ASSERT(j == 2);
@@ -992,17 +992,17 @@ TEST(LegacyAPIExecuteSelectTwice)
 TEST(LegacyAPITraverseReaderTwice)
 {
     const std::string fn("legacy_traverse_reader_twice.odb");
-    odb::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
-    odb::Reader o(fn);
+    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    odc::Reader o(fn);
 
     int i (0), j (0);
 
-    for (odb::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
         ++i;
 
     ASSERT(i == 2);
 
-    for (odb::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
         ++j;
 
     ASSERT(j == 2);
@@ -1061,12 +1061,12 @@ TEST(ODB269)
 //void buildMultiHandle(eckit::MultiHandle&, const std::string&);
 TEST(HttpHandle)
 {
-    eckit::DataHandle* in (odb::DataHandleFactory::openForRead("http://localhost/conv.odb"));
+    eckit::DataHandle* in (odc::DataHandleFactory::openForRead("http://localhost/conv.odb"));
     //eckit::DataHandle* out (DataHandleFactory::openForWrite(const std::string&, const eckit::Length& = eckit::Length(0)));
 
-    odb::Select o("select *;", *in);
+    odc::Select o("select *;", *in);
 
-    for (odb::Select::iterator it (o.begin()); it != o.end(); ++it)
+    for (odc::Select::iterator it (o.begin()); it != o.end(); ++it)
     {
         Log::info() << "." << std::endl;
     }

@@ -13,7 +13,7 @@
 
 #include "odb_api/tools/Tool.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class CountTool : public Tool {
@@ -42,6 +42,6 @@ private:
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

@@ -11,7 +11,7 @@
 #ifndef TEST_ODA_C_API_H
 #define TEST_ODA_C_API_H
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -25,6 +25,6 @@ int test_odacapi3(int argc, char *argv[]);
 
 } // namespace test 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif

@@ -7,7 +7,7 @@
 #include "odb_api/DataLinks.h"
 #include "odb_api/DataTables.h"
 
-namespace odb {
+namespace odc {
 
 class DataTable;
 class DataLink;
@@ -57,6 +57,6 @@ private:
     DataLinks links_;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif // DATASET_H_

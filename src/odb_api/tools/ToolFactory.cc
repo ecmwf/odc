@@ -27,7 +27,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 std::map<std::string, AbstractToolFactory *> *AbstractToolFactory::toolFactories = 0;
@@ -167,5 +167,5 @@ AbstractToolFactory::~AbstractToolFactory()
 }
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

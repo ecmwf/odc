@@ -18,7 +18,7 @@
 
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 FixedSizeWriterIterator::FixedSizeWriterIterator(Owner &owner, DataHandle *dh)
 : WriterBufferingIterator(owner, dh, true)
@@ -51,4 +51,4 @@ int FixedSizeWriterIterator::writeRow(const double* values, unsigned long count)
 	return 0;
 } 
 
-} // namespace odb 
+} // namespace odc 

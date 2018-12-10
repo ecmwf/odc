@@ -11,7 +11,7 @@
 #ifndef odblib_ColumnType_H
 #define odblib_ColumnType_H
 
-namespace odb {
+namespace odc {
 
 enum ColumnType
 {
@@ -23,6 +23,6 @@ enum ColumnType
 	DOUBLE   = 5
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif // odblib_ColumnType_H

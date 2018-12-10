@@ -24,7 +24,7 @@
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
-namespace odb {
+namespace odc {
 
 class DispatchingWriter;
 
@@ -60,6 +60,6 @@ private:
 	static MetaData nullMD;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

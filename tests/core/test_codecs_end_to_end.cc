@@ -40,7 +40,7 @@ namespace {
 
     class MockReadIterator {
     public:
-        MockReadIterator(odb::ColumnType type, double data) :
+        MockReadIterator(odc::ColumnType type, double data) :
             columns_(1),
             type_(type),
             data_(data),
@@ -48,15 +48,15 @@ namespace {
             refCount_(0),
             noMore_(false) {
 
-            columns_[0] = new odb::Column(columns_);
+            columns_[0] = new odc::Column(columns_);
             ASSERT(columns_[0]);
 
             columns_[0]->name("a-col");
-            columns_[0]->type<odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(type_, false);
+            columns_[0]->type<odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(type_, false);
             columns_[0]->hasMissing(false);
         }
 
-        odb::MetaData& columns() { return columns_; }
+        odc::MetaData& columns() { return columns_; }
         bool isNewDataset()      { return false; }
         double* data()           { return &data_; }
 
@@ -68,8 +68,8 @@ namespace {
         }
 
     protected:
-        odb::MetaData columns_;
-        odb::ColumnType type_;
+        odc::MetaData columns_;
+        odc::ColumnType type_;
         double data_;
         int nRows_;
 
@@ -85,8 +85,8 @@ namespace {
     const long the_const_value = 20090624;
 
     struct MockReadIteratorConstInt : public MockReadIterator {
-        MockReadIteratorConstInt() : MockReadIterator(odb::INTEGER, the_const_value) {
-            columns_[0]->coder(new odb::codec::CodecInt32<odb::SameByteOrder>);
+        MockReadIteratorConstInt() : MockReadIterator(odc::INTEGER, the_const_value) {
+            columns_[0]->coder(new odc::codec::CodecInt32<odc::SameByteOrder>);
         }
     };
 
@@ -95,8 +95,8 @@ namespace {
     const char* const_string_1 = "a-string";
 
     struct MockReadIteratorConstString1 : public MockReadIterator {
-        MockReadIteratorConstString1() : MockReadIterator(odb::STRING, *reinterpret_cast<const double*>(const_string_1)) {
-            columns_[0]->coder(new odb::codec::CodecChars<odb::SameByteOrder>);
+        MockReadIteratorConstString1() : MockReadIterator(odc::STRING, *reinterpret_cast<const double*>(const_string_1)) {
+            columns_[0]->coder(new odc::codec::CodecChars<odc::SameByteOrder>);
         }
     };
 
@@ -105,8 +105,8 @@ namespace {
     const char* const_string_2 = "pies\0\0\0\0";
 
     struct MockReadIteratorConstString2 : public MockReadIterator {
-        MockReadIteratorConstString2() : MockReadIterator(odb::STRING, *reinterpret_cast<const double*>(const_string_2)) {
-            columns_[0]->coder(new odb::codec::CodecChars<odb::SameByteOrder>);
+        MockReadIteratorConstString2() : MockReadIterator(odc::STRING, *reinterpret_cast<const double*>(const_string_2)) {
+            columns_[0]->coder(new odc::codec::CodecChars<odc::SameByteOrder>);
         }
     };
 }
@@ -121,10 +121,10 @@ CASE("The constant integer codec stores a constant integer") {
     eckit::MemoryHandle writeDH(buf);
 
     {
-        odb::Writer<> oda(writeDH);
-        odb::Writer<>::iterator outit = oda.begin();
+        odc::Writer<> oda(writeDH);
+        odc::Writer<>::iterator outit = oda.begin();
 
-        odb::tool::MockReader<MockReadIteratorConstInt> reader;
+        odc::tool::MockReader<MockReadIteratorConstInt> reader;
         outit->pass1(reader.begin(), reader.end());
     }
 
@@ -133,10 +133,10 @@ CASE("The constant integer codec stores a constant integer") {
     {
         eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
         dh.openForRead();
-        odb::Reader oda(dh);
+        odc::Reader oda(dh);
 
-        odb::Reader::iterator it = oda.begin();
-        odb::Reader::iterator end = oda.end();
+        odc::Reader::iterator it = oda.begin();
+        odc::Reader::iterator end = oda.end();
 
         EXPECT(it->columns()[0]->name() == "a-col");
 
@@ -151,7 +151,7 @@ CASE("The constant integer codec stores a constant integer") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant");
-        EXPECT(it->columns()[0]->type() == odb::INTEGER);
+        EXPECT(it->columns()[0]->type() == odc::INTEGER);
     }
 }
 
@@ -165,10 +165,10 @@ CASE("The constant codec can also store strings") {
     eckit::MemoryHandle writeDH(buf);
 
     {
-        odb::Writer<> oda(writeDH);
-        odb::Writer<>::iterator outit = oda.begin();
+        odc::Writer<> oda(writeDH);
+        odc::Writer<>::iterator outit = oda.begin();
 
-        odb::tool::MockReader<MockReadIteratorConstString1> reader;
+        odc::tool::MockReader<MockReadIteratorConstString1> reader;
         outit->pass1(reader.begin(), reader.end());
     }
 
@@ -177,10 +177,10 @@ CASE("The constant codec can also store strings") {
     {
         eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
         dh.openForRead();
-        odb::Reader oda(dh);
+        odc::Reader oda(dh);
 
-        odb::Reader::iterator it = oda.begin();
-        odb::Reader::iterator end = oda.end();
+        odc::Reader::iterator it = oda.begin();
+        odc::Reader::iterator end = oda.end();
 
         EXPECT(it->columns()[0]->name() == "a-col");
 
@@ -195,7 +195,7 @@ CASE("The constant codec can also store strings") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant_string");
-        EXPECT(it->columns()[0]->type() == odb::STRING);
+        EXPECT(it->columns()[0]->type() == odc::STRING);
     }
 }
 
@@ -209,10 +209,10 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
     eckit::MemoryHandle writeDH(buf);
 
     {
-        odb::Writer<> oda(writeDH);
-        odb::Writer<>::iterator outit = oda.begin();
+        odc::Writer<> oda(writeDH);
+        odc::Writer<>::iterator outit = oda.begin();
 
-        odb::tool::MockReader<MockReadIteratorConstString2> reader;
+        odc::tool::MockReader<MockReadIteratorConstString2> reader;
         outit->pass1(reader.begin(), reader.end());
     }
 
@@ -221,10 +221,10 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
     {
         eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
         dh.openForRead();
-        odb::Reader oda(dh);
+        odc::Reader oda(dh);
 
-        odb::Reader::iterator it = oda.begin();
-        odb::Reader::iterator end = oda.end();
+        odc::Reader::iterator it = oda.begin();
+        odc::Reader::iterator end = oda.end();
 
         EXPECT(it->columns()[0]->name() == "a-col");
 
@@ -239,7 +239,7 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant_string");
-        EXPECT(it->columns()[0]->type() == odb::STRING);
+        EXPECT(it->columns()[0]->type() == odc::STRING);
     }
 }
 
@@ -250,11 +250,11 @@ CASE("The constant codec can also store doubles") {
 
     // Don't use the pass1 mechanism here. Build a writer explicitly to show that we can
 
-    odb::ColumnType types[] = { odb::REAL, odb::DOUBLE };
+    odc::ColumnType types[] = { odc::REAL, odc::DOUBLE };
 
     for (size_t i = 0; i < 2; i++) {
 
-        odb::ColumnType type = types[i];
+        odc::ColumnType type = types[i];
 
         // Construct the encoded stuff
 
@@ -263,8 +263,8 @@ CASE("The constant codec can also store doubles") {
         eckit::MemoryHandle writeDH(buf);
 
         {
-            odb::Writer<> oda(writeDH);
-            odb::Writer<>::iterator outit = oda.begin();
+            odc::Writer<> oda(writeDH);
+            odc::Writer<>::iterator outit = oda.begin();
 
             outit->setNumberOfColumns(1);
             outit->setColumn(0, "abcdefg", type);
@@ -281,10 +281,10 @@ CASE("The constant codec can also store doubles") {
         {
             eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
             dh.openForRead();
-            odb::Reader oda(dh);
+            odc::Reader oda(dh);
 
-            odb::Reader::iterator it = oda.begin();
-            odb::Reader::iterator end = oda.end();
+            odc::Reader::iterator it = oda.begin();
+            odc::Reader::iterator end = oda.end();
 
             EXPECT(it->columns()[0]->name() == "abcdefg");
 
@@ -312,11 +312,11 @@ CASE("Missing values are encoded and decoded correctly") {
     typedef std::map<std::string, std::pair<double, int> > MapType;
     MapType codec_value_map;
 
-    codec_value_map["short_real"]    = std::make_pair(odb::MDI::realMDI(), sizeof(float));
-    codec_value_map["short_real2"]   = std::make_pair(odb::MDI::realMDI(), sizeof(float));
-    codec_value_map["long_real"]     = std::make_pair(odb::MDI::realMDI(), sizeof(double));
-    codec_value_map["int8_missing"]  = std::make_pair(odb::MDI::integerMDI(), sizeof(int8_t));
-    codec_value_map["int16_missing"]  = std::make_pair(odb::MDI::integerMDI(), sizeof(int16_t));
+    codec_value_map["short_real"]    = std::make_pair(odc::MDI::realMDI(), sizeof(float));
+    codec_value_map["short_real2"]   = std::make_pair(odc::MDI::realMDI(), sizeof(float));
+    codec_value_map["long_real"]     = std::make_pair(odc::MDI::realMDI(), sizeof(double));
+    codec_value_map["int8_missing"]  = std::make_pair(odc::MDI::integerMDI(), sizeof(int8_t));
+    codec_value_map["int16_missing"]  = std::make_pair(odc::MDI::integerMDI(), sizeof(int16_t));
 
     for (MapType::const_iterator it = codec_value_map.begin(); it != codec_value_map.end(); ++it) {
 
@@ -326,9 +326,9 @@ CASE("Missing values are encoded and decoded correctly") {
 
         // Get the appropriate codec
 
-        eckit::ScopedPtr<odb::codec::Codec> c(
-                    odb::codec::Codec::findCodec<
-                            odb::DataStream<odb::SameByteOrder, eckit::DataHandle> >(codec_name, false));
+        eckit::ScopedPtr<odc::codec::Codec> c(
+                    odc::codec::Codec::findCodec<
+                            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(codec_name, false));
 
         EXPECT(c->name() == codec_name);
 

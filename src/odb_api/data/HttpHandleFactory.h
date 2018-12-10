@@ -14,7 +14,7 @@
 
 #include "odb_api/data/DataHandleFactory.h"
 
-namespace odb {
+namespace odc {
 
 class HttpHandleFactory : public DataHandleFactory
 {
@@ -24,6 +24,6 @@ protected:
     eckit::DataHandle* makeHandle(const std::string&) const;
 };
 
-} // namespace odb
+} // namespace odc
 
 #endif

@@ -7,9 +7,9 @@
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelect.h"
 
-using namespace odb;
+using namespace odc;
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 DataSelectIterator::DataSelectIterator(const DataSelect& query, bool begin) :
@@ -94,4 +94,4 @@ void DataSelectIterator::increment()
 }
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

@@ -17,7 +17,7 @@
 
 #include "odb_api/ODBApplication.h"
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 class Tool;
@@ -25,19 +25,19 @@ class Tool;
 class ToolRunnerApplication : public ODBApplication {
 public:
 	ToolRunnerApplication (int argc, char **argv, bool createCommandLineTool = true, bool deleteTool=true);
-	ToolRunnerApplication (odb::tool::Tool &tool, int argc, char **argv);
+	ToolRunnerApplication (odc::tool::Tool &tool, int argc, char **argv);
 	~ToolRunnerApplication ();
 
-	void tool(odb::tool::Tool *);
+	void tool(odc::tool::Tool *);
 
 	void run();
 	int printHelp(std::ostream &out);
 private:
-	odb::tool::Tool* tool_;
+	odc::tool::Tool* tool_;
 	bool deleteTool_;
 };
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 
 #endif

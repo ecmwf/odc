@@ -15,4 +15,4 @@
 #include "odb_api/DispatchingWriter.h"
 #include "odb_api/TextReaderIterator.h"
 
-using namespace odb;
+using namespace odc;

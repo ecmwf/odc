@@ -20,7 +20,7 @@
 #include "odb_api/ColumnType.h"
 #include "odb_api/MetaData.h"
 
-namespace odb {
+namespace odc {
 namespace codec {
 
 class Codec;
@@ -150,12 +150,12 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				break;
 		}
 
-		//if (odb::ODBAPISettings::debug && i == 28) eckit::Log::info() << ": AFTER " << col << " -> " << col.coder() << std::endl;
+		//if (odc::ODBAPISettings::debug && i == 28) eckit::Log::info() << ": AFTER " << col << " -> " << col.coder() << std::endl;
 	}
 	return 0;
 }
 
 } // namespace codec
-} // namespace odb 
+} // namespace odc 
 
 #endif

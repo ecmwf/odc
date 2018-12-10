@@ -8,7 +8,7 @@
 #include "odb_api/DataTable.h"
 #include "odb_api/IteratorFacade.h"
 
-namespace odb {
+namespace odc {
 
 class DataJoin;
 
@@ -61,11 +61,11 @@ private:
     int type_;
     bool done_;
 
-    friend class odb::DataJoin;
-    friend class odb::IteratorFacadeAccess;
+    friend class odc::DataJoin;
+    friend class odc::IteratorFacadeAccess;
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATAJOINITERATOR_H_

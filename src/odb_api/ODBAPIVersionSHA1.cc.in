@@ -10,9 +10,9 @@
 
 #include "odb_api/ODBAPIVersion.h"
 
-namespace odb {
+namespace odc {
 
     const char *ODBAPIVersion::gitsha1() { return "@ODB_API_GIT_SHA1@"; }
 
-} // namespace odb
+} // namespace odc
 

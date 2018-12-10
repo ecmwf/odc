@@ -35,13 +35,13 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
         class TemporaryODB1 : public TemporaryFile {
         public:
             TemporaryODB1() {
-                odb::Writer<> oda(path());
-                odb::Writer<>::iterator writer = oda.begin();
+                odc::Writer<> oda(path());
+                odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(3);
-                writer->setColumn(0, "x", odb::REAL);
-                writer->setColumn(1, "y", odb::REAL);
-                writer->setColumn(2, "z", odb::INTEGER);
+                writer->setColumn(0, "x", odc::REAL);
+                writer->setColumn(1, "y", odc::REAL);
+                writer->setColumn(2, "z", odc::INTEGER);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -58,13 +58,13 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
         class TemporaryODB2 : public TemporaryFile {
         public:
             TemporaryODB2() {
-                odb::Writer<> oda(path());
-                odb::Writer<>::iterator writer = oda.begin();
+                odc::Writer<> oda(path());
+                odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(3);
-                writer->setColumn(0, "x", odb::REAL);
-                writer->setColumn(1, "y", odb::INTEGER);
-                writer->setColumn(2, "v", odb::REAL);
+                writer->setColumn(0, "x", odc::REAL);
+                writer->setColumn(1, "y", odc::INTEGER);
+                writer->setColumn(2, "v", odc::REAL);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -81,14 +81,14 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
         class TemporaryODB3 : public TemporaryFile {
         public:
             TemporaryODB3() {
-                odb::Writer<> oda(path());
-                odb::Writer<>::iterator writer = oda.begin();
+                odc::Writer<> oda(path());
+                odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(4);
-                writer->setColumn(0, "x", odb::INTEGER);
-                writer->setColumn(1, "v", odb::REAL);
-                writer->setColumn(2, "y", odb::REAL);
-                writer->setColumn(3, "z", odb::REAL);
+                writer->setColumn(0, "x", odc::INTEGER);
+                writer->setColumn(1, "v", odc::REAL);
+                writer->setColumn(2, "y", odc::REAL);
+                writer->setColumn(3, "z", odc::REAL);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -106,12 +106,12 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
         class TemporaryODB4 : public TemporaryFile {
         public:
             TemporaryODB4() {
-                odb::Writer<> oda(path());
-                odb::Writer<>::iterator writer = oda.begin();
+                odc::Writer<> oda(path());
+                odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(2);
-                writer->setColumn(0, "x", odb::REAL);
-                writer->setColumn(1, "v", odb::REAL);
+                writer->setColumn(0, "x", odc::REAL);
+                writer->setColumn(1, "v", odc::REAL);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -147,8 +147,8 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
         SECTION("The data in the concatenated files is correct") {
 
-            odb::Reader in(combinedFile.path());
-            odb::Reader::iterator it = in.begin();
+            odc::Reader in(combinedFile.path());
+            odc::Reader::iterator it = in.begin();
 
             EXPECT(it->columns().size() == 3);
             EXPECT(it->columns()[0]->name() == "x");
@@ -209,17 +209,17 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
         SECTION("A copy of the concatenated file is identical") {
 
-            odb::Reader in(combinedFile.path());
-            odb::Reader::iterator it = in.begin();
-            odb::Reader::iterator end = in.end();
+            odc::Reader in(combinedFile.path());
+            odc::Reader::iterator it = in.begin();
+            odc::Reader::iterator end = in.end();
 
             TemporaryFile copyFile;
-            odb::Writer<> out(copyFile.path());
-            odb::Writer<>::iterator o = out.begin();
+            odc::Writer<> out(copyFile.path());
+            odc::Writer<>::iterator o = out.begin();
             o->pass1(it, end);
 
             // Check that ODB-API thinks the files are the same
-            EXPECT_NO_THROW(odb::Comparator().compare(combinedFile.path(), copyFile.path()));
+            EXPECT_NO_THROW(odc::Comparator().compare(combinedFile.path(), copyFile.path()));
         }
     }
 }
@@ -236,13 +236,13 @@ CASE("If corrupt data follows a valid ODB this should not be treated as a new OD
     eckit::MemoryHandle writeDH(buf);
 
     {
-        odb::Writer<> oda(writeDH);
-        odb::Writer<>::iterator writer = oda.begin();
+        odc::Writer<> oda(writeDH);
+        odc::Writer<>::iterator writer = oda.begin();
 
         writer->setNumberOfColumns(3);
-        writer->setColumn(0, "x", odb::REAL);
-        writer->setColumn(1, "y", odb::REAL);
-        writer->setColumn(2, "z", odb::INTEGER);
+        writer->setColumn(0, "x", odc::REAL);
+        writer->setColumn(1, "y", odc::REAL);
+        writer->setColumn(2, "z", odc::INTEGER);
         writer->writeHeader();
 
         for (size_t i = 1; i <= 2; i++) {
@@ -263,8 +263,8 @@ CASE("If corrupt data follows a valid ODB this should not be treated as a new OD
     eckit::MemoryHandle readDH(buf);
     readDH.openForRead();
 
-    odb::Reader in(readDH);
-    odb::Reader::iterator it = in.begin();
+    odc::Reader in(readDH);
+    odc::Reader::iterator it = in.begin();
 
     EXPECT(static_cast<long>(it->data()[0]) == 1);
     EXPECT(static_cast<long>(it->data()[1]) == 1);
@@ -292,13 +292,13 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
     eckit::MemoryHandle writeDH(buf);
 
     {
-        odb::Writer<> oda(writeDH);
-        odb::Writer<>::iterator writer = oda.begin();
+        odc::Writer<> oda(writeDH);
+        odc::Writer<>::iterator writer = oda.begin();
 
         writer->setNumberOfColumns(3);
-        writer->setColumn(0, "x", odb::REAL);
-        writer->setColumn(1, "y", odb::REAL);
-        writer->setColumn(2, "z", odb::INTEGER);
+        writer->setColumn(0, "x", odc::REAL);
+        writer->setColumn(1, "y", odc::REAL);
+        writer->setColumn(2, "z", odc::INTEGER);
         writer->writeHeader();
 
         for (size_t i = 1; i <= 2; i++) {
@@ -318,8 +318,8 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
     eckit::MemoryHandle readDH(buf.data(), static_cast<size_t>(writeDH.position()));
     readDH.openForRead();
 
-    odb::Reader in(readDH);
-    odb::Reader::iterator it = in.begin();
+    odc::Reader in(readDH);
+    odc::Reader::iterator it = in.begin();
 
     EXPECT(static_cast<long>(it->data()[0]) == 1);
     EXPECT(static_cast<long>(it->data()[1]) == 1);

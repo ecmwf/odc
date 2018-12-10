@@ -4,7 +4,7 @@
 #include "odb_api/DataLink.h"
 #include "odb_api/DataLinkIterator.h"
 
-namespace odb {
+namespace odc {
 namespace internal {
 
 template <typename Row, typename Traits>
@@ -37,4 +37,4 @@ template class DataLinkIterator<DataRow>;
 template class DataLinkIterator<const DataRow>;
 
 } // namespace internal
-} // namespace odb
+} // namespace odc

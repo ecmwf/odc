@@ -13,7 +13,7 @@
 #ifndef odb_api_Indexer_H
 #define odb_api_Indexer_H
 
-namespace odb {
+namespace odc {
 
 typedef std::vector<std::pair<eckit::Offset,eckit::Length> > BlockOffsets;
 typedef unsigned long long ullong;
@@ -29,6 +29,6 @@ private:
     static BlockOffsets offsetsOfBlocks(const eckit::PathName&);
 };
 
-} // namespace odb 
+} // namespace odc 
 
 #endif 

@@ -6,7 +6,7 @@
 
 #include "odb_api/DataLink.h"
 
-namespace odb {
+namespace odc {
 
 class DataSet;
 class DataView;
@@ -135,10 +135,10 @@ private:
     size_t rowBufferSize_;
     bool done_;
 
-    friend class odb::DataView;
+    friend class odc::DataView;
 };
 
 } // namespace internal
-} // namespace odb
+} // namespace odc
 
 #endif // DATAVIEW_H_

@@ -27,7 +27,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 namespace tool {
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ SQLTool::SQLTool(int argc,char **argv) :
     bool fullPrecision = optionIsSet("--full_precision") || optionIsSet("--full-precision");
 
 
-    sqlOutputConfig_.reset(new odb::sql::SQLOutputConfig(noColumnNames, noNULL, fieldDelimiter, outputFormat,
+    sqlOutputConfig_.reset(new odc::sql::SQLOutputConfig(noColumnNames, noNULL, fieldDelimiter, outputFormat,
                                                          bitfieldsBinary, noColumnAlignment, fullPrecision));
 
     // Configure the output file
@@ -121,7 +121,7 @@ void SQLTool::run()
         implicitTableDH->openForRead();
 
         eckit::sql::SQLDatabase& db(session.currentDatabase());
-        db.addImplicitTable(new odb::sql::ODATable(db, *implicitTableDH));
+        db.addImplicitTable(new odc::sql::ODATable(db, *implicitTableDH));
     }
 
     // And actually do the SQL!
@@ -134,5 +134,5 @@ void SQLTool::run()
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

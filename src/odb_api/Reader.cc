@@ -19,7 +19,7 @@
 using namespace std;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 Reader::Reader(DataHandle &dh)
 : dataHandle_(&dh),
@@ -98,8 +98,8 @@ eckit::DataHandle* Reader::dataHandle()
 {
     // Assume the Reader was constructed with a path, and not a DataHandle*
     if (! dataHandle_)
-        dataHandle_ = odb::DataHandleFactory::openForRead(path_);
+        dataHandle_ = odc::DataHandleFactory::openForRead(path_);
     return dataHandle_; 
 }
 
-} // namespace odb
+} // namespace odc

@@ -8,6 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-namespace odb {
+namespace odc {
 
-} // namespace odb
+} // namespace odc

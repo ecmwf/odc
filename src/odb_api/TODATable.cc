@@ -26,7 +26,7 @@
 using namespace eckit;
 using namespace eckit::sql;
 
-namespace odb {
+namespace odc {
 namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ class ODAFactory : public eckit::sql::SQLTableFactoryBase {
         char oda[5] {'\xff', '\xff', 'O', 'D', 'A'};
         if (fh.read(buf, 5) != 5 || ::memcmp(buf, oda, 5) != 0) return 0;
 
-        return new odb::sql::ODATable(owner, location, name);
+        return new odc::sql::ODATable(owner, location, name);
     }
 };
 
@@ -237,4 +237,4 @@ template class TODATable<TextReader>;
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace sql
-} // namespace odb
+} // namespace odc

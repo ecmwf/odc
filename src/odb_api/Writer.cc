@@ -40,7 +40,7 @@ using namespace std;
 #include "odb_api/WriterBufferingIterator.h"
 #include "odb_api/ODBAPISettings.h"
 
-namespace odb {
+namespace odc {
 
 
 template <typename ITERATOR>
@@ -126,4 +126,4 @@ template Writer<WriterBufferingIterator>::~Writer();
 template Writer<WriterBufferingIterator>::iterator Writer<WriterBufferingIterator>::begin(bool);
 template WriterBufferingIterator * Writer<WriterBufferingIterator>::createWriteIterator(eckit::PathName,bool);
 
-} // namespace odb
+} // namespace odc

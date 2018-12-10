@@ -9,10 +9,10 @@
 #include "eckit/sql/SQLDataSet.h"
 #include "eckit/sql/SQLDataTable.h"
 
-using namespace odb;
+using namespace odc;
 using namespace eckit;
 
-namespace odb {
+namespace odc {
 
 
 DataSelect::DataSelect(const std::string& statement, const DataSet& dataset)
@@ -96,7 +96,7 @@ void DataSelect::populateColumns()
 
         switch (kind)
         {
-            using namespace odb::sql::type;
+            using namespace odc::sql::type;
 
             case SQLType::realType:    dataType = REAL;     break;
             case SQLType::doubleType:  dataType = DOUBLE;   break;
@@ -118,4 +118,4 @@ void DataSelect::populateColumns()
     }
 }
 
-} // namespace odb
+} // namespace odc

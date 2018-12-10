@@ -27,7 +27,7 @@
 using namespace eckit;
 using namespace std;
 
-namespace odb {
+namespace odc {
 namespace tool {
 namespace test {
 
@@ -198,5 +198,5 @@ void TestRunner::smslabel(const string &s)
 
 } // namespace test
 } // namespace tool 
-} // namespace odb 
+} // namespace odc 
 

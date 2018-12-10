@@ -6,7 +6,7 @@
 #include "odb_api/DataJoin.h"
 
 using namespace std;
-using namespace odb;
+using namespace odc;
 
 namespace {
 
