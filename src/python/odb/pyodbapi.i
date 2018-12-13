@@ -107,7 +107,7 @@ using namespace odc;
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/expression/SQLExpression.h"
 
-#include "odc/odbcapi.h"
+#include "odc/odccapi.h"
 %init %{
 	void python_api_start();
 	python_api_start();

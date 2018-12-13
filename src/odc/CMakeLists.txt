@@ -180,8 +180,8 @@ WriterDispatchingIterator.h
 md5_hash.h
 md5_hash.c
 odc.h
-odbcapi.cc
-odbcapi.h
+odccapi.cc
+odccapi.h
 RowsCounter.h
 RowsCounter.cc
 Block.h
