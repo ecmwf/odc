@@ -22,7 +22,7 @@ SET \$var1 = 123;
 SET \$var2 = 3.24;
 EOF
 
-export ODB_API_SCHEMA_PATH="$(pwd)/schema.hh"
+export odc_SCHEMA_PATH="$(pwd)/schema.hh"
 
 
 # Create some test data
@@ -51,7 +51,7 @@ odb compare outfile.odb expect.odb
 
 # --
 
-odb sql 'select * where col1=$var1' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col1=$var1' -i data.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col1:INTEGER,col2:REAL,col3:DOUBLE,col4:INTEGER
@@ -62,19 +62,19 @@ odb compare outfile.odb expect.odb
 
 # --
 
-odb sql 'select * where col2=$var1' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col2=$var1' -i data.odb -f odb -o outfile.odb
 
 [[ -e outfile.odb && ! -s outfile.odb ]] # Expect zero sized file
 
 # --
 
-odb sql 'select * where col3=$var1' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col3=$var1' -i data.odb -f odb -o outfile.odb
 
 [[ -e outfile.odb && ! -s outfile.odb ]] # Expect zero sized file
 
 # --
 
-odb sql 'select * where col4=$var1' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col4=$var1' -i data.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col1:INTEGER,col2:REAL,col3:DOUBLE,col4:INTEGER
@@ -85,7 +85,7 @@ odb compare outfile.odb expect.odb
 
 # --
 
-odb sql 'select * where col1<$var2' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col1<$var2' -i data.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col1:INTEGER,col2:REAL,col3:DOUBLE,col4:INTEGER
@@ -98,7 +98,7 @@ odb compare outfile.odb expect.odb
 
 # --
 
-odb sql 'select * where col2<$var2' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col2<$var2' -i data.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col1:INTEGER,col2:REAL,col3:DOUBLE,col4:INTEGER
@@ -112,7 +112,7 @@ odb compare outfile.odb expect.odb
 
 # --
 
-odb sql 'select * where col3<$var2' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col3<$var2' -i data.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col1:INTEGER,col2:REAL,col3:DOUBLE,col4:INTEGER
@@ -125,7 +125,7 @@ odb compare outfile.odb expect.odb
 
 # --
 
-odb sql 'select * where col4<$var2' -i data.odb -f odb -o outfile.odb
+odb sql '#include "schema.hh"; select * where col4<$var2' -i data.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col1:INTEGER,col2:REAL,col3:DOUBLE,col4:INTEGER

@@ -12,7 +12,7 @@ ecbuild_add_library(TARGET		Odb_fortran
 
 set( test_environment_fortran
      TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
-     ODB_API_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/../../tests/cma.hh
+     odc_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/../../tests/cma.hh
 )
 
 if( HAVE_FORTRAN )
@@ -31,9 +31,9 @@ if( HAVE_FORTRAN )
                           LIBS       Odb_fortran ${ODB_LIBS} 
                           ENVIRONMENT  ${test_environment_fortran} 
 
-                          LABELS     odb_api odb_api_fortran
+                          LABELS     odc odc_fortran
 
-                          TEST_DEPENDS get_odb_api_test_data
+                          TEST_DEPENDS get_odc_test_data
                                        get_mars_client_test_data_mo
                                        get_mars_client_test_data_ec
                                        test_ec_archiving.ecml

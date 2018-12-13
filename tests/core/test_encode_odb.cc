@@ -14,9 +14,9 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/eckit_config.h"
 
-#include "odb_api/Writer.h"
-#include "odb_api/Reader.h"
-#include "odb_api/ColumnType.h"
+#include "odc/Writer.h"
+#include "odc/Reader.h"
+#include "odc/ColumnType.h"
 
 using namespace eckit::testing;
 

@@ -14,7 +14,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/eckit_ecbuild_config.h"
 
-#include "odb_api/Codec.h"
+#include "odc/Codec.h"
 
 #include "MockDataHandles.h"
 

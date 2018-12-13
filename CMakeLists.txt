@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
 
-project( odb_api C CXX )
+project( odc C CXX )
 
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
@@ -42,7 +42,7 @@ ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
                     DEFAULT OFF )
 
 
-SET(ODB_API_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
+SET(odc_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
 
 if( HAVE_FORTRAN )
 
@@ -62,14 +62,14 @@ ecbuild_add_option( FEATURE PYTHON
 
 set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" )
 
-get_directory_property( ODB_API_DEFINITIONS COMPILE_DEFINITIONS )
+get_directory_property( odc_DEFINITIONS COMPILE_DEFINITIONS )
 
-set( ODB_API_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( ODB_API_LIBRARIES      Odb )
+set( odc_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
+set( odc_LIBRARIES      Odb )
 
 if( HAVE_FORTRAN )
-  list( APPEND ODB_API_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
-  list( INSERT ODB_API_LIBRARIES 0 Odb_fortran )
+  list( APPEND odc_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
+  list( INSERT odc_LIBRARIES 0 Odb_fortran )
 endif()
 
 add_subdirectory( src )

@@ -38,14 +38,14 @@ varno.hh
 vertco_type.hh
 )
 
-ecbuild_get_test_multidata( TARGET get_odb_api_test_data
-                            #DIRNAME odb_api/tests
+ecbuild_get_test_multidata( TARGET get_odc_test_data
+                            #DIRNAME odc/tests
                             NAMES ${test_data_files}
                             NOCHECK )
 
 ### list tests
 
-list( APPEND odb_api_tests
+list( APPEND odc_tests
 Test_AggregateFunctions
 Test_AggregateFunctions2
 Test_AggregateFunctions3
@@ -241,10 +241,10 @@ Test_c_api_example_write_data
 get_target_property( odb_bin odb LOCATION )
 
 set( test_environment
-  ODB_API_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/cma.hh
-  ODB_API_CODES=${PROJECT_SOURCE_DIR}/etc
-  ODB_API_HOME=${PROJECT_SOURCE_DIR}
-  ODB_API_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
+  odc_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/cma.hh
+  odc_CODES=${PROJECT_SOURCE_DIR}/etc
+  odc_HOME=${PROJECT_SOURCE_DIR}
+  odc_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
   PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
   ODB_RTABLE_PATH=${PROJECT_SOURCE_DIR}/etc
 
@@ -262,7 +262,7 @@ ecbuild_get_test_multidata( TARGET get_odb2netcdf_data
 ecbuild_add_test( TARGET test_odb2netcdf_1d
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_1d.sh
     ENVIRONMENT ${test_environment}
-    LABELS       odb_api odb_api_netcdf
+    LABELS       odc odc_netcdf
     TEST_DEPENDS get_odb2netcdf_data
     CONDITION HAVE_NETCDF )
 
@@ -270,20 +270,20 @@ ecbuild_add_test( TARGET test_odb2netcdf_2d
     COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_2d.sh
     ENVIRONMENT ${test_environment}
     TEST_DEPENDS get_odb2netcdf_data
-    LABELS       odb_api odb_api_netcdf
+    LABELS       odc odc_netcdf
     CONDITION HAVE_NETCDF )
 
-### odb_api tests
+### odc tests
 
-set( _prev_test get_odb_api_test_data  )
+set( _prev_test get_odc_test_data  )
 
-foreach( _test ${odb_api_tests} )
+foreach( _test ${odc_tests} )
     set( _dependencies ${_prev_test} )
     ecbuild_add_test( TARGET       ${_test}
                       COMMAND      ${odb_bin}
                       ARGS         ${_test}
                       ENVIRONMENT  ${test_environment}
-                      LABELS       odb_api
+                      LABELS       odc
                       TEST_DEPENDS ${_dependencies})
     set( _prev_test ${_test} )
 endforeach()
@@ -291,7 +291,7 @@ endforeach()
 
 # TODO: Write the old ecml tests...
 
-#ecbuild_get_test_multidata( TARGET ecml_get_odb_api_test_data DIRNAME odb_api/tests NAMES ${ecml_test_data_files} NOCHECK )
+#ecbuild_get_test_multidata( TARGET ecml_get_odc_test_data DIRNAME odc/tests NAMES ${ecml_test_data_files} NOCHECK )
 
 list( APPEND odb_module_tests
     #test_odb_governance.ecml
@@ -315,11 +315,11 @@ list( APPEND odb_module_tests
 # This is a bit of a hack...
 
 ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_mo
-                            DIRNAME odb_api/tests
+                            DIRNAME odc/tests
                             NAMES   20150218_glu_surface_odb2 )
 
 ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_ec
-                            DIRNAME odb_api/tests
+                            DIRNAME odc/tests
                             NAMES   conv_mfb_20151108_12.odb )
 
 ecbuild_add_executable( TARGET      test_client_lib_fortran
@@ -331,7 +331,7 @@ ecbuild_add_executable( TARGET      test_client_lib_fortran
 ecbuild_add_executable( TARGET      test_client_lib_cpp
                         CONDITION   HAVE_ODB
                         SOURCES     test_client_lib_cpp.cc
-                        INCLUDES    ${ODB_API_INCLUDE_DIRS}
+                        INCLUDES    ${odc_INCLUDE_DIRS}
                         LIBS        Odb odbtools )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )

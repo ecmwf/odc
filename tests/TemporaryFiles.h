@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef odb_api_tests_TemporaryODB_H
-#define odb_api_tests_TemporaryODB_H
+#ifndef odc_tests_TemporaryODB_H
+#define odc_tests_TemporaryODB_H
 
 #include "eckit/filesystem/PathName.h"
 
-#include "odb_api/Writer.h"
+#include "odc/Writer.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -45,4 +45,4 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-#endif // odb_api_tests_TemporaryODB_H
+#endif // odc_tests_TemporaryODB_H

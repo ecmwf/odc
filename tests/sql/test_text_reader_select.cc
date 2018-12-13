@@ -11,8 +11,8 @@
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "odb_api/Select.h"
-#include "odb_api/TODATable.h"
+#include "odc/Select.h"
+#include "odc/TODATable.h"
 
 using namespace eckit::testing;
 

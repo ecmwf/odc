@@ -14,10 +14,10 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
 
-#include "odb_api/MetaData.h"
-#include "odb_api/Reader.h"
-#include "odb_api/Writer.h"
-#include "odb_api/tools/MockReader.h"
+#include "odc/MetaData.h"
+#include "odc/Reader.h"
+#include "odc/Writer.h"
+#include "odc/tools/MockReader.h"
 
 using namespace eckit::testing;
 

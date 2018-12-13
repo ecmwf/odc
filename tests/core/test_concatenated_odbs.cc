@@ -15,9 +15,9 @@
 
 #include "TemporaryFiles.h"
 
-#include "odb_api/Reader.h"
-#include "odb_api/Writer.h"
-#include "odb_api/Comparator.h"
+#include "odc/Reader.h"
+#include "odc/Writer.h"
+#include "odc/Comparator.h"
 
 #include <stdint.h>
 

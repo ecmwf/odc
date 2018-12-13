@@ -13,8 +13,8 @@
 
 #include "eckit/testing/Test.h"
 
-#include "odb_api/csv/TextReader.h"
-#include "odb_api/csv/TextReaderIterator.h"
+#include "odc/csv/TextReader.h"
+#include "odc/csv/TextReaderIterator.h"
 
 using namespace eckit::testing;
 

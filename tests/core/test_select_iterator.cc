@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odb_api_ecbuild_config.h"
+#include "odc_ecbuild_config.h"
 
 #include "eckit/eckit_config.h"
 #include "eckit/config/Resource.h"
@@ -16,8 +16,8 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/testing/Test.h"
 
-#include "odb_api/Select.h"
-#include "odb_api/Reader.h"
+#include "odc/Select.h"
+#include "odc/Reader.h"
 
 #include "TemporaryFiles.h"
 

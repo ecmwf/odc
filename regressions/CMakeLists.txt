@@ -4,8 +4,8 @@ list( APPEND regressions_data_files
     odb_387_mdset.odb
 )
 
-ecbuild_get_test_multidata( TARGET get_odb_api_regressions_data
-                            #DIRNAME odb_api/tests
+ecbuild_get_test_multidata( TARGET get_odc_regressions_data
+                            #DIRNAME odc/tests
                             NAMES ${regressions_data_files}
                             NOCHECK )
 
@@ -19,7 +19,7 @@ foreach( _script ${regressions_scripts})
         TYPE script
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
         ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-        TEST_DEPENDS get_odb_api_regressions_data
+        TEST_DEPENDS get_odc_regressions_data
     )
 endforeach()
 

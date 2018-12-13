@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef odb_api_tests_MockDataHandles_H
-#define odb_api_tests_MockDataHandles_H
+#ifndef odc_tests_MockDataHandles_H
+#define odc_tests_MockDataHandles_H
 
 #include "eckit/io/DataHandle.h"
 
@@ -107,4 +107,4 @@ private:
 
 //----------------------------------------------------------------------------------------------------------------------
 
-#endif // odb_api_tests_MockDataHandles_H
+#endif // odc_tests_MockDataHandles_H

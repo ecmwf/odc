@@ -11,7 +11,7 @@
 %include "std_vector.i"
 %{
 #define SWIG_FILE_WITH_INIT
-#include "odb_api/pyodbapi.h"
+#include "odc/pyodbapi.h"
 
 %}
 
@@ -48,11 +48,11 @@
 
 using namespace std;
 
-%include "odb_api/ODBAPIVersion.h"
-%include "odb_api/ODBAPISettings.h"
+%include "odc/ODBAPIVersion.h"
+%include "odc/ODBAPISettings.h"
 
 #include "eckit/filesystem/PathName.h"
-#include "odb_api/MemoryBlock.h"
+#include "odc/MemoryBlock.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/filesystem/FileHandle.h"
 #include "eckit/utils/Timer.h"
@@ -60,45 +60,45 @@ using namespace std;
 
 using namespace eckit;
 
-%include "odb_api/Select.h"
+%include "odc/Select.h"
 
-%include "odb_api/ColumnType.h"
+%include "odc/ColumnType.h"
 %include "eckit/sql/SQLTypedefs.h"
-#include "odb_api/StringTool.h"
-#include "odb_api/DataStream.h"
-%include "odb_api/Codec.h"
-%include "odb_api/Column.h"
+#include "odc/StringTool.h"
+#include "odc/DataStream.h"
+%include "odc/Codec.h"
+%include "odc/Column.h"
 #include "eckit/sql/SQLIteratorSession.h"
 
 using namespace odc;
 
 %template(MetaDataBase) std::vector<Column*>;
-%include "odb_api/MetaData.h"
+%include "odc/MetaData.h"
 
-#include "odb_api/Header.h"
+#include "odc/Header.h"
 
 %include "exception.i"
 
-%include "odb_api/IteratorProxy.h"
+%include "odc/IteratorProxy.h"
 %template(ReaderIteratorProxy) odc::IteratorProxy<odc::ReaderIterator,odc::Reader,const double>;
 %template(ReaderIteratorRow) odc::Row_<odc::ReaderIterator,odc::Reader,const double,odc::IteratorProxy<odc::ReaderIterator,odc::Reader,const double> >;
 
 %template(SelectIteratorProxy) odc::IteratorProxy<odc::SelectIterator,odc::Select,const double>;
 %template(SelectIteratorRow) odc::Row_<odc::SelectIterator,odc::Select,const double,odc::IteratorProxy<odc::SelectIterator,odc::Select,const double> >;
 
-#include "odb_api/TemplateParameters.h"
-%include "odb_api/Reader.h"
-%include "odb_api/TextReader.h"
-%include "odb_api/Select.h"
-%include "odb_api/Writer.h"
-%include "odb_api/WriterBufferingIterator.h"
-%include "odb_api/WriterDispatchingIterator.h"
-%include "odb_api/DispatchingWriter.h"
-%include "odb_api/DispatchingWriter.h"
-%include "odb_api/ReaderIterator.h"
-%include "odb_api/TextReaderIterator.h"
-%include "odb_api/SelectIterator.h"
-#include "odb_api/FixedSizeWriterIterator.h"
+#include "odc/TemplateParameters.h"
+%include "odc/Reader.h"
+%include "odc/TextReader.h"
+%include "odc/Select.h"
+%include "odc/Writer.h"
+%include "odc/WriterBufferingIterator.h"
+%include "odc/WriterDispatchingIterator.h"
+%include "odc/DispatchingWriter.h"
+%include "odc/DispatchingWriter.h"
+%include "odc/ReaderIterator.h"
+%include "odc/TextReaderIterator.h"
+%include "odc/SelectIterator.h"
+#include "odc/FixedSizeWriterIterator.h"
 
 #include "eckit/sql/SQLInteractiveSession.h"
 #include "eckit/sql/SQLIteratorSession.h"
@@ -107,7 +107,7 @@ using namespace odc;
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/expression/SQLExpression.h"
 
-#include "odb_api/odbcapi.h"
+#include "odc/odbcapi.h"
 %init %{
 	void python_api_start();
 	python_api_start();

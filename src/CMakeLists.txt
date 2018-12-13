@@ -3,21 +3,21 @@ ecbuild_find_project_files()
 
 ### config header
 
-ecbuild_generate_config_headers( DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api )
+ecbuild_generate_config_headers( DESTINATION ${INSTALL_INCLUDE_DIR}/odc )
 
-configure_file( odb_api_config.h.in odb_api_config.h )
+configure_file( odc_config.h.in odc_config.h )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/odb_api_config.h DESTINATION ${INSTALL_INCLUDE_DIR}/odb_api )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/odc_config.h DESTINATION ${INSTALL_INCLUDE_DIR}/odc )
 
 ### include directories
 
-include_directories( ${ODB_API_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
+include_directories( ${odc_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
 
 ### libs
 
-add_subdirectory( odb_api )
-add_subdirectory( odb_api/tools )
-add_subdirectory( odb_api/odb2netcdf )
+add_subdirectory( odc )
+add_subdirectory( odc/tools )
+add_subdirectory( odc/odb2netcdf )
 add_subdirectory( fortran )
 add_subdirectory( python )
 

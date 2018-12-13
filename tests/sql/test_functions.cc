@@ -13,8 +13,8 @@
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "odb_api/Writer.h"
-#include "odb_api/Select.h"
+#include "odc/Writer.h"
+#include "odc/Select.h"
 
 #include "TemporaryFiles.h"
 

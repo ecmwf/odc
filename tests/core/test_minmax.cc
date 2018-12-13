@@ -10,7 +10,7 @@
 
 #include "eckit/testing/Test.h"
 
-#include "odb_api/Reader.h"
+#include "odc/Reader.h"
 
 #include "TemporaryFiles.h"
 

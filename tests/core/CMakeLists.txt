@@ -15,10 +15,10 @@ list( APPEND _core_odb_tests
 
 foreach( _test ${_core_odb_tests} )
     ecbuild_add_test(
-        TARGET       odb_api_${_test}
+        TARGET       odc_${_test}
         SOURCES      ${_test}.cc ../TemporaryFiles.h ../MockDataHandles.h
-        TEST_DEPENDS get_odb_api_test_data
-        INCLUDES     ${ECKIT_INCLUDE_DIRS} ${ODB_API_INCLUDE_DIRS}
+        TEST_DEPENDS get_odc_test_data
+        INCLUDES     ${ECKIT_INCLUDE_DIRS} ${odc_INCLUDE_DIRS}
         ENVIRONMENT  ${test_environment}
         LIBS         eckit Odb )
 endforeach()

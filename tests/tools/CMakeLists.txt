@@ -3,7 +3,7 @@ list( APPEND tools_data_files
     2000010106.odb
 )
 
-ecbuild_get_test_multidata( TARGET get_odb_api_tools_data
+ecbuild_get_test_multidata( TARGET get_odc_tools_data
                             NAMES ${tools_data_files}
                             NOCHECK )
 
@@ -22,7 +22,7 @@ foreach( _script ${tools_tests_scripts} )
         TYPE script
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
         ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-        TEST_DEPENDS get_odb_api_tools_data
+        TEST_DEPENDS get_odc_tools_data
     )
 endforeach()
 
