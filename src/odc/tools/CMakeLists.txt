@@ -1,4 +1,4 @@
-list( APPEND odbtools_src_files
+list( APPEND odctools_src_files
 TestCase.h 
 TestCase.cc 
 TestRunner.cc 
@@ -46,7 +46,7 @@ odc_tools_c.cc
 odc_tools_c.h
 )
 
-list( APPEND odbtest_src_files
+list( APPEND odctest_src_files
 Examples.cc
 CAPIExamples.cc
 UnitTests.cc
@@ -101,22 +101,22 @@ MockReader.cc
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odc )
 
-ecbuild_add_library( TARGET     odbtools
+ecbuild_add_library( TARGET     odctools
                      INSTALL_HEADERS LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc/tools
-                     SOURCES    ${odbtools_src_files}
-                     TEMPLATES  ${odbtools_templates}
-                     LIBS       Odb )
+                     SOURCES    ${odctools_src_files}
+                     TEMPLATES  ${odctools_templates}
+                     LIBS       odccore )
 
-ecbuild_add_library( TARGET     odbtest
+ecbuild_add_library( TARGET     odctest
                      #INSTALL_HEADERS LISTED
                      #HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc/tools
-                     SOURCES    ${odbtest_src_files}
-                     TEMPLATES  ${odbtest_templates}
-                     LIBS       Odb odbtools )
+                     SOURCES    ${odctest_src_files}
+                     TEMPLATES  ${odctest_templates}
+                     LIBS       odccore odctools )
 
-## TODO: Re-enable odbtest
+## TODO: Re-enable odctest
 
-ecbuild_add_executable( TARGET    odb
-                        SOURCES   odb.cc
-                        LIBS      Odb odbtools ) ### odbtest )
+ecbuild_add_executable( TARGET    odc
+                        SOURCES   odc.cc
+                        LIBS      odccore odctools ) ### odctest )

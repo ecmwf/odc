@@ -65,11 +65,11 @@ set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" 
 get_directory_property( odc_DEFINITIONS COMPILE_DEFINITIONS )
 
 set( odc_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( odc_LIBRARIES      Odb )
+set( odc_LIBRARIES      odbcore )
 
 if( HAVE_FORTRAN )
   list( APPEND odc_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
-  list( INSERT odc_LIBRARIES 0 Odb_fortran )
+  list( INSERT odc_LIBRARIES 0 odc_fortran )
 endif()
 
 add_subdirectory( src )
@@ -82,9 +82,9 @@ add_subdirectory( tests )
 ecbuild_pkgconfig( NAME ${PROJECT_NAME}
                    DESCRIPTION "ECMWF coding, decoding and processing of observational data"
                    URL "https://software.ecmwf.int/wiki/display/ODB/ODB+API"
-                   LIBRARIES Odb )
+                   LIBRARIES odb )
 
-ecbuild_install_project( NAME OdbAPI )
+ecbuild_install_project( NAME odc )
 
 ecbuild_print_summary()
 

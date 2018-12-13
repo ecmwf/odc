@@ -9,7 +9,7 @@ if ( odc_SCHEMA_PATH )
 endif()
 
 
-list( APPEND odblib_src_files
+list( APPEND odclib_src_files
 ####odbql.cc
 ####odbql.h
 pyodbapi.h
@@ -241,7 +241,7 @@ data/MarsHandleFactory.h
 
 # templates
 
-list( APPEND odblib_templates
+list( APPEND odclib_templates
 ConstantSetter.cc
 DataStream.cc
 FastODA2Request.cc
@@ -252,16 +252,16 @@ MDUpdatingIterator.cc
 MetaDataReader.cc
 )
 
-# define Odb library
+# define odc library
 
-ecbuild_add_library( TARGET             Odb
+ecbuild_add_library( TARGET             odccore
                      INSTALL_HEADERS    LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc
                      PRIVATE_INCLUDES   ${METKIT_INCLUDE_DIRS}         # Only for MarsRequestHandle
                      COMPONENT          server
-                     SOURCES            ${odblib_src_files}
+                     SOURCES            ${odclib_src_files}
                      GENERATED          ODBAPIVersionSHA1.cc
-                     TEMPLATES          ${odblib_templates}
+                     TEMPLATES          ${odclib_templates}
                      LINKER_LANGUAGE    CXX
                      LIBS               metkit )
 

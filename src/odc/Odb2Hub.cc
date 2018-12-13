@@ -10,7 +10,7 @@
 
 #include "eckit/config/Resource.h"
 
-#include "odc/odbcapi.h"
+#include "odc/odccapi.h"
 #include "eckit/sql/type/SQLBitfield.h"
 #include "odc/DataStream.h"
 #include "odc/Codec.h"

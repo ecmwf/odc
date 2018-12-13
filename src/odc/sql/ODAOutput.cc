@@ -11,12 +11,12 @@
 #include "eckit/sql/expression/SQLExpressions.h"
 #include "eckit/sql/SQLSelect.h"
 
-#include "odb_api/ColumnType.h"
-#include "odb_api/DispatchingWriter.h"
-#include "odb_api/LibOdc.h"
-#include "odb_api/sql/ODAOutput.h"
-#include "odb_api/sql/Types.h"
-#include "odb_api/Writer.h"
+#include "odc/ColumnType.h"
+#include "odc/DispatchingWriter.h"
+#include "odc/LibOdc.h"
+#include "odc/sql/ODAOutput.h"
+#include "odc/sql/Types.h"
+#include "odc/Writer.h"
 
 using namespace eckit;
 using namespace eckit::sql;

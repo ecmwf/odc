@@ -22,7 +22,7 @@
 #include "odc/ODAHandle.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/ODBAPIVersion.h"
-#include "odc/odbcapi.h"
+#include "odc/odccapi.h"
 #include "odc/Select.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"

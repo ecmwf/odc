@@ -16,9 +16,7 @@
 #include "odc/Writer.h"
 #include "TestCase.h"
 
-extern "C" {
-#include "odc/odbcapi.h"
-}
+#include "odc/odccapi.h"
 
 #include "TestOdaCAPI.h"
 

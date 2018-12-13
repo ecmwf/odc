@@ -13,7 +13,7 @@
 #include "eckit/types/FloatCompare.h"
 #include "eckit/value/Value.h"
 
-#include "odb_api/Reader.h"
+#include "odc/Reader.h"
 
 // Some of the math.h/cmath functions are not clean when switching to C++11
 #if __cplusplus <= 199711L

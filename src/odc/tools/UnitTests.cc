@@ -32,13 +32,10 @@
 #include "odc/tools/ImportTool.h"
 #include "odc/tools/SplitTool.h"
 #include "odc/ODBAPISettings.h"
-#include "odc/odbql.h"
 #include "odc/data/DataHandleFactory.h"
 #include "odc/DispatchingWriter.h"
 
-extern "C" {
-#include "odc/odbcapi.h"
-}
+#include "odc/odccapi.h"
 
 using namespace std;
 using namespace eckit;
@@ -1008,54 +1005,6 @@ TEST(LegacyAPITraverseReaderTwice)
     ASSERT(j == 2);
 }
 
-#define checkRC(return_code, message, db) { \
-    if (return_code != ODBQL_OK) { \
-        std::stringstream ss; \
-        ss << message << ": " << odbql_errmsg(db); \
-        odbql_close(db); \
-        throw SeriousBug(ss.str()); \
-    } \
-}
-
-TEST(ODB269)
-{
-    odbql *db;
-    odbql_stmt *stmt;
-    int i;
-
-    int rc = odbql_open("", &db);
-
-    checkRC(rc, "Cannot open database", db);
-    
-    rc = odbql_prepare_v2(db, "CREATE TABLE foo AS ( x INTEGER, y DOUBLE, v STRING) ON 'test_odb269.odb';", -1, &stmt, 0);
-    checkRC(rc, "Failed to prepare DDL statements", db);
-
-    rc = odbql_prepare_v2(db, "INSERT INTO foo (x,y,v) VALUES (?,?,?);", -1, &stmt, 0);
-    checkRC(rc, "Failed to prepare INSERT statement", db);
-
-    for (i = 0; i < 3; ++i) 
-        odbql_bind_null(stmt, i);
-    rc = odbql_step(stmt);
-    rc = odbql_finalize(stmt);
-    checkRC(rc, "odbql_finalize failed", db);
-
-    for (int i(0); i < 2000; ++i)
-    {
-        cout << i << " " << endl;
-        rc = odbql_prepare_v2(db, "SELECT count(*) FROM 'test_odb269.odb';", -1, &stmt, 0);
-        checkRC(rc, "Failed to prepare statement", db);
-        while((rc = odbql_step(stmt)) != ODBQL_DONE) 
-        {
-            ASSERT(odbql_column_count(stmt) == 1);
-            odbql_value* v (odbql_column_value(stmt, 0));
-            ASSERT(odbql_value_int(v) == 1);
-        }
-        rc = odbql_finalize(stmt);
-    }
-
-    rc = odbql_close(db);
-    checkRC(rc, "odbql_close failed", db);
-}
 
 //void buildMultiHandle(eckit::MultiHandle&, const std::vector<std::string>&);
 //void buildMultiHandle(eckit::MultiHandle&, const std::string&);

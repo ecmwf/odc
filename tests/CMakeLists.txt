@@ -238,7 +238,7 @@ Test_c_api_example_write_data
 
 ### get location of odb executable
 
-get_target_property( odb_bin odb LOCATION )
+get_target_property( odc_bin odc LOCATION )
 
 set( test_environment
   odc_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/cma.hh
@@ -280,7 +280,7 @@ set( _prev_test get_odc_test_data  )
 foreach( _test ${odc_tests} )
     set( _dependencies ${_prev_test} )
     ecbuild_add_test( TARGET       ${_test}
-                      COMMAND      ${odb_bin}
+                      COMMAND      ${odc_bin}
                       ARGS         ${_test}
                       ENVIRONMENT  ${test_environment}
                       LABELS       odc
@@ -325,14 +325,14 @@ ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_ec
 ecbuild_add_executable( TARGET      test_client_lib_fortran
                         CONDITION   HAVE_FORTRAN AND HAVE_ODB
                         SOURCES     test_client_lib_fortran.f90
-                        LIBS        Odb_fortran ${ODB_LIBS}
+                        LIBS        odc_fortran ${ODB_LIBS}
                         LINKER_LANGUAGE Fortran)
 
 ecbuild_add_executable( TARGET      test_client_lib_cpp
                         CONDITION   HAVE_ODB
                         SOURCES     test_client_lib_cpp.cc
                         INCLUDES    ${odc_INCLUDE_DIRS}
-                        LIBS        Odb odbtools )
+                        LIBS        odccore odctools )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 

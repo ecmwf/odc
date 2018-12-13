@@ -1,14 +1,14 @@
 
-ecbuild_add_library(TARGET		Odb_fortran
+ecbuild_add_library(TARGET		odc_fortran
 
                     CONDITION   HAVE_FORTRAN
 
                     SOURCES		
                                 # Legacy:
 
-                                odb_c_binding.f90
+                                odc_c_binding.f90
 
-                    LIBS		Odb )
+                    LIBS		odccore )
 
 set( test_environment_fortran
      TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
@@ -28,7 +28,7 @@ if( HAVE_FORTRAN )
         ecbuild_add_test( TARGET     ${_test}
                           CONDITION  HAVE_FORTRAN
                           SOURCES    ${_test}.f90
-                          LIBS       Odb_fortran ${ODB_LIBS} 
+                          LIBS       odc_fortran ${ODB_LIBS} 
                           ENVIRONMENT  ${test_environment_fortran} 
 
                           LABELS     odc odc_fortran
@@ -42,11 +42,6 @@ if( HAVE_FORTRAN )
                           LINKER_LANGUAGE Fortran )
     endforeach()
 
-# odbql, the new Fortran API:
-    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odbql_binding.mod  DESTINATION ${INSTALL_INCLUDE_DIR} )
-    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odbql_wrappers.mod DESTINATION ${INSTALL_INCLUDE_DIR} )
-    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odbql_constants.mod DESTINATION ${INSTALL_INCLUDE_DIR} )
-
 # Legacy Fortran bindings:
-    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odb_c_binding.mod DESTINATION ${INSTALL_INCLUDE_DIR} )
+    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odc_c_binding.mod DESTINATION ${INSTALL_INCLUDE_DIR} )
 endif()

@@ -12,7 +12,7 @@
 
 #include "eckit/sql/expression/function/FunctionFactory.h"
 #include "odc/ODBAPIVersion.h"
-#include "odc/odbcapi.h"
+#include "odc/odccapi.h"
 
 #include "TestOdaCAPI.h"
 #include "Tool.h"
@@ -119,7 +119,7 @@ int gdb(int argc, char *argv[])
 	for (int i = 2; i < argc; i++)
 		args += std::string(" ") + argv[i];
 
-	PathName scriptFile (std::string(".gdb_") + std::string(argc < 3 ? "odb" : argv[2]));
+    PathName scriptFile (std::string(".gdb_") + std::string(argc < 3 ? "odc" : argv[2]));
     
     if (! scriptFile.exists())
 	{

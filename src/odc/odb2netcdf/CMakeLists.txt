@@ -26,6 +26,6 @@ ecbuild_add_library( TARGET     Odb2Netcdf
                      #COMPONENT  server
                      SOURCES    ${odb2netcdf_src_files}
                      PRIVATE_INCLUDES ${NETCDF_INCLUDE_DIRS}
-                     LIBS       Odb odbtools ${NETCDF_LIBRARIES}
+                     LIBS       odccore odctools ${NETCDF_LIBRARIES}
                      CONDITION HAVE_NETCDF)
 

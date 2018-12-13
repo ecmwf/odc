@@ -21,7 +21,7 @@
 
 #include "odc/odc.h"
 
-#include "odc/odbcapi.h"
+#include "odc/odccapi.h"
 #include "odc/tools/odc_tools_c.h"
 
 #include "TestCase.h"

@@ -19,10 +19,10 @@
 #include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLStatement.h"
 
-#include "odb_api/odb_api.h"
-#include "odb_api/sql/SQLOutputConfig.h"
-#include "odb_api/TODATable.h"
-#include "odb_api/tools/SQLTool.h"
+#include "odc/odc.h"
+#include "odc/sql/SQLOutputConfig.h"
+#include "odc/TODATable.h"
+#include "odc/tools/SQLTool.h"
 
 using namespace std;
 using namespace eckit;

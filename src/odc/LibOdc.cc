@@ -14,21 +14,19 @@
 #include <algorithm>
 #include <string>
 
-#include "odb_api/LibOdc.h"
+#include "odc/LibOdc.h"
 
-#include "odb_api/ODBAPIVersion.h"
+#include "odc/ODBAPIVersion.h"
 
 namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-static LibOdc LibOdc;
+LibOdc::LibOdc() : Library("odc") {}
 
-LibOdc::LibOdc() : Library("odb_api") {}
-
-const LibOdc& LibOdc::instance()
-{
-    return LibOdc;
+const LibOdc& LibOdc::instance() {
+    static LibOdc theinstance;
+    return theinstance;;
 }
 
 const void* LibOdc::addr() const { return this; }

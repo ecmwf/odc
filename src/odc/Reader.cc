@@ -8,13 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-///
-/// \file ODA.cc
-///
-/// @author Piotr Kuchta, Feb 2009
 
-#include "odb_api/data/DataHandleFactory.h"
-#include "odb_api/Reader.h"
+#include "odc/data/DataHandleFactory.h"
+#include "odc/Reader.h"
 
 using namespace std;
 using namespace eckit;
@@ -23,8 +19,7 @@ namespace odc {
 
 Reader::Reader(DataHandle &dh)
 : dataHandle_(&dh),
-  deleteDataHandle_(false)
-{}
+  deleteDataHandle_(false) {}
 
 Reader::Reader()
 : dataHandle_(0),

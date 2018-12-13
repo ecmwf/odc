@@ -8,9 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/// @author Piotr Kuchta
 /// @author Simon Smart
 /// @date Feb 2009
+/// @author Piotr Kuchta
+/// @date Dec 2018
 
 #ifndef Reader_H
 #define Reader_H
