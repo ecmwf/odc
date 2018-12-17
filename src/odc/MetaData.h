@@ -29,8 +29,8 @@ public:
 	MetaData();
 	MetaData(int);
 	MetaData(int, Column *);
-	MetaData(const MetaData&);
-	MetaData* clone() const;
+    MetaData(const MetaData&);
+    MetaData* clone() const;
 
 	static MetaData scanFile(const eckit::PathName&);
 
@@ -40,8 +40,8 @@ public:
 	unsigned long long dataSize() const { return dataSize_; }
 	void dataSize(unsigned long long n) { dataSize_ = n; }
 
-	MetaData& operator=(const MetaData&);
-	MetaData& operator+=(const MetaData&);
+    MetaData& operator=(const MetaData&);
+    MetaData& operator+=(const MetaData&);
 	MetaData operator+(const MetaData&);
 
 	/// Check if number of columns, column names and column types are equal. Values not checked.

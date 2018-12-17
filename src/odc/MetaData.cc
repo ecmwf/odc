@@ -240,7 +240,7 @@ bool MetaData::operator==(const MetaData& other) const
 
     for (size_t i = 0; i < size(); ++i)
         if (*(*this)[i] != *other[i])
-			return false;
+            return false;
 
 	return true;
 }

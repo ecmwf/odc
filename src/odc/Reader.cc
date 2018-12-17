@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-
 #include "odc/data/DataHandleFactory.h"
 #include "odc/Reader.h"
 
@@ -19,7 +18,8 @@ namespace odc {
 
 Reader::Reader(DataHandle &dh)
 : dataHandle_(&dh),
-  deleteDataHandle_(false) {}
+  deleteDataHandle_(false)
+{}
 
 Reader::Reader()
 : dataHandle_(0),

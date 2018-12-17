@@ -152,6 +152,13 @@ Stager.cc
 ODBTarget.cc
 ODBTarget.h
 
+core/ThreadSharedDataHandle.cc
+core/ThreadSharedDataHandle.h
+core/ReadTablesIterator.cc
+core/ReadTablesIterator.h
+core/Table.cc
+core/Table.h
+
 csv/TextReader.cc
 csv/TextReader.h
 csv/TextReaderIterator.cc
