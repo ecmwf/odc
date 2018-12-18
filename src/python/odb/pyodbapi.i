@@ -30,7 +30,7 @@
 	} catch (const eckit::FileError& e) {
 		PyErr_SetString(PyExc_IOError, e.what());
 		return NULL;
-	} catch (const ::odb::sql::SyntaxError& e) {
+    } catch (const ::eckit::sql::SyntaxError& e) {
 		PyErr_SetString(PyExc_SyntaxError, e.what());
 		return NULL;
 	}  catch (const eckit::Exception& e) {
@@ -68,7 +68,7 @@ using namespace eckit;
 #include "odb_api/DataStream.h"
 %include "odb_api/Codec.h"
 %include "odb_api/Column.h"
-#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLSession.h"
 
 using namespace odb;
 
@@ -88,7 +88,7 @@ using namespace odb;
 
 #include "odb_api/TemplateParameters.h"
 %include "odb_api/Reader.h"
-%include "odb_api/TextReader.h"
+%include "odb_api/csv/TextReader.h"
 %include "odb_api/Select.h"
 %include "odb_api/Writer.h"
 %include "odb_api/WriterBufferingIterator.h"
@@ -96,12 +96,11 @@ using namespace odb;
 %include "odb_api/DispatchingWriter.h"
 %include "odb_api/DispatchingWriter.h"
 %include "odb_api/ReaderIterator.h"
-%include "odb_api/TextReaderIterator.h"
+%include "odb_api/csv/TextReaderIterator.h"
 %include "odb_api/SelectIterator.h"
 #include "odb_api/FixedSizeWriterIterator.h"
 
-#include "eckit/sql/SQLInteractiveSession.h"
-#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLTable.h"
 #include "eckit/sql/SQLSelect.h"
 #include "eckit/sql/SQLParser.h"
