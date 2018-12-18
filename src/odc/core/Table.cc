@@ -14,45 +14,70 @@
 #include "odc/MetaData.h"
 #include "odc/Header.h"
 
+using namespace eckit;
+
 
 namespace odc {
 namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Table::Table() {}
+Table::Table(const ThreadSharedDataHandle& dh) :
+    dh_(dh) {}
 
-Table::Table(const ThreadSharedDataHandle& dh, eckit::Offset startPosition, eckit::Offset nextPosition, MetaData&& md, Properties&& props) :
-    dh_(dh),
-    startPosition_(startPosition),
-    nextPosition_(nextPosition),
-    metadata_(std::move(md)),
-    properties_(std::move(props)) {}
-
-eckit::Offset Table::startPosition() const {
+Offset Table::startPosition() const {
     return startPosition_;
 }
 
 
-eckit::Offset Table::nextPosition() const {
+Offset Table::nextPosition() const {
     return nextPosition_;
+}
+
+Length Table::encodedDataSize() const {
+    return dataSize_;
 }
 
 size_t Table::numRows() const {
     return metadata_.rowsNumber();
 }
 
+size_t Table::numColumns() const {
+    return metadata_.size();
+}
 
-bool Table::readTable(odc::core::ThreadSharedDataHandle& dh, odc::core::Table& t) {
+int32_t Table::byteOrder() const {
+    return byteOrder_;
+}
 
-    t.startPosition_ = dh.position();
+const MetaData& Table::columns() const {
+    return metadata_;
+}
+
+const Properties& Table::properties() const {
+    return properties_;
+}
+
+Buffer Table::readEncodedData() {
+
+    Buffer data(dataSize_);
+
+    dh_.seek(dataPosition_);
+    dh_.read(data, dataSize_);
+    return data;
+}
+
+
+std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
+
+    Offset startPosition = dh.position();
 
     // Read the magic number. IF no more data, we are done
 
-    eckit::FixedString<5> magic;
+    FixedString<5> magic;
     long bytesRead = dh.read(&magic, sizeof(magic));
 
-    if (bytesRead != sizeof(magic)) return false;
+    if (bytesRead != sizeof(magic)) return 0;
 
     ASSERT(magic == "\xff\xffODA");
 
@@ -60,22 +85,28 @@ bool Table::readTable(odc::core::ThreadSharedDataHandle& dh, odc::core::Table& t
     // TODO: Proxy class is silly. This could be done in a nicer way.
 
     struct ProxyClass {
-        eckit::DataHandle& dataHandle() { return dh_; }
+        DataHandle& dataHandle() { return dh_; }
         MetaData& columns() { return md_; }
-        eckit::DataHandle& dh_;
+        DataHandle& dh_;
         MetaData& md_;
         Properties& properties_;
     };
 
+    std::unique_ptr<Table> newTable(new Table(dh));
+
     MetaData md;
     Properties props;
-    ProxyClass proxy{dh, t.metadata_, t.properties_};
+    ProxyClass proxy{dh, newTable->metadata_, newTable->properties_};
     Header<ProxyClass> hdr(proxy);
     hdr.loadAfterMagic();
 
-    t.nextPosition_ = dh.position() + eckit::Length(hdr.dataSize());
+    newTable->startPosition_ = startPosition;
+    newTable->dataPosition_ = dh.position();
+    newTable->dataSize_ = hdr.dataSize();
+    newTable->nextPosition_ = dh.position() + newTable->dataSize_;
+    newTable->byteOrder_ = hdr.byteOrder();
 
-    return true;
+    return newTable;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

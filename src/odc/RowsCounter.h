@@ -15,7 +15,6 @@ namespace odc {
 
 class RowsCounter {
 public:
-	static unsigned long long rowCount(const eckit::PathName &);
 	static unsigned long long fastRowCount(const eckit::PathName &);
 
 private:

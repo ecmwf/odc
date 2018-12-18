@@ -10,8 +10,6 @@
 
 #include "eckit/eckit.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/Indexer.h"

@@ -12,13 +12,13 @@
 #include "eckit/parser/StringTools.h"
 #include "eckit/parser/Tokenizer.h"
 #include "odc/GribCodes.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
+#include "odc/core/TablesReader.h"
 #include "odc/ODAHandle.h"
 
 #include <algorithm>
 #include <string>
 #include <memory>
+#include <ostream>
 
 namespace odc {
 
@@ -90,19 +90,15 @@ template <typename T>
 bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::OffsetList& offsets, eckit::LengthList& lengths, std::vector<ODAHandle*>& handles)
 {
     using eckit::Log;
-    ostream& L (Log::debug());
+    std::ostream& L (Log::debug());
 
 	L << "Iterating over headers of '" << fileName << "'" <<  std::endl;
 	
     inputFile_ = fileName;
 
-	typedef MetaDataReader<MetaDataReaderIterator> MDR;
-
-    const bool buffered = true;
-    const bool skipData = true;
-    MDR mdReader(fileName, skipData, buffered);
-
-	MDR::iterator it = mdReader.begin(), end = mdReader.end();
+    core::TablesReader reader(fileName);
+    auto it = reader.begin();
+    auto end = reader.end();
 
     std::unique_ptr<MetaData> currentMD(it->columns().clone());
 	rowsNumber_ = currentMD->rowsNumber();
@@ -111,11 +107,11 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
 	unsigned long int mds = 0;	
 	for ( ; it != end; ++it)
 	{
-		ASSERT(it->isNewDataset());
-		const MetaData &md (it->columns());
+        const MetaData& md (it->columns());
 		++mds;
 
-		eckit::Offset startOffset = (**it).blockStartOffset(), endOffset = (**it).blockEndOffset();
+        eckit::Offset startOffset = it->startPosition();
+        eckit::Offset endOffset = it->nextPosition();
 		eckit::Length blockSize = endOffset - startOffset;
 
 		if (!offsets.size() || !mergeSimilarBlocks_ || !currentMD->equalsIncludingConstants(md, columnNames_))
@@ -155,7 +151,7 @@ template <typename T>
 bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 {
     using eckit::Offset;
-    ostream& L (eckit::Log::debug());
+    std::ostream& L (eckit::Log::debug());
     
 	std::vector<std::string> currentValues;
 	for (size_t i = 0; i < columnNames_.size(); ++i)
@@ -172,7 +168,7 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 		currentValues.push_back(v);
 		double dv = !column ? odc::MDI::realMDI() : column->min();
 
-		L << "FastODA2Request@" << this << "::collectValues: columnName: " << columnName << ": " << v << "(" << dv << ")" << endl;
+        L << "FastODA2Request@" << this << "::collectValues: columnName: " << columnName << ": " << v << "(" << dv << ")" << std::endl;
 
 		odaHandle.addValue(columnNames_[i], dv);
 		doubleValues_[keywords_[i]].insert(dv);
@@ -201,7 +197,7 @@ template <typename T>
 std::string FastODA2Request<T>::genRequest() const
 {
     std::stringstream request;
-    ostream& L (eckit::Log::debug());
+    std::ostream& L (eckit::Log::debug());
 
 	for (size_t i = 0; i < columnNames_.size(); ++i)
 	{
@@ -226,7 +222,7 @@ std::string FastODA2Request<T>::patchValue(const std::string& k, const std::stri
 {
     using eckit::Log;
     using eckit::StringTools;
-    ostream& L (Log::debug());
+    std::ostream& L (Log::debug());
     
 	std::string v = StringTools::trim(value);
 	L << "FastODA2Request@" << this << "::patchValue: v = '" << v  << "', key = " << k << std::endl;

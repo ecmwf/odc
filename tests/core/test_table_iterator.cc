@@ -14,7 +14,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/config/Resource.h"
 
-#include "odc/core/ReadTablesIterator.h"
+#include "odc/core/TablesReader.h"
 
 using namespace eckit::testing;
 using eckit::Log;
@@ -31,8 +31,9 @@ CASE("Test access Table iterator") {
     std::unique_ptr<eckit::DataHandle> dh(filename.fileHandle());
     dh->openForRead();
 
-    odc::core::ReadTablesIterator it(*dh);
-    odc::core::ReadTablesIterator end;
+    odc::core::TablesReader reader(*dh);
+    auto it = reader.begin();
+    auto end = reader.end();
 
     size_t numRows = 0;
     size_t tableCount = 0;

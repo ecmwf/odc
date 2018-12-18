@@ -20,8 +20,7 @@
 
 #include "odc/Comparator.h"
 #include "odc/DateTime.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
+#include "odc/core/TablesReader.h"
 #include "odc/Reader.h"
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
@@ -482,7 +481,7 @@ TEST(windSpeedWindDirection)
 static void SplitTool_chunks()
 {
     const char * fn = "selectAggregatedAndNonAggregated.odb";
-    unsigned long long n = odc::tool::CountTool::fastRowCount(fn);
+    size_t n = odc::tool::CountTool::rowCount(fn);
     vector<pair<Offset,Length> > chunks = odc::tool::SplitTool::getChunks(fn);
 
     Log::info() << "chunks.size():" << chunks.size() << std::endl;
@@ -693,14 +692,12 @@ TEST(create_table_using_variable)
 }
 */
 
-typedef MetaDataReader<MetaDataReaderIterator> MDR;
-
 TEST(meta_data_reader_checks_if_file_truncated)
 {
     ASSERT(0 == system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=1914000 count=1"));
-    MDR mdr("disp.7.1.odb.truncated");
+    core::TablesReader mdr("disp.7.1.odb.truncated");
     try {
-        for(MDR::iterator it(mdr.begin()), end(mdr.end()); it != end; ++it)
+        for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
             ;
         ASSERT(0 && "Scanning of truncated file did not fail");
     } catch (eckit::ShortFile ex) {
@@ -711,9 +708,9 @@ TEST(meta_data_reader_checks_if_file_truncated)
 TEST(meta_data_reader_fails_scanning_corrupted_file)
 {
     ASSERT(0 == system("cat disp.7.1.odb disp.7.1.odb.truncated >corrupted.odb"));
-    MDR mdr("corrupted.odb");
+    core::TablesReader mdr("corrupted.odb");
     try {
-        for(MDR::iterator it(mdr.begin()), end(mdr.end()); it != end; ++it)
+        for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
             ;
         ASSERT(0 && "Scanning of corrupted.odb did not fail");
     } catch (eckit::ShortFile ex) {

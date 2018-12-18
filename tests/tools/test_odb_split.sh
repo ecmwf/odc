@@ -13,7 +13,7 @@ cd ${test_wd}
 # In case we are resuming from a previous failed run, which has left output in the directory
 rm *.odb || true
 
-odb split ../2000010106.odb "2000010106_varno_{varno}.odb"
+odc split ../2000010106.odb "2000010106_varno_{varno}.odb"
 
 nfiles=$(ls -lh *.odb | wc -l)
 
@@ -26,7 +26,7 @@ for i in 1,12326 110,10914 112,13609 119,3084678 123,13609 2,8384 206,8881 29,13
 
     IFS=","
     set $i
-    nrows=$(odb count 2000010106_varno_$1.odb)
+    nrows=$(odc count 2000010106_varno_$1.odb)
     if [[ $nrows -ne $2 ]]; then
         echo "Mismatched odb size. Got $nrows rows, expected $2"
         exit -1;

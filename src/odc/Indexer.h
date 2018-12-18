@@ -13,6 +13,10 @@
 #ifndef odc_Indexer_H
 #define odc_Indexer_H
 
+#include <vector>
+
+#include "eckit/filesystem/PathName.h"
+
 namespace odc {
 
 typedef std::vector<std::pair<eckit::Offset,eckit::Length> > BlockOffsets;

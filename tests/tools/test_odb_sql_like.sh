@@ -24,11 +24,11 @@ col1:STRING,col2:INTEGER
 'mary',4
 EOF
 
-odb import data.csv data.odb
+odc import data.csv data.odb
 
 # Test select query
 
-odb sql 'select col2 where col1 like "ra"' -i data.odb -f odb -o outfile.odb
+odc sql 'select col2 where col1 like "ra"' -i data.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col2:INTEGER
@@ -36,9 +36,9 @@ col2:INTEGER
 2
 EOF
 
-odb import expect.csv expect.odb
+odc import expect.csv expect.odb
 
-odb compare outfile.odb expect.odb
+odc compare outfile.odb expect.odb
 
 # Clean up
 

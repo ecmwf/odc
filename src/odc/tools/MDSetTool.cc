@@ -8,17 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
+#include "odc/tools/MDSetTool.h"
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/parser/Tokenizer.h"
+#include "eckit/sql/SQLTypedefs.h"
+
+#include "odc/core/TablesReader.h"
 #include "odc/Header.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
 #include "odc/ODBAPISettings.h"
-#include "eckit/sql/SQLTypedefs.h"
-#include "odc/tools/MDSetTool.h"
 
 using namespace eckit;
 using namespace std;
@@ -61,14 +62,10 @@ void MDSetTool::run()
     std::vector<eckit::sql::BitfieldDef> bitfieldDefs;
     parseUpdateList(parameters(1), columns, types, values, bitfieldDefs);
 
-    typedef odc::MetaDataReader<odc::MetaDataReaderIterator> R;
-    R reader(inFile, false);
+    odc::core::TablesReader reader(inFile);
 
-    for (R::iterator it = reader.begin(), end = reader.end();
-        it != end;
-        ++it)
-    {
-        ASSERT(it->isNewDataset());
+    for (auto it = reader.begin(), end = reader.end(); it != end; ++it) {
+
         const MetaData& md (it->columns());
         for (size_t i = 0; i < columns.size(); ++i)
         {
@@ -92,21 +89,24 @@ void MDSetTool::run()
             }
         }
 
-		size_t sizeOfEncodedData = (**it).sizeOfEncodedData(); 
+        size_t sizeOfEncodedData = it->encodedDataSize();
+        eckit::Buffer encodedData(it->readEncodedData());
+        ASSERT(encodedData.size() == sizeOfEncodedData);
+
 	    // See if the file was created on a different order architecture
-		if ((**it).byteOrder() == BYTE_ORDER_INDICATOR)
+        if (it->byteOrder() == BYTE_ORDER_INDICATOR)
 		{
 			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << std::endl;
 
             serializeHeader<SameByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), it->properties(), md);
-			DataStream<SameByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
+            DataStream<SameByteOrder,DataHandle>(*outHandle).writeBytes(encodedData, sizeOfEncodedData);
 		}
 		else
 		{
 			Log::info() << "MDSetTool::run: OTHER ORDER " << sizeOfEncodedData << std::endl;
 			
             serializeHeader<OtherByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), it->properties(), md);
-			DataStream<OtherByteOrder,DataHandle>(*outHandle).writeBytes((**it).encodedData(), sizeOfEncodedData);	
+            DataStream<OtherByteOrder,DataHandle>(*outHandle).writeBytes(encodedData, sizeOfEncodedData);
 		}
 	}
 }

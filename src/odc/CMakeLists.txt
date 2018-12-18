@@ -72,10 +72,6 @@ MemoryBlock.cc
 MemoryBlock.h
 MetaData.cc
 MetaData.h
-MetaDataReader.cc
-MetaDataReader.h
-MetaDataReaderIterator.cc
-MetaDataReaderIterator.h
 ####ODAColumn.cc
 ####ODAColumn.h
 ####NullColumn.cc
@@ -154,8 +150,8 @@ ODBTarget.h
 
 core/ThreadSharedDataHandle.cc
 core/ThreadSharedDataHandle.h
-core/ReadTablesIterator.cc
-core/ReadTablesIterator.h
+core/TablesReader.cc
+core/TablesReader.h
 core/Table.cc
 core/Table.h
 
@@ -187,6 +183,9 @@ data/HttpHandleFactory.cc
 # requires  metkit
 data/MarsHandleFactory.cc
 data/MarsHandleFactory.h
+
+iterator-api/BaseReader.cc
+iterator-api/BaseReader.h
 )
 
 # templates
@@ -199,7 +198,6 @@ Header.cc
 ODAUpdatingIterator.cc
 WriterDispatchingIterator.cc
 MDUpdatingIterator.cc
-MetaDataReader.cc
 )
 
 # define odc library

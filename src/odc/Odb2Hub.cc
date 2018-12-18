@@ -28,15 +28,15 @@ using namespace eckit;
 using namespace odc;
 using namespace odc::tool;
 
-PathName Odb2Hub::getPath(const string& schema, const string& pathName, const string& keywordToColumnMapping)
+PathName Odb2Hub::getPath(const std::string& schema, const std::string& pathName, const std::string& keywordToColumnMapping)
 {
-    ostream& L(Log::info());
+    std::ostream& L(Log::info());
 	FileMapper mapper(schema);
 	
-	vector<string> keywords(mapper.keywords());
-	L << "Odb2Hub::getPath: schema = " << schema << endl;
-	L << "Odb2Hub::getPath: pathName = " << pathName << endl;
-	L << "Odb2Hub::getPath: keywordToColumnMapping = " << keywordToColumnMapping << endl;
+    std::vector<std::string> keywords(mapper.keywords());
+    L << "Odb2Hub::getPath: schema = " << schema << std::endl;
+    L << "Odb2Hub::getPath: pathName = " << pathName << std::endl;
+    L << "Odb2Hub::getPath: keywordToColumnMapping = " << keywordToColumnMapping << std::endl;
 
 	FastODA2Request<ODA2RequestServerTraits> o2r;
 	//o.parseConfig(StringTool::readFile(cfgFile));
@@ -44,21 +44,21 @@ PathName Odb2Hub::getPath(const string& schema, const string& pathName, const st
 
 	OffsetList offsets;
 	LengthList lengths;
-	vector<ODAHandle*> handles;
+    std::vector<ODAHandle*> handles;
 	bool rc = o2r.scanFile(pathName, offsets, lengths, handles);
 	ASSERT(rc == true);
 
 	// This will throw an exception if values of interest are not constant.
-	map<string, double> uniqueValues(o2r.getUniqueValues());
-	map<string, string> values;
-	for (map<string, double>::iterator it(uniqueValues.begin()); it != uniqueValues.end(); ++it)
+    std::map<std::string, double> uniqueValues(o2r.getUniqueValues());
+    std::map<std::string, std::string> values;
+    for (std::map<std::string, double>::iterator it(uniqueValues.begin()); it != uniqueValues.end(); ++it)
 	{
-		const string keyword(it->first);
-		const set<string>& vs(o2r.getValues(keyword));
+        const std::string keyword(it->first);
+        const std::set<std::string>& vs(o2r.getValues(keyword));
 		ASSERT (vs.size() == 1);
-        string value (StringTools::trim(*vs.begin()));
+        std::string value (StringTools::trim(*vs.begin()));
 
-		L << "getPath: '" << keyword << "' = '" << value << "'" << endl;
+        L << "getPath: '" << keyword << "' = '" << value << "'" << std::endl;
 
 		values[keyword] = value;
 	}

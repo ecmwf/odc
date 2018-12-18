@@ -8,17 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
-#include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
-#include "odc/Reader.h"
-#include "odc/Select.h"
 #include "odc/Indexer.h"
-#include "odc/RowsCounter.h"
-#include "eckit/io/PartFileHandle.h"
-#include "eckit/io/Offset.h"
+
+#include "eckit/eckit.h"
 #include "eckit/io/Length.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/PartFileHandle.h"
+
+#include "odc/core/TablesReader.h"
+#include "odc/MetaData.h"
+#include "odc/Reader.h"
+#include "odc/RowsCounter.h"
+#include "odc/Select.h"
+#include "odc/Writer.h"
 
 using namespace eckit;
 
@@ -26,25 +28,23 @@ namespace odc {
 
 BlockOffsets Indexer::offsetsOfBlocks(const PathName &db)
 {
-	typedef MetaDataReader<MetaDataReaderIterator> MDR;
-
     BlockOffsets r;
 
-	MDR mdReader(db);
-	MDR::iterator it (mdReader.begin());
-	MDR::iterator end (mdReader.end());
+    core::TablesReader reader(db);
+    auto it = reader.begin();
+    auto end = reader.end();
 	for (; it != end; ++it)
     {
-        Offset offset ((**it).blockStartOffset());
-        Length length ((**it).blockEndOffset() - (**it).blockStartOffset());
+        Offset offset = it->startPosition();
+        Length length = it->nextPosition() - it->startPosition();
 
-        r.push_back(make_pair(offset,length));
+        r.push_back(std::make_pair(offset,length));
     }
 
 	return r;
 }
 
-std::vector<eckit::PathName> Indexer::createIndex(const vector<PathName> &dataFiles)
+std::vector<eckit::PathName> Indexer::createIndex(const std::vector<PathName> &dataFiles)
 {
     std::vector<eckit::PathName> indices;
     for (size_t i(0); i < dataFiles.size(); ++i)

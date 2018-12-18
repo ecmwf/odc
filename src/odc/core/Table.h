@@ -16,6 +16,8 @@
 
 #include <memory>
 
+#include "eckit/io/Buffer.h"
+
 #include "odc/core/ThreadSharedDataHandle.h"
 #include "odc/MetaData.h"
 
@@ -32,26 +34,38 @@ class Table {
 
 public: // methods
 
-    Table();
-    Table(const ThreadSharedDataHandle& dh, eckit::Offset startPosition, eckit::Offset nextPosition, MetaData&& md, Properties&& props);
-
-    eckit::Offset startPosition() const;
-    eckit::Offset nextPosition() const;
-
-    size_t numRows() const;
-
     // Construct a table. This is a static function rather than a constructor
     // so that we can return false for no-more-data rather than throwing an
     // exception
 
-    static bool readTable(ThreadSharedDataHandle& dh, Table& t);
+    static std::unique_ptr<Table> readTable(ThreadSharedDataHandle& dh);
+
+    eckit::Offset startPosition() const;
+    eckit::Offset nextPosition() const;
+    eckit::Length encodedDataSize() const;
+
+    size_t numRows() const;
+    size_t numColumns() const;
+    int32_t byteOrder() const;
+
+    const MetaData& columns() const;
+    const Properties& properties() const;
+
+    eckit::Buffer readEncodedData();
+
+private: // methods
+
+    Table(const ThreadSharedDataHandle& dh);
 
 private: // members
 
     ThreadSharedDataHandle dh_;
 
     eckit::Offset startPosition_;
+    eckit::Offset dataPosition_;
+    eckit::Length dataSize_;
     eckit::Offset nextPosition_;
+    int32_t byteOrder_;
 
     MetaData metadata_;
     Properties properties_;

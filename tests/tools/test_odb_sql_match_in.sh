@@ -32,12 +32,12 @@ col1:INTEGER,col2:INTEGER
 7,8
 EOF
 
-odb import data1.csv data1.odb
-odb import data2.csv data2.odb
+odc import data1.csv data1.odb
+odc import data2.csv data2.odb
 
 # Test select query
 
-odb sql 'select col2 where match (col1) in query (select col1 from "data2.odb")' -i data1.odb -f odb -o outfile.odb
+odc sql 'select col2 where match (col1) in query (select col1 from "data2.odb")' -i data1.odb -f odb -o outfile.odb
 
 cat > expect.csv <<EOF
 col2:INTEGER
@@ -46,9 +46,9 @@ col2:INTEGER
 800
 EOF
 
-odb import expect.csv expect.odb
+odc import expect.csv expect.odb
 
-odb compare outfile.odb expect.odb
+odc compare outfile.odb expect.odb
 
 # Clean up
 

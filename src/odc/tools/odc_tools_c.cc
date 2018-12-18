@@ -17,8 +17,6 @@
 
 #include "odc/FastODA2Request.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
 #include "odc/ODAHandle.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/ODBAPIVersion.h"

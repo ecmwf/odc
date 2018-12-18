@@ -20,8 +20,7 @@ class CountTool : public Tool {
 public:
 	CountTool (int argc, char *argv[]); 
 
-	static unsigned long long rowCount(const eckit::PathName &);
-	static unsigned long long fastRowCount(const eckit::PathName &);
+    static size_t rowCount(const eckit::PathName &);
 
 	void run(); 
 

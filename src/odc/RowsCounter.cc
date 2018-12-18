@@ -10,8 +10,7 @@
 
 #include "eckit/eckit.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
+#include "odc/core/TablesReader.h"
 #include "odc/Reader.h"
 #include "odc/RowsCounter.h"
 
@@ -23,27 +22,15 @@ unsigned long long RowsCounter::fastRowCount(const PathName &db)
 {
 	unsigned long long n = 0;
 
-	typedef MetaDataReader<MetaDataReaderIterator> MDR;
+    core::TablesReader reader(db);
 
-	MDR mdReader(db);
-	MDR::iterator it = mdReader.begin();
-	MDR::iterator end = mdReader.end();
+    auto it = reader.begin();
+    auto end = reader.end();
 	for (; it != end; ++it)
-		n += it->columns().rowsNumber();
+        n += it->numRows();
 	return n;
 }
 
-unsigned long long RowsCounter::rowCount(const PathName &db)
-{
-	odc::Reader oda(db);
-	odc::Reader::iterator i = oda.begin();
-	odc::Reader::iterator end = oda.end();
-
-	unsigned long long n = 0;
-	for ( ; i != end; ++i)
-		++n;
-	return n;
-}
 
 } // namespace odc 
 

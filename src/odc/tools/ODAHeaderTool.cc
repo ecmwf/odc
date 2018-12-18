@@ -9,33 +9,30 @@
  */
 
 #include "ODAHeaderTool.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
+#include "odc/core/TablesReader.h"
 
 using namespace eckit;
 
 namespace odc {
 namespace tool {
 
-typedef odc::MetaDataReader<odc::MetaDataReaderIterator> MDReader;
-
 class MDPrinter {
 public:
-	virtual void print(std::ostream&, MDReader::iterator &) = 0;
+    virtual void print(std::ostream&, const core::Table&) = 0;
 	virtual void printSummary(std::ostream&) {};
 };
 
 class VerbosePrinter : public MDPrinter {
 public:
 	VerbosePrinter() : headerCount_() {}
-	void print(std::ostream& o, MDReader::iterator &r)
+    void print(std::ostream& o, const core::Table& tbl)
 	{
         o << std::endl << "Header " << ++headerCount_ << ". "
-			<< "Begin offset: " << (**r).blockStartOffset() << ", end offset: " << (**r).blockEndOffset()
-			<< ", number of rows in block: " << r->columns().rowsNumber() 
-			<< ", byteOrder: " << (((**r).byteOrder() == 1) ? "same" : "other")
+            << "Begin offset: " << tbl.startPosition() << ", end offset: " << tbl.nextPosition()
+            << ", number of rows in block: " << tbl.numRows()
+            << ", byteOrder: " << ((tbl.byteOrder() == 1) ? "same" : "other")
             << std::endl
-			<< r->columns();
+            << tbl.columns();
 	}
 private:
 	unsigned long headerCount_;
@@ -44,11 +41,11 @@ private:
 class OffsetsPrinter : public MDPrinter {
 public:
 	OffsetsPrinter() {}
-	void print(std::ostream& o, MDReader::iterator &r)
+    void print(std::ostream& o, const core::Table& tbl)
 	{
-		Offset offset ((**r).blockStartOffset());
-		Length length ((**r).blockEndOffset() - (**r).blockStartOffset());
-		o << offset << " " << length << " " << r->columns().rowsNumber() << " " << r->columns().size() << std::endl;
+        Offset offset (tbl.startPosition());
+        Length length (tbl.nextPosition() - tbl.startPosition());
+        o << offset << " " << length << " " << tbl.numRows() << " " << tbl.numColumns() << std::endl;
 	}
 private:
 	unsigned long headerCount_;
@@ -60,11 +57,11 @@ public:
     DDLPrinter(const std::string& path, const std::string& tableName)
     : path_(path), tableName_(tableName) {}
 
-	void print(std::ostream& o, MDReader::iterator &r)
+    void print(std::ostream& o, const core::Table& tbl)
 	{
-        if (md_.empty() || md_.back() != r->columns())
+        if (md_.empty() || md_.back() != tbl.columns())
         {
-			md_.push_back(r->columns());
+            md_.push_back(tbl.columns());
             return;
         }
 	}
@@ -175,16 +172,14 @@ void HeaderTool::run()
          optionIsSet("-ddl")     ? static_cast<MDPrinter*>(&ddlPrinter) :
                                    static_cast<MDPrinter*>(&verbosePrinter)));
 
-	MDReader oda(db);
-	MDReader::iterator r(oda.begin());
-	MDReader::iterator end(oda.end());
 
-	odc::MetaData metaData(r->columns());
-	for(; r != end; ++r)
+    core::TablesReader reader(db);
+    auto it = reader.begin();
+    auto end = reader.end();
+
+    for(; it != end; ++it)
 	{
-		ASSERT (r->isNewDataset());
-		printer.print(o, r);
-		metaData = r->columns();
+        printer.print(o, *it);
 	}
     printer.printSummary(o);
 }

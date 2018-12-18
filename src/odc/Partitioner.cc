@@ -10,8 +10,6 @@
 
 #include "eckit/eckit.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/Partitioner.h"
@@ -26,7 +24,7 @@ namespace odc {
 
 Partitions Partitioner::createPartitions(const std::vector<eckit::PathName>& files, size_t numberOfPartitions)
 {
-    vector<PathName> indices;
+    std::vector<PathName> indices;
     for (size_t i (0); i < files.size(); ++i)
         indices.push_back(files[i] + ".idx");
 
@@ -41,7 +39,7 @@ Partitions Partitioner::createPartitions(const std::vector<eckit::PathName>& fil
     ullong totalRowsNumber (countRows (files, indices));
     ullong rowsPerPartition ((totalRowsNumber / numberOfPartitions));
 
-    Log::info() << "*** createPartitions: numberOfPartitions: " << numberOfPartitions << ", totalRowsNumber: " << totalRowsNumber << ", rowsPerPartition: " << rowsPerPartition <<  endl;
+    Log::info() << "*** createPartitions: numberOfPartitions: " << numberOfPartitions << ", totalRowsNumber: " << totalRowsNumber << ", rowsPerPartition: " << rowsPerPartition << std::endl;
     for (size_t i(0); i < indices.size(); ++i)
     {
         odc::Select in("select block_begin, block_length, seqno, n_rows;", indices[i]); 

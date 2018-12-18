@@ -29,7 +29,6 @@ class ThreadSharedDataHandle : public eckit::DataHandle {
 
 public: // methods
 
-    ThreadSharedDataHandle();
     ThreadSharedDataHandle (eckit::DataHandle& dh);
     ThreadSharedDataHandle (eckit::DataHandle* dh);
     ~ThreadSharedDataHandle() override;
@@ -39,8 +38,6 @@ public: // methods
 
     ThreadSharedDataHandle(ThreadSharedDataHandle&&);
     ThreadSharedDataHandle& operator=(ThreadSharedDataHandle&&);
-
-    bool empty() const { return !internal_; }
 
     bool operator!=(const ThreadSharedDataHandle& other);
     bool operator==(const ThreadSharedDataHandle& other);

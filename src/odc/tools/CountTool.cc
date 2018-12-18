@@ -10,8 +10,7 @@
 
 #include "eckit/eckit.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
+#include "odc/core/TablesReader.h"
 #include "odc/Reader.h"
 #include "odc/tools/CountTool.h"
 
@@ -22,29 +21,18 @@ namespace tool {
 
 CountTool::CountTool (int argc, char *argv[]) : Tool(argc, argv) { }
 
-unsigned long long CountTool::fastRowCount(const PathName &db)
+size_t CountTool::rowCount(const PathName &db)
 {
-	unsigned long long n = 0;
+    odc::core::TablesReader reader(db);
+    auto it = reader.begin();
+    auto end = reader.end();
 
-	typedef MetaDataReader<MetaDataReaderIterator> MDR;
+    size_t n = 0;
 
-	MDR mdReader(db);
-	MDR::iterator it = mdReader.begin();
-	MDR::iterator end = mdReader.end();
-	for (; it != end; ++it)
-		n += it->columns().rowsNumber();
-	return n;
-}
+    for (; it != end; ++it) {
+        n += it->numRows();
+    }
 
-unsigned long long CountTool::rowCount(const PathName &db)
-{
-	odc::Reader oda(db);
-	odc::Reader::iterator i = oda.begin();
-	odc::Reader::iterator end = oda.end();
-
-	unsigned long long n = 0;
-	for ( ; i != end; ++i)
-		++n;
 	return n;
 }
 
@@ -63,9 +51,9 @@ void CountTool::run()
     {
         const std::string fileName (parameters(i));
 
-        Log::debug() << "CountTool: counting " << fileName << endl;
+        Log::debug() << "CountTool: counting " << fileName << std::endl;
 
-        n += fastRowCount(fileName);
+        n += rowCount(fileName);
     }
 	
 	std::cout << n << std::endl;

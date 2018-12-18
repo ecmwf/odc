@@ -19,18 +19,19 @@ namespace core {
 
 ThreadSharedDataHandle::Internal::Internal(eckit::DataHandle* dh, bool owned) :
     dh_(dh),
-    owned_(owned) {}
+    owned_(owned) {
 
-ThreadSharedDataHandle::Internal::~Internal() {
     if (owned_) {
-        delete dh_;
+        dh_->openForRead();
     }
 }
 
-
-ThreadSharedDataHandle::ThreadSharedDataHandle() :
-    internal_(),
-    position_(0) {}
+ThreadSharedDataHandle::Internal::~Internal() {
+    if (owned_) {
+        dh_->close();
+        delete dh_;
+    }
+}
 
 
 ThreadSharedDataHandle::ThreadSharedDataHandle(eckit::DataHandle& dh) :

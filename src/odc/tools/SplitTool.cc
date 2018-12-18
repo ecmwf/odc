@@ -8,23 +8,22 @@
  * does it submit to any jurisdiction.
  */
 
+#include "SplitTool.h"
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/PartFileHandle.h"
+
+#include "odc/core/TablesReader.h"
 #include "odc/DispatchingWriter.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/TemplateParameters.h"
-#include "SplitTool.h"
 
 using namespace eckit;
 using namespace std;
 
 namespace odc {
 namespace tool {
-
-typedef odc::MetaDataReader<odc::MetaDataReaderIterator> MDReader;
 
 SplitTool::SplitTool (int argc, char *argv[])
 : Tool(argc, argv),
@@ -68,8 +67,8 @@ vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t
 
     vector<pair<Offset,Length> > r;
 
-    MDReader mdr(inFile);
-    MDReader::iterator it(mdr.begin()), end(mdr.end());
+    core::TablesReader reader(inFile);
+    auto it(reader.begin()), end(reader.end());
 
 	Offset currentOffset(0);
 	Length currentLength(0);
@@ -77,10 +76,10 @@ vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t
 
     for(; it != end; ++it)
     {   
-        Offset offset((**it).blockStartOffset());
-        Length length((**it).blockEndOffset() - offset);
-		size_t numberOfRows (it->columns().rowsNumber());
-		size_t numberOfColumns (it->columns().size());
+        Offset offset(it->startPosition());
+        Length length(it->nextPosition() - it->startPosition());
+        size_t numberOfRows (it->numRows());
+        size_t numberOfColumns (it->numColumns());
 
 		L << "SplitTool::getChunks: " << offset << " " << length << endl;
 
@@ -103,8 +102,8 @@ vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t
 
 std::string SplitTool::genOrderBySelect(const std::string& inFile, const std::string& outFileTemplate)
 {
-    MDReader mdr(inFile);
-    MDReader::iterator it(mdr.begin());
+    core::TablesReader reader(inFile);
+    auto it = reader.begin();
     TemplateParameters templateParameters;
     TemplateParameters::parse(outFileTemplate, templateParameters, it->columns());
     std::stringstream ss;

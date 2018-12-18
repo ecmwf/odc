@@ -11,8 +11,6 @@
 #include "eckit/eckit.h"
 #include "odc/CodecOptimizer.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
 
 using namespace eckit;
 
@@ -40,7 +38,7 @@ odc::ColumnType MetaData::convertType(const std::string& t)
     else if (type == "DOUBLE")   return odc::DOUBLE;
     else if (type == "PK9REAL")  return odc::DOUBLE;
     else if (type == "STRING")   return odc::STRING;
-    else if (type.find("BITFIELD") != string::npos) return odc::BITFIELD;
+    else if (type.find("BITFIELD") != std::string::npos) return odc::BITFIELD;
     else throw eckit::UserError("Unsupported column type: " + type);
 
     return odc::IGNORE; // never reached
@@ -51,38 +49,6 @@ MetaData* MetaData::clone() const {
 	for (size_t i = 0; i < size(); ++i)
         (*md)[i]->coder((*this)[i]->coder().clone());
 	return md;
-}
-
-MetaData MetaData::scanFile(const PathName& fileName)
-{
-    std::ostream& L(Log::debug());
-	L << "Iterating over headers of '" << fileName << "'" <<  std::endl;
-
-	typedef MetaDataReader<MetaDataReaderIterator> MDR;
-
-	MDR mdReader(fileName);
-	MDR::iterator it (mdReader.begin());
-	MDR::iterator end (mdReader.end());
-
-	MetaData wholeFileMD(it->columns());
-
-	unsigned long int i = 0;	
-	unsigned long int mds = 0;	
-	for ( ; it != end; ++it)
-	{
-		++i;
-		if (it->isNewDataset())
-		{
-			++mds;
-			L << it->columns() << std::endl;
-			wholeFileMD |= it->columns();
-		}
-	}
-	L << "TestMetaDataReader::test i=" << i << ", mds=" << mds << std::endl;
-
-	codec::CodecOptimizer().setOptimalCodecs<DataStream<> >(wholeFileMD);
-
-	return wholeFileMD;
 }
 
 void MetaData::setSize(size_t n)

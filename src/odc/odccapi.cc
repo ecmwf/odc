@@ -19,8 +19,7 @@
 
 #include "odc/FastODA2Request.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
+#include "odc/core/TablesReader.h"
 #include "odc/ODAHandle.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/ODBAPIVersion.h"
@@ -88,10 +87,10 @@ double odb_count(const char * filename)
 	double n = 0;
 
 	PathName path = filename;
-	typedef MetaDataReader<MetaDataReaderIterator> MDR;
-	MDR mdReader(path);
-	for (MDR::iterator it(mdReader.begin()), end(mdReader.end()); it != end; ++it)
-		n += it->columns().rowsNumber();
+    core::TablesReader mdReader(path);
+    for (auto it(mdReader.begin()), end(mdReader.end()); it != end; ++it) {
+        n += it->numRows();
+    }
 	return n;
 }
 
@@ -481,7 +480,7 @@ int odb_read_iterator_get_missing_value(oda_read_iterator_ptr ri, int index, dou
     ReaderIterator* r (reinterpret_cast<ReaderIterator*>(ri));
     if (index < 0 && r->columns().size() < index) 
     {
-        stringstream ss;
+        std::stringstream ss;
         ss << "odb_read_iterator_get_missing_value: index " << index 
             << " out of range, should be between 0 and " << r->columns().size();
         throw UserError(ss.str());

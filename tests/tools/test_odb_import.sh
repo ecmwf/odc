@@ -24,9 +24,9 @@ col1:INTEGER,col2:REAL,col3:DOUBLE,col4:INTEGER,col5:BITFIELD[a:1;b:2;c:5]
 0,0.0,3.25,0,555
 EOF
 
-odb import data.csv data.odb
+odc import data.csv data.odb
 
-[[ $(odb count data.odb) -eq 5 ]] || (echo "Unexpected number of rows in ODB" ; false)
+[[ $(odc count data.odb) -eq 5 ]] || (echo "Unexpected number of rows in ODB" ; false)
 
 # Check that we get what we are expecting
 
@@ -42,8 +42,8 @@ col1	col2	col3	col4	col5
 0	0.000000	3.250000	0	555
 EOF
 
-odb ls data.odb
-odb ls data.odb > odb_ls
+odc ls data.odb
+odc ls data.odb > odb_ls
 
 cmp odb_ls_reference odb_ls
 

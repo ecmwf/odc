@@ -10,18 +10,18 @@
 
 #include "eckit/eckit.h"
 #include "odc/MetaData.h"
-#include "odc/MetaDataReader.h"
-#include "odc/MetaDataReaderIterator.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/Partition.h"
 #include "eckit/io/PartFileHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/io/Offset.h"
 #include "eckit/io/Length.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/StringTools.h"
 
 #include "odc/WriterBufferingIterator.h"
+#include "odc/Writer.h"
 
 using namespace eckit;
 using namespace std;

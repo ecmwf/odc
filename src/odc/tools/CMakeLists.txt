@@ -57,14 +57,6 @@ TestAggregateFunctions3.cc
 TestAtTableInTheOutput.cc
 TestBitfields.cc
 TestCommandLineParsing.cc
-TestDataJoin.cc
-TestDataLink.cc
-TestDataLoader.cc
-TestDataPage.cc
-TestDataRow.cc
-TestDataSelect.cc
-TestDataSet.cc
-TestDataTable.cc
 TestDispatchingWriter.cc
 TestDistinct.cc
 TestFastODA2Request.cc
@@ -83,7 +75,6 @@ TestInMemoryDataHandle.cc
 TestInt16_MissingCodec.cc
 TestIntegerValues.cc
 TestMetaData.cc
-TestMetaDataReader.cc
 TestMetaDataReader.ksh
 TestMissingValue.cc
 TestOdaCAPI.cc
