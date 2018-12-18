@@ -4,7 +4,7 @@
 if( HAVE_PYTHON AND SWIG_FOUND )
   join( ECKIT_INCLUDE_DIRS "', '" _ECKIT_INCLUDES )
   configure_file( setup.py.in setup.py )
-  file( COPY odb test_python_odc.py legacy_test_python_odc.py legacy_odc_python_examples.py DESTINATION . )
+  file( COPY odb test_python_odb_api.py legacy_test_python_odb_api.py legacy_odb_api_python_examples.py DESTINATION . )
 
   add_subdirectory("odb")
 

@@ -17,7 +17,7 @@
 
 
 %exception {
-	using namespace ::odb;
+	using namespace ::odc;
 	using namespace ::odc::sql;
     try {
         $action
@@ -88,7 +88,7 @@ using namespace odc;
 
 #include "odc/TemplateParameters.h"
 %include "odc/Reader.h"
-%include "odc/TextReader.h"
+%include "odc/csv/TextReader.h"
 %include "odc/Select.h"
 %include "odc/Writer.h"
 %include "odc/WriterBufferingIterator.h"
@@ -96,7 +96,7 @@ using namespace odc;
 %include "odc/DispatchingWriter.h"
 %include "odc/DispatchingWriter.h"
 %include "odc/ReaderIterator.h"
-%include "odc/TextReaderIterator.h"
+%include "odc/csv/TextReaderIterator.h"
 %include "odc/SelectIterator.h"
 #include "odc/FixedSizeWriterIterator.h"
 

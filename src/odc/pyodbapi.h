@@ -10,9 +10,9 @@
 #include "odc/Select.h"
 #include "odc/MetaData.h"
 #include "odc/Reader.h"
-#include "odc/TextReader.h"
+#include "odc/csv/TextReader.h"
 #include "odc/WriterBufferingIterator.h"
 #include "odc/DispatchingWriter.h"
-#include "odc/TextReaderIterator.h"
+#include "odc/csv/TextReaderIterator.h"
 
 using namespace odc;

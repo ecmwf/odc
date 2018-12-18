@@ -42,7 +42,7 @@ ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
                     DEFAULT OFF )
 
 
-SET(odc_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
+SET(ODC_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
 
 if( HAVE_FORTRAN )
 
@@ -62,15 +62,18 @@ ecbuild_add_option( FEATURE PYTHON
 
 set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" )
 
-get_directory_property( odc_DEFINITIONS COMPILE_DEFINITIONS )
+get_directory_property( ODC_DEFINITIONS COMPILE_DEFINITIONS )
 
-set( odc_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( odc_LIBRARIES      odbcore )
+set( ODC_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
+set( ODC_LIBRARIES      odbcore )
 
 if( HAVE_FORTRAN )
-  list( APPEND odc_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
-  list( INSERT odc_LIBRARIES 0 odc_fortran )
+  list( APPEND ODC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
+  list( INSERT ODC_LIBRARIES 0 odc_fortran )
 endif()
+
+set( odc_INCLUDE_DIRS ${ODC_INCLUDE_DIRS} )
+set( odc_LIBRARIES ${ODC_LIBRARIES} )
 
 add_subdirectory( src )
 add_subdirectory( regressions )
