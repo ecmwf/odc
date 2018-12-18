@@ -30,7 +30,7 @@
 	} catch (const eckit::FileError& e) {
 		PyErr_SetString(PyExc_IOError, e.what());
 		return NULL;
-	} catch (const ::odc::sql::SyntaxError& e) {
+    } catch (const ::eckit::sql::SyntaxError& e) {
 		PyErr_SetString(PyExc_SyntaxError, e.what());
 		return NULL;
 	}  catch (const eckit::Exception& e) {
@@ -68,7 +68,7 @@ using namespace eckit;
 #include "odc/DataStream.h"
 %include "odc/Codec.h"
 %include "odc/Column.h"
-#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLSession.h"
 
 using namespace odc;
 
@@ -100,8 +100,7 @@ using namespace odc;
 %include "odc/SelectIterator.h"
 #include "odc/FixedSizeWriterIterator.h"
 
-#include "eckit/sql/SQLInteractiveSession.h"
-#include "eckit/sql/SQLIteratorSession.h"
+#include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLTable.h"
 #include "eckit/sql/SQLSelect.h"
 #include "eckit/sql/SQLParser.h"
