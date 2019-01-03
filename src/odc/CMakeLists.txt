@@ -184,8 +184,8 @@ data/HttpHandleFactory.cc
 data/MarsHandleFactory.cc
 data/MarsHandleFactory.h
 
-iterator-api/BaseReader.cc
-iterator-api/BaseReader.h
+#iterator-api/BaseReader.cc
+#iterator-api/BaseReader.h
 )
 
 # templates
