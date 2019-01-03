@@ -16,8 +16,8 @@
 #ifndef Header_H
 #define Header_H
 
-#include <stdint.h>
-#include "eckit/eckit.h"
+#include <cstddef>
+#include <cstdint>
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }

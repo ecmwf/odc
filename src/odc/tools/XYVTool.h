@@ -11,6 +11,8 @@
 #ifndef XYVTool_H
 #define XYVTool_H
 
+#include <ostream>
+
 #include "Tool.h"
 
 namespace odc {

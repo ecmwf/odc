@@ -16,10 +16,13 @@
 #ifndef odc_WriterDispatchingIterator_H
 #define odc_WriterDispatchingIterator_H
 
-#include "eckit/eckit.h"
+#include <map>
+#include <cstdint>
+
+#include "eckit/sql/SQLTypedefs.h"
+
 #include "odc/ColumnType.h"
 #include "odc/TemplateParameters.h"
-#include "eckit/sql/SQLTypedefs.h"
 #include "odc/Writer.h"
 
 namespace eckit { class PathName; }

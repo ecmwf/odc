@@ -12,29 +12,30 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include <fstream>
+
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/BufferedHandle.h"
 #include "eckit/log/Number.h"
 #include "eckit/log/Timer.h"
 #include "eckit/exception/Exceptions.h"
-
-#include "odc/Comparator.h"
-#include "odc/DateTime.h"
-#include "odc/core/TablesReader.h"
-#include "odc/Reader.h"
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
+
+#include "odc/Comparator.h"
+#include "odc/core/TablesReader.h"
+#include "odc/data/DataHandleFactory.h"
+#include "odc/DateTime.h"
+#include "odc/DispatchingWriter.h"
+#include "odc/ODBAPISettings.h"
+#include "odc/odccapi.h"
+#include "odc/Reader.h"
 #include "odc/Select.h"
-#include "odc/Writer.h"
-#include "TestCase.h"
 #include "odc/tools/CountTool.h"
 #include "odc/tools/ImportTool.h"
 #include "odc/tools/SplitTool.h"
-#include "odc/ODBAPISettings.h"
-#include "odc/data/DataHandleFactory.h"
-#include "odc/DispatchingWriter.h"
-
-#include "odc/odccapi.h"
+#include "odc/tools/TestCase.h"
+#include "odc/Writer.h"
 
 using namespace std;
 using namespace eckit;

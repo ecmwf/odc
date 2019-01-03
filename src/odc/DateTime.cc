@@ -11,6 +11,7 @@
 #include <iostream>
 #include <limits>
 #include <stdexcept>
+#include <iomanip>
 
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"

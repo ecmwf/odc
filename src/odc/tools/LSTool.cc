@@ -8,6 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
+
+#include <fstream>
+
 #include "odc/Reader.h"
 #include "odc/tools/LSTool.h"
 

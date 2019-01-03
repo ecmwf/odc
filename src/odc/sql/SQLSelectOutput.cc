@@ -10,6 +10,7 @@
 
 #include <limits>
 #include <algorithm>
+#include <numeric>
 
 #include "eckit/eckit.h"
 #include "eckit/log/Number.h"

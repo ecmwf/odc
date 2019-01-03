@@ -11,6 +11,9 @@
 #ifndef MemoryBlock_H
 #define MemoryBlock_H
 
+#include <cstddef>
+#include <string>
+
 // A simple class to implement buffers
 
 class MemoryBlock {

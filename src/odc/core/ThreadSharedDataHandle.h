@@ -15,6 +15,7 @@
 #define odc_core_ThreadSharedDataHandle_H
 
 #include <mutex>
+#include <memory>
 
 #include "eckit/io/DataHandle.h"
 

@@ -10,8 +10,11 @@
 
 #include "SplitTool.h"
 
+#include <ostream>
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/PartFileHandle.h"
+#include "eckit/types/Types.h"
 
 #include "odc/core/TablesReader.h"
 #include "odc/DispatchingWriter.h"

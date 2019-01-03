@@ -15,7 +15,11 @@
 #ifndef CommandLineParser_H
 #define CommandLineParser_H
 
-#include "eckit/eckit.h"
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
+
 
 namespace odc {
 namespace tool {

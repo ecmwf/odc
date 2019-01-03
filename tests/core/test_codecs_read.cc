@@ -20,6 +20,7 @@
 
 #include <time.h>
 #include <stdlib.h>
+#include <algorithm>
 
 // Some of the math.h/cmath functions are not clean when switching to C++11
 #if __cplusplus <= 199711L

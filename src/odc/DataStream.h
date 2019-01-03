@@ -16,9 +16,8 @@
 #ifndef DataStream_H
 #define DataStream_H
 
-#include <stdint.h>
+#include <cstdint>
 
-#include "eckit/eckit.h"
 #include "eckit/sql/SQLTypedefs.h"
 
 namespace eckit { class DataHandle; }

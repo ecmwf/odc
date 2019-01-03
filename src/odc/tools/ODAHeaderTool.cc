@@ -8,6 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
+#include <sstream>
+
 #include "ODAHeaderTool.h"
 #include "odc/core/TablesReader.h"
 
@@ -19,7 +21,7 @@ namespace tool {
 class MDPrinter {
 public:
     virtual void print(std::ostream&, const core::Table&) = 0;
-	virtual void printSummary(std::ostream&) {};
+    virtual void printSummary(std::ostream&) {}
 };
 
 class VerbosePrinter : public MDPrinter {

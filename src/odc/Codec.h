@@ -11,7 +11,7 @@
 #ifndef Codec_H
 #define Codec_H
 
-#include <strings.h> // for bzero
+#include <cstring>
 #include <limits>
 
 #include "odc/CodecFactory.h"
@@ -920,7 +920,7 @@ template<typename BYTEORDER>
 void CodecConstantString<BYTEORDER>::print(std::ostream& s) const
 {
 	char buf[sizeof(double) + 1];
-	bzero(buf, sizeof(buf));
+    memset(buf, 0, sizeof(buf));
 	strncpy(buf, reinterpret_cast<const char *>(&this->min_), sizeof(double));
 	s << this->name() << ", value='" << std::string(buf) << "'";
 }

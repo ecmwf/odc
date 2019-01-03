@@ -13,16 +13,19 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include <sstream>
+#include <memory>
+#include <fstream>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Timer.h"
 #include "eckit/parser/StringTools.h"
 
 #include "odc/CommandLineParser.h"
-#include "Tool.h"
-#include "TestCase.h"
-#include "ToolFactory.h"
-#include "TestRunner.h"
+#include "odc/tools/Tool.h"
+#include "odc/tools/TestCase.h"
+#include "odc/tools/ToolFactory.h"
+#include "odc/tools/TestRunner.h"
 
 using namespace eckit;
 using namespace std;

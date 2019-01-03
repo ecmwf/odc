@@ -8,15 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
+#include "odc/Partitions.h"
+
+#include <fstream>
+
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/Length.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/PartFileHandle.h"
+
 #include "odc/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
-#include "odc/Partitions.h"
-#include "eckit/io/PartFileHandle.h"
-#include "eckit/io/Offset.h"
-#include "eckit/io/Length.h"
-#include "eckit/filesystem/PathName.h"
 
 using namespace eckit;
 using namespace std;
@@ -45,7 +48,7 @@ vector<PathName> Partitions::write(const PathName& fileNamePrefix) const
 
         Log::info() << "" << " ##### Writing partition " << i << " to file " << partitionFileName << endl;
 
-        ullong n (p.write(partitionFileName));
+        p.write(partitionFileName);
 
         r.push_back(partitionFileName);
     }

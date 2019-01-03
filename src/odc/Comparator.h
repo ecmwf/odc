@@ -12,6 +12,8 @@
 #define Comparator_H
 
 #include <cmath>
+#include <vector>
+#include <set>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"

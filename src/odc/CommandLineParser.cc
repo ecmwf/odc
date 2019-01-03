@@ -11,9 +11,10 @@
 ///
 /// @author Piotr Kuchta, ECMWF, July 2009
 
+#include "odc/CommandLineParser.h"
+
 #include "eckit/exception/Exceptions.h"
 #include "eckit/utils/Translator.h"
-#include "odc/CommandLineParser.h"
 
 namespace odc {
 namespace tool {

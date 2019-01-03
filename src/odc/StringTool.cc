@@ -12,13 +12,14 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <strings.h> // for bzero
+#include "eckit/parser/StringTools.h"
+
+#include <cstring>
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/utils/Regex.h"
-#include "eckit/parser/StringTools.h"
 #include "odc/StringTool.h"
 
 using namespace std;
@@ -38,7 +39,7 @@ std::string StringTool::readFile(const PathName fileName, bool logging)
 	char buffer[CHUNK_SIZE]; 
 
 	FileHandle f(fileName);
-	Length estimated = f.openForRead();
+    f.openForRead();
 	
 	std::string ret;
 	size_t read, totalRead = 0;
@@ -101,7 +102,7 @@ std::string StringTool::unQuote(const std::string& value)
 std::string StringTool::double_as_string(double m)
 {
 	char buf[sizeof(double) + 1];
-	bzero(buf, sizeof(buf));
+    memset(buf, 0, sizeof(buf));
 	memcpy(buf, reinterpret_cast<char *>(&m), sizeof(double));
 	return std::string(buf, sizeof(double));
 }

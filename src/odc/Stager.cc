@@ -10,6 +10,7 @@
 
 
 #include <ctype.h>
+#include <fstream>
 
 #include "eckit/config/Resource.h"
 #include "eckit/parser/StringTools.h"

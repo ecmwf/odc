@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
 #include "odc/Codec.h"
 #include "odc/CodecFactory.h"
 
@@ -16,6 +15,8 @@ using namespace eckit;
 
 namespace odc {
 namespace codec {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 template<> std::map<std::string, AbstractCodecFactory<DataHandle>* > AbstractCodecFactory<DataHandle>::codecFactories = std::map<std::string, AbstractCodecFactory<DataHandle>* >();
 template<> std::map<std::string, AbstractCodecFactory<FastInMemoryDataHandle>* > AbstractCodecFactory<FastInMemoryDataHandle>::codecFactories = std::map<std::string, AbstractCodecFactory<FastInMemoryDataHandle>* >();
@@ -138,6 +139,8 @@ void Codec::loadCodecs() {
 	static CodecFactory<CodecInt16String,PrettyFastInMemoryDataHandle> prettyFastCodecInt16StringFactory("int16_string");
 	static CodecFactory<CodecInt8String,PrettyFastInMemoryDataHandle> prettyFastCodecInt8StringFactory("int8_string");
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace codec
 } // namespace odc

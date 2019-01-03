@@ -8,8 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
 #include "odc/MemoryBlock.h"
+
+#include <cstring>
+#include <string>
+
+#include "eckit/eckit.h"
 
 MemoryBlock::MemoryBlock(size_t size):
 	buffer_(0),

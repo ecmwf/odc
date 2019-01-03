@@ -13,11 +13,15 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
+#include "odc/csv/TextReaderIterator.h"
+
+#include <algorithm>
+#include <fstream>
+
 #include "eckit/parser/StringTools.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/types/Types.h"
 
-#include "odc/csv/TextReaderIterator.h"
 #include "odc/csv/TextReader.h"
 #include "odc/ColumnType.h"
 

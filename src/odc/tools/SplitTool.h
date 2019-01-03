@@ -11,6 +11,10 @@
 #ifndef SplitTool_H
 #define SplitTool_H
 
+#include <string>
+#include <vector>
+#include <ostream>
+
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
 #include "Tool.h"

@@ -11,6 +11,8 @@
 
 #include "odc/core/ThreadSharedDataHandle.h"
 
+#include "eckit/exception/Exceptions.h"
+
 namespace odc {
 namespace core {
 

@@ -14,7 +14,9 @@
 #ifndef InMemoryDataHandle_H
 #define InMemoryDataHandle_H
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/DataHandle.h"
+
 #include "odc/MemoryBlock.h"
 
 namespace odc {

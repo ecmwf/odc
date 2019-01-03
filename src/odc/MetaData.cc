@@ -8,9 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
-#include "odc/CodecOptimizer.h"
 #include "odc/MetaData.h"
+
+#include <algorithm>
+
+#include "odc/CodecOptimizer.h"
 
 using namespace eckit;
 
@@ -25,7 +27,7 @@ MetaData::MetaData(const MetaData& md) : std::vector<Column*>(0), rowsNumber_(0)
 odc::ColumnType MetaData::convertType(const std::string& t)
 {
     std::string type(t);
-    transform(type.begin(), type.end(), type.begin(), ::toupper);
+    std::transform(type.begin(), type.end(), type.begin(), ::toupper);
 
     if      (type == "INTEGER")  return odc::INTEGER;
     else if (type == "YYYYMMDD") return odc::INTEGER;

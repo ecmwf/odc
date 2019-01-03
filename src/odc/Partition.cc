@@ -8,18 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
+#include "odc/Partition.h"
+
+#include <fstream>
+
+#include "eckit/filesystem/PathName.h"
+#include "eckit/io/FileHandle.h"
+#include "eckit/io/Length.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/PartFileHandle.h"
+#include "eckit/parser/StringTools.h"
+
 #include "odc/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
-#include "odc/Partition.h"
-#include "eckit/io/PartFileHandle.h"
-#include "eckit/io/FileHandle.h"
-#include "eckit/io/Offset.h"
-#include "eckit/io/Length.h"
-#include "eckit/filesystem/PathName.h"
-#include "eckit/parser/StringTools.h"
-
 #include "odc/WriterBufferingIterator.h"
 #include "odc/Writer.h"
 

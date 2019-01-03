@@ -34,7 +34,7 @@ const void* LibOdc::addr() const { return this; }
 std::string LibOdc::version() const { return ODBAPIVersion::version(); }
 
 std::string LibOdc::gitsha1(unsigned int count) const {
-    std::string sha1(eckit_git_sha1());
+    std::string sha1(ODBAPIVersion::gitsha1());
     if(sha1.empty()) {
         return "not available";
     }

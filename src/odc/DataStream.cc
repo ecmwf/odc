@@ -13,9 +13,11 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/log/CodeLocation.h"
+
 #include "odc/MemoryBlock.h"
 
 namespace odc {

@@ -15,7 +15,7 @@
 /// \file Array.h
 /// @author Piotr Kuchta, ECMWF August 2009
 
-#include "eckit/eckit.h"
+#include <cstddef>
 
 namespace odc {
 

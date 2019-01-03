@@ -10,8 +10,10 @@
 
 
 #include "odc/csv/TextReader.h"
-#include "odc/csv/TextReaderIterator.h"
 
+#include <fstream>
+
+#include "odc/csv/TextReaderIterator.h"
 
 using namespace eckit;
 

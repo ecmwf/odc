@@ -12,23 +12,26 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "CompactTool.h"
-#include "CompareTool.h"
-#include "CountTool.h"
-#include "IndexTool.h"
-#include "FixedSizeRowTool.h"
-#include "ImportTool.h"
-#include "LSTool.h"
-#include "MDSetTool.h"
-#include "MergeTool.h"
-#include "ODA2RequestTool.h"
-#include "ODAHeaderTool.h"
-#include "SQLTool.h"
-#include "SetTool.h"
-#include "SplitTool.h"
-#include "Tool.h"
-#include "ToolFactory.h"
-#include "XYVTool.h"
+#include "odc/tools/Tool.h"
+
+#include <ostream>
+
+#include "odc/tools/CompactTool.h"
+#include "odc/tools/CompareTool.h"
+#include "odc/tools/CountTool.h"
+#include "odc/tools/IndexTool.h"
+#include "odc/tools/FixedSizeRowTool.h"
+#include "odc/tools/ImportTool.h"
+#include "odc/tools/LSTool.h"
+#include "odc/tools/MDSetTool.h"
+#include "odc/tools/MergeTool.h"
+#include "odc/tools/ODA2RequestTool.h"
+#include "odc/tools/ODAHeaderTool.h"
+#include "odc/tools/SQLTool.h"
+#include "odc/tools/SetTool.h"
+#include "odc/tools/SplitTool.h"
+#include "odc/tools/ToolFactory.h"
+#include "odc/tools/XYVTool.h"
 
 namespace odc {
 namespace tool {

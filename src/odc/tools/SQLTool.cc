@@ -8,6 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
+#include <fstream>
+#include <ostream>
+#include <memory>
+
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/io/PartFileHandle.h"
@@ -18,6 +22,7 @@
 #include "eckit/sql/SQLSelectFactory.h"
 #include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLStatement.h"
+#include "eckit/types/Types.h"
 
 #include "odc/odc.h"
 #include "odc/sql/SQLOutputConfig.h"

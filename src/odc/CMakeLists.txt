@@ -211,6 +211,6 @@ ecbuild_add_library( TARGET             odccore
                      GENERATED          ODBAPIVersionSHA1.cc
                      TEMPLATES          ${odclib_templates}
                      LINKER_LANGUAGE    CXX
-                     LIBS               metkit )
+                     LIBS               eckit metkit eckit_sql )
 
 

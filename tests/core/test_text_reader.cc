@@ -10,6 +10,7 @@
 
 #include <string>
 #include <cmath>
+#include <algorithm>
 
 #include "eckit/testing/Test.h"
 

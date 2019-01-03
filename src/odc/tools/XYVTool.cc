@@ -8,10 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
+#include "odc/tools/XYVTool.h"
+
+#include <fstream>
+
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "odc/Select.h"
-#include "XYVTool.h"
 
 using namespace std;
 using namespace eckit;

@@ -15,6 +15,8 @@
 #ifndef odc_SQLTool_H
 #define odc_SQLTool_H
 
+#include <memory>
+
 #include "odc/tools/Tool.h"
 #include "eckit/sql/SQLOutputConfig.h"
 

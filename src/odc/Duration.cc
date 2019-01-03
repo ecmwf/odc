@@ -8,8 +8,9 @@
  * does it submit to any jurisdiction.
  */
 
-#include <locale>         // std::locale, std::isdigit
+#include <locale>
 #include <stdexcept>
+#include <sstream>
 
 #include "eckit/eckit.h"
 #include "odc/Duration.h"
