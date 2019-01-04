@@ -14,12 +14,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, September 2015
 
-#include <string>
+#include <cstring>
 #include <iostream>
-#include <vector>
 #include <math.h>
+#include <string>
+#include <vector>
 
-#include "odc/odc.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odc/odccapi.h"
 #include "odc/tools/odc_tools_c.h"

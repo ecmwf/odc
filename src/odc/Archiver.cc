@@ -15,7 +15,6 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/MultiHandle.h"
 
-#include "odc/odc.h"
 #include "odc/FileMapper.h"
 #include "odc/Odb2Hub.h"
 #include "odc/Archiver.h"

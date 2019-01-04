@@ -13,8 +13,6 @@
 ///
 /// @author Piotr Kuchta, September 2015
 
-#include "odc/odc.h"
-
 #include "odc/FastODA2Request.h"
 #include "odc/MetaData.h"
 #include "odc/ODAHandle.h"

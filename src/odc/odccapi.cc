@@ -13,8 +13,6 @@
 ///
 /// @author Piotr Kuchta, March 2009
 
-#include "odc/odc.h"
-
 #include "eckit/runtime/Main.h"
 
 #include "odc/FastODA2Request.h"

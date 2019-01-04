@@ -24,7 +24,6 @@
 #include "eckit/sql/SQLStatement.h"
 #include "eckit/types/Types.h"
 
-#include "odc/odc.h"
 #include "odc/sql/SQLOutputConfig.h"
 #include "odc/TODATable.h"
 #include "odc/tools/SQLTool.h"
