@@ -156,15 +156,11 @@ int valgrind(int argc, char *argv[])
 
 int sqlhelp(int argc, char *argv[])
 {
-    typedef eckit::sql::expression::function::FunctionFactory::FunctionInfo FI;
-    FI& fi = eckit::sql::expression::function::FunctionFactory::instance().functionsInfo();
-	for (FI::iterator i = fi.begin(); i != fi.end(); ++i)
-	{
-		if (i->first.first == "FunctionFactory")
-			continue;
+    auto info = eckit::sql::expression::function::FunctionFactory::instance().functionsInfo();
 
-		std::cout << i->first.first << "/" << i->first.second << " " << i->second << std::endl;
-	}
-	
+    for (auto& i : info) {
+        std::cout << i.name << "/" << i.arity << " " << i.help << std::endl;
+    }
+
 	return 0;
 }

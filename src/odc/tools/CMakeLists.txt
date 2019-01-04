@@ -80,7 +80,6 @@ TestMissingValue.cc
 TestOdaCAPI.cc
 TestOdaCAPI.h
 TestOrderBy.cc
-TestSQLFunctionsInfo.cc
 TestSelectDataHandle.cc
 TestSelectStarAt.cc
 TestSelectTwoFiles.cc
