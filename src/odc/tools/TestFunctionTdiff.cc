@@ -34,8 +34,8 @@ static void setUp()
 	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
-	row->setColumn(0, "date", odc::INTEGER);
-	row->setColumn(1, "time", odc::INTEGER);
+    row->setColumn(0, "date", odc::api::INTEGER);
+    row->setColumn(1, "time", odc::api::INTEGER);
 	
 	row->writeHeader();
 

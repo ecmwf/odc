@@ -12,7 +12,6 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
-#include "odc/ColumnType.h"
 #include "odc/Writer.h"
 #include "TestCase.h"
 
@@ -40,8 +39,8 @@ int test_odacapi_setup_in_C(int argc, char* argv[])
     ASSERT(wi);
 
     ASSERT(0 == odb_write_iterator_set_no_of_columns(wi, 2));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::INTEGER, "ifoo"));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::REAL, "nbar"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::api::INTEGER, "ifoo"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::api::REAL, "nbar"));
 
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
@@ -67,8 +66,8 @@ int test_odacapi_setup(int argc, char* argv[])
     odc::Writer<>::iterator writer = oda.begin();
     writer->setNumberOfColumns(2);
 
-    writer->setColumn(0, "ifoo", odc::INTEGER);
-    writer->setColumn(1, "nbar", odc::REAL);
+    writer->setColumn(0, "ifoo", odc::api::INTEGER);
+    writer->setColumn(1, "nbar", odc::api::REAL);
 
     writer->writeHeader();
 
@@ -215,8 +214,8 @@ int test_odacapi3(int argc, char* argv[])
     ASSERT(0 != wi);
 
     ASSERT(0 == odb_write_iterator_set_no_of_columns(wi, 2));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::INTEGER, "ifoo"));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::REAL, "nbar"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::api::INTEGER, "ifoo"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::api::REAL, "nbar"));
 
     ASSERT(0 == odb_write_iterator_write_header(wi));
 

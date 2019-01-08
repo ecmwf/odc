@@ -40,7 +40,7 @@ namespace {
 
     class MockReadIterator {
     public:
-        MockReadIterator(odc::ColumnType type, double data) :
+        MockReadIterator(odc::api::ColumnType type, double data) :
             columns_(1),
             type_(type),
             data_(data),
@@ -69,7 +69,7 @@ namespace {
 
     protected:
         odc::MetaData columns_;
-        odc::ColumnType type_;
+        odc::api::ColumnType type_;
         double data_;
         int nRows_;
 
@@ -85,7 +85,7 @@ namespace {
     const long the_const_value = 20090624;
 
     struct MockReadIteratorConstInt : public MockReadIterator {
-        MockReadIteratorConstInt() : MockReadIterator(odc::INTEGER, the_const_value) {
+        MockReadIteratorConstInt() : MockReadIterator(odc::api::INTEGER, the_const_value) {
             columns_[0]->coder(new odc::codec::CodecInt32<odc::SameByteOrder>);
         }
     };
@@ -95,7 +95,7 @@ namespace {
     const char* const_string_1 = "a-string";
 
     struct MockReadIteratorConstString1 : public MockReadIterator {
-        MockReadIteratorConstString1() : MockReadIterator(odc::STRING, *reinterpret_cast<const double*>(const_string_1)) {
+        MockReadIteratorConstString1() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_1)) {
             columns_[0]->coder(new odc::codec::CodecChars<odc::SameByteOrder>);
         }
     };
@@ -105,7 +105,7 @@ namespace {
     const char* const_string_2 = "pies\0\0\0\0";
 
     struct MockReadIteratorConstString2 : public MockReadIterator {
-        MockReadIteratorConstString2() : MockReadIterator(odc::STRING, *reinterpret_cast<const double*>(const_string_2)) {
+        MockReadIteratorConstString2() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_2)) {
             columns_[0]->coder(new odc::codec::CodecChars<odc::SameByteOrder>);
         }
     };
@@ -151,7 +151,7 @@ CASE("The constant integer codec stores a constant integer") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant");
-        EXPECT(it->columns()[0]->type() == odc::INTEGER);
+        EXPECT(it->columns()[0]->type() == odc::api::INTEGER);
     }
 }
 
@@ -195,7 +195,7 @@ CASE("The constant codec can also store strings") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant_string");
-        EXPECT(it->columns()[0]->type() == odc::STRING);
+        EXPECT(it->columns()[0]->type() == odc::api::STRING);
     }
 }
 
@@ -239,7 +239,7 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
 
         // Check that this has used the constant codec.
         EXPECT(it->columns()[0]->coder().name() == "constant_string");
-        EXPECT(it->columns()[0]->type() == odc::STRING);
+        EXPECT(it->columns()[0]->type() == odc::api::STRING);
     }
 }
 
@@ -250,11 +250,11 @@ CASE("The constant codec can also store doubles") {
 
     // Don't use the pass1 mechanism here. Build a writer explicitly to show that we can
 
-    odc::ColumnType types[] = { odc::REAL, odc::DOUBLE };
+    odc::api::ColumnType types[] = { odc::api::REAL, odc::api::DOUBLE };
 
     for (size_t i = 0; i < 2; i++) {
 
-        odc::ColumnType type = types[i];
+        odc::api::ColumnType type = types[i];
 
         // Construct the encoded stuff
 

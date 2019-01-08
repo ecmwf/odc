@@ -15,6 +15,7 @@
 #include "odc/Column.h"
 
 using namespace eckit;
+using namespace odc::api;
 
 namespace odc {
 
@@ -47,7 +48,7 @@ Column& Column::operator=(const Column& other)
 	name(other.name()); 
 
 	type<DataStream<SameByteOrder, DataHandle> >(other.type(), false);
-	if (type_ == BITFIELD)
+    if (type_ == BITFIELD)
 		bitfieldDef(other.bitfieldDef());
 
 	//delete coder_;
@@ -59,7 +60,7 @@ Column& Column::operator=(const Column& other)
 
 const char *Column::columnTypeName(ColumnType type)
 {
-	switch(type) {
+    switch(type) {
 		case IGNORE:   return "IGNORE";
 		case INTEGER:  return "INTEGER";
 		case REAL:     return "REAL";
@@ -106,7 +107,7 @@ bool Column::operator==(const Column& other) const
 void Column::print(std::ostream& s) const
 {
 	s << "name: " << name_ << ", ";
-	s << "type: " << columnTypeName(odc::ColumnType(type_));
+    s << "type: " << columnTypeName(ColumnType(type_));
 
 	if (type_ == BITFIELD)
 	{

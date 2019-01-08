@@ -159,11 +159,11 @@ TEST(c_api_example_write_data)
     oda_writer* writer = odb_writer_create("", &err);
     oda_write_iterator* wi = odb_create_write_iterator(writer, "c_api_example_write_data.odb", &err);
     ASSERT(0 == odb_write_iterator_set_no_of_columns(wi, 4));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::INTEGER, "x"));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::REAL, "y"));
-    ASSERT(0 == odb_write_iterator_set_column(wi, 2, odc::DOUBLE, "v"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::api::INTEGER, "x"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 1, odc::api::REAL, "y"));
+    ASSERT(0 == odb_write_iterator_set_column(wi, 2, odc::api::DOUBLE, "v"));
     // Define three fields: a (1 bit only), b (2 bits), c (1 bit)
-    ASSERT(0 == odb_write_iterator_set_bitfield(wi, 3, odc::BITFIELD, "bf", "a:b:c", "1:2:1"));
+    ASSERT(0 == odb_write_iterator_set_bitfield(wi, 3, odc::api::BITFIELD, "bf", "a:b:c", "1:2:1"));
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
     double data[4];

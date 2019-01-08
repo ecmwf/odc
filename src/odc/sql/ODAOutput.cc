@@ -11,7 +11,7 @@
 #include "eckit/sql/expression/SQLExpressions.h"
 #include "eckit/sql/SQLSelect.h"
 
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 #include "odc/DispatchingWriter.h"
 #include "odc/LibOdc.h"
 #include "odc/sql/ODAOutput.h"
@@ -20,6 +20,7 @@
 
 using namespace eckit;
 using namespace eckit::sql;
+using namespace odc::api;
 
 namespace odc {
 namespace sql {
@@ -98,7 +99,7 @@ void ODAOutput<WRITER>::prepare(SQLSelect& sql)
         for (size_t i = 0; i < columns.size(); i++) {
 
             SQLExpression& c(*columns[i]);
-            ColumnType typ = sqlToOdbType(*c.type());
+            api::ColumnType typ = sqlToOdbType(*c.type());
 
             if (typ == BITFIELD) {
                 (**it_).setBitfieldColumn(i, c.title(), typ, c.bitfieldDef());

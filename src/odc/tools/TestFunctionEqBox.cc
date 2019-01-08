@@ -36,8 +36,8 @@ static void setUp()
 	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(2);
 
-	row->setColumn(0, "lat", odc::REAL);
-	row->setColumn(1, "lon", odc::REAL);
+    row->setColumn(0, "lat", odc::api::REAL);
+    row->setColumn(1, "lon", odc::api::REAL);
 	
 	row->writeHeader();
 

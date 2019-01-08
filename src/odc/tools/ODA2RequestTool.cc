@@ -167,9 +167,9 @@ void ODA2RequestTool::gatherStats(const PathName& inputFile)
 	for (odc::Select::iterator row = oda.begin(); row != end; ++row) 
 		for (size_t i = 0; i < n; ++i)
 		{
-			odc::ColumnType type = row->columns()[i]->type();
-			Value v = type == odc::STRING ? (*row).string(i)
-					: type == odc::INTEGER ? int_as_double2string((*row)[i])
+            odc::api::ColumnType type = row->columns()[i]->type();
+            Value v = type == odc::api::STRING ? (*row).string(i)
+                    : type == odc::api::INTEGER ? int_as_double2string((*row)[i])
 					: double2string((*row)[i]);
 			values_[i].insert(v);
 		}

@@ -30,9 +30,9 @@ static void setUp()
 	odc::Writer<>::iterator it = f.begin();
 
     it->setNumberOfColumns(4);
-    it->setColumn(0, "lat@hdr", odc::REAL);
-	it->setColumn(1, "lon@hdr", odc::REAL);
-	it->setColumn(2, "obsvalue", odc::REAL);
+    it->setColumn(0, "lat@hdr", odc::api::REAL);
+    it->setColumn(1, "lon@hdr", odc::api::REAL);
+    it->setColumn(2, "obsvalue", odc::api::REAL);
 
     eckit::sql::BitfieldDef bfDef;
 	bfDef.first.push_back("x");
@@ -40,7 +40,7 @@ static void setUp()
 	bfDef.first.push_back("y");
 	bfDef.second.push_back(2);
 
-	it->setBitfieldColumn(3, "bf", odc::BITFIELD, bfDef);
+    it->setBitfieldColumn(3, "bf", odc::api::BITFIELD, bfDef);
 
 	it->writeHeader();
 

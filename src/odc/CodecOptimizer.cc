@@ -25,11 +25,11 @@ namespace codec {
 CodecOptimizer::CodecOptimizer()
 : defaultCodec_()
 {
-    defaultCodec_[REAL] = "short_real2";
-	defaultCodec_[DOUBLE] = "long_real";
-	defaultCodec_[STRING] = "chars";
-	defaultCodec_[INTEGER] = "int32";
-	defaultCodec_[BITFIELD] = "int32";
+    defaultCodec_[api::REAL] = "short_real2";
+    defaultCodec_[api::DOUBLE] = "long_real";
+    defaultCodec_[api::STRING] = "chars";
+    defaultCodec_[api::INTEGER] = "int32";
+    defaultCodec_[api::BITFIELD] = "int32";
 
     typedef eckit::StringTools S;
     std::vector<std::string> mappings (S::split(",", eckit::Resource<std::string>("$ODB_DEFAULT_CODEC", "")));

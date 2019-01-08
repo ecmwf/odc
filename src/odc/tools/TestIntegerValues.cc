@@ -63,15 +63,15 @@ static void test()
 			double nr = ((*it)[i]);
 			switch(it->columns()[i]->type())
 			{
-			case odc::INTEGER:
-			case odc::BITFIELD:
+            case odc::api::INTEGER:
+            case odc::api::BITFIELD:
 				std::cout <<  static_cast<int>(nr) << " ";
 				//cout <<  "* should be: " << it->integer(i) << " ";
 				break;
-			case odc::REAL:
+            case odc::api::REAL:
 				std::cout <<  nr << " ";
 				break;
-			case odc::IGNORE:
+            case odc::api::IGNORE:
 			default:
 				ASSERT("Unknown type" && false);
 				break;

@@ -34,6 +34,14 @@ size_t Table::numColumns() const {
     return impl_->numColumns();
 }
 
+const std::string& Table::columnName(int col) const {
+    return impl_->columnName(col);
+}
+
+ColumnType Table::columnType(int col) const {
+    return impl_->columnType(col);
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 // Implementation definition
@@ -50,6 +58,16 @@ size_t TableImpl::numRows() const {
 
 size_t TableImpl::numColumns() const {
     return internal_.numColumns();
+}
+
+const std::string& TableImpl::columnName(int col) const {
+    ASSERT(col > 0 && col < internal_.numColumns());
+    return internal_.columns()[col]->name();
+}
+
+ColumnType TableImpl::columnType(int col) const {
+    ASSERT(col > 0 && col < internal_.numColumns());
+    return internal_.columns()[col]->type();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

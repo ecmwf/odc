@@ -16,7 +16,7 @@
 #define odc_SelectIterator_H
 
 #include "eckit/sql/expression/SQLExpressions.h"
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 #include "odc/sql/SQLSelectOutput.h"
 #include "eckit/sql/SQLSession.h"
 
@@ -59,9 +59,9 @@ public:
     const std::map<std::string, std::string>& properties() const { NOTIMP; }
 
     int close() { NOTIMP; }
-    int setColumn(size_t index, std::string name, ColumnType type) { NOTIMP; }
+    int setColumn(size_t index, std::string name, api::ColumnType type) { NOTIMP; }
 	void writeHeader() { NOTIMP; }
-    int setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b) { NOTIMP; }
+    int setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b) { NOTIMP; }
 	void missingValue(size_t, double) { NOTIMP; }
 	
     /// Set an output buffer for retrieving the next row(s)

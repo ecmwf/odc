@@ -16,8 +16,7 @@
 #define StringTool_H
 
 #include "eckit/eckit.h"
-//#include "odc/ColumnType.h"
-#include "ColumnType.h"
+#include "odc/api/ColumnType.h"
 
 
 namespace eckit { class PathName; class CodeLocation; }
@@ -51,7 +50,7 @@ public:
     static int shell(std::string cmd, const eckit::CodeLocation &where, bool assertSuccess = true);
 
 	static double translate(const std::string& v);
-	static std::string valueAsString(double, ColumnType);
+    static std::string valueAsString(double, api::ColumnType);
 
 	static std::string patchTimeForMars(const std::string& v);
 

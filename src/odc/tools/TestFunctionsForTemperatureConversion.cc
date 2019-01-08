@@ -32,9 +32,9 @@ static void setUp()
 	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(3);
 
-	row->setColumn(0, "kelvin_col", odc::REAL);
-	row->setColumn(1, "celsius_col", odc::REAL);
-	row->setColumn(2, "fahrenheit_col", odc::REAL);
+    row->setColumn(0, "kelvin_col", odc::api::REAL);
+    row->setColumn(1, "celsius_col", odc::api::REAL);
+    row->setColumn(2, "fahrenheit_col", odc::api::REAL);
 	
 	row->writeHeader();
 

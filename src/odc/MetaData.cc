@@ -15,6 +15,7 @@
 #include "odc/CodecOptimizer.h"
 
 using namespace eckit;
+using namespace odc::api;
 
 namespace odc {
 
@@ -30,26 +31,26 @@ MetaData::MetaData(const MetaData& md) :
     *this += md;
 }
 
-odc::ColumnType MetaData::convertType(const std::string& t)
+ColumnType MetaData::convertType(const std::string& t)
 {
     std::string type(t);
     std::transform(type.begin(), type.end(), type.begin(), ::toupper);
 
-    if      (type == "INTEGER")  return odc::INTEGER;
-    else if (type == "YYYYMMDD") return odc::INTEGER;
-    else if (type == "HHMMSS")   return odc::INTEGER;
-    else if (type == "PK1INT")   return odc::INTEGER;
-    else if (type == "PK9INT")   return odc::INTEGER;
-    else if (type == "@LINK")    return odc::INTEGER;
-    else if (type == "REAL")     return odc::REAL;
-    else if (type == "FLOAT")    return odc::REAL;
-    else if (type == "DOUBLE")   return odc::DOUBLE;
-    else if (type == "PK9REAL")  return odc::DOUBLE;
-    else if (type == "STRING")   return odc::STRING;
-    else if (type.find("BITFIELD") != std::string::npos) return odc::BITFIELD;
+    if      (type == "INTEGER")  return INTEGER;
+    else if (type == "YYYYMMDD") return INTEGER;
+    else if (type == "HHMMSS")   return INTEGER;
+    else if (type == "PK1INT")   return INTEGER;
+    else if (type == "PK9INT")   return INTEGER;
+    else if (type == "@LINK")    return INTEGER;
+    else if (type == "REAL")     return REAL;
+    else if (type == "FLOAT")    return REAL;
+    else if (type == "DOUBLE")   return DOUBLE;
+    else if (type == "PK9REAL")  return DOUBLE;
+    else if (type == "STRING")   return STRING;
+    else if (type.find("BITFIELD") != std::string::npos) return BITFIELD;
     else throw eckit::UserError("Unsupported column type: " + type);
 
-    return odc::IGNORE; // never reached
+    return IGNORE; // never reached
 }
 
 MetaData* MetaData::clone() const {

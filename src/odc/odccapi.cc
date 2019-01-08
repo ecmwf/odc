@@ -28,6 +28,7 @@
 
 using namespace eckit;
 using namespace odc;
+using namespace odc::api;
 
 char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };
 

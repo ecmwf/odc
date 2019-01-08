@@ -23,7 +23,7 @@
 #include "eckit/types/Types.h"
 
 #include "odc/csv/TextReader.h"
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 
 using namespace eckit;
 
@@ -212,11 +212,11 @@ bool TextReaderIterator::next()
         if (S::upper(v) == "NULL") {
             lastValues_[columnOffsets_[i]] = columns_[i]->missingValue();
         } else  {
-            odc::ColumnType typ ( columns()[i]->type() );
+            api::ColumnType typ ( columns()[i]->type() );
 
             switch (typ) {
 
-            case odc::STRING: {
+            case api::STRING: {
                 std::string unquoted = S::unQuote(v);
                 size_t charlen = unquoted.length();
                 size_t lenDoubles = charlen > 0 ? (((charlen - 1) / 8) + 1): 1;
@@ -246,16 +246,16 @@ bool TextReaderIterator::next()
                 break;
             }
 
-            case odc::REAL:
+            case api::REAL:
                 lastValues_[columnOffsets_[i]] = static_cast<double>(Translator<std::string, float>()(v));
                 break;
 
-            case odc::DOUBLE:
+            case api::DOUBLE:
                 lastValues_[columnOffsets_[i]] = Translator<std::string, double>()(v);
                 break;
 
-            case odc::INTEGER:
-            case odc::BITFIELD:
+            case api::INTEGER:
+            case api::BITFIELD:
                 lastValues_[columnOffsets_[i]] = static_cast<double>(Translator<std::string, long>()(v));
                 break;
 

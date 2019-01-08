@@ -271,7 +271,7 @@ std::string ReaderIterator::property(std::string key)
 }
 
 
-ColumnType ReaderIterator::columnType(unsigned long index) { return columns_[index]->type(); }
+api::ColumnType ReaderIterator::columnType(unsigned long index) { return columns_[index]->type(); }
 const std::string& ReaderIterator::columnName(unsigned long index) const { return columns_[index]->name(); }
 const std::string& ReaderIterator::codecName(unsigned long index) const { return columns_[index]->coder().name(); }
 double ReaderIterator::columnMissingValue(unsigned long index) { return columns_[index]->missingValue(); }

@@ -161,8 +161,8 @@ bool FastODA2Request<T>::collectValues(const MetaData& md, ODAHandle& odaHandle)
 		Column* column = md.hasColumn(columnName) ? md.columnByName(columnName) : 0;
 		std::string v = ! column ? columnNotFound(columnName)
 				: ! column->isConstant() ? columnIsNotConstant(*column)
-				: column->type() == odc::STRING ? StringTool::double_as_string(column->min())
-				: column->type() == odc::INTEGER ? StringTool::int_as_double2string(column->min())
+                : column->type() == odc::api::STRING ? StringTool::double_as_string(column->min())
+                : column->type() == odc::api::INTEGER ? StringTool::int_as_double2string(column->min())
 				: eckit::Translator<double, std::string>()(column->min());
 		values_[i].insert(v);
 		currentValues.push_back(v);

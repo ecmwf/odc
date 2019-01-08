@@ -33,9 +33,9 @@ Length createFile(const std::string& fileName, unsigned int andate, unsigned int
 		odc::Writer<> oda(fileName);
 		odc::Writer<>::iterator row = oda.begin();
 		row->setNumberOfColumns(3);
-		row->setColumn(0, "antime", odc::INTEGER);
-		row->setColumn(1, "andate", odc::INTEGER);
-		row->setColumn(2, "reportype", odc::INTEGER);
+        row->setColumn(0, "antime", odc::api::INTEGER);
+        row->setColumn(1, "andate", odc::api::INTEGER);
+        row->setColumn(2, "reportype", odc::api::INTEGER);
 		row->writeHeader();
 		for (size_t i = 0; i < 1; ++i, ++row)
 		{

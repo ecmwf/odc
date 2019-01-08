@@ -34,7 +34,7 @@ static void setUp()
 
     it->setNumberOfColumns(2);
 
-	it->setColumn(0, "lat@hdr", odc::REAL);
+    it->setColumn(0, "lat@hdr", odc::api::REAL);
 	it->missingValue(0, 1);
 
     eckit::sql::BitfieldDef bfDef;
@@ -43,7 +43,7 @@ static void setUp()
 	bfDef.first.push_back("y");
 	bfDef.second.push_back(2);
 
-	it->setBitfieldColumn(1, "bf", odc::BITFIELD, bfDef);
+    it->setBitfieldColumn(1, "bf", odc::api::BITFIELD, bfDef);
 
 	it->writeHeader();
 

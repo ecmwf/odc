@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 #include "odc/FixedSizeWriterIterator.h"
 
 using namespace eckit;

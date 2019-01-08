@@ -69,7 +69,7 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
 
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, ColumnType type)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, api::ColumnType type)
 {
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
@@ -81,7 +81,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b)
 {
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
@@ -108,7 +108,7 @@ std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(c
         // code updated for std::string [19/07/2011] AF
         double d (values[p.columnIndex]);
         std::string s;
-        if ( columns_[p.columnIndex]->type() == odc::STRING)
+        if ( columns_[p.columnIndex]->type() == api::STRING)
         {
             char* sp (reinterpret_cast<char *>(&d));
             size_t len (0);
@@ -355,7 +355,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::open() { return 0; }
 
 /* * /
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, ColumnType type)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, api::ColumnType type)
 {
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
@@ -376,7 +376,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 }
 
 template <typename WRITE_ITERATOR, typename OWNER>
-int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b)
+int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b)
 {
     //eckit::Log::info() << "WriterDispatchingIterator::setBitfieldColumn: " << std::endl;
 

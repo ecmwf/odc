@@ -15,6 +15,7 @@
 
 #include "odc/api/Odb.h"
 #include "odc/api/Table.h"
+#include "odc/api/ColumnType.h"
 
 using namespace odc::api;
 
@@ -30,6 +31,21 @@ struct odb_t {
 struct odb_table_t {
     odb_table_t(const Table& t) : internal(t) {}
     const Table internal;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Types for lookup
+
+const int ODC_NUM_TYPES = NUM_TYPES;
+
+const char* ODC_TYPE_NAMES[] = {
+    OdbTypes<ColumnType(0)>::name,
+    OdbTypes<ColumnType(1)>::name,
+    OdbTypes<ColumnType(2)>::name,
+    OdbTypes<ColumnType(3)>::name,
+    OdbTypes<ColumnType(4)>::name,
+    OdbTypes<ColumnType(5)>::name
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -94,6 +110,16 @@ int odc_table_num_rows(struct odb_table_t* t) {
 int odc_table_num_columns(struct odb_table_t* t) {
     ASSERT(t);
     return t->internal.numColumns();
+}
+
+int odb_table_column_type(struct odb_table_t* t, int col) {
+    ASSERT(t);
+    return t->internal.columnType(col);
+}
+
+const char* odb_table_column_name(struct odb_table_t* t, int col) {
+    ASSERT(t);
+    return t->internal.columnName(col).c_str();
 }
 
 

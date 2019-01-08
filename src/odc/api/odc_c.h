@@ -26,6 +26,11 @@ struct odb_table_t;
 
 void odc_initialise_api();
 
+/* Constants and lookups */
+
+extern const int ODC_NUM_TYPES;
+extern const char* ODC_TYPE_NAMES[];
+
 /* Basic READ object API */
 
 struct odb_t* odc_open_for_read(const char* filename);
@@ -39,7 +44,9 @@ int odc_num_tables(struct odb_t* o);
 struct odb_table_t* odc_get_table(struct odb_t* o, int n);
 void odc_free_table(struct odb_table_t* o);
 
-int odc_table_num_rows(struct odb_table_t*);
-int odc_table_num_columns(struct odb_table_t*);
+int odc_table_num_rows(struct odb_table_t* t);
+int odc_table_num_columns(struct odb_table_t* t);
+int odb_table_column_type(struct odb_table_t* t, int col);
+const char* odb_table_column_name(struct odb_table_t* t, int col);
 
 /*---------------------------------------------------------------------------------------------------------------------*/

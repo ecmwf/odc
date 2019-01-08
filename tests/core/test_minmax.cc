@@ -37,8 +37,8 @@ CASE("Test reading min, max and intermediate values") {
                 odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(2);
-                writer->setColumn(0, "intcol", odc::INTEGER);
-                writer->setColumn(1, "realcol", odc::REAL);
+                writer->setColumn(0, "intcol", odc::api::INTEGER);
+                writer->setColumn(1, "realcol", odc::api::REAL);
                 writer->writeHeader();
 
                 (*writer)[0] = std::numeric_limits<int32_t>::min();

@@ -31,7 +31,7 @@ static void setUp()
 	odc::Writer<>::iterator row = oda.begin();
 	row->setNumberOfColumns(1);
 
-	row->setColumn(0, "obsvalue", odc::REAL);
+    row->setColumn(0, "obsvalue", odc::api::REAL);
 	
 	row->writeHeader();
 

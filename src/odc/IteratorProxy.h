@@ -22,7 +22,7 @@
 #ifndef odc_IteratorProxy_H
 #define odc_IteratorProxy_H
 
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 #include "odc/SelectIterator.h"
 #include "eckit/sql/SQLTypedefs.h"
 
@@ -100,10 +100,10 @@ public:
     bool isMissing(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data(i); }
 	double missingValue(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue(); }
 
-	int setColumn(size_t index, const std::string& name, ColumnType type)
+    int setColumn(size_t index, const std::string& name, api::ColumnType type)
 	{ return (*((*it_).iter_)).setColumn(index, name, type); }
 
-    int setBitfieldColumn(size_t index, const std::string& name, ColumnType type, eckit::sql::BitfieldDef b)
+    int setBitfieldColumn(size_t index, const std::string& name, api::ColumnType type, eckit::sql::BitfieldDef b)
 	{ return ((*it_).iter_)->setBitfieldColumn(index, name, type, b); }
 
 	void missingValue(size_t index, double v) { ((*it_).iter_)->missingValue(index, v); }

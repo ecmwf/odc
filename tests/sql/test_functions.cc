@@ -35,8 +35,8 @@ CASE("Various distance measuring functions return sensible things") {
 
         row->setNumberOfColumns(2);
 
-        row->setColumn(0, "lat", odc::REAL);
-        row->setColumn(1, "lon", odc::REAL);
+        row->setColumn(0, "lat", odc::api::REAL);
+        row->setColumn(1, "lon", odc::api::REAL);
 
         row->writeHeader();
 
@@ -179,8 +179,8 @@ CASE("Inside or outside detection works for circles") {
         odc::Writer<>::iterator row = oda.begin();
 
         row->setNumberOfColumns(2);
-        row->setColumn(0, "x", odc::REAL);
-        row->setColumn(1, "y", odc::REAL);
+        row->setColumn(0, "x", odc::api::REAL);
+        row->setColumn(1, "y", odc::api::REAL);
         row->writeHeader();
 
         (*row)[0] = 45.0;
@@ -263,8 +263,8 @@ CASE("Norms are correctly calculated") {
         odc::Writer<>::iterator row = oda.begin();
 
         row->setNumberOfColumns(2);
-        row->setColumn(0, "x", odc::REAL);
-        row->setColumn(1, "y", odc::REAL);
+        row->setColumn(0, "x", odc::api::REAL);
+        row->setColumn(1, "y", odc::api::REAL);
         row->writeHeader();
 
         (*row)[0] = 3.0;

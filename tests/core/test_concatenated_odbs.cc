@@ -39,9 +39,9 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(3);
-                writer->setColumn(0, "x", odc::REAL);
-                writer->setColumn(1, "y", odc::REAL);
-                writer->setColumn(2, "z", odc::INTEGER);
+                writer->setColumn(0, "x", odc::api::REAL);
+                writer->setColumn(1, "y", odc::api::REAL);
+                writer->setColumn(2, "z", odc::api::INTEGER);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -62,9 +62,9 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(3);
-                writer->setColumn(0, "x", odc::REAL);
-                writer->setColumn(1, "y", odc::INTEGER);
-                writer->setColumn(2, "v", odc::REAL);
+                writer->setColumn(0, "x", odc::api::REAL);
+                writer->setColumn(1, "y", odc::api::INTEGER);
+                writer->setColumn(2, "v", odc::api::REAL);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -85,10 +85,10 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(4);
-                writer->setColumn(0, "x", odc::INTEGER);
-                writer->setColumn(1, "v", odc::REAL);
-                writer->setColumn(2, "y", odc::REAL);
-                writer->setColumn(3, "z", odc::REAL);
+                writer->setColumn(0, "x", odc::api::INTEGER);
+                writer->setColumn(1, "v", odc::api::REAL);
+                writer->setColumn(2, "y", odc::api::REAL);
+                writer->setColumn(3, "z", odc::api::REAL);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -110,8 +110,8 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 odc::Writer<>::iterator writer = oda.begin();
 
                 writer->setNumberOfColumns(2);
-                writer->setColumn(0, "x", odc::REAL);
-                writer->setColumn(1, "v", odc::REAL);
+                writer->setColumn(0, "x", odc::api::REAL);
+                writer->setColumn(1, "v", odc::api::REAL);
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
@@ -240,9 +240,9 @@ CASE("If corrupt data follows a valid ODB this should not be treated as a new OD
         odc::Writer<>::iterator writer = oda.begin();
 
         writer->setNumberOfColumns(3);
-        writer->setColumn(0, "x", odc::REAL);
-        writer->setColumn(1, "y", odc::REAL);
-        writer->setColumn(2, "z", odc::INTEGER);
+        writer->setColumn(0, "x", odc::api::REAL);
+        writer->setColumn(1, "y", odc::api::REAL);
+        writer->setColumn(2, "z", odc::api::INTEGER);
         writer->writeHeader();
 
         for (size_t i = 1; i <= 2; i++) {
@@ -296,9 +296,9 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
         odc::Writer<>::iterator writer = oda.begin();
 
         writer->setNumberOfColumns(3);
-        writer->setColumn(0, "x", odc::REAL);
-        writer->setColumn(1, "y", odc::REAL);
-        writer->setColumn(2, "z", odc::INTEGER);
+        writer->setColumn(0, "x", odc::api::REAL);
+        writer->setColumn(1, "y", odc::api::REAL);
+        writer->setColumn(2, "z", odc::api::INTEGER);
         writer->writeHeader();
 
         for (size_t i = 1; i <= 2; i++) {

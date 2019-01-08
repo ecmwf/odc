@@ -35,6 +35,9 @@ public: // methods
     size_t numRows() const;
     size_t numColumns() const;
 
+    const std::string& columnName(int col) const;
+    ColumnType columnType(int col) const;
+
 private: // members
 
     core::Table internal_;

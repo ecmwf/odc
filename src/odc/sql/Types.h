@@ -14,7 +14,7 @@
 #ifndef odc_sql_Types_H
 #define odc_sql_Types_H
 
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 
 namespace eckit { namespace sql { namespace type { class SQLType; }}}
 
@@ -23,7 +23,7 @@ namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-odc::ColumnType sqlToOdbType(const eckit::sql::type::SQLType& t);
+odc::api::ColumnType sqlToOdbType(const eckit::sql::type::SQLType& t);
 
 //----------------------------------------------------------------------------------------------------------------------
 

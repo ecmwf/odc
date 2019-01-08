@@ -24,6 +24,7 @@
 inline size_t MEGA(size_t n) { return n*1024*1204; }
 
 using namespace eckit;
+using namespace odc::api;
 
 namespace odc {
 
@@ -252,7 +253,7 @@ int WriterBufferingIterator::open()
 }
 
 
-int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnType type)
+int WriterBufferingIterator::setColumn(size_t index, std::string name, api::ColumnType type)
 {
 	//Log::debug() << "WriterBufferingIterator::setColumn: " << std::endl;
 	ASSERT(index < columns().size());
@@ -275,7 +276,7 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, ColumnTyp
 	return 0;
 }
 
-int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b)
+int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b)
 {
 	//Log::debug() << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
 	ASSERT(index < columns().size());

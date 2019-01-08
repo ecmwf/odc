@@ -43,7 +43,7 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 	{
 		stringstream name;
 		name << "Column" << i;
-		row->setColumn(i, name.str().c_str(), odc::REAL);
+        row->setColumn(i, name.str().c_str(), odc::api::REAL);
 	}
 	row->writeHeader();
 

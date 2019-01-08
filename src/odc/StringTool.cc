@@ -156,8 +156,9 @@ ostream& operator<<(std::ostream& s, const std::vector<std::string>& st)
 }
 
 
-std::string StringTool::valueAsString(double d, ColumnType t)
+std::string StringTool::valueAsString(double d, api::ColumnType t)
 {
+    using namespace api;
 	stringstream s;
 	switch (t) {
 	case INTEGER: return int_as_double2string(d);

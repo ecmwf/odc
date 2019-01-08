@@ -62,7 +62,7 @@ using namespace eckit;
 
 %include "odc/Select.h"
 
-%include "odc/ColumnType.h"
+%include "odc/api/ColumnType.h"
 %include "eckit/sql/SQLTypedefs.h"
 #include "odc/StringTool.h"
 #include "odc/DataStream.h"

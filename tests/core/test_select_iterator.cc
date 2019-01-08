@@ -41,9 +41,9 @@ SETUP("An odb file containing some pre-prepared data") {
             odc::Writer<>::iterator writer = oda.begin();
 
             writer->setNumberOfColumns(3);
-            writer->setColumn(0, "ifoo", odc::INTEGER);
-            writer->setColumn(1, "nbar", odc::REAL);
-            writer->setColumn(2, "string", odc::STRING);
+            writer->setColumn(0, "ifoo", odc::api::INTEGER);
+            writer->setColumn(1, "nbar", odc::api::REAL);
+            writer->setColumn(2, "string", odc::api::STRING);
             writer->writeHeader();
 
             for (size_t i = 1; i <= 10; i++) {
@@ -193,7 +193,7 @@ CASE("Test bugfix 02, quote <<UnitTest problem fixed with p4 change 23687>>") {
             odc::Writer<>::iterator writer = oda.begin();
 
             writer->setNumberOfColumns(1);
-            writer->setColumn(0, "value", odc::INTEGER);
+            writer->setColumn(0, "value", odc::api::INTEGER);
             writer->writeHeader();
 
             for (size_t i = 0; i < values.size(); ++i) {

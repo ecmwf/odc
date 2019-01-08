@@ -18,6 +18,7 @@ api/Odb.cc
 api/Table.h
 api/TableImpl.h
 api/Table.cc
+api/ColumnType.h
 
 ####odbql.cc
 ####odbql.h
@@ -36,7 +37,6 @@ CodecOptimizer.cc
 CodecOptimizer.h
 Column.cc
 Column.h
-ColumnType.h
 CommandLineParser.cc
 CommandLineParser.h
 Comparator.cc

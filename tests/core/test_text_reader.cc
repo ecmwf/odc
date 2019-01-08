@@ -56,11 +56,11 @@ CASE("Read columnar data from CSV") {
     EXPECT(it->columns()[3]->name() == "col4");
     EXPECT(it->columns()[4]->name() == "col5");
 
-    EXPECT(it->columns()[0]->type() == odc::INTEGER);
-    EXPECT(it->columns()[1]->type() == odc::REAL);
-    EXPECT(it->columns()[2]->type() == odc::DOUBLE);
-    EXPECT(it->columns()[3]->type() == odc::STRING);
-    EXPECT(it->columns()[4]->type() == odc::BITFIELD);
+    EXPECT(it->columns()[0]->type() == odc::api::INTEGER);
+    EXPECT(it->columns()[1]->type() == odc::api::REAL);
+    EXPECT(it->columns()[2]->type() == odc::api::DOUBLE);
+    EXPECT(it->columns()[3]->type() == odc::api::STRING);
+    EXPECT(it->columns()[4]->type() == odc::api::BITFIELD);
 
     size_t count = 0;
     for (; it != reader.end(); ++it) {
@@ -101,7 +101,7 @@ CASE("Starting with long strings") {
 
     EXPECT(it->columns().size() == 1);
     EXPECT(it->columns()[0]->name() == "col4");
-    EXPECT(it->columns()[0]->type() == odc::STRING);
+    EXPECT(it->columns()[0]->type() == odc::api::STRING);
 
     size_t count = 0;
     for (; it != reader.end(); ++it) {

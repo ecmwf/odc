@@ -24,6 +24,7 @@
 
 using namespace std;
 using namespace eckit;
+using namespace odc::api;
 
 class ValuesDifferent : public Exception {
 public:

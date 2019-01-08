@@ -70,7 +70,7 @@ public:
 	Column* columnByName(const std::string&) const;
 	size_t columnIndex(const std::string&) const;
 
-    static odc::ColumnType convertType(const std::string&);
+    static api::ColumnType convertType(const std::string&);
 #ifdef SWIGPYTHON
 	std::string __str__()
 	{
@@ -147,7 +147,7 @@ MetaData& MetaData::addBitfieldPrivate(const std::string& name, const eckit::sql
 	Column* c = new Column(*this);
 	ASSERT(c);
 	c->name(name);
-	c->type<DATASTREAM>(BITFIELD, false);
+    c->type<DATASTREAM>(api::BITFIELD, false);
 	c->bitfieldDef(bd);
 	push_back(c);
 

@@ -21,7 +21,7 @@
 
 #include "eckit/sql/SQLTypedefs.h"
 
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 #include "odc/TemplateParameters.h"
 #include "odc/Writer.h"
 
@@ -47,8 +47,8 @@ public:
 	double* data();
     double& data(size_t i);
 
-	int setColumn(size_t index, std::string name, ColumnType type);
-    int setBitfieldColumn(size_t index, std::string name, ColumnType type, eckit::sql::BitfieldDef b);
+    int setColumn(size_t index, std::string name, api::ColumnType type);
+    int setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b);
 
 	void missingValue(size_t i, double); 
 
@@ -58,7 +58,7 @@ public:
 
 	int close();
 
-	ColumnType columnType(size_t index);
+    api::ColumnType columnType(size_t index);
     const std::string& columnName(size_t index) const;
     const std::string& codecName(size_t index) const;
 	double columnMissingValue(size_t index);

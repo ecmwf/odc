@@ -12,7 +12,7 @@
 #define Column_H
 
 #include "odc/Codec.h"
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 #include "eckit/sql/SQLTypedefs.h"
 
 namespace eckit { class DataHandle; }
@@ -28,9 +28,9 @@ public:
 	Column(MetaData &);
 	Column(const Column&);
 
-	static const char *columnTypeName(ColumnType type);
+    static const char *columnTypeName(api::ColumnType type);
 
-	static ColumnType type(const std::string&);
+    static api::ColumnType type(const std::string&);
 
 	Column& operator=(const Column&);
 
@@ -51,10 +51,10 @@ public:
 	void name(const std::string name) { name_ = name; }
 	const std::string &name() const { return name_; }
 
-	template<typename DATASTREAM> void type(ColumnType t, bool differentByteOrder); 
+    template<typename DATASTREAM> void type(api::ColumnType t, bool differentByteOrder);
 
-	void type(ColumnType t) { type_ = t; }
-	ColumnType type() const { return ColumnType(type_); }
+    void type(api::ColumnType t) { type_ = t; }
+    api::ColumnType type() const { return api::ColumnType(type_); }
 
     bool hasInitialisedCoder() const { return coder_ != 0; }
 	bool isConstant();
@@ -84,7 +84,7 @@ public:
 	const std::string __repr__()
 	{
 		return //std::string("<") + 
-			name_ + ":" + columnTypeName(odc::ColumnType(type_))
+            name_ + ":" + columnTypeName(odc::api::ColumnType(type_))
 		 //+ ">" 
 			;
 	}
@@ -109,9 +109,9 @@ private:
 
 template<typename DATASTREAM> void Column::load(DATASTREAM &f)
 {
-	f.readString(name_);
+    f.readString(name_);
 	f.readInt32(type_);
-	if (type_ == BITFIELD)
+    if (type_ == api::BITFIELD)
 	{
         eckit::sql::FieldNames names;
         eckit::sql::Sizes sizes;
@@ -127,15 +127,16 @@ template<typename DATASTREAM> void Column::save(DATASTREAM &f)
 	f.writeString(name_);
 	f.writeInt32(type_);
 
-	if (type_ == BITFIELD)
+    if (type_ == api::BITFIELD)
 		f.writeBitfieldDef(bitfieldDef_);
 
 	coder().save(f);
 }
 
 template <typename DATASTREAM> 
-void Column::type(ColumnType t, bool differentByteOrder)
+void Column::type(api::ColumnType t, bool differentByteOrder)
 {
+    using namespace odc::api;
 	type_ = t;
 	std::string codecName;
 	switch (type_)

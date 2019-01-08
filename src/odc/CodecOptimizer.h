@@ -17,7 +17,7 @@
 #define CodecOptimizer_H
 
 #include "eckit/eckit.h"
-#include "odc/ColumnType.h"
+#include "odc/api/ColumnType.h"
 #include "odc/MetaData.h"
 
 namespace odc {
@@ -32,7 +32,7 @@ public:
 	template <typename DATASTREAM>
 		int setOptimalCodecs(MetaData& columns);
 private:
-    std::map<ColumnType, std::string> defaultCodec_;
+    std::map<api::ColumnType, std::string> defaultCodec_;
 };
 
 template <typename DATASTREAM>
@@ -50,7 +50,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 		std::string codec(defaultCodec_[col.type()]);
 		switch(col.type())
 		{
-            case REAL: {
+            case api::REAL: {
 
                 // Currently the real data is (whist in the column) encoded using the LongReal codec.
                 // n.b. CodecOptimizer doesn't currently support OtherByteOrder.
@@ -77,7 +77,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				break;
             }
 
-			case DOUBLE:
+            case api::DOUBLE:
 				if(max == min)
 					codec = col.hasMissing() ? "real_constant_or_missing" : "constant";
 				col.coder(Codec::findCodec<DATASTREAM>(codec, false));
@@ -90,7 +90,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
                                 //        << std::endl;
 				break;
 
-			case STRING:
+            case api::STRING:
 				{
                     n = col.coder().numStrings();
                                         if (n == 1 && col.coder().dataSizeDoubles() == 1)
@@ -118,8 +118,8 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 				}
 				break;
 
-			case BITFIELD:
-			case INTEGER:
+            case api::BITFIELD:
+            case api::INTEGER:
 				n = max - min;
 				//LOG << " { min=" << min << ", max=" << max << ", n=" << n << "} ";
 				if(col.hasMissing())

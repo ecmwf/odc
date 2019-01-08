@@ -67,13 +67,13 @@ public:
     void setNumberOfColumns(size_t n) { columns_.setSize(n); }
 
 #ifdef SWIGPYTHON
-    int setColumn(size_t, const std::string&, ColumnType) { NOTIMP; }
+    int setColumn(size_t, const std::string&, api::ColumnType) { NOTIMP; }
 	void writeHeader() { NOTIMP; }
-    int setBitfieldColumn(size_t, const std::string&, ColumnType, eckit::sql::BitfieldDef) { NOTIMP; }
+    int setBitfieldColumn(size_t, const std::string&, api::ColumnType, eckit::sql::BitfieldDef) { NOTIMP; }
 	void missingValue(size_t, double) { NOTIMP; }
 #endif
 
-	ColumnType columnType(unsigned long index);
+    api::ColumnType columnType(unsigned long index);
     const std::string& columnName(unsigned long index) const;
     const std::string& codecName(unsigned long index) const;
 	double columnMissingValue(unsigned long index);

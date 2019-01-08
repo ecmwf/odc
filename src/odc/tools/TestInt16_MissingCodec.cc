@@ -35,7 +35,7 @@ public:
 		ASSERT(col);
 
 		col->name("column_name"); 
-		col->type<DataStream<SameByteOrder, DataHandle> >(odc::INTEGER, false);
+        col->type<DataStream<SameByteOrder, DataHandle> >(odc::api::INTEGER, false);
 		col->hasMissing(true);
         next();
 	}

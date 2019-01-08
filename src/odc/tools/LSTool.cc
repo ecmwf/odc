@@ -54,18 +54,18 @@ unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
             out << spacer;
 			switch(md[i]->type())
 			{
-				case odc::INTEGER:
-				case odc::BITFIELD:
+                case odc::api::INTEGER:
+                case odc::api::BITFIELD:
 					out << static_cast<int>((*it)[i]);
 					break;
-				case odc::REAL:
-				case odc::DOUBLE:
+                case odc::api::REAL:
+                case odc::api::DOUBLE:
 					out << (*it)[i];
 					break;
-				case odc::STRING:
+                case odc::api::STRING:
 					out << "'" << (*it).string(i) << "'";
 					break;
-				case odc::IGNORE:
+                case odc::api::IGNORE:
 				default:
 					ASSERT("Unknown type" && false);
 					break;

@@ -25,6 +25,7 @@
 
 using namespace eckit;
 using namespace eckit::sql;
+using namespace odc::api;
 
 namespace odc {
 namespace sql {

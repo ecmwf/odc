@@ -76,6 +76,7 @@ public:
 
     static std::string typeName(const odc::Column& c)
     {
+        using namespace api;
         switch (c.type())
         {
             case STRING:   return "STRING";
@@ -93,7 +94,7 @@ public:
         std::stringstream definition;
         std::string type_name (typeName(c));
 
-        if (c.type() == BITFIELD)
+        if (c.type() == api::BITFIELD)
         {
             const eckit::sql::BitfieldDef& bd (c.bitfieldDef());
             const std::vector<std::string>& fieldNames (bd.first);

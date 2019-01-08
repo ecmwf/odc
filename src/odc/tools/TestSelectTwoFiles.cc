@@ -29,7 +29,7 @@ static void setUp()
 		odc::Writer<> f("TestSelectTwoFiles1.odb");
 		odc::Writer<>::iterator it = f.begin();
         it->setNumberOfColumns(1);
-		it->setColumn(0, "a", odc::REAL);
+        it->setColumn(0, "a", odc::api::REAL);
 		it->writeHeader();
 		(*it)[0] = 1;
 		++it;
@@ -38,7 +38,7 @@ static void setUp()
 		odc::Writer<> f("TestSelectTwoFiles2.odb");
 		odc::Writer<>::iterator it = f.begin();
         it->setNumberOfColumns(1);
-		it->setColumn(0, "b", odc::REAL);
+        it->setColumn(0, "b", odc::api::REAL);
 		it->writeHeader();
 		(*it)[0] = 2;
 		++it;
