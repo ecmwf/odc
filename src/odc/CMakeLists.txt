@@ -10,6 +10,15 @@ endif()
 
 
 list( APPEND odclib_src_files
+
+api/odc.h
+api/odc.cc
+api/Odb.h
+api/Odb.cc
+api/Table.h
+api/TableImpl.h
+api/Table.cc
+
 ####odbql.cc
 ####odbql.h
 pyodbapi.h

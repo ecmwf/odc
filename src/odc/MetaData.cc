@@ -21,8 +21,14 @@ namespace odc {
 MetaData::MetaData() : std::vector<Column*>(), rowsNumber_(0) {}
 MetaData::MetaData(int i) : std::vector<Column*>(i), rowsNumber_(0) {}
 MetaData::MetaData(int i, Column *p) : std::vector<Column*>(i, p), rowsNumber_(0) {}
-MetaData::MetaData(const MetaData& md) : std::vector<Column*>(0), rowsNumber_(0)
-{ *this += md; }
+
+// SDS: n.b. this is changed from before. We
+MetaData::MetaData(const MetaData& md) :
+    std::vector<Column*>(0),
+    rowsNumber_(md.rowsNumber_),
+    dataSize_(md.dataSize_) {
+    *this += md;
+}
 
 odc::ColumnType MetaData::convertType(const std::string& t)
 {
