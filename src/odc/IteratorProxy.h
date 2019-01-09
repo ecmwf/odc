@@ -191,7 +191,7 @@ public:
 			Py_RETURN_NONE;
 
 		switch (column.type()) {
-		case STRING:
+        case api::STRING:
 		{
 			const char *s = reinterpret_cast<const char *>(&d);
 			size_t j = 0;
@@ -199,8 +199,8 @@ public:
 				; 
 			return PyString_FromStringAndSize(s, j);
 		}
-		case INTEGER: return PyLong_FromDouble(d);
-		case BITFIELD:
+        case api::INTEGER: return PyLong_FromDouble(d);
+        case api::BITFIELD:
 		{
 			//cerr << "BITFIELD" << std::endl;
 			typedef unsigned long B;
