@@ -31,6 +31,17 @@ void odc_initialise_api();
 extern const int ODC_NUM_TYPES;
 extern const char* ODC_TYPE_NAMES[];
 
+/* Error handling */
+
+const int ODC_THROW = 1;
+const int ODC_ERRORS_CHECKED = 2;
+const int ODC_ERRORS_REPORT = 3;
+
+void odc_error_handling(int handling_type);
+void odc_reset_error();
+const char* odc_error_string();
+extern int odc_errno;
+
 /* Basic READ object API */
 
 struct odb_t* odc_open_for_read(const char* filename);
