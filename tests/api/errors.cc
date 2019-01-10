@@ -113,6 +113,9 @@ CASE("Don't continue unless error has been reset") {
     // We haven't handled the previous error, so the API will barf
 
     EXPECT_THROWS_AS(odc_num_tables(o.get()), eckit::SeriousBug);
+
+    // Reset error before cleanup
+    odc_reset_error();
 }
 
 
