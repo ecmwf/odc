@@ -64,8 +64,6 @@ TestFastODA2Request2.cc
 TestFastODA2Request3.cc
 TestFunctionDateAndTime.cc
 TestFunctionDotp.cc
-TestFunctionEqBox.cc
-TestFunctionRggBox.cc
 TestFunctionTdiff.cc
 TestFunctionThin.cc
 TestFunctionTypeConversion.cc

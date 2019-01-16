@@ -8,8 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/io/Buffer.h"
-#include "eckit/io/MemoryHandle.h"
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 

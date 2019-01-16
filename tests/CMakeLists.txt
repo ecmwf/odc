@@ -135,8 +135,6 @@ Test_FullPage_PushingBackRowsToTheFullPage
 Test_FullPage_SplitFullPage
 Test_FunctionDateAndTime
 Test_FunctionDotp
-Test_FunctionEqBox
-Test_FunctionRggBox
 Test_FunctionTdiff
 Test_FunctionThin
 Test_FunctionTypeConversion
