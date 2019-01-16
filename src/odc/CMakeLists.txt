@@ -176,6 +176,15 @@ sql/ODAOutput.cc
 sql/ODAOutput.h
 sql/Types.cc
 sql/Types.h
+sql/function/FunctionEQ_BOXLAT.cc
+sql/function/FunctionEQ_BOXLAT.h
+sql/function/FunctionEQ_BOXLON.cc
+sql/function/FunctionEQ_BOXLON.h
+sql/function/FunctionRGG_BOXLAT.cc
+sql/function/FunctionRGG_BOXLAT.h
+sql/function/FunctionRGG_BOXLON.cc
+sql/function/FunctionRGG_BOXLON.h
+
 
 # Data types' support
 data/DataHandleFactory.h
