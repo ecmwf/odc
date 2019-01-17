@@ -47,11 +47,13 @@ CASE("Simple select on CSV (one column) data") {
 
         odc::Select::iterator it = select.begin();
 
-        // TODO: Is this really the right behaviour? Surely it should appear as one row?
-        EXPECT(!(it != select.end()));
+        EXPECT(it != select.end());
         EXPECT((*it)[0] == 55);
         EXPECT((*it)[1] == 10);
         EXPECT((*it)[2] == 10);
+
+        ++it;
+        EXPECT(it == select.end());
     }
 
     SECTION("Mixed output and aggregate") {
@@ -108,19 +110,22 @@ CASE("Simple select on CSV (two columns) data") {
     }
 
 
-    SECTION("Sum one column") {
+    SECTION("Sum and count") {
         odc::Select select("select sum(a), count(a), count(*), sum(c), count(c), count(b);");
         select.database().addImplicitTable(new odc::sql::ODBCSVTable(select.database(), DATA, "input", ","));
 
         odc::Select::iterator it = select.begin();
 
-        EXPECT(!(it != select.end()));
+        EXPECT(it != select.end());
         EXPECT(it->data(0) == 55);
         EXPECT(it->data(1) == 10);
         EXPECT(it->data(2) == 10);
         EXPECT(it->data(3) == 55);
         EXPECT(it->data(4) == 10);
         EXPECT(it->data(5) == 10);
+
+        ++it;
+        EXPECT(it == select.end());
     }
 
     SECTION("Mixed output and aggregate") {
