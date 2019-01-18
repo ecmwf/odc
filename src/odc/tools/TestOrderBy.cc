@@ -29,63 +29,51 @@ static void test()
 {
 	{
 		string sql = "select distinct a from \"TestOrderBy_a1to10twice.odb\" order by a;";
-		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odc::Select sel(sql);
 		odc::Select::iterator it = sel.begin();
 		odc::Select::iterator end = sel.end();
 
-		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 0;
 		for (; it != end; ++it)
 		{
 			int v = (*it)[0];
-			Log::info()  << "test:" <<  v  << std::endl;
 			ASSERT(v == ++i);
 		}
-		Log::info()  << "test: i = " <<  i  << std::endl;
 		ASSERT(i == 10);
 	}
 
 	{
 		string sql = "select a from \"TestOrderBy_a1to10twice.odb\" order by a;";
-		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odc::Select sel(sql);
 		odc::Select::iterator it = sel.begin();
 		odc::Select::iterator end = sel.end();
 
-		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 0, j = 0;
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::info()  << "test:" <<  v  << std::endl;
 			ASSERT(i <= v);
 			i = v;
 		}
-		Log::info()  << "test: i=" <<  i  << ", j=" << j << std::endl;
 		ASSERT(i == 10);
 		ASSERT(j == 20);
 	}
 
 	{
 		string sql = "select distinct a from \"TestOrderBy_a1to10twice.odb\" order by a desc;";
-		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odc::Select sel(sql);
 		odc::Select::iterator it = sel.begin();
 		odc::Select::iterator end = sel.end();
 
-		Log::info()  << "test: entering the loop" << std::endl;
 		int i = 10, j = 0;
 		for (; it != end; ++it, ++j)
 		{
 			int v = (*it)[0];
-			Log::info()  << "test:" <<  v  << std::endl;
 			ASSERT(i-- == v);
 		}
-		Log::info()  << "test: i = " <<  i  << std::endl;
 		ASSERT(i == 0);
 		ASSERT(j == 10);
 	}
@@ -100,13 +88,11 @@ static void test()
         odc::tool::ImportTool::importText(in, "TestOrderBy.odb");
 
 		string sql = "select distinct a,b,c from \"TestOrderBy.odb\" order by a desc, b asc;";
-		Log::info() << "Executing: '" << sql << "'" << std::endl;
 
 		odc::Select sel(sql);
 		odc::Select::iterator it = sel.begin();
 		odc::Select::iterator end = sel.end();
 
-		Log::info()  << "test: entering the loop" << std::endl;
         int i = 0, v1 = 0 , v2 = 0;
 		string s;
 		for (; it != end; ++it, ++i)
@@ -114,9 +100,7 @@ static void test()
 			v1 = (*it)[0];
 			v2 = (*it)[1];
 			s = (*it).string(2);
-			Log::info() << "test:" <<  v1  << ", " << v2 << ", '" << s << "'" << std::endl;
 		}
-		Log::info()  << "test: i = " <<  i  << std::endl;
 		ASSERT(i == 4);
 		ASSERT(v1 == 1 && v2 == 20 && StringTools::trim(s) == "two");
 	}
