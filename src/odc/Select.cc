@@ -16,6 +16,7 @@
 
 #include "odc/data/DataHandleFactory.h"
 #include "odc/Select.h"
+#include "odc/sql/SQLOutputConfig.h"
 #include "odc/sql/SQLSelectOutput.h"
 #include "odc/TODATable.h"
 
@@ -29,7 +30,8 @@ namespace odc {
 
 Select::Select(const std::string& selectStatement, bool manageOwnBuffer) :
     selectStatement_(selectStatement),
-    session_(std::unique_ptr<eckit::sql::SQLOutput>(new sql::SQLSelectOutput(manageOwnBuffer))),
+    session_(std::unique_ptr<eckit::sql::SQLOutput>(new sql::SQLSelectOutput(manageOwnBuffer)),
+             std::unique_ptr<eckit::sql::SQLOutputConfig>(new odc::sql::SQLOutputConfig)),
     initted_(false),
     it_(0) {}
 

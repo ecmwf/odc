@@ -36,9 +36,9 @@ public: // methods
 
     SQLOutputConfig(const std::string& odbFilename);
 
-    virtual ~SQLOutputConfig();
+    ~SQLOutputConfig() override;
 
-    virtual eckit::sql::SQLOutput* buildOutput() const;
+    eckit::sql::SQLOutput* buildOutput(const eckit::PathName& path) const override;
 
     void setOutputStream(std::ostream& s);
 

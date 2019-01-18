@@ -41,7 +41,7 @@ SQLOutputConfig::SQLOutputConfig(const std::string& odbFilename) :
 
 SQLOutputConfig::~SQLOutputConfig() {}
 
-eckit::sql::SQLOutput* SQLOutputConfig::buildOutput() const {
+eckit::sql::SQLOutput* SQLOutputConfig::buildOutput(const eckit::PathName& path) const {
 
     // TODO: maxOpenFiles configuration for output. Was disabled in Feb 2016
     const size_t maxOpenFiles = 100;
@@ -49,13 +49,13 @@ eckit::sql::SQLOutput* SQLOutputConfig::buildOutput() const {
     if (outputFormat_ == "default" || outputFormat_ == "wide") {
         return new eckit::sql::SQLSimpleOutput(*this, outStream_.get());
     } else if (outputFormat_ == "odb") {
-        ASSERT(outputFile_.asString().size());
+        ASSERT(path.asString().size());
         TemplateParameters templateParameters;
-        TemplateParameters::parse(outputFile_, templateParameters);
+        TemplateParameters::parse(path, templateParameters);
         if (templateParameters.size()) {
-            return new odc::sql::ODAOutput<DispatchingWriter>(new DispatchingWriter(outputFile_, maxOpenFiles));
+            return new odc::sql::ODAOutput<DispatchingWriter>(new DispatchingWriter(path, maxOpenFiles));
         } else {
-            return new odc::sql::ODAOutput<Writer<>>(new Writer<>(outputFile_));
+            return new odc::sql::ODAOutput<Writer<>>(new Writer<>(path));
             // TODO: toODAColumns
         }
 
