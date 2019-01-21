@@ -46,9 +46,11 @@ eckit::sql::SQLOutput* SQLOutputConfig::buildOutput(const eckit::PathName& path)
     // TODO: maxOpenFiles configuration for output. Was disabled in Feb 2016
     const size_t maxOpenFiles = 100;
 
-    if (outputFormat_ == "default" || outputFormat_ == "wide") {
+    std::string format (path.asString().empty() ? outputFormat_ : "odb");
+
+    if (format == "default" || format == "wide") {
         return new eckit::sql::SQLSimpleOutput(*this, outStream_.get());
-    } else if (outputFormat_ == "odb") {
+    } else if (format == "odb") {
         ASSERT(path.asString().size());
         TemplateParameters templateParameters;
         TemplateParameters::parse(path, templateParameters);
