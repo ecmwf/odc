@@ -182,7 +182,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	{
 		if (it->isNewDataset() && it->columns() != columnsBuffer_)
 		{
-            eckit::Log::error() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
+            eckit::Log::debug() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
 			flush();
 			pass1init(it, end);
             writeHeader();
