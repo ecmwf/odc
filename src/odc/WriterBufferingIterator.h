@@ -90,13 +90,14 @@ public:
 	void flush();
 
     std::vector<eckit::PathName> outputFiles();
-	int refCount_;
     bool next();
 
 private:
     size_t rowDataSizeDoublesInternal() const;
+public:
+    int refCount_;
 protected:
-	Owner& owner_;
+    Owner& owner_;
 	MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;
@@ -136,7 +137,7 @@ private:
 	MetaData columnsBuffer_;
 
 	size_t rowsBufferSize_;
-    size_t rowDataSizeDoubles_;;
+    size_t rowDataSizeDoubles_;
 	MemoryBlock setvBuffer_;
 	size_t maxAnticipatedHeaderSize_;
 
@@ -154,7 +155,7 @@ private:
 template<typename T>
 void WriterBufferingIterator::pass1init(T& it, const T& end)
 {
-	eckit::Log::debug() << "WriterBufferingIterator::pass1init" << std::endl;
+    eckit::Log::debug() << "WriterBufferingIterator::pass1init" << std::endl;
 
 	// Copy columns from the input iterator.
 	columns(columnsBuffer_ = it->columns());
@@ -171,7 +172,7 @@ void WriterBufferingIterator::pass1init(T& it, const T& end)
 template<typename T>
 unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 {
-	eckit::Log::debug() << "WriterBufferingIterator::pass1" << std::endl;
+    eckit::Log::debug() << "WriterBufferingIterator::pass1" << std::endl;
 
 	pass1init(it, end);
     writeHeader();
@@ -181,7 +182,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	{
 		if (it->isNewDataset() && it->columns() != columnsBuffer_)
 		{
-			eckit::Log::debug() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
+            eckit::Log::error() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
 			flush();
 			pass1init(it, end);
             writeHeader();
@@ -200,10 +201,10 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 			flush();
 	} 
 
-	eckit::Log::debug() << "Flushing rest of the buffer..." << std::endl;
+    eckit::Log::debug() << "Flushing rest of the buffer..." << std::endl;
 	flush();
 
-	eckit::Log::debug() << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << std::endl;
+    eckit::Log::debug() << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << std::endl;
 	ASSERT(close() == 0);
 	return nrows;
 }

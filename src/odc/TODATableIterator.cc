@@ -45,6 +45,7 @@ template <typename READER>
 void TODATableIterator<READER>::rewind() {
     it_ = const_cast<READER&>(parent_.oda()).begin();
     end_ = parent_.oda().end();
+    firstRow_ = true;
 }
 
 template <typename READER>

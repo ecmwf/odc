@@ -70,8 +70,7 @@ static void createDataForMixedAggregated()
             "2,2,0.1\n"
             ;
 
-    NOTIMP;
-//    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
+    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
 }
 
 TEST(selectAggregatedAndNonAggregated)
