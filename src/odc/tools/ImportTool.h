@@ -11,6 +11,8 @@
 #ifndef ImportTool_H
 #define ImportTool_H
 
+#include "eckit/filesystem/PathName.h"
+
 #include "odc/tools/Tool.h"
 
 namespace odc {
