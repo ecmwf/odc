@@ -18,16 +18,18 @@
 #include "odc/Select.h"
 #include "odc/Reader.h"
 
-#include "odc/Tracer.h"
+#include "odc/utility/Tracer.h"
 #include "odc/Writer.h"
 #include "TestCase.h"
 
 using namespace std;
 using namespace eckit;
 using namespace odc;
+using namespace odc::utility;
+
 static void setUp()
 {
-    Tracer t(Log::info(), "setUp");
+    Tracer t(Log::debug(), "setUp");
 
 	odc::Writer<> f("TestMissingValue.odb");
 	odc::Writer<>::iterator it = f.begin();
@@ -57,7 +59,7 @@ static void setUp()
 
 static void selectIntoSecondFile()
 {
-    Tracer t(Log::info(), "selectIntoSecondFile");
+    Tracer t(Log::debug(), "selectIntoSecondFile");
 
     const string fileName = "TestMissingValue.odb";
     string sql = "select lat,bf into \"TestMissingValue2.odb\"";

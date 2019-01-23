@@ -14,13 +14,14 @@
 
 #include "odc/Select.h"
 
-#include "odc/Tracer.h"
+#include "odc/utility/Tracer.h"
 #include "odc/Writer.h"
 #include "TestCase.h"
 
 using namespace std;
 using namespace eckit;
 using namespace odc;
+using namespace odc::utility;
 
 static void setUp()
 {

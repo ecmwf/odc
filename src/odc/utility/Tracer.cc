@@ -8,17 +8,28 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/Tracer.h"
+#include "odc/utility/Tracer.h"
 
-Tracer::Tracer(std::ostream& o, const std::string& m)
-: out_(o), message_(m)
-{
+#include <ostream>
+
+
+namespace odc {
+namespace utility {
+
+//----------------------------------------------------------------------------------------------------------------------
+
+Tracer::Tracer(std::ostream& o, const std::string& m) :
+    out_(o), message_(m) {
 	//out_ << message_ << " BEGIN" <<  std::endl;
 	out_ << "BEGIN " <<  message_ << std::endl;
 }
 
-Tracer::~Tracer()
-{
+Tracer::~Tracer() {
 	//out_ << message_ << " END" <<  std::endl;
 	out_ << "END " <<  message_ << std::endl;
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+} // utility
+} // odc

@@ -14,7 +14,7 @@
 #include "odc/Comparator.h"
 #include "odc/Reader.h"
 #include "odc/StringTool.h"
-#include "odc/Tracer.h"
+#include "odc/utility/Tracer.h"
 
 #include <string.h>
 
@@ -25,6 +25,7 @@
 using namespace std;
 using namespace eckit;
 using namespace odc::api;
+using namespace odc::utility;
 
 class ValuesDifferent : public Exception {
 public:
