@@ -113,6 +113,11 @@ void ThreadSharedDataHandle::close() {
     internal_->dh_->close();
 }
 
+eckit::Length ThreadSharedDataHandle::estimate() {
+    ASSERT(internal_);
+    return internal_->dh_->estimate();
+}
+
 eckit::Offset ThreadSharedDataHandle::position() {
     return position_;
 }
@@ -124,7 +129,7 @@ eckit::Offset ThreadSharedDataHandle::seek(const eckit::Offset& position) {
 
 std::string ThreadSharedDataHandle::title() const {
     ASSERT(internal_);
-    return internal_->dh_->title();
+    return internal_->dh_->name();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
