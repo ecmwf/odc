@@ -108,7 +108,7 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
     newTable->byteOrder_ = hdr.byteOrder();
 
     // Check that the ODB hasn't been truncated
-    if (newTable->nextPosition_ > dh.estimate()) throw ShortFile(dh.title(), Here());   }
+    if (newTable->nextPosition_ > dh.estimate()) throw ShortFile(dh.title(), Here());
 
     return newTable;
 }
