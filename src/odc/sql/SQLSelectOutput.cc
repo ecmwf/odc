@@ -114,6 +114,8 @@ void SQLSelectOutput::prepare(SQLSelect& sql) {
     size_t offset = 0;
     expression::Expressions output(sql.output());
     metaData_.setSize(output.size());
+    columnSizesDoubles_.clear();
+    columnSizesDoubles_.reserve(output.size());
 
     // TODO: What happens here if the metadata/columns change during an odb?
     // --> We need to update this allocation as we go.

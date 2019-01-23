@@ -54,6 +54,9 @@ Select::Select(const std::string& selectStatement, const std::string& path, bool
     db.addImplicitTable(new odc::sql::ODATable(db, *ownDH_));
 }
 
+Select::Select(const std::string &selectStatement, const char *path, bool manageOwnBuffer) :
+    Select(selectStatement, std::string(path), manageOwnBuffer) {}
+
 
 Select::~Select() {}
 

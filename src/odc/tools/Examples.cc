@@ -23,12 +23,20 @@
 
 #include "TestCase.h"
 
+using namespace eckit;
+
 namespace {
 
 TEST(example_select_data_read_results)
 {
     // Prepare input data
-    const std::string data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
+    const std::string data =
+        R"(x:INTEGER,y:INTEGER,v:DOUBLE
+        1,1,0.3
+        1,1,0.2
+        2,2,0.4
+        2,2,0.1)";
+
     odc::tool::ImportTool::importText(data, std::string("example_select_data_read_results.odb"));
 
     odc::Select select("select x,min(v),max(v);", "example_select_data_read_results.odb");
