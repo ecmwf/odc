@@ -39,8 +39,6 @@ static void test()
 
 	odc::Select::iterator it = oda.begin();
 
-	Log::debug() << "test: it->columns().size() == " << it->columns().size() << std::endl;
-
 	ASSERT(it->columns().size() == 9);
 
 	for ( ; it != oda.end() && i < 5000; ++it, ++i) 
@@ -54,7 +52,7 @@ static void test()
 			| int ((*it)[6]) << 5
 			| int ((*it)[7]) << 6
 			| int ((*it)[8]) << 7;
-		//Log::info() << i << ": " << (*it)[0] << " " << sum << std::endl;
+//        Log::info() << i << ": " << (*it)[0] << " " << sum << std::endl;
 		ASSERT((*it)[0] == sum);
 	}
 }
