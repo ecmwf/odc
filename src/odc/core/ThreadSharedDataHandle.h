@@ -56,6 +56,8 @@ public: // methods
     eckit::Offset position() override;
     eckit::Offset seek(const eckit::Offset&) override;
 
+    std::string title() const override;
+
 private: // members
 
     struct Internal {

@@ -77,7 +77,8 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
     FixedString<5> magic;
     long bytesRead = dh.read(&magic, sizeof(magic));
 
-    if (bytesRead != sizeof(magic)) return 0;
+    if (bytesRead == 0) return 0;
+    if (bytesRead != sizeof(magic)) throw ShortFile(dh.title(), Here());
 
     ASSERT(magic == "\xff\xffODA");
 
@@ -105,6 +106,9 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
     newTable->dataSize_ = hdr.dataSize();
     newTable->nextPosition_ = dh.position() + newTable->dataSize_;
     newTable->byteOrder_ = hdr.byteOrder();
+
+    // Check that the ODB hasn't been truncated
+    if (newTable->nextPosition_ > dh.estimate()) throw ShortFile(dh.title(), Here());   }
 
     return newTable;
 }

@@ -122,6 +122,11 @@ eckit::Offset ThreadSharedDataHandle::seek(const eckit::Offset& position) {
     return position_;
 }
 
+std::string ThreadSharedDataHandle::title() const {
+    ASSERT(internal_);
+    return internal_->dh_->title();
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 }

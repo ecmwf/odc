@@ -12,6 +12,8 @@
 
 #include "eckit/exception/Exceptions.h"
 
+using namespace eckit;
+
 namespace odc {
 namespace core {
 
@@ -70,15 +72,15 @@ const Table& ReadTablesIterator::operator*() const {
 //----------------------------------------------------------------------------------------------------------------------
 
 
-TablesReader::TablesReader(eckit::DataHandle& dh) :
+TablesReader::TablesReader(DataHandle& dh) :
     dh_(dh) {}
 
 
-TablesReader::TablesReader(eckit::DataHandle* dh) :
+TablesReader::TablesReader(DataHandle* dh) :
     dh_(dh) {}
 
 
-TablesReader::TablesReader(const eckit::PathName& path) :
+TablesReader::TablesReader(const PathName& path) :
     TablesReader(path.fileHandle()) {}
 
 
@@ -101,7 +103,14 @@ bool TablesReader::ensureTable(long idx) {
 
     if (idx == long(tables_.size())) {
 
-        dh_.seek(tables_.empty() ? eckit::Offset(0) : tables_.back()->nextPosition());
+        Offset nextPosition = (tables_.empty() ? Offset(0) : tables_.back()->nextPosition());
+        ASSERT(nextPosition <= dh_.estimate());
+
+        // If the table has been truncated, this is an error, and we cannot read on.
+        Offset pos = dh_.seek(nextPosition);
+        if (pos < nextPosition) {
+            throw ShortFile(dh_.title(), Here());
+        }
 
         std::unique_ptr<Table> tbl(Table::readTable(dh_));
         if (!tbl) return false;
