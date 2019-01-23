@@ -27,7 +27,7 @@ using namespace eckit;
 using namespace odc;
 static void setUp()
 {
-	Tracer t(Log::debug(), "setUp");
+    Tracer t(Log::info(), "setUp");
 
 	odc::Writer<> f("TestMissingValue.odb");
 	odc::Writer<>::iterator it = f.begin();
@@ -52,15 +52,15 @@ static void setUp()
 		(*it)[0] = i;
 		(*it)[1] = i;
 		++it;
-	}
+    }
 }
 
 static void selectIntoSecondFile()
 {
-    Tracer t(Log::debug(), "selectIntoSecondFile");
+    Tracer t(Log::info(), "selectIntoSecondFile");
 
     const string fileName = "TestMissingValue.odb";
-    string sql = "select lat,bf into \"TestMissingValue.odb\"";
+    string sql = "select lat,bf into \"TestMissingValue2.odb\"";
     sql += " from \"" + fileName + "\" ;";
 
     odc::Select f(sql); //, fileName);
@@ -75,22 +75,22 @@ static void test()
 {
 	selectIntoSecondFile();
 
-	odc::Comparator().compare("TestMissingValue.odb", "TestMissingValue.odb");
+    odc::Comparator().compare("TestMissingValue.odb", "TestMissingValue2.odb");
 
 	{
 		odc::Reader f("TestMissingValue.odb");
 		odc::Reader::iterator fbegin(f.begin());
 		odc::Reader::iterator fend(f.end());
 
-		odc::Select s("select * from \"TestMissingValue.odb\";");
+        odc::Select s("select * from \"TestMissingValue2.odb\";");
 		odc::Select::iterator sbegin(s.begin());
 		odc::Select::iterator send(s.end());
 
-		odc::Comparator().compare(fbegin, fend, sbegin, send, "TestMissingValue.odb", "SELECT TestMissingValue.odb");
+        odc::Comparator().compare(fbegin, fend, sbegin, send, "TestMissingValue.odb", "SELECT TestMissingValue2.odb");
 	}
 
 	{
-		odc::Reader f("TestMissingValue.odb");
+        odc::Reader f("TestMissingValue2.odb");
 		odc::Reader::iterator it = f.begin();
 		odc::Reader::iterator end = f.end();
 
@@ -116,7 +116,7 @@ static void test()
 
 	{
 		// Check the isMissing and missingValue API of SelectIterator
-		odc::Select s("select * from \"TestMissingValue.odb\";"); //, fileName);
+        odc::Select s("select * from \"TestMissingValue2.odb\";"); //, fileName);
 		odc::Select::iterator i = s.begin();
 		odc::Select::iterator e = s.end();
 		for (; i != e; ++i)
