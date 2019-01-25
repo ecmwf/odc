@@ -100,7 +100,12 @@ void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
         throw SeriousBug("String to long for configured output", Here());
     }
 
-    ::memcpy(reinterpret_cast<char*>(pos_), s, len);
+    if (missing) {
+        len = 0;
+    } else {
+        ::memcpy(reinterpret_cast<char*>(pos_), s, len);
+    }
+
     if (len < charSize) {
         ::memset(&reinterpret_cast<char*>(pos_)[len], 0, charSize-len);
     }
