@@ -70,8 +70,7 @@ static void createDataForMixedAggregated()
             "2,2,0.1\n"
             ;
 
-    NOTIMP;
-//    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
+    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
 }
 
 TEST(selectAggregatedAndNonAggregated)
@@ -863,48 +862,51 @@ TEST(JULIAN_SECONDS)
 
 TEST(CREATE_TABLE_and_SELECT_INTO)
 {
-	const char *inputData = 
-	"a:INTEGER,b:INTEGER\n"
-	"1,1\n"
-	"2,2\n"
-	"3,3\n"
-	"4,4\n"
-	"5,5\n"
-	"6,6\n"
-	"7,7\n"
-	"8,8\n"
-	"9,9\n"
-	"10,10\n"
-	;
+    const char *inputData =
+        R"(a:INTEGER,b:INTEGER
+        1,1
+        2,2
+        3,3
+        4,4
+        5,5
+        6,6
+        7,7
+        8,8
+        9,9
+        10,10)";
 
 	odc::tool::ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
-    const char* sql =
-    "CREATE TYPE mybitfield AS ( "
-    "codetype bit9,"
-    "instype bit10,"
-    "retrtype bit6,"
-    "geoarea bit6,"
-    ");"
+    const char* sql = R"(
+        CREATE TYPE mybitfield AS (
+            codetype bit9,
+            instype bit10,
+            retrtype bit6,
+            geoarea bit6,
+        );
 
-    "CREATE TABLE \"foo.odb\" AS ( "
-    "lat real,"
-    "lon real,"
-    "status mybitfield,"
-    ");"
+        CREATE TABLE "foo.odb" AS (
+            lat real,
+            lon real,
+            status mybitfield,
+        );
 
-    "SELECT a,b,a*b INTO \"foo.odb\" FROM \"CREATE_TABLE_and_SELECT_INTO.odb\";"
-    ;
+        SELECT a,b,a*b INTO "foo.odb" FROM "CREATE_TABLE_and_SELECT_INTO.odb";
+    )";
 
     {
         odc::Select o(sql);
         odc::Select::iterator it = o.begin();
         unsigned long counter = 0;
-        for ( ; it != o.end(); ++it, ++counter)
+        Log::info() << "Inside select" << std::endl;
+        for ( ; it != o.end(); ++it, ++counter) {
+            Log::info() << "Getting a line..." << std::endl;
             ;
+        }
         Log::info() << "CREATE_TABLE_and_SELECT_INTO: counter=" << counter << endl;
     }
     system("ls -l foo.odb; ");
-    system((ODBAPISettings::instance().fileInHome("~/bin/odb") + " header foo.odb").c_str());
+    system((eckit::PathName("~/bin/odc").asString() + " header foo.odb").c_str());
+    system((eckit::PathName("~/bin/odc").asString() + " ls foo.odb").c_str());
 }
 
 /*

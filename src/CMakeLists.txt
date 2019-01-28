@@ -19,5 +19,4 @@ add_subdirectory( odc )
 add_subdirectory( odc/tools )
 add_subdirectory( odc/odb2netcdf )
 add_subdirectory( fortran )
-add_subdirectory( python )
 

@@ -8,20 +8,34 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef TRACER_H
 
-#include <ostream>
+#ifndef odc_utility_Tracer_H
+#define odc_utility_Tracer_H
+
+#include <iosfwd>
 #include <string>
 
+namespace odc {
+namespace utility {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class Tracer {
 public:
+
 	Tracer(std::ostream&, const std::string&);
 	~Tracer();
+
 private:
+
     std::ostream& out_;
     std::string message_;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
+
+} // utility
+} // odc
 
 #endif
 

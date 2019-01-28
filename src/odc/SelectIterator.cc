@@ -29,8 +29,8 @@ SelectIterator::SelectIterator(const std::string& select, eckit::sql::SQLSession
     select_(select),
     output_(output),
     session_(s),
-    refCount_(0),
-    noMore_(false) {
+    noMore_(false),
+    refCount_(0) {
 
     parse();
 }

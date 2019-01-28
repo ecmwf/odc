@@ -53,8 +53,11 @@ public: // methods
     long write(const void*,long) override;
     void close() override;
 
+    eckit::Length estimate() override;
     eckit::Offset position() override;
     eckit::Offset seek(const eckit::Offset&) override;
+
+    std::string title() const override;
 
 private: // members
 

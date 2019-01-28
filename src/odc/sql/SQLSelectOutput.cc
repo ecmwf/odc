@@ -100,7 +100,12 @@ void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
         throw SeriousBug("String to long for configured output", Here());
     }
 
-    ::memcpy(reinterpret_cast<char*>(pos_), s, len);
+    if (missing) {
+        len = 0;
+    } else {
+        ::memcpy(reinterpret_cast<char*>(pos_), s, len);
+    }
+
     if (len < charSize) {
         ::memset(&reinterpret_cast<char*>(pos_)[len], 0, charSize-len);
     }
@@ -114,6 +119,8 @@ void SQLSelectOutput::prepare(SQLSelect& sql) {
     size_t offset = 0;
     expression::Expressions output(sql.output());
     metaData_.setSize(output.size());
+    columnSizesDoubles_.clear();
+    columnSizesDoubles_.reserve(output.size());
 
     // TODO: What happens here if the metadata/columns change during an odb?
     // --> We need to update this allocation as we go.

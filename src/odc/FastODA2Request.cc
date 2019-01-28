@@ -101,6 +101,7 @@ bool FastODA2Request<T>::scanFile(const eckit::PathName& fileName, eckit::Offset
     auto end = reader.end();
 
     std::unique_ptr<MetaData> currentMD(it->columns().clone());
+    currentMD->resetStats();
 	rowsNumber_ = currentMD->rowsNumber();
 
     values_ = std::vector<std::set<std::string> >(currentMD->size(), std::set<std::string>());

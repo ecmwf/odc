@@ -92,7 +92,7 @@ DataHandle* DataHandleFactory::openForRead(const std::string& s)
 {
     registerFactories();
     std::pair<std::string,std::string> p (splitPrefix(s));
-    std::auto_ptr<DataHandle> d (makeHandle(p.first, p.second));
+    std::unique_ptr<DataHandle> d (makeHandle(p.first, p.second));
     d->openForRead();
     return d.release();
 }
@@ -101,7 +101,7 @@ DataHandle* DataHandleFactory::openForWrite(const std::string& s, const eckit::L
 {
     registerFactories();
     std::pair<std::string,std::string> p (splitPrefix(s));
-    std::auto_ptr<DataHandle> d (makeHandle(p.first, p.second));
+    std::unique_ptr<DataHandle> d (makeHandle(p.first, p.second));
     d->openForWrite(length);
     return d.release();
 }

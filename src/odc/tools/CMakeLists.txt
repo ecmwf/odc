@@ -63,7 +63,6 @@ TestFastODA2Request.cc
 TestFastODA2Request2.cc
 TestFastODA2Request3.cc
 TestFunctionDateAndTime.cc
-TestFunctionDotp.cc
 TestFunctionTdiff.cc
 TestFunctionThin.cc
 TestFunctionTypeConversion.cc
@@ -107,4 +106,4 @@ ecbuild_add_library( TARGET     odctest
 
 ecbuild_add_executable( TARGET    odc
                         SOURCES   odc.cc
-                        LIBS      odccore odctools ) ### odctest )
+                        LIBS      odccore odctools odctest )

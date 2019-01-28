@@ -225,6 +225,7 @@ void MetaData::resetStats()
 	//Log::debug() << "MetaData::resetStats" << std::endl;
 	for (size_t i = 0; i < size(); i++)
 		(*this)[i]->resetStats();
+    rowsNumber_ = 0;
 }
 
 void MetaData::print(std::ostream& s) const

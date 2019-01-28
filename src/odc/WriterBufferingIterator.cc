@@ -29,7 +29,8 @@ using namespace odc::api;
 namespace odc {
 
 WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odc::sql::TableDef* tableDef)
-: owner_(owner),
+: refCount_(0),
+  owner_(owner),
   columns_(0),
   lastValues_(0),
   nextRow_(0),
@@ -38,7 +39,8 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   nrows_(0),
   f(dh),
   encodedDataBuffer_(0),
-  refCount_(0),
+  path_(owner.path()),
+  initialisedColumns_(false),
   properties_(),
   blockBuffer_(),
   rowsBuffer_(),
@@ -49,9 +51,7 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   setvBuffer_(0),
   maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() ),
   tableDef_(tableDef),
-  path_(owner.path()),
-  openDataHandle_(openDataHandle),
-  initialisedColumns_(false)
+  openDataHandle_(openDataHandle)
 {
 	if (openDataHandle)	
 		open();
@@ -140,8 +140,7 @@ void WriterBufferingIterator::allocBuffers()
 
 void WriterBufferingIterator::allocRowsBuffer()
 {
-	size_t nCols = columns().size();
-
+    rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
     size_t rowByteSize = (sizeof(uint16_t) + rowDataSizeDoubles()*sizeof(double));
     blockBuffer_.size(maxAnticipatedHeaderSize_ + rowsBufferSize_ * rowByteSize);
     rowsBuffer_.share(blockBuffer_ + maxAnticipatedHeaderSize_, rowsBufferSize_ * rowByteSize);

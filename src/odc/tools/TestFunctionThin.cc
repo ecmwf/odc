@@ -61,10 +61,10 @@ static void test()
     int i=0;
 	odc::Select oda(sql);
     for(odc::Select::iterator it = oda.begin(); it != oda.end(); ++it) {
-      if (i % 2 == 1) 
-	    ASSERT(fabs((*it)[0] - 0.0e0) < EPS); // 
+      if (i % 2 == 1)
+        ASSERT(fabs((*it)[0] - 0.0e0) < EPS); //
       else
-	    ASSERT(fabs((*it)[0] - 1.0) < EPS); // 
+        ASSERT(fabs((*it)[0] - 1.0) < EPS); //
       ++i;
     }
 

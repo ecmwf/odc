@@ -13,15 +13,9 @@
 ///
 /// @author Piotr Kuchta, September 2015
 
-#include "odc/FastODA2Request.h"
-#include "odc/MetaData.h"
-#include "odc/ODAHandle.h"
-#include "odc/ODBAPISettings.h"
-#include "odc/ODBAPIVersion.h"
-#include "odc/odccapi.h"
-#include "odc/Select.h"
-#include "odc/Reader.h"
-#include "odc/Writer.h"
+#include "eckit/exception/Exceptions.h"
+
+#include "odc/tools/ImportTool.h"
 
 using namespace eckit;
 using namespace odc;
@@ -31,9 +25,7 @@ extern "C" {
 int import_text(const char* text, const char* output_file)
 {
     try {
-        NOTIMP;
-        // TODO: Fix this.
-//        odc::tool::ImportTool::importText(text, output_file);
+        odc::tool::ImportTool::importText(text, output_file);
         return 0;
     } catch (Exception e) {
         return 1;

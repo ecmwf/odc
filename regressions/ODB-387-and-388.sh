@@ -12,13 +12,13 @@ cd ${test_wd}
 
 # Test doing a replace
 
-odb mdset "expver='    9876'" ../odb_387_mdset.odb temporary1.odb
+odc mdset "expver='    9876'" ../odb_387_mdset.odb temporary1.odb
 
 # Demonstrate that we have changed a column
 
-odb compare ../odb_387_mdset.odb temporary1.odb && exit -1
+odc compare ../odb_387_mdset.odb temporary1.odb && exit -1
 
-odb compare -excludeColumns expver ../odb_387_mdset.odb temporary1.odb
+odc compare -excludeColumns expver ../odb_387_mdset.odb temporary1.odb
 
 # The file sizes are the same
 
@@ -28,19 +28,19 @@ fi
 
 # Change another column
 
-odb mdset "stream=123456" temporary1.odb temporary2.odb
+odc mdset "stream=123456" temporary1.odb temporary2.odb
 
 # Demonstrate that we can exclude only one, or a range of columns
 
-odb compare ../odb_387_mdset.odb temporary1.odb && exit -1
+odc compare ../odb_387_mdset.odb temporary1.odb && exit -1
 
-odb compare temporary1.odb temporary2.odb && exit -1
+odc compare temporary1.odb temporary2.odb && exit -1
 
-odb compare -excludeColumns stream temporary1.odb temporary2.odb
+odc compare -excludeColumns stream temporary1.odb temporary2.odb
 
-odb compare -excludeColumns stream ../odb_387_mdset.odb temporary2.odb && exit -1
+odc compare -excludeColumns stream ../odb_387_mdset.odb temporary2.odb && exit -1
 
-odb compare -excludeColumns stream,expver ../odb_387_mdset.odb temporary2.odb
+odc compare -excludeColumns stream,expver ../odb_387_mdset.odb temporary2.odb
 
 # The file sizes are still the same
 

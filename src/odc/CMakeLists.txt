@@ -113,8 +113,6 @@ TReadOnlyMemoryDataHandle.cc
 TReadOnlyMemoryDataHandle.h
 TemplateParameters.cc
 TemplateParameters.h
-Tracer.cc
-Tracer.h
 UnsafeInMemoryDataHandle.h
 Writer.cc
 Writer.h
@@ -182,6 +180,8 @@ sql/function/FunctionRGG_BOXLAT.h
 sql/function/FunctionRGG_BOXLON.cc
 sql/function/FunctionRGG_BOXLON.h
 
+utility/Tracer.cc
+utility/Tracer.h
 
 # Data types' support
 data/DataHandleFactory.h
