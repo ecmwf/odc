@@ -70,9 +70,41 @@ Buffer Table::readEncodedData() {
 
 void Table::decode(DecodeTarget& target) const {
 
+    Buffer data(readEncodedData());
+
+    if ()
+
+    decode()
+
+    // Ensure there is sufficient space for decoding. Gives the target the
+    // opportunity to allocate it if we desired.
+
+//    target.ensureLength(numRows());
+
     // For now, we assume we are decoding everything!
 
-    std::vector<api::StridedData>& target.
+    const MetaData& metadata;
+    std::vector<api::StridedData> facades(target.dataFacades()); // n.b. a copy
+
+    size_t nrows = metadata.rowsNumber();
+    size_t ncols = metadata.size();
+
+    ASSERT(facades.size() == ncols);
+    for (const auto& f : facades) ASSERT(f.nelem() == nrows);
+
+    // Read the data in in bulk for this table
+
+    eckit::Buffer readBuffer(dataSize_);
+    dh_.seek(dataPosition_);
+    dh_.read(readBuffer, dataSize_);
+
+    // Do the decoding
+
+    for (size_t rowCount = 0; rowCount < nrows; ++rowCount) {
+
+        size_t dataSize =ohs();
+
+    }
 
 }
 
