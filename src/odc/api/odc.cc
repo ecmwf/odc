@@ -16,8 +16,6 @@
 #include "odc/api/odc.h"
 
 #include "odc/api/Odb.h"
-#include "odc/api/Table.h"
-#include "odc/api/ColumnType.h"
 
 using namespace odc::api;
 

@@ -14,7 +14,7 @@
 #include "eckit/log/Log.h"
 
 #include "odc/core/TablesReader.h"
-#include "odc/api/TableImpl.h"
+#include "odc/core/Table.h"
 
 using namespace eckit;
 
@@ -22,6 +22,14 @@ namespace odc {
 namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
+
+///
+/// Internal types
+
+struct TableImpl : public core::Table {
+    TableImpl(const core::Table& t) : Table(t) {}
+};
+
 
 // Internal API class definition
 
@@ -80,8 +88,8 @@ const std::vector<Table>& OdbImpl::tables() {
 
         core::TablesReader reader(path_);
 
-        for (odc::core::Table& t : reader) {
-            tables_.push_back(Table(std::make_shared<TableImpl>(t)));
+        for (core::Table& t : reader) {
+            tables_.push_back(std::make_shared<TableImpl>(t));
         }
     }
 
@@ -89,6 +97,31 @@ const std::vector<Table>& OdbImpl::tables() {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+// Table implementation
+
+Table::Table(std::shared_ptr<TableImpl> t) :
+    impl_(t) {}
+
+Table::~Table() {}
+
+size_t Table::numRows() const {
+    return impl_->numRows();
+}
+
+size_t Table::numColumns() const {
+    return impl_->numColumns();
+}
+
+const std::string& Table::columnName(int col) const {
+    ASSERT(col > 0 && size_t(col) < impl_->numColumns());
+    return impl_->columns()[col]->name();
+}
+
+ColumnType Table::columnType(int col) const {
+    ASSERT(col > 0 && size_t(col) < impl_->numColumns());
+    return impl_->columns()[col]->type();
+}
 
 } // namespace api
 } // namespace odc

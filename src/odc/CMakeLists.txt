@@ -15,9 +15,6 @@ api/odc.h
 api/odc.cc
 api/Odb.h
 api/Odb.cc
-api/Table.h
-api/TableImpl.h
-api/Table.cc
 api/ColumnType.h
 
 ####odbql.cc

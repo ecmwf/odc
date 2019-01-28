@@ -19,14 +19,36 @@
 #include <memory>
 #include <vector>
 
-#include "odc/api/Table.h"
+#include "odc/api/ColumnType.h"
 
 namespace odc {
 namespace api {
 
-class OdbImpl;
+//----------------------------------------------------------------------------------------------------------------------
+
+class TableImpl;
+
+class Table {
+
+public: // methods
+
+    Table(std::shared_ptr<TableImpl> t);
+    ~Table();
+
+    size_t numRows() const;
+    size_t numColumns() const;
+
+    const std::string& columnName(int col) const;
+    ColumnType columnType(int col) const;
+
+private: // members
+
+    std::shared_ptr<TableImpl> impl_;
+};
 
 //----------------------------------------------------------------------------------------------------------------------
+
+class OdbImpl;
 
 class Odb {
 
