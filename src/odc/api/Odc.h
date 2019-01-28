@@ -20,9 +20,25 @@
 #include <vector>
 
 #include "odc/api/ColumnType.h"
+#include "odc/api/StridedData.h"
 
 namespace odc {
 namespace api {
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class DecodeTargetImpl;
+
+class DecodeTarget {
+
+public: // methods
+
+    static DecodeTarget build(std::vector<StridedData>& columnFacades);
+
+private: // members
+
+    std::shared_ptr<DecodeTargetImpl> impl_;
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -40,6 +56,8 @@ public: // methods
 
     const std::string& columnName(int col) const;
     ColumnType columnType(int col) const;
+
+    decode(DecodeTarget& target) const;
 
 private: // members
 

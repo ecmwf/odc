@@ -15,7 +15,7 @@
 
 #include "odc/api/odc.h"
 
-#include "odc/api/Odb.h"
+#include "odc/api/Odc.h"
 
 using namespace odc::api;
 
@@ -127,12 +127,15 @@ auto wrapApiFunction(FN f) -> decltype(f()) {
     try {
         return f();
     } catch (eckit::Exception& e) {
+        eckit::Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
         set_error(e.what(), 1);
     } catch (std::exception& e) {
+        eckit::Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
         set_error(e.what(), 2);
     } catch (...) {
+        eckit::Log::error() << "Caught unknown exception on C-C++ API boundary: " << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
         set_error("Unexpected exception caught", 3);
     }
@@ -166,8 +169,6 @@ void odc_initialise_api() {
             eckit::Main::initialise(1, const_cast<char**>(argv));
             initialised = true;
         }
-
-        ASSERT(false);
     });
 }
 
@@ -225,20 +226,78 @@ int odc_table_num_columns(struct odb_table_t* t) {
     });
 }
 
-int odb_table_column_type(struct odb_table_t* t, int col) {
+int odc_table_column_type(struct odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
         return t->internal.columnType(col);
     });
 }
 
-const char* odb_table_column_name(struct odb_table_t* t, int col) {
+const char* odc_table_column_name(struct odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
         return t->internal.columnName(col).c_str();
     });
 }
 
+const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
+    return wrapApiFunction([t] {
+        odb_decoded_t* dt = new odb_decoded_t;
+
+        dt->ncolumns = t->internal.numColumns();
+        dt->nrows = t->internal.numRows();
+        dt->columns = 0;
+        dt->columnData = new odb_strided_data_t[dt->ncolumns];
+
+        return dt;
+    });
+}
+
+void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
+    return wrapApiFunction([t, dt] {
+
+        // Sanity checking
+
+        size_t nrows = t->internal.numRows();
+        size_t ncols = t->internal.numColumns();
+
+        ASSERT(dt->ncolumns == ncols);
+        ASSERT(dt->nrows >= nrows);
+        ASSERT(dt->columnData);
+
+        // Construct C++ API adapter
+
+        std::vector<StridedData> dataFacade;
+        dataFacade.reserve(ncolumns);
+
+        for (int i = 0; i < ncols; i++) {
+            auto& col(dt->columnData[i]);
+            ASSERT(col.nelem >= nrows);
+            dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
+        }
+
+        DecodeTarget target(DecodeTarget::build(dataFacade));
+
+        // Do the decoder
+
+        t->internal.decode(target);
+
+        // And return the values
+
+        dt->nrows = nrows;
+
+        for (int i = 0; i < ncols; i++) dt->columnData[i].nelem = nrows;
+    });
+}
+
+void odc_free_odb_decoded(const odb_decoded_t* dt) {
+    return wrapApiFunction([dt] {
+        ASSERT(dt);
+        ASSERT(dt->columnData);
+        delete [] dt->columnData;
+        delete dt;
+    });
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

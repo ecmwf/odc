@@ -13,9 +13,10 @@ list( APPEND odclib_src_files
 
 api/odc.h
 api/odc.cc
-api/Odb.h
-api/Odb.cc
+api/Odc.h
+api/Odc.cc
 api/ColumnType.h
+api/StridedData.h
 
 ####odbql.cc
 ####odbql.h
@@ -151,6 +152,8 @@ Stager.cc
 ODBTarget.cc
 ODBTarget.h
 
+core/DecodeTarget.h
+core/DecodeTarget.cc
 core/ThreadSharedDataHandle.cc
 core/ThreadSharedDataHandle.h
 core/TablesReader.cc

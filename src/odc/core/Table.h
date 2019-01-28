@@ -27,6 +27,8 @@ namespace eckit { class DataHandle; }
 namespace odc {
 namespace core {
 
+class DecodeTarget;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 
@@ -52,6 +54,8 @@ public: // methods
     const Properties& properties() const;
 
     eckit::Buffer readEncodedData();
+
+    void decode(DecodeTarget& target) const;
 
 private: // methods
 

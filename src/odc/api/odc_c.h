@@ -18,6 +18,32 @@ struct odb_t;
 
 struct odb_table_t;
 
+struct odb_column_t {
+
+    const char* name;
+    int colNo;
+    int type;
+};
+
+struct odb_strided_data_t {
+    const char* data;
+    int nelem;
+    int elemSize;
+    int stride;
+};
+
+struct odb_decoded_t {
+
+    const char* ownedData;
+
+    int ncolumns;
+    int nrows;
+
+    /* Arrays of length ncolumns */
+    struct odb_column_t* columns;
+    struct odb_strided_data_t* columnData;
+};
+
 /*
  * Initialise API
  * @note This is only required if being used from a context where eckit::Main()
@@ -57,7 +83,14 @@ void odc_free_table(struct odb_table_t* o);
 
 int odc_table_num_rows(struct odb_table_t* t);
 int odc_table_num_columns(struct odb_table_t* t);
-int odb_table_column_type(struct odb_table_t* t, int col);
-const char* odb_table_column_name(struct odb_table_t* t, int col);
+int odc_table_column_type(struct odb_table_t* t, int col);
+const char* odc_table_column_name(struct odb_table_t* t, int col);
+
+/* Decoding data */
+
+const struct odb_decoded_t* odc_table_decode_all(const struct odb_table_t* t);
+void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt);
+
+void odc_free_odb_decoded(const odb_decoded_t* dt);
 
 /*---------------------------------------------------------------------------------------------------------------------*/

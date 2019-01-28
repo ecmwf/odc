@@ -10,6 +10,7 @@
 
 #include "eckit/types/FixedString.h"
 
+#include "odc/core/DecodeTarget.h"
 #include "odc/core/Table.h"
 #include "odc/MetaData.h"
 #include "odc/Header.h"
@@ -65,6 +66,14 @@ Buffer Table::readEncodedData() {
     dh_.seek(dataPosition_);
     dh_.read(data, dataSize_);
     return data;
+}
+
+void Table::decode(DecodeTarget& target) const {
+
+    // For now, we assume we are decoding everything!
+
+    std::vector<api::StridedData>& target.
+
 }
 
 

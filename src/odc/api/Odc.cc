@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/api/Odb.h"
+#include "odc/api/Odc.h"
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
@@ -98,6 +98,19 @@ const std::vector<Table>& OdbImpl::tables() {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+// Shim for decoding
+
+struct DecodeTargetImpl : public core::DecodeTarget {
+    using core::DecodeTarget::DecodeTarget;
+};
+
+DecodeTarget DecodeTarget::build(std::vector<StridedData>& columnFacades) {
+    return DecodeTargetImpl(columnFacades);
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
 // Table implementation
 
 Table::Table(std::shared_ptr<TableImpl> t) :
@@ -121,6 +134,10 @@ const std::string& Table::columnName(int col) const {
 ColumnType Table::columnType(int col) const {
     ASSERT(col > 0 && size_t(col) < impl_->numColumns());
     return impl_->columns()[col]->type();
+}
+
+Table::decode(DecodeTarget& target) const {
+
 }
 
 } // namespace api
