@@ -15,6 +15,7 @@
 
 #include "odc/core/TablesReader.h"
 #include "odc/core/Table.h"
+#include "odc/core/DecodeTarget.h"
 
 using namespace eckit;
 
@@ -104,10 +105,10 @@ struct DecodeTargetImpl : public core::DecodeTarget {
     using core::DecodeTarget::DecodeTarget;
 };
 
-DecodeTarget DecodeTarget::build(std::vector<StridedData>& columnFacades) {
-    return DecodeTargetImpl(columnFacades);
-}
+DecodeTarget::DecodeTarget(std::vector<StridedData>& columnFacades) :
+    impl_(std::make_shared<DecodeTargetImpl>(columnFacades)) {}
 
+DecodeTarget::~DecodeTarget() {}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -136,8 +137,8 @@ ColumnType Table::columnType(int col) const {
     return impl_->columns()[col]->type();
 }
 
-Table::decode(DecodeTarget& target) const {
-
+void Table::decode(DecodeTarget& target) const {
+    impl_->decode(*target.impl_);
 }
 
 } // namespace api

@@ -27,22 +27,8 @@ namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class DecodeTargetImpl;
-
-class DecodeTarget {
-
-public: // methods
-
-    static DecodeTarget build(std::vector<StridedData>& columnFacades);
-
-private: // members
-
-    std::shared_ptr<DecodeTargetImpl> impl_;
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
 class TableImpl;
+class DecodeTarget;
 
 class Table {
 
@@ -57,11 +43,29 @@ public: // methods
     const std::string& columnName(int col) const;
     ColumnType columnType(int col) const;
 
-    decode(DecodeTarget& target) const;
+    void decode(DecodeTarget& target) const;
 
 private: // members
 
     std::shared_ptr<TableImpl> impl_;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class DecodeTargetImpl;
+
+class DecodeTarget {
+
+public: // methods
+
+    DecodeTarget(std::vector<StridedData>& columnFacades);
+    ~DecodeTarget();
+
+private: // members
+
+    std::shared_ptr<DecodeTargetImpl> impl_;
+
+    friend class Table;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

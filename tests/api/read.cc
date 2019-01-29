@@ -69,8 +69,8 @@ CASE("Decode an entire ODB file") {
 
         std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
 
-        EXPECT(decoded.nrows == odc_table_num_rows(table.get()));
-        EXPECT(decoded.ncolumns == 51);
+        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
+        EXPECT(decoded->ncolumns == 51);
 
         eckit::Log::info() << "Decoded: ncolumns = " << decoded->ncolumns << std::endl;
         eckit::Log::info() << "Decoded: nrows = " << decoded->nrows << std::endl;

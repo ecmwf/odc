@@ -8,12 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
+#include "odc/core/Table.h"
+
+#include <functional>
+
+#include "eckit/io/Buffer.h"
+#include "eckit/io/MemoryHandle.h"
 #include "eckit/types/FixedString.h"
 
 #include "odc/core/DecodeTarget.h"
-#include "odc/core/Table.h"
 #include "odc/MetaData.h"
 #include "odc/Header.h"
+#include "odc/Codec.h"
 
 using namespace eckit;
 
@@ -68,13 +74,8 @@ Buffer Table::readEncodedData() {
     return data;
 }
 
-void Table::decode(DecodeTarget& target) const {
+void Table::decode(DecodeTarget& target) {
 
-    Buffer data(readEncodedData());
-
-    if ()
-
-    decode()
 
     // Ensure there is sufficient space for decoding. Gives the target the
     // opportunity to allocate it if we desired.
@@ -83,7 +84,7 @@ void Table::decode(DecodeTarget& target) const {
 
     // For now, we assume we are decoding everything!
 
-    const MetaData& metadata;
+    const MetaData& metadata(columns());
     std::vector<api::StridedData> facades(target.dataFacades()); // n.b. a copy
 
     size_t nrows = metadata.rowsNumber();
@@ -94,18 +95,53 @@ void Table::decode(DecodeTarget& target) const {
 
     // Read the data in in bulk for this table
 
-    eckit::Buffer readBuffer(dataSize_);
-    dh_.seek(dataPosition_);
-    dh_.read(readBuffer, dataSize_);
+    const Buffer readBuffer(readEncodedData());
+    MemoryHandle dh(readBuffer);
+
+    std::vector<std::reference_wrapper<codec::Codec>> decoders;
+    decoders.reserve(ncols);
+    for (auto& col : metadata) {
+        decoders.push_back(col->coder());
+        decoders.back().get().dataHandle(&dh);
+    }
 
     // Do the decoding
 
+    size_t lastStartCol = 0;
+    size_t startCol = 0;
+    std::vector<size_t> lastDecoded(ncols, 0);
+
     for (size_t rowCount = 0; rowCount < nrows; ++rowCount) {
 
-        size_t dataSize =ohs();
+        uint16_t startCol;
+        ASSERT(dh.read(&startCol, sizeof(startCol)) == 2);
+        if (byteOrder_ != BYTE_ORDER_INDICATOR) {
+            std::swap(reinterpret_cast<char*>(&startCol)[0], reinterpret_cast<char*>(&startCol)[1]);
+        }
 
+        if (lastStartCol > startCol) {
+            for (size_t col = startCol; col < lastStartCol; col++) {
+                facades[col].fill(rowCount, lastDecoded[col]);
+            }
+        }
+
+        for (size_t col = startCol; col < ncols; col++) {
+            decoders[col].get().decode(reinterpret_cast<double*>(facades[col][rowCount]));
+            lastDecoded[col] = rowCount;
+        }
+
+        lastStartCol = startCol;
     }
 
+    // And fill in any columns that are incomplete
+
+    for (size_t col = 0; col < ncols; col++) {
+        if (lastDecoded[col] < nrows-1) {
+            facades[col].fill(nrows, lastDecoded[col] - 1);
+        } else {
+            break;
+        }
+    }
 }
 
 

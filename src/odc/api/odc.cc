@@ -249,6 +249,10 @@ const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
         dt->columns = 0;
         dt->columnData = new odb_strided_data_t[dt->ncolumns];
 
+        // TODO: How much space do we need to allocate in total
+        // TODO: Look at the table metadata and extract the decoded size
+        // TODO: Return the offsets into the arrays!
+
         return dt;
     });
 }
@@ -261,22 +265,23 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
         size_t nrows = t->internal.numRows();
         size_t ncols = t->internal.numColumns();
 
-        ASSERT(dt->ncolumns == ncols);
-        ASSERT(dt->nrows >= nrows);
+        ASSERT(dt->ncolumns == long(ncols));
+        ASSERT(dt->nrows >= long(nrows));
         ASSERT(dt->columnData);
 
         // Construct C++ API adapter
 
         std::vector<StridedData> dataFacade;
-        dataFacade.reserve(ncolumns);
+        dataFacade.reserve(ncols);
 
-        for (int i = 0; i < ncols; i++) {
+        for (size_t i = 0; i < ncols; i++) {
             auto& col(dt->columnData[i]);
-            ASSERT(col.nelem >= nrows);
+            eckit::Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
+            ASSERT(col.nelem >= long(nrows));
             dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
         }
 
-        DecodeTarget target(DecodeTarget::build(dataFacade));
+        DecodeTarget target(dataFacade);
 
         // Do the decoder
 
@@ -286,7 +291,7 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
 
         dt->nrows = nrows;
 
-        for (int i = 0; i < ncols; i++) dt->columnData[i].nelem = nrows;
+        for (size_t i = 0; i < ncols; i++) dt->columnData[i].nelem = nrows;
     });
 }
 

@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/core/DecodeTarget.h".h"
+#include "odc/core/DecodeTarget.h"
 
 
 namespace odc {

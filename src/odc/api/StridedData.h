@@ -15,6 +15,13 @@
 #ifndef odc_api_StridedData_H
 #define odc_api_StridedData_H
 
+#include <cstddef>
+#include <string.h>
+#include <algorithm>
+
+#include "eckit/exception/Exceptions.h"
+
+
 namespace odc {
 namespace api {
 
@@ -36,8 +43,7 @@ public: // methods
         data_(reinterpret_cast<char*>(data)), nelem_(nelem), dataSize_(dataSize), stride_(stride), const_(cnst) {}
 
     StridedData(const void* data, size_t nelem, size_t dataSize, size_t stride) :
-        StridedData(const_cast<void*>(data), nelem, dataSize, stride, true),
-        const_(true) {}
+        StridedData(const_cast<void*>(data), nelem, dataSize, stride, true) {}
 
     ~StridedData() {}
 
@@ -50,11 +56,16 @@ public: // methods
     size_t dataSize() const { return dataSize_; }
     size_t stride() const { return stride_; }
 
-    value_type* operator[](int i) { ASSERT(!const_); return &data_[i*stride_]; }
-    const value_type* operator[](int i) const { return &data_[i*stride_]; }
+    value_type* get(int i) { ASSERT(!const_); return &data_[i*stride_]; }
+    const value_type* get(int i) const { return &data_[i*stride_]; }
+
+    value_type* operator[](int i) { ASSERT(!const_); return get(i); }
+    const value_type* operator[](int i) const { return get(i); }
 
     value_type* operator*() { ASSERT(!const_); return data_; }
     const value_type* operator*() const { return data_; }
+
+    void fill(int sourceRow, int finalRow);
 
     // Iteration functionality
 
@@ -67,7 +78,7 @@ public: // methods
         return *this;
     }
 
-    StridedData& operator++(int) {
+    StridedData operator++(int) {
         auto ret = *this;
         ++(*this);
         return ret;
@@ -75,7 +86,7 @@ public: // methods
 
     bool operator==(const StridedData& rhs) {
         return (data_ == rhs.data_ &&
-                nelem_ == rhs.data_ &&
+                nelem_ == rhs.nelem_ &&
                 const_ == rhs.const_ &&
                 dataSize_ == rhs.dataSize_ &&
                 stride_ == rhs.stride_);
@@ -87,13 +98,42 @@ public: // methods
 private: // members
 
     value_type* data_;
-    bool const_;
 
     size_t nelem_;
     size_t dataSize_;
     size_t stride_;
+    bool const_;
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+
+inline void StridedData::fill(int sourceRow, int finalRow) {
+
+    ASSERT(sourceRow < finalRow);
+
+    // Specialisations for speed
+
+    if (dataSize_ == 8) {
+        if (stride_ == 8) {
+            std::fill(reinterpret_cast<uint64_t*>(get(sourceRow+1)),
+                      reinterpret_cast<uint64_t*>(get(finalRow+1)),
+                      *reinterpret_cast<uint64_t*>(get(sourceRow)));
+        } else {
+            uint64_t src = *reinterpret_cast<uint64_t*>(get(sourceRow));
+            uint64_t* end = reinterpret_cast<uint64_t*>(get(finalRow));
+            for (uint64_t* p = reinterpret_cast<uint64_t*>(get(sourceRow+1));
+                 p <= end;
+                 p = reinterpret_cast<uint64_t*>(reinterpret_cast<char*>(p) + stride_)) {
+                *p = src;
+            }
+        }
+    } else {
+        char* src = get(sourceRow);
+        for (int row = sourceRow + 1; row <= finalRow; ++row) {
+            ::memcpy(get(row), src, dataSize_);
+        }
+    }
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 

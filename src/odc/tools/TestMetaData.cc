@@ -23,8 +23,6 @@ using namespace odc;
 
 static void test()
 {
-	typedef DataStream<SameByteOrder, DataHandle> DS;
-
 	MetaData md1(0);
 	md1.addColumn /*<DS>*/("A", "REAL");//, false, 0.);
 	md1.addColumn /*<DS>*/("B", "INTEGER");//, false, 0.);

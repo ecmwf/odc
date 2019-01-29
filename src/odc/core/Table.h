@@ -55,7 +55,7 @@ public: // methods
 
     eckit::Buffer readEncodedData();
 
-    void decode(DecodeTarget& target) const;
+    void decode(DecodeTarget& target);
 
 private: // methods
 
