@@ -18,7 +18,7 @@ struct odb_t;
 
 struct odb_table_t;
 
-struct odb_column_t {
+struct odb_column_t { /* CURRENTLY UNUSED */
 
     const char* name;
     int colNo;
@@ -26,7 +26,7 @@ struct odb_column_t {
 };
 
 struct odb_strided_data_t {
-    const char* data;
+    char* data;
     int nelem;
     int elemSize;
     int stride;
@@ -34,7 +34,7 @@ struct odb_strided_data_t {
 
 struct odb_decoded_t {
 
-    const char* ownedData;
+    char* ownedData;
 
     int ncolumns;
     int nrows;

@@ -9,8 +9,10 @@
  */
 
 #include <functional>
+#include <cstdint>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/maths/Functions.h"
 #include "eckit/runtime/Main.h"
 
 #include "odc/api/odc.h"
@@ -242,16 +244,43 @@ const char* odc_table_column_name(struct odb_table_t* t, int col) {
 
 const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
     return wrapApiFunction([t] {
+
+        const Table& tbl(t->internal);
+
+        size_t nrows = tbl.numRows();
+        size_t ncols = tbl.numColumns();
+
+        // Allocate the object to return
+
         odb_decoded_t* dt = new odb_decoded_t;
 
-        dt->ncolumns = t->internal.numColumns();
-        dt->nrows = t->internal.numRows();
+        dt->ncolumns = ncols;
+        dt->nrows = nrows;
         dt->columns = 0;
-        dt->columnData = new odb_strided_data_t[dt->ncolumns];
+        dt->columnData = new odb_strided_data_t[ncols];
 
-        // TODO: How much space do we need to allocate in total
-        // TODO: Look at the table metadata and extract the decoded size
-        // TODO: Return the offsets into the arrays!
+        // Fill in column details
+
+        uintptr_t totalRowSize = 0;
+        for (size_t col = 0; col < ncols; ++col) {
+            dt->columnData[col].elemSize = tbl.columnDecodedSize(col);
+//            eckit::Log::info() << "Setting facade: " << col << " - " << nrows << std::endl;
+            dt->columnData[col].nelem = nrows;
+            dt->columnData[col].data = reinterpret_cast<char*>(totalRowSize); // Store offset. Update with ptr later.
+            totalRowSize += eckit::round(dt->columnData[col].elemSize, sizeof(double));
+        }
+
+        // Allocate the storage (and assign the strided data to the columns)
+
+        dt->ownedData = new char[totalRowSize * nrows];
+        for (size_t col = 0; col < ncols; ++col) {
+            dt->columnData[col].data = dt->ownedData + reinterpret_cast<uintptr_t>(dt->columnData[col].data);
+            dt->columnData[col].stride = totalRowSize;
+        }
+
+        // And do the actual decoding!
+
+        odc_table_decode(t, dt);
 
         return dt;
     });
@@ -276,7 +305,7 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
 
         for (size_t i = 0; i < ncols; i++) {
             auto& col(dt->columnData[i]);
-            eckit::Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
+//            eckit::Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
             ASSERT(col.nelem >= long(nrows));
             dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
         }
@@ -299,6 +328,7 @@ void odc_free_odb_decoded(const odb_decoded_t* dt) {
     return wrapApiFunction([dt] {
         ASSERT(dt);
         ASSERT(dt->columnData);
+        if (dt->ownedData) delete [] dt->ownedData;
         delete [] dt->columnData;
         delete dt;
     });

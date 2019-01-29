@@ -14,6 +14,7 @@
 #include "odc/Codec.h"
 #include "odc/api/ColumnType.h"
 #include "eckit/sql/SQLTypedefs.h"
+#include "eckit/os/BackTrace.h"
 
 namespace eckit { class DataHandle; }
 
@@ -43,7 +44,7 @@ public:
 	template<typename DATASTREAM> void save(DATASTREAM &);
 
 	codec::Codec& coder() const { return *coder_; }
-	void coder(codec::Codec *c) { delete coder_; coder_ = c; }
+    void coder(codec::Codec *c) { delete coder_; coder_ = c; }
 
     size_t dataSizeDoubles() const { return coder_->dataSizeDoubles(); }
     void dataSizeDoubles(size_t count) { coder_->dataSizeDoubles(count); }
@@ -119,7 +120,7 @@ template<typename DATASTREAM> void Column::load(DATASTREAM &f)
 		f.readBitfieldDef(bitfieldDef_);
 	}
 
-	coder(codec::Codec::loadCodec(f));
+    coder(codec::Codec::loadCodec(f));
 }
 
 template<typename DATASTREAM> void Column::save(DATASTREAM &f)

@@ -11,7 +11,9 @@
 #include "odc/core/Table.h"
 
 #include <functional>
+#include <bitset>
 
+#include "eckit/io/AutoCloser.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/types/FixedString.h"
@@ -97,6 +99,8 @@ void Table::decode(DecodeTarget& target) {
 
     const Buffer readBuffer(readEncodedData());
     MemoryHandle dh(readBuffer);
+    AutoCloser<DataHandle> closer(dh);
+    dh.openForRead();
 
     std::vector<std::reference_wrapper<codec::Codec>> decoders;
     decoders.reserve(ncols);
@@ -104,7 +108,6 @@ void Table::decode(DecodeTarget& target) {
         decoders.push_back(col->coder());
         decoders.back().get().dataHandle(&dh);
     }
-
     // Do the decoding
 
     size_t lastStartCol = 0;
@@ -113,15 +116,13 @@ void Table::decode(DecodeTarget& target) {
 
     for (size_t rowCount = 0; rowCount < nrows; ++rowCount) {
 
-        uint16_t startCol;
-        ASSERT(dh.read(&startCol, sizeof(startCol)) == 2);
-        if (byteOrder_ != BYTE_ORDER_INDICATOR) {
-            std::swap(reinterpret_cast<char*>(&startCol)[0], reinterpret_cast<char*>(&startCol)[1]);
-        }
+        unsigned char marker[2];
+        ASSERT(dh.read(&marker, sizeof(marker)) == 2);
+        int startCol = (marker[0] * 256) + marker[1]; // Endian independant
 
         if (lastStartCol > startCol) {
             for (size_t col = startCol; col < lastStartCol; col++) {
-                facades[col].fill(rowCount, lastDecoded[col]);
+                facades[col].fill(lastDecoded[col], rowCount-1);
             }
         }
 
@@ -137,7 +138,7 @@ void Table::decode(DecodeTarget& target) {
 
     for (size_t col = 0; col < ncols; col++) {
         if (lastDecoded[col] < nrows-1) {
-            facades[col].fill(nrows, lastDecoded[col] - 1);
+            facades[col].fill(lastDecoded[col], nrows-1);
         } else {
             break;
         }

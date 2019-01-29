@@ -42,6 +42,7 @@ public: // methods
 
     const std::string& columnName(int col) const;
     ColumnType columnType(int col) const;
+    size_t columnDecodedSize(int col) const;
 
     void decode(DecodeTarget& target) const;
 

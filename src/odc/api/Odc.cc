@@ -72,14 +72,9 @@ int Odb::numTables() {
 // Implementation definition
 
 OdbImpl::OdbImpl(const eckit::PathName& path) :
-    path_(path) {
+    path_(path) {}
 
-    Log::info() << "Construct: " << path << std::endl;
-}
-
-OdbImpl::~OdbImpl() {
-    Log::info() << "Destroy: " << std::endl;
-}
+OdbImpl::~OdbImpl() {}
 
 const std::vector<Table>& OdbImpl::tables() {
 
@@ -135,6 +130,10 @@ const std::string& Table::columnName(int col) const {
 ColumnType Table::columnType(int col) const {
     ASSERT(col > 0 && size_t(col) < impl_->numColumns());
     return impl_->columns()[col]->type();
+}
+
+size_t Table::columnDecodedSize(int col) const {
+    return impl_->columns()[col]->dataSizeDoubles() * sizeof(double);
 }
 
 void Table::decode(DecodeTarget& target) const {

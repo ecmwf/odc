@@ -210,12 +210,15 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
 
 bool MetaData::operator==(const MetaData& other) const
 {
-    if (size() != other.size())
-		return false;
+    if (size() != other.size()) {
+        return false;
+    }
 
-    for (size_t i = 0; i < size(); ++i)
-        if (*(*this)[i] != *other[i])
+    for (size_t i = 0; i < size(); ++i) {
+        if (*(*this)[i] != *other[i]) {
             return false;
+        }
+    }
 
 	return true;
 }
@@ -223,15 +226,17 @@ bool MetaData::operator==(const MetaData& other) const
 void MetaData::resetStats()
 {
 	//Log::debug() << "MetaData::resetStats" << std::endl;
-	for (size_t i = 0; i < size(); i++)
-		(*this)[i]->resetStats();
+    for (size_t i = 0; i < size(); i++) {
+        (*this)[i]->resetStats();
+    }
     rowsNumber_ = 0;
 }
 
 void MetaData::print(std::ostream& s) const
 {
-	for (size_t i = 0; i < size(); i++)
-		s << i << ". " << *at(i) << std::endl;
+    for (size_t i = 0; i < size(); i++) {
+        s << i << ". " << *at(i) << std::endl;
+    }
 }
 
 MetaData& MetaData::addColumn(const std::string& name, const std::string& type)

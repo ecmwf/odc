@@ -47,15 +47,16 @@ Column& Column::operator=(const Column& other)
 {
 	name(other.name()); 
 
-	type<DataStream<SameByteOrder, DataHandle> >(other.type(), false);
+//	type<DataStream<SameByteOrder, DataHandle> >(other.type(), false);
+    type_ = other.type_;
     if (type_ == BITFIELD)
 		bitfieldDef(other.bitfieldDef());
 
-	//delete coder_;
-	//coder_ = (other.coder_)->clone();
-	//hasMissing(other.hasMissing());
-	missingValue(other.missingValue());
-	return *this;
+    delete coder_;
+    coder_ = other.coder_->clone();
+//    hasMissing(other.hasMissing());
+//    missingValue(other.missingValue());
+    return *this;
 }
 
 const char *Column::columnTypeName(ColumnType type)

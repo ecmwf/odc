@@ -40,10 +40,13 @@ public: // methods
     // Construction and copy
 
     StridedData(void* data, size_t nelem, size_t dataSize, size_t stride, bool cnst=false) :
-        data_(reinterpret_cast<char*>(data)), nelem_(nelem), dataSize_(dataSize), stride_(stride), const_(cnst) {}
+        data_(reinterpret_cast<char*>(data)), nelem_(nelem), dataSize_(dataSize), stride_(stride), const_(cnst) {
+        ASSERT(!const_);
+    }
 
     StridedData(const void* data, size_t nelem, size_t dataSize, size_t stride) :
-        StridedData(const_cast<void*>(data), nelem, dataSize, stride, true) {}
+        StridedData(const_cast<void*>(data), nelem, dataSize, stride, true) {
+    }
 
     ~StridedData() {}
 
@@ -56,8 +59,12 @@ public: // methods
     size_t dataSize() const { return dataSize_; }
     size_t stride() const { return stride_; }
 
-    value_type* get(int i) { ASSERT(!const_); return &data_[i*stride_]; }
-    const value_type* get(int i) const { return &data_[i*stride_]; }
+    value_type* get(int i) {
+        ASSERT(!const_); return &data_[i*stride_];
+    }
+    const value_type* get(int i) const {
+        return &data_[i*stride_];
+    }
 
     value_type* operator[](int i) { ASSERT(!const_); return get(i); }
     const value_type* operator[](int i) const { return get(i); }
