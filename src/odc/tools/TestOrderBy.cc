@@ -15,7 +15,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/parser/StringTools.h"
 #include "odc/Select.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 #include "ImportTool.h"
 #include "TestCase.h"

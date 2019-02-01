@@ -24,17 +24,8 @@ pyodbapi.h
 ODBAPIVersionSHA1.cc
 StringTool.cc
 StringTool.h
-Array.h
 ###>>>#ShiftedBitColumnExpression.cc
 ###>>>#ShiftedBitColumnExpression.h
-Codec.cc
-Codec.h
-CodecFactory.h
-CodecFactory.cc
-CodecOptimizer.cc
-CodecOptimizer.h
-Column.cc
-Column.h
 CommandLineParser.cc
 CommandLineParser.h
 Comparator.cc
@@ -62,8 +53,6 @@ MDI.cc
 MDI.h
 GribCodes.cc
 GribCodes.h
-Header.cc
-Header.h
 InMemoryDataHandle.cc
 InMemoryDataHandle.h
 IteratorProxy.h
@@ -75,10 +64,6 @@ MDSetter.cc
 MDSetter.h
 MDUpdatingIterator.cc
 MDUpdatingIterator.h
-MemoryBlock.cc
-MemoryBlock.h
-MetaData.cc
-MetaData.h
 ####ODAColumn.cc
 ####ODAColumn.h
 ####NullColumn.cc
@@ -152,14 +137,40 @@ Stager.cc
 ODBTarget.cc
 ODBTarget.h
 
-core/DecodeTarget.h
+core/Column.cc
+core/Column.h
+core/DataStream.h
 core/DecodeTarget.cc
-core/ThreadSharedDataHandle.cc
-core/ThreadSharedDataHandle.h
-core/TablesReader.cc
-core/TablesReader.h
+core/DecodeTarget.h
+core/Exceptions.cc
+core/Exceptions.h
+core/Header.cc
+core/Header.h
+core/MetaData.cc
+core/MetaData.h
 core/Table.cc
 core/Table.h
+core/TablesReader.cc
+core/TablesReader.h
+core/ThreadSharedDataHandle.cc
+core/ThreadSharedDataHandle.h
+core/Codec.cc
+core/Codec.h
+core/CodecFactory.h
+core/CodecFactory.cc
+
+codec/Constant.cc
+codec/Constant.h
+codec/Integer.cc
+codec/Integer.h
+codec/IntegerMissing.cc
+codec/IntegerMissing.h
+codec/String.cc
+codec/String.h
+codec/Real.cc
+codec/Real.h
+codec/CodecOptimizer.cc
+codec/CodecOptimizer.h
 
 csv/TextReader.cc
 csv/TextReader.h
@@ -209,9 +220,7 @@ data/MarsHandleFactory.h
 
 list( APPEND odclib_templates
 ConstantSetter.cc
-DataStream.cc
 FastODA2Request.cc
-Header.cc
 ODAUpdatingIterator.cc
 WriterDispatchingIterator.cc
 MDUpdatingIterator.cc

@@ -16,7 +16,7 @@
 #include "eckit/runtime/Main.h"
 
 #include "odc/FastODA2Request.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/core/TablesReader.h"
 #include "odc/ODAHandle.h"
 #include "odc/ODBAPISettings.h"

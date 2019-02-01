@@ -23,8 +23,6 @@
 using namespace eckit;
 using namespace std;
 
-inline size_t MEGA(size_t n) { return n*1024*1204; }
-
 template class eckit::ThreadSingleton<odc::ODBAPISettings>;
 static ThreadSingleton<odc::ODBAPISettings> instance_;
 
@@ -100,8 +98,8 @@ ODBAPISettings& ODBAPISettings::instance()
 }
 
 ODBAPISettings::ODBAPISettings()
-: headerBufferSize_(Resource<long>("$ODB_HEADER_BUFFER_SIZE;-headerBufferSize;headerBufferSize", MEGA(4))),
-  setvbufferSize_(Resource<long>("$ODB_SETVBUFFER_SIZE;-setvbufferSize;setvbufferSize", MEGA(8))),
+: headerBufferSize_(Resource<long>("$ODC_HEADER_BUFFER_SIZE;-headerBufferSize;headerBufferSize", 4 * 1024 * 1024)),
+  setvbufferSize_(Resource<long>("$ODC_SETVBUFFER_SIZE;-setvbufferSize;setvbufferSize", 8 * 1024 * 1024)),
   useAIO_(Resource<bool>("$odc_USE_AIO", false))
 {}
 

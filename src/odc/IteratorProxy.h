@@ -22,8 +22,9 @@
 #ifndef odc_IteratorProxy_H
 #define odc_IteratorProxy_H
 
+#include <string.h>
+
 #include "odc/api/ColumnType.h"
-#include "odc/SelectIterator.h"
 #include "eckit/sql/SQLTypedefs.h"
 
 namespace eckit { class PathName; }
@@ -33,7 +34,7 @@ namespace eckit { class DataHandle; }
 
 #include <Python.h>
 
-#include "odc/Column.h"
+#include "odc/core/Column.h"
 #include "odc/odccapi.h"
 
 struct ODBStopIteration : public std::exception {
@@ -53,14 +54,11 @@ extern "C" void python_api_start()
 
 namespace odc {
 
+namespace core { class MetaData; }
+
 //----------------------------------------------------------------------------------------------------------------------
 
 class Reader;
-class ReaderIterator;
-class MetaData;
-class MetaDataReaderIterator;
-class SelectIterator;
-
 
 template <typename ITERATOR, typename O, typename DATA>
 class IteratorProxy;
@@ -93,9 +91,9 @@ public:
     size_t dataOffset(size_t i) const { return it_->iter_->dataOffset(i); }
     size_t dataSizeDoubles(size_t i) const { return columns()[i]->dataSizeDoubles(); }
 
-    const MetaData& columns() const { return ((*it_).iter_)->columns(); }
+    const core::MetaData& columns() const { return ((*it_).iter_)->columns(); }
     void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
-	const MetaData& columns(const MetaData& md) { return ((*it_).iter_)->columns(md); }
+    const core::MetaData& columns(const core::MetaData& md) { return ((*it_).iter_)->columns(md); }
 	bool isNewDataset() { return ((*it_).iter_)->isNewDataset(); }
     bool isMissing(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data(i); }
 	double missingValue(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue(); }

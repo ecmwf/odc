@@ -36,7 +36,7 @@
 #include <vector>
 #include "eckit/sql/SQLOutput.h"
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 
 namespace odc {

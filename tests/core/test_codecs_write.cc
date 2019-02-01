@@ -8,15 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/testing/Test.h"
-#include "eckit/system/SystemInfo.h"
-#include "eckit/io/DataHandle.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/eckit_ecbuild_config.h"
+#include "eckit/io/Buffer.h"
+#include "eckit/memory/ScopedPtr.h"
+#include "eckit/system/SystemInfo.h"
+#include "eckit/testing/Test.h"
 
-#include "odc/Codec.h"
-
-#include "MockDataHandles.h"
+#include "odc/core/Codec.h"
+#include "odc/codec/Constant.h"
+#include "odc/codec/Integer.h"
+#include "odc/codec/IntegerMissing.h"
+#include "odc/codec/Real.h"
+#include "odc/codec/String.h"
 
 #include <time.h>
 #include <stdlib.h>
@@ -33,10 +36,13 @@
 #define signbit(x) std::signbit((x))
 #endif
 
+using namespace eckit;
 using namespace eckit::testing;
 using namespace odc::codec;
-using odc::SameByteOrder;
-using odc::OtherByteOrder;
+using odc::core::Codec;
+using odc::core::SameByteOrder;
+using odc::core::OtherByteOrder;
+using odc::core::DataStream;
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -62,6 +68,40 @@ size_t prepend_codec_selection_header(std::vector<unsigned char>& data,
 
     return 4 + codec_name.length();
 }
+
+
+class EndianCodecSave {
+
+public:
+
+    EndianCodecSave(bool bigEndianData, Codec& codec) :
+        buffer_(4095) {
+
+        if (eckit::system::SystemInfo::isBigEndian() == bigEndianData) {
+            DataStream<SameByteOrder> ds(buffer_);
+            codec.save(ds);
+            position_ = ds.position();
+        } else {
+            DataStream<OtherByteOrder> ds(buffer_);
+            codec.save(ds);
+            position_ = ds.position();
+        }
+    }
+
+    const char* data() const { return buffer_; }
+    eckit::Offset position() const { return position_; }
+
+    char* get() { return &buffer_[position_];  }
+    void set(char* p) {
+        ASSERT(p >= &buffer_[0]);
+        ASSERT(p - &buffer_[0] < static_cast<long>(buffer_.size()));
+        position_ = static_cast<size_t>(p - &buffer_[0]);
+    }
+
+private:
+    eckit::Buffer buffer_;
+    eckit::Offset position_;
+};
 
 // Normal write process:
 //
@@ -103,11 +143,9 @@ CASE("Constant values consume no space in the output data buffer") {
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecConstant<SameByteOrder>);
         } else {
@@ -128,14 +166,10 @@ CASE("Constant values consume no space in the output data buffer") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            static_cast<CodecConstant<SameByteOrder>*>(c.get())->save(&dh);
-        } else {
-            static_cast<CodecConstant<OtherByteOrder>*>(c.get())->save(&dh);
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(28));
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), data.size()) == 0);
+        EXPECT(ds.position() == eckit::Offset(28));
+        EXPECT(::memcmp(&data[0], ds.data(), data.size()) == 0);
 
         // Encode the data to wherever we want it (in reality would be after the header, via a buffer.).
 
@@ -185,11 +219,9 @@ CASE("constant strings consume no output data space") {
             // n.b. Don't swap string data around with endianness
         }
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecConstantString<SameByteOrder>);
         } else {
@@ -210,14 +242,10 @@ CASE("constant strings consume no output data space") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            static_cast<CodecConstantString<SameByteOrder>*>(c.get())->save(&dh);
-        } else {
-            static_cast<CodecConstantString<OtherByteOrder>*>(c.get())->save(&dh);
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(28));
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), data.size()) == 0);
+        EXPECT(ds.position() == eckit::Offset(28));
+        EXPECT(::memcmp(&data[0], ds.data(), data.size()) == 0);
 
         // Encode the data to wherever we want it (in reality would be after the header, via a buffer.).
 
@@ -282,11 +310,9 @@ CASE("Constant integer or missing value behaves a bit oddly") {
         }
         data.push_back(0xff); // missing
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecConstantOrMissing<SameByteOrder>);
         } else {
@@ -310,38 +336,34 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            static_cast<CodecConstantOrMissing<SameByteOrder>*>(c.get())->save(&dh);
-        } else {
-            static_cast<CodecConstantOrMissing<OtherByteOrder>*>(c.get())->save(&dh);
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it (in reality would be after the header, via a buffer.).
         // Expect one byte per element.
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), baseValue + 0)) == (dh.get() + 1));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), baseValue + 0)) == (ds.get() + 1));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 1));
+        ds.set(posNext);
 
         for (size_t n = 0; n < 255; n++) {
-            EXPECT((posNext = c->encode(dh.get(), baseValue + n)) == (dh.get() + 1));
-            dh.set(posNext);
+            EXPECT((posNext = c->encode(ds.get(), baseValue + n)) == (ds.get() + 1));
+            ds.set(posNext);
         }
 
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 1));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t nelem = 258;
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + nelem));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + nelem));
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + nelem) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + nelem) == 0);
     }
 }
 
@@ -390,11 +412,9 @@ CASE("real constant or missing value is not quite constant") {
         }
         data.push_back(0xff); // missing
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecRealConstantOrMissing<SameByteOrder>);
         } else {
@@ -418,43 +438,39 @@ CASE("real constant or missing value is not quite constant") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            static_cast<CodecRealConstantOrMissing<SameByteOrder>*>(c.get())->save(&dh);
-        } else {
-            static_cast<CodecRealConstantOrMissing<OtherByteOrder>*>(c.get())->save(&dh);
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect one byte per element.
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), baseValue + 0)) == (dh.get() + 1));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), baseValue + 0)) == (ds.get() + 1));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 1));
+        ds.set(posNext);
         for (size_t n = 0; n < 255; n++) {
-            EXPECT((posNext = c->encode(dh.get(), baseValue + n)) == (dh.get() + 1));
-            dh.set(posNext);
+            EXPECT((posNext = c->encode(ds.get(), baseValue + n)) == (ds.get() + 1));
+            ds.set(posNext);
         }
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 1));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t nelem = 258;
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + nelem));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + nelem));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + nelem; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //                eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + nelem) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + nelem) == 0);
     }
 }
 
@@ -499,11 +515,9 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecChars<SameByteOrder>);
         } else {
@@ -525,21 +539,18 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            static_cast<CodecChars<SameByteOrder>*>(c.get())->save(&dh);
-        } else {
-            static_cast<CodecChars<OtherByteOrder>*>(c.get())->save(&dh);
-        }
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EndianCodecSave ds(bigEndianOutput, *c);
+
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data where we want it (ensuring that the data is written in appropriate
         // sized blocks.
 
-        unsigned char* posNext;
+        char* posNext;
         for(size_t n = 5; n < 10; n++) {
-            EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(expected_data[n])))
-                             == (dh.get() + 8));
-            dh.set(posNext);
+            EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(expected_data[n])))
+                             == (ds.get() + 8));
+            ds.set(posNext);
         }
 
         // Check we have the data we expect
@@ -550,9 +561,9 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         size_t dataSize = (8 * 5);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + dataSize));
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), 4) == 0);
-        EXPECT(::memcmp(&data[28], &dh.getBuffer()[28], expectedHdrSize + dataSize - 28) == 0);
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + dataSize));
+        EXPECT(::memcmp(&data[0], ds.data(), 4) == 0);
+        EXPECT(::memcmp(&data[28], &ds.data()[28], expectedHdrSize + dataSize - 28) == 0);
     }
 }
 
@@ -602,11 +613,9 @@ CASE("long floating point values can include the missing data value") {
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecLongReal<SameByteOrder>);
         } else {
@@ -643,51 +652,47 @@ CASE("long floating point values can include the missing data value") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            static_cast<CodecLongReal<SameByteOrder>*>(c.get())->save(&dh);
-        } else {
-            static_cast<CodecLongReal<OtherByteOrder>*>(c.get())->save(&dh);
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect 8 bytes per element
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), 0.0)) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), 123456789.0123456)) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), -9876543210.9876)) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&inf_bits))) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&neg_inf_bits))) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&sig_nan_bits))) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&quiet_nan_bits))) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), -2147483647)) == (dh.get() + 8));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 8));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), 0.0)) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), 123456789.0123456)) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), -9876543210.9876)) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(&inf_bits))) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(&neg_inf_bits))) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(&sig_nan_bits))) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(&quiet_nan_bits))) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), -2147483647)) == (ds.get() + 8));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 8));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t data_size = (9 * 8);
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + data_size));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //                eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + data_size) == 0);
     }
 }
 
@@ -747,11 +752,9 @@ CASE("short floating point values can include the missing data value") {
         if (bigEndianOutput)
             std::reverse(data.end()-4, data.end());
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (secondCodec) {
                 c.reset(new CodecShortReal2<SameByteOrder>);
@@ -796,21 +799,9 @@ CASE("short floating point values can include the missing data value") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            if (secondCodec) {
-                static_cast<CodecShortReal2<SameByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecShortReal<SameByteOrder>*>(c.get())->save(&dh);
-            }
-        } else {
-            if (secondCodec) {
-                static_cast<CodecShortReal2<OtherByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecShortReal<OtherByteOrder>*>(c.get())->save(&dh);
-            }
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect 4 bytes per element
@@ -819,57 +810,57 @@ CASE("short floating point values can include the missing data value") {
         //      is just treated as missing on read, without flagging hasMissing(). We do this here
         //      just to demonstrate. See ODB-367
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), 0.0)) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), 654321.123)) == (dh.get() + 4));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), 0.0)) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), 654321.123)) == (ds.get() + 4));
+        ds.set(posNext);
 
         size_t offsetMissing = 0;
         if (secondCodec) {
-            EXPECT((posNext = c->encode(dh.get(), 1.17549435082229e-38)) == (dh.get() + 4));
-            dh.set(posNext);
-            EXPECT_THROWS_AS(c->encode(dh.get(), -3.40282346638529e+38), eckit::AssertionFailed);
-            offsetMissing = dh.position();
-            dh.set(dh.get() + 4);
+            EXPECT((posNext = c->encode(ds.get(), 1.17549435082229e-38)) == (ds.get() + 4));
+            ds.set(posNext);
+            EXPECT_THROWS_AS(c->encode(ds.get(), -3.40282346638529e+38), eckit::AssertionFailed);
+            offsetMissing = ds.position();
+            ds.set(ds.get() + 4);
         } else {
-            EXPECT_THROWS_AS(c->encode(dh.get(), 1.17549435082229e-38), eckit::AssertionFailed);
-            offsetMissing = dh.position();
-            dh.set(dh.get() + 4);
-            EXPECT((posNext = c->encode(dh.get(), -3.40282346638529e+38)) == (dh.get() + 4));
-            dh.set(posNext);
+            EXPECT_THROWS_AS(c->encode(ds.get(), 1.17549435082229e-38), eckit::AssertionFailed);
+            offsetMissing = ds.position();
+            ds.set(ds.get() + 4);
+            EXPECT((posNext = c->encode(ds.get(), -3.40282346638529e+38)) == (ds.get() + 4));
+            ds.set(posNext);
         }
 
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&inf_bits))) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(&neg_inf_bits))) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), static_cast<double>(*reinterpret_cast<const float*>(&sig_nan_bits)))) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), static_cast<double>(*reinterpret_cast<const float*>(&quiet_nan_bits)))) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 4));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(&inf_bits))) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(&neg_inf_bits))) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), static_cast<double>(*reinterpret_cast<const float*>(&sig_nan_bits)))) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), static_cast<double>(*reinterpret_cast<const float*>(&quiet_nan_bits)))) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 4));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t data_size = (9 * 4);
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + data_size));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //                eckit::Log::info() << "******************************" << std::endl;
 //        }
 
         // The missing values won't be encoded when they are hit, so skip them in the data test
 
         EXPECT(offsetMissing != 0);
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), offsetMissing) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), offsetMissing) == 0);
         EXPECT(::memcmp(&data[0] + offsetMissing + 4,
-                        dh.getBuffer() + offsetMissing + 4,
+                        ds.data() + offsetMissing + 4,
                         expectedHdrSize + data_size - offsetMissing - 4) == 0);
     }
 }
@@ -911,11 +902,9 @@ CASE("32bit integers are as-is") {
                 std::reverse(data.end()-len, data.end());
         }
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             c.reset(new CodecInt32<SameByteOrder>);
         } else {
@@ -938,45 +927,41 @@ CASE("32bit integers are as-is") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            static_cast<CodecInt32<SameByteOrder>*>(c.get())->save(&dh);
-        } else {
-            static_cast<CodecInt32<OtherByteOrder>*>(c.get())->save(&dh);
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect 4 bytes per element
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), 0)) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), -1)) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), 2147483647)) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), -2147483648)) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), 222222222)) == (dh.get() + 4));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), -6543210)) == (dh.get() + 4));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), 0)) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), -1)) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), 2147483647)) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), -2147483648)) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), 222222222)) == (ds.get() + 4));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), -6543210)) == (ds.get() + 4));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t data_size = (6 * 4);
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + data_size));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //                eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + data_size) == 0);
     }
 }
 
@@ -1038,11 +1023,9 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
         if (bigEndianOutput)
             std::reverse(data.end()-2, data.end());
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
                 c.reset(new CodecInt16Missing<SameByteOrder>);
@@ -1073,21 +1056,9 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            if (withMissing) {
-                static_cast<CodecInt16<SameByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt16Missing<SameByteOrder>*>(c.get())->save(&dh);
-            }
-        } else {
-            if (withMissing) {
-                static_cast<CodecInt16<OtherByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt16Missing<OtherByteOrder>*>(c.get())->save(&dh);
-            }
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect 2 bytes per element
@@ -1096,39 +1067,39 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
         //      is just treated as missing on read, without flagging hasMissing(). We do this here
         //      just to demonstrate. See ODB-369
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), baseVal + 0.0)) == (dh.get() + 2));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), baseVal + 0.0)) == (ds.get() + 2));
+        ds.set(posNext);
         if (withMissing) {
-            EXPECT_THROWS_AS(c->encode(dh.get(), baseVal + 65535), eckit::AssertionFailed);
-            EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 2)); // Ensure data is the same
+            EXPECT_THROWS_AS(c->encode(ds.get(), baseVal + 65535), eckit::AssertionFailed);
+            EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 2)); // Ensure data is the same
         } else {
-            EXPECT((posNext = c->encode(dh.get(), baseVal + 65535)) == (dh.get() + 2));
+            EXPECT((posNext = c->encode(ds.get(), baseVal + 65535)) == (ds.get() + 2));
         }
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), baseVal + 32767)) == (dh.get() + 2));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), baseVal + 32768)) == (dh.get() + 2));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), baseVal + 12345)) == (dh.get() + 2));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 2));
-        dh.set(posNext);
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), baseVal + 32767)) == (ds.get() + 2));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), baseVal + 32768)) == (ds.get() + 2));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), baseVal + 12345)) == (ds.get() + 2));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 2));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t data_size = (6 * 2);
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + data_size));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //               eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + data_size) == 0);
     }
 }
 
@@ -1186,11 +1157,9 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         data.push_back(withMissing ? 0xff : 0x88);
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise the codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
                 c.reset(new CodecInt8Missing<SameByteOrder>);
@@ -1220,21 +1189,9 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            if (withMissing) {
-                static_cast<CodecInt8<SameByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt8Missing<SameByteOrder>*>(c.get())->save(&dh);
-            }
-        } else {
-            if (withMissing) {
-                static_cast<CodecInt8<OtherByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt8Missing<OtherByteOrder>*>(c.get())->save(&dh);
-            }
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect 1 bytes per element
@@ -1243,37 +1200,37 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
         //      is just treated as missing on read, without flagging hasMissing(). We do this here
         //      just to demonstrate. See ODB-369
 
-        unsigned char* posNext;
+        char* posNext;
 
         for (size_t n = 0; n < 255; n++) {
-            EXPECT((posNext = c->encode(dh.get(), baseVal + n)) == (dh.get() + 1));
-            dh.set(posNext);
+            EXPECT((posNext = c->encode(ds.get(), baseVal + n)) == (ds.get() + 1));
+            ds.set(posNext);
         }
 
         if (withMissing) {
-            EXPECT_THROWS_AS(c->encode(dh.get(), baseVal + 255), eckit::AssertionFailed);
-            EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1)); // Ensure data is the same
+            EXPECT_THROWS_AS(c->encode(ds.get(), baseVal + 255), eckit::AssertionFailed);
+            EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 1)); // Ensure data is the same
         } else {
-            EXPECT((posNext = c->encode(dh.get(), baseVal + 255)) == (dh.get() + 1));
+            EXPECT((posNext = c->encode(ds.get(), baseVal + 255)) == (ds.get() + 1));
         }
-        dh.set(posNext);
+        ds.set(posNext);
 
-        EXPECT((posNext = c->encode(dh.get(), customMissingValue)) == (dh.get() + 1));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), customMissingValue)) == (ds.get() + 1));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t data_size = (257 * 1);
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + data_size));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //               eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + data_size) == 0);
     }
 }
 
@@ -1346,11 +1303,9 @@ CASE("Character strings can be stored in a flat list, and indexed") {
                 data.push_back(0);
         }
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
                 c.reset(new CodecInt16String<SameByteOrder>);
@@ -1389,53 +1344,41 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            if (bits16) {
-                static_cast<CodecInt16String<SameByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt8String<SameByteOrder>*>(c.get())->save(&dh);
-            }
-        } else {
-            if (bits16) {
-                static_cast<CodecInt16String<OtherByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->save(&dh);
-            }
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect 1 or 2 bytes per element
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s1))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s2))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s3))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s4))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s5))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s6))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s1))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s2))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s3))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s4))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s5))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s6))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t data_size = (6 * (bits16 ? 2 : 1));
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + data_size));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //               eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + data_size) == 0);
     }
 }
 
@@ -1508,11 +1451,9 @@ CASE("Character strings can be stored in a flat list, and indexed, and longer th
                 data.push_back(0);
         }
 
-        MockWriteDataHandle dh; // Skip name of codec
-
         // Initialise codecs
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
                 c.reset(new CodecInt16String<SameByteOrder>);
@@ -1554,53 +1495,41 @@ CASE("Character strings can be stored in a flat list, and indexed, and longer th
 
         // Encode the header to the data stream
 
-        if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            if (bits16) {
-                static_cast<CodecInt16String<SameByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt8String<SameByteOrder>*>(c.get())->save(&dh);
-            }
-        } else {
-            if (bits16) {
-                static_cast<CodecInt16String<OtherByteOrder>*>(c.get())->save(&dh);
-            } else {
-                static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->save(&dh);
-            }
-        }
+        EndianCodecSave ds(bigEndianOutput, *c);
 
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize));
 
         // Encode the data to wherever we want it
         // Expect 1 or 2 bytes per element
 
-        unsigned char* posNext;
+        char* posNext;
 
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s1))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s2))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s3))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s4))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s5))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
-        EXPECT((posNext = c->encode(dh.get(), *reinterpret_cast<const double*>(s6))) == (dh.get() + (bits16 ? 2 : 1)));
-        dh.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s1))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s2))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s3))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s4))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s5))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
+        EXPECT((posNext = c->encode(ds.get(), *reinterpret_cast<const double*>(s6))) == (ds.get() + (bits16 ? 2 : 1)));
+        ds.set(posNext);
 
         // Check we have the data we expect
 
         size_t data_size = (6 * (bits16 ? 2 : 1));
-        EXPECT(dh.position() == eckit::Offset(expectedHdrSize + data_size));
+        EXPECT(ds.position() == eckit::Offset(expectedHdrSize + data_size));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < expectedHdrSize + data_size; n++) {
-//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(dh.getBuffer()[n]) << std::endl;
-//            if (int(data[n]) != int(dh.getBuffer()[n]))
+//            eckit::Log::info() << std::hex << int(data[n]) << " " << int(ds.data()[n]) << std::endl;
+//            if (int(data[n]) != int(ds.data()[n]))
 //               eckit::Log::info() << "******************************" << std::endl;
 //        }
 
-        EXPECT(::memcmp(&data[0], dh.getBuffer(), expectedHdrSize + data_size) == 0);
+        EXPECT(::memcmp(&data[0], ds.data(), expectedHdrSize + data_size) == 0);
     }
 }
 

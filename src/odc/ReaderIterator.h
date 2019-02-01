@@ -19,7 +19,7 @@
 #include "odc/IteratorProxy.h"
 #include "odc/TReadOnlyMemoryDataHandle.h"
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -60,10 +60,10 @@ public:
     void property(std::string, std::string);
     std::string property(std::string);
 
-    const Properties& properties() const { return properties_; }
+    const core::Properties& properties() const { return properties_; }
 
-    const MetaData& columns() const { return columns_; }
-    const MetaData& columns(const MetaData& md) { return columns_ = md; }
+    const core::MetaData& columns() const { return columns_; }
+    const core::MetaData& columns(const core::MetaData& md) { return columns_ = md; }
     void setNumberOfColumns(size_t n) { columns_.setSize(n); }
 
 #ifdef SWIGPYTHON
@@ -106,7 +106,7 @@ private:
 	void loadHeaderAndBufferData();
 
     Reader& owner_;
-	MetaData columns_;
+    core::MetaData columns_;
 	double* lastValues_;
     size_t* columnOffsets_; // in doubles
     size_t rowDataSizeDoubles_;
@@ -114,7 +114,7 @@ private:
 	unsigned long long nrows_;
 
     std::unique_ptr<eckit::DataHandle> f_;
-	Properties properties_;
+    core::Properties properties_;
 
 	bool newDataset_;
 

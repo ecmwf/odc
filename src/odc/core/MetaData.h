@@ -8,10 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef MetaData_H
-#define MetaData_H
+#ifndef odc_core_MetaData_H
+#define odc_core_MetaData_H
 
-#include "odc/Column.h"
+#include "odc/core/Column.h"
 #include "eckit/sql/SQLTypedefs.h"
 
 #ifdef SWIGPYTHON
@@ -21,8 +21,12 @@
 namespace eckit { class PathName; }
 
 namespace odc {
+namespace core {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 typedef std::vector<Column*> MetaDataBase;
+using Properties = std::map<std::string, std::string>;
 
 class MetaData : public MetaDataBase {
 public:
@@ -135,7 +139,7 @@ MetaData& MetaData::addColumnPrivate(const std::string& name, const std::string&
 	ASSERT(c);
 
 	c->name(name);
-	c->type<DATASTREAM>(odc::Column::type(type), false);
+    c->type<DATASTREAM>(Column::type(type), false);
 
 	push_back(c);
 	return *this;
@@ -154,6 +158,9 @@ MetaData& MetaData::addBitfieldPrivate(const std::string& name, const eckit::sql
 	return *this;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+
+} // namespace core
 } // namespace odc
 
 #endif

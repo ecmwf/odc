@@ -16,9 +16,8 @@
 #ifndef TextReaderIterator_H
 #define TextReaderIterator_H
 
-#include "odc/Header.h"
 #include "odc/IteratorProxy.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -93,7 +92,6 @@ protected:
 
 	friend class odc::TextReader;
 	friend class odc::IteratorProxy<odc::TextReaderIterator, odc::TextReader, const double>;
-	friend class odc::Header<odc::TextReaderIterator>;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

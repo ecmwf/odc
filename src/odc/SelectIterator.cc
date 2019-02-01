@@ -13,7 +13,7 @@
 #include "eckit/sql/SQLSelect.h"
 
 #include "odc/DataStream.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Select.h"
 #include "odc/SelectIterator.h"
 #include "odc/sql/SQLSelectOutput.h"

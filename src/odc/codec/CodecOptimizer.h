@@ -13,34 +13,35 @@
 ///
 /// @author Piotr Kuchta, Jan 2010
 
-#ifndef CodecOptimizer_H
-#define CodecOptimizer_H
+#ifndef odc_core_CodecOptimizer_H
+#define odc_core_CodecOptimizer_H
 
-#include "eckit/eckit.h"
 #include "odc/api/ColumnType.h"
-#include "odc/MetaData.h"
+#include "odc/codec/Real.h"
+#include "odc/core/CodecFactory.h"
+#include "odc/core/MetaData.h"
 
 namespace odc {
 namespace codec {
 
-class Codec;
+//----------------------------------------------------------------------------------------------------------------------
 
-class CodecOptimizer 
+class CodecOptimizer
 {
 public:
 	CodecOptimizer();
 	template <typename DATASTREAM>
-		int setOptimalCodecs(MetaData& columns);
+        int setOptimalCodecs(core::MetaData& columns);
 private:
     std::map<api::ColumnType, std::string> defaultCodec_;
 };
 
-template <typename DATASTREAM>
-int CodecOptimizer::setOptimalCodecs(MetaData& columns)
+template <typename ByteOrder>
+int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
 {
         //std::ostream &LOG = eckit::Log::error();
 	for (size_t i = 0; i < columns.size(); i++) {
-		Column& col = *columns[i];
+        core::Column& col = *columns[i];
 		long long n;
 		double min = col.min();
 		double max = col.max();
@@ -54,7 +55,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 
                 // Currently the real data is (whist in the column) encoded using the LongReal codec.
                 // n.b. CodecOptimizer doesn't currently support OtherByteOrder.
-                CodecLongReal<SameByteOrder>* codec_long = dynamic_cast<CodecLongReal<SameByteOrder>*>(&col.coder());
+                CodecLongReal<core::SameByteOrder>* codec_long = dynamic_cast<CodecLongReal<core::SameByteOrder>*>(&col.coder());
                 ASSERT(codec_long != 0);
 
                 if (max == min) {
@@ -66,7 +67,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
                     codec = "short_real2";
                 }
 
-				col.coder(Codec::findCodec<DATASTREAM>(codec, false));
+                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec));
                 col.hasMissing(hasMissing);
 				col.missingValue(missing);
 				col.min(min);
@@ -80,7 +81,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
             case api::DOUBLE:
 				if(max == min)
 					codec = col.hasMissing() ? "real_constant_or_missing" : "constant";
-				col.coder(Codec::findCodec<DATASTREAM>(codec, false));
+                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec));
 				col.hasMissing(hasMissing);
 				col.missingValue(missing);
 				col.min(min);
@@ -101,14 +102,14 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 						codec = "int16_string";
 
 
-					Codec * newCodec = Codec::findCodec<DATASTREAM>(codec, false);
+                    std::unique_ptr<core::Codec> newCodec = core::CodecFactory::instance().build<ByteOrder>(codec);
                     if (codec == "constant_string") {
                         ASSERT(col.coder().dataSizeDoubles() == 1);
                     } else {
                         newCodec->dataSizeDoubles(col.coder().dataSizeDoubles());
                         newCodec->copyStrings(col.coder());
                     }
-					col.coder(newCodec);
+                    col.coder(std::move(newCodec));
 					col.hasMissing(hasMissing);
 					col.missingValue(missing);
 					col.min(min);
@@ -134,7 +135,7 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 					else if(n <= 0xff) codec = "int8";
 					else if(n <= 0xffff) codec = "int16";
 				}
-				col.coder(Codec::findCodec<DATASTREAM>(codec, false));
+                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec));
 				col.hasMissing(hasMissing);
 				col.missingValue(missing);
 				col.min(min);
@@ -154,6 +155,8 @@ int CodecOptimizer::setOptimalCodecs(MetaData& columns)
 	}
 	return 0;
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace codec
 } // namespace odc 

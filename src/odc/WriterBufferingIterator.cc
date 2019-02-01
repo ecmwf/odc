@@ -14,19 +14,17 @@
 /// @author Piotr Kuchta, Feb 2009
 
 #include "eckit/exception/Exceptions.h"
-#include "odc/Writer.h"
 
+#include "odc/core/Header.h"
 #include "odc/WriterBufferingIterator.h"
-#include <arpa/inet.h>
-
-#include "odc/ODBAPISettings.h"
-
-inline size_t MEGA(size_t n) { return n*1024*1204; }
+#include "odc/Writer.h"
 
 using namespace eckit;
 using namespace odc::api;
 
 namespace odc {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odc::sql::TableDef* tableDef)
 : refCount_(0),
@@ -42,14 +40,9 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   path_(owner.path()),
   initialisedColumns_(false),
   properties_(),
-  blockBuffer_(),
-  rowsBuffer_(),
   nextRowInBuffer_(0),
-  memoryDataHandle_(0),
   columnsBuffer_(0),
   rowsBufferSize_(owner.rowsBufferSize()),
-  setvBuffer_(0),
-  maxAnticipatedHeaderSize_( ODBAPISettings::instance().headerBufferSize() ),
   tableDef_(tableDef),
   openDataHandle_(openDataHandle)
 {
@@ -141,11 +134,8 @@ void WriterBufferingIterator::allocBuffers()
 void WriterBufferingIterator::allocRowsBuffer()
 {
     rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
-    size_t rowByteSize = (sizeof(uint16_t) + rowDataSizeDoubles()*sizeof(double));
-    blockBuffer_.size(maxAnticipatedHeaderSize_ + rowsBufferSize_ * rowByteSize);
-    rowsBuffer_.share(blockBuffer_ + maxAnticipatedHeaderSize_, rowsBufferSize_ * rowByteSize);
-
-	memoryDataHandle_.buffer(rowsBuffer_);
+    rowByteSize_ = sizeof(uint16_t) + rowDataSizeDoubles() * sizeof(double);
+    rowsBuffer_ = Buffer(rowsBufferSize_ * rowByteSize_);
 	nextRowInBuffer_ = rowsBuffer_;
 }
 
@@ -187,7 +177,7 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 	gatherStats(data, nCols);
 
     std::copy(data, data + rowDataSizeDoubles(), reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
-    nextRowInBuffer_ += (rowDataSizeDoubles() * sizeof(double)) + sizeof(uint16_t);
+    nextRowInBuffer_ += rowByteSize_;
 
 	ASSERT(nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
 
@@ -206,35 +196,35 @@ size_t WriterBufferingIterator::rowDataSizeDoublesInternal() const {
     return total;
 }
 
-unsigned char* WriterBufferingIterator::writeNumberOfRepeatedValues(unsigned char *p, uint16_t k)
-{
-	uint16_t nk (htons(k));
-	unsigned char *pk (reinterpret_cast<unsigned char *>(&nk));
-	*p++ = *pk++;
-	*p++ = *pk;
-	return p;
-}
-
-int WriterBufferingIterator::doWriteRow(const double* values, unsigned long count)
+int WriterBufferingIterator::doWriteRow(core::DataStream<core::SameByteOrder>& stream, const double* values)
 {
     if (lastValues_ == 0) allocBuffers();
 
-        uint16_t k = 0;
-        for (; k < count; ++k) {
-            if (::memcmp(&values[columnOffsets_[k]], &lastValues_[columnOffsets_[k]], columnByteSizes_[k]) != 0) break;
-        }
+    // Find where the first changing row is
 
-	unsigned char *p (encodedDataBuffer_);
-	p = writeNumberOfRepeatedValues(p, k);
+    // BUG: First row may not be properly encoded if it is zero.
+    uint16_t k = 0;
+    for (; k < columns().size(); ++k) {
+        if (::memcmp(&values[columnOffsets_[k]], &lastValues_[columnOffsets_[k]], columnByteSizes_[k]) != 0) break;
+    }
 
-	for (size_t i = k; i < count; ++i) 
-	{
-                p = columns_[i]->coder().encode(p, values[columnOffsets_[i]]);
-                ::memcpy(&lastValues_[columnOffsets_[i]], &values[columnOffsets_[i]], columnByteSizes_[i]);
+    // Marker stores the starting column
+
+    uint8_t marker[2] { (k % 256), ((k / 256) % 256) };
+    stream.writeBytes(marker, sizeof(marker)); // raw write
+
+    // TODO: Update Codecs to encode to a DataStream directly.
+    // n.b. We are relying on the sizing of the buffer behind stream to have been done correctly.
+    //      This is fundamentally unsafe. TODO: Do it properly.
+
+    char* p = stream.get();
+
+    for (size_t i = k; i < columns().size(); ++i)  {
+        p = columns_[i]->coder().encode(p, values[columnOffsets_[i]]);
+        ::memcpy(&lastValues_[columnOffsets_[i]], &values[columnOffsets_[i]], columnByteSizes_[i]);
 	}
 
-	DataStream<SameByteOrder, FastInMemoryDataHandle> f(memoryDataHandle_);
-	f.writeBytes(encodedDataBuffer_.cast<char>(), p - encodedDataBuffer_);
+    stream.set(p);
 
 	nrows_++;
 	return 0;
@@ -245,7 +235,7 @@ int WriterBufferingIterator::open()
 	//Log::debug() << "WriterBufferingIterator::open@" << this << ": Opening data handle " << f << std::endl;
 	ASSERT(f);
 
-	Length estimatedLen = MEGA(20);
+    Length estimatedLen = 20 * 1024 * 1024;
 	f->openForWrite(estimatedLen);
 
 	return 0;
@@ -305,60 +295,47 @@ void WriterBufferingIterator::flush()
     
 	setOptimalCodecs<DataStream<SameByteOrder, FastInMemoryDataHandle> >();
 
-	unsigned long rowsWritten = 0;
-    const size_t nCols = columns().size();
-    for (unsigned char *pr = rowsBuffer_; pr < nextRowInBuffer_; pr += sizeof(uint16_t) + rowDataSizeDoubles() * sizeof(double), ++rowsWritten) {
-        doWriteRow(reinterpret_cast<double *>(pr + sizeof(uint16_t)), nCols);
+    Buffer encodedBuffer(rowsBuffer_.size());
+    core::DataStream<core::SameByteOrder> encodedStream(encodedBuffer);
+
+    // Iterate over stored rows, and re-encode them into the encodedBuffer
+
+    // TODO: Note we can ensure alignment when storing these. Currently the uint16_t ensure non-alignment.
+
+    size_t rowsWritten = 0;
+    unsigned char* p = rowsBuffer_.data();
+    while (p < nextRowInBuffer_) {
+        doWriteRow(encodedStream, reinterpret_cast<double *>(pr + sizeof(uint16_t)));
+        p += rowByteSize_;
+        ++rowsWritten;
     }
 
-	InMemoryDataHandle bufferForHeader;
-	doWriteHeader(bufferForHeader, memoryDataHandle_.position(), rowsWritten);
+    // Clean up storage buffers for row data
+    allocBuffers();
 
-    Log::debug() << "WriterBufferingIterator::flush: header size: " << bufferForHeader.position() << std::endl;
+    Buffer headerBuffer = serializeHeader(memoryDataHandle_.position(), rowsNumber);
 
-	MemoryBlock buff(bufferForHeader.position());
-	bufferForHeader.openForRead();
-	bufferForHeader.read(buff, buff.size());
+    Log::debug() << "WriterBufferingIterator::flush: header size: " << headerBuffer.size() << std::endl;
 
-	if (buff.size() < maxAnticipatedHeaderSize_)
-	{
-		Log::debug() << "WriterBufferingIterator::flush: writing header and data in one go. "
-			"Block size: " << buff.size() + memoryDataHandle_.position() << std::endl;
-
-        std::copy(static_cast<unsigned char*>(buff), static_cast<unsigned char*>(buff) + buff.size(),
-			memoryDataHandle_.buffer() - buff.size());
-		this->f->write(memoryDataHandle_.buffer() - buff.size(),
-			static_cast<size_t>(memoryDataHandle_.position()) + buff.size()); // Write encoded data
-	}
-	else
-	{
-		Log::info() << "WriterBufferingIterator::flush: writing header and data separately." << std::endl;
-
-		this->f->write(buff, buff.size()); // Write header
-		this->f->write(memoryDataHandle_.buffer(), memoryDataHandle_.position()); // Write encoded data
-	}
+    dataHandle().write(headerBuffer, headerBuffer.size()); // Write header
+    dataHandle().write(encodedBuffer, encodedStream.position()); // Write encoded data
 
 	Log::debug() << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << std::endl;
 
-	memoryDataHandle_.buffer(rowsBuffer_.cast<unsigned char>());
+    // Reset the write buffers
 
-	nextRowInBuffer_ = rowsBuffer_;
+    nextRowInBuffer_ = rowsBuffer_.data();
 
-    MetaData& md(const_cast<MetaData&>(columns()));
-    md = columnsBuffer_;
-    md.resetStats();
+    // This is a bad place to be. We need to reset the coders in the columns, not clone
+    // the existing ones (which have been optimised).
+
+    columns_.resetCodecs();
+    columns_.resetStats();
 }
 
 
-template <typename T>
-void WriterBufferingIterator::doWriteHeader(T& dataHandle, size_t dataSize, size_t rowsNumber)
-{
-    //Log::debug() << "WriterBufferingIterator::doWriteHeader: dataSize=" << dataSize << ", rowsNumber=" << rowsNumber << std::endl;
-
-	allocBuffers();
-
-	//  FIXME: copy properties from input - props are not initialised now
-	serializeHeader<SameByteOrder,T>(dataHandle, dataSize, rowsNumber, properties_, columns()); 
+void WriterBufferingIterator::serializeHeader(size_t dataSize, size_t rowsNumber) {
+    return core::Header::serializeHeader<core::SameByteOrder>(dataSize, rowsNumber, properties_, columns());
 }
 
 int WriterBufferingIterator::close()
@@ -379,6 +356,8 @@ std::vector<eckit::PathName> WriterBufferingIterator::outputFiles()
     r.push_back(path_);
     return r;
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace odc 
 

@@ -19,7 +19,7 @@
 #include <string>
 #include <stdint.h>
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -47,17 +47,16 @@ private:
 class TemplateParameters : public std::vector<TemplateParameter*> {
 public:
 	TemplateParameters();
-	TemplateParameters(const std::string& fileNameTemplate, const MetaData& = nullMD);
+    TemplateParameters(const std::string& fileNameTemplate, const core::MetaData& = nullMD);
 	~TemplateParameters();
 
 	void release();
-	static TemplateParameters& parse(const std::string& fileNameTemplate, TemplateParameters&, const MetaData& = nullMD);
+    static TemplateParameters& parse(const std::string& fileNameTemplate, TemplateParameters&, const core::MetaData& = nullMD);
 
 private:
 	TemplateParameters(const TemplateParameters&);
 	TemplateParameters& operator=(const TemplateParameters&);
-
-	static MetaData nullMD;
+    static core::MetaData nullMD;
 };
 
 } // namespace odc

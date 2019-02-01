@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odc/Comparator.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Select.h"
 #include "odc/Reader.h"
 

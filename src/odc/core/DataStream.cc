@@ -1,3 +1,4 @@
+#if 0
 /*
  * (C) Copyright 1996-2012 ECMWF.
  * 
@@ -17,8 +18,6 @@
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/log/CodeLocation.h"
-
-#include "odc/MemoryBlock.h"
 
 namespace odc {
 
@@ -327,3 +326,5 @@ void DataStream<T,D>::writeBitfieldDef(const eckit::sql::BitfieldDef &v)
 
 } // namespace odc
 
+
+#endif

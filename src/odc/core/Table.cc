@@ -19,9 +19,9 @@
 #include "eckit/types/FixedString.h"
 
 #include "odc/core/DecodeTarget.h"
-#include "odc/MetaData.h"
-#include "odc/Header.h"
-#include "odc/Codec.h"
+#include "odc/core/Header.h"
+#include "odc/core/MetaData.h"
+#include "odc/core/Codec.h"
 
 using namespace eckit;
 
@@ -150,34 +150,15 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
 
     Offset startPosition = dh.position();
 
-    // Read the magic number. IF no more data, we are done
+    // Check the magic number. If no more data, we are done
 
-    FixedString<5> magic;
-    long bytesRead = dh.read(&magic, sizeof(magic));
-
-    if (bytesRead == 0) return 0;
-    if (bytesRead != sizeof(magic)) throw ShortFile(dh.title(), Here());
-
-    ASSERT(magic == "\xff\xffODA");
+    if (!Header::readMagic(dh)) return 0;
 
     // Load the header
-    // TODO: Proxy class is silly. This could be done in a nicer way.
-
-    struct ProxyClass {
-        DataHandle& dataHandle() { return dh_; }
-        MetaData& columns() { return md_; }
-        DataHandle& dh_;
-        MetaData& md_;
-        Properties& properties_;
-    };
 
     std::unique_ptr<Table> newTable(new Table(dh));
-
-    MetaData md;
-    Properties props;
-    ProxyClass proxy{dh, newTable->metadata_, newTable->properties_};
-    Header<ProxyClass> hdr(proxy);
-    hdr.loadAfterMagic();
+    Header hdr(newTable->metadata_, newTable->properties_);
+    hdr.loadAfterMagic(dh);
 
     newTable->startPosition_ = startPosition;
     newTable->dataPosition_ = dh.position();
@@ -186,7 +167,7 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
     newTable->byteOrder_ = hdr.byteOrder();
 
     // Check that the ODB hasn't been truncated
-    if (newTable->nextPosition_ > dh.estimate()) throw ShortFile(dh.title(), Here());
+    if (newTable->nextPosition_ > dh.estimate()) throw ODBIncomplete(dh.title(), Here());
 
     return newTable;
 }

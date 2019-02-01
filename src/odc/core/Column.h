@@ -8,10 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef Column_H
-#define Column_H
+#ifndef odc_core_Column_H
+#define odc_core_Column_H
 
-#include "odc/Codec.h"
+#include <memory>
+
+#include "odc/core/Codec.h"
 #include "odc/api/ColumnType.h"
 #include "eckit/sql/SQLTypedefs.h"
 #include "eckit/os/BackTrace.h"
@@ -19,6 +21,9 @@
 namespace eckit { class DataHandle; }
 
 namespace odc {
+namespace core {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class Reader;
 class MetaData;
@@ -40,11 +45,11 @@ public:
 
 	virtual ~Column();
 
-	template<typename DATASTREAM> void load(DATASTREAM &);
-	template<typename DATASTREAM> void save(DATASTREAM &);
+    template<typename ByteOrder> void load(DataStream<ByteOrder>& ds);
+    template<typename ByteOrder> void save(DataStream<ByteOrder>& ds);
 
-	codec::Codec& coder() const { return *coder_; }
-    void coder(codec::Codec *c) { delete coder_; coder_ = c; }
+    Codec& coder() const { return *coder_; }
+    void coder(std::unique_ptr<Codec> c) { std::swap(coder_, c); }
 
     size_t dataSizeDoubles() const { return coder_->dataSizeDoubles(); }
     void dataSizeDoubles(size_t count) { coder_->dataSizeDoubles(count); }
@@ -52,7 +57,7 @@ public:
 	void name(const std::string name) { name_ = name; }
 	const std::string &name() const { return name_; }
 
-    template<typename DATASTREAM> void type(api::ColumnType t, bool differentByteOrder);
+    template<typename ByteOrder> void type(api::ColumnType t);
 
     void type(api::ColumnType t) { type_ = t; }
     api::ColumnType type() const { return api::ColumnType(type_); }
@@ -101,41 +106,65 @@ private:
 	std::string name_;
 	/// Note: type_ should be ColumnType, but it is saved on file so must be of a fixed size type.
 	int32_t type_;
-	codec::Codec* coder_;
+    std::unique_ptr<Codec> coder_;
 	/// bitfieldDef_ is not empty if type_ == BITFIELD.
     eckit::sql::BitfieldDef bitfieldDef_;
 	//std::string typeSignature_;
 
 };
 
-template<typename DATASTREAM> void Column::load(DATASTREAM &f)
+//----------------------------------------------------------------------------------------------------------------------
+
+template <typename ByteOrder>
+void Column::load(DataStream<ByteOrder>& ds)
 {
-    f.readString(name_);
-	f.readInt32(type_);
+    ds.read(name_);
+    ds.read(type_);
     if (type_ == api::BITFIELD)
 	{
-        eckit::sql::FieldNames names;
-        eckit::sql::Sizes sizes;
-		bitfieldDef_ = make_pair(names, sizes);
-		f.readBitfieldDef(bitfieldDef_);
+        eckit::sql::FieldNames& names(bitfieldDef_.first);
+        eckit::sql::Sizes& sizes(bitfieldDef_.second);
+
+        static_assert(std::is_same<std::remove_reference<decltype(names)>::type::value_type, std::string>::value, "Format sanity check");
+        static_assert(std::is_same<std::remove_reference<decltype(sizes)>::type::value_type, int32_t>::value, "Format sanity check");
+
+        names.clear();
+        sizes.clear();
+
+        ds.read(names);
+        ds.read(sizes);
+        ASSERT(names.size() == sizes.size());
 	}
 
-    coder(codec::Codec::loadCodec(f));
+    std::string codecName;
+    ds.read(codecName);
+    coder_.reset(CodecFactory::instance().build<ByteOrder>(codecName));
+    coder_->load(ds);
 }
 
-template<typename DATASTREAM> void Column::save(DATASTREAM &f)
-{
-	f.writeString(name_);
-	f.writeInt32(type_);
+template <typename ByteOrder>
+void Column::save(DataStream<ByteOrder>& ds) {
 
-    if (type_ == api::BITFIELD)
-		f.writeBitfieldDef(bitfieldDef_);
+    ds.writeString(name_);
+    ds.writeInt32(type_);
 
-	coder().save(f);
+    if (type_ == api::BITFIELD) {
+        eckit::sql::FieldNames& names(bitfieldDef_.first);
+        eckit::sql::Sizes& sizes(bitfieldDef_.second);
+
+        static_assert(std::is_same<std::remove_reference<decltype(names)>::type::value_type, std::string>::value, "Format sanity check");
+        static_assert(std::is_same<std::remove_reference<decltype(sizes)>::type::value_type, int32_t>::value, "Format sanity check");
+        ASSERT(names.size() == sizes.size());
+
+        ds.write(names);
+        ds.write(sizes);
+    }
+
+    coder_->save(ds);
 }
 
-template <typename DATASTREAM> 
-void Column::type(api::ColumnType t, bool differentByteOrder)
+template <typename ByteOrder>
+void Column::type(api::ColumnType t)
 {
     using namespace odc::api;
 	type_ = t;
@@ -153,12 +182,16 @@ void Column::type(api::ColumnType t, bool differentByteOrder)
 			ASSERT(!"Type not supported");
 			break;
 	}
-	coder(codec::Codec::findCodec<DATASTREAM>(codecName, differentByteOrder));
+
+    coder(CodecFactory::instance().build<ByteOrder>(codecName));
 
     // TODO: when we have codec unsigned_int64 it will have 0 as 
     if (type_ == BITFIELD) missingValue(MDI::bitfieldMDI());
 }
 
-} // namespace odc {
+//----------------------------------------------------------------------------------------------------------------------
+
+} // namespace core
+} // namespace odc
 
 #endif

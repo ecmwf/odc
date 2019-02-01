@@ -8,16 +8,18 @@
  * does it submit to any jurisdiction.
  */
 
+#include "odc/core/Column.h"
 
-#include "eckit/eckit.h"
 #include "eckit/parser/StringTools.h"
 
-#include "odc/Column.h"
 
 using namespace eckit;
 using namespace odc::api;
 
 namespace odc {
+namespace core {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 Column::Column(MetaData &owner)
 : owner_(owner),
@@ -37,11 +39,7 @@ Column::Column(const Column& o)
 	*this = o;
 }
 
-Column::~Column()
-{
-    //cerr << "Column::~Column():@" << this  << ", name= " << name_ << std::endl << std::endl;
-	delete coder_; 
-}
+Column::~Column() {}
 
 Column& Column::operator=(const Column& other)
 {
@@ -52,8 +50,7 @@ Column& Column::operator=(const Column& other)
     if (type_ == BITFIELD)
 		bitfieldDef(other.bitfieldDef());
 
-    delete coder_;
-    coder_ = other.coder_->clone();
+    coder_.reset(other.coder_->clone());
 //    hasMissing(other.hasMissing());
 //    missingValue(other.missingValue());
     return *this;
@@ -129,5 +126,8 @@ void Column::print(std::ostream& s) const
 	else s << "NONE";
 }
 
-} // namespace odc 
+//----------------------------------------------------------------------------------------------------------------------
+
+} // namespace core
+} // namespace odc
 

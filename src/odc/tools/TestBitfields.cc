@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/log/Log.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Select.h"
 
 #include "TestCase.h"

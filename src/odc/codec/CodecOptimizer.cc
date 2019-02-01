@@ -15,12 +15,14 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/parser/StringTools.h"
-#include "odc/CodecOptimizer.h"
+#include "odc/codec/CodecOptimizer.h"
 
 //
 
 namespace odc {
 namespace codec {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 CodecOptimizer::CodecOptimizer()
 : defaultCodec_()
@@ -32,15 +34,17 @@ CodecOptimizer::CodecOptimizer()
     defaultCodec_[api::BITFIELD] = "int32";
 
     typedef eckit::StringTools S;
-    std::vector<std::string> mappings (S::split(",", eckit::Resource<std::string>("$ODB_DEFAULT_CODEC", "")));
+    std::vector<std::string> mappings (S::split(",", eckit::Resource<std::string>("$ODC_DEFAULT_CODEC", "")));
 
 	for (size_t i = 0; i < mappings.size(); ++i)
 	{
 		std::vector<std::string> a(S::split(":", mappings[i]));
-		ASSERT("Wrong format of $ODB_DEFAULT_CODEC" && a.size() == 2);
-		defaultCodec_[Column::type(S::trim(a[0]))] = S::trim(a[1]);
+        ASSERT("Wrong format of $ODC_DEFAULT_CODEC" && a.size() == 2);
+        defaultCodec_[core::Column::type(S::trim(a[0]))] = S::trim(a[1]);
 	}
 }
 
-} // namespace codec 
+//----------------------------------------------------------------------------------------------------------------------
+
+} // namespace core
 } // namespace odc 

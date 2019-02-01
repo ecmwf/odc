@@ -25,8 +25,10 @@ namespace eckit {
 
 namespace odc {
 
-class MetaData;
-class Column;
+namespace core {
+    class MetaData;
+    class Column;
+}
 
 const double maxAbsoluteError = 1e-9;
 const double maxRelativeError = 1e-9;
@@ -59,7 +61,7 @@ public:
                  const std::vector<std::string>& excludedColumnsTypes,
                  const std::vector<std::string>& excludedcolumns);
 
-    void compare(const MetaData& metaData1, const MetaData& metaData2,
+    void compare(const core::MetaData& metaData1, const core::MetaData& metaData2,
                  const std::set<std::string>& excludedColumnsTypes,
                  const std::set<std::string>& excludedColumns,
                  std::vector<int>& skipCols);
@@ -67,14 +69,14 @@ public:
     void compare(int nCols,
                  const double *data1,
                  const double *data2,
-                 const MetaData& metaData1,
-                 const MetaData& metaData2);
+                 const core::MetaData& metaData1,
+                 const core::MetaData& metaData2);
 
     void compare(int nCols,
                  const double *data1,
                  const double *data2,
-                 const MetaData& metaData1,
-                 const MetaData& metaData2,
+                 const core::MetaData& metaData1,
+                 const core::MetaData& metaData2,
                  const std::vector<int>& skipCols);
 
 	void checkMissingFlag(bool v) { checkMissingFlag_ = v; }
@@ -94,7 +96,7 @@ public:
 
 	inline static int same(double A,double B) { return err(A,B) < maxRelativeError; }
 
-    void raiseNotEqual(const Column&, double, double);
+    void raiseNotEqual(const core::Column&, double, double);
 
 private:
 	long nRow_;

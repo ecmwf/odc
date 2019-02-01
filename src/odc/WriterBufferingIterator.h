@@ -16,16 +16,15 @@
 #ifndef odc_WriterBufferingIterator_H
 #define odc_WriterBufferingIterator_H
 
-#include "odc/Array.h"
-#include "odc/CodecOptimizer.h"
-#include "odc/Header.h"
+#include "odc/codec/CodecOptimizer.h"
 #include "odc/IteratorProxy.h"
-#include "odc/MemoryBlock.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
 namespace odc {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 template <typename I> class Writer;
 namespace sql { class TableDef; }
@@ -55,8 +54,8 @@ public:
 
 	int close();
 
-    const MetaData& columns() const { return columns_; }
-    const MetaData& columns(const MetaData& md) {
+    const core::MetaData& columns() const { return columns_; }
+    const core::MetaData& columns(const core::MetaData& md) {
         columns_ = md;
         initialisedColumns_ = columns_.allColumnsInitialised();
         return columns_;
@@ -98,7 +97,7 @@ public:
     int refCount_;
 protected:
     Owner& owner_;
-	MetaData columns_;
+    core::MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;
     size_t* columnOffsets_; // in doubles
@@ -106,10 +105,7 @@ protected:
 	unsigned long long nrows_;
 
 	eckit::DataHandle *f;
-	Array<unsigned char> encodedDataBuffer_;
     eckit::PathName path_;
-
-	unsigned char* writeNumberOfRepeatedValues(unsigned char *, uint16_t);
 
 private:
 // No copy allowed.
@@ -118,28 +114,24 @@ private:
 
 	template <typename T> void pass1init(T&, const T&);
 
-	template <typename T> void doWriteHeader(T&, size_t, size_t);
+    eckit::Buffer serializeHeader(size_t dataSize, size_t rowsNumber);
 
-
-	void allocBuffers();
+    void allocBuffers();
 	void allocRowsBuffer();
 	void resetColumnsBuffer();
 
-	int doWriteRow(const double*, unsigned long);
+    int doWriteRow(core::DataStream<core::SameByteOrder>& stream, const double* values);
 
     bool initialisedColumns_;
-	Properties properties_;
+    core::Properties properties_;
 
-	Array<unsigned char> blockBuffer_;
-	Array<unsigned char> rowsBuffer_;
+    eckit::Buffer rowsBuffer_;
 	unsigned char* nextRowInBuffer_;
-	FastInMemoryDataHandle memoryDataHandle_;
-	MetaData columnsBuffer_;
+    core::MetaData columnsBuffer_;
 
 	size_t rowsBufferSize_;
     size_t rowDataSizeDoubles_;
-	MemoryBlock setvBuffer_;
-	size_t maxAnticipatedHeaderSize_;
+    size_t rowByteSize_;
 
 	codec::CodecOptimizer codecOptimizer_;
 
@@ -149,7 +141,6 @@ private:
     bool openDataHandle_;
 
 	friend class IteratorProxy<WriterBufferingIterator, Owner>;
-	friend class Header<WriterBufferingIterator>;
 };
 
 template<typename T>
@@ -208,6 +199,8 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	ASSERT(close() == 0);
 	return nrows;
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace odc 
 

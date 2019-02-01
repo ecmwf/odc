@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 #include <algorithm>
 
@@ -18,6 +18,9 @@ using namespace eckit;
 using namespace odc::api;
 
 namespace odc {
+namespace core {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 MetaData::MetaData() : std::vector<Column*>(), rowsNumber_(0) {}
 MetaData::MetaData(int i) : std::vector<Column*>(i), rowsNumber_(0) {}
@@ -262,5 +265,8 @@ MetaData& MetaData::addBitfield(const std::string& name, const eckit::sql::Bitfi
     return addBitfieldPrivate<odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(name, bf);
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+
+} // namespace core
 } // namespace odc
 

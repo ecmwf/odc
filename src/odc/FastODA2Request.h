@@ -13,7 +13,7 @@
 
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 namespace odc {
 

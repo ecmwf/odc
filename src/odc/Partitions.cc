@@ -17,7 +17,7 @@
 #include "eckit/io/Offset.h"
 #include "eckit/io/PartFileHandle.h"
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 

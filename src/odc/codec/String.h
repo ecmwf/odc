@@ -1,0 +1,288 @@
+/*
+ * (C) Copyright 1996-2012 ECMWF.
+ *
+ * This software is licensed under the terms of the Apache Licence Version 2.0
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
+ * granted to it by virtue of its status as an intergovernmental organisation nor
+ * does it submit to any jurisdiction.
+ */
+
+#ifndef odc_core_codec_String_H
+#define odc_core_codec_String_H
+
+#include "odc/core/Codec.h"
+#include "odc/codec/Integer.h"
+
+namespace odc {
+namespace codec {
+
+//----------------------------------------------------------------------------------------------------------------------
+
+/// @note CodecChars is _only_ used as an intermediate codec. It encodes data during the
+///       normal Writer phase that is then _reencoded_ using Int16String,...
+///       We should NEVER see 'chars' in the output data.
+
+template<typename ByteOrder>
+class CodecChars : public core::DataStreamCodec<ByteOrder> {
+
+public: // definitions
+
+    constexpr static char codec_name[] = "chars";
+
+public: // methods
+
+    CodecChars(const std::string& name=codec_name);
+    ~CodecChars() override {}
+
+    void load(core::DataStream<ByteOrder>& ds) override;
+    void save(core::DataStream<ByteOrder>& ds) override;
+
+protected: // methods
+
+    std::unique_ptr<core::Codec> clone() override;
+
+private: // methods
+
+    unsigned char* encode(unsigned char* p, const double& d) override;
+    void decode(double* out) override;
+    void gatherStats(const double& v) override;
+
+    size_t numStrings() const override { return strings_.size(); }
+    void copyStrings(core::Codec& rhs) override;
+
+    size_t dataSizeDoubles() const override { return decodedSizeDoubles_; }
+    void dataSizeDoubles(size_t count) override { decodedSizeDoubles_ = count; }
+
+    void print(std::ostream &s) const override;
+
+protected: // members
+
+    std::map<std::string, size_t> stringLookup_;
+    std::vector<std::string> strings_;
+    size_t decodedSizeDoubles_;
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+template<typename ByteOrder, typename InternalCodec>
+class IntStringCodecBase : public CodecChars<ByteOrder> {
+
+public: // methods
+
+    IntStringCodecBase(const std::string& name) : CodecChars<ByteOrder>(name) {
+        this->min_ = odc::MDI::integerMDI();
+        this->max_ = this->min_;
+        this->missingValue_ = this->min_;
+        intCodec_.min(0);
+    }
+    ~IntStringCodecBase() override {}
+
+private: // methods
+
+    std::unique_ptr<core::Codec> clone() {
+        std::unique_ptr<core::Codec> cdc = CodecChars<ByteOrder>::clone();
+        auto& c = static_cast<IntStringCodecBase<ByteOrder, InternalCodec>&>(*cdc);
+        c.intCodec_.min(intCodec_.min());
+        c.intCodec_.max(intCodec_.max());
+        c.min(this->min());
+        c.max(this->max());
+        return cdc;
+    }
+
+    /// Ensure that data streams are passed through to the internal coder
+    void setDataStream(core::DataStream<ByteOrder>& ds) override {
+        core::DataStreamCodec<ByteOrder>::setDataStream(ds);
+        intCodec_.setDataStream(ds);
+    }
+    void clearDataStream() override {
+        core::DataStreamCodec<ByteOrder>::clearDataStream();
+        intCodec_.clearDataStream();
+    }
+
+    unsigned char* encode(unsigned char* p, const double& d) override {
+
+        /// n.b. Yes this is ugly. This is a hack into the existing API - and it assumes
+        ///      that the double& provided actually is the first element of a longer string.
+
+        size_t len = ::strnlen(reinterpret_cast<const char*>(&d), this->decodedSizeDoubles_*sizeof(double));
+        std::string s(reinterpret_cast<const char*>(&d), len);
+
+        std::map<std::string, size_t>::const_iterator it = this->stringLookup_.find(s);
+        ASSERT(it != this->stringLookup_.end());
+
+        return intCodec_.core::Codec::encode(p, it->second);
+    }
+
+    void decode(double* out) override {
+
+        double tmp_i;
+        intCodec_.core::Codec::decode(&tmp_i);
+        size_t i = static_cast<int>(tmp_i);
+
+        ASSERT(i < this->strings_.size());
+        const std::string& s(this->strings_[i]);
+
+        ::memset(out, 0, this->decodedSizeDoubles_*sizeof(double));
+        ::memcpy(reinterpret_cast<char*>(out), &s[0], std::min(s.length(), this->decodedSizeDoubles_*sizeof(double)));
+    }
+
+private: // members
+
+    InternalCodec intCodec_;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+template<typename ByteOrder>
+struct CodecInt8String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>> {
+    constexpr static char codec_name[] = "int8_string";
+    CodecInt8String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name) {}
+    ~CodecInt8String() override {}
+};
+
+
+template<typename ByteOrder>
+struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>> {
+    constexpr static char codec_name[] = "int16_string";
+    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name) {}
+    ~CodecInt16String() override {}
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Implementation
+
+template<typename ByteOrder>
+CodecChars<ByteOrder>::CodecChars(const std::string& name) :
+    core::DataStreamCodec<ByteOrder>(name),
+    decodedSizeDoubles_(1) {}
+
+template<typename ByteOrder>
+unsigned char* CodecChars<ByteOrder>::encode(unsigned char* p, const double& s) {
+
+    /// n.b. Yes this is ugly. This is a hack into the existing API - and it assumes
+    ///      that the double& provided actually is the first element of a longer string.
+
+    memcpy(p, &s, decodedSizeDoubles_*sizeof(double));
+    return p + (decodedSizeDoubles_*sizeof(double));
+}
+
+template<typename ByteOrder>
+void CodecChars<ByteOrder>::decode(double* out) {
+
+    throw eckit::SeriousBug("CodecChars should never have been written to an ODB. Should not be decoding", Here());
+    // ds().read(out, sizeof(double)*decodedSizeDoubles_);
+}
+
+
+template<typename ByteOrder>
+void CodecChars<ByteOrder>::gatherStats(const double& v) {
+
+    size_t len = ::strnlen(reinterpret_cast<const char*>(&v), decodedSizeDoubles_*sizeof(double));
+    std::string s(reinterpret_cast<const char*>(&v), len);
+
+    char buf[255];
+    memcpy(buf, &v, sizeof(double));
+    buf[sizeof(double)] = 0;
+
+    if (stringLookup_.find(s) == stringLookup_.end()) {
+        size_t index = strings_.size();
+        strings_.push_back(s);
+        stringLookup_[s] = index;
+    }
+
+    // In case the column is const, the const value will be copied and used by the optimized codec.
+    this->min_ = v;
+
+}
+
+
+template<typename ByteOrder>
+void CodecChars<ByteOrder>::load(core::DataStream<ByteOrder>& ds) {
+
+    core::DataStreamCodec<ByteOrder>::load(ds);
+
+    // Load the table of strings
+    // This is based on the old-style hash-table storage, so it isn't a trivial list of strings
+    int32_t numStrings;
+    ds.read(numStrings);
+    ASSERT(numStrings >= 0);
+
+    strings_.resize(numStrings);
+
+    // How many doubles-worth of memory is needed to decode the largest string?
+    decodedSizeDoubles_ = 1;
+
+    for (size_t i = 0; i < size_t(numStrings); i++) {
+        std::string s;
+        ds.read(s);
+
+        int32_t cnt;
+        ds.read(cnt);
+
+        int32_t index;
+        ds.read(index);
+
+        ASSERT(index < numStrings);
+        strings_[index] = s;
+
+        decodedSizeDoubles_ = std::max(decodedSizeDoubles_, ((s.length()-1)/sizeof(double))+1);
+    }
+
+    // Ensure that the string lookup is EMPTY. We don't use it after reading
+    ASSERT(stringLookup_.size() == 0);
+}
+
+
+template<typename ByteOrder>
+void CodecChars<ByteOrder>::save(core::DataStream<ByteOrder>& ds) {
+
+    core::DataStreamCodec<ByteOrder>::save(ds);
+
+    ds.write(static_cast<int32_t>(strings_.size()));
+
+    for (size_t i = 0; i < strings_.size(); i++) {
+        ds.write(strings_[i]);
+        ds.write(static_cast<int32_t>(0)); // "cnt" field is not used.
+        ds.write(static_cast<int32_t>(i));
+    }
+}
+
+template<typename ByteOrder>
+std::unique_ptr<core::Codec> CodecChars<ByteOrder>::clone() {
+
+    std::unique_ptr<core::Codec> cdc = core::Codec::clone();
+    auto& c = static_cast<CodecChars&>(*cdc);
+    c.stringLookup_ = stringLookup_;
+    c.strings_ = strings_;
+    ASSERT(c.min() == this->min_);
+    ASSERT(c.max() == this->max_);
+    return cdc;
+}
+
+template<typename ByteOrder>
+void CodecChars<ByteOrder>::copyStrings(core::Codec& rhs) {
+    CodecChars<ByteOrder>* c = dynamic_cast<CodecChars<ByteOrder>*>(&rhs);
+    ASSERT(c);
+    strings_ = c->strings_;
+    stringLookup_ = c->stringLookup_;
+}
+
+template<typename ByteOrder>
+void CodecChars<ByteOrder>::print(std::ostream& s) const {
+    s << this->name_
+      << ", #words=" << strings_.size();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+} // namespace codec
+} // namespace odc
+
+#endif
+

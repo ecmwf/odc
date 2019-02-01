@@ -109,7 +109,7 @@ bool TablesReader::ensureTable(long idx) {
         // If the table has been truncated, this is an error, and we cannot read on.
         Offset pos = dh_.seek(nextPosition);
         if (pos < nextPosition) {
-            throw ShortFile(dh_.title(), Here());
+            throw ODBIncomplete(dh_.title(), Here());
         }
 
         std::unique_ptr<Table> tbl(Table::readTable(dh_));

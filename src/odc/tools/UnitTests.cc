@@ -700,7 +700,7 @@ TEST(meta_data_reader_checks_if_file_truncated)
         for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
             ;
         ASSERT(0 && "Scanning of truncated file did not fail");
-    } catch (eckit::ShortFile ex) {
+    } catch (odc::core::ODBIncomplete ex) {
         Log::info() << "Scanning of truncated file disp.7.1.odb.truncated failed as expected." << std::endl;
     }
 }
@@ -713,7 +713,7 @@ TEST(meta_data_reader_fails_scanning_corrupted_file)
         for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
             ;
         ASSERT(0 && "Scanning of corrupted.odb did not fail");
-    } catch (eckit::ShortFile ex) {
+    } catch (odc::core::ODBIncomplete ex) {
         Log::info() << "Scanning of corrupted.odb failed as expected." << std::endl;
     }
 }

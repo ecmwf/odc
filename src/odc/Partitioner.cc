@@ -9,7 +9,7 @@
  */
 
 #include "eckit/eckit.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/Partitioner.h"

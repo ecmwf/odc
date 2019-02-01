@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "odc/DataStream.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 #include "TestCase.h"
 

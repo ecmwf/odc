@@ -18,7 +18,7 @@
 
 #include "odc/core/TablesReader.h"
 #include "odc/Header.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/ODBAPISettings.h"
 
 using namespace eckit;

@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2010
 
 #include "eckit/log/Timer.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 
 #include "odc/Writer.h"

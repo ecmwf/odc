@@ -19,7 +19,7 @@
 #include "eckit/io/Buffer.h"
 
 #include "odc/core/ThreadSharedDataHandle.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 
 namespace eckit { class DataHandle; }

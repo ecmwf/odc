@@ -13,7 +13,6 @@
 ///
 
 #include "odc_config.h"
-#include "odc/Header.h"
 #include "odc/ODBAPIVersion.h"
 
 namespace odc {

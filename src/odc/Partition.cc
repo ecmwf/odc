@@ -19,7 +19,7 @@
 #include "eckit/io/PartFileHandle.h"
 #include "eckit/parser/StringTools.h"
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/WriterBufferingIterator.h"

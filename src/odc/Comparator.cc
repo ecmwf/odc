@@ -11,7 +11,10 @@
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
+
 #include "odc/Comparator.h"
+#include "odc/core/Column.h"
+#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/StringTool.h"
 #include "odc/utility/Tracer.h"
@@ -26,12 +29,12 @@ using namespace std;
 using namespace eckit;
 using namespace odc::api;
 using namespace odc::utility;
+using namespace odc::core;
 
 class ValuesDifferent : public Exception {
 public:
 	ValuesDifferent(const std::string& what) : Exception(what) {}
 };
-
 
 namespace odc {
 

@@ -14,7 +14,7 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Select.h"
 
 #include "TestCase.h"

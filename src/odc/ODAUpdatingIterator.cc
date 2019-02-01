@@ -13,7 +13,7 @@
 ///
 /// @author Piotr Kuchta, June 2009
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 
 namespace odc {
 

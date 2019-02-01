@@ -14,7 +14,7 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
 
-#include "odc/MetaData.h"
+#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
 #include "odc/tools/MockReader.h"
