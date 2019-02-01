@@ -187,8 +187,8 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
         std::copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
 		nextRowInBuffer_ += sizeof(uint16_t) + nCols * sizeof(double);
 
-		ASSERT(nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
-		if (nextRowInBuffer_ == rowsBuffer_ + rowsBuffer_.size())
+        ASSERT((char*)nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
+        if ((char*)nextRowInBuffer_ == rowsBuffer_ + rowsBuffer_.size())
 			flush();
 	} 
 

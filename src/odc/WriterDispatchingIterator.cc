@@ -8,15 +8,15 @@
  * does it submit to any jurisdiction.
  */
 
-///
-/// \file WriterDispatchingIterator.cc
-///
-/// @author Piotr Kuchta, Feb 2009
+#include "odc/WriterDispatchingIterator.h"
+
+#include "eckit/log/Timer.h"
+#include "eckit/utils/Translator.h"
 
 #include "odc/Comparator.h"
 #include "odc/Reader.h"
-#include "eckit/log/Timer.h"
-#include "eckit/utils/Translator.h"
+
+using namespace odc::core;
 
 
 namespace {
@@ -40,6 +40,9 @@ void trimStringInDouble(char* &p, size_t& len)
 
 namespace odc {
 
+//----------------------------------------------------------------------------------------------------------------------
+
+
 template <typename WRITE_ITERATOR, typename OWNER>
 WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNER &owner, int maxOpenFiles, bool append)
 : owner_(owner),
@@ -58,14 +61,13 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
   lastDispatchedValues_(),
   lastIndex_(),
   initialized_(false),
+  append_(append),
   refCount_(0),
   iterators_(),
   files_(),
   templateParameters_(),
   maxOpenFiles_(maxOpenFiles),
-  filesCreated_(),
-  append_(append)
-{}
+  filesCreated_() {}
 
 
 template <typename WRITE_ITERATOR, typename OWNER>
@@ -76,7 +78,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, st
 	ASSERT(col);
 
 	col->name(name);
-	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
+    col->type<SameByteOrder>(type);
 	return 0;
 }
 
@@ -88,7 +90,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 	ASSERT(col);
 
 	col->name(name);
-	col->type<DataStream<SameByteOrder, FastInMemoryDataHandle> >(type, false);
+    col->type<SameByteOrder>(type);
     col->bitfieldDef(b);
 	col->missingValue(0);
 	return 0;
@@ -548,6 +550,8 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::close()
 
 	return rc;
 }
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace odc
 

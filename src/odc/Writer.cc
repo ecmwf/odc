@@ -13,6 +13,8 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
+#include "odc/Writer.h"
+
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -28,15 +30,12 @@ using namespace std;
 #include "eckit/io/FileDescHandle.h"
 #include "eckit/config/Resource.h"
 
+#include "odc/codec/CodecOptimizer.h"
 #include "odc/core/Codec.h"
 #include "odc/core/Column.h"
 #include "odc/core/MetaData.h"
-#include "odc/CodecOptimizer.h"
 #include "odc/core/DataStream.h"
-#include "odc/FixedSizeWriterIterator.h"
 #include "odc/ODBAPISettings.h"
-#include "odc/Writer.h"
-#include "odc/WriterBufferingIterator.h"
 #include "odc/WriterBufferingIterator.h"
 #include "odc/ODBAPISettings.h"
 

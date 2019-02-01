@@ -68,7 +68,6 @@ TestFunctionThin.cc
 TestFunctionTypeConversion.cc
 TestFunctionsForAngleConversion.cc
 TestFunctionsForTemperatureConversion.cc
-TestInMemoryDataHandle.cc
 TestInt16_MissingCodec.cc
 TestIntegerValues.cc
 TestMetaData.cc

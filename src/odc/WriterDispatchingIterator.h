@@ -63,8 +63,8 @@ public:
     const std::string& codecName(size_t index) const;
 	double columnMissingValue(size_t index);
 
-    const MetaData& columns() const { return columns_; }
-	const MetaData& columns(const MetaData& md); 
+    const core::MetaData& columns() const { return columns_; }
+    const core::MetaData& columns(const core::MetaData& md);
 
 	OWNER& owner() { return owner_; }
 
@@ -97,14 +97,14 @@ protected:
 
 	OWNER& owner_;
 	Writer<WRITE_ITERATOR> iteratorsOwner_;
-	MetaData columns_;
+    core::MetaData columns_;
 	double* lastValues_;
 	double* nextRow_;
     size_t* columnOffsets_;
 	unsigned long long nrows_;
 	std::string outputFileTemplate_;
 
-	Properties properties_;
+    core::Properties properties_;
 
 	std::vector<int> dispatchedIndexes_;
 	Values2IteratorIndex values2iteratorIndex_;

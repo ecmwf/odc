@@ -47,14 +47,10 @@ Duration.h
 Endian.h
 FastODA2Request.cc
 FastODA2Request.h
-FixedSizeWriterIterator.cc
-FixedSizeWriterIterator.h
 MDI.cc
 MDI.h
 GribCodes.cc
 GribCodes.h
-InMemoryDataHandle.cc
-InMemoryDataHandle.h
 IteratorProxy.h
 LibOdc.cc
 LibOdc.h
