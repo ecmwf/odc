@@ -12,8 +12,6 @@
 
 #include "odc/odccapi.h"
 #include "eckit/sql/type/SQLBitfield.h"
-#include "odc/DataStream.h"
-#include "odc/Codec.h"
 #include "odc/core/Column.h"
 #include "odc/core/MetaData.h"
 #include "odc/IteratorProxy.h"

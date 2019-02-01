@@ -91,8 +91,6 @@ TODATable.cc
 TODATable.h
 TODATableIterator.cc
 TODATableIterator.h
-TReadOnlyMemoryDataHandle.cc
-TReadOnlyMemoryDataHandle.h
 TemplateParameters.cc
 TemplateParameters.h
 UnsafeInMemoryDataHandle.h

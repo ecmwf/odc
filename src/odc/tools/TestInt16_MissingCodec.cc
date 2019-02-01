@@ -31,16 +31,16 @@ public:
 	MockReaderIterator3()
     : noMore_(false), refCount_(0), columns_(1), nRows_(0), min_(23), data_(0)
 	{
-		odc::Column* col = columns_[0] = new odc::Column(columns_);
+        core::Column* col = columns_[0] = new core::Column(columns_);
 		ASSERT(col);
 
 		col->name("column_name"); 
-        col->type<DataStream<SameByteOrder, DataHandle> >(odc::api::INTEGER, false);
+        col->type<core::SameByteOrder>(odc::api::INTEGER);
 		col->hasMissing(true);
         next();
 	}
 
-	odc::MetaData& columns() { return columns_; }
+    core::MetaData& columns() { return columns_; }
 
 	bool isNewDataset() { return false; } 
 	double* data() { return &data_; }
@@ -78,7 +78,7 @@ public:
 	int refCount_;
 
 private:
-	odc::MetaData columns_;
+    core::MetaData columns_;
 	unsigned int nRows_;
 	double min_;
 	double data_;
@@ -117,7 +117,7 @@ static void test()
 		ASSERT((*it)[0] == (*originalIt)[0]);
 	}
 
-	odc::codec::Codec& coder ( it->columns()[0]->coder() );
+    core::Codec& coder ( it->columns()[0]->coder() );
 
 	string name = coder.name();
 

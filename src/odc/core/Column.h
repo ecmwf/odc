@@ -25,7 +25,6 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Reader;
 class MetaData;
 
 class Column {
@@ -57,7 +56,8 @@ public:
 	void name(const std::string name) { name_ = name; }
 	const std::string &name() const { return name_; }
 
-    template<typename ByteOrder> void type(api::ColumnType t);
+    template <typename ByteOrder> void type(api::ColumnType t);
+    template <typename ByteOrder> void resetCodec();
 
     void type(api::ColumnType t) { type_ = t; }
     api::ColumnType type() const { return api::ColumnType(type_); }
@@ -138,15 +138,15 @@ void Column::load(DataStream<ByteOrder>& ds)
 
     std::string codecName;
     ds.read(codecName);
-    coder_.reset(CodecFactory::instance().build<ByteOrder>(codecName));
+    coder_ = CodecFactory::instance().build<ByteOrder>(codecName);
     coder_->load(ds);
 }
 
 template <typename ByteOrder>
 void Column::save(DataStream<ByteOrder>& ds) {
 
-    ds.writeString(name_);
-    ds.writeInt32(type_);
+    ds.write(name_);
+    ds.write(static_cast<int32_t>(type_));
 
     if (type_ == api::BITFIELD) {
         eckit::sql::FieldNames& names(bitfieldDef_.first);
@@ -187,6 +187,11 @@ void Column::type(api::ColumnType t)
 
     // TODO: when we have codec unsigned_int64 it will have 0 as 
     if (type_ == BITFIELD) missingValue(MDI::bitfieldMDI());
+}
+
+template <typename ByteOrder>
+void Column::resetCodec() {
+    type<ByteOrder>(static_cast<api::ColumnType>(type_));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

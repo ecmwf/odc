@@ -14,10 +14,10 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/parser/StringTools.h"
+#include "eckit/io/MemoryHandle.h"
 
 #include "odc/FileCollector.h"
 #include "odc/FileMapper.h"
-#include "odc/InMemoryDataHandle.h"
 #include "odc/Partition.h"
 #include "odc/Indexer.h"
 #include "odc/Partitioner.h"
@@ -29,6 +29,7 @@ using namespace std;
 using namespace eckit;
 using namespace odc;
 using namespace odc::tool;
+using namespace odc::core;
 
 void Stager::prepareMapper(FileMapper&                                            mapper,
                            const std::vector<std::string>&                        keywords,
@@ -128,7 +129,7 @@ void Stager::sendPartitionsInfo(MultiHandle& output, const Partitions& partition
 {
     Log::info() << "partitions: " << endl << partitions << endl;
 
-    InMemoryDataHandle *dh (new InMemoryDataHandle);
+    DataHandle* dh = new eckit::MemoryHandle(1024, true);
     dh->openForWrite(0);
     Writer<> out(*dh);
     Writer<>::iterator o (out.begin());

@@ -21,6 +21,7 @@
 #include "SetTool.h"
 
 using namespace eckit;
+using namespace odc::core;
 
 namespace odc {
 namespace tool {
@@ -43,17 +44,17 @@ void SetTool::run()
 	PathName inFile = parameters(2);
 	PathName outFile = parameters(3);
 
-	odc::Reader in(inFile);
-	odc::Writer<> out(outFile);
+    Reader in(inFile);
+    Writer<> out(outFile);
 
-	odc::Writer<>::iterator writer(out.begin());
+    Writer<>::iterator writer(out.begin());
 
-	odc::Reader::iterator sourceIt = in.begin();
-	const odc::Reader::iterator sourceEnd = in.end();
+    Reader::iterator sourceIt = in.begin();
+    const Reader::iterator sourceEnd = in.end();
 
 	parseUpdateList(parameters(1), columns, values);
 
-	typedef odc::ConstantSetter<odc::Reader::iterator> Setter;
+    typedef ConstantSetter<Reader::iterator> Setter;
 	Setter setter(sourceIt, sourceEnd, columns, values);
 	Setter::iterator begin = setter.begin();
 	const Setter::iterator end = setter.end();

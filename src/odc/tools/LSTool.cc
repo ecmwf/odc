@@ -32,7 +32,7 @@ unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
 	odc::Reader::iterator it = f.begin();
 	odc::Reader::iterator end = f.end();
 
-	odc::MetaData md(0);
+    core::MetaData md(0);
 	// Formatting of real values:
     out << std::fixed;
 	unsigned long long n = 0;

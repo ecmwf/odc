@@ -77,7 +77,7 @@ TEST(example_read_data)
 
 TEST(example_write_data)
 {
-    odc::MetaData metaData;
+    odc::core::MetaData metaData;
     metaData
         .addColumn("x", "INTEGER")
         .addColumn("y", "INTEGER")

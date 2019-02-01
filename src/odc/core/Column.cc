@@ -25,7 +25,6 @@ Column::Column(MetaData &owner)
 : owner_(owner),
   name_(),
   type_(IGNORE),
-  coder_(0),
   bitfieldDef_()
 {}
 
@@ -33,7 +32,6 @@ Column::Column(const Column& o)
 : owner_(o.owner_),
   name_(o.name_),
   type_(o.type_),
-  coder_( 0),
   bitfieldDef_(o.bitfieldDef_)
 {
 	*this = o;
@@ -50,7 +48,7 @@ Column& Column::operator=(const Column& other)
     if (type_ == BITFIELD)
 		bitfieldDef(other.bitfieldDef());
 
-    coder_.reset(other.coder_->clone());
+    coder_ = other.coder_->clone();
 //    hasMissing(other.hasMissing());
 //    missingValue(other.missingValue());
     return *this;

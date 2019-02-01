@@ -16,6 +16,7 @@
 
 #include "odc/data/DataHandleFactory.h"
 #include "odc/Select.h"
+#include "odc/SelectIterator.h"
 #include "odc/sql/SQLOutputConfig.h"
 #include "odc/sql/SQLSelectOutput.h"
 #include "odc/TODATable.h"

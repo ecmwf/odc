@@ -20,6 +20,8 @@
 #include <Python.h>
 #endif
 
+#include "eckit/memory/NonCopyable.h"
+
 #include "odc/IteratorProxy.h"
 
 namespace eckit { class PathName; }

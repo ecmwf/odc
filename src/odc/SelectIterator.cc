@@ -12,7 +12,6 @@
 #include "eckit/sql/SQLSelectFactory.h"
 #include "eckit/sql/SQLSelect.h"
 
-#include "odc/DataStream.h"
 #include "odc/core/MetaData.h"
 #include "odc/Select.h"
 #include "odc/SelectIterator.h"

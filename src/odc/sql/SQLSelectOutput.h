@@ -59,7 +59,7 @@ public: // methods
     const double* data() const { return out_; }
     double& data(size_t i) { return out_[offsets_[i]]; }
     size_t rowDataSizeDoubles() const { return requiredBufferSize_; }
-    const MetaData& metadata() const { return metaData_; }
+    const core::MetaData& metadata() const { return metaData_; }
     size_t dataOffset(size_t i) const { return offsets_[i]; }
 
 private: // utility
@@ -100,7 +100,7 @@ private: // members
     std::vector<size_t> columnSizesDoubles_;
     std::vector<size_t> offsets_;
 
-    MetaData metaData_;
+    core::MetaData metaData_;
 
     /// How much output have we done
     unsigned long long count_;

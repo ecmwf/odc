@@ -16,6 +16,8 @@
 #ifndef odc_WriterBufferingIterator_H
 #define odc_WriterBufferingIterator_H
 
+#include "eckit/filesystem/PathName.h"
+
 #include "odc/codec/CodecOptimizer.h"
 #include "odc/IteratorProxy.h"
 
@@ -65,7 +67,7 @@ public:
 
 	Owner& owner() { return owner_; }
 
-	eckit::DataHandle& dataHandle() { return *f; }
+    eckit::DataHandle& dataHandle() { return *f_; }
 
 	void property(std::string key, std::string value) { properties_[key] = value; }
 
@@ -74,7 +76,7 @@ public:
 
 //protected:
 
-	template <typename DATASTREAM> int setOptimalCodecs();
+    int setOptimalCodecs();
 
 	void writeHeader();
 
@@ -104,7 +106,7 @@ protected:
     size_t* columnByteSizes_;
 	unsigned long long nrows_;
 
-	eckit::DataHandle *f;
+    eckit::DataHandle* f_;
     eckit::PathName path_;
 
 private:

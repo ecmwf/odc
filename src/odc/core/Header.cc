@@ -12,6 +12,7 @@
 
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/Buffer.h"
+#include "eckit/types/FixedString.h"
 
 #include "odc/core/DataStream.h"
 #include "odc/core/Exceptions.h"
@@ -58,18 +59,18 @@ void Header::load(DataHandle& dh) {
     DataStream<ByteOrder> ds(basicBuffer, sizeof(basicBuffer));
 
     int32_t formatVersionMajor;
-    ds.readInt32(formatVersionMajor);
+    ds.read(formatVersionMajor);
     ASSERT("File format version not supported" && formatVersionMajor <= FORMAT_VERSION_NUMBER_MAJOR);
 
     int32_t formatVersionMinor;
-    ds.readInt32(formatVersionMinor);
+    ds.read(formatVersionMinor);
     ASSERT("File format version not supported" && formatVersionMinor <= FORMAT_VERSION_NUMBER_MINOR && formatVersionMinor > 3);
 
     std::string headerDigest;
-    ds.readString(headerDigest);
+    ds.read(headerDigest);
 
     int32_t headerSize;
-    ds.readint32(headerSize);
+    ds.read(headerSize);
 
     // Read the remaining header data
 
@@ -87,21 +88,21 @@ void Header::load(DataHandle& dh) {
 
     // 0 means we don't know offset of next header.
     int64_t nextFrameOffset;
-    ds.readInt64(nextFrameOffset);
+    ds.read(nextFrameOffset);
     dataSize_ = nextFrameOffset;
-    const_cast<MetaData&>(owner_.columns()).dataSize(dataSize_);
+    md_.dataSize(dataSize_);
 
     // Reserved, not used yet.
     int64_t prevFrameOffset;
-    ds.readInt64(prevFrameOffset);
+    ds.read(prevFrameOffset);
     ASSERT(prevFrameOffset == 0);
 
     // TODO: increase file format version
 
     int64_t numberOfRows;
-    ds.readInt64(numberOfRows);
+    ds.read(numberOfRows);
     rowsNumber_ = numberOfRows;
-    const_cast<MetaData&>(owner_.columns()).rowsNumber(rowsNumber_);
+    md_.rowsNumber(rowsNumber_);
 
     eckit::Log::debug() << "Header::load: numberOfRows = " << numberOfRows << std::endl;
 
@@ -109,9 +110,9 @@ void Header::load(DataHandle& dh) {
     Flags flags;
     ds.read(flags);
 
-    ds.readProperties(owner_.properties_);
+    ds.read(props_);
 
-    const_cast<MetaData&>(owner_.columns()).load(ds);
+    md_.load(ds);
 }
 
 void Header::loadAfterMagic(DataHandle& dh) {
@@ -138,14 +139,14 @@ eckit::Buffer serializeHeaderInternal(size_t dataSize, size_t rowsNumber, const 
 
     constexpr size_t initial_header_size = 9 + 8 + 4 + 32 + 4;
 
-    eckit::Buffer buffer(ODBAPISettings::headerBufferSize());
+    eckit::Buffer buffer(ODBAPISettings::instance().headerBufferSize());
     bool serialised = false;
     char* variableHeaderStart = 0;
     int32_t variableHeaderSize;
 
     while (!serialised) {
         try {
-            variableHeaderStart = buffer.data() + initial_header_size;
+            variableHeaderStart = buffer + initial_header_size;
             DataStream<ByteOrder> ds(variableHeaderStart, buffer.size() - initial_header_size);
 
             ds.write(static_cast<int64_t>(dataSize));   // Reserved: nextFrameOffset
@@ -157,13 +158,13 @@ eckit::Buffer serializeHeaderInternal(size_t dataSize, size_t rowsNumber, const 
 
             ds.write(properties);
 
-            columns.save(f);
+            columns.save(ds);
 
             serialised = true;
             variableHeaderSize = ds.position();
 
         } catch (ODBEndOfDataStream& e) {
-            subBuffer = eckit::Buffer(subBuffer.size() * 2);
+            buffer = eckit::Buffer(buffer.size() * 2);
         }
     }
 

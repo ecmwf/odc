@@ -53,7 +53,7 @@ public: // methods
 
 private: // members
 
-    std::mutex m_;
+    mutable std::mutex m_;
     std::map<std::string, std::reference_wrapper<CodecBuilderBase>> builders_;
 };
 
@@ -91,10 +91,10 @@ public: // methods
 private: // methods
 
     std::unique_ptr<Codec> make(const SameByteOrder&) const override {
-        return new CODEC<SameByteOrder>();
+        return std::unique_ptr<Codec>(new CODEC<SameByteOrder>());
     }
     std::unique_ptr<Codec> make(const OtherByteOrder&) const override {
-        return new CODEC<OtherByteOrder>();
+        return std::unique_ptr<Codec>(new CODEC<OtherByteOrder>());
     }
 };
 

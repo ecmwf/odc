@@ -55,20 +55,20 @@ public:
 
 	void operator|=(const MetaData& other);
 
-	template<typename DATASTREAM> void save(DATASTREAM &) const;
-	template<typename DATASTREAM> void load(DATASTREAM &);
+    template<typename ByteStream> void save(DataStream<ByteStream>& ds) const;
+    template<typename ByteStream> void load(DataStream<ByteStream>& ds);
 
 	void setSize(size_t);
 
 	MetaData& addColumn(const std::string& name, const std::string& type);
 
-	template<typename DATASTREAM>
+    template<typename ByteOrder>
 	MetaData& addColumnPrivate(const std::string& name, const std::string& type);
 
     bool allColumnsInitialised() const;
 
     MetaData& addBitfield(const std::string& name, const eckit::sql::BitfieldDef&);
-    template<typename DATASTREAM> MetaData& addBitfieldPrivate(const std::string& name, const eckit::sql::BitfieldDef&);
+    template<typename ByteOrder> MetaData& addBitfieldPrivate(const std::string& name, const eckit::sql::BitfieldDef&);
 
 	bool hasColumn(const std::string&) const;
 	Column* columnByName(const std::string&) const;
@@ -91,6 +91,8 @@ public:
 
 	void resetStats();
 
+    template <typename ByteOrder> void resetCodecs() { for (auto& col : *this) col->resetCodec<ByteOrder>(); }
+
 	virtual ~MetaData();
 
 	virtual void print(std::ostream& s) const;
@@ -104,54 +106,53 @@ private:
 };
 
 
-template<typename DATASTREAM>
-void MetaData::save(DATASTREAM &f) const
+template<typename ByteOrder>
+void MetaData::save(DataStream<ByteOrder>& ds) const
 {
-	int32_t count = size();
-    f.writeInt32(count);
+    ds.write(static_cast<int32_t>(size()));
     for(size_t i = 0; i < size(); i++) {
-        at(i)->save(f);
+        at(i)->save(ds);
     }
 }
 
-template<typename DATASTREAM>
-void MetaData::load(DATASTREAM &f)
+template<typename ByteOrder>
+void MetaData::load(DataStream<ByteOrder>& ds)
 {
 	for (size_t i = 0; i < size(); i++)
 		delete at(i);
 	clear();
 
 	int32_t nCols;
-	f.readInt32(nCols);
+    ds.read(nCols);
 	resize(nCols, NULL);
 	for (size_t i = 0; i < size(); i++)
 	{
 		delete at(i);
 		at(i) = new Column(*this);
-		at(i)->load(f);
+        at(i)->load(ds);
 	}
 }
 
-template <typename DATASTREAM>
+template <typename ByteOrder>
 MetaData& MetaData::addColumnPrivate(const std::string& name, const std::string& type)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);
 
 	c->name(name);
-    c->type<DATASTREAM>(Column::type(type), false);
+    c->type<ByteOrder>(Column::type(type));
 
 	push_back(c);
 	return *this;
 }
 
-template<typename DATASTREAM> 
+template<typename ByteOrder>
 MetaData& MetaData::addBitfieldPrivate(const std::string& name, const eckit::sql::BitfieldDef& bd)
 {
 	Column* c = new Column(*this);
 	ASSERT(c);
 	c->name(name);
-    c->type<DATASTREAM>(api::BITFIELD, false);
+    c->type<ByteOrder>(api::BITFIELD);
 	c->bitfieldDef(bd);
 	push_back(c);
 

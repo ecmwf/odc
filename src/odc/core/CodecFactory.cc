@@ -44,17 +44,16 @@ void CodecFactory::deregister(const std::string& name, CodecBuilderBase& builder
     builders_.erase(it);
 }
 
-CodecBuilderBase::CodecBuilderBase(const std::string& name) {
+CodecBuilderBase::CodecBuilderBase(const std::string& name) :
+    name_(name) {
     CodecFactory::instance().enregister(name, *this);
 }
 
 CodecBuilderBase::~CodecBuilderBase() {
-    CodecFactory::instance().deregister(name, *this);
+    CodecFactory::instance().deregister(name_, *this);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace core
 } // namespace odc
-
-#endif

@@ -111,7 +111,6 @@ static void createDataForMixedAggregated2()
     Writer<>::iterator o = out.begin();
     MetaData md(o->columns());
 
-    typedef DataStream<SameByteOrder, DataHandle> DS;
     md.addColumn /* <DS> */("x", "INTEGER");//, true, .0);
     md.addColumn /* <DS> */("y", "INTEGER");//, true, .0);
     md.addColumn /* <DS> */("v", "DOUBLE");//, true, .0);

@@ -86,7 +86,7 @@ void Partitions::addReport(const PathName& fileName, ullong blockStart, ullong b
         ullong firstRow (0);
         if (! currentPartition.blocks().empty()) {
             const Block& lastBlock (currentPartition.blocks().back());
-            if (lastBlock.fileName == fileName && currentPartition.startOfLastBlock() == Offset(blockStart))
+            if (lastBlock.fileName == fileName && Offset(currentPartition.startOfLastBlock()) == Offset(blockStart))
                 firstRow = currentPartition.rowsOnLastBlock();
         }
 
@@ -119,7 +119,7 @@ void Partitions::addReport(const PathName& fileName, ullong blockStart, ullong b
 
                 currentBlock.lastRow += nRows;
 
-                if (currentPartition.startOfLastBlock() == Offset(blockStart))
+                if (Offset(currentPartition.startOfLastBlock()) == Offset(blockStart))
                     currentPartition.rowsOnLastBlock(currentPartition.rowsOnLastBlock() + nRows);
                 else {
                     currentPartition.startOfLastBlock(Offset(blockStart));

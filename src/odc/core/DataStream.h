@@ -17,9 +17,11 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
-#include <map>
 
 #include "eckit/io/Buffer.h"
 #include "eckit/io/Offset.h"
@@ -99,6 +101,68 @@ private: // members
     char* current_;
     char* end_;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// GeneralDataStream provides a way to store DataStreams.
+// This can probably be done better, but I want the read/write functions to be both
+// templated, and non-virtual, in the specific-data-order cases.
+
+class GeneralDataStream {
+
+public:
+
+    GeneralDataStream() {}
+
+    template <typename ...Args>
+    GeneralDataStream(bool otherByteOrder, Args&&... args) :
+        sameDs_(otherByteOrder ? 0 : new DataStream<SameByteOrder>(std::forward<Args>(args)...)),
+        otherDs_(otherByteOrder ? new DataStream<OtherByteOrder>(std::forward<Args>(args)...) : 0) {}
+
+    ~GeneralDataStream() {}
+
+    GeneralDataStream(GeneralDataStream&& rhs) = default;
+    GeneralDataStream& operator=(GeneralDataStream&& rhs) = default;
+
+    bool isOther() const { return !!otherDs_; }
+    DataStream<SameByteOrder>& same() { ASSERT(sameDs_); return *sameDs_; }
+    DataStream<OtherByteOrder>& other() { ASSERT(otherDs_); return *otherDs_; }
+
+    eckit::Offset position() const {
+        ASSERT(sameDs_ || otherDs_);
+        return sameDs_ ? sameDs_->position() : otherDs_->position();
+    }
+
+    template <typename ...Args>
+    void read(Args&&... args) {
+        ASSERT(sameDs_ || otherDs_);
+        sameDs_ ? sameDs_->read(std::forward<Args>(args)...) : otherDs_->read(std::forward<Args>(args)...);
+    }
+
+    template <typename ...Args>
+    void readBytes(Args&&... args) {
+        ASSERT(sameDs_ || otherDs_);
+        sameDs_ ?  sameDs_->readBytes(std::forward<Args>(args)...) : otherDs_->readBytes(std::forward<Args>(args)...);
+    }
+
+    template <typename ...Args>
+    void write(Args&&... args) {
+        ASSERT(sameDs_ || otherDs_);
+        sameDs_ ? sameDs_->write(std::forward<Args>(args)...) :  otherDs_->write(std::forward<Args>(args)...);
+    }
+
+    template <typename ...Args>
+    void writeBytes(Args&&... args) {
+        ASSERT(sameDs_ || otherDs_);
+        sameDs_ ? sameDs_->writeBytes(std::forward<Args>(args)...) :  otherDs_->writeBytes(std::forward<Args>(args)...);
+    }
+
+private: // members
+
+    std::unique_ptr<DataStream<SameByteOrder>> sameDs_;
+    std::unique_ptr<DataStream<OtherByteOrder>> otherDs_;
+};
+
 
 //----------------------------------------------------------------------------------------------------------------------
 

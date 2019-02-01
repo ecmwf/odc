@@ -8,20 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-///
-/// \file ReaderIterator.cc
-///
-/// @author Piotr Kuchta, Feb 2009
-
-#include <arpa/inet.h>
-
-#include "odc/data/DataHandleFactory.h"
-
-#include "odc/Header.h"
-#include "odc/Reader.h"
 #include "odc/ReaderIterator.h"
 
+#include "eckit/io/DataHandle.h"
+
+#include "odc/core/Codec.h"
+#include "odc/core/Header.h"
+#include "odc/data/DataHandleFactory.h"
+#include "odc/Reader.h"
+
 using namespace eckit;
+using namespace odc::core;
 
 namespace odc {
 
@@ -31,10 +28,11 @@ ReaderIterator::ReaderIterator(Reader &owner)
   lastValues_(0),
   columnOffsets_(0),
   rowDataSizeDoubles_(0),
-  codecs_(0),
   nrows_(0),
+  rowsRemainingInTable_(0),
   f_(owner_.dataHandle()->clone()),
   newDataset_(false),
+  rowDataBuffer_(0),
   noMore_(false),
   headerCounter_(0),
   byteOrder_(BYTE_ORDER_INDICATOR),
@@ -58,10 +56,11 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   lastValues_(0),
   columnOffsets_(0),
   rowDataSizeDoubles_(0),
-  codecs_(0),
   nrows_(0),
+  rowsRemainingInTable_(0),
   f_(odc::DataHandleFactory::openForRead(pathName)),
   newDataset_(false),
+  rowDataBuffer_(0),
   noMore_(false),
   headerCounter_(0),
   byteOrder_(BYTE_ORDER_INDICATOR),
@@ -72,24 +71,64 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
 	loadHeaderAndBufferData();
 }
 
-void ReaderIterator::loadHeaderAndBufferData()
-{
-	Header<ReaderIterator> header(*this);
-	header.load();
-	byteOrder_ = header.byteOrder();
-    rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
-    ++headerCounter_;
+bool ReaderIterator::loadHeaderAndBufferData() {
 
-	initRowBuffer();
+    if (noMore_) return false;
 
-	size_t dataSize = header.dataSize();
-	memDataHandle_.size(dataSize);
-	unsigned long bytesRead = f_->read(reinterpret_cast<char*>(memDataHandle_.buffer()), dataSize);
+    ASSERT(rowsRemainingInTable_ == 0);
 
-    if (bytesRead != dataSize)
-        throw eckit::SeriousBug("Could not read the amount of data indicated by file's header");
+    // Keep going until we find a valid header, or run out of data
+    // n.b. an empty table is legit, so we need a loop.
 
-    newDataset_ = true;
+    while (true) {
+
+        // Check the magic. If no more data, we are done
+
+        if (!Header::readMagic(*f_)) {
+            noMore_ = true;
+            return false;
+        }
+
+        // Read in the rest of the header
+
+        Header header(columns_, properties_);
+        header.loadAfterMagic(*f_);
+
+        byteOrder_ = header.byteOrder();
+        rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
+        ++headerCounter_;
+
+        // Ensure the decode buffers are all set up
+
+        initRowBuffer();
+
+        // Read in the data into a buffer and initialise the DataStream.
+
+        size_t dataSize = header.dataSize();
+
+        // It is perfectly legitimate to have zero rows in an ODB. If that is the case,
+        // then loop around again.
+
+        if (dataSize == 0) {
+            ASSERT(header.rowsNumber() == 0);
+        } else {
+
+            // Read the expected data into the rows buffer.
+
+            ASSERT(header.rowsNumber() != 0);
+            ASSERT(dataSize >= 2);
+
+            if (!readBuffer(dataSize)) {
+                // See ODB-376
+                throw SeriousBug("Expected row data to follow table header");
+            }
+
+            // And we are done
+            newDataset_ = true;
+            rowsRemainingInTable_ = header.rowsNumber();
+            return true;
+        }
+    }
 }
 
 ReaderIterator::~ReaderIterator ()
@@ -98,7 +137,6 @@ ReaderIterator::~ReaderIterator ()
 
 	close();
 	delete [] lastValues_;
-	delete [] codecs_;
     delete [] columnOffsets_;
 }
 
@@ -117,8 +155,8 @@ void ReaderIterator::initRowBuffer()
 	delete [] lastValues_;
     lastValues_ = new double [numDoubles];
 
-	delete [] codecs_;
-	codecs_ = new odc::codec::Codec* [nCols];
+    codecs_.clear();
+    codecs_.resize(nCols, 0);
 
     delete [] columnOffsets_;
     columnOffsets_ = new size_t[nCols];
@@ -128,20 +166,38 @@ void ReaderIterator::initRowBuffer()
 	{
 		codecs_[i] = &columns()[i]->coder();
         lastValues_[offset] = codecs_[i]->missingValue();
-        codecs_[i]->dataHandle(&memDataHandle_);
         columnOffsets_[i] = offset;
         offset += columns()[i]->dataSizeDoubles();
     }
 }
 
-size_t ReaderIterator::readBuffer(size_t dataSize)
-{
-	memDataHandle_.size(dataSize);
+size_t ReaderIterator::readBuffer(size_t dataSize) {
 
-	unsigned long bytesRead;
-	if( (bytesRead = f_->read(memDataHandle_.buffer(), dataSize)) == 0)
-		return 0;
-	ASSERT(bytesRead == dataSize);
+    // Ensure we have enough buffer space
+
+    if (rowDataBuffer_.size() < dataSize) {
+        rowDataBuffer_ = eckit::Buffer(dataSize);
+    }
+
+    // Read the data into a buffer
+
+    size_t bytesRead = f_->read(rowDataBuffer_, dataSize);
+    if (bytesRead == 0) return 0;
+
+    if (bytesRead != dataSize) {
+        std::stringstream ss;
+        ss << "Failed to read " << dataSize << " bytes of encoded data";
+        throw ODBIncomplete(ss.str(), Here());
+    }
+
+    // Assign the data to a DataStream.
+
+    rowDataStream_ = GeneralDataStream(byteOrder_ != BYTE_ORDER_INDICATOR, rowDataBuffer_);
+
+    // Assign the appropriate data stream to each of the codecs.
+
+    for (auto& codec : codecs_) codec->setDataStream(rowDataStream_);
+
 	return bytesRead;
 }
 
@@ -151,88 +207,18 @@ bool ReaderIterator::next()
     if (noMore_)
         return false; 
 
-    uint16_t c = 0;
-    long bytesRead = 0;
-
-    if ( (bytesRead = memDataHandle_.read(&c, 2)) == 0) {
-
-        // Keep going until we find a valid header, or run out of data
-        // n.b. an empty table is legit, so we need a loop.
-
-        bool found = false;
-        do {
-
-            // If we are at the end of the data, we are done.
-            if ( (bytesRead = f_->read(&c, 2)) <= 0) {
-                owner_.noMoreData();
-                return ! (noMore_ = true);
-            }
-            ASSERT(bytesRead == 2);
-
-            // The only legit thing to follow a table, is another table
-
-            if (c != ODA_MAGIC_NUMBER)  {
-                // memDataHandle_ is preloaded with all of the data associated with an ODB table according
-                // to its header. If we have read data beyond the full table without finding the magic for
-                // a new table, then this is a corrupt file, and we should report it as such, rather than
-                // just treating this as more row data.
-
-                // See ODB-376
-
-                std::stringstream ss;
-                ss << "Unexpected data found in ODB file \"" << f_->name()
-                   << "\" at position " << (static_cast<long long>(f_->position())-2);
-                throw BadValue(ss.str());
-            }
-
-            // Read in the rest of the header
-
-            DataStream<SameByteOrder> ds(f_.get());
-
-            unsigned char cc;
-            ds.readUChar(cc); ASSERT(cc == 'O');
-            ds.readUChar(cc); ASSERT(cc == 'D');
-            ds.readUChar(cc); ASSERT(cc == 'A');
-
-            Header<ReaderIterator> header(*this);
-            header.loadAfterMagic();
-            byteOrder_ = header.byteOrder();
-            rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
-            ++headerCounter_;
-            initRowBuffer();
-
-            size_t dataSize = header.dataSize();
-
-            // If there are no rows in this table, loop around again to read the _next_ table
-
-            if (dataSize == 0) {
-                ASSERT(header.rowsNumber() == 0);
-            } else {
-
-                // We are now expecting rows. Read the data into the rows buffer, and continue with row reading
-
-                ASSERT(header.rowsNumber() != 0);
-                ASSERT(dataSize >= 2);
-
-                if (!readBuffer(dataSize)) {
-                    // See ODB-376
-                    throw SeriousBug("Expected row data to follow table header");
-                }
-
-                bytesRead = memDataHandle_.read(&c, 2);
-                ASSERT(bytesRead == 2);
-
-                // We have found a new, valid table. Break out of the loop.
-                found = true;
-                newDataset_ = true;
-            }
-
-        } while(!found);
+    if (rowsRemainingInTable_ == 0) {
+        if (!loadHeaderAndBufferData()) return false;
+        ASSERT(rowsRemainingInTable_ != 0);
     }
-	c = ntohs(c);
+
+    unsigned char marker[2];
+    rowDataStream_.readBytes(marker, sizeof(marker));
+
+    int startCol = (marker[0] * 256) + marker[1];
 
 	size_t nCols = columns().size();
-    for(size_t i = c; i < nCols; i++) {
+    for(size_t i = startCol; i < nCols; i++) {
         codecs_[i]->decode(&lastValues_[columnOffsets_[i]]);
     }
 

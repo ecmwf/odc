@@ -17,7 +17,6 @@
 #define ReaderIterator_H
 
 #include "odc/IteratorProxy.h"
-#include "odc/TReadOnlyMemoryDataHandle.h"
 
 #include "odc/core/MetaData.h"
 
@@ -33,9 +32,8 @@ extern "C" {
 }
 
 namespace odc {
-	namespace codec { class Codec; }
+    namespace core { class Codec; }
 	namespace sql { class ODATableIterator; }
-	template <typename O> class Header;
 }
 
 namespace odc {
@@ -103,27 +101,28 @@ private:
     ReaderIterator& operator=(const ReaderIterator&);
 
 	void initRowBuffer();
-	void loadHeaderAndBufferData();
+    bool loadHeaderAndBufferData();
 
     Reader& owner_;
     core::MetaData columns_;
 	double* lastValues_;
     size_t* columnOffsets_; // in doubles
     size_t rowDataSizeDoubles_;
-    odc::codec::Codec** codecs_;
+    std::vector<core::Codec*> codecs_;
 	unsigned long long nrows_;
+    size_t rowsRemainingInTable_;
 
     std::unique_ptr<eckit::DataHandle> f_;
     core::Properties properties_;
 
 	bool newDataset_;
 
+    eckit::Buffer rowDataBuffer_;
+    core::GeneralDataStream rowDataStream_;
+
 public:
 	bool noMore_;
 private:
-
-	//PrettyFastInMemoryDataHandle
-	ReadOnlyMemoryDataHandle memDataHandle_;
 
 	unsigned long headerCounter_;
 	int32_t byteOrder_;
@@ -138,7 +137,6 @@ protected:
 
 	friend class odc::Reader;
 	friend class odc::IteratorProxy<odc::ReaderIterator, odc::Reader, const double>;
-	friend class odc::Header<odc::ReaderIterator>;
 	friend class odc::sql::ODATableIterator;
 };
 

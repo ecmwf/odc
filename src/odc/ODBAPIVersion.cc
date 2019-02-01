@@ -14,14 +14,15 @@
 
 #include "odc_config.h"
 #include "odc/ODBAPIVersion.h"
+#include "odc/core/Header.h"
 
 namespace odc {
 
     const char *ODBAPIVersion::version() { return odc_VERSION_STR; }
     const char *gitsha1() { return odc_GIT_SHA1; }
 
-	unsigned int ODBAPIVersion::formatVersionMajor() { return FORMAT_VERSION_NUMBER_MAJOR; }
-	unsigned int ODBAPIVersion::formatVersionMinor() { return FORMAT_VERSION_NUMBER_MINOR; }
+    unsigned int ODBAPIVersion::formatVersionMajor() { return core::FORMAT_VERSION_NUMBER_MAJOR; }
+    unsigned int ODBAPIVersion::formatVersionMinor() { return core::FORMAT_VERSION_NUMBER_MINOR; }
 	const char *ODBAPIVersion::installPrefix()       { return odc_INSTALL_PREFIX; }
 	const char *ODBAPIVersion::buildDirectory()      { return odc_BINARY_DIR; }
 

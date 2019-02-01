@@ -20,9 +20,11 @@
 #include "odc/Reader.h"
 #include "odc/RowsCounter.h"
 #include "odc/Select.h"
+#include "odc/SelectIterator.h"
 #include "odc/Writer.h"
 
 using namespace eckit;
+using namespace odc::core;
 
 namespace odc {
 
@@ -61,7 +63,7 @@ void Indexer::createIndex(const PathName &dataFile, const PathName& indexFile)
 {
     BlockOffsets offsets (offsetsOfBlocks(dataFile));
 
-    odc::MetaData metaData;
+    MetaData metaData;
     metaData
         .addColumn("block_begin", "INTEGER")
         .addColumn("block_length", "INTEGER")

@@ -20,6 +20,8 @@
 #include <memory>
 #include <ostream>
 
+using namespace odc::core;
+
 namespace odc {
 
 template <typename T>

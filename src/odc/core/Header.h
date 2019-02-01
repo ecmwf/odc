@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "eckit/memory/NonCopyable.h"
+#include "eckit/io/Buffer.h"
 
 namespace eckit { class DataHandle; }
 

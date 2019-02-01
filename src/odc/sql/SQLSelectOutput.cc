@@ -140,7 +140,7 @@ void SQLSelectOutput::prepare(SQLSelect& sql) {
         // Update the metadata
 
         metaData_[i]->name(column->title());
-        metaData_[i]->type<DataStream<SameByteOrder,DataHandle>>(sqlToOdbType(*column->type()), false);
+        metaData_[i]->type<core::SameByteOrder>(sqlToOdbType(*column->type()));
         metaData_[i]->hasMissing(column->hasMissingValue());
         metaData_[i]->missingValue(column->missingValue());
         metaData_[i]->bitfieldDef(column->bitfieldDef());

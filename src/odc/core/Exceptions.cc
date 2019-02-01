@@ -35,5 +35,3 @@ ODBEndOfDataStream::ODBEndOfDataStream(const std::string& s, const eckit::CodeLo
 
 } // namespace core
 } // namespace odc
-
-#endif

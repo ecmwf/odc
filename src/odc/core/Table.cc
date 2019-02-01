@@ -59,6 +59,10 @@ int32_t Table::byteOrder() const {
     return byteOrder_;
 }
 
+bool Table::otherByteOrder() const {
+    return byteOrder_ != BYTE_ORDER_INDICATOR;
+}
+
 const MetaData& Table::columns() const {
     return metadata_;
 }
@@ -98,35 +102,32 @@ void Table::decode(DecodeTarget& target) {
     // Read the data in in bulk for this table
 
     const Buffer readBuffer(readEncodedData());
-    MemoryHandle dh(readBuffer);
-    AutoCloser<DataHandle> closer(dh);
-    dh.openForRead();
+    GeneralDataStream ds(otherByteOrder(), readBuffer);
 
-    std::vector<std::reference_wrapper<codec::Codec>> decoders;
+    std::vector<std::reference_wrapper<Codec>> decoders;
     decoders.reserve(ncols);
     for (auto& col : metadata) {
         decoders.push_back(col->coder());
-        decoders.back().get().dataHandle(&dh);
+        decoders.back().get().setDataStream(ds);
     }
     // Do the decoding
 
-    size_t lastStartCol = 0;
-    size_t startCol = 0;
+    int lastStartCol = 0;
     std::vector<size_t> lastDecoded(ncols, 0);
 
     for (size_t rowCount = 0; rowCount < nrows; ++rowCount) {
 
         unsigned char marker[2];
-        ASSERT(dh.read(&marker, sizeof(marker)) == 2);
+        ds.readBytes(&marker, sizeof(marker));
         int startCol = (marker[0] * 256) + marker[1]; // Endian independant
 
         if (lastStartCol > startCol) {
-            for (size_t col = startCol; col < lastStartCol; col++) {
+            for (int col = startCol; col < lastStartCol; col++) {
                 facades[col].fill(lastDecoded[col], rowCount-1);
             }
         }
 
-        for (size_t col = startCol; col < ncols; col++) {
+        for (int col = startCol; col < long(ncols); col++) {
             decoders[col].get().decode(reinterpret_cast<double*>(facades[col][rowCount]));
             lastDecoded[col] = rowCount;
         }

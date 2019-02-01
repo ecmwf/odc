@@ -16,6 +16,7 @@
 #include "odc/tools/MergeTool.h"
 
 using namespace eckit;
+using namespace odc::core;
 
 namespace odc {
 namespace tool {

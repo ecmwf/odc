@@ -23,12 +23,14 @@
 #include "odc/ODBAPIVersion.h"
 #include "odc/odccapi.h"
 #include "odc/Select.h"
+#include "odc/SelectIterator.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
 
 using namespace eckit;
 using namespace odc;
 using namespace odc::api;
+using namespace odc::core;
 
 char *dummyCommandLineArgs[] = { const_cast<char*>("odbcapi"), 0 };
 
@@ -477,7 +479,7 @@ int odb_write_iterator_get_column_offset(oda_write_iterator_ptr wi, int n, int* 
 int odb_read_iterator_get_missing_value(oda_read_iterator_ptr ri, int index, double* value)
 {
     ReaderIterator* r (reinterpret_cast<ReaderIterator*>(ri));
-    if (index < 0 && r->columns().size() < index) 
+    if (index < 0 || long(r->columns().size()) < index)
     {
         std::stringstream ss;
         ss << "odb_read_iterator_get_missing_value: index " << index 

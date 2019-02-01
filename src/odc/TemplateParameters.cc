@@ -16,6 +16,7 @@
 #include "odc/TemplateParameters.h"
 
 using namespace eckit;
+using namespace odc::core;
 
 namespace odc {
 

@@ -25,6 +25,15 @@ namespace {
     core::CodecBuilder<CodecShortReal2> shortReal2Builder;
 }
 
+template <> constexpr const char* CodecLongReal<odc::core::SameByteOrder>::codec_name;
+template <> constexpr const char* CodecLongReal<odc::core::OtherByteOrder>::codec_name;
+
+template <> constexpr const char* CodecShortReal<odc::core::SameByteOrder>::codec_name;
+template <> constexpr const char* CodecShortReal<odc::core::OtherByteOrder>::codec_name;
+
+template <> constexpr const char* CodecShortReal2<odc::core::SameByteOrder>::codec_name;
+template <> constexpr const char* CodecShortReal2<odc::core::OtherByteOrder>::codec_name;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace codec

@@ -21,8 +21,6 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template<> std::map<std::string, AbstractCodecFactory<DataHandle>* > AbstractCodecFactory<DataHandle>::codecFactories = std::map<std::string, AbstractCodecFactory<DataHandle>* >();
-
 Codec::Codec(const std::string& name)
 : name_(name),
   hasMissing_(false),
@@ -31,9 +29,9 @@ Codec::Codec(const std::string& name)
   max_(missingValue_)
 {}
 
-Codec* Codec::clone()
+std::unique_ptr<Codec> Codec::clone()
 {
-    Codec* c = findCodec<DataStream<SameByteOrder, DataHandle> >(name_, false);
+    auto c = CodecFactory::instance().build<SameByteOrder>(name_);
     c->hasMissing_ = hasMissing_;
     c->missingValue_ = missingValue_;
     c->min_ = min_;
@@ -42,6 +40,14 @@ Codec* Codec::clone()
 }
 
 Codec::~Codec() {}
+
+void Codec::setDataStream(GeneralDataStream& ds) {
+    if (ds.isOther()) {
+        setDataStream(ds.other());
+    } else {
+        setDataStream(ds.same());
+    }
+}
 
 void Codec::setDataStream(DataStream<SameByteOrder>&) {
     throw eckit::SeriousBug("Mismatched byte order between DataStream and Codec", Here());
@@ -94,29 +100,6 @@ void Codec::print(std::ostream& s) const {
         s << ", missingValue=" << missingValue_;
     }
 }
-
-template<> Codec* Codec::loadCodec(DataStream<SameByteOrder,DataHandle> &f) { return AbstractCodecFactory<DataHandle>::loadCodec(f.dataHandle(), false); }
-template<> Codec* Codec::loadCodec(DataStream<OtherByteOrder,DataHandle> &f) { return AbstractCodecFactory<DataHandle>::loadCodec(f.dataHandle(), true); }
-
-template<> Codec* Codec::loadCodec(DataStream<SameByteOrder,FastInMemoryDataHandle> &f) { return AbstractCodecFactory<FastInMemoryDataHandle>::loadCodec(f.dataHandle(), false); }
-template<> Codec* Codec::loadCodec(DataStream<OtherByteOrder,FastInMemoryDataHandle> &f) { return AbstractCodecFactory<FastInMemoryDataHandle>::loadCodec(f.dataHandle(), true); }
-
-template<> Codec* Codec::loadCodec(DataStream<SameByteOrder,PrettyFastInMemoryDataHandle> &f) { return AbstractCodecFactory<PrettyFastInMemoryDataHandle>::loadCodec(f.dataHandle(), false); }
-template<> Codec* Codec::loadCodec(DataStream<OtherByteOrder,PrettyFastInMemoryDataHandle> &f) { return AbstractCodecFactory<PrettyFastInMemoryDataHandle>::loadCodec(f.dataHandle(), true); }
-
-template<>
-template<> void AbstractCodecFactory<DataHandle>::save<SameByteOrder>(Codec *codec, DataStream<SameByteOrder,DataHandle> &f) { codecFactories[codec->name()]->save(codec, f.dataHandle(), false); }
-template<> 
-template<> void AbstractCodecFactory<DataHandle>::save<OtherByteOrder>(Codec *codec, DataStream<OtherByteOrder,DataHandle> &f) { codecFactories[codec->name()]->save(codec, f.dataHandle(), true); }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-// Implementation namespace
-
-namespace codec {
-
-
-} // namespace codec
 
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -44,7 +44,7 @@ public:
 
 	bool operator!=(const TextReaderIterator& other);
 
-	MetaData& columns() { return columns_; }
+    core::MetaData& columns() { return columns_; }
 
 	static eckit::sql::BitfieldDef parseBitfields(const std::string&);
 //protected:
@@ -68,7 +68,7 @@ private:
 	void initRowBuffer();
 	void parseHeader();
 
-	MetaData columns_;
+    core::MetaData columns_;
 	double* lastValues_;
     size_t* columnOffsets_;
     size_t rowDataSizeDoubles_;

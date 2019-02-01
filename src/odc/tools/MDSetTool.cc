@@ -16,14 +16,15 @@
 #include "eckit/parser/Tokenizer.h"
 #include "eckit/sql/SQLTypedefs.h"
 
-#include "odc/core/TablesReader.h"
-#include "odc/Header.h"
+#include "odc/core/Header.h"
 #include "odc/core/MetaData.h"
+#include "odc/core/TablesReader.h"
 #include "odc/ODBAPISettings.h"
 
 using namespace eckit;
 using namespace std;
 typedef eckit::StringTools S;
+using namespace odc::core;
 
 namespace odc {
 namespace tool {
@@ -76,7 +77,7 @@ void MDSetTool::run()
             if (bitfieldDefs[i].first.size()) c.bitfieldDef(bitfieldDefs[i]);
             if (values[i].size() && values[i] != "NONE")
             {
-                odc::codec::Codec& codec (c.coder());
+                Codec& codec (c.coder());
                 if (codec.name().find("constant") == std::string::npos)
                 {
                     stringstream ss;
@@ -98,16 +99,24 @@ void MDSetTool::run()
 		{
 			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << std::endl;
 
-            serializeHeader<SameByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), it->properties(), md);
-            DataStream<SameByteOrder,DataHandle>(*outHandle).writeBytes(encodedData, sizeOfEncodedData);
+            eckit::Buffer encodedHeader = core::Header::serializeHeader(sizeOfEncodedData,
+                                                                        md.rowsNumber(),
+                                                                        it->properties(),
+                                                                        md);
+            outHandle->write(encodedHeader.data(), encodedHeader.size());
 		}
 		else
 		{
 			Log::info() << "MDSetTool::run: OTHER ORDER " << sizeOfEncodedData << std::endl;
 			
-            serializeHeader<OtherByteOrder,DataHandle>(*outHandle, sizeOfEncodedData, md.rowsNumber(), it->properties(), md);
-            DataStream<OtherByteOrder,DataHandle>(*outHandle).writeBytes(encodedData, sizeOfEncodedData);
+            eckit::Buffer encodedHeader = core::Header::serializeHeaderOtherByteOrder(
+                                                                        sizeOfEncodedData,
+                                                                        md.rowsNumber(),
+                                                                        it->properties(),
+                                                                        md);
+            outHandle->write(encodedHeader.data(), encodedHeader.size());
 		}
+        outHandle->write(encodedData.data(), sizeOfEncodedData);
 	}
 }
 

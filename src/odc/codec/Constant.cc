@@ -11,6 +11,7 @@
 
 #include "odc/codec/Constant.h"
 #include "odc/core/CodecFactory.h"
+#include "odc/core/DataStream.h"
 
 namespace odc {
 namespace codec {
@@ -23,6 +24,14 @@ namespace {
     core::CodecBuilder<CodecConstant> constantBuilder;
     core::CodecBuilder<CodecConstantString> constantStringBuilder;
 }
+
+// Static constexprs
+
+template <> constexpr char CodecConstant<core::SameByteOrder>::codec_name[];
+template <> constexpr char CodecConstant<core::OtherByteOrder>::codec_name[];
+
+template <> constexpr char CodecConstantString<core::SameByteOrder>::codec_name[];
+template <> constexpr char CodecConstantString<core::OtherByteOrder>::codec_name[];
 
 //----------------------------------------------------------------------------------------------------------------------
 

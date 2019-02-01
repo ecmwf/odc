@@ -49,6 +49,7 @@ public: // methods
     size_t numRows() const;
     size_t numColumns() const;
     int32_t byteOrder() const;
+    bool otherByteOrder() const;
 
     const MetaData& columns() const;
     const Properties& properties() const;

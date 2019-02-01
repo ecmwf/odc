@@ -12,8 +12,6 @@
 
 #include <algorithm>
 
-#include "odc/CodecOptimizer.h"
-
 using namespace eckit;
 using namespace odc::api;
 
@@ -193,8 +191,8 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
 		}
 		else
 		{
-			odc::codec::Codec& codec1 = c1.coder();
-			odc::codec::Codec& codec2 = c2.coder();
+            Codec& codec1 = c1.coder();
+            Codec& codec2 = c2.coder();
 			if ( codec1.min() != codec2.min() )
 			{
 				L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
@@ -244,7 +242,7 @@ void MetaData::print(std::ostream& s) const
 
 MetaData& MetaData::addColumn(const std::string& name, const std::string& type)
 {
-    return addColumnPrivate<odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(name, type);
+    return addColumnPrivate<SameByteOrder>(name, type);
 }
 
 bool MetaData::allColumnsInitialised() const {
@@ -262,7 +260,7 @@ bool MetaData::allColumnsInitialised() const {
 
 MetaData& MetaData::addBitfield(const std::string& name, const eckit::sql::BitfieldDef& bf)
 {
-    return addBitfieldPrivate<odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(name, bf);
+    return addBitfieldPrivate<SameByteOrder>(name, bf);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -14,6 +14,7 @@
 #include "odc/core/TablesReader.h"
 
 using namespace eckit;
+using namespace odc::core;
 
 namespace odc {
 namespace tool {
@@ -74,7 +75,7 @@ public:
             printTable(o, md_[i], tableName_, path_);
     }
 
-    static std::string typeName(const odc::Column& c)
+    static std::string typeName(const Column& c)
     {
         using namespace api;
         switch (c.type())
@@ -89,7 +90,7 @@ public:
         }
     }
 
-    static std::pair<std::string,std::string> typeDefinitionAndName(const std::string& tableName, const odc::Column& c)
+    static std::pair<std::string,std::string> typeDefinitionAndName(const std::string& tableName, const Column& c)
     {
         std::stringstream definition;
         std::string type_name (typeName(c));
@@ -124,7 +125,7 @@ public:
         return columnName; 
     }
 
-    static void printTable(std::ostream& s, const odc::MetaData& md, const std::string& tableName, const std::string& path)
+    static void printTable(std::ostream& s, const MetaData& md, const std::string& tableName, const std::string& path)
     {
         std::stringstream create_type, create_table;
 
@@ -145,7 +146,7 @@ public:
     }
 
 private:
-	std::vector<odc::MetaData> md_;
+    std::vector<MetaData> md_;
     const std::string path_;
     const std::string tableName_;
 };

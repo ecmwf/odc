@@ -77,7 +77,7 @@ bool TODATableIterator<READER>::next() {
 template <typename READER>
 void TODATableIterator<READER>::updateMetaData() {
 
-    const MetaData& md = it_->columns();
+    const core::MetaData& md = it_->columns();
 
     columnOffsets_.clear();
     for (const eckit::sql::SQLColumn& col : columns_) {

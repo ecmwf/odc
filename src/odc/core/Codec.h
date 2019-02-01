@@ -43,6 +43,7 @@ public:
     virtual unsigned char* encode(unsigned char* p, const double& d) = 0;
     virtual void decode(double* out) = 0;
 
+    void setDataStream(GeneralDataStream& ds);
     virtual void setDataStream(DataStream<SameByteOrder>& ds);
     virtual void setDataStream(DataStream<OtherByteOrder>& ds);
     virtual void clearDataStream() = 0;

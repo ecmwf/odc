@@ -25,8 +25,10 @@
 
 namespace odc {
     class Select;
-    class MetaData;
     template <typename I, typename O, typename D> class IteratorProxy;
+    namespace core {
+        class MetaData;
+    }
 }
 
 namespace eckit {
@@ -52,8 +54,8 @@ public:
 //    double* data() { return data_; }
     double& data(size_t i) { return output_.data(i); }
 
-    const MetaData& columns() const { return output_.metadata(); }
-	const MetaData& columns(const MetaData&) { NOTIMP; }
+    const core::MetaData& columns() const { return output_.metadata(); }
+    const core::MetaData& columns(const core::MetaData&) { NOTIMP; }
     void setNumberOfColumns(size_t) { NOTIMP; }
 
     const std::map<std::string, std::string>& properties() const { NOTIMP; }

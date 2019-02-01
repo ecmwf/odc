@@ -8,8 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/data/DataHandleFactory.h"
 #include "odc/Reader.h"
+
+#include "eckit/io/DataHandle.h"
+
+#include "odc/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;

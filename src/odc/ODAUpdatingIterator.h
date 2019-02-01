@@ -18,6 +18,8 @@
 
 namespace odc {
 
+namespace core { class MetaData; }
+
 template <typename T>
 class ODAUpdatingIterator 
 {
@@ -29,8 +31,8 @@ public:
 	bool isNewDataset();
 	double* data() { return data_; }
 
-	const MetaData& columns() { return ii_->columns(); }
-	const MetaData& columns(MetaData& md) { return ii_->columns(md); }
+    const core::MetaData& columns() { return ii_->columns(); }
+    const core::MetaData& columns(core::MetaData& md) { return ii_->columns(md); }
 
     ODAUpdatingIterator& operator++() { next(0); return *this; }
 

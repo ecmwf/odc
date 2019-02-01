@@ -20,6 +20,7 @@
 #endif
 
 #include "odc/IteratorProxy.h"
+#include "odc/SelectIterator.h"
 #include "eckit/sql/SQLSession.h"
 
 namespace eckit { class PathName; }
@@ -28,8 +29,6 @@ namespace eckit { class DataHandle; }
 namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
-
-class SelectIterator;
 
 class Select
 {

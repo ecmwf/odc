@@ -26,6 +26,7 @@ using namespace std;
 using namespace eckit;
 using namespace odc;
 using namespace odc::utility;
+using namespace odc::core;
 
 static void setUp()
 {
@@ -97,7 +98,7 @@ static void test()
 		odc::Reader::iterator end = f.end();
 
         Column& column = *it->columns()[0];
-		codec::Codec& codec = column.coder();
+        Codec& codec = column.coder();
 
 		Log::info() << "test: codec: " << codec << std::endl;	
 

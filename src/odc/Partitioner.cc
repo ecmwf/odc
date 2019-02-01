@@ -8,15 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
-#include "odc/core/MetaData.h"
-#include "odc/Reader.h"
-#include "odc/Select.h"
 #include "odc/Partitioner.h"
-#include "odc/RowsCounter.h"
+
 #include "eckit/io/PartFileHandle.h"
 #include "eckit/io/Offset.h"
 #include "eckit/io/Length.h"
+
+#include "odc/core/MetaData.h"
+#include "odc/Reader.h"
+#include "odc/RowsCounter.h"
+#include "odc/Select.h"
+#include "odc/SelectIterator.h"
 
 using namespace eckit;
 

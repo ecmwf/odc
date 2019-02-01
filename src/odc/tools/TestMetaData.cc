@@ -12,7 +12,6 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odc/DataStream.h"
 #include "odc/core/MetaData.h"
 
 #include "TestCase.h"
@@ -20,6 +19,7 @@
 using namespace std;
 using namespace eckit;
 using namespace odc;
+using namespace odc::core;
 
 static void test()
 {
