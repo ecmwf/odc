@@ -11,13 +11,14 @@
 #include "eckit/io/Buffer.h"
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/MemoryHandle.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/testing/Test.h"
 
 #include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
 #include "odc/tools/MockReader.h"
+#include "odc/codec/Integer.h"
+#include "odc/codec/String.h"
 
 using namespace eckit::testing;
 
@@ -48,15 +49,15 @@ namespace {
             refCount_(0),
             noMore_(false) {
 
-            columns_[0] = new odc::Column(columns_);
+            columns_[0] = new odc::core::Column(columns_);
             ASSERT(columns_[0]);
 
             columns_[0]->name("a-col");
-            columns_[0]->type<odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(type_, false);
+            columns_[0]->type<odc::core::SameByteOrder>(type_);
             columns_[0]->hasMissing(false);
         }
 
-        odc::MetaData& columns() { return columns_; }
+        odc::core::MetaData& columns() { return columns_; }
         bool isNewDataset()      { return false; }
         double* data()           { return &data_; }
 
@@ -68,7 +69,7 @@ namespace {
         }
 
     protected:
-        odc::MetaData columns_;
+        odc::core::MetaData columns_;
         odc::api::ColumnType type_;
         double data_;
         int nRows_;
@@ -86,7 +87,7 @@ namespace {
 
     struct MockReadIteratorConstInt : public MockReadIterator {
         MockReadIteratorConstInt() : MockReadIterator(odc::api::INTEGER, the_const_value) {
-            columns_[0]->coder(new odc::codec::CodecInt32<odc::SameByteOrder>);
+            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecInt32<odc::core::SameByteOrder>));
         }
     };
 
@@ -96,7 +97,7 @@ namespace {
 
     struct MockReadIteratorConstString1 : public MockReadIterator {
         MockReadIteratorConstString1() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_1)) {
-            columns_[0]->coder(new odc::codec::CodecChars<odc::SameByteOrder>);
+            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>));
         }
     };
 
@@ -106,7 +107,7 @@ namespace {
 
     struct MockReadIteratorConstString2 : public MockReadIterator {
         MockReadIteratorConstString2() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_2)) {
-            columns_[0]->coder(new odc::codec::CodecChars<odc::SameByteOrder>);
+            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>));
         }
     };
 }
@@ -326,9 +327,7 @@ CASE("Missing values are encoded and decoded correctly") {
 
         // Get the appropriate codec
 
-        eckit::ScopedPtr<odc::codec::Codec> c(
-                    odc::codec::Codec::findCodec<
-                            odc::DataStream<odc::SameByteOrder, eckit::DataHandle> >(codec_name, false));
+        std::unique_ptr<odc::core::Codec> c(odc::core::CodecFactory::instance().build<odc::core::SameByteOrder>(codec_name));
 
         EXPECT(c->name() == codec_name);
 
@@ -342,14 +341,13 @@ CASE("Missing values are encoded and decoded correctly") {
 
         // And check that we can decode it again!
 
-        eckit::MemoryHandle dh(buffer, sizeof(buffer));
-        dh.openForRead();
-        c->dataHandle(&dh);
+        odc::core::DataStream<odc::core::SameByteOrder> ds(buffer, sizeof(buffer));
+        c->setDataStream(ds);
 
         double decoded;
         c->decode(&decoded);
 
-        ASSERT(dh.position() == eckit::Offset(encoded_size));
+        ASSERT(ds.position() == eckit::Offset(encoded_size));
         ASSERT(decoded == missing_value);
     }
 }

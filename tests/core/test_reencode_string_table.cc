@@ -13,9 +13,8 @@
 #include "eckit/memory/ScopedPtr.h"
 #include "eckit/eckit_ecbuild_config.h"
 
-#include "odc/Codec.h"
-
-#include "MockDataHandles.h"
+#include "odc/core/Codec.h"
+#include "odc/codec/String.h"
 
 #include <time.h>
 #include <stdlib.h>
@@ -33,9 +32,8 @@
 #endif
 
 using namespace eckit::testing;
+using namespace odc::core;
 using namespace odc::codec;
-using odc::SameByteOrder;
-using odc::OtherByteOrder;
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -120,50 +118,36 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         // Construct codec directly, and decode the header
 
-        MockReadDataHandle dh(data); // Skip name of codec
+        // Skip name of codec
+        GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
         eckit::ScopedPtr<Codec> c;
         if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
                 c.reset(new CodecInt16String<SameByteOrder>);
-                static_cast<CodecInt16String<SameByteOrder>*>(c.get())->load(&dh);
             } else {
                 c.reset(new CodecInt8String<SameByteOrder>);
-                static_cast<CodecInt8String<SameByteOrder>*>(c.get())->load(&dh);
             }
         } else {
             if (bits16) {
                 c.reset(new CodecInt16String<OtherByteOrder>);
-                static_cast<CodecInt16String<OtherByteOrder>*>(c.get())->load(&dh);
             } else {
                 c.reset(new CodecInt8String<OtherByteOrder>);
-                static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->load(&dh);
             }
         }
+        c->load(ds);
 
-        EXPECT(dh.position() == eckit::Offset(148));
+        EXPECT(ds.position() == eckit::Offset(148));
 
         // Now re-encode the codec header, and check that we get what we started with!
 
-        MockWriteDataHandle dh_write;
-
-        if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-            if (bits16) {
-                static_cast<CodecInt16String<SameByteOrder>*>(c.get())->save(&dh_write);
-            } else {
-                static_cast<CodecInt8String<SameByteOrder>*>(c.get())->save(&dh_write);
-            }
-        } else {
-            if (bits16) {
-                static_cast<CodecInt16String<OtherByteOrder>*>(c.get())->save(&dh_write);
-            } else {
-                static_cast<CodecInt8String<OtherByteOrder>*>(c.get())->save(&dh_write);
-            }
-        }
+        eckit::Buffer writeBuffer(4096);
+        GeneralDataStream ds2(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), writeBuffer);
+        c->save(ds2);
 
         // Check that the data is the same both times!
 
-        EXPECT(dh_write.position() == eckit::Offset(148));
+        EXPECT(ds2.position() == eckit::Offset(148));
 
 //        eckit::Log::info() << "DATA: " << std::endl;
 //        for (size_t n = 0; n < data.size(); n++) {
@@ -173,11 +157,11 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 //        }
 
         // The header should be correctly re-encoded.
-        EXPECT(::memcmp(dh_write.getBuffer(), &data[0], 148) == 0);
+        EXPECT(::memcmp(writeBuffer, &data[0], 148) == 0);
 
         // We haven't encoded the data itself
         for (size_t i = 148; i < 154; i++) {
-            EXPECT(dh_write.getBuffer()[i] == 0);
+            EXPECT(writeBuffer[i] == 0);
         }
     }
 }

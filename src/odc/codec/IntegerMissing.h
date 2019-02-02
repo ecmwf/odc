@@ -23,13 +23,13 @@ class CodecInt8Missing : public BaseCodecInteger<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "int8_missing";
+    constexpr static const char* codec_name() { return "int8_missing"; }
     using value_type = uint8_t;
     constexpr static value_type missingMarker = 0xff;
 
 public: // methods
 
-    CodecInt8Missing(const std::string& name=codec_name, double minmaxmissing=odc::MDI::integerMDI()) :
+    CodecInt8Missing(const std::string& name=codec_name(), double minmaxmissing=odc::MDI::integerMDI()) :
         BaseCodecInteger<ByteOrder>(name, minmaxmissing) {}
     ~CodecInt8Missing() override {}
 
@@ -64,13 +64,13 @@ class CodecInt16Missing : public BaseCodecInteger<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "int16_missing";
+    constexpr static const char* codec_name() { return "int16_missing"; }
     using value_type = uint16_t;
     constexpr static value_type missingMarker = 0xffff;
 
 public: // methods
 
-    CodecInt16Missing() : BaseCodecInteger<ByteOrder>(codec_name) {}
+    CodecInt16Missing() : BaseCodecInteger<ByteOrder>(codec_name()) {}
     ~CodecInt16Missing() override {}
 
 private: // methods
@@ -102,11 +102,11 @@ class CodecConstantOrMissing : public CodecInt8Missing<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "constant_or_missing";
+    constexpr static const char* codec_name() { return "constant_or_missing"; }
 
 public: // methods
 
-    CodecConstantOrMissing(const std::string& name=codec_name, double minmaxmissing=odc::MDI::integerMDI()) :
+    CodecConstantOrMissing(const std::string& name=codec_name(), double minmaxmissing=odc::MDI::integerMDI()) :
         CodecInt8Missing<ByteOrder>(name, minmaxmissing) {}
     ~CodecConstantOrMissing() override {}
 
@@ -134,12 +134,12 @@ class CodecRealConstantOrMissing : public CodecConstantOrMissing<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "real_constant_or_missing";
+    constexpr static const char* codec_name() { return "real_constant_or_missing"; }
 
 public: // methods
 
     CodecRealConstantOrMissing() :
-        CodecConstantOrMissing<ByteOrder>(codec_name, odc::MDI::realMDI()) {}
+        CodecConstantOrMissing<ByteOrder>(codec_name(), odc::MDI::realMDI()) {}
 
     ~CodecRealConstantOrMissing() override {}
 };

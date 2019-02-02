@@ -57,12 +57,28 @@ void Codec::setDataStream(DataStream<OtherByteOrder>&) {
     throw eckit::SeriousBug("Mismatched byte order between DataStream and Codec", Here());
 }
 
+void Codec::load(GeneralDataStream& ds) {
+    if (ds.isOther()) {
+        load(ds.other());
+    } else {
+        load(ds.same());
+    }
+}
+
 void Codec::load(DataStream<SameByteOrder>&) {
     throw eckit::SeriousBug("Mismatched byte order between DataStream and Codec", Here());
 }
 
 void Codec::load(DataStream<OtherByteOrder>&) {
     throw eckit::SeriousBug("Mismatched byte order between DataStream and Codec", Here());
+}
+
+void Codec::save(GeneralDataStream& ds) {
+    if (ds.isOther()) {
+        save(ds.other());
+    } else {
+        save(ds.same());
+    }
 }
 
 void Codec::save(DataStream<SameByteOrder>&) {

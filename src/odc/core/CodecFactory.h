@@ -51,6 +51,9 @@ public: // methods
     template <typename ByteOrder>
     std::unique_ptr<Codec> build(const std::string& name) const;
 
+    template <typename ByteOrder>
+    std::unique_ptr<Codec> load(DataStream<ByteOrder>& ds) const;
+
 private: // members
 
     mutable std::mutex m_;
@@ -85,7 +88,7 @@ class CodecBuilder : public CodecBuilderBase {
 
 public: // methods
 
-    CodecBuilder() : CodecBuilderBase(CODEC<SameByteOrder>::codec_name) {}
+    CodecBuilder() : CodecBuilderBase(CODEC<SameByteOrder>::codec_name()) {}
     ~CodecBuilder() {}
 
 private: // methods
@@ -107,6 +110,17 @@ std::unique_ptr<Codec> CodecFactory::build(const std::string& name) const {
     auto it = builders_.find(name);
     if (it == builders_.end()) throw ODBDecodeError(std::string("Codec '") + name +"' not found", Here());
     return it->second.get().make(ByteOrder());
+}
+
+template <typename ByteOrder>
+std::unique_ptr<Codec> CodecFactory::load(DataStream<ByteOrder>& ds) const {
+
+    std::string codecName;
+    ds.read(codecName);
+
+    auto c = build<ByteOrder>(codecName);
+    c->load(ds);
+    return c;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ list( APPEND _core_odc_tests
 foreach( _test ${_core_odc_tests} )
     ecbuild_add_test(
         TARGET       odc_${_test}
-        SOURCES      ${_test}.cc ../TemporaryFiles.h ../MockDataHandles.h
+        SOURCES      ${_test}.cc ../TemporaryFiles.h
         TEST_DEPENDS get_odc_test_data
         INCLUDES     ${ECKIT_INCLUDE_DIRS} ${odc_INCLUDE_DIRS}
         ENVIRONMENT  ${test_environment}

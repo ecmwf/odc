@@ -44,6 +44,7 @@ bool Header::readMagic(DataHandle& dh) {
     if (bytesRead == 0) return false;
     if (bytesRead != sizeof(magic)) throw ODBIncomplete(dh.title(), Here());
     if (magic != "\xff\xffODA") throw ODBInvalid(dh.title(), "Incorrect MAGIC", Here());
+    return true;
 }
 
 template <typename ByteOrder>

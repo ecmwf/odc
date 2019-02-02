@@ -43,11 +43,11 @@ class CodecInt8 : public BaseCodecInteger<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "int8";
+    constexpr static const char* codec_name() { return "int8"; }
 
 public: // methods
 
-    CodecInt8() : BaseCodecInteger<ByteOrder>(codec_name) {}
+    CodecInt8() : BaseCodecInteger<ByteOrder>(codec_name()) {}
     ~CodecInt8() override {}
 
 private: // methods
@@ -74,11 +74,11 @@ class CodecInt16 : public BaseCodecInteger<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "int16";
+    constexpr static const char* codec_name() { return "int16"; }
 
 public: // methods
 
-    CodecInt16() : BaseCodecInteger<ByteOrder>(codec_name) {}
+    CodecInt16() : BaseCodecInteger<ByteOrder>(codec_name()) {}
     ~CodecInt16() override {}
 
 private: // methods
@@ -106,11 +106,11 @@ class CodecInt32 : public BaseCodecInteger<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "int32";
+    constexpr static const char* codec_name() { return "int32"; }
 
 public: // methods
 
-    CodecInt32() : BaseCodecInteger<ByteOrder>(codec_name) {}
+    CodecInt32() : BaseCodecInteger<ByteOrder>(codec_name()) {}
     ~CodecInt32() override {}
 
 private: // methods

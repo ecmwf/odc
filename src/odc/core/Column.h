@@ -136,10 +136,7 @@ void Column::load(DataStream<ByteOrder>& ds)
         ASSERT(names.size() == sizes.size());
 	}
 
-    std::string codecName;
-    ds.read(codecName);
-    coder_ = CodecFactory::instance().build<ByteOrder>(codecName);
-    coder_->load(ds);
+    coder_ = CodecFactory::instance().load(ds);
 }
 
 template <typename ByteOrder>

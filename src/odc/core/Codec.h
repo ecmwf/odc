@@ -48,19 +48,12 @@ public:
     virtual void setDataStream(DataStream<OtherByteOrder>& ds);
     virtual void clearDataStream() = 0;
 
+    void load(GeneralDataStream& ds);
     virtual void load(DataStream<SameByteOrder>& ds);
     virtual void load(DataStream<OtherByteOrder>& ds);
+    void save(GeneralDataStream& ds);
     virtual void save(DataStream<SameByteOrder>& ds);
     virtual void save(DataStream<OtherByteOrder>& ds);
-
-	template <typename DATASTREAM> static Codec* findCodec(const std::string& name, bool differentByteOrder);
-	//static Codec* findCodec(const std::string& name, bool differentByteOrder);
-	
-	////template<typename BYTEORDER> static Codec* findCodec(const std::string& name);
-
-	template<typename DATASTREAM> static Codec* loadCodec(DATASTREAM &);
-
-	template<typename DATASTREAM> void save(DATASTREAM &); 
 
 	void resetStats() { min_ = max_ = missingValue_; hasMissing_ = false; }
 

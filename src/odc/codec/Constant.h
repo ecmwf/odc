@@ -30,11 +30,11 @@ class CodecConstant : public core::DataStreamCodec<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "constant";
+    constexpr static const char* codec_name() { return "constant"; }
 
 public: // methods
 
-    CodecConstant(const std::string& name=codec_name) : core::DataStreamCodec<ByteOrder>(name) {}
+    CodecConstant(const std::string& name=codec_name()) : core::DataStreamCodec<ByteOrder>(name) {}
     ~CodecConstant() {}
 
 private: // methods
@@ -51,11 +51,11 @@ class CodecConstantString : public CodecConstant<ByteOrder> {
 
 public: // name
 
-    constexpr static char codec_name[] = "constant_string";
+    constexpr static const char* codec_name() { return "constant_string"; }
 
 public: // methods
 
-    CodecConstantString() : CodecConstant<ByteOrder>(codec_name) {}
+    CodecConstantString() : CodecConstant<ByteOrder>(codec_name()) {}
 
 private: // methods
 

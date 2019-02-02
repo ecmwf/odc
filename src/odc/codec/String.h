@@ -28,11 +28,11 @@ class CodecChars : public core::DataStreamCodec<ByteOrder> {
 
 public: // definitions
 
-    constexpr static char codec_name[] = "chars";
+    constexpr static const char* codec_name() { return "chars"; }
 
 public: // methods
 
-    CodecChars(const std::string& name=codec_name);
+    CodecChars(const std::string& name=codec_name());
     ~CodecChars() override {}
 
     void load(core::DataStream<ByteOrder>& ds) override;
@@ -113,13 +113,13 @@ private: // methods
         std::map<std::string, size_t>::const_iterator it = this->stringLookup_.find(s);
         ASSERT(it != this->stringLookup_.end());
 
-        return intCodec_.core::Codec::encode(p, it->second);
+        return static_cast<core::Codec&>(intCodec_).encode(p, it->second);
     }
 
     void decode(double* out) override {
 
         double tmp_i;
-        intCodec_.core::Codec::decode(&tmp_i);
+        static_cast<core::Codec&>(intCodec_).decode(&tmp_i);
         size_t i = static_cast<int>(tmp_i);
 
         ASSERT(i < this->strings_.size());
@@ -139,16 +139,16 @@ private: // members
 
 template<typename ByteOrder>
 struct CodecInt8String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>> {
-    constexpr static char codec_name[] = "int8_string";
-    CodecInt8String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name) {}
+    constexpr static const char* codec_name() { return "int8_string"; }
+    CodecInt8String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name()) {}
     ~CodecInt8String() override {}
 };
 
 
 template<typename ByteOrder>
 struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>> {
-    constexpr static char codec_name[] = "int16_string";
-    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name) {}
+    constexpr static const char* codec_name() { return "int16_string"; }
+    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name()) {}
     ~CodecInt16String() override {}
 };
 

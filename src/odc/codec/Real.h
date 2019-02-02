@@ -29,12 +29,12 @@ class CodecLongReal : public core::DataStreamCodec<ByteOrder> {
 
 public: // definitions
 
-    constexpr static const char* codec_name = "long_real";
+    constexpr static const char* codec_name() { return "long_real"; }
 
 public: // methods
 
     CodecLongReal() :
-        core::DataStreamCodec<ByteOrder>(codec_name),
+        core::DataStreamCodec<ByteOrder>(codec_name()),
         hasShortRealInternalMissing_(false),
         hasShortReal2InternalMissing_(false) {}
 
@@ -112,16 +112,16 @@ private: // methods
 
 template <typename ByteOrder>
 struct CodecShortReal : public ShortRealBase<ByteOrder, minFloatAsInt> {
-    constexpr static const char* codec_name = "short_real";
-    CodecShortReal() : ShortRealBase<ByteOrder, minFloatAsInt>(codec_name) {}
+    constexpr static const char* codec_name() { return "short_real"; }
+    CodecShortReal() : ShortRealBase<ByteOrder, minFloatAsInt>(codec_name()) {}
     ~CodecShortReal() {}
 };
 
 
 template <typename ByteOrder>
 struct CodecShortReal2 : public ShortRealBase<ByteOrder, maxFloatAsInt> {
-    constexpr static const char* codec_name = "short_real2";
-    CodecShortReal2() : ShortRealBase<ByteOrder, maxFloatAsInt>(codec_name) {}
+    constexpr static const char* codec_name() { return "short_real2"; }
+    CodecShortReal2() : ShortRealBase<ByteOrder, maxFloatAsInt>(codec_name()) {}
     ~CodecShortReal2() {}
 };
 
