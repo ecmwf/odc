@@ -223,6 +223,7 @@ bool ReaderIterator::next()
     }
 
 	++nrows_ ;
+    --rowsRemainingInTable_;
 	return nCols;
 }
 

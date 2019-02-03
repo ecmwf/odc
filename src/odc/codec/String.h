@@ -129,6 +129,53 @@ private: // methods
         ::memcpy(reinterpret_cast<char*>(out), &s[0], std::min(s.length(), this->decodedSizeDoubles_*sizeof(double)));
     }
 
+    void load(core::DataStream<ByteOrder>& ds) override {
+        core::DataStreamCodec<ByteOrder>::load(ds);
+
+        // Load the table of strings
+        // This is based on the old-style hash-table storage, so it isn't a trivial list of strings
+        int32_t numStrings;
+        ds.read(numStrings);
+        ASSERT(numStrings >= 0);
+
+        this->strings_.resize(numStrings);
+
+        // How many doubles-worth of memory is needed to decode the largest string?
+        this->decodedSizeDoubles_ = 1;
+
+        for (size_t i = 0; i < size_t(numStrings); i++) {
+            std::string s;
+            ds.read(s);
+
+            int32_t cnt;
+            ds.read(cnt);
+
+            int32_t index;
+            ds.read(index);
+
+            ASSERT(index < numStrings);
+            this->strings_[index] = s;
+
+            this->decodedSizeDoubles_ = std::max(this->decodedSizeDoubles_, ((s.length()-1)/sizeof(double))+1);
+        }
+
+        // Ensure that the string lookup is EMPTY. We don't use it after reading
+        ASSERT(this->stringLookup_.size() == 0);
+    }
+
+    void save(core::DataStream<ByteOrder>& ds) override {
+
+        core::DataStreamCodec<ByteOrder>::save(ds);
+
+        ds.write(static_cast<int32_t>(this->strings_.size()));
+
+        for (size_t i = 0; i < this->strings_.size(); i++) {
+            ds.write(this->strings_[i]);
+            ds.write(static_cast<int32_t>(0)); // "cnt" field is not used.
+            ds.write(static_cast<int32_t>(i));
+        }
+    }
+
 private: // members
 
     InternalCodec intCodec_;
@@ -175,8 +222,7 @@ unsigned char* CodecChars<ByteOrder>::encode(unsigned char* p, const double& s) 
 template<typename ByteOrder>
 void CodecChars<ByteOrder>::decode(double* out) {
 
-    throw eckit::SeriousBug("CodecChars should never have been written to an ODB. Should not be decoding", Here());
-    // ds().read(out, sizeof(double)*decodedSizeDoubles_);
+     this->ds().read(out, sizeof(double)*decodedSizeDoubles_);
 }
 
 
@@ -204,53 +250,17 @@ void CodecChars<ByteOrder>::gatherStats(const double& v) {
 
 template<typename ByteOrder>
 void CodecChars<ByteOrder>::load(core::DataStream<ByteOrder>& ds) {
-
-    core::DataStreamCodec<ByteOrder>::load(ds);
-
-    // Load the table of strings
-    // This is based on the old-style hash-table storage, so it isn't a trivial list of strings
-    int32_t numStrings;
-    ds.read(numStrings);
-    ASSERT(numStrings >= 0);
-
-    strings_.resize(numStrings);
-
-    // How many doubles-worth of memory is needed to decode the largest string?
-    decodedSizeDoubles_ = 1;
-
-    for (size_t i = 0; i < size_t(numStrings); i++) {
-        std::string s;
-        ds.read(s);
-
-        int32_t cnt;
-        ds.read(cnt);
-
-        int32_t index;
-        ds.read(index);
-
-        ASSERT(index < numStrings);
-        strings_[index] = s;
-
-        decodedSizeDoubles_ = std::max(decodedSizeDoubles_, ((s.length()-1)/sizeof(double))+1);
-    }
-
-    // Ensure that the string lookup is EMPTY. We don't use it after reading
-    ASSERT(stringLookup_.size() == 0);
+    int32_t nStrings;
+    ds.read(nStrings);
+    ASSERT(nStrings == 0); // No string table stored
 }
 
 
 template<typename ByteOrder>
 void CodecChars<ByteOrder>::save(core::DataStream<ByteOrder>& ds) {
-
+    // String table only stored in derived int-storing types
     core::DataStreamCodec<ByteOrder>::save(ds);
-
-    ds.write(static_cast<int32_t>(strings_.size()));
-
-    for (size_t i = 0; i < strings_.size(); i++) {
-        ds.write(strings_[i]);
-        ds.write(static_cast<int32_t>(0)); // "cnt" field is not used.
-        ds.write(static_cast<int32_t>(i));
-    }
+    ds.write(static_cast<int32_t>(0));
 }
 
 template<typename ByteOrder>

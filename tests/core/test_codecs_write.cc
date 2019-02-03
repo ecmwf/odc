@@ -44,6 +44,13 @@ using odc::core::SameByteOrder;
 using odc::core::OtherByteOrder;
 using odc::core::DataStream;
 
+//        Log::info() << "DS: " << ds.position() << std::endl;
+//        for (int i = 0; i < ds.position(); ++i) {
+//            Log::info() << i << " : " << std::hex << (int)ds.data()[i] << std::dec << " -- " << (char)ds.data()[i] << std::endl;
+//        }
+//        Log::info() << "pos: " << ds.position() << " : " << expectedHdrSize << std::endl;
+//        exit(-1);
+
 // ------------------------------------------------------------------------------------------------------
 
 // TODO with codecs:

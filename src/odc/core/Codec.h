@@ -137,7 +137,8 @@ protected: // methods
     }
 
     void save(DataStream<ByteOrder>& ds) override {
-        ds.write(name_);
+        // n.b. Name is written by the _column_ not the codec.
+        // ds.write(name_);
         ds.write(hasMissing_);
         ds.write(min_);
         ds.write(max_);

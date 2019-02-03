@@ -261,7 +261,7 @@ inline void DataStream<ByteOrder>::readBytes(void* addr, size_t bytes) {
     if (newpos > end_) {
         std::stringstream ss;
         ss << "Attempting to read " << bytes
-           << " from DataStream with only " << (end_ - current_) << " bytes remaining";
+           << " bytes from DataStream with only " << (end_ - current_) << " bytes remaining";
         throw ODBEndOfDataStream(ss.str(), Here());
     }
 
