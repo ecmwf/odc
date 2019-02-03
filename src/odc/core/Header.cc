@@ -52,26 +52,26 @@ void Header::load(DataHandle& dh) {
 
     // There must be at least 56 bytes available to read the basic header.
 
-    constexpr size_t basic_header_size = 12 + 32 + 12;
+    constexpr size_t basic_header_size = 12 + 32 + 4;
     char basicBuffer[basic_header_size];
 
     if (dh.read(basicBuffer, sizeof(basicBuffer)) != sizeof(basicBuffer)) throw ODBIncomplete(dh.title(), Here());
 
-    DataStream<ByteOrder> ds(basicBuffer, sizeof(basicBuffer));
+    DataStream<ByteOrder> ds1(basicBuffer, sizeof(basicBuffer));
 
     int32_t formatVersionMajor;
-    ds.read(formatVersionMajor);
+    ds1.read(formatVersionMajor);
     ASSERT("File format version not supported" && formatVersionMajor <= FORMAT_VERSION_NUMBER_MAJOR);
 
     int32_t formatVersionMinor;
-    ds.read(formatVersionMinor);
+    ds1.read(formatVersionMinor);
     ASSERT("File format version not supported" && formatVersionMinor <= FORMAT_VERSION_NUMBER_MINOR && formatVersionMinor > 3);
 
     std::string headerDigest;
-    ds.read(headerDigest);
+    ds1.read(headerDigest);
 
     int32_t headerSize;
-    ds.read(headerSize);
+    ds1.read(headerSize);
 
     // Read the remaining header data
 
@@ -81,7 +81,7 @@ void Header::load(DataHandle& dh) {
     // Calculate the MD5
 
     MD5 md5;
-    md5.add(buffer, buffer.size());
+    md5.add(buffer.data(), buffer.size());
     std::string actualHeaderDigest = md5.digest();
     if (headerDigest != actualHeaderDigest) throw ODBInvalid(dh.title(), "Header digest incorrect", Here());
 
@@ -89,19 +89,19 @@ void Header::load(DataHandle& dh) {
 
     // 0 means we don't know offset of next header.
     int64_t nextFrameOffset;
-    ds.read(nextFrameOffset);
+    ds2.read(nextFrameOffset);
     dataSize_ = nextFrameOffset;
     md_.dataSize(dataSize_);
 
     // Reserved, not used yet.
     int64_t prevFrameOffset;
-    ds.read(prevFrameOffset);
+    ds2.read(prevFrameOffset);
     ASSERT(prevFrameOffset == 0);
 
     // TODO: increase file format version
 
     int64_t numberOfRows;
-    ds.read(numberOfRows);
+    ds2.read(numberOfRows);
     rowsNumber_ = numberOfRows;
     md_.rowsNumber(rowsNumber_);
 
@@ -109,11 +109,11 @@ void Header::load(DataHandle& dh) {
 
     // Flags -> ODAFlags
     Flags flags;
-    ds.read(flags);
+    ds2.read(flags);
 
-    ds.read(props_);
+    ds2.read(props_);
 
-    md_.load(ds);
+    md_.load(ds2);
 }
 
 void Header::loadAfterMagic(DataHandle& dh) {
