@@ -21,6 +21,7 @@ namespace codec {
 
 static constexpr uint32_t minFloatAsInt = 0x800000;
 static constexpr uint32_t maxFloatAsInt = 0x7f7fffff;
+static constexpr uint32_t real2MissingAsInt = 0xff7fffff; // = - reinterpret_cast<float&>(maxFloatAsInt)
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -87,12 +88,15 @@ private: // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override {
 
+        const uint32_t internalMissingInt = InternalMissing;
+        const float internalMissing = reinterpret_cast<const float&>(internalMissingInt);
+
         float s;
         if (d == this->missingValue_) {
-            s = InternalMissing;
+            s = internalMissing;
         } else {
             s = d;
-            ASSERT(s != InternalMissing);
+            ASSERT(s != internalMissing);
         }
 
         ByteOrder::swap(s);
@@ -103,8 +107,8 @@ private: // methods
     void decode(double* out) override {
         float s;
         this->ds().read(s);
-        uint32_t internalMissingInt = InternalMissing;
-        float internalMissing = reinterpret_cast<float&>(internalMissingInt);
+        const uint32_t internalMissingInt = InternalMissing;
+        const float internalMissing = reinterpret_cast<const float&>(internalMissingInt);
         (*out) = (s == internalMissing ? this->missingValue_ : s);
     }
 };
@@ -119,9 +123,9 @@ struct CodecShortReal : public ShortRealBase<ByteOrder, minFloatAsInt> {
 
 
 template <typename ByteOrder>
-struct CodecShortReal2 : public ShortRealBase<ByteOrder, maxFloatAsInt> {
+struct CodecShortReal2 : public ShortRealBase<ByteOrder, real2MissingAsInt> {
     constexpr static const char* codec_name() { return "short_real2"; }
-    CodecShortReal2() : ShortRealBase<ByteOrder, maxFloatAsInt>(codec_name()) {}
+    CodecShortReal2() : ShortRealBase<ByteOrder, real2MissingAsInt>(codec_name()) {}
     ~CodecShortReal2() {}
 };
 

@@ -193,9 +193,9 @@ struct CodecInt8String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrde
 
 
 template<typename ByteOrder>
-struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>> {
+struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder>> {
     constexpr static const char* codec_name() { return "int16_string"; }
-    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name()) {}
+    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder>>(codec_name()) {}
     ~CodecInt16String() override {}
 };
 
