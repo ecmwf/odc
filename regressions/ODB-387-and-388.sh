@@ -23,7 +23,10 @@ odc compare -excludeColumns expver ../odb_387_mdset.odb temporary1.odb
 # The file sizes are the same
 
 if [[ $(stat -c%s ../odb_387_mdset.odb) -ne $(stat -c%s temporary1.odb) ]]; then
-    exit -1
+    if [[ $(stat -c%s temporary1.odb) -ne 59246 ]]; then
+        # n.b. A change. We no longer encode 10x unused flags into ODB files (which are then not used on reading).
+        exit -1
+    fi
 fi
 
 # Change another column
@@ -45,7 +48,10 @@ odc compare -excludeColumns stream,expver ../odb_387_mdset.odb temporary2.odb
 # The file sizes are still the same
 
 if [[ $(stat -c%s ../odb_387_mdset.odb) -ne $(stat -c%s temporary2.odb) ]]; then
-    exit -1
+    if [[ $(stat -c%s temporary1.odb) -ne 59246 ]]; then
+        # n.b. A change. We no longer encode 10x unused flags into ODB files (which are then not used on reading).
+        exit -1
+    fi
 fi
 
 # Clean up
