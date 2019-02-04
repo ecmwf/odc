@@ -222,7 +222,7 @@ unsigned char* CodecChars<ByteOrder>::encode(unsigned char* p, const double& s) 
 template<typename ByteOrder>
 void CodecChars<ByteOrder>::decode(double* out) {
 
-     this->ds().read(out, sizeof(double)*decodedSizeDoubles_);
+     this->ds().readBytes(out, sizeof(double)*decodedSizeDoubles_);
 }
 
 
@@ -250,6 +250,7 @@ void CodecChars<ByteOrder>::gatherStats(const double& v) {
 
 template<typename ByteOrder>
 void CodecChars<ByteOrder>::load(core::DataStream<ByteOrder>& ds) {
+    core::DataStreamCodec<ByteOrder>::load(ds);
     int32_t nStrings;
     ds.read(nStrings);
     ASSERT(nStrings == 0); // No string table stored

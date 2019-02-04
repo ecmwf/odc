@@ -97,7 +97,7 @@ CASE("Constant values are constant") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -129,7 +129,7 @@ CASE("Constant values are constant") {
         size_t hdrSize = prepend_codec_selection_header(data, "constant", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -192,7 +192,7 @@ CASE("constant strings are constant") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -224,7 +224,7 @@ CASE("constant strings are constant") {
         size_t hdrSize = prepend_codec_selection_header(data, "constant_string", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -301,7 +301,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -338,7 +338,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
         size_t hdrSize = prepend_codec_selection_header(data, "constant_or_missing", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -417,7 +417,7 @@ CASE("real constant or missing value is not quite constant") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -454,7 +454,7 @@ CASE("real constant or missing value is not quite constant") {
         size_t hdrSize = prepend_codec_selection_header(data, "real_constant_or_missing", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -531,7 +531,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -565,7 +565,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
         size_t hdrSize = prepend_codec_selection_header(data, "chars", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -636,7 +636,7 @@ CASE("long floating point values can include the missing data value") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -678,7 +678,7 @@ CASE("long floating point values can include the missing data value") {
         size_t hdrSize = prepend_codec_selection_header(data, "long_real", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -760,7 +760,7 @@ CASE("short floating point values can include the missing data value") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -819,7 +819,7 @@ CASE("short floating point values can include the missing data value") {
         size_t hdrSize = prepend_codec_selection_header(data, secondCodec ? "short_real2" : "short_real", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -905,7 +905,7 @@ CASE("32bit integers are as-is") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -939,7 +939,7 @@ CASE("32bit integers are as-is") {
         size_t hdrSize = prepend_codec_selection_header(data, "int32", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1013,7 +1013,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1059,7 +1059,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
         size_t hdrSize = prepend_codec_selection_header(data, withMissing ? "int16_missing" : "int16", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1136,7 +1136,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1175,7 +1175,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
         size_t hdrSize = prepend_codec_selection_header(data, withMissing ? "int8_missing" : "int8", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1264,7 +1264,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1308,7 +1308,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         size_t hdrSize = prepend_codec_selection_header(data, bits16 ? "int16_string" : "int8_string", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1402,7 +1402,7 @@ CASE("Character strings can be stored in a flat list, and indexed, and be longer
 
         {
             // Skip name of codec
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -1449,7 +1449,7 @@ CASE("Character strings can be stored in a flat list, and indexed, and be longer
         size_t hdrSize = prepend_codec_selection_header(data, bits16 ? "int16_string" : "int8_string", bigEndianSource);
 
         {
-            GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
