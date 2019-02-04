@@ -108,7 +108,7 @@ std::unique_ptr<Codec> CodecFactory::build(const std::string& name) const {
     std::lock_guard<std::mutex> lock(m_);
 
     auto it = builders_.find(name);
-    if (it == builders_.end()) throw ODBDecodeError(std::string("Codec '") + name +"' not found", Here());
+    if (it == builders_.end()) throw ODBDecodeError(std::string("Codec '") + name + "' not found", Here());
     return it->second.get().make(ByteOrder());
 }
 

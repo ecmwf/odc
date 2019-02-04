@@ -79,7 +79,7 @@ public:
 	void missingValue(double v) { coder_->missingValue(v); }
 	double missingValue() const { return coder_->missingValue(); } 
 
-	void resetStats() { coder_->resetStats(); }
+    void resetStats() { ASSERT(coder_); coder_->resetStats(); }
 
     void bitfieldDef(const eckit::sql::BitfieldDef& b) { bitfieldDef_ = b; }
     const eckit::sql::BitfieldDef& bitfieldDef() const { return bitfieldDef_; }
@@ -156,6 +156,9 @@ void Column::save(DataStream<ByteOrder>& ds) {
         ds.write(names);
         ds.write(sizes);
     }
+
+    // And write the coder name
+    ds.write(coder_->name());
 
     coder_->save(ds);
 }

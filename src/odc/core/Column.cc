@@ -48,7 +48,11 @@ Column& Column::operator=(const Column& other)
     if (type_ == BITFIELD)
 		bitfieldDef(other.bitfieldDef());
 
-    coder_ = other.coder_->clone();
+    if (other.coder_) {
+        coder_ = other.coder_->clone();
+    } else {
+        coder_.reset();
+    }
 //    hasMissing(other.hasMissing());
 //    missingValue(other.missingValue());
     return *this;

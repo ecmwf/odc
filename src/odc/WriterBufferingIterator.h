@@ -116,7 +116,7 @@ private:
 
 	template <typename T> void pass1init(T&, const T&);
 
-    eckit::Buffer serializeHeader(size_t dataSize, size_t rowsNumber);
+    std::pair<eckit::Buffer, size_t> serializeHeader(size_t dataSize, size_t rowsNumber);
 
     void allocBuffers();
 	void allocRowsBuffer();

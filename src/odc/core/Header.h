@@ -64,15 +64,11 @@ public: // methods
 
     void loadAfterMagic(eckit::DataHandle& dh);
 
-    static eckit::Buffer serializeHeader(size_t dataSize,
-                                         size_t rowsNumber,
-                                         const Properties& properties,
-                                         const MetaData& columns);
+    static std::pair<eckit::Buffer, size_t>
+    serializeHeader(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns);
 
-    static eckit::Buffer serializeHeaderOtherByteOrder(size_t dataSize,
-                                                       size_t rowsNumber,
-                                                       const Properties& properties,
-                                                       const MetaData& columns);
+    static std::pair<eckit::Buffer, size_t>
+    serializeHeaderOtherByteOrder(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns);
 
 private: // members
 

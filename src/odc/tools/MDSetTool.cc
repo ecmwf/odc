@@ -99,22 +99,22 @@ void MDSetTool::run()
 		{
 			Log::info() << "MDSetTool::run: SAME ORDER " << sizeOfEncodedData << std::endl;
 
-            eckit::Buffer encodedHeader = core::Header::serializeHeader(sizeOfEncodedData,
-                                                                        md.rowsNumber(),
-                                                                        it->properties(),
-                                                                        md);
-            outHandle->write(encodedHeader.data(), encodedHeader.size());
+            auto encodedHeader = core::Header::serializeHeader(sizeOfEncodedData,
+                                                               md.rowsNumber(),
+                                                               it->properties(),
+                                                               md);
+            outHandle->write(encodedHeader.first, encodedHeader.second);
 		}
 		else
 		{
 			Log::info() << "MDSetTool::run: OTHER ORDER " << sizeOfEncodedData << std::endl;
 			
-            eckit::Buffer encodedHeader = core::Header::serializeHeaderOtherByteOrder(
-                                                                        sizeOfEncodedData,
-                                                                        md.rowsNumber(),
-                                                                        it->properties(),
-                                                                        md);
-            outHandle->write(encodedHeader.data(), encodedHeader.size());
+            auto encodedHeader = core::Header::serializeHeaderOtherByteOrder(
+                                                               sizeOfEncodedData,
+                                                               md.rowsNumber(),
+                                                               it->properties(),
+                                                               md);
+            outHandle->write(encodedHeader.first, encodedHeader.second);
 		}
         outHandle->write(encodedData.data(), sizeOfEncodedData);
 	}

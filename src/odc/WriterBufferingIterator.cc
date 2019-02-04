@@ -293,9 +293,10 @@ void WriterBufferingIterator::missingValue(size_t i, double missingValue)
 
 void WriterBufferingIterator::flush()
 {
-	if (nextRowInBuffer_ == rowsBuffer_)
+    ASSERT(initialisedColumns_);
+    if (nextRowInBuffer_ == rowsBuffer_ || rowsBuffer_.size() == 0)
 		return;
-    
+
     setOptimalCodecs();
 
     Buffer encodedBuffer(rowsBuffer_.size());
@@ -316,12 +317,13 @@ void WriterBufferingIterator::flush()
     // Clean up storage buffers for row data
     allocBuffers();
 
-    Buffer headerBuffer = serializeHeader(encodedStream.position(), rowsWritten);
+    std::pair<Buffer, size_t> encodedHeader = serializeHeader(encodedStream.position(), rowsWritten);
+    ASSERT(encodedHeader.second <= encodedHeader.first.size());
 
-    Log::debug() << "WriterBufferingIterator::flush: header size: " << headerBuffer.size() << std::endl;
+    Log::debug() << "WriterBufferingIterator::flush: header size: " << encodedHeader.second << std::endl;
 
-    dataHandle().write(headerBuffer, headerBuffer.size()); // Write header
-    dataHandle().write(encodedBuffer, encodedStream.position()); // Write encoded data
+    ASSERT(dataHandle().write(encodedHeader.first, encodedHeader.second) == long(encodedHeader.second)); // Write header
+    ASSERT(dataHandle().write(encodedBuffer, encodedStream.position()) == encodedStream.position()); // Write encoded data
 
 	Log::debug() << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << std::endl;
 
@@ -337,13 +339,13 @@ void WriterBufferingIterator::flush()
 }
 
 
-eckit::Buffer WriterBufferingIterator::serializeHeader(size_t dataSize, size_t rowsNumber) {
+std::pair<Buffer, size_t> WriterBufferingIterator::serializeHeader(size_t dataSize, size_t rowsNumber) {
     return core::Header::serializeHeader(dataSize, rowsNumber, properties_, columns());
 }
 
 int WriterBufferingIterator::close()
 {
-	flush();
+    if (initialisedColumns_) flush();
 
     if (!openDataHandle_ && f_)
 	{

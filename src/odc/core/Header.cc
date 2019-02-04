@@ -133,7 +133,7 @@ namespace {
 
 
 template <typename ByteOrder>
-eckit::Buffer serializeHeaderInternal(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns) {
+std::pair<eckit::Buffer, size_t> serializeHeaderInternal(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns) {
 
     // Serialise the variable size part of the header first. Use the configured buffer size
     // but allow expansion if needed.
@@ -194,16 +194,18 @@ eckit::Buffer serializeHeaderInternal(size_t dataSize, size_t rowsNumber, const 
 
     ds.write(static_cast<int32_t>(variableHeaderSize)); // How much header data follows
 
-    return buffer;
+    ASSERT(ds.position() == eckit::Offset(initial_header_size));
+
+    return std::make_pair(std::move(buffer), variableHeaderSize + ds.position());
 }
 
 }
 
-eckit::Buffer Header::serializeHeader(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns) {
+std::pair<Buffer, size_t> Header::serializeHeader(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns) {
     return serializeHeaderInternal<SameByteOrder>(dataSize, rowsNumber, properties, columns);
 }
 
-eckit::Buffer Header::serializeHeaderOtherByteOrder(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns) {
+std::pair<Buffer, size_t> Header::serializeHeaderOtherByteOrder(size_t dataSize, size_t rowsNumber, const Properties& properties, const MetaData& columns) {
     return serializeHeaderInternal<OtherByteOrder>(dataSize, rowsNumber, properties, columns);
 }
 
