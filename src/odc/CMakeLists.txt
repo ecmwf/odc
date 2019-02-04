@@ -44,7 +44,6 @@ DispatchingWriter.h
 ####DirectAccessIterator.h
 Duration.cc
 Duration.h
-Endian.h
 FastODA2Request.cc
 FastODA2Request.h
 MDI.cc
