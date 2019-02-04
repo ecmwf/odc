@@ -43,7 +43,6 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
   properties_(),
   rowsBuffer_(0),
   nextRowInBuffer_(0),
-  columnsBuffer_(0),
   rowsBufferSize_(owner.rowsBufferSize()),
   tableDef_(tableDef),
   openDataHandle_(openDataHandle)
@@ -78,12 +77,6 @@ unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigne
 
 int WriterBufferingIterator::setOptimalCodecs()
 {
-	if (columnsBuffer_.size() == 0)
-	{
-		columnsBuffer_ = columns();
-		columnsBuffer_.resetStats();
-	}
-
     return codecOptimizer_.setOptimalCodecs<SameByteOrder>(const_cast<MetaData&>(columns()));
 }
 
@@ -211,8 +204,8 @@ int WriterBufferingIterator::doWriteRow(core::DataStream<core::SameByteOrder>& s
     // static_cast eliminates unecessary warnings due to % operator returning an int.
 
     uint8_t marker[2] {
-        static_cast<uint8_t>(k % 256),
-        static_cast<uint8_t>((k / 256) % 256)
+        static_cast<uint8_t>((k / 256) % 256),
+        static_cast<uint8_t>(k % 256)
     };
     stream.writeBytes(marker, sizeof(marker)); // raw write
 
@@ -265,7 +258,8 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, api::Colu
 
 	col->name(name); 
     col->type<SameByteOrder>(type);
-	return 0;
+
+    return 0;
 }
 
 int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b)

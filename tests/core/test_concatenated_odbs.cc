@@ -15,9 +15,10 @@
 
 #include "TemporaryFiles.h"
 
+#include "odc/Comparator.h"
+#include "odc/core/Exceptions.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
-#include "odc/Comparator.h"
 
 #include <stdint.h>
 
@@ -278,7 +279,7 @@ CASE("If corrupt data follows a valid ODB this should not be treated as a new OD
     // Where we would expect an EOF, or a new table, we now have corrupt data. This increment should
     // NOT succeed, but should complain vociferously!!!
 
-    EXPECT_THROWS_AS(++it, eckit::BadValue);
+    EXPECT_THROWS_AS(++it, odc::core::ODBInvalid);
 }
 
 CASE("If a corrupted ODB (with no row data following the header) then report an error") {
@@ -311,7 +312,8 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
 
     // The header size is 320 bytes. Copy the data from the start...
 
-    writeDH.write(buf.data(), 322);
+//    writeDH.write(buf.data(), 322);
+    writeDH.write(buf.data(), 322 - 80); // -80 == we no longer encode (empty) flags
 
     // Now read the data. We should get the data back, and then an error...
 

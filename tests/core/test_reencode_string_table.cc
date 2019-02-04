@@ -119,7 +119,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // Construct codec directly, and decode the header
 
         // Skip name of codec
-        GeneralDataStream ds(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+        GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
         eckit::ScopedPtr<Codec> c;
         if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
@@ -142,7 +142,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // Now re-encode the codec header, and check that we get what we started with!
 
         eckit::Buffer writeBuffer(4096);
-        GeneralDataStream ds2(bigEndianSource == eckit::system::SystemInfo::isBigEndian(), writeBuffer);
+        GeneralDataStream ds2(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), writeBuffer);
         c->save(ds2);
 
         // Check that the data is the same both times!

@@ -49,7 +49,7 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
 		double missing = col.missingValue();
                 //LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << std::endl;
 		std::string codec(defaultCodec_[col.type()]);
-		switch(col.type())
+        switch(col.type())
 		{
             case api::REAL: {
 

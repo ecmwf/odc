@@ -59,6 +59,7 @@ public:
     const core::MetaData& columns() const { return columns_; }
     const core::MetaData& columns(const core::MetaData& md) {
         columns_ = md;
+        for (auto& col : columns_) col->resetCodec<core::SameByteOrder>(); // We want to use the default codecs for encoding
         initialisedColumns_ = columns_.allColumnsInitialised();
         return columns_;
     }
@@ -129,7 +130,6 @@ private:
 
     eckit::Buffer rowsBuffer_;
 	unsigned char* nextRowInBuffer_;
-    core::MetaData columnsBuffer_;
 
 	size_t rowsBufferSize_;
     size_t rowDataSizeDoubles_;
@@ -151,11 +151,11 @@ void WriterBufferingIterator::pass1init(T& it, const T& end)
     eckit::Log::debug() << "WriterBufferingIterator::pass1init" << std::endl;
 
 	// Copy columns from the input iterator.
-	columns(columnsBuffer_ = it->columns());
+    columns(it->columns());
 
-	columns_.resetStats();
-	columnsBuffer_.resetStats();
-	
+    columns_.resetCodecs<core::SameByteOrder>();
+    columns_.resetStats();
+
 	size_t nCols = it->columns().size();
 	ASSERT(nCols > 0);
 
@@ -173,7 +173,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	unsigned long nrows = 0;
 	for ( ; it != end; ++it, ++nrows)
 	{
-		if (it->isNewDataset() && it->columns() != columnsBuffer_)
+        if (it->isNewDataset() && it->columns() != columns())
 		{
             eckit::Log::debug() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
 			flush();
@@ -181,17 +181,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
             writeHeader();
         }
 
-		const double *data = it->data();
-		size_t nCols = it->columns().size();
-
-		gatherStats(data, nCols);
-
-        std::copy(data, data + nCols, reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
-		nextRowInBuffer_ += sizeof(uint16_t) + nCols * sizeof(double);
-
-        ASSERT((char*)nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
-        if ((char*)nextRowInBuffer_ == rowsBuffer_ + rowsBuffer_.size())
-			flush();
+        writeRow(it->data(), it->columns().size());
 	} 
 
     eckit::Log::debug() << "Flushing rest of the buffer..." << std::endl;
