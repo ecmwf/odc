@@ -142,6 +142,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // Now re-encode the codec header, and check that we get what we started with!
 
         eckit::Buffer writeBuffer(4096);
+        ::memset(writeBuffer, 0, writeBuffer.size());
         GeneralDataStream ds2(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), writeBuffer);
         c->save(ds2);
 
