@@ -49,6 +49,13 @@ ReadTablesIterator& ReadTablesIterator::operator++() {
     return *this;
 }
 
+ReadTablesIterator ReadTablesIterator::operator++(int) {
+
+    auto copy = *this;
+    ++(*this);
+    return copy;
+}
+
 Table* ReadTablesIterator::operator->() {
     ASSERT(pos_ != -1);
     return &owner_.getTable(pos_);

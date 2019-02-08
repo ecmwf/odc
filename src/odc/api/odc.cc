@@ -196,9 +196,8 @@ void odc_close(odb_t* o) {
 
 odb_table_t* odc_next_table(odb_t* o) {
     return wrapApiFunction([o] {
-        Table t;
-        if (o->internal.next(t)) {
-            return new odb_table_t(t);
+        if (Optional<Table> t = o->internal.next()) {
+            return new odb_table_t(t.get());
         }
         return static_cast<odb_table_t*>(nullptr);
     });

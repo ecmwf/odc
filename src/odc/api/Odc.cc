@@ -41,7 +41,7 @@ public: // methods
     OdbImpl(const eckit::PathName& path);
     ~OdbImpl();
 
-    bool next(Table& t);
+    Optional<Table> next();
 
 private: // members
 
@@ -58,8 +58,8 @@ Odb::Odb(const std::string& path) :
 
 Odb::~Odb() {}
 
-bool Odb::next(Table& t) {
-    return impl_->next(t);
+Optional<Table> Odb::next() {
+    return impl_->next();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -72,14 +72,11 @@ OdbImpl::OdbImpl(const eckit::PathName& path) :
 
 OdbImpl::~OdbImpl() {}
 
-bool OdbImpl::next(Table& t) {
+Optional<Table> OdbImpl::next() {
 
-    if (it_ == reader_.end()) return false;
+    if (it_ == reader_.end()) return {};
 
-    t = Table(std::make_shared<TableImpl>(*it_));
-    ++it_;
-
-    return true;
+    return Optional<Table>(std::make_shared<TableImpl>(*it_++));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

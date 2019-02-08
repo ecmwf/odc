@@ -18,12 +18,30 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <type_traits>
 
 #include "odc/api/ColumnType.h"
 #include "odc/api/StridedData.h"
 
 namespace odc {
 namespace api {
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Utility. proto- std::optional.
+
+template <typename T>
+struct Optional {
+    Optional() : valid_(false) {}
+    Optional(T&& v) : valid_(true) { new (&val_) T(std::forward<T>(v)); }
+    ~Optional() { if(valid_) reinterpret_cast<T*>(&val_)->~T(); }
+    explicit operator bool() { return valid_; }
+    T& get() { return *reinterpret_cast<T*>(&val_); }
+    const T& get() const { return *reinterpret_cast<const T*>(&val_); }
+private:
+    typename std::aligned_storage<sizeof(T), alignof(T)>::type val_;
+    bool valid_;
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -81,7 +99,7 @@ public: // methods
     Odb(const std::string& path);
     ~Odb();
 
-    bool next(Table& t);
+    Optional<Table> next();
 
 private: // members
 
