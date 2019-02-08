@@ -41,13 +41,12 @@ public: // methods
     OdbImpl(const eckit::PathName& path);
     ~OdbImpl();
 
-    const std::vector<Table>& tables();
+    bool next(Table& t);
 
 private: // members
 
-    eckit::PathName path_;
-
-    std::vector<Table> tables_;
+    core::TablesReader reader_;
+    core::TablesReader::iterator it_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -59,12 +58,8 @@ Odb::Odb(const std::string& path) :
 
 Odb::~Odb() {}
 
-const std::vector<Table>& Odb::tables() {
-    return impl_->tables();
-}
-
-int Odb::numTables() {
-    return impl_->tables().size();
+bool Odb::next(Table& t) {
+    return impl_->next(t);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -72,24 +67,19 @@ int Odb::numTables() {
 // Implementation definition
 
 OdbImpl::OdbImpl(const eckit::PathName& path) :
-    path_(path) {}
+    reader_(path),
+    it_(reader_.begin()) {}
 
 OdbImpl::~OdbImpl() {}
 
-const std::vector<Table>& OdbImpl::tables() {
+bool OdbImpl::next(Table& t) {
 
-    // Lazily read the tables
+    if (it_ == reader_.end()) return false;
 
-    if (tables_.empty()) {
+    t = Table(std::make_shared<TableImpl>(*it_));
+    ++it_;
 
-        core::TablesReader reader(path_);
-
-        for (core::Table& t : reader) {
-            tables_.push_back(std::make_shared<TableImpl>(t));
-        }
-    }
-
-    return tables_;
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -109,34 +99,42 @@ DecodeTarget::~DecodeTarget() {}
 
 // Table implementation
 
+Table::Table() {}
+
 Table::Table(std::shared_ptr<TableImpl> t) :
     impl_(t) {}
 
 Table::~Table() {}
 
 size_t Table::numRows() const {
+    ASSERT(impl_);
     return impl_->numRows();
 }
 
 size_t Table::numColumns() const {
+    ASSERT(impl_);
     return impl_->numColumns();
 }
 
 const std::string& Table::columnName(int col) const {
+    ASSERT(impl_);
     ASSERT(col > 0 && size_t(col) < impl_->numColumns());
     return impl_->columns()[col]->name();
 }
 
 ColumnType Table::columnType(int col) const {
+    ASSERT(impl_);
     ASSERT(col > 0 && size_t(col) < impl_->numColumns());
     return impl_->columns()[col]->type();
 }
 
 size_t Table::columnDecodedSize(int col) const {
+    ASSERT(impl_);
     return impl_->columns()[col]->dataSizeDoubles() * sizeof(double);
 }
 
 void Table::decode(DecodeTarget& target) const {
+    ASSERT(impl_);
     impl_->decode(*target.impl_);
 }
 

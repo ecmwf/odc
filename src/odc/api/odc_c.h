@@ -76,9 +76,7 @@ void odc_close(struct odb_t* o);
 
 /* Table handling */
 
-int odc_num_tables(struct odb_t* o);
-
-struct odb_table_t* odc_get_table(struct odb_t* o, int n);
+struct odb_table_t* odc_next_table(struct odb_t* o);
 void odc_free_table(struct odb_table_t* o);
 
 int odc_table_num_rows(struct odb_table_t* t);

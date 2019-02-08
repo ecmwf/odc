@@ -34,6 +34,7 @@ class Table {
 
 public: // methods
 
+    Table();
     Table(std::shared_ptr<TableImpl> t);
     ~Table();
 
@@ -80,12 +81,7 @@ public: // methods
     Odb(const std::string& path);
     ~Odb();
 
-    // Get the vector of Tables. We only read _files_ with this interface,
-    // so it doesn't matter that this implies multiple passes.
-
-    const std::vector<Table>& tables();
-
-    int numTables();
+    bool next(Table& t);
 
 private: // members
 

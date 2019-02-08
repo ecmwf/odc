@@ -39,18 +39,17 @@ CASE("Count lines in an existing ODB file") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
 
-    int ntables = odc_num_tables(o.get());
-    EXPECT(ntables == 333);
-
+    size_t ntables = 0;
     size_t totalRows = 0;
 
-    for (int i = 0; i < ntables; i++) {
-
-        std::unique_ptr<odb_table_t> table(odc_get_table(o.get(), i));
+    std::unique_ptr<odb_table_t> table;
+    while (table.reset(odc_next_table(o.get())), table) {
         totalRows += odc_table_num_rows(table.get());
         EXPECT(odc_table_num_columns(table.get()) == 51);
+        ++ntables;
     }
 
+    EXPECT(ntables == 333);
     EXPECT(totalRows == 3321753);
 }
 
@@ -60,17 +59,16 @@ CASE("Decode an entire ODB file") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
 
-    int ntables = odc_num_tables(o.get());
-    EXPECT(ntables == 333);
+    size_t ntables = 0;
 
-    for (int i = 0; i < ntables; i++) {
-
-        std::unique_ptr<odb_table_t> table(odc_get_table(o.get(), i));
+    std::unique_ptr<odb_table_t> table;
+    while (table.reset(odc_next_table(o.get())), table) {
 
         std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
-
         EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
         EXPECT(decoded->ncolumns == 51);
+
+        ++ntables;
     }
 }
 

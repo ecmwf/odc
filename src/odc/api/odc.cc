@@ -194,16 +194,13 @@ void odc_close(odb_t* o) {
  * Table handling
  */
 
-int odc_num_tables(struct odb_t* o) {
+odb_table_t* odc_next_table(odb_t* o) {
     return wrapApiFunction([o] {
-        return o->internal.numTables();
-    });
-}
-
-odb_table_t* odc_get_table(odb_t* o, int n) {
-    return wrapApiFunction([o, n] {
-        ASSERT(n >= 0 && n < o->internal.numTables());
-        return new odb_table_t(o->internal.tables()[n]);
+        Table t;
+        if (o->internal.next(t)) {
+            return new odb_table_t(t);
+        }
+        return static_cast<odb_table_t*>(nullptr);
     });
 }
 
