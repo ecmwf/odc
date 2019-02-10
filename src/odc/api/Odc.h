@@ -51,6 +51,10 @@ class Settings {
 public: // methods
 
     static void treatIntegersAsDoubles(bool flag);
+
+    static void setIntegerMissingValue(int64_t val);
+
+    static void setDoubleMissingValue(double val);
 };
 
 //----------------------------------------------------------------------------------------------------------------------

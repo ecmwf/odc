@@ -48,6 +48,8 @@ extern "C" {
 //  - Remove the MARS functionality to MARS
 //  - Open memory buffers rather than files
 //  - Bitfield descriptions in the API
+//  - Sensible behaviour with missing values. The current version is SHIT.
+//  - Move odc::ODBAPISettings and odc::MDI somewhere sensible
 
 //----------------------------------------------------------------------------------------------------------------------
 

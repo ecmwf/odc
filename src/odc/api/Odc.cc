@@ -16,6 +16,7 @@
 #include "odc/core/TablesReader.h"
 #include "odc/core/Table.h"
 #include "odc/core/DecodeTarget.h"
+#include "odc/MDI.h"
 #include "odc/ODBAPISettings.h"
 
 using namespace eckit;
@@ -140,6 +141,14 @@ void Table::decode(DecodeTarget& target) const {
 
 void Settings::treatIntegersAsDoubles(bool flag) {
     odc::ODBAPISettings::instance().treatIntegersAsDoubles(flag);
+}
+
+void Settings::setIntegerMissingValue(int64_t val) {
+    odc::MDI::integerMDI(val);
+}
+
+void Settings::setDoubleMissingValue(double val) {
+    odc::MDI::realMDI(val);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
