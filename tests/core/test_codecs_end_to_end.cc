@@ -87,7 +87,7 @@ namespace {
 
     struct MockReadIteratorConstInt : public MockReadIterator {
         MockReadIteratorConstInt() : MockReadIterator(odc::api::INTEGER, the_const_value) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecInt32<odc::core::SameByteOrder>));
+            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecInt32<odc::core::SameByteOrder, double>));
         }
     };
 

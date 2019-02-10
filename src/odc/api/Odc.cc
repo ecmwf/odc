@@ -16,6 +16,7 @@
 #include "odc/core/TablesReader.h"
 #include "odc/core/Table.h"
 #include "odc/core/DecodeTarget.h"
+#include "odc/ODBAPISettings.h"
 
 using namespace eckit;
 
@@ -134,6 +135,14 @@ void Table::decode(DecodeTarget& target) const {
     ASSERT(impl_);
     impl_->decode(*target.impl_);
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void Settings::treatIntegersAsDoubles(bool flag) {
+    odc::ODBAPISettings::instance().treatIntegersAsDoubles(flag);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 
 } // namespace api
 } // namespace odc

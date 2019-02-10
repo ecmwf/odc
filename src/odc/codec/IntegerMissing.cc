@@ -20,9 +20,9 @@ namespace codec {
 // Self registration
 
 namespace {
-    core::CodecBuilder<CodecInt8Missing> int8MissingBuilder;
-    core::CodecBuilder<CodecInt16Missing> int16MissingBuilder;
-    core::CodecBuilder<CodecConstantOrMissing> constantOrMissingBuilder;
+    core::IntegerCodecBuilder<CodecInt8Missing> int8MissingBuilder;
+    core::IntegerCodecBuilder<CodecInt16Missing> int16MissingBuilder;
+    core::IntegerCodecBuilder<CodecConstantOrMissing> constantOrMissingBuilder;
     core::CodecBuilder<CodecRealConstantOrMissing> realConstantOrMissingBuilder;
 }
 

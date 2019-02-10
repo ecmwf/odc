@@ -19,10 +19,12 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <cstdint>
 
 #include "eckit/memory/NonCopyable.h"
 
 #include "odc/core/Exceptions.h"
+#include "odc/ODBAPISettings.h"
 
 namespace odc {
 namespace core {
@@ -86,6 +88,8 @@ private: // members
 template <template <typename> class CODEC>
 class CodecBuilder : public CodecBuilderBase {
 
+    static_assert(CODEC<SameByteOrder>::codec_name() == CODEC<OtherByteOrder>::codec_name(), "Invalid name");
+
 public: // methods
 
     CodecBuilder() : CodecBuilderBase(CODEC<SameByteOrder>::codec_name()) {}
@@ -98,6 +102,37 @@ private: // methods
     }
     std::unique_ptr<Codec> make(const OtherByteOrder&) const override {
         return std::unique_ptr<Codec>(new CODEC<OtherByteOrder>());
+    }
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// For integers we have two representations. Either int64_t or double.
+// This is for backward compatibility with the IFS
+
+template <template <typename ByteOrder, typename ValueType> class CODEC_T>
+class IntegerCodecBuilder : public CodecBuilderBase {
+
+public: // methods
+
+    IntegerCodecBuilder() : CodecBuilderBase(CODEC_T<SameByteOrder, double>::codec_name()) {}
+    ~IntegerCodecBuilder() {}
+
+private: // methods
+
+    std::unique_ptr<Codec> make(const SameByteOrder&) const override {
+        if (ODBAPISettings::instance().integersAsDoubles()) {
+            return std::unique_ptr<Codec>(new CODEC_T<SameByteOrder, double>());
+        } else {
+            return std::unique_ptr<Codec>(new CODEC_T<SameByteOrder, int64_t>());
+        }
+    }
+    std::unique_ptr<Codec> make(const OtherByteOrder&) const override {
+        if (ODBAPISettings::instance().integersAsDoubles()) {
+            return std::unique_ptr<Codec>(new CODEC_T<OtherByteOrder, double>());
+        } else {
+            return std::unique_ptr<Codec>(new CODEC_T<OtherByteOrder, int64_t>());
+        }
     }
 };
 

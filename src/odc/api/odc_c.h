@@ -50,7 +50,10 @@ struct odb_decoded_t {
  *       is not otherwise initialised
 */
 
-void odc_initialise_api();
+const int ODC_INTEGERS_AS_DOUBLES = 1;
+const int ODC_INTEGERS_AS_LONGS = 2;
+
+void odc_initialise_api(int integerBehaviour=ODC_INTEGERS_AS_DOUBLES);
 
 /* Constants and lookups */
 
@@ -90,5 +93,9 @@ const struct odb_decoded_t* odc_table_decode_all(const struct odb_table_t* t);
 void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt);
 
 void odc_free_odb_decoded(const odb_decoded_t* dt);
+
+/* Encoding data */
+
+void* odc_encode(const struct odb_decoded_t* dt, void* buffer, long* size);
 
 /*---------------------------------------------------------------------------------------------------------------------*/

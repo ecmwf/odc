@@ -321,9 +321,9 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
         std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            c.reset(new CodecConstantOrMissing<SameByteOrder>);
+            c.reset(new CodecConstantOrMissing<SameByteOrder, double>);
         } else {
-            c.reset(new CodecConstantOrMissing<OtherByteOrder>);
+            c.reset(new CodecConstantOrMissing<OtherByteOrder, double>);
         }
 
         c->missingValue(customMissingValue);
@@ -913,9 +913,9 @@ CASE("32bit integers are as-is") {
 
         std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
-            c.reset(new CodecInt32<SameByteOrder>);
+            c.reset(new CodecInt32<SameByteOrder, double>);
         } else {
-            c.reset(new CodecInt32<OtherByteOrder>);
+            c.reset(new CodecInt32<OtherByteOrder, double>);
         }
 
         c->missingValue(222222222);
@@ -1035,15 +1035,15 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
         std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
-                c.reset(new CodecInt16Missing<SameByteOrder>);
+                c.reset(new CodecInt16Missing<SameByteOrder, double>);
             } else {
-                c.reset(new CodecInt16<SameByteOrder>);
+                c.reset(new CodecInt16<SameByteOrder, double>);
             }
         } else {
             if (withMissing) {
-                c.reset(new CodecInt16Missing<OtherByteOrder>);
+                c.reset(new CodecInt16Missing<OtherByteOrder, double>);
             } else {
-                c.reset(new CodecInt16<OtherByteOrder>);
+                c.reset(new CodecInt16<OtherByteOrder, double>);
             }
         }
 
@@ -1169,15 +1169,15 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
         std::unique_ptr<Codec> c;
         if (bigEndianOutput == eckit::system::SystemInfo::isBigEndian()) {
             if (withMissing) {
-                c.reset(new CodecInt8Missing<SameByteOrder>);
+                c.reset(new CodecInt8Missing<SameByteOrder, double>);
             } else {
-                c.reset(new CodecInt8<SameByteOrder>);
+                c.reset(new CodecInt8<SameByteOrder, double>);
             }
         } else {
             if (withMissing) {
-                c.reset(new CodecInt8Missing<OtherByteOrder>);
+                c.reset(new CodecInt8Missing<OtherByteOrder, double>);
             } else {
-                c.reset(new CodecInt8<OtherByteOrder>);
+                c.reset(new CodecInt8<OtherByteOrder, double>);
             }
         }
 

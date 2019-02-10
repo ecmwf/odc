@@ -41,6 +41,14 @@ extern "C" {
 //      ODC_ERRORS_REPORT  - All exceptions will be caught and odc_errno set
 //                           accordingly.
 
+// ii) odc_encode accepts a description of the data structured in memory.
+
+// TODO:
+//  - Encoding/decoding integers sensibly (rather than as doubles)
+//  - Remove the MARS functionality to MARS
+//  - Open memory buffers rather than files
+//  - Bitfield descriptions in the API
+
 //----------------------------------------------------------------------------------------------------------------------
 
 struct odb_t {
@@ -162,15 +170,24 @@ extern "C" {
  *       is not otherwise initialised
 */
 
-void odc_initialise_api() {
-    return wrapApiFunction([] {
+void odc_initialise_api(int integerBehaviour) {
+    return wrapApiFunction([integerBehaviour] {
         static bool initialised = false;
+
+        if (initialised) {
+            eckit::Log::warning() << "Initialising ODC library twice" << std::endl;
+        }
 
         if (!initialised) {
             const char* argv[2] = {"odc-api", 0};
             eckit::Main::initialise(1, const_cast<char**>(argv));
             initialised = true;
         }
+
+        if (integerBehaviour != ODC_INTEGERS_AS_DOUBLES && integerBehaviour != ODC_INTEGERS_AS_LONGS) {
+            throw eckit::SeriousBug("ODC integer behaviour must be either ODC_INTEGERS_AS_DOUBLES or ODC_INTEGERS_AS_LONGS", Here());
+        }
+        Settings::treatIntegersAsDoubles(integerBehaviour == ODC_INTEGERS_AS_DOUBLES);
     });
 }
 

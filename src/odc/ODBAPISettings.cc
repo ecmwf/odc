@@ -84,6 +84,14 @@ string odc::ODBAPISettings::fileInHome(const string& fileName)
     return home_ + fileName.substr(1);
 }
 
+void odc::ODBAPISettings::treatIntegersAsDoubles(bool flag) {
+    integersAsDoubles_ = flag;
+}
+
+bool odc::ODBAPISettings::integersAsDoubles() const {
+    return integersAsDoubles_;
+}
+
 void debugMeNow() {
 	Log::info() << "Debug me now" << endl;
 	odc::ODBAPISettings::debug = true;
@@ -100,7 +108,8 @@ ODBAPISettings& ODBAPISettings::instance()
 ODBAPISettings::ODBAPISettings()
 : headerBufferSize_(Resource<long>("$ODC_HEADER_BUFFER_SIZE;-headerBufferSize;headerBufferSize", 4 * 1024 * 1024)),
   setvbufferSize_(Resource<long>("$ODC_SETVBUFFER_SIZE;-setvbufferSize;setvbufferSize", 8 * 1024 * 1024)),
-  useAIO_(Resource<bool>("$odc_USE_AIO", false))
+  useAIO_(Resource<bool>("$ODC_USE_AIO", false)),
+  integersAsDoubles_(Resource<bool>("$ODC_INTEGERS_AS_DOUBLES", true))
 {}
 
 size_t ODBAPISettings::headerBufferSize() { return headerBufferSize_; }

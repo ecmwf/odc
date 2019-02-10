@@ -58,7 +58,7 @@ private: // methods
 
 protected: // members
 
-    std::map<std::string, size_t> stringLookup_;
+    std::map<std::string, int64_t> stringLookup_;
     std::vector<std::string> strings_;
     size_t decodedSizeDoubles_;
 };
@@ -69,6 +69,9 @@ protected: // members
 
 template<typename ByteOrder, typename InternalCodec>
 class IntStringCodecBase : public CodecChars<ByteOrder> {
+
+    static_assert(std::is_same<typename InternalCodec::value_type, int64_t>::value, "Safety check");
+    using InternalInt = typename InternalCodec::value_type;
 
 public: // methods
 
@@ -110,19 +113,26 @@ private: // methods
         size_t len = ::strnlen(reinterpret_cast<const char*>(&d), this->decodedSizeDoubles_*sizeof(double));
         std::string s(reinterpret_cast<const char*>(&d), len);
 
-        std::map<std::string, size_t>::const_iterator it = this->stringLookup_.find(s);
+        auto it = this->stringLookup_.find(s);
         ASSERT(it != this->stringLookup_.end());
 
-        return static_cast<core::Codec&>(intCodec_).encode(p, it->second);
+        // n.b. Reinterpret cast is yucky, but is for backward compatibility with old interface.
+        // CodecInt*<, int64_t> undoes that internally.
+        // WARNING: This is very type unsafe
+        InternalInt internal = it->second;
+        return static_cast<core::Codec&>(intCodec_).encode(p, reinterpret_cast<const double&>(internal));
     }
 
     void decode(double* out) override {
 
-        double tmp_i;
-        static_cast<core::Codec&>(intCodec_).decode(&tmp_i);
-        size_t i = static_cast<int>(tmp_i);
+        // n.b. Reinterpret cast is yucky, but is for backward compatibility with old interface.
+        // CodecInt*<, int64_t> undoes that internally.
+        // WARNING: This is very type unsafe
 
-        ASSERT(i < this->strings_.size());
+        InternalInt i;
+        static_cast<core::Codec&>(intCodec_).decode(reinterpret_cast<double*>(&i));
+
+        ASSERT(i < long(this->strings_.size()));
         const std::string& s(this->strings_[i]);
 
         ::memset(out, 0, this->decodedSizeDoubles_*sizeof(double));
@@ -185,17 +195,17 @@ private: // members
 
 
 template<typename ByteOrder>
-struct CodecInt8String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>> {
+struct CodecInt8String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder, int64_t>> {
     constexpr static const char* codec_name() { return "int8_string"; }
-    CodecInt8String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name()) {}
+    CodecInt8String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder, int64_t>>(codec_name()) {}
     ~CodecInt8String() override {}
 };
 
 
 template<typename ByteOrder>
-struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder>> {
+struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder, int64_t>> {
     constexpr static const char* codec_name() { return "int16_string"; }
-    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder>>(codec_name()) {}
+    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder, int64_t>>(codec_name()) {}
     ~CodecInt16String() override {}
 };
 

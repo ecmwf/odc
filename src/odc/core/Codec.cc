@@ -106,6 +106,8 @@ void Codec::gatherStats(const double& v)
         if(v > max_ || max_ == missingValue_)
             max_ = v;
     }
+
+    eckit::Log::info() << "GatherStats: " << v << " .. " << min_ << " .. " << max_ << " RANGE " << max_-min_ << std::endl;
 }
 
 void Codec::print(std::ostream& s) const {
