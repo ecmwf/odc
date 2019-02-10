@@ -35,7 +35,7 @@ struct Optional {
     Optional() : valid_(false) {}
     Optional(T&& v) : valid_(true) { new (&val_) T(std::forward<T>(v)); }
     ~Optional() { if(valid_) reinterpret_cast<T*>(&val_)->~T(); }
-    explicit operator bool() { return valid_; }
+    explicit operator bool() const { return valid_; }
     T& get() { return *reinterpret_cast<T*>(&val_); }
     const T& get() const { return *reinterpret_cast<const T*>(&val_); }
 private:

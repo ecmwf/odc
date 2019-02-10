@@ -1,11 +1,12 @@
 
 list( APPEND _api_odc_tests
     read
+    errors
 )
 
 foreach( _test ${_api_odc_tests} )
     ecbuild_add_test(
-        TARGET       odc_api_${_test}
+        TARGET       odc_capi_${_test}
         SOURCES      ${_test}.cc
         INCLUDES     ${ECKIT_INCLUDE_DIRS} ${odc_INCLUDE_DIRS}
         ENVIRONMENT  ${test_environment}

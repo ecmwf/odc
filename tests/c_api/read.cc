@@ -12,22 +12,40 @@
 
 #include "eckit/testing/Test.h"
 
-#include "odc/api/Odc.h"
+#include "odc/odc.h"
 
 using namespace eckit::testing;
+
+// Specialise custom deletion for odb_t
+
+namespace std {
+template <> struct default_delete<odb_t> {
+    void operator() (odb_t* o) { odc_close(o); }
+};
+
+template <> struct default_delete<odb_table_t> {
+    void operator() (odb_table_t* t) { odc_free_table(t); }
+};
+
+template <> struct default_delete<const odb_decoded_t> {
+    void operator() (const odb_decoded_t* dt) { odc_free_odb_decoded(dt); }
+};
+
+}
 
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Count lines in an existing ODB file") {
 
-    odc::api::Odb o("../2000010106.odb");
+    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
 
     size_t ntables = 0;
     size_t totalRows = 0;
 
-    while (const auto& table = o.next()) {
-        totalRows += table.get().numRows();
-        EXPECT(table.get().numColumns() == 51);
+    std::unique_ptr<odb_table_t> table;
+    while (table.reset(odc_next_table(o.get())), table) {
+        totalRows += odc_table_num_rows(table.get());
+        EXPECT(odc_table_num_columns(table.get()) == 51);
         ++ntables;
     }
 
@@ -37,21 +55,22 @@ CASE("Count lines in an existing ODB file") {
 
 // ------------------------------------------------------------------------------------------------------
 
-//CASE("Decode an entire ODB file") {
-//
-//    odc::api::Odb o("../2000010106.odb");
-//
-//    size_t ntables = 0;
-//
-//    while (const auto& table = o.next()) {
-//
-//        std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
-//        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
-//        EXPECT(decoded->ncolumns == 51);
-//
-//        ++ntables;
-//    }
-//}
+CASE("Decode an entire ODB file") {
+
+    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
+
+    size_t ntables = 0;
+
+    std::unique_ptr<odb_table_t> table;
+    while (table.reset(odc_next_table(o.get())), table) {
+
+        std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
+        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
+        EXPECT(decoded->ncolumns == 51);
+
+        ++ntables;
+    }
+}
 
 // ------------------------------------------------------------------------------------------------------
 
