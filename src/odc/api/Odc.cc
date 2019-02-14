@@ -183,7 +183,7 @@ size_t importText(DataHandle& dh_in, DataHandle& dh_out, const std::string& deli
     HandleBuf buf(dh_in);
     std::istream is(&buf);
 
-    return importText(dh_in, dh_out, delimiter);
+    return importText(is, dh_out, delimiter);
 }
 
 size_t importText(std::istream& in, DataHandle& dh_out, const std::string& delimiter) {
