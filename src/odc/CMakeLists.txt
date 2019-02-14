@@ -53,18 +53,10 @@ GribCodes.h
 IteratorProxy.h
 LibOdc.cc
 LibOdc.h
-MD5.cc
-MD5.h
 MDSetter.cc
 MDSetter.h
 MDUpdatingIterator.cc
 MDUpdatingIterator.h
-####ODAColumn.cc
-####ODAColumn.h
-####NullColumn.cc
-####NullColumn.h
-####ODADatabase.cc
-####ODADatabase.h
 ODAHandle.cc
 ODAHandle.h
 ODATranslator.h
@@ -92,8 +84,6 @@ WriterBufferingIterator.cc
 WriterBufferingIterator.h
 WriterDispatchingIterator.cc
 WriterDispatchingIterator.h
-md5_hash.h
-md5_hash.c
 odccapi.cc
 odccapi.h
 RowsCounter.h
