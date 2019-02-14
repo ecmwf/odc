@@ -20,7 +20,7 @@
 
 #include "odc/api/Odc.h"
 #include "odc/sql/SQLOutputConfig.h"
-#include "odc/TODATable.h"
+#include "odc/sql/TODATable.h"
 
 
 using namespace std;

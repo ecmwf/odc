@@ -86,10 +86,6 @@ ReaderIterator.h
 ###>>>#SchemaAnalyzer.h
 SelectIterator.cc
 SelectIterator.h
-TODATable.cc
-TODATable.h
-TODATableIterator.cc
-TODATableIterator.h
 TemplateParameters.cc
 TemplateParameters.h
 Writer.cc
@@ -175,6 +171,10 @@ sql/SQLSelectOutput.cc
 sql/SQLSelectOutput.h
 sql/ODAOutput.cc
 sql/ODAOutput.h
+sql/TODATable.cc
+sql/TODATable.h
+sql/TODATableIterator.cc
+sql/TODATableIterator.h
 sql/Types.cc
 sql/Types.h
 sql/function/FunctionEQ_BOXLAT.cc

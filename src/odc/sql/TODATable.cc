@@ -17,11 +17,11 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/sql/SQLColumn.h"
 
-#include "odc/TODATable.h"
-#include "odc/TODATableIterator.h"
-#include "odc/Reader.h"
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
+#include "odc/Reader.h"
+#include "odc/sql/TODATable.h"
+#include "odc/sql/TODATableIterator.h"
 
 using namespace eckit;
 using namespace eckit::sql;

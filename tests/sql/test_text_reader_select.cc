@@ -12,7 +12,7 @@
 #include "eckit/types/FloatCompare.h"
 
 #include "odc/Select.h"
-#include "odc/TODATable.h"
+#include "odc/sql/TODATable.h"
 
 using namespace eckit::testing;
 

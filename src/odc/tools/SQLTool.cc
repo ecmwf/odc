@@ -25,7 +25,7 @@
 #include "eckit/types/Types.h"
 
 #include "odc/sql/SQLOutputConfig.h"
-#include "odc/TODATable.h"
+#include "odc/sql/TODATable.h"
 #include "odc/tools/SQLTool.h"
 
 using namespace std;

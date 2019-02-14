@@ -11,11 +11,11 @@
 #include "eckit/sql/SQLColumn.h"
 #include "eckit/exception/Exceptions.h"
 
-#include "odc/TODATableIterator.h"
-#include "odc/TODATable.h"
-#include "odc/Reader.h"
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
+#include "odc/Reader.h"
+#include "odc/sql/TODATable.h"
+#include "odc/sql/TODATableIterator.h"
 
 
 namespace odc {
