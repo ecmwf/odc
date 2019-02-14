@@ -371,14 +371,14 @@ void odc_free_odb_decoded(const odb_decoded_t* dt) {
     });
 }
 
-void* odc_import_encode_text(const char* data, void* buffer, long* size) {
-    return wrapApiFunction([data, buffer, size] {
+void* odc_import_encode_text(const char* data, const char* delimiter, void* buffer, long* size) {
+    return wrapApiFunction([data, buffer, size, delimiter] {
 
         ASSERT(*size >= 0);
         MemoryHandle input_dh(data, ::strlen(data));
         std::unique_ptr<MemoryHandle> output_dh(buffer ? new MemoryHandle(buffer, size_t(*size)) : new MemoryHandle);
 
-        importText(input_dh, *output_dh);
+        importText(input_dh, *output_dh, delimiter);
         *size = output_dh->position();
 
         if (buffer) return buffer;
@@ -392,14 +392,14 @@ void* odc_import_encode_text(const char* data, void* buffer, long* size) {
     });
 }
 
-void* odc_import_encode_file(int fd, void* buffer, long* size) {
-    return wrapApiFunction([fd, buffer, size] {
+void* odc_import_encode_file(int fd, const char* delimiter, void* buffer, long* size) {
+    return wrapApiFunction([fd, buffer, size, delimiter] {
 
         ASSERT(*size >= 0);
         FileDescHandle input_dh(fd);
         std::unique_ptr<MemoryHandle> output_dh(buffer ? new MemoryHandle(buffer, size_t(*size)) : new MemoryHandle);
 
-        importText(input_dh, *output_dh);
+        importText(input_dh, *output_dh, delimiter);
         *size = output_dh->position();
 
         if (buffer) return buffer;
@@ -413,13 +413,13 @@ void* odc_import_encode_file(int fd, void* buffer, long* size) {
     });
 }
 
-void odc_import_encode_file_to_file(int input_fd, int output_fd) {
-    return wrapApiFunction([input_fd, output_fd] {
+void odc_import_encode_file_to_file(int input_fd, int output_fd, const char* delimiter) {
+    return wrapApiFunction([input_fd, output_fd, delimiter] {
 
         FileDescHandle input_dh(input_fd);
         FileDescHandle output_dh(output_fd);
 
-        importText(input_dh, output_dh);
+        importText(input_dh, output_dh, delimiter);
     });
 }
 

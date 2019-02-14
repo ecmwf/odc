@@ -12,6 +12,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/HandleBuf.h"
+#include "eckit/io/MemoryHandle.h"
 #include "eckit/log/Log.h"
 
 #include "odc/core/TablesReader.h"
@@ -173,20 +174,33 @@ void Settings::setDoubleMissingValue(double val) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void importText(DataHandle& dh_in, DataHandle& dh_out) {
+size_t importText(DataHandle& dh_in, DataHandle& dh_out, const std::string& delimiter) {
 
     dh_in.openForRead();
-    dh_out.openForWrite(0);
+    AutoClose close_in(dh_in);
 
     // Convert data handle to std::istream.
     HandleBuf buf(dh_in);
     std::istream is(&buf);
 
-    odc::TextReader reader(is, ",");
+    return importText(dh_in, dh_out, delimiter);
+}
+
+size_t importText(std::istream& in, DataHandle& dh_out, const std::string& delimiter) {
+
+    dh_out.openForWrite(0);
+    AutoClose close_out(dh_out);
+
+    odc::TextReader reader(in, delimiter);
     odc::Writer<> writer(dh_out);
     odc::Writer<>::iterator output(writer.begin());
 
-    output->pass1(reader.begin(), reader.end());
+    return output->pass1(reader.begin(), reader.end());
+}
+
+size_t importText(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter) {
+    MemoryHandle dh_in(in.c_str(), in.length());
+    return importText(dh_in, dh_out, delimiter);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

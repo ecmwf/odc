@@ -42,8 +42,6 @@ ToolRunnerApplication.cc
 ToolRunnerApplication.h
 XYVTool.cc
 XYVTool.h
-odc_tools_c.cc
-odc_tools_c.h
 )
 
 list( APPEND odctest_src_files

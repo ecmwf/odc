@@ -101,8 +101,8 @@ void odc_free_odb_decoded(const struct odb_decoded_t* dt);
 
 /// @note if buffer = NULL, library will allocate one that is to be freed with free
 
-void* odc_import_encode_text(const char* data, void* buffer, long* size);
-void* odc_import_encode_file(int fd, void* buffer, long* size);
-void odc_import_encode_file_to_file(int input_fd, int output_fd);
+void* odc_import_encode_text(const char* data, const char* delimiter, void* buffer, long* size);
+void* odc_import_encode_file(int fd, const char* delimiter, void* buffer, long* size);
+void odc_import_encode_file_to_file(int input_fd, int output_fd, const char* delimiter);
 
 /*---------------------------------------------------------------------------------------------------------------------*/

@@ -8,24 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/eckit.h"
+#include "odc/tools/ImportTool.h"
+
 #include "eckit/filesystem/PathName.h"
-#include "eckit/io/MemoryHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/log/Log.h"
 #include "eckit/parser/StringTools.h"
 #include "eckit/sql/SQLParser.h"
-#include "eckit/sql/SQLSelectFactory.h"
 #include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLStatement.h"
 
-#include "odc/csv/TextReader.h"
-#include "odc/csv/TextReaderIterator.h"
+#include "odc/api/Odc.h"
 #include "odc/sql/SQLOutputConfig.h"
-#include "odc/Select.h"
-#include "odc/SelectIterator.h"
 #include "odc/TODATable.h"
-#include "odc/tools/ImportTool.h"
-#include "odc/Writer.h"
 
 
 using namespace std;
@@ -83,7 +78,14 @@ void ImportTool::run()
 
     std::string sql (optionArgument("-sql", std::string("select *;")));
 
-    filterAndImportFile (inFile, outFile, sql, delimiter);
+    if (sql == "select *;") {
+        FileHandle dh_in(inFile);
+        FileHandle dh_out(outFile);
+        size_t n = api::importText(dh_in, dh_out);
+        Log::info() << "ImportTool::importText: Copied " << n << " rows." << std::endl;
+    } else {
+        filterAndImportFile (inFile, outFile, sql, delimiter);
+    }
 }
 
 void ImportTool::importFile(const PathName& in, const PathName& out, const std::string& delimiter)
@@ -105,21 +107,6 @@ void ImportTool::filterAndImportFile(const PathName& in, const PathName& out, co
     size_t n = session.statement().execute();
 
     Log::info() << "ImportTool::importFile: Copied " << n << " rows." << std::endl;
-}
-
-void ImportTool::importText(const std::string& s, const PathName& out, const std::string& delimiter)
-{
-    // TODO: There is no reason to be doing an SQL select * here! Just parse the damn file!
-
-    std::stringstream ss(s);
-    odc::TextReader reader(ss, delimiter);
-
-	odc::Writer<> writer(out);
-	odc::Writer<>::iterator output(writer.begin());
-
-    unsigned long long n = output->pass1(reader.begin(), reader.end());
-
-    Log::info() << "ImportTool::importText: Copied " << n << " rows." << std::endl;
 }
 
 } // namespace tool 

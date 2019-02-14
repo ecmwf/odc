@@ -129,7 +129,11 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void importText(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out);
+/// importText returns number of lines imported
+
+size_t importText(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t importText(std::istream& is, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t importText(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
 
 //----------------------------------------------------------------------------------------------------------------------
 

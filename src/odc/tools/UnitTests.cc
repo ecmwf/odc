@@ -22,6 +22,7 @@
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
 
+#include "odc/api/Odc.h"
 #include "odc/Comparator.h"
 #include "odc/core/TablesReader.h"
 #include "odc/data/DataHandleFactory.h"
@@ -32,7 +33,6 @@
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/tools/CountTool.h"
-#include "odc/tools/ImportTool.h"
 #include "odc/tools/SplitTool.h"
 #include "odc/tools/TestCase.h"
 #include "odc/Writer.h"
@@ -70,7 +70,8 @@ static void createDataForMixedAggregated()
             "2,2,0.1\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
+    eckit::FileHandle dh("selectAggregatedAndNonAggregated.odb");
+    odc::api::importText(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregated)
@@ -150,7 +151,8 @@ static void createDataForMixedAggregated3()
             "'B',2,0.1\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated3.odb");
+    FileHandle dh("selectAggregatedAndNonAggregated3.odb");
+    odc::api::importText(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregated3)
@@ -184,7 +186,8 @@ static void createDataForMixedAggregatedNULL()
             "NULL,3,0.3\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregatedNULL.odb");
+    FileHandle dh("selectAggregatedAndNonAggregatedNULL.odb");
+    odc::api::importText(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregatedNULL)
@@ -217,7 +220,8 @@ static void createDataForRegex1()
             "11,22,33,44\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "regex1.odb");
+    FileHandle dh("regex1.odb");
+    odc::api::importText(data, dh);
 }
 
 static void regex1()
@@ -249,7 +253,8 @@ TEST(vector_syntax)
             "10,10\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "vector_syntax.odb");
+    FileHandle dh("vector_syntax.odb");
+    odc::api::importText(data, dh);
 
     const char *sql =
             "set $X = [1,2,3,4,5];"
@@ -309,7 +314,8 @@ static void create_stringInWhere_file()
             "'bbb',2\n"
             "'bbbc',2\n"
             ;
-    odc::tool::ImportTool::importText(data, "stringInWhere.odb");
+    FileHandle dh("stringInWhere.odb");
+    odc::api::importText(data, dh);
 }
 
 TEST(stringInWhere)
@@ -357,7 +363,8 @@ TEST(rownumber1)
 	const char *inputData = "a:INTEGER,b:INTEGER\n" "1,1\n" "2,2\n" "3,3\n" "4,4\n" "5,5\n" "6,6\n" "7,7\n" "8,8\n" "9,9\n" "10,10\n";
 
     string path("Test_rownumber1.odb");
-	odc::tool::ImportTool::importText(inputData, path);
+    FileHandle dh(path);
+    odc::api::importText(inputData, dh);
     string query("SELECT rownumber() from \"" + path + "\";");
 
     odc::Select select(query);
@@ -389,7 +396,8 @@ TEST(sqlOutputFormatting)
 
     const char* testFile("sqlOutputFormatting.odb");
 
-    odc::tool::ImportTool::importText(data, testFile);
+    FileHandle dh(testFile);
+    odc::api::importText(data, dh);
 
     bool doNotWriteColumnNames(false); // -T
     bool doNotWriteNULL(false);        // -N
@@ -447,7 +455,8 @@ static void createDataForWindSpeedWindDirection()
             "5.4,0.0\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "uv.odb");
+    FileHandle dh("uv.odb");
+    odc::api::importText(data, dh);
 }
 
 TEST(windSpeedWindDirection)
@@ -560,7 +569,8 @@ TEST(hash_operator_on_select_list)
             ;
 
     ScratchFile f("hash_operator_on_select_list.odb");
-    odc::tool::ImportTool::importText(data, f);
+    FileHandle dh(f);
+    odc::api::importText(data, dh);
 
     string sql("select x,x#-1,x#1 from \"" + f + "\";");
     odc::Select select(sql);
@@ -592,7 +602,8 @@ TEST(hash_operator_in_where)
             ;
 
     ScratchFile f("hash_operator_in_where.odb");
-    odc::tool::ImportTool::importText(data, f);
+    FileHandle dh(f);
+    odc::api::importText(data, dh);
 
     string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
     odc::Select select(sql);
@@ -733,7 +744,8 @@ TEST(operator_ge)
             "10,10\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "1to10.odb");
+    FileHandle dh("1to10.odb");
+    odc::api::importText(data, dh);
 
     odc::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
     unsigned long counter = 0;
@@ -760,7 +772,8 @@ static void create_1to10()
             "10,10\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "1to10.odb");
+    FileHandle dh("1to10.odb");
+    odc::api::importText(data, dh);
 }
 
 /* FIXME
@@ -874,7 +887,8 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
         9,9
         10,10)";
 
-	odc::tool::ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
+    FileHandle dh("CREATE_TABLE_and_SELECT_INTO.odb");
+    odc::api::importText(inputData, dh);
     const char* sql = R"(
         CREATE TYPE mybitfield AS (
             codetype bit9,
@@ -912,8 +926,8 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
 TEST(SELECT_ALL)
 {
     ostream& L(eckit::Log::info());
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
+    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
+    odc::api::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
     system("cat select_all_1.odb select_all_2.odb >select_all.odb");
 
     L << "--- Test_SELECT_ALL: open select_all.odb" << endl;
@@ -931,7 +945,8 @@ TEST(SELECT_ALL)
 // ODB-106
 TEST(SELECT_WHERE_0)
 {
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", "select_where_0.odb");
+    FileHandle dh("select_where_0.odb");
+    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
     odc::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
     odc::Select::iterator it (o.begin()), end (o.end());
     ++it;
@@ -948,7 +963,8 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
             );
     const char* outFileTemplate ("ODB_235_{a}_{expver}.odb");
 
-    odc::tool::ImportTool::importText(data, inFile);
+    FileHandle dh(inFile);
+    odc::api::importText(data, dh);
 
 	odc::Reader in(inFile);
 	odc::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
@@ -969,7 +985,8 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
 TEST(LegacyAPIExecuteSelectTwice)
 {
     const std::string fn("legacy_execute_select_twice.odb");
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    FileHandle dh(fn);
+    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
     odc::Select o(std::string("SELECT * FROM \"") + fn + "\";");
 
     int i (0), j (0);
@@ -988,7 +1005,8 @@ TEST(LegacyAPIExecuteSelectTwice)
 TEST(LegacyAPITraverseReaderTwice)
 {
     const std::string fn("legacy_traverse_reader_twice.odb");
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    FileHandle dh(fn);
+    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
     odc::Reader o(fn);
 
     int i (0), j (0);

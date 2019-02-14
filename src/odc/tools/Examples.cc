@@ -15,8 +15,9 @@
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/FileHandle.h"
 
-#include "odc/tools/ImportTool.h"
+#include "odc/api/Odc.h"
 #include "odc/Select.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
@@ -37,7 +38,8 @@ TEST(example_select_data_read_results)
         2,2,0.4
         2,2,0.1)";
 
-    odc::tool::ImportTool::importText(data, std::string("example_select_data_read_results.odb"));
+    FileHandle out("example_select_data_read_results.odb");
+    odc::api::importText(data, out);
 
     odc::Select select("select x,min(v),max(v);", "example_select_data_read_results.odb");
 
@@ -59,7 +61,8 @@ TEST(example_read_data)
 {
     // Prepare input data
     const std::string data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
-    odc::tool::ImportTool::importText(data, std::string("example_read_data.odb"));
+    FileHandle out("example_read_data.odb");
+    odc::api::importText(data, out);
 
     odc::Reader o("example_read_data.odb");
     for (odc::Reader::iterator it (o.begin()),
@@ -143,12 +146,12 @@ ecml::Values ExampleCallback::handle()
 // Execute SQL SELECT statement using SQL verb, passing the new callback as a requests's parameter.
 TEST(example_sql_select_callback)
 {
-    odc::tool::ImportTool::importText("x:INTEGER,y:INTEGER,v:DOUBLE\n"
+    odc::api::importText("x:INTEGER,y:INTEGER,v:DOUBLE\n"
                                        "1,1,0.3\n"
                                        "1,1,0.2\n"
                                        "2,2,0.4\n"
                                        "2,2,0.1\n",
-                                       "example_sql_select_callback_input.odb");
+                                       FileHandle("example_sql_select_callback_input.odb"));
 
     ecml::ExecutionContext context;
     odc::ODBModule odbModule;
@@ -172,12 +175,12 @@ TEST(example_sql_select_callback)
 // Run callback by registering it and executing as a verb in MARS script
 TEST(example_sql_select_callback_invoked_as_a_request)
 {
-    odc::tool::ImportTool::importText("x:INTEGER,y:INTEGER,v:DOUBLE\n"
+    odc::api::importText("x:INTEGER,y:INTEGER,v:DOUBLE\n"
                                        "1,1,0.3\n"
                                        "1,1,0.2\n"
                                        "2,2,0.4\n"
                                        "2,2,0.1\n",
-                                       "example_sql_select_callback_input.odb");
+                                       FileHandle("example_sql_select_callback_input.odb"));
 
     ecml::ExecutionContext context;
     odc::ODBModule odbModule;
@@ -202,12 +205,12 @@ TEST(example_sql_select_callback_invoked_as_a_request)
 // each time with with different extra_parameters.
 TEST(example_sql_select_and_a_mars_verb_as_a_callback)
 {
-    odc::tool::ImportTool::importText("x:INTEGER,y:INTEGER,v:DOUBLE\n"
+    odc::api::importText("x:INTEGER,y:INTEGER,v:DOUBLE\n"
                                        "1,1,0.3\n"
                                        "1,1,0.2\n"
                                        "2,2,0.4\n"
                                        "2,2,0.1\n",
-                                       "example_sql_select_callback_input.odb");
+                                       FileHandle("example_sql_select_callback_input.odb"));
 
     ecml::ExecutionContext context;
     odc::ODBModule odbModule;

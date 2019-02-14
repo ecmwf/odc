@@ -21,13 +21,16 @@
 #include <vector>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/io/FileHandle.h"
 
+#include "odc/api/odc.h"
 #include "odc/odccapi.h"
-#include "odc/tools/odc_tools_c.h"
 
 #include "TestCase.h"
 
 namespace {
+
+// TODO: Migrate this test over!!!
 
 TEST(c_api_example_select_data_read_results)
 {
@@ -42,12 +45,20 @@ TEST(c_api_example_select_data_read_results)
     size_t i;
 
     // Prepare input data
-    import_text("x:INTEGER,y:INTEGER,v:DOUBLE,f:BITFIELD[a:1;b:2]]\n" 
+
+    long size = 0;
+    void* buf = odc_import_encode_text(
+                "x:INTEGER,y:INTEGER,v:DOUBLE,f:BITFIELD[a:1;b:2]]\n"
                 "1,1,0.3,0\n"
                 "1,1,0.2,1\n" 
                 "2,2,0.4,2\n" 
-                "2,2,0.1,3\n", 
-                "c_example_select_data_read_results.odb");
+                "2,2,0.1,3\n", ",", 0, &size);
+
+    eckit::FileHandle dh("c_example_select_data_read_results.odb");
+    dh.openForWrite(size);
+    ASSERT(dh.write(buf, size) == size);
+    dh.close();
+    free(buf);
 
     oh = odb_select_create("", &err);
     ASSERT(0 == err);
@@ -99,12 +110,20 @@ TEST(c_api_example_read_data)
     int nRows;
 
     // Prepare input data
-    import_text("x:INTEGER,y:REAL,v:DOUBLE,f:BITFIELD[a:1;b:2]\n" 
+    long size = 0;
+    void* buf = odc_import_encode_text(
+                "x:INTEGER,y:REAL,v:DOUBLE,f:BITFIELD[a:1;b:2]\n"
                 "1,1,0.3,0\n" 
                 "2,1,0.2,1\n" 
                 "3,2,0.4,2\n" 
-                "4,2,0.1,3\n",
-                "c_api_example_read_data.odb");
+                "4,2,0.1,3\n", ",", 0, &size);
+
+    eckit::FileHandle dh("c_api_example_read_data.odb");
+    dh.openForWrite(size);
+    ASSERT(dh.write(buf, size) == size);
+    dh.close();
+    free(buf);
+
 
     oh = odb_read_create("", &err);
     it = odb_create_read_iterator(oh, "c_api_example_read_data.odb", &err);
