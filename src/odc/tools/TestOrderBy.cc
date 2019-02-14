@@ -87,8 +87,12 @@ static void test()
 		"1,20,'two'\n"
 		"2,30,'three'\n"
 		"2,40,'four'\n";
-        FileHandle dh("TestOrderBy.odb");
-        odc::api::importText(in, dh);
+        {
+            FileHandle dh("TestOrderBy.odb");
+            dh.openForWrite(0);
+            AutoClose close(dh);
+            odc::api::importText(in, dh);
+        }
 
 		string sql = "select distinct a,b,c from \"TestOrderBy.odb\" order by a desc, b asc;";
 
@@ -117,6 +121,8 @@ static void setUp()
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
     FileHandle dh("TestOrderBy_a1to10twice.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(s, dh);
 }
 static void tearDown(){}

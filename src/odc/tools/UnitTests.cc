@@ -71,6 +71,8 @@ static void createDataForMixedAggregated()
             ;
 
     eckit::FileHandle dh("selectAggregatedAndNonAggregated.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 
@@ -152,6 +154,8 @@ static void createDataForMixedAggregated3()
             ;
 
     FileHandle dh("selectAggregatedAndNonAggregated3.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 
@@ -187,6 +191,8 @@ static void createDataForMixedAggregatedNULL()
             ;
 
     FileHandle dh("selectAggregatedAndNonAggregatedNULL.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 
@@ -221,6 +227,8 @@ static void createDataForRegex1()
             ;
 
     FileHandle dh("regex1.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 
@@ -253,8 +261,12 @@ TEST(vector_syntax)
             "10,10\n"
             ;
 
-    FileHandle dh("vector_syntax.odb");
-    odc::api::importText(data, dh);
+    {
+        FileHandle dh("vector_syntax.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText(data, dh);
+    }
 
     const char *sql =
             "set $X = [1,2,3,4,5];"
@@ -315,6 +327,8 @@ static void create_stringInWhere_file()
             "'bbbc',2\n"
             ;
     FileHandle dh("stringInWhere.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 
@@ -361,10 +375,15 @@ TEST(blocksSizes)
 TEST(rownumber1)
 {
 	const char *inputData = "a:INTEGER,b:INTEGER\n" "1,1\n" "2,2\n" "3,3\n" "4,4\n" "5,5\n" "6,6\n" "7,7\n" "8,8\n" "9,9\n" "10,10\n";
-
     string path("Test_rownumber1.odb");
-    FileHandle dh(path);
-    odc::api::importText(inputData, dh);
+
+    {
+        FileHandle dh(path);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText(inputData, dh);
+    }
+
     string query("SELECT rownumber() from \"" + path + "\";");
 
     odc::Select select(query);
@@ -397,6 +416,8 @@ TEST(sqlOutputFormatting)
     const char* testFile("sqlOutputFormatting.odb");
 
     FileHandle dh(testFile);
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 
     bool doNotWriteColumnNames(false); // -T
@@ -456,6 +477,8 @@ static void createDataForWindSpeedWindDirection()
             ;
 
     FileHandle dh("uv.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 
@@ -569,8 +592,13 @@ TEST(hash_operator_on_select_list)
             ;
 
     ScratchFile f("hash_operator_on_select_list.odb");
-    FileHandle dh(f);
-    odc::api::importText(data, dh);
+
+    {
+        FileHandle dh(f);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText(data, dh);
+    }
 
     string sql("select x,x#-1,x#1 from \"" + f + "\";");
     odc::Select select(sql);
@@ -602,8 +630,13 @@ TEST(hash_operator_in_where)
             ;
 
     ScratchFile f("hash_operator_in_where.odb");
-    FileHandle dh(f);
-    odc::api::importText(data, dh);
+
+    {
+        FileHandle dh(f);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText(data, dh);
+    }
 
     string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
     odc::Select select(sql);
@@ -744,8 +777,12 @@ TEST(operator_ge)
             "10,10\n"
             ;
 
-    FileHandle dh("1to10.odb");
-    odc::api::importText(data, dh);
+    {
+        FileHandle dh("1to10.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText(data, dh);
+    }
 
     odc::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
     unsigned long counter = 0;
@@ -773,6 +810,8 @@ static void create_1to10()
             ;
 
     FileHandle dh("1to10.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 
@@ -887,8 +926,13 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
         9,9
         10,10)";
 
-    FileHandle dh("CREATE_TABLE_and_SELECT_INTO.odb");
-    odc::api::importText(inputData, dh);
+    {
+        FileHandle dh("CREATE_TABLE_and_SELECT_INTO.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText(inputData, dh);
+    }
+
     const char* sql = R"(
         CREATE TYPE mybitfield AS (
             codetype bit9,
@@ -945,8 +989,12 @@ TEST(SELECT_ALL)
 // ODB-106
 TEST(SELECT_WHERE_0)
 {
-    FileHandle dh("select_where_0.odb");
-    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    {
+        FileHandle dh("select_where_0.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    }
     odc::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
     odc::Select::iterator it (o.begin()), end (o.end());
     ++it;
@@ -963,8 +1011,12 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
             );
     const char* outFileTemplate ("ODB_235_{a}_{expver}.odb");
 
-    FileHandle dh(inFile);
-    odc::api::importText(data, dh);
+    {
+        FileHandle dh(inFile);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText(data, dh);
+    }
 
 	odc::Reader in(inFile);
 	odc::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
@@ -985,8 +1037,12 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
 TEST(LegacyAPIExecuteSelectTwice)
 {
     const std::string fn("legacy_execute_select_twice.odb");
-    FileHandle dh(fn);
-    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    {
+        FileHandle dh(fn);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    }
     odc::Select o(std::string("SELECT * FROM \"") + fn + "\";");
 
     int i (0), j (0);
@@ -1005,8 +1061,12 @@ TEST(LegacyAPIExecuteSelectTwice)
 TEST(LegacyAPITraverseReaderTwice)
 {
     const std::string fn("legacy_traverse_reader_twice.odb");
-    FileHandle dh(fn);
-    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    {
+        FileHandle dh(fn);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    }
     odc::Reader o(fn);
 
     int i (0), j (0);

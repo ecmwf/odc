@@ -378,6 +378,11 @@ void* odc_import_encode_text(const char* data, const char* delimiter, void* buff
         MemoryHandle input_dh(data, ::strlen(data));
         std::unique_ptr<MemoryHandle> output_dh(buffer ? new MemoryHandle(buffer, size_t(*size)) : new MemoryHandle);
 
+        input_dh.openForRead();
+        output_dh->openForWrite(0);
+        AutoClose close_in(input_dh);
+        AutoClose close_out(*output_dh);
+
         importText(input_dh, *output_dh, delimiter);
         *size = output_dh->position();
 
@@ -399,6 +404,11 @@ void* odc_import_encode_file(int fd, const char* delimiter, void* buffer, long* 
         FileDescHandle input_dh(fd);
         std::unique_ptr<MemoryHandle> output_dh(buffer ? new MemoryHandle(buffer, size_t(*size)) : new MemoryHandle);
 
+        input_dh.openForRead();
+        output_dh->openForWrite(0);
+        AutoClose close_in(input_dh);
+        AutoClose close_out(*output_dh);
+
         importText(input_dh, *output_dh, delimiter);
         *size = output_dh->position();
 
@@ -418,6 +428,11 @@ void odc_import_encode_file_to_file(int input_fd, int output_fd, const char* del
 
         FileDescHandle input_dh(input_fd);
         FileDescHandle output_dh(output_fd);
+
+        input_dh.openForRead();
+        output_dh.openForWrite(0);
+        AutoClose close_in(input_dh);
+        AutoClose close_out(output_dh);
 
         importText(input_dh, output_dh, delimiter);
     });

@@ -37,6 +37,8 @@ static void setUp()
 	"20101201\n"
 	"20101202\n";
     FileHandle dh("TestIntegerValues.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(data, dh);
 }
 

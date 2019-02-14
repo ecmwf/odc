@@ -29,14 +29,19 @@ CASE("We can import data") {
         0,3.25,0.0,0,666
         0,0.0,3.25,0,555)";
 
-    eckit::MemoryHandle dh_in(SOURCE_DATA, ::strlen(SOURCE_DATA));
     eckit::MemoryHandle dh_out;
+    size_t importedSize;
 
-    ::odc::api::importText(dh_in, dh_out);
+    {
+        dh_out.openForWrite(0);
+        eckit::AutoClose close(dh_out);
+        ::odc::api::importText(SOURCE_DATA, dh_out);
+        importedSize = dh_out.position();
+    }
 
-    eckit::Log::info() << "Imported length: " << dh_out.position() << std::endl;
+    eckit::Log::info() << "Imported length: " << importedSize << std::endl;
 
-    eckit::MemoryHandle readAgain(dh_out.data(), dh_out.position());
+    eckit::MemoryHandle readAgain(dh_out.data(), importedSize);
     readAgain.openForRead();
     odc::api::Odb o(readAgain);
 

@@ -176,9 +176,6 @@ void Settings::setDoubleMissingValue(double val) {
 
 size_t importText(DataHandle& dh_in, DataHandle& dh_out, const std::string& delimiter) {
 
-    dh_in.openForRead();
-    AutoClose close_in(dh_in);
-
     // Convert data handle to std::istream.
     HandleBuf buf(dh_in);
     std::istream is(&buf);
@@ -187,9 +184,6 @@ size_t importText(DataHandle& dh_in, DataHandle& dh_out, const std::string& deli
 }
 
 size_t importText(std::istream& in, DataHandle& dh_out, const std::string& delimiter) {
-
-    dh_out.openForWrite(0);
-    AutoClose close_out(dh_out);
 
     odc::TextReader reader(in, delimiter);
     odc::Writer<> writer(dh_out);
@@ -200,6 +194,8 @@ size_t importText(std::istream& in, DataHandle& dh_out, const std::string& delim
 
 size_t importText(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter) {
     MemoryHandle dh_in(in.c_str(), in.length());
+    dh_in.openForRead();
+    AutoClose close(dh_in);
     return importText(dh_in, dh_out, delimiter);
 }
 

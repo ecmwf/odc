@@ -39,6 +39,8 @@ TEST(example_select_data_read_results)
         2,2,0.1)";
 
     FileHandle out("example_select_data_read_results.odb");
+    out.openForWrite(0);
+    AutoClose close(out);
     odc::api::importText(data, out);
 
     odc::Select select("select x,min(v),max(v);", "example_select_data_read_results.odb");
@@ -62,6 +64,8 @@ TEST(example_read_data)
     // Prepare input data
     const std::string data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
     FileHandle out("example_read_data.odb");
+    out.openForWrite(0);
+    AutoClose close(out);
     odc::api::importText(data, out);
 
     odc::Reader o("example_read_data.odb");

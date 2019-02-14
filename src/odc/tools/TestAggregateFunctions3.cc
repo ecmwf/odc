@@ -43,6 +43,8 @@ static void setUp()
 	for (size_t i = 1; i <= 10; ++i)
 		s << i << std::endl;
     FileHandle dh("TestAggregateFunctions3.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(s, dh);
 }
 

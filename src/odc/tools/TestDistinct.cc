@@ -49,6 +49,8 @@ static void setUp()
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
     FileHandle dh("TestDistinct_a1to10twice.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
     odc::api::importText(s, dh);
 }
 
