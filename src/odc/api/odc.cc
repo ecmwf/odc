@@ -10,16 +10,20 @@
 
 #include <functional>
 #include <cstdint>
+#include <unistd.h>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/runtime/Main.h"
+#include "eckit/io/MemoryHandle.h"
+#include "eckit/io/FileDescHandle.h"
 
 #include "odc/api/odc.h"
 
 #include "odc/api/Odc.h"
 
 using namespace odc::api;
+using namespace eckit;
 
 extern "C" {
 
@@ -50,11 +54,16 @@ extern "C" {
 //  - Bitfield descriptions in the API
 //  - Sensible behaviour with missing values. The current version is SHIT.
 //  - Move odc::ODBAPISettings and odc::MDI somewhere sensible
+//  - Remove daft executable bootstrapping of tools/tests
+//  - Exaple for encoding. See CAPI examples.
+//  - Test performance of decoding
+//  - Test performance of compare/split
 
 //----------------------------------------------------------------------------------------------------------------------
 
 struct odb_t {
     odb_t(const char* f) : internal(f) {}
+    odb_t(eckit::DataHandle* dh) : internal(dh) {} // takes ownership
     Odb internal;
 };
 
@@ -133,21 +142,21 @@ auto wrapApiFunction(FN f) -> decltype(f()) {
         ss << "APi call being made after unchecked error: ("
            << odc_errno << "): " << odc_error_string()
            << ". SeriousBug in calling code";
-        throw eckit::SeriousBug(ss.str(), Here());
+        throw SeriousBug(ss.str(), Here());
     }
 
     try {
         return f();
-    } catch (eckit::Exception& e) {
-        eckit::Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
+    } catch (Exception& e) {
+        Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
         set_error(e.what(), 1);
     } catch (std::exception& e) {
-        eckit::Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
+        Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
         set_error(e.what(), 2);
     } catch (...) {
-        eckit::Log::error() << "Caught unknown exception on C-C++ API boundary: " << std::endl;
+        Log::error() << "Caught unknown exception on C-C++ API boundary: " << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
         set_error("Unexpected exception caught", 3);
     }
@@ -168,26 +177,30 @@ extern "C" {
 
 /*
  * Initialise API
- * @note This is only required if being used from a context where eckit::Main()
+ * @note This is only required if being used from a context where Main()
  *       is not otherwise initialised
 */
 
-void odc_initialise_api(int integerBehaviour) {
-    return wrapApiFunction([integerBehaviour] {
+void odc_initialise_api() {
+    return wrapApiFunction([] {
         static bool initialised = false;
 
         if (initialised) {
-            eckit::Log::warning() << "Initialising ODC library twice" << std::endl;
+            Log::warning() << "Initialising ODC library twice" << std::endl;
         }
 
         if (!initialised) {
             const char* argv[2] = {"odc-api", 0};
-            eckit::Main::initialise(1, const_cast<char**>(argv));
+            Main::initialise(1, const_cast<char**>(argv));
             initialised = true;
         }
+    });
+}
 
+void odc_integer_behaviour(int integerBehaviour) {
+    return wrapApiFunction([integerBehaviour] {
         if (integerBehaviour != ODC_INTEGERS_AS_DOUBLES && integerBehaviour != ODC_INTEGERS_AS_LONGS) {
-            throw eckit::SeriousBug("ODC integer behaviour must be either ODC_INTEGERS_AS_DOUBLES or ODC_INTEGERS_AS_LONGS", Here());
+            throw SeriousBug("ODC integer behaviour must be either ODC_INTEGERS_AS_DOUBLES or ODC_INTEGERS_AS_LONGS", Here());
         }
         Settings::treatIntegersAsDoubles(integerBehaviour == ODC_INTEGERS_AS_DOUBLES);
     });
@@ -201,6 +214,15 @@ odb_t* odc_open_for_read(const char* filename) {
     });
 }
 
+odb_t* odc_open_from_fd(int fd) {
+    return wrapApiFunction([fd] {
+        // Take a copy of the file descriptor. This allows us to decouple the life of this
+        // from the life of the caller
+        int fd2 = dup(fd);
+        if (fd == -1) throw CantOpenFile("dup() failed on supplied file descriptor", Here());
+        return new odb_t {new FileDescHandle(fd2, true)};
+    });
+}
 
 void odc_close(odb_t* o) {
     return wrapApiFunction([o]{
@@ -279,10 +301,10 @@ const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
         uintptr_t totalRowSize = 0;
         for (size_t col = 0; col < ncols; ++col) {
             dt->columnData[col].elemSize = tbl.columnDecodedSize(col);
-//            eckit::Log::info() << "Setting facade: " << col << " - " << nrows << std::endl;
+//            Log::info() << "Setting facade: " << col << " - " << nrows << std::endl;
             dt->columnData[col].nelem = nrows;
             dt->columnData[col].data = reinterpret_cast<char*>(totalRowSize); // Store offset. Update with ptr later.
-            totalRowSize += eckit::round(dt->columnData[col].elemSize, sizeof(double));
+            totalRowSize += round(dt->columnData[col].elemSize, sizeof(double));
         }
 
         // Allocate the storage (and assign the strided data to the columns)
@@ -320,7 +342,7 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
 
         for (size_t i = 0; i < ncols; i++) {
             auto& col(dt->columnData[i]);
-//            eckit::Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
+//            Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
             ASSERT(col.nelem >= long(nrows));
             dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
         }
@@ -346,6 +368,58 @@ void odc_free_odb_decoded(const odb_decoded_t* dt) {
         if (dt->ownedData) delete [] dt->ownedData;
         delete [] dt->columnData;
         delete dt;
+    });
+}
+
+void* odc_import_encode_text(const char* data, void* buffer, long* size) {
+    return wrapApiFunction([data, buffer, size] {
+
+        ASSERT(*size >= 0);
+        MemoryHandle input_dh(data, ::strlen(data));
+        std::unique_ptr<MemoryHandle> output_dh(buffer ? new MemoryHandle(buffer, size_t(*size)) : new MemoryHandle);
+
+        importText(input_dh, *output_dh);
+        *size = output_dh->position();
+
+        if (buffer) return buffer;
+
+        // Allocate memory that can be freed on the client side
+
+        void* output = ::malloc(output_dh->position());
+        ::memcpy(output, output_dh->data(), output_dh->position());
+        *size = output_dh->position();
+        return output;
+    });
+}
+
+void* odc_import_encode_file(int fd, void* buffer, long* size) {
+    return wrapApiFunction([fd, buffer, size] {
+
+        ASSERT(*size >= 0);
+        FileDescHandle input_dh(fd);
+        std::unique_ptr<MemoryHandle> output_dh(buffer ? new MemoryHandle(buffer, size_t(*size)) : new MemoryHandle);
+
+        importText(input_dh, *output_dh);
+        *size = output_dh->position();
+
+        if (buffer) return buffer;
+
+        // Allocate memory that can be freed on the client side
+
+        void* output = ::malloc(output_dh->position());
+        ::memcpy(output, output_dh->data(), output_dh->position());
+        *size = output_dh->position();
+        return output;
+    });
+}
+
+void odc_import_encode_file_to_file(int input_fd, int output_fd) {
+    return wrapApiFunction([input_fd, output_fd] {
+
+        FileDescHandle input_dh(input_fd);
+        FileDescHandle output_dh(output_fd);
+
+        importText(input_dh, output_dh);
     });
 }
 

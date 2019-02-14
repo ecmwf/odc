@@ -167,8 +167,11 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
     newTable->nextPosition_ = dh.position() + newTable->dataSize_;
     newTable->byteOrder_ = hdr.byteOrder();
 
-    // Check that the ODB hasn't been truncated
-    if (newTable->nextPosition_ > dh.estimate()) throw ODBIncomplete(dh.title(), Here());
+    // Check that the ODB hasn't been truncated.
+    // n.b. Some DataHandles always return 0 (e.g. on a stream), so leth that pass.
+    if (newTable->nextPosition_ > dh.estimate() && dh.estimate() != 0) {
+        throw ODBIncomplete(dh.title(), Here());
+    }
 
     return newTable;
 }

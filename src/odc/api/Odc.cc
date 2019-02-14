@@ -11,11 +11,15 @@
 #include "odc/api/Odc.h"
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/HandleBuf.h"
 #include "eckit/log/Log.h"
 
 #include "odc/core/TablesReader.h"
 #include "odc/core/Table.h"
 #include "odc/core/DecodeTarget.h"
+#include "odc/csv/TextReader.h"
+#include "odc/csv/TextReaderIterator.h"
+#include "odc/Writer.h"
 #include "odc/MDI.h"
 #include "odc/ODBAPISettings.h"
 
@@ -41,6 +45,8 @@ class OdbImpl {
 public: // methods
 
     OdbImpl(const eckit::PathName& path);
+    OdbImpl(eckit::DataHandle& dh);
+    OdbImpl(eckit::DataHandle* dh); // takes ownership
     ~OdbImpl();
 
     Optional<Table> next();
@@ -58,6 +64,12 @@ private: // members
 Odb::Odb(const std::string& path) :
     impl_(std::make_shared<OdbImpl>(path)) {}
 
+Odb::Odb(eckit::DataHandle& dh) :
+    impl_(std::make_shared<OdbImpl>(dh)) {}
+
+Odb::Odb(eckit::DataHandle* dh) :
+    impl_(std::make_shared<OdbImpl>(dh)) {}
+
 Odb::~Odb() {}
 
 Optional<Table> Odb::next() {
@@ -70,6 +82,14 @@ Optional<Table> Odb::next() {
 
 OdbImpl::OdbImpl(const eckit::PathName& path) :
     reader_(path),
+    it_(reader_.begin()) {}
+
+OdbImpl::OdbImpl(eckit::DataHandle& dh) :
+    reader_(dh),
+    it_(reader_.begin()) {}
+
+OdbImpl::OdbImpl(eckit::DataHandle* dh) :
+    reader_(dh),
     it_(reader_.begin()) {}
 
 OdbImpl::~OdbImpl() {}
@@ -149,6 +169,24 @@ void Settings::setIntegerMissingValue(int64_t val) {
 
 void Settings::setDoubleMissingValue(double val) {
     odc::MDI::realMDI(val);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void importText(DataHandle& dh_in, DataHandle& dh_out) {
+
+    dh_in.openForRead();
+    dh_out.openForWrite(0);
+
+    // Convert data handle to std::istream.
+    HandleBuf buf(dh_in);
+    std::istream is(&buf);
+
+    odc::TextReader reader(is, ",");
+    odc::Writer<> writer(dh_out);
+    odc::Writer<>::iterator output(writer.begin());
+
+    output->pass1(reader.begin(), reader.end());
 }
 
 //----------------------------------------------------------------------------------------------------------------------

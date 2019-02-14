@@ -19,8 +19,7 @@ struct odb_t;
 struct odb_table_t;
 
 struct odb_column_t { /* CURRENTLY UNUSED */
-
-    const char* name;
+    const char name[64];
     int colNo;
     int type;
 };
@@ -53,7 +52,8 @@ struct odb_decoded_t {
 const int ODC_INTEGERS_AS_DOUBLES = 1;
 const int ODC_INTEGERS_AS_LONGS = 2;
 
-void odc_initialise_api(int integerBehaviour=ODC_INTEGERS_AS_DOUBLES);
+void odc_initialise_api();
+void odc_integer_behaviour(int integerBehaviour);
 
 /* Constants and lookups */
 
@@ -74,6 +74,7 @@ extern int odc_errno;
 /* Basic READ object API */
 
 struct odb_t* odc_open_for_read(const char* filename);
+struct odb_t* odc_open_from_fd(int fd);
 
 void odc_close(struct odb_t* o);
 
@@ -92,10 +93,16 @@ const char* odc_table_column_name(struct odb_table_t* t, int col);
 const struct odb_decoded_t* odc_table_decode_all(const struct odb_table_t* t);
 void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt);
 
-void odc_free_odb_decoded(const odb_decoded_t* dt);
+void odc_free_odb_decoded(const struct odb_decoded_t* dt);
 
 /* Encoding data */
 
-void* odc_encode(const struct odb_decoded_t* dt, void* buffer, long* size);
+//void* odc_encode(const struct odb_decoded_t* dt, void* buffer, long* size);
+
+/// @note if buffer = NULL, library will allocate one that is to be freed with free
+
+void* odc_import_encode_text(const char* data, void* buffer, long* size);
+void* odc_import_encode_file(int fd, void* buffer, long* size);
+void odc_import_encode_file_to_file(int input_fd, int output_fd);
 
 /*---------------------------------------------------------------------------------------------------------------------*/

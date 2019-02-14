@@ -23,6 +23,11 @@
 #include "odc/api/ColumnType.h"
 #include "odc/api/StridedData.h"
 
+namespace eckit {
+    class DataHandle;
+}
+
+
 namespace odc {
 namespace api {
 
@@ -111,6 +116,8 @@ class Odb {
 public: // methods
 
     Odb(const std::string& path);
+    Odb(eckit::DataHandle& dh);
+    Odb(eckit::DataHandle* dh); // takes ownership
     ~Odb();
 
     Optional<Table> next();
@@ -119,6 +126,10 @@ private: // members
 
     std::shared_ptr<OdbImpl> impl_;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void importText(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out);
 
 //----------------------------------------------------------------------------------------------------------------------
 
