@@ -82,8 +82,6 @@ Reader.cc
 Reader.h
 ReaderIterator.cc
 ReaderIterator.h
-###>>>#SchemaAnalyzer.cc
-###>>>#SchemaAnalyzer.h
 SelectIterator.cc
 SelectIterator.h
 TemplateParameters.cc
