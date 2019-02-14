@@ -92,7 +92,6 @@ TODATableIterator.cc
 TODATableIterator.h
 TemplateParameters.cc
 TemplateParameters.h
-UnsafeInMemoryDataHandle.h
 Writer.cc
 Writer.h
 WriterBufferingIterator.cc
