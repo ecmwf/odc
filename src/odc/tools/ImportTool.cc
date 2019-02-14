@@ -81,6 +81,10 @@ void ImportTool::run()
     if (sql == "select *;") {
         FileHandle dh_in(inFile);
         FileHandle dh_out(outFile);
+        dh_in.openForRead();
+        AutoClose close_in(dh_in);
+        dh_out.openForWrite(0);
+        AutoClose close_out(dh_out);
         size_t n = api::importText(dh_in, dh_out);
         Log::info() << "ImportTool::importText: Copied " << n << " rows." << std::endl;
     } else {
