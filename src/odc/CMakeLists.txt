@@ -38,10 +38,6 @@ DateTime.h
 ####Dictionary.h
 DispatchingWriter.cc
 DispatchingWriter.h
-####DirectAccess.cc
-####DirectAccess.h
-####DirectAccessIterator.cc
-####DirectAccessIterator.h
 Duration.cc
 Duration.h
 FastODA2Request.cc
