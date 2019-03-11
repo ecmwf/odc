@@ -18,8 +18,6 @@ api/Odc.cc
 api/ColumnType.h
 api/StridedData.h
 
-####odbql.cc
-####odbql.h
 pyodbapi.h
 ODBAPIVersionSHA1.cc
 StringTool.cc
@@ -34,8 +32,6 @@ ConstantSetter.cc
 ConstantSetter.h
 DateTime.cc
 DateTime.h
-####Dictionary.cc
-####Dictionary.h
 DispatchingWriter.cc
 DispatchingWriter.h
 Duration.cc

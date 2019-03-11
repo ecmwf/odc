@@ -23,6 +23,7 @@
 
 #include "eckit/memory/NonCopyable.h"
 
+#include "odc/api/ColumnType.h"
 #include "odc/core/Exceptions.h"
 #include "odc/ODBAPISettings.h"
 
@@ -51,10 +52,10 @@ public: // methods
     void deregister(const std::string& name, CodecBuilderBase& builder);
 
     template <typename ByteOrder>
-    std::unique_ptr<Codec> build(const std::string& name) const;
+    std::unique_ptr<Codec> build(const std::string& name, api::ColumnType type) const;
 
     template <typename ByteOrder>
-    std::unique_ptr<Codec> load(DataStream<ByteOrder>& ds) const;
+    std::unique_ptr<Codec> load(DataStream<ByteOrder>& ds, api::ColumnType type) const;
 
 private: // members
 
@@ -75,8 +76,8 @@ protected: // methods
 
 public: // methods
 
-    virtual std::unique_ptr<Codec> make(const SameByteOrder&) const = 0;
-    virtual std::unique_ptr<Codec> make(const OtherByteOrder&) const = 0;
+    virtual std::unique_ptr<Codec> make(const SameByteOrder&, api::ColumnType) const = 0;
+    virtual std::unique_ptr<Codec> make(const OtherByteOrder&, api::ColumnType) const = 0;
 
 private: // members
 
@@ -97,11 +98,11 @@ public: // methods
 
 private: // methods
 
-    std::unique_ptr<Codec> make(const SameByteOrder&) const override {
-        return std::unique_ptr<Codec>(new CODEC<SameByteOrder>());
+    std::unique_ptr<Codec> make(const SameByteOrder&, api::ColumnType type) const override {
+        return std::unique_ptr<Codec>(new CODEC<SameByteOrder>(type));
     }
-    std::unique_ptr<Codec> make(const OtherByteOrder&) const override {
-        return std::unique_ptr<Codec>(new CODEC<OtherByteOrder>());
+    std::unique_ptr<Codec> make(const OtherByteOrder&, api::ColumnType type) const override {
+        return std::unique_ptr<Codec>(new CODEC<OtherByteOrder>(type));
     }
 };
 
@@ -120,18 +121,18 @@ public: // methods
 
 private: // methods
 
-    std::unique_ptr<Codec> make(const SameByteOrder&) const override {
-        if (ODBAPISettings::instance().integersAsDoubles()) {
-            return std::unique_ptr<Codec>(new CODEC_T<SameByteOrder, double>());
+    std::unique_ptr<Codec> make(const SameByteOrder&, api::ColumnType type) const override {
+        if ((type == api::INTEGER || type == api::BITFIELD) && !ODBAPISettings::instance().integersAsDoubles()) {
+            return std::unique_ptr<Codec>(new CODEC_T<SameByteOrder, int64_t>(type));
         } else {
-            return std::unique_ptr<Codec>(new CODEC_T<SameByteOrder, int64_t>());
+            return std::unique_ptr<Codec>(new CODEC_T<SameByteOrder, double>(type));
         }
     }
-    std::unique_ptr<Codec> make(const OtherByteOrder&) const override {
-        if (ODBAPISettings::instance().integersAsDoubles()) {
-            return std::unique_ptr<Codec>(new CODEC_T<OtherByteOrder, double>());
+    std::unique_ptr<Codec> make(const OtherByteOrder&, api::ColumnType type) const override {
+        if ((type == api::INTEGER || type == api::BITFIELD) && !ODBAPISettings::instance().integersAsDoubles()) {
+            return std::unique_ptr<Codec>(new CODEC_T<OtherByteOrder, int64_t>(type));
         } else {
-            return std::unique_ptr<Codec>(new CODEC_T<OtherByteOrder, int64_t>());
+            return std::unique_ptr<Codec>(new CODEC_T<OtherByteOrder, double>(type));
         }
     }
 };
@@ -139,21 +140,21 @@ private: // methods
 //----------------------------------------------------------------------------------------------------------------------
 
 template <typename ByteOrder>
-std::unique_ptr<Codec> CodecFactory::build(const std::string& name) const {
+std::unique_ptr<Codec> CodecFactory::build(const std::string& name, api::ColumnType type) const {
     std::lock_guard<std::mutex> lock(m_);
 
     auto it = builders_.find(name);
     if (it == builders_.end()) throw ODBDecodeError(std::string("Codec '") + name + "' not found", Here());
-    return it->second.get().make(ByteOrder());
+    return it->second.get().make(ByteOrder(), type);
 }
 
 template <typename ByteOrder>
-std::unique_ptr<Codec> CodecFactory::load(DataStream<ByteOrder>& ds) const {
+std::unique_ptr<Codec> CodecFactory::load(DataStream<ByteOrder>& ds, api::ColumnType type) const {
 
     std::string codecName;
     ds.read(codecName);
 
-    auto c = build<ByteOrder>(codecName);
+    auto c = build<ByteOrder>(codecName, type);
     c->load(ds);
     return c;
 }

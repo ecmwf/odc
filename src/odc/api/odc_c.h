@@ -57,8 +57,9 @@ void odc_integer_behaviour(int integerBehaviour);
 
 /* Constants and lookups */
 
-extern const int ODC_NUM_TYPES;
+const int ODC_NUM_TYPES = 6;
 extern const char* ODC_TYPE_NAMES[];
+const char* odc_type_name(int type);
 
 /* Error handling */
 
@@ -83,10 +84,14 @@ void odc_close(struct odb_t* o);
 struct odb_table_t* odc_next_table(struct odb_t* o);
 void odc_free_table(struct odb_table_t* o);
 
-int odc_table_num_rows(struct odb_table_t* t);
-int odc_table_num_columns(struct odb_table_t* t);
-int odc_table_column_type(struct odb_table_t* t, int col);
-const char* odc_table_column_name(struct odb_table_t* t, int col);
+int odc_table_num_rows(const struct odb_table_t* t);
+int odc_table_num_columns(const struct odb_table_t* t);
+int odc_table_column_type(const struct odb_table_t* t, int col);
+const char* odc_table_column_name(const struct odb_table_t* t, int col);
+int odc_table_column_bitfield_count(const struct odb_table_t* t, int col);
+const char* odc_table_column_bitfield_field_name(const struct odb_table_t* t, int col, int n);
+int odc_table_column_bitfield_field_size(const struct odb_table_t* t, int col, int n);
+int odc_table_column_bitfield_field_offset(const struct odb_table_t* t, int col, int n);
 
 /* Decoding data */
 

@@ -26,9 +26,10 @@ class BaseCodecMissing : public BaseCodecInteger<ByteOrder, ValueType> {
 
 public: // methods
 
-    BaseCodecMissing(const std::string& name=DerivedCodec::codec_name(),
+    BaseCodecMissing(api::ColumnType type,
+                     const std::string& name=DerivedCodec::codec_name(),
                      double minmaxmissing=odc::MDI::integerMDI()) :
-        BaseCodecInteger<ByteOrder, ValueType>(name, minmaxmissing) {}
+        BaseCodecInteger<ByteOrder, ValueType>(type, name, minmaxmissing) {}
     ~BaseCodecMissing() {}
 
 private: // methods
@@ -57,6 +58,10 @@ private: // methods
         this->ds().read(s);
         (*val_out) = (s == DerivedCodec::missingMarker ? this->missingValue_ : (s + this->min_));
     }
+
+    void skip() override {
+        this->ds().advance(sizeof(InternalValueType));
+    }
 };
 
 
@@ -66,6 +71,7 @@ template <typename ByteOrder, typename ValueType>
 struct CodecInt8Missing : public BaseCodecMissing<ByteOrder, ValueType, uint8_t, CodecInt8Missing<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int8_missing"; }
     constexpr static uint8_t missingMarker = 0xff;
+    using BaseCodecMissing<ByteOrder, ValueType, uint8_t, CodecInt8Missing<ByteOrder, ValueType>>::BaseCodecMissing;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -74,6 +80,7 @@ template<typename ByteOrder, typename ValueType>
 struct CodecInt16Missing : public BaseCodecMissing<ByteOrder, ValueType, uint16_t, CodecInt16Missing<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int16_missing"; }
     constexpr static uint16_t missingMarker = 0xffff;
+    using BaseCodecMissing<ByteOrder, ValueType, uint16_t, CodecInt16Missing<ByteOrder, ValueType>>::BaseCodecMissing;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -117,8 +124,8 @@ public: // definitions
 
 public: // methods
 
-    CodecRealConstantOrMissing() :
-        CodecConstantOrMissing<ByteOrder, double>(codec_name(), odc::MDI::realMDI()) {}
+    CodecRealConstantOrMissing(api::ColumnType type) :
+        CodecConstantOrMissing<ByteOrder, double>(type, codec_name(), odc::MDI::realMDI()) {}
 
     ~CodecRealConstantOrMissing() override {}
 };

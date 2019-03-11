@@ -16,10 +16,16 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DecodeTarget::DecodeTarget(const std::vector<api::StridedData>& facades) :
+DecodeTarget::DecodeTarget(const std::vector<std::string>& columns,
+                           const std::vector<api::StridedData>& facades) :
+    columns_(columns),
     columnFacades_(facades) {}
 
 DecodeTarget::~DecodeTarget() {}
+
+const std::vector<std::string>&DecodeTarget::columns() const {
+    return columns_;
+}
 
 std::vector<api::StridedData>& DecodeTarget::dataFacades() {
     return columnFacades_;

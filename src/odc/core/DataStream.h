@@ -93,6 +93,7 @@ public:
 
     char* get() { return current_; }
     void set(char* p) { ASSERT(p >= start_); ASSERT(p <= end_); current_ = p; }
+    void advance(size_t nbytes) { current_ += nbytes; ASSERT(current_ <= end_); }
 
 private: // members
 

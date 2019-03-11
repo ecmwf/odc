@@ -35,8 +35,8 @@ public: // definitions
 
 public: // methods
 
-    BaseCodecInteger(const std::string& name, double minmaxmissing=odc::MDI::integerMDI()) :
-        core::DataStreamCodec<ByteOrder>(name) {
+    BaseCodecInteger(api::ColumnType type, const std::string& name, double minmaxmissing=odc::MDI::integerMDI()) :
+        core::DataStreamCodec<ByteOrder>(name, type) {
 
             this->min_ = minmaxmissing;
             this->max_ = minmaxmissing;
@@ -47,11 +47,11 @@ public: // methods
 
 private: // methods
 
-//    void gatherStats(const double& v) {
-//        static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
-//        const ValueType& val(reinterpret_cast<const ValueType&>(v));
-//        core::Codec::gatherStats(val);
-//    }
+    void gatherStats(const double& v) override {
+        static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
+        const ValueType& val(reinterpret_cast<const ValueType&>(v));
+        core::Codec::gatherStats(val);
+    }
 };
 
 
@@ -65,7 +65,7 @@ class CodecIntegerOffset : public BaseCodecInteger<ByteOrder, ValueType> {
 
 public: // methods
 
-    CodecIntegerOffset() : BaseCodecInteger<ByteOrder, ValueType>(DerivedCodec::codec_name()) {}
+    CodecIntegerOffset(api::ColumnType type) : BaseCodecInteger<ByteOrder, ValueType>(type, DerivedCodec::codec_name()) {}
     ~CodecIntegerOffset() override {}
 
 private: // methods
@@ -88,6 +88,10 @@ private: // methods
         this->ds().read(s);
         (*val_out) = s + this->min_;
     }
+
+    void skip() override {
+        this->ds().advance(sizeof(InternalValueType));
+    }
 };
 
 
@@ -101,7 +105,7 @@ class CodecIntegerDirect : public BaseCodecInteger<ByteOrder, ValueType> {
 
 public: // methods
 
-    CodecIntegerDirect() : BaseCodecInteger<ByteOrder, ValueType>(DerivedCodec::codec_name()) {}
+    CodecIntegerDirect(api::ColumnType type) : BaseCodecInteger<ByteOrder, ValueType>(type, DerivedCodec::codec_name()) {}
     ~CodecIntegerDirect() override {}
 
 private: // methods
@@ -124,6 +128,10 @@ private: // methods
         this->ds().read(s);
         (*val_out) = s;
     }
+
+    void skip() override {
+        this->ds().advance(sizeof(InternalValueType));
+    }
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -131,6 +139,7 @@ private: // methods
 template<typename ByteOrder, typename ValueType>
 struct CodecInt8 : public CodecIntegerOffset<ByteOrder, ValueType, uint8_t, CodecInt8<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int8"; }
+    using CodecIntegerOffset<ByteOrder, ValueType, uint8_t, CodecInt8<ByteOrder, ValueType>>::CodecIntegerOffset;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -138,6 +147,7 @@ struct CodecInt8 : public CodecIntegerOffset<ByteOrder, ValueType, uint8_t, Code
 template<typename ByteOrder, typename ValueType>
 struct CodecInt16 : public CodecIntegerOffset<ByteOrder, ValueType, uint16_t, CodecInt16<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int16"; }
+    using CodecIntegerOffset<ByteOrder, ValueType, uint16_t, CodecInt16<ByteOrder, ValueType>>::CodecIntegerOffset;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -145,6 +155,7 @@ struct CodecInt16 : public CodecIntegerOffset<ByteOrder, ValueType, uint16_t, Co
 template<typename ByteOrder, typename ValueType>
 struct CodecInt32 : public CodecIntegerDirect<ByteOrder, ValueType, int32_t, CodecInt32<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int32"; }
+    using CodecIntegerDirect<ByteOrder, ValueType, int32_t, CodecInt32<ByteOrder, ValueType>>::CodecIntegerDirect;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

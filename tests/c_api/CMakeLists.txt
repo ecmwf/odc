@@ -1,6 +1,7 @@
 
 list( APPEND _api_odc_tests
     read
+    encode
     errors
 )
 

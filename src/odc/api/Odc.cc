@@ -36,6 +36,12 @@ namespace api {
 
 struct TableImpl : public core::Table {
     TableImpl(const core::Table& t) : Table(t) {}
+
+    const std::vector<ColumnInfo>& columnInfo() const;
+
+private: // members
+
+    mutable std::vector<ColumnInfo> columnInfo_;
 };
 
 
@@ -110,8 +116,9 @@ struct DecodeTargetImpl : public core::DecodeTarget {
     using core::DecodeTarget::DecodeTarget;
 };
 
-DecodeTarget::DecodeTarget(std::vector<StridedData>& columnFacades) :
-    impl_(std::make_shared<DecodeTargetImpl>(columnFacades)) {}
+DecodeTarget::DecodeTarget(const std::vector<std::string>& columns,
+                           std::vector<StridedData>& columnFacades) :
+    impl_(std::make_shared<DecodeTargetImpl>(columns, columnFacades)) {}
 
 DecodeTarget::~DecodeTarget() {}
 
@@ -119,7 +126,48 @@ DecodeTarget::~DecodeTarget() {}
 
 // Table implementation
 
-Table::Table() {}
+const std::vector<ColumnInfo>& TableImpl::columnInfo() const {
+
+    // ColumnInfo is memoised, so only constructed once
+
+    if (columnInfo_.empty()) {
+
+        columnInfo_.reserve(numColumns());
+
+        for (const core::Column* col : columns()) {
+
+            // Extract any bitfield details
+
+            const eckit::sql::BitfieldDef& bf(col->bitfieldDef());
+
+            ASSERT(bf.first.size() == bf.second.size());
+            std::vector<ColumnInfo::Bit> bitfield;
+            bitfield.reserve(bf.first.size());
+
+            uint8_t offset = 0;
+            for (size_t i = 0; i < bf.first.size(); i++) {
+                bitfield.emplace_back(ColumnInfo::Bit {
+                    bf.first[i],    // name
+                    bf.second[i],   // size
+                    offset          // offset
+                });
+                offset += bf.second[i];
+            }
+
+            // Construct column details
+
+            columnInfo_.emplace_back(ColumnInfo {
+                col->name(),
+                col->type(),
+                col->dataSizeDoubles() * sizeof(double),
+                std::move(bitfield)
+            });
+        }
+    }
+
+    return columnInfo_;
+}
+
 
 Table::Table(std::shared_ptr<TableImpl> t) :
     impl_(t) {}
@@ -136,21 +184,9 @@ size_t Table::numColumns() const {
     return impl_->numColumns();
 }
 
-const std::string& Table::columnName(int col) const {
+const std::vector<ColumnInfo>& Table::columnInfo() const {
     ASSERT(impl_);
-    ASSERT(col > 0 && size_t(col) < impl_->numColumns());
-    return impl_->columns()[col]->name();
-}
-
-ColumnType Table::columnType(int col) const {
-    ASSERT(impl_);
-    ASSERT(col > 0 && size_t(col) < impl_->numColumns());
-    return impl_->columns()[col]->type();
-}
-
-size_t Table::columnDecodedSize(int col) const {
-    ASSERT(impl_);
-    return impl_->columns()[col]->dataSizeDoubles() * sizeof(double);
+    return impl_->columnInfo();
 }
 
 void Table::decode(DecodeTarget& target) const {

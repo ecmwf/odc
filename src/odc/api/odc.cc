@@ -76,7 +76,7 @@ struct odb_table_t {
 
 // Types for lookup
 
-const int ODC_NUM_TYPES = NUM_TYPES;
+static_assert(ODC_NUM_TYPES == NUM_TYPES, "Number of types must match");
 
 const char* ODC_TYPE_NAMES[] = {
     OdbTypes<ColumnType(0)>::name,
@@ -206,6 +206,14 @@ void odc_integer_behaviour(int integerBehaviour) {
     });
 }
 
+const char* odc_type_name(int type) {
+    return wrapApiFunction([type] {
+        ASSERT(type >= 0);
+        ASSERT(type < NUM_TYPES);
+        return ODC_TYPE_NAMES[type];
+    });
+}
+
 /* Basic READ objects */
 
 odb_t* odc_open_for_read(const char* filename) {
@@ -251,31 +259,59 @@ void odc_free_table(odb_table_t* t) {
     });
 }
 
-int odc_table_num_rows(struct odb_table_t* t) {
+int odc_table_num_rows(const odb_table_t* t) {
     return wrapApiFunction([t] {
         ASSERT(t);
         return t->internal.numRows();
     });
 }
 
-int odc_table_num_columns(struct odb_table_t* t) {
+int odc_table_num_columns(const odb_table_t* t) {
     return wrapApiFunction([t] {
         ASSERT(t);
         return t->internal.numColumns();
     });
 }
 
-int odc_table_column_type(struct odb_table_t* t, int col) {
+int odc_table_column_type(const odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
-        return t->internal.columnType(col);
+        return t->internal.columnInfo()[col].type;
     });
 }
 
-const char* odc_table_column_name(struct odb_table_t* t, int col) {
+const char* odc_table_column_name(const odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
-        return t->internal.columnName(col).c_str();
+        return t->internal.columnInfo()[col].name.c_str();
+    });
+}
+
+int odc_table_column_bitfield_count(const struct odb_table_t* t, int col) {
+    return wrapApiFunction([t, col] {
+        ASSERT(t);
+        return t->internal.columnInfo()[col].bitfield.size();
+    });
+}
+
+const char* odc_table_column_bitfield_field_name(const struct odb_table_t* t, int col, int n) {
+    return wrapApiFunction([t, col, n] {
+        ASSERT(t);
+        return t->internal.columnInfo()[col].bitfield[n].name.c_str();
+    });
+}
+
+int odc_table_column_bitfield_field_size(const struct odb_table_t* t, int col, int n) {
+    return wrapApiFunction([t, col, n] {
+        ASSERT(t);
+        return t->internal.columnInfo()[col].bitfield[n].size;
+    });
+}
+
+int odc_table_column_bitfield_field_offset(const struct odb_table_t* t, int col, int n) {
+    return wrapApiFunction([t, col, n] {
+        ASSERT(t);
+        return t->internal.columnInfo()[col].bitfield[n].offset;
     });
 }
 
@@ -300,7 +336,7 @@ const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
 
         uintptr_t totalRowSize = 0;
         for (size_t col = 0; col < ncols; ++col) {
-            dt->columnData[col].elemSize = tbl.columnDecodedSize(col);
+            dt->columnData[col].elemSize = tbl.columnInfo()[col].decodedSize;
 //            Log::info() << "Setting facade: " << col << " - " << nrows << std::endl;
             dt->columnData[col].nelem = nrows;
             dt->columnData[col].data = reinterpret_cast<char*>(totalRowSize); // Store offset. Update with ptr later.
@@ -331,23 +367,27 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
         size_t nrows = t->internal.numRows();
         size_t ncols = t->internal.numColumns();
 
-        ASSERT(dt->ncolumns == long(ncols));
+        ASSERT(dt->ncolumns <= long(ncols));
         ASSERT(dt->nrows >= long(nrows));
         ASSERT(dt->columnData);
+        ASSERT(dt->columns);
 
         // Construct C++ API adapter
 
         std::vector<StridedData> dataFacade;
         dataFacade.reserve(ncols);
+        std::vector<std::string> columnNames;
+        columnNames.reserve(ncols);
 
-        for (size_t i = 0; i < ncols; i++) {
+        for (int i = 0; i < dt->ncolumns; i++) {
             auto& col(dt->columnData[i]);
-//            Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
+            Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
             ASSERT(col.nelem >= long(nrows));
             dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
+            columnNames.emplace_back(dt->columns[i].name);
         }
 
-        DecodeTarget target(dataFacade);
+        DecodeTarget target(columnNames, dataFacade);
 
         // Do the decoder
 
@@ -357,7 +397,7 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
 
         dt->nrows = nrows;
 
-        for (size_t i = 0; i < ncols; i++) dt->columnData[i].nelem = nrows;
+        for (int i = 0; i < dt->ncolumns; i++) dt->columnData[i].nelem = nrows;
     });
 }
 

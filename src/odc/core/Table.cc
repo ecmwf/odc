@@ -82,22 +82,55 @@ Buffer Table::readEncodedData() {
 
 void Table::decode(DecodeTarget& target) {
 
-
-    // Ensure there is sufficient space for decoding. Gives the target the
-    // opportunity to allocate it if we desired.
-
-//    target.ensureLength(numRows());
-
-    // For now, we assume we are decoding everything!
-
     const MetaData& metadata(columns());
-    std::vector<api::StridedData> facades(target.dataFacades()); // n.b. a copy
-
     size_t nrows = metadata.rowsNumber();
     size_t ncols = metadata.size();
 
-    ASSERT(facades.size() == ncols);
-    for (const auto& f : facades) ASSERT(f.nelem() == nrows);
+    // Create a lookup for the columns by name
+
+    std::map<std::string, size_t> columnLookup;
+    std::map<std::string, size_t> lookupSimple;
+
+    for (size_t i = 0; i < ncols; i++) {
+        const auto& nm(metadata[i]->name());
+        if (!columnLookup.emplace(nm, i).second) {
+            std::stringstream ss;
+            ss << "Duplicate column '" << nm << "' " << " found in table";
+            throw ODBDecodeError(ss.str(), Here());
+        }
+        lookupSimple.emplace(nm.substr(0, nm.find('@')), i);
+    }
+
+    // Loop over the specified output columns, and select the correct ones for decoding.
+
+    std::vector<char> visitColumn(ncols, false);
+    std::vector<api::StridedData*> facades(ncols, 0); // TODO: Do we want to do a copy, rather than point to StridedData*?
+
+    ASSERT(target.columns().size() == target.dataFacades().size());
+    ASSERT(target.columns().size() <= ncols);
+
+    for (size_t i = 0; i < target.columns().size(); i++) {
+
+        const auto& nm(target.columns()[i]);
+        auto it = columnLookup.find(nm);
+        if (it == columnLookup.end()) it = lookupSimple.find(nm);
+        if (it == lookupSimple.end()) {
+            std::stringstream ss;
+            ss << "Column '" << nm << "' not found in ODB";
+            throw ODBDecodeError(ss.str(), Here());
+        }
+
+        size_t pos = it->second;
+        if (visitColumn[pos]) {
+            std::stringstream ss;
+            ss << "Duplicated column '" << nm << "' in decode specification";
+            throw ODBDecodeError(ss.str(), Here());
+        }
+
+        visitColumn[pos] = true;
+        facades[pos] = &target.dataFacades()[i];
+        ASSERT(target.dataFacades()[i].nelem() >= nrows);
+    }
 
     // Read the data in in bulk for this table
 
@@ -110,6 +143,7 @@ void Table::decode(DecodeTarget& target) {
         decoders.push_back(col->coder());
         decoders.back().get().setDataStream(ds);
     }
+
     // Do the decoding
 
     int lastStartCol = 0;
@@ -123,13 +157,19 @@ void Table::decode(DecodeTarget& target) {
 
         if (lastStartCol > startCol) {
             for (int col = startCol; col < lastStartCol; col++) {
-                facades[col].fill(lastDecoded[col], rowCount-1);
+                if (visitColumn[col]) {
+                    facades[col]->fill(lastDecoded[col], rowCount-1);
+                }
             }
         }
 
         for (int col = startCol; col < long(ncols); col++) {
-            decoders[col].get().decode(reinterpret_cast<double*>(facades[col][rowCount]));
-            lastDecoded[col] = rowCount;
+            if (visitColumn[col]) {
+                decoders[col].get().decode(reinterpret_cast<double*>((*facades[col])[rowCount]));
+                lastDecoded[col] = rowCount;
+            } else {
+                decoders[col].get().skip();
+            }
         }
 
         lastStartCol = startCol;
@@ -139,7 +179,9 @@ void Table::decode(DecodeTarget& target) {
 
     for (size_t col = 0; col < ncols; col++) {
         if (lastDecoded[col] < nrows-1) {
-            facades[col].fill(lastDecoded[col], nrows-1);
+            if (visitColumn[col]) {
+                facades[col]->fill(lastDecoded[col], nrows-1);
+            }
         } else {
             break;
         }

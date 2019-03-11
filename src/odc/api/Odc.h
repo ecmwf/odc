@@ -64,6 +64,22 @@ public: // methods
 
 //----------------------------------------------------------------------------------------------------------------------
 
+struct ColumnInfo {
+
+    struct Bit {
+        std::string name;
+        int size;
+        int offset;
+    };
+
+    std::string name;
+    ColumnType type;
+    size_t decodedSize;
+    std::vector<Bit> bitfield;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
 class TableImpl;
 class DecodeTarget;
 
@@ -71,16 +87,13 @@ class Table {
 
 public: // methods
 
-    Table();
     Table(std::shared_ptr<TableImpl> t);
     ~Table();
 
     size_t numRows() const;
     size_t numColumns() const;
 
-    const std::string& columnName(int col) const;
-    ColumnType columnType(int col) const;
-    size_t columnDecodedSize(int col) const;
+    const std::vector<ColumnInfo>& columnInfo() const;
 
     void decode(DecodeTarget& target) const;
 
@@ -97,7 +110,8 @@ class DecodeTarget {
 
 public: // methods
 
-    DecodeTarget(std::vector<StridedData>& columnFacades);
+    DecodeTarget(const std::vector<std::string>& columns,
+                 std::vector<StridedData>& columnFacades);
     ~DecodeTarget();
 
 private: // members
