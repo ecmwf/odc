@@ -87,6 +87,7 @@ void odc_free_table(struct odb_table_t* o);
 int odc_table_num_rows(const struct odb_table_t* t);
 int odc_table_num_columns(const struct odb_table_t* t);
 int odc_table_column_type(const struct odb_table_t* t, int col);
+int odc_table_column_data_size(const struct odb_table_t* t, int col);
 const char* odc_table_column_name(const struct odb_table_t* t, int col);
 int odc_table_column_bitfield_count(const struct odb_table_t* t, int col);
 const char* odc_table_column_bitfield_field_name(const struct odb_table_t* t, int col, int n);

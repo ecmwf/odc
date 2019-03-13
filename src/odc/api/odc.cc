@@ -280,6 +280,13 @@ int odc_table_column_type(const odb_table_t* t, int col) {
     });
 }
 
+int odc_table_column_data_size(const odb_table_t* t, int col) {
+    return wrapApiFunction([t, col] {
+        ASSERT(t);
+        return t->internal.columnInfo()[col].decodedSize;
+    });
+}
+
 const char* odc_table_column_name(const odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
@@ -381,7 +388,7 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
 
         for (int i = 0; i < dt->ncolumns; i++) {
             auto& col(dt->columnData[i]);
-            Log::info() << "Facade (" << i << "): " << col.nelem << " -- " << nrows << std::endl;
+            Log::info() << "Facade (" << i << "): " << col.nelem << " : " << col.elemSize << " -- " << nrows << std::endl;
             ASSERT(col.nelem >= long(nrows));
             dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
             columnNames.emplace_back(dt->columns[i].name);
