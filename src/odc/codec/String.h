@@ -89,7 +89,7 @@ public: // methods
 
 private: // methods
 
-    std::unique_ptr<core::Codec> clone() {
+    std::unique_ptr<core::Codec> clone() override {
         std::unique_ptr<core::Codec> cdc = CodecChars<ByteOrder>::clone();
         auto& c = static_cast<IntStringCodecBase<ByteOrder, InternalCodec>&>(*cdc);
         c.intCodec_.min(intCodec_.min());
@@ -293,6 +293,7 @@ std::unique_ptr<core::Codec> CodecChars<ByteOrder>::clone() {
     auto& c = static_cast<CodecChars&>(*cdc);
     c.stringLookup_ = stringLookup_;
     c.strings_ = strings_;
+    c.decodedSizeDoubles_ = decodedSizeDoubles_;
     ASSERT(c.min() == this->min_);
     ASSERT(c.max() == this->max_);
     return cdc;
