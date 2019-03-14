@@ -21,7 +21,7 @@ TestMetaDataReader.odb
 a1to10twice.odb
 TestAggregateFunctions2.odb
 dribu.odb
-TestAggregateFunctions3.odb 
+TestAggregateFunctions3.odb
 
 # MetOffice schema for testing ODB-127
 ECMA.ddl
@@ -38,7 +38,7 @@ varno.hh
 vertco_type.hh
 )
 
-ecbuild_get_test_multidata( TARGET get_odc_test_data
+ecbuild_get_test_multidata( TARGET odc_get_test_data
                             #DIRNAME odc/tests
                             NAMES ${test_data_files}
                             NOCHECK )
@@ -248,7 +248,8 @@ set( test_environment
 
 ### odb2netcdf tests
 
-ecbuild_get_test_multidata( TARGET get_odb2netcdf_data
+ecbuild_get_test_multidata(
+    TARGET odc_get_odb2netcdf_data
     NAMES odb2netcdf_1d.odb odb2netcdf_1d.cdl
           odb2netcdf_2d_hdr.odb odb2netcdf_2d_body.odb odb2netcdf_2d.cdl
     NOCHECK )
@@ -281,29 +282,6 @@ foreach( _test ${odc_tests} )
                       TEST_DEPENDS ${_dependencies})
     set( _prev_test ${_test} )
 endforeach()
-
-
-# TODO: Write the old ecml tests...
-
-#ecbuild_get_test_multidata( TARGET ecml_get_odc_test_data DIRNAME odc/tests NAMES ${ecml_test_data_files} NOCHECK )
-
-list( APPEND odb_module_tests
-    #test_odb_governance.ecml
-    test_sql_splitting.ecml
-    test_sql_variables.ecml
-    test_chunk.ecml
-    test_chunk2.ecml
-    test_embedded_ecml_in_from_clause.ecml
-    test_sql_like.ecml
-    test_sql_match_in.ecml
-    test_create_partitions.ecml
-
-# Disabled till ODB-215 fixed as it fails in Bamboo
-    # test_server_side_processing.ecml
-
-    # n.b. ODB-394
-    test_stage.ecml
-)
 
 # n.b. Old behaviour (c.f. ODB-394) re-enabled with ODB_PATCH_TIME_ENCODE_RELATIVE.
 # This is a bit of a hack...

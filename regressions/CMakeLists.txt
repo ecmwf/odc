@@ -4,7 +4,7 @@ list( APPEND regressions_data_files
     odb_387_mdset.odb
 )
 
-ecbuild_get_test_multidata( TARGET get_odc_regressions_data
+ecbuild_get_test_multidata( TARGET odc_get_regressions_data
                             #DIRNAME odc/tests
                             NAMES ${regressions_data_files}
                             NOCHECK )

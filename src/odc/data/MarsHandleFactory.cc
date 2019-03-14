@@ -37,41 +37,8 @@ bool shortName(const std::string& prefix, const std::string& s)
     return std::equal(prefix.begin(), prefix.end(), s.begin());
 }
 
-//std::string verb(const ecml::Request request)
-//{
-//    std::string v (eckit::StringTools::lower(request->text()));
-//
-//    const char* verbs[] = {"retrieve", "stage", "list", "archive", 0};
-//
-//    for (size_t i (0); verbs[i]; ++i)
-//        if (shortName(v, verbs[i]))
-//            return verbs[i];
-//
-//    throw eckit::UserError(std::string("Unknown request '") + v + "'");
-//    return v;
-//}
-
 DataHandle* MarsHandleFactory::makeHandle(const string& r) const
 {
-    //Log::debug() << "MarsHandleFactory::makeHandle: parsing " << r << endl;
-
-    //ecml::Request requests (ecml::RequestParser::parse(r));
-
-    //Log::debug() << "MarsHandleFactory::makeHandle: requests = " << requests << endl;
-
-    //ecml::Request request (requests->value());
-
-    //Log::debug() << "MarsHandleFactory::makeHandle: request = " << request << endl;
-
-    //if (requests->rest())
-    //    Log::warning() << "MarsHandleFactory: Only " << request << " used, skipped rest of " << requests << endl;
-
-    //string host (ecml::RequestHandler::database(request));
-    //long port (ecml::RequestHandler::port(request));
-
-    //metkit::MarsRequest mr (verb(request));
-    //ecml::convertToMarsRequest<metkit::MarsRequest> (request, mr);
-
     metkit::MarsRequest mr(metkit::MarsRequest::parse(r));
 
     std::vector<std::string> hostVector;

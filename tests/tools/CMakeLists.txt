@@ -19,6 +19,7 @@ list( APPEND tools_tests_scripts
 
 foreach( _script ${tools_tests_scripts} )
     ecbuild_add_test(
+        TARGET odc_${_script}
         TYPE script
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
         ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}

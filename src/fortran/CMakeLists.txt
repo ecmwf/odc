@@ -3,7 +3,7 @@ ecbuild_add_library(TARGET		odc_fortran
 
                     CONDITION   HAVE_FORTRAN
 
-                    SOURCES		
+                    SOURCES
                                 # Legacy:
 
                                 odc_c_binding.f90
@@ -25,19 +25,17 @@ if( HAVE_FORTRAN )
     )
 
     foreach( _test ${fortran_tests} )
-        ecbuild_add_test( TARGET     ${_test}
+        ecbuild_add_test( TARGET     odc_${_test}
                           CONDITION  HAVE_FORTRAN
                           SOURCES    ${_test}.f90
-                          LIBS       odc_fortran ${ODB_LIBS} 
-                          ENVIRONMENT  ${test_environment_fortran} 
+                          LIBS       odc_fortran ${ODB_LIBS}
+                          ENVIRONMENT  ${test_environment_fortran}
 
                           LABELS     odc odc_fortran
 
                           TEST_DEPENDS get_odc_test_data
                                        get_mars_client_test_data_mo
                                        get_mars_client_test_data_ec
-                                       test_ec_archiving.ecml
-                                       test_mo_archiving.ecml
 
                           LINKER_LANGUAGE Fortran )
     endforeach()
