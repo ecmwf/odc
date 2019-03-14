@@ -18,7 +18,7 @@
 #include "odc/data/HttpHandleFactory.h"
 
 #include "eckit/io/MultiHandle.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/memory/ScopedPtr.h"
 
 using namespace eckit;

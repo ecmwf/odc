@@ -13,7 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "eckit/filesystem/PathName.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "odc/Select.h"
 #include "odc/core/MetaData.h"
 

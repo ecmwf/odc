@@ -12,8 +12,8 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "eckit/parser/StringTools.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/StringTools.h"
+#include "eckit/utils/Tokenizer.h"
 #include "eckit/sql/SQLTypedefs.h"
 
 #include "odc/core/Header.h"

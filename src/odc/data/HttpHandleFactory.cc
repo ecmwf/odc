@@ -11,7 +11,7 @@
 #include <sstream>
 
 
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 #include "odc/data/HttpHandle.h"
 #include "odc/data/HttpHandleFactory.h"

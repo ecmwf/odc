@@ -10,7 +10,7 @@
 
 #include "odc/core/Column.h"
 
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 
 using namespace eckit;

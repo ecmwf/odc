@@ -9,8 +9,8 @@
  */
 
 #include "eckit/types/Types.h"
-#include "eckit/parser/StringTools.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/StringTools.h"
+#include "eckit/utils/Tokenizer.h"
 #include "odc/GribCodes.h"
 #include "odc/core/TablesReader.h"
 #include "odc/ODAHandle.h"

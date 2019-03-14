@@ -16,7 +16,7 @@
 #include "eckit/io/Length.h"
 #include "eckit/io/PartFileHandle.h"
 #include "eckit/io/FileDescHandle.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"

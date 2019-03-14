@@ -13,7 +13,7 @@
 #include <fstream>
 
 #include "eckit/config/Resource.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/io/MemoryHandle.h"
 
 #include "odc/FileCollector.h"

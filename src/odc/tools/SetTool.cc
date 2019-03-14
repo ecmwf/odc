@@ -12,7 +12,7 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "eckit/parser/Tokenizer.h"
+#include "eckit/utils/Tokenizer.h"
 
 #include "odc/ConstantSetter.h"
 #include "odc/Reader.h"

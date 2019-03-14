@@ -11,7 +11,7 @@
 #include <sstream>
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 #include "metkit/MarsRequestHandle.h"
 #include "metkit/DHSProtocol.h"

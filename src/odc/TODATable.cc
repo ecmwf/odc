@@ -11,7 +11,7 @@
 #include <sstream>
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/sql/SQLTableFactory.h"
 #include "eckit/sql/type/SQLBitfield.h"
 #include "eckit/utils/Translator.h"

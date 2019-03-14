@@ -14,7 +14,7 @@
 
 #include "eckit/config/Resource.h"
 #include "eckit/eckit.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "odc/GribCodes.h"
 #include "odc/StringTool.h"
 

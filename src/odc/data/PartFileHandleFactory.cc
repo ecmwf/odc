@@ -12,7 +12,7 @@
 
 #include "odc/data/PartFileHandleFactory.h"
 #include "eckit/io/PartFileHandle.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 using namespace eckit;
 using namespace std;

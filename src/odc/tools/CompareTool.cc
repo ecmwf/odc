@@ -11,7 +11,7 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/log/Timer.h"
 #include "odc/Comparator.h"
 #include "odc/Reader.h"

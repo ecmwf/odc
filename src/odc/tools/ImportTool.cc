@@ -12,7 +12,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/log/Log.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
 #include "eckit/sql/SQLSession.h"

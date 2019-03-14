@@ -12,7 +12,7 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 
 #include <cstring>
 
@@ -20,6 +20,7 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/utils/Regex.h"
+
 #include "odc/StringTool.h"
 
 using namespace std;

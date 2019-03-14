@@ -14,7 +14,7 @@
 /// @author Piotr Kuchta, Jan 2010
 
 #include "eckit/config/Resource.h"
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "odc/codec/CodecOptimizer.h"
 
 //

@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include "eckit/parser/StringTools.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/Types.h"
