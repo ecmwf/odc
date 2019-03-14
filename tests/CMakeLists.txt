@@ -270,7 +270,7 @@ ecbuild_add_test( TARGET test_odb2netcdf_2d
 
 ### odc tests
 
-set( _prev_test get_odc_test_data  )
+set( _prev_test odc_get_test_data  )
 
 foreach( _test ${odc_tests} )
     set( _dependencies ${_prev_test} )
@@ -286,11 +286,11 @@ endforeach()
 # n.b. Old behaviour (c.f. ODB-394) re-enabled with ODB_PATCH_TIME_ENCODE_RELATIVE.
 # This is a bit of a hack...
 
-ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_mo
+ecbuild_get_test_multidata( TARGET  odc_get_mars_client_test_data_mo
                             DIRNAME odc/tests
                             NAMES   20150218_glu_surface_odb2 )
 
-ecbuild_get_test_multidata( TARGET  get_mars_client_test_data_ec
+ecbuild_get_test_multidata( TARGET  odc_get_mars_client_test_data_ec
                             DIRNAME odc/tests
                             NAMES   conv_mfb_20151108_12.odb )
 

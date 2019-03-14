@@ -11,7 +11,7 @@ foreach( _test ${_sql_odc_tests} )
         SOURCES      ${_test}.cc ../TemporaryFiles.h
         INCLUDES     ${ECKIT_INCLUDE_DIRS} ${odc_INCLUDE_DIRS}
         ENVIRONMENT  ${test_environment}
-        TEST_DEPENDS get_odc_test_data
+        TEST_DEPENDS odc_get_test_data
         LIBS         eckit odccore )
 endforeach()
 

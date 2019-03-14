@@ -33,9 +33,9 @@ if( HAVE_FORTRAN )
 
                           LABELS     odc odc_fortran
 
-                          TEST_DEPENDS get_odc_test_data
-                                       get_mars_client_test_data_mo
-                                       get_mars_client_test_data_ec
+                          TEST_DEPENDS odc_get_test_data
+                                       odc_get_mars_client_test_data_mo
+                                       odc_get_mars_client_test_data_ec
 
                           LINKER_LANGUAGE Fortran )
     endforeach()
