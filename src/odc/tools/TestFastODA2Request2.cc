@@ -70,7 +70,6 @@ static void setUp()
 }
 static void test()
 {
-	const char * configFile = "/tmp/p4/mars/server/dev/oda/mars/marsKeywordToODBColumn";
 	const char * config = "let, DATE = andate, TIME = antime, REPORTYPE = reportype" ;
 
 	FastODA2Request<ODA2RequestServerTraits> o;

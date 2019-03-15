@@ -8,7 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odc_cpp.h"
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
