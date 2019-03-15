@@ -13,8 +13,8 @@ list( APPEND odclib_src_files
 
 api/odc.h
 api/odc.cc
-api/Odc.h
-api/Odc.cc
+api/Odc_cpp.h
+api/Odc_cpp.cc
 api/ColumnType.h
 api/StridedData.h
 

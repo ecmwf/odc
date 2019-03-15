@@ -17,7 +17,7 @@
 
 #include "odc/api/odc.h"
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odc_cpp.h"
 
 using namespace odc::api;
 
