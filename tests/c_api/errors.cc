@@ -51,7 +51,7 @@ CASE("Correctly open an odb file") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
 
-    odb_table_t* t = odc_next_table(o.get());
+    odb_table_t* t = odc_next_table(o.get(), false);
     EXPECT(t != 0);
     EXPECT(odc_errno == 0);
     odc_free_table(t);

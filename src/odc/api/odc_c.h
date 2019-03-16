@@ -81,7 +81,7 @@ void odc_close(struct odb_t* o);
 
 /* Table handling */
 
-struct odb_table_t* odc_next_table(struct odb_t* o);
+struct odb_table_t* odc_next_table(struct odb_t* o, bool aggregated);
 void odc_free_table(struct odb_table_t* o);
 
 int odc_table_num_rows(const struct odb_table_t* t);
@@ -97,7 +97,7 @@ int odc_table_column_bitfield_field_offset(const struct odb_table_t* t, int col,
 /* Decoding data */
 
 const struct odb_decoded_t* odc_table_decode_all(const struct odb_table_t* t);
-void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt);
+void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt, int nthreads);
 
 void odc_free_odb_decoded(const struct odb_decoded_t* dt);
 

@@ -243,9 +243,10 @@ void odc_close(odb_t* o) {
  * Table handling
  */
 
-odb_table_t* odc_next_table(odb_t* o) {
-    return wrapApiFunction([o] {
-        if (Optional<Table> t = o->internal.next()) {
+odb_table_t* odc_next_table(odb_t* o, bool aggregated) {
+    return wrapApiFunction([o, aggregated] {
+        eckit::Log::info() << "Aggregated: " << (aggregated ? "T": "F") << std::endl;
+        if (Optional<Table> t = o->internal.next(aggregated)) {
             return new odb_table_t(t.get());
         }
         return static_cast<odb_table_t*>(nullptr);
@@ -360,14 +361,14 @@ const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
 
         // And do the actual decoding!
 
-        odc_table_decode(t, dt);
+        odc_table_decode(t, dt, 1);
 
         return dt;
     });
 }
 
-void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
-    return wrapApiFunction([t, dt] {
+void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt, int nthreads) {
+    return wrapApiFunction([t, dt, nthreads] {
 
         // Sanity checking
 
@@ -388,7 +389,7 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
 
         for (int i = 0; i < dt->ncolumns; i++) {
             auto& col(dt->columnData[i]);
-            Log::info() << "Facade (" << i << "): " << col.nelem << " : " << col.elemSize << " -- " << nrows << std::endl;
+//            Log::info() << "Facade (" << i << "): " << col.nelem << " : " << col.elemSize << " -- " << nrows << std::endl;
             ASSERT(col.nelem >= long(nrows));
             dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
             columnNames.emplace_back(dt->columns[i].name);
@@ -398,7 +399,8 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt) {
 
         // Do the decoder
 
-        t->internal.decode(target);
+        ASSERT(nthreads >= 1);
+        t->internal.decode(target, static_cast<size_t>(nthreads));
 
         // And return the values
 

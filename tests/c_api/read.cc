@@ -43,7 +43,7 @@ CASE("Count lines in an existing ODB file") {
     size_t totalRows = 0;
 
     std::unique_ptr<odb_table_t> table;
-    while (table.reset(odc_next_table(o.get())), table) {
+    while (table.reset(odc_next_table(o.get(), false)), table) {
         totalRows += odc_table_num_rows(table.get());
         EXPECT(odc_table_num_columns(table.get()) == 51);
         ++ntables;
@@ -62,7 +62,7 @@ CASE("Decode an entire ODB file") {
     size_t ntables = 0;
 
     std::unique_ptr<odb_table_t> table;
-    while (table.reset(odc_next_table(o.get())), table) {
+    while (table.reset(odc_next_table(o.get(), false)), table) {
 
         std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
         EXPECT(decoded->nrows == odc_table_num_rows(table.get()));

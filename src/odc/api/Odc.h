@@ -39,6 +39,8 @@ template <typename T>
 struct Optional {
     Optional() : valid_(false) {}
     Optional(T&& v) : valid_(true) { new (&val_) T(std::forward<T>(v)); }
+    Optional(const Optional<T>& rhs) : valid_(rhs.valid_) { if (valid_) new (&val_) T(*reinterpret_cast<const T*>(&rhs.val_)); }
+    Optional(Optional<T>&& rhs) : valid_(rhs.valid_) { if (valid_) new (&val_) T(std::move(*reinterpret_cast<T*>(&rhs.val_))); }
     ~Optional() { if(valid_) reinterpret_cast<T*>(&val_)->~T(); }
     explicit operator bool() const { return valid_; }
     T& get() { return *reinterpret_cast<T*>(&val_); }
@@ -95,7 +97,7 @@ public: // methods
 
     const std::vector<ColumnInfo>& columnInfo() const;
 
-    void decode(DecodeTarget& target) const;
+    void decode(DecodeTarget& target, size_t nthreads) const;
 
 private: // members
 
@@ -114,11 +116,13 @@ public: // methods
                  std::vector<StridedData>& columnFacades);
     ~DecodeTarget();
 
+    DecodeTarget slice(size_t rowOffset, size_t nrows) const;
+
 private: // members
 
     std::shared_ptr<DecodeTargetImpl> impl_;
 
-    friend class Table;
+    friend class TableImpl;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -134,7 +138,8 @@ public: // methods
     Odb(eckit::DataHandle* dh); // takes ownership
     ~Odb();
 
-    Optional<Table> next();
+    /// Can combine multiple frames into one logical frame. Row limit < 0 is unlimited.
+    Optional<Table> next(bool aggregated=true, long rowlimit=-1);
 
 private: // members
 

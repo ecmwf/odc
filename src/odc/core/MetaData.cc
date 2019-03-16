@@ -224,6 +224,38 @@ bool MetaData::operator==(const MetaData& other) const
 	return true;
 }
 
+bool MetaData::compatible(const MetaData& other) const {
+
+    // Normal case will be equality --> try O[N] check first.
+
+    if (size() != other.size()) return false;
+
+    bool equal = true;
+    for (size_t i = 0; i < size(); ++i) {
+        if (*(*this)[i] != *other[i]) {
+            equal = false;
+            break;
+        }
+    }
+
+    if (equal) return true;
+
+    // Build a lookup so not O[N^2] to do match
+
+    std::map<std::string, Column*> columnLookup;
+    for (Column* col : *this) {
+        columnLookup.emplace(col->name(), col);
+    }
+
+    for (Column* col : other) {
+        auto it = columnLookup.find(col->name());
+        if (it == columnLookup.end()) return false;
+        if (*it->second != *col) return false;
+    }
+
+    return true;
+}
+
 void MetaData::resetStats()
 {
 	//Log::debug() << "MetaData::resetStats" << std::endl;

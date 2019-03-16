@@ -52,6 +52,7 @@ public:
 	bool equalsIncludingConstants(const MetaData&, const std::vector<std::string>& constColumns) const; 
 
     bool operator!=(const MetaData& other) const { return ! (*this == other); }
+    bool compatible(const MetaData& other) const;
 
 	void operator|=(const MetaData& other);
 

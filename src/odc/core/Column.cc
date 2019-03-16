@@ -99,8 +99,9 @@ bool Column::isConstant()
 /// return true if names and types are the same; do not compare codecs.
 bool Column::operator==(const Column& other) const
 {
-	if (name() == other.name() && type() == other.type())
+    if (name() == other.name() && type() == other.type() && dataSizeDoubles() == other.dataSizeDoubles()) {
 		return true;
+    }
 	return false;
 }
 

@@ -45,7 +45,7 @@ CASE("We can import data") {
     readAgain.openForRead();
     odc::api::Odb o(readAgain);
 
-    while (auto table = o.next()) {
+    while (auto table = o.next(false)) {
         eckit::Log::info() << "Table: " << table.get().numRows() << std::endl;
     }
 

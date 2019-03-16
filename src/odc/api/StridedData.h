@@ -53,6 +53,13 @@ public: // methods
     StridedData(const StridedData& rhs) = default;
     StridedData& operator=(const StridedData& rhs) = default;
 
+    // Slice the StridedData to get a sub-strided-data
+
+    StridedData slice(size_t rowOffset, size_t nrows) {
+        ASSERT(rowOffset + nrows <= nelem_);
+        return StridedData(get(rowOffset), nrows, dataSize_, stride_, const_);
+    }
+
     // Accessing the data
 
     size_t nelem() const { return nelem_; }

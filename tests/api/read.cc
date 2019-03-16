@@ -25,7 +25,7 @@ CASE("Count lines in an existing ODB file") {
     size_t ntables = 0;
     size_t totalRows = 0;
 
-    while (const auto& table = o.next()) {
+    while (const auto& table = o.next(false)) {
         totalRows += table.get().numRows();
         EXPECT(table.get().numColumns() == 51);
         ++ntables;
