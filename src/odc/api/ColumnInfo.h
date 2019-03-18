@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2017 ECMWF.
+ * (C) Copyright 2019- ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,37 +8,40 @@
  * does it submit to any jurisdiction.
  */
 
+
 /// @author Simon Smart
-/// @date   June 2017
+/// @date March 2019
 
-#ifndef odb_api_LibOdc_H
-#define odb_api_LibOdc_H
+#ifndef odc_api_ColumnInfo_H
+#define odc_api_ColumnInfo_H
 
-#include "eckit/system/Library.h"
+#include <string>
+#include <vector>
+
+#include "odc/api/ColumnType.h"
 
 namespace odc {
+namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class LibOdc : public eckit::system::Library {
-public:
+struct ColumnInfo {
 
-    LibOdc();
+    struct Bit {
+        std::string name;
+        int size;
+        int offset;
+    };
 
-    static const LibOdc& instance();
-
-    virtual std::string version() const;
-
-protected:
-
-    const void* addr() const;
-
-    virtual std::string gitsha1(unsigned int count) const;
-
+    std::string name;
+    ColumnType type;
+    size_t decodedSize;
+    std::vector<Bit> bitfield;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace eckit
+} // namespace api
+} // namespace odc
 
-#endif // odb_api_LibOdc_H
+#endif // odc_api_StridedData_H

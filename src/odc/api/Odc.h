@@ -21,6 +21,7 @@
 #include <type_traits>
 
 #include "odc/api/ColumnType.h"
+#include "odc/api/ColumnInfo.h"
 #include "odc/api/StridedData.h"
 
 namespace eckit {
@@ -62,22 +63,6 @@ public: // methods
     static void setIntegerMissingValue(int64_t val);
 
     static void setDoubleMissingValue(double val);
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
-struct ColumnInfo {
-
-    struct Bit {
-        std::string name;
-        int size;
-        int offset;
-    };
-
-    std::string name;
-    ColumnType type;
-    size_t decodedSize;
-    std::vector<Bit> bitfield;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -145,6 +130,13 @@ private: // members
 
     std::shared_ptr<OdbImpl> impl_;
 };
+
+//----------------------------------------------------------------------------------------------------------------------
+
+void encode(eckit::DataHandle& out,
+            const std::vector<ColumnInfo>& columns,
+            const std::vector<ConstStridedData>& data,
+            size_t maxRowsPerFrame=10000);
 
 //----------------------------------------------------------------------------------------------------------------------
 

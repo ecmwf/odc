@@ -323,6 +323,7 @@ int odc_table_column_bitfield_field_offset(const struct odb_table_t* t, int col,
     });
 }
 
+/*
 const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
     return wrapApiFunction([t] {
 
@@ -365,34 +366,33 @@ const odb_decoded_t* odc_table_decode_all(const odb_table_t* t) {
 
         return dt;
     });
-}
+}*/
 
-void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt, int nthreads) {
-    return wrapApiFunction([t, dt, nthreads] {
+long odc_table_decode(const odb_table_t* t, int ncolumns, long nrows, odb_strided_column_t* columnData, int nthreads) {
+    return wrapApiFunction([t, ncolumns, nrows, columnData, nthreads] {
 
         // Sanity checking
 
-        size_t nrows = t->internal.numRows();
-        size_t ncols = t->internal.numColumns();
+        long frame_rows = t->internal.numRows();
+        long frame_cols = t->internal.numColumns();
 
-        ASSERT(dt->ncolumns <= long(ncols));
-        ASSERT(dt->nrows >= long(nrows));
-        ASSERT(dt->columnData);
-        ASSERT(dt->columns);
+        ASSERT(ncolumns <= long(frame_cols));
+        ASSERT(nrows >= long(frame_rows));
+        ASSERT(columnData);
 
         // Construct C++ API adapter
 
         std::vector<StridedData> dataFacade;
-        dataFacade.reserve(ncols);
+        dataFacade.reserve(ncolumns);
         std::vector<std::string> columnNames;
-        columnNames.reserve(ncols);
+        columnNames.reserve(ncolumns);
 
-        for (int i = 0; i < dt->ncolumns; i++) {
-            auto& col(dt->columnData[i]);
+        for (int i = 0; i < ncolumns; i++) {
+            auto& col(columnData[i]);
 //            Log::info() << "Facade (" << i << "): " << col.nelem << " : " << col.elemSize << " -- " << nrows << std::endl;
-            ASSERT(col.nelem >= long(nrows));
+            ASSERT(col.nelem >= long(frame_rows));
             dataFacade.emplace_back(col.data, col.nelem, col.elemSize, col.stride);
-            columnNames.emplace_back(dt->columns[i].name);
+            columnNames.emplace_back(col.name);
         }
 
         DecodeTarget target(columnNames, dataFacade);
@@ -404,19 +404,71 @@ void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt, int
 
         // And return the values
 
-        dt->nrows = nrows;
-
-        for (int i = 0; i < dt->ncolumns; i++) dt->columnData[i].nelem = nrows;
+        for (int i = 0; i < ncolumns; i++) columnData[i].nelem = frame_rows;
+        return frame_rows;
     });
 }
 
-void odc_free_odb_decoded(const odb_decoded_t* dt) {
+/*void odc_free_odb_decoded(const odb_decoded_t* dt) {
     return wrapApiFunction([dt] {
         ASSERT(dt);
         ASSERT(dt->columnData);
         if (dt->ownedData) delete [] dt->ownedData;
         delete [] dt->columnData;
         delete dt;
+    });
+}*/
+
+
+void odc_table_encode_dh(eckit::DataHandle& dh,
+                         int ncolumns,
+                         long nrows,
+                         odb_strided_column_t* columnData,
+                         long maxRowsPerFrame) {
+
+    ASSERT(maxRowsPerFrame > 0);
+    ASSERT(ncolumns > 0);
+
+    std::vector<ColumnInfo> colInfo;
+    std::vector<ConstStridedData> data;
+    colInfo.reserve(ncolumns);
+    data.reserve(ncolumns);
+
+    for (int i = 0; i < ncolumns; i++) {
+
+        const odb_strided_column_t& c(columnData[i]);
+        ASSERT(c.nelem == nrows);
+
+        colInfo.emplace_back(ColumnInfo {c.name, INTEGER, size_t(c.elemSize), {}});
+        data.emplace_back(ConstStridedData {c.data, size_t(nrows), size_t(c.elemSize), size_t(c.stride)});
+    }
+
+    ::odc::api::encode(dh, colInfo, data, static_cast<size_t>(maxRowsPerFrame));
+}
+
+void odc_table_encode(void* buffer, long bufferSize,
+                      int ncolumns, long nrows,
+                      struct odb_strided_column_t* columnData,
+                      long maxRowsPerFrame=10000) {
+
+    return wrapApiFunction([buffer, bufferSize, ncolumns, nrows, columnData, maxRowsPerFrame] {
+
+        // TODO: Allocate and return a buffer, as per the routines below?
+        MemoryHandle dh(buffer, bufferSize);
+        dh.openForWrite(0);
+        AutoClose closer(dh);
+        odc_table_encode_dh(dh, ncolumns, nrows, columnData, maxRowsPerFrame);
+    });
+}
+
+void odc_table_encode_to_file(int fd, int ncolumns, long nrows,
+                              struct odb_strided_column_t* columnData,
+                              long maxRowsPerFrame=10000) {
+    return wrapApiFunction([fd, ncolumns, nrows, columnData, maxRowsPerFrame] {
+        FileDescHandle dh(fd);
+        dh.openForWrite(0);
+        AutoClose closer(dh);
+        odc_table_encode_dh(dh, ncolumns, nrows, columnData, maxRowsPerFrame);
     });
 }
 

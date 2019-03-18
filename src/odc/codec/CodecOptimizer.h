@@ -33,7 +33,7 @@ public:
 	template <typename DATASTREAM>
         int setOptimalCodecs(core::MetaData& columns);
 private:
-    std::map<api::ColumnType, std::string> defaultCodec_;
+    static std::map<api::ColumnType, std::string> defaultCodec_;
 };
 
 template <typename ByteOrder>

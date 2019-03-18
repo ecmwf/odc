@@ -16,6 +16,7 @@ api/odc.cc
 api/Odc.h
 api/Odc.cc
 api/ColumnType.h
+api/ColumnInfo.h
 api/StridedData.h
 
 pyodbapi.h
@@ -110,6 +111,8 @@ core/Column.h
 core/DataStream.h
 core/DecodeTarget.cc
 core/DecodeTarget.h
+core/Encoder.cc
+core/Encoder.h
 core/Exceptions.cc
 core/Exceptions.h
 core/Header.cc

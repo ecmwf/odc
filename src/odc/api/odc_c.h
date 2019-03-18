@@ -18,29 +18,12 @@ struct odb_t;
 
 struct odb_table_t;
 
-struct odb_column_t { /* CURRENTLY UNUSED */
+struct odb_strided_column_t {
     const char name[64];
-    int colNo;
-    int type;
-};
-
-struct odb_strided_data_t {
     char* data;
     int nelem;
     int elemSize;
     int stride;
-};
-
-struct odb_decoded_t {
-
-    char* ownedData;
-
-    int ncolumns;
-    int nrows;
-
-    /* Arrays of length ncolumns */
-    struct odb_column_t* columns;
-    struct odb_strided_data_t* columnData;
 };
 
 /*
@@ -96,10 +79,37 @@ int odc_table_column_bitfield_field_offset(const struct odb_table_t* t, int col,
 
 /* Decoding data */
 
-const struct odb_decoded_t* odc_table_decode_all(const struct odb_table_t* t);
-void odc_table_decode(const struct odb_table_t* t, struct odb_decoded_t* dt, int nthreads);
+//const struct odb_decoded_t* odc_table_decode_all(const struct odb_table_t* t);
 
-void odc_free_odb_decoded(const struct odb_decoded_t* dt);
+/*
+ * odb_table_decode - do the actual decode of the table
+ *
+ * t - the table opaque pointer
+ * ncolumns - the number of columns described for decoding
+ * nrows - the maximum number of rows to decode
+ * columnData - describes the data layout per column
+ * nthreads - number of threads to use for decoding (if multiple frames)
+ *
+ * RETURNS: the number of rows decoded
+ */
+
+long odc_table_decode(const struct odb_table_t* t, int ncolumns, long nrows,
+                      struct odb_strided_column_t* columnData, int nthreads);
+
+/*
+ * odb_table_encode - encode data
+ */
+
+void odc_table_encode(void* buffer, long bufferSize,
+                      int ncolumns, long nrows,
+                      struct odb_strided_column_t* columnData,
+                      long maxRowsPerFrame);
+
+void odc_table_encode_to_file(int fd, int ncolumns, long nrows,
+                              struct odb_strided_column_t* columnData,
+                              long maxRowsPerFrame);
+
+//void odc_free_odb_decoded(const struct odb_decoded_t* dt);
 
 /* Encoding data */
 

@@ -19,14 +19,15 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/log/Log.h"
 
-#include "odc/core/TablesReader.h"
-#include "odc/core/Table.h"
 #include "odc/core/DecodeTarget.h"
+#include "odc/core/Encoder.h"
+#include "odc/core/Table.h"
+#include "odc/core/TablesReader.h"
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
-#include "odc/Writer.h"
 #include "odc/MDI.h"
 #include "odc/ODBAPISettings.h"
+#include "odc/Writer.h"
 
 using namespace eckit;
 
@@ -332,6 +333,33 @@ size_t importText(const std::string& in, eckit::DataHandle& dh_out, const std::s
     dh_in.openForRead();
     AutoClose close(dh_in);
     return importText(dh_in, dh_out, delimiter);
+}
+
+void encode(DataHandle& out, const std::vector<ColumnInfo>& columns, const std::vector<ConstStridedData>& data, size_t maxRowsPerFrame) {
+
+    ASSERT(columns.size() == data.size());
+    ASSERT(data.size() > 0);
+
+    size_t ncols = data.size();
+    size_t nrows = data[0].nelem();
+    ASSERT(std::all_of(data.begin(), data.end(), [nrows](const ConstStridedData& d) { return d.nelem() == nrows; }));
+
+    if (nrows <= maxRowsPerFrame) {
+        core::encodeFrame(out, columns, data);
+    } else {
+        std::vector<ConstStridedData> sliced;
+        sliced.reserve(ncols);
+        size_t start = 0;
+        while (start < nrows) {
+            size_t nelem = std::min(nrows - start, maxRowsPerFrame);
+            for (const ConstStridedData& sd : data) {
+                sliced.emplace_back(sd.slice(start, nelem));
+            }
+            core::encodeFrame(out, columns, sliced);
+            start += nelem;
+            sliced.clear();
+        }
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
