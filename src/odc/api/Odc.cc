@@ -25,6 +25,7 @@
 #include "odc/core/TablesReader.h"
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
+#include "odc/LibOdc.h"
 #include "odc/MDI.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/Writer.h"
@@ -306,6 +307,11 @@ void Settings::setIntegerMissingValue(int64_t val) {
 
 void Settings::setDoubleMissingValue(double val) {
     odc::MDI::realMDI(val);
+}
+
+const std::string& Settings::version() {
+    static std::string vstring = LibOdc::instance().version();
+    return  vstring;
 }
 
 long Settings::integerMissingValue() {

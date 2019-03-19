@@ -45,6 +45,7 @@ const int ODC_NUM_TYPES = 6;
 extern const char* ODC_TYPE_NAMES[];
 const char* odc_type_name(int type);
 long odc_missing_integer();
+const char* odc_version();
 
 /* Error handling */
 

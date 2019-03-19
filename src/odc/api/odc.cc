@@ -205,6 +205,12 @@ long odc_missing_integer() {
     return Settings::integerMissingValue();
 }
 
+const char* odc_version() {
+    return wrapApiFunction([]{
+        return Settings::version().c_str();
+    });
+}
+
 /* Basic READ objects */
 
 odb_t* odc_open_for_read(const char* filename) {

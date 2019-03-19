@@ -66,6 +66,7 @@ public: // methods
     static double doubleMissingValue();
     static void setDoubleMissingValue(double val);
 
+    static const std::string& version();
 };
 
 //----------------------------------------------------------------------------------------------------------------------
