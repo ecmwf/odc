@@ -60,9 +60,12 @@ public: // methods
 
     static void treatIntegersAsDoubles(bool flag);
 
+    static long integerMissingValue();
     static void setIntegerMissingValue(int64_t val);
 
+    static double doubleMissingValue();
     static void setDoubleMissingValue(double val);
+
 };
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -39,6 +39,8 @@ void encodeFrame(eckit::DataHandle& out,
     for (size_t i = 0; i < ncols; ++i) {
         md[i]->name(columns[i].name);
         md[i]->type<SameByteOrder>(columns[i].type);
+        ASSERT(columns[i].decodedSize % sizeof(double) == 0);
+        md[i]->dataSizeDoubles(columns[i].decodedSize / sizeof(double));
         if (!columns[i].bitfield.empty()) {
             eckit::sql::BitfieldDef bf;
             for (const auto& bit : columns[i].bitfield) {

@@ -19,7 +19,6 @@
 #include "eckit/io/FileDescHandle.h"
 
 #include "odc/api/odc.h"
-
 #include "odc/api/Odc.h"
 
 using namespace odc::api;
@@ -46,18 +45,6 @@ extern "C" {
 //                           accordingly.
 
 // ii) odc_encode accepts a description of the data structured in memory.
-
-// TODO:
-//  - Encoding/decoding integers sensibly (rather than as doubles)
-//  - Remove the MARS functionality to MARS
-//  - Open memory buffers rather than files
-//  - Bitfield descriptions in the API
-//  - Sensible behaviour with missing values. The current version is SHIT.
-//  - Move odc::ODBAPISettings and odc::MDI somewhere sensible
-//  - Remove daft executable bootstrapping of tools/tests
-//  - Exaple for encoding. See CAPI examples.
-//  - Test performance of decoding
-//  - Test performance of compare/split
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -212,6 +199,10 @@ const char* odc_type_name(int type) {
         ASSERT(type < NUM_TYPES);
         return ODC_TYPE_NAMES[type];
     });
+}
+
+long odc_missing_integer() {
+    return Settings::integerMissingValue();
 }
 
 /* Basic READ objects */
@@ -439,7 +430,7 @@ void odc_table_encode_dh(eckit::DataHandle& dh,
         const odb_strided_column_t& c(columnData[i]);
         ASSERT(c.nelem == nrows);
 
-        colInfo.emplace_back(ColumnInfo {c.name, INTEGER, size_t(c.elemSize), {}});
+        colInfo.emplace_back(ColumnInfo {c.name, ColumnType(c.type), size_t(c.elemSize), {}});
         data.emplace_back(ConstStridedData {c.data, size_t(nrows), size_t(c.elemSize), size_t(c.stride)});
     }
 

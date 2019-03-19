@@ -20,6 +20,7 @@ struct odb_table_t;
 
 struct odb_strided_column_t {
     const char name[64];
+    int type;       // Only used for encode. Not used in decode at moment
     char* data;
     int nelem;
     int elemSize;
@@ -43,6 +44,7 @@ void odc_integer_behaviour(int integerBehaviour);
 const int ODC_NUM_TYPES = 6;
 extern const char* ODC_TYPE_NAMES[];
 const char* odc_type_name(int type);
+long odc_missing_integer();
 
 /* Error handling */
 

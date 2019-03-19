@@ -139,7 +139,7 @@ template <typename ByteOrder>
 void CodecConstantString<ByteOrder>::print(std::ostream& s) const {
     s << this->name_ << ", value='"
       << std::string(reinterpret_cast<const char*>(&this->min_), sizeof(double))
-      << "'" << std::endl;
+      << "'";
 }
 
 //----------------------------------------------------------------------------------------------------------------------

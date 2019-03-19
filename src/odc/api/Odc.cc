@@ -308,6 +308,14 @@ void Settings::setDoubleMissingValue(double val) {
     odc::MDI::realMDI(val);
 }
 
+long Settings::integerMissingValue() {
+    return odc::MDI::integerMDI();
+}
+
+double Settings::doubleMissingValue() {
+    return odc::MDI::realMDI();
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 size_t importText(DataHandle& dh_in, DataHandle& dh_out, const std::string& delimiter) {
