@@ -16,8 +16,11 @@
 
 #include <cstring>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/FileHandle.h"
+#include "eckit/log/CodeLocation.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/utils/Regex.h"
 
