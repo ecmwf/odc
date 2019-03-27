@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2012 ECMWF.
+ * (C) Copyright 1996-2018 ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,25 +8,31 @@
  * does it submit to any jurisdiction.
  */
 
+/// @author Simon Smart
+/// @date March 2019
 
-#include "odc/codec/IntegerMissing.h"
-#include "odc/core/CodecFactory.h"
+#ifndef odc_core_Encoder_H
+#define odc_core_Encoder_H
+
+#include <vector>
+
+#include "eckit/io/DataHandle.h"
+
+#include "odc/api/ColumnInfo.h"
+#include "odc/api/StridedData.h"
 
 namespace odc {
-namespace codec {
+namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-// Self registration
-
-namespace {
-    core::IntegerCodecBuilder<CodecInt8Missing> int8MissingBuilder;
-    core::IntegerCodecBuilder<CodecInt16Missing> int16MissingBuilder;
-    core::IntegerCodecBuilder<CodecConstantOrMissing> constantOrMissingBuilder;
-    core::CodecBuilder<CodecRealConstantOrMissing> realConstantOrMissingBuilder;
-}
+void encodeFrame(eckit::DataHandle& out,
+                 const std::vector<api::ColumnInfo>& columns,
+                 const std::vector<api::ConstStridedData>& data);
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace codec
+} // namespace core
 } // namespace odc
+
+#endif

@@ -13,8 +13,10 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/FileHandle.h"
+
+#include "odc/api/Odc.h"
 #include "odc/Select.h"
-#include "odc/tools/ImportTool.h"
 
 #include "TestCase.h"
 
@@ -46,7 +48,10 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
-    odc::tool::ImportTool::importText(s.str().c_str(), "TestDistinct_a1to10twice.odb");
+    FileHandle dh("TestDistinct_a1to10twice.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::importText(s, dh);
 }
 
 

@@ -32,7 +32,7 @@ public: // definitions
 
 public: // methods
 
-    CodecChars(const std::string& name=codec_name());
+    CodecChars(api::ColumnType type, const std::string& name=codec_name());
     ~CodecChars() override {}
 
     void load(core::DataStream<ByteOrder>& ds) override;
@@ -46,6 +46,7 @@ private: // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override;
     void decode(double* out) override;
+    void skip() override;
     void gatherStats(const double& v) override;
 
     size_t numStrings() const override { return strings_.size(); }
@@ -58,7 +59,7 @@ private: // methods
 
 protected: // members
 
-    std::map<std::string, size_t> stringLookup_;
+    std::map<std::string, int64_t> stringLookup_;
     std::vector<std::string> strings_;
     size_t decodedSizeDoubles_;
 };
@@ -70,9 +71,15 @@ protected: // members
 template<typename ByteOrder, typename InternalCodec>
 class IntStringCodecBase : public CodecChars<ByteOrder> {
 
+    static_assert(std::is_same<typename InternalCodec::value_type, int64_t>::value, "Safety check");
+    using InternalInt = typename InternalCodec::value_type;
+
 public: // methods
 
-    IntStringCodecBase(const std::string& name) : CodecChars<ByteOrder>(name) {
+    IntStringCodecBase(api::ColumnType type, const std::string& name) :
+        CodecChars<ByteOrder>(type, name),
+        intCodec_(api::INTEGER) {
+
         this->min_ = odc::MDI::integerMDI();
         this->max_ = this->min_;
         this->missingValue_ = this->min_;
@@ -82,7 +89,7 @@ public: // methods
 
 private: // methods
 
-    std::unique_ptr<core::Codec> clone() {
+    std::unique_ptr<core::Codec> clone() override {
         std::unique_ptr<core::Codec> cdc = CodecChars<ByteOrder>::clone();
         auto& c = static_cast<IntStringCodecBase<ByteOrder, InternalCodec>&>(*cdc);
         c.intCodec_.min(intCodec_.min());
@@ -110,23 +117,34 @@ private: // methods
         size_t len = ::strnlen(reinterpret_cast<const char*>(&d), this->decodedSizeDoubles_*sizeof(double));
         std::string s(reinterpret_cast<const char*>(&d), len);
 
-        std::map<std::string, size_t>::const_iterator it = this->stringLookup_.find(s);
+        auto it = this->stringLookup_.find(s);
         ASSERT(it != this->stringLookup_.end());
 
-        return static_cast<core::Codec&>(intCodec_).encode(p, it->second);
+        // n.b. Reinterpret cast is yucky, but is for backward compatibility with old interface.
+        // CodecInt*<, int64_t> undoes that internally.
+        // WARNING: This is very type unsafe
+        InternalInt internal = it->second;
+        return static_cast<core::Codec&>(intCodec_).encode(p, reinterpret_cast<const double&>(internal));
     }
 
     void decode(double* out) override {
 
-        double tmp_i;
-        static_cast<core::Codec&>(intCodec_).decode(&tmp_i);
-        size_t i = static_cast<int>(tmp_i);
+        // n.b. Reinterpret cast is yucky, but is for backward compatibility with old interface.
+        // CodecInt*<, int64_t> undoes that internally.
+        // WARNING: This is very type unsafe
 
-        ASSERT(i < this->strings_.size());
+        InternalInt i;
+        static_cast<core::Codec&>(intCodec_).decode(reinterpret_cast<double*>(&i));
+
+        ASSERT(i < long(this->strings_.size()));
         const std::string& s(this->strings_[i]);
 
         ::memset(out, 0, this->decodedSizeDoubles_*sizeof(double));
         ::memcpy(reinterpret_cast<char*>(out), &s[0], std::min(s.length(), this->decodedSizeDoubles_*sizeof(double)));
+    }
+
+    void skip() override {
+        static_cast<core::Codec&>(intCodec_).skip();
     }
 
     void load(core::DataStream<ByteOrder>& ds) override {
@@ -185,17 +203,17 @@ private: // members
 
 
 template<typename ByteOrder>
-struct CodecInt8String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>> {
+struct CodecInt8String : public IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder, int64_t>> {
     constexpr static const char* codec_name() { return "int8_string"; }
-    CodecInt8String() : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder>>(codec_name()) {}
+    CodecInt8String(api::ColumnType type) : IntStringCodecBase<ByteOrder, CodecInt8<ByteOrder, int64_t>>(type, codec_name()) {}
     ~CodecInt8String() override {}
 };
 
 
 template<typename ByteOrder>
-struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder>> {
+struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder, int64_t>> {
     constexpr static const char* codec_name() { return "int16_string"; }
-    CodecInt16String() : IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder>>(codec_name()) {}
+    CodecInt16String(api::ColumnType type) : IntStringCodecBase<ByteOrder, CodecInt16<ByteOrder, int64_t>>(type, codec_name()) {}
     ~CodecInt16String() override {}
 };
 
@@ -205,8 +223,8 @@ struct CodecInt16String : public IntStringCodecBase<ByteOrder, CodecInt16<ByteOr
 // Implementation
 
 template<typename ByteOrder>
-CodecChars<ByteOrder>::CodecChars(const std::string& name) :
-    core::DataStreamCodec<ByteOrder>(name),
+CodecChars<ByteOrder>::CodecChars(api::ColumnType type, const std::string& name) :
+    core::DataStreamCodec<ByteOrder>(name, type),
     decodedSizeDoubles_(1) {}
 
 template<typename ByteOrder>
@@ -225,6 +243,10 @@ void CodecChars<ByteOrder>::decode(double* out) {
      this->ds().readBytes(out, sizeof(double)*decodedSizeDoubles_);
 }
 
+template <typename ByteOrder>
+void CodecChars<ByteOrder>::skip() {
+    this->ds().advance(sizeof(double) * decodedSizeDoubles_);
+}
 
 template<typename ByteOrder>
 void CodecChars<ByteOrder>::gatherStats(const double& v) {
@@ -271,6 +293,7 @@ std::unique_ptr<core::Codec> CodecChars<ByteOrder>::clone() {
     auto& c = static_cast<CodecChars&>(*cdc);
     c.stringLookup_ = stringLookup_;
     c.strings_ = strings_;
+    c.decodedSizeDoubles_ = decodedSizeDoubles_;
     ASSERT(c.min() == this->min_);
     ASSERT(c.max() == this->max_);
     return cdc;

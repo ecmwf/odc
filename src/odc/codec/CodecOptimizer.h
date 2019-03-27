@@ -33,7 +33,7 @@ public:
 	template <typename DATASTREAM>
         int setOptimalCodecs(core::MetaData& columns);
 private:
-    std::map<api::ColumnType, std::string> defaultCodec_;
+    static std::map<api::ColumnType, std::string> defaultCodec_;
 };
 
 template <typename ByteOrder>
@@ -67,7 +67,7 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
                     codec = "short_real2";
                 }
 
-                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec));
+                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec, col.type()));
                 col.hasMissing(hasMissing);
 				col.missingValue(missing);
 				col.min(min);
@@ -81,7 +81,7 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
             case api::DOUBLE:
 				if(max == min)
 					codec = col.hasMissing() ? "real_constant_or_missing" : "constant";
-                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec));
+                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec, col.type()));
 				col.hasMissing(hasMissing);
 				col.missingValue(missing);
 				col.min(min);
@@ -102,7 +102,7 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
 						codec = "int16_string";
 
 
-                    std::unique_ptr<core::Codec> newCodec = core::CodecFactory::instance().build<ByteOrder>(codec);
+                    std::unique_ptr<core::Codec> newCodec = core::CodecFactory::instance().build<ByteOrder>(codec, col.type());
                     if (codec == "constant_string") {
                         ASSERT(col.coder().dataSizeDoubles() == 1);
                     } else {
@@ -135,7 +135,7 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
 					else if(n <= 0xff) codec = "int8";
 					else if(n <= 0xffff) codec = "int16";
 				}
-                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec));
+                col.coder(core::CodecFactory::instance().build<ByteOrder>(codec, col.type()));
 				col.hasMissing(hasMissing);
 				col.missingValue(missing);
 				col.min(min);

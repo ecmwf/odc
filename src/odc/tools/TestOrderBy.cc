@@ -13,11 +13,13 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/utils/StringTools.h"
-#include "odc/Select.h"
-#include "odc/core/MetaData.h"
 
-#include "ImportTool.h"
+#include "odc/api/Odc_cpp.h"
+#include "odc/core/MetaData.h"
+#include "odc/Select.h"
+
 #include "TestCase.h"
 
 using namespace std;
@@ -85,7 +87,12 @@ static void test()
 		"1,20,'two'\n"
 		"2,30,'three'\n"
 		"2,40,'four'\n";
-        odc::tool::ImportTool::importText(in, "TestOrderBy.odb");
+        {
+            FileHandle dh("TestOrderBy.odb");
+            dh.openForWrite(0);
+            AutoClose close(dh);
+            odc::api::importText(in, dh);
+        }
 
 		string sql = "select distinct a,b,c from \"TestOrderBy.odb\" order by a desc, b asc;";
 
@@ -113,7 +120,10 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
-    odc::tool::ImportTool::importText(s.str().c_str(), "TestOrderBy_a1to10twice.odb");
+    FileHandle dh("TestOrderBy_a1to10twice.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::importText(s, dh);
 }
 static void tearDown(){}
 

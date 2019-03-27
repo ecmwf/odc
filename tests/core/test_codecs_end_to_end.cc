@@ -87,7 +87,7 @@ namespace {
 
     struct MockReadIteratorConstInt : public MockReadIterator {
         MockReadIteratorConstInt() : MockReadIterator(odc::api::INTEGER, the_const_value) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecInt32<odc::core::SameByteOrder>));
+            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecInt32<odc::core::SameByteOrder, double>(odc::api::INTEGER)));
         }
     };
 
@@ -97,7 +97,7 @@ namespace {
 
     struct MockReadIteratorConstString1 : public MockReadIterator {
         MockReadIteratorConstString1() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_1)) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>));
+            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
         }
     };
 
@@ -107,7 +107,7 @@ namespace {
 
     struct MockReadIteratorConstString2 : public MockReadIterator {
         MockReadIteratorConstString2() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_2)) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>));
+            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
         }
     };
 }
@@ -327,7 +327,7 @@ CASE("Missing values are encoded and decoded correctly") {
 
         // Get the appropriate codec
 
-        std::unique_ptr<odc::core::Codec> c(odc::core::CodecFactory::instance().build<odc::core::SameByteOrder>(codec_name));
+        std::unique_ptr<odc::core::Codec> c(odc::core::CodecFactory::instance().build<odc::core::SameByteOrder>(codec_name, odc::api::DOUBLE));
 
         EXPECT(c->name() == codec_name);
 

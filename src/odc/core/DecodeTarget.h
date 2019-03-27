@@ -29,13 +29,20 @@ class DecodeTarget {
 
 public: // methods
 
-    DecodeTarget(const std::vector<api::StridedData>& facades);
+    DecodeTarget(const std::vector<std::string> & columns,
+                 const std::vector<api::StridedData>& facades);
+    DecodeTarget(const std::vector<std::string> & columns,
+                 std::vector<api::StridedData>&& facades);
     ~DecodeTarget();
 
+    const std::vector<std::string>& columns() const;
     std::vector<api::StridedData>& dataFacades();
+
+    DecodeTarget slice(size_t rowOffset, size_t nrows);
 
 private: // members
 
+    std::vector<std::string> columns_;
     std::vector<api::StridedData> columnFacades_;
 };
 

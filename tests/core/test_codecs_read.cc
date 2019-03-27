@@ -13,6 +13,7 @@
 #include "eckit/io/DataHandle.h"
 #include "eckit/eckit_ecbuild_config.h"
 
+#include "odc/api/Odc.h"
 #include "odc/core/Codec.h"
 #include "odc/codec/Constant.h"
 #include "odc/codec/Integer.h"
@@ -38,6 +39,13 @@
 using namespace eckit::testing;
 using namespace odc::core;
 using namespace odc::codec;
+
+namespace {
+    struct TestIntegerDecoding {
+        TestIntegerDecoding() { odc::api::Settings::treatIntegersAsDoubles(false); }
+        ~TestIntegerDecoding() { odc::api::Settings::treatIntegersAsDoubles(true); }
+    };
+}
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -101,9 +109,9 @@ CASE("Constant values are constant") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c.reset(new CodecConstant<SameByteOrder>);
+                c.reset(new CodecConstant<SameByteOrder, double>(odc::api::DOUBLE));
             } else {
-                c.reset(new CodecConstant<OtherByteOrder>);
+                c.reset(new CodecConstant<OtherByteOrder, double>(odc::api::DOUBLE));
             }
             c->load(ds);
 
@@ -133,9 +141,9 @@ CASE("Constant values are constant") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::DOUBLE);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::DOUBLE);
             }
 
             EXPECT(ds.position() == eckit::Offset(hdrSize + 28));
@@ -153,6 +161,101 @@ CASE("Constant values are constant") {
     }
 }
 
+
+CASE("Constant integer values are constant") {
+
+    // Set to decode to integers rather than doubles
+    TestIntegerDecoding resetter;
+
+    // Data in little endian format.
+    // "min" value is used for constants
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                  // no missing value
+        "\x00\x00\x80\xb4\x80\x65\xd2\x41",  // min (1234567890.1234567)
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // missing value unspecified
+
+    };
+
+    // Loop throumgh endiannesses for the source data
+
+    for (int i = 0; i < 2; i++) {
+
+        bool bigEndianSource = (i == 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : 8;
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+            if (bigEndianSource)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Construct codec directly
+
+        {
+            // Skip name of codec
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                c.reset(new CodecConstant<SameByteOrder, int64_t>(odc::api::BITFIELD));
+            } else {
+                c.reset(new CodecConstant<OtherByteOrder, int64_t>(odc::api::INTEGER));
+            }
+            c->load(ds);
+
+            EXPECT(ds.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            int64_t tmpi;
+            double& tmpd(reinterpret_cast<double&>(tmpi));
+            c->decode(&tmpd);
+            EXPECT(tmpi == 1234567890);
+            c->decode(&tmpd);
+            EXPECT(tmpi == 1234567890);
+            c->decode(&tmpd);
+            EXPECT(tmpi == 1234567890);
+            c->decode(&tmpd);
+            EXPECT(tmpi == 1234567890);
+
+            // No further data should have been consumed from the data handle.
+            EXPECT(ds.position() == eckit::Offset(28));
+        }
+
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, "constant", bigEndianSource);
+
+        {
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
+            } else {
+                c = CodecFactory::instance().load(ds.other(), odc::api::BITFIELD);
+            }
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            int64_t tmpi;
+            double& tmp(reinterpret_cast<double&>(tmpi));
+            c->decode(&tmp);
+            EXPECT(tmpi == 1234567890);
+            EXPECT(tmpi == 1234567890);
+            EXPECT(tmpi == 1234567890);
+            EXPECT(tmpi == 1234567890);
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28));
+        }
+    }
+}
 
 CASE("constant strings are constant") {
 
@@ -196,9 +299,9 @@ CASE("constant strings are constant") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c.reset(new CodecConstantString<SameByteOrder>);
+                c.reset(new CodecConstantString<SameByteOrder>(odc::api::STRING));
             } else {
-                c.reset(new CodecConstantString<OtherByteOrder>);
+                c.reset(new CodecConstantString<OtherByteOrder>(odc::api::STRING));
             }
             c->load(ds);
 
@@ -228,9 +331,9 @@ CASE("constant strings are constant") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::STRING);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::STRING);
             }
 
             EXPECT(ds.position() == eckit::Offset(hdrSize + 28));
@@ -305,9 +408,9 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c.reset(new CodecConstantOrMissing<SameByteOrder>);
+                c.reset(new CodecConstantOrMissing<SameByteOrder, double>(odc::api::DOUBLE));
             } else {
-                c.reset(new CodecConstantOrMissing<OtherByteOrder>);
+                c.reset(new CodecConstantOrMissing<OtherByteOrder, double>(odc::api::INTEGER));
             }
             c->load(ds);
             c->setDataStream(ds);
@@ -342,9 +445,9 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::DOUBLE);
             }
             c->setDataStream(ds);
 
@@ -421,9 +524,9 @@ CASE("real constant or missing value is not quite constant") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c.reset(new CodecRealConstantOrMissing<SameByteOrder>);
+                c.reset(new CodecRealConstantOrMissing<SameByteOrder>(odc::api::DOUBLE));
             } else {
-                c.reset(new CodecRealConstantOrMissing<OtherByteOrder>);
+                c.reset(new CodecRealConstantOrMissing<OtherByteOrder>(odc::api::DOUBLE));
             }
             c->load(ds);
             c->setDataStream(ds);
@@ -458,9 +561,9 @@ CASE("real constant or missing value is not quite constant") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::DOUBLE);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::DOUBLE);
             }
             c->setDataStream(ds);
 
@@ -535,9 +638,9 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c.reset(new CodecChars<SameByteOrder>);
+                c.reset(new CodecChars<SameByteOrder>(odc::api::STRING));
             } else {
-                c.reset(new CodecChars<OtherByteOrder>);
+                c.reset(new CodecChars<OtherByteOrder>(odc::api::STRING));
             }
             c->load(ds);
             c->setDataStream(ds);
@@ -569,9 +672,9 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::STRING);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::STRING);
             }
             c->setDataStream(ds);
 
@@ -640,9 +743,9 @@ CASE("long floating point values can include the missing data value") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c.reset(new CodecLongReal<SameByteOrder>);
+                c.reset(new CodecLongReal<SameByteOrder>(odc::api::DOUBLE));
             } else {
-                c.reset(new CodecLongReal<OtherByteOrder>);
+                c.reset(new CodecLongReal<OtherByteOrder>(odc::api::DOUBLE));
             }
             c->load(ds);
             c->setDataStream(ds);
@@ -682,9 +785,9 @@ CASE("long floating point values can include the missing data value") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::DOUBLE);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::DOUBLE);
             }
             c->setDataStream(ds);
 
@@ -765,15 +868,15 @@ CASE("short floating point values can include the missing data value") {
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
                 if (secondCodec) {
-                    c.reset(new CodecShortReal2<SameByteOrder>);
+                    c.reset(new CodecShortReal2<SameByteOrder>(odc::api::REAL));
                 } else {
-                    c.reset(new CodecShortReal<SameByteOrder>);
+                    c.reset(new CodecShortReal<SameByteOrder>(odc::api::DOUBLE));
                 }
             } else {
                 if (secondCodec) {
-                    c.reset(new CodecShortReal2<OtherByteOrder>);
+                    c.reset(new CodecShortReal2<OtherByteOrder>(odc::api::DOUBLE));
                 } else {
-                    c.reset(new CodecShortReal<OtherByteOrder>);
+                    c.reset(new CodecShortReal<OtherByteOrder>(odc::api::REAL));
                 }
             }
             c->load(ds);
@@ -823,9 +926,9 @@ CASE("short floating point values can include the missing data value") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::DOUBLE);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::REAL);
             }
             c->setDataStream(ds);
 
@@ -861,6 +964,114 @@ CASE("short floating point values can include the missing data value") {
             EXPECT(isnan(val));
 
             EXPECT(ds.position() == eckit::Offset(hdrSize + 28 + (8 * 4)));
+        }
+    }
+}
+
+CASE("32bit integers can be decoded direct to integers") {
+
+    // Set to decode to integers rather than doubles
+    TestIntegerDecoding resetter;
+
+    // Use a curious, custom missingValue to show it is being used.
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                  // no missing value
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // minimum unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // missing value unspecified
+
+        // data to encode
+        "\x00\x00\x00\x00",   // 0.0
+        "\xff\xff\xff\xff",   // -1
+        "\xff\xff\xff\x7f",   // 2147483647  == largest
+        "\x00\x00\x00\x80",   // -2147483648 == smallest
+        "\x96\x28\x9c\xff"    // -6543210
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 2; i++) {
+
+        bool bigEndianSource = (i == 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0 || j > 3) ? 4 : 8;
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+            if (bigEndianSource)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Construct codec directly
+
+        {
+            // Skip name of codec
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                c.reset(new CodecInt32<SameByteOrder, int64_t>(odc::api::INTEGER));
+            } else {
+                c.reset(new CodecInt32<OtherByteOrder, int64_t>(odc::api::INTEGER));
+            }
+            c->load(ds);
+            c->setDataStream(ds);
+
+            EXPECT(ds.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            double val;
+            int64_t& intVal = reinterpret_cast<int64_t&>(val);
+            c->decode(&val);
+            EXPECT(intVal == 0);
+            c->decode(&val);
+            EXPECT(intVal == -1);
+            c->decode(&val);
+            EXPECT(intVal == 2147483647);
+            c->decode(&val);
+            EXPECT(intVal == -2147483648);
+            c->decode(&val);
+            EXPECT(intVal == -6543210);
+
+            EXPECT(ds.position() == eckit::Offset(28 + (5 * 4)));
+        }
+
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, "int32", bigEndianSource);
+
+        {
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
+            } else {
+                c = CodecFactory::instance().load(ds.other(), odc::api::INTEGER);
+            }
+            c->setDataStream(ds);
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            double val;
+            int64_t& intVal = reinterpret_cast<int64_t&>(val);
+            c->decode(&val);
+            EXPECT(intVal == 0);
+            c->decode(&val);
+            EXPECT(intVal == -1);
+            c->decode(&val);
+            EXPECT(intVal == 2147483647);
+            c->decode(&val);
+            EXPECT(intVal == -2147483648);
+            c->decode(&val);
+            EXPECT(intVal == -6543210);
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28 + (5 * 4)));
         }
     }
 }
@@ -909,9 +1120,9 @@ CASE("32bit integers are as-is") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c.reset(new CodecInt32<SameByteOrder>);
+                c.reset(new CodecInt32<SameByteOrder, double>(odc::api::INTEGER));
             } else {
-                c.reset(new CodecInt32<OtherByteOrder>);
+                c.reset(new CodecInt32<OtherByteOrder, double>(odc::api::INTEGER));
             }
             c->load(ds);
             c->setDataStream(ds);
@@ -943,9 +1154,9 @@ CASE("32bit integers are as-is") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::INTEGER);
             }
             c->setDataStream(ds);
 
@@ -1018,15 +1229,15 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
                 if (withMissing) {
-                    c.reset(new CodecInt16Missing<SameByteOrder>);
+                    c.reset(new CodecInt16Missing<SameByteOrder, double>(odc::api::INTEGER));
                 } else {
-                    c.reset(new CodecInt16<SameByteOrder>);
+                    c.reset(new CodecInt16<SameByteOrder, double>(odc::api::INTEGER));
                 }
             } else {
                 if (withMissing) {
-                    c.reset(new CodecInt16Missing<OtherByteOrder>);
+                    c.reset(new CodecInt16Missing<OtherByteOrder, double>(odc::api::INTEGER));
                 } else {
-                    c.reset(new CodecInt16<OtherByteOrder>);
+                    c.reset(new CodecInt16<OtherByteOrder, double>(odc::api::INTEGER));
                 }
             }
             c->load(ds);
@@ -1063,9 +1274,9 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::INTEGER);
             }
             c->setDataStream(ds);
 
@@ -1087,6 +1298,136 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
             EXPECT(val == (double(-123.45) + 32768));
             c->decode(&val);
             EXPECT(val == (double(-123.45) + 12345));
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28 + (5 * 2)));
+        }
+    }
+}
+
+
+CASE("16bit integers are stored with an offset and can be decoded to integers") {
+
+    // Set to decode to integers rather than doubles
+    TestIntegerDecoding resetter;
+
+    // n.b. we use a non-standard, non-integral minimum to demonstrate the offset behaviour.
+
+    // Use a curious, custom missingValue to show it is being used.
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                  // no missing value
+        "\x00\x00\x00\x00\x00\xc0\x5e\xc0",  // minimum = -123
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
+        "\x04\x4f\xab\xa0\xe4\x4e\x91\x26",  // missing value = 6.54565456545599971850917315786e-123
+
+        // data to encode
+        "\x00\x00",   // 0.0
+        "\xff\xff",   // 65535 and the missing value
+        "\xff\x7f",   // 32767 (no negatives)
+        "\x00\x80",   // 32768 (no negatives)
+        "\x39\x30"    // 12345
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 4; i++) {
+
+        bool bigEndianSource = (i % 2 == 0);
+
+        bool withMissing = (i > 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : (j > 3) ? 2 : 8;
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+            if (bigEndianSource)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Construct codec directly
+
+        {
+            // Skip name of codec
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                if (withMissing) {
+                    c.reset(new CodecInt16Missing<SameByteOrder, int64_t>(odc::api::INTEGER));
+                } else {
+                    c.reset(new CodecInt16<SameByteOrder, int64_t>(odc::api::INTEGER));
+                }
+            } else {
+                if (withMissing) {
+                    c.reset(new CodecInt16Missing<OtherByteOrder, int64_t>(odc::api::INTEGER));
+                } else {
+                    c.reset(new CodecInt16<OtherByteOrder, int64_t>(odc::api::INTEGER));
+                }
+            }
+            c->load(ds);
+            c->setDataStream(ds);
+
+            EXPECT(ds.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            double val;
+            int64_t& intVal(reinterpret_cast<int64_t&>(val));
+            c->decode(&val);
+            EXPECT(intVal == -123 + 0);
+            c->decode(&val);
+            if (withMissing) {
+                // missing Value returned unchanged. TODO: change this behaviour...
+//                EXPECT(val == 6.54565456545599971850917315786e-123);
+            } else {
+                EXPECT(intVal == -123 + 65535);
+            }
+            c->decode(&val);
+            EXPECT(intVal == -123 + 32767);
+            c->decode(&val);
+            EXPECT(intVal == -123 + 32768);
+            c->decode(&val);
+            EXPECT(intVal == -123 + 12345);
+
+            EXPECT(ds.position() == eckit::Offset(28 + (5 * 2)));
+        }
+
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, withMissing ? "int16_missing" : "int16", bigEndianSource);
+
+        {
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
+            } else {
+                c = CodecFactory::instance().load(ds.other(), odc::api::INTEGER);
+            }
+            c->setDataStream(ds);
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            double val;
+            int64_t& intVal(reinterpret_cast<int64_t&>(val));
+            c->decode(&val);
+            EXPECT(intVal == -123 + 0);
+            c->decode(&val);
+            if (withMissing) {
+//                EXPECT(val == 6.54565456545599971850917315786e-123);
+            } else {
+                EXPECT(intVal == -123 + 65535);
+            }
+            c->decode(&val);
+            EXPECT(intVal == -123 + 32767);
+            c->decode(&val);
+            EXPECT(intVal == -123 + 32768);
+            c->decode(&val);
+            EXPECT(intVal == -123 + 12345);
 
             EXPECT(ds.position() == eckit::Offset(hdrSize + 28 + (5 * 2)));
         }
@@ -1141,15 +1482,15 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
                 if (withMissing) {
-                    c.reset(new CodecInt8Missing<SameByteOrder>);
+                    c.reset(new CodecInt8Missing<SameByteOrder, double>(odc::api::INTEGER));
                 } else {
-                    c.reset(new CodecInt8<SameByteOrder>);
+                    c.reset(new CodecInt8<SameByteOrder, double>(odc::api::INTEGER));
                 }
             } else {
                 if (withMissing) {
-                    c.reset(new CodecInt8Missing<OtherByteOrder>);
+                    c.reset(new CodecInt8Missing<OtherByteOrder, double>(odc::api::INTEGER));
                 } else {
-                    c.reset(new CodecInt8<OtherByteOrder>);
+                    c.reset(new CodecInt8<OtherByteOrder, double>(odc::api::INTEGER));
                 }
             }
             c->load(ds);
@@ -1179,9 +1520,9 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::INTEGER);
             }
             c->setDataStream(ds);
 
@@ -1202,6 +1543,121 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
     }
 }
 
+
+CASE("8bit integers are stored with an offset and can be decoded to integers") {
+
+    // Set to decode to integers rather than doubles
+    TestIntegerDecoding resetter;
+
+    // n.b. we use a non-standard, non-integral minimum to demonstrate the offset behaviour.
+
+    // Use a curious, custom missingValue to show it is being used.
+
+    const char* source_data[] = {
+
+        // Codec header
+        "\x00\x00\x00\x00",                  // no missing value
+        "\x00\x00\x00\x00\x00\x88\xb3\xc0",  // minimum = -5000
+        "\x00\x00\x00\x00\x00\x00\x00\x00",  // maximum unspecified
+        "\x04\x4f\xab\xa0\xe4\x4e\x91\x26",  // missing value = 6.54565456545599971850917315786e-123
+    };
+
+    // Loop through endiannesses for the source data
+
+    for (int i = 0; i < 4; i++) {
+
+        bool bigEndianSource = (i % 2 == 0);
+
+        bool withMissing = (i > 1);
+
+        std::vector<unsigned char> data;
+
+        for (size_t j = 0; j < sizeof(source_data) / sizeof(const char*); j++) {
+            size_t len = (j == 0) ? 4 : 8;
+            data.insert(data.end(), source_data[j], source_data[j] + len);
+            if (bigEndianSource)
+                std::reverse(data.end()-len, data.end());
+        }
+
+        // Add all of the data values
+
+        for (int n = 0; n < 256; n++) {
+            data.push_back(static_cast<unsigned char>(n));
+        }
+
+        // Construct codec directly
+
+        {
+            // Skip name of codec
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                if (withMissing) {
+                    c.reset(new CodecInt8Missing<SameByteOrder, int64_t>(odc::api::INTEGER));
+                } else {
+                    c.reset(new CodecInt8<SameByteOrder, int64_t>(odc::api::INTEGER));
+                }
+            } else {
+                if (withMissing) {
+                    c.reset(new CodecInt8Missing<OtherByteOrder, int64_t>(odc::api::INTEGER));
+                } else {
+                    c.reset(new CodecInt8<OtherByteOrder, int64_t>(odc::api::INTEGER));
+                }
+            }
+            c->load(ds);
+            c->setDataStream(ds);
+
+            EXPECT(ds.position() == eckit::Offset(28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            double val;
+            int64_t& intVal = reinterpret_cast<int64_t&>(val);
+            for (int n = 0; n < 255; n++) {
+                c->decode(&val);
+                EXPECT(intVal == (-5000 + n));
+            }
+
+            c->decode(&val);
+            // TODO: Missing
+//            EXPECT(val == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
+
+            EXPECT(ds.position() == eckit::Offset(28 + 256));
+        }
+
+        // Construct codec from factory
+
+        size_t hdrSize = prepend_codec_selection_header(data, withMissing ? "int8_missing" : "int8", bigEndianSource);
+
+        {
+            GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
+
+            std::unique_ptr<Codec> c;
+            if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
+                c = CodecFactory::instance().load(ds.same(), odc::api::INTEGER);
+            } else {
+                c = CodecFactory::instance().load(ds.other(), odc::api::INTEGER);
+            }
+            c->setDataStream(ds);
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28));
+            EXPECT(c->dataSizeDoubles() == 1);
+
+            double val;
+            int64_t& intVal = reinterpret_cast<int64_t&>(val);
+            for (int n = 0; n < 255; n++) {
+                c->decode(&val);
+                EXPECT(intVal == (-5000 + n));
+            }
+
+            c->decode(&val);
+            // TODO: Missing
+//            EXPECT(val == (withMissing ? 6.54565456545599971850917315786e-123 : (-5000.5 + 255)));
+
+            EXPECT(ds.position() == eckit::Offset(hdrSize + 28 + 256));
+        }
+    }
+}
 
 CASE("Character strings can be stored in a flat list, and indexed") {
 
@@ -1269,15 +1725,15 @@ CASE("Character strings can be stored in a flat list, and indexed") {
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
                 if (bits16) {
-                    c.reset(new CodecInt16String<SameByteOrder>);
+                    c.reset(new CodecInt16String<SameByteOrder>(odc::api::STRING));
                 } else {
-                    c.reset(new CodecInt8String<SameByteOrder>);
+                    c.reset(new CodecInt8String<SameByteOrder>(odc::api::STRING));
                 }
             } else {
                 if (bits16) {
-                    c.reset(new CodecInt16String<OtherByteOrder>);
+                    c.reset(new CodecInt16String<OtherByteOrder>(odc::api::STRING));
                 } else {
-                    c.reset(new CodecInt8String<OtherByteOrder>);
+                    c.reset(new CodecInt8String<OtherByteOrder>(odc::api::STRING));
                 }
             }
             c->load(ds);
@@ -1312,9 +1768,9 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::STRING);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::STRING);
             }
             c->setDataStream(ds);
 
@@ -1407,15 +1863,15 @@ CASE("Character strings can be stored in a flat list, and indexed, and be longer
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
                 if (bits16) {
-                    c.reset(new CodecInt16String<SameByteOrder>);
+                    c.reset(new CodecInt16String<SameByteOrder>(odc::api::STRING));
                 } else {
-                    c.reset(new CodecInt8String<SameByteOrder>);
+                    c.reset(new CodecInt8String<SameByteOrder>(odc::api::STRING));
                 }
             } else {
                 if (bits16) {
-                    c.reset(new CodecInt16String<OtherByteOrder>);
+                    c.reset(new CodecInt16String<OtherByteOrder>(odc::api::STRING));
                 } else {
-                    c.reset(new CodecInt8String<OtherByteOrder>);
+                    c.reset(new CodecInt8String<OtherByteOrder>(odc::api::STRING));
                 }
             }
             c->load(ds);
@@ -1453,9 +1909,9 @@ CASE("Character strings can be stored in a flat list, and indexed, and be longer
 
             std::unique_ptr<Codec> c;
             if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
-                c = CodecFactory::instance().load(ds.same());
+                c = CodecFactory::instance().load(ds.same(), odc::api::STRING);
             } else {
-                c = CodecFactory::instance().load(ds.other());
+                c = CodecFactory::instance().load(ds.other(), odc::api::STRING);
             }
             c->setDataStream(ds);
 

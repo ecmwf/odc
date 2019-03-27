@@ -13,10 +13,10 @@
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/types/FixedString.h"
+#include "eckit/utils/MD5.h"
 
 #include "odc/core/DataStream.h"
 #include "odc/core/Exceptions.h"
-#include "odc/MD5.h"
 #include "odc/core/MetaData.h"
 #include "odc/ODBAPISettings.h"
 

@@ -25,7 +25,7 @@ namespace codec {
 // Now the actual codecs!
 
 
-template<typename ByteOrder>
+template<typename ByteOrder, typename ValueType>
 class CodecConstant : public core::DataStreamCodec<ByteOrder> {
 
 public: // definitions
@@ -34,20 +34,22 @@ public: // definitions
 
 public: // methods
 
-    CodecConstant(const std::string& name=codec_name()) : core::DataStreamCodec<ByteOrder>(name) {}
+    CodecConstant(api::ColumnType type, const std::string& name=codec_name()) : core::DataStreamCodec<ByteOrder>(name, type) {}
     ~CodecConstant() {}
 
 private: // methods
 
+    void gatherStats(const double& v) override;
     unsigned char* encode(unsigned char* p, const double& d) override;
     void decode(double* out) override;
+    void skip() override;
 
     void print(std::ostream& s) const;
 };
 
 
 template<typename ByteOrder>
-class CodecConstantString : public CodecConstant<ByteOrder> {
+class CodecConstantString : public CodecConstant<ByteOrder, double> {
 
 public: // name
 
@@ -55,12 +57,13 @@ public: // name
 
 public: // methods
 
-    CodecConstantString() : CodecConstant<ByteOrder>(codec_name()) {}
+    CodecConstantString(api::ColumnType type) : CodecConstant<ByteOrder, double>(type, codec_name()) {}
 
 private: // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override;
     void decode(double* out) override;
+    void skip() override;
 
     void print(std::ostream& s) const;
     size_t numStrings() const override { return 1; }
@@ -73,19 +76,30 @@ private: // methods
 
 // Implementation of Constant
 
-template <typename ByteOrder>
-unsigned char* CodecConstant<ByteOrder>::encode(unsigned char* p, const double&) {
+template <typename ByteOrder, typename ValueType>
+void CodecConstant<ByteOrder, ValueType>::gatherStats(const double& v) {
+    static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
+    const ValueType& val(reinterpret_cast<const ValueType&>(v));
+    core::Codec::gatherStats(val);
+}
+
+template <typename ByteOrder, typename ValueType>
+unsigned char* CodecConstant<ByteOrder, ValueType>::encode(unsigned char* p, const double&) {
     return p;
 }
 
-template <typename ByteOrder>
-void CodecConstant<ByteOrder>::decode(double* out) {
-    (*out) = this->min_;
+template <typename ByteOrder, typename ValueType>
+void CodecConstant<ByteOrder, ValueType>::decode(double* out) {
+    static_assert(sizeof(ValueType) == sizeof(double), "unsafe casting check");
+    *reinterpret_cast<ValueType*>(out) = static_cast<ValueType>(this->min_);
 }
 
-template <typename ByteOrder>
-void CodecConstant<ByteOrder>::print(std::ostream& s) const {
-    s << this->name_ << ", value=" << std::fixed << this->min_;
+template <typename ByteOrder, typename ValueType>
+void CodecConstant<ByteOrder, ValueType>::skip() {}
+
+template <typename ByteOrder, typename ValueType>
+void CodecConstant<ByteOrder, ValueType>::print(std::ostream& s) const {
+    s << this->name_ << ", value=" << std::fixed << static_cast<ValueType>(this->min_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -101,6 +115,9 @@ template <typename ByteOrder>
 void CodecConstantString<ByteOrder>::decode(double* out) {
     (*out) = this->min_;
 }
+
+template <typename ByteOrder>
+void CodecConstantString<ByteOrder>::skip() {}
 
 template <typename ByteOrder>
 void CodecConstantString<ByteOrder>::load(core::DataStream<ByteOrder>& ds) {
@@ -122,7 +139,7 @@ template <typename ByteOrder>
 void CodecConstantString<ByteOrder>::print(std::ostream& s) const {
     s << this->name_ << ", value='"
       << std::string(reinterpret_cast<const char*>(&this->min_), sizeof(double))
-      << "'" << std::endl;
+      << "'";
 }
 
 //----------------------------------------------------------------------------------------------------------------------

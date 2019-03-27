@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 1996-2012 ECMWF.
+ * (C) Copyright 2019- ECMWF.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -9,24 +9,39 @@
  */
 
 
-#include "odc/codec/IntegerMissing.h"
-#include "odc/core/CodecFactory.h"
+/// @author Simon Smart
+/// @date March 2019
+
+#ifndef odc_api_ColumnInfo_H
+#define odc_api_ColumnInfo_H
+
+#include <string>
+#include <vector>
+
+#include "odc/api/ColumnType.h"
 
 namespace odc {
-namespace codec {
+namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-// Self registration
+struct ColumnInfo {
 
-namespace {
-    core::IntegerCodecBuilder<CodecInt8Missing> int8MissingBuilder;
-    core::IntegerCodecBuilder<CodecInt16Missing> int16MissingBuilder;
-    core::IntegerCodecBuilder<CodecConstantOrMissing> constantOrMissingBuilder;
-    core::CodecBuilder<CodecRealConstantOrMissing> realConstantOrMissingBuilder;
-}
+    struct Bit {
+        std::string name;
+        int size;
+        int offset;
+    };
+
+    std::string name;
+    ColumnType type;
+    size_t decodedSize;
+    std::vector<Bit> bitfield;
+};
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace codec
+} // namespace api
 } // namespace odc
+
+#endif // odc_api_StridedData_H

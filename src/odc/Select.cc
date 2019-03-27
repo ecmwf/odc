@@ -19,7 +19,7 @@
 #include "odc/SelectIterator.h"
 #include "odc/sql/SQLOutputConfig.h"
 #include "odc/sql/SQLSelectOutput.h"
-#include "odc/TODATable.h"
+#include "odc/sql/TODATable.h"
 
 using namespace eckit;
 

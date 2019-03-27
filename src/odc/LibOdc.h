@@ -27,11 +27,11 @@ public:
 
     static const LibOdc& instance();
 
+    virtual std::string version() const;
+
 protected:
 
     const void* addr() const;
-
-    virtual std::string version() const;
 
     virtual std::string gitsha1(unsigned int count) const;
 

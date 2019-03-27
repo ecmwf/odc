@@ -38,6 +38,9 @@ public:
     void setHome(const char *argv0);
     std::string fileInHome(const std::string&);
 
+    void treatIntegersAsDoubles(bool flag);
+    bool integersAsDoubles() const;
+
 	static bool debug;
 
 private:
@@ -49,6 +52,7 @@ private:
 	size_t setvbufferSize_;
 
 	bool useAIO_;
+    bool integersAsDoubles_;
 
     friend struct eckit::NewAlloc0<ODBAPISettings>;
     std::string home_;

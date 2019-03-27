@@ -134,7 +134,7 @@ void odb_set_headerBufferSize(unsigned int n) { ODBAPISettings::instance().heade
 unsigned int odb_get_setvbufferSize() { return ODBAPISettings::instance().setvbufferSize(); } 
 void odb_set_setvbufferSize(unsigned int n) { ODBAPISettings::instance().setvbufferSize(n); }
 
-const char* odc_version() { return odc::ODBAPIVersion::version(); }
+const char* odc_version(); // { return odc::ODBAPIVersion::version(); }
 const char* odc_git_sha1() { return odc::ODBAPIVersion::gitsha1(); }
 
 unsigned int odc_format_version_major() { return odc::ODBAPIVersion::formatVersionMajor(); }

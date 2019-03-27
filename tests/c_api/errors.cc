@@ -42,9 +42,7 @@ CASE("By default we throw on error") {
 
     // Don't explicitly set handler. Test default in first case.
 
-    std::unique_ptr<odb_t> o(odc_open_for_read("../does-not-exist.odb"));
-
-    EXPECT_THROWS_AS(odc_num_tables(o.get()), eckit::CantOpenFile);
+    EXPECT_THROWS_AS(odc_open_for_read("../does-not-exist.odb"), eckit::CantOpenFile);
 }
 
 CASE("Correctly open an odb file") {
@@ -53,9 +51,10 @@ CASE("Correctly open an odb file") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
 
-    int ntables = odc_num_tables(o.get());
+    odb_table_t* t = odc_next_table(o.get(), false);
+    EXPECT(t != 0);
     EXPECT(odc_errno == 0);
-    EXPECT(ntables == 333);
+    odc_free_table(t);
 }
 
 CASE("We can report errors through the API") {
@@ -64,20 +63,16 @@ CASE("We can report errors through the API") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../does-not-exist.odb"));
 
-    EXPECT(odc_errno == 0); // Opening the file is lazy
-
-    int n = odc_num_tables(o.get());
-
     std::string expectedError = "Cannot open ../does-not-exist.odb  (No such file or directory)";
 
-    EXPECT(n == 0);
+    EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
     EXPECT(odc_error_string() == expectedError);
 
-    n = odc_num_tables(o.get());
+    o.reset(odc_open_for_read("../does-not-exist.odb"));
 
-    EXPECT(n == 0);
+    EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
     EXPECT(odc_error_string() == expectedError);
@@ -89,13 +84,9 @@ CASE("Don't continue unless error has been reset") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../does-not-exist.odb"));
 
-    EXPECT(odc_errno == 0); // Opening the file is lazy
-
-    int n = odc_num_tables(o.get());
-
     std::string expectedError = "Cannot open ../does-not-exist.odb  (No such file or directory)";
 
-    EXPECT(n == 0);
+    EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
     EXPECT(odc_error_string() == expectedError);
@@ -103,16 +94,16 @@ CASE("Don't continue unless error has been reset") {
     // Reset error condition (in principle handle it) then try again
     odc_reset_error();
 
-    n = odc_num_tables(o.get());
+    o.reset(odc_open_for_read("../does-not-exist.odb"));
 
-    EXPECT(n == 0);
+    EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
     EXPECT(odc_error_string() == expectedError);
 
     // We haven't handled the previous error, so the API will barf
 
-    EXPECT_THROWS_AS(odc_num_tables(o.get()), eckit::SeriousBug);
+    EXPECT_THROWS_AS(odc_open_for_read("../does-not-exist.odb"), eckit::SeriousBug);
 
     // Reset error before cleanup
     odc_reset_error();

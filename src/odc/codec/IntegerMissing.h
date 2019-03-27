@@ -18,70 +18,32 @@ namespace codec {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template <typename ByteOrder>
-class CodecInt8Missing : public BaseCodecInteger<ByteOrder> {
-
-public: // definitions
-
-    constexpr static const char* codec_name() { return "int8_missing"; }
-    using value_type = uint8_t;
-    constexpr static value_type missingMarker = 0xff;
+template <typename ByteOrder,
+          typename ValueType,
+          typename InternalValueType,
+          class DerivedCodec> // codec_nam passed through CRTP as char* is odd to deal with in template
+class BaseCodecMissing : public BaseCodecInteger<ByteOrder, ValueType> {
 
 public: // methods
 
-    CodecInt8Missing(const std::string& name=codec_name(), double minmaxmissing=odc::MDI::integerMDI()) :
-        BaseCodecInteger<ByteOrder>(name, minmaxmissing) {}
-    ~CodecInt8Missing() override {}
+    BaseCodecMissing(api::ColumnType type,
+                     const std::string& name=DerivedCodec::codec_name(),
+                     double minmaxmissing=odc::MDI::integerMDI()) :
+        BaseCodecInteger<ByteOrder, ValueType>(type, name, minmaxmissing) {}
+    ~BaseCodecMissing() {}
 
 private: // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override {
-        value_type s;
-        if (d == this->missingValue_) {
-            s = missingMarker;
+        static_assert(sizeof(ValueType) == sizeof(d), "unsafe casting check");
+
+        const ValueType& val(reinterpret_cast<const ValueType&>(d));
+        InternalValueType s;
+        if (val == this->missingValue_) {
+            s = DerivedCodec::missingMarker;
         } else {
-            s = d - this->min_;
-            ASSERT(s != missingMarker);
-        }
-        ::memcpy(p, &s, sizeof(s));
-        return p + sizeof(s);
-    }
-
-    void decode(double* out) override {
-        value_type s;
-        this->ds().read(s);
-        (*out) = (s == missingMarker ? this->missingValue_ : (s + this->min_));
-    }
-};
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-// This can be template combined with CodecInt8Missing...
-
-template <typename ByteOrder>
-class CodecInt16Missing : public BaseCodecInteger<ByteOrder> {
-
-public: // definitions
-
-    constexpr static const char* codec_name() { return "int16_missing"; }
-    using value_type = uint16_t;
-    constexpr static value_type missingMarker = 0xffff;
-
-public: // methods
-
-    CodecInt16Missing() : BaseCodecInteger<ByteOrder>(codec_name()) {}
-    ~CodecInt16Missing() override {}
-
-private: // methods
-
-    unsigned char* encode(unsigned char* p, const double& d) override {
-        value_type s;
-        if (d == this->missingValue_) {
-            s = missingMarker;
-        } else {
-            s = d - this->min_;
-            ASSERT(s != missingMarker);
+            s = val - this->min_;
+            ASSERT(s != DerivedCodec::missingMarker);
         }
         ByteOrder::swap(s);
         ::memcpy(p, &s, sizeof(s));
@@ -89,26 +51,50 @@ private: // methods
     }
 
     void decode(double* out) override {
-        value_type s;
+        static_assert(sizeof(ValueType) == sizeof(out), "unsafe casting check");
+
+        ValueType* val_out = reinterpret_cast<ValueType*>(out);
+        InternalValueType s;
         this->ds().read(s);
-        (*out) = (s == missingMarker ? this->missingValue_ : (s + this->min_));
+        (*val_out) = (s == DerivedCodec::missingMarker ? this->missingValue_ : (s + this->min_));
     }
+
+    void skip() override {
+        this->ds().advance(sizeof(InternalValueType));
+    }
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+template <typename ByteOrder, typename ValueType>
+struct CodecInt8Missing : public BaseCodecMissing<ByteOrder, ValueType, uint8_t, CodecInt8Missing<ByteOrder, ValueType>> {
+    constexpr static const char* codec_name() { return "int8_missing"; }
+    constexpr static uint8_t missingMarker = 0xff;
+    using BaseCodecMissing<ByteOrder, ValueType, uint8_t, CodecInt8Missing<ByteOrder, ValueType>>::BaseCodecMissing;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template <typename ByteOrder>
-class CodecConstantOrMissing : public CodecInt8Missing<ByteOrder> {
+template<typename ByteOrder, typename ValueType>
+struct CodecInt16Missing : public BaseCodecMissing<ByteOrder, ValueType, uint16_t, CodecInt16Missing<ByteOrder, ValueType>> {
+    constexpr static const char* codec_name() { return "int16_missing"; }
+    constexpr static uint16_t missingMarker = 0xffff;
+    using BaseCodecMissing<ByteOrder, ValueType, uint16_t, CodecInt16Missing<ByteOrder, ValueType>>::BaseCodecMissing;
+};
 
-public: // definitions
+//----------------------------------------------------------------------------------------------------------------------
+
+
+template <typename ByteOrder, typename ValueType>
+struct CodecConstantOrMissing : public BaseCodecMissing<ByteOrder, ValueType, uint8_t, CodecConstantOrMissing<ByteOrder, ValueType>> {
+
+    static_assert(sizeof(ValueType) == sizeof(double), "unsafe casting check");
 
     constexpr static const char* codec_name() { return "constant_or_missing"; }
+    constexpr static uint8_t missingMarker = 0xff;
 
-public: // methods
-
-    CodecConstantOrMissing(const std::string& name=codec_name(), double minmaxmissing=odc::MDI::integerMDI()) :
-        CodecInt8Missing<ByteOrder>(name, minmaxmissing) {}
-    ~CodecConstantOrMissing() override {}
+    using BaseCodecMissing<ByteOrder, ValueType, uint8_t, CodecConstantOrMissing<ByteOrder, ValueType>>::BaseCodecMissing;
 
 private: // methods
 
@@ -130,7 +116,7 @@ private: // methods
 //----------------------------------------------------------------------------------------------------------------------
 
 template <typename ByteOrder>
-class CodecRealConstantOrMissing : public CodecConstantOrMissing<ByteOrder> {
+class CodecRealConstantOrMissing : public CodecConstantOrMissing<ByteOrder, double> {
 
 public: // definitions
 
@@ -138,8 +124,8 @@ public: // definitions
 
 public: // methods
 
-    CodecRealConstantOrMissing() :
-        CodecConstantOrMissing<ByteOrder>(codec_name(), odc::MDI::realMDI()) {}
+    CodecRealConstantOrMissing(api::ColumnType type) :
+        CodecConstantOrMissing<ByteOrder, double>(type, codec_name(), odc::MDI::realMDI()) {}
 
     ~CodecRealConstantOrMissing() override {}
 };

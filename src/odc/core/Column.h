@@ -136,7 +136,7 @@ void Column::load(DataStream<ByteOrder>& ds)
         ASSERT(names.size() == sizes.size());
 	}
 
-    coder_ = CodecFactory::instance().load(ds);
+    coder_ = CodecFactory::instance().load(ds, api::ColumnType(type_));
 }
 
 template <typename ByteOrder>
@@ -183,7 +183,7 @@ void Column::type(api::ColumnType t)
 			break;
 	}
 
-    coder(CodecFactory::instance().build<ByteOrder>(codecName));
+    coder(CodecFactory::instance().build<ByteOrder>(codecName, t));
 
     // TODO: when we have codec unsigned_int64 it will have 0 as 
     if (type_ == BITFIELD) missingValue(MDI::bitfieldMDI());

@@ -12,10 +12,11 @@
 ///
 /// @author Piotr Kuchta, ECMWF, September 2010
 
-#include "odc/Select.h"
-#include "odc/Reader.h"
+#include "eckit/io/FileHandle.h"
 
-#include "ImportTool.h"
+#include "odc/Select.h"
+
+#include "odc/api/Odc.h"
 #include "TestCase.h"
 
 using namespace std;
@@ -41,7 +42,10 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i)
 		s << i << std::endl;
-    odc::tool::ImportTool::importText(s.str().c_str(), "TestAggregateFunctions3.odb");
+    FileHandle dh("TestAggregateFunctions3.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::importText(s, dh);
 }
 
 

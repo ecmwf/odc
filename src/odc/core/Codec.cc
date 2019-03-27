@@ -21,17 +21,17 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Codec::Codec(const std::string& name)
+Codec::Codec(const std::string& name, api::ColumnType type)
 : name_(name),
   hasMissing_(false),
   missingValue_(odc::MDI::realMDI()),
   min_(missingValue_),
-  max_(missingValue_)
-{}
+  max_(missingValue_),
+  type_(type) {}
 
 std::unique_ptr<Codec> Codec::clone()
 {
-    auto c = CodecFactory::instance().build<SameByteOrder>(name_);
+    auto c = CodecFactory::instance().build<SameByteOrder>(name_, type_);
     c->hasMissing_ = hasMissing_;
     c->missingValue_ = missingValue_;
     c->min_ = min_;
