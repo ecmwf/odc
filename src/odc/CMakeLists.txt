@@ -12,9 +12,10 @@ endif()
 list( APPEND odclib_src_files
 
 api/odc.h
+api/odc_c.h
 api/odc.cc
-api/Odc_cpp.h
-api/Odc_cpp.cc
+api/Odb.h
+api/Odb.cc
 api/ColumnType.h
 api/ColumnInfo.h
 api/StridedData.h
@@ -23,8 +24,6 @@ pyodbapi.h
 ODBAPIVersionSHA1.cc
 StringTool.cc
 StringTool.h
-###>>>#ShiftedBitColumnExpression.cc
-###>>>#ShiftedBitColumnExpression.h
 CommandLineParser.cc
 CommandLineParser.h
 Comparator.cc
@@ -100,7 +99,7 @@ Odb2Hub.cc
 RequestUtils.h
 RequestUtils.cc
 Archiver.h
-Archiver.cc 
+Archiver.cc
 Stager.h
 Stager.cc
 ODBTarget.cc
@@ -207,11 +206,10 @@ ecbuild_add_library( TARGET             odccore
                      INSTALL_HEADERS    LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc
                      PRIVATE_INCLUDES   ${METKIT_INCLUDE_DIRS}         # Only for MarsRequestHandle
-                     COMPONENT          server
                      SOURCES            ${odclib_src_files}
                      GENERATED          ODBAPIVersionSHA1.cc
                      TEMPLATES          ${odclib_templates}
                      LINKER_LANGUAGE    CXX
-                     LIBS               eckit metkit eckit_sql )
+                     LIBS               metkit eckit_sql eckit )
 
 

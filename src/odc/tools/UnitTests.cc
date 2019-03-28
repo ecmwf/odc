@@ -22,7 +22,7 @@
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odb.h"
 #include "odc/Comparator.h"
 #include "odc/core/TablesReader.h"
 #include "odc/data/DataHandleFactory.h"

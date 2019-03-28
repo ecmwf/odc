@@ -15,7 +15,7 @@
 #include "eckit/io/StdFileHandle.h"
 #include "eckit/io/FileHandle.h"
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odb.h"
 #include "odc/Select.h"
 #include "odc/Writer.h"
 

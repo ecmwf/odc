@@ -19,7 +19,7 @@
 #include "eckit/io/FileDescHandle.h"
 
 #include "odc/api/odc.h"
-#include "odc/api/Odc_cpp.h"
+#include "odc/api/Odb.h"
 
 using namespace odc::api;
 using namespace eckit;

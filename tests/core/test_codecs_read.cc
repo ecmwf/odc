@@ -13,7 +13,7 @@
 #include "eckit/io/DataHandle.h"
 #include "eckit/eckit_ecbuild_config.h"
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odb.h"
 #include "odc/core/Codec.h"
 #include "odc/codec/Constant.h"
 #include "odc/codec/Integer.h"

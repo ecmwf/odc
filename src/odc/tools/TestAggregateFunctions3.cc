@@ -16,7 +16,7 @@
 
 #include "odc/Select.h"
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odb.h"
 #include "TestCase.h"
 
 using namespace std;

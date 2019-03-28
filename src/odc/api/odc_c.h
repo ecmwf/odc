@@ -8,9 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
-/* n.b. Nothing in this file that CFFI will struggle to parse --> pure c, no preprocessor directives. */
+/** @note Nothing in this file that CFFI will struggle to parse --> pure c, no preprocessor directives. */
+/**       This file should not be included in compile code directly. Include odc/api/odc.h instead.     */
 
-/*---------------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/
 
 /* Types forward declared, but not defined (only accessible through function API). */
 
@@ -124,4 +125,4 @@ void* odc_import_encode_text(const char* data, const char* delimiter, void* buff
 void* odc_import_encode_file(int fd, const char* delimiter, void* buffer, long* size);
 void odc_import_encode_file_to_file(int input_fd, int output_fd, const char* delimiter);
 
-/*---------------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------------*/

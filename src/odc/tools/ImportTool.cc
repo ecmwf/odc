@@ -18,7 +18,7 @@
 #include "eckit/sql/SQLSession.h"
 #include "eckit/sql/SQLStatement.h"
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odb.h"
 #include "odc/sql/SQLOutputConfig.h"
 #include "odc/sql/TODATable.h"
 

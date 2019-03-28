@@ -17,7 +17,8 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/FileHandle.h"
 
-#include "odc/api/Odc.h"
+#include "odc/api/Odb.h"
+
 #include "odc/Select.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"

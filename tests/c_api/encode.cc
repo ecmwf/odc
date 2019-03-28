@@ -12,7 +12,7 @@
 
 #include "eckit/testing/Test.h"
 
-#include "odc/odc.h"
+#include "odc/api/odc.h"
 
 using namespace eckit::testing;
 

@@ -16,7 +16,7 @@
 #include "eckit/io/FileHandle.h"
 
 #include "odc/Reader.h"
-#include "odc/api/Odc.h"
+#include "odc/api/Odb.h"
 
 
 #include "TestCase.h"
