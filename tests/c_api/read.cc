@@ -27,9 +27,9 @@ template <> struct default_delete<odb_table_t> {
     void operator() (odb_table_t* t) { odc_free_table(t); }
 };
 
-template <> struct default_delete<const odb_decoded_t> {
-    void operator() (const odb_decoded_t* dt) { odc_free_odb_decoded(dt); }
-};
+//template <> struct default_delete<const odb_decoded_t> {
+//    void operator() (const odb_decoded_t* dt) { odc_free_odb_decoded(dt); }
+//};
 
 }
 
@@ -57,19 +57,19 @@ CASE("Count lines in an existing ODB file") {
 
 CASE("Decode an entire ODB file") {
 
-    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
-
-    size_t ntables = 0;
-
-    std::unique_ptr<odb_table_t> table;
-    while (table.reset(odc_next_table(o.get(), false)), table) {
-
-        std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
-        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
-        EXPECT(decoded->ncolumns == 51);
-
-        ++ntables;
-    }
+//    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
+//
+//    size_t ntables = 0;
+//
+//    std::unique_ptr<odb_table_t> table;
+//    while (table.reset(odc_next_table(o.get(), false)), table) {
+//
+//        std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
+//        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
+//        EXPECT(decoded->ncolumns == 51);
+//
+//        ++ntables;
+//    }
 }
 
 // ------------------------------------------------------------------------------------------------------
