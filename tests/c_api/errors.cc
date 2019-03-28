@@ -10,6 +10,7 @@
 
 #include <memory>
 
+#include "eckit/utils/StringTools.h"
 #include "eckit/testing/Test.h"
 
 #include "odc/api/odc.h"
@@ -63,19 +64,20 @@ CASE("We can report errors through the API") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../does-not-exist.odb"));
 
-    std::string expectedError = "Cannot open ../does-not-exist.odb  (No such file or directory)";
+    std::string expected = "Cannot open ../does-not-exist.odb"; // test start since strerror_r() message isn't portable
 
     EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
-    EXPECT(odc_error_string() == expectedError);
+
+    EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
 
     o.reset(odc_open_for_read("../does-not-exist.odb"));
 
     EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
-    EXPECT(odc_error_string() == expectedError);
+    EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
 }
 
 CASE("Don't continue unless error has been reset") {
@@ -84,12 +86,12 @@ CASE("Don't continue unless error has been reset") {
 
     std::unique_ptr<odb_t> o(odc_open_for_read("../does-not-exist.odb"));
 
-    std::string expectedError = "Cannot open ../does-not-exist.odb  (No such file or directory)";
+    std::string expected = "Cannot open ../does-not-exist.odb"; // test start since strerror_r() message isn't portable
 
     EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
-    EXPECT(odc_error_string() == expectedError);
+    EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
 
     // Reset error condition (in principle handle it) then try again
     odc_reset_error();
@@ -99,7 +101,7 @@ CASE("Don't continue unless error has been reset") {
     EXPECT(!o);
     EXPECT(odc_errno != 0);
     EXPECT(odc_error_string() != 0);
-    EXPECT(odc_error_string() == expectedError);
+    EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
 
     // We haven't handled the previous error, so the API will barf
 
