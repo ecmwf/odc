@@ -47,6 +47,7 @@ extern const char* ODC_TYPE_NAMES[];
 const char* odc_type_name(int type);
 long odc_missing_integer();
 const char* odc_version();
+const char* odc_git_sha1();
 
 /* Error handling */
 

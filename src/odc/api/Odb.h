@@ -67,6 +67,7 @@ public: // methods
     static void setDoubleMissingValue(double val);
 
     static const std::string& version();
+    static const std::string& gitsha1();
 };
 
 //----------------------------------------------------------------------------------------------------------------------

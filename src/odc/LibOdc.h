@@ -29,11 +29,11 @@ public:
 
     virtual std::string version() const;
 
+    virtual std::string gitsha1(unsigned int count) const;
+
 protected:
 
     const void* addr() const;
-
-    virtual std::string gitsha1(unsigned int count) const;
 
 };
 

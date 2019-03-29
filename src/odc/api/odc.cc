@@ -211,6 +211,12 @@ const char* odc_version() {
     });
 }
 
+const char* odc_git_sha1() {
+    return wrapApiFunction([]{
+        return Settings::version().c_str();
+    });
+}
+
 /* Basic READ objects */
 
 odb_t* odc_open_for_read(const char* filename) {

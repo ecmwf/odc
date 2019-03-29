@@ -314,6 +314,11 @@ const std::string& Settings::version() {
     return  vstring;
 }
 
+const std::string& Settings::gitsha1() {
+    static std::string vstring = LibOdc::instance().gitsha1(40);
+    return  vstring;
+}
+
 long Settings::integerMissingValue() {
     return odc::MDI::integerMDI();
 }
