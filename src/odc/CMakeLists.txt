@@ -36,8 +36,6 @@ DispatchingWriter.cc
 DispatchingWriter.h
 Duration.cc
 Duration.h
-FastODA2Request.cc
-FastODA2Request.h
 MDI.cc
 MDI.h
 GribCodes.cc
@@ -94,12 +92,8 @@ FileCollector.h
 FileCollector.cc
 FileMapper.h
 FileMapper.cc
-Odb2Hub.h
-Odb2Hub.cc
 RequestUtils.h
 RequestUtils.cc
-Archiver.h
-Archiver.cc
 Stager.h
 Stager.cc
 ODBTarget.cc
@@ -118,6 +112,8 @@ core/Header.cc
 core/Header.h
 core/MetaData.cc
 core/MetaData.h
+core/Span.cc
+core/Span.h
 core/Table.cc
 core/Table.h
 core/TablesReader.cc
@@ -168,6 +164,9 @@ sql/function/FunctionRGG_BOXLAT.h
 sql/function/FunctionRGG_BOXLON.cc
 sql/function/FunctionRGG_BOXLON.h
 
+requests/OdbToRequest.cc
+requests/OdbToRequest.h
+
 utility/Tracer.cc
 utility/Tracer.h
 
@@ -182,9 +181,6 @@ data/HttpHandle.h
 data/HttpHandle.cc
 data/HttpHandleFactory.h
 data/HttpHandleFactory.cc
-# requires  metkit
-data/MarsHandleFactory.cc
-data/MarsHandleFactory.h
 
 #iterator-api/BaseReader.cc
 #iterator-api/BaseReader.h
@@ -194,7 +190,6 @@ data/MarsHandleFactory.h
 
 list( APPEND odclib_templates
 ConstantSetter.cc
-FastODA2Request.cc
 ODAUpdatingIterator.cc
 WriterDispatchingIterator.cc
 MDUpdatingIterator.cc

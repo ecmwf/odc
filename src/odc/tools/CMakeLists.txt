@@ -57,9 +57,6 @@ TestBitfields.cc
 TestCommandLineParsing.cc
 TestDispatchingWriter.cc
 TestDistinct.cc
-TestFastODA2Request.cc
-TestFastODA2Request2.cc
-TestFastODA2Request3.cc
 TestFunctionDateAndTime.cc
 TestFunctionTdiff.cc
 TestFunctionThin.cc

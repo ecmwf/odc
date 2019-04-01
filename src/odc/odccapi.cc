@@ -15,7 +15,6 @@
 
 #include "eckit/runtime/Main.h"
 
-#include "odc/FastODA2Request.h"
 #include "odc/core/MetaData.h"
 #include "odc/core/TablesReader.h"
 #include "odc/ODAHandle.h"
@@ -97,29 +96,26 @@ double odb_count(const char * filename)
 
 int get_blocks_offsets(const char* fileName, size_t* numberOfBlocks,  off_t** offsets, size_t** sizes)
 {
-	FastODA2Request<ODA2RequestClientTraits> o;
-	o.mergeSimilarBlocks(false);
+    core::TablesReader reader(fileName);
 
-	OffsetList offs;
-	LengthList lengths;
-	std::vector<ODAHandle*> handles;
+    OffsetList offs;
+    LengthList lengths;
 
-	o.scanFile(fileName, offs, lengths, handles);
+    for (const auto& table : reader) {
+        offs.push_back(table.startPosition());
+        lengths.push_back(table.nextPosition() - table.startPosition());
+    }
 
 	ASSERT(offs.size() == lengths.size());
-	ASSERT(offs.size() == handles.size());
-
 	size_t n = offs.size();
 
 	*numberOfBlocks = n;
 	*offsets = new off_t[n];
 	*sizes = new size_t[n];
 	
-	for (size_t i = 0; i < n; ++i)
-	{
+    for (size_t i = 0; i < n; ++i) {
 		(*offsets)[i] = offs[i];
 		(*sizes)[i] = lengths[i];
-		delete handles[i];
 	}
 
 	return 0;

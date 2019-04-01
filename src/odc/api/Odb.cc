@@ -133,7 +133,7 @@ Optional<Table> OdbImpl::next(bool aggregated, long rowlimit) {
         }
     }
 
-    ASSERT(rowlimit < 0 || nrows <= rowlimit);
+    ASSERT(rowlimit < 0 || static_cast<long>(nrows) <= rowlimit);
 
     return Optional<Table>(tbl);
 }

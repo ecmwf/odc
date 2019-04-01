@@ -80,26 +80,45 @@ Buffer Table::readEncodedData() {
     return data;
 }
 
+const std::map<std::string, size_t>& Table::columnLookup() {
+
+    if (columnLookup_.empty()) {
+
+        const MetaData& metadata(columns());
+        size_t ncols = metadata.size();
+
+        for (size_t i = 0; i < ncols; i++) {
+            const auto& nm(metadata[i]->name());
+            if (!columnLookup_.emplace(nm, i).second) {
+                std::stringstream ss;
+                ss << "Duplicate column '" << nm << "' " << " found in table";
+                throw ODBDecodeError(ss.str(), Here());
+            }
+            simpleColumnLookup_.emplace(nm.substr(0, nm.find('@')), i);
+        }
+    }
+
+    return columnLookup_;
+}
+
+const std::map<std::string, size_t>&Table::simpleColumnLookup() {
+
+    if (simpleColumnLookup_.empty()) {
+        columnLookup();
+    }
+
+    return simpleColumnLookup_;
+}
+
+
 void Table::decode(DecodeTarget& target) {
 
     const MetaData& metadata(columns());
     size_t nrows = metadata.rowsNumber();
     size_t ncols = metadata.size();
 
-    // Create a lookup for the columns by name
-
-    std::map<std::string, size_t> columnLookup;
-    std::map<std::string, size_t> lookupSimple;
-
-    for (size_t i = 0; i < ncols; i++) {
-        const auto& nm(metadata[i]->name());
-        if (!columnLookup.emplace(nm, i).second) {
-            std::stringstream ss;
-            ss << "Duplicate column '" << nm << "' " << " found in table";
-            throw ODBDecodeError(ss.str(), Here());
-        }
-        lookupSimple.emplace(nm.substr(0, nm.find('@')), i);
-    }
+    const std::map<std::string, size_t>& columnLookup(this->columnLookup());
+    const std::map<std::string, size_t>& lookupSimple(simpleColumnLookup());
 
     // Loop over the specified output columns, and select the correct ones for decoding.
 
@@ -186,6 +205,178 @@ void Table::decode(DecodeTarget& target) {
             break;
         }
     }
+}
+
+
+Span Table::span(const std::vector<std::string>& columns, bool onlyConstants) {
+
+    Span s(startPosition(), nextPosition()-startPosition());
+
+    // Get any constant columns
+
+    std::vector<std::string> nonConstantColumns;
+
+    for (const std::string& columnName : columns) {
+
+        Column* column = metadata_.columnByName(columnName);
+        if (!column) throw UserError("Column '" + columnName + "' not found", Here());
+
+        if (column->isConstant()) {
+            s.addValue(columnName, column->type(), column->min());
+        } else {
+            nonConstantColumns.push_back(columnName);
+        }
+    }
+
+    // We don't decode non-constant columns unless allowed to
+
+    if (!nonConstantColumns.empty() && onlyConstants) {
+        std::stringstream ss;
+        ss << "Non-constant columns required in span: " << nonConstantColumns;
+        throw UserError(ss.str(), Here());
+    }
+
+    if (!nonConstantColumns.empty()) {
+        s.extend(decodeSpan(nonConstantColumns));
+    }
+
+    return s;
+}
+
+
+// Helper workers to simplify building span decoder
+
+class ColumnValuesBase {
+public: // methods
+    virtual void updateSpan(Span& span) = 0;
+    virtual void addValue(double* val) = 0;
+};
+
+
+template <typename T>
+class ColumnValues : public ColumnValuesBase {
+public: // methods
+
+    ColumnValues(const std::string& name) : name_(name) {}
+
+    void updateSpan(Span& s) override {
+        s.addValues(name_, values_);
+    }
+
+protected: // members
+    std::string name_;
+    std::set<T> values_;
+};
+
+struct IntegerColumnValues : ColumnValues<int64_t> {
+    using ColumnValues<int64_t>::ColumnValues;
+    void addValue(double* val) override { values_.insert(static_cast<int64_t>(*val)); }
+};
+
+struct DoubleColumnValues : ColumnValues<double> {
+    using ColumnValues<double>::ColumnValues;
+    void addValue(double* val) override { values_.insert(*val); }
+};
+
+struct StringColumnValues : ColumnValues<std::string> {
+    StringColumnValues(const std::string& nm, size_t maxlen) : ColumnValues<std::string>(nm), maxLength_(maxlen) {}
+    void addValue(double* val) override {
+        const char* c = reinterpret_cast<const char*>(val);
+        values_.insert(std::string(c, ::strnlen(c, maxLength_)));
+    }
+    size_t maxLength_;
+};
+
+
+
+Span Table::decodeSpan(const std::vector<std::string>& columns) {
+
+    const MetaData& metadata(this->columns());
+    size_t nrows = metadata.rowsNumber();
+    size_t ncols = metadata.size();
+
+    const std::map<std::string, size_t>& columnLookup = this->columnLookup();
+    const std::map<std::string, size_t>& lookupSimple = simpleColumnLookup();
+
+    // Store the unique values
+
+    std::vector<std::unique_ptr<ColumnValuesBase>> columnValues(ncols);
+
+    // Loop over the specified output columns, and select the correct ones for decoding.
+
+    std::vector<char> visitColumn(ncols, false);
+    size_t maxDoublesDecode = 1;
+
+    for (const std::string& columnName : columns) {
+
+        auto it = columnLookup.find(columnName);
+        if (it == columnLookup.end()) it = lookupSimple.find(columnName);
+        if (it == lookupSimple.end()) {
+            std::stringstream ss;
+            ss << "Column '" << columnName << "' not found in ODB";
+            throw ODBDecodeError(ss.str(), Here());
+        }
+
+        visitColumn[it->second] = true;
+
+        // What do we do with the values?
+
+        switch (metadata[it->second]->type()) {
+        case api::BITFIELD:
+        case api::INTEGER:
+            columnValues[it->second].reset(new IntegerColumnValues(columnName));
+            break;
+        case api::REAL:
+        case api::DOUBLE:
+            columnValues[it->second].reset(new DoubleColumnValues(columnName));
+            break;
+        case api::STRING:
+            columnValues[it->second].reset(new StringColumnValues(columnName, sizeof(double)*metadata[it->second]->dataSizeDoubles()));
+            maxDoublesDecode = std::max(maxDoublesDecode, metadata[it->second]->dataSizeDoubles());
+            break;
+        default:
+            throw SeriousBug("Unexpected type in decoding column: " + columnName, Here());
+        };
+    }
+
+    // Read the data in in bulk for this table
+
+    const Buffer readBuffer(readEncodedData());
+    GeneralDataStream ds(otherByteOrder(), readBuffer);
+
+    std::vector<std::reference_wrapper<Codec>> decoders;
+    decoders.reserve(ncols);
+    for (auto& col : metadata) {
+        decoders.push_back(col->coder());
+        decoders.back().get().setDataStream(ds);
+    }
+
+    // Do the decoding
+
+    std::vector<size_t> lastDecoded(ncols, 0);
+    double decodeBuffer[maxDoublesDecode];
+
+    for (size_t rowCount = 0; rowCount < nrows; ++rowCount) {
+
+        unsigned char marker[2];
+        ds.readBytes(&marker, sizeof(marker));
+        int startCol = (marker[0] * 256) + marker[1]; // Endian independant
+
+        for (int col = startCol; col < long(ncols); col++) {
+            if (visitColumn[col]) {
+                decoders[col].get().decode(decodeBuffer);
+                columnValues[col]->addValue(decodeBuffer);
+            } else {
+                decoders[col].get().skip();
+            }
+        }
+    }
+
+    // And add these to the spans
+
+    Span s(startPosition(), nextPosition()-startPosition());
+    for (const auto& values : columnValues) values->updateSpan(s);
+    return s;
 }
 
 
