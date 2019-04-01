@@ -13,13 +13,12 @@
 
 #include "odc/data/DataHandleFactory.h"
 #include "odc/data/PartFileHandleFactory.h"
-#include "odc/data/MarsHandleFactory.h"
 #include "odc/data/FileHandleFactory.h"
 #include "odc/data/HttpHandleFactory.h"
 
 #include "eckit/io/MultiHandle.h"
 #include "eckit/utils/StringTools.h"
-#include "eckit/memory/ScopedPtr.h"
+#include "eckit/exception/Exceptions.h"
 
 using namespace eckit;
 
@@ -109,7 +108,6 @@ DataHandle* DataHandleFactory::openForWrite(const std::string& s, const eckit::L
 void DataHandleFactory::registerFactories()
 {
     static PartFileHandleFactory partFileHandleFactory;
-    static MarsHandleFactory marsHandleFactory;
     static FileHandleFactory fileHandleFactory;
     static HttpHandleFactory httpHandleFactory;
 }

@@ -25,7 +25,6 @@
 #include "odc/tools/LSTool.h"
 #include "odc/tools/MDSetTool.h"
 #include "odc/tools/MergeTool.h"
-#include "odc/tools/ODA2RequestTool.h"
 #include "odc/tools/ODAHeaderTool.h"
 #include "odc/tools/SQLTool.h"
 #include "odc/tools/SetTool.h"
@@ -57,7 +56,6 @@ void Tool::registerTools()
 	static ToolFactory<LSTool> lsTool("ls");
 	static ToolFactory<MDSetTool> mdset("mdset");
 	static ToolFactory<MergeTool> mergeTool("merge");
-	static ToolFactory<ODA2RequestTool> oda2requestTool("oda2request");
 	static ToolFactory<HeaderTool> odaHeader("header");
 	static ToolFactory<SQLTool> sqlTool("sql");
 	static ToolFactory<SetTool> set("set");

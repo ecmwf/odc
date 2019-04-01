@@ -24,8 +24,8 @@ MDSetTool.cc
 MDSetTool.h
 MergeTool.cc
 MergeTool.h
-ODA2RequestTool.cc
-ODA2RequestTool.h
+#ODA2RequestTool.cc
+#ODA2RequestTool.h
 ODAHeaderTool.cc
 ODAHeaderTool.h
 SQLTool.cc
