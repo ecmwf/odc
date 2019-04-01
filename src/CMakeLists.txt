@@ -20,4 +20,4 @@ add_subdirectory( odc/tools )
 add_subdirectory( odc/odb2netcdf )
 
 ### fortran bindings -- OFF for the moment due to errors with gfortran 6.3 / 7.3
-# add_subdirectory( fortran )
+add_subdirectory( fortran )
