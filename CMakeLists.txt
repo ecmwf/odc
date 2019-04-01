@@ -17,7 +17,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ### dependencies and options
 
 ecbuild_use_package( PROJECT eckit  VERSION 1.0 REQUIRED )
-ecbuild_use_package( PROJECT metkit VERSION 0.11 REQUIRED )
 
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )

@@ -200,11 +200,10 @@ MDUpdatingIterator.cc
 ecbuild_add_library( TARGET             odccore
                      INSTALL_HEADERS    LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc
-                     PRIVATE_INCLUDES   ${METKIT_INCLUDE_DIRS}         # Only for MarsRequestHandle
                      SOURCES            ${odclib_src_files}
                      GENERATED          ODBAPIVersionSHA1.cc
                      TEMPLATES          ${odclib_templates}
                      LINKER_LANGUAGE    CXX
-                     LIBS               metkit eckit_sql eckit )
+                     LIBS               eckit_sql eckit )
 
 
