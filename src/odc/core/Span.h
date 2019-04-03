@@ -40,9 +40,16 @@ public: // methods
     // Add the values _as_a_double_. Not nice, but compatible with old decoding api
     void addValue(const std::string& column, api::ColumnType t, double val);
 
-    void addValues(const std::string& column, const std::set<int64_t>& vals);
+    void addValues(const std::string& column, const std::set<long>& vals);
     void addValues(const std::string& column, const std::set<double>& vals);
     void addValues(const std::string& column, const std::set<std::string>& vals);
+
+    template <typename T>
+    void visit(T& visitor) {
+        for (const auto& kv : integerValues_) visitor(kv.first, kv.second);
+        for (const auto& kv : realValues_) visitor(kv.first, kv.second);
+        for (const auto& kv : stringValues_) visitor(kv.first, kv.second);
+    }
 
 private: // members
 

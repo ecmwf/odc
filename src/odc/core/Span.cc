@@ -13,6 +13,7 @@
 #include <cstring>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/types/Types.h"
 
 
 using namespace eckit;
@@ -51,7 +52,7 @@ void Span::addValue(const std::string& column, api::ColumnType t, double val) {
     case api::BITFIELD:
         ASSERT(realValues_.find(column) == realValues_.end());
         ASSERT(stringValues_.find(column) == stringValues_.end());
-        realValues_[column].insert(static_cast<int64_t>(val));
+        integerValues_[column].insert(static_cast<int64_t>(val));
         break;
 
     case api::REAL:
@@ -85,7 +86,7 @@ void Span::addValues(const std::string& column, const std::set<double>& vals) {
     realValues_[column].insert(vals.cbegin(), vals.cend());
 }
 
-void Span::addValues(const std::string& column, const std::set<int64_t>& vals) {
+void Span::addValues(const std::string& column, const std::set<long>& vals) {
 
     ASSERT(realValues_.find(column) == realValues_.end());
     ASSERT(stringValues_.find(column) == stringValues_.end());

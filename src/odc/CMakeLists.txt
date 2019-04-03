@@ -38,8 +38,6 @@ Duration.cc
 Duration.h
 MDI.cc
 MDI.h
-GribCodes.cc
-GribCodes.h
 IteratorProxy.h
 LibOdc.cc
 LibOdc.h
@@ -163,9 +161,6 @@ sql/function/FunctionRGG_BOXLAT.cc
 sql/function/FunctionRGG_BOXLAT.h
 sql/function/FunctionRGG_BOXLON.cc
 sql/function/FunctionRGG_BOXLON.h
-
-requests/OdbToRequest.cc
-requests/OdbToRequest.h
 
 utility/Tracer.cc
 utility/Tracer.h

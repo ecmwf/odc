@@ -19,6 +19,7 @@
 #include <memory>
 #include <vector>
 #include <type_traits>
+#include <set>
 
 #include "odc/api/ColumnType.h"
 #include "odc/api/ColumnInfo.h"
@@ -72,6 +73,32 @@ public: // methods
 
 //----------------------------------------------------------------------------------------------------------------------
 
+class SpanImpl;
+
+class SpanVisitor {
+public:
+    virtual void operator()(const std::string& columnName, const std::set<int64_t>& vals) = 0;
+    virtual void operator()(const std::string& columnName, const std::set<double>& vals) = 0;
+    virtual void operator()(const std::string& columnName, const std::set<std::string>& vals) = 0;
+};
+
+
+class Span {
+
+public: // methods
+
+    Span(std::shared_ptr<SpanImpl> s);
+    ~Span();
+
+    void visit(SpanVisitor& visitor) const;
+
+private: // members
+
+    std::shared_ptr<SpanImpl> impl_;
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+
 class TableImpl;
 class DecodeTarget;
 
@@ -88,6 +115,8 @@ public: // methods
     const std::vector<ColumnInfo>& columnInfo() const;
 
     void decode(DecodeTarget& target, size_t nthreads) const;
+
+    Span span(const std::vector<std::string>& columns, bool onlyConstantValues) const;
 
 private: // members
 

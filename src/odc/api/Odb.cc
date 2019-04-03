@@ -52,6 +52,7 @@ struct TableImpl {
     size_t numColumns() const;
 
     void decode(DecodeTarget& target, size_t nthreads);
+    Span span(const std::vector<std::string>& columns, bool onlyConstantValues);
 
 private: // members
 
@@ -118,8 +119,6 @@ OdbImpl::~OdbImpl() {}
 
 Optional<Table> OdbImpl::next(bool aggregated, long rowlimit) {
 
-    std::cout << "aggr: " << (aggregated ? "T":"F") << std::endl;
-
     if (it_ == reader_.end()) return {};
 
     // !aggregated --> just return the next one
@@ -151,6 +150,22 @@ DecodeTarget::DecodeTarget(const std::vector<std::string>& columns,
     impl_(std::make_shared<DecodeTargetImpl>(columns, columnFacades)) {}
 
 DecodeTarget::~DecodeTarget() {}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+struct SpanImpl : core::Span {
+    SpanImpl(core::Span&& s) : core::Span(std::move(s)) {}
+};
+
+
+Span::Span(std::shared_ptr<SpanImpl> s) : impl_(s) {}
+
+Span::~Span() {}
+
+void Span::visit(SpanVisitor& visitor) const {
+    impl_->visit(visitor);
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -270,6 +285,17 @@ void TableImpl::decode(DecodeTarget& target, size_t nthreads) {
     }
 }
 
+Span TableImpl::span(const std::vector<std::string>& columns, bool onlyConstantValues) {
+
+    std::shared_ptr<SpanImpl> s(std::make_shared<SpanImpl>(tables_.front().span(columns, onlyConstantValues)));
+
+    for (auto it = tables_.begin() + 1; it != tables_.end(); ++it) {
+        s->extend(it->span(columns, onlyConstantValues));
+    }
+
+    return s;
+}
+
 Table::Table(std::shared_ptr<TableImpl> t) :
     impl_(t) {}
 
@@ -293,6 +319,11 @@ const std::vector<ColumnInfo>& Table::columnInfo() const {
 void Table::decode(DecodeTarget& target, size_t nthreads) const {
     ASSERT(impl_);
     impl_->decode(target, nthreads);
+}
+
+Span Table::span(const std::vector<std::string>& columns, bool onlyConstantValues) const {
+    ASSERT(impl_);
+    return impl_->span(columns, onlyConstantValues);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
