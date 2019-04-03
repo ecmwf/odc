@@ -26,7 +26,6 @@
 #include "odc/Comparator.h"
 #include "odc/core/TablesReader.h"
 #include "odc/data/DataHandleFactory.h"
-#include "odc/DateTime.h"
 #include "odc/DispatchingWriter.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/odccapi.h"
@@ -440,30 +439,6 @@ TEST(sqlOutputFormatting)
     p.parseString("select x,y,v;", &fh, odc::sql::SQLSelectFactory::instance().config());
     */
 
-}
-
-double julian(double d, double t)
-{
-    int indate = (int) d;
-    int intime = (int) t;
-    int year_target = indate/10000;
-    int month_target = (indate%10000)/100;
-    int day_target = indate%100;
-    int hour_target = intime/10000;
-    int min_target = (intime%10000)/100;
-    int sec_target = intime%100;
-
-    utils::DateTime d1(year_target, month_target, day_target,
-                       hour_target, min_target, sec_target);
-
-    return d1.dateToJulian();
-}
-
-TEST(dateTime)
-{
-    int j1 = julian(20120714, 120000);
-    int j2 = julian(20120714, 0);
-    //ASSERT(j1 > j2);
 }
 
 static void createDataForWindSpeedWindDirection()

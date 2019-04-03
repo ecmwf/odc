@@ -30,12 +30,8 @@ Comparator.cc
 Comparator.h
 ConstantSetter.cc
 ConstantSetter.h
-DateTime.cc
-DateTime.h
 DispatchingWriter.cc
 DispatchingWriter.h
-Duration.cc
-Duration.h
 MDI.cc
 MDI.h
 IteratorProxy.h
