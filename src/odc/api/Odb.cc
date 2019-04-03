@@ -167,6 +167,14 @@ void Span::visit(SpanVisitor& visitor) const {
     impl_->visit(visitor);
 }
 
+Offset Span::offset() const {
+    return impl_->offset();
+}
+
+Length Span::length() const {
+    return impl_->length();
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 // Table implementation

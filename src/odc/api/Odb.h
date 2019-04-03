@@ -21,6 +21,9 @@
 #include <type_traits>
 #include <set>
 
+#include "eckit/io/Length.h"
+#include "eckit/io/Offset.h"
+
 #include "odc/api/ColumnType.h"
 #include "odc/api/ColumnInfo.h"
 #include "odc/api/StridedData.h"
@@ -91,6 +94,9 @@ public: // methods
     ~Span();
 
     void visit(SpanVisitor& visitor) const;
+
+    eckit::Offset offset() const;
+    eckit::Length length() const;
 
 private: // members
 

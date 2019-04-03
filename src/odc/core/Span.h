@@ -34,6 +34,9 @@ public: // methods
     Span(eckit::Offset start, eckit::Length length);
     ~Span();
 
+    eckit::Offset offset() const { return start_; }
+    eckit::Length length() const { return length_; }
+
     void extend(const Span& other);
     void extend(eckit::Length length);
 
