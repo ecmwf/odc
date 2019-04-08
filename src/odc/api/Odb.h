@@ -80,6 +80,7 @@ class SpanImpl;
 
 class SpanVisitor {
 public:
+    virtual ~SpanVisitor();
     virtual void operator()(const std::string& columnName, const std::set<int64_t>& vals) = 0;
     virtual void operator()(const std::string& columnName, const std::set<double>& vals) = 0;
     virtual void operator()(const std::string& columnName, const std::set<std::string>& vals) = 0;

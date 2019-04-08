@@ -248,6 +248,9 @@ Span Table::span(const std::vector<std::string>& columns, bool onlyConstants) {
 
 class ColumnValuesBase {
 public: // methods
+
+    virtual ~ColumnValuesBase() {}
+
     virtual void updateSpan(Span& span) = 0;
     virtual void addValue(double* val) = 0;
 };
