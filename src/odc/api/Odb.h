@@ -106,7 +106,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class TableImpl;
+struct TableImpl;
 class DecodeTarget;
 
 class Table {
