@@ -164,8 +164,6 @@ struct SpanImpl : core::Span {
 
 Span::Span(std::shared_ptr<SpanImpl> s) : impl_(s) {}
 
-Span::~Span() {}
-
 void Span::visit(SpanVisitor& visitor) const {
     impl_->visit(visitor);
 }

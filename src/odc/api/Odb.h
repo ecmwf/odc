@@ -92,7 +92,6 @@ class Span {
 public: // methods
 
     Span(std::shared_ptr<SpanImpl> s);
-    ~Span();
 
     void visit(SpanVisitor& visitor) const;
 
