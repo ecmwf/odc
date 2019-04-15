@@ -244,6 +244,76 @@ CASE("Encode from columnar data") {
 
 CASE("Encode data with custom stride") {
 
+    odc_integer_behaviour(ODC_INTEGERS_AS_LONGS);
+
+    const int nrows = 5;
+    const int ncols = 5;
+
+    // Construct some source data
+
+    long icol[2*nrows] = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
+    long bcol[2*nrows] = {1101, 2202, 3303, 4404,  5505, 6606, 7707, 8808, 9909, 0};
+    char scol[2*nrows][3 * sizeof(double)] = {0};
+    double dcol[2*nrows] = {1131, 2232, 3333, 4434, 5535, 6636, 7737, 8838, 9939, 0};
+    double rcol[2*nrows] = {1141, 2242, 3343, 4444, 5545, 6646, 7747, 8848, 9949, 0};
+    for (size_t i = 0; i < 2*nrows; ++i) {
+        ::strncpy(&scol[i][0], "abcdefghhgfedcbazzzz", 3*sizeof(double));
+    }
+
+    // Configure the encoder to encode said data
+
+    std::unique_ptr<odb_encoder_t> enc(odc_alloc_encoder());
+
+    odc_encoder_set_row_count(enc.get(), nrows);
+    EXPECT(0 == odc_encoder_add_column(enc.get(), "col1", ODC_INTEGER));
+    EXPECT(1 == odc_encoder_add_column(enc.get(), "col2", ODC_BITFIELD));
+    EXPECT(2 == odc_encoder_add_column(enc.get(), "col3", ODC_STRING));
+    odc_encoder_column_set_size(enc.get(), 2, sizeof(scol[0]));
+    EXPECT(3 == odc_encoder_add_column(enc.get(), "col4", ODC_DOUBLE));
+    EXPECT(4 == odc_encoder_add_column(enc.get(), "col5", ODC_REAL));
+
+    odc_encoder_column_set_data(enc.get(), 0, icol);
+    odc_encoder_column_set_data(enc.get(), 1, bcol);
+    odc_encoder_column_set_data(enc.get(), 2, scol);
+    odc_encoder_column_set_data(enc.get(), 3, dcol);
+    odc_encoder_column_set_data(enc.get(), 4, rcol);
+
+    odc_encoder_column_set_stride(enc.get(), 0, 2 * sizeof(icol[0]));
+    odc_encoder_column_set_stride(enc.get(), 1, 2 * sizeof(bcol[0]));
+    odc_encoder_column_set_stride(enc.get(), 2, 2 * sizeof(scol[0]));
+    odc_encoder_column_set_stride(enc.get(), 3, 2 * sizeof(dcol[0]));
+    odc_encoder_column_set_stride(enc.get(), 4, 2 * sizeof(rcol[0]));
+
+    // Do the encoding
+
+    eckit::Buffer encoded(1024 * 1024);
+    long sz = odc_encode_to_buffer(enc.get(), encoded, encoded.size());
+
+    // Check that we have encoded what we think we have encoded
+
+    std::unique_ptr<odb_t> o(odc_open_buffer(encoded, sz));
+    std::unique_ptr<odb_table_t> t(odc_alloc_next_table(o.get(), false));
+
+    EXPECT(t);
+    EXPECT(odc_table_column_count(t.get()) == ncols);
+    EXPECT(odc_table_row_count(t.get()) == nrows);
+
+    std::unique_ptr<odb_decode_target_t> dec(odc_alloc_decode_target());
+    odc_table_build_all_decode_target(t.get(), dec.get());
+    odc_table_decode(t.get(), dec.get(), 1);
+
+    EXPECT(odc_decode_target_column_data(dec.get(), 0) == odc_decode_target_array_data(dec.get()));
+    for (size_t row = 0; row < nrows; ++row) {
+        EXPECT(icol[2*row] == *(reinterpret_cast<const int64_t*>(odc_decode_target_column_data(dec.get(), 0)) + row));
+        EXPECT(bcol[2*row] == *(reinterpret_cast<const int64_t*>(odc_decode_target_column_data(dec.get(), 1)) + row));
+        EXPECT(dcol[2*row] == *(reinterpret_cast<const double*>(odc_decode_target_column_data(dec.get(), 3)) + row));
+        EXPECT(rcol[2*row] == *(reinterpret_cast<const double*>(odc_decode_target_column_data(dec.get(), 4)) + row));
+        const char* c2 = reinterpret_cast<const char*>(odc_decode_target_column_data(dec.get(), 2));
+        EXPECT(strncmp(c2 + (row * sizeof(scol[0])), "abcdefghhgfedcbazzzz", sizeof(scol[0])) == 0);
+    }
+
+    EXPECT(odc_alloc_next_table(o.get(), false) == 0);
+
 }
 
 // ------------------------------------------------------------------------------------------------------
