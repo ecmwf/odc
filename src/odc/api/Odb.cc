@@ -141,6 +141,7 @@ Optional<Table> OdbImpl::next(bool aggregated, long rowlimit) {
 
 // Shim for decoding
 struct DecodeTargetImpl : public core::DecodeTarget {
+public:
     using core::DecodeTarget::DecodeTarget;
 };
 
@@ -152,15 +153,15 @@ DecodeTarget::~DecodeTarget() {}
 
 //----------------------------------------------------------------------------------------------------------------------
 
+SpanVisitor::~SpanVisitor() {}
+
+//----------------------------------------------------------------------------------------------------------------------
 
 struct SpanImpl : core::Span {
     SpanImpl(core::Span&& s) : core::Span(std::move(s)) {}
 };
 
-
 Span::Span(std::shared_ptr<SpanImpl> s) : impl_(s) {}
-
-Span::~Span() {}
 
 void Span::visit(SpanVisitor& visitor) const {
     impl_->visit(visitor);
@@ -339,7 +340,7 @@ void Settings::treatIntegersAsDoubles(bool flag) {
     odc::ODBAPISettings::instance().treatIntegersAsDoubles(flag);
 }
 
-void Settings::setIntegerMissingValue(int64_t val) {
+void Settings::setIntegerMissingValue(long val) {
     odc::MDI::integerMDI(val);
 }
 

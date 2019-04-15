@@ -65,7 +65,7 @@ public: // methods
     static void treatIntegersAsDoubles(bool flag);
 
     static long integerMissingValue();
-    static void setIntegerMissingValue(int64_t val);
+    static void setIntegerMissingValue(long val);
 
     static double doubleMissingValue();
     static void setDoubleMissingValue(double val);
@@ -76,11 +76,12 @@ public: // methods
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class SpanImpl;
+struct SpanImpl;
 
 class SpanVisitor {
 public:
-    virtual void operator()(const std::string& columnName, const std::set<int64_t>& vals) = 0;
+    virtual ~SpanVisitor();
+    virtual void operator()(const std::string& columnName, const std::set<long>& vals) = 0;
     virtual void operator()(const std::string& columnName, const std::set<double>& vals) = 0;
     virtual void operator()(const std::string& columnName, const std::set<std::string>& vals) = 0;
 };
@@ -91,7 +92,6 @@ class Span {
 public: // methods
 
     Span(std::shared_ptr<SpanImpl> s);
-    ~Span();
 
     void visit(SpanVisitor& visitor) const;
 
@@ -105,7 +105,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class TableImpl;
+struct TableImpl;
 class DecodeTarget;
 
 class Table {
@@ -131,7 +131,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class DecodeTargetImpl;
+struct DecodeTargetImpl;
 
 class DecodeTarget {
 

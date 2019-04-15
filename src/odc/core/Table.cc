@@ -248,6 +248,9 @@ Span Table::span(const std::vector<std::string>& columns, bool onlyConstants) {
 
 class ColumnValuesBase {
 public: // methods
+
+    virtual ~ColumnValuesBase() {}
+
     virtual void updateSpan(Span& span) = 0;
     virtual void addValue(double* val) = 0;
 };
@@ -268,8 +271,8 @@ protected: // members
     std::set<T> values_;
 };
 
-struct IntegerColumnValues : ColumnValues<int64_t> {
-    using ColumnValues<int64_t>::ColumnValues;
+struct IntegerColumnValues : ColumnValues<long> {
+    using ColumnValues<long>::ColumnValues;
     void addValue(double* val) override { values_.insert(static_cast<int64_t>(*val)); }
 };
 

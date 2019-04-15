@@ -80,7 +80,7 @@ private: // methods
         return p + sizeof(s);
     }
 
-    void decode(double* out) {
+    void decode(double* out) override {
         static_assert(sizeof(ValueType) == sizeof(out), "unsafe casting check");
 
         ValueType* val_out = reinterpret_cast<ValueType*>(out);

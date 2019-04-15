@@ -44,7 +44,7 @@ private: // methods
     void decode(double* out) override;
     void skip() override;
 
-    void print(std::ostream& s) const;
+    void print(std::ostream& s) const override;
 };
 
 
@@ -65,7 +65,7 @@ private: // methods
     void decode(double* out) override;
     void skip() override;
 
-    void print(std::ostream& s) const;
+    void print(std::ostream& s) const override;
     size_t numStrings() const override { return 1; }
 
     void load(core::DataStream<ByteOrder>& ds) override;
@@ -107,7 +107,7 @@ void CodecConstant<ByteOrder, ValueType>::print(std::ostream& s) const {
 // Implementation of ConstantString
 
 template <typename ByteOrder>
-unsigned char* CodecConstantString<ByteOrder>::encode(unsigned char* p, const double& d) {
+unsigned char* CodecConstantString<ByteOrder>::encode(unsigned char* p, const double&) {
     return p;
 }
 
