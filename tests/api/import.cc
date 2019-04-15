@@ -35,7 +35,7 @@ CASE("We can import data") {
     {
         dh_out.openForWrite(0);
         eckit::AutoClose close(dh_out);
-        ::odc::api::importText(SOURCE_DATA, dh_out);
+        ::odc::api::odbFromCSV(SOURCE_DATA, dh_out);
         importedSize = dh_out.position();
     }
 
@@ -46,7 +46,7 @@ CASE("We can import data") {
     odc::api::Odb o(readAgain);
 
     while (auto table = o.next(false)) {
-        eckit::Log::info() << "Table: " << table.get().numRows() << std::endl;
+        eckit::Log::info() << "Table: " << table.get().rowCount() << std::endl;
     }
 
 

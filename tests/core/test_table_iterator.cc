@@ -44,13 +44,13 @@ CASE("Test access Table iterator") {
     while (it != end) {
         tableCount++;
 
-        EXPECT(it->numRows() == (tableCount == 333? 1753 : 10000));
+        EXPECT(it->rowCount() == (tableCount == 333? 1753 : 10000));
         EXPECT(it->nextPosition() > lastOffset);
         EXPECT(it->nextPosition() <= dh->estimate());
         EXPECT(dh->estimate() == eckit::Length(155557962));
         lastOffset = it->nextPosition();
 
-        numRows += it->numRows();
+        numRows += it->rowCount();
         ++it;
     }
 

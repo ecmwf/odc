@@ -27,8 +27,8 @@ CASE("Count lines in an existing ODB file") {
     size_t totalRows = 0;
 
     while (const auto& table = o.next(false)) {
-        totalRows += table.get().numRows();
-        EXPECT(table.get().numColumns() == 51);
+        totalRows += table.get().rowCount();
+        EXPECT(table.get().columnCount() == 51);
         ++ntables;
     }
 
@@ -46,14 +46,40 @@ CASE("Count lines in an existing ODB file") {
 //
 //    while (const auto& table = o.next()) {
 //
-//        std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
-//        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
-//        EXPECT(decoded->ncolumns == 51);
+//        DecodeTarget decoded;
+//        table.get().decode();
+//
+//        EXPECT(decoded.rows() == table.get().rowCount());
+//        EXPECT(decoded.columns() == 51);
 //
 //        ++ntables;
 //    }
 //}
-
+//
+//// ------------------------------------------------------------------------------------------------------
+//
+//CASE("Decode only some columns") {
+//
+//    odc::api::Odb o("../2000010106.odb");
+//
+//    size_t ntables = 0;
+//
+//    while (const auto& table = o.next()) {
+//
+//        DecodeTarget decoded;
+//        decoded.addColumn("statid");
+//        decoded.addColumn("expver");
+//        decoded.addColumn("andate");
+//        decoded.addColumn("obsvalue");
+//
+//        DecodeTarget decoded = table.get().decode();
+//
+//        EXPECT(decoded.rows() == table.get().rowCount());
+//        EXPECT(decoded.columns() == 51);
+//
+//        ++ntables;
+//    }
+//}
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Decode an entire ODB file preallocated data structures") {

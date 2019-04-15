@@ -51,7 +51,7 @@ static void setUp()
     FileHandle dh("TestDistinct_a1to10twice.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(s, dh);
+    odc::api::odbFromCSV(s, dh);
 }
 
 

@@ -91,7 +91,7 @@ static void test()
             FileHandle dh("TestOrderBy.odb");
             dh.openForWrite(0);
             AutoClose close(dh);
-            odc::api::importText(in, dh);
+            odc::api::odbFromCSV(in, dh);
         }
 
 		string sql = "select distinct a,b,c from \"TestOrderBy.odb\" order by a desc, b asc;";
@@ -123,7 +123,7 @@ static void setUp()
     FileHandle dh("TestOrderBy_a1to10twice.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(s, dh);
+    odc::api::odbFromCSV(s, dh);
 }
 static void tearDown(){}
 

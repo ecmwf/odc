@@ -85,8 +85,8 @@ void ImportTool::run()
         AutoClose close_in(dh_in);
         dh_out.openForWrite(0);
         AutoClose close_out(dh_out);
-        size_t n = api::importText(dh_in, dh_out);
-        Log::info() << "ImportTool::importText: Copied " << n << " rows." << std::endl;
+        size_t n = api::odbFromCSV(dh_in, dh_out);
+        Log::info() << "ImportTool::odbFromCSV: Copied " << n << " rows." << std::endl;
     } else {
         filterAndImportFile (inFile, outFile, sql, delimiter);
     }

@@ -47,12 +47,12 @@ TEST(c_api_example_select_data_read_results)
     // Prepare input data
 
     long size = 0;
-    void* buf = odc_import_encode_text(
-                "x:INTEGER,y:INTEGER,v:DOUBLE,f:BITFIELD[a:1;b:2]]\n"
-                "1,1,0.3,0\n"
-                "1,1,0.2,1\n" 
-                "2,2,0.4,2\n" 
-                "2,2,0.1,3\n", ",", 0, &size);
+    void* buf = 0; ASSERT(false); //odc_import_encode_text(
+//                "x:INTEGER,y:INTEGER,v:DOUBLE,f:BITFIELD[a:1;b:2]]\n"
+//                "1,1,0.3,0\n"
+//                "1,1,0.2,1\n"
+//                "2,2,0.4,2\n"
+//                "2,2,0.1,3\n", ",", 0, &size);
 
     eckit::FileHandle dh("c_example_select_data_read_results.odb");
     dh.openForWrite(size);
@@ -111,12 +111,12 @@ TEST(c_api_example_read_data)
 
     // Prepare input data
     long size = 0;
-    void* buf = odc_import_encode_text(
-                "x:INTEGER,y:REAL,v:DOUBLE,f:BITFIELD[a:1;b:2]\n"
-                "1,1,0.3,0\n" 
-                "2,1,0.2,1\n" 
-                "3,2,0.4,2\n" 
-                "4,2,0.1,3\n", ",", 0, &size);
+    void* buf = 0; ASSERT(false); //odc_import_encode_text(
+//                "x:INTEGER,y:REAL,v:DOUBLE,f:BITFIELD[a:1;b:2]\n"
+//                "1,1,0.3,0\n"
+//                "2,1,0.2,1\n"
+//                "3,2,0.4,2\n"
+//                "4,2,0.1,3\n", ",", 0, &size);
 
     eckit::FileHandle dh("c_api_example_read_data.odb");
     dh.openForWrite(size);

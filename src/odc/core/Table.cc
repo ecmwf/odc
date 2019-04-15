@@ -47,11 +47,11 @@ Length Table::encodedDataSize() const {
     return dataSize_;
 }
 
-size_t Table::numRows() const {
+size_t Table::rowCount() const {
     return metadata_.rowsNumber();
 }
 
-size_t Table::numColumns() const {
+size_t Table::columnCount() const {
     return metadata_.size();
 }
 

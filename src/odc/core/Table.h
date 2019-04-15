@@ -47,8 +47,8 @@ public: // methods
     eckit::Offset nextPosition() const;
     eckit::Length encodedDataSize() const;
 
-    size_t numRows() const;
-    size_t numColumns() const;
+    size_t rowCount() const;
+    size_t columnCount() const;
     int32_t byteOrder() const;
     bool otherByteOrder() const;
 

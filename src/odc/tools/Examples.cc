@@ -42,7 +42,7 @@ TEST(example_select_data_read_results)
     FileHandle out("example_select_data_read_results.odb");
     out.openForWrite(0);
     AutoClose close(out);
-    odc::api::importText(data, out);
+    odc::api::odbFromCSV(data, out);
 
     odc::Select select("select x,min(v),max(v);", "example_select_data_read_results.odb");
 
@@ -67,7 +67,7 @@ TEST(example_read_data)
     FileHandle out("example_read_data.odb");
     out.openForWrite(0);
     AutoClose close(out);
-    odc::api::importText(data, out);
+    odc::api::odbFromCSV(data, out);
 
     odc::Reader o("example_read_data.odb");
     for (odc::Reader::iterator it (o.begin()),

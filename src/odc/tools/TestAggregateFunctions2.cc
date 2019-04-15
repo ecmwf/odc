@@ -65,7 +65,7 @@ static void setUp()
     FileHandle dh("TestAggregateFunctions2.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(s, dh);
+    odc::api::odbFromCSV(s, dh);
 }
 
 

@@ -48,8 +48,8 @@ struct TableImpl {
 
     const std::vector<ColumnInfo>& columnInfo() const;
 
-    size_t numRows() const;
-    size_t numColumns() const;
+    size_t rowCount() const;
+    size_t columnCount() const;
 
     void decode(DecodeTarget& target, size_t nthreads);
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues);
@@ -123,7 +123,7 @@ Optional<Table> OdbImpl::next(bool aggregated, long rowlimit) {
 
     // !aggregated --> just return the next one
     auto tbl = std::make_shared<TableImpl>(*it_++);
-    size_t nrows = tbl->numRows();
+    size_t nrows = tbl->rowCount();
 
     if (aggregated) {
         while (it_ != reader_.end()) {
@@ -140,7 +140,6 @@ Optional<Table> OdbImpl::next(bool aggregated, long rowlimit) {
 //----------------------------------------------------------------------------------------------------------------------
 
 // Shim for decoding
-
 struct DecodeTargetImpl : public core::DecodeTarget {
     using core::DecodeTarget::DecodeTarget;
 };
@@ -195,7 +194,7 @@ const std::vector<ColumnInfo>& TableImpl::columnInfo() const {
 
     if (columnInfo_.empty()) {
 
-        columnInfo_.reserve(numColumns());
+        columnInfo_.reserve(columnCount());
 
         for (const core::Column* col : tables_.begin()->columns()) {
 
@@ -231,13 +230,13 @@ const std::vector<ColumnInfo>& TableImpl::columnInfo() const {
     return columnInfo_;
 }
 
-size_t TableImpl::numRows() const {
+size_t TableImpl::rowCount() const {
     return std::accumulate(tables_.begin(), tables_.end(), size_t(0),
-                           [](size_t n, const core::Table& t) { return n + t.numRows(); });
+                           [](size_t n, const core::Table& t) { return n + t.rowCount(); });
 }
 
-size_t TableImpl::numColumns() const {
-    return tables_[0].numColumns();
+size_t TableImpl::columnCount() const {
+    return tables_[0].columnCount();
 }
 
 void TableImpl::decode(DecodeTarget& target, size_t nthreads) {
@@ -250,7 +249,7 @@ void TableImpl::decode(DecodeTarget& target, size_t nthreads) {
 
         size_t rowOffset = 0;
         for (core::Table& t : tables_) {
-            size_t rows = t.numRows();
+            size_t rows = t.rowCount();
             core::DecodeTarget&& subTarget(target.impl_->slice(rowOffset, rows));
             if (nthreads == 1) {
                 t.decode(subTarget);
@@ -309,14 +308,14 @@ Table::Table(std::shared_ptr<TableImpl> t) :
 
 Table::~Table() {}
 
-size_t Table::numRows() const {
+size_t Table::rowCount() const {
     ASSERT(impl_);
-    return impl_->numRows();
+    return impl_->rowCount();
 }
 
-size_t Table::numColumns() const {
+size_t Table::columnCount() const {
     ASSERT(impl_);
-    return impl_->numColumns();
+    return impl_->columnCount();
 }
 
 const std::vector<ColumnInfo>& Table::columnInfo() const {
@@ -368,16 +367,16 @@ double Settings::doubleMissingValue() {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-size_t importText(DataHandle& dh_in, DataHandle& dh_out, const std::string& delimiter) {
+size_t odbFromCSV(DataHandle& dh_in, DataHandle& dh_out, const std::string& delimiter) {
 
     // Convert data handle to std::istream.
     HandleBuf buf(dh_in);
     std::istream is(&buf);
 
-    return importText(is, dh_out, delimiter);
+    return odbFromCSV(is, dh_out, delimiter);
 }
 
-size_t importText(std::istream& in, DataHandle& dh_out, const std::string& delimiter) {
+size_t odbFromCSV(std::istream& in, DataHandle& dh_out, const std::string& delimiter) {
 
     odc::TextReader reader(in, delimiter);
     odc::Writer<> writer(dh_out);
@@ -386,11 +385,11 @@ size_t importText(std::istream& in, DataHandle& dh_out, const std::string& delim
     return output->pass1(reader.begin(), reader.end());
 }
 
-size_t importText(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter) {
+size_t odbFromCSV(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter) {
     MemoryHandle dh_in(in.c_str(), in.length());
     dh_in.openForRead();
     AutoClose close(dh_in);
-    return importText(dh_in, dh_out, delimiter);
+    return odbFromCSV(dh_in, dh_out, delimiter);
 }
 
 void encode(DataHandle& out, const std::vector<ColumnInfo>& columns, const std::vector<ConstStridedData>& data, size_t maxRowsPerFrame) {

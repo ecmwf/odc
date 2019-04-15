@@ -39,7 +39,7 @@ static void setUp()
     FileHandle dh("TestIntegerValues.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 

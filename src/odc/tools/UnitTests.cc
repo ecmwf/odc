@@ -72,7 +72,7 @@ static void createDataForMixedAggregated()
     eckit::FileHandle dh("selectAggregatedAndNonAggregated.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregated)
@@ -155,7 +155,7 @@ static void createDataForMixedAggregated3()
     FileHandle dh("selectAggregatedAndNonAggregated3.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregated3)
@@ -192,7 +192,7 @@ static void createDataForMixedAggregatedNULL()
     FileHandle dh("selectAggregatedAndNonAggregatedNULL.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregatedNULL)
@@ -228,7 +228,7 @@ static void createDataForRegex1()
     FileHandle dh("regex1.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 static void regex1()
@@ -264,7 +264,7 @@ TEST(vector_syntax)
         FileHandle dh("vector_syntax.odb");
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText(data, dh);
+        odc::api::odbFromCSV(data, dh);
     }
 
     const char *sql =
@@ -328,7 +328,7 @@ static void create_stringInWhere_file()
     FileHandle dh("stringInWhere.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(stringInWhere)
@@ -380,7 +380,7 @@ TEST(rownumber1)
         FileHandle dh(path);
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText(inputData, dh);
+        odc::api::odbFromCSV(inputData, dh);
     }
 
     string query("SELECT rownumber() from \"" + path + "\";");
@@ -417,7 +417,7 @@ TEST(sqlOutputFormatting)
     FileHandle dh(testFile);
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 
     bool doNotWriteColumnNames(false); // -T
     bool doNotWriteNULL(false);        // -N
@@ -454,7 +454,7 @@ static void createDataForWindSpeedWindDirection()
     FileHandle dh("uv.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(windSpeedWindDirection)
@@ -572,7 +572,7 @@ TEST(hash_operator_on_select_list)
         FileHandle dh(f);
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText(data, dh);
+        odc::api::odbFromCSV(data, dh);
     }
 
     string sql("select x,x#-1,x#1 from \"" + f + "\";");
@@ -610,7 +610,7 @@ TEST(hash_operator_in_where)
         FileHandle dh(f);
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText(data, dh);
+        odc::api::odbFromCSV(data, dh);
     }
 
     string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
@@ -756,7 +756,7 @@ TEST(operator_ge)
         FileHandle dh("1to10.odb");
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText(data, dh);
+        odc::api::odbFromCSV(data, dh);
     }
 
     odc::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
@@ -787,7 +787,7 @@ static void create_1to10()
     FileHandle dh("1to10.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
-    odc::api::importText(data, dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 /* FIXME
@@ -905,7 +905,7 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
         FileHandle dh("CREATE_TABLE_and_SELECT_INTO.odb");
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText(inputData, dh);
+        odc::api::odbFromCSV(inputData, dh);
     }
 
     const char* sql = R"(
@@ -945,8 +945,8 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
 TEST(SELECT_ALL)
 {
     ostream& L(eckit::Log::info());
-    odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
-    odc::api::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
+    odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
+    odc::api::odbFromCSV("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
     system("cat select_all_1.odb select_all_2.odb >select_all.odb");
 
     L << "--- Test_SELECT_ALL: open select_all.odb" << endl;
@@ -968,7 +968,7 @@ TEST(SELECT_WHERE_0)
         FileHandle dh("select_where_0.odb");
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+        odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
     }
     odc::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
     odc::Select::iterator it (o.begin()), end (o.end());
@@ -990,7 +990,7 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
         FileHandle dh(inFile);
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText(data, dh);
+        odc::api::odbFromCSV(data, dh);
     }
 
 	odc::Reader in(inFile);
@@ -1016,7 +1016,7 @@ TEST(LegacyAPIExecuteSelectTwice)
         FileHandle dh(fn);
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+        odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
     }
     odc::Select o(std::string("SELECT * FROM \"") + fn + "\";");
 
@@ -1040,7 +1040,7 @@ TEST(LegacyAPITraverseReaderTwice)
         FileHandle dh(fn);
         dh.openForWrite(0);
         AutoClose close(dh);
-        odc::api::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+        odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
     }
     odc::Reader o(fn);
 

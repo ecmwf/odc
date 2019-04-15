@@ -115,8 +115,8 @@ public: // methods
     Table(std::shared_ptr<TableImpl> t);
     ~Table();
 
-    size_t numRows() const;
-    size_t numColumns() const;
+    size_t rowCount() const;
+    size_t columnCount() const;
 
     const std::vector<ColumnInfo>& columnInfo() const;
 
@@ -180,11 +180,11 @@ void encode(eckit::DataHandle& out,
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/// importText returns number of lines imported
+/// odbFromCSV returns number of lines imported
 
-size_t importText(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
-size_t importText(std::istream& is, eckit::DataHandle& dh_out, const std::string& delimiter=",");
-size_t importText(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t odbFromCSV(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t odbFromCSV(std::istream& is, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t odbFromCSV(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
 
 //----------------------------------------------------------------------------------------------------------------------
 

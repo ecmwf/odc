@@ -48,6 +48,7 @@ public: // methods
     StridedDataT(void_arg_t data, size_t nelem, size_t dataSize, size_t stride) :
         data_(reinterpret_cast<value_type*>(data)), nelem_(nelem), dataSize_(dataSize), stride_(stride) {
     }
+    StridedDataT() : StridedDataT(0, 0, 0, 0) {}
 
     ~StridedDataT() {}
 
@@ -120,6 +121,13 @@ public: // methods
     }
     bool operator!=(const StridedDataT<value_type>& rhs) const {
         return !(*this == rhs);
+    }
+
+private: // methods
+
+    friend std::ostream& operator<<(std::ostream& o, const StridedDataT<value_type>& s) {
+        o << "StridedData(0x" << (void*)s.data_ << "-" << s.dataSize_ << ":" << s.stride_ << "x" << s.nelem_ << ")";
+        return o;
     }
 
 private: // members

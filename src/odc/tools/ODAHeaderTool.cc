@@ -32,7 +32,7 @@ public:
 	{
         o << std::endl << "Header " << ++headerCount_ << ". "
             << "Begin offset: " << tbl.startPosition() << ", end offset: " << tbl.nextPosition()
-            << ", number of rows in block: " << tbl.numRows()
+            << ", number of rows in block: " << tbl.rowCount()
             << ", byteOrder: " << ((tbl.byteOrder() == 1) ? "same" : "other")
             << std::endl
             << tbl.columns();
@@ -48,7 +48,7 @@ public:
 	{
         Offset offset (tbl.startPosition());
         Length length (tbl.nextPosition() - tbl.startPosition());
-        o << offset << " " << length << " " << tbl.numRows() << " " << tbl.numColumns() << std::endl;
+        o << offset << " " << length << " " << tbl.rowCount() << " " << tbl.columnCount() << std::endl;
 	}
 private:
 	unsigned long headerCount_;

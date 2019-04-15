@@ -89,7 +89,7 @@ double odb_count(const char * filename)
 	PathName path = filename;
     core::TablesReader mdReader(path);
     for (auto it(mdReader.begin()), end(mdReader.end()); it != end; ++it) {
-        n += it->numRows();
+        n += it->rowCount();
     }
 	return n;
 }

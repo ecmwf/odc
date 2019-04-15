@@ -37,15 +37,15 @@ template <> struct default_delete<odb_table_t> {
 
 CASE("Count lines in an existing ODB file") {
 
-    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
+    std::unique_ptr<odb_t> o(odc_open_path("../2000010106.odb"));
 
     size_t ntables = 0;
     size_t totalRows = 0;
 
     std::unique_ptr<odb_table_t> table;
-    while (table.reset(odc_next_table(o.get(), false)), table) {
-        totalRows += odc_table_num_rows(table.get());
-        EXPECT(odc_table_num_columns(table.get()) == 51);
+    while (table.reset(odc_alloc_next_table(o.get(), false)), table) {
+        totalRows += odc_table_row_count(table.get());
+        EXPECT(odc_table_column_count(table.get()) == 51);
         ++ntables;
     }
 
@@ -57,15 +57,15 @@ CASE("Count lines in an existing ODB file") {
 
 CASE("Decode an entire ODB file") {
 
-//    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
+//    std::unique_ptr<odb_t> o(odc_open_path("../2000010106.odb"));
 //
 //    size_t ntables = 0;
 //
 //    std::unique_ptr<odb_table_t> table;
-//    while (table.reset(odc_next_table(o.get(), false)), table) {
+//    while (table.reset(odc_alloc_next_table(o.get(), false)), table) {
 //
 //        std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
-//        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
+//        EXPECT(decoded->nrows == odc_table_row_count(table.get()));
 //        EXPECT(decoded->ncolumns == 51);
 //
 //        ++ntables;
@@ -76,7 +76,7 @@ CASE("Decode an entire ODB file") {
 
 CASE("Decode an entire ODB file preallocated data structures") {
 //
-//    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
+//    std::unique_ptr<odb_t> o(odc_open_path("../2000010106.odb"));
 //
 //    int ntables = odc_num_tables(o.get());
 //    EXPECT(ntables == 333);
@@ -88,7 +88,7 @@ CASE("Decode an entire ODB file preallocated data structures") {
 //
 //        std::unique_ptr<odb_table_t> table(odc_get_table(o.get(), i));
 //
-//        ASSERT(odc_table_num_columns(table.get()) == 51);
+//        ASSERT(odc_table_column_count(table.get()) == 51);
 //
 //        decoded.ncolumns = 51;
 //        decoded.nrows = 10000;
@@ -96,7 +96,7 @@ CASE("Decode an entire ODB file preallocated data structures") {
 //
 //        ///   odc_table_decode(table.get(), &decoded);
 //
-//        ///EXPECT(decoded.nrows == odc_table_num_rows(table.get()));
+//        ///EXPECT(decoded.nrows == odc_table_row_count(table.get()));
 //        ///EXPECT(decoded.ncolumns == 51);
 //
 //        ///eckit::Log::info() << "Decoded: ncolumns = " << decoded.ncolumns << std::endl;
