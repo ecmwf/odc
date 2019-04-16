@@ -8,6 +8,8 @@ if ( odc_SCHEMA_PATH )
     add_definitions ( -Dodc_SCHEMA_PATH=${odc_SCHEMA_PATH} )
 endif()
 
+configure_file( odc_config.f90.in odc_config.f90 )
+
 
 list( APPEND odclib_src_files
 
@@ -196,5 +198,14 @@ ecbuild_add_library( TARGET             odccore
                      TEMPLATES          ${odclib_templates}
                      LINKER_LANGUAGE    CXX
                      LIBS               eckit_sql eckit )
+
+ecbuild_add_library(
+    TARGET         fodc
+    CONDITION      HAVE_FORTRAN
+    SOURCES        api/odc.f90
+                   odc_config.f90
+    GENERATED      odc_config.f90
+    LIBS           odccore
+)
 
 

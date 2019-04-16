@@ -54,7 +54,7 @@ CASE("Correctly open an odb file") {
 
     odb_table_t* t = odc_alloc_next_table(o.get(), false);
     EXPECT(t != 0);
-    EXPECT(odc_errno == 0);
+    EXPECT(odc_success());
     odc_free_table(t);
 }
 
@@ -67,7 +67,7 @@ CASE("We can report errors through the API") {
     std::string expected = "Cannot open ../does-not-exist.odb"; // test start since strerror_r() message isn't portable
 
     EXPECT(!o);
-    EXPECT(odc_errno != 0);
+    EXPECT(!odc_success());
     EXPECT(odc_error_string() != 0);
 
     EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
@@ -75,7 +75,7 @@ CASE("We can report errors through the API") {
     o.reset(odc_open_path("../does-not-exist.odb"));
 
     EXPECT(!o);
-    EXPECT(odc_errno != 0);
+    EXPECT(!odc_success());
     EXPECT(odc_error_string() != 0);
     EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
 }
@@ -89,7 +89,7 @@ CASE("Don't continue unless error has been reset") {
     std::string expected = "Cannot open ../does-not-exist.odb"; // test start since strerror_r() message isn't portable
 
     EXPECT(!o);
-    EXPECT(odc_errno != 0);
+    EXPECT(!odc_success());
     EXPECT(odc_error_string() != 0);
     EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
 
@@ -99,7 +99,7 @@ CASE("Don't continue unless error has been reset") {
     o.reset(odc_open_path("../does-not-exist.odb"));
 
     EXPECT(!o);
-    EXPECT(odc_errno != 0);
+    EXPECT(!odc_success());
     EXPECT(odc_error_string() != 0);
     EXPECT(eckit::StringTools::startsWith(odc_error_string(), expected));
 

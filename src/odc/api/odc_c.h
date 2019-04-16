@@ -71,7 +71,7 @@ const int ODC_ERRORS_REPORT = 3;
 void odc_error_handling(int handling_type);
 void odc_reset_error();
 const char* odc_error_string();
-extern int odc_errno;
+bool odc_success();
 
 /* Basic READ object API */
 

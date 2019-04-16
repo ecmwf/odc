@@ -42,7 +42,7 @@ extern "C" {
 //      ODC_ERRORS_CHECKED - Enforces that error values are checked. If an API call
 //                           is made and the previous error has not been reset, then
 //                           std::terminate will be called.
-//      ODC_ERRORS_REPORT  - All exceptions will be caught and odc_errno set
+//      ODC_ERRORS_REPORT  - All exceptions will be caught and odc_success set
 //                           accordingly.
 
 // ii) odc_encode accepts a description of the data structured in memory.
@@ -101,17 +101,21 @@ struct odb_encoder_t {
 
 static std::string g_current_error_str;
 static int g_odc_error_behaviour = ODC_THROW;
-int odc_errno = 0;
+bool g_last_success = true;
 
 void odc_reset_error() {
     g_current_error_str.clear();
-    odc_errno = 0;
+    g_last_success = true;
 }
 
 void odc_error_handling(int handling_type) {
     ASSERT(handling_type >= ODC_THROW && handling_type <= ODC_ERRORS_REPORT);
     g_odc_error_behaviour = handling_type;
     odc_reset_error();
+}
+
+bool odc_success() {
+    return g_last_success;
 }
 
 const char* odc_error_string() {
@@ -122,9 +126,9 @@ const char* odc_error_string() {
     }
 }
 
-static void set_error(const std::string& s, int err) {
+static void set_error(const std::string& s) {
     g_current_error_str = s;
-    odc_errno = err;
+    g_last_success = false;
 }
 
 } // extern "C"
@@ -145,10 +149,10 @@ auto wrapApiFunction(FN f) -> decltype(f()) {
     if (g_odc_error_behaviour == ODC_ERRORS_REPORT) {
         odc_reset_error();
     }
-    if (g_odc_error_behaviour == ODC_ERRORS_CHECKED && odc_errno != 0) {
+    if (g_odc_error_behaviour == ODC_ERRORS_CHECKED && !odc_success()) {
         std::stringstream ss;
-        ss << "APi call being made after unchecked error: ("
-           << odc_errno << "): " << odc_error_string()
+        ss << "APi call being made after unchecked error: "
+           << odc_error_string()
            << ". SeriousBug in calling code";
         throw SeriousBug(ss.str(), Here());
     }
@@ -158,15 +162,15 @@ auto wrapApiFunction(FN f) -> decltype(f()) {
     } catch (Exception& e) {
         Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
-        set_error(e.what(), 1);
+        set_error(e.what());
     } catch (std::exception& e) {
         Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
-        set_error(e.what(), 2);
+        set_error(e.what());
     } catch (...) {
         Log::error() << "Caught unknown exception on C-C++ API boundary: " << std::endl;
         if (g_odc_error_behaviour == ODC_THROW) throw;
-        set_error("Unexpected exception caught", 3);
+        set_error("Unexpected exception caught");
     }
 
     // Return default constructed value.
@@ -264,7 +268,7 @@ const char* odc_version() {
 
 const char* odc_git_sha1() {
     return wrapApiFunction([]{
-        return Settings::version().c_str();
+        return Settings::gitsha1().c_str();
     });
 }
 
