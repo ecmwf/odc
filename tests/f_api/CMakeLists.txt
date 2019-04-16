@@ -1,6 +1,7 @@
 
 list( APPEND _api_fodc_tests
     general
+    read
 )
 
 foreach( _test ${_api_fodc_tests} )

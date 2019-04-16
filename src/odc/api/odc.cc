@@ -353,7 +353,7 @@ void odc_free_table(odb_table_t* t) {
     });
 }
 
-int odc_table_row_count(const odb_table_t* t) {
+long odc_table_row_count(const odb_table_t* t) {
     return wrapApiFunction([t] {
         ASSERT(t);
         return t->internal.rowCount();

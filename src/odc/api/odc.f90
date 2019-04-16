@@ -18,15 +18,38 @@ module odc
     private
 
     type odc_reader
-        type(c_ptr) :: impl
+        type(c_ptr) :: impl = c_null_ptr
     contains
         procedure :: open_path => reader_open_path
         procedure :: close => reader_close
+
+        ! next_frame will clean up the frame object when called on the same object.
+        ! If not, must call frame%free()
+        procedure :: next_frame => reader_next_frame
+    end type
+
+    type odc_frame
+        type(c_ptr) :: impl = c_null_ptr
+    contains
+        procedure :: free => frame_free
+        procedure :: row_count => frame_row_count
+        procedure :: column_count => frame_column_count
+    end type
+
+    type odc_encoder
+    contains
+    end type
+
+    type odc_decode_target
+    contains
     end type
 
     ! Type declarations
 
     public :: odc_reader
+    public :: odc_frame
+    public :: odc_encoder
+    public :: odc_decode_target
 
     ! Configuration management functions
 
@@ -115,6 +138,36 @@ module odc
             type(c_ptr), intent(in), value :: o
         end subroutine
 
+        function odc_alloc_next_table(o, aggregated) result(frame) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: o
+            logical(c_bool), intent(in), value :: aggregated
+            type(c_ptr) :: frame
+        end function
+
+        ! Frame functionality
+
+        subroutine odc_free_table(frame) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+        end subroutine
+
+        function odc_table_row_count(frame) result(nrows) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_long) :: nrows
+        end function
+
+        function odc_table_column_count(frame) result(ncols) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int) :: ncols
+        end function
+
     end interface
 
 contains
@@ -166,6 +219,7 @@ contains
     subroutine reader_close(reader)
         class(odc_reader) :: reader
         call odc_close(reader%impl)
+        reader%impl = c_null_ptr
     end subroutine
 
     subroutine reader_open_path(reader, path)
@@ -175,5 +229,43 @@ contains
         nullified_path = trim(path) // c_null_char
         reader%impl = odc_open_path(c_loc(nullified_path))
     end subroutine
+
+    function reader_next_frame(reader, frame, aggregated) result(success)
+        class(odc_reader), intent(inout) :: reader
+        type(odc_frame), intent(inout) :: frame
+        logical, intent(in), optional :: aggregated
+        logical(c_bool) :: l_aggregated = .false.
+        logical :: success
+
+        if (c_associated(frame%impl)) then
+            call frame%free()
+        endif
+
+        if (present(aggregated)) then
+            l_aggregated = aggregated
+        end if
+
+        frame%impl = odc_alloc_next_table(reader%impl, l_aggregated)
+        success = c_associated(frame%impl)
+
+    end function
+
+    subroutine frame_free(frame)
+        class(odc_frame), intent(inout) :: frame
+        call odc_free_table(frame%impl)
+        frame%impl = c_null_ptr
+    end subroutine
+
+    function frame_row_count(frame) result(nrows)
+        class(odc_frame), intent(inout) :: frame
+        integer(c_long) :: nrows
+        nrows = odc_table_row_count(frame%impl)
+    end function
+
+    function frame_column_count(frame) result(ncols)
+        class(odc_frame), intent(inout) :: frame
+        integer :: ncols
+        ncols = odc_table_column_count(frame%impl)
+    end function
 
 end module

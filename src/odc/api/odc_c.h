@@ -87,7 +87,7 @@ void odc_close(struct odb_t* o);
 struct odb_table_t* odc_alloc_next_table(struct odb_t* o, bool aggregated);
 void odc_free_table(struct odb_table_t* o);
 
-int odc_table_row_count(const struct odb_table_t* t);
+long odc_table_row_count(const struct odb_table_t* t);
 int odc_table_column_count(const struct odb_table_t* t);
 int odc_table_column_type(const struct odb_table_t* t, int col);
 int odc_table_column_data_size(const struct odb_table_t* t, int col);
