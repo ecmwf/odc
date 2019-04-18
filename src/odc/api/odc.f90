@@ -34,6 +34,8 @@ module odc
         procedure :: free => frame_free
         procedure :: row_count => frame_row_count
         procedure :: column_count => frame_column_count
+        procedure :: column_name => frame_column_name
+        procedure :: column_type => frame_column_type
     end type
 
     type odc_encoder
@@ -168,6 +170,25 @@ module odc
             integer(c_int) :: ncols
         end function
 
+        function odc_table_column_name(frame, col) result(column_name) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: col
+            type(c_ptr) :: column_name
+        end function
+
+        function odc_table_column_type(frame, col) result(column_type) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: col
+            integer(c_int) :: column_type
+        end function
+
+
     end interface
 
 contains
@@ -252,7 +273,9 @@ contains
 
     subroutine frame_free(frame)
         class(odc_frame), intent(inout) :: frame
-        call odc_free_table(frame%impl)
+        if (c_associated(frame%impl)) then
+            call odc_free_table(frame%impl)
+        end if
         frame%impl = c_null_ptr
     end subroutine
 
@@ -266,6 +289,22 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer :: ncols
         ncols = odc_table_column_count(frame%impl)
+    end function
+
+    function frame_column_name(frame, col) result(column_name)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col
+        character(:), allocatable :: column_name
+        column_name = fortranise_cstr(odc_table_column_name(frame%impl, col-1))
+    end function
+
+    function frame_column_type(frame, col) result(column_type)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col
+        integer :: column_type
+        column_type = odc_table_column_type(frame%impl, col-1)
     end function
 
 end module
