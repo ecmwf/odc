@@ -36,6 +36,11 @@ module odc
         procedure :: column_count => frame_column_count
         procedure :: column_name => frame_column_name
         procedure :: column_type => frame_column_type
+        procedure :: column_data_size => frame_column_data_size
+        procedure :: column_bitfield_count => frame_column_bitfield_count
+        procedure :: column_bits_name => frame_column_bits_name
+        procedure :: column_bits_size => frame_column_bits_size
+        procedure :: column_bits_offset => frame_column_bits_offset
     end type
 
     type odc_encoder
@@ -188,6 +193,50 @@ module odc
             integer(c_int) :: column_type
         end function
 
+        function odc_table_column_data_size(frame, col) result(element_size) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: col
+            integer(c_int) :: element_size
+        end function
+
+        function odc_table_column_bitfield_count(frame, col) result(field_count) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: col
+            integer(c_int) :: field_count
+        end function
+
+        function odc_table_column_bits_name(frame, col, field) result(bits_name) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: col, field
+            type(c_ptr) :: bits_name
+        end function
+
+        function odc_table_column_bits_size(frame, col, field) result(bits_size) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: col, field
+            integer(c_int) :: bits_size
+        end function
+
+        function odc_table_column_bits_offset(frame, col, field) result(bits_offset) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: col, field
+            integer(c_int) :: bits_offset
+        end function
 
     end interface
 
@@ -305,6 +354,46 @@ contains
         integer, intent(in) :: col
         integer :: column_type
         column_type = odc_table_column_type(frame%impl, col-1)
+    end function
+
+    function frame_column_data_size(frame, col) result(element_size)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col
+        integer :: element_size
+        element_size = odc_table_column_data_size(frame%impl, col-1)
+    end function
+
+    function frame_column_bitfield_count(frame, col) result(bitfield_count)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col
+        integer :: bitfield_count
+        bitfield_count = odc_table_column_bitfield_count(frame%impl, col-1)
+    end function
+
+    function frame_column_bits_name(frame, col, field) result(bits_name)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col, field
+        character(:), allocatable :: bits_name
+        bits_name = fortranise_cstr(odc_table_column_bits_name(frame%impl, col-1, field-1))
+    end function
+
+    function frame_column_bits_size(frame, col, field) result(bits_size)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col, field
+        integer :: bits_size
+        bits_size = odc_table_column_bits_size(frame%impl, col-1, field-1)
+    end function
+
+    function frame_column_bits_offset(frame, col, field) result(bits_offset)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col, field
+        integer :: bits_offset
+        bits_offset = odc_table_column_bits_offset(frame%impl, col-1, field-1)
     end function
 
 end module

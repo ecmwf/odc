@@ -134,15 +134,15 @@ CASE("Encode data in standard tabular form") {
     EXPECT(odc_table_column_bitfield_count(t.get(), 5) == 0);
     EXPECT(odc_table_column_bitfield_count(t.get(), 6) == 3);
 
-    EXPECT(::strcmp(odc_table_column_bitfield_field_name(t.get(), 6, 0), "bits1") == 0);
-    EXPECT(::strcmp(odc_table_column_bitfield_field_name(t.get(), 6, 1), "bits2") == 0);
-    EXPECT(::strcmp(odc_table_column_bitfield_field_name(t.get(), 6, 2), "bits3") == 0);
-    EXPECT(odc_table_column_bitfield_field_size(t.get(), 6, 0) == 2);
-    EXPECT(odc_table_column_bitfield_field_size(t.get(), 6, 1) == 3);
-    EXPECT(odc_table_column_bitfield_field_size(t.get(), 6, 2) == 1);
-    EXPECT(odc_table_column_bitfield_field_offset(t.get(), 6, 0) == 0);
-    EXPECT(odc_table_column_bitfield_field_offset(t.get(), 6, 1) == 2);
-    EXPECT(odc_table_column_bitfield_field_offset(t.get(), 6, 2) == 5);
+    EXPECT(::strcmp(odc_table_column_bits_name(t.get(), 6, 0), "bits1") == 0);
+    EXPECT(::strcmp(odc_table_column_bits_name(t.get(), 6, 1), "bits2") == 0);
+    EXPECT(::strcmp(odc_table_column_bits_name(t.get(), 6, 2), "bits3") == 0);
+    EXPECT(odc_table_column_bits_size(t.get(), 6, 0) == 2);
+    EXPECT(odc_table_column_bits_size(t.get(), 6, 1) == 3);
+    EXPECT(odc_table_column_bits_size(t.get(), 6, 2) == 1);
+    EXPECT(odc_table_column_bits_offset(t.get(), 6, 0) == 0);
+    EXPECT(odc_table_column_bits_offset(t.get(), 6, 1) == 2);
+    EXPECT(odc_table_column_bits_offset(t.get(), 6, 2) == 5);
 
     // Test that the data is correctly encoded
 

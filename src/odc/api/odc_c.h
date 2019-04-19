@@ -93,9 +93,9 @@ int odc_table_column_type(const struct odb_table_t* t, int col);
 int odc_table_column_data_size(const struct odb_table_t* t, int col);
 const char* odc_table_column_name(const struct odb_table_t* t, int col);
 int odc_table_column_bitfield_count(const struct odb_table_t* t, int col);
-const char* odc_table_column_bitfield_field_name(const struct odb_table_t* t, int col, int n);
-int odc_table_column_bitfield_field_size(const struct odb_table_t* t, int col, int n);
-int odc_table_column_bitfield_field_offset(const struct odb_table_t* t, int col, int n);
+const char* odc_table_column_bits_name(const struct odb_table_t* t, int col, int n);
+int odc_table_column_bits_size(const struct odb_table_t* t, int col, int n); // yuk.
+int odc_table_column_bits_offset(const struct odb_table_t* t, int col, int n);
 
 /* Decoding data */
 

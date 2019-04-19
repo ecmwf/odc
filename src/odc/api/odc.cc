@@ -370,49 +370,66 @@ int odc_table_column_count(const odb_table_t* t) {
 int odc_table_column_type(const odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
-        return t->internal.columnInfo()[col].type;
+        const auto& ci(t->internal.columnInfo());
+        ASSERT(col >= 0 && col < ci.size());
+        return ci[col].type;
     });
 }
 
 int odc_table_column_data_size(const odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
-        return t->internal.columnInfo()[col].decodedSize;
+        const auto& ci(t->internal.columnInfo());
+        ASSERT(col >= 0 && col < ci.size());
+        return ci[col].decodedSize;
     });
 }
 
 const char* odc_table_column_name(const odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
-        return t->internal.columnInfo()[col].name.c_str();
+        const auto& ci(t->internal.columnInfo());
+        ASSERT(col >= 0 && col < ci.size());
+        return ci[col].name.c_str();
     });
 }
 
 int odc_table_column_bitfield_count(const struct odb_table_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
-        return t->internal.columnInfo()[col].bitfield.size();
+        const auto& ci(t->internal.columnInfo());
+        ASSERT(col >= 0 && col < ci.size());
+        return ci[col].bitfield.size();
     });
 }
 
-const char* odc_table_column_bitfield_field_name(const struct odb_table_t* t, int col, int n) {
+const char* odc_table_column_bits_name(const struct odb_table_t* t, int col, int n) {
     return wrapApiFunction([t, col, n] {
         ASSERT(t);
-        return t->internal.columnInfo()[col].bitfield[n].name.c_str();
+        const auto& ci(t->internal.columnInfo());
+        ASSERT(col >= 0 && col < ci.size());
+        ASSERT(n >= 0 && n < ci[col].bitfield.size());
+        return ci[col].bitfield[n].name.c_str();
     });
 }
 
-int odc_table_column_bitfield_field_size(const struct odb_table_t* t, int col, int n) {
+int odc_table_column_bits_size(const struct odb_table_t* t, int col, int n) {
     return wrapApiFunction([t, col, n] {
         ASSERT(t);
-        return t->internal.columnInfo()[col].bitfield[n].size;
+        const auto& ci(t->internal.columnInfo());
+        ASSERT(col >= 0 && col < ci.size());
+        ASSERT(n >= 0 && n < ci[col].bitfield.size());
+        return ci[col].bitfield[n].size;
     });
 }
 
-int odc_table_column_bitfield_field_offset(const struct odb_table_t* t, int col, int n) {
+int odc_table_column_bits_offset(const struct odb_table_t* t, int col, int n) {
     return wrapApiFunction([t, col, n] {
         ASSERT(t);
-        return t->internal.columnInfo()[col].bitfield[n].offset;
+        const auto& ci(t->internal.columnInfo());
+        ASSERT(col >= 0 && col < ci.size());
+        ASSERT(n >= 0 && n < ci[col].bitfield.size());
+        return ci[col].bitfield[n].offset;
     });
 }
 

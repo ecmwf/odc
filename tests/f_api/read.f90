@@ -31,6 +31,20 @@ module fapi_read_tests
         ODC_REAL, ODC_REAL, ODC_REAL]
 
 
+    character(14), parameter :: column_10_bitfield_names(*) = [ character(14) :: &
+        "lat_humon", "lat_qcsub", "lat_override", "lat_flag", "lat_hqc_flag", "lon_humon", "lon_qcsub", &
+        "lon_override", "lon_flag", "lon_hqc_flag", "date_humon", "date_qcsub", "date_override", &
+        "date_flag", "date_hqc_flag", "time_humon", "time_qcsub", "time_override", "time_flag", &
+        "time_hqc_flag", "stalt_humon", "stalt_qcsub", "stalt_override", "stalt_flag", "stalt_hqc_flag" &
+    ]
+
+    integer, parameter :: column_10_bitfield_sizes(*) = [ &
+        1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1]
+
+
+
+
+
 contains
 
     function test_count_lines() result(success)
@@ -78,8 +92,8 @@ contains
 
         type(odc_reader) :: reader
         type(odc_frame) :: frame
-        character(:), allocatable :: column_name
-        integer :: ncols, col, column_type
+        character(:), allocatable :: column_name, field_name
+        integer :: ncols, col, column_type, field, field_size, expected_offset, field_offset, element_size
         logical :: success
 
         success = .true.
@@ -98,19 +112,75 @@ contains
 
                 column_name = frame%column_name(col)
                 column_type = frame%column_type(col)
+                element_size = frame%column_data_size(col)
 
                 if (column_name /= trim(example_column_names(col))) then
-                    write(*,'(3a,i2,3a)') 'Unexpected column name ', column_name, &
+                    write(error_unit,'(3a,i2,3a)') 'Unexpected column name ', column_name, &
                                ' for column ', col, ' (expected ', trim(example_column_names(col)), ')'
                     success = .false.
                 end if
 
                 if (column_type /= example_column_types(col)) then
-                    write(*, '(a,i1,a,i2,a,i1,a)') 'Unexpected column type ', column_type, ' for column ', &
-                                   col, ' (expected ', example_column_types(col), ')'
+                    write(error_unit, '(a,i1,a,i2,a,i1,a)') 'Unexpected column type ', column_type, &
+                            ' for column ', col, ' (expected ', example_column_types(col), ')'
                     success = .false.
                 end if
 
+                if (element_size /= 8) then
+                    write(error_unit, '(a,i1,a,i2,a)') 'Unexpected column data size ', element_size, &
+                            ' for column ', col, ' (expected 8)'
+                    success = .false.
+                end if
+
+                if (column_type == ODC_BITFIELD) then
+                    if (frame%column_bitfield_count(col) <= 0) then
+                        write(error_unit, *) "Bitfields expected for bitfield column"
+                        success = .false.
+                    end if
+                else
+                    if (frame%column_bitfield_count(col) /= 0) then
+                        write(error_unit, *) "Unexpected bitfields for non-bitfield column"
+                        success = .false.
+                    end if
+                end if
+
+            end do
+
+            ! Test bitfields for column 10
+
+            if (frame%column_bitfield_count(10) /= 25) then
+                write(error_unit, *) "Expected 25 bitfield fields for column 10. Got ", &
+                                     frame%column_bitfield_count(10)
+                success = .false.
+            end if
+
+            expected_offset = 0
+            do field = 1, 25
+
+                col = 10
+                field_name = frame%column_bits_name(col, field)
+                field_size = frame%column_bits_size(col, field)
+                field_offset = frame%column_bits_offset(col, field)
+
+                if (field_name /= trim(column_10_bitfield_names(field))) then
+                    write(error_unit, '(3a,i2,3a)') 'Unexpected field name ', field_name, ' for field ', &
+                            field, ' (expected ', trim(column_10_bitfield_names(field)), ')'
+                    success = .false.
+                end if
+
+                if (field_size /= column_10_bitfield_sizes(field)) then
+                    write(error_unit, '(a,i2,a,i2,a,i2,a)') 'Unexpected field size ', field_size, &
+                            ' for field ', field, ' (expected ', column_10_bitfield_sizes(field), ')'
+                    success = .false.
+                end if
+
+                if (field_offset /= expected_offset) then
+                    write(error_unit, '(a,i2,a,i2,a,i2,a)') 'Unexpected field offset ', field_offset, &
+                            ' for field ', field, ' (expected ', expected_offset, ')'
+                    success = .false.
+                end if
+
+                expected_offset = expected_offset + field_size
             end do
 
             call frame%free()
