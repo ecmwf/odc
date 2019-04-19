@@ -145,7 +145,7 @@ module odc
             type(c_ptr), intent(in), value :: o
         end subroutine
 
-        function odc_alloc_next_table(o, aggregated) result(frame) bind(c)
+        function odc_alloc_next_frame(o, aggregated) result(frame) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: o
@@ -155,27 +155,27 @@ module odc
 
         ! Frame functionality
 
-        subroutine odc_free_table(frame) bind(c)
+        subroutine odc_free_frame(frame) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: frame
         end subroutine
 
-        function odc_table_row_count(frame) result(nrows) bind(c)
+        function odc_frame_row_count(frame) result(nrows) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: frame
             integer(c_long) :: nrows
         end function
 
-        function odc_table_column_count(frame) result(ncols) bind(c)
+        function odc_frame_column_count(frame) result(ncols) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: frame
             integer(c_int) :: ncols
         end function
 
-        function odc_table_column_name(frame, col) result(column_name) bind(c)
+        function odc_frame_column_name(frame, col) result(column_name) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -184,7 +184,7 @@ module odc
             type(c_ptr) :: column_name
         end function
 
-        function odc_table_column_type(frame, col) result(column_type) bind(c)
+        function odc_frame_column_type(frame, col) result(column_type) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -193,7 +193,7 @@ module odc
             integer(c_int) :: column_type
         end function
 
-        function odc_table_column_data_size(frame, col) result(element_size) bind(c)
+        function odc_frame_column_data_size(frame, col) result(element_size) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -202,7 +202,7 @@ module odc
             integer(c_int) :: element_size
         end function
 
-        function odc_table_column_bitfield_count(frame, col) result(field_count) bind(c)
+        function odc_frame_column_bitfield_count(frame, col) result(field_count) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -211,7 +211,7 @@ module odc
             integer(c_int) :: field_count
         end function
 
-        function odc_table_column_bits_name(frame, col, field) result(bits_name) bind(c)
+        function odc_frame_column_bits_name(frame, col, field) result(bits_name) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -220,7 +220,7 @@ module odc
             type(c_ptr) :: bits_name
         end function
 
-        function odc_table_column_bits_size(frame, col, field) result(bits_size) bind(c)
+        function odc_frame_column_bits_size(frame, col, field) result(bits_size) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -229,7 +229,7 @@ module odc
             integer(c_int) :: bits_size
         end function
 
-        function odc_table_column_bits_offset(frame, col, field) result(bits_offset) bind(c)
+        function odc_frame_column_bits_offset(frame, col, field) result(bits_offset) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -315,7 +315,7 @@ contains
             l_aggregated = aggregated
         end if
 
-        frame%impl = odc_alloc_next_table(reader%impl, l_aggregated)
+        frame%impl = odc_alloc_next_frame(reader%impl, l_aggregated)
         success = c_associated(frame%impl)
 
     end function
@@ -323,7 +323,7 @@ contains
     subroutine frame_free(frame)
         class(odc_frame), intent(inout) :: frame
         if (c_associated(frame%impl)) then
-            call odc_free_table(frame%impl)
+            call odc_free_frame(frame%impl)
         end if
         frame%impl = c_null_ptr
     end subroutine
@@ -331,13 +331,13 @@ contains
     function frame_row_count(frame) result(nrows)
         class(odc_frame), intent(inout) :: frame
         integer(c_long) :: nrows
-        nrows = odc_table_row_count(frame%impl)
+        nrows = odc_frame_row_count(frame%impl)
     end function
 
     function frame_column_count(frame) result(ncols)
         class(odc_frame), intent(inout) :: frame
         integer :: ncols
-        ncols = odc_table_column_count(frame%impl)
+        ncols = odc_frame_column_count(frame%impl)
     end function
 
     function frame_column_name(frame, col) result(column_name)
@@ -345,7 +345,7 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer, intent(in) :: col
         character(:), allocatable :: column_name
-        column_name = fortranise_cstr(odc_table_column_name(frame%impl, col-1))
+        column_name = fortranise_cstr(odc_frame_column_name(frame%impl, col-1))
     end function
 
     function frame_column_type(frame, col) result(column_type)
@@ -353,7 +353,7 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer, intent(in) :: col
         integer :: column_type
-        column_type = odc_table_column_type(frame%impl, col-1)
+        column_type = odc_frame_column_type(frame%impl, col-1)
     end function
 
     function frame_column_data_size(frame, col) result(element_size)
@@ -361,7 +361,7 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer, intent(in) :: col
         integer :: element_size
-        element_size = odc_table_column_data_size(frame%impl, col-1)
+        element_size = odc_frame_column_data_size(frame%impl, col-1)
     end function
 
     function frame_column_bitfield_count(frame, col) result(bitfield_count)
@@ -369,7 +369,7 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer, intent(in) :: col
         integer :: bitfield_count
-        bitfield_count = odc_table_column_bitfield_count(frame%impl, col-1)
+        bitfield_count = odc_frame_column_bitfield_count(frame%impl, col-1)
     end function
 
     function frame_column_bits_name(frame, col, field) result(bits_name)
@@ -377,7 +377,7 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer, intent(in) :: col, field
         character(:), allocatable :: bits_name
-        bits_name = fortranise_cstr(odc_table_column_bits_name(frame%impl, col-1, field-1))
+        bits_name = fortranise_cstr(odc_frame_column_bits_name(frame%impl, col-1, field-1))
     end function
 
     function frame_column_bits_size(frame, col, field) result(bits_size)
@@ -385,7 +385,7 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer, intent(in) :: col, field
         integer :: bits_size
-        bits_size = odc_table_column_bits_size(frame%impl, col-1, field-1)
+        bits_size = odc_frame_column_bits_size(frame%impl, col-1, field-1)
     end function
 
     function frame_column_bits_offset(frame, col, field) result(bits_offset)
@@ -393,7 +393,7 @@ contains
         class(odc_frame), intent(inout) :: frame
         integer, intent(in) :: col, field
         integer :: bits_offset
-        bits_offset = odc_table_column_bits_offset(frame%impl, col-1, field-1)
+        bits_offset = odc_frame_column_bits_offset(frame%impl, col-1, field-1)
     end function
 
 end module

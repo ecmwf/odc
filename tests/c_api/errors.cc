@@ -17,15 +17,15 @@
 
 using namespace eckit::testing;
 
-// Specialise custom deletion for odb_t
+// Specialise custom deletion for odc_reader_t
 
 namespace std {
-template <> struct default_delete<odb_t> {
-    void operator() (odb_t* o) { odc_close(o); }
+template <> struct default_delete<odc_reader_t> {
+    void operator() (odc_reader_t* o) { odc_close(o); }
 };
 
-template <> struct default_delete<odb_table_t> {
-    void operator() (odb_table_t* t) { odc_free_table(t); }
+template <> struct default_delete<odc_frame_t> {
+    void operator() (odc_frame_t* t) { odc_free_frame(t); }
 };
 
 }
@@ -50,19 +50,19 @@ CASE("Correctly open an odb file") {
 
     SetErrorHandling e(ODC_THROW);
 
-    std::unique_ptr<odb_t> o(odc_open_path("../2000010106.odb"));
+    std::unique_ptr<odc_reader_t> o(odc_open_path("../2000010106.odb"));
 
-    odb_table_t* t = odc_alloc_next_table(o.get(), false);
+    odc_frame_t* t = odc_alloc_next_frame(o.get(), false);
     EXPECT(t != 0);
     EXPECT(odc_success());
-    odc_free_table(t);
+    odc_free_frame(t);
 }
 
 CASE("We can report errors through the API") {
 
     SetErrorHandling e(ODC_ERRORS_REPORT);
 
-    std::unique_ptr<odb_t> o(odc_open_path("../does-not-exist.odb"));
+    std::unique_ptr<odc_reader_t> o(odc_open_path("../does-not-exist.odb"));
 
     std::string expected = "Cannot open ../does-not-exist.odb"; // test start since strerror_r() message isn't portable
 
@@ -84,7 +84,7 @@ CASE("Don't continue unless error has been reset") {
 
     SetErrorHandling e(ODC_ERRORS_CHECKED);
 
-    std::unique_ptr<odb_t> o(odc_open_path("../does-not-exist.odb"));
+    std::unique_ptr<odc_reader_t> o(odc_open_path("../does-not-exist.odb"));
 
     std::string expected = "Cannot open ../does-not-exist.odb"; // test start since strerror_r() message isn't portable
 
