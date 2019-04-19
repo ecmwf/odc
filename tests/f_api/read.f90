@@ -41,10 +41,6 @@ module fapi_read_tests
     integer, parameter :: column_10_bitfield_sizes(*) = [ &
         1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1]
 
-
-
-
-
 contains
 
     function test_count_lines() result(success)
@@ -93,7 +89,8 @@ contains
         type(odc_reader) :: reader
         type(odc_frame) :: frame
         character(:), allocatable :: column_name, field_name
-        integer :: ncols, col, column_type, field, field_size, expected_offset, field_offset, element_size
+        integer :: ncols, col, column_type, field, field_size, expected_offset, field_offset
+        integer :: element_size, element_size_doubles
         logical :: success
 
         success = .true.
@@ -113,6 +110,7 @@ contains
                 column_name = frame%column_name(col)
                 column_type = frame%column_type(col)
                 element_size = frame%column_data_size(col)
+                element_size_doubles = frame%column_data_size_doubles(col)
 
                 if (column_name /= trim(example_column_names(col))) then
                     write(error_unit,'(3a,i2,3a)') 'Unexpected column name ', column_name, &
@@ -129,6 +127,12 @@ contains
                 if (element_size /= 8) then
                     write(error_unit, '(a,i1,a,i2,a)') 'Unexpected column data size ', element_size, &
                             ' for column ', col, ' (expected 8)'
+                    success = .false.
+                end if
+
+                if (element_size_doubles /= 1) then
+                    write(error_unit, '(a,i1,a,i2,a)') 'Unexpected column doubles data size ', &
+                            element_size_doubles, ' for column ', col, ' (expected 1)'
                     success = .false.
                 end if
 

@@ -37,6 +37,7 @@ module odc
         procedure :: column_name => frame_column_name
         procedure :: column_type => frame_column_type
         procedure :: column_data_size => frame_column_data_size
+        procedure :: column_data_size_doubles => frame_column_data_size_doubles
         procedure :: column_bitfield_count => frame_column_bitfield_count
         procedure :: column_bits_name => frame_column_bits_name
         procedure :: column_bits_size => frame_column_bits_size
@@ -362,6 +363,20 @@ contains
         integer, intent(in) :: col
         integer :: element_size
         element_size = odc_frame_column_data_size(frame%impl, col-1)
+    end function
+
+    function frame_column_data_size_doubles(frame, col) result(element_size)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(inout) :: frame
+        integer, intent(in) :: col
+        integer :: element_size
+        element_size = odc_frame_column_data_size(frame%impl, col-1)
+        if (mod(element_size, 8) == 0) then
+            element_size = element_size / 8
+        else
+            element_size = (element_size / 8) + 1
+        end if
+
     end function
 
     function frame_column_bitfield_count(frame, col) result(bitfield_count)
