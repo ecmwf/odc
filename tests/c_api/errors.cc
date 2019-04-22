@@ -52,7 +52,7 @@ CASE("Correctly open an odb file") {
 
     std::unique_ptr<odc_reader_t> o(odc_open_path("../2000010106.odb"));
 
-    odc_frame_t* t = odc_alloc_next_frame(o.get(), false);
+    odc_frame_t* t = odc_alloc_next_frame(o.get());
     EXPECT(t != 0);
     EXPECT(odc_success());
     odc_free_frame(t);

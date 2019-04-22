@@ -17,6 +17,8 @@ module odc
 
     private
 
+    integer, parameter :: dp = selected_real_kind(15, 307)
+
     type odc_reader
         type(c_ptr) :: impl = c_null_ptr
     contains
@@ -42,6 +44,7 @@ module odc
         procedure :: column_bits_name => frame_column_bits_name
         procedure :: column_bits_size => frame_column_bits_size
         procedure :: column_bits_offset => frame_column_bits_offset
+        procedure :: decode => frame_decode
     end type
 
     type odc_encoder
@@ -49,7 +52,16 @@ module odc
     end type
 
     type odc_decode_target
+        type(c_ptr) :: impl = c_null_ptr
     contains
+        procedure :: initialise => dt_initialise
+        procedure :: free => dt_free
+        procedure :: set_row_count => dt_set_row_count
+        procedure :: set_data_array => dt_set_data_array
+        procedure :: data => dt_data_array
+        procedure :: row_count => dt_row_count
+        procedure :: column_count => dt_column_count
+        procedure :: column_data_size_doubles => dt_column_data_size_doubles
     end type
 
     ! Type declarations
@@ -66,6 +78,8 @@ module odc
     public :: odc_type_name, odc_type_count
     public :: odc_error_handling, odc_reset_error
     public :: odc_success, odc_error_string
+    public :: odc_missing_integer, odc_missing_double
+    public :: odc_set_missing_integer, odc_set_missing_double
 
     ! For utility
 
@@ -125,6 +139,30 @@ module odc
         subroutine odc_reset_error() bind(c)
         end subroutine
 
+        function odc_missing_integer() result(missing_integer) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            integer(c_long) :: missing_integer
+        end function
+
+        function odc_missing_double() result(missing_double) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            real(c_double) :: missing_double
+        end function
+
+        subroutine odc_set_missing_integer(missing_integer) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            integer(c_long), intent(in), value :: missing_integer
+        end subroutine
+
+        subroutine odc_set_missing_double(missing_double) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            real(c_double), intent(in), value :: missing_double
+        end subroutine
+
         function odc_success() result(successp) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -146,11 +184,18 @@ module odc
             type(c_ptr), intent(in), value :: o
         end subroutine
 
-        function odc_alloc_next_frame(o, aggregated) result(frame) bind(c)
+        function odc_alloc_next_frame(o) result(frame) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: o
-            logical(c_bool), intent(in), value :: aggregated
+            type(c_ptr) :: frame
+        end function
+
+        function odc_alloc_next_frame_aggregated(o, maximum_rows) result(frame) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: o
+            integer(c_long), intent(in), value :: maximum_rows
             type(c_ptr) :: frame
         end function
 
@@ -239,6 +284,80 @@ module odc
             integer(c_int) :: bits_offset
         end function
 
+        subroutine odc_frame_build_all_decode_target(frame, target) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame, target
+        end subroutine
+
+        function odc_frame_decode(frame, decode_target, nthreads) result(row_count) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame, decode_target
+            integer(c_int), intent(in), value :: nthreads
+            integer(c_long) :: row_count
+        end function
+
+        ! Work with decode targets
+
+        function odc_alloc_decode_target() result(decode_target) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr) :: decode_target
+        end function
+
+        subroutine odc_free_decode_target(decode_target) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decode_target
+        end subroutine
+
+        subroutine odc_decode_target_set_row_count(decode_target, row_count) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decode_target
+            integer(c_long), intent(in), value :: row_count
+        end subroutine
+
+        subroutine odc_decode_target_set_array_data(decode_target, buffer, buffer_size) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decode_target
+            type(c_ptr), intent(in), value :: buffer
+            integer(c_long), intent(in), value :: buffer_size
+        end subroutine
+
+        function odc_decode_target_array_data(decode_target) result(data) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decode_target
+            type(c_ptr) :: data
+        end function
+
+        function odc_decode_target_column_count(decode_target) result(column_count) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decode_target
+            integer(c_int) :: column_count
+        end function
+
+        function odc_decode_target_column_size(decode_target, column) result(column_size) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decode_target
+            integer(c_int), intent(in), value :: column
+            integer(c_int) :: column_size
+        end function
+
+        function odc_decode_target_row_count(decode_target) result(row_count) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decode_target
+            integer(c_long) :: row_count
+        end function
+
     end interface
 
 contains
@@ -301,11 +420,13 @@ contains
         reader%impl = odc_open_path(c_loc(nullified_path))
     end subroutine
 
-    function reader_next_frame(reader, frame, aggregated) result(success)
+    function reader_next_frame(reader, frame, aggregated, maximum_rows) result(success)
         class(odc_reader), intent(inout) :: reader
         type(odc_frame), intent(inout) :: frame
         logical, intent(in), optional :: aggregated
-        logical(c_bool) :: l_aggregated = .false.
+        integer, intent(in), optional :: maximum_rows
+        logical :: l_aggregated = .false.
+        integer(c_long) :: l_maximum_rows = -1
         logical :: success
 
         if (c_associated(frame%impl)) then
@@ -316,7 +437,19 @@ contains
             l_aggregated = aggregated
         end if
 
-        frame%impl = odc_alloc_next_frame(reader%impl, l_aggregated)
+        if (present(maximum_rows)) then
+            if (.not. present(aggregated)) then
+                l_aggregated = .true.
+            end if
+            l_maximum_rows = maximum_rows
+        end if
+
+        if (l_aggregated) then
+            frame%impl = odc_alloc_next_frame_aggregated(reader%impl, l_maximum_rows)
+        else
+            frame%impl = odc_alloc_next_frame(reader%impl)
+        end if
+
         success = c_associated(frame%impl)
 
     end function
@@ -371,12 +504,7 @@ contains
         integer, intent(in) :: col
         integer :: element_size
         element_size = odc_frame_column_data_size(frame%impl, col-1)
-        if (mod(element_size, 8) == 0) then
-            element_size = element_size / 8
-        else
-            element_size = (element_size / 8) + 1
-        end if
-
+        element_size = merge(0, 1, mod(element_size, 8) == 0) + (element_size / 8)
     end function
 
     function frame_column_bitfield_count(frame, col) result(bitfield_count)
@@ -411,4 +539,80 @@ contains
         bits_offset = odc_frame_column_bits_offset(frame%impl, col-1, field-1)
     end function
 
+    function frame_decode(frame, decode_target, nthreads) result(row_count)
+        class(odc_frame), intent(inout) :: frame
+        type(odc_decode_target), intent(inout) :: decode_target
+        integer, intent(in), optional :: nthreads
+        integer(c_long) :: row_count
+        integer :: nthreads_ = 1
+        if (present(nthreads)) nthreads_ = nthreads
+        row_count = odc_frame_decode(frame%impl, decode_target%impl, nthreads_)
+    end function
+
+    subroutine dt_initialise(tgt, target_frame)
+        class(odc_decode_target), intent(inout) :: tgt
+        type(odc_frame), intent(in), optional :: target_frame
+        tgt%impl = odc_alloc_decode_target()
+        if (present(target_frame)) then
+            call odc_frame_build_all_decode_target(target_frame%impl, tgt%impl)
+        end if
+    end subroutine
+
+    subroutine dt_free(tgt)
+        class(odc_decode_target), intent(inout) :: tgt
+        call odc_free_decode_target(tgt%impl)
+        tgt%impl = c_null_ptr
+    end subroutine
+
+    subroutine dt_set_row_count(tgt, row_count)
+        class(odc_decode_target), intent(inout) :: tgt
+        integer(c_long), intent(in) :: row_count
+        call odc_decode_target_set_row_count(tgt%impl, row_count)
+    end subroutine
+
+    subroutine dt_set_data_array(tgt, data_array)
+        class(odc_decode_target), intent(inout) :: tgt
+        real(c_double), intent(inout), target :: data_array(:,:)
+        integer(c_long) :: data_size
+        call tgt%set_row_count(size(data_array, 1, c_long))
+        data_size = 8 * size(data_array, 1) * size(data_array, 2)
+        call odc_decode_target_set_array_data(tgt%impl, c_loc(data_array), data_size)
+    end subroutine
+
+    function dt_row_count(tgt) result(row_count)
+        class(odc_decode_target), intent(inout) :: tgt
+        integer(c_long) :: row_count
+        row_count = odc_decode_target_row_count(tgt%impl)
+    end function
+
+    function dt_column_count(tgt) result(column_count)
+        class(odc_decode_target), intent(inout) :: tgt
+        integer(c_long) :: column_count
+        column_count = odc_decode_target_column_count(tgt%impl)
+    end function
+
+    function dt_column_data_size_doubles(tgt, col) result(size_doubles)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_decode_target), intent(inout) :: tgt
+        integer, intent(in) :: col
+        integer :: size_doubles
+        size_doubles = odc_decode_target_column_size(tgt%impl, col-1)
+        size_doubles = merge(0, 1, mod(size_doubles, 8) == 0) + (size_doubles / 8)
+    end function
+
+    function dt_data_array(tgt) result(data)
+        class(odc_decode_target), intent(inout) :: tgt
+        type(c_ptr) :: c_data
+        real(dp), pointer :: data(:,:)
+        integer :: doubles_columns, col
+
+        ! What are the dimensions of the array?
+        doubles_columns = 0
+        do col = 1, tgt%column_count()
+            doubles_columns = doubles_columns + tgt%column_data_size_doubles(col)
+        end do
+
+        c_data = odc_decode_target_array_data(tgt%impl)
+        call c_f_pointer(c_data, data, [int(tgt%row_count()), doubles_columns])
+    end function
 end module

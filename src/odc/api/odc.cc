@@ -68,11 +68,14 @@ struct odc_decode_target_t {
         size_t stride;
     };
 
-    odc_decode_target_t() : nrows(0), ownedData() {}
+    odc_decode_target_t() : nrows(0), dataSize(0), externalData(0), ownedData() {}
 
     size_t nrows;
     std::vector<std::string> columnNames;
     std::vector<DecodeColumn> columnData;
+
+    size_t dataSize;
+    void* externalData;
     std::unique_ptr<char> ownedData;
 };
 
@@ -260,6 +263,18 @@ long odc_missing_integer() {
     return Settings::integerMissingValue();
 }
 
+double odc_missing_double() {
+    return Settings::doubleMissingValue();
+}
+
+void odc_set_missing_integer(long mi) {
+    return Settings::setIntegerMissingValue(mi);
+}
+
+void odc_set_missing_double(double md) {
+    return Settings::setDoubleMissingValue(md);
+}
+
 const char* odc_version() {
     return wrapApiFunction([]{
         return Settings::version().c_str();
@@ -337,9 +352,18 @@ void odc_close(odc_reader_t* o) {
  * Table handling
  */
 
-odc_frame_t* odc_alloc_next_frame(odc_reader_t* o, bool aggregated) {
-    return wrapApiFunction([o, aggregated] {
-        if (Optional<Table> t = o->internal.next(aggregated)) {
+odc_frame_t* odc_alloc_next_frame(odc_reader_t* o) {
+    return wrapApiFunction([o] {
+        if (Optional<Table> t = o->internal.next(false)) {
+            return new odc_frame_t(t.get());
+        }
+        return static_cast<odc_frame_t*>(nullptr);
+    });
+}
+
+odc_frame_t* odc_alloc_next_frame_aggregated(odc_reader_t* o, long maximum_rows) {
+    return wrapApiFunction([o, maximum_rows] {
+        if (Optional<Table> t = o->internal.next(true, maximum_rows)) {
             return new odc_frame_t(t.get());
         }
         return static_cast<odc_frame_t*>(nullptr);
@@ -371,7 +395,7 @@ int odc_frame_column_type(const odc_frame_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
         const auto& ci(t->internal.columnInfo());
-        ASSERT(col >= 0 && col < ci.size());
+        ASSERT(col >= 0 && size_t(col) < ci.size());
         return ci[col].type;
     });
 }
@@ -380,7 +404,7 @@ int odc_frame_column_data_size(const odc_frame_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
         const auto& ci(t->internal.columnInfo());
-        ASSERT(col >= 0 && col < ci.size());
+        ASSERT(col >= 0 && size_t(col) < ci.size());
         return ci[col].decodedSize;
     });
 }
@@ -389,7 +413,7 @@ const char* odc_frame_column_name(const odc_frame_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
         const auto& ci(t->internal.columnInfo());
-        ASSERT(col >= 0 && col < ci.size());
+        ASSERT(col >= 0 && size_t(col) < ci.size());
         return ci[col].name.c_str();
     });
 }
@@ -398,7 +422,7 @@ int odc_frame_column_bitfield_count(const struct odc_frame_t* t, int col) {
     return wrapApiFunction([t, col] {
         ASSERT(t);
         const auto& ci(t->internal.columnInfo());
-        ASSERT(col >= 0 && col < ci.size());
+        ASSERT(col >= 0 && size_t(col) < ci.size());
         return ci[col].bitfield.size();
     });
 }
@@ -407,8 +431,8 @@ const char* odc_frame_column_bits_name(const struct odc_frame_t* t, int col, int
     return wrapApiFunction([t, col, n] {
         ASSERT(t);
         const auto& ci(t->internal.columnInfo());
-        ASSERT(col >= 0 && col < ci.size());
-        ASSERT(n >= 0 && n < ci[col].bitfield.size());
+        ASSERT(col >= 0 && size_t(col) < ci.size());
+        ASSERT(n >= 0 && size_t(n) < ci[col].bitfield.size());
         return ci[col].bitfield[n].name.c_str();
     });
 }
@@ -417,8 +441,8 @@ int odc_frame_column_bits_size(const struct odc_frame_t* t, int col, int n) {
     return wrapApiFunction([t, col, n] {
         ASSERT(t);
         const auto& ci(t->internal.columnInfo());
-        ASSERT(col >= 0 && col < ci.size());
-        ASSERT(n >= 0 && n < ci[col].bitfield.size());
+        ASSERT(col >= 0 && size_t(col) < ci.size());
+        ASSERT(n >= 0 && size_t(n) < ci[col].bitfield.size());
         return ci[col].bitfield[n].size;
     });
 }
@@ -427,8 +451,8 @@ int odc_frame_column_bits_offset(const struct odc_frame_t* t, int col, int n) {
     return wrapApiFunction([t, col, n] {
         ASSERT(t);
         const auto& ci(t->internal.columnInfo());
-        ASSERT(col >= 0 && col < ci.size());
-        ASSERT(n >= 0 && n < ci[col].bitfield.size());
+        ASSERT(col >= 0 && size_t(col) < ci.size());
+        ASSERT(n >= 0 && size_t(n) < ci[col].bitfield.size());
         return ci[col].bitfield[n].offset;
     });
 }
@@ -443,16 +467,26 @@ odc_decode_target_t* odc_alloc_decode_target() {
     });
 }
 
-void odc_free_decode_target(odc_decode_target_t* dc) {
-    return wrapApiFunction([dc] {
-        delete dc;
+void odc_free_decode_target(odc_decode_target_t* dt) {
+    return wrapApiFunction([dt] {
+        delete dt;
     });
 }
 
-void odc_decode_target_set_row_count(odc_decode_target_t* dc, long nrows) {
-    return wrapApiFunction([dc, nrows] {
-        ASSERT(dc);
-        dc->nrows = nrows;
+void odc_decode_target_set_row_count(odc_decode_target_t* dt, long nrows) {
+    return wrapApiFunction([dt, nrows] {
+        ASSERT(dt);
+        dt->nrows = nrows;
+    });
+}
+
+void odc_decode_target_set_array_data(struct odc_decode_target_t* dt, void* buffer, long bufferSize) {
+    return wrapApiFunction([dt, buffer, bufferSize] {
+        ASSERT(dt);
+        ASSERT(buffer);
+        ASSERT(bufferSize > 0);
+        dt->externalData = buffer;
+        dt->dataSize = bufferSize;
     });
 }
 
@@ -466,10 +500,24 @@ int odc_decode_target_add_column(odc_decode_target_t* dt, const char* name) {
     });
 }
 
+int odc_decode_target_column_count(struct odc_decode_target_t* dt) {
+    return wrapApiFunction([dt] {
+        ASSERT(dt);
+        return dt->columnNames.size();
+    });
+}
+
+long odc_decode_target_row_count(struct odc_decode_target_t* dt) {
+    return wrapApiFunction([dt] {
+        ASSERT(dt);
+        return dt->nrows;
+    });
+}
+
 void odc_decode_target_column_set_size(odc_decode_target_t* dt, int col, int elemSize) {
     return wrapApiFunction([dt, col, elemSize] {
         ASSERT(dt);
-        ASSERT(col >= 0 && col < dt->columnData.size());
+        ASSERT(col >= 0 && size_t(col) < dt->columnData.size());
         ASSERT(elemSize > 0 && elemSize % sizeof(double) == 0);
         dt->columnData[col].elemSize = elemSize;
     });
@@ -478,7 +526,7 @@ void odc_decode_target_column_set_size(odc_decode_target_t* dt, int col, int ele
 void odc_decode_target_column_set_stride(odc_decode_target_t* dt, int col, int stride) {
     return wrapApiFunction([dt, col, stride] {
         ASSERT(dt);
-        ASSERT(col >= 0 && col < dt->columnData.size());
+        ASSERT(col >= 0 && size_t(col) < dt->columnData.size());
         ASSERT(stride > 0 && stride % sizeof(double) == 0);
         dt->columnData[col].stride = stride;
     });
@@ -487,7 +535,7 @@ void odc_decode_target_column_set_stride(odc_decode_target_t* dt, int col, int s
 void odc_decode_target_column_set_data(odc_decode_target_t* dt, int col, void* data) {
     return wrapApiFunction([dt, col, data] {
         ASSERT(dt);
-        ASSERT(col >= 0 && col < dt->columnData.size());
+        ASSERT(col >= 0 && size_t(col) < dt->columnData.size());
         ASSERT(data);
         dt->columnData[col].data = data;
     });
@@ -496,16 +544,19 @@ void odc_decode_target_column_set_data(odc_decode_target_t* dt, int col, void* d
 const void* odc_decode_target_array_data(struct odc_decode_target_t* dt) {
     return wrapApiFunction([dt] {
         ASSERT(dt);
-        ASSERT(dt->ownedData);
-        return dt->ownedData.get();
+        if (dt->ownedData) {
+            return (void*)dt->ownedData.get();
+        } else {
+            ASSERT(dt->externalData);
+            return dt->externalData;
+        }
     });
 }
 
 int odc_decode_target_column_stride(struct odc_decode_target_t* dt, int col) {
     return wrapApiFunction([dt, col] {
         ASSERT(dt);
-        ASSERT(col >= 0 && col < dt->columnData.size());
-        ASSERT(dt->ownedData);
+        ASSERT(col >= 0 && size_t(col) < dt->columnData.size());
         return dt->columnData[col].stride;
     });
 }
@@ -513,8 +564,7 @@ int odc_decode_target_column_stride(struct odc_decode_target_t* dt, int col) {
 int odc_decode_target_column_size(struct odc_decode_target_t* dt, int col) {
     return wrapApiFunction([dt, col] {
         ASSERT(dt);
-        ASSERT(col >= 0 && col < dt->columnData.size());
-        ASSERT(dt->ownedData);
+        ASSERT(col >= 0 && size_t(col) < dt->columnData.size());
         return dt->columnData[col].elemSize;
     });
 }
@@ -522,8 +572,7 @@ int odc_decode_target_column_size(struct odc_decode_target_t* dt, int col) {
 const void* odc_decode_target_column_data(struct odc_decode_target_t* dt, int col) {
     return wrapApiFunction([dt, col] {
         ASSERT(dt);
-        ASSERT(col >= 0 && col < dt->columnData.size());
-        ASSERT(dt->ownedData);
+        ASSERT(col >= 0 && size_t(col) < dt->columnData.size());
         return dt->columnData[col].data;
     });
 }
@@ -583,13 +632,23 @@ static void fill_in_decode_target(const odc_frame_t* t, odc_decode_target_t* dt)
             allocateSize += (col.elemSize * dt->nrows);
         }
     }
+
     if (allocateSize != 0) {
 
-        dt->ownedData.reset(new char[allocateSize]);
+        void* dataPtr;
+        if (dt->externalData) {
+            dt->ownedData.reset();
+            dataPtr = dt->externalData;
+            ASSERT(allocateSize <= dt->dataSize);
+        } else {
+            dt->ownedData.reset(new char[allocateSize]);
+            dt->dataSize = allocateSize;
+            dataPtr = dt->ownedData.get();
+        }
 
         // Update the allocated columns data pointer information
         for (const auto& off : offsets) {
-            dt->columnData[off.first].data = dt->ownedData.get() + off.second;
+            dt->columnData[off.first].data = static_cast<char*>(dataPtr) + off.second;
         }
     }
 }
@@ -629,7 +688,7 @@ long odc_frame_decode(const odc_frame_t* t, odc_decode_target_t* dt, int nthread
 
         // And return the values
 
-        dt->nrows = frame_rows;
+//        dt->nrows = frame_rows;
         return frame_rows;
     });
 }
@@ -684,7 +743,7 @@ int odc_encoder_add_column(odc_encoder_t* en, const char* name, int type) {
 void odc_encoder_column_set_size(odc_encoder_t* en, int col, int elemSize) {
     return wrapApiFunction([en, col, elemSize] {
         ASSERT(en);
-        ASSERT(col >= 0 && col < en->columnInfo.size());
+        ASSERT(col >= 0 && size_t(col) < en->columnInfo.size());
         ASSERT(elemSize > 0 && elemSize % sizeof(double) == 0);
         en->columnInfo[col].decodedSize = elemSize;
     });
@@ -693,7 +752,7 @@ void odc_encoder_column_set_size(odc_encoder_t* en, int col, int elemSize) {
 void odc_encoder_column_set_stride(odc_encoder_t* en, int col, int stride) {
     return wrapApiFunction([en, col, stride] {
         ASSERT(en);
-        ASSERT(col >= 0 && col < en->columnInfo.size());
+        ASSERT(col >= 0 && size_t(col) < en->columnInfo.size());
         ASSERT(stride > 0 && stride % sizeof(double) == 0);
         en->columnData[col].stride = stride;
     });
@@ -702,7 +761,7 @@ void odc_encoder_column_set_stride(odc_encoder_t* en, int col, int stride) {
 void odc_encoder_column_set_data(odc_encoder_t* en, int col, const void* data) {
     return wrapApiFunction([en, col, data] {
         ASSERT(en);
-        ASSERT(col >= 0 && col < en->columnInfo.size());
+        ASSERT(col >= 0 && size_t(col) < en->columnInfo.size());
         ASSERT(data);
         en->columnData[col].data = data;
     });
@@ -711,7 +770,7 @@ void odc_encoder_column_set_data(odc_encoder_t* en, int col, const void* data) {
 void odc_encoder_column_add_bitfield_field(struct odc_encoder_t* en, int col, const char* name, int nbits) {
     return wrapApiFunction([en, col, name, nbits] {
         ASSERT(en);
-        ASSERT(col >= 0 && col < en->columnInfo.size());
+        ASSERT(col >= 0 && size_t(col) < en->columnInfo.size());
 
         size_t offset;
         ColumnInfo& ci(en->columnInfo[col]);
@@ -722,7 +781,7 @@ void odc_encoder_column_add_bitfield_field(struct odc_encoder_t* en, int col, co
         }
 
         ASSERT(offset + nbits <= 32);
-        ci.bitfield.emplace_back(ColumnInfo::Bit {name, nbits, offset});
+        ci.bitfield.emplace_back(ColumnInfo::Bit {name, nbits, int(offset)});
     });
 }
 

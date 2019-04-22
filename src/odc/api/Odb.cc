@@ -123,11 +123,16 @@ Optional<Table> OdbImpl::next(bool aggregated, long rowlimit) {
 
     // !aggregated --> just return the next one
     auto tbl = std::make_shared<TableImpl>(*it_++);
-    size_t nrows = tbl->rowCount();
+    long nrows = tbl->rowCount();
+
+    if (rowlimit >= 0 && nrows > rowlimit) throw SeriousBug("Unable to decode frame larger than row limit", Here());
 
     if (aggregated) {
         while (it_ != reader_.end()) {
+            long next_nrows = nrows + it_->rowCount();
+            if (rowlimit >= 0 && next_nrows > rowlimit) break;
             if (!tbl->addFrame(*it_)) break;
+            nrows = next_nrows;
             ++it_;
         }
     }

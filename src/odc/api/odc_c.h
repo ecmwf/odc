@@ -59,6 +59,10 @@ enum OdcColumnType {
 int odc_type_count();
 const char* odc_type_name(int type);
 long odc_missing_integer();
+double odc_missing_double();
+void odc_set_missing_integer(long missing_integer);
+void odc_set_missing_double(double missing_double);
+
 const char* odc_version();
 const char* odc_git_sha1();
 
@@ -84,7 +88,8 @@ void odc_close(struct odc_reader_t* o);
 
 /* Table handling */
 
-struct odc_frame_t* odc_alloc_next_frame(struct odc_reader_t* o, bool aggregated);
+struct odc_frame_t* odc_alloc_next_frame(struct odc_reader_t* o);
+struct odc_frame_t* odc_alloc_next_frame_aggregated(struct odc_reader_t* o, long maximum_rows);
 void odc_free_frame(struct odc_frame_t* o);
 
 long odc_frame_row_count(const struct odc_frame_t* t);
@@ -106,6 +111,7 @@ int odc_frame_column_bits_offset(const struct odc_frame_t* t, int col, int n);
 struct odc_decode_target_t* odc_alloc_decode_target();
 void odc_free_decode_target(struct odc_decode_target_t* dt);
 void odc_decode_target_set_row_count(struct odc_decode_target_t* dt, long nrows);
+void odc_decode_target_set_array_data(struct odc_decode_target_t* dt, void* buffer, long bufferSize);
 
 /* Construct a decode target that will decode an entire table (including allocating buffer space) */
 void odc_frame_build_all_decode_target(const struct odc_frame_t* t, struct odc_decode_target_t* dt);
@@ -116,6 +122,8 @@ void odc_decode_target_column_set_stride(struct odc_decode_target_t* dt, int col
 void odc_decode_target_column_set_data(struct odc_decode_target_t* dt, int col, void* data);
 
 const void* odc_decode_target_array_data(struct odc_decode_target_t* dt);
+long odc_decode_target_row_count(struct odc_decode_target_t* dt);
+int odc_decode_target_column_count(struct odc_decode_target_t* dt);
 int odc_decode_target_column_size(struct odc_decode_target_t* dt, int col);
 int odc_decode_target_column_stride(struct odc_decode_target_t* dt, int col);
 const void* odc_decode_target_column_data(struct odc_decode_target_t* dt, int col);

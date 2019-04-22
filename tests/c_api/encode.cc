@@ -96,7 +96,7 @@ CASE("Encode data in standard tabular form") {
     // Check that the table contains what we expect
 
     std::unique_ptr<odc_reader_t> o(odc_open_buffer(encoded, sz));
-    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get(), false));
+    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get()));
 
     EXPECT(t);
     EXPECT(odc_frame_column_count(t.get()) == ncols-1);
@@ -168,7 +168,7 @@ CASE("Encode data in standard tabular form") {
         ASSERT(strncmp(c5+(2*sizeof(double)*i), "abcdefghijkl", 2*sizeof(double)) == 0);
     }
 
-    EXPECT(odc_alloc_next_frame(o.get(), false) == 0);
+    EXPECT(odc_alloc_next_frame(o.get()) == 0);
 }
 
 CASE("Encode from columnar data") {
@@ -215,7 +215,7 @@ CASE("Encode from columnar data") {
     // Check that we have encoded what we think we have encoded
 
     std::unique_ptr<odc_reader_t> o(odc_open_buffer(encoded, sz));
-    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get(), false));
+    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get()));
 
     EXPECT(t);
     EXPECT(odc_frame_column_count(t.get()) == ncols);
@@ -237,7 +237,7 @@ CASE("Encode from columnar data") {
         ASSERT(strncmp(c2+(3*sizeof(double)*i), "abcdefghhgfedcbazzzz", 3*sizeof(double)) == 0);
     }
 
-    EXPECT(odc_alloc_next_frame(o.get(), false) == 0);
+    EXPECT(odc_alloc_next_frame(o.get()) == 0);
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -292,7 +292,7 @@ CASE("Encode data with custom stride") {
     // Check that we have encoded what we think we have encoded
 
     std::unique_ptr<odc_reader_t> o(odc_open_buffer(encoded, sz));
-    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get(), false));
+    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get()));
 
     EXPECT(t);
     EXPECT(odc_frame_column_count(t.get()) == ncols);
@@ -312,7 +312,7 @@ CASE("Encode data with custom stride") {
         EXPECT(strncmp(c2 + (row * sizeof(scol[0])), "abcdefghhgfedcbazzzz", sizeof(scol[0])) == 0);
     }
 
-    EXPECT(odc_alloc_next_frame(o.get(), false) == 0);
+    EXPECT(odc_alloc_next_frame(o.get()) == 0);
 
 }
 
@@ -371,7 +371,7 @@ CASE("Encode with more rows that fit inside a table") {
 
     std::unique_ptr<odc_reader_t> o(odc_open_buffer(encoded, sz));
 
-    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get(), false));
+    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get()));
 
     EXPECT(t);
     EXPECT(odc_frame_column_count(t.get()) == ncols);
@@ -395,7 +395,7 @@ CASE("Encode with more rows that fit inside a table") {
 
     // And there is a second set of data
 
-    t.reset(odc_alloc_next_frame(o.get(), false));
+    t.reset(odc_alloc_next_frame(o.get()));
     EXPECT(t);
     EXPECT(odc_frame_column_count(t.get()) == ncols);
     EXPECT(odc_frame_row_count(t.get()) == 5);  // n.b. != nrows
@@ -418,7 +418,7 @@ CASE("Encode with more rows that fit inside a table") {
 
     // Until done.
 
-    EXPECT(odc_alloc_next_frame(o.get(), false) == 0);
+    EXPECT(odc_alloc_next_frame(o.get()) == 0);
 
 }
 
@@ -457,7 +457,7 @@ CASE("Encode to a file descriptor") {
     // Check that we have encoded what we think we have encoded
 
     std::unique_ptr<odc_reader_t> o(odc_open_path(tf.asString().c_str()));
-    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get(), false));
+    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get()));
 
     EXPECT(t);
     EXPECT(odc_frame_column_count(t.get()) == 1);
@@ -470,7 +470,7 @@ CASE("Encode to a file descriptor") {
     EXPECT(odc_decode_target_column_data(dec.get(), 0) == odc_decode_target_array_data(dec.get()));
     EXPECT(::memcmp(icol, odc_decode_target_column_data(dec.get(), 0), sizeof(icol)) == 0);
 
-    EXPECT(odc_alloc_next_frame(o.get(), false) == 0);
+    EXPECT(odc_alloc_next_frame(o.get()) == 0);
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -516,7 +516,7 @@ CASE("Encode to a custom output stream") {
     // Check that we have encoded what we think we have encoded
 
     std::unique_ptr<odc_reader_t> o(odc_open_buffer(encoded, sz));
-    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get(), false));
+    std::unique_ptr<odc_frame_t> t(odc_alloc_next_frame(o.get()));
 
     EXPECT(t);
     EXPECT(odc_frame_column_count(t.get()) == 1);
@@ -529,7 +529,7 @@ CASE("Encode to a custom output stream") {
     EXPECT(odc_decode_target_column_data(dec.get(), 0) == odc_decode_target_array_data(dec.get()));
     EXPECT(::memcmp(icol, odc_decode_target_column_data(dec.get(), 0), sizeof(icol)) == 0);
 
-    EXPECT(odc_alloc_next_frame(o.get(), false) == 0);
+    EXPECT(odc_alloc_next_frame(o.get()) == 0);
 }
 
 // ------------------------------------------------------------------------------------------------------
