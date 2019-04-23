@@ -34,10 +34,10 @@ Select::Select(const std::string& selectStatement, bool manageOwnBuffer) :
     session_(std::unique_ptr<eckit::sql::SQLOutput>(new sql::SQLSelectOutput(manageOwnBuffer)),
              std::unique_ptr<eckit::sql::SQLOutputConfig>(new odc::sql::SQLOutputConfig)),
     initted_(false),
-    it_(0) {}
+    it_(nullptr) {}
 
 
-Select::Select(const std::string& selectStatement, DataHandle& dh, bool manageOwnBuffer) :
+Select::Select(const std::string& selectStatement, DataHandle& dh, bool /* manageOwnBuffer */) :
     Select(selectStatement, &dh) {
 
     dh.openForRead();
@@ -46,7 +46,7 @@ Select::Select(const std::string& selectStatement, DataHandle& dh, bool manageOw
 }
 
 
-Select::Select(const std::string& selectStatement, const std::string& path, bool manageOwnBuffer) :
+Select::Select(const std::string& selectStatement, const std::string& path, bool /* manageOwnBuffer */) :
     Select(selectStatement) {
 
     ownDH_.reset(DataHandleFactory::openForRead(path));
@@ -74,7 +74,7 @@ SelectIterator* Select::createSelectIterator(const std::string& sql) {
     return new SelectIterator(sql, session_, *output);
 }
 
-const Select::iterator Select::end() { return iterator(0); }
+const Select::iterator Select::end() { return iterator(nullptr); }
 
 // This is horrible, but the TextReader, and any stream based iteraton, can only
 // iterate once, so we MUST NOT create two iterators if begin() is called twice.

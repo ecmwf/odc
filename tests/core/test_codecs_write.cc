@@ -8,9 +8,13 @@
  * does it submit to any jurisdiction.
  */
 
+#include <cmath>
+#include <ctime>
+#include <cstdlib>
+#include <algorithm>
+
 #include "eckit/eckit_ecbuild_config.h"
 #include "eckit/io/Buffer.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/system/SystemInfo.h"
 #include "eckit/testing/Test.h"
 
@@ -22,20 +26,6 @@
 #include "odc/codec/Real.h"
 #include "odc/codec/String.h"
 
-#include <time.h>
-#include <stdlib.h>
-#include <algorithm>
-
-// Some of the math.h/cmath functions are not clean when switching to C++11
-#if __cplusplus <= 199711L
-#include <math.h>
-#else
-#include <cmath>
-#define fpclassify(x) std::fpclassify((x))
-#define isinf(x) std::isinf((x))
-#define isnan(x) std::isnan((x))
-#define signbit(x) std::signbit((x))
-#endif
 
 using namespace eckit;
 using namespace eckit::testing;

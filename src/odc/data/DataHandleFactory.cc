@@ -11,14 +11,14 @@
 #include <sstream>
 #include <memory>
 
+#include "eckit/io/MultiHandle.h"
+#include "eckit/utils/StringTools.h"
+#include "eckit/exception/Exceptions.h"
+
 #include "odc/data/DataHandleFactory.h"
 #include "odc/data/PartFileHandleFactory.h"
 #include "odc/data/FileHandleFactory.h"
 #include "odc/data/HttpHandleFactory.h"
-
-#include "eckit/io/MultiHandle.h"
-#include "eckit/utils/StringTools.h"
-#include "eckit/exception/Exceptions.h"
 
 using namespace eckit;
 
