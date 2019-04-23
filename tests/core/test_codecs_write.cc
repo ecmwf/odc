@@ -34,6 +34,8 @@ using odc::core::Codec;
 using odc::core::SameByteOrder;
 using odc::core::OtherByteOrder;
 using odc::core::DataStream;
+using std::isnan;
+using std::isinf;
 
 //        Log::info() << "DS: " << ds.position() << std::endl;
 //        for (int i = 0; i < ds.position(); ++i) {
