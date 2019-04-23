@@ -11,8 +11,8 @@
 /// @author Simon Smart
 /// Aug 2018
 
-#ifndef odb_SQLOutputConfig_H
-#define _SQLOutputConfig_H
+#ifndef odc_sql_SQLOutputConfig_H
+#define odc_sql_SQLOutputConfig_H
 
 #include "eckit/sql/SQLOutputConfig.h"
 

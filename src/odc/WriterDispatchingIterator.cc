@@ -304,7 +304,7 @@ bool WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::next()
 template <typename WRITE_ITERATOR, typename OWNER>
 void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::parseTemplateParameters()
 {
-    templateParameters_.release();
+    templateParameters_.reset();
     TemplateParameters::parse(outputFileTemplate_, templateParameters_, columns());
     if (templateParameters_.size() == 0)
     {
