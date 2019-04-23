@@ -139,13 +139,13 @@ module odc
         subroutine odc_reset_error() bind(c)
         end subroutine
 
-        function odc_missing_integer() result(missing_integer) bind(c)
+        pure function odc_missing_integer() result(missing_integer) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             integer(c_long) :: missing_integer
         end function
 
-        function odc_missing_double() result(missing_double) bind(c)
+        pure function odc_missing_double() result(missing_double) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             real(c_double) :: missing_double
@@ -334,7 +334,7 @@ module odc
             type(c_ptr) :: data
         end function
 
-        function odc_decode_target_column_count(decode_target) result(column_count) bind(c)
+        pure function odc_decode_target_column_count(decode_target) result(column_count) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -342,7 +342,7 @@ module odc
             integer(c_int) :: column_count
         end function
 
-        function odc_decode_target_column_size(decode_target, column) result(column_size) bind(c)
+        pure function odc_decode_target_column_size(decode_target, column) result(column_size) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -351,7 +351,7 @@ module odc
             integer(c_int) :: column_size
         end function
 
-        function odc_decode_target_row_count(decode_target) result(row_count) bind(c)
+        pure function odc_decode_target_row_count(decode_target) result(row_count) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: decode_target
@@ -463,20 +463,20 @@ contains
     end subroutine
 
     function frame_row_count(frame) result(nrows)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer(c_long) :: nrows
         nrows = odc_frame_row_count(frame%impl)
     end function
 
     function frame_column_count(frame) result(ncols)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer :: ncols
         ncols = odc_frame_column_count(frame%impl)
     end function
 
     function frame_column_name(frame, col) result(column_name)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
         character(:), allocatable :: column_name
         column_name = fortranise_cstr(odc_frame_column_name(frame%impl, col-1))
@@ -484,7 +484,7 @@ contains
 
     function frame_column_type(frame, col) result(column_type)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
         integer :: column_type
         column_type = odc_frame_column_type(frame%impl, col-1)
@@ -492,7 +492,7 @@ contains
 
     function frame_column_data_size(frame, col) result(element_size)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
         integer :: element_size
         element_size = odc_frame_column_data_size(frame%impl, col-1)
@@ -500,7 +500,7 @@ contains
 
     function frame_column_data_size_doubles(frame, col) result(element_size)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
         integer :: element_size
         element_size = odc_frame_column_data_size(frame%impl, col-1)
@@ -509,7 +509,7 @@ contains
 
     function frame_column_bitfield_count(frame, col) result(bitfield_count)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
         integer :: bitfield_count
         bitfield_count = odc_frame_column_bitfield_count(frame%impl, col-1)
@@ -517,7 +517,7 @@ contains
 
     function frame_column_bits_name(frame, col, field) result(bits_name)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col, field
         character(:), allocatable :: bits_name
         bits_name = fortranise_cstr(odc_frame_column_bits_name(frame%impl, col-1, field-1))
@@ -525,7 +525,7 @@ contains
 
     function frame_column_bits_size(frame, col, field) result(bits_size)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col, field
         integer :: bits_size
         bits_size = odc_frame_column_bits_size(frame%impl, col-1, field-1)
@@ -533,7 +533,7 @@ contains
 
     function frame_column_bits_offset(frame, col, field) result(bits_offset)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col, field
         integer :: bits_offset
         bits_offset = odc_frame_column_bits_offset(frame%impl, col-1, field-1)
@@ -579,21 +579,21 @@ contains
         call odc_decode_target_set_array_data(tgt%impl, c_loc(data_array), data_size)
     end subroutine
 
-    function dt_row_count(tgt) result(row_count)
-        class(odc_decode_target), intent(inout) :: tgt
+    pure function dt_row_count(tgt) result(row_count)
+        class(odc_decode_target), intent(in) :: tgt
         integer(c_long) :: row_count
         row_count = odc_decode_target_row_count(tgt%impl)
     end function
 
-    function dt_column_count(tgt) result(column_count)
-        class(odc_decode_target), intent(inout) :: tgt
+    pure function dt_column_count(tgt) result(column_count)
+        class(odc_decode_target), intent(in) :: tgt
         integer(c_long) :: column_count
         column_count = odc_decode_target_column_count(tgt%impl)
     end function
 
-    function dt_column_data_size_doubles(tgt, col) result(size_doubles)
+    pure function dt_column_data_size_doubles(tgt, col) result(size_doubles)
         ! n.b. 1-indexed column (Fortran API)
-        class(odc_decode_target), intent(inout) :: tgt
+        class(odc_decode_target), intent(in) :: tgt
         integer, intent(in) :: col
         integer :: size_doubles
         size_doubles = odc_decode_target_column_size(tgt%impl, col-1)
