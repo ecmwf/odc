@@ -349,26 +349,27 @@ TEST(vector_syntax2)
     eckit::sql::SQLParser::parseString(session, sql);
 }
 
-TEST(blocksSizes)
-{
-    size_t numberOfBlocks = 0;
-    off_t* offsets = 0;
-    size_t* sizes = 0;
+// DISABLED FOR odb-to-request
+//TEST(blocksSizes)
+//{
+//    size_t numberOfBlocks = 0;
+//    off_t* offsets = 0;
+//    size_t* sizes = 0;
 
-    int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);
-    ASSERT(r == 0);
+//    int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);
+//    ASSERT(r == 0);
 
-    Log::info() << "num of blocks: " << numberOfBlocks << std::endl;
-    for (size_t i = 0; i < numberOfBlocks; ++i)
-    {
-        Log::info() << "UnitTest: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
-    }
-    Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << std::endl;
-    ASSERT(numberOfBlocks == 5);
+//    Log::info() << "num of blocks: " << numberOfBlocks << std::endl;
+//    for (size_t i = 0; i < numberOfBlocks; ++i)
+//    {
+//        Log::info() << "UnitTest: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
+//    }
+//    Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << std::endl;
+//    ASSERT(numberOfBlocks == 5);
 
-    release_blocks_offsets(&offsets);
-    release_blocks_sizes(&sizes);
-}
+//    release_blocks_offsets(&offsets);
+//    release_blocks_sizes(&sizes);
+//}
 
 
 TEST(rownumber1)

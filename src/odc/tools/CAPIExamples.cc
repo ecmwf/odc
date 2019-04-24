@@ -32,6 +32,8 @@ namespace {
 
 // TODO: Migrate this test over!!!
 
+#if 0 // DISABLED
+
 TEST(c_api_example_select_data_read_results)
 {
     const int maxCols = 4;
@@ -47,7 +49,9 @@ TEST(c_api_example_select_data_read_results)
     // Prepare input data
 
     long size = 0;
-    void* buf = 0; ASSERT(false); //odc_import_encode_text(
+    void* buf = 0;
+
+    ASSERT(false); //odc_import_encode_text(
 //                "x:INTEGER,y:INTEGER,v:DOUBLE,f:BITFIELD[a:1;b:2]]\n"
 //                "1,1,0.3,0\n"
 //                "1,1,0.2,1\n"
@@ -171,6 +175,8 @@ TEST(c_api_example_read_data)
     ASSERT(0 == odb_read_iterator_destroy(it));
     ASSERT(0 == odb_read_destroy(oh));
 }
+
+#endif
 
 TEST(c_api_example_write_data)
 {

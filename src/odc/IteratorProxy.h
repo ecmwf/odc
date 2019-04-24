@@ -15,7 +15,7 @@
 
 /// @note (SDS, Aug 2018); IteratorProxy is a handle to various iterator objects
 /// (Select,Read,Write,MetaData,...) that essentially implements the intrusive shared pointer
-/// functionality of SharedPtr, without the thread safety or any other niceties.
+/// functionality of std::shared_ptr, without the thread safety or any other niceties.
 ///
 /// TODO: Remove it. It is really horrible.
 

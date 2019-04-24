@@ -96,7 +96,7 @@ private:
 protected:
     int refCount_;
 
-    // This is a bit yucky, but the IteratorProxy essentially reimplements SharedPtr
+    // This is a bit yucky, but the IteratorProxy essentially reimplements std::shared_ptr
     // but not in a threadsafe way.
     friend class odc::IteratorProxy<odc::SelectIterator, odc::Select, const double>;
 };
