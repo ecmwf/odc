@@ -9,7 +9,7 @@
 
 program example_fortran_api
   use, intrinsic :: iso_c_binding
-  use odb_c_binding
+  use odc_c_binding
   implicit none
 
   integer, parameter            :: max_varlen = 128
