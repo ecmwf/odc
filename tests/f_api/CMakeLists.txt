@@ -10,10 +10,12 @@ foreach( _test ${_api_fodc_tests} )
         SOURCES      ${_test}.f90
         ENVIRONMENT  ${test_environment}
         TEST_DEPENDS get_odc_test_data
+        CONDITION    HAVE_FORTRAN
         LIBS         fodc )
 endforeach()
 
 ecbuild_add_executable( TARGET     odc-fortran-ls
                         SOURCES    odc_ls.f90
                         LIBS       fodc
+                        CONDITION    HAVE_FORTRAN
                         NOINSTALL)
