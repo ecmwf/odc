@@ -2,6 +2,7 @@
 list( APPEND _api_fodc_tests
     general
     read
+    encode
 )
 
 foreach( _test ${_api_fodc_tests} )
