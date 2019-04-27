@@ -38,25 +38,6 @@ namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-// Utility. proto- std::optional.
-
-template <typename T>
-struct Optional {
-    Optional() : valid_(false) {}
-    Optional(T&& v) : valid_(true) { new (&val_) T(std::forward<T>(v)); }
-    Optional(const Optional<T>& rhs) : valid_(rhs.valid_) { if (valid_) new (&val_) T(*reinterpret_cast<const T*>(&rhs.val_)); }
-    Optional(Optional<T>&& rhs) : valid_(rhs.valid_) { if (valid_) new (&val_) T(std::move(*reinterpret_cast<T*>(&rhs.val_))); }
-    ~Optional() { if(valid_) reinterpret_cast<T*>(&val_)->~T(); }
-    explicit operator bool() const { return valid_; }
-    T& get() { return *reinterpret_cast<T*>(&val_); }
-    const T& get() const { return *reinterpret_cast<const T*>(&val_); }
-private:
-    typename std::aligned_storage<sizeof(T), alignof(T)>::type val_;
-    bool valid_;
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
 // Global settings
 
 class Settings {
@@ -105,70 +86,75 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-struct TableImpl;
-class DecodeTarget;
+struct FrameImpl;
 
-class Table {
+class ReaderImpl;
+
+class Reader {
 
 public: // methods
 
-    Table(std::shared_ptr<TableImpl> t);
-    ~Table();
+    Reader(const std::string& path);
+    Reader(eckit::DataHandle& dh);
+    Reader(eckit::DataHandle* dh); // takes ownership
+    ~Reader();
+
+private: // members
+
+    std::shared_ptr<ReaderImpl> impl_;
+
+    friend class FrameImpl;
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class Decoder;
+
+class Frame {
+
+public: // methods
+
+    Frame(Reader& reader);
+    Frame(const Frame& reader);
+    ~Frame();
+
+    // Get the next frame
+    bool next(bool aggregated=true, long rowlimit=-1);
 
     size_t rowCount() const;
     size_t columnCount() const;
 
     const std::vector<ColumnInfo>& columnInfo() const;
 
-    void decode(DecodeTarget& target, size_t nthreads) const;
+    void decode(Decoder& target, size_t nthreads) const;
 
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues) const;
 
 private: // members
 
-    std::shared_ptr<TableImpl> impl_;
+    std::unique_ptr<FrameImpl> impl_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-struct DecodeTargetImpl;
+struct DecoderImpl;
 
-class DecodeTarget {
+class Decoder {
 
 public: // methods
 
-    DecodeTarget(const std::vector<std::string>& columns,
+    Decoder(const std::vector<std::string>& columns,
                  std::vector<StridedData>& columnFacades);
-    ~DecodeTarget();
+    ~Decoder();
 
-    DecodeTarget slice(size_t rowOffset, size_t nrows) const;
-
-private: // members
-
-    std::shared_ptr<DecodeTargetImpl> impl_;
-
-    friend class TableImpl;
-};
-
-//----------------------------------------------------------------------------------------------------------------------
-
-class OdbImpl;
-
-class Odb {
-
-public: // methods
-
-    Odb(const std::string& path);
-    Odb(eckit::DataHandle& dh);
-    Odb(eckit::DataHandle* dh); // takes ownership
-    ~Odb();
-
-    /// Can combine multiple frames into one logical frame. Row limit < 0 is unlimited.
-    Optional<Table> next(bool aggregated=true, long rowlimit=-1);
+    Decoder slice(size_t rowOffset, size_t nrows) const;
 
 private: // members
 
-    std::shared_ptr<OdbImpl> impl_;
+    std::shared_ptr<DecoderImpl> impl_;
+
+    friend class FrameImpl;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

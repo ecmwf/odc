@@ -21,18 +21,20 @@ using namespace eckit::testing;
 
 CASE("Count lines in an existing ODB file") {
 
-    odc::api::Odb o("../2000010106.odb");
+    odc::api::Reader o("../2000010106.odb");
 
-    size_t ntables = 0;
+    size_t nframes = 0;
     size_t totalRows = 0;
 
-    while (const auto& table = o.next(false)) {
-        totalRows += table.get().rowCount();
-        EXPECT(table.get().columnCount() == 51);
-        ++ntables;
+    odc::api::Frame frame(o);
+
+    while (frame.next(false)) {
+        totalRows += frame.rowCount();
+        EXPECT(frame.columnCount() == 51);
+        ++nframes;
     }
 
-    EXPECT(ntables == 333);
+    EXPECT(nframes == 333);
     EXPECT(totalRows == 3321753);
 }
 

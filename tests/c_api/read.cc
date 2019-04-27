@@ -20,11 +20,11 @@ using namespace eckit::testing;
 
 namespace std {
 template <> struct default_delete<odc_reader_t> {
-    void operator() (odc_reader_t* o) { odc_close(o); }
+    void operator() (const odc_reader_t* reader) { odc_close(reader); }
 };
 
 template <> struct default_delete<odc_frame_t> {
-    void operator() (odc_frame_t* t) { odc_free_frame(t); }
+    void operator() (const odc_frame_t* frame) { odc_free_frame(frame); }
 };
 
 //template <> struct default_delete<const odb_decoded_t> {
@@ -37,18 +37,30 @@ template <> struct default_delete<odc_frame_t> {
 
 CASE("Count lines in an existing ODB file") {
 
-    std::unique_ptr<odc_reader_t> o(odc_open_path("../2000010106.odb"));
+    odc_reader_t* reader = 0;
+    EXPECT(odc_open_path(&reader, "../2000010106.odb") == ODC_SUCCESS);
+
 
     size_t ntables = 0;
     size_t totalRows = 0;
 
-    std::unique_ptr<odc_frame_t> table;
-    while (table.reset(odc_alloc_next_frame(o.get())), table) {
-        totalRows += odc_frame_row_count(table.get());
-        EXPECT(odc_frame_column_count(table.get()) == 51);
+    int ierr;
+    odc_frame_t* frame = 0;
+    EXPECT(odc_new_frame(&frame, reader) == ODC_SUCCESS);
+    while ((ierr = odc_next_frame(frame)) == ODC_SUCCESS) {
+
+        long nrows;
+        EXPECT(odc_frame_row_count(frame, &nrows) == ODC_SUCCESS);
+        totalRows += nrows;
+
+        int ncols;
+        EXPECT(odc_frame_column_count(frame, &ncols) == ODC_SUCCESS);
+        EXPECT(ncols == 51);
+
         ++ntables;
     }
 
+    EXPECT(ierr == ODC_ITERATION_COMPLETE);
     EXPECT(ntables == 333);
     EXPECT(totalRows == 3321753);
 }

@@ -38,8 +38,8 @@ template <> struct default_delete<odc_frame_t> {
     void operator() (odc_frame_t* t) { odc_free_frame(t); }
 };
 
-template <> struct default_delete<odc_decode_target_t> {
-    void operator() (odc_decode_target_t* t) { odc_free_decode_target(t); }
+template <> struct default_delete<odc_decoder_t> {
+    void operator() (odc_decoder_t* t) { odc_free_decode_target(t); }
 };
 }
 

@@ -40,121 +40,68 @@ namespace api {
 ///
 /// Internal types
 
-struct TableImpl {
-    TableImpl(const core::Table& t) : tables_{t} {}
+struct FrameImpl {
+    FrameImpl(Reader& reader);
+    FrameImpl(const FrameImpl& rhs);
 
-    /// Add a frame _if_compatible_
-    bool addFrame(const core::Table& t);
+    // Moves this frame onwards
+    bool next(bool aggregated, long rowlimit);
 
     const std::vector<ColumnInfo>& columnInfo() const;
 
     size_t rowCount() const;
     size_t columnCount() const;
 
-    void decode(DecodeTarget& target, size_t nthreads);
+    void decode(Decoder& target, size_t nthreads);
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues);
 
 private: // members
 
     mutable std::vector<ColumnInfo> columnInfo_;
+    core::TablesReader& reader_;
+    core::TablesReader::iterator it_;
     std::vector<core::Table> tables_;
+    bool first_;
 };
 
 
 // Internal API class definition
 
-class OdbImpl {
+class ReaderImpl : public core::TablesReader {
 
 public: // methods
 
-    OdbImpl(const eckit::PathName& path);
-    OdbImpl(eckit::DataHandle& dh);
-    OdbImpl(eckit::DataHandle* dh); // takes ownership
-    ~OdbImpl();
-
-    Optional<Table> next(bool aggregated, long rowlimit);
-
-private: // members
-
-    core::TablesReader reader_;
-    core::TablesReader::iterator it_;
+    using core::TablesReader::TablesReader;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
 // API Forwarding
 
-Odb::Odb(const std::string& path) :
-    impl_(std::make_shared<OdbImpl>(path)) {}
+Reader::Reader(const std::string& path) :
+    impl_(std::make_shared<ReaderImpl>(path)) {}
 
-Odb::Odb(eckit::DataHandle& dh) :
-    impl_(std::make_shared<OdbImpl>(dh)) {}
+Reader::Reader(eckit::DataHandle& dh) :
+    impl_(std::make_shared<ReaderImpl>(dh)) {}
 
-Odb::Odb(eckit::DataHandle* dh) :
-    impl_(std::make_shared<OdbImpl>(dh)) {}
+Reader::Reader(eckit::DataHandle* dh) :
+    impl_(std::make_shared<ReaderImpl>(dh)) {}
 
-Odb::~Odb() {}
-
-Optional<Table> Odb::next(bool aggregated, long rowlimit) {
-    return impl_->next(aggregated, rowlimit);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-
-// Implementation definition
-
-OdbImpl::OdbImpl(const eckit::PathName& path) :
-    reader_(path),
-    it_(reader_.begin()) {}
-
-OdbImpl::OdbImpl(eckit::DataHandle& dh) :
-    reader_(dh),
-    it_(reader_.begin()) {}
-
-OdbImpl::OdbImpl(eckit::DataHandle* dh) :
-    reader_(dh),
-    it_(reader_.begin()) {}
-
-OdbImpl::~OdbImpl() {}
-
-Optional<Table> OdbImpl::next(bool aggregated, long rowlimit) {
-
-    if (it_ == reader_.end()) return {};
-
-    // !aggregated --> just return the next one
-    auto tbl = std::make_shared<TableImpl>(*it_++);
-    long nrows = tbl->rowCount();
-
-    if (rowlimit >= 0 && nrows > rowlimit) throw SeriousBug("Unable to decode frame larger than row limit", Here());
-
-    if (aggregated) {
-        while (it_ != reader_.end()) {
-            long next_nrows = nrows + it_->rowCount();
-            if (rowlimit >= 0 && next_nrows > rowlimit) break;
-            if (!tbl->addFrame(*it_)) break;
-            nrows = next_nrows;
-            ++it_;
-        }
-    }
-
-    ASSERT(rowlimit < 0 || static_cast<long>(nrows) <= rowlimit);
-
-    return Optional<Table>(tbl);
-}
+Reader::~Reader() {}
 
 //----------------------------------------------------------------------------------------------------------------------
 
 // Shim for decoding
-struct DecodeTargetImpl : public core::DecodeTarget {
+struct DecoderImpl : public core::DecodeTarget {
 public:
     using core::DecodeTarget::DecodeTarget;
 };
 
-DecodeTarget::DecodeTarget(const std::vector<std::string>& columns,
+Decoder::Decoder(const std::vector<std::string>& columns,
                            std::vector<StridedData>& columnFacades) :
-    impl_(std::make_shared<DecodeTargetImpl>(columns, columnFacades)) {}
+    impl_(std::make_shared<DecoderImpl>(columns, columnFacades)) {}
 
-DecodeTarget::~DecodeTarget() {}
+Decoder::~Decoder() {}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -184,15 +131,55 @@ Length Span::length() const {
 
 // Table implementation
 
-bool TableImpl::addFrame(const core::Table& t) {
+FrameImpl::FrameImpl(Reader& reader) :
+    reader_(*reader.impl_),
+    it_(reader_.begin()),
+    first_(true) {}
 
-    ASSERT(tables_.size() > 0);
-    if (!tables_.front().columns().compatible(t.columns())) return false;
-    tables_.push_back(t);
+FrameImpl::FrameImpl(const FrameImpl& rhs) :
+    reader_(rhs.reader_),
+    it_(rhs.it_),
+    first_(rhs.first_) {}
+
+bool FrameImpl::next(bool aggregated, long rowlimit) {
+
+    // n.b. Slightly convoluted incrementing of iterator ensures that for a simple read we do it
+    // in a single pass, so it will work on a non random-access DataHandle.
+
+    columnInfo_.clear();
+    tables_.clear();
+
+    if (it_ == reader_.end()) return false;
+
+    if (!first_) {
+        ++it_;
+        if (it_ == reader_.end()) return false;
+    }
+
+    first_ = false;
+    tables_.emplace_back(*it_);
+    long nrows = tables_.back().rowCount();
+
+    if (aggregated) {
+        while (true) {
+            auto it_next = it_;
+            ++it_next;
+            if (it_next == reader_.end()) break;
+
+            long next_nrows = nrows + it_next->rowCount();
+            if (rowlimit >= 0 && next_nrows > rowlimit) break;
+            if (!tables_.front().columns().compatible(it_->columns())) break;
+            tables_.emplace_back(*it_);
+            nrows = next_nrows;
+            ++it_;
+        }
+    }
+
+    ASSERT(rowlimit < 0 || nrows <= rowlimit);
     return true;
 }
 
-const std::vector<ColumnInfo>& TableImpl::columnInfo() const {
+const std::vector<ColumnInfo>& FrameImpl::columnInfo() const {
 
     ASSERT(tables_.size() > 0);
 
@@ -236,16 +223,16 @@ const std::vector<ColumnInfo>& TableImpl::columnInfo() const {
     return columnInfo_;
 }
 
-size_t TableImpl::rowCount() const {
+size_t FrameImpl::rowCount() const {
     return std::accumulate(tables_.begin(), tables_.end(), size_t(0),
                            [](size_t n, const core::Table& t) { return n + t.rowCount(); });
 }
 
-size_t TableImpl::columnCount() const {
+size_t FrameImpl::columnCount() const {
     return tables_[0].columnCount();
 }
 
-void TableImpl::decode(DecodeTarget& target, size_t nthreads) {
+void FrameImpl::decode(Decoder& target, size_t nthreads) {
 
     if (tables_.size() == 1) {
         tables_[0].decode(*target.impl_);
@@ -298,7 +285,7 @@ void TableImpl::decode(DecodeTarget& target, size_t nthreads) {
     }
 }
 
-Span TableImpl::span(const std::vector<std::string>& columns, bool onlyConstantValues) {
+Span FrameImpl::span(const std::vector<std::string>& columns, bool onlyConstantValues) {
 
     std::shared_ptr<SpanImpl> s(std::make_shared<SpanImpl>(tables_.front().span(columns, onlyConstantValues)));
 
@@ -309,32 +296,40 @@ Span TableImpl::span(const std::vector<std::string>& columns, bool onlyConstantV
     return s;
 }
 
-Table::Table(std::shared_ptr<TableImpl> t) :
-    impl_(t) {}
+Frame::Frame(Reader& reader) :
+    impl_(new FrameImpl(reader)) {}
 
-Table::~Table() {}
+Frame::Frame(const Frame& rhs) :
+    impl_(new FrameImpl(*rhs.impl_)) {}
 
-size_t Table::rowCount() const {
+Frame::~Frame() {}
+
+bool Frame::next(bool aggregated, long rowlimit) {
+    ASSERT(impl_);
+    return impl_->next(aggregated, rowlimit);
+}
+
+size_t Frame::rowCount() const {
     ASSERT(impl_);
     return impl_->rowCount();
 }
 
-size_t Table::columnCount() const {
+size_t Frame::columnCount() const {
     ASSERT(impl_);
     return impl_->columnCount();
 }
 
-const std::vector<ColumnInfo>& Table::columnInfo() const {
+const std::vector<ColumnInfo>& Frame::columnInfo() const {
     ASSERT(impl_);
     return impl_->columnInfo();
 }
 
-void Table::decode(DecodeTarget& target, size_t nthreads) const {
+void Frame::decode(Decoder& target, size_t nthreads) const {
     ASSERT(impl_);
     impl_->decode(target, nthreads);
 }
 
-Span Table::span(const std::vector<std::string>& columns, bool onlyConstantValues) const {
+Span Frame::span(const std::vector<std::string>& columns, bool onlyConstantValues) const {
     ASSERT(impl_);
     return impl_->span(columns, onlyConstantValues);
 }

@@ -19,19 +19,14 @@ struct odc_reader_t;
 
 struct odc_frame_t;
 
-struct odc_decode_target_t;
+struct odc_decoder_t;
 
 struct odc_encoder_t;
 
-/*
- * TODO:
- * 1. Finish encoder/decoder
- * 2. Relabel Table --> Frame
- * 3. odb_t types --> odc_t types
- * 4. Add fortran interface
- * 5. Prettify the C header file (need post-processing for odyssey)
- * 5. Default to integer behaviour?
- */
+typedef struct odc_reader_t odc_reader_t;
+typedef struct odc_frame_t odc_frame_t;
+typedef struct odc_decoder_t odc_decoder_t;
+typedef struct odc_encoder_t odc_encoder_t;
 
 /*
  * Initialise API
@@ -42,8 +37,11 @@ struct odc_encoder_t;
 const int ODC_INTEGERS_AS_DOUBLES = 1;
 const int ODC_INTEGERS_AS_LONGS = 2;
 
-void odc_initialise_api();
-void odc_integer_behaviour(int integerBehaviour);
+int odc_initialise_api();
+int odc_integer_behaviour(int integerBehaviour);
+
+int odc_version(const char** version);
+int odc_git_sha1(const char** sha1);
 
 /* Constants and lookups */
 
@@ -56,124 +54,100 @@ enum OdcColumnType {
     ODC_DOUBLE   = 5
 };
 
-int odc_type_count();
-const char* odc_type_name(int type);
-long odc_missing_integer();
-double odc_missing_double();
-void odc_set_missing_integer(long missing_integer);
-void odc_set_missing_double(double missing_double);
-
-const char* odc_version();
-const char* odc_git_sha1();
-
 /* Error handling */
 
-const int ODC_THROW = 1;
-const int ODC_ERRORS_CHECKED = 2;
-const int ODC_ERRORS_REPORT = 3;
+enum OdcErrorValues {
+    ODC_SUCCESS = 0,
+    ODC_ERROR_ECKIT_EXCEPTION,
+    ODC_ERROR_GENERAL_EXCEPTION,
+    ODC_ERROR_UNKNOWN_EXCEPTION,
+    ODC_ITERATION_COMPLETE
+};
 
-void odc_error_handling(int handling_type);
-void odc_reset_error();
-const char* odc_error_string();
-bool odc_success();
+const char* odc_error_string(int err);
+
+/* General value checks */
+
+int odc_type_name(int type, const char** type_name);
+int odc_set_missing_integer(long missing_integer);
+int odc_set_missing_double(double missing_double);
+
+// n.b. these function do not report errors. Libary configuration
+
+int odc_type_count();
+long odc_missing_integer();
+double odc_missing_double();
 
 /* Basic READ object API */
 
-struct odc_reader_t* odc_open_path(const char* filename);
-struct odc_reader_t* odc_open_file_descriptor(int fd);
-struct odc_reader_t* odc_open_buffer(const void* data, long length);
-struct odc_reader_t* odc_open_stream(void* handle, long (*stream_proc)(void* handle, void* buffer, long length));
+typedef long (*stream_read_t)(void* context, void* buffer, long length);
+int odc_open_path(odc_reader_t** reader, const char* filename);
+int odc_open_file_descriptor(odc_reader_t** reader, int fd);
+int odc_open_buffer(odc_reader_t** reader, const void* data, long length);
+int odc_open_stream(odc_reader_t** reader, void* context, stream_read_t stream_proc);
 
-void odc_close(struct odc_reader_t* o);
+int odc_close(const odc_reader_t* o);
 
 /* Table handling */
 
-struct odc_frame_t* odc_alloc_next_frame(struct odc_reader_t* o);
-struct odc_frame_t* odc_alloc_next_frame_aggregated(struct odc_reader_t* o, long maximum_rows);
-void odc_free_frame(struct odc_frame_t* o);
+int odc_new_frame(odc_frame_t** frame, odc_reader_t* reader);
+int odc_free_frame(const odc_frame_t* frame);
+int odc_next_frame(odc_frame_t* frame);
+int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows);
+int odc_copy_frame(odc_frame_t* source_frame, odc_frame_t** copy);
 
-long odc_frame_row_count(const struct odc_frame_t* t);
-int odc_frame_column_count(const struct odc_frame_t* t);
-int odc_frame_column_type(const struct odc_frame_t* t, int col);
-int odc_frame_column_data_size(const struct odc_frame_t* t, int col);
-const char* odc_frame_column_name(const struct odc_frame_t* t, int col);
-int odc_frame_column_bitfield_count(const struct odc_frame_t* t, int col);
-const char* odc_frame_column_bits_name(const struct odc_frame_t* t, int col, int n);
-int odc_frame_column_bits_size(const struct odc_frame_t* t, int col, int n); // yuk.
-int odc_frame_column_bits_offset(const struct odc_frame_t* t, int col, int n);
+int odc_frame_row_count(const odc_frame_t* frame, long* count);
+int odc_frame_column_count(const odc_frame_t* frame, int* count);
+int odc_frame_column_attrs(const odc_frame_t* frame, int col, const char** name, int* type, int* element_size, int* bitfield_count);
+int odc_frame_bitfield_attrs(const odc_frame_t* frame, int col, int field, const char** name, int* offset, int* size);
 
-/* Decoding data */
-
-// TODO: Is this really the right API?
+/*
+ * Describe how decoding should occur
+ */
 
 /* A decode target may allocate its own buffer to decode into, or use one that is
  * externally supplied */
-struct odc_decode_target_t* odc_alloc_decode_target();
-void odc_free_decode_target(struct odc_decode_target_t* dt);
-void odc_decode_target_set_row_count(struct odc_decode_target_t* dt, long nrows);
-void odc_decode_target_set_array_data(struct odc_decode_target_t* dt, void* buffer, long bufferSize);
 
-/* Construct a decode target that will decode an entire table (including allocating buffer space) */
-void odc_frame_build_all_decode_target(const struct odc_frame_t* t, struct odc_decode_target_t* dt);
+int odc_new_decoder(odc_decoder_t** decoder);
+int odc_free_decoder(const odc_decoder_t* decoder);
 
-int odc_decode_target_add_column(struct odc_decode_target_t* dt, const char* name);
-void odc_decode_target_column_set_size(struct odc_decode_target_t* dt, int col, int elemSize);
-void odc_decode_target_column_set_stride(struct odc_decode_target_t* dt, int col, int stride);
-void odc_decode_target_column_set_data(struct odc_decode_target_t* dt, int col, void* data);
+int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* frame);
+int odc_decoder_set_row_count(odc_decoder_t* decoder, long nrows);
+int odc_decoder_row_count(const odc_decoder_t* decoder, long* nrows);
+int odc_decoder_set_data_array(odc_decoder_t* decoder, void* data, long width, long height, bool columnMajor);
+int odc_decoder_data_array(const odc_decoder_t* decoder, const void** data, long* width, long* height, bool* columnMajor);
 
-const void* odc_decode_target_array_data(struct odc_decode_target_t* dt);
-long odc_decode_target_row_count(struct odc_decode_target_t* dt);
-int odc_decode_target_column_count(struct odc_decode_target_t* dt);
-int odc_decode_target_column_size(struct odc_decode_target_t* dt, int col);
-int odc_decode_target_column_stride(struct odc_decode_target_t* dt, int col);
-const void* odc_decode_target_column_data(struct odc_decode_target_t* dt, int col);
+int odc_decoder_add_column(odc_decoder_t* decoder, const char* name);
+int odc_decoder_column_count(const odc_decoder_t* decoder, int* count);
 
+int odc_decoder_set_column_attrs(odc_decoder_t* decoder, int col, int element_size, int stride, void* data);
+int odc_decoder_column_attrs(const odc_decoder_t* decoder, int col, int* element_size, int* stride, const void** data);
 
 /*
- * odb_frame_decode - do the actual decode of the table (allocates if necessary)
- *
- * t - the table opaque pointer
- * dt - the target decode details
- * nthreads - number of threads to use for decoding (if multiple frames)
- *
- * RETURNS: the number of rows decoded
+ * Do the actual decoding
  */
 
-long odc_frame_decode(const struct odc_frame_t* t, struct odc_decode_target_t* dt, int nthreads);
-
-//const struct odb_decoded_t* odc_frame_decode_all(const struct odb_frame_t* t);
-
+int odc_decode(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded);
+int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded, int nthreads);
 
 /*
  * odb_frame_encode - encode data
- * TODO: Bit field encoding
  */
 
-struct odc_encoder_t* odc_alloc_encoder();
-void odc_free_encoder(struct odc_encoder_t* en);
+int odc_new_encoder(odc_encoder_t** encoder);
+int odc_free_encoder(const odc_encoder_t* encoder);
 
-/* Add a dense column of data */
+int odc_encoder_set_row_count(odc_encoder_t* encoder, long nrows);
+int odc_encoder_set_rows_per_frame(odc_encoder_t* encoder, long rows_per_frame);
+int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height, bool columnMajor);
 
-void odc_encoder_set_row_count(struct odc_encoder_t* en, long nrows);
-void odc_encoder_set_rows_per_frame(struct odc_encoder_t* en, long rows_per_frame);
-void odc_encoder_set_data_array(struct odc_encoder_t* en, void* data, bool columnMajor);
+int odc_encoder_add_column(odc_encoder_t* encoder, const char* name, int type);
+int odc_encoder_column_set_attrs(odc_encoder_t* encoder, int col, int element_size, int stride, const void* data);
+int odc_encoder_column_add_bitfield(odc_encoder_t* encoder, int col, const char* name, int nbits);
 
-int odc_encoder_add_column(struct odc_encoder_t* en, const char* name, int type);
-void odc_encoder_column_set_size(struct odc_encoder_t* en, int col, int elemSize);
-void odc_encoder_column_set_stride(struct odc_encoder_t* en, int col, int stride);
-void odc_encoder_column_set_data(struct odc_encoder_t* en, int col, const void*);
-void odc_encoder_column_add_bitfield_field(struct odc_encoder_t* en, int col, const char* name, int nbits);
-
-long odc_encode_to_stream(struct odc_encoder_t* en, void* handle, long (*write_fn)(void* handle, const void* buffer, long length));
-long odc_encode_to_file_descriptor(struct odc_encoder_t* en, int fd);
-long odc_encode_to_buffer(struct odc_encoder_t* en, void* buffer, long length);
-
-
-
-//void odc_free_odb_decoded(const struct odb_decoded_t* dt);
-
-/* Encoding data */
-
-//void* odc_encode(const struct odb_decoded_t* dt, void* buffer, long* size);
+typedef long (*stream_write_t)(void* context, const void* buffer, long length);
+int odc_encode_to_stream(odc_encoder_t* encoder, void* context, stream_write_t write_fn, long* bytes_encoded);
+int odc_encode_to_file_descriptor(odc_encoder_t* encoder, int fd, long* bytes_encoded);
+int odc_encode_to_buffer(odc_encoder_t* encoder, void* buffer, long length, long* bytes_encoded);
 
 /*--------------------------------------------------------------------------------------------------------------------*/

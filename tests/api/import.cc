@@ -43,7 +43,7 @@ CASE("We can import data") {
 
     eckit::MemoryHandle readAgain(dh_out.data(), importedSize);
     readAgain.openForRead();
-    odc::api::Odb o(readAgain);
+    odc::api::Reader o(readAgain);
 
     while (auto table = o.next(false)) {
         eckit::Log::info() << "Table: " << table.get().rowCount() << std::endl;

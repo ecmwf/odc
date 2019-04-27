@@ -50,6 +50,13 @@ public: // methods
     Table& operator*();
     const Table& operator*() const;
 
+private: // methods
+
+    friend std::ostream& operator<<(std::ostream& os, const ReadTablesIterator& rti) {
+        os << "ReadTablesIterator(" << &rti.owner_ << ", " << rti.pos_ << ")";
+        return os;
+    }
+
 private: // members
 
     TablesReader& owner_;
