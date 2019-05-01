@@ -682,6 +682,7 @@ int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long wi
         encoder->arrayWidth = width;
         encoder->arrayHeight = height;
         encoder->columnMajor = columnMajor;
+        if (encoder->nrows == 0) encoder->nrows = height;
     });
 }
 
@@ -696,10 +697,9 @@ int odc_encoder_add_column(odc_encoder_t* encoder, const char* name, int type) {
 int odc_encoder_column_set_attrs(odc_encoder_t* encoder, int col, int element_size, int stride, const void* data) {
     return wrapApiFunction([encoder, col, element_size, stride, data] {
         ASSERT(encoder);
-        ASSERT(col >= 0 && size_t(col) > encoder->columnInfo.size());
+        ASSERT(col >= 0 && size_t(col) < encoder->columnInfo.size());
         ASSERT(element_size >= 0 && element_size % 8 == 0);
         ASSERT(stride >= 0 && stride % 8 == 0);
-        ASSERT(data);
         encoder->columnInfo[col].decodedSize = element_size;
         encoder->columnData[col].stride = stride;
         encoder->columnData[col].data = data;

@@ -870,11 +870,12 @@ contains
         err = odc_encoder_add_column(encoder%impl, c_loc(nullified_name), type)
     end function
 
-    function encoder_column_set_attrs(encoder, col, element_size, stride, data) result(err)
+    function encoder_column_set_attrs(encoder, col, element_size, element_size_doubles, stride, data) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_encoder), intent(inout) :: encoder
         integer, intent(in) :: col
         integer, intent(in), optional :: element_size
+        integer, intent(in), optional :: element_size_doubles
         integer, intent(in), optional :: stride
         type(c_ptr), intent(in), optional :: data
         integer :: err
@@ -883,6 +884,7 @@ contains
         integer(c_int) :: l_stride = 0
         type(c_ptr) :: l_data = c_null_ptr
         if (present(element_size)) l_element_size = element_size
+        if (present(element_size_doubles)) l_element_size = element_size_doubles * double_size
         if (present(stride)) l_stride = stride
         if (present(data)) l_data = data
 
