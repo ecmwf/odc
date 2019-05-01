@@ -11,41 +11,56 @@ module odc
     integer(c_int), public, parameter :: ODC_BITFIELD = 4
     integer(c_int), public, parameter :: ODC_DOUBLE = 5
 
-    integer(c_int), public, parameter :: ODC_THROW = 1
-    integer(c_int), public, parameter :: ODC_ERRORS_CHECKED = 2
-    integer(c_int), public, parameter :: ODC_ERRORS_REPORT = 3
+    ! Error values
+
+    integer, public, parameter :: ODC_SUCCESS = 0
+    integer, public, parameter :: ODC_ERROR_ECKIT_EXCEPTION = 1
+    integer, public, parameter :: ODC_ERROR_GENERAL_EXCEPTION = 2
+    integer, public, parameter :: ODC_ERROR_UNKNOWN_EXCEPTION = 3
+    integer, public, parameter :: ODC_ITERATION_COMPLETE = 4
 
     private
 
     integer, parameter :: dp = selected_real_kind(15, 307)
+    integer, parameter :: double_size = c_sizeof(1.0_dp)
 
     type odc_reader
         type(c_ptr) :: impl = c_null_ptr
     contains
         procedure :: open_path => reader_open_path
         procedure :: close => reader_close
-
-        ! next_frame will clean up the frame object when called on the same object.
-        ! If not, must call frame%free()
-        procedure :: next_frame => reader_next_frame
     end type
 
     type odc_frame
         type(c_ptr) :: impl = c_null_ptr
     contains
+        procedure :: initialise => frame_initialise
         procedure :: free => frame_free
+        procedure :: copy => frame_copy
+        procedure :: next => frame_next
         procedure :: row_count => frame_row_count
         procedure :: column_count => frame_column_count
-        procedure :: column_name => frame_column_name
-        procedure :: column_type => frame_column_type
-        procedure :: column_data_size => frame_column_data_size
-        procedure :: column_data_size_doubles => frame_column_data_size_doubles
-        procedure :: column_bitfield_count => frame_column_bitfield_count
-        procedure :: column_bits_name => frame_column_bits_name
-        procedure :: column_bits_size => frame_column_bits_size
-        procedure :: column_bits_offset => frame_column_bits_offset
-        procedure :: decode => frame_decode
+        procedure :: column_attrs => frame_column_attrs
+        procedure :: bitfield_attrs => frame_bitfield_attrs
     end type
+
+    type odc_decoder
+        type(c_ptr) :: impl = c_null_ptr
+    contains
+        procedure :: initialise => decoder_initialise
+        procedure :: free => decoder_free
+        procedure :: defaults_from_frame => decoder_defaults_from_frame
+        procedure :: set_row_count => decoder_set_row_count
+        procedure :: row_count => decoder_row_count
+        procedure :: set_data => decoder_set_data_array
+        procedure :: data => decoder_data_array
+        procedure :: add_column => decoder_add_column
+        procedure :: column_count => decoder_column_count
+        procedure :: column_set_attrs => decoder_column_set_attrs
+        procedure :: column_attrs => decoder_column_attrs
+        procedure :: decode => decoder_decode
+    end type
+
 
     type odc_encoder
         type(c_ptr) :: impl = c_null_ptr
@@ -56,26 +71,11 @@ module odc
         procedure :: free => encoder_free
         procedure :: set_row_count => encoder_set_row_count
         procedure :: set_rows_per_frame => encoder_set_rows_per_frame
-        procedure :: set_data_array => encoder_set_data_array
+        procedure :: set_data => encoder_set_data_array
         procedure :: add_column => encoder_add_column
-        procedure :: column_set_size_doubles => encoder_column_set_size_doubles
-        procedure :: column_set_stride => encoder_column_set_stride
-        procedure :: column_set_data => encoder_column_set_data
-        procedure :: column_add_bitfield_field => encoder_column_add_bitfield_field
+        procedure :: column_set_attrs => encoder_column_set_attrs
+        procedure :: column_add_bitfield => encoder_column_add_bitfield
         procedure :: encode => encoder_encode
-    end type
-
-    type odc_decode_target
-        type(c_ptr) :: impl = c_null_ptr
-    contains
-        procedure :: initialise => dt_initialise
-        procedure :: free => dt_free
-        procedure :: set_row_count => dt_set_row_count
-        procedure :: set_data_array => dt_set_data_array
-        procedure :: data => dt_data_array
-        procedure :: row_count => dt_row_count
-        procedure :: column_count => dt_column_count
-        procedure :: column_data_size_doubles => dt_column_data_size_doubles
     end type
 
     ! Type declarations
@@ -83,15 +83,14 @@ module odc
     public :: odc_reader
     public :: odc_frame
     public :: odc_encoder
-    public :: odc_decode_target
+    public :: odc_decoder
 
     ! Configuration management functions
 
     public :: odc_version, odc_git_sha1
     public :: odc_initialise_api
     public :: odc_type_name, odc_type_count
-    public :: odc_error_handling, odc_reset_error
-    public :: odc_success, odc_error_string
+    public :: odc_error_string
     public :: odc_missing_integer, odc_missing_double
     public :: odc_set_missing_integer, odc_set_missing_double
 
@@ -110,358 +109,388 @@ module odc
 
     interface
 
-        pure function c_odc_version() result(pstr) bind(c, name='odc_version')
+        function c_odc_version(pstr) result(err) bind(c, name='odc_version')
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr) :: pstr
+            type(c_ptr), intent(out) :: pstr
+            integer(c_int) :: err
         end function
 
-        pure function c_odc_git_sha1() result(pstr) bind(c, name='odc_git_sha1')
+        function c_odc_git_sha1(pstr) result(err) bind(c, name='odc_git_sha1')
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr) :: pstr
+            type(c_ptr), intent(out) :: pstr
+            integer(c_int) :: err
         end function
 
-        subroutine odc_initialise_api() bind(c)
-        end subroutine
+        function odc_initialise_api() result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            integer(c_int) :: err
+        end function
 
-        pure function c_odc_type_name(type) result(pstr) bind(c, name='odc_type_name')
+        function odc_integer_behaviour(integer_behaviour) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            integer(c_int), intent(in), value :: integer_behaviour
+            integer(c_int) :: err
+        end function
+
+        function c_odc_type_name(type, pstr) result(err) bind(c, name='odc_type_name')
             use, intrinsic :: iso_c_binding
             implicit none
             integer(c_int), intent(in), value :: type
-            type(c_ptr) :: pstr
+            type(c_ptr), intent(out) :: pstr
+            integer(c_int) :: err
         end function
 
-        pure function odc_type_count() result(ntypes) bind(c)
+        function odc_type_count(ntypes) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            integer(c_int) :: ntypes
+            integer(c_int), intent(out) :: ntypes
+            integer(c_int) :: err
         end function
 
-        subroutine odc_error_handling(handling_type) bind(c)
+        function c_odc_error_string(err) result(error_string) bind(c, name='odc_error_string')
             use, intrinsic :: iso_c_binding
             implicit none
-            integer(c_int), intent(in), value :: handling_type
-        end subroutine
-
-        function c_odc_error_string() result(error_string) bind(c, name='odc_error_string')
-            use, intrinsic :: iso_c_binding
-            implicit none
+            integer(c_int), intent(in), value :: err
             type(c_ptr) :: error_string
         end function
 
-        subroutine odc_reset_error() bind(c)
-        end subroutine
-
-        pure function odc_missing_integer() result(missing_integer) bind(c)
+        function odc_missing_integer(missing_integer) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            integer(c_long) :: missing_integer
+            integer(c_long), intent(out) :: missing_integer
+            integer(c_int) :: err
         end function
 
-        pure function odc_missing_double() result(missing_double) bind(c)
+        function odc_missing_double(missing_double) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            real(c_double) :: missing_double
+            real(c_double), intent(out) :: missing_double
+            integer(c_int) :: err
         end function
 
-        subroutine odc_set_missing_integer(missing_integer) bind(c)
+        function odc_set_missing_integer(missing_integer) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             integer(c_long), intent(in), value :: missing_integer
-        end subroutine
+            integer(c_int) :: err
+        end function
 
-        subroutine odc_set_missing_double(missing_double) bind(c)
+        function odc_set_missing_double(missing_double) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             real(c_double), intent(in), value :: missing_double
-        end subroutine
-
-        function odc_success() result(successp) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            logical(c_bool) :: successp
+            integer(c_int) :: err
         end function
 
         ! READ object api
 
-        function odc_open_path(path) result(reader) bind(c)
+        function odc_open_path(reader, path) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: path
-            type(c_ptr) :: reader
+            type(c_ptr), intent(out) :: reader
+            integer(c_int) :: err
         end function
 
-        subroutine odc_close(o) bind(c)
+        function odc_close(reader) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr), intent(in), value :: o
-        end subroutine
-
-        function odc_alloc_next_frame(o) result(frame) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: o
-            type(c_ptr) :: frame
-        end function
-
-        function odc_alloc_next_frame_aggregated(o, maximum_rows) result(frame) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: o
-            integer(c_long), intent(in), value :: maximum_rows
-            type(c_ptr) :: frame
+            type(c_ptr), intent(in), value :: reader
+            integer(c_int) :: err
         end function
 
         ! Frame functionality
 
-        subroutine odc_free_frame(frame) bind(c)
+        function odc_new_frame(frame, reader) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr), intent(in), value :: frame
-        end subroutine
-
-        function odc_frame_row_count(frame) result(nrows) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: frame
-            integer(c_long) :: nrows
+            type(c_ptr), intent(out) :: frame
+            type(c_ptr), intent(in), value :: reader
+            integer(c_int) :: err
         end function
 
-        function odc_frame_column_count(frame) result(ncols) bind(c)
+        function odc_free_frame(frame) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: frame
-            integer(c_int) :: ncols
+            integer(c_int) :: err
         end function
 
-        function odc_frame_column_name(frame, col) result(column_name) bind(c)
+        function odc_next_frame(frame) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int) :: err
+        end function
+
+        function odc_next_frame_aggregated(frame, maximum_rows) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_long), intent(in), value :: maximum_rows
+            integer(c_int) :: err
+        end function
+
+        function odc_copy_frame(source_frame, copy) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: source_frame
+            type(c_ptr), intent(out) :: copy
+            integer(c_int) :: err
+        end function
+
+        function odc_frame_row_count(frame, count) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_long), intent(out) :: count
+            integer(c_int) :: err
+        end function
+
+        function odc_frame_column_count(frame, count) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(out) :: count
+            integer(c_int) :: err
+        end function
+
+        function odc_frame_column_attrs(frame, col, name, type, element_size, bitfield_count) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: frame
             integer(c_int), intent(in), value :: col
-            type(c_ptr) :: column_name
+            type(c_ptr), intent(out) :: name
+            integer(c_int), intent(out) :: type
+            integer(c_int), intent(out) :: element_size
+            integer(c_int), intent(out) :: bitfield_count
+            integer(c_int) :: err
         end function
 
-        function odc_frame_column_type(frame, col) result(column_type) bind(c)
+        function odc_frame_bitfield_attrs(frame, col, field, name, offset, size) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: frame
             integer(c_int), intent(in), value :: col
-            integer(c_int) :: column_type
+            integer(c_int), intent(in), value :: field
+            type(c_ptr), intent(out) :: name
+            integer(c_int), intent(out) :: offset
+            integer(c_int), intent(out) :: size
+            integer(c_int) :: err
         end function
 
-        function odc_frame_column_data_size(frame, col) result(element_size) bind(c)
-            ! n.b. 0-indexed column (C API)
+        ! Work with decoders
+
+        function odc_new_decoder(decoder) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
+            type(c_ptr), intent(out) :: decoder
+            integer(c_int) :: err
+        end function
+
+        function odc_free_decoder(decoder) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            integer(c_int) :: err
+        end function
+
+        function odc_decoder_defaults_from_frame(decoder, frame) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
             type(c_ptr), intent(in), value :: frame
-            integer(c_int), intent(in), value :: col
-            integer(c_int) :: element_size
+            integer(c_int) :: err
         end function
 
-        function odc_frame_column_bitfield_count(frame, col) result(field_count) bind(c)
-            ! n.b. 0-indexed column (C API)
+        function odc_decoder_set_row_count(decoder, row_count) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr), intent(in), value :: frame
-            integer(c_int), intent(in), value :: col
-            integer(c_int) :: field_count
-        end function
-
-        function odc_frame_column_bits_name(frame, col, field) result(bits_name) bind(c)
-            ! n.b. 0-indexed column (C API)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: frame
-            integer(c_int), intent(in), value :: col, field
-            type(c_ptr) :: bits_name
-        end function
-
-        function odc_frame_column_bits_size(frame, col, field) result(bits_size) bind(c)
-            ! n.b. 0-indexed column (C API)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: frame
-            integer(c_int), intent(in), value :: col, field
-            integer(c_int) :: bits_size
-        end function
-
-        function odc_frame_column_bits_offset(frame, col, field) result(bits_offset) bind(c)
-            ! n.b. 0-indexed column (C API)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: frame
-            integer(c_int), intent(in), value :: col, field
-            integer(c_int) :: bits_offset
-        end function
-
-        subroutine odc_frame_build_all_decode_target(frame, target) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: frame, target
-        end subroutine
-
-        function odc_frame_decode(frame, decode_target, nthreads) result(row_count) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: frame, decode_target
-            integer(c_int), intent(in), value :: nthreads
-            integer(c_long) :: row_count
-        end function
-
-        ! Work with decode targets
-
-        function odc_alloc_decode_target() result(decode_target) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr) :: decode_target
-        end function
-
-        subroutine odc_free_decode_target(decode_target) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: decode_target
-        end subroutine
-
-        subroutine odc_decode_target_set_row_count(decode_target, row_count) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: decode_target
+            type(c_ptr), intent(in), value :: decoder
             integer(c_long), intent(in), value :: row_count
-        end subroutine
-
-        subroutine odc_decode_target_set_array_data(decode_target, buffer, buffer_size) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: decode_target
-            type(c_ptr), intent(in), value :: buffer
-            integer(c_long), intent(in), value :: buffer_size
-        end subroutine
-
-        function odc_decode_target_array_data(decode_target) result(data) bind(c)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: decode_target
-            type(c_ptr) :: data
+            integer(c_int) :: err
         end function
 
-        pure function odc_decode_target_column_count(decode_target) result(column_count) bind(c)
+        function odc_decoder_row_count(decoder, row_count) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            integer(c_long), intent(out) :: row_count
+            integer(c_int) :: err
+        end function
+
+        function odc_decoder_set_data_array(decoder, data, width, height, columnMajor) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            type(c_ptr), intent(in), value :: data
+            integer(c_long), intent(in), value :: width
+            integer(c_long), intent(in), value :: height
+            logical(c_bool), intent(in), value :: columnMajor
+            integer(c_int) :: err
+        end function
+
+        function odc_decoder_data_array(decoder, data, width, height, columnMajor) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            type(c_ptr), intent(out) :: data
+            integer(c_long), intent(out) :: width
+            integer(c_long), intent(out) :: height
+            logical(c_bool), intent(out) :: columnMajor
+            integer(c_int) :: err
+       end function
+
+        function odc_decoder_add_column(decoder, name) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            type(c_ptr), intent(in), value :: name
+            integer(c_int) :: err
+        end function
+
+        function odc_decoder_column_count(decoder, count) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            integer(c_int), intent(out) :: count
+            integer(c_int) :: err
+        end function
+
+        function odc_decoder_column_set_attrs(decoder, col, element_size, stride, data) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr), intent(in), value :: decode_target
-            integer(c_int) :: column_count
+            type(c_ptr), intent(in), value :: decoder
+            integer(c_int), intent(in), value :: col
+            integer(c_int), intent(in), value :: element_size
+            integer(c_int), intent(in), value :: stride
+            type(c_ptr), intent(in), value :: data
+            integer(c_int) :: err
         end function
 
-        pure function odc_decode_target_column_size(decode_target, column) result(column_size) bind(c)
+        function odc_decoder_column_attrs(decoder, col, element_size, stride, data) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr), intent(in), value :: decode_target
-            integer(c_int), intent(in), value :: column
-            integer(c_int) :: column_size
+            type(c_ptr), intent(in), value :: decoder
+            integer(c_int), intent(in), value :: col
+            integer(c_int), intent(out) :: element_size
+            integer(c_int), intent(out) :: stride
+            type(c_ptr), intent(out) :: data
+            integer(c_int) :: err
         end function
 
-        pure function odc_decode_target_row_count(decode_target) result(row_count) bind(c)
+        ! Do actual decoding
+
+        function odc_decode(decoder, frame, rows_decoded) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr), intent(in), value :: decode_target
-            integer(c_long) :: row_count
+            type(c_ptr), intent(in), value :: decoder
+            type(c_ptr), intent(in), value :: frame
+            integer(c_long), intent(out) :: rows_decoded
+            integer(c_int) :: err
+        end function
+
+        function odc_decode_threaded(decoder, frame, rows_decoded, nthreads) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            type(c_ptr), intent(in), value :: frame
+            integer(c_long), intent(out) :: rows_decoded
+            integer(c_int), intent(in), value :: nthreads
+            integer(c_int) :: err
         end function
 
         ! Work with encoders
 
-        function odc_alloc_encoder() result(encoder) bind(c)
+        function odc_new_encoder(encoder) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_ptr) :: encoder
+            type(c_ptr), intent(out) :: encoder
+            integer(c_int) :: err
         end function
 
-        subroutine odc_free_encoder(encoder) bind(c)
+        function odc_free_encoder(encoder) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
-        end subroutine
+            integer(c_int) :: err
+        end function
 
-        subroutine odc_encoder_set_row_count(encoder, row_count) bind(c)
+        function odc_encoder_set_row_count(encoder, row_count) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
             integer(c_long), intent(in), value :: row_count
-        end subroutine
+            integer(c_int) :: err
+        end function
 
-        subroutine odc_encoder_set_rows_per_frame(encoder, rows_per_frame) bind(c)
+        function odc_encoder_set_rows_per_frame(encoder, rows_per_frame) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
             integer(c_long), intent(in), value :: rows_per_frame
-        end subroutine
+            integer(c_int) :: err
+        end function
 
-        subroutine odc_encoder_set_data_array(encoder, data, column_major) bind(c)
+        function odc_encoder_set_data_array(encoder, data, width, height, column_major) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
             type(c_ptr), intent(in), value :: data
+            integer(c_long), intent(in), value :: width
+            integer(c_long), intent(in), value :: height
             logical(c_bool), intent(in), value :: column_major
-        end subroutine
+            integer(c_int) :: err
+        end function
 
-        function odc_encoder_add_column(encoder, name, type) result(column_number) bind(c)
-            ! n.b. 0-indexed column (C API)
+        function odc_encoder_add_column(encoder, name, type) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
             type(c_ptr), intent(in), value :: name
             integer(c_int), intent(in), value :: type
-            integer(c_int) :: column_number
+            integer(c_int) :: err
         end function
 
-        subroutine odc_encoder_column_set_size(encoder, column, element_size) bind(c)
+        function odc_encoder_column_set_attrs(encoder, col, element_size, stride, data) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
-            integer(c_int), intent(in), value :: column
+            integer(c_int), intent(in), value :: col
             integer(c_int), intent(in), value :: element_size
-        end subroutine
-
-        subroutine odc_encoder_column_set_stride(encoder, column, stride) bind(c)
-            ! n.b. 0-indexed column (C API)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: encoder
-            integer(c_int), intent(in), value :: column
             integer(c_int), intent(in), value :: stride
-        end subroutine
+            type(c_ptr), intent(in), value :: data
+            integer(c_int) :: err
+        end function
 
-        subroutine odc_encoder_column_set_data(encoder, column, data_ptr) bind(c)
+        function odc_encoder_column_add_bitfield(encoder, col, name, nbits) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
-            integer(c_int), intent(in), value :: column
-            type(c_ptr), intent(in), value :: data_ptr
-        end subroutine
-
-        subroutine odc_encoder_column_add_bitfield_field(encoder, column, name, nbits) bind(c)
-            ! n.b. 0-indexed column (C API)
-            use, intrinsic :: iso_c_binding
-            implicit none
-            type(c_ptr), intent(in), value :: encoder
-            integer(c_int), intent(in), value :: column
+            integer(c_int), intent(in), value :: col
             type(c_ptr), intent(in), value :: name
             integer(c_int), intent(in), value :: nbits
-        end subroutine
+            integer(c_int) :: err
+        end function
 
-        function odc_encode_to_stream(encoder, handle, stream_fn) result(bytes_written) bind(c)
+        function odc_encode_to_stream(encoder, handle, stream_fn, bytes_encoded) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
             type(c_ptr), intent(in), value :: handle
             type(c_funptr), intent(in), value :: stream_fn
-            integer(c_long) :: bytes_written
+            integer(c_long), intent(out) :: bytes_encoded
+            integer(c_int) :: err
         end function
     end interface
 
@@ -488,356 +517,410 @@ contains
         fstr = transfer(tmp(1:length), fstr)
     end function
 
-    function odc_version() result(version_str)
-        character(:), allocatable :: version_str
-        version_str = fortranise_cstr(c_odc_version())
+    function odc_version(version_str) result(err)
+        character(:), allocatable, intent(out) :: version_str
+        type(c_ptr) :: tmp_str
+        integer :: err
+        err = c_odc_version(tmp_str)
+        if (err == ODC_SUCCESS) version_str = fortranise_cstr(tmp_str)
     end function
 
-    function odc_git_sha1() result(git_sha1)
-        character(:), allocatable :: git_sha1
-        git_sha1 = fortranise_cstr(c_odc_git_sha1())
+    function odc_git_sha1(git_sha1) result(err)
+        character(:), allocatable, intent(out) :: git_sha1
+        type(c_ptr) :: tmp_str
+        integer :: err
+        err = c_odc_git_sha1(tmp_str)
+        if (err == ODC_SUCCESS) git_sha1 = fortranise_cstr(tmp_str)
     end function
 
-    function odc_type_name(type) result(type_name)
+    function odc_type_name(type, type_name) result(err)
         integer(c_int), intent(in) :: type
-        character(:), allocatable :: type_name
-        type_name = fortranise_cstr(c_odc_type_name(type))
+        character(:), allocatable, intent(out) :: type_name
+        type(c_ptr) :: tmp_str
+        integer :: err
+        err = c_odc_type_name(type, tmp_str)
+        if (err == ODC_SUCCESS)  type_name = fortranise_cstr(tmp_str)
     end function
 
-    function odc_error_string() result(error_string)
+    function odc_error_string(err) result(error_string)
+        integer, intent(in) :: err
         character(:), allocatable, target :: error_string
-        error_string = fortranise_cstr(c_odc_error_string())
+        error_string = fortranise_cstr(c_odc_error_string(err))
     end function
 
     ! Methods for reader objects
 
-    subroutine reader_close(reader)
-        class(odc_reader) :: reader
-        call odc_close(reader%impl)
-        reader%impl = c_null_ptr
-    end subroutine
-
-    subroutine reader_open_path(reader, path)
+    function reader_open_path(reader, path) result(err)
         class(odc_reader), intent(inout) :: reader
         character(*), intent(in) :: path
+        integer :: err
         character(:), allocatable, target :: nullified_path
         nullified_path = trim(path) // c_null_char
-        reader%impl = odc_open_path(c_loc(nullified_path))
-    end subroutine
+        err = odc_open_path(reader%impl, c_loc(nullified_path))
+    end function
 
-    function reader_next_frame(reader, frame, aggregated, maximum_rows) result(success)
+    function reader_close(reader) result(err)
         class(odc_reader), intent(inout) :: reader
-        type(odc_frame), intent(inout) :: frame
+        integer :: err
+        err = odc_close(reader%impl)
+        reader%impl = c_null_ptr
+    end function
+
+    ! Methods for frame object
+
+    function frame_initialise(frame, reader) result(err)
+        class(odc_frame), intent(inout) :: frame
+        type(odc_reader), intent(inout) :: reader
+        integer :: err
+        err = odc_new_frame(frame%impl, reader%impl)
+    end function
+
+    function frame_free(frame) result(err)
+        class(odc_frame), intent(inout) :: frame
+        integer :: err
+        err = odc_free_frame(frame%impl)
+    end function
+
+    function frame_copy(frame, new_frame) result(err)
+        class(odc_frame), intent(inout) :: frame
+        class(odc_frame), intent(inout) :: new_frame
+        integer :: err
+        err = odc_copy_frame(frame%impl, new_frame%impl)
+    end function
+
+    function frame_next(frame, aggregated, maximum_rows) result(err)
+        class(odc_frame), intent(inout) :: frame
         logical, intent(in), optional :: aggregated
-        integer, intent(in), optional :: maximum_rows
-        logical :: l_aggregated = .false.
+        integer(c_long), intent(in), optional :: maximum_rows
+        integer :: err
+
         integer(c_long) :: l_maximum_rows = -1
-        logical :: success
+        logical :: l_aggregated = .false.
 
-        if (c_associated(frame%impl)) then
-            call frame%free()
-        endif
-
-        if (present(aggregated)) then
-            l_aggregated = aggregated
-        end if
-
-        if (present(maximum_rows)) then
-            if (.not. present(aggregated)) then
-                l_aggregated = .true.
-            end if
-            l_maximum_rows = maximum_rows
-        end if
+        if (present(aggregated)) l_aggregated = aggregated
+        if (present(maximum_rows)) l_maximum_rows = maximum_rows
 
         if (l_aggregated) then
-            frame%impl = odc_alloc_next_frame_aggregated(reader%impl, l_maximum_rows)
+            err = odc_next_frame_aggregated(frame%impl, l_maximum_rows)
         else
-            frame%impl = odc_alloc_next_frame(reader%impl)
+            err = odc_next_frame(frame%impl)
+        end if
+    end function
+
+    function frame_row_count(frame, nrows) result(err)
+        class(odc_frame), intent(in) :: frame
+        integer(c_long), intent(out) :: nrows
+        integer :: err
+        err = odc_frame_row_count(frame%impl, nrows)
+    end function
+
+    function frame_column_count(frame, ncols) result(err)
+        class(odc_frame), intent(in) :: frame
+        integer(c_int), intent(out) :: ncols
+        integer :: err
+        err = odc_frame_column_count(frame%impl, ncols)
+    end function
+
+    function frame_column_attrs(frame, col, name, type, element_size, element_size_doubles, bitfield_count) result(err)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(in) :: frame
+        integer, intent(in) :: col
+        integer :: err
+
+        character(:), allocatable, intent(out), optional :: name
+        integer, intent(out), optional :: type
+        integer, intent(out), optional :: element_size
+        integer, intent(out), optional :: element_size_doubles
+        integer, intent(out), optional :: bitfield_count
+
+        type(c_ptr) :: name_tmp
+        integer(c_int) :: type_tmp
+        integer(c_int) :: element_size_tmp
+        integer(c_int) :: bitfield_count_tmp
+
+        err = odc_frame_column_attrs(frame%impl, col-1, name_tmp, type_tmp,&
+                                     element_size_tmp, bitfield_count_tmp)
+
+        if (err == ODC_SUCCESS) then
+            if (present(name)) name = fortranise_cstr(name_tmp)
+            if (present(type)) type = type_tmp
+            if (present(element_size)) element_size = element_size_tmp
+            if (present(element_size_doubles)) element_size = element_size_tmp / double_size
+            if (present(bitfield_count)) bitfield_count = bitfield_count_tmp
         end if
 
-        success = c_associated(frame%impl)
-
     end function
 
-    subroutine frame_free(frame)
-        class(odc_frame), intent(inout) :: frame
-        if (c_associated(frame%impl)) then
-            call odc_free_frame(frame%impl)
+    function frame_bitfield_attrs(frame, col, field, name, offset, bf_size) result(err)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_frame), intent(in) :: frame
+        integer, intent(in) :: col
+        integer, intent(in) :: field
+        integer :: err
+
+        character(:), allocatable, intent(out), optional :: name
+        integer, intent(out), optional :: offset
+        integer, intent(out), optional :: bf_size
+
+        type(c_ptr) :: name_tmp
+        integer(c_int) :: offset_tmp
+        integer(c_int) :: size_tmp
+
+        err = odc_frame_bitfield_attrs(frame%impl, col-1, field-1, name_tmp, offset_tmp, size_tmp)
+
+        if (err == ODC_SUCCESS) then
+            if (present(name)) name = fortranise_cstr(name_tmp)
+            if (present(offset)) offset = offset_tmp
+            if (present(bf_size)) bf_size = size_tmp
         end if
-        frame%impl = c_null_ptr
-    end subroutine
 
-    function frame_row_count(frame) result(nrows)
-        class(odc_frame), intent(in) :: frame
-        integer(c_long) :: nrows
-        nrows = odc_frame_row_count(frame%impl)
     end function
 
-    function frame_column_count(frame) result(ncols)
-        class(odc_frame), intent(in) :: frame
-        integer :: ncols
-        ncols = odc_frame_column_count(frame%impl)
+    ! Methods for decoder object
+
+    function decoder_initialise(decoder) result(err)
+        class(odc_decoder), intent(inout) :: decoder
+        integer :: err
+        err = odc_new_decoder(decoder%impl)
     end function
 
-    function frame_column_name(frame, col) result(column_name)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col
-        character(:), allocatable :: column_name
-        column_name = fortranise_cstr(odc_frame_column_name(frame%impl, col-1))
+    function decoder_free(decoder) result(err)
+        class(odc_decoder), intent(inout) :: decoder
+        integer :: err
+        err = odc_free_decoder(decoder%impl)
     end function
 
-    function frame_column_type(frame, col) result(column_type)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col
-        integer :: column_type
-        column_type = odc_frame_column_type(frame%impl, col-1)
+    function decoder_defaults_from_frame(decoder, frame) result(err)
+        class(odc_decoder), intent(inout) :: decoder
+        type(odc_frame), intent(in) :: frame
+        integer :: err
+        err = odc_decoder_defaults_from_frame(decoder%impl, frame%impl)
     end function
 
-    function frame_column_data_size(frame, col) result(element_size)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col
-        integer :: element_size
-        element_size = odc_frame_column_data_size(frame%impl, col-1)
+    function decoder_set_row_count(decoder, count) result(err)
+        class(odc_decoder), intent(inout) :: decoder
+        integer(c_long), intent(in) :: count
+        integer :: err
+        err = odc_decoder_set_row_count(decoder%impl, count)
     end function
 
-    function frame_column_data_size_doubles(frame, col) result(element_size)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col
-        integer :: element_size
-        element_size = odc_frame_column_data_size(frame%impl, col-1)
-        element_size = merge(0, 1, mod(element_size, 8) == 0) + (element_size / 8)
+    function decoder_row_count(decoder, count) result(err)
+        class(odc_decoder), intent(in) :: decoder
+        integer(c_long), intent(out) :: count
+        integer :: err
+        err = odc_decoder_row_count(decoder%impl, count)
     end function
 
-    function frame_column_bitfield_count(frame, col) result(bitfield_count)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col
-        integer :: bitfield_count
-        bitfield_count = odc_frame_column_bitfield_count(frame%impl, col-1)
-    end function
-
-    function frame_column_bits_name(frame, col, field) result(bits_name)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col, field
-        character(:), allocatable :: bits_name
-        bits_name = fortranise_cstr(odc_frame_column_bits_name(frame%impl, col-1, field-1))
-    end function
-
-    function frame_column_bits_size(frame, col, field) result(bits_size)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col, field
-        integer :: bits_size
-        bits_size = odc_frame_column_bits_size(frame%impl, col-1, field-1)
-    end function
-
-    function frame_column_bits_offset(frame, col, field) result(bits_offset)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_frame), intent(in) :: frame
-        integer, intent(in) :: col, field
-        integer :: bits_offset
-        bits_offset = odc_frame_column_bits_offset(frame%impl, col-1, field-1)
-    end function
-
-    function frame_decode(frame, decode_target, nthreads) result(row_count)
-        class(odc_frame), intent(inout) :: frame
-        type(odc_decode_target), intent(inout) :: decode_target
-        integer, intent(in), optional :: nthreads
-        integer(c_long) :: row_count
-        integer :: nthreads_ = 1
-        if (present(nthreads)) nthreads_ = nthreads
-        row_count = odc_frame_decode(frame%impl, decode_target%impl, nthreads_)
-    end function
-
-    subroutine dt_initialise(tgt, target_frame)
-        class(odc_decode_target), intent(inout) :: tgt
-        type(odc_frame), intent(in), optional :: target_frame
-        tgt%impl = odc_alloc_decode_target()
-        if (present(target_frame)) then
-            call odc_frame_build_all_decode_target(target_frame%impl, tgt%impl)
-        end if
-    end subroutine
-
-    subroutine dt_free(tgt)
-        class(odc_decode_target), intent(inout) :: tgt
-        call odc_free_decode_target(tgt%impl)
-        tgt%impl = c_null_ptr
-    end subroutine
-
-    subroutine dt_set_row_count(tgt, row_count)
-        class(odc_decode_target), intent(inout) :: tgt
-        integer(c_long), intent(in) :: row_count
-        call odc_decode_target_set_row_count(tgt%impl, row_count)
-    end subroutine
-
-    subroutine dt_set_data_array(tgt, data_array)
-        class(odc_decode_target), intent(inout) :: tgt
-        real(c_double), intent(inout), target :: data_array(:,:)
-        integer(c_long) :: data_size
-        call tgt%set_row_count(size(data_array, 1, c_long))
-        data_size = 8 * size(data_array, 1) * size(data_array, 2)
-        call odc_decode_target_set_array_data(tgt%impl, c_loc(data_array), data_size)
-    end subroutine
-
-    pure function dt_row_count(tgt) result(row_count)
-        class(odc_decode_target), intent(in) :: tgt
-        integer(c_long) :: row_count
-        row_count = odc_decode_target_row_count(tgt%impl)
-    end function
-
-    pure function dt_column_count(tgt) result(column_count)
-        class(odc_decode_target), intent(in) :: tgt
-        integer(c_long) :: column_count
-        column_count = odc_decode_target_column_count(tgt%impl)
-    end function
-
-    pure function dt_column_data_size_doubles(tgt, col) result(size_doubles)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_decode_target), intent(in) :: tgt
-        integer, intent(in) :: col
-        integer :: size_doubles
-        size_doubles = odc_decode_target_column_size(tgt%impl, col-1)
-        size_doubles = merge(0, 1, mod(size_doubles, 8) == 0) + (size_doubles / 8)
-    end function
-
-    function dt_data_array(tgt) result(data)
-        class(odc_decode_target), intent(inout) :: tgt
-        type(c_ptr) :: c_data
-        real(dp), pointer :: data(:,:)
-        integer :: doubles_columns, col
-
-        ! What are the dimensions of the array?
-        doubles_columns = 0
-        do col = 1, tgt%column_count()
-            doubles_columns = doubles_columns + tgt%column_data_size_doubles(col)
-        end do
-
-        c_data = odc_decode_target_array_data(tgt%impl)
-        call c_f_pointer(c_data, data, [int(tgt%row_count()), doubles_columns])
-    end function
-
-    ! Worker functions for the encoder
-
-    subroutine encoder_initialise(encoder)
-        class(odc_encoder), intent(inout) :: encoder
-        encoder%impl = odc_alloc_encoder()
-    end subroutine
-
-    subroutine encoder_free(encoder)
-        class(odc_encoder), intent(inout) :: encoder
-        call odc_free_encoder(encoder%impl)
-        encoder%impl = c_null_ptr
-    end subroutine
-
-    subroutine encoder_set_row_count(encoder, row_count)
-        class(odc_encoder), intent(inout) :: encoder
-        integer(c_long), intent(in) :: row_count
-        call odc_encoder_set_row_count(encoder%impl, row_count)
-    end subroutine
-
-    subroutine encoder_set_rows_per_frame(encoder, nrows)
-        class(odc_encoder), intent(inout) :: encoder
-        integer(c_long), intent(in) :: nrows
-        call odc_encoder_set_rows_per_frame(encoder%impl, nrows)
-    end subroutine
-
-    subroutine encoder_set_data_array(encoder, data_array, column_major)
-        class(odc_encoder), intent(inout) :: encoder
-        real(dp), intent(inout), target :: data_array(:,:)
+    function decoder_set_data_array(decoder, data, column_major) result(err)
+        class(odc_decoder), intent(inout) :: decoder
+        real(dp), intent(inout), target :: data(:,:)
         logical, intent(in), optional :: column_major
+        logical(c_bool) :: l_column_major = .true.
+        integer :: err
+        if (present(column_major)) l_column_major = column_major
+        err = odc_decoder_set_data_array(decoder%impl, c_loc(data), size(data, 2, c_long)*double_size, &
+                                         size(data, 1, c_long), l_column_major)
+    end function
 
-        if (present(column_major)) then
-            encoder%column_major = column_major
-        else
-            encoder%column_major = .true.
+    function decoder_data_array(decoder, data, column_major) result(err)
+        class(odc_decoder), intent(in) :: decoder
+        real(dp), intent(inout), pointer, optional :: data(:,:)
+        logical, intent(out), optional :: column_major
+        integer :: err
+
+        type(c_ptr) :: cdata
+        integer(c_long) :: width, height
+        logical(c_bool) :: cmajor
+
+        err = odc_decoder_data_array(decoder%impl, cdata, width, height, cmajor)
+
+        if (err == ODC_SUCCESS) then
+            if (present(data)) call c_f_pointer(cdata, data, [height, width / double_size])
+            if (present(column_major)) column_major = cmajor
         end if
-        encoder%data_array => data_array
-    end subroutine
 
-    function encoder_add_column(encoder, name, type) result(column_index)
+    end function
+
+    function decoder_add_column(decoder, name) result(err)
+        class(odc_decoder), intent(inout) :: decoder
+        character(*), intent(in) :: name
+        character(:), allocatable, target :: nullified_name
+        integer :: err
+
+        nullified_name = trim(name) // c_null_char
+        err = odc_decoder_add_column(decoder%impl, c_loc(nullified_name))
+    end function
+
+    function decoder_column_count(decoder, count) result(err)
+        class(odc_decoder), intent(in) :: decoder
+        integer, intent(out) :: count
+        integer(c_int) :: count_tmp
+        integer :: err
+        err = odc_decoder_column_count(decoder%impl, count_tmp)
+        count = count_tmp
+    end function
+
+    function decoder_column_set_attrs(decoder, col, element_size, stride, data) result(err)
         ! n.b. 1-indexed column (Fortran API)
+        class(odc_decoder), intent(inout) :: decoder
+        integer, intent(in) :: col
+        integer, intent(in), optional :: element_size
+        integer, intent(in), optional :: stride
+        type(c_ptr), intent(in), optional :: data
+        integer :: err
+
+        integer(c_int) :: l_element_size = 0
+        integer(c_int) :: l_stride = 0
+        type(c_ptr) :: l_data = c_null_ptr
+        if (present(element_size)) l_element_size = element_size
+        if (present(stride)) l_stride = stride
+        if (present(data)) l_data = data
+
+        err = odc_decoder_column_set_attrs(decoder%impl, col-1, l_element_size, l_stride, l_data)
+    end function
+
+    function decoder_column_attrs(decoder, col, element_size, element_size_doubles, stride, data) result(err)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_decoder), intent(in) :: decoder
+        integer, intent(in) :: col
+        integer, intent(out), optional :: element_size
+        integer, intent(out), optional :: element_size_doubles
+        integer, intent(out), optional :: stride
+        type(c_ptr), intent(out), optional :: data
+        integer :: err
+
+        integer(c_int) :: l_element_size
+        integer(c_int) :: l_stride
+        type(c_ptr) :: l_data
+
+        err = odc_decoder_column_attrs(decoder%impl, col-1, l_element_size, l_stride, l_data)
+
+        if (err == ODC_SUCCESS) then
+            if (present(element_size)) element_size = l_element_size
+            if (present(element_size_doubles)) element_size_doubles = l_element_size / double_size
+            if (present(stride)) stride = l_stride
+            if (present(data)) data = l_data
+        end if
+    end function
+
+    function decoder_decode(decoder, frame, rows_decoded, nthreads) result(err)
+        class(odc_decoder), intent(inout) :: decoder
+        class(odc_frame), intent(inout) :: frame
+        integer(c_long), intent(out) :: rows_decoded
+        integer, intent(in), optional :: nthreads
+        integer :: err
+
+        if (present(nthreads)) then
+            err = odc_decode_threaded(decoder%impl, frame%impl, rows_decoded, nthreads)
+        else
+            err = odc_decode(decoder%impl, frame%impl, rows_decoded)
+        end if
+    end function
+
+    ! Methods for the encoder
+
+    function encoder_initialise(encoder) result(err)
+        class(odc_encoder), intent(inout) :: encoder
+        integer :: err
+        err = odc_new_encoder(encoder%impl)
+    end function
+
+    function encoder_free(encoder) result(err)
+        class(odc_encoder), intent(inout) :: encoder
+        integer :: err
+        err = odc_free_encoder(encoder%impl)
+    end function
+
+    function encoder_set_row_count(encoder, row_count) result(err)
+        class(odc_encoder), intent(inout) :: encoder
+        integer(c_long), intent(in) :: row_count
+        integer :: err
+        err = odc_encoder_set_row_count(encoder%impl, row_count)
+    end function
+
+    function encoder_set_rows_per_frame(encoder, rows_per_frame) result(err)
+        class(odc_encoder), intent(inout) :: encoder
+        integer(c_long), intent(in) :: rows_per_frame
+        integer :: err
+        err = odc_encoder_set_rows_per_frame(encoder%impl, rows_per_frame)
+    end function
+
+    function encoder_set_data_array(encoder, data, column_major) result(err)
+        class(odc_encoder), intent(inout) :: encoder
+        real(dp), intent(inout), target :: data(:,:)
+        logical, intent(in), optional :: column_major
+        integer :: err
+        logical(c_bool) :: l_column_major = .true.
+
+        if (present(column_major)) l_column_major = column_major
+        err = odc_encoder_set_data_array(encoder%impl, c_loc(data), size(data, 2, c_long)*double_size, &
+                                         size(data, 1, c_long), l_column_major)
+    end function
+
+    function encoder_add_column(encoder, name, type) result(err)
         class(odc_encoder), intent(inout) :: encoder
         character(*), intent(in) :: name
         integer, intent(in) :: type
-        integer :: column_index
-        character(:), allocatable, target :: cstr_name
-        cstr_name = name // c_null_char
-        column_index = 1 + odc_encoder_add_column(encoder%impl, c_loc(cstr_name), type)
+        integer :: err
+        character(:), allocatable, target :: nullified_name
+        nullified_name = trim(name) // c_null_char
+        err = odc_encoder_add_column(encoder%impl, c_loc(nullified_name), type)
     end function
 
-    subroutine encoder_column_set_size_doubles(encoder, column, element_size)
+    function encoder_column_set_attrs(encoder, col, element_size, stride, data) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_encoder), intent(inout) :: encoder
-        integer, intent(in) :: column, element_size
-        call odc_encoder_column_set_size(encoder%impl, column-1, element_size*8)
-    end subroutine
+        integer, intent(in) :: col
+        integer, intent(in), optional :: element_size
+        integer, intent(in), optional :: stride
+        type(c_ptr), intent(in), optional :: data
+        integer :: err
 
-    subroutine encoder_column_set_stride(encoder, column, stride)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_encoder), intent(inout) :: encoder
-        integer, intent(in) :: column, stride
-        call odc_encoder_column_set_stride(encoder%impl, column-1, stride)
-    end subroutine
+        integer(c_int) :: l_element_size = 0
+        integer(c_int) :: l_stride = 0
+        type(c_ptr) :: l_data = c_null_ptr
+        if (present(element_size)) l_element_size = element_size
+        if (present(stride)) l_stride = stride
+        if (present(data)) l_data = data
 
-    subroutine encoder_column_set_data(encoder, column, data)
-        ! n.b. 1-indexed column (Fortran API)
-        class(odc_encoder), intent(inout) :: encoder
-        integer, intent(in) :: column
-        real(dp), intent(inout), target :: data(*)
-        call odc_encoder_column_set_data(encoder%impl, column-1, c_loc(data))
-    end subroutine
+        err = odc_encoder_column_set_attrs(encoder%impl, col-1, l_element_size, l_stride, l_data)
+    end function
 
-    subroutine encoder_column_add_bitfield_field(encoder, column, name, nbits)
+    function encoder_column_add_bitfield(encoder, col, name, nbits) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_encoder), intent(inout) :: encoder
-        integer, intent(in) :: column
+        integer, intent(in) :: col
         character(*), intent(in) :: name
         integer, intent(in) :: nbits
-        character(:), allocatable, target :: cstr_name
-        cstr_name = name // c_null_char
-        call odc_encoder_column_add_bitfield_field(encoder%impl, column-1, c_loc(cstr_name), nbits)
-    end subroutine
+        integer :: err
+        character(:), allocatable, target :: nullified_name
+        nullified_name = trim(name) // c_null_char
+        err = odc_encoder_column_add_bitfield(encoder%impl, col-1, c_loc(nullified_name), nbits)
+    end function
 
     ! Helper function for streamage
 
-    function write_fn(handle, buffer, length) result(written) bind(c)
-        type(c_ptr), intent(in), value :: handle
+    function write_fn(context, buffer, length) result(written) bind(c)
+        type(c_ptr), intent(in), value :: context
         type(c_ptr), intent(in), value :: buffer
         integer(c_long), intent(in), value :: length
         integer(c_long) :: written
         integer, pointer :: fortran_unit
         character(c_char), pointer :: fortran_buffer(:)
 
-        call c_f_pointer(handle, fortran_unit)
+        call c_f_pointer(context, fortran_unit)
         call c_f_pointer(buffer, fortran_buffer, [length])
         write(fortran_unit) fortran_buffer
         written = length
     end function
 
-    function encoder_encode(encoder, outunit) result(bytes_written)
+    function encoder_encode(encoder, outunit, bytes_written) result(err)
         class(odc_encoder), intent(inout) :: encoder
         integer, intent(in), target :: outunit
-        integer(c_long) :: bytes_written
+        integer(c_long), intent(out) :: bytes_written
+        integer :: err
 
-        ! If we have set a data array, then set the details for the columns
-        if (associated(encoder%data_array)) then
-            if (encoder%column_major) then
-                if (encoder%row_count() == 0) then
-                    call encoder%set_row_count(size(encoder%data_array, 1, c_long))
-                end if
-            else
-                if (encoder%row_count() == 0) then
-                    call encoder%set_row_count(size(encoder%data_array, 2, c_long))
-                end if
-            end if
-        end if
-
-        bytes_written = odc_encode_to_stream(encoder%impl, c_loc(outunit), c_funloc(write_fn))
+        err = odc_encode_to_stream(encoder%impl, c_loc(outunit), c_funloc(write_fn), bytes_written)
 
     end function
 

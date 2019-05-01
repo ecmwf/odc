@@ -148,8 +148,10 @@ extern "C" {
 
 // Types for lookup
 
-int odc_type_count() {
-    return NUM_TYPES;
+int odc_type_count(int* count) {
+    return wrapApiFunction([count] {
+        (*count) = NUM_TYPES;
+    });
 }
 
 int odc_type_name(int type, const char** type_name) {
@@ -218,12 +220,18 @@ int odc_integer_behaviour(int integerBehaviour) {
     });
 }
 
-long odc_missing_integer() {
-    return Settings::integerMissingValue();
+int odc_missing_integer(long* missing_value) {
+    return wrapApiFunction([missing_value] {
+        ASSERT(missing_value);
+        (*missing_value) = Settings::integerMissingValue();
+    });
 }
 
-double odc_missing_double() {
-    return Settings::doubleMissingValue();
+int odc_missing_double(double* missing_value) {
+    return wrapApiFunction([missing_value] {
+        ASSERT(missing_value);
+        (*missing_value) = Settings::doubleMissingValue();
+    });
 }
 
 int odc_set_missing_integer(long missing_integer) {
@@ -456,7 +464,7 @@ int odc_decoder_row_count(const odc_decoder_t* decoder, long* nrows) {
     });
 }
 
-int odc_decoder_set_array_data(struct odc_decoder_t* decoder, void* buffer, long width, long height, bool columnMajor) {
+int odc_decoder_set_data_array(odc_decoder_t* decoder, void* buffer, long width, long height, bool columnMajor) {
     return wrapApiFunction([decoder, buffer, width, height, columnMajor] {
         ASSERT(decoder);
         ASSERT(buffer);
@@ -469,7 +477,7 @@ int odc_decoder_set_array_data(struct odc_decoder_t* decoder, void* buffer, long
     });
 }
 
-int odc_decoder_array_data(struct odc_decoder_t* decoder, const void** data, long* width, long* height, bool* columnMajor) {
+int odc_decoder_data_array(const odc_decoder_t* decoder, const void** data, long* width, long* height, bool* columnMajor) {
     return wrapApiFunction([decoder, data, width, height, columnMajor] {
         ASSERT(decoder);
 
@@ -505,7 +513,7 @@ int odc_decoder_column_count(const odc_decoder_t* decoder, int* count) {
     });
 }
 
-int odc_decoder_set_column_attrs(odc_decoder_t* decoder, int col, int element_size, int stride, void* data) {
+int odc_decoder_column_set_attrs(odc_decoder_t* decoder, int col, int element_size, int stride, void* data) {
     return wrapApiFunction([decoder, col, element_size, stride, data] {
         ASSERT(decoder);
         ASSERT(col >= 0 && size_t(col) < decoder->columnData.size());

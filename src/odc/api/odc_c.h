@@ -72,11 +72,9 @@ int odc_type_name(int type, const char** type_name);
 int odc_set_missing_integer(long missing_integer);
 int odc_set_missing_double(double missing_double);
 
-// n.b. these function do not report errors. Libary configuration
-
-int odc_type_count();
-long odc_missing_integer();
-double odc_missing_double();
+int odc_type_count(int* count);
+int odc_missing_integer(long* missing_value);
+int odc_missing_double(double* missing_value);
 
 /* Basic READ object API */
 
