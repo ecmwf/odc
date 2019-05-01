@@ -598,7 +598,10 @@ contains
         logical :: l_aggregated = .false.
 
         if (present(aggregated)) l_aggregated = aggregated
-        if (present(maximum_rows)) l_maximum_rows = maximum_rows
+        if (present(maximum_rows)) then
+            l_maximum_rows = maximum_rows
+            if (.not. present(aggregated)) l_aggregated = .true.
+        end if
 
         if (l_aggregated) then
             err = odc_next_frame_aggregated(frame%impl, l_maximum_rows)
@@ -645,13 +648,13 @@ contains
             if (present(name)) name = fortranise_cstr(name_tmp)
             if (present(type)) type = type_tmp
             if (present(element_size)) element_size = element_size_tmp
-            if (present(element_size_doubles)) element_size = element_size_tmp / double_size
+            if (present(element_size_doubles)) element_size_doubles = element_size_tmp / double_size
             if (present(bitfield_count)) bitfield_count = bitfield_count_tmp
         end if
 
     end function
 
-    function frame_bitfield_attrs(frame, col, field, name, offset, bf_size) result(err)
+    function frame_bitfield_attrs(frame, col, field, name, offset, size) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
@@ -660,7 +663,7 @@ contains
 
         character(:), allocatable, intent(out), optional :: name
         integer, intent(out), optional :: offset
-        integer, intent(out), optional :: bf_size
+        integer, intent(out), optional :: size
 
         type(c_ptr) :: name_tmp
         integer(c_int) :: offset_tmp
@@ -671,7 +674,7 @@ contains
         if (err == ODC_SUCCESS) then
             if (present(name)) name = fortranise_cstr(name_tmp)
             if (present(offset)) offset = offset_tmp
-            if (present(bf_size)) bf_size = size_tmp
+            if (present(size)) size = size_tmp
         end if
 
     end function

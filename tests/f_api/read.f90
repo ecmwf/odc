@@ -8,32 +8,54 @@ module fapi_read_tests
 
 contains
 
+    subroutine check_call(err, msg, success)
+        integer, intent(in) :: err
+        character(*), intent(in) :: msg
+        logical, intent(inout) :: success
+
+        if (err /= ODC_SUCCESS) then
+            write(error_unit, *) 'Failed API call: ', msg
+            write(error_unit, *) 'Error: ', odc_error_string(err)
+            success = .false.
+        end if
+    end subroutine
+
+
     function test_count_lines() result(success)
 
         ! Test that we obtain the expected version number
 
         type(odc_reader) :: reader
         type(odc_frame) :: frame
-        integer(8) :: frame_count, row_count
+        integer(8) :: frame_count, row_count, tmp_8
+        integer :: err, tmp_4
         logical :: success
 
         success = .true.
-        call reader%open_path("../2000010106.odb")
+        call check_call(reader%open_path("../2000010106.odb"), "open ODB", success)
+        call check_call(frame%initialise(reader), "initialise frame", success)
 
         frame_count = 0
         row_count = 0
 
-        do while (reader%next_frame(frame))
+        err = frame%next()
+        do while (err == ODC_SUCCESS)
+
+            call check_call(frame%row_count(tmp_8), "row count", success)
 
             frame_count = frame_count + 1
-            row_count = row_count + frame%row_count()
+            row_count = row_count + tmp_8
 
-            if (frame%column_count() /= 51) then
-                write(error_unit, *) 'Unexpected column count: ', frame%column_count(), ' /= 51'
+            call check_call(frame%column_count(tmp_4), "column count", success)
+            if (tmp_4 /= 51) then
+                write(error_unit, *) 'Unexpected column count: ', tmp_4, ' /= 51'
                 success = .false.
             endif
 
+            err = frame%next()
         end do
+
+        if (err /= ODC_ITERATION_COMPLETE) call check_call(err, "next frame", success)
 
         if (frame_count /= 333) then
             write(error_unit, *) 'Unexpected frame count: ', frame_count, ' /= 333'
@@ -45,7 +67,7 @@ contains
             success = .false.
         endif
 
-        call reader%close()
+        call check_call(reader%close(), "close reader", success)
 
     end function
 
@@ -55,7 +77,7 @@ contains
         type(odc_frame) :: frame
         character(:), allocatable :: column_name, field_name
         integer :: ncols, col, column_type, field, field_size, expected_offset, field_offset
-        integer :: element_size, element_size_doubles
+        integer :: element_size, element_size_doubles, bitfield_count
         logical :: success
 
         character(23), parameter :: example_column_names(*) = [ character(23) :: &
@@ -94,107 +116,105 @@ contains
             1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1]
 
         success = .true.
-        call reader%open_path("../2000010106.odb")
+        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(frame%initialise(reader), "initialise frame", success)
 
-        if (reader%next_frame(frame)) then
+        call check_call(frame%next(), "get the first frame", success)
 
-            ncols = frame%column_count()
-            if (ncols /= 51) then
-                write(error_unit, *) 'Expected 51 columns'
-                success = .false.
-            endif
+        call check_call(frame%column_count(ncols), "column count", success)
+        if (ncols /= 51) then
+            write(error_unit, *) 'Expected 51 columns'
+            success = .false.
+        endif
 
-            ! n.b. -- 1-based indexing!
-            do col = 1, ncols
+        ! n.b. -- 1-based indexing!
+        do col = 1, ncols
 
-                column_name = frame%column_name(col)
-                column_type = frame%column_type(col)
-                element_size = frame%column_data_size(col)
-                element_size_doubles = frame%column_data_size_doubles(col)
+            call check_call(frame%column_attrs(col, &
+                                               name=column_name, &
+                                               type=column_type, &
+                                               element_size=element_size, &
+                                               element_size_doubles=element_size_doubles, &
+                                               bitfield_count=bitfield_count), "column attrs", success)
 
-                if (column_name /= trim(example_column_names(col))) then
-                    write(error_unit,'(3a,i2,3a)') 'Unexpected column name ', column_name, &
-                               ' for column ', col, ' (expected ', trim(example_column_names(col)), ')'
-                    success = .false.
-                end if
-
-                if (column_type /= example_column_types(col)) then
-                    write(error_unit, '(a,i1,a,i2,a,i1,a)') 'Unexpected column type ', column_type, &
-                            ' for column ', col, ' (expected ', example_column_types(col), ')'
-                    success = .false.
-                end if
-
-                if (element_size /= 8) then
-                    write(error_unit, '(a,i1,a,i2,a)') 'Unexpected column data size ', element_size, &
-                            ' for column ', col, ' (expected 8)'
-                    success = .false.
-                end if
-
-                if (element_size_doubles /= 1) then
-                    write(error_unit, '(a,i1,a,i2,a)') 'Unexpected column doubles data size ', &
-                            element_size_doubles, ' for column ', col, ' (expected 1)'
-                    success = .false.
-                end if
-
-                if (column_type == ODC_BITFIELD) then
-                    if (frame%column_bitfield_count(col) <= 0) then
-                        write(error_unit, *) "Bitfields expected for bitfield column"
-                        success = .false.
-                    end if
-                else
-                    if (frame%column_bitfield_count(col) /= 0) then
-                        write(error_unit, *) "Unexpected bitfields for non-bitfield column"
-                        success = .false.
-                    end if
-                end if
-
-            end do
-
-            ! Test bitfields for column 10
-
-            if (frame%column_bitfield_count(10) /= 25) then
-                write(error_unit, *) "Expected 25 bitfield fields for column 10. Got ", &
-                                     frame%column_bitfield_count(10)
+            if (column_name /= trim(example_column_names(col))) then
+                write(error_unit,'(3a,i2,3a)') 'Unexpected column name ', column_name, &
+                           ' for column ', col, ' (expected ', trim(example_column_names(col)), ')'
                 success = .false.
             end if
 
-            expected_offset = 0
-            do field = 1, 25
+            if (column_type /= example_column_types(col)) then
+                write(error_unit, '(a,i1,a,i2,a,i1,a)') 'Unexpected column type ', column_type, &
+                        ' for column ', col, ' (expected ', example_column_types(col), ')'
+                success = .false.
+            end if
 
-                col = 10
-                field_name = frame%column_bits_name(col, field)
-                field_size = frame%column_bits_size(col, field)
-                field_offset = frame%column_bits_offset(col, field)
+            if (element_size /= 8) then
+                write(error_unit, '(a,i1,a,i2,a)') 'Unexpected column data size ', element_size, &
+                        ' for column ', col, ' (expected 8)'
+                success = .false.
+            end if
 
-                if (field_name /= trim(column_10_bitfield_names(field))) then
-                    write(error_unit, '(3a,i2,3a)') 'Unexpected field name ', field_name, ' for field ', &
-                            field, ' (expected ', trim(column_10_bitfield_names(field)), ')'
+            if (element_size_doubles /= 1) then
+                write(error_unit, '(a,i1,a,i2,a)') 'Unexpected column doubles data size ', &
+                        element_size_doubles, ' for column ', col, ' (expected 1)'
+                success = .false.
+            end if
+
+            if (column_type == ODC_BITFIELD) then
+                if (bitfield_count <= 0) then
+                    write(error_unit, *) "Bitfields expected for bitfield column"
                     success = .false.
                 end if
-
-                if (field_size /= column_10_bitfield_sizes(field)) then
-                    write(error_unit, '(a,i2,a,i2,a,i2,a)') 'Unexpected field size ', field_size, &
-                            ' for field ', field, ' (expected ', column_10_bitfield_sizes(field), ')'
+            else
+                if (bitfield_count /= 0) then
+                    write(error_unit, *) "Unexpected bitfields for non-bitfield column"
                     success = .false.
                 end if
+            end if
 
-                if (field_offset /= expected_offset) then
-                    write(error_unit, '(a,i2,a,i2,a,i2,a)') 'Unexpected field offset ', field_offset, &
-                            ' for field ', field, ' (expected ', expected_offset, ')'
-                    success = .false.
-                end if
+        end do
 
-                expected_offset = expected_offset + field_size
-            end do
+        ! Test bitfields for column 10
 
-            call frame%free()
-        else
-            write(error_unit, *) 'Expected at least one frame'
+        call check_call(frame%column_attrs(10, bitfield_count=bitfield_count), "bitfield count", success)
+        if (bitfield_count /= 25) then
+            write(error_unit, *) "Expected 25 bitfield fields for column 10. Got ", bitfield_count
             success = .false.
-            return
         end if
 
-        call reader%close()
+        expected_offset = 0
+        do field = 1, 25
+
+            ! Look at column 10
+            call check_call(frame%bitfield_attrs(10, field, &
+                                                 name=field_name, &
+                                                 offset=field_offset, &
+                                                 size=field_size), "bitfield attrs", success)
+
+            if (field_name /= trim(column_10_bitfield_names(field))) then
+                write(error_unit, '(3a,i2,3a)') 'Unexpected field name ', field_name, ' for field ', &
+                        field, ' (expected ', trim(column_10_bitfield_names(field)), ')'
+                success = .false.
+            end if
+
+            if (field_size /= column_10_bitfield_sizes(field)) then
+                write(error_unit, '(a,i2,a,i2,a,i2,a)') 'Unexpected field size ', field_size, &
+                        ' for field ', field, ' (expected ', column_10_bitfield_sizes(field), ')'
+                success = .false.
+            end if
+
+            if (field_offset /= expected_offset) then
+                write(error_unit, '(a,i2,a,i2,a,i2,a)') 'Unexpected field offset ', field_offset, &
+                        ' for field ', field, ' (expected ', expected_offset, ')'
+                success = .false.
+            end if
+
+            expected_offset = expected_offset + field_size
+        end do
+
+        call check_call(frame%free(), "free frame", success)
+        call check_call(reader%close(), "close reader", success)
     end function
 
     function check_frame_2_values(array_data) result(success)
@@ -205,8 +225,13 @@ contains
         integer :: row, i
         integer, parameter :: expected_seqno(*) = [6106691, 6002945, 6003233, 6105819]
         integer, parameter :: expected_obschar(*) = [537918674, 135265490, 135265490, 537918674]
+        integer(8) :: missing_integer
+        real(8) :: missing_double
 
         success = .true.
+
+        call check_call(odc_missing_integer(missing_integer), "missing integer", success)
+        call check_call(odc_missing_double(missing_double), "missing double", success)
 
         do i = 1, 4
             row = 1 + ((i-1) * 765)
@@ -233,16 +258,16 @@ contains
             end if
 
             ! Sortbox (INTEGER, missing)
-            if (int(array_data(row, 14)) /= odc_missing_integer()) then
+            if (int(array_data(row, 14)) /= missing_integer) then
                 write(error_unit, *) 'Expected value with set missing value. Got ', int(array_data(row, 14)), ', &
-                                     expected ', odc_missing_integer()
+                                     expected ', missing_integer
                 success = .false.
             end if
 
             ! repres_error (REAL, missing)
-            if (array_data(row, 49) /= odc_missing_double()) then
+            if (array_data(row, 49) /= missing_double) then
                 write(error_unit, *) 'Expected value with set missing value. Got ', array_data(row, 49), ', &
-                                     expected ', odc_missing_double()
+                                     expected ', missing_double
                 success = .false.
             end if
         end do
@@ -253,61 +278,57 @@ contains
 
         type(odc_reader) :: reader
         type(odc_frame) :: frame
-        type(odc_decode_target) :: decode_target
-        integer(8) :: nrows
-        logical :: success
+        type(odc_decoder) :: decoder
+        integer(8) :: nrows, nrows2
+        integer :: ncols
+        logical :: success, column_major
         real(8), pointer :: array_data(:,:)
 
         success =.true.
-        call reader%open_path("../2000010106.odb")
-
-        if (.not. reader%next_frame(frame)) then
-            write(error_unit, *) 'Expected at least one frames'
-            success = .false.
-            return
-        end if
+        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(frame%initialise(reader), "initialise frame", success)
 
         ! Read the second frame, because why not.
-        if (reader%next_frame(frame)) then
+        call check_call(frame%next(), "get first frame", success)
+        call check_call(frame%next(), "get second frame", success)
 
-            call decode_target%initialise(frame)
-            !call decode_target%set_row_count(11000_8)
+        call check_call(decoder%initialise(), "initialise decoder", success)
+        call check_call(decoder%defaults_from_frame(frame), "decoder from frame", success)
+        call check_call(decoder%decode(frame, nrows), "do decode", success)
 
-            nrows = frame%decode(decode_target)
-
-            if (nrows /= 10000) then
-                write(error_unit, *) 'Unexpected number of rows decoded'
-                success = .false.
-            end if
-
-            if (decode_target%row_count() /= 10000) then
-                write(error_unit, *) 'Got row count ', decode_target%row_count(), ' not 10000'
-                success = .false.
-            end if
-
-            if (decode_target%column_count() /= 51) then
-                write(error_unit, *) 'Got column count ', decode_target%column_count(), ' not 51'
-                success = .false.
-            end if
-
-            array_data => decode_target%data()
-
-            if (any(shape(array_data) /= [10000, 51])) then
-                write(error_unit, *) 'Unexpected data dimensions'
-                success = .false.
-            end if
-
-            success = success .and. check_frame_2_values(array_data)
-
-            call decode_target%free()
-
-        else
-            write(error_unit, *) 'Expected at least two frames'
+        if (nrows /= 10000) then
+            write(error_unit, *) 'Unexpected number of rows decoded'
             success = .false.
-            return
         end if
 
-        call reader%close()
+        call check_call(decoder%row_count(nrows2), "decoder row count", success)
+        if (nrows2 /= 10000) then
+            write(error_unit, *) 'Got row count ', nrows, ' not 10000'
+            success = .false.
+        end if
+
+        call check_call(decoder%column_count(ncols), "decoder column count", success)
+        if (ncols /= 51) then
+            write(error_unit, *) 'Got column count ', ncols, ' not 51'
+            success = .false.
+        end if
+
+        call check_call(decoder%data(array_data, column_major), "get decoded data", success)
+
+        if (any(shape(array_data) /= [10000, 51])) then
+            write(error_unit, *) 'Unexpected data dimensions'
+            success = .false.
+        end if
+
+        if (.not. column_major) then
+            write(error_unit, *) 'Expected column major by default'
+            success = .false.
+        end if
+
+        success = success .and. check_frame_2_values(array_data)
+
+        call check_call(decoder%free(), "free decoder", success)
+        call check_call(reader%close(), "free reader", success)
 
     end function
 
@@ -317,59 +338,54 @@ contains
 
         type(odc_reader) :: reader
         type(odc_frame) :: frame
-        type(odc_decode_target) :: decode_target
-        integer(8) :: nrows
+        type(odc_decoder) :: decoder
+        integer(8) :: rows_decoded, nrows
+        integer :: ncols
         logical :: success
         real(8), target :: array_data(11000, 51)
 
         success = .true.
-        call reader%open_path("../2000010106.odb")
+        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(frame%initialise(reader), "initialise frame", success)
 
-        if (.not. reader%next_frame(frame)) then
-            write(error_unit, *) 'Expected at least one frames'
-            success = .false.
-            return
-        end if
+        call check_call(frame%next(), "get first frame", success)
 
-        call decode_target%initialise(frame)
-        call decode_target%set_data_array(array_data)
-        if (frame%decode(decode_target) /= 10000) then
+        call check_call(decoder%initialise(), "initialise decoder", success)
+        call check_call(decoder%defaults_from_frame(frame), "decoder frame defaults", success)
+        call check_call(decoder%set_data(array_data), "set array data", success)
+        call check_call(decoder%decode(frame, rows_decoded), "decode first frame", success)
+
+        if (rows_decoded /= 10000) then
             write(error_unit, *) 'Unexpected number of rows decoded'
             success = .false.
         end if
 
-        ! Read the second frame, because why not. Reuse the decode target!
-        if (reader%next_frame(frame)) then
+        call check_call(frame%next(), "get second frame", success)
 
-            nrows = frame%decode(decode_target)
+        call check_call(decoder%decode(frame, rows_decoded), "decode second frame", success)
 
-            if (nrows /= 10000) then
-                write(error_unit, *) 'Unexpected number of rows decoded'
-                success = .false.
-            end if
-
-            if (decode_target%row_count() /= 11000) then
-                write(error_unit, *) 'Got row count ', decode_target%row_count(), ' not 11000'
-                write(error_unit, *) 'Row count should related to the size of the decode target, not the decode data'
-                success = .false.
-            end if
-
-            if (decode_target%column_count() /= 51) then
-                write(error_unit, *) 'Got column count ', decode_target%column_count(), ' not 51'
-                success = .false.
-            end if
-
-            success = success .and. check_frame_2_values(array_data)
-
-            call decode_target%free()
-
-        else
-            write(error_unit, *) 'Expected at least two frames'
+        if (rows_decoded /= 10000) then
+            write(error_unit, *) 'Unexpected number of rows decoded'
             success = .false.
-            return
         end if
 
-        call reader%close()
+        call check_call(decoder%row_count(nrows), "decoder row count", success)
+        if (nrows /= 11000) then
+            write(error_unit, *) 'Got row count ', nrows, ' not 11000'
+            write(error_unit, *) 'Row count should be related to the size of the decode target, not the decode data'
+            success = .false.
+        end if
+
+        call check_call(decoder%column_count(ncols), "decoder column count", success)
+        if (ncols /= 51) then
+            write(error_unit, *) 'Got column count ', ncols, ' not 51'
+            success = .false.
+        end if
+
+        success = success .and. check_frame_2_values(array_data)
+
+        call check_call(decoder%free(), "free decoder", success)
+        call check_call(reader%close(), "close reader", success)
 
     end function
 
@@ -377,50 +393,48 @@ contains
 
         type(odc_reader) :: reader
         type(odc_frame) :: frame
-        type(odc_decode_target) :: decode_target
-        integer(8) :: nrows
+        type(odc_decoder) :: decoder
+        integer(8) :: rows_decoded, nrows
+        integer :: ncols
         logical :: success
         real(8), pointer :: array_data(:,:)
 
         success = .true.
-        call reader%open_path("../2000010106.odb")
+        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(frame%initialise(reader), "initialise frame", success)
 
-        if (reader%next_frame(frame, maximum_rows=99999)) then
+        call check_call(frame%next(maximum_rows=99999_8), "get first (aggregate) frame", success)
 
-            call decode_target%initialise(frame)
-            nrows = frame%decode(decode_target, nthreads=4)
+        call check_call(decoder%initialise(), "initialise decoder", success)
+        call check_call(decoder%defaults_from_frame(frame), "decoder frame defaults", success)
+        call check_call(decoder%decode(frame, rows_decoded, nthreads=4), "decode threaded", success)
 
-            if (nrows /= 90000) then
-                write(error_unit, *) 'Unexpected number of rows decoded'
-                success = .false.
-            end if
-
-            if (decode_target%row_count() /= 90000) then
-                write(error_unit, *) 'Got row count ', decode_target%row_count(), ' not 90000'
-                success = .false.
-            end if
-
-            if (decode_target%column_count() /= 51) then
-                write(error_unit, *) 'Got column count ', decode_target%column_count(), ' not 51'
-                success = .false.
-            end if
-
-            array_data => decode_target%data()
-
-            if (any(shape(array_data) /= [90000, 51])) then
-                write(error_unit, *) 'Unexpected data dimensions'
-                success = .false.
-            end if
-
-            call decode_target%free()
-
-        else
-            write(error_unit, *) 'Expected at least one frame'
+        if (rows_decoded /= 90000) then
+            write(error_unit, *) 'Unexpected number of rows decoded'
             success = .false.
-            return
         end if
 
-        call reader%close()
+        call check_call(decoder%row_count(nrows), "decoder row count", success)
+        if (nrows /= 90000) then
+            write(error_unit, *) 'Got row count ', nrows, ' not 90000'
+            success = .false.
+        end if
+
+        call check_call(decoder%column_count(ncols), "decoder column count", success)
+        if (ncols /= 51) then
+            write(error_unit, *) 'Got column count ', ncols, ' not 51'
+            success = .false.
+        end if
+
+        call check_call(decoder%data(array_data), "get array data", success)
+
+        if (any(shape(array_data) /= [90000, 51])) then
+            write(error_unit, *) 'Unexpected data dimensions'
+            success = .false.
+        end if
+
+        call check_call(decoder%free(), "free decoder", success)
+        call check_call(reader%close(), "close reader", success)
 
     end function
 
@@ -434,9 +448,9 @@ program fapi_general
 
     logical :: success
 
-    call odc_initialise_api()
-
     success = .true.
+    call check_call(odc_initialise_api(), "initialise api", success)
+
     success = test_count_lines() .and. success
     success = test_column_details() .and. success
     success = test_decode_columns_allocate() .and. success

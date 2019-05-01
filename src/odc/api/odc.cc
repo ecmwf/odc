@@ -474,6 +474,7 @@ int odc_decoder_set_data_array(odc_decoder_t* decoder, void* buffer, long width,
         decoder->dataWidth = width;
         decoder->dataHeight = height;
         decoder->columnMajor = columnMajor;
+        decoder->nrows = height;
     });
 }
 

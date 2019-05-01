@@ -13,10 +13,15 @@ contains
         ! Test that we obtain the expected version number
 
         logical :: success
-        character(20) :: version_str
+        character(:), allocatable :: version_str
 
         success = .true.
-        version_str = odc_version()
+
+        if (odc_version(version_str) /= ODC_SUCCESS) then
+            write(error_unit, *) 'getting version string failed'
+            success = .false.
+        end if
+
         if (version_str /= odc_version_str) then
             write(error_unit, *) "Unexpected version: ", version_str
             write(error_unit, *) "Expected: ", odc_version_str
@@ -30,10 +35,15 @@ contains
         ! Test that we obtain the expected version number
 
         logical :: success
-        character(40) :: sha1
+        character(:), allocatable :: sha1
 
         success = .true.
-        sha1 = odc_git_sha1()
+
+        if (odc_git_sha1(sha1) /= ODC_SUCCESS) then
+            write(error_unit, *) 'getting git sha1 string failed'
+            success = .false.
+        end if
+
         if (sha1 /= odc_git_sha1_str .and. sha1 /= "not available") then
             write(error_unit, *) "Unexpected git sha1: ", sha1
             write(error_unit, *) "Expected: ", odc_git_sha1_str
@@ -44,66 +54,57 @@ contains
 
     function test_type_names() result(success)
         logical :: success
+        integer :: test_types(6) = [ODC_IGNORE, ODC_INTEGER, ODC_REAL, ODC_STRING, ODC_BITFIELD, ODC_DOUBLE]
+        character(8) :: names(6) = [character(8) :: "ignore", "integer", "real", "string", "bitfield", "double"]
+        character(:), allocatable :: name
+        integer :: ntypes, n
+
         success = .true.
 
-        if (odc_type_count() /= 6) then
+        if (odc_type_count(ntypes) /= ODC_SUCCESS) then
+            write(error_unit, *) 'Failed to get type count'
+            success = .false.
+        end if
+
+        if (ntypes /= 6) then
             write(error_unit, *) 'Unexpected number of types found'
             success = .false.
         endif
 
-        if (odc_type_name(ODC_IGNORE) /= "ignore" .or. &
-            odc_type_name(ODC_INTEGER) /= "integer" .or. &
-            odc_type_name(ODC_REAL) /= "real" .or. &
-            odc_type_name(ODC_STRING) /= "string" .or. &
-            odc_type_name(ODC_BITFIELD) /= "bitfield" .or. &
-            odc_type_name(ODC_DOUBLE) /= "double") then
-            write(error_unit, *) 'Unexpected type name'
-            success = .false.
-        endif
+        do n = 1, ntypes
+            if (odc_type_name(test_types(n), name) /= ODC_SUCCESS) then
+                write(error_unit, *) 'Failed to get type name, type=', test_types(n)
+                success = .false.
+            end if
+
+            if (name /= trim(names(n))) then
+                write(error_unit, *) 'Unexpected type name "', name, '" for type ', n
+                success = .false.
+            end if
+        end do
 
     end function
 
     function test_error_handling() result(success)
         logical :: success
         type(odc_reader) :: reader
-        integer :: i, j
+        integer :: j, err
         success = .true.
 
-        do i = 1, 2
+        ! Check that an error is correctly reported
 
-            if (i == 1) then
-                call odc_error_handling(ODC_ERRORS_CHECKED)
-            else
-                call odc_error_handling(ODC_ERRORS_REPORT)
+        do j = 1, 2
+
+            err = reader%open_path("invalid-path")
+            if (err == ODC_SUCCESS) then
+                write(error_unit, *) 'open_path succeeded unexpectedly with "invalid-path"'
+                success = .false.
             end if
 
-            ! Check that an error is correctly reported
-
-            do j = 1, 2
-
-                call reader%open_path("invalid-path")
-
-                if (odc_success()) then
-                    write(error_unit, *) 'open_path succeeded unexpectedly with "invalid-path"'
-                    success = .false.
-                else if (odc_error_string() /= "Cannot open invalid-path  (No such file or directory)") then
-                    write(error_unit, *) 'unexpected error message: ', odc_error_string()
-                    success = .false.
-                endif
-
-                ! Skip resetting errors after first case of ODC_ERRORS_REPORT (i.e. the error is reported
-                ! so we should continue)
-                if (.not. (i == 2 .and. j == 1)) then
-
-                    ! Check that errors are correctly reset
-                    call odc_reset_error()
-
-                    if (.not. odc_success()) then
-                        write(error_unit, *) 'Reset of error state failed'
-                        success = .false.
-                    end if
-                end if
-            end do
+            if (odc_error_string(err) /= "Cannot open invalid-path  (No such file or directory)") then
+                write(error_unit, *) 'unexpected error message: ', odc_error_string(err)
+                success = .false.
+            endif
         end do
 
     end function
@@ -117,10 +118,13 @@ program fapi_general
     implicit none
 
     logical :: success
-
-    call odc_initialise_api()
-
     success = .true.
+
+    if (odc_initialise_api() /= ODC_SUCCESS) then
+        write(error_unit, *) 'Failed to initialise ODC api'
+        success = .false.
+    end if
+
     success = success .and. test_odc_version()
     success = success .and. test_git_sha1()
     success = success .and. test_type_names()
