@@ -724,7 +724,7 @@ int odc_encoder_column_add_bitfield(odc_encoder_t* encoder, int col, const char*
     });
 }
 
-void fill_in_encoder(odc_encoder_t* encoder) {
+void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<double[]>>& transposedData) {
 
     ASSERT(encoder->nrows > 0);
     ASSERT(encoder->columnData.size() == encoder->columnInfo.size());
@@ -755,22 +755,44 @@ void fill_in_encoder(odc_encoder_t* encoder) {
 
         // We are constructing the encoder from a 2D array of data.
 
+        // n.b. There is a complication with arrays in column major order. There must be a column size
+        //      (i.e. double). If the data size is greater than this, the data becomes non-contiguous
+        //      and split across multiple columns. Need to aggregate it for encoding.
+
         size_t offset;
         for (size_t i = 0; i < encoder->columnData.size(); ++i) {
             odc_encoder_t::EncodeColumn& c(encoder->columnData[i]);
             const ColumnInfo& info(encoder->columnInfo[i]);
 
             ASSERT(info.decodedSize != 0);
+            ASSERT(info.decodedSize % sizeof(double) == 0);
             ASSERT(c.data == 0);
             ASSERT(c.stride == 0);
 
-            c.stride = (encoder->columnMajor ? info.decodedSize : encoder->arrayWidth);
-            c.data = static_cast<const char*>(encoder->arrayData) + offset;
-            offset += info.decodedSize * (encoder->columnMajor ? encoder->arrayHeight : 1);
+            if (encoder->columnMajor) {
+                c.stride = info.decodedSize;
+                c.data = static_cast<const char*>(encoder->arrayData) + offset;
+                if (info.decodedSize != sizeof(double)) {
+                    // Transpose data for contiguous elementsn
+                    size_t widthDoubles = info.decodedSize / sizeof(double);
+                    transposedData.push_back(std::unique_ptr<double[]>(new double[widthDoubles * encoder->arrayHeight]));
+                    const double* psrc = reinterpret_cast<const double*>(c.data);
+                    double* ptgt = transposedData.back().get();
+                    for (size_t y = 0; y < encoder->arrayHeight; ++y) {
+                        for (size_t x = 0; x < widthDoubles; ++x) {
+                            ptgt[x + (y * widthDoubles)] = psrc[y + (x * encoder->arrayHeight)];
+                        }
+                    }
+                    c.data = ptgt;
+                }
+                offset += info.decodedSize * encoder->arrayHeight;
+            } else {
+                c.stride = encoder->arrayWidth;
+                offset += info.decodedSize;
+            }
 
             // sanity checks
             ASSERT(c.stride % sizeof(double) == 0);
-            ASSERT(info.decodedSize % sizeof(double) == 0);
         }
     } else {
 
@@ -801,13 +823,16 @@ void odc_encode_to_data_handle(odc_encoder_t* encoder, eckit::DataHandle& dh) {
     ASSERT(encoder->columnData.size() == encoder->columnInfo.size());
     ASSERT(encoder->maxRowsPerFrame > 0);
 
-    fill_in_encoder(encoder);
+    // TransposedData allows column-oriented data to be reordered before encoding if needed.
+    std::vector<std::unique_ptr<double[]>> transposedData;
+    fill_in_encoder(encoder, transposedData);
 
     size_t ncolumns = encoder->columnData.size();
     ASSERT(ncolumns > 0);
 
     std::vector<ConstStridedData> stridedData;
     stridedData.reserve(ncolumns);
+
 
     for (size_t i = 0; i < ncolumns; i++) {
         const ColumnInfo& info{encoder->columnInfo[i]};
