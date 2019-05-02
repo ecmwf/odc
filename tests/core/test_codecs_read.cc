@@ -21,20 +21,10 @@
 #include "odc/codec/Real.h"
 #include "odc/codec/String.h"
 
+#include <cmath>
 #include <time.h>
 #include <stdlib.h>
 #include <algorithm>
-
-// Some of the math.h/cmath functions are not clean when switching to C++11
-#if __cplusplus <= 199711L
-#include <math.h>
-#else
-#include <cmath>
-#define fpclassify(x) std::fpclassify((x))
-#define isinf(x) std::isinf((x))
-#define isnan(x) std::isnan((x))
-#define signbit(x) std::signbit((x))
-#endif
 
 using namespace eckit::testing;
 using namespace odc::core;
@@ -761,15 +751,15 @@ CASE("long floating point values can include the missing data value") {
             c->decode(&val);
             EXPECT(val == -9876543210.9876);
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val > 0);
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val < 0);
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
             c->decode(&val);
             EXPECT(val == -2147483647);
 
@@ -802,15 +792,15 @@ CASE("long floating point values can include the missing data value") {
             c->decode(&val);
             EXPECT(val == -9876543210.9876);
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val > 0);
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val < 0);
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
             c->decode(&val);
             EXPECT(val == -2147483647);
 
@@ -904,15 +894,15 @@ CASE("short floating point values can include the missing data value") {
                 EXPECT(val == float(-3.40282346638529e+38));
             }
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val > 0);
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val < 0);
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
 
             EXPECT(ds.position() == eckit::Offset(28 + (8 * 4)));
         }
@@ -953,15 +943,15 @@ CASE("short floating point values can include the missing data value") {
                 EXPECT(val == float(-3.40282346638529e+38));
             }
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val > 0);
             c->decode(&val);
-            EXPECT(isinf(val));
+            EXPECT(std::isinf(val));
             EXPECT(val < 0);
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
             c->decode(&val);
-            EXPECT(isnan(val));
+            EXPECT(std::isnan(val));
 
             EXPECT(ds.position() == eckit::Offset(hdrSize + 28 + (8 * 4)));
         }
