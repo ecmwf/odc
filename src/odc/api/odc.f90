@@ -22,7 +22,7 @@ module odc
     private
 
     integer, parameter :: dp = selected_real_kind(15, 307)
-    integer, parameter :: double_size = c_sizeof(1.0_dp)
+    integer, parameter :: double_size = 8 !c_sizeof(1.0_dp) !intel compiler...
 
     type odc_reader
         type(c_ptr) :: impl = c_null_ptr

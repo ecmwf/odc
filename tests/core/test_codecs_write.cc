@@ -34,8 +34,6 @@ using odc::core::Codec;
 using odc::core::SameByteOrder;
 using odc::core::OtherByteOrder;
 using odc::core::DataStream;
-using std::isnan;
-using std::isinf;
 
 //        Log::info() << "DS: " << ds.position() << std::endl;
 //        for (int i = 0; i < ds.position(); ++i) {
@@ -709,18 +707,18 @@ CASE("long floating point values can include the missing data value") {
         c->gatherStats(123456789.0123456);
         c->gatherStats(-9876543210.9876);
         double v = *reinterpret_cast<const double*>(&inf_bits);
-        EXPECT(isinf(v));
+        EXPECT(std::isinf(v));
         EXPECT(v > 0);
         c->gatherStats(v);
         v = *reinterpret_cast<const double*>(&neg_inf_bits);
-        EXPECT(isinf(v));
+        EXPECT(std::isinf(v));
         EXPECT(v < 0);
         c->gatherStats(v);
         v = *reinterpret_cast<const double*>(&sig_nan_bits);
-        EXPECT(isnan(v));
+        EXPECT(std::isnan(v));
         c->gatherStats(v);
         v = *reinterpret_cast<const double*>(&quiet_nan_bits);
-        EXPECT(isnan(v));
+        EXPECT(std::isnan(v));
         c->gatherStats(v);
         c->gatherStats(customMissingValue);
         c->gatherStats(-2147483647);
@@ -857,18 +855,18 @@ CASE("short floating point values can include the missing data value") {
         c->gatherStats(1.17549435082229e-38);
         c->gatherStats(-3.40282346638529e+38);
         double v = *reinterpret_cast<const double*>(&inf_bits);
-        EXPECT(isinf(v));
+        EXPECT(std::isinf(v));
         EXPECT(v > 0);
         c->gatherStats(v);
         v = *reinterpret_cast<const double*>(&neg_inf_bits);
-        EXPECT(isinf(v));
+        EXPECT(std::isinf(v));
         EXPECT(v < 0);
         c->gatherStats(v);
         v = static_cast<double>(*reinterpret_cast<const float*>(&sig_nan_bits));
-        EXPECT(isnan(v));
+        EXPECT(std::isnan(v));
         c->gatherStats(v);
         v = static_cast<double>(*reinterpret_cast<const float*>(&quiet_nan_bits));
-        EXPECT(isnan(v));
+        EXPECT(std::isnan(v));
         c->gatherStats(v);
         c->gatherStats(customMissingValue);
 
