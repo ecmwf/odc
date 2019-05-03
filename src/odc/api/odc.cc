@@ -43,6 +43,7 @@ struct odc_decoder_t {
         void* data;
         size_t elemSize;
         size_t stride;
+        bool transpose;
     };
 
     odc_decoder_t() : nrows(0), dataWidth(0), dataHeight(0), externalData(0), columnMajor(true), ownedData() {}
@@ -502,7 +503,7 @@ int odc_decoder_add_column(odc_decoder_t* decoder, const char* name) {
         ASSERT(decoder);
         ASSERT(name);
         decoder->columnNames.emplace_back(name);
-        decoder->columnData.emplace_back(odc_decoder_t::DecodeColumn {0, 0, 0});
+        decoder->columnData.emplace_back(odc_decoder_t::DecodeColumn {0, 0, 0, false});
     });
 }
 
@@ -543,8 +544,6 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
     if (decoder->nrows == 0) {
         decoder->nrows = frame->rowCount();
     }
-
-    // If we are allocating, we assume that we are filling in dense columns (for now)
 
     size_t height = decoder->nrows;  // in rows
     size_t width = 0;                // in bytes
@@ -588,9 +587,15 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
         size_t offset = 0;
         for (auto& col : decoder->columnData) {
             if (!col.data) {
-                col.stride = (decoder->columnMajor ? col.elemSize : width);
                 col.data = static_cast<char*>(dataPtr) + offset;
-                offset += (decoder->columnMajor ? height : 1) * col.elemSize;
+                if (decoder->columnMajor) {
+                    col.stride = col.elemSize;
+                    offset += height * col.elemSize;
+                    col.transpose = true;
+                } else {
+                    col.stride = width;
+                    offset += col.elemSize;
+                }
             } else {
                 if (col.stride == 0) col.stride = col.elemSize;
             }
@@ -633,6 +638,23 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
 
         ASSERT(nthreads >= 1);
         frame->decode(target, static_cast<size_t>(nthreads));
+
+        // For the cases where needed, reorder the data
+
+        for (auto& col : decoder->columnData) {
+            if (col.transpose) {
+                ASSERT(col.elemSize == col.stride);
+                size_t rows = decoder->nrows;
+                size_t cols = col.elemSize / sizeof(8);
+                double* output = static_cast<double*>(col.data);
+                std::vector<double> tmpArray(output, output+(frame_rows * cols));
+                for (size_t r = 0; r < frame_rows; r++) {
+                    for (size_t c = 0; c < cols; c++) {
+                        output[r + (c * rows)] = tmpArray[c + (r * cols)];
+                    }
+                }
+            }
+        }
 
         // And return the values
 
