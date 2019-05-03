@@ -591,7 +591,7 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
                 if (decoder->columnMajor) {
                     col.stride = col.elemSize;
                     offset += height * col.elemSize;
-                    col.transpose = true;
+                    if (col.elemSize > 8) col.transpose = true;
                 } else {
                     col.stride = width;
                     offset += col.elemSize;
