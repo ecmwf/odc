@@ -95,6 +95,62 @@ contains
 
     end function
 
+    function test_encode_row_major() result(success)
+
+        real(8) :: data(15, 7)
+        integer :: row, outunit
+        integer(8) :: bytes_written
+        type(odc_encoder) :: encoder
+        logical :: success
+        success = .true.
+
+        ! Fill in an array of data to encode
+
+        data(1, :) = col1_data
+        data(2, :) = col2_data
+        data(3, :) = col4_data
+        data(4, :) = col4_data
+        data(5, :) = col5_data
+        do row = 1, 7
+            data(6:7, row) = transfer(col6_data(row), 1.0_8, 2)
+            data(8, row) = transfer(col7_data(row), 1.0_8)
+        end do
+        data(9, :) = col8_data
+        data(10, :) = col9_data
+        data(11, :) = col10_data
+        data(12, :) = col11_data
+        data(13, :) = col12_data
+        data(14, :) = col13_data
+        data(15, :) = col14_data
+
+        call check_call(encoder%initialise(), "initialise encoder", success)
+
+        call check_call(encoder%add_column("col1", ODC_INTEGER), "add col1", success)
+        call check_call(encoder%add_column("col2", ODC_INTEGER), "add col2", success)
+        call check_call(encoder%add_column("col3", ODC_BITFIELD), "add col3", success)
+        call check_call(encoder%add_column("col4", ODC_DOUBLE), "add col4", success)
+        call check_call(encoder%add_column("col5", ODC_INTEGER), "add col5", success)
+        call check_call(encoder%add_column("col6", ODC_STRING), "add col6", success)
+        call check_call(encoder%add_column("col7", ODC_STRING), "add col7", success)
+        call check_call(encoder%add_column("col8", ODC_REAL), "add col8", success)
+        call check_call(encoder%add_column("col9", ODC_DOUBLE), "add col9", success)
+        call check_call(encoder%add_column("col10", ODC_REAL), "add col10", success)
+        call check_call(encoder%add_column("col11", ODC_BITFIELD), "add col11", success)
+        call check_call(encoder%add_column("col12", ODC_INTEGER), "add col12", success)
+        call check_call(encoder%add_column("col13", ODC_INTEGER), "add col13", success)
+        call check_call(encoder%add_column("col14", ODC_INTEGER), "add col14", success)
+
+        call check_call(encoder%column_set_attrs(6, element_size_doubles=2), "column attrs", success)
+        call check_call(encoder%set_data(data, column_major=.false.), "set encoder data", success)
+
+        open(newunit=outunit, file='testout2.odb', access='stream', form='unformatted')
+
+        call check_call(encoder%encode(outunit, bytes_written), "do encode", success)
+
+        call check_call(encoder%free(), "free encoder", success)
+
+    end function
+
     !funcion test_encode_integers() result(success)
     !    logical :: success
     !    success = .true.
@@ -121,6 +177,7 @@ program fapi_general
     call check_call(odc_set_missing_double(999999.0_8), "set missing double", success)
 
     success = test_encode_column_major() .and. success
+    success = test_encode_row_major() .and. success
     !success = test_encode_integers() .and. success
     !success = test_encode_columns() .and. success
 

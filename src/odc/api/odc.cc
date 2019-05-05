@@ -623,13 +623,27 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
 
         fill_in_decoder(decoder, frame);
 
+        // Store of column index/temporary data for column-major columns wider than 8-bytes that
+        // need to be transposed (i.e. part of an output array).
+        std::vector<std::pair<size_t, std::unique_ptr<double[]>>> temporaryTransposeData;
+
         // Construct C++ API adapter
 
         std::vector<StridedData> dataFacade;
         dataFacade.reserve(decoder->columnNames.size());
 
-        for (auto& col : decoder->columnData) {
-            dataFacade.emplace_back(StridedData{col.data, size_t(decoder->nrows), size_t(col.elemSize), size_t(col.stride)});
+        for (size_t i = 0; i < decoder->columnData.size(); ++i) {
+            const auto& col = decoder->columnData[i];
+
+            void* data = col.data;
+            if (col.transpose) {
+                ASSERT(col.elemSize % sizeof(double) == 0);
+                ASSERT(col.stride == col.elemSize);
+                size_t cols = col.elemSize / sizeof(double);
+                temporaryTransposeData.emplace_back(std::pair<size_t, std::unique_ptr<double[]>>(i, new double[frame_rows * cols]));
+                data = temporaryTransposeData.back().second.get();
+            }
+            dataFacade.emplace_back(StridedData{data, size_t(decoder->nrows), size_t(col.elemSize), size_t(col.stride)});
         }
 
         Decoder target(decoder->columnNames, dataFacade);
@@ -641,17 +655,15 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
 
         // For the cases where needed, reorder the data
 
-        for (auto& col : decoder->columnData) {
-            if (col.transpose) {
-                ASSERT(col.elemSize == col.stride);
-                size_t rows = decoder->nrows;
-                size_t cols = col.elemSize / sizeof(8);
-                double* output = static_cast<double*>(col.data);
-                std::vector<double> tmpArray(output, output+(frame_rows * cols));
-                for (size_t r = 0; r < frame_rows; r++) {
-                    for (size_t c = 0; c < cols; c++) {
-                        output[r + (c * rows)] = tmpArray[c + (r * cols)];
-                    }
+        for (const auto& kv : temporaryTransposeData) {
+            size_t colIndex = kv.first;
+            const double* tmpArray = kv.second.get();
+            double* output = static_cast<double*>(decoder->columnData[colIndex].data);
+            size_t rows = decoder->nrows;
+            size_t cols = decoder->columnData[colIndex].elemSize / sizeof(double);
+            for (size_t row = 0; row < frame_rows; row++) {
+                for (size_t col = 0; col < cols; col++) {
+                    output[row + (col * rows)] = tmpArray[col + (row * cols)];
                 }
             }
         }
@@ -781,7 +793,7 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<double[
         //      (i.e. double). If the data size is greater than this, the data becomes non-contiguous
         //      and split across multiple columns. Need to aggregate it for encoding.
 
-        size_t offset;
+        size_t offset = 0;
         for (size_t i = 0; i < encoder->columnData.size(); ++i) {
             odc_encoder_t::EncodeColumn& c(encoder->columnData[i]);
             const ColumnInfo& info(encoder->columnInfo[i]);
@@ -791,9 +803,10 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<double[
             ASSERT(c.data == 0);
             ASSERT(c.stride == 0);
 
+            c.data = static_cast<const char*>(encoder->arrayData) + offset;
+
             if (encoder->columnMajor) {
                 c.stride = info.decodedSize;
-                c.data = static_cast<const char*>(encoder->arrayData) + offset;
                 if (info.decodedSize != sizeof(double)) {
                     // Transpose data for contiguous elementsn
                     size_t widthDoubles = info.decodedSize / sizeof(double);
@@ -812,6 +825,7 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<double[
                 c.stride = encoder->arrayWidth;
                 offset += info.decodedSize;
             }
+            std::cout << "Col: " << i << ": " << c.data << ", " << c.stride << ", " << info.decodedSize << std::endl;
 
             // sanity checks
             ASSERT(c.stride % sizeof(double) == 0);

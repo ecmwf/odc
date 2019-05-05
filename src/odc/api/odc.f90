@@ -718,11 +718,18 @@ contains
         class(odc_decoder), intent(inout) :: decoder
         real(dp), intent(inout), target :: data(:,:)
         logical, intent(in), optional :: column_major
+        integer(c_long) :: width, height
         logical(c_bool) :: l_column_major = .true.
         integer :: err
         if (present(column_major)) l_column_major = column_major
-        err = odc_decoder_set_data_array(decoder%impl, c_loc(data), size(data, 2, c_long)*double_size, &
-                                         size(data, 1, c_long), l_column_major)
+        if (l_column_major) then
+            width = size(data, 2) * double_size
+            height = size(data, 1)
+        else
+            width = size(data, 1) * double_size
+            height = size(data, 2)
+        end if
+        err = odc_decoder_set_data_array(decoder%impl, c_loc(data), width, height, l_column_major)
     end function
 
     function decoder_data_array(decoder, data, column_major) result(err)
@@ -738,7 +745,13 @@ contains
         err = odc_decoder_data_array(decoder%impl, cdata, width, height, cmajor)
 
         if (err == ODC_SUCCESS) then
-            if (present(data)) call c_f_pointer(cdata, data, [height, width / double_size])
+            if (present(data)) then
+                if (cmajor) then
+                    call c_f_pointer(cdata, data, [height, width / double_size])
+                else
+                    call c_f_pointer(cdata, data, [width / double_size, height])
+                end if
+            end if
             if (present(column_major)) column_major = cmajor
         end if
 
@@ -852,12 +865,19 @@ contains
         class(odc_encoder), intent(inout) :: encoder
         real(dp), intent(inout), target :: data(:,:)
         logical, intent(in), optional :: column_major
+        integer(c_long) :: width, height
         integer :: err
         logical(c_bool) :: l_column_major = .true.
 
         if (present(column_major)) l_column_major = column_major
-        err = odc_encoder_set_data_array(encoder%impl, c_loc(data), size(data, 2, c_long)*double_size, &
-                                         size(data, 1, c_long), l_column_major)
+        if (l_column_major) then
+            width = size(data, 2) * double_size
+            height = size(data, 1)
+        else
+            width = size(data, 1) * double_size
+            height = size(data, 2)
+        end if
+        err = odc_encoder_set_data_array(encoder%impl, c_loc(data), width, height, l_column_major)
     end function
 
     function encoder_add_column(encoder, name, type) result(err)
