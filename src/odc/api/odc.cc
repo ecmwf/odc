@@ -836,7 +836,6 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<double[
                 c.stride = encoder->arrayWidth;
                 offset += info.decodedSize;
             }
-            std::cout << "Col: " << i << ": " << c.data << ", " << c.stride << ", " << info.decodedSize << std::endl;
 
             // sanity checks
             ASSERT(c.stride % sizeof(double) == 0);

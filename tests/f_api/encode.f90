@@ -40,12 +40,16 @@ contains
     end subroutine
 
     subroutine check_decoded_column_major(data, success)
-        real(8) :: data(7, 15)
+        real(8), intent(in) :: data(:, :)
         integer :: row
         character(16) :: str16
         character(8) :: str8
         logical, intent(inout) :: success
-        success = .true.
+
+        if (size(data, 1) /= 7 .or. size(data, 2) /= 15) then
+            write(error_unit, *) 'did not get data shape [7, 15]'
+            success = .false.
+        end if
 
         if (any(col1_data /= data(:, 1))) then
             write(error_unit, *) 'Col 1 differs: ', col1_data, ' vs ', data(:, 1)
@@ -147,7 +151,6 @@ contains
     subroutine initialise_encoder(encoder, success)
         type(odc_encoder) :: encoder
         logical, intent(inout) :: success
-        success = .true.
 
         call check_call(encoder%initialise(), "initialise encoder", success)
 
@@ -227,8 +230,51 @@ contains
 
     subroutine check_encoded_odb(path, success)
         character(*), intent(in) :: path
-        logical :: success
-        success = .true.
+        logical, intent(inout) :: success
+
+        type(odc_reader) :: reader
+        type(odc_frame) :: frame
+        type(odc_decoder) :: decoder
+        real(8), pointer :: data(:,:)
+        logical :: column_major
+        integer :: err
+        integer(8) :: nrows
+
+        call check_call(reader%open_path(path), "open " // path, success)
+        call check_call(frame%initialise(reader), "initialise frame", success)
+
+        ! We are expecting one frame
+
+        call check_call(frame%next(), "get first frame", success)
+
+        ! Decode the data
+
+        call check_call(decoder%initialise(), "initialise decoder", success)
+        call check_call(decoder%defaults_from_frame(frame), "defaults from frame", success)
+        call check_call(decoder%decode(frame, nrows), "decode", success)
+        call check_call(decoder%data(data, column_major), "get data", success)
+
+        if (.not. column_major) then
+            write(error_unit, *) 'expected column major'
+            success = .false.
+        end if
+
+        call check_decoded_column_major(data, success)
+        call check_call(decoder%free(), "free decoder", success)
+
+        ! And iterations done
+
+        err = frame%next()
+        if (err /= ODC_ITERATION_COMPLETE) then
+            write(error_unit, *) 'expected iteration complete'
+            success = .false.
+        end if
+
+        ! Cleanup
+
+        call check_call(frame%free(), "free frame", success)
+        call check_call(reader%close(), "free frame", success)
+
     end subroutine
 
     !funcion test_encode_integers() result(success)
