@@ -93,6 +93,7 @@ module odc
     public :: odc_error_string
     public :: odc_missing_integer, odc_missing_double
     public :: odc_set_missing_integer, odc_set_missing_double
+    public :: odc_halt_on_failure
 
     ! For utility
 
@@ -133,6 +134,13 @@ module odc
             use, intrinsic :: iso_c_binding
             implicit none
             integer(c_int), intent(in), value :: integer_behaviour
+            integer(c_int) :: err
+        end function
+
+        function odc_halt_on_failure(halt) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            logical(c_bool), intent(in), value :: halt
             integer(c_int) :: err
         end function
 

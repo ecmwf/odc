@@ -86,6 +86,7 @@ struct odc_encoder_t {
 /* Error handling */
 
 static std::string g_current_error_str;
+static bool g_halt_on_failure = false;
 
 const char* odc_error_string(int err) {
     switch (err) {
@@ -127,14 +128,17 @@ int wrapApiFunction(FN f) {
     } catch (Exception& e) {
         Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         g_current_error_str = e.what();
+        if (g_halt_on_failure) throw;
         return ODC_ERROR_ECKIT_EXCEPTION;
     } catch (std::exception& e) {
         Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         g_current_error_str = e.what();
+        if (g_halt_on_failure) throw;
         return ODC_ERROR_GENERAL_EXCEPTION;
     } catch (...) {
         Log::error() << "Caught unknown on C-C++ API boundary" << std::endl;
         g_current_error_str = "Unrecognised and unknown exception";
+        if (g_halt_on_failure) throw;
         return ODC_ERROR_UNKNOWN_EXCEPTION;
     }
 
@@ -218,6 +222,13 @@ int odc_integer_behaviour(int integerBehaviour) {
             throw SeriousBug("ODC integer behaviour must be either ODC_INTEGERS_AS_DOUBLES or ODC_INTEGERS_AS_LONGS", Here());
         }
         Settings::treatIntegersAsDoubles(integerBehaviour == ODC_INTEGERS_AS_DOUBLES);
+    });
+}
+
+int odc_halt_on_failure(bool halt) {
+    return wrapApiFunction([halt] {
+        g_halt_on_failure = halt;
+        eckit::Log::info() << "ODC setting halt on filure: " << (halt ? "true" : "false") << std::endl;
     });
 }
 

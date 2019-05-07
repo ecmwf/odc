@@ -39,6 +39,7 @@ const int ODC_INTEGERS_AS_LONGS = 2;
 
 int odc_initialise_api();
 int odc_integer_behaviour(int integerBehaviour);
+int odc_halt_on_failure(bool halt);
 
 int odc_version(const char** version);
 int odc_git_sha1(const char** sha1);
