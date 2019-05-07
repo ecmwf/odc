@@ -228,6 +228,103 @@ contains
 
     end function
 
+    subroutine check_frame_column(frame, col, name, type, success)
+        type(odc_frame), intent(in) :: frame
+        integer, intent(in) :: col, type
+        character(*), intent(in) :: name
+        logical, intent(inout) :: success
+
+        character(:), allocatable :: column_name, nm
+        integer :: ncols, column_type, element_size, element_size_doubles, bitfield_count
+        integer :: sz, off, i
+        integer :: expected_count, expected_sz
+
+        character(3) :: expected_bf_names(3) = ['bf1', 'bf2', 'bf3']
+        integer :: expected_bf_sizes(3) = [3, 2, 1]
+        integer :: expected_bf_offsets(3) = [0, 3, 5]
+
+        call check_call(frame%column_count(ncols), "column count", success)
+        if (ncols /= 14) then
+            write(error_unit, *) 'Unexpected column count. got ', ncols, ', expected 14'
+            success = .false.
+        end if
+
+        call check_call(frame%column_attrs(col, &
+                                           name=column_name, &
+                                           type=column_type, &
+                                           element_size=element_size, &
+                                           element_size_doubles=element_size_doubles, &
+                                           bitfield_count=bitfield_count), "column attrs", success)
+
+        if (column_name /= name) then
+            write(error_unit, '(a,i2,4a)') 'Unexpected column name for column ', col, &
+                                           '. Got ', column_name, ', expected ', name
+            success = .false.
+        end if
+
+        if (column_type /= type) then
+            write(error_unit, '(3(a,i2))') 'Unexpected column type for column ', col, &
+                                           '. Got ', column_name, ', expected ', name
+            success = .false.
+        end if
+
+        if (col == 6) then
+            expected_sz = 2
+        else
+            expected_sz = 1
+        end if
+
+        if (element_size_doubles /= expected_sz) then
+            write(error_unit, '(3(a,i2))') 'Unexpected column element size for column ', col, &
+                                           '. Got ', element_size_doubles, ', expected ', expected_sz
+            success = .false.
+        end if
+
+        if (element_size /= 8*expected_sz) then
+            write(error_unit, '(3(a,i2))') 'Unexpected column element size for column ', col, &
+                                           '. Got ', element_size, ', expected ', 8*expected_sz
+            success = .false.
+        end if
+
+        if (col == 11) then
+            expected_count = 3
+        else
+            expected_count = 0
+        end if
+
+        if (bitfield_count /= expected_count) then
+            write(error_unit, '(3(a,i2))') 'Unexpected column bitfield_count for column ', col, &
+                                           '. Got ', bitfield_count, ', expected ', expected_count
+            success = .false.
+        end if
+
+        if (col == 11) then
+            do i = 1, 3
+                call check_call(frame%bitfield_attrs(11, i, name=nm, offset=off, size=sz), 'bitfield attrs', success)
+
+                if (sz /= expected_bf_sizes(i)) then
+                    write(error_unit, '(3(a,i2))') 'Unexpected bitfield size for field ', i, &
+                                                   '. Got ', sz, ', expected ', expected_bf_sizes(i)
+                    success = .false.
+                end if
+
+                if (off /= expected_bf_offsets(i)) then
+                    write(error_unit, '(3(a,i2))') 'Unexpected bitfield offset for field ', i, &
+                                                   '. Got ', off, ', expected ', expected_bf_offsets(i)
+                    success = .false.
+                end if
+
+                if (nm /= expected_bf_names(i)) then
+                    write(error_unit, '(a,i2,4a)') 'Unexpected bitfield name for field ', i, &
+                                                   '. Got ', nm, ', expected ', expected_bf_names(i)
+                    success = .false.
+                end if
+
+            end do
+        end if
+
+    end subroutine
+
     subroutine check_encoded_odb(path, success)
         character(*), intent(in) :: path
         logical, intent(inout) :: success
@@ -246,6 +343,21 @@ contains
         ! We are expecting one frame
 
         call check_call(frame%next(), "get first frame", success)
+
+        call check_frame_column(frame, 1, "col1", ODC_INTEGER, success)
+        call check_frame_column(frame, 2, "col2", ODC_INTEGER, success)
+        call check_frame_column(frame, 3, "col3", ODC_BITFIELD, success)
+        call check_frame_column(frame, 4, "col4", ODC_DOUBLE, success)
+        call check_frame_column(frame, 5, "col5", ODC_INTEGER, success)
+        call check_frame_column(frame, 6, "col6", ODC_STRING, success)
+        call check_frame_column(frame, 7, "col7", ODC_STRING, success)
+        call check_frame_column(frame, 8, "col8", ODC_REAL, success)
+        call check_frame_column(frame, 9, "col9", ODC_DOUBLE, success)
+        call check_frame_column(frame, 10, "col10", ODC_REAL, success)
+        call check_frame_column(frame, 11, "col11", ODC_BITFIELD, success)
+        call check_frame_column(frame, 12, "col12", ODC_INTEGER, success)
+        call check_frame_column(frame, 13, "col13", ODC_INTEGER, success)
+        call check_frame_column(frame, 14, "col14", ODC_INTEGER, success)
 
         ! Decode the data
 
