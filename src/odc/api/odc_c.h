@@ -13,6 +13,8 @@
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 
+#include <stdbool.h>
+
 /* Types forward declared, but not defined (only accessible through function API). */
 
 struct odc_reader_t;

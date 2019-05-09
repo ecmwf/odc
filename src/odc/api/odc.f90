@@ -871,7 +871,7 @@ contains
 
     function encoder_set_data_array(encoder, data, column_major) result(err)
         class(odc_encoder), intent(inout) :: encoder
-        real(dp), intent(inout), target :: data(:,:)
+        real(dp), intent(in), target :: data(:,:)
         logical, intent(in), optional :: column_major
         integer(c_long) :: width, height
         integer :: err

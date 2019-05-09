@@ -137,8 +137,10 @@ FrameImpl::FrameImpl(Reader& reader) :
     first_(true) {}
 
 FrameImpl::FrameImpl(const FrameImpl& rhs) :
+    columnInfo_(rhs.columnInfo_),
     reader_(rhs.reader_),
     it_(rhs.it_),
+    tables_(rhs.tables_),
     first_(rhs.first_) {}
 
 bool FrameImpl::next(bool aggregated, long rowlimit) {
