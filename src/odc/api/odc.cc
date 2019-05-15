@@ -651,7 +651,7 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
                 ASSERT(col.elemSize % sizeof(double) == 0);
                 ASSERT(col.stride == col.elemSize);
                 size_t cols = col.elemSize / sizeof(double);
-                temporaryTransposeData.emplace_back(std::pair<size_t, std::unique_ptr<double[]>>(i, new double[frame_rows * cols]));
+                temporaryTransposeData.emplace_back(i, std::unique_ptr<double[]>(new double[frame_rows * cols]));
                 data = temporaryTransposeData.back().second.get();
             }
             dataFacade.emplace_back(StridedData{data, size_t(decoder->nrows), size_t(col.elemSize), size_t(col.stride)});
