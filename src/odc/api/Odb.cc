@@ -170,10 +170,11 @@ bool FrameImpl::next(bool aggregated, long rowlimit) {
 
             long next_nrows = nrows + it_next->rowCount();
             if (rowlimit >= 0 && next_nrows > rowlimit) break;
-            if (!tables_.front().columns().compatible(it_->columns())) break;
+            if (!tables_.front().columns().compatible(it_next->columns())) break;
+
+            ++it_;
             tables_.emplace_back(*it_);
             nrows = next_nrows;
-            ++it_;
         }
     }
 
