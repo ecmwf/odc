@@ -198,7 +198,7 @@ contains
 
         call check_call(encoder%free(), "free encoder", success)
 
-        call check_encoded_odb('testout2.odb', success)
+        call check_encoded_odb('testout.odb', success)
 
     end function
 
