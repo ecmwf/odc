@@ -46,7 +46,7 @@ struct odc_decoder_t {
         bool transpose;
     };
 
-    odc_decoder_t() : nrows(0), dataWidth(0), dataHeight(0), externalData(0), columnMajor(true), ownedData() {}
+    odc_decoder_t() : nrows(0), dataWidth(0), dataHeight(0), externalData(0), columnMajor(false), ownedData() {}
 
     size_t nrows;
     std::vector<std::string> columnNames;
@@ -723,6 +723,17 @@ int odc_encoder_set_rows_per_frame(odc_encoder_t* encoder, long rows_per_frame) 
 int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height, bool columnMajor) {
     return wrapApiFunction([encoder, data, width, height, columnMajor] {
         ASSERT(encoder);
+
+        // If we are setting this _again_ then this is because a configured encoder
+        // is being reused. Make sure that we rezero things that should be rezeroed.
+
+        if (encoder->arrayData != 0) {
+            for (auto& col : encoder->columnData) {
+                col.data = 0;
+                col.stride = 0;
+            }
+        }
+
         encoder->arrayData = data;
         encoder->arrayWidth = width;
         encoder->arrayHeight = height;
