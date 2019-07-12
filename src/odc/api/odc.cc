@@ -947,7 +947,7 @@ int odc_encode_to_file_descriptor(odc_encoder_t* encoder, int fd, long* bytes_en
         dh.openForWrite(0);
         AutoClose closer(dh);
         odc_encode_to_data_handle(encoder, dh);
-        (*bytes_encoded) = dh.position();
+        if (bytes_encoded) (*bytes_encoded) = dh.position();
     });
 }
 
@@ -957,7 +957,7 @@ int odc_encode_to_buffer(odc_encoder_t* encoder, void* buffer, long length, long
         dh.openForWrite(0);
         AutoClose closer(dh);
         odc_encode_to_data_handle(encoder, dh);
-        (*bytes_encoded) = dh.position();
+        if (bytes_encoded) (*bytes_encoded) = dh.position();
     });
 }
 
