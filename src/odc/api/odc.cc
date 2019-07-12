@@ -442,6 +442,13 @@ int odc_free_decoder(const odc_decoder_t* decoder) {
     });
 }
 
+int odc_decoder_set_column_major(odc_decoder_t* decoder, bool columnMajor) {
+    return wrapApiFunction([decoder, columnMajor] {
+        ASSERT(decoder);
+        decoder->columnMajor = columnMajor;
+    });
+}
+
 int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* frame) {
     return wrapApiFunction([decoder, frame] {
 

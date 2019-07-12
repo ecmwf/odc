@@ -121,6 +121,7 @@ int odc_new_decoder(odc_decoder_t** decoder);
 int odc_free_decoder(const odc_decoder_t* decoder);
 
 int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* frame);
+int odc_decoder_set_column_major(odc_decoder_t* decoder, bool columnMajor);
 int odc_decoder_set_row_count(odc_decoder_t* decoder, long nrows);
 int odc_decoder_row_count(const odc_decoder_t* decoder, long* nrows);
 int odc_decoder_set_data_array(odc_decoder_t* decoder, void* data, long width, long height, bool columnMajor);
