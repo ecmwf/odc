@@ -298,7 +298,7 @@ int odc_open_buffer(odc_reader_t** reader, const void* data, long length) {
 
 }
 
-int odb_open_stream(odc_reader_t** reader, void* handle, stream_read_t stream_proc) {
+int odc_open_stream(odc_reader_t** reader, void* handle, stream_read_t stream_proc) {
 
     // Wrap the stream in a DataHandle
     struct ReadStreamDataHandle : public eckit::DataHandle {

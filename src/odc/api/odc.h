@@ -130,7 +130,7 @@ int odc_decoder_data_array(const odc_decoder_t* decoder, const void** data, long
 int odc_decoder_add_column(odc_decoder_t* decoder, const char* name);
 int odc_decoder_column_count(const odc_decoder_t* decoder, int* count);
 
-int odc_decoder_set_column_attrs(odc_decoder_t* decoder, int col, int element_size, int stride, void* data);
+int odc_decoder_column_set_attrs(odc_decoder_t* decoder, int col, int element_size, int stride, void* data);
 int odc_decoder_column_attrs(const odc_decoder_t* decoder, int col, int* element_size, int* stride, const void** data);
 
 /*
