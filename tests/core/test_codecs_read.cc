@@ -60,7 +60,6 @@ size_t prepend_codec_selection_header(std::vector<unsigned char>& data,
     return 4 + codec_name.length();
 }
 
-
 CASE("Constant values are constant") {
 
     // Data in little endian format.
@@ -93,6 +92,7 @@ CASE("Constant values are constant") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -121,6 +121,7 @@ CASE("Constant values are constant") {
             // No further data should have been consumed from the data handle.
             EXPECT(ds.position() == eckit::Offset(28));
         }
+#endif
 
         // Construct codec from factory
 
@@ -150,7 +151,6 @@ CASE("Constant values are constant") {
         }
     }
 }
-
 
 CASE("Constant integer values are constant") {
 
@@ -187,6 +187,7 @@ CASE("Constant integer values are constant") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -216,6 +217,7 @@ CASE("Constant integer values are constant") {
             // No further data should have been consumed from the data handle.
             EXPECT(ds.position() == eckit::Offset(28));
         }
+#endif
 
         // Construct codec from factory
 
@@ -246,6 +248,7 @@ CASE("Constant integer values are constant") {
         }
     }
 }
+
 
 CASE("constant strings are constant") {
 
@@ -283,6 +286,7 @@ CASE("constant strings are constant") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -311,6 +315,7 @@ CASE("constant strings are constant") {
             // No further data should have been consumed from the data handle.
             EXPECT(ds.position() == eckit::Offset(28));
         }
+#endif
 
         // Construct codec from factory
 
@@ -343,7 +348,6 @@ CASE("constant strings are constant") {
         }
     }
 }
-
 
 CASE("Constant integer or missing value behaves a bit oddly") {
 
@@ -392,6 +396,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -425,6 +430,7 @@ CASE("Constant integer or missing value behaves a bit oddly") {
 
             EXPECT(ds.position() == eckit::Offset(28 + 258));
         }
+#endif
 
         // Construct codec from factory
 
@@ -508,6 +514,7 @@ CASE("real constant or missing value is not quite constant") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -541,6 +548,7 @@ CASE("real constant or missing value is not quite constant") {
 
             EXPECT(ds.position() == eckit::Offset(28 + 258));
         }
+#endif
 
         // Construct codec from factory
 
@@ -622,6 +630,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -652,6 +661,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
             EXPECT(ds.position() == eckit::Offset(32 + (8 * 5)));
         }
+#endif
 
         // Construct codec from factory
 
@@ -727,6 +737,7 @@ CASE("long floating point values can include the missing data value") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -765,6 +776,7 @@ CASE("long floating point values can include the missing data value") {
 
             EXPECT(ds.position() == eckit::Offset(28 + (8 * 8)));
         }
+#endif
 
         // Construct codec from factory
 
@@ -851,6 +863,7 @@ CASE("short floating point values can include the missing data value") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -906,6 +919,7 @@ CASE("short floating point values can include the missing data value") {
 
             EXPECT(ds.position() == eckit::Offset(28 + (8 * 4)));
         }
+#endif
 
         // Construct codec from factory
 
@@ -998,6 +1012,7 @@ CASE("32bit integers can be decoded direct to integers") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1029,6 +1044,7 @@ CASE("32bit integers can be decoded direct to integers") {
 
             EXPECT(ds.position() == eckit::Offset(28 + (5 * 4)));
         }
+#endif
 
         // Construct codec from factory
 
@@ -1104,6 +1120,7 @@ CASE("32bit integers are as-is") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1134,6 +1151,7 @@ CASE("32bit integers are as-is") {
 
             EXPECT(ds.position() == eckit::Offset(28 + (5 * 4)));
         }
+#endif
 
         // Construct codec from factory
 
@@ -1212,6 +1230,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1254,6 +1273,7 @@ CASE("16bit integers are stored with an offset. This need not (strictly) be inte
 
             EXPECT(ds.position() == eckit::Offset(28 + (5 * 2)));
         }
+#endif
 
         // Construct codec from factory
 
@@ -1339,6 +1359,7 @@ CASE("16bit integers are stored with an offset and can be decoded to integers") 
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1383,6 +1404,7 @@ CASE("16bit integers are stored with an offset and can be decoded to integers") 
 
             EXPECT(ds.position() == eckit::Offset(28 + (5 * 2)));
         }
+#endif
 
         // Construct codec from factory
 
@@ -1465,6 +1487,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1500,6 +1523,7 @@ CASE("8bit integers are stored with an offset. This need not (strictly) be integ
 
             EXPECT(ds.position() == eckit::Offset(28 + 256));
         }
+#endif
 
         // Construct codec from factory
 
@@ -1577,6 +1601,7 @@ CASE("8bit integers are stored with an offset and can be decoded to integers") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1614,6 +1639,7 @@ CASE("8bit integers are stored with an offset and can be decoded to integers") {
 
             EXPECT(ds.position() == eckit::Offset(28 + 256));
         }
+#endif
 
         // Construct codec from factory
 
@@ -1708,6 +1734,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1748,6 +1775,7 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
             EXPECT(ds.position() == eckit::Offset(144 + (6 * (bits16 ? 2 : 1))));
         }
+#endif
 
         // Construct codec from factory
 
@@ -1846,6 +1874,7 @@ CASE("Character strings can be stored in a flat list, and indexed, and be longer
 
         // Construct codec directly
 
+#ifndef _CRAYC
         {
             // Skip name of codec
             GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
@@ -1889,6 +1918,7 @@ CASE("Character strings can be stored in a flat list, and indexed, and be longer
 
             EXPECT(ds.position() == eckit::Offset(156 + (6 * (bits16 ? 2 : 1))));
         }
+#endif
 
         // Construct codec from factory
 

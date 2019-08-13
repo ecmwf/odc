@@ -89,7 +89,9 @@ private: // members
 template <template <typename> class CODEC>
 class CodecBuilder : public CodecBuilderBase {
 
+#ifndef _CRAYC
     static_assert(CODEC<SameByteOrder>::codec_name() == CODEC<OtherByteOrder>::codec_name(), "Invalid name");
+#endif
 
 public: // methods
 
