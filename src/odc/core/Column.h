@@ -191,7 +191,9 @@ void Column::type(api::ColumnType t)
 
 template <typename ByteOrder>
 void Column::resetCodec() {
+    int ds = dataSizeDoubles(); // Preserve byte size (part of type information)
     type<ByteOrder>(static_cast<api::ColumnType>(type_));
+    dataSizeDoubles(ds);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

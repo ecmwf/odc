@@ -9,6 +9,7 @@ list( APPEND _core_odc_tests
     test_reencode_string_table
     test_concatenated_odbs
     test_minmax
+    test_metadata
 
     test_select_iterator
     test_text_reader
