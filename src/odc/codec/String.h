@@ -174,7 +174,9 @@ private: // methods
             ASSERT(index < numStrings);
             this->strings_[index] = s;
 
-            this->decodedSizeDoubles_ = std::max(this->decodedSizeDoubles_, ((s.length()-1)/sizeof(double))+1);
+            if (s.length() != 0) {
+                this->decodedSizeDoubles_ = std::max(this->decodedSizeDoubles_, ((s.length()-1)/sizeof(double))+1);
+            }
         }
 
         // Ensure that the string lookup is EMPTY. We don't use it after reading
