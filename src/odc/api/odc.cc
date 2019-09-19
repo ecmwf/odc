@@ -310,7 +310,7 @@ int odc_open_stream(odc_reader_t** reader, void* handle, stream_read_t stream_pr
         void openForAppend(const Length&) override { NOTIMP; }
         long read(void* buffer, long length) override { return fn_(handle_, buffer, length); }
         long write(const void*, long) override { NOTIMP; }
-        void close() {}
+        void close() override {}
 
         void* handle_;
         stream_read_t fn_;
@@ -925,7 +925,7 @@ int odc_encode_to_stream(odc_encoder_t* encoder, void* handle, stream_write_t wr
             return written;
         }
         Offset position() override { return pos_; }
-        void close() {}
+        void close() override {}
 
         void* handle_;
         stream_write_t fn_;
