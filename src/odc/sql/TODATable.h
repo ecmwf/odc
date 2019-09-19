@@ -70,17 +70,17 @@ extern template class TODATable<TextReader>;
 
 struct ODATable : public TODATable<Reader> {
     ODATable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name) :
-        TODATable(owner, path, name, Reader(path)) {}
+        TODATable<Reader>(owner, path, name, Reader(path)) {}
     ODATable(eckit::sql::SQLDatabase& owner, eckit::DataHandle& dh) :
-        TODATable(owner, "<>", "input", Reader(dh)) {}
+        TODATable<Reader>(owner, "<>", "input", Reader(dh)) {}
 };
 
 
 struct ODBCSVTable : public TODATable<TextReader> {
     ODBCSVTable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name, const std::string& delimiter) :
-        TODATable(owner, path, name, TextReader(path, delimiter)) {}
+        TODATable<TextReader>(owner, path, name, TextReader(path, delimiter)) {}
     ODBCSVTable(eckit::sql::SQLDatabase& owner, std::istream& is, const std::string& name, const std::string& delimiter) :
-        TODATable(owner, "<none>", name, TextReader(is, delimiter)) {}
+        TODATable<TextReader>(owner, "<none>", name, TextReader(is, delimiter)) {}
 };
 
 

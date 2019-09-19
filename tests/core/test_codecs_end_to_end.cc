@@ -100,16 +100,6 @@ namespace {
             columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
         }
     };
-
-    // A constant string value (shorter than 8 bytes)
-
-    const char* const_string_2 = "pies\0\0\0\0";
-
-    struct MockReadIteratorConstString2 : public MockReadIterator {
-        MockReadIteratorConstString2() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_2)) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
-        }
-    };
 }
 
 
@@ -189,50 +179,6 @@ CASE("The constant codec can also store strings") {
         for ( ; it != end; ++it) {
             double val = (*it)[0];
             EXPECT(::memcmp(const_string_1, &val, sizeof(val)) == 0);
-            count++;
-        }
-
-        EXPECT(count == num_rows_to_write);
-
-        // Check that this has used the constant codec.
-        EXPECT(it->columns()[0]->coder().name() == "constant_string");
-        EXPECT(it->columns()[0]->type() == odc::api::STRING);
-    }
-}
-
-
-CASE("The constant codec can also store strings shorter than 8 bytes") {
-
-    // Construct the encoded stuff
-
-    eckit::Buffer buf(4096);
-
-    eckit::MemoryHandle writeDH(buf);
-
-    {
-        odc::Writer<> oda(writeDH);
-        odc::Writer<>::iterator outit = oda.begin();
-
-        odc::tool::MockReader<MockReadIteratorConstString2> reader;
-        outit->pass1(reader.begin(), reader.end());
-    }
-
-    // And test that this decodes correctly
-
-    {
-        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
-        dh.openForRead();
-        odc::Reader oda(dh);
-
-        odc::Reader::iterator it = oda.begin();
-        odc::Reader::iterator end = oda.end();
-
-        EXPECT(it->columns()[0]->name() == "a-col");
-
-        size_t count = 0;
-        for ( ; it != end; ++it) {
-            double val = (*it)[0];
-            EXPECT(::memcmp(const_string_2, &val, sizeof(val)) == 0);
             count++;
         }
 

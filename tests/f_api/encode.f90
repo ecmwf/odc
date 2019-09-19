@@ -179,9 +179,10 @@ contains
     function test_encode_column_major() result(success)
 
         real(8) :: data(7, 15)
-        integer :: outunit
+        integer :: outunit, iter
         integer(8) :: bytes_written
         type(odc_encoder) :: encoder
+        character(*), parameter :: test_filename = 'f90_test_encode_column.odb'
         logical :: success
         success = .true.
 
@@ -190,24 +191,30 @@ contains
         call check_decoded_column_major(data, success)
         call initialise_encoder(encoder, success)
 
-        call check_call(encoder%set_data(data), "set encoder data", success)
+        ! Put encoding in a loop. Do the encoding twice, to demonstrate that
+        ! we can iterate through tables of data.
 
-        open(newunit=outunit, file='testout.odb', access='stream', form='unformatted')
-        call check_call(encoder%encode(outunit, bytes_written), "do encode", success)
+        open(newunit=outunit, file=test_filename, access='stream', form='unformatted')
+
+        do iter = 0, 1
+            call check_call(encoder%set_data(data), "set encoder data", success)
+            call check_call(encoder%encode(outunit, bytes_written), "do encode", success)
+        end do
+
         close(outunit)
-
         call check_call(encoder%free(), "free encoder", success)
 
-        call check_encoded_odb('testout.odb', success)
+        call check_encoded_odb(test_filename, success)
 
     end function
 
     function test_encode_row_major() result(success)
 
         real(8) :: data(15, 7)
-        integer :: row, outunit
+        integer :: row, outunit, iter
         integer(8) :: bytes_written
         type(odc_encoder) :: encoder
+        character(*), parameter :: test_filename = 'f90_test_encode_row.odb'
         logical :: success
         success = .true.
 
@@ -216,15 +223,20 @@ contains
         call check_decoded_column_major(transpose(data), success)
         call initialise_encoder(encoder, success)
 
-        call check_call(encoder%set_data(data, column_major=.false.), "set encoder data", success)
+        ! Put encoding in a loop. Do the encoding twice, to demonstrate that
+        ! we can iterate through tables of data.
 
-        open(newunit=outunit, file='testout2.odb', access='stream', form='unformatted')
-        call check_call(encoder%encode(outunit, bytes_written), "do encode", success)
+        open(newunit=outunit, file=test_filename, access='stream', form='unformatted')
+
+        do iter = 0, 1
+            call check_call(encoder%set_data(data, column_major=.false.), "set encoder data", success)
+            call check_call(encoder%encode(outunit, bytes_written), "do encode", success)
+        end do
+
         close(outunit)
-
         call check_call(encoder%free(), "free encoder", success)
 
-        call check_encoded_odb('testout2.odb', success)
+        call check_encoded_odb(test_filename, success)
 
     end function
 
@@ -334,45 +346,49 @@ contains
         type(odc_decoder) :: decoder
         real(8), pointer :: data(:,:)
         logical :: column_major
-        integer :: err
+        integer :: err, iter
         integer(8) :: nrows
 
         call check_call(reader%open_path(path), "open " // path, success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
-        ! We are expecting one frame
+        ! We are expecting two frames
 
-        call check_call(frame%next(), "get first frame", success)
+        do iter = 0, 1
 
-        call check_frame_column(frame, 1, "col1", ODC_INTEGER, success)
-        call check_frame_column(frame, 2, "col2", ODC_INTEGER, success)
-        call check_frame_column(frame, 3, "col3", ODC_BITFIELD, success)
-        call check_frame_column(frame, 4, "col4", ODC_DOUBLE, success)
-        call check_frame_column(frame, 5, "col5", ODC_INTEGER, success)
-        call check_frame_column(frame, 6, "col6", ODC_STRING, success)
-        call check_frame_column(frame, 7, "col7", ODC_STRING, success)
-        call check_frame_column(frame, 8, "col8", ODC_REAL, success)
-        call check_frame_column(frame, 9, "col9", ODC_DOUBLE, success)
-        call check_frame_column(frame, 10, "col10", ODC_REAL, success)
-        call check_frame_column(frame, 11, "col11", ODC_BITFIELD, success)
-        call check_frame_column(frame, 12, "col12", ODC_INTEGER, success)
-        call check_frame_column(frame, 13, "col13", ODC_INTEGER, success)
-        call check_frame_column(frame, 14, "col14", ODC_INTEGER, success)
+            call check_call(frame%next(), "get first frame", success)
 
-        ! Decode the data
+            call check_frame_column(frame, 1, "col1", ODC_INTEGER, success)
+            call check_frame_column(frame, 2, "col2", ODC_INTEGER, success)
+            call check_frame_column(frame, 3, "col3", ODC_BITFIELD, success)
+            call check_frame_column(frame, 4, "col4", ODC_DOUBLE, success)
+            call check_frame_column(frame, 5, "col5", ODC_INTEGER, success)
+            call check_frame_column(frame, 6, "col6", ODC_STRING, success)
+            call check_frame_column(frame, 7, "col7", ODC_STRING, success)
+            call check_frame_column(frame, 8, "col8", ODC_REAL, success)
+            call check_frame_column(frame, 9, "col9", ODC_DOUBLE, success)
+            call check_frame_column(frame, 10, "col10", ODC_REAL, success)
+            call check_frame_column(frame, 11, "col11", ODC_BITFIELD, success)
+            call check_frame_column(frame, 12, "col12", ODC_INTEGER, success)
+            call check_frame_column(frame, 13, "col13", ODC_INTEGER, success)
+            call check_frame_column(frame, 14, "col14", ODC_INTEGER, success)
 
-        call check_call(decoder%initialise(), "initialise decoder", success)
-        call check_call(decoder%defaults_from_frame(frame), "defaults from frame", success)
-        call check_call(decoder%decode(frame, nrows), "decode", success)
-        call check_call(decoder%data(data, column_major), "get data", success)
+            ! Decode the data
 
-        if (.not. column_major) then
-            write(error_unit, *) 'expected column major'
-            success = .false.
-        end if
+            call check_call(decoder%initialise(), "initialise decoder", success)
+            call check_call(decoder%defaults_from_frame(frame), "defaults from frame", success)
+            call check_call(decoder%decode(frame, nrows), "decode", success)
+            call check_call(decoder%data(data, column_major), "get data", success)
 
-        call check_decoded_column_major(data, success)
-        call check_call(decoder%free(), "free decoder", success)
+            if (.not. column_major) then
+                write(error_unit, *) 'expected column major'
+                success = .false.
+            end if
+
+            call check_decoded_column_major(data, success)
+            call check_call(decoder%free(), "free decoder", success)
+
+        end do
 
         ! And iterations done
 

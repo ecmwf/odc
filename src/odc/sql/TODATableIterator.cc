@@ -80,6 +80,7 @@ void TODATableIterator<READER>::updateMetaData() {
     const core::MetaData& md = it_->columns();
 
     columnOffsets_.clear();
+    columnDoublesSizes_.clear();
     for (const eckit::sql::SQLColumn& col : columns_) {
 
         if (!md.hasColumn(col.name())) {
@@ -88,6 +89,7 @@ void TODATableIterator<READER>::updateMetaData() {
 
         size_t idx = md.columnIndex(col.name());
         columnOffsets_.push_back(it_->dataOffset(idx));
+        columnDoublesSizes_.push_back(it_->dataSizeDoubles(idx));
     }
 }
 
@@ -95,6 +97,12 @@ template <typename READER>
 std::vector<size_t> TODATableIterator<READER>::columnOffsets() const {
     ASSERT(columnOffsets_.size() == columns_.size());
     return columnOffsets_;
+}
+
+template <typename READER>
+std::vector<size_t> TODATableIterator<READER>::doublesDataSizes() const {
+    ASSERT(columnDoublesSizes_.size() == columns_.size());
+    return columnDoublesSizes_;
 }
 
 template <typename READER>

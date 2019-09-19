@@ -5,9 +5,11 @@ list( APPEND _core_odc_tests
     test_codecs_write
     test_codecs_read
     test_codecs_end_to_end
+    test_codecs_end_to_end2
     test_reencode_string_table
     test_concatenated_odbs
     test_minmax
+    test_metadata
 
     test_select_iterator
     test_text_reader

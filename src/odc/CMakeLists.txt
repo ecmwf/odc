@@ -14,7 +14,6 @@ configure_file( odc_config.f90.in odc_config.f90 )
 list( APPEND odclib_src_files
 
 api/odc.h
-api/odc_c.h
 api/odc.cc
 api/Odb.h
 api/Odb.cc

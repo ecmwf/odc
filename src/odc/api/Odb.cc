@@ -232,6 +232,7 @@ size_t FrameImpl::rowCount() const {
 }
 
 size_t FrameImpl::columnCount() const {
+    ASSERT_MSG(!tables_.empty(), "No tables. Have you remembered to call odc_next_frame() on frame?");
     return tables_[0].columnCount();
 }
 

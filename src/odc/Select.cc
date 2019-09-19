@@ -38,7 +38,7 @@ Select::Select(const std::string& selectStatement, bool manageOwnBuffer) :
 
 
 Select::Select(const std::string& selectStatement, DataHandle& dh, bool /* manageOwnBuffer */) :
-    Select(selectStatement, &dh) {
+    Select(selectStatement, true) {
 
     dh.openForRead();
     eckit::sql::SQLDatabase& db(session_.currentDatabase());

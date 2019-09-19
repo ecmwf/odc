@@ -43,7 +43,9 @@ private: // methods
             s = DerivedCodec::missingMarker;
         } else {
             s = val - this->min_;
+#ifndef _CRAYC
             ASSERT(s != DerivedCodec::missingMarker);
+#endif
         }
         ByteOrder::swap(s);
         ::memcpy(p, &s, sizeof(s));

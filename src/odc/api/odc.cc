@@ -46,7 +46,7 @@ struct odc_decoder_t {
         bool transpose;
     };
 
-    odc_decoder_t() : nrows(0), dataWidth(0), dataHeight(0), externalData(0), columnMajor(true), ownedData() {}
+    odc_decoder_t() : nrows(0), dataWidth(0), dataHeight(0), externalData(0), columnMajor(false), ownedData() {}
 
     size_t nrows;
     std::vector<std::string> columnNames;
@@ -298,7 +298,7 @@ int odc_open_buffer(odc_reader_t** reader, const void* data, long length) {
 
 }
 
-int odb_open_stream(odc_reader_t** reader, void* handle, stream_read_t stream_proc) {
+int odc_open_stream(odc_reader_t** reader, void* handle, stream_read_t stream_proc) {
 
     // Wrap the stream in a DataHandle
     struct ReadStreamDataHandle : public eckit::DataHandle {
@@ -310,7 +310,7 @@ int odb_open_stream(odc_reader_t** reader, void* handle, stream_read_t stream_pr
         void openForAppend(const Length&) override { NOTIMP; }
         long read(void* buffer, long length) override { return fn_(handle_, buffer, length); }
         long write(const void*, long) override { NOTIMP; }
-        void close() {}
+        void close() override {}
 
         void* handle_;
         stream_read_t fn_;
@@ -439,6 +439,13 @@ int odc_new_decoder(odc_decoder_t** decoder) {
 int odc_free_decoder(const odc_decoder_t* decoder) {
     return wrapApiFunction([decoder] {
         delete decoder;
+    });
+}
+
+int odc_decoder_set_column_major(odc_decoder_t* decoder, bool columnMajor) {
+    return wrapApiFunction([decoder, columnMajor] {
+        ASSERT(decoder);
+        decoder->columnMajor = columnMajor;
     });
 }
 
@@ -723,6 +730,17 @@ int odc_encoder_set_rows_per_frame(odc_encoder_t* encoder, long rows_per_frame) 
 int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height, bool columnMajor) {
     return wrapApiFunction([encoder, data, width, height, columnMajor] {
         ASSERT(encoder);
+
+        // If we are setting this _again_ then this is because a configured encoder
+        // is being reused. Make sure that we rezero things that should be rezeroed.
+
+        if (encoder->arrayData != 0) {
+            for (auto& col : encoder->columnData) {
+                col.data = 0;
+                col.stride = 0;
+            }
+        }
+
         encoder->arrayData = data;
         encoder->arrayWidth = width;
         encoder->arrayHeight = height;
@@ -907,7 +925,7 @@ int odc_encode_to_stream(odc_encoder_t* encoder, void* handle, stream_write_t wr
             return written;
         }
         Offset position() override { return pos_; }
-        void close() {}
+        void close() override {}
 
         void* handle_;
         stream_write_t fn_;
@@ -929,7 +947,7 @@ int odc_encode_to_file_descriptor(odc_encoder_t* encoder, int fd, long* bytes_en
         dh.openForWrite(0);
         AutoClose closer(dh);
         odc_encode_to_data_handle(encoder, dh);
-        (*bytes_encoded) = dh.position();
+        if (bytes_encoded) (*bytes_encoded) = dh.position();
     });
 }
 
@@ -939,7 +957,7 @@ int odc_encode_to_buffer(odc_encoder_t* encoder, void* buffer, long length, long
         dh.openForWrite(0);
         AutoClose closer(dh);
         odc_encode_to_data_handle(encoder, dh);
-        (*bytes_encoded) = dh.position();
+        if (bytes_encoded) (*bytes_encoded) = dh.position();
     });
 }
 

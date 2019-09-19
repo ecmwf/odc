@@ -317,6 +317,14 @@ module odc
             integer(c_int) :: err
         end function
 
+        function odc_decoder_set_column_major(decoder, columnMajor) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            logical(c_bool), intent(in), value :: columnMajor
+            integer(c_int) :: err
+        end function
+
         function odc_decoder_set_row_count(decoder, row_count) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -689,10 +697,16 @@ contains
 
     ! Methods for decoder object
 
-    function decoder_initialise(decoder) result(err)
+    function decoder_initialise(decoder, column_major) result(err)
         class(odc_decoder), intent(inout) :: decoder
+        logical, intent(in), optional :: column_major
         integer :: err
+        logical(c_bool) :: l_column_major = .true.
+        if (present(column_major)) l_column_major = column_major
         err = odc_new_decoder(decoder%impl)
+        if (err == ODC_SUCCESS) then
+            err = odc_decoder_set_column_major(decoder%impl, l_column_major)
+        end if
     end function
 
     function decoder_free(decoder) result(err)

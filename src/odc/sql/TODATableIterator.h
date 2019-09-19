@@ -44,6 +44,7 @@ private: // methods (override>
     virtual bool next() override;
 
     virtual std::vector<size_t> columnOffsets() const override;
+    virtual std::vector<size_t> doublesDataSizes() const override;
     virtual const double* data() const override;
 
 private: // methods
@@ -58,6 +59,7 @@ private: // members
 
     const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns_;
     std::vector<size_t> columnOffsets_;
+    std::vector<size_t> columnDoublesSizes_;
 
     std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback_;
 

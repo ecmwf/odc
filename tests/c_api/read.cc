@@ -18,43 +18,46 @@ using namespace eckit::testing;
 
 // Specialise custom deletion for odb_t
 
+#define CHECK_RETURN(x) EXPECT((x) == ODC_SUCCESS)
+
 namespace std {
 template <> struct default_delete<odc_reader_t> {
-    void operator() (const odc_reader_t* reader) { odc_close(reader); }
+    void operator() (const odc_reader_t* reader) { CHECK_RETURN(odc_close(reader)); }
 };
 
 template <> struct default_delete<odc_frame_t> {
-    void operator() (const odc_frame_t* frame) { odc_free_frame(frame); }
+    void operator() (const odc_frame_t* frame) { CHECK_RETURN(odc_free_frame(frame)); }
 };
 
-//template <> struct default_delete<const odb_decoded_t> {
-//    void operator() (const odb_decoded_t* dt) { odc_free_odb_decoded(dt); }
-//};
-
+template <> struct default_delete<odc_decoder_t> {
+    void operator() (odc_decoder_t* t) { CHECK_RETURN(odc_free_decoder(t)); }
+};
 }
 
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Count lines in an existing ODB file") {
 
-    odc_reader_t* reader = 0;
-    EXPECT(odc_open_path(&reader, "../2000010106.odb") == ODC_SUCCESS);
+    odc_reader_t* reader = nullptr;
+    CHECK_RETURN(odc_open_path(&reader, "../2000010106.odb"));
+    std::unique_ptr<odc_reader_t> reader_deleter(reader);
 
+    odc_frame_t* frame = nullptr;
+    CHECK_RETURN(odc_new_frame(&frame, reader));
+    std::unique_ptr<odc_frame_t> frame_deleter(frame);
 
     size_t ntables = 0;
     size_t totalRows = 0;
 
     int ierr;
-    odc_frame_t* frame = 0;
-    EXPECT(odc_new_frame(&frame, reader) == ODC_SUCCESS);
     while ((ierr = odc_next_frame(frame)) == ODC_SUCCESS) {
 
         long nrows;
-        EXPECT(odc_frame_row_count(frame, &nrows) == ODC_SUCCESS);
+        CHECK_RETURN(odc_frame_row_count(frame, &nrows));
         totalRows += nrows;
 
         int ncols;
-        EXPECT(odc_frame_column_count(frame, &ncols) == ODC_SUCCESS);
+        CHECK_RETURN(odc_frame_column_count(frame, &ncols));
         EXPECT(ncols == 51);
 
         ++ntables;
@@ -68,6 +71,7 @@ CASE("Count lines in an existing ODB file") {
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Decode an entire ODB file") {
+
 
 //    std::unique_ptr<odb_t> o(odc_open_path("../2000010106.odb"));
 //
