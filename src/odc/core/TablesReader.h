@@ -41,14 +41,21 @@ public: // methods
     bool operator!=(const ReadTablesIterator& other);
     bool operator==(const ReadTablesIterator& other);
 
-    // n.b. We only define the prefix increment operator
     ReadTablesIterator& operator++();
+    ReadTablesIterator operator++(int);
 
     Table* operator->();
     const Table* operator->() const;
 
     Table& operator*();
     const Table& operator*() const;
+
+private: // methods
+
+    friend std::ostream& operator<<(std::ostream& os, const ReadTablesIterator& rti) {
+        os << "ReadTablesIterator(" << &rti.owner_ << ", " << rti.pos_ << ")";
+        return os;
+    }
 
 private: // members
 

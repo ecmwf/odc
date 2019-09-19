@@ -24,9 +24,9 @@ TemplateParameters::TemplateParameters()
 : std::vector<TemplateParameter*>()
 {}
 
-TemplateParameters::~TemplateParameters() { release(); }
+TemplateParameters::~TemplateParameters() { reset(); }
 
-void TemplateParameters::release()
+void TemplateParameters::reset()
 {
 	for (size_t i = 0; i < size(); ++i)
 		delete at(i);

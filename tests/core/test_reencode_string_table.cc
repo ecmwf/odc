@@ -8,28 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
+#include <ctime>
+#include <cstdlib>
+#include <algorithm>
+#include <cmath>
+
 #include "eckit/testing/Test.h"
 #include "eckit/system/SystemInfo.h"
-#include "eckit/memory/ScopedPtr.h"
 #include "eckit/eckit_ecbuild_config.h"
 
+#include "odc/api/ColumnType.h"
 #include "odc/core/Codec.h"
 #include "odc/codec/String.h"
 
-#include <time.h>
-#include <stdlib.h>
-#include <algorithm>
-
-// Some of the math.h/cmath functions are not clean when switching to C++11
-#if __cplusplus <= 199711L
-#include <math.h>
-#else
-#include <cmath>
-#define fpclassify(x) std::fpclassify((x))
-#define isinf(x) std::isinf((x))
-#define isnan(x) std::isnan((x))
-#define signbit(x) std::signbit((x))
-#endif
 
 using namespace eckit::testing;
 using namespace odc::core;
@@ -121,18 +112,18 @@ CASE("Character strings can be stored in a flat list, and indexed") {
         // Skip name of codec
         GeneralDataStream ds(bigEndianSource != eckit::system::SystemInfo::isBigEndian(), &data[0], data.size());
 
-        eckit::ScopedPtr<Codec> c;
+        std::unique_ptr<Codec> c;
         if (bigEndianSource == eckit::system::SystemInfo::isBigEndian()) {
             if (bits16) {
-                c.reset(new CodecInt16String<SameByteOrder>);
+                c.reset(new CodecInt16String<SameByteOrder>(odc::api::STRING));
             } else {
-                c.reset(new CodecInt8String<SameByteOrder>);
+                c.reset(new CodecInt8String<SameByteOrder>(odc::api::STRING));
             }
         } else {
             if (bits16) {
-                c.reset(new CodecInt16String<OtherByteOrder>);
+                c.reset(new CodecInt16String<OtherByteOrder>(odc::api::STRING));
             } else {
-                c.reset(new CodecInt8String<OtherByteOrder>);
+                c.reset(new CodecInt8String<OtherByteOrder>(odc::api::STRING));
             }
         }
         c->load(ds);

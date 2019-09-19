@@ -34,8 +34,8 @@ public: // definitions
 
 public: // methods
 
-    CodecLongReal() :
-        core::DataStreamCodec<ByteOrder>(codec_name()),
+    CodecLongReal(api::ColumnType type) :
+        core::DataStreamCodec<ByteOrder>(codec_name(), type),
         hasShortRealInternalMissing_(false),
         hasShortReal2InternalMissing_(false) {}
 
@@ -55,6 +55,10 @@ private: // methods
 
     void decode(double* out) override {
         this->ds().read(*out);
+    }
+
+    void skip() override {
+        this->ds().advance(sizeof(double));
     }
 
     /// Keep track on internal missing value collisions, to help the CodecOptimizer.
@@ -81,7 +85,7 @@ class ShortRealBase : public core::DataStreamCodec<ByteOrder> {
 
 public: // methods
 
-    ShortRealBase(const std::string& name) : core::DataStreamCodec<ByteOrder>(name) {}
+    ShortRealBase(api::ColumnType type, const std::string& name) : core::DataStreamCodec<ByteOrder>(name, type) {}
     ~ShortRealBase() override {}
 
 private: // methods
@@ -111,13 +115,17 @@ private: // methods
         const float internalMissing = reinterpret_cast<const float&>(internalMissingInt);
         (*out) = (s == internalMissing ? this->missingValue_ : s);
     }
+
+    void skip() override {
+        this->ds().advance(sizeof(float));
+    }
 };
 
 
 template <typename ByteOrder>
 struct CodecShortReal : public ShortRealBase<ByteOrder, minFloatAsInt> {
     constexpr static const char* codec_name() { return "short_real"; }
-    CodecShortReal() : ShortRealBase<ByteOrder, minFloatAsInt>(codec_name()) {}
+    CodecShortReal(api::ColumnType type) : ShortRealBase<ByteOrder, minFloatAsInt>(type, codec_name()) {}
     ~CodecShortReal() {}
 };
 
@@ -125,7 +133,7 @@ struct CodecShortReal : public ShortRealBase<ByteOrder, minFloatAsInt> {
 template <typename ByteOrder>
 struct CodecShortReal2 : public ShortRealBase<ByteOrder, real2MissingAsInt> {
     constexpr static const char* codec_name() { return "short_real2"; }
-    CodecShortReal2() : ShortRealBase<ByteOrder, real2MissingAsInt>(codec_name()) {}
+    CodecShortReal2(api::ColumnType type) : ShortRealBase<ByteOrder, real2MissingAsInt>(type, codec_name()) {}
     ~CodecShortReal2() {}
 };
 

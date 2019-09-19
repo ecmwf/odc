@@ -20,6 +20,7 @@
 
 #include "odc/core/ThreadSharedDataHandle.h"
 #include "odc/core/MetaData.h"
+#include "odc/core/Span.h"
 
 
 namespace eckit { class DataHandle; }
@@ -46,8 +47,8 @@ public: // methods
     eckit::Offset nextPosition() const;
     eckit::Length encodedDataSize() const;
 
-    size_t numRows() const;
-    size_t numColumns() const;
+    size_t rowCount() const;
+    size_t columnCount() const;
     int32_t byteOrder() const;
     bool otherByteOrder() const;
 
@@ -58,9 +59,16 @@ public: // methods
 
     void decode(DecodeTarget& target);
 
+    Span span(const std::vector<std::string>& columns, bool onlyConstant=false);
+    Span decodeSpan(const std::vector<std::string>& columns);
+
 private: // methods
 
     Table(const ThreadSharedDataHandle& dh);
+
+    /// Lookups used for decoding. Memoised for efficiency
+    const std::map<std::string, size_t>& columnLookup();
+    const std::map<std::string, size_t>& simpleColumnLookup();
 
 private: // members
 
@@ -74,6 +82,11 @@ private: // members
 
     MetaData metadata_;
     Properties properties_;
+
+    // Lookups. Memoised for efficiency
+
+    std::map<std::string, size_t> columnLookup_;
+    std::map<std::string, size_t> simpleColumnLookup_;
 };
 
 

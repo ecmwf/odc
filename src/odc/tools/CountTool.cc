@@ -30,7 +30,7 @@ size_t CountTool::rowCount(const PathName &db)
     size_t n = 0;
 
     for (; it != end; ++it) {
-        n += it->numRows();
+        n += it->rowCount();
     }
 
 	return n;

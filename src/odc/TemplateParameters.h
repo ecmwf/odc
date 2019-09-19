@@ -50,7 +50,7 @@ public:
     TemplateParameters(const std::string& fileNameTemplate, const core::MetaData& = nullMD);
 	~TemplateParameters();
 
-	void release();
+        void reset();
     static TemplateParameters& parse(const std::string& fileNameTemplate, TemplateParameters&, const core::MetaData& = nullMD);
 
 private:

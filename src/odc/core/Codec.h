@@ -30,7 +30,7 @@ namespace core {
 
 class Codec {
 public:
-	Codec(const std::string& name);
+    Codec(const std::string& name, api::ColumnType type);
 	virtual ~Codec();
 
 	/// Creates a clone of this codec. NOTE: the clone is not really usefull for coding/decoding, but has the same stats/missing
@@ -42,6 +42,7 @@ public:
     char* encode(char* p, const double& d) { return reinterpret_cast<char*>(encode(reinterpret_cast<uint8_t*>(p), d)); }
     virtual unsigned char* encode(unsigned char* p, const double& d) = 0;
     virtual void decode(double* out) = 0;
+    virtual void skip() = 0;
 
     void setDataStream(GeneralDataStream& ds);
     virtual void setDataStream(DataStream<SameByteOrder>& ds);
@@ -98,6 +99,8 @@ protected:
 	double missingValue_;
 	double min_;
 	double max_;
+
+    api::ColumnType type_;
 	
 private:
 	Codec(const Codec&);
@@ -119,7 +122,7 @@ class DataStreamCodec : public Codec {
 
 public: // methods
 
-    DataStreamCodec(const std::string& name) : Codec(name), ds_(0) {}
+    DataStreamCodec(const std::string& name, api::ColumnType type) : Codec(name, type), ds_(0) {}
 
     void setDataStream(DataStream<ByteOrder>& ds) override {
         ds_ = &ds;

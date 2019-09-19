@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -13,11 +13,13 @@
 /// @author Piotr Kuchta, ECMWF, September 2010
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/utils/StringTools.h"
-#include "odc/Select.h"
-#include "odc/core/MetaData.h"
 
-#include "ImportTool.h"
+#include "odc/api/Odb.h"
+#include "odc/core/MetaData.h"
+#include "odc/Select.h"
+
 #include "TestCase.h"
 
 using namespace std;
@@ -85,7 +87,12 @@ static void test()
 		"1,20,'two'\n"
 		"2,30,'three'\n"
 		"2,40,'four'\n";
-        odc::tool::ImportTool::importText(in, "TestOrderBy.odb");
+        {
+            FileHandle dh("TestOrderBy.odb");
+            dh.openForWrite(0);
+            AutoClose close(dh);
+            odc::api::odbFromCSV(in, dh);
+        }
 
 		string sql = "select distinct a,b,c from \"TestOrderBy.odb\" order by a desc, b asc;";
 
@@ -113,7 +120,10 @@ static void setUp()
 	s << "a:REAL" << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
 	for (size_t i = 1; i <= 10; ++i) s << i << std::endl;
-    odc::tool::ImportTool::importText(s.str().c_str(), "TestOrderBy_a1to10twice.odb");
+    FileHandle dh("TestOrderBy_a1to10twice.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(s, dh);
 }
 static void tearDown(){}
 

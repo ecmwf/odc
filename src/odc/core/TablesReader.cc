@@ -49,6 +49,13 @@ ReadTablesIterator& ReadTablesIterator::operator++() {
     return *this;
 }
 
+ReadTablesIterator ReadTablesIterator::operator++(int) {
+
+    auto copy = *this;
+    ++(*this);
+    return copy;
+}
+
 Table* ReadTablesIterator::operator->() {
     ASSERT(pos_ != -1);
     return &owner_.getTable(pos_);
@@ -103,8 +110,9 @@ bool TablesReader::ensureTable(long idx) {
 
     if (idx == long(tables_.size())) {
 
+        // n.b. Some DataHandles don't implement estimate() --> accept "0"
         Offset nextPosition = (tables_.empty() ? Offset(0) : tables_.back()->nextPosition());
-        ASSERT(nextPosition <= dh_.estimate());
+        ASSERT(nextPosition <= dh_.estimate() || dh_.estimate() == Length(0));
 
         // If the table has been truncated, this is an error, and we cannot read on.
         Offset pos = dh_.seek(nextPosition);

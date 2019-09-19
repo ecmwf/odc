@@ -12,68 +12,76 @@
 
 #include "eckit/testing/Test.h"
 
-#include "odc/odc.h"
+#include "odc/api/odc.h"
+#include "odc/api/Odb.h"
 
 using namespace eckit::testing;
-
-// Specialise custom deletion for odb_t
-
-namespace std {
-template <> struct default_delete<odb_t> {
-    void operator() (odb_t* o) { odc_close(o); }
-};
-
-template <> struct default_delete<odb_table_t> {
-    void operator() (odb_table_t* t) { odc_free_table(t); }
-};
-
-template <> struct default_delete<const odb_decoded_t> {
-    void operator() (const odb_decoded_t* dt) { odc_free_odb_decoded(dt); }
-};
-
-}
 
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Count lines in an existing ODB file") {
 
-    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
+    odc::api::Reader o("../2000010106.odb");
 
-    int ntables = odc_num_tables(o.get());
-    EXPECT(ntables == 333);
-
+    size_t nframes = 0;
     size_t totalRows = 0;
 
-    for (int i = 0; i < ntables; i++) {
+    odc::api::Frame frame(o);
 
-        std::unique_ptr<odb_table_t> table(odc_get_table(o.get(), i));
-        totalRows += odc_table_num_rows(table.get());
-        EXPECT(odc_table_num_columns(table.get()) == 51);
+    while (frame.next(false)) {
+        totalRows += frame.rowCount();
+        EXPECT(frame.columnCount() == 51);
+        ++nframes;
     }
 
+    EXPECT(nframes == 333);
     EXPECT(totalRows == 3321753);
 }
 
 // ------------------------------------------------------------------------------------------------------
 
-CASE("Decode an entire ODB file") {
-
-    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
-
-    int ntables = odc_num_tables(o.get());
-    EXPECT(ntables == 333);
-
-    for (int i = 0; i < ntables; i++) {
-
-        std::unique_ptr<odb_table_t> table(odc_get_table(o.get(), i));
-
-        std::unique_ptr<const odb_decoded_t> decoded(odc_table_decode_all(table.get()));
-
-        EXPECT(decoded->nrows == odc_table_num_rows(table.get()));
-        EXPECT(decoded->ncolumns == 51);
-    }
-}
-
+//CASE("Decode an entire ODB file") {
+//
+//    odc::api::Odb o("../2000010106.odb");
+//
+//    size_t ntables = 0;
+//
+//    while (const auto& table = o.next()) {
+//
+//        DecodeTarget decoded;
+//        table.get().decode();
+//
+//        EXPECT(decoded.rows() == table.get().rowCount());
+//        EXPECT(decoded.columns() == 51);
+//
+//        ++ntables;
+//    }
+//}
+//
+//// ------------------------------------------------------------------------------------------------------
+//
+//CASE("Decode only some columns") {
+//
+//    odc::api::Odb o("../2000010106.odb");
+//
+//    size_t ntables = 0;
+//
+//    while (const auto& table = o.next()) {
+//
+//        DecodeTarget decoded;
+//        decoded.addColumn("statid");
+//        decoded.addColumn("expver");
+//        decoded.addColumn("andate");
+//        decoded.addColumn("obsvalue");
+//
+//        DecodeTarget decoded = table.get().decode();
+//
+//        EXPECT(decoded.rows() == table.get().rowCount());
+//        EXPECT(decoded.columns() == 51);
+//
+//        ++ntables;
+//    }
+//}
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Decode an entire ODB file preallocated data structures") {

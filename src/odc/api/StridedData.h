@@ -27,31 +27,45 @@ namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class StridedData {
+template <typename value_type>
+class StridedDataT {
 
 public: // types
 
-    using value_type = char;
+    using const_value_type = typename std::add_const<value_type>::type;
 
-    using iterator = StridedData;
+    using iterator = StridedDataT<value_type>;
+    using const_iterator = StridedDataT<const_value_type>;
+
+private: // types
+
+    using void_arg_t = typename std::conditional<std::is_const<value_type>::value, const void*, void*>::type;
 
 public: // methods
 
     // Construction and copy
 
-    StridedData(void* data, size_t nelem, size_t dataSize, size_t stride, bool cnst=false) :
-        data_(reinterpret_cast<char*>(data)), nelem_(nelem), dataSize_(dataSize), stride_(stride), const_(cnst) {
-        ASSERT(!const_);
+    StridedDataT(void_arg_t data, size_t nelem, size_t dataSize, size_t stride) :
+        data_(reinterpret_cast<value_type*>(data)), nelem_(nelem), dataSize_(dataSize), stride_(stride) {
+    }
+    StridedDataT() : StridedDataT(0, 0, 0, 0) {}
+
+    ~StridedDataT() {}
+
+    StridedDataT(const StridedDataT<value_type>& rhs) = default;
+    StridedDataT<value_type>& operator=(const StridedDataT<value_type>& rhs) = default;
+
+    // Slice the StridedData to get a sub-strided-data
+
+    StridedDataT<value_type> slice(size_t rowOffset, size_t nrows) {
+        ASSERT(rowOffset + nrows <= nelem_);
+        return StridedDataT<value_type>(get(rowOffset), nrows, dataSize_, stride_);
     }
 
-    StridedData(const void* data, size_t nelem, size_t dataSize, size_t stride) :
-        StridedData(const_cast<void*>(data), nelem, dataSize, stride, true) {
+    StridedDataT<value_type> slice(size_t rowOffset, size_t nrows) const {
+        ASSERT(rowOffset + nrows <= nelem_);
+        return StridedDataT<const_value_type>(get(rowOffset), nrows, dataSize_, stride_);
     }
-
-    ~StridedData() {}
-
-    StridedData(const StridedData& rhs) = default;
-    StridedData& operator=(const StridedData& rhs) = default;
 
     // Accessing the data
 
@@ -60,46 +74,60 @@ public: // methods
     size_t stride() const { return stride_; }
 
     value_type* get(int i) {
-        ASSERT(!const_); return &data_[i*stride_];
+        return &data_[i*stride_];
     }
-    const value_type* get(int i) const {
+    const_value_type* get(int i) const {
         return &data_[i*stride_];
     }
 
-    value_type* operator[](int i) { ASSERT(!const_); return get(i); }
-    const value_type* operator[](int i) const { return get(i); }
+    value_type* operator[](int i) { return get(i); }
+    const_value_type* operator[](int i) const { return get(i); }
 
-    value_type* operator*() { ASSERT(!const_); return data_; }
-    const value_type* operator*() const { return data_; }
+    value_type* operator*() { return data_; }
+    const_value_type* operator*() const { return data_; }
 
     void fill(int sourceRow, int finalRow);
 
+    bool isNewValue(size_t row) const {
+        if (row == 0) return true;
+        return ::memcmp(get(row), get(row-1), dataSize_) != 0;
+    }
+
     // Iteration functionality
 
-    iterator begin() const { return *this; }
-    iterator end() const { return StridedData(data_ + (nelem_*stride_), 0, dataSize_, stride_, const_); }
+    iterator begin() { return *this; }
+    iterator end() { return iterator {data_ + (nelem_*stride_), 0, dataSize_, stride_}; }
 
-    StridedData& operator++() {
+    const_iterator begin() const { return const_iterator {data_, nelem_, dataSize_, stride_}; }
+    const_iterator end() const { return const_iterator {data_ + (nelem_*stride_), 0, dataSize_, stride_}; }
+
+    StridedDataT<value_type>& operator++() {
         data_ += stride_;
         --nelem_;
         return *this;
     }
 
-    StridedData operator++(int) {
+    StridedDataT<value_type> operator++(int) {
         auto ret = *this;
         ++(*this);
         return ret;
     }
 
-    bool operator==(const StridedData& rhs) {
+    bool operator==(const StridedDataT<value_type>& rhs) const {
         return (data_ == rhs.data_ &&
                 nelem_ == rhs.nelem_ &&
-                const_ == rhs.const_ &&
                 dataSize_ == rhs.dataSize_ &&
                 stride_ == rhs.stride_);
     }
-    bool operator!=(const StridedData& rhs) {
+    bool operator!=(const StridedDataT<value_type>& rhs) const {
         return !(*this == rhs);
+    }
+
+private: // methods
+
+    friend std::ostream& operator<<(std::ostream& o, const StridedDataT<value_type>& s) {
+        o << "StridedData(0x" << (void*)s.data_ << "-" << s.dataSize_ << ":" << s.stride_ << "x" << s.nelem_ << ")";
+        return o;
     }
 
 private: // members
@@ -109,12 +137,12 @@ private: // members
     size_t nelem_;
     size_t dataSize_;
     size_t stride_;
-    bool const_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-inline void StridedData::fill(int sourceRow, int finalRow) {
+template <typename value_type>
+inline void StridedDataT<value_type>::fill(int sourceRow, int finalRow) {
 
     ASSERT(sourceRow < finalRow);
 
@@ -141,6 +169,9 @@ inline void StridedData::fill(int sourceRow, int finalRow) {
         }
     }
 }
+
+using StridedData = StridedDataT<char>;
+using ConstStridedData = StridedDataT<const char>;
 
 //----------------------------------------------------------------------------------------------------------------------
 

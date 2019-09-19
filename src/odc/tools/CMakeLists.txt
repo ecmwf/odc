@@ -24,8 +24,8 @@ MDSetTool.cc
 MDSetTool.h
 MergeTool.cc
 MergeTool.h
-ODA2RequestTool.cc
-ODA2RequestTool.h
+#ODA2RequestTool.cc
+#ODA2RequestTool.h
 ODAHeaderTool.cc
 ODAHeaderTool.h
 SQLTool.cc
@@ -42,8 +42,6 @@ ToolRunnerApplication.cc
 ToolRunnerApplication.h
 XYVTool.cc
 XYVTool.h
-odc_tools_c.cc
-odc_tools_c.h
 )
 
 list( APPEND odctest_src_files
@@ -59,9 +57,6 @@ TestBitfields.cc
 TestCommandLineParsing.cc
 TestDispatchingWriter.cc
 TestDistinct.cc
-TestFastODA2Request.cc
-TestFastODA2Request2.cc
-TestFastODA2Request3.cc
 TestFunctionDateAndTime.cc
 TestFunctionTdiff.cc
 TestFunctionThin.cc

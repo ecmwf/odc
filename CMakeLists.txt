@@ -17,7 +17,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ### dependencies and options
 
 ecbuild_use_package( PROJECT eckit  VERSION 1.0 REQUIRED )
-ecbuild_use_package( PROJECT metkit VERSION 0.11 REQUIRED )
 
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
 ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
@@ -60,7 +59,7 @@ set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" 
 get_directory_property( ODC_DEFINITIONS COMPILE_DEFINITIONS )
 
 set( ODC_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( ODC_LIBRARIES      odbcore )
+set( ODC_LIBRARIES      odccore )
 
 if( HAVE_FORTRAN )
   list( APPEND ODC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )

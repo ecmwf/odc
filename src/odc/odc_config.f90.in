@@ -1,0 +1,7 @@
+
+module odc_config
+
+    character(*), parameter :: odc_version_str = "@odc_VERSION_STR@"
+    character(*), parameter :: odc_git_sha1_str = "@odc_GIT_SHA1@"
+
+end module

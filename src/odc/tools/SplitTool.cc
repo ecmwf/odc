@@ -81,8 +81,8 @@ vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t
     {   
         Offset offset(it->startPosition());
         Length length(it->nextPosition() - it->startPosition());
-        size_t numberOfRows (it->numRows());
-        size_t numberOfColumns (it->numColumns());
+        size_t numberOfRows (it->rowCount());
+        size_t numberOfColumns (it->columnCount());
 
 		L << "SplitTool::getChunks: " << offset << " " << length << endl;
 

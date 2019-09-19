@@ -21,7 +21,7 @@ namespace codec {
 // Self registration
 
 namespace {
-    core::CodecBuilder<CodecConstant> constantBuilder;
+    core::IntegerCodecBuilder<CodecConstant> constantBuilder;
     core::CodecBuilder<CodecConstantString> constantStringBuilder;
 }
 

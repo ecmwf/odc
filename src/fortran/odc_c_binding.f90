@@ -11,7 +11,7 @@
 ! ECMWF
 !------------------------------------------------------------------------------
 !
-! MODULE: odb_c_binding
+! MODULE: odc_c_binding
 !
 !> @author Anne Fouilloux, ECMWF
 !
@@ -23,7 +23,7 @@
 ! TODO_dd_mmm_yyyy - TODO_describe_appropriate_changes - TODO_name
 !------------------------------------------------------------------------------
 
-module odb_c_binding
+module odc_c_binding
   use iso_c_binding
   use, intrinsic :: iso_c_binding
   implicit none
@@ -424,4 +424,4 @@ contains
      offset = offset + 1
    end function
 
-end module odb_c_binding
+end module odc_c_binding

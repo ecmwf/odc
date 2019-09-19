@@ -15,8 +15,10 @@
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/FileHandle.h"
 
-#include "odc/tools/ImportTool.h"
+#include "odc/api/Odb.h"
+
 #include "odc/Select.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
@@ -37,7 +39,10 @@ TEST(example_select_data_read_results)
         2,2,0.4
         2,2,0.1)";
 
-    odc::tool::ImportTool::importText(data, std::string("example_select_data_read_results.odb"));
+    FileHandle out("example_select_data_read_results.odb");
+    out.openForWrite(0);
+    AutoClose close(out);
+    odc::api::odbFromCSV(data, out);
 
     odc::Select select("select x,min(v),max(v);", "example_select_data_read_results.odb");
 
@@ -59,7 +64,10 @@ TEST(example_read_data)
 {
     // Prepare input data
     const std::string data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
-    odc::tool::ImportTool::importText(data, std::string("example_read_data.odb"));
+    FileHandle out("example_read_data.odb");
+    out.openForWrite(0);
+    AutoClose close(out);
+    odc::api::odbFromCSV(data, out);
 
     odc::Reader o("example_read_data.odb");
     for (odc::Reader::iterator it (o.begin()),

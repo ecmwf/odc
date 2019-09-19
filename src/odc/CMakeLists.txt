@@ -8,63 +8,40 @@ if ( odc_SCHEMA_PATH )
     add_definitions ( -Dodc_SCHEMA_PATH=${odc_SCHEMA_PATH} )
 endif()
 
+configure_file( odc_config.f90.in odc_config.f90 )
+
 
 list( APPEND odclib_src_files
 
 api/odc.h
 api/odc.cc
-api/Odc_cpp.h
-api/Odc_cpp.cc
+api/Odb.h
+api/Odb.cc
 api/ColumnType.h
+api/ColumnInfo.h
 api/StridedData.h
 
-####odbql.cc
-####odbql.h
 pyodbapi.h
 ODBAPIVersionSHA1.cc
 StringTool.cc
 StringTool.h
-###>>>#ShiftedBitColumnExpression.cc
-###>>>#ShiftedBitColumnExpression.h
 CommandLineParser.cc
 CommandLineParser.h
 Comparator.cc
 Comparator.h
 ConstantSetter.cc
 ConstantSetter.h
-DateTime.cc
-DateTime.h
-####Dictionary.cc
-####Dictionary.h
 DispatchingWriter.cc
 DispatchingWriter.h
-####DirectAccess.cc
-####DirectAccess.h
-####DirectAccessIterator.cc
-####DirectAccessIterator.h
-Duration.cc
-Duration.h
-FastODA2Request.cc
-FastODA2Request.h
 MDI.cc
 MDI.h
-GribCodes.cc
-GribCodes.h
 IteratorProxy.h
 LibOdc.cc
 LibOdc.h
-MD5.cc
-MD5.h
 MDSetter.cc
 MDSetter.h
 MDUpdatingIterator.cc
 MDUpdatingIterator.h
-####ODAColumn.cc
-####ODAColumn.h
-####NullColumn.cc
-####NullColumn.h
-####ODADatabase.cc
-####ODADatabase.h
 ODAHandle.cc
 ODAHandle.h
 ODATranslator.h
@@ -82,25 +59,16 @@ Reader.cc
 Reader.h
 ReaderIterator.cc
 ReaderIterator.h
-###>>>#SchemaAnalyzer.cc
-###>>>#SchemaAnalyzer.h
 SelectIterator.cc
 SelectIterator.h
-TODATable.cc
-TODATable.h
-TODATableIterator.cc
-TODATableIterator.h
 TemplateParameters.cc
 TemplateParameters.h
-UnsafeInMemoryDataHandle.h
 Writer.cc
 Writer.h
 WriterBufferingIterator.cc
 WriterBufferingIterator.h
 WriterDispatchingIterator.cc
 WriterDispatchingIterator.h
-md5_hash.h
-md5_hash.c
 odccapi.cc
 odccapi.h
 RowsCounter.h
@@ -119,12 +87,8 @@ FileCollector.h
 FileCollector.cc
 FileMapper.h
 FileMapper.cc
-Odb2Hub.h
-Odb2Hub.cc
 RequestUtils.h
 RequestUtils.cc
-Archiver.h
-Archiver.cc 
 Stager.h
 Stager.cc
 ODBTarget.cc
@@ -135,12 +99,16 @@ core/Column.h
 core/DataStream.h
 core/DecodeTarget.cc
 core/DecodeTarget.h
+core/Encoder.cc
+core/Encoder.h
 core/Exceptions.cc
 core/Exceptions.h
 core/Header.cc
 core/Header.h
 core/MetaData.cc
 core/MetaData.h
+core/Span.cc
+core/Span.h
 core/Table.cc
 core/Table.h
 core/TablesReader.cc
@@ -176,6 +144,10 @@ sql/SQLSelectOutput.cc
 sql/SQLSelectOutput.h
 sql/ODAOutput.cc
 sql/ODAOutput.h
+sql/TODATable.cc
+sql/TODATable.h
+sql/TODATableIterator.cc
+sql/TODATableIterator.h
 sql/Types.cc
 sql/Types.h
 sql/function/FunctionEQ_BOXLAT.cc
@@ -201,9 +173,6 @@ data/HttpHandle.h
 data/HttpHandle.cc
 data/HttpHandleFactory.h
 data/HttpHandleFactory.cc
-# requires  metkit
-data/MarsHandleFactory.cc
-data/MarsHandleFactory.h
 
 #iterator-api/BaseReader.cc
 #iterator-api/BaseReader.h
@@ -213,7 +182,6 @@ data/MarsHandleFactory.h
 
 list( APPEND odclib_templates
 ConstantSetter.cc
-FastODA2Request.cc
 ODAUpdatingIterator.cc
 WriterDispatchingIterator.cc
 MDUpdatingIterator.cc
@@ -224,12 +192,19 @@ MDUpdatingIterator.cc
 ecbuild_add_library( TARGET             odccore
                      INSTALL_HEADERS    LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc
-                     PRIVATE_INCLUDES   ${METKIT_INCLUDE_DIRS}         # Only for MarsRequestHandle
-                     COMPONENT          server
                      SOURCES            ${odclib_src_files}
                      GENERATED          ODBAPIVersionSHA1.cc
                      TEMPLATES          ${odclib_templates}
                      LINKER_LANGUAGE    CXX
-                     LIBS               eckit metkit eckit_sql )
+                     LIBS               eckit_sql eckit )
+
+ecbuild_add_library(
+    TARGET         fodc
+    CONDITION      HAVE_FORTRAN
+    SOURCES        api/odc.f90
+                   odc_config.f90
+    GENERATED      odc_config.f90
+    LIBS           odccore
+)
 
 

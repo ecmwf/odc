@@ -13,9 +13,11 @@
 /// @author Piotr Kuchta, ECMWF, Jan 2011
 
 #include "eckit/filesystem/PathName.h"
-#include "odc/Reader.h"
+#include "eckit/io/FileHandle.h"
 
-#include "ImportTool.h"
+#include "odc/Reader.h"
+#include "odc/api/Odb.h"
+
 
 #include "TestCase.h"
 
@@ -34,7 +36,10 @@ static void setUp()
 	"20101130\n"
 	"20101201\n"
 	"20101202\n";
-    odc::tool::ImportTool::importText(data, "TestIntegerValues.odb");
+    FileHandle dh("TestIntegerValues.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 

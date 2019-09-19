@@ -27,7 +27,7 @@ unsigned long long RowsCounter::fastRowCount(const PathName &db)
     auto it = reader.begin();
     auto end = reader.end();
 	for (; it != end; ++it)
-        n += it->numRows();
+        n += it->rowCount();
 	return n;
 }
 

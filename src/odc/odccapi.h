@@ -51,8 +51,8 @@ void odb_set_headerBufferSize(unsigned int );
 unsigned int odb_get_setvbufferSize();
 void odb_set_setvbufferSize(unsigned int);
 
-const char* odc_version();
-const char* odc_git_sha1();
+int odc_version(const char**);
+int odc_git_sha1(const char**);
 unsigned int odc_format_version_major();
 unsigned int odc_format_version_minor();
 

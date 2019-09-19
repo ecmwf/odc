@@ -20,9 +20,9 @@ namespace codec {
 // Self registration
 
 namespace {
-    core::CodecBuilder<CodecInt8> int8Builder;
-    core::CodecBuilder<CodecInt16> int16Builder;
-    core::CodecBuilder<CodecInt32> int32Builder;
+    core::IntegerCodecBuilder<CodecInt8> int8Builder;
+    core::IntegerCodecBuilder<CodecInt16> int16Builder;
+    core::IntegerCodecBuilder<CodecInt32> int32Builder;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

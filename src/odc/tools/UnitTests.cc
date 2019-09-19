@@ -22,17 +22,16 @@
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
 
+#include "odc/api/Odb.h"
 #include "odc/Comparator.h"
 #include "odc/core/TablesReader.h"
 #include "odc/data/DataHandleFactory.h"
-#include "odc/DateTime.h"
 #include "odc/DispatchingWriter.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/odccapi.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/tools/CountTool.h"
-#include "odc/tools/ImportTool.h"
 #include "odc/tools/SplitTool.h"
 #include "odc/tools/TestCase.h"
 #include "odc/Writer.h"
@@ -70,7 +69,10 @@ static void createDataForMixedAggregated()
             "2,2,0.1\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated.odb");
+    eckit::FileHandle dh("selectAggregatedAndNonAggregated.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregated)
@@ -150,7 +152,10 @@ static void createDataForMixedAggregated3()
             "'B',2,0.1\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregated3.odb");
+    FileHandle dh("selectAggregatedAndNonAggregated3.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregated3)
@@ -184,7 +189,10 @@ static void createDataForMixedAggregatedNULL()
             "NULL,3,0.3\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "selectAggregatedAndNonAggregatedNULL.odb");
+    FileHandle dh("selectAggregatedAndNonAggregatedNULL.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(selectAggregatedAndNonAggregatedNULL)
@@ -217,7 +225,10 @@ static void createDataForRegex1()
             "11,22,33,44\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "regex1.odb");
+    FileHandle dh("regex1.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 static void regex1()
@@ -249,7 +260,12 @@ TEST(vector_syntax)
             "10,10\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "vector_syntax.odb");
+    {
+        FileHandle dh("vector_syntax.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV(data, dh);
+    }
 
     const char *sql =
             "set $X = [1,2,3,4,5];"
@@ -309,7 +325,10 @@ static void create_stringInWhere_file()
             "'bbb',2\n"
             "'bbbc',2\n"
             ;
-    odc::tool::ImportTool::importText(data, "stringInWhere.odb");
+    FileHandle dh("stringInWhere.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(stringInWhere)
@@ -330,34 +349,41 @@ TEST(vector_syntax2)
     eckit::sql::SQLParser::parseString(session, sql);
 }
 
-TEST(blocksSizes)
-{
-    size_t numberOfBlocks = 0;
-    off_t* offsets = 0;
-    size_t* sizes = 0;
+// DISABLED FOR odb-to-request
+//TEST(blocksSizes)
+//{
+//    size_t numberOfBlocks = 0;
+//    off_t* offsets = 0;
+//    size_t* sizes = 0;
 
-    int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);
-    ASSERT(r == 0);
+//    int r = get_blocks_offsets("TestFastODA2Request2BIG.odb", &numberOfBlocks, &offsets, &sizes);
+//    ASSERT(r == 0);
 
-    Log::info() << "num of blocks: " << numberOfBlocks << std::endl;
-    for (size_t i = 0; i < numberOfBlocks; ++i)
-    {
-        Log::info() << "UnitTest: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
-    }
-    Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << std::endl;
-    ASSERT(numberOfBlocks == 5);
+//    Log::info() << "num of blocks: " << numberOfBlocks << std::endl;
+//    for (size_t i = 0; i < numberOfBlocks; ++i)
+//    {
+//        Log::info() << "UnitTest: #" << i << ": offset: " << offsets[i] << ", sizes: " << sizes[i] << std::endl;
+//    }
+//    Log::info() << "blocksSizes: numberOfBlocks=" << numberOfBlocks << std::endl;
+//    ASSERT(numberOfBlocks == 5);
 
-    release_blocks_offsets(&offsets);
-    release_blocks_sizes(&sizes);
-}
+//    release_blocks_offsets(&offsets);
+//    release_blocks_sizes(&sizes);
+//}
 
 
 TEST(rownumber1)
 {
 	const char *inputData = "a:INTEGER,b:INTEGER\n" "1,1\n" "2,2\n" "3,3\n" "4,4\n" "5,5\n" "6,6\n" "7,7\n" "8,8\n" "9,9\n" "10,10\n";
-
     string path("Test_rownumber1.odb");
-	odc::tool::ImportTool::importText(inputData, path);
+
+    {
+        FileHandle dh(path);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV(inputData, dh);
+    }
+
     string query("SELECT rownumber() from \"" + path + "\";");
 
     odc::Select select(query);
@@ -389,7 +415,10 @@ TEST(sqlOutputFormatting)
 
     const char* testFile("sqlOutputFormatting.odb");
 
-    odc::tool::ImportTool::importText(data, testFile);
+    FileHandle dh(testFile);
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 
     bool doNotWriteColumnNames(false); // -T
     bool doNotWriteNULL(false);        // -N
@@ -413,30 +442,6 @@ TEST(sqlOutputFormatting)
 
 }
 
-double julian(double d, double t)
-{
-    int indate = (int) d;
-    int intime = (int) t;
-    int year_target = indate/10000;
-    int month_target = (indate%10000)/100;
-    int day_target = indate%100;
-    int hour_target = intime/10000;
-    int min_target = (intime%10000)/100;
-    int sec_target = intime%100;
-
-    utils::DateTime d1(year_target, month_target, day_target,
-                       hour_target, min_target, sec_target);
-
-    return d1.dateToJulian();
-}
-
-TEST(dateTime)
-{
-    int j1 = julian(20120714, 120000);
-    int j2 = julian(20120714, 0);
-    //ASSERT(j1 > j2);
-}
-
 static void createDataForWindSpeedWindDirection()
 {
     const char *data =
@@ -447,7 +452,10 @@ static void createDataForWindSpeedWindDirection()
             "5.4,0.0\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "uv.odb");
+    FileHandle dh("uv.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 TEST(windSpeedWindDirection)
@@ -560,7 +568,13 @@ TEST(hash_operator_on_select_list)
             ;
 
     ScratchFile f("hash_operator_on_select_list.odb");
-    odc::tool::ImportTool::importText(data, f);
+
+    {
+        FileHandle dh(f);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV(data, dh);
+    }
 
     string sql("select x,x#-1,x#1 from \"" + f + "\";");
     odc::Select select(sql);
@@ -592,7 +606,13 @@ TEST(hash_operator_in_where)
             ;
 
     ScratchFile f("hash_operator_in_where.odb");
-    odc::tool::ImportTool::importText(data, f);
+
+    {
+        FileHandle dh(f);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV(data, dh);
+    }
 
     string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
     odc::Select select(sql);
@@ -733,7 +753,12 @@ TEST(operator_ge)
             "10,10\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "1to10.odb");
+    {
+        FileHandle dh("1to10.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV(data, dh);
+    }
 
     odc::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
     unsigned long counter = 0;
@@ -760,7 +785,10 @@ static void create_1to10()
             "10,10\n"
             ;
 
-    odc::tool::ImportTool::importText(data, "1to10.odb");
+    FileHandle dh("1to10.odb");
+    dh.openForWrite(0);
+    AutoClose close(dh);
+    odc::api::odbFromCSV(data, dh);
 }
 
 /* FIXME
@@ -874,7 +902,13 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
         9,9
         10,10)";
 
-	odc::tool::ImportTool::importText(inputData, "CREATE_TABLE_and_SELECT_INTO.odb");
+    {
+        FileHandle dh("CREATE_TABLE_and_SELECT_INTO.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV(inputData, dh);
+    }
+
     const char* sql = R"(
         CREATE TYPE mybitfield AS (
             codetype bit9,
@@ -912,8 +946,8 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
 TEST(SELECT_ALL)
 {
     ostream& L(eckit::Log::info());
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
+    odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
+    odc::api::odbFromCSV("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
     system("cat select_all_1.odb select_all_2.odb >select_all.odb");
 
     L << "--- Test_SELECT_ALL: open select_all.odb" << endl;
@@ -931,7 +965,12 @@ TEST(SELECT_ALL)
 // ODB-106
 TEST(SELECT_WHERE_0)
 {
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", "select_where_0.odb");
+    {
+        FileHandle dh("select_where_0.odb");
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    }
     odc::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
     odc::Select::iterator it (o.begin()), end (o.end());
     ++it;
@@ -948,7 +987,12 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
             );
     const char* outFileTemplate ("ODB_235_{a}_{expver}.odb");
 
-    odc::tool::ImportTool::importText(data, inFile);
+    {
+        FileHandle dh(inFile);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV(data, dh);
+    }
 
 	odc::Reader in(inFile);
 	odc::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
@@ -969,7 +1013,12 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
 TEST(LegacyAPIExecuteSelectTwice)
 {
     const std::string fn("legacy_execute_select_twice.odb");
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    {
+        FileHandle dh(fn);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    }
     odc::Select o(std::string("SELECT * FROM \"") + fn + "\";");
 
     int i (0), j (0);
@@ -988,7 +1037,12 @@ TEST(LegacyAPIExecuteSelectTwice)
 TEST(LegacyAPITraverseReaderTwice)
 {
     const std::string fn("legacy_traverse_reader_twice.odb");
-    odc::tool::ImportTool::importText("a:INTEGER,b:INTEGER\n1,2\n3,4\n", fn);
+    {
+        FileHandle dh(fn);
+        dh.openForWrite(0);
+        AutoClose close(dh);
+        odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
+    }
     odc::Reader o(fn);
 
     int i (0), j (0);

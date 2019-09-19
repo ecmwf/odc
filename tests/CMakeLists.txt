@@ -83,9 +83,6 @@ Test_EmptyTable_HasExpectedCapacity
 Test_EmptyTable_HasZeroSize
 Test_EmptyTable_IsEmpty
 Test_EmptyTable_SizeCanBeIncreased
-Test_FastODA2Request
-Test_FastODA2Request2
-Test_FastODA2Request3
 Test_FilledDataSet_DataLoaderReturnsExpectedNumberOfTables
 Test_FilledDataSet_DataLoaderReturnsExpectedTables
 Test_FilledDataSet_DataSaverOutputContainsExpectedRows
@@ -313,3 +310,5 @@ add_subdirectory( sql )
 add_subdirectory( tools )
 add_subdirectory( server )
 add_subdirectory( api )
+add_subdirectory( c_api )
+add_subdirectory( f_api )

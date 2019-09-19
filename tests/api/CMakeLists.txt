@@ -1,7 +1,7 @@
 
 list( APPEND _api_odc_tests
     read
-    errors
+    import
 )
 
 foreach( _test ${_api_odc_tests} )

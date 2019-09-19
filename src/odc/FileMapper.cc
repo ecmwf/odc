@@ -45,11 +45,9 @@ void FileMapper::checkRoots() const
 
     for (size_t i (0); i < roots_.size(); ++i)
     {
-        const string& p (roots_[i]);
         bool exists (PathName(roots_[i]).exists());
 
-        Log::info() << "checkRoots: " << i << ": " << roots_[i]
-            << " " << exists << std::endl;
+        Log::info() << "checkRoots: " << i << ": " << roots_[i] << " " << exists << std::endl;
 
         if (exists)
             atLeastOneRootExists = true;
