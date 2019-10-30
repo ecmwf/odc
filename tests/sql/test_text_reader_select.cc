@@ -101,7 +101,7 @@ CASE("Simple select on CSV (two columns) data") {
             std::stringstream colb;
             colb << "a-long-" << (count+4) << "-str****";
             EXPECT(it->data(0) == count+4);
-            EXPECT(it->dataSizeDoubles(1) == (count == 10 ? 3 : 2));
+            EXPECT(it->dataSizeDoubles(1) == (count == 6 ? 3 : 2));
             EXPECT(::strncmp(colb.str().c_str(), (char*)&it->data(1), it->dataSizeDoubles(1)*sizeof(double)) == 0);
             EXPECT(it->data(2) == 11-(count+4));
         }

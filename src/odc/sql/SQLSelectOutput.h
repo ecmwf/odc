@@ -74,6 +74,7 @@ private: // methods (overrides)
     virtual void flush();
     virtual bool output(const eckit::sql::expression::Expressions&);
     virtual void prepare(eckit::sql::SQLSelect&);
+    virtual void updateTypes(eckit::sql::SQLSelect&);
     virtual void cleanup(eckit::sql::SQLSelect&);
 	virtual unsigned long long count();
 
