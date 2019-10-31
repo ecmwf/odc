@@ -226,20 +226,56 @@ int odc_free_decoder(const odc_decoder_t* decoder);
  */
 int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* frame);
 
+/** Instruct the decoder to output in column major form */
 int odc_decoder_set_column_major(odc_decoder_t* decoder, bool columnMajor);
+
+/** ????? */
+/// @todo check this
 int odc_decoder_set_row_count(odc_decoder_t* decoder, long nrows);
+
+/** Get the number of rows the decoder is configured to decode data into */
 int odc_decoder_row_count(const odc_decoder_t* decoder, long* nrows);
+
+/**
+ * Define the output data array into which the data may be decoded.
+ * This is a shortcut to calling odc_decoder_column_set_data_array for every column.
+ */
 int odc_decoder_set_data_array(odc_decoder_t* decoder, void* data, long width, long height, bool columnMajor);
 
+/** Gets the output data array into which the data may be decoded */
 int odc_decoder_data_array(const odc_decoder_t* decoder, const void** data, long* width, long* height, bool* columnMajor);
 
+/**
+ *  Adds a column to the set for decoding.
+ *  This is an alternative to odc_decoder_defaults_from_frame
+ */
 int odc_decoder_add_column(odc_decoder_t* decoder, const char* name);
+
+/** The number of columns the decoder is configured to decode */
 int odc_decoder_column_count(const odc_decoder_t* decoder, int* count);
 
-int odc_decoder_column_set_attrs(odc_decoder_t* decoder, int col, int element_size, int stride, void* data);
-int odc_decoder_column_attrs(const odc_decoder_t* decoder, int col, int* element_size, int* stride, const void** data);
+/**
+ * Sets a specific data array into which the data associated with the column can be decoded
+ * This is an alternative to the odc_decoder_set_data_array.
+ */
+int odc_decoder_column_set_data_array(odc_decoder_t* decoder, int col, int element_size, int stride, void* data);
 
+/**
+ * Gets the buffer and data layout into which the data has been decoded.
+ * Only valid after calling odc_decode
+ */
+int odc_decoder_column_data_array(const odc_decoder_t* decoder, int col, int* element_size, int* stride, const void** data);
+
+/**
+ * Decode the data described by the frame into the data array(s) configured in the decoder.
+ */
 int odc_decode(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded);
+
+/**
+ * Decode the data described by the frame into the data array(s) configured in the decoder.
+ * If the frame is logical aggregated over multiple frames in the message,
+ * then parallelise the decoding over multiple threads.
+ */
 int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded, int nthreads);
 
 ///@}
@@ -277,7 +313,7 @@ int odc_encoder_set_rows_per_frame(odc_encoder_t* encoder, long rows_per_frame);
  *  @param width the width of the 2D array in bytes. NOTE it is in BYTES.
  *  @param height the height of the 2D array in rows, being greater or equal than the row count.
  *  @param columnMajorWidth if zero then 2D array is interpreted as row-major, otherwise its the size in bytes of the
- *         column entries
+ *         column entries, typically 8 bytes.
  */
 int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height, int columnMajorWidth);
 
@@ -297,6 +333,7 @@ int odc_encoder_column_set_data_array(odc_encoder_t* encoder, int col, int eleme
 
 /** Adds a bitfield to a column */
 int odc_encoder_column_add_bitfield(odc_encoder_t* encoder, int col, const char* name, int nbits);
+
 
 typedef long (*odc_stream_write_t)(void* context, const void* buffer, long length);
 
