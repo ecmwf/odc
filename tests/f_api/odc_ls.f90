@@ -68,7 +68,7 @@ contains
 
         do col = 1, ncols
             call write_integer(output_unit, col)
-            call check_call(frame%column_attrs(col, name=name_str), "getting column name")
+            call check_call(frame%column_attributes(col, name=name_str), "getting column name")
             write(output_unit, '(3a)', advance='no') '. ', name_str, char(9)
         end do
         write(output_unit,*)
@@ -97,8 +97,8 @@ contains
 
         current_index = 1
         do col = 1, ncols
-            call check_call(frame%column_attrs(col, type=types(col)), "getting column type")
-            call check_call(decoder%column_attrs(col, element_size_doubles=sizes(col)), "getting element size")
+            call check_call(frame%column_attributes(col, type=types(col)), "getting column type")
+            call check_call(decoder%column_data_array(col, element_size_doubles=sizes(col)), "getting element size")
             indexes(col) = current_index
             current_index = current_index + sizes(col)
         end do

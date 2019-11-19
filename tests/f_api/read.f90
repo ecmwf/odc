@@ -130,12 +130,12 @@ contains
         ! n.b. -- 1-based indexing!
         do col = 1, ncols
 
-            call check_call(frame%column_attrs(col, &
-                                               name=column_name, &
-                                               type=column_type, &
-                                               element_size=element_size, &
-                                               element_size_doubles=element_size_doubles, &
-                                               bitfield_count=bitfield_count), "column attrs", success)
+            call check_call(frame%column_attributes(col, &
+                                                    name=column_name, &
+                                                    type=column_type, &
+                                                    element_size=element_size, &
+                                                    element_size_doubles=element_size_doubles, &
+                                                    bitfield_count=bitfield_count), "column attrs", success)
 
             if (column_name /= trim(example_column_names(col))) then
                 write(error_unit,'(3a,i2,3a)') 'Unexpected column name ', column_name, &
@@ -177,7 +177,7 @@ contains
 
         ! Test bitfields for column 10
 
-        call check_call(frame%column_attrs(10, bitfield_count=bitfield_count), "bitfield count", success)
+        call check_call(frame%column_attributes(10, bitfield_count=bitfield_count), "bitfield count", success)
         if (bitfield_count /= 25) then
             write(error_unit, *) "Expected 25 bitfield fields for column 10. Got ", bitfield_count
             success = .false.
@@ -187,10 +187,10 @@ contains
         do field = 1, 25
 
             ! Look at column 10
-            call check_call(frame%bitfield_attrs(10, field, &
-                                                 name=field_name, &
-                                                 offset=field_offset, &
-                                                 size=field_size), "bitfield attrs", success)
+            call check_call(frame%bitfield_attributes(10, field, &
+                                                      name=field_name, &
+                                                      offset=field_offset, &
+                                                      size=field_size), "bitfield attrs", success)
 
             if (field_name /= trim(column_10_bitfield_names(field))) then
                 write(error_unit, '(3a,i2,3a)') 'Unexpected field name ', field_name, ' for field ', &

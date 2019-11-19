@@ -67,7 +67,12 @@ const char* odc_error_string(int err);
 // int odc_abort_on_failure(bool abort); ///< @todo to remove
 
 typedef void (*odc_failure_handler_t)(void* context, int error_code);
-int odc_set_failure_handler(odc_failure_handler_t handler);
+
+/** Set a function to be called on error in addition to returning an error code.
+ *  The handler can can access odc_error_string()
+ *  The handler can also access std::current_exception() if needed (and even rethrow if required).
+ */
+int odc_set_failure_handler(odc_failure_handler_t handler, void* context);
 
 ///@}
 
@@ -229,8 +234,9 @@ int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* f
 /** Instruct the decoder to output in column major form */
 int odc_decoder_set_column_major(odc_decoder_t* decoder, bool columnMajor);
 
-/** ????? */
-/// @todo check this
+/** If the decoder is to allocate its buffer internally, specify the number of rows to allocate
+    if this is to be different from the number of rows in the frame decoded.
+    This is only really useful if we are re-using a decoder. */
 int odc_decoder_set_row_count(odc_decoder_t* decoder, long nrows);
 
 /** Get the number of rows the decoder is configured to decode data into */
@@ -255,6 +261,11 @@ int odc_decoder_add_column(odc_decoder_t* decoder, const char* name);
 int odc_decoder_column_count(const odc_decoder_t* decoder, int* count);
 
 /**
+ * Set the decoded data size for a column in bytes.
+ */
+int odc_decoder_column_set_data_size(odc_decoder_t* decoder, int col, int element_size);
+
+/**
  * Sets a specific data array into which the data associated with the column can be decoded
  * This is an alternative to the odc_decoder_set_data_array.
  */
@@ -268,6 +279,8 @@ int odc_decoder_column_data_array(const odc_decoder_t* decoder, int col, int* el
 
 /**
  * Decode the data described by the frame into the data array(s) configured in the decoder.
+ * If no data array has been set above, an array to decode into will be allocated. This can be
+ * obtained by using the odc_decoder_data_array function.
  */
 int odc_decode(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded);
 
@@ -327,8 +340,22 @@ int odc_encoder_add_column(odc_encoder_t* encoder, const char* name, int type);
  */
 int odc_encoder_column_set_element_size(odc_encoder_t* encoder, int col, int element_size);
 
+/**
+ * Set the source data size for a given column in bytes
+ *  @param encoder the encoder
+ *  @param col the column (zero indexed)
+ *  @param element_size the element size in bytes (must be a multiple of 8) [a value of 0 uses default]
+ */
+int odc_encoder_column_set_data_size(odc_encoder_t* encoder, int col, int element_size);
+
 /** Associates a custom data layout and data array with the column.
-    This function is used as an alternative to odc_encoder_set_data_array */
+ *  This function is used as an alternative to odc_encoder_set_data_array
+ *  @param encoder the encoder
+ *  @param col the column (zero indexed)
+ *  @param element_size the element size in bytes (must be a multiple of 8) [a value of 0 uses default]
+ *  @param stride the separation in memory between consecutive elements in bytes [0 uses default, i.e. contiguous]
+ *  @param data a pointer to the first element
+ */
 int odc_encoder_column_set_data_array(odc_encoder_t* encoder, int col, int element_size, int stride, const void* data);
 
 /** Adds a bitfield to a column */
