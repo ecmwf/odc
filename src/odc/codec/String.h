@@ -312,6 +312,7 @@ void CodecChars<ByteOrder>::copyStrings(core::Codec& rhs) {
 template<typename ByteOrder>
 void CodecChars<ByteOrder>::print(std::ostream& s) const {
     s << this->name_
+      << ", width=" << (decodedSizeDoubles_ * sizeof(double))
       << ", #words=" << strings_.size();
 }
 
