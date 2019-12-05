@@ -16,16 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ########################################################################################################################
 ### dependencies and options
 
-ecbuild_use_package( PROJECT eckit  VERSION 1.0 REQUIRED )
-
-ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
-ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
-
-ecbuild_dont_pack(REGEX "*.odb")
-ecbuild_dont_pack(REGEX ".gdbinit")
-
-###############################################################################
-# some variables/options of this project
+ecbuild_use_package( PROJECT eckit  VERSION 1.4 REQUIRED )
 
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
@@ -44,8 +35,7 @@ if( HAVE_FORTRAN )
 
 endif()
 
-
-###############################################################################
+########################################################################################################################
 # contents
 
 set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" )
