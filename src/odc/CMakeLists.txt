@@ -1,9 +1,5 @@
 configure_file( ODBAPIVersionSHA1.cc.in ODBAPIVersionSHA1.cc @ONLY )
 
-if ( ODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
-    add_definitions ( -DODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
-endif()
-
 configure_file( odc_config.f90.in odc_config.f90 )
 
 
@@ -202,5 +198,3 @@ ecbuild_add_library(
     GENERATED      odc_config.f90
     LIBS           odccore
 )
-
-
