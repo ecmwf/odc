@@ -36,10 +36,6 @@ ecbuild_add_option( FEATURE FORTRAN
 #                    DEFAULT OFF
 #                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
-ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
-                    DESCRIPTION "ODB Server uses four digits format of time"
-                    DEFAULT OFF )
-
 
 SET(ODC_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
 
@@ -84,4 +80,3 @@ ecbuild_pkgconfig( NAME ${PROJECT_NAME}
 ecbuild_install_project( NAME odc )
 
 ecbuild_print_summary()
-
