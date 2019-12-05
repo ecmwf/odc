@@ -220,7 +220,7 @@ bool MetaData::equals(const MetaData& other, bool compareDataSizes) const
     }
 
     for (size_t i = 0; i < size(); ++i) {
-        if (!at(i)->equals(*other[i]), compareDataSizes) {
+        if (!at(i)->equals(*other[i], compareDataSizes)) {
             return false;
         }
     }
