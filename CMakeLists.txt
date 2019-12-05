@@ -63,7 +63,7 @@ set( ODC_LIBRARIES      odccore )
 
 if( HAVE_FORTRAN )
   list( APPEND ODC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
-  list( INSERT ODC_LIBRARIES 0 fodc )
+  list( INSERT ODC_LIBRARIES 0 fodc odc_fortran ) # odc_fortran is deprecated
 endif()
 
 set( odc_INCLUDE_DIRS ${ODC_INCLUDE_DIRS} )
