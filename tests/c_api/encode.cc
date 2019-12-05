@@ -88,7 +88,7 @@ CASE("Encode data in standard tabular form") {
     CHECK_RETURN(odc_encoder_add_column(enc, "col4", ODC_DOUBLE));
     CHECK_RETURN(odc_encoder_add_column(enc, "col5", ODC_STRING));
     int elementSize = 2 * sizeof(double);
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 4, elementSize, 0, 0));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 4, elementSize, 0, 0));
     CHECK_RETURN(odc_encoder_add_column(enc, "col6", ODC_REAL));
     CHECK_RETURN(odc_encoder_add_column(enc, "col7", ODC_BITFIELD));
     CHECK_RETURN(odc_encoder_column_add_bitfield(enc, 6, "bits1", 2));
@@ -135,7 +135,7 @@ CASE("Encode data in standard tabular form") {
         int type;
         int elementSize;
         int bitfieldCount;
-        CHECK_RETURN(odc_frame_column_attrs(frame, col, &name, &type, &elementSize, &bitfieldCount));
+        CHECK_RETURN(odc_frame_column_attributes(frame, col, &name, &type, &elementSize, &bitfieldCount));
         EXPECT(name);
         EXPECT(::strcmp(name, column_names[col]) == 0);
         EXPECT(type == column_types[col]);
@@ -147,7 +147,7 @@ CASE("Encode data in standard tabular form") {
                 const char* bf_name;
                 int bfSize;
                 int bfOffset;
-                CHECK_RETURN(odc_frame_bitfield_attrs(frame, col, bf, &bf_name, &bfOffset, &bfSize));
+                CHECK_RETURN(odc_frame_bitfield_attributes(frame, col, bf, &bf_name, &bfOffset, &bfSize));
                 EXPECT(bf_name);
                 EXPECT(::strcmp(bf_name, bitfield_names[bf]) == 0);
                 EXPECT(bfSize == bitfield_sizes[bf]);
@@ -170,7 +170,7 @@ CASE("Encode data in standard tabular form") {
     EXPECT(rows_decoded == nrows);
 
     const void* p;
-    CHECK_RETURN(odc_decoder_column_attrs(decoder, 0, 0, 0, &p));
+    CHECK_RETURN(odc_decoder_column_data_array(decoder, 0, 0, 0, &p));
     const void* pdata;
     long row_stride;
     bool decodeColumnMajor;
@@ -236,11 +236,11 @@ CASE("Encode from columnar data") {
     CHECK_RETURN(odc_encoder_add_column(enc, "col5", ODC_REAL));
 
     int elementSizeCol2 = 3 * sizeof(double);
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 0, 0, 0, icol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 1, 0, 0, bcol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 2, elementSizeCol2, 0, scol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 3, 0, 0, dcol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 4, 0, 0, rcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 0, 0, 0, icol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 1, 0, 0, bcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 2, elementSizeCol2, 0, scol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 3, 0, 0, dcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 4, 0, 0, rcol));
 
     // Do the encoding
 
@@ -337,11 +337,11 @@ CASE("Encode data with custom stride") {
     CHECK_RETURN(odc_encoder_add_column(enc, "col4", ODC_DOUBLE));
     CHECK_RETURN(odc_encoder_add_column(enc, "col5", ODC_REAL));
 
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 0, 0, 2*sizeof(icol[0]), icol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 1, 0, 2*sizeof(bcol[0]), bcol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 2, sizeof(scol[0]), 2*sizeof(scol[0]), scol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 3, 0, 2*sizeof(dcol[0]), dcol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 4, 0, 2*sizeof(rcol[0]), rcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 0, 0, 2*sizeof(icol[0]), icol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 1, 0, 2*sizeof(bcol[0]), bcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 2, sizeof(scol[0]), 2*sizeof(scol[0]), scol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 3, 0, 2*sizeof(dcol[0]), dcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 4, 0, 2*sizeof(rcol[0]), rcol));
 
     // Do the encoding
 
@@ -438,11 +438,11 @@ CASE("Encode with more rows that fit inside a table") {
     CHECK_RETURN(odc_encoder_add_column(enc, "col4", ODC_DOUBLE));
     CHECK_RETURN(odc_encoder_add_column(enc, "col5", ODC_REAL));
 
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 0, 0, 0, icol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 1, 0, 0, bcol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 2, sizeof(scol[0]), 0, scol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 3, 0, 0, dcol));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 4, 0, 0, rcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 0, 0, 0, icol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 1, 0, 0, bcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 2, sizeof(scol[0]), 0, scol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 3, 0, 0, dcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 4, 0, 0, rcol));
 
     // Set reduced number of lines per frame
 
@@ -536,7 +536,7 @@ CASE("Encode to a file descriptor") {
 
     CHECK_RETURN(odc_encoder_set_row_count(enc, nrows));
     CHECK_RETURN(odc_encoder_add_column(enc, "col1", ODC_INTEGER));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 0, 0, 0, icol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 0, 0, 0, icol));
 
     // Do the encoding
 
@@ -630,7 +630,7 @@ CASE("Encode to a custom output stream") {
 
     CHECK_RETURN(odc_encoder_set_row_count(enc, nrows));
     CHECK_RETURN(odc_encoder_add_column(enc, "col1", ODC_INTEGER));
-    CHECK_RETURN(odc_encoder_column_set_attrs(enc, 0, 0, 0, icol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 0, 0, 0, icol));
 
     // Do the encoding
 

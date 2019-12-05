@@ -169,7 +169,7 @@ contains
         call check_call(encoder%add_column("col13", ODC_INTEGER), "add col13", success)
         call check_call(encoder%add_column("col14", ODC_INTEGER), "add col14", success)
 
-        call check_call(encoder%column_set_attrs(6, element_size_doubles=2), "column attrs", success)
+        call check_call(encoder%column_set_data_size(6, element_size_doubles=2), "column attrs", success)
 
         call check_call(encoder%column_add_bitfield(11, "bf1", 3), "add bitfield 1", success)
         call check_call(encoder%column_add_bitfield(11, "bf2", 2), "add bitfield 2", success)
@@ -261,12 +261,12 @@ contains
             success = .false.
         end if
 
-        call check_call(frame%column_attrs(col, &
-                                           name=column_name, &
-                                           type=column_type, &
-                                           element_size=element_size, &
-                                           element_size_doubles=element_size_doubles, &
-                                           bitfield_count=bitfield_count), "column attrs", success)
+        call check_call(frame%column_attributes(col, &
+                                                name=column_name, &
+                                                type=column_type, &
+                                                element_size=element_size, &
+                                                element_size_doubles=element_size_doubles, &
+                                                bitfield_count=bitfield_count), "column attrs", success)
 
         if (column_name /= name) then
             write(error_unit, '(a,i2,4a)') 'Unexpected column name for column ', col, &
@@ -312,7 +312,7 @@ contains
 
         if (col == 11) then
             do i = 1, 3
-                call check_call(frame%bitfield_attrs(11, i, name=nm, offset=off, size=sz), 'bitfield attrs', success)
+                call check_call(frame%bitfield_attributes(11, i, name=nm, offset=off, size=sz), 'bitfield attrs', success)
 
                 if (sz /= expected_bf_sizes(i)) then
                     write(error_unit, '(3(a,i2))') 'Unexpected bitfield size for field ', i, &

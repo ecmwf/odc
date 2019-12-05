@@ -14,10 +14,9 @@ module odc
     ! Error values
 
     integer, public, parameter :: ODC_SUCCESS = 0
-    integer, public, parameter :: ODC_ERROR_ECKIT_EXCEPTION = 1
+    integer, public, parameter :: ODC_ITERATION_COMPLETE = 1
     integer, public, parameter :: ODC_ERROR_GENERAL_EXCEPTION = 2
     integer, public, parameter :: ODC_ERROR_UNKNOWN_EXCEPTION = 3
-    integer, public, parameter :: ODC_ITERATION_COMPLETE = 4
 
     private
 
@@ -40,8 +39,8 @@ module odc
         procedure :: next => frame_next
         procedure :: row_count => frame_row_count
         procedure :: column_count => frame_column_count
-        procedure :: column_attrs => frame_column_attrs
-        procedure :: bitfield_attrs => frame_bitfield_attrs
+        procedure :: column_attributes => frame_column_attributes
+        procedure :: bitfield_attributes => frame_bitfield_attributes
     end type
 
     type odc_decoder
@@ -56,8 +55,9 @@ module odc
         procedure :: data => decoder_data_array
         procedure :: add_column => decoder_add_column
         procedure :: column_count => decoder_column_count
-        procedure :: column_set_attrs => decoder_column_set_attrs
-        procedure :: column_attrs => decoder_column_attrs
+        procedure :: column_set_data_size => decoder_column_set_data_size
+        procedure :: column_set_data_array => decoder_column_set_data_array
+        procedure :: column_data_array => decoder_column_data_array
         procedure :: decode => decoder_decode
     end type
 
@@ -73,7 +73,8 @@ module odc
         procedure :: set_rows_per_frame => encoder_set_rows_per_frame
         procedure :: set_data => encoder_set_data_array
         procedure :: add_column => encoder_add_column
-        procedure :: column_set_attrs => encoder_column_set_attrs
+        procedure :: column_set_data_size => encoder_column_set_data_size
+        procedure :: column_set_data_array => encoder_column_set_data_array
         procedure :: column_add_bitfield => encoder_column_add_bitfield
         procedure :: encode => encoder_encode
     end type
@@ -89,11 +90,25 @@ module odc
 
     public :: odc_version, odc_git_sha1
     public :: odc_initialise_api
-    public :: odc_type_name, odc_type_count
+    public :: odc_column_type_name, odc_column_type_count
     public :: odc_error_string
     public :: odc_missing_integer, odc_missing_double
     public :: odc_set_missing_integer, odc_set_missing_double
-    public :: odc_halt_on_failure
+    public :: odc_set_failure_handler
+
+    ! Error handling definitions
+
+    abstract interface
+        subroutine failure_handler_t(context, error)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            integer, intent(in) :: error
+            integer(c_long), intent(in) :: context
+        end subroutine
+    end interface
+
+    integer(c_long), save :: failure_handler_context
+    procedure(failure_handler_t), pointer, save :: failure_handler_fn
 
     ! For utility
 
@@ -137,6 +152,14 @@ module odc
             integer(c_int) :: err
         end function
 
+        function c_odc_set_failure_handler(handler, context) result(err) bind(c, name='odc_set_failure_handler')
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_funptr), intent(in), value :: handler
+            type(c_ptr), intent(in), value :: context
+            integer(c_int) :: err
+        end function
+
         function odc_halt_on_failure(halt) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -144,7 +167,7 @@ module odc
             integer(c_int) :: err
         end function
 
-        function c_odc_type_name(type, pstr) result(err) bind(c, name='odc_type_name')
+        function c_odc_column_type_name(type, pstr) result(err) bind(c, name='odc_column_type_name')
             use, intrinsic :: iso_c_binding
             implicit none
             integer(c_int), intent(in), value :: type
@@ -152,7 +175,7 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_type_count(ntypes) result(err) bind(c)
+        function odc_column_type_count(ntypes) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             integer(c_int), intent(out) :: ntypes
@@ -267,7 +290,7 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_frame_column_attrs(frame, col, name, type, element_size, bitfield_count) result(err) bind(c)
+        function odc_frame_column_attributes(frame, col, name, type, element_size, bitfield_count) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -280,7 +303,7 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_frame_bitfield_attrs(frame, col, field, name, offset, size) result(err) bind(c)
+        function odc_frame_bitfield_attributes(frame, col, field, name, offset, size) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -379,7 +402,17 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_decoder_column_set_attrs(decoder, col, element_size, stride, data) result(err) bind(c)
+        function odc_decoder_column_set_data_size(decoder, col, element_size) result(err) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: decoder
+            integer(c_int), intent(in), value :: col
+            integer(c_int), intent(in), value :: element_size
+            integer(c_int) :: err
+        end function
+
+        function odc_decoder_column_set_data_array(decoder, col, element_size, stride, data) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -391,7 +424,7 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_decoder_column_attrs(decoder, col, element_size, stride, data) result(err) bind(c)
+        function odc_decoder_column_data_array(decoder, col, element_size, stride, data) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -456,14 +489,14 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_encoder_set_data_array(encoder, data, width, height, column_major) result(err) bind(c)
+        function odc_encoder_set_data_array(encoder, data, width, height, columnMajorWidth) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
             type(c_ptr), intent(in), value :: data
             integer(c_long), intent(in), value :: width
             integer(c_long), intent(in), value :: height
-            logical(c_bool), intent(in), value :: column_major
+            integer(c_int), intent(in), value :: columnMajorWidth
             integer(c_int) :: err
         end function
 
@@ -476,7 +509,17 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_encoder_column_set_attrs(encoder, col, element_size, stride, data) result(err) bind(c)
+        function odc_encoder_column_set_data_size(encoder, col, element_size) result(err) bind(c)
+            ! n.b. 0-indexed column (C API)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: encoder
+            integer(c_int), intent(in), value :: col
+            integer(c_int), intent(in), value :: element_size
+            integer(c_int) :: err
+        end function
+
+        function odc_encoder_column_set_data_array(encoder, col, element_size, stride, data) result(err) bind(c)
             ! n.b. 0-indexed column (C API)
             use, intrinsic :: iso_c_binding
             implicit none
@@ -533,6 +576,21 @@ contains
         fstr = transfer(tmp(1:length), fstr)
     end function
 
+    subroutine failure_handler_wrapper(unused_context, error)
+        type(c_ptr), intent(in), value :: unused_context
+        integer(c_long), intent(in), value :: error
+        call failure_handler_fn(failure_handler_context, int(error))
+    end subroutine
+
+    function odc_set_failure_handler(handler, context) result(err)
+        procedure(failure_handler_t), pointer :: handler
+        integer(c_long) :: context
+        integer :: err
+        failure_handler_fn => handler
+        failure_handler_context = context
+        err = c_odc_set_failure_handler(c_funloc(failure_handler_wrapper), c_null_ptr)
+    end function
+
     function odc_version(version_str) result(err)
         character(:), allocatable, intent(out) :: version_str
         type(c_ptr) :: tmp_str
@@ -549,12 +607,12 @@ contains
         if (err == ODC_SUCCESS) git_sha1 = fortranise_cstr(tmp_str)
     end function
 
-    function odc_type_name(type, type_name) result(err)
+    function odc_column_type_name(type, type_name) result(err)
         integer(c_int), intent(in) :: type
         character(:), allocatable, intent(out) :: type_name
         type(c_ptr) :: tmp_str
         integer :: err
-        err = c_odc_type_name(type, tmp_str)
+        err = c_odc_column_type_name(type, tmp_str)
         if (err == ODC_SUCCESS)  type_name = fortranise_cstr(tmp_str)
     end function
 
@@ -640,7 +698,7 @@ contains
         err = odc_frame_column_count(frame%impl, ncols)
     end function
 
-    function frame_column_attrs(frame, col, name, type, element_size, element_size_doubles, bitfield_count) result(err)
+    function frame_column_attributes(frame, col, name, type, element_size, element_size_doubles, bitfield_count) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
@@ -657,7 +715,7 @@ contains
         integer(c_int) :: element_size_tmp
         integer(c_int) :: bitfield_count_tmp
 
-        err = odc_frame_column_attrs(frame%impl, col-1, name_tmp, type_tmp,&
+        err = odc_frame_column_attributes(frame%impl, col-1, name_tmp, type_tmp,&
                                      element_size_tmp, bitfield_count_tmp)
 
         if (err == ODC_SUCCESS) then
@@ -670,7 +728,7 @@ contains
 
     end function
 
-    function frame_bitfield_attrs(frame, col, field, name, offset, size) result(err)
+    function frame_bitfield_attributes(frame, col, field, name, offset, size) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_frame), intent(in) :: frame
         integer, intent(in) :: col
@@ -685,7 +743,7 @@ contains
         integer(c_int) :: offset_tmp
         integer(c_int) :: size_tmp
 
-        err = odc_frame_bitfield_attrs(frame%impl, col-1, field-1, name_tmp, offset_tmp, size_tmp)
+        err = odc_frame_bitfield_attributes(frame%impl, col-1, field-1, name_tmp, offset_tmp, size_tmp)
 
         if (err == ODC_SUCCESS) then
             if (present(name)) name = fortranise_cstr(name_tmp)
@@ -798,7 +856,17 @@ contains
         count = count_tmp
     end function
 
-    function decoder_column_set_attrs(decoder, col, element_size, stride, data) result(err)
+    function decoder_column_set_data_size(decoder, col, element_size) result(err)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_decoder), intent(inout) :: decoder
+        integer, intent(in) :: col
+        integer(c_int), intent(in) :: element_size
+        integer :: err
+
+        err = odc_decoder_column_set_data_size(decoder%impl, col-1, element_size)
+    end function
+
+    function decoder_column_set_data_array(decoder, col, element_size, stride, data) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_decoder), intent(inout) :: decoder
         integer, intent(in) :: col
@@ -814,10 +882,10 @@ contains
         if (present(stride)) l_stride = stride
         if (present(data)) l_data = data
 
-        err = odc_decoder_column_set_attrs(decoder%impl, col-1, l_element_size, l_stride, l_data)
+        err = odc_decoder_column_set_data_array(decoder%impl, col-1, l_element_size, l_stride, l_data)
     end function
 
-    function decoder_column_attrs(decoder, col, element_size, element_size_doubles, stride, data) result(err)
+    function decoder_column_data_array(decoder, col, element_size, element_size_doubles, stride, data) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_decoder), intent(in) :: decoder
         integer, intent(in) :: col
@@ -831,7 +899,7 @@ contains
         integer(c_int) :: l_stride
         type(c_ptr) :: l_data
 
-        err = odc_decoder_column_attrs(decoder%impl, col-1, l_element_size, l_stride, l_data)
+        err = odc_decoder_column_data_array(decoder%impl, col-1, l_element_size, l_stride, l_data)
 
         if (err == ODC_SUCCESS) then
             if (present(element_size)) element_size = l_element_size
@@ -888,6 +956,7 @@ contains
         real(dp), intent(in), target :: data(:,:)
         logical, intent(in), optional :: column_major
         integer(c_long) :: width, height
+        integer(c_int) :: columnMajorWidth
         integer :: err
         logical(c_bool) :: l_column_major = .true.
 
@@ -895,11 +964,13 @@ contains
         if (l_column_major) then
             width = size(data, 2) * double_size
             height = size(data, 1)
+            columnMajorWidth = 8
         else
             width = size(data, 1) * double_size
             height = size(data, 2)
+            columnMajorWidth = 0
         end if
-        err = odc_encoder_set_data_array(encoder%impl, c_loc(data), width, height, l_column_major)
+        err = odc_encoder_set_data_array(encoder%impl, c_loc(data), width, height, columnMajorWidth)
     end function
 
     function encoder_add_column(encoder, name, type) result(err)
@@ -912,7 +983,23 @@ contains
         err = odc_encoder_add_column(encoder%impl, c_loc(nullified_name), type)
     end function
 
-    function encoder_column_set_attrs(encoder, col, element_size, element_size_doubles, stride, data) result(err)
+    function encoder_column_set_data_size(encoder, col, element_size, element_size_doubles) result(err)
+        ! n.b. 1-indexed column (Fortran API)
+        class(odc_encoder), intent(inout) :: encoder
+        integer, intent(in) :: col
+        integer, intent(in), optional :: element_size
+        integer, intent(in), optional :: element_size_doubles
+        integer :: err
+
+
+        integer(c_int) :: l_element_size = 0
+        if (present(element_size)) l_element_size = element_size
+        if (present(element_size_doubles)) l_element_size = element_size_doubles * double_size
+
+        err = odc_encoder_column_set_data_size(encoder%impl, col-1, l_element_size)
+    end function
+
+    function encoder_column_set_data_array(encoder, col, element_size, element_size_doubles, stride, data) result(err)
         ! n.b. 1-indexed column (Fortran API)
         class(odc_encoder), intent(inout) :: encoder
         integer, intent(in) :: col
@@ -930,7 +1017,7 @@ contains
         if (present(stride)) l_stride = stride
         if (present(data)) l_data = data
 
-        err = odc_encoder_column_set_attrs(encoder%impl, col-1, l_element_size, l_stride, l_data)
+        err = odc_encoder_column_set_data_array(encoder%impl, col-1, l_element_size, l_stride, l_data)
     end function
 
     function encoder_column_add_bitfield(encoder, col, name, nbits) result(err)

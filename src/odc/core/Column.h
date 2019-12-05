@@ -41,6 +41,7 @@ public:
 
 	bool operator==(const Column&) const;
 	bool operator!=(const Column& other) const { return ! (*this == other); }
+    bool equals(const Column& other, bool compareDataSizes=true) const;
 
 	virtual ~Column();
 

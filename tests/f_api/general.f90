@@ -61,7 +61,7 @@ contains
 
         success = .true.
 
-        if (odc_type_count(ntypes) /= ODC_SUCCESS) then
+        if (odc_column_type_count(ntypes) /= ODC_SUCCESS) then
             write(error_unit, *) 'Failed to get type count'
             success = .false.
         end if
@@ -72,7 +72,7 @@ contains
         endif
 
         do n = 1, ntypes
-            if (odc_type_name(test_types(n), name) /= ODC_SUCCESS) then
+            if (odc_column_type_name(test_types(n), name) /= ODC_SUCCESS) then
                 write(error_unit, *) 'Failed to get type name, type=', test_types(n)
                 success = .false.
             end if
