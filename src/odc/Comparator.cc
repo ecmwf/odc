@@ -120,6 +120,8 @@ void Comparator::compare(int nCols,
         // Skip the specified columns
         if (nextSkipCol != skipCols.end() && (*nextSkipCol) == i) {
             ++nextSkipCol;
+            pdata1 += md1[i]->dataSizeDoubles();
+            pdata2 += md2[i]->dataSizeDoubles();
             continue;
         }
 
