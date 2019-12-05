@@ -41,8 +41,6 @@ ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
                     DEFAULT OFF )
 
 
-SET(ODC_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
-
 if( HAVE_FORTRAN )
 
     set( Fortran Fortran )

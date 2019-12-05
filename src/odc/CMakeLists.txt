@@ -4,10 +4,6 @@ if ( ODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
     add_definitions ( -DODB_SERVER_TIME_FORMAT_FOUR_DIGITS )
 endif()
 
-if ( odc_SCHEMA_PATH )
-    add_definitions ( -Dodc_SCHEMA_PATH=${odc_SCHEMA_PATH} )
-endif()
-
 configure_file( odc_config.f90.in odc_config.f90 )
 
 

@@ -232,7 +232,6 @@ Test_c_api_example_write_data
 get_target_property( odc_bin odc LOCATION )
 
 set( test_environment
-  odc_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/cma.hh
   odc_CODES=${PROJECT_SOURCE_DIR}/etc
   odc_HOME=${PROJECT_SOURCE_DIR}
   odc_TEST_DATA_PATH=${CMAKE_CURRENT_BINARY_DIR}
