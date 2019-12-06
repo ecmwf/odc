@@ -2,6 +2,7 @@
 list( APPEND regressions_data_files
     2000010106.odb
     odb_387_mdset.odb
+    odb_463.odb
 )
 
 ecbuild_get_test_multidata( TARGET odc_get_regressions_data
@@ -12,7 +13,9 @@ ecbuild_get_test_multidata( TARGET odc_get_regressions_data
 set(regressions_scripts
 
     ODB-374.sh
-    ODB-387-and-388.sh)
+    ODB-387-and-388.sh
+    ODB-463.sh
+)
 
 foreach( _script ${regressions_scripts})
     ecbuild_add_test(
