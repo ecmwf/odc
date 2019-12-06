@@ -209,14 +209,18 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
 	return true;
 }
 
-bool MetaData::operator==(const MetaData& other) const
+bool MetaData::operator==(const MetaData& other) const {
+    return equals(other);
+}
+
+bool MetaData::equals(const MetaData& other, bool compareDataSizes) const
 {
     if (size() != other.size()) {
         return false;
     }
 
     for (size_t i = 0; i < size(); ++i) {
-        if (*(*this)[i] != *other[i]) {
+        if (!at(i)->equals(*other[i], compareDataSizes)) {
             return false;
         }
     }

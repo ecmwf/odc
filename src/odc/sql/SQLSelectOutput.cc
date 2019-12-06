@@ -97,7 +97,9 @@ void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
 
     size_t charSize = columnSizesDoubles_[currentColumn_] * sizeof(double);
     if (len > charSize) {
-        throw SeriousBug("String to long for configured output", Here());
+        std::ostringstream ss;
+        ss << "String too long for configured output: " << len << " > " << charSize;
+        throw SeriousBug(ss.str(), Here());
     }
 
     if (missing) {
@@ -115,10 +117,16 @@ void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
 
 
 void SQLSelectOutput::prepare(SQLSelect& sql) {
+    updateTypes(sql);
+}
+
+void SQLSelectOutput::updateTypes(SQLSelect& sql) {
 
     size_t offset = 0;
     expression::Expressions output(sql.output());
     metaData_.setSize(output.size());
+    offsets_.clear();
+    offsets_.reserve(output.size());
     columnSizesDoubles_.clear();
     columnSizesDoubles_.reserve(output.size());
 

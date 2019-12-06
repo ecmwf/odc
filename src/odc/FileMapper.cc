@@ -114,25 +114,31 @@ string FileMapper::patchTime(const string& s) const
     ASSERT("Format of time" && s.size() != 3 && !(s.size() > 6));
     string r (s);
 
-#ifdef ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
-    if (s.size() == 1) r = string("0") + s + "00";
-    //                '60000' => '0600'
-    if (s.size() == 5) r = string("0") + s.substr(0,3);
-    //                '120000' => '1200'
-    if (s.size() == 6) r = s.substr(0,4);
+    // This option exists to replace the compile time option ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
+    // This exists to support differences in usage between the Met Office and ECMWF
 
-    ASSERT(r.size() == 4); // We want time as four digits, don't we....
-#else
-    if (s.size() == 1) r = string("0") + s;
-    // HACK: for TIME '0600' => '06'
-    if (s.size() == 4) r = s.substr(0,2);
-    //                '60000' => '06'
-    if (s.size() == 5) r = string("0") + s.substr(0,1);
-    //                '120000' => '12'
-    if (s.size() == 6) r = s.substr(0,2);
+    bool odbServerTimeFormat4Digits = eckit::Resource<bool>("odbServerTimeFormat,$ODB_SERVER_TIME_FORMAT_FOUR_DIGITS", false);
 
-    ASSERT(r.size() == 2); // We want time as two digits, don't we....
-#endif
+    if(odbServerTimeFormat4Digits) {
+        if (s.size() == 1) r = string("0") + s + "00";
+        //                '60000' => '0600'
+        if (s.size() == 5) r = string("0") + s.substr(0,3);
+        //                '120000' => '1200'
+        if (s.size() == 6) r = s.substr(0,4);
+
+        ASSERT(r.size() == 4); // We want time as four digits, don't we....
+    }
+    else {
+        if (s.size() == 1) r = string("0") + s;
+        // HACK: for TIME '0600' => '06'
+        if (s.size() == 4) r = s.substr(0,2);
+        //                '60000' => '06'
+        if (s.size() == 5) r = string("0") + s.substr(0,1);
+        //                '120000' => '12'
+        if (s.size() == 6) r = s.substr(0,2);
+
+        ASSERT(r.size() == 2); // We want time as two digits, don't we....
+    }
 
     return r;
 }

@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
 
 project( odc C CXX )
 
@@ -16,16 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ########################################################################################################################
 ### dependencies and options
 
-ecbuild_use_package( PROJECT eckit  VERSION 1.0 REQUIRED )
-
-ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_odb DONT_PACK_REGEX "*.odb" )
-ecbuild_add_resources( TARGET ${PROJECT_NAME}_no_oda DONT_PACK_REGEX "*.oda" )
-
-ecbuild_dont_pack(REGEX "*.odb")
-ecbuild_dont_pack(REGEX ".gdbinit")
-
-###############################################################################
-# some variables/options of this project
+ecbuild_use_package( PROJECT eckit  VERSION 1.4 REQUIRED )
 
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
@@ -36,12 +27,6 @@ ecbuild_add_option( FEATURE FORTRAN
 #                    DEFAULT OFF
 #                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
-ecbuild_add_option( FEATURE ODB_SERVER_TIME_FORMAT_FOUR_DIGITS
-                    DESCRIPTION "ODB Server uses four digits format of time"
-                    DEFAULT OFF )
-
-
-SET(ODC_SCHEMA_PATH "" CACHE STRING "Path to schema file that will be loaded before executing SQL")
 
 if( HAVE_FORTRAN )
 
@@ -50,8 +35,7 @@ if( HAVE_FORTRAN )
 
 endif()
 
-
-###############################################################################
+########################################################################################################################
 # contents
 
 set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" )
@@ -63,7 +47,7 @@ set( ODC_LIBRARIES      odccore )
 
 if( HAVE_FORTRAN )
   list( APPEND ODC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
-  list( INSERT ODC_LIBRARIES 0 odc_fortran )
+  list( INSERT ODC_LIBRARIES 0 fodc odc_fortran ) # odc_fortran is deprecated
 endif()
 
 set( odc_INCLUDE_DIRS ${ODC_INCLUDE_DIRS} )
@@ -84,4 +68,3 @@ ecbuild_pkgconfig( NAME ${PROJECT_NAME}
 ecbuild_install_project( NAME odc )
 
 ecbuild_print_summary()
-

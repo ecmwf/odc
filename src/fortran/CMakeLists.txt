@@ -12,7 +12,6 @@ ecbuild_add_library(TARGET		odc_fortran
 
 set( test_environment_fortran
      TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
-     odc_SCHEMA_PATH=${CMAKE_CURRENT_BINARY_DIR}/../../tests/cma.hh
 )
 
 if( HAVE_FORTRAN )

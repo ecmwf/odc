@@ -22,8 +22,6 @@ SET \$var1 = 123;
 SET \$var2 = 3.24;
 EOF
 
-export odc_SCHEMA_PATH="$(pwd)/schema.hh"
-
 
 # Create some test data
 

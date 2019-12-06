@@ -97,10 +97,17 @@ bool Column::isConstant()
 
 
 /// return true if names and types are the same; do not compare codecs.
-bool Column::operator==(const Column& other) const
-{
-    if (name() == other.name() && type() == other.type() && dataSizeDoubles() == other.dataSizeDoubles()) {
-		return true;
+bool Column::operator==(const Column& other) const {
+    return equals(other);
+}
+
+bool Column::equals(const Column& other, bool compareDataSizes) const {
+    if (name() == other.name() && type() == other.type()) {
+        if (compareDataSizes) {
+            return (dataSizeDoubles() == other.dataSizeDoubles());
+        } else {
+            return true;
+        }
     }
 	return false;
 }

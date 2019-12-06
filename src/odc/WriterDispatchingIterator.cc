@@ -438,7 +438,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	size_t maxcols = columns().size();
 	ASSERT(maxcols > 0);
 
-	eckit::Log::debug() << "WriterDispatchingIterator::pass1<WriterBufferingIterator>: columns().size() => " << maxcols << std::endl;
+    eckit::Log::debug() << "WriterDispatchingIterator::pass1<WriterBufferingIterator>: columns().size() => " << maxcols << std::endl;
 
 	nrows_  = 0;
 	for (; it != end; ++it)
@@ -454,7 +454,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 				iterators_[i]->columns(columns());
 				iterators_[i]->writeHeader();
 			}
-		}
+        }
 
 		const double* data (it->data());
 		size_t size (it->columns().size());
@@ -462,7 +462,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 		ASSERT(rc == 0);
 	}
 
-	eckit::Log::debug() << "Split: processed " << nrows_ << " row(s)." << std::endl;
+    eckit::Log::debug() << "Split: processed " << nrows_ << " row(s)." << std::endl;
 	return nrows_;
 }
 
@@ -474,10 +474,12 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
     Log::info() << "Verifying split..." << endl;
     Timer timer("Split verification");
 
+    // Copy columns from the input iterator.
+    columns(it->columns());
+
     vector<Reader*> readers;
     vector<pair<Reader::iterator, Reader::iterator> > iterators;
     for (size_t i (0); i < files_.size(); ++i) {
-        Log::debug() << "Opening '" << files_[i] << "'" << endl;
         Reader* reader(new Reader(files_[i]));
         readers.push_back(reader);
         iterators.push_back(make_pair(reader->begin(), reader->end()));
@@ -489,8 +491,7 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
     long long i (0);
     for (; it != end; ++i)
     {
-		//if (it->isNewDataset() && columns() != it->columns() )
-		if (columns() != it->columns())
+        if (it->isNewDataset() && columns() != it->columns() )
 		{
 			columns(it->columns());
 			parseTemplateParameters();
@@ -506,11 +507,17 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
 
         const MetaData& sMetaData (sIt->columns());
         try {
-            ASSERT(sIt != sEnd && sMetaData == columns());
+            ASSERT(sIt != sEnd);
+
+            // In the parent codec, we will always have the largest data size (e.g. for
+            // the longest string). This will not be true in the dispatched iterators
+            // which will only be large enough for the strings dispatched to them.
+            bool compareDataSizes = false;
+            ASSERT(sMetaData.equals(columns(), compareDataSizes));
 
             ++rowsRead[fileIndex];
-            const double* const& originalData(it->data());
-            const double* const& outputData(sIt->data());
+            const double* const originalData(it->data());
+            const double* const outputData(sIt->data());
             comparator.compare(n, originalData, outputData, columns(), sMetaData);
         } catch (...) {
             ++numberOfDifferences;

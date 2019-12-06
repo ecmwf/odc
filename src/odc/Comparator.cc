@@ -111,35 +111,54 @@ void Comparator::compare(int nCols,
 
     std::vector<int>::const_iterator nextSkipCol = skipCols.begin();
 
+    const double* pdata1 = data1;
+    const double* pdata2 = data2;
+
     unsigned long long numberOfDifferences (0);
     for (int i=0; i < nCols; i++) {
 
         // Skip the specified columns
         if (nextSkipCol != skipCols.end() && (*nextSkipCol) == i) {
             ++nextSkipCol;
+            pdata1 += md1[i]->dataSizeDoubles();
+            pdata2 += md2[i]->dataSizeDoubles();
             continue;
         }
 
         try {
             const Column& column(*md1[i]);
+            const Column& column2(*md2[i]);
             ColumnType type(column.type());
-            double d1 (data1[i]), d2 (data2[i]);
 
             switch (type)
             {
-                case STRING:
-                    if (strncmp(reinterpret_cast<const char*>(&d1), reinterpret_cast<const char*>(&d2), sizeof(double)))
-                        raiseNotEqual(column, d1, d2);
+                case STRING: {
+
+                    size_t width1 = column.dataSizeDoubles() * sizeof(double);
+                    size_t width2 = column2.dataSizeDoubles() * sizeof(double);
+
+                    size_t len1 = ::strnlen(reinterpret_cast<const char*>(pdata1), width1);
+                    size_t len2 = ::strnlen(reinterpret_cast<const char*>(pdata2), width2);
+                    if (len1 != len2 ||
+                        ::strncmp(reinterpret_cast<const char*>(pdata1), reinterpret_cast<const char*>(pdata2), len1)) {
+
+                        std::ostringstream ss;
+                        ss << "String values differ in column " << column.name() << ": "
+                           << std::string(reinterpret_cast<const char*>(pdata1), len1) << " is not equal to "
+                           << std::string(reinterpret_cast<const char*>(pdata2), len2) << std::endl;
+                        throw ValuesDifferent(ss.str());
+                    }
                     break;
+                }
                 case INTEGER:
                 case BITFIELD:
                 case DOUBLE:
-                    if (! (same(d1, d2) || (NaN_isOK_ && (::isnan(d1) && ::isnan(d2)))))
-                        raiseNotEqual(column, d1, d2);
+                    if (! (same(*pdata1, *pdata2) || (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
+                        raiseNotEqual(column, *pdata1, *pdata2);
                     break;
                 case REAL:
-                    if (! (same(float(d1), float(d2)) || (NaN_isOK_ && (::isnan(d1) && ::isnan(d2)))))
-                        raiseNotEqual(column, d1, d2);
+                    if (! (same(float(*pdata1), float(*pdata2)) || (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
+                        raiseNotEqual(column, *pdata1, *pdata2);
                     break;
                 case IGNORE:
                 default:
@@ -152,8 +171,8 @@ void Comparator::compare(int nCols,
                 << " found different." << std::endl;
             Log::info() << " " << e.what() << std::endl;
 
-            Log::info() << " data1[" << i << "] = " << std::scientific << data1[i] << std::endl;
-            Log::info() << " data2[" << i << "] = " << std::scientific << data2[i] << std::endl;
+            Log::info() << " data1[" << i << "] = " << std::scientific << *pdata1 << std::endl;
+            Log::info() << " data2[" << i << "] = " << std::scientific << *pdata2 << std::endl;
 
             Log::info() << " md1[" << i << "] = " << *md1[i] << std::endl;
             Log::info() << " md2[" << i << "] = " << *md2[i] << std::endl;
@@ -161,6 +180,9 @@ void Comparator::compare(int nCols,
             //TODO: make it an option to stop when an error found
             //throw;
         }
+
+        pdata1 += md1[i]->dataSizeDoubles();
+        pdata2 += md2[i]->dataSizeDoubles();
     }
 
     if (numberOfDifferences)

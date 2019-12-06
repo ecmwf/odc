@@ -134,6 +134,18 @@ void WriterBufferingIterator::allocRowsBuffer()
 void WriterBufferingIterator::writeHeader()
 {
 	allocBuffers();
+
+    // If the calculated buffer size now is bigger than the size used for an
+    // existing buffer, then clear it.
+    // n.b. if zero, this is no problem as we allocate the buffer lazily in writeRow
+
+    if (rowsBuffer_.size() != 0 && rowByteSize_ < (sizeof(uint16_t) + rowDataSizeDoublesInternal()*sizeof(double))) {
+        rowDataSizeDoubles_ = 0;
+        rowByteSize_ = 0;
+        rowsBuffer_ = eckit::Buffer(0);
+        nextRowInBuffer_ = 0;
+    }
+
     for (size_t i = 0; i < columns_.size(); ++i) {
 
         // If we haven't configured a row, then this is bad

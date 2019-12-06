@@ -48,6 +48,7 @@ public:
 
 	/// Check if number of columns, column names and column types are equal. Values not checked.
 	bool operator==(const MetaData&) const;
+    bool equals(const MetaData& md, bool compareDataSizes=true) const;
 
 	bool equalsIncludingConstants(const MetaData&, const std::vector<std::string>& constColumns) const; 
 
