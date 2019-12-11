@@ -61,9 +61,9 @@ add_subdirectory( tests )
 # finalize
 
 ecbuild_pkgconfig( NAME ${PROJECT_NAME}
-                   DESCRIPTION "ECMWF coding, decoding and processing of observational data"
-                   URL "https://software.ecmwf.int/wiki/display/ODB/ODB+API"
-                   LIBRARIES odb )
+                   DESCRIPTION "ECMWF encoding and decoding of observational data in ODB2 format"
+                   URL "https://software.ecmwf.int/wiki/display/ODC"
+                   LIBRARIES odccore )
 
 ecbuild_install_project( NAME odc )
 
