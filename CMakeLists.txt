@@ -31,7 +31,7 @@ ecbuild_add_option( FEATURE FORTRAN
 if( HAVE_FORTRAN )
 
     set( Fortran Fortran )
-    ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/module )
+    ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/module )
 
 endif()
 
