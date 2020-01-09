@@ -10,8 +10,8 @@
 
 #include "odc/sql/function/FunctionEQ_BOXLON.h"
 
-#include "eckit/sql/expression/function/EqRegionCache.h"
 #include "eckit/sql/expression/function/FunctionFactory.h"
+#include "odc/sql/function/EqRegionCache.h"
 
 using namespace eckit::sql::expression::function;
 using namespace eckit::sql::expression;

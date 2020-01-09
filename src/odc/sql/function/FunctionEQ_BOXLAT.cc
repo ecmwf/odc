@@ -10,7 +10,7 @@
 
 #include "odc/sql/function/FunctionEQ_BOXLAT.h"
 
-#include "eckit/sql/expression/function/EqRegionCache.h"
+#include "odc/sql/function/EqRegionCache.h"
 #include "eckit/sql/expression/function/FunctionFactory.h"
 
 using namespace eckit::sql::expression::function;

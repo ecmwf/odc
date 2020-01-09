@@ -10,7 +10,7 @@
 
 #include "odc/sql/function/FunctionRGG_BOXLAT.h"
 
-#include "eckit/sql/expression/function//RggRegionCache.h"
+#include "odc/sql//function/RggRegionCache.h"
 #include "eckit/sql/expression/function/FunctionFactory.h"
 
 using namespace eckit::sql::expression::function;
