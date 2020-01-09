@@ -10,7 +10,7 @@ foreach( _test ${_api_fodc_tests} )
         TARGET       odc_fapi_${_test}
         SOURCES      ${_test}.f90
         ENVIRONMENT  ${test_environment}
-        TEST_DEPENDS get_odc_test_data
+        TEST_DEPENDS odc_get_test_data
         CONDITION    HAVE_FORTRAN
         LIBS         fodc )
 endforeach()
