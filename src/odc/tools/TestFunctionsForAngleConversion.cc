@@ -16,7 +16,7 @@ const double EPS = 7e-6;
 
 #include "eckit/log/Timer.h"
 #include "odc/Select.h"
-#include "eckit/sql/expression/function/piconst.h"
+#include "odc/sql/function/piconst.h"
 
 #include "odc/Writer.h"
 #include "TestCase.h"
@@ -25,7 +25,7 @@ using namespace std;
 using namespace eckit;
 using namespace odc;
 
-using namespace eckit::sql::expression::function;
+using namespace odc::sql::function;
 
 
 static void setUp()

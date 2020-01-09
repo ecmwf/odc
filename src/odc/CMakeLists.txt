@@ -150,6 +150,13 @@ sql/function/FunctionRGG_BOXLAT.cc
 sql/function/FunctionRGG_BOXLAT.h
 sql/function/FunctionRGG_BOXLON.cc
 sql/function/FunctionRGG_BOXLON.h
+sql/function/EqRegionCache.cc
+sql/function/EqRegionCache.h
+sql/function/RegionCache.cc
+sql/function/RegionCache.h
+sql/function/RggRegionCache.cc
+sql/function/RggRegionCache.h
+sql/function/piconst.h
 
 utility/Tracer.cc
 utility/Tracer.h
