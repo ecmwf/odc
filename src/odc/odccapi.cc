@@ -25,6 +25,7 @@
 #include "odc/SelectIterator.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
+#include "odc/api/odc.h"
 
 using namespace eckit;
 using namespace odc;
@@ -75,6 +76,10 @@ void odb_start()
     static const char *argv[2] = {"odb_start", 0};
 
     odb_start_with_args(1, const_cast<char **>(argv));
+}
+
+int odc_git_sha1(const char** o) {
+    return odc_vcs_version(o);
 }
 
 void odb_start_with_args(int argc, char* argv[])
@@ -132,6 +137,8 @@ void odb_set_setvbufferSize(unsigned int n) { ODBAPISettings::instance().setvbuf
 
 unsigned int odc_format_version_major() { return odc::ODBAPIVersion::formatVersionMajor(); }
 unsigned int odc_format_version_minor() { return odc::ODBAPIVersion::formatVersionMinor(); }
+
+
 
 /// @param config  ignored for now.
 oda_ptr odb_read_create(const char *config, int *err)

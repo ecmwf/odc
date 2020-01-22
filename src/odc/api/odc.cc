@@ -271,7 +271,7 @@ int odc_version(const char** version) {
     });
 }
 
-int odc_git_sha1(const char** sha1) {
+int odc_vcs_version(const char** sha1) {
     return wrapApiFunction([sha1]{
         (*sha1) = Settings::gitsha1().c_str();
     });

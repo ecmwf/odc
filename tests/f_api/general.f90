@@ -39,7 +39,7 @@ contains
 
         success = .true.
 
-        if (odc_git_sha1(sha1) /= ODC_SUCCESS) then
+        if (odc_vcs_version(sha1) /= ODC_SUCCESS) then
             write(error_unit, *) 'getting git sha1 string failed'
             success = .false.
         end if
