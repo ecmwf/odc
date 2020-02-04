@@ -16,7 +16,7 @@ odc split ../odb_463.odb ./out.{reportype}.odb
 
 # Check that all of the expected files are created
 
-[[ "$(ls out.*.odb | wc -l)" != "21" ]] && echo "Incorrect number of files created by split" && exit -1
+[[ "$(ls out.*.odb | wc -l)" -ne "21" ]] && echo "Incorrect number of files created by split" && exit -1
 for rt in 16001 16002 16004 16005 16006 16008 16009 16012 16017 16022 16025 16026 16029 16045 16065 16068 16074 16076 16082 16083 16084; do
     [[ ! -f "out.${rt}.odb" ]] && "expected split output 'out.${rt}.odb' not found" && exit -1
 done
