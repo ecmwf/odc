@@ -35,6 +35,8 @@ public: // methods
     CodecChars(api::ColumnType type, const std::string& name=codec_name());
     ~CodecChars() override {}
 
+    using Codec::load;
+    using Codec::save;
     void load(core::DataStream<ByteOrder>& ds) override;
     void save(core::DataStream<ByteOrder>& ds) override;
 
@@ -100,10 +102,12 @@ private: // methods
     }
 
     /// Ensure that data streams are passed through to the internal coder
+    using CodecChars<ByteOrder>::setDataStream;
     void setDataStream(core::DataStream<ByteOrder>& ds) override {
         core::DataStreamCodec<ByteOrder>::setDataStream(ds);
         intCodec_.setDataStream(ds);
     }
+
     void clearDataStream() override {
         core::DataStreamCodec<ByteOrder>::clearDataStream();
         intCodec_.clearDataStream();
@@ -147,6 +151,7 @@ private: // methods
         static_cast<core::Codec&>(intCodec_).skip();
     }
 
+    using CodecChars<ByteOrder>::load;
     void load(core::DataStream<ByteOrder>& ds) override {
         core::DataStreamCodec<ByteOrder>::load(ds);
 
@@ -183,6 +188,7 @@ private: // methods
         ASSERT(this->stringLookup_.size() == 0);
     }
 
+    using CodecChars<ByteOrder>::save;
     void save(core::DataStream<ByteOrder>& ds) override {
 
         core::DataStreamCodec<ByteOrder>::save(ds);
