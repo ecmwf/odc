@@ -68,8 +68,8 @@ private: // methods
     void print(std::ostream& s) const override;
     size_t numStrings() const override { return 1; }
 
-    using Codec::load;
-    using Codec::save;
+    using CodecConstant<ByteOrder, double>::load;
+    using CodecConstant<ByteOrder, double>::save;
     void load(core::DataStream<ByteOrder>& ds) override;
     void save(core::DataStream<ByteOrder>& ds) override;
 };
