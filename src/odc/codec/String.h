@@ -35,8 +35,8 @@ public: // methods
     CodecChars(api::ColumnType type, const std::string& name=codec_name());
     ~CodecChars() override {}
 
-    using Codec::load;
-    using Codec::save;
+    using core::DataStreamCodec<ByteOrder>::load;
+    using core::DataStreamCodec<ByteOrder>::save;
     void load(core::DataStream<ByteOrder>& ds) override;
     void save(core::DataStream<ByteOrder>& ds) override;
 
