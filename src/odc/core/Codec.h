@@ -124,6 +124,7 @@ public: // methods
 
     DataStreamCodec(const std::string& name, api::ColumnType type) : Codec(name, type), ds_(0) {}
 
+    using Codec::setDataStream;
     void setDataStream(DataStream<ByteOrder>& ds) override {
         ds_ = &ds;
     }
@@ -131,6 +132,7 @@ public: // methods
 
 protected: // methods
 
+    using Codec::load;
     void load(DataStream<ByteOrder>& ds) override {
         // n.b. name read by the CodecFactory.
         ds.read(hasMissing_);
@@ -139,6 +141,7 @@ protected: // methods
         ds.read(missingValue_);
     }
 
+    using Codec::save;
     void save(DataStream<ByteOrder>& ds) override {
         // n.b. Name is written by the _column_ not the codec.
         // ds.write(name_);
