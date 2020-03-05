@@ -26,13 +26,17 @@ class BaseCodecMissing : public BaseCodecInteger<ByteOrder, ValueType> {
 
 public: // methods
 
+    // n.b. We should be able to call name=DerivedCodec::codec_name() directly, but
+    // this causes a compilation error with Cray C++ 8.6
     BaseCodecMissing(api::ColumnType type,
-                     const std::string& name=DerivedCodec::codec_name(),
+                     const std::string& name=codec_name_str(),
                      double minmaxmissing=odc::MDI::integerMDI()) :
         BaseCodecInteger<ByteOrder, ValueType>(type, name, minmaxmissing) {}
     ~BaseCodecMissing() {}
 
 private: // methods
+
+    static std::string codec_name_str() { return DerivedCodec::codec_name(); }
 
     unsigned char* encode(unsigned char* p, const double& d) override {
         static_assert(sizeof(ValueType) == sizeof(d), "unsafe casting check");
@@ -43,9 +47,7 @@ private: // methods
             s = DerivedCodec::missingMarker;
         } else {
             s = val - this->min_;
-#ifndef _CRAYC
             ASSERT(s != DerivedCodec::missingMarker);
-#endif
         }
         ByteOrder::swap(s);
         ::memcpy(p, &s, sizeof(s));
