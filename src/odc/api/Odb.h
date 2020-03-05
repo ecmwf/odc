@@ -20,6 +20,7 @@
 #include <vector>
 #include <type_traits>
 #include <set>
+#include <map>
 
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
@@ -162,6 +163,7 @@ private: // members
 void encode(eckit::DataHandle& out,
             const std::vector<ColumnInfo>& columns,
             const std::vector<ConstStridedData>& data,
+            const std::map<std::string, std::string>& properties = {},
             size_t maxRowsPerFrame=10000);
 
 //----------------------------------------------------------------------------------------------------------------------

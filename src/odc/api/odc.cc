@@ -78,6 +78,7 @@ struct odc_encoder_t {
     size_t maxRowsPerFrame;
     std::vector<ColumnInfo> columnInfo;
     std::vector<EncodeColumn> columnData;
+    std::map<std::string, std::string> properties;
 };
 
 
@@ -730,6 +731,13 @@ int odc_free_encoder(const odc_encoder_t* encoder) {
     });
 }
 
+int odc_encoder_add_property(odc_encoder_t* encoder, const char* key, const char* value) {
+    return wrapApiFunction([encoder, key, value] {
+        ASSERT(encoder);
+        encoder->properties[key] = value;
+    });
+}
+
 int odc_encoder_set_row_count(odc_encoder_t* encoder, long nrows) {
     return wrapApiFunction([encoder, nrows] {
         ASSERT(encoder);
@@ -934,7 +942,7 @@ void odc_encode_to_data_handle(odc_encoder_t* encoder, eckit::DataHandle& dh) {
         stridedData.emplace_back(ConstStridedData {c.data, encoder->nrows, info.decodedSize, c.stride});
     }
 
-    ::odc::api::encode(dh, encoder->columnInfo, stridedData, encoder->maxRowsPerFrame);
+    ::odc::api::encode(dh, encoder->columnInfo, stridedData, encoder->properties, encoder->maxRowsPerFrame);
 }
 
 

@@ -310,6 +310,9 @@ int odc_new_encoder(odc_encoder_t** encoder);
 /** Deallocates the encoder */
 int odc_free_encoder(const odc_encoder_t* encoder);
 
+/** Add a property (key-value) to the encoder to encode into the ODB2 file */
+int odc_encoder_add_property(odc_encoder_t* encoder, const char* key, const char* value);
+
 /** Declare the number of rows you are going to encode */
 int odc_encoder_set_row_count(odc_encoder_t* encoder, long nrows);
 
