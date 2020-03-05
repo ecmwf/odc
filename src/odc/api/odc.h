@@ -310,6 +310,9 @@ int odc_new_encoder(odc_encoder_t** encoder);
 /** Deallocates the encoder */
 int odc_free_encoder(const odc_encoder_t* encoder);
 
+/** Add a property (key-value) to the encoder to encode into the ODB2 file */
+int odc_encoder_add_property(odc_encoder_t* encoder, const char* key, const char* value);
+
 /** Declare the number of rows you are going to encode */
 int odc_encoder_set_row_count(odc_encoder_t* encoder, long nrows);
 
@@ -334,11 +337,6 @@ int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long wi
 
 /** Describes a new column in the encoder */
 int odc_encoder_add_column(odc_encoder_t* encoder, const char* name, int type);
-
-/** Describes the column element size overriding the default for the type
- *  Typically used for string types where the length is greater than 8 bytes
- */
-int odc_encoder_column_set_element_size(odc_encoder_t* encoder, int col, int element_size);
 
 /**
  * Set the source data size for a given column in bytes

@@ -397,7 +397,11 @@ size_t odbFromCSV(const std::string& in, eckit::DataHandle& dh_out, const std::s
     return odbFromCSV(dh_in, dh_out, delimiter);
 }
 
-void encode(DataHandle& out, const std::vector<ColumnInfo>& columns, const std::vector<ConstStridedData>& data, size_t maxRowsPerFrame) {
+void encode(DataHandle& out,
+            const std::vector<ColumnInfo>& columns,
+            const std::vector<ConstStridedData>& data,
+            const std::map<std::string, std::string>& properties,
+            size_t maxRowsPerFrame) {
 
     ASSERT(columns.size() == data.size());
     ASSERT(data.size() > 0);
@@ -407,7 +411,7 @@ void encode(DataHandle& out, const std::vector<ColumnInfo>& columns, const std::
     ASSERT(std::all_of(data.begin(), data.end(), [nrows](const ConstStridedData& d) { return d.nelem() == nrows; }));
 
     if (nrows <= maxRowsPerFrame) {
-        core::encodeFrame(out, columns, data);
+        core::encodeFrame(out, columns, data, properties);
     } else {
         std::vector<ConstStridedData> sliced;
         sliced.reserve(ncols);
@@ -417,7 +421,7 @@ void encode(DataHandle& out, const std::vector<ColumnInfo>& columns, const std::
             for (const ConstStridedData& sd : data) {
                 sliced.emplace_back(sd.slice(start, nelem));
             }
-            core::encodeFrame(out, columns, sliced);
+            core::encodeFrame(out, columns, sliced, properties);
             start += nelem;
             sliced.clear();
         }

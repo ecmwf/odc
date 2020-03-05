@@ -260,14 +260,14 @@ contains
             ! Sortbox (INTEGER, missing)
             if (int(array_data(row, 14)) /= missing_integer) then
                 write(error_unit, *) 'Expected value with set missing value. Got ', int(array_data(row, 14)), ', &
-                                     expected ', missing_integer
+                                     &expected ', missing_integer
                 success = .false.
             end if
 
             ! repres_error (REAL, missing)
             if (array_data(row, 49) /= missing_double) then
                 write(error_unit, *) 'Expected value with set missing value. Got ', array_data(row, 49), ', &
-                                     expected ', missing_double
+                                     &expected ', missing_double
                 success = .false.
             end if
         end do

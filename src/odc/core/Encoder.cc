@@ -24,7 +24,8 @@ namespace core {
 
 void encodeFrame(eckit::DataHandle& out,
                  const std::vector<api::ColumnInfo>& columns,
-                 const std::vector<api::ConstStridedData>& data) {
+                 const std::vector<api::ConstStridedData>& data,
+                 const std::map<std::string, std::string>& properties) {
 
     ASSERT(columns.size() == data.size());
     ASSERT(columns.size() > 0);
@@ -111,7 +112,7 @@ void encodeFrame(eckit::DataHandle& out,
 
     // Encode the header
 
-    Properties props;
+    Properties props {properties};
     props["encoder"] = std::string("odc version ") + LibOdc::instance().version();
     std::pair<Buffer, size_t> encodedHeader = Header::serializeHeader(encodedStream.position(), nrows, props, md);
 

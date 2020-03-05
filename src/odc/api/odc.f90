@@ -88,7 +88,7 @@ module odc
 
     ! Configuration management functions
 
-    public :: odc_version, odc_git_sha1
+    public :: odc_version, odc_vcs_version
     public :: odc_initialise_api
     public :: odc_column_type_name, odc_column_type_count
     public :: odc_error_string
@@ -132,7 +132,7 @@ module odc
             integer(c_int) :: err
         end function
 
-        function c_odc_git_sha1(pstr) result(err) bind(c, name='odc_git_sha1')
+        function c_odc_vcs_version(pstr) result(err) bind(c, name='odc_vcs_version')
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(out) :: pstr
@@ -599,11 +599,11 @@ contains
         if (err == ODC_SUCCESS) version_str = fortranise_cstr(tmp_str)
     end function
 
-    function odc_git_sha1(git_sha1) result(err)
+    function odc_vcs_version(git_sha1) result(err)
         character(:), allocatable, intent(out) :: git_sha1
         type(c_ptr) :: tmp_str
         integer :: err
-        err = c_odc_git_sha1(tmp_str)
+        err = c_odc_vcs_version(tmp_str)
         if (err == ODC_SUCCESS) git_sha1 = fortranise_cstr(tmp_str)
     end function
 
