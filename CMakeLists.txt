@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ########################################################################################################################
 ### dependencies and options
 
-ecbuild_use_package( PROJECT eckit  VERSION 1.9 REQUIRED )
+ecbuild_use_package( PROJECT eckit  VERSION 1.4 REQUIRED )
 
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
