@@ -67,22 +67,14 @@ RowsCounter.h
 RowsCounter.cc
 Block.h
 Block.cc
-Partition.h
-Partition.cc
-Partitions.h
-Partitions.cc
 Indexer.h
 Indexer.cc
-Partitioner.h
-Partitioner.cc
 FileCollector.h
 FileCollector.cc
 FileMapper.h
 FileMapper.cc
 RequestUtils.h
 RequestUtils.cc
-Stager.h
-Stager.cc
 ODBTarget.cc
 ODBTarget.h
 
