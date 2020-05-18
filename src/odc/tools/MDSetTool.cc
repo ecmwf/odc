@@ -136,7 +136,7 @@ void MDSetTool::parseUpdateList(const std::string& s,
         string value (assignment.size() == 2 ? assignment[1] : "NONE");
         vector<string> columnNameAndType(S::split(":", assignment[0]));
         string type (columnNameAndType.size() == 2 ? columnNameAndType[1] : "NONE");
-        string column (assignment[0]);
+        string column (columnNameAndType[0]);
 	
         eckit::sql::BitfieldDef bf;
         if (type.size() && type[0] == '[' && type[type.size() - 1] == ']')
