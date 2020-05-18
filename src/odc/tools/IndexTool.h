@@ -13,8 +13,13 @@
 #ifndef IndexTool_H
 #define IndexTool_H
 
-#include "odc/Partition.h"
-#include "odc/Partitions.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/Length.h"
+
+#include "odc/tools/Tool.h"
+
+#include <vector>
+#include <utility>
 
 namespace odc {
 namespace tool {
