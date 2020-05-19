@@ -69,10 +69,6 @@ Block.h
 Block.cc
 Indexer.h
 Indexer.cc
-FileCollector.h
-FileCollector.cc
-FileMapper.h
-FileMapper.cc
 RequestUtils.h
 RequestUtils.cc
 ODBTarget.cc
