@@ -438,7 +438,6 @@ void EqRegionCache::eq_caps(int& dim, int& n, double s_cap[/* n */], int n_regio
 {
     int j;
     double c_polar;
-    int n_collars = *N_collars;
 
     if (n == 1) {
         //
@@ -484,7 +483,7 @@ void EqRegionCache::eq_caps(int& dim, int& n, double s_cap[/* n */], int n_regio
         // determine n_collars, the number of collars between the polar caps.
         //
 
-        n_collars = *N_collars = num_collars(n, c_polar, ideal_collar_angle(dim, n));
+        int n_collars = *N_collars = num_collars(n, c_polar, ideal_collar_angle(dim, n));
 
         //
         // Given dim, N, c_polar and n_collars, determine r_regions,
