@@ -101,7 +101,7 @@ void LSTool::run()
     std::ostream* out = &std::cout;
 	if (optionIsSet("-o")) {
         foutPtr.reset(new std::ofstream(optionArgument("-o", std::string("")).c_str()));
-        out = foutPtr;
+        out = foutPtr.get();
     }
 
 	unsigned long long n = 0;
