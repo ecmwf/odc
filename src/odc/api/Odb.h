@@ -62,12 +62,16 @@ struct SpanImpl;
 
 class SpanVisitor {
 public:
+
     virtual ~SpanVisitor();
+
     virtual void operator()(const std::string& columnName, const std::set<long>& vals) = 0;
     virtual void operator()(const std::string& columnName, const std::set<double>& vals) = 0;
     virtual void operator()(const std::string& columnName, const std::set<std::string>& vals) = 0;
 };
 
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class Span {
 
