@@ -52,6 +52,9 @@ struct FrameImpl {
     size_t rowCount() const;
     size_t columnCount() const;
 
+    eckit::Offset offset() const;
+    eckit::Length length() const;
+
     void decode(Decoder& target, size_t nthreads);
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues);
 
@@ -300,6 +303,14 @@ Span FrameImpl::span(const std::vector<std::string>& columns, bool onlyConstantV
     return s;
 }
 
+eckit::Offset FrameImpl::offset() const {
+    return tables_.front().startPosition();
+}
+
+eckit::Length FrameImpl::length() const {
+    return tables_.back().nextPosition() - tables_.front().startPosition();
+}
+
 Frame::Frame(Reader& reader) :
     impl_(new FrameImpl(reader)) {}
 
@@ -337,6 +348,17 @@ Span Frame::span(const std::vector<std::string>& columns, bool onlyConstantValue
     ASSERT(impl_);
     return impl_->span(columns, onlyConstantValues);
 }
+
+eckit::Offset Frame::offset() const {
+    ASSERT(impl_);
+    return impl_->offset();
+}
+
+eckit::Length Frame::length() const {
+    ASSERT(impl_);
+    return impl_->length();
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 

@@ -130,6 +130,9 @@ public: // methods
     size_t rowCount() const;
     size_t columnCount() const;
 
+    eckit::Offset offset() const;
+    eckit::Length length() const;
+
     const std::vector<ColumnInfo>& columnInfo() const;
 
     void decode(Decoder& target, size_t nthreads) const;
