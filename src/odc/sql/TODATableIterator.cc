@@ -30,9 +30,10 @@ namespace sql {
 template <typename READER>
 TODATableIterator<READER>::TODATableIterator(const TODATable<READER>& parent,
                                              const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
-                                             std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) :
+                                             std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback,
+                                             const typename READER::iterator& seedIterator) :
     parent_(parent),
-    it_(const_cast<READER&>(parent_.oda()).begin()),
+    it_(seedIterator),
     end_(parent_.oda().end()),
     columns_(columns),
     metadataUpdateCallback_(metadataUpdateCallback),
@@ -43,9 +44,11 @@ TODATableIterator<READER>::TODATableIterator(const TODATable<READER>& parent,
 
 template <typename READER>
 void TODATableIterator<READER>::rewind() {
-    it_ = const_cast<READER&>(parent_.oda()).begin();
-    end_ = parent_.oda().end();
-    firstRow_ = true;
+    if (!firstRow_) {
+        it_ = const_cast<READER&>(parent_.oda()).begin();
+        end_ = parent_.oda().end();
+        firstRow_ = true;
+    }
 }
 
 template <typename READER>
