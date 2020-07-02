@@ -59,7 +59,7 @@ private: // methods
 
 private: // members
 
-    TablesReader& owner_;
+    std::reference_wrapper<TablesReader> owner_;
     long pos_;
 };
 

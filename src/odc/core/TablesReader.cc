@@ -25,7 +25,7 @@ ReadTablesIterator::ReadTablesIterator(TablesReader& owner, long pos) :
 
     // Ensure the first table is loaded
     if (pos_ != -1) {
-        if (!owner_.ensureTable(0)) pos_ = -1;
+        if (!owner_.get().ensureTable(0)) pos_ = -1;
     }
 }
 
@@ -35,14 +35,14 @@ bool ReadTablesIterator::operator!=(const ReadTablesIterator& other) {
 }
 
 bool ReadTablesIterator::operator==(const ReadTablesIterator& other) {
-    return (&owner_ == &other.owner_) && (pos_ == other.pos_);
+    return (&owner_.get() == &other.owner_.get()) && (pos_ == other.pos_);
 }
 
 ReadTablesIterator& ReadTablesIterator::operator++() {
 
     ++pos_;
 
-    if (!owner_.ensureTable(pos_)) {
+    if (!owner_.get().ensureTable(pos_)) {
         pos_ = -1;
     }
 
@@ -58,22 +58,22 @@ ReadTablesIterator ReadTablesIterator::operator++(int) {
 
 Table* ReadTablesIterator::operator->() {
     ASSERT(pos_ != -1);
-    return &owner_.getTable(pos_);
+    return &owner_.get().getTable(pos_);
 }
 
 const Table* ReadTablesIterator::operator->() const {
     ASSERT(pos_ != -1);
-    return &owner_.getTable(pos_);
+    return &owner_.get().getTable(pos_);
 }
 
 Table& ReadTablesIterator::operator*() {
     ASSERT(pos_ != -1);
-    return owner_.getTable(pos_);
+    return owner_.get().getTable(pos_);
 }
 
 const Table& ReadTablesIterator::operator*() const {
     ASSERT(pos_ != -1);
-    return owner_.getTable(pos_);
+    return owner_.get().getTable(pos_);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

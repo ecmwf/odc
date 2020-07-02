@@ -77,7 +77,7 @@ class Span {
 
 public: // methods
 
-    Span(std::shared_ptr<SpanImpl> s);
+    Span(std::unique_ptr<SpanImpl>&& s);
 
     void visit(SpanVisitor& visitor) const;
 
@@ -86,7 +86,46 @@ public: // methods
 
 private: // members
 
-    std::shared_ptr<SpanImpl> impl_;
+    std::unique_ptr<SpanImpl> impl_;
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+class Decoder;
+
+class FrameImpl;
+
+class Frame {
+
+public: // methods
+
+    Frame(); // Construct a null frame
+    Frame(std::unique_ptr<FrameImpl>&&);
+    Frame(const Frame&);
+    Frame(Frame&&);
+    ~Frame();
+
+    Frame& operator=(const Frame&);
+    Frame& operator=(Frame&&);
+
+    explicit operator bool() const;
+
+    size_t rowCount() const;
+    size_t columnCount() const;
+
+    eckit::Offset offset() const;
+    eckit::Length length() const;
+
+    const std::vector<ColumnInfo>& columnInfo() const;
+
+    Span span(const std::vector<std::string>& columns, bool onlyConstantValues) const;
+
+private: // members
+
+    std::unique_ptr<FrameImpl> impl_;
+
+    friend class Decoder;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -99,49 +138,16 @@ class Reader {
 
 public: // methods
 
-    Reader(const std::string& path);
-    Reader(eckit::DataHandle& dh);
-    Reader(eckit::DataHandle* dh); // takes ownership
+    Reader(const std::string& path, bool aggregated=true, long rowlimit=-1);
+    Reader(eckit::DataHandle& dh, bool aggregated=true, long rowlimit=-1);
+    Reader(eckit::DataHandle* dh, bool aggregated=true, long rowlimit=-1); // takes ownership
     ~Reader();
 
-private: // members
-
-    std::shared_ptr<ReaderImpl> impl_;
-
-    friend class FrameImpl;
-};
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-class Decoder;
-
-class Frame {
-
-public: // methods
-
-    Frame(Reader& reader);
-    Frame(const Frame& reader);
-    ~Frame();
-
-    // Get the next frame
-    bool next(bool aggregated=true, long rowlimit=-1);
-
-    size_t rowCount() const;
-    size_t columnCount() const;
-
-    eckit::Offset offset() const;
-    eckit::Length length() const;
-
-    const std::vector<ColumnInfo>& columnInfo() const;
-
-    void decode(Decoder& target, size_t nthreads) const;
-
-    Span span(const std::vector<std::string>& columns, bool onlyConstantValues) const;
+    Frame next();
 
 private: // members
 
-    std::unique_ptr<FrameImpl> impl_;
+    std::unique_ptr<ReaderImpl> impl_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -153,16 +159,16 @@ class Decoder {
 public: // methods
 
     Decoder(const std::vector<std::string>& columns,
-                 std::vector<StridedData>& columnFacades);
+            std::vector<StridedData>& columnFacades);
     ~Decoder();
 
     Decoder slice(size_t rowOffset, size_t nrows) const;
 
+    void decode(const Frame& frame, size_t nthreads=1);
+
 private: // members
 
-    std::shared_ptr<DecoderImpl> impl_;
-
-    friend class FrameImpl;
+    std::unique_ptr<DecoderImpl> impl_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------
