@@ -35,7 +35,8 @@ public: // methods
 
     TODATableIterator(const TODATable<READER>& parent,
                       const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
-                      std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback);
+                      std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback,
+                      const typename READER::iterator& seedIterator);
 	virtual ~TODATableIterator();
 
 private: // methods (override>

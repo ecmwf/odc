@@ -66,7 +66,8 @@ ODAFactory odaFactoryInstance;
 template <typename READER>
 TODATable<READER>::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name, READER&& oda) :
     SQLTable(owner, path, name),
-    oda_(std::move(oda)) {
+    oda_(std::move(oda)),
+    readerIterator_(oda_.begin()) {
 
     populateMetaData();
 }
@@ -84,7 +85,7 @@ const READER& TODATable<READER>::oda() const {
 template <typename READER>
 void TODATable<READER>::populateMetaData()
 {
-    auto it = oda_.begin();
+    auto& it(readerIterator_);
 
     size_t count = it->columns().size();
 
@@ -222,7 +223,7 @@ const SQLColumn& TODATable<READER>::column(const std::string& name) const {
 template <typename READER>
 SQLTableIterator* TODATable<READER>::iterator(const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
                                               std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const {
-    return new TODATableIterator<READER>(*this, columns, metadataUpdateCallback);
+    return new TODATableIterator<READER>(*this, columns, metadataUpdateCallback, readerIterator_);
 }
 
 template <typename READER>
