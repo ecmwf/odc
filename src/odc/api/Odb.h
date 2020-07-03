@@ -78,6 +78,8 @@ class Span {
 public: // methods
 
     Span(std::unique_ptr<SpanImpl>&& s);
+    Span(Span&&);
+    ~Span();
 
     void visit(SpanVisitor& visitor) const;
 

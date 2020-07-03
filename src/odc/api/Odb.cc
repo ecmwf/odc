@@ -206,6 +206,8 @@ struct SpanImpl : core::Span {
 Span::Span(std::unique_ptr<SpanImpl>&& s) :
     impl_(std::move(s)) {}
 
+Span::~Span() {}
+
 void Span::visit(SpanVisitor& visitor) const {
     impl_->visit(visitor);
 }
