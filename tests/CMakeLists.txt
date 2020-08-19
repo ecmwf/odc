@@ -227,9 +227,6 @@ Test_c_api_example_read_data
 Test_c_api_example_write_data
 )
 
-### get location of odb executable
-
-get_target_property( odc_bin odc LOCATION )
 
 set( test_environment
   odc_CODES=${PROJECT_SOURCE_DIR}/etc
@@ -271,7 +268,7 @@ set( _prev_test odc_get_test_data  )
 foreach( _test ${odc_tests} )
     set( _dependencies ${_prev_test} )
     ecbuild_add_test( TARGET       ${_test}
-                      COMMAND      ${odc_bin}
+                      COMMAND      $<TARGET_FILE:odc>
                       ARGS         ${_test}
                       ENVIRONMENT  ${test_environment}
                       LABELS       odc
