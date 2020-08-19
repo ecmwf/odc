@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
+cmake_minimum_required( VERSION 3.12 FATAL_ERROR )
 
 project( odc VERSION 1.0.3 LANGUAGES C CXX )
 
@@ -6,7 +6,7 @@ set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} 
 
 include( ecbuild_system NO_POLICY_SCOPE )
 
-ecbuild_requires_macro_version( 2.9 )
+ecbuild_requires_macro_version( 3.4 )
 
 ecbuild_declare_project()
 
