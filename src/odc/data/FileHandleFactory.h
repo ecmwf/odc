@@ -9,8 +9,8 @@
  */
 /// @author Piotr Kuchta, May 2015
 
-#ifndef eckit_utils_FileHandleFactory_H
-#define eckit_utils_FileHandleFactory_H
+#ifndef odc_data_FileHandleFactory_H
+#define odc_data_FileHandleFactory_H
 
 #include "DataHandleFactory.h"
 
