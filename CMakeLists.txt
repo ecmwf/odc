@@ -18,6 +18,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ecbuild_find_package( NAME eckit VERSION 1.4 REQUIRED )
 
+message(STATUS "eckit_INCLUDE_DIRS ${eckit_INCLUDE_DIRS}")
+message(STATUS "ECKIT_INCLUDE_DIRS ${ECKIT_INCLUDE_DIRS}")
+message(STATUS "eckit_INCLUDE_DIR ${eckit_INCLUDE_DIR}")
+message(STATUS "ECKIT_INCLUDE_DIR ${ECKIT_INCLUDE_DIR}")
+
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
                     DEFAULT OFF )
@@ -38,7 +43,7 @@ endif()
 ########################################################################################################################
 # contents
 
-set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" )
+set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${eckit_DEFINITIONS}" )
 
 get_directory_property( ODC_DEFINITIONS COMPILE_DEFINITIONS )
 
@@ -52,6 +57,8 @@ endif()
 
 set( odc_INCLUDE_DIRS ${ODC_INCLUDE_DIRS} )
 set( odc_LIBRARIES ${ODC_LIBRARIES} )
+
+include_directories( ${odc_INCLUDE_DIRS} )
 
 add_subdirectory( src )
 add_subdirectory( regressions )

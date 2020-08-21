@@ -8,7 +8,7 @@ ecbuild_add_library(TARGET		odc_fortran
 
                                 odc_c_binding.f90
 
-                    LIBS		odccore )
+                    PUBLIC_LIBS odccore )
 
 set( test_environment_fortran
      TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
@@ -27,7 +27,7 @@ if( HAVE_FORTRAN )
         ecbuild_add_test( TARGET     odc_${_test}
                           CONDITION  HAVE_FORTRAN
                           SOURCES    ${_test}.f90
-                          LIBS       odc_fortran ${ODB_LIBS}
+                          LIBS       odc_fortran 
                           ENVIRONMENT  ${test_environment_fortran}
 
                           LABELS     odc odc_fortran

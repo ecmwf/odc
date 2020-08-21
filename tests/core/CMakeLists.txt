@@ -22,7 +22,7 @@ foreach( _test ${_core_odc_tests} )
         TARGET       odc_${_test}
         SOURCES      ${_test}.cc ../TemporaryFiles.h
         TEST_DEPENDS odc_get_test_data
-        INCLUDES     ${ECKIT_INCLUDE_DIRS} ${odc_INCLUDE_DIRS}
+        INCLUDES     ${eckit_INCLUDE_DIRS} ${odc_INCLUDE_DIRS}
         ENVIRONMENT  ${test_environment}
         LIBS         eckit odccore )
 endforeach()

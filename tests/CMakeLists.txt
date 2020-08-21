@@ -290,7 +290,7 @@ ecbuild_get_test_multidata( TARGET  odc_get_mars_client_test_data_ec
 ecbuild_add_executable( TARGET      test_client_lib_fortran
                         CONDITION   HAVE_FORTRAN AND HAVE_ODB
                         SOURCES     test_client_lib_fortran.f90
-                        LIBS        odc_fortran ${ODB_LIBS}
+                        LIBS        odc_fortran
                         LINKER_LANGUAGE Fortran)
 
 ecbuild_add_executable( TARGET      test_client_lib_cpp

@@ -182,8 +182,8 @@ ecbuild_add_library( TARGET             odccore
                      SOURCES            ${odclib_src_files}
                      GENERATED          ODBAPIVersionSHA1.cc
                      TEMPLATES          ${odclib_templates}
-                     LINKER_LANGUAGE    CXX
-                     LIBS               eckit_sql eckit )
+                     PUBLIC_INCLUDES    ${eckit_INCLUDE_DIRS}
+                     PUBLIC_LIBS        eckit_sql eckit )
 
 ecbuild_add_library(
     TARGET         fodc
@@ -191,5 +191,5 @@ ecbuild_add_library(
     SOURCES        api/odc.f90
                    odc_config.f90
     GENERATED      odc_config.f90
-    LIBS           odccore
+    PUBLIC_LIBS   odccore
 )
