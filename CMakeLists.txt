@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.12 FATAL_ERROR )
 
-project( odc VERSION 1.0.3 LANGUAGES C CXX )
+project( odc VERSION 1.1.0 LANGUAGES C CXX )
 
 set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
 
