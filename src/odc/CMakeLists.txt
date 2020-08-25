@@ -176,14 +176,22 @@ MDUpdatingIterator.cc
 
 # define odc library
 
-ecbuild_add_library( TARGET             odccore
-                     INSTALL_HEADERS    LISTED
-                     HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc
-                     SOURCES            ${odclib_src_files}
-                     GENERATED          ODBAPIVersionSHA1.cc
-                     TEMPLATES          ${odclib_templates}
-                     PUBLIC_INCLUDES    ${eckit_INCLUDE_DIRS}
-                     PUBLIC_LIBS        eckit_sql eckit )
+ecbuild_add_library( TARGET odccore
+                     INSTALL_HEADERS
+                        LISTED
+                     HEADER_DESTINATION
+                        ${INSTALL_INCLUDE_DIR}/odc
+                     SOURCES
+                        ${odclib_src_files}
+                     GENERATED
+                        ODBAPIVersionSHA1.cc
+                     TEMPLATES
+                        ${odclib_templates}
+                     PUBLIC_INCLUDES
+                        $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/src>
+                        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
+                     PUBLIC_LIBS
+                        eckit_sql eckit )
 
 ecbuild_add_library(
     TARGET         fodc
@@ -191,5 +199,5 @@ ecbuild_add_library(
     SOURCES        api/odc.f90
                    odc_config.f90
     GENERATED      odc_config.f90
-    PUBLIC_LIBS   odccore
+    PUBLIC_LIBS    odccore
 )
