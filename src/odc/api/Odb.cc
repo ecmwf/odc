@@ -342,7 +342,7 @@ Span FrameImpl::span(const std::vector<std::string>& columns, bool onlyConstantV
         s->extend(it->span(columns, onlyConstantValues));
     }
 
-    return s;
+    return Span(std::move(s));
 }
 
 eckit::Offset FrameImpl::offset() const {
