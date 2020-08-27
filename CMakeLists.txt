@@ -32,7 +32,6 @@ ecbuild_add_option( FEATURE FORTRAN
                     DEFAULT OFF )
 
 if( HAVE_FORTRAN )
-    set( Fortran Fortran )
     ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/module )
 endif()
 
@@ -47,7 +46,7 @@ set( ODC_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_D
 set( ODC_LIBRARIES      odccore )
 
 if( HAVE_FORTRAN )
-  list( APPEND ODC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
+  list( APPEND ODC_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/module )
   list( INSERT ODC_LIBRARIES 0 fodc odc_fortran ) # odc_fortran is deprecated
 endif()
 
