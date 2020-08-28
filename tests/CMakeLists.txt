@@ -296,7 +296,6 @@ ecbuild_add_executable( TARGET      test_client_lib_fortran
 ecbuild_add_executable( TARGET      test_client_lib_cpp
                         CONDITION   HAVE_ODB
                         SOURCES     test_client_lib_cpp.cc
-                        INCLUDES    ${odc_INCLUDE_DIRS}
                         LIBS        odccore odctools )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )

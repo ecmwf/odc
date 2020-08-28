@@ -7,7 +7,6 @@ foreach( _test ${_odc_server_tests} )
         TARGET       odc_${_test}
         SOURCES      ${_test}.cc
         TEST_DEPENDS odc_get_test_data
-        INCLUDES     ${eckit_INCLUDE_DIRS} ${odc_INCLUDE_DIRS}
         ENVIRONMENT  ${test_environment}
         LIBS         eckit odccore
     )

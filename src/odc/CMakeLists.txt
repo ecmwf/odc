@@ -194,10 +194,11 @@ ecbuild_add_library( TARGET odccore
                         eckit_sql eckit )
 
 ecbuild_add_library(
-    TARGET         fodc
-    CONDITION      HAVE_FORTRAN
-    SOURCES        api/odc.f90
-                   odc_config.f90
-    GENERATED      odc_config.f90
-    PUBLIC_LIBS    odccore
+    TARGET          fodc
+    CONDITION       HAVE_FORTRAN
+    SOURCES         api/odc.f90
+                    odc_config.f90
+    GENERATED       odc_config.f90
+    PUBLIC_INCLUDES $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/module>
+    PUBLIC_LIBS     odccore
 )

@@ -38,23 +38,6 @@ endif()
 ########################################################################################################################
 # contents
 
-set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${eckit_DEFINITIONS}" )
-
-get_directory_property( ODC_DEFINITIONS COMPILE_DEFINITIONS )
-
-set( ODC_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( ODC_LIBRARIES      odccore )
-
-if( HAVE_FORTRAN )
-  list( APPEND ODC_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/module )
-  list( INSERT ODC_LIBRARIES 0 fodc odc_fortran ) # odc_fortran is deprecated
-endif()
-
-set( odc_INCLUDE_DIRS ${ODC_INCLUDE_DIRS} )
-set( odc_LIBRARIES ${ODC_LIBRARIES} )
-
-include_directories( ${odc_INCLUDE_DIRS} )
-
 add_subdirectory( src )
 add_subdirectory( regressions )
 add_subdirectory( tests )

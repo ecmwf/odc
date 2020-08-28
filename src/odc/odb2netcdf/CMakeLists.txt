@@ -10,13 +10,11 @@ ecbuild_add_executable(TARGET odb2netcdf.x
 
     INCLUDES
             ${NETCDF_INCLUDE_DIRS}
-            ${odc_INCLUDE_DIRS}
-            ${eckit_INCLUDE_DIRS}
 
     LIBS
             ${NETCDF_LIBRARIES}
-            ${odc_LIBRARIES}
-            ${eckit_LIBRARIES}
+            odccore
+            eckit
 
     CONDITION HAVE_NETCDF)
 
