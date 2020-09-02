@@ -21,8 +21,9 @@ public:
     static double realMDI() { return realMDI_; }
     static double integerMDI() { return integerMDI_; }
 
-    /// We always use 0 as MDI of Bitfield columns.
-    static double bitfieldMDI() { return 0; }
+    // Historically this used 0 as the missing value. This seems ... wrong. Really wrong. No bits
+    // set is not the same as a missing value (see ODB-493)
+    static double bitfieldMDI() { return integerMDI(); }
 
     static void realMDI(double v) { realMDI_ = v; }
     static void integerMDI(double v) { integerMDI_ = v; }
