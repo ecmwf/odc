@@ -10,6 +10,8 @@
 
 cmake_minimum_required( VERSION 3.12 FATAL_ERROR )
 
+set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} ) # Required for standalone tarballs
+
 find_package( ecbuild 3.4 REQUIRED )
 
 project( odc LANGUAGES C CXX )
