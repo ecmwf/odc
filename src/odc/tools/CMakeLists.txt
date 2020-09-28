@@ -1,8 +1,8 @@
 list( APPEND odctools_src_files
-TestCase.h 
-TestCase.cc 
-TestRunner.cc 
-TestRunner.h 
+TestCase.h
+TestCase.cc
+TestRunner.cc
+TestRunner.h
 TestRunnerApplication.cc
 TestRunnerApplication.h
 TestRunnerApplication.cfg
@@ -87,14 +87,14 @@ ecbuild_add_library( TARGET     odctools
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc/tools
                      SOURCES    ${odctools_src_files}
                      TEMPLATES  ${odctools_templates}
-                     LIBS       odccore )
+                     PUBLIC_LIBS odccore )
 
 ecbuild_add_library( TARGET     odctest
                      #INSTALL_HEADERS LISTED
                      #HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc/tools
                      SOURCES    ${odctest_src_files}
                      TEMPLATES  ${odctest_templates}
-                     LIBS       odccore odctools )
+                     PUBLIC_LIBS  odccore odctools )
 
 ## TODO: Re-enable odctest
 

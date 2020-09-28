@@ -9,10 +9,6 @@ configure_file( odc_config.h.in odc_config.h )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/odc_config.h DESTINATION ${INSTALL_INCLUDE_DIR}/odc )
 
-### include directories
-
-include_directories( ${odc_INCLUDE_DIRS} ${ECKIT_INCLUDE_DIRS} )
-
 ### libs
 
 add_subdirectory( odc )

@@ -1,14 +1,20 @@
-cmake_minimum_required( VERSION 3.6 FATAL_ERROR )
+# (C) Copyright 2011- ECMWF.
+#
+# This software is licensed under the terms of the Apache Licence Version 2.0
+# which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+# In applying this licence, ECMWF does not waive the privileges and immunities
+# granted to it by virtue of its status as an intergovernmental organisation nor
+# does it submit to any jurisdiction.
 
-project( odc C CXX )
+########################################################################################################################
 
-set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../ecbuild/cmake")
+cmake_minimum_required( VERSION 3.12 FATAL_ERROR )
 
-include( ecbuild_system NO_POLICY_SCOPE )
+set( CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH} ) # Required for standalone tarballs
 
-ecbuild_requires_macro_version( 2.9 )
+find_package( ecbuild 3.4 REQUIRED )
 
-ecbuild_declare_project()
+project( odc LANGUAGES C CXX )
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,42 +22,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 ########################################################################################################################
 ### dependencies and options
 
-ecbuild_use_package( PROJECT eckit  VERSION 1.9 REQUIRED )
-
-ecbuild_add_option( FEATURE FORTRAN
-                    DESCRIPTION "whether or not to build the Fortran interface"
-                    DEFAULT OFF )
+ecbuild_find_package( NAME eckit VERSION 1.4 REQUIRED )
 
 #ecbuild_add_option( FEATURE NETCDF
 #                    DESCRIPTION "whether or not to build the odb2netcdf tool"
 #                    DEFAULT OFF
 #                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
 
+ecbuild_add_option( FEATURE FORTRAN
+                    DESCRIPTION "whether or not to build the Fortran interface"
+                    DEFAULT OFF )
 
 if( HAVE_FORTRAN )
-
-    set( Fortran Fortran )
     ecbuild_enable_fortran( REQUIRED MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/module )
-
 endif()
 
 ########################################################################################################################
 # contents
-
-set_directory_properties( PROPERTIES COMPILE_DEFINITIONS "${ECKIT_DEFINITIONS}" )
-
-get_directory_property( ODC_DEFINITIONS COMPILE_DEFINITIONS )
-
-set( ODC_INCLUDE_DIRS   ${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR}/src )
-set( ODC_LIBRARIES      odccore )
-
-if( HAVE_FORTRAN )
-  list( APPEND ODC_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/module )
-  list( INSERT ODC_LIBRARIES 0 fodc odc_fortran ) # odc_fortran is deprecated
-endif()
-
-set( odc_INCLUDE_DIRS ${ODC_INCLUDE_DIRS} )
-set( odc_LIBRARIES ${ODC_LIBRARIES} )
 
 add_subdirectory( src )
 add_subdirectory( regressions )
