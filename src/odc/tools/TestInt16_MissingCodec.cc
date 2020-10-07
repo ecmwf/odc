@@ -48,8 +48,6 @@ public:
 
 	//MockReaderIterator3& operator++() { next(); return *this; }
 
-	const MockReaderIterator3& end() { return *reinterpret_cast<MockReaderIterator3*>(0); }
-
     bool next()
 	{
 		if (noMore_) return noMore_;
