@@ -11,8 +11,8 @@
 /// \file piconst.h
 /// ECMWF July 2010
 
-#ifndef eckit_sql_expression_piconst_H
-#define eckit_sql_expression_piconst_H
+#ifndef odc_sql_expression_piconst_H
+#define odc_sql_expression_piconst_H
 
 #include <cmath>
 

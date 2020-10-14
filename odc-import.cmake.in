@@ -1,0 +1,3 @@
+include( CMakeFindDependencyMacro )
+
+find_dependency( eckit HINTS ${CMAKE_CURRENT_LIST_DIR}/../eckit @eckit_DIR@ )

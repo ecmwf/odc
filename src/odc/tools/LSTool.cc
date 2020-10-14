@@ -98,12 +98,14 @@ void LSTool::run()
     std::string db = parameters(1);
 
     std::unique_ptr<std::ofstream> foutPtr;
-	if (optionIsSet("-o"))
+    std::ostream* out = &std::cout;
+	if (optionIsSet("-o")) {
         foutPtr.reset(new std::ofstream(optionArgument("-o", std::string("")).c_str()));
-    std::ostream& out = optionIsSet("-o") ? *foutPtr : std::cout;
+        out = foutPtr.get();
+    }
 
 	unsigned long long n = 0;
-	n = printData(db, out);
+	n = printData(db, *out);
 	Log::info() << "Selected " << n << " row(s)." << std::endl;
 }
 

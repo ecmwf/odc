@@ -29,12 +29,17 @@ extern "C" {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-struct odc_reader_t : public Reader {
-    using Reader::Reader;
+struct odc_reader_t {
+    odc_reader_t(DataHandle* dh) : impl_(nullptr), dh_(dh) {
+        dh_->openForRead();
+    }
+    std::unique_ptr<Reader> impl_;
+    std::unique_ptr<DataHandle> dh_;
 };
 
-struct odc_frame_t : public Frame {
-    using Frame::Frame;
+struct odc_frame_t {
+    odc_reader_t& reader_;
+    Frame frame_;
 };
 
 struct odc_decoder_t {
@@ -285,7 +290,7 @@ int odc_vcs_version(const char** sha1) {
 int odc_open_path(odc_reader_t** reader, const char* filename) {
     return wrapApiFunction([reader, filename] {
 //        ASSERT(!(*reader));
-        (*reader) = new odc_reader_t {filename};
+        (*reader) = new odc_reader_t(PathName(filename).fileHandle());
     });
 }
 
@@ -295,13 +300,13 @@ int odc_open_file_descriptor(odc_reader_t** reader, int fd) {
         // from the life of the caller
         int fd2 = dup(fd);
         if (fd == -1) throw CantOpenFile("dup() failed on supplied file descriptor", Here());
-        (*reader) = new odc_reader_t {new FileDescHandle(fd2, true)};
+        (*reader) = new odc_reader_t(new FileDescHandle(fd2, true));
     });
 }
 
 int odc_open_buffer(odc_reader_t** reader, const void* data, long length) {
     return wrapApiFunction([reader, data, length] {
-        (*reader) = new odc_reader_t {new MemoryHandle(data, length)};
+        (*reader) = new odc_reader_t(new MemoryHandle(data, length));
     });
 
 }
@@ -359,7 +364,14 @@ int odc_free_frame(const odc_frame_t* frame) {
 int odc_next_frame(odc_frame_t* frame) {
     return wrapApiFunction(std::function<int()> {[frame] {
         ASSERT(frame);
-        if (frame->next(false)) {
+
+        odc_reader_t& r(frame->reader_);
+        if (!r.impl_) {
+            bool aggregated = false;
+            r.impl_.reset(new Reader(*r.dh_, aggregated));
+        }
+
+        if ((frame->frame_ = r.impl_->next())) {
             return ODC_SUCCESS;
         } else {
             return ODC_ITERATION_COMPLETE;
@@ -370,10 +382,17 @@ int odc_next_frame(odc_frame_t* frame) {
 int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows) {
     return wrapApiFunction(std::function<int()> {[frame, maximum_rows] {
         ASSERT(frame);
-        if (frame->next(true, maximum_rows)) {
-            return ODC_SUCCESS;
+
+        odc_reader_t& r(frame->reader_);
+        if (!r.impl_) {
+            bool aggregated = true;
+            r.impl_.reset(new Reader(*r.dh_, aggregated, maximum_rows));
+        }
+
+        if ((frame->frame_ = r.impl_->next())) {
+             return ODC_SUCCESS;
         } else {
-            return ODC_ITERATION_COMPLETE;
+             return ODC_ITERATION_COMPLETE;
         }
     }});
 }
@@ -389,7 +408,7 @@ int odc_frame_row_count(const odc_frame_t* frame, long* count) {
     return wrapApiFunction([frame, count] {
         ASSERT(frame);
         ASSERT(count);
-        (*count) = frame->rowCount();
+        (*count) = frame->frame_.rowCount();
     });
 }
 
@@ -397,7 +416,7 @@ int odc_frame_column_count(const odc_frame_t* frame, int* count) {
     return wrapApiFunction([frame, count] {
         ASSERT(frame);
         ASSERT(count);
-        (*count) = frame->columnCount();
+        (*count) = frame->frame_.columnCount();
     });
 }
 
@@ -409,7 +428,7 @@ int odc_frame_column_attributes(const odc_frame_t* frame,
                                 int* bitfield_count) {
     return wrapApiFunction([frame, col, name, type, element_size, bitfield_count] {
         ASSERT(frame);
-        const auto& ci(frame->columnInfo());
+        const auto& ci(frame->frame_.columnInfo());
         ASSERT(col >= 0 && size_t(col) < ci.size());
         const auto& colInfo(ci[col]);
 
@@ -423,7 +442,7 @@ int odc_frame_column_attributes(const odc_frame_t* frame,
 int odc_frame_bitfield_attributes(const odc_frame_t* frame, int col, int field, const char** name, int* offset, int* size) {
     return wrapApiFunction([frame, col, field, name, offset, size] {
         ASSERT(frame);
-        const auto& ci(frame->columnInfo());
+        const auto& ci(frame->frame_.columnInfo());
         ASSERT(col >= 0 && size_t(col) < ci.size());
         const auto& colInfo(ci[col]);
         ASSERT(field >= 0 && size_t(field) < colInfo.bitfield.size());
@@ -456,15 +475,15 @@ int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* f
         ASSERT(decoder);
         ASSERT(frame);
 
-        size_t nrows = frame->rowCount();
-        size_t ncols = frame->columnCount();
+        size_t nrows = frame->frame_.rowCount();
+        size_t ncols = frame->frame_.columnCount();
 
         decoder->nrows = nrows;
 
         // Fill in column details
 
         for (size_t col = 0; col < ncols; ++col) {
-            odc_decoder_add_column(decoder, frame->columnInfo()[col].name.c_str());
+            odc_decoder_add_column(decoder, frame->frame_.columnInfo()[col].name.c_str());
         }
     });
 }
@@ -578,7 +597,7 @@ int odc_decoder_column_data_array(const odc_decoder_t* decoder, int col, int* el
 static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
 
     if (decoder->nrows == 0) {
-        decoder->nrows = frame->rowCount();
+        decoder->nrows = frame->frame_.rowCount();
     }
 
     size_t height = decoder->nrows;  // in rows
@@ -593,9 +612,9 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
                 col.elemSize = sizeof(double); // backwards compatible default
             } else {
                 const std::string& colName(decoder->columnNames[i]);
-                auto it = std::find_if(frame->columnInfo().begin(), frame->columnInfo().end(),
+                auto it = std::find_if(frame->frame_.columnInfo().begin(), frame->frame_.columnInfo().end(),
                                        [&colName](const ColumnInfo& ci) { return ci.name == colName; });
-                ASSERT(it != frame->columnInfo().end());
+                ASSERT(it != frame->frame_.columnInfo().end());
                 ASSERT(it->decodedSize > 0);
                 ASSERT(it->decodedSize % sizeof(double) == 0);
                 col.elemSize = it->decodedSize;
@@ -648,8 +667,8 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
 
         // Sanity checking
 
-        size_t frame_rows = frame->rowCount();
-        size_t frame_cols = frame->columnCount();
+        size_t frame_rows = frame->frame_.rowCount();
+        size_t frame_cols = frame->frame_.columnCount();
 
         ASSERT(decoder->columnData.size() == decoder->columnNames.size());
         ASSERT(decoder->columnNames.size() <= frame_cols);
@@ -687,7 +706,7 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
         // Do the decoder
 
         ASSERT(nthreads >= 1);
-        frame->decode(target, static_cast<size_t>(nthreads));
+        target.decode(frame->frame_, static_cast<size_t>(nthreads));
 
         // For the cases where needed, reorder the data
 

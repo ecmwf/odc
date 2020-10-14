@@ -6,9 +6,9 @@
 #define odc_VERSION_STR "@odc_VERSION_STR@"
 #define odc_VERSION     "@odc_VERSION@"
 
-#define odc_MAJOR_VERSION  @odc_MAJOR_VERSION@
-#define odc_MINOR_VERSION  @odc_MINOR_VERSION@
-#define odc_PATCH_VERSION  @odc_PATCH_VERSION@
+#define odc_VERSION_MAJOR  @odc_VERSION_MAJOR@
+#define odc_VERSION_MINOR  @odc_VERSION_MINOR@
+#define odc_VERSION_PATCH  @odc_VERSION_PATCH@
 
 #define odc_INSTALL_PREFIX "@CMAKE_INSTALL_PREFIX@"
 #define odc_BINARY_DIR     "@CMAKE_BINARY_DIR@"

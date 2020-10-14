@@ -11,4 +11,4 @@ module unload emos
 module unload fftw
 module unload libemos
 
-module load cmake/3.10.2
+module load cmake/3.16.5

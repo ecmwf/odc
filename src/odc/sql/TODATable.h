@@ -31,7 +31,6 @@ class TODATable : public eckit::sql::SQLTable {
 public:
 
     TODATable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name);
-    TODATable(eckit::sql::SQLDatabase& owner, eckit::DataHandle& dh);
 
     virtual ~TODATable();
 
@@ -59,6 +58,11 @@ private: // methods (overrides)
 public:
 
     READER oda_;
+
+private: // members
+
+    // This is a hack. Avoid calling begin() twice on non-seekable DataHandle if possible
+    typename READER::iterator readerIterator_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

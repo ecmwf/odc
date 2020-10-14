@@ -378,7 +378,9 @@ Span Table::decodeSpan(const std::vector<std::string>& columns) {
     // And add these to the spans
 
     Span s(startPosition(), nextPosition()-startPosition());
-    for (const auto& values : columnValues) values->updateSpan(s);
+    for (const auto& values : columnValues) {
+        if (values.get()) values->updateSpan(s);
+    }
     return s;
 }
 

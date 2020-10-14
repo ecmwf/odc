@@ -21,14 +21,15 @@ using namespace eckit::testing;
 
 CASE("Count lines in an existing ODB file") {
 
-    odc::api::Reader o("../2000010106.odb");
+    bool aggregated = false;
+    odc::api::Reader reader("../2000010106.odb", aggregated);
 
     size_t nframes = 0;
     size_t totalRows = 0;
 
-    odc::api::Frame frame(o);
+    odc::api::Frame frame;
 
-    while (frame.next(false)) {
+    while ((frame = reader.next())) {
         totalRows += frame.rowCount();
         EXPECT(frame.columnCount() == 51);
         ++nframes;

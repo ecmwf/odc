@@ -43,15 +43,14 @@ CASE("We can import data") {
 
     eckit::MemoryHandle readAgain(dh_out.data(), importedSize);
     readAgain.openForRead();
-    odc::api::Reader r(readAgain);
 
-    odc::api::Frame f(r);
-    while (f.next(false)) {
+    bool aggregated = false;
+    odc::api::Reader r(readAgain, aggregated);
+
+    odc::api::Frame f;
+    while ((f = r.next())) {
         eckit::Log::info() << "Frame: " << f.rowCount() << std::endl;
     }
-
-
-
 }
 
 // ------------------------------------------------------------------------------------------------------

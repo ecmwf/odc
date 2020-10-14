@@ -713,7 +713,7 @@ TEST(create_table_using_variable)
 
 TEST(meta_data_reader_checks_if_file_truncated)
 {
-    ASSERT(0 == system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=1914000 count=1"));
+    ASSERT(0 == system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=1913000 count=1"));
     core::TablesReader mdr("disp.7.1.odb.truncated");
     try {
         for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
@@ -721,19 +721,6 @@ TEST(meta_data_reader_checks_if_file_truncated)
         ASSERT(0 && "Scanning of truncated file did not fail");
     } catch (odc::core::ODBIncomplete ex) {
         Log::info() << "Scanning of truncated file disp.7.1.odb.truncated failed as expected." << std::endl;
-    }
-}
-
-TEST(meta_data_reader_fails_scanning_corrupted_file)
-{
-    ASSERT(0 == system("cat disp.7.1.odb disp.7.1.odb.truncated >corrupted.odb"));
-    core::TablesReader mdr("corrupted.odb");
-    try {
-        for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
-            ;
-        ASSERT(0 && "Scanning of corrupted.odb did not fail");
-    } catch (odc::core::ODBIncomplete ex) {
-        Log::info() << "Scanning of corrupted.odb failed as expected." << std::endl;
     }
 }
 
