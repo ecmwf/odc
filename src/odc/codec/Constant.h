@@ -139,8 +139,9 @@ void CodecConstantString<ByteOrder>::save(core::DataStream<ByteOrder>& ds) {
 
 template <typename ByteOrder>
 void CodecConstantString<ByteOrder>::print(std::ostream& s) const {
+    const char* cstr = reinterpret_cast<const char*>(&this->min_);
     s << this->name_ << ", value='"
-      << std::string(reinterpret_cast<const char*>(&this->min_), sizeof(double))
+      << std::string(cstr, ::strnlen(cstr, sizeof(double)))
       << "'";
 }
 
