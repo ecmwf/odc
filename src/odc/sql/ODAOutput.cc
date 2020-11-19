@@ -21,6 +21,7 @@
 using namespace eckit;
 using namespace eckit::sql;
 using namespace odc::api;
+using eckit::sql::expression::SQLExpression;
 
 namespace odc {
 namespace sql {
