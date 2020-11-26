@@ -71,13 +71,19 @@ const Properties& Table::properties() const {
     return properties_;
 }
 
-Buffer Table::readEncodedData() {
+Buffer Table::readEncodedData(bool includeHeader) {
 
-    Buffer data(dataSize_);
-
-    dh_.seek(dataPosition_);
-    dh_.read(data, dataSize_);
-    return data;
+    if (includeHeader) {
+        Buffer data(nextPosition() - startPosition());
+        dh_.seek(startPosition());
+        dh_.read(data, nextPosition() - startPosition());
+        return data;
+    } else {
+        Buffer data(dataSize_);
+        dh_.seek(dataPosition_);
+        dh_.read(data, dataSize_);
+        return data;
+    }
 }
 
 const std::map<std::string, size_t>& Table::columnLookup() {

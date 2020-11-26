@@ -54,6 +54,10 @@ public: // methods
         for (const auto& kv : stringValues_) visitor(kv.first, kv.second);
     }
 
+    const std::set<long>& getIntegerValues(const std::string& column) const;
+    const std::set<double>& getRealValues(const std::string& column) const;
+    const std::set<std::string>& getStringValues(const std::string& column) const;
+
 private: // members
 
     eckit::Offset start_;

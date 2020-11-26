@@ -55,7 +55,7 @@ public: // methods
     const MetaData& columns() const;
     const Properties& properties() const;
 
-    eckit::Buffer readEncodedData();
+    eckit::Buffer readEncodedData(bool includeHeader=false);
 
     void decode(DecodeTarget& target);
 
@@ -76,6 +76,7 @@ private: // members
 
     eckit::Offset startPosition_;
     eckit::Offset dataPosition_;
+    eckit::Length headerSize_;
     eckit::Length dataSize_;
     eckit::Offset nextPosition_;
     int32_t byteOrder_;

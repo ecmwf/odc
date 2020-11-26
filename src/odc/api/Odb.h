@@ -31,6 +31,7 @@
 
 namespace eckit {
     class DataHandle;
+    class Buffer;
 }
 
 
@@ -83,6 +84,10 @@ public: // methods
 
     void visit(SpanVisitor& visitor) const;
 
+    const std::set<long>& getIntegerValues(const std::string& column) const;
+    const std::set<double>& getRealValues(const std::string& column) const;
+    const std::set<std::string>& getStringValues(const std::string& column) const;
+
     eckit::Offset offset() const;
     eckit::Length length() const;
 
@@ -120,6 +125,10 @@ public: // methods
     eckit::Length length() const;
 
     const std::vector<ColumnInfo>& columnInfo() const;
+    bool hasColumn(const std::string& name) const;
+
+    Frame filter(const std::string& sql);
+    eckit::Buffer encodedData();
 
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues) const;
 
