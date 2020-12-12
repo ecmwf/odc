@@ -609,6 +609,7 @@ size_t odbFromCSV(DataHandle& dh_in, DataHandle& dh_out, const std::string& deli
     // Convert data handle to std::istream.
     HandleBuf buf(dh_in);
     std::istream is(&buf);
+    is.exceptions(std::ios_base::badbit);
 
     return odbFromCSV(is, dh_out, delimiter);
 }
