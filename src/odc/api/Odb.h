@@ -192,6 +192,13 @@ void encode(eckit::DataHandle& out,
 
 //----------------------------------------------------------------------------------------------------------------------
 
+/// SQL filtering may not be appropriate to do on a per-Frame basis, as aggregate values
+/// won't behave properly
+
+size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& out);
+
+//----------------------------------------------------------------------------------------------------------------------
+
 /// odbFromCSV returns number of lines imported
 
 size_t odbFromCSV(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
