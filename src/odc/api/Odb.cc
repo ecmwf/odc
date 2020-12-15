@@ -458,15 +458,7 @@ Frame FrameImpl::filter(const std::string& sql) {
 
     std::unique_ptr<MemoryHandle> output_dh(new MemoryHandle);
 
-    // Do the SQL select
-
-    odc::Select odb(sql, input_dh);
-    odc::Select::iterator it = odb.begin();
-    odc::Select::iterator end = odb.end();
-
-    odc::Writer<> writer(*output_dh);
-    odc::Writer<>::iterator outit = writer.begin();
-    outit->pass1(it, end);
+    ::odc::api::filter(sql, input_dh, *output_dh);
 
     // Open this output data handle as a 'new' odb, and extract the Frame
     // There should only be one frame, as it should have a consistent structure from
@@ -661,6 +653,22 @@ void encode(DataHandle& out,
             start += nelem;
             sliced.clear();
         }
+    }
+}
+
+
+size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& out) {
+
+    if (sql.empty()) {
+        in.saveInto(out);
+    } else {
+        odc::Select odb(sql, in);
+        odc::Select::iterator it = odb.begin();
+        odc::Select::iterator end = odb.end();
+
+        odc::Writer<> writer(out);
+        odc::Writer<>::iterator outit = writer.begin();
+        outit->pass1(it, end);
     }
 }
 
