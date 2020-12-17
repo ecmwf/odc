@@ -241,6 +241,10 @@ Span::Span(std::unique_ptr<SpanImpl>&& s) :
 
 Span::~Span() {}
 
+bool Span::operator==(const Span& rhs) const {
+    return(*impl_ == *rhs.impl_);
+}
+
 void Span::visit(SpanVisitor& visitor) const {
     impl_->visit(visitor);
 }

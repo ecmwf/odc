@@ -100,6 +100,11 @@ void Span::addValues(const std::string& column, const std::set<std::string>& val
     stringValues_[column].insert(vals.begin(), vals.end());
 }
 
+bool Span::operator==(const Span& rhs) const {
+    return (stringValues_ == rhs.stringValues_ && realValues_ == rhs.realValues_ &&
+            integerValues_ == rhs.integerValues_);
+}
+
 const std::set<long>& Span::getIntegerValues(const std::string& column) const {
     auto it = integerValues_.find(column);
     if (it == integerValues_.end()) {
