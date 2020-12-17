@@ -88,6 +88,8 @@ public: // methods
     const std::set<double>& getRealValues(const std::string& column) const;
     const std::set<std::string>& getStringValues(const std::string& column) const;
 
+    bool operator==(const Span& rhs) const;
+
     eckit::Offset offset() const;
     eckit::Length length() const;
 

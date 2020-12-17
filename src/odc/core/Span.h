@@ -47,6 +47,8 @@ public: // methods
     void addValues(const std::string& column, const std::set<double>& vals);
     void addValues(const std::string& column, const std::set<std::string>& vals);
 
+    bool operator==(const Span& rhs) const;
+
     template <typename T>
     void visit(T& visitor) {
         for (const auto& kv : integerValues_) visitor(kv.first, kv.second);
