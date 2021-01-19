@@ -47,12 +47,18 @@ public: // methods
     void addValues(const std::string& column, const std::set<double>& vals);
     void addValues(const std::string& column, const std::set<std::string>& vals);
 
+    bool operator==(const Span& rhs) const;
+
     template <typename T>
     void visit(T& visitor) {
         for (const auto& kv : integerValues_) visitor(kv.first, kv.second);
         for (const auto& kv : realValues_) visitor(kv.first, kv.second);
         for (const auto& kv : stringValues_) visitor(kv.first, kv.second);
     }
+
+    const std::set<long>& getIntegerValues(const std::string& column) const;
+    const std::set<double>& getRealValues(const std::string& column) const;
+    const std::set<std::string>& getStringValues(const std::string& column) const;
 
 private: // members
 

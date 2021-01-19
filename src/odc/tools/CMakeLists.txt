@@ -80,8 +80,6 @@ MockReader.h
 MockReader.cc
 )
 
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../odc )
-
 ecbuild_add_library( TARGET     odctools
                      INSTALL_HEADERS LISTED
                      HEADER_DESTINATION ${INSTALL_INCLUDE_DIR}/odc/tools

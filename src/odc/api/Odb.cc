@@ -10,6 +10,7 @@
 
 #include "odc/api/Odb.h"
 
+#include <algorithm>
 #include <numeric>
 #include <mutex>
 #include <future>
@@ -29,6 +30,7 @@
 #include "odc/MDI.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/Writer.h"
+#include "odc/Select.h"
 
 using namespace eckit;
 
@@ -42,13 +44,17 @@ namespace api {
 
 class DecoderImpl;
 
-struct FrameImpl {
+class FrameImpl {
+
+public: // methods
+
     FrameImpl(std::vector<core::Table>&& tables);
 
     // Moves this frame onwards
     bool next(bool aggregated, long rowlimit);
 
     const std::vector<ColumnInfo>& columnInfo() const;
+    bool hasColumn(const std::string& column) const;
 
     size_t rowCount() const;
     size_t columnCount() const;
@@ -58,6 +64,9 @@ struct FrameImpl {
 
     void decode(DecoderImpl& target, size_t nthreads);
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues);
+
+    Frame filter(const std::string& sql);
+    Buffer encodedData();
 
 private: // members
 
@@ -153,6 +162,30 @@ Frame ReaderImpl::next() {
     return Frame(std::unique_ptr<FrameImpl>(new FrameImpl(std::move(tables))));
 }
 
+Buffer FrameImpl::encodedData() {
+
+    std::vector<Buffer> buffers;
+    size_t total_size = 0;
+
+    for (auto& t : tables_) {
+        bool includeHeader = true;
+        buffers.emplace_back(t.readEncodedData(includeHeader));
+        total_size += buffers.back().size();
+    }
+
+    if (buffers.size() == 1) {
+        return std::move(buffers.front());
+    }
+
+    Buffer joinedBuffer(total_size);
+    size_t pos = 0;
+
+    for (const auto& b : buffers) {
+        ::memcpy(&joinedBuffer[pos], b, b.size());
+    }
+    return joinedBuffer;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 // API Forwarding
@@ -208,8 +241,24 @@ Span::Span(std::unique_ptr<SpanImpl>&& s) :
 
 Span::~Span() {}
 
+bool Span::operator==(const Span& rhs) const {
+    return(*impl_ == *rhs.impl_);
+}
+
 void Span::visit(SpanVisitor& visitor) const {
     impl_->visit(visitor);
+}
+
+const std::set<long>& Span::getIntegerValues(const std::string& column) const {
+    return impl_->getIntegerValues(column);
+}
+
+const std::set<double>& Span::getRealValues(const std::string& column) const {
+    return impl_->getRealValues(column);
+}
+
+const std::set<std::string>& Span::getStringValues(const std::string& column) const {
+    return impl_->getStringValues(column);
 }
 
 Offset Span::offset() const {
@@ -269,6 +318,11 @@ const std::vector<ColumnInfo>& FrameImpl::columnInfo() const {
     }
 
     return columnInfo_;
+}
+
+bool FrameImpl::hasColumn(const std::string& column) const {
+    ASSERT(tables_.size() > 0);
+    return tables_.front().columns().hasColumn(column);
 }
 
 size_t FrameImpl::rowCount() const {
@@ -332,6 +386,88 @@ void FrameImpl::decode(DecoderImpl& target, size_t nthreads) {
             }
         }
     }
+}
+
+namespace {
+class SerialTableReadHandle : public DataHandle {
+public:
+    SerialTableReadHandle(std::vector<core::Table>& tables) :
+        tables_(tables),
+        buffer_(0) {
+        ASSERT(tables.size() > 0);
+    }
+
+    Length openForRead() override {
+        ASSERT(tables_.size() > 0);
+
+        table_ = 0;
+        pos_ = 0;
+
+        bool includeHeader = true;
+        buffer_ = tables_[0].readEncodedData(includeHeader);
+        return buffer_.size();
+    }
+
+    void close() override {}
+
+    long read(void* out, long length) override {
+
+        if (pos_ == buffer_.size()) {
+            if (table_ >= tables_.size()-1) return 0;
+            table_++;
+            pos_ = 0;
+            bool includeHeader = true;
+            buffer_ = tables_[table_].readEncodedData(includeHeader);
+        }
+
+        ASSERT(pos_ < buffer_.size());
+        long readlength = std::min<long>(length, (buffer_.size() - pos_));
+        ::memcpy(out, &buffer_[pos_], readlength);
+        pos_ += readlength;
+        return readlength;
+    }
+
+    void print(std::ostream& s) const override {
+        s << "SerialTableReadHandle(" << tables_.size() << ")";
+    }
+
+    DataHandle* clone() const {
+        return new SerialTableReadHandle(tables_);
+    }
+
+private:
+
+    std::vector<core::Table>& tables_;
+
+    Buffer buffer_;
+    long table_;
+    long pos_;
+};
+}
+
+Frame FrameImpl::filter(const std::string& sql) {
+
+    /// @note The SQL functionality works somewhat differently to the rest of the API.
+    ///       It parses data in a streaming manner from a data handle.
+
+    // Input data handle
+
+    SerialTableReadHandle input_dh(tables_);
+
+    // Output data handle
+
+    std::unique_ptr<MemoryHandle> output_dh(new MemoryHandle);
+
+    ::odc::api::filter(sql, input_dh, *output_dh);
+
+    // Open this output data handle as a 'new' odb, and extract the Frame
+    // There should only be one frame, as it should have a consistent structure from
+    // the SQL select
+
+    Reader reader(output_dh.release());
+    Frame filtered_frame = reader.next();
+    ASSERT(!reader.next());
+    return filtered_frame;
 }
 
 Span FrameImpl::span(const std::vector<std::string>& columns, bool onlyConstantValues) {
@@ -399,6 +535,11 @@ const std::vector<ColumnInfo>& Frame::columnInfo() const {
     return impl_->columnInfo();
 }
 
+bool Frame::hasColumn(const std::string& column) const {
+    ASSERT(impl_);
+    return impl_->hasColumn(column);
+}
+
 Span Frame::span(const std::vector<std::string>& columns, bool onlyConstantValues) const {
     ASSERT(impl_);
     return impl_->span(columns, onlyConstantValues);
@@ -412,6 +553,16 @@ eckit::Offset Frame::offset() const {
 eckit::Length Frame::length() const {
     ASSERT(impl_);
     return impl_->length();
+}
+
+Frame Frame::filter(const std::string& sql) {
+    ASSERT(impl_);
+    return impl_->filter(sql);
+}
+
+Buffer Frame::encodedData() {
+    ASSERT(impl_);
+    return impl_->encodedData();
 }
 
 
@@ -502,6 +653,22 @@ void encode(DataHandle& out,
             start += nelem;
             sliced.clear();
         }
+    }
+}
+
+
+size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& out) {
+
+    if (sql.empty()) {
+        in.saveInto(out);
+    } else {
+        odc::Select odb(sql, in);
+        odc::Select::iterator it = odb.begin();
+        odc::Select::iterator end = odb.end();
+
+        odc::Writer<> writer(out);
+        odc::Writer<>::iterator outit = writer.begin();
+        outit->pass1(it, end);
     }
 }
 

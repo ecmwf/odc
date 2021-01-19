@@ -31,6 +31,7 @@
 
 namespace eckit {
     class DataHandle;
+    class Buffer;
 }
 
 
@@ -83,6 +84,12 @@ public: // methods
 
     void visit(SpanVisitor& visitor) const;
 
+    const std::set<long>& getIntegerValues(const std::string& column) const;
+    const std::set<double>& getRealValues(const std::string& column) const;
+    const std::set<std::string>& getStringValues(const std::string& column) const;
+
+    bool operator==(const Span& rhs) const;
+
     eckit::Offset offset() const;
     eckit::Length length() const;
 
@@ -120,6 +127,10 @@ public: // methods
     eckit::Length length() const;
 
     const std::vector<ColumnInfo>& columnInfo() const;
+    bool hasColumn(const std::string& name) const;
+
+    Frame filter(const std::string& sql);
+    eckit::Buffer encodedData();
 
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues) const;
 
@@ -180,6 +191,13 @@ void encode(eckit::DataHandle& out,
             const std::vector<ConstStridedData>& data,
             const std::map<std::string, std::string>& properties = {},
             size_t maxRowsPerFrame=10000);
+
+//----------------------------------------------------------------------------------------------------------------------
+
+/// SQL filtering may not be appropriate to do on a per-Frame basis, as aggregate values
+/// won't behave properly
+
+size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& out);
 
 //----------------------------------------------------------------------------------------------------------------------
 
