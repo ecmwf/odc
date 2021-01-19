@@ -108,7 +108,7 @@ bool Span::operator==(const Span& rhs) const {
 const std::set<long>& Span::getIntegerValues(const std::string& column) const {
     auto it = integerValues_.find(column);
     if (it == integerValues_.end()) {
-        throw SeriousBug(std::string("Unknown integer column in span: " + column, Here()));
+        throw SeriousBug(std::string("Unknown integer column in span: ") + column, Here());
     }
     return it->second;
 }
@@ -116,7 +116,7 @@ const std::set<long>& Span::getIntegerValues(const std::string& column) const {
 const std::set<double>& Span::getRealValues(const std::string& column) const {
     auto it = realValues_.find(column);
     if (it == realValues_.end()) {
-        throw SeriousBug(std::string("Unknown real column in span: " + column, Here()));
+        throw SeriousBug(std::string("Unknown real column in span: ") + column, Here());
     }
     return it->second;
 }
@@ -124,7 +124,7 @@ const std::set<double>& Span::getRealValues(const std::string& column) const {
 const std::set<std::string>& Span::getStringValues(const std::string& column) const {
     auto it = stringValues_.find(column);
     if (it == stringValues_.end()) {
-        throw SeriousBug(std::string("Unknown string column in span: " + column, Here()));
+        throw SeriousBug(std::string("Unknown string column in span: ") + column, Here());
     }
     return it->second;
 }
