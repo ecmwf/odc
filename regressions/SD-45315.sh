@@ -18,7 +18,7 @@ odc sql "select anflag.final, anflag.varqc, anflag,status.active@hdr, status.pas
 
 # And check that we made a change, and reverted it
 
-odc compare ../odb_45315.sh temporary.odb
+odc compare ../sd_45315.odb temporary.odb
 
 # Clean up
 
