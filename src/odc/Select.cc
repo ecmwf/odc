@@ -59,7 +59,11 @@ Select::Select(const std::string &selectStatement, const char *path, bool manage
     Select(selectStatement, std::string(path), manageOwnBuffer) {}
 
 
-Select::~Select() {}
+Select::~Select() noexcept(false) {
+    if (ownDH_) {
+        ownDH_->close();
+    }
+}
 
 eckit::sql::SQLDatabase& Select::database() {
     return session_.currentDatabase();

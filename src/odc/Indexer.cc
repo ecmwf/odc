@@ -82,6 +82,7 @@ void Indexer::createIndex(const PathName &dataFile, const PathName& indexFile)
 
         PartFileHandle h(dataFile, blockBegin, blockLength);
         h.openForRead();
+        AutoClose closer(h);
 
         int prevSeqno (-1);
         int nRows (0);

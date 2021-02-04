@@ -47,6 +47,7 @@ class ODAFactory : public eckit::sql::SQLTableFactoryBase {
         // Check that this is an ODB file
         FileHandle fh(path, false);
         fh.openForRead();
+        AutoClose closer(fh);
 
         char buf[5];
         char oda[5] {'\xff', '\xff', 'O', 'D', 'A'};

@@ -33,6 +33,9 @@ struct odc_reader_t {
     odc_reader_t(DataHandle* dh) : impl_(nullptr), dh_(dh) {
         dh_->openForRead();
     }
+    ~odc_reader_t() noexcept(false) {
+        dh_->close();
+    }
     std::unique_ptr<Reader> impl_;
     std::unique_ptr<DataHandle> dh_;
 };

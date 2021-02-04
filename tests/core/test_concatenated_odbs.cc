@@ -141,7 +141,6 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
             eckit::MultiHandle aggregateHandle(readHandles);
             eckit::FileHandle out_handle(combinedFile.path());
-            aggregateHandle.openForRead();
             aggregateHandle.saveInto(out_handle);
         }
 
@@ -263,6 +262,7 @@ CASE("If corrupt data follows a valid ODB this should not be treated as a new OD
 
     eckit::MemoryHandle readDH(buf);
     readDH.openForRead();
+    eckit::AutoClose close(readDH);
 
     odc::Reader in(readDH);
     odc::Reader::iterator it = in.begin();
@@ -319,6 +319,7 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
 
     eckit::MemoryHandle readDH(buf.data(), static_cast<size_t>(writeDH.position()));
     readDH.openForRead();
+    eckit::AutoClose close(readDH);
 
     odc::Reader in(readDH);
     odc::Reader::iterator it = in.begin();

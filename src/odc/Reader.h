@@ -41,7 +41,7 @@ public:
     Reader(Reader&& rhs);
     Reader& operator=(Reader&& rhs);
 
-	virtual ~Reader();
+	~Reader();
 
     // TODO: begin() should be const.
     iterator begin();

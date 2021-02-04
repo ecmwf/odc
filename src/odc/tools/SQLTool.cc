@@ -109,6 +109,7 @@ void SQLTool::run()
 
     eckit::sql::SQLSession session(std::move(sqlOutputConfig_)); // n.b. invalidates sqlOutputConfig_
     std::unique_ptr<eckit::DataHandle> implicitTableDH;
+    std::unique_ptr<AutoClose> implicitCloser;
 
     if (!inputFile_.empty()) {
         if (inputFile_ == "/dev/stdin" || inputFile_ == "stdin") {
@@ -123,6 +124,7 @@ void SQLTool::run()
         }
 
         implicitTableDH->openForRead();
+        implicitCloser.reset(new AutoClose(*implicitTableDH));
 
         eckit::sql::SQLDatabase& db(session.currentDatabase());
         db.addImplicitTable(new odc::sql::ODATable(db, *implicitTableDH));

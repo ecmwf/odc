@@ -10,9 +10,9 @@
 
 #include <memory>
 
-#include "eckit/testing/Test.h"
-#include "eckit/filesystem/PathName.h"
 #include "eckit/config/Resource.h"
+#include "eckit/filesystem/PathName.h"
+#include "eckit/testing/Test.h"
 
 #include "odc/core/TablesReader.h"
 
@@ -30,6 +30,7 @@ CASE("Test access Table iterator") {
 
     std::unique_ptr<eckit::DataHandle> dh(filename.fileHandle());
     dh->openForRead();
+    eckit::AutoClose close(*dh);
 
     odc::core::TablesReader reader(*dh);
     auto it = reader.begin();

@@ -124,20 +124,17 @@ void doMerge(std::vector<std::pair<I, I> >& iterators, const PathName& outputFil
 	}
 }
 
-template <typename T>
-struct AutoR : public std::vector<T*> { ~AutoR() { for (size_t i = 0; i < this->size(); ++i) delete this->at(i); } }; 
-
 void MergeTool::merge(const std::vector<PathName>& inputFiles, const PathName& outputFile)
 {
 	typedef odc::Reader R;
 	typedef R::iterator I;
 
-    AutoR<R>  readers;
+	std::vector<std::unique_ptr<odc::Reader>> readers;
     std::vector<std::pair<I, I> > iterators;
 
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
-		readers.push_back(new odc::Reader(inputFiles[i]));
+		readers.push_back(std::unique_ptr<odc::Reader>(new odc::Reader(inputFiles[i])));
         iterators.push_back(std::make_pair(readers[i]->begin(), readers[i]->end()));
 	}
     doMerge<R, I>(iterators, outputFile);
@@ -146,15 +143,16 @@ void MergeTool::merge(const std::vector<PathName>& inputFiles, const PathName& o
 void MergeTool::merge(const std::vector<PathName>& inputFiles, const std::vector<std::string>& sqls, const PathName& outputFile)
 {
     typedef odc::Select S;
-    AutoR<S> readers;
-    AutoR<eckit::FileHandle> fhs;
+    std::vector<std::unique_ptr<eckit::FileHandle>> fhs;
+    std::vector<std::unique_ptr<eckit::AutoClose>> closers;
+    std::vector<std::unique_ptr<odc::Select>> readers;
     std::vector<std::pair<S::iterator, S::iterator> > iterators;
 	for (size_t i = 0; i < inputFiles.size(); ++i)
 	{
-        FileHandle* fh = new FileHandle(inputFiles[i]);
-        fh->openForRead();
-        fhs.push_back(fh);
-		readers.push_back(new S(sqls[i], *fhs[i]));
+	    fhs.push_back(std::unique_ptr<eckit::FileHandle>(new FileHandle(inputFiles[i])));
+	    fhs.back()->openForRead();
+	    closers.push_back(std::unique_ptr<eckit::AutoClose>(new AutoClose(*fhs.back())));
+		readers.push_back(std::unique_ptr<odc::Select>(new S(sqls[i], *fhs[i])));
         iterators.push_back(std::make_pair(readers[i]->begin(), readers[i]->end()));
 	}
     doMerge<S, S::iterator>(iterators, outputFile);

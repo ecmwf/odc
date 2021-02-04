@@ -1051,6 +1051,7 @@ TEST(LegacyAPITraverseReaderTwice)
 TEST(HttpHandle)
 {
     eckit::DataHandle* in (odc::DataHandleFactory::openForRead("http://localhost/conv.odb"));
+    AutoClose closer(*in);
     //eckit::DataHandle* out (DataHandleFactory::openForWrite(const std::string&, const eckit::Length& = eckit::Length(0)));
 
     odc::Select o("select *;", *in);

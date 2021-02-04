@@ -44,6 +44,7 @@ std::string StringTool::readFile(const PathName fileName, bool logging)
 
 	FileHandle f(fileName);
     f.openForRead();
+    AutoClose close(f);
 	
 	std::string ret;
 	size_t read, totalRead = 0;
@@ -57,7 +58,6 @@ std::string StringTool::readFile(const PathName fileName, bool logging)
 	if (logging)
 		Log::info()  << "Read " << totalRead << " bytes from file " << fileName << "[" << ret << "]" << std::endl;
 
-	f.close();
 	return ret;
 }
 

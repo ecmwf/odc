@@ -131,7 +131,7 @@ bool ReaderIterator::loadHeaderAndBufferData() {
     }
 }
 
-ReaderIterator::~ReaderIterator ()
+ReaderIterator::~ReaderIterator () noexcept(false)
 {
 	Log::debug() << "ReaderIterator::~ReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << std::endl;
 
@@ -247,6 +247,7 @@ double& ReaderIterator::data(size_t i)
 
 int ReaderIterator::close()
 {
+    if (f_) f_->close();
     f_.reset();
 	return 0;
 }
