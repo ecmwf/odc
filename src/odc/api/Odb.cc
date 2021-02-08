@@ -669,8 +669,9 @@ size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& 
 
         odc::Writer<> writer(out);
         odc::Writer<>::iterator outit = writer.begin();
-        outit->pass1(it, end);
+        return outit->pass1(it, end);
     }
+    return 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
