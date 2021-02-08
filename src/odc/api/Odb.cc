@@ -431,8 +431,8 @@ public:
         s << "SerialTableReadHandle(" << tables_.size() << ")";
     }
 
-    DataHandle* clone() const {
-        return new SerialTableReadHandle(tables_);
+    DataHandle *clone() const override {
+      return new SerialTableReadHandle(tables_);
     }
 
 private:
