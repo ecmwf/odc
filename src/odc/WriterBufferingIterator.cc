@@ -28,27 +28,50 @@ namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odc::sql::TableDef* tableDef)
-: refCount_(0),
-  owner_(owner),
-  columns_(0),
-  lastValues_(0),
-  nextRow_(0),
-  columnOffsets_(0),
-  columnByteSizes_(0),
-  nrows_(0),
-  f_(dh),
-  path_(owner.path()),
-  initialisedColumns_(false),
-  properties_(),
-  rowsBuffer_(0),
-  nextRowInBuffer_(0),
-  rowsBufferSize_(owner.rowsBufferSize()),
-  tableDef_(tableDef),
-  openDataHandle_(openDataHandle)
+WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odc::sql::TableDef* tableDef) :
+    HandleHolder(dh),
+    refCount_(0),
+    owner_(owner),
+    columns_(0),
+    lastValues_(0),
+    nextRow_(0),
+    columnOffsets_(0),
+    columnByteSizes_(0),
+    nrows_(0),
+    path_(owner.path()),
+    initialisedColumns_(false),
+    properties_(),
+    rowsBuffer_(0),
+    nextRowInBuffer_(0),
+    rowsBufferSize_(owner.rowsBufferSize()),
+    tableDef_(tableDef),
+    openDataHandle_(openDataHandle)
 {
-	if (openDataHandle)	
+	if (openDataHandle)
 		open();
+}
+
+WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle &dh, bool openDataHandle, const odc::sql::TableDef* tableDef) :
+    HandleHolder(dh),
+    refCount_(0),
+    owner_(owner),
+    columns_(0),
+    lastValues_(0),
+    nextRow_(0),
+    columnOffsets_(0),
+    columnByteSizes_(0),
+    nrows_(0),
+    path_(owner.path()),
+    initialisedColumns_(false),
+    properties_(),
+    rowsBuffer_(0),
+    nextRowInBuffer_(0),
+    rowsBufferSize_(owner.rowsBufferSize()),
+    tableDef_(tableDef),
+    openDataHandle_(openDataHandle)
+{
+    if (openDataHandle)
+        open();
 }
 
 WriterBufferingIterator::~WriterBufferingIterator()
@@ -58,8 +81,6 @@ WriterBufferingIterator::~WriterBufferingIterator()
     delete [] nextRow_;
     delete [] columnOffsets_;
     delete [] columnByteSizes_;
-    if (! openDataHandle_)
-        delete f_;
 }
 
 unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigned long count)
@@ -240,11 +261,10 @@ int WriterBufferingIterator::doWriteRow(core::DataStream<core::SameByteOrder>& s
 
 int WriterBufferingIterator::open()
 {
-    //Log::debug() << "WriterBufferingIterator::open@" << this << ": Opening data handle " << f_ << std::endl;
-    ASSERT(f_);
+    //Log::debug() << "WriterBufferingIterator::open@" << this << ": Opening data handle " << handle() << std::endl;
 
     Length estimatedLen = 20 * 1024 * 1024;
-    f_->openForWrite(estimatedLen);
+    handle().openForWrite(estimatedLen);
 
 	return 0;
 }
@@ -353,10 +373,9 @@ int WriterBufferingIterator::close()
 {
     if (initialisedColumns_) flush();
 
-    if (!openDataHandle_ && f_)
+    if (!openDataHandle_)
 	{
-        f_->close();
-        f_ = 0;
+        handle().close();
 	}
 	return 0;
 }
