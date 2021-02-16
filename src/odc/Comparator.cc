@@ -40,7 +40,6 @@ namespace odc {
 
 Comparator::Comparator(bool checkMissingFlag)
 : nRow_(0),
-  checkMissingFlag_(checkMissingFlag),
   NaN_isOK_(Resource<bool>("$odc_NAN_IS_OK", false))
 {}
 
@@ -231,29 +230,13 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2,
 						ASSERT(column1.bitfieldDef() == column2.bitfieldDef());
 					}
 			}
-		
-			if (checkMissingFlag_)	
-			{
-				if (column1.missingValue() != column2.missingValue())
-				{
-					Log::warning() << column1.name() << " : " 
-						<< "column1.missingValue()=" << column1.missingValue() << ", " 
-						<< "column2.missingValue()=" << column2.missingValue() << ", " 
-						<< std::endl;
-					ASSERT(column1.missingValue() == column2.missingValue());
-				}
-			}
-			else
-            {
-				if (column1.missingValue() != column2.missingValue())
-				{
-					Log::warning() << column1.name() << " : " 
-						<< "column1.missingValue()=" << column1.missingValue() << ", " 
-						<< "column2.missingValue()=" << column2.missingValue() << ", " 
-						<< std::endl;
-				}
-			}
 
+			if (column1.hasMissing() != column2.hasMissing()) {
+			    Log::warning() << "column1.hasMissing()=" << (column1.hasMissing() ? "true" : "false") << ", "
+			                   << "column2.hasMissing()=" << (column2.hasMissing() ? "true" : "false") << std::endl;
+			    ASSERT(column1.hasMissing() == column2.hasMissing());
+			}
+		
 			if (column1.hasMissing() && column2.hasMissing())
 				ASSERT(column1.missingValue() == column2.missingValue());
 		} catch (...) {

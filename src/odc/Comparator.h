@@ -79,8 +79,6 @@ public:
                  const core::MetaData& metaData2,
                  const std::vector<int>& skipCols);
 
-	void checkMissingFlag(bool v) { checkMissingFlag_ = v; }
-
 	inline static double err(double A, double B)
 	{
 		double relativeError;
@@ -100,7 +98,6 @@ public:
 
 private:
 	long nRow_;
-	bool checkMissingFlag_;
 	bool NaN_isOK_;
 };
 
