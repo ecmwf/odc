@@ -236,7 +236,7 @@ bool TextReaderIterator::next()
                     initRowBuffer();
                     ASSERT(oldData);
                     ::memcpy(lastValues_, oldData, columnOffsets_[i]*sizeof(double));
-                    delete oldData;
+                    delete[] oldData;
                 }
 
                 char* buf = reinterpret_cast<char*>(&lastValues_[columnOffsets_[i]]);
