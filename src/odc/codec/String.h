@@ -265,7 +265,6 @@ void CodecChars<ByteOrder>::gatherStats(const double& v) {
 
     if (stringLookup_.find(s) == stringLookup_.end()) {
         size_t index = strings_.size();
-        eckit::Log::info() << "New index: " << index << std::endl;
         strings_.push_back(s);
         stringLookup_[s] = index;
     }
