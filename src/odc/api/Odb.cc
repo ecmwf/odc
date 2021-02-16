@@ -226,6 +226,13 @@ void Decoder::decode(const Frame& frame, size_t nthreads) {
     frame.impl_->decode(*impl_, nthreads);
 }
 
+Decoder Decoder::slice(size_t rowOffset, size_t nrows) const {
+    ASSERT(impl_);
+    core::DecodeTarget&& sliced = impl_->slice(rowOffset, nrows);
+    return {sliced.columns(), sliced.dataFacades()};
+}
+
+
 //----------------------------------------------------------------------------------------------------------------------
 
 SpanVisitor::~SpanVisitor() {}
