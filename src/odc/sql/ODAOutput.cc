@@ -88,6 +88,7 @@ void ODAOutput<WRITER>::initUpdateTypes(eckit::sql::SQLSelect& sql) {
         it_ = writer_->begin();
         it_->setNumberOfColumns(columns.size());
         columnSizes_.resize(columns.size());
+        missingValues_.resize(columns.size());
 
         for (size_t i = 0; i < columns.size(); ++i) {
 
