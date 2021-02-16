@@ -13,6 +13,7 @@
 
 #include "odc/core/Codec.h"
 #include "odc/codec/Integer.h"
+#include "eckit/memory/Zero.h"
 
 namespace odc {
 namespace codec {
@@ -262,19 +263,18 @@ void CodecChars<ByteOrder>::gatherStats(const double& v) {
     size_t len = ::strnlen(reinterpret_cast<const char*>(&v), decodedSizeDoubles_*sizeof(double));
     std::string s(reinterpret_cast<const char*>(&v), len);
 
-    char buf[255];
-    memcpy(buf, &v, sizeof(double));
-    buf[sizeof(double)] = 0;
-
     if (stringLookup_.find(s) == stringLookup_.end()) {
         size_t index = strings_.size();
+        eckit::Log::info() << "New index: " << index << std::endl;
         strings_.push_back(s);
         stringLookup_[s] = index;
     }
 
     // In case the column is const, the const value will be copied and used by the optimized codec.
-    this->min_ = v;
-
+    // n.b. we don't just do this->min_ = minVal as there is no guarantee that the length of the
+    //      string is >= 8 bytes. See AddressSanitizer failure on odc_test_codecs_write
+    eckit::zero(this->min_);
+    ::memcpy(&this->min_, &v, std::min(sizeof(double), len));
 }
 
 
