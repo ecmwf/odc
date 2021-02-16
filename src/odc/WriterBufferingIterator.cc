@@ -304,7 +304,6 @@ int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, a
 	col->name(name); 
     col->type<SameByteOrder>(type);
     col->bitfieldDef(b);
-	col->missingValue(0);
 	return 0;
 }
 

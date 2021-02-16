@@ -92,7 +92,6 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 	col->name(name);
     col->type<SameByteOrder>(type);
     col->bitfieldDef(b);
-	col->missingValue(0);
 	return 0;
 }
 

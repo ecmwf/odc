@@ -49,7 +49,6 @@ void encodeFrame(eckit::DataHandle& out,
                 bf.second.push_back(bit.size);
             }
             md[i]->bitfieldDef(bf);
-            md[i]->missingValue(0);
         }
     }
 
