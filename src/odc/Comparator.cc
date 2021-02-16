@@ -129,40 +129,69 @@ void Comparator::compare(int nCols,
             const Column& column2(*md2[i]);
             ColumnType type(column.type());
 
-            switch (type)
-            {
-                case STRING: {
+            // Is this a missing value in both columns?
 
-                    size_t width1 = column.dataSizeDoubles() * sizeof(double);
-                    size_t width2 = column2.dataSizeDoubles() * sizeof(double);
+            bool isMissing1 = false;
+            if (column.hasMissing()) {
+                double missing1 = column.missingValue();
+                const char* punnable_val1 = reinterpret_cast<const char*>(pdata1);
+                const char* punnable_missing1 = reinterpret_cast<const char*>(&missing1);
+                const uint64_t* punned_val1 = reinterpret_cast<const uint64_t*>(punnable_val1);
+                const uint64_t* punned_missing1 = reinterpret_cast<const uint64_t*>(punnable_missing1);
+                isMissing1 = (*punned_val1 == *punned_missing1);
+            }
 
-                    size_t len1 = ::strnlen(reinterpret_cast<const char*>(pdata1), width1);
-                    size_t len2 = ::strnlen(reinterpret_cast<const char*>(pdata2), width2);
-                    if (len1 != len2 ||
-                        ::strncmp(reinterpret_cast<const char*>(pdata1), reinterpret_cast<const char*>(pdata2), len1)) {
+            bool isMissing2 = false;
+            if (column2.hasMissing()) {
+                double missing2 = column2.missingValue();
+                const char* punnable_val2 = reinterpret_cast<const char*>(pdata2);
+                const char* punnable_missing2 = reinterpret_cast<const char*>(&missing2);
+                const uint64_t* punned_val2 = reinterpret_cast<const uint64_t*>(punnable_val2);
+                const uint64_t* punned_missing2 = reinterpret_cast<const uint64_t*>(punnable_missing2);
+                isMissing2 = (*punned_val2 == *punned_missing2);
+            }
 
-                        std::ostringstream ss;
-                        ss << "String values differ in column " << column.name() << ": "
-                           << std::string(reinterpret_cast<const char*>(pdata1), len1) << " is not equal to "
-                           << std::string(reinterpret_cast<const char*>(pdata2), len2) << std::endl;
-                        throw ValuesDifferent(ss.str());
+            if (isMissing1 != isMissing2) {
+                raiseNotEqual(column, *pdata1, *pdata2);
+            }
+
+            if (!isMissing1 && !isMissing2) {
+                switch (type) {
+                    case STRING: {
+
+                        size_t width1 = column.dataSizeDoubles() * sizeof(double);
+                        size_t width2 = column2.dataSizeDoubles() * sizeof(double);
+
+                        size_t len1 = ::strnlen(reinterpret_cast<const char*>(pdata1), width1);
+                        size_t len2 = ::strnlen(reinterpret_cast<const char*>(pdata2), width2);
+                        if (len1 != len2 ||
+                            ::strncmp(reinterpret_cast<const char*>(pdata1), reinterpret_cast<const char*>(pdata2),
+                                      len1)) {
+
+                            std::ostringstream ss;
+                            ss << "String values differ in column " << column.name() << ": "
+                               << std::string(reinterpret_cast<const char*>(pdata1), len1) << " is not equal to "
+                               << std::string(reinterpret_cast<const char*>(pdata2), len2) << std::endl;
+                            throw ValuesDifferent(ss.str());
+                        }
+                        break;
                     }
-                    break;
+                    case INTEGER:
+                    case BITFIELD:
+                    case DOUBLE:
+                        if (!(same(*pdata1, *pdata2) || (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
+                            raiseNotEqual(column, *pdata1, *pdata2);
+                        break;
+                    case REAL:
+                        if (!(same(float(*pdata1), float(*pdata2)) ||
+                              (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
+                            raiseNotEqual(column, *pdata1, *pdata2);
+                        break;
+                    case IGNORE:
+                    default:
+                        ASSERT(!"Unknown type");
+                        break;
                 }
-                case INTEGER:
-                case BITFIELD:
-                case DOUBLE:
-                    if (! (same(*pdata1, *pdata2) || (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
-                        raiseNotEqual(column, *pdata1, *pdata2);
-                    break;
-                case REAL:
-                    if (! (same(float(*pdata1), float(*pdata2)) || (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
-                        raiseNotEqual(column, *pdata1, *pdata2);
-                    break;
-                case IGNORE:
-                default:
-                    ASSERT(!"Unknown type");
-                    break;
             }
         } catch (Exception &e) {
             ++numberOfDifferences; 
