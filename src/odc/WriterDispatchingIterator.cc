@@ -70,6 +70,12 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
   filesCreated_() {}
 
 
+
+template <typename WRITE_ITERATOR, typename OWNER>
+void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setNumberOfColumns(size_t n) {
+    columns_.setSize(n);
+}
+
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, api::ColumnType type)
 {
@@ -464,6 +470,14 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
     eckit::Log::debug() << "Split: processed " << nrows_ << " row(s)." << std::endl;
 	return nrows_;
 }
+
+template <typename WRITE_ITERATOR, typename OWNER>
+void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles) {
+    for (size_t i = 0; i < iterators_.size(); ++i) {
+        iterators_[i]->flushAndResetColumnSizes(resetColumnSizeDoubles);
+    }
+}
+
 
 template <>
 template <typename T>

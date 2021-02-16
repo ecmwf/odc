@@ -96,6 +96,10 @@ public:
     std::vector<eckit::PathName> outputFiles();
     bool next();
 
+    // If we are encoding strings, and the relevant string column size changes, we need
+    // to restart the encoding process
+    void flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles);
+
 private:
     size_t rowDataSizeDoublesInternal() const;
 public:

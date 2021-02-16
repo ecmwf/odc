@@ -28,27 +28,21 @@ namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/*template<typename WRITER>
-ODAOutput<WRITER>::ODAOutput(WRITER* writer, const MetaData& columns)
-: writer_(writer), it_(writer->begin()), count_(0), metaData_(0)
-{
-    metaData_ = columns;
-}*/
-
 template<typename WRITER>
 ODAOutput<WRITER>::ODAOutput(WRITER* writer) :
     writer_(writer),
-    it_(writer->begin()),
-    count_(0)
+    it_(nullptr),
+    col_(0),
+    count_(0),
+    initted_(false)
 {}
 
 template<typename WRITER>
 ODAOutput<WRITER>::~ODAOutput() {}
 
 template<typename WRITER>
-void ODAOutput<WRITER>::print(std::ostream& s) const
-{ 
-    s << "ODAOutput: iterator: " << it_ << std::endl; // " metaData_: " <<  metaData_ << std::endl;;
+void ODAOutput<WRITER>::print(std::ostream& s) const {
+    s << "ODAOutput: iterator: " << it_ << std::endl;
 }
 
 template<typename WRITER>
@@ -67,11 +61,8 @@ template<typename WRITER>
 bool ODAOutput<WRITER>::output(const expression::Expressions& results)
 {
     size_t nCols (results.size());
-    for(size_t i (0); i < nCols; ++i)
-    {
-        bool missing = false;
-        // TODO: pass the context to it_
-        (*it_)[i] = results[i]->eval(missing);
+    for(col_ = 0; col_ < nCols; ++col_) {
+        results[col_]->output(*this);
     }
 
     ++it_;
@@ -83,47 +74,95 @@ template<typename WRITER>
 void ODAOutput<WRITER>::preprepare(SQLSelect& sql) {}
 
 template<typename WRITER>
-void ODAOutput<WRITER>::prepare(SQLSelect& sql)
-{
-    const expression::Expressions& columns (sql.output());
+void ODAOutput<WRITER>::prepare(SQLSelect& sql) { initUpdateTypes(sql); }
 
-    //if (metaData_.size()) {
-    //    Log::debug<LibOdc>() << "ODAOutput: Using meta of INTO table" << std::endl;
-    //    ASSERT(metaData_.size() == n);
-    //    const_cast<MetaData&>(it_->columns()) = metaData_;
-    //}
-    //else
-    //{
+template<typename WRITER>
+void ODAOutput<WRITER>::updateTypes(eckit::sql::SQLSelect& sql) { initUpdateTypes(sql); }
 
-        const_cast<MetaData&>(it_->columns()).setSize(columns.size());
+template<typename WRITER>
+void ODAOutput<WRITER>::initUpdateTypes(eckit::sql::SQLSelect& sql) {
+    const expression::Expressions& columns(sql.output());
 
-        for (size_t i = 0; i < columns.size(); i++) {
+    if (!initted_) {
+        initted_ = true;
+        it_ = writer_->begin();
+        it_->setNumberOfColumns(columns.size());
+        columnSizes_.resize(columns.size());
+
+        for (size_t i = 0; i < columns.size(); ++i) {
 
             SQLExpression& c(*columns[i]);
             api::ColumnType typ = sqlToOdbType(*c.type());
 
+            columnSizes_[i] = sizeof(double);
             if (typ == BITFIELD) {
-                (**it_).setBitfieldColumn(i, c.title(), typ, c.bitfieldDef());
+                it_->setBitfieldColumn(i, c.title(), typ, c.bitfieldDef());
             } else {
-                (**it_).setColumn(i, c.title(), typ);
+                it_->setColumn(i, c.title(), typ);
+                if (typ == STRING) {
+                    size_t maxlen = c.type()->size();
+                    columnSizes_[i] = maxlen;
+                    ASSERT(maxlen % sizeof(double) == 0);
+                    it_->columns()[i]->dataSizeDoubles(maxlen / sizeof(double));
+                }
             }
-
-            (**it_).missingValue(i, c.missingValue());
+            missingValues_[i] = it_->missingValue(i);
         }
-    //}
-    (**it_).writeHeader();
-    Log::debug<LibOdc>() << " => ODAOutput: " << std::endl << (**it_).columns() << std::endl;
+
+        it_->writeHeader();
+
+        Log::debug<LibOdc>() << " => ODAOutput: " << std::endl << it_->columns() << std::endl;
+
+    } else {
+
+        std::map<std::string, size_t> resetColumnSizeDoubles;
+
+        for (size_t i = 0; i < columns.size(); ++i) {
+
+            SQLExpression& c(*columns[i]);
+            api::ColumnType typ = sqlToOdbType(*c.type());
+
+            ASSERT(typ == it_->columns()[i]->type());
+            ASSERT(c.title() == it_->columns()[i]->name());
+
+            if (typ == STRING) {
+                size_t maxlen = c.type()->size();
+                ASSERT(maxlen % sizeof(double) == 0);
+                size_t sizeDoubles = maxlen / sizeof(double);
+                if (sizeDoubles > it_->columns()[i]->dataSizeDoubles()) {
+                    columnSizes_[i] = maxlen;
+                    resetColumnSizeDoubles[c.title()] = sizeDoubles;
+                }
+            } else {
+                ASSERT(it_->columns()[i]->dataSizeDoubles() == 1);
+            }
+        }
+
+        // And if we _do_ need to adjust the column sizes...
+
+        if (!resetColumnSizeDoubles.empty()) {
+            it_->flushAndResetColumnSizes(resetColumnSizeDoubles);
+        }
+    }
 }
 
 // Direct output functions removed in order output
 
-template <typename WRITER> void ODAOutput<WRITER>::outputReal(double, bool) { NOTIMP; }
-template <typename WRITER> void ODAOutput<WRITER>::outputDouble(double, bool) { NOTIMP; }
-template <typename WRITER> void ODAOutput<WRITER>::outputInt(double, bool) { NOTIMP; }
-template <typename WRITER> void ODAOutput<WRITER>::outputUnsignedInt(double, bool) { NOTIMP; }
-template <typename WRITER> void ODAOutput<WRITER>::outputString(const char*, size_t, bool) { NOTIMP; }
-template <typename WRITER> void ODAOutput<WRITER>::outputBitfield(double, bool) { NOTIMP; }
+template <typename WRITER>
+void ODAOutput<WRITER>::outputNumber(double val, bool missing) {
+    (*it_)[col_] = (missing ? missingValues_[col_] : val);
+}
 
+template <typename WRITER> void ODAOutput<WRITER>::outputReal(double val, bool missing) { outputNumber(val, missing); }
+template <typename WRITER> void ODAOutput<WRITER>::outputDouble(double val, bool missing) { outputNumber(val, missing); }
+template <typename WRITER> void ODAOutput<WRITER>::outputInt(double val, bool missing) { outputNumber(val, missing); }
+template <typename WRITER> void ODAOutput<WRITER>::outputUnsignedInt(double val, bool missing) { outputNumber(val, missing); }
+template <typename WRITER> void ODAOutput<WRITER>::outputBitfield(double val, bool missing) { outputNumber(val, missing); }
+template <typename WRITER> void ODAOutput<WRITER>::outputString(const char* val, size_t len, bool missing) {
+    ::memset(&(*it_)[col_], 0, columnSizes_[col_]);
+    ASSERT(len <= columnSizes_[col_]);
+    if (!missing) ::strncpy(reinterpret_cast<char*>(&(*it_)[col_]), val, len);
+}
 
 // Explicit template instantiations.
 

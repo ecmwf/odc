@@ -49,7 +49,7 @@ public:
 	~SelectIterator();
 
     // TODO: New dataset
-    bool isNewDataset() { return false; }
+    bool isNewDataset() { return output_.isNewDataset(); }
     const double* data() const { return output_.data(); }
 //    double* data() { return data_; }
     double& data(size_t i) { return output_.data(i); }

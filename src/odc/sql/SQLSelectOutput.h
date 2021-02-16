@@ -61,10 +61,11 @@ public: // methods
     size_t rowDataSizeDoubles() const { return requiredBufferSize_; }
     const core::MetaData& metadata() const { return metaData_; }
     size_t dataOffset(size_t i) const { return offsets_[i]; }
+    bool isNewDataset() const { return isNewDataset_; }
 
 private: // utility
 
-    void outputNumber(double);
+    void outputNumber(double val, bool missing);
 
 private: // methods (overrides)
 
@@ -100,6 +101,7 @@ private: // members
     /// How are writes carried out
     std::vector<size_t> columnSizesDoubles_;
     std::vector<size_t> offsets_;
+    std::vector<double> missingValues_;
 
     core::MetaData metaData_;
 
@@ -108,6 +110,8 @@ private: // members
     size_t currentColumn_;
 
     bool manageOwnBuffer_;
+    bool isNewDataset_;
+    bool newDatasetOutputted_;
 };
 
 //----------------------------------------------------------------------------------------------------------------------

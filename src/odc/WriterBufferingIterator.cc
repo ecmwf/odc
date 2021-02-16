@@ -127,6 +127,9 @@ void WriterBufferingIterator::allocBuffers()
     columnByteSizes_ = new size_t[colSize];
     ASSERT(lastValues_);
 
+    ::memset(lastValues_, 0, numDoubles * sizeof(double));
+    ::memset(nextRow_, 0, numDoubles * sizeof(double));
+
     // Initialise data
 
     size_t offset = 0;
@@ -135,7 +138,7 @@ void WriterBufferingIterator::allocBuffers()
         // If we are trying to do anything before the writer is properly initialised ...
         ASSERT(columns_[i]->hasInitialisedCoder());
 
-        nextRow_[i] = lastValues_[i] = columns_[i]->missingValue();
+        nextRow_[offset] = lastValues_[offset] = columns_[i]->missingValue();
         columnOffsets_[i] = offset;
         columnByteSizes_[i] = columns_[i]->dataSizeDoubles() * sizeof(double);
         offset += columns_[i]->dataSizeDoubles();
@@ -384,6 +387,17 @@ std::vector<eckit::PathName> WriterBufferingIterator::outputFiles()
     std::vector<eckit::PathName> r;
     r.push_back(path_);
     return r;
+}
+
+void WriterBufferingIterator::flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles) {
+
+    flush();
+
+    for (const auto& kv : resetColumnSizeDoubles) {
+        columns_.columnByName(kv.first)->dataSizeDoubles(kv.second);
+    }
+
+    writeHeader();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
