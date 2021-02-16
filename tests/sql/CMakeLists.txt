@@ -2,7 +2,6 @@
 list( APPEND _sql_odc_tests
     test_functions
     test_text_reader_select
-    test_box_functions
     test_oda_output
 )
 
