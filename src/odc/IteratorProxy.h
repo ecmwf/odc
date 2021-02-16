@@ -97,6 +97,7 @@ public:
 	bool isNewDataset() { return ((*it_).iter_)->isNewDataset(); }
     bool isMissing(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data(i); }
 	double missingValue(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue(); }
+    double hasMissing(size_t i) { return ((*it_).iter_)->columns()[i]->hasMissing(); }
     void flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles) {
         ((*it_).iter_)->flushAndResetColumnSizes(resetColumnSizeDoubles);
 	}
