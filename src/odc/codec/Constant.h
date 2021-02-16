@@ -101,7 +101,11 @@ void CodecConstant<ByteOrder, ValueType>::skip() {}
 
 template <typename ByteOrder, typename ValueType>
 void CodecConstant<ByteOrder, ValueType>::print(std::ostream& s) const {
-    s << this->name_ << ", value=" << std::fixed << static_cast<ValueType>(this->min_);
+    s << this->name_ << ", value=" << std::fixed << static_cast<ValueType>(this->min_)
+                     << ", hasMissing=" << (this->hasMissing_?"true":"false");
+    if (this->hasMissing_) {
+        s << ", missingValue=" << this->missingValue_;
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
