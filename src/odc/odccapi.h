@@ -85,6 +85,7 @@ int odb_select_iterator_get_column_name(oda_select_iterator_ptr, int, char **, i
 int odb_select_iterator_get_bitfield(oda_select_iterator_ptr, int, char**, char**, int*, int*);
 int odb_select_iterator_get_next_row(oda_select_iterator_ptr, int, double*, int*);
 int odb_select_iterator_get_row_buffer_size_doubles(oda_read_iterator_ptr, int*);
+int odb_select_iterator_get_missing_value(oda_select_iterator_ptr ri, int index, double* value);
 
 oda_writer_ptr odb_writer_create(const char *, int *);
 int odb_writer_destroy(oda_writer_ptr);

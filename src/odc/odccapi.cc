@@ -542,3 +542,17 @@ int odb_select_iterator_get_bitfield(oda_select_iterator_ptr it,
 
 } // extern "C" 
 
+
+int odb_select_iterator_get_missing_value(oda_select_iterator_ptr ri, int index, double* value)
+{
+    SelectIterator* r (reinterpret_cast<SelectIterator*>(ri));
+    if (index < 0 || long(r->columns().size()) < index)
+    {
+        std::stringstream ss;
+        ss << "odb_select_iterator_get_missing_value: index " << index
+           << " out of range, should be between 0 and " << r->columns().size();
+        throw UserError(ss.str());
+    }
+    *value = r->columns()[index]->missingValue();
+    return 0;
+}

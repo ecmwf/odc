@@ -234,6 +234,15 @@ interface
      integer(kind=c_int)                  :: cerr
    end function
 
+   function odb_select_get_missing_value(odb_iterator, n, v) &
+           bind(C, name="odb_select_iterator_get_missing_value")
+       use, intrinsic                       :: iso_c_binding
+       type(C_PTR), VALUE                   :: odb_iterator
+       integer(kind=C_INT),VALUE            :: n
+       real(kind=C_DOUBLE)                  :: v
+       integer(kind=C_INT)                  :: odb_select_get_missing_value
+   end function odb_select_get_missing_value
+
    function odb_select_get_column_type(odb_iterator, n, type) bind(C, name="odb_select_iterator_get_column_type")
      use, intrinsic                       :: iso_c_binding
      type(C_PTR), VALUE                   :: odb_iterator

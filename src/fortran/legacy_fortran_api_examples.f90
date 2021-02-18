@@ -373,6 +373,7 @@ subroutine example_fortran_api2
  integer(kind=C_INT)                           :: itype, newdataset, c_ncolumns=3, size_name 
  integer(kind=C_INT)                           :: bitfield_names_size, bitfield_sizes_size, ioffset, isize
  real(kind=C_DOUBLE), dimension(:), allocatable:: one_row
+ real(kind=c_double)                           :: bitfield_missing
  character(len=64)                             :: tmp_str1, tmp_str2
  integer                                       :: col
 
@@ -446,6 +447,10 @@ subroutine example_fortran_api2
 
  ! Test the contents of the data section!
 
+ cerr = odb_select_get_missing_value(odb_it, 0, bitfield_missing)
+ if (cerr /= 0) stop 45
+ if (bitfield_missing /= 2147483647) stop 46
+
  allocate(one_row(row_size_doubles))
  do i = 1, 100
 
@@ -457,6 +462,7 @@ subroutine example_fortran_api2
    tmp_str1(1:24) = transfer(one_row(column_offsets(4):column_offsets(5)-1), tmp_str1(1:24))
    tmp_str2(1:8) = transfer(one_row(column_offsets(5)), tmp_str2(1:8))
 
+   write(0, *) column_offsets
    write(0,*) i, ":", one_row(column_offsets(1)), &
                       one_row(column_offsets(2)), &
                       one_row(column_offsets(3)), &
@@ -464,7 +470,11 @@ subroutine example_fortran_api2
                       tmp_str2(1:8), &
                       one_row(column_offsets(6))
 
-   if (one_row(column_offsets(1)) /= i) stop 39
+   if (i == 1) then
+     if (one_row(column_offsets(1)) /= bitfield_missing) stop 47
+   else
+     if (one_row(column_offsets(1)) /= i) stop 39
+   end if
    if (one_row(column_offsets(2)) /= i) stop 40
    if (one_row(column_offsets(3)) /= 5) stop 41
    if (trim(tmp_str1(1:strlen(tmp_str1))) /= 'this-is-a-long-string') stop 42
