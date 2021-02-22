@@ -50,9 +50,9 @@ void quick_encode_internal(eckit::DataHandle& out,
 }
 
 template <typename T,
-          typename ...Ts,
-          typename std::enable_if<!std::is_same<T, uint64_t>::value, T>::type* = nullptr>
-void quick_encode_internal(eckit::DataHandle& out,
+          typename ...Ts>
+typename std::enable_if<!std::is_same<T, uint64_t>::value, void>::type
+quick_encode_internal(eckit::DataHandle& out,
                            std::vector<odc::api::ColumnInfo>& columnInfo,
                            std::vector<odc::api::ConstStridedData>& strides,
                            const std::string& colname,
