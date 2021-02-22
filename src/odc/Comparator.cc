@@ -38,10 +38,10 @@ public:
 
 namespace odc {
 
-Comparator::Comparator(bool checkMissingFlag)
-: nRow_(0),
-  NaN_isOK_(Resource<bool>("$odc_NAN_IS_OK", false))
-{}
+Comparator::Comparator(bool skipTestingHaveMissing):
+    skipTestingHaveMissing_(skipTestingHaveMissing),
+    nRow_(0),
+    NaN_isOK_(Resource<bool>("$odc_NAN_IS_OK", false)) {}
 
 
 void Comparator::compare(const PathName& p1, const PathName& p2)
@@ -132,7 +132,7 @@ void Comparator::compare(int nCols,
             // Is this a missing value in both columns?
 
             bool isMissing1 = false;
-            if (column.hasMissing()) {
+            if (column.hasMissing() || skipTestingHaveMissing_) {
                 double missing1 = column.missingValue();
                 const char* punnable_val1 = reinterpret_cast<const char*>(pdata1);
                 const char* punnable_missing1 = reinterpret_cast<const char*>(&missing1);
@@ -142,7 +142,7 @@ void Comparator::compare(int nCols,
             }
 
             bool isMissing2 = false;
-            if (column2.hasMissing()) {
+            if (column2.hasMissing() || skipTestingHaveMissing_) {
                 double missing2 = column2.missingValue();
                 const char* punnable_val2 = reinterpret_cast<const char*>(pdata2);
                 const char* punnable_missing2 = reinterpret_cast<const char*>(&missing2);
@@ -260,10 +260,12 @@ void Comparator::compare(const MetaData& metaData1, const MetaData& metaData2,
 					}
 			}
 
-			if (column1.hasMissing() != column2.hasMissing()) {
-			    Log::warning() << "column1.hasMissing()=" << (column1.hasMissing() ? "true" : "false") << ", "
-			                   << "column2.hasMissing()=" << (column2.hasMissing() ? "true" : "false") << std::endl;
-			    ASSERT(column1.hasMissing() == column2.hasMissing());
+            if (!skipTestingHaveMissing_) {
+                if (column1.hasMissing() != column2.hasMissing()) {
+                    Log::error() << "column1.hasMissing()=" << (column1.hasMissing() ? "true" : "false") << ", "
+                                 << "column2.hasMissing()=" << (column2.hasMissing() ? "true" : "false") << std::endl;
+                    ASSERT(column1.hasMissing() == column2.hasMissing());
+                }
 			}
 		} catch (...) {
             Log::info() << "While comparing column " << i << ": "

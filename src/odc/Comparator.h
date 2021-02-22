@@ -36,7 +36,7 @@ const double maxRelativeError = 1e-9;
 
 class Comparator {
 public:
-	Comparator(bool checkMissingFlag = true);
+	Comparator(bool skipTestingHaveMissing=false);
 
 	void operator()() { run(); }
 	void run(); 
@@ -97,6 +97,7 @@ public:
     void raiseNotEqual(const core::Column&, double, double);
 
 private:
+    bool skipTestingHaveMissing_;
 	long nRow_;
 	bool NaN_isOK_;
 };
