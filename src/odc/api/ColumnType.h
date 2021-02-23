@@ -25,7 +25,10 @@ enum ColumnType {
 	REAL     = 2,
 	STRING   = 3,
 	BITFIELD = 4,
-	DOUBLE   = 5
+	DOUBLE   = 5,
+
+	// This value exists only to keep the Clang Undefined Behaviour sanitizer happy in unit tests.
+    INVALID_ONLY_FOR_TESTING = 123
 };
 
 constexpr int NUM_TYPES = 6;

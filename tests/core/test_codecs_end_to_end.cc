@@ -93,7 +93,8 @@ namespace {
 
     // A constant string value (the full 8 bytes)
 
-    const char* const_string_1 = "a-string";
+    // too-big, aligned storage --> undefined sanitizer is happy with access as casted double
+    alignas(sizeof(double)) const char const_string_1[16] = "a-string";
 
     struct MockReadIteratorConstString1 : public MockReadIterator {
         MockReadIteratorConstString1() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_1)) {

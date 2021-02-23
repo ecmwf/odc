@@ -12,6 +12,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <algorithm>
+#include <array>
 
 #include "eckit/eckit_ecbuild_config.h"
 #include "eckit/io/Buffer.h"
@@ -308,7 +309,7 @@ CASE("constant strings consume no output data space") {
 
         // Statistics in writing order
 
-        const char* str = "hi-there";
+        alignas(sizeof(double)) const char str[] = "hi-there";
         c->gatherStats(*reinterpret_cast<const double*>(str));
         c->gatherStats(*reinterpret_cast<const double*>(str));
         c->gatherStats(*reinterpret_cast<const double*>(str));
@@ -557,7 +558,8 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
     const size_t expectedHdrSize = 32;
 
-    const char* expected_data[] = {
+    alignas(sizeof(double))
+    const std::array<char[16], 10> expected_data = {
 
         // Codec header
         "\x00\x00\x00\x00",                         // 0 = hasMissing
@@ -582,7 +584,7 @@ CASE("Character strings are 8-byte sequences coerced into being treated as doubl
 
         std::vector<unsigned char> data;
 
-        for (size_t j = 0; j < sizeof(expected_data) / sizeof(const char*); j++) {
+        for (size_t j = 0; j < expected_data.size(); j++) {
             size_t len = (j == 0 || j == 4) ? 4 : 8;
             data.insert(data.end(), expected_data[j], expected_data[j] + len);
 
@@ -1401,12 +1403,13 @@ CASE("Character strings can be stored in a flat list, and indexed") {
 
         // Statistics in writing order
 
-        const char* s1 = "ab"; // check that we can handle short strings!
-        const char* s2 = "ghijkl";
-        const char* s3 = "mnopqrst";
-        const char* s4 = "uvwxyzabcdef"; // n.b. will be trucated to 8-bytes
-        const char* s5 = "ghijklmn";
-        const char* s6 = "opqrstuv";
+        // Allocate more, and aligned, storage than required --> the undefined behaviour sanitizer is happy with the test
+        alignas(sizeof(double)) const char s1[16] = "ab"; // check that we can handle short strings!
+        alignas(sizeof(double)) const char s2[16] = "ghijkl";
+        alignas(sizeof(double)) const char s3[16] = "mnopqrst";
+        alignas(sizeof(double)) const char s4[16] = "uvwxyzabcdef"; // n.b. will be trucated to 8-bytes
+        alignas(sizeof(double)) const char s5[16] = "ghijklmn";
+        alignas(sizeof(double)) const char s6[16] = "opqrstuv";
 
         // n.b. these casts are a bit dubious in terms of memory access. May go beyond ends of s1, s2
 
@@ -1552,12 +1555,13 @@ CASE("Character strings can be stored in a flat list, and indexed, and longer th
 
         // Statistics in writing order
 
-        const char* s1 = "ab"; // check that we can handle short strings!
-        const char* s2 = "ghijkl";
-        const char* s3 = "mnopqrst";
-        const char* s4 = "uvwxyzabcdef"; // n.b. will NOT be trucated to 8-bytes
-        const char* s5 = "ghijklmnopqrstuvwxyz"; // n.b. will be truncated to 16-bytes
-        const char* s6 = "opqrstuv";
+        // Allocate more, and aligned, storage than required --> the undefined behaviour sanitizer is happy with the test
+        alignas(sizeof(double)) const char s1[24] = "ab"; // check that we can handle short strings!
+        alignas(sizeof(double)) const char s2[24] = "ghijkl";
+        alignas(sizeof(double)) const char s3[24] = "mnopqrst";
+        alignas(sizeof(double)) const char s4[24] = "uvwxyzabcdef"; // n.b. will NOT be trucated to 8-bytes
+        alignas(sizeof(double)) const char s5[24] = "ghijklmnopqrstuvwxyz"; // n.b. will be truncated to 16-bytes
+        alignas(sizeof(double)) const char s6[24] = "opqrstuv";
 
         // n.b. these casts are a bit dubious in terms of memory access. May go beyond ends of s1, s2
 
