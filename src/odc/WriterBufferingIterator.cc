@@ -150,7 +150,7 @@ void WriterBufferingIterator::allocBuffers()
 void WriterBufferingIterator::allocRowsBuffer()
 {
     rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
-    rowByteSize_ = sizeof(uint16_t) + rowDataSizeDoubles() * sizeof(double);
+    rowByteSize_ = rowDataSizeDoubles() * sizeof(double);
     rowsBuffer_ = Buffer(rowsBufferSize_ * rowByteSize_);
     nextRowInBuffer_ = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
 }
@@ -163,11 +163,11 @@ void WriterBufferingIterator::writeHeader()
     // existing buffer, then clear it.
     // n.b. if zero, this is no problem as we allocate the buffer lazily in writeRow
 
-    if (rowsBuffer_.size() != 0 && rowByteSize_ < (sizeof(uint16_t) + rowDataSizeDoublesInternal()*sizeof(double))) {
+    if (rowsBuffer_.size() != 0 && rowByteSize_ < rowDataSizeDoublesInternal()*sizeof(double)) {
         rowDataSizeDoubles_ = 0;
         rowByteSize_ = 0;
         rowsBuffer_ = eckit::Buffer(0);
-        nextRowInBuffer_ = 0;
+        nextRowInBuffer_ = nullptr;
     }
 
     for (size_t i = 0; i < columns_.size(); ++i) {
@@ -204,7 +204,7 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
 
 	gatherStats(data, nCols);
 
-    std::copy(data, data + rowDataSizeDoubles(), reinterpret_cast<double*>(nextRowInBuffer_ + sizeof(uint16_t)));
+    std::copy(data, data + rowDataSizeDoubles(), reinterpret_cast<double*>(nextRowInBuffer_));
     nextRowInBuffer_ += rowByteSize_;
 
     ASSERT((char*)nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
@@ -332,12 +332,10 @@ void WriterBufferingIterator::flush()
 
     // Iterate over stored rows, and re-encode them into the encodedBuffer
 
-    // TODO: Note we can ensure alignment when storing these. Currently the uint16_t ensure non-alignment.
-
     size_t rowsWritten = 0;
     unsigned char* p = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
     while (p < nextRowInBuffer_) {
-        doWriteRow(encodedStream, reinterpret_cast<double *>(p + sizeof(uint16_t)));
+        doWriteRow(encodedStream, reinterpret_cast<double *>(p));
         p += rowByteSize_;
         ++rowsWritten;
     }
