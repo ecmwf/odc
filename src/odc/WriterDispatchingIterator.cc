@@ -499,7 +499,12 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
     }
 
     vector<size_t> rowsRead(files_.size());
-    Comparator comparator;
+
+    // Frames in the source/dispatched cases will have different sizes, so the haveMissing()
+    // value may differ. Only compare the values
+    bool skipTestingHaveMissing = true;
+    Comparator comparator(skipTestingHaveMissing);
+
     unsigned long numberOfDifferences (0);
     long long i (0);
     for (; it != end; ++i)
