@@ -12,7 +12,6 @@
 ///
 /// @author Piotr Kuchta, ECMWF, September 2010
 
-#include "eckit/io/StdFileHandle.h"
 #include "eckit/io/FileHandle.h"
 
 #include "odc/api/Odb.h"
@@ -41,8 +40,10 @@ static void test()
 	odc::Select::iterator it2 = sel.begin();
 	odc::Select::iterator end2 = sel.end();
 
-	FILE *fout = fopen("TestAggregateFunctions2.odb", "w");
-	StdFileHandle fhout(fout);
+	FileHandle fhout("TestAggregateFunctions2.odb");
+	fhout.openForWrite(0);
+	AutoClose closer(fhout);
+
 	odc::Writer<> writer(fhout);
 	odc::Writer<>::iterator outit = writer.begin();
 
