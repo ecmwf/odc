@@ -38,7 +38,7 @@ public:
 
     Select(const std::string& selectStatement="", bool manageOwnBuffer=true);
     Select(const std::string& selectStatement, eckit::DataHandle& dh, bool manageOwnBuffer=true);
-    Select(const std::string& selectStatement, const std::string& path, bool manageOwnBuffer=true);
+    Select(const std::string& selectStatement, const eckit::PathName& path, bool manageOwnBuffer=true);
 
     // This only exists to disambiguate const char* --> std::string rather than to bool.
     Select(const std::string& selectStatement, const char* path, bool manageOwnBuffer=true);

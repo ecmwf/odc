@@ -134,18 +134,6 @@ sql/Types.h
 utility/Tracer.cc
 utility/Tracer.h
 
-# Data types' support
-data/DataHandleFactory.h
-data/DataHandleFactory.cc
-data/FileHandleFactory.h
-data/FileHandleFactory.cc
-data/PartFileHandleFactory.h
-data/PartFileHandleFactory.cc
-data/HttpHandle.h
-data/HttpHandle.cc
-data/HttpHandleFactory.h
-data/HttpHandleFactory.cc
-
 #iterator-api/BaseReader.cc
 #iterator-api/BaseReader.h
 )
