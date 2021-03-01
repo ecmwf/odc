@@ -25,7 +25,6 @@
 #include "odc/api/Odb.h"
 #include "odc/Comparator.h"
 #include "odc/core/TablesReader.h"
-#include "odc/data/DataHandleFactory.h"
 #include "odc/DispatchingWriter.h"
 #include "odc/ODBAPISettings.h"
 #include "odc/odccapi.h"
@@ -1022,20 +1021,4 @@ TEST(LegacyAPITraverseReaderTwice)
     ASSERT(j == 2);
 }
 
-
-//void buildMultiHandle(eckit::MultiHandle&, const std::vector<std::string>&);
-//void buildMultiHandle(eckit::MultiHandle&, const std::string&);
-TEST(HttpHandle)
-{
-    eckit::DataHandle* in (odc::DataHandleFactory::openForRead("http://localhost/conv.odb"));
-    AutoClose closer(*in);
-    //eckit::DataHandle* out (DataHandleFactory::openForWrite(const std::string&, const eckit::Length& = eckit::Length(0)));
-
-    odc::Select o("select *;", *in);
-
-    for (odc::Select::iterator it (o.begin()); it != o.end(); ++it)
-    {
-        Log::info() << "." << std::endl;
-    }
-}
 

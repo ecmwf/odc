@@ -89,6 +89,10 @@ Test_select_constant_value
 Test_sqlOutputFormatting
 Test_stringInWhere
 Test_windSpeedWindDirection
+#Test_CREATE_TABLE_and_SELECT_INTO
+#Test_SELECT_WHERE_0
+#Test_LegacyAPIExecuteSelectTwice
+#Test_LegacyAPITraverseReaderTwice
 Test_QuestionMarkHandlingWhenSplittingByStringColumn_ODB235
 
 #Examples.cc

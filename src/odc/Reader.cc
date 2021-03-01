@@ -12,7 +12,6 @@
 
 #include "eckit/io/DataHandle.h"
 
-#include "odc/data/DataHandleFactory.h"
 
 using namespace std;
 using namespace eckit;
@@ -46,8 +45,8 @@ Reader& Reader::operator=(Reader&& rhs) {
     return *this;
 }
 
-Reader::Reader(const std::string& path)
-: dataHandle_(DataHandleFactory::openForRead(path)),
+Reader::Reader(const eckit::PathName& path)
+: dataHandle_(path.fileHandle()),
   deleteDataHandle_(true),
   path_(path)
 {}
@@ -95,8 +94,12 @@ void Reader::noMoreData()
 eckit::DataHandle* Reader::dataHandle()
 {
     // Assume the Reader was constructed with a path, and not a DataHandle*
-    if (! dataHandle_)
-        dataHandle_ = odc::DataHandleFactory::openForRead(path_);
+    if (! dataHandle_) {
+        dataHandle_ = path_.fileHandle();
+        dataHandle_->openForRead();
+        deleteDataHandle_ = true;
+    }
+
     return dataHandle_; 
 }
 
