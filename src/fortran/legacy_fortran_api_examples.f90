@@ -491,7 +491,7 @@ subroutine example_fortran_api2
  ! Clean up
 
  cerr = odb_select_iterator_delete(odb_it)
- cerr = odb_read_delete(odb_handle)
+ cerr = odb_select_delete(odb_handle)
 
 end subroutine example_fortran_api2
 end program example_fortran_api
