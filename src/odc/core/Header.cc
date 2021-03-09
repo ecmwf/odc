@@ -41,7 +41,7 @@ bool Header::readMagic(DataHandle& dh) {
     eckit::FixedString<5> magic;
 
     long bytesRead = dh.read(&magic, sizeof(magic));
-    if (bytesRead == 0) return false;
+    if (bytesRead == 0 || bytesRead == EOF) return false;
     if (bytesRead != sizeof(magic)) throw ODBIncomplete(dh.title(), Here());
     if (magic != "\xff\xffODA") throw ODBInvalid(dh.title(), "Incorrect MAGIC", Here());
     return true;
