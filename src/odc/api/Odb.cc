@@ -42,7 +42,7 @@ namespace api {
 ///
 /// Internal types
 
-class DecoderImpl;
+struct DecoderImpl;
 
 class FrameImpl {
 
@@ -447,8 +447,8 @@ private:
     std::vector<core::Table>& tables_;
 
     Buffer buffer_;
-    long table_;
-    long pos_;
+    size_t table_;
+    size_t pos_;
 };
 }
 
