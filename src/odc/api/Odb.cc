@@ -18,6 +18,7 @@
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/HandleBuf.h"
 #include "eckit/io/MemoryHandle.h"
+#include "eckit/io/BufferList.h"
 #include "eckit/log/Log.h"
 
 #include "odc/core/DecodeTarget.h"
@@ -164,26 +165,14 @@ Frame ReaderImpl::next() {
 
 Buffer FrameImpl::encodedData() {
 
-    std::vector<Buffer> buffers;
-    size_t total_size = 0;
+    eckit::BufferList buffers;
+    const bool includeHeader = true;
 
     for (auto& t : tables_) {
-        bool includeHeader = true;
-        buffers.emplace_back(t.readEncodedData(includeHeader));
-        total_size += buffers.back().size();
+        buffers.append(t.readEncodedData(includeHeader));
     }
 
-    if (buffers.size() == 1) {
-        return std::move(buffers.front());
-    }
-
-    Buffer joinedBuffer(total_size);
-    size_t pos = 0;
-
-    for (const auto& b : buffers) {
-        ::memcpy(&joinedBuffer[pos], b, b.size());
-    }
-    return joinedBuffer;
+    return buffers.consolidate();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
