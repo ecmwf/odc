@@ -186,7 +186,6 @@ void Column::type(api::ColumnType t)
 
     coder(CodecFactory::instance().build<ByteOrder>(codecName, t));
 
-    // TODO: when we have codec unsigned_int64 it will have 0 as 
     if (type_ == BITFIELD) missingValue(MDI::bitfieldMDI());
 }
 

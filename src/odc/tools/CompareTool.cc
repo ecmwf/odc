@@ -45,16 +45,16 @@ CompareTool::CompareTool (int argc, char *argv[])
 		throw Exception(s.str());
 	}
 
-    file1_ = new PathName(parameters()[1]);
-    file2_ = new PathName(parameters()[2]);
+    file1_ = parameters()[1];
+    file2_ = parameters()[2];
 }
 
 
 void CompareTool::run()
 {
-    Timer t(std::string("Comparing files ") + *file1_ + " and " + *file2_);
-    odc::Reader oda1(*file1_);
-    odc::Reader oda2(*file2_);
+    Timer t(std::string("Comparing files ") + file1_ + " and " + file2_);
+    odc::Reader oda1(file1_);
+    odc::Reader oda2(file2_);
 
 	odc::Reader::iterator it1(oda1.begin());
 	odc::Reader::iterator end1(oda1.end());
@@ -73,7 +73,7 @@ void CompareTool::run()
     }
 
 	bool checkMissing = ! optionIsSet("-dontCheckMissing");
-    odc::Comparator(checkMissing).compare(it1, end1, it2, end2, *file1_, *file2_, excludedColumnsTypes, excludedColumns);
+    odc::Comparator(checkMissing).compare(it1, end1, it2, end2, file1_, file2_, excludedColumnsTypes, excludedColumns);
 }
 
 } // namespace tool 

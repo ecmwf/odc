@@ -33,6 +33,9 @@ struct odc_reader_t {
     odc_reader_t(DataHandle* dh) : impl_(nullptr), dh_(dh) {
         dh_->openForRead();
     }
+    ~odc_reader_t() noexcept(false) {
+        dh_->close();
+    }
     std::unique_ptr<Reader> impl_;
     std::unique_ptr<DataHandle> dh_;
 };
@@ -62,7 +65,8 @@ struct odc_decoder_t {
     void* externalData;
     bool columnMajor;
 
-    std::unique_ptr<char> ownedData;
+    // n.b. not std::vector. Don't force 0-initialising array.
+    std::unique_ptr<char[]> ownedData;
 };
 
 struct odc_encoder_t {

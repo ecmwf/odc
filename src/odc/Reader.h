@@ -22,8 +22,8 @@
 
 #include "odc/IteratorProxy.h"
 #include "odc/ReaderIterator.h"
+#include "eckit/filesystem/PathName.h"
 
-namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
 
 namespace odc {
@@ -35,13 +35,13 @@ public:
 	typedef iterator::Row row;
 
 	Reader(eckit::DataHandle &);
-    Reader(const std::string& path);
+    Reader(const eckit::PathName& path);
 	Reader();
 
     Reader(Reader&& rhs);
     Reader& operator=(Reader&& rhs);
 
-	virtual ~Reader();
+	~Reader();
 
     // TODO: begin() should be const.
     iterator begin();
@@ -63,7 +63,7 @@ private:
 
 	eckit::DataHandle* dataHandle_;
 	bool deleteDataHandle_;
-    std::string path_;
+    eckit::PathName path_;
 
 	friend class IteratorProxy<ReaderIterator,Reader,const double>;
 	friend class ReaderIterator;

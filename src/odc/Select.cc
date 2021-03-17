@@ -13,8 +13,8 @@
 /// @date April 2010
 
 #include "eckit/io/DataHandle.h"
+#include "eckit/filesystem/PathName.h"
 
-#include "odc/data/DataHandleFactory.h"
 #include "odc/Select.h"
 #include "odc/SelectIterator.h"
 #include "odc/sql/SQLOutputConfig.h"
@@ -46,10 +46,10 @@ Select::Select(const std::string& selectStatement, DataHandle& dh, bool /* manag
 }
 
 
-Select::Select(const std::string& selectStatement, const std::string& path, bool /* manageOwnBuffer */) :
+Select::Select(const std::string& selectStatement, const eckit::PathName& path, bool /* manageOwnBuffer */) :
     Select(selectStatement) {
 
-    ownDH_.reset(DataHandleFactory::openForRead(path));
+    ownDH_.reset(path.fileHandle());
     ownDH_->openForRead();
     eckit::sql::SQLDatabase& db(session_.currentDatabase());
     db.addImplicitTable(new odc::sql::ODATable(db, *ownDH_));
@@ -59,7 +59,11 @@ Select::Select(const std::string &selectStatement, const char *path, bool manage
     Select(selectStatement, std::string(path), manageOwnBuffer) {}
 
 
-Select::~Select() {}
+Select::~Select() noexcept(false) {
+    if (ownDH_) {
+        ownDH_->close();
+    }
+}
 
 eckit::sql::SQLDatabase& Select::database() {
     return session_.currentDatabase();

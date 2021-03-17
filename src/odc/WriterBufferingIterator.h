@@ -17,6 +17,7 @@
 #define odc_WriterBufferingIterator_H
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/HandleHolder.h"
 
 #include "odc/codec/CodecOptimizer.h"
 #include "odc/IteratorProxy.h"
@@ -31,13 +32,14 @@ namespace odc {
 template <typename I> class Writer;
 namespace sql { class TableDef; }
 
-class WriterBufferingIterator 
+class WriterBufferingIterator : public eckit::HandleHolder
 {
 public:
 	typedef Writer<WriterBufferingIterator> Owner;
 
 	//WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle=true);
 	WriterBufferingIterator (Owner &owner, eckit::DataHandle *, bool openDataHandle, const odc::sql::TableDef* tableDef=0);
+    WriterBufferingIterator (Owner &owner, eckit::DataHandle &, bool openDataHandle, const odc::sql::TableDef* tableDef=0);
 
 	~WriterBufferingIterator();
 
@@ -68,7 +70,7 @@ public:
 
 	Owner& owner() { return owner_; }
 
-    eckit::DataHandle& dataHandle() { return *f_; }
+    eckit::DataHandle& dataHandle() { return handle(); }
 
 	void property(std::string key, std::string value) { properties_[key] = value; }
 
@@ -94,6 +96,10 @@ public:
     std::vector<eckit::PathName> outputFiles();
     bool next();
 
+    // If we are encoding strings, and the relevant string column size changes, we need
+    // to restart the encoding process
+    void flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles);
+
 private:
     size_t rowDataSizeDoublesInternal() const;
 public:
@@ -107,7 +113,6 @@ protected:
     size_t* columnByteSizes_;
 	unsigned long long nrows_;
 
-    eckit::DataHandle* f_;
     eckit::PathName path_;
 
 private:

@@ -30,6 +30,10 @@ int gdb(int argc, char *argv[]);
 int valgrind(int argc, char *argv[]);
 int sqlhelp(int argc, char *argv[]);
 
+// This is a hack to ensure that the odctest library links in properly
+#include "odc/tools/TestOdaCAPI.h"
+int (*global_odctest_hack)(int, char**) = &::odc::tool::test::test_odacapi_setup;
+
 int main(int argc, char *argv[])
 {
 	try { return executeCommand(argc, argv);

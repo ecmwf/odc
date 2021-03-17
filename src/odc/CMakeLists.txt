@@ -130,36 +130,9 @@ sql/TODATableIterator.cc
 sql/TODATableIterator.h
 sql/Types.cc
 sql/Types.h
-sql/function/FunctionEQ_BOXLAT.cc
-sql/function/FunctionEQ_BOXLAT.h
-sql/function/FunctionEQ_BOXLON.cc
-sql/function/FunctionEQ_BOXLON.h
-sql/function/FunctionRGG_BOXLAT.cc
-sql/function/FunctionRGG_BOXLAT.h
-sql/function/FunctionRGG_BOXLON.cc
-sql/function/FunctionRGG_BOXLON.h
-sql/function/EqRegionCache.cc
-sql/function/EqRegionCache.h
-sql/function/RegionCache.cc
-sql/function/RegionCache.h
-sql/function/RggRegionCache.cc
-sql/function/RggRegionCache.h
-sql/function/piconst.h
 
 utility/Tracer.cc
 utility/Tracer.h
-
-# Data types' support
-data/DataHandleFactory.h
-data/DataHandleFactory.cc
-data/FileHandleFactory.h
-data/FileHandleFactory.cc
-data/PartFileHandleFactory.h
-data/PartFileHandleFactory.cc
-data/HttpHandle.h
-data/HttpHandle.cc
-data/HttpHandleFactory.h
-data/HttpHandleFactory.cc
 
 #iterator-api/BaseReader.cc
 #iterator-api/BaseReader.h

@@ -33,6 +33,7 @@ static void test()
 	const string fileName = "2000010106.odb";
 	FileHandle fh(fileName);
 	fh.openForRead();
+	AutoClose closer(fh);
 	odc::Select oda(sql, fh);
 	
 	Log::info() << "test: Execute '" << sql << "'" << std::endl;

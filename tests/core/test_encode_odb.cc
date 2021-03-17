@@ -188,19 +188,19 @@ CASE("Data is encoded and read back correctly") {
     const float f5 = static_cast<float>(654321.123);
     const float f6 = static_cast<float>(-123456.789e-21);
 
-    const char* const s1 = "a-string-longstrvvvvlong";
-    const char* const s2 = "string-2";
-    const char* const s3 = "string-3-LLong";
-    const char* const s4 = "string-4";
-    const char* const s5 = "string-5-LLong";
-    const char* const s6 = "string-6";
+    alignas(sizeof(double)) const char s1[] = "a-string-longstrvvvvlong";
+    alignas(sizeof(double)) const char s2[] = "string-2";
+    alignas(sizeof(double)) const char s3[] = "string-3-LLong";
+    alignas(sizeof(double)) const char s4[] = "string-4";
+    alignas(sizeof(double)) const char s5[] = "string-5-LLong";
+    alignas(sizeof(double)) const char s6[] = "string-6";
 
-    const int32_t b1 = static_cast<int32_t>((uint32_t)std::numeric_limits<uint32_t>::min());
-    const int32_t b2 = static_cast<int32_t>((uint32_t)std::numeric_limits<uint32_t>::max());
-    const int32_t b3 = static_cast<int32_t>((uint32_t)0);
-    const int32_t b4 = static_cast<int32_t>((uint32_t)0xff00ff00);
-    const int32_t b5 = static_cast<int32_t>((uint32_t)0x00ff00ff);
-    const int32_t b6 = static_cast<int32_t>((uint32_t)0xfedcba98);
+    alignas(sizeof(double)) const int32_t b1 = static_cast<int32_t>((uint32_t)std::numeric_limits<uint32_t>::min());
+    alignas(sizeof(double)) const int32_t b2 = static_cast<int32_t>((uint32_t)std::numeric_limits<uint32_t>::max());
+    alignas(sizeof(double)) const int32_t b3 = static_cast<int32_t>((uint32_t)0);
+    alignas(sizeof(double)) const int32_t b4 = static_cast<int32_t>((uint32_t)0xff00ff00);
+    alignas(sizeof(double)) const int32_t b5 = static_cast<int32_t>((uint32_t)0x00ff00ff);
+    alignas(sizeof(double)) const int32_t b6 = static_cast<int32_t>((uint32_t)0xfedcba98);
 
     const double d1 = std::numeric_limits<double>::min();
     const double d2 = std::numeric_limits<double>::max();

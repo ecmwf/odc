@@ -110,6 +110,7 @@ private: // methods
         } else {
             s << std::fixed << this->min_;
         }
+        s << ", hasMissing=" << (this->hasMissing_?"true":"false");
 
         if (this->hasMissing_) {
             s << ", missingValue=" << this->missingValue_;

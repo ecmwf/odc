@@ -133,6 +133,7 @@ void SplitTool::presortAndSplit(const PathName& inFile, const std::string& outFi
     {   
 		PartFileHandle h(inFile, chunks[i].first, chunks[i].second);
 		h.openForRead();
+		AutoClose closer(h);
 		odc::Select in(sql, h);
 		outIt->pass1(in.begin(), in.end());
     } 

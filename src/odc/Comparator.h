@@ -36,7 +36,7 @@ const double maxRelativeError = 1e-9;
 
 class Comparator {
 public:
-	Comparator(bool checkMissingFlag = true);
+	Comparator(bool skipTestingHaveMissing=false);
 
 	void operator()() { run(); }
 	void run(); 
@@ -79,8 +79,6 @@ public:
                  const core::MetaData& metaData2,
                  const std::vector<int>& skipCols);
 
-	void checkMissingFlag(bool v) { checkMissingFlag_ = v; }
-
 	inline static double err(double A, double B)
 	{
 		double relativeError;
@@ -99,8 +97,8 @@ public:
     void raiseNotEqual(const core::Column&, double, double);
 
 private:
+    bool skipTestingHaveMissing_;
 	long nRow_;
-	bool checkMissingFlag_;
 	bool NaN_isOK_;
 };
 

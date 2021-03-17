@@ -13,6 +13,7 @@
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odc/tools/Tool.h"
 #include "odc/tools/ToolFactory.h"
@@ -50,7 +51,7 @@ void ToolRunnerApplication::run()
 	if (tool_ == 0)
 	{
         std::cerr << name() << ": Unknown command '" << argv(1) << "'" << std::endl;
-		return;
+        throw eckit::UserError(std::string("Unknown command: ") + argv(1), Here());
 	}
 
 	tool_->run();

@@ -13,6 +13,8 @@
 
 #include "odc/tools/Tool.h"
 
+#include "eckit/filesystem/PathName.h"
+
 namespace odc {
 
 class RowsReaderIterator;
@@ -43,8 +45,8 @@ private:
 
 	static char* dummyArgv_[];
 
-    eckit::PathName* file1_;
-    eckit::PathName* file2_;
+    eckit::PathName file1_;
+    eckit::PathName file2_;
 
 	odc::RowsReaderIterator* reader1_;
 	odc::RowsReaderIterator* reader2_;

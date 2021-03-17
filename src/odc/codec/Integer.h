@@ -73,8 +73,11 @@ private: // methods
     unsigned char* encode(unsigned char* p, const double& d) override {
         static_assert(sizeof(ValueType) == sizeof(d), "unsafe casting check");
 
+        // Static cast to uint64_t ensures that the narrowing cast doesn't trigger the
+        // undefined behaviour sanitizer. It is correct that we can generate an integer
+        // that is too big, and throw it away, if invalid data gets here.
         const ValueType& val(reinterpret_cast<const ValueType&>(d));
-        InternalValueType s = val - this->min_;
+        InternalValueType s = static_cast<uint64_t>(val - this->min_);
         ByteOrder::swap(s);
         ::memcpy(p, &s, sizeof(s));
         return p + sizeof(s);

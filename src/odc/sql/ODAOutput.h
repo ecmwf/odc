@@ -20,6 +20,9 @@
 #include "eckit/sql/SQLOutput.h"
 #include "odc/core/MetaData.h"
 
+#include "odc/WriterBufferingIterator.h"
+#include "odc/DispatchingWriter.h"
+
 namespace odc {
 namespace sql {
 
@@ -42,10 +45,14 @@ private: // methods
     std::unique_ptr<WRITER> writer_;
 
 	typename WRITER::iterator it_;
+	int col_;
+	std::vector<size_t> columnSizes_;
+	std::vector<double> missingValues_;
 
 //    MetaData metaData_;
 
 	unsigned long long count_;
+    bool initted_;
 
 // -- Overridden methods
     virtual void reset() override;
@@ -54,7 +61,10 @@ private: // methods
     virtual void preprepare(eckit::sql::SQLSelect&) override;
     virtual void prepare(eckit::sql::SQLSelect&) override;
     virtual void cleanup(eckit::sql::SQLSelect&) override;
+    virtual void updateTypes(eckit::sql::SQLSelect&) override;
     virtual unsigned long long count() override;
+
+    void initUpdateTypes(eckit::sql::SQLSelect&);
 
     // Overridden (and removed) functions
 
@@ -64,6 +74,7 @@ private: // methods
     virtual void outputUnsignedInt(double, bool) override;
     virtual void outputString(const char*, size_t, bool) override;
     virtual void outputBitfield(double, bool) override;
+    void outputNumber(double, bool);
 };
 
 //----------------------------------------------------------------------------------------------------------------------

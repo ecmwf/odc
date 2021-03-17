@@ -604,8 +604,8 @@ struct custom_buffer_t {
     size_t size;
 };
 
-typedef long (*write_fn)(void* handle, const void* buffer, long length);
-long custom_buffer_write(custom_buffer_t* handle, const void* buffer, long length) {
+long custom_buffer_write(void* h, const void* buffer, long length) {
+    auto handle = reinterpret_cast<custom_buffer_t*>(h);
     ASSERT(handle);
     ASSERT(length + handle->pos <= handle->size);
     ::memcpy(handle->data + handle->pos, buffer, length);
@@ -638,7 +638,7 @@ CASE("Encode to a custom output stream") {
     custom_buffer_t handle = { (char*)encoded, 0, encoded.size() };
 
     long sz;
-    CHECK_RETURN(odc_encode_to_stream(enc, &handle, (write_fn)&custom_buffer_write, &sz));
+    CHECK_RETURN(odc_encode_to_stream(enc, &handle, &custom_buffer_write, &sz));
     EXPECT(sz > 0);
     EXPECT(size_t(sz) == handle.pos);
 

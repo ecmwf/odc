@@ -70,6 +70,12 @@ WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNE
   filesCreated_() {}
 
 
+
+template <typename WRITE_ITERATOR, typename OWNER>
+void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setNumberOfColumns(size_t n) {
+    columns_.setSize(n);
+}
+
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setColumn(size_t index, std::string name, api::ColumnType type)
 {
@@ -92,7 +98,6 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 	col->name(name);
     col->type<SameByteOrder>(type);
     col->bitfieldDef(b);
-	col->missingValue(0);
 	return 0;
 }
 
@@ -466,6 +471,14 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	return nrows_;
 }
 
+template <typename WRITE_ITERATOR, typename OWNER>
+void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles) {
+    for (size_t i = 0; i < iterators_.size(); ++i) {
+        iterators_[i]->flushAndResetColumnSizes(resetColumnSizeDoubles);
+    }
+}
+
+
 template <>
 template <typename T>
 void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verify(T& it, const T& end) {
@@ -486,7 +499,12 @@ void WriterDispatchingIterator<WriterBufferingIterator,DispatchingWriter>::verif
     }
 
     vector<size_t> rowsRead(files_.size());
-    Comparator comparator;
+
+    // Frames in the source/dispatched cases will have different sizes, so the haveMissing()
+    // value may differ. Only compare the values
+    bool skipTestingHaveMissing = true;
+    Comparator comparator(skipTestingHaveMissing);
+
     unsigned long numberOfDifferences (0);
     long long i (0);
     for (; it != end; ++i)

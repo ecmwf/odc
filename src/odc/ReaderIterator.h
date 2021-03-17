@@ -46,7 +46,7 @@ public:
     ReaderIterator (Reader &owner);
     ReaderIterator (Reader &owner, const eckit::PathName&);
 
-	~ReaderIterator ();
+	~ReaderIterator () noexcept(false);
 
 	bool isNewDataset();
     const double* data() const { return lastValues_; }

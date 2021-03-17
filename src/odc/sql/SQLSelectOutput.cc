@@ -40,7 +40,9 @@ SQLSelectOutput::SQLSelectOutput(bool manageOwnBuffer) :
     end_(0),
     bufferElements_(0),
     count_(0),
-    manageOwnBuffer_(manageOwnBuffer) {}
+    manageOwnBuffer_(manageOwnBuffer),
+    isNewDataset_(true),
+    newDatasetOutputted_(false) {}
 
 SQLSelectOutput::~SQLSelectOutput() {}
 
@@ -74,22 +76,32 @@ bool SQLSelectOutput::output(const expression::Expressions& results)
     }
     ASSERT(pos_ == end_);
     count_++;
+
+    if (isNewDataset_) {
+        if (newDatasetOutputted_) {
+            isNewDataset_ = false;
+            newDatasetOutputted_ = false;
+        } else {
+            newDatasetOutputted_ = true;
+        }
+    }
+
 	return true;
 }
 
 
-void SQLSelectOutput::outputNumber(double x) {
+void SQLSelectOutput::outputNumber(double x, bool missing) {
     ASSERT(pos_ >= out_ && pos_ < end_);
-    *pos_++ = x;
+    *pos_++ = (missing ? missingValues_[currentColumn_] : x);
 }
 
 // TODO: We can add special missing-value behaviour here --- with user specified missing values!
 
-void SQLSelectOutput::outputReal(double x, bool missing) { outputNumber(x); }
-void SQLSelectOutput::outputDouble(double x, bool missing) { outputNumber(x); }
-void SQLSelectOutput::outputInt(double x, bool missing) { outputNumber(x); }
-void SQLSelectOutput::outputUnsignedInt(double x, bool missing) { outputNumber(x); }
-void SQLSelectOutput::outputBitfield(double x, bool missing) { outputNumber(x); }
+void SQLSelectOutput::outputReal(double x, bool missing) { outputNumber(x, missing); }
+void SQLSelectOutput::outputDouble(double x, bool missing) { outputNumber(x, missing); }
+void SQLSelectOutput::outputInt(double x, bool missing) { outputNumber(x, missing); }
+void SQLSelectOutput::outputUnsignedInt(double x, bool missing) { outputNumber(x, missing); }
+void SQLSelectOutput::outputBitfield(double x, bool missing) { outputNumber(x, missing); }
 
 void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
 
@@ -129,9 +141,13 @@ void SQLSelectOutput::updateTypes(SQLSelect& sql) {
     offsets_.reserve(output.size());
     columnSizesDoubles_.clear();
     columnSizesDoubles_.reserve(output.size());
+    missingValues_.clear();
+    missingValues_.reserve(output.size());
 
     // TODO: What happens here if the metadata/columns change during an odb?
     // --> We need to update this allocation as we go.
+    isNewDataset_ = true;
+    newDatasetOutputted_ = false;
 
     for (size_t i = 0; i < output.size(); i++) {
 
@@ -150,9 +166,14 @@ void SQLSelectOutput::updateTypes(SQLSelect& sql) {
         metaData_[i]->name(column->title());
         metaData_[i]->type<core::SameByteOrder>(sqlToOdbType(*column->type()));
         metaData_[i]->hasMissing(column->hasMissingValue());
-        metaData_[i]->missingValue(column->missingValue());
         metaData_[i]->bitfieldDef(column->bitfieldDef());
         metaData_[i]->dataSizeDoubles(columnSizesDoubles_.back());
+
+        // n.b. missing value in the target can be different than for the source. And it can change in the source
+        //      between frames. So don't set the target missing value to the sources, use the default one associated
+        //      with the default encoder.
+
+        missingValues_.push_back(metaData_[i]->missingValue());
     }
 
     requiredBufferSize_ = std::accumulate(columnSizesDoubles_.begin(), columnSizesDoubles_.end(), 0);

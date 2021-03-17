@@ -95,8 +95,14 @@ public:
     void setNumberOfColumns(size_t n) { ((*it_).iter_)->setNumberOfColumns(n); }
     const core::MetaData& columns(const core::MetaData& md) { return ((*it_).iter_)->columns(md); }
 	bool isNewDataset() { return ((*it_).iter_)->isNewDataset(); }
-    bool isMissing(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data(i); }
+    bool isMissing(size_t i) {
+        return ((*it_).iter_)->columns()[i]->hasMissing() && ((*it_).iter_)->columns()[i]->missingValue() == (*it_)->data(i);
+	}
 	double missingValue(size_t i) { return ((*it_).iter_)->columns()[i]->missingValue(); }
+    double hasMissing(size_t i) { return ((*it_).iter_)->columns()[i]->hasMissing(); }
+    void flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles) {
+        ((*it_).iter_)->flushAndResetColumnSizes(resetColumnSizeDoubles);
+	}
 
     int setColumn(size_t index, const std::string& name, api::ColumnType type)
 	{ return (*((*it_).iter_)).setColumn(index, name, type); }

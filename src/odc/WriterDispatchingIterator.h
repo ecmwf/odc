@@ -47,6 +47,7 @@ public:
 	double* data();
     double& data(size_t i);
 
+    void setNumberOfColumns(size_t n);
     int setColumn(size_t index, std::string name, api::ColumnType type);
     int setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b);
 
@@ -84,6 +85,10 @@ public:
 	void writeHeader();
 
 	int writeRow(const double* values, unsigned long count);
+
+    // If we are encoding strings, and the relevant string column size changes, we need
+    // to restart the encoding process
+    void flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles);
 
 protected:
     bool next();

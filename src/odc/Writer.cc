@@ -95,13 +95,14 @@ typename Writer<ITERATOR>::iterator Writer<ITERATOR>::begin(bool openDataHandle)
 	if (dataHandle_ == 0)
     {
 		dh = ODBAPISettings::instance().writeToFile(path_, eckit::Length(0), false);
+        return typename Writer::iterator(new ITERATOR(*this, dh, openDataHandle));
     }
 	else
 	{
 		ASSERT(dataHandle_);
 		dh = dataHandle_;
+        return typename Writer::iterator(new ITERATOR(*this, *dh, openDataHandle));
 	}
-	return typename Writer::iterator(new ITERATOR(*this, dh, openDataHandle));
 }
 
 template <typename ITERATOR>

@@ -38,12 +38,12 @@ public:
 
     Select(const std::string& selectStatement="", bool manageOwnBuffer=true);
     Select(const std::string& selectStatement, eckit::DataHandle& dh, bool manageOwnBuffer=true);
-    Select(const std::string& selectStatement, const std::string& path, bool manageOwnBuffer=true);
+    Select(const std::string& selectStatement, const eckit::PathName& path, bool manageOwnBuffer=true);
 
     // This only exists to disambiguate const char* --> std::string rather than to bool.
     Select(const std::string& selectStatement, const char* path, bool manageOwnBuffer=true);
 
-	virtual ~Select();
+	~Select() noexcept(false);
 
 #ifdef SWIGPYTHON
     iterator __iter__() { return iterator(createSelectIterator(selectStatement_)); }

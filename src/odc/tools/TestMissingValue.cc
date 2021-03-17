@@ -47,6 +47,7 @@ static void setUp()
 	bfDef.second.push_back(2);
 
     it->setBitfieldColumn(1, "bf", odc::api::BITFIELD, bfDef);
+    it->missingValue(1, 0);
 
 	it->writeHeader();
 
@@ -100,43 +101,44 @@ static void test()
         Column& column = *it->columns()[0];
         Codec& codec = column.coder();
 
-		Log::info() << "test: codec: " << codec << std::endl;	
-
 		ASSERT(codec.hasMissing());
-		ASSERT(codec.missingValue() == 1);
 
+		// We do not preserve missing values across these calls. Missing value is as
+		// configured in the encoder, not the data source
+//		ASSERT(codec.missingValue() == 1);
+        ASSERT(codec.missingValue() == MDI::realMDI());
 
-		for (; it != end; ++it)
+		for (int row = 0; it != end; ++it, ++row)
 		{
-			ASSERT( (*it).missingValue(0) == 1 );
-
-			if ( (*it)[0] == 1 )
-				ASSERT( (*it).isMissing(0) );
-			else
-				ASSERT( ! (*it).isMissing(0) );
+		    if (row == 1) {
+		        ASSERT((*it).isMissing(0));
+		    } else {
+                ASSERT(!(*it).isMissing(0));
+		    }
 		}
 	}
 
 	{
-		// Check the isMissing and missingValue API of SelectIterator
+	    // Check that we correctly identify missing items in the select api
+	    // n.b. We _don't' expose the original missing value...
         odc::Select s("select * from \"TestMissingValue2.odb\";"); //, fileName);
 		odc::Select::iterator i = s.begin();
 		odc::Select::iterator e = s.end();
-		for (; i != e; ++i)
+		for (int row = 0; i != e; ++i, ++row)
 		{
-			ASSERT( (*i).missingValue(0) == 1 );
-			ASSERT( (*i).missingValue(1) == 0 );
+            ASSERT( (*i).missingValue(0) == MDI::realMDI() );
+            ASSERT( (*i).missingValue(1) == MDI::bitfieldMDI() );
 
-			if ( (*i)[0] == 1 )
-				ASSERT( (*i).isMissing(0) );
-			else
-				ASSERT( ! (*i).isMissing(0) );
-
-			// For Bitfields missing value by default equals 0
-			if ( (*i)[1] == 0 )
-				ASSERT( (*i).isMissing(1) );
-			else
-				ASSERT( ! (*i).isMissing(1) );
+            if (row == 0) {
+                ASSERT( ! (*i).isMissing(0) );
+                ASSERT( (*i).isMissing(1) );
+            } else if (row == 1) {
+                ASSERT( (*i).isMissing(0) );
+                ASSERT( ! (*i).isMissing(1) );
+            } else {
+                ASSERT( ! (*i).isMissing(0) );
+                ASSERT( ! (*i).isMissing(1) );
+            }
 		}
 	}
 

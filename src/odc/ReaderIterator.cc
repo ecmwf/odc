@@ -14,7 +14,6 @@
 
 #include "odc/core/Codec.h"
 #include "odc/core/Header.h"
-#include "odc/data/DataHandleFactory.h"
 #include "odc/Reader.h"
 
 using namespace eckit;
@@ -58,7 +57,7 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   rowDataSizeDoubles_(0),
   nrows_(0),
   rowsRemainingInTable_(0),
-  f_(odc::DataHandleFactory::openForRead(pathName)),
+  f_(pathName.fileHandle()),
   newDataset_(false),
   rowDataBuffer_(0),
   noMore_(false),
@@ -67,6 +66,7 @@ ReaderIterator::ReaderIterator(Reader &owner, const PathName& pathName)
   refCount_(0)
 {
 	ASSERT(f_);
+	f_->openForRead();
 
 	loadHeaderAndBufferData();
 }
@@ -131,7 +131,7 @@ bool ReaderIterator::loadHeaderAndBufferData() {
     }
 }
 
-ReaderIterator::~ReaderIterator ()
+ReaderIterator::~ReaderIterator () noexcept(false)
 {
 	Log::debug() << "ReaderIterator::~ReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << std::endl;
 
@@ -247,6 +247,7 @@ double& ReaderIterator::data(size_t i)
 
 int ReaderIterator::close()
 {
+    if (f_) f_->close();
     f_.reset();
 	return 0;
 }

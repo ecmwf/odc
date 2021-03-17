@@ -84,6 +84,8 @@ void TODATableIterator<READER>::updateMetaData() {
 
     columnOffsets_.clear();
     columnDoublesSizes_.clear();
+    columnsHaveMissing_.clear();
+    columnMissingValues_.clear();
     for (const eckit::sql::SQLColumn& col : columns_) {
 
         if (!md.hasColumn(col.name())) {
@@ -93,6 +95,8 @@ void TODATableIterator<READER>::updateMetaData() {
         size_t idx = md.columnIndex(col.name());
         columnOffsets_.push_back(it_->dataOffset(idx));
         columnDoublesSizes_.push_back(it_->dataSizeDoubles(idx));
+        columnsHaveMissing_.push_back(it_->hasMissing(idx));
+        columnMissingValues_.push_back(it_->missingValue(idx));
     }
 }
 
@@ -106,6 +110,18 @@ template <typename READER>
 std::vector<size_t> TODATableIterator<READER>::doublesDataSizes() const {
     ASSERT(columnDoublesSizes_.size() == columns_.size());
     return columnDoublesSizes_;
+}
+
+template <typename READER>
+std::vector<char> TODATableIterator<READER>::columnsHaveMissing() const {
+    ASSERT(columnsHaveMissing_.size() == columns_.size());
+    return columnsHaveMissing_;
+}
+
+template <typename READER>
+std::vector<double> TODATableIterator<READER>::missingValues() const {
+    ASSERT(columnMissingValues_.size() == columns_.size());
+    return columnMissingValues_;
 }
 
 template <typename READER>

@@ -97,10 +97,9 @@ void Codec::missingValue(double v)
 
 void Codec::gatherStats(const double& v)
 {
-    if(v == missingValue_)
+    if(v == missingValue_) {
         hasMissing_ = 1;
-    else
-    {
+    } else {
         if(v < min_ || min_ == missingValue_)
             min_ = v;
         if(v > max_ || max_ == missingValue_)
@@ -110,7 +109,8 @@ void Codec::gatherStats(const double& v)
 
 void Codec::print(std::ostream& s) const {
     s << name_
-      << ", range=<" << std::fixed << min_ << "," << max_ << ">";
+      << ", range=<" << std::fixed << min_ << "," << max_ << ">"
+      << ", hasMissing=" << (hasMissing_?"true":"false");
 
     if (hasMissing_) {
         s << ", missingValue=" << missingValue_;
