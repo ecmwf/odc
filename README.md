@@ -44,6 +44,8 @@ odc --version
 
 ## Usage
 
+Include the `odc` headers like so:
+
 ```c
 // odc_test.c
 #include "odc/api/odc.h"
@@ -54,9 +56,10 @@ int main() {
 }
 ```
 
+Make sure to reference the linked library when compiling:
+
 ```sh
-gcc -lodccore -o odc_test odc_test.c
-./odc_test
+gcc -lodccore odc_test.c
 ```
 
 ## License
