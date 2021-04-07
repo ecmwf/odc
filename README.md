@@ -1,6 +1,6 @@
 # odc
 
-A package to read and write ODB-2 data.
+A package to read and write ODB\-2 data.
 
 ## Dependencies
 
