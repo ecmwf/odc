@@ -7,9 +7,9 @@ A package to read and write ODB\-2 data.
 ### Required
 
 * C/C++ compiler
-* [CMake](https://cmake.org/)
-* [ecbuild](https://github.com/ecmwf/ecbuild)
-* [eckit](https://github.com/ecmwf/eckit)
+* [CMake]
+* [ecbuild]
+* [eckit]
 
 ### Optional
 
@@ -65,3 +65,8 @@ gcc -lodccore odc_test.c
 ## License
 
 `odc` is distributed under the Apache license 2.0 - see the accompanying [LICENSE](./LICENSE) file for more details.
+
+[LICENSE]: ./LICENSE
+[CMake]: https://cmake.org/
+[ecbuild]: https://github.com/ecmwf/ecbuild
+[eckit]: https://github.com/ecmwf/eckit
