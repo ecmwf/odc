@@ -13,7 +13,6 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/odc_config.h DESTINATION ${INSTALL_INC
 
 add_subdirectory( odc )
 add_subdirectory( odc/tools )
-add_subdirectory( odc/odb2netcdf )
 
 ### fortran bindings -- OFF for the moment due to errors with gfortran 6.3 / 7.3
 add_subdirectory( fortran )
