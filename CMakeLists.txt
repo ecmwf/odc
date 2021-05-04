@@ -22,11 +22,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ecbuild_find_package( NAME eckit VERSION 1.4 REQUIRED )
 
-#ecbuild_add_option( FEATURE NETCDF
-#                    DESCRIPTION "whether or not to build the odb2netcdf tool"
-#                    DEFAULT OFF
-#                    REQUIRED_PACKAGES "NetCDF COMPONENTS CXX" )
-
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"
                     DEFAULT OFF )

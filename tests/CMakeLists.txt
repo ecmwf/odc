@@ -115,28 +115,6 @@ set( test_environment
   TEST_DATA_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}
   )
 
-### odb2netcdf tests
-
-ecbuild_get_test_multidata(
-    TARGET odc_get_odb2netcdf_data
-    NAMES odb2netcdf_1d.odb odb2netcdf_1d.cdl
-          odb2netcdf_2d_hdr.odb odb2netcdf_2d_body.odb odb2netcdf_2d.cdl
-    NOCHECK )
-
-ecbuild_add_test( TARGET test_odb2netcdf_1d
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_1d.sh
-    ENVIRONMENT ${test_environment}
-    LABELS       odc odc_netcdf
-    TEST_DEPENDS get_odb2netcdf_data
-    CONDITION HAVE_NETCDF )
-
-ecbuild_add_test( TARGET test_odb2netcdf_2d
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_odb2netcdf_2d.sh
-    ENVIRONMENT ${test_environment}
-    TEST_DEPENDS get_odb2netcdf_data
-    LABELS       odc odc_netcdf
-    CONDITION HAVE_NETCDF )
-
 ### odc tests
 
 set( _prev_test odc_get_test_data  )
