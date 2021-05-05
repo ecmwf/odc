@@ -109,6 +109,26 @@ contains
 
     end function
 
+    function test_odc_integer_behaviour() result(success)
+
+        ! Test that we can set the integer behaviour as both double and long
+
+        logical :: success
+
+        success = .true.
+
+        if (odc_integer_behaviour(ODC_INTEGERS_AS_DOUBLES) /= ODC_SUCCESS) then
+            write(error_unit, *) 'setting integer behaviour to doubles failed'
+            success = .false.
+        end if
+
+        if (odc_integer_behaviour(ODC_INTEGERS_AS_LONGS) /= ODC_SUCCESS) then
+            write(error_unit, *) 'setting integer behaviour to longs failed'
+            success = .false.
+        endif
+
+    end function
+
 end module
 
 
@@ -129,6 +149,7 @@ program fapi_general
     success = success .and. test_git_sha1()
     success = success .and. test_type_names()
     success = success .and. test_error_handling()
+    success = success .and. test_odc_integer_behaviour()
 
     if (.not. success) stop -1
 

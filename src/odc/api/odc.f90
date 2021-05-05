@@ -18,6 +18,11 @@ module odc
     integer, public, parameter :: ODC_ERROR_GENERAL_EXCEPTION = 2
     integer, public, parameter :: ODC_ERROR_UNKNOWN_EXCEPTION = 3
 
+    ! Integer behaviour values
+
+    integer(c_int), public, parameter :: ODC_INTEGERS_AS_DOUBLES = 1  ! this is the default
+    integer(c_int), public, parameter :: ODC_INTEGERS_AS_LONGS = 2
+
     private
 
     integer, parameter :: dp = selected_real_kind(15, 307)
@@ -95,6 +100,7 @@ module odc
     public :: odc_missing_integer, odc_missing_double
     public :: odc_set_missing_integer, odc_set_missing_double
     public :: odc_set_failure_handler
+    public :: odc_integer_behaviour
 
     ! Error handling definitions
 
