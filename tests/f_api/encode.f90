@@ -20,6 +20,8 @@ module fapi_encode_tests
     integer(8), parameter :: col12_data(7) = [-512, 999999, 3, 7623, -22000, 999999, 7]
     integer(8), parameter :: col13_data(7) = [-1234567, 8765432, 999999, 22, 2222222, -81222323, 999999]
     integer(8), parameter :: col14_data(7) = [999999, 999999, 999999, 999999, 999999, 999999, 999999]
+    character(8), parameter :: property_keys(2) = [character(8) :: "foo", "baz"]
+    character(8), parameter :: property_values(2) = [character(8) :: "bar", "qux"]
 
 contains
 
@@ -191,6 +193,11 @@ contains
         call check_decoded_column_major(data, success)
         call initialise_encoder(encoder, success)
 
+        ! Encode additional property key/value pairs
+        do iter = 1, 2
+            call check_call(encoder%add_property(property_keys(iter), property_values(iter)), "add property", success)
+        end do
+
         ! Put encoding in a loop. Do the encoding twice, to demonstrate that
         ! we can iterate through tables of data.
 
@@ -222,6 +229,11 @@ contains
 
         call check_decoded_column_major(transpose(data), success)
         call initialise_encoder(encoder, success)
+
+        ! Encode additional property key/value pairs
+        do iter = 1, 2
+            call check_call(encoder%add_property(property_keys(iter), property_values(iter)), "add property", success)
+        end do
 
         ! Put encoding in a loop. Do the encoding twice, to demonstrate that
         ! we can iterate through tables of data.
@@ -351,6 +363,8 @@ contains
 
         call check_call(reader%open_path(path), "open " // path, success)
         call check_call(frame%initialise(reader), "initialise frame", success)
+
+        ! TODO: Check if encoded property key/values match, once the appropriate interface is implemented
 
         ! We are expecting two frames
 

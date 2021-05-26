@@ -78,6 +78,7 @@ module odc
         procedure :: set_rows_per_frame => encoder_set_rows_per_frame
         procedure :: set_data => encoder_set_data_array
         procedure :: add_column => encoder_add_column
+        procedure :: add_property => encoder_add_property
         procedure :: column_set_data_size => encoder_column_set_data_size
         procedure :: column_set_data_array => encoder_column_set_data_array
         procedure :: column_add_bitfield => encoder_column_add_bitfield
@@ -512,6 +513,15 @@ module odc
             type(c_ptr), intent(in), value :: encoder
             type(c_ptr), intent(in), value :: name
             integer(c_int), intent(in), value :: type
+            integer(c_int) :: err
+        end function
+
+        function odc_encoder_add_property(encoder, property_key, property_value) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: encoder
+            type(c_ptr), intent(in), value :: property_key
+            type(c_ptr), intent(in), value :: property_value
             integer(c_int) :: err
         end function
 
@@ -987,6 +997,18 @@ contains
         character(:), allocatable, target :: nullified_name
         nullified_name = trim(name) // c_null_char
         err = odc_encoder_add_column(encoder%impl, c_loc(nullified_name), type)
+    end function
+
+    function encoder_add_property(encoder, property_key, property_value) result(err)
+        class(odc_encoder), intent(inout) :: encoder
+        character(*), intent(in) :: property_key
+        character(*), intent(in) :: property_value
+        integer :: err
+        character(:), allocatable, target :: nullified_key
+        character(:), allocatable, target :: nullified_value
+        nullified_key = trim(property_key) // c_null_char
+        nullified_value = trim(property_value) // c_null_char
+        err = odc_encoder_add_property(encoder%impl, c_loc(nullified_key), c_loc(nullified_key))
     end function
 
     function encoder_column_set_data_size(encoder, col, element_size, element_size_doubles) result(err)
