@@ -252,6 +252,38 @@ contains
 
     end function
 
+    subroutine check_frame_properties(frame, keys, values, success)
+        type(odc_frame), intent(in) :: frame
+        character(*), intent(in) :: keys(:)
+        character(*), intent(in) :: values(:)
+        logical, intent(inout) :: success
+
+        character(:), allocatable, target :: version, key, val
+        character(255) :: version_str
+        integer :: iter
+
+        call check_call(odc_version(version), 'getting version number', success)
+        write(version_str, *) 'odc version ', version
+        version_str = trim(adjustl(version_str))
+
+        ! Check encoded frame properties
+        do iter = 1, size(keys)
+            call check_call(frame%property(keys(iter), val), 'getting property by key', success)
+            if (val /= values(iter)) then
+                write(error_unit, *) 'unexpected property value for ', trim(adjustl(keys(iter))), ': ', val , ' /= ', values(iter)
+                success = .false.
+            end if
+        end do
+
+        ! Check common encoder property
+        call check_call(frame%property('encoder', val), 'getting property by key', success)
+        if (val /= version_str) then
+            write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+            success = .false.
+        end if
+
+    end subroutine
+
     subroutine check_frame_column(frame, col, name, type, success)
         type(odc_frame), intent(in) :: frame
         integer, intent(in) :: col, type
@@ -364,13 +396,13 @@ contains
         call check_call(reader%open_path(path), "open " // path, success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
-        ! TODO: Check if encoded property key/values match, once the appropriate interface is implemented
-
         ! We are expecting two frames
 
         do iter = 0, 1
 
             call check_call(frame%next(), "get first frame", success)
+
+            call check_frame_properties(frame, property_keys, property_values, success)
 
             call check_frame_column(frame, 1, "col1", ODC_INTEGER, success)
             call check_frame_column(frame, 2, "col2", ODC_INTEGER, success)

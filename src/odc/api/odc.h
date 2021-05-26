@@ -204,6 +204,30 @@ int odc_frame_column_attributes(const odc_frame_t* frame, int col, const char** 
  */
 int odc_frame_bitfield_attributes(const odc_frame_t* frame, int col, int entry, const char** name, int* offset, int* size);
 
+/** Returns the number of properties encoded in the frame
+ * \param frame Frame instance
+ * \param nproperties Return variable for number of properties
+ * \returns Return code (#OdcErrorValues)
+ */
+int odc_frame_properties_count(const odc_frame_t* frame, int* nproperties);
+
+/** Returns the string key/value property by its index
+ * \param frame Frame instance
+ * \param idx Property index
+ * \param key Return variable for property key
+ * \param value Return variable for property value
+ * \returns Return code (#OdcErrorValues)
+ */
+int odc_frame_property_idx(const odc_frame_t* frame, int idx, const char** key, const char** value);
+
+/** Returns the string property value by its key
+ * \param frame Frame instance
+ * \param key Property key
+ * \param value Return variable for property value
+ * \returns Return code (#OdcErrorValues)
+ */
+int odc_frame_property(const odc_frame_t* frame, const char* key, const char** value);
+
 ///@}
 
 

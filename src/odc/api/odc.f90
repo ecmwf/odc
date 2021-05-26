@@ -46,6 +46,9 @@ module odc
         procedure :: column_count => frame_column_count
         procedure :: column_attributes => frame_column_attributes
         procedure :: bitfield_attributes => frame_bitfield_attributes
+        procedure :: properties_count => frame_properties_count
+        procedure :: property_idx => frame_property_idx
+        procedure :: property => frame_property
     end type
 
     type odc_decoder
@@ -320,6 +323,33 @@ module odc
             type(c_ptr), intent(out) :: name
             integer(c_int), intent(out) :: offset
             integer(c_int), intent(out) :: size
+            integer(c_int) :: err
+        end function
+
+        function odc_frame_properties_count(frame, nproperties) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(out) :: nproperties
+            integer(c_int) :: err
+        end function
+
+        function odc_frame_property_idx(frame, idx, key, val) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            integer(c_int), intent(in), value :: idx
+            type(c_ptr), intent(out) :: key
+            type(c_ptr), intent(out) :: val
+            integer(c_int) :: err
+        end function
+
+        function odc_frame_property(frame, key, value) result(err) bind(c)
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_ptr), intent(in), value :: frame
+            type(c_ptr), intent(in), value :: key
+            type(c_ptr), intent(out) :: value
             integer(c_int) :: err
         end function
 
@@ -769,6 +799,63 @@ contains
 
     end function
 
+    function frame_properties_count(frame, nproperties) result(err)
+        class(odc_frame), intent(in) :: frame
+        integer, intent(out) :: nproperties
+        integer :: err
+
+        integer(c_int) :: nproperties_tmp
+
+        err = odc_frame_properties_count(frame%impl, nproperties_tmp)
+
+        if (err == ODC_SUCCESS) then
+            nproperties = nproperties_tmp
+        end if
+
+    end function
+
+    function frame_property_idx(frame, idx, key, val) result(err)
+        class(odc_frame), intent(in) :: frame
+        integer, intent(in) :: idx
+        character(:), allocatable, intent(out) :: key
+        character(:), allocatable, intent(out) :: val
+        integer :: err
+
+        type(c_ptr) :: key_tmp
+        type(c_ptr) :: val_tmp
+
+        err = odc_frame_property_idx(frame%impl, idx-1, key_tmp, val_tmp)
+
+        if (err == ODC_SUCCESS) then
+            key = fortranise_cstr(key_tmp)
+            val = fortranise_cstr(val_tmp)
+        end if
+
+    end function
+
+    function frame_property(frame, key, val) result(err)
+        class(odc_frame), intent(in) :: frame
+        character(*), intent(in) :: key
+        character(:), allocatable, intent(out) :: val
+        integer :: err
+
+        character(:), allocatable, target :: nullified_key
+        type(c_ptr) :: val_tmp
+
+        nullified_key = trim(key) // c_null_char
+
+        err = odc_frame_property(frame%impl, c_loc(nullified_key), val_tmp)
+
+        if (err == ODC_SUCCESS) then
+            if (c_associated(val_tmp)) then
+                val = fortranise_cstr(val_tmp)
+            else
+                val = ''
+            end if
+        end if
+
+    end function
+
     ! Methods for decoder object
 
     function decoder_initialise(decoder, column_major) result(err)
@@ -1008,7 +1095,7 @@ contains
         character(:), allocatable, target :: nullified_value
         nullified_key = trim(property_key) // c_null_char
         nullified_value = trim(property_value) // c_null_char
-        err = odc_encoder_add_property(encoder%impl, c_loc(nullified_key), c_loc(nullified_key))
+        err = odc_encoder_add_property(encoder%impl, c_loc(nullified_key), c_loc(nullified_value))
     end function
 
     function encoder_column_set_data_size(encoder, col, element_size, element_size_doubles) result(err)

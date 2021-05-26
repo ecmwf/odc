@@ -134,6 +134,11 @@ public: // methods
 
     Span span(const std::vector<std::string>& columns, bool onlyConstantValues) const;
 
+    /** Returns a map of string key/value properties encoded in the current frame
+     * \returns Map object
+     */
+    const std::map<std::string, std::string>& properties() const;
+
 private: // members
 
     std::unique_ptr<FrameImpl> impl_;
