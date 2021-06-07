@@ -448,7 +448,7 @@ contains
         logical :: aggregated = .false.
         character(:), allocatable, target :: version, key, val
         character(255) :: version_str
-        logical :: success
+        logical :: success, exists
         success = .true.
 
         call test_generate_odb('properties-1.odb', 1, success)
@@ -515,15 +515,16 @@ contains
                     call check_call(frame%property('baz', val), 'getting property by key', success)
                     if (val /= 'qux') then
                         write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                        success = .false.
                     end if
                 end if
 
                 ! Check for reading of non-existent properties
-                call check_call(frame%property('non-existent', val), 'getting property by key', success)
-                if (len(val) > 0) then
-                    write(error_unit, *) 'unexpected non-existent property value: ', val
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
                 end if
-
             end do
 
             nframes = nframes + 1
@@ -554,7 +555,7 @@ contains
         logical :: aggregated = .true.
         character(:), allocatable, target :: version, key, val
         character(255) :: version_str
-        logical :: success
+        logical :: success, exists
         success = .true.
 
         call test_check_file_exists('properties-1.odb', success)
@@ -609,17 +610,20 @@ contains
                 call check_call(frame%property('foo', val), 'getting property by key', success)
                 if (val /= 'bar') then
                     write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
                 end if
 
                 call check_call(frame%property('baz', val), 'getting property by key', success)
                 if (val /= 'qux') then
                     write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                    success = .false.
                 end if
 
                 ! Check for reading of non-existent properties
-                call check_call(frame%property('non-existent', val), 'getting property by key', success)
-                if (len(val) > 0) then
-                    write(error_unit, *) 'unexpected non-existent property value: ', val
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
                 end if
             end do
 
@@ -651,7 +655,7 @@ contains
         logical :: aggregated = .false.
         character(:), allocatable, target :: version, key, val
         character(255) :: version_str
-        logical :: success
+        logical :: success, exists
         success = .true.
 
         call test_generate_odb('properties-2.odb', 2, success)
@@ -706,17 +710,20 @@ contains
                 call check_call(frame%property('foo', val), 'getting property by key', success)
                 if (val /= 'bar') then
                     write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
                 end if
 
                 call check_call(frame%property('baz', val), 'getting property by key', success)
                 if (val /= 'qux') then
                     write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                    success = .false.
                 end if
 
                 ! Check for reading of non-existent properties
-                call check_call(frame%property('non-existent', val), 'getting property by key', success)
-                if (len(val) > 0) then
-                    write(error_unit, *) 'unexpected non-existent property value: ', val
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
                 end if
             end do
 
@@ -748,7 +755,7 @@ contains
         logical :: aggregated = .true.
         character(:), allocatable, target :: version, key, val
         character(255) :: version_str
-        logical :: success
+        logical :: success, exists
         success = .true.
 
         call test_check_file_exists('properties-2.odb', success)
@@ -803,17 +810,20 @@ contains
                 call check_call(frame%property('foo', val), 'getting property by key', success)
                 if (val /= 'bar') then
                     write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
                 end if
 
                 call check_call(frame%property('baz', val), 'getting property by key', success)
                 if (val /= 'qux') then
                     write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                    success = .false.
                 end if
 
                 ! Check for reading of non-existent properties
-                call check_call(frame%property('non-existent', val), 'getting property by key', success)
-                if (len(val) > 0) then
-                    write(error_unit, *) 'unexpected non-existent property value: ', val
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
                 end if
             end do
 
@@ -845,7 +855,7 @@ contains
         logical :: aggregated = .false.
         character(:), allocatable, target :: version, key, val
         character(255) :: version_str
-        logical :: success
+        logical :: success, exists
         success = .true.
 
         call test_generate_odb('properties-3.odb', 3, success)
@@ -901,6 +911,7 @@ contains
                     call check_call(frame%property('foo', val), 'getting property by key', success)
                     if (val /= 'bar') then
                         write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                        success = .false.
                     end if
                 else
                     call check_call(frame%property('encoder', val), 'getting property by key', success)
@@ -912,13 +923,15 @@ contains
                     call check_call(frame%property('foo', val), 'getting property by key', success)
                     if (val /= 'baz') then
                         write(error_unit, *) 'unexpected property value for foo: ', val , ' /= baz'
+                        success = .false.
                     end if
                 end if
 
                 ! Check for reading of non-existent properties
-                call check_call(frame%property('non-existent', val), 'getting property by key', success)
-                if (len(val) > 0) then
-                    write(error_unit, *) 'unexpected non-existent property value: ', val
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= F'
+                    success = .false.
                 end if
             end do
 
@@ -950,7 +963,7 @@ contains
         logical :: aggregated = .true.
         character(:), allocatable, target :: version, key, val
         character(255) :: version_str
-        logical :: success
+        logical :: success, exists
         success = .true.
 
         call test_check_file_exists('properties-3.odb', success)
@@ -1003,12 +1016,14 @@ contains
                 ! Value from the first frame will win
                 if (val /= 'bar') then
                     write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
                 end if
 
                 ! Check for reading of non-existent properties
-                call check_call(frame%property('non-existent', val), 'getting property by key', success)
-                if (len(val) > 0) then
-                    write(error_unit, *) 'unexpected non-existent property value: ', val
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
                 end if
             end do
 

@@ -1,6 +1,11 @@
-program odc_ls
+! To build this program, please make sure to first compile odc Fortran module,
+! and then reference linked libraries:
+!
+!     gfortran -c ../../src/odc/api/odc.f90
+!     gfortran -lodccore -lfodc -o odc-fortran-ls odc_ls.f90
 
-    use, intrinsic :: iso_fortran_env
+program odc_ls
+    use, intrinsic :: iso_fortran_env, only: error_unit,output_unit
     use odc
     implicit none
 
@@ -56,8 +61,8 @@ contains
     end subroutine
 
     subroutine usage()
-        write(error_unit,*) 'Usage:'
-        write(error_unit,*) '    odc-fortran-ls <odb2 file>'
+        write(output_unit, *) 'Usage:'
+        write(output_unit, *) '    odc-fortran-ls <odb2 file>'
     end subroutine
 
     subroutine write_header(frame, ncols)
@@ -81,10 +86,11 @@ contains
         integer, intent(in) :: ncols
         integer(8) :: row
         real(8), pointer :: array_data(:,:)
-        integer :: ncols_decoder, ncols_frame, col, current_index
+        integer :: ncols_decoder, ncols_frame, col, current_index, bitfield_count
         integer(8) :: missing_integer
         real(8) :: missing_double
-        integer, dimension(ncols) :: types, sizes, indexes
+        integer, dimension(ncols) :: types, sizes, bf_sizes, indexes
+        integer, target :: bf, bf_size
 
         call check_call(decoder%data(array_data), "getting access to data")
 
@@ -97,10 +103,18 @@ contains
 
         current_index = 1
         do col = 1, ncols
-            call check_call(frame%column_attributes(col, type=types(col)), "getting column type")
+            call check_call(frame%column_attributes(col, type=types(col), bitfield_count=bitfield_count), "getting column type")
             call check_call(decoder%column_data_array(col, element_size_doubles=sizes(col)), "getting element size")
             indexes(col) = current_index
             current_index = current_index + sizes(col)
+
+            if (types(col) == ODC_BITFIELD) then
+                bf_sizes(col) = 0
+                do bf = 1, bitfield_count
+                    call check_call(frame%bitfield_attributes(col, bf, size=bf_size), "getting bitfield size")
+                    bf_sizes(col) = bf_sizes(col) + bf_size
+                end do
+            end if
         end do
 
         call check_call(odc_missing_integer(missing_integer), "getting missing integer")
@@ -119,7 +133,7 @@ contains
                     if (int(array_data(row, indexes(col))) == 0) then
                         write(output_unit, '(a)', advance='no') '.'
                     else
-                        call write_integer(output_unit, int(array_data(row, indexes(col))))
+                        call write_bitfield(output_unit, int(array_data(row, indexes(col))), bf_sizes(col))
                     end if
                 case (ODC_REAL, ODC_DOUBLE)
                     if (array_data(row, indexes(col)) == missing_double) then
@@ -145,11 +159,19 @@ contains
         write(iunit, '(a)', advance='no') trim(adjustl(val))
     end subroutine
 
+    subroutine write_bitfield(iunit, i, size)
+        integer, intent(in) :: iunit, i, size
+        character(32) :: padding_format, val
+        write(padding_format, '(a,i0,a)') '(b32.', size, ')'
+        write(val, padding_format) i
+        write(iunit, '(a)', advance='no') trim(adjustl(val))
+    end subroutine
+
     subroutine write_double(iunit, r)
         integer, intent(in) :: iunit
         real(8), intent(in) :: r
         character(32) :: val
-        write(val, *) r
+        write(val, '(f8.4)') r
         write(iunit, '(a)', advance='no') trim(adjustl(val))
     end subroutine
 

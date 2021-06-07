@@ -1,5 +1,7 @@
 
 module odc
+    ! NOTE: The API reference of this code has been prepared, so any further changes to the public API must be manually
+    ! documented. Please see <f90-reference.rst> in this repository for more information.
 
     use, intrinsic :: iso_c_binding
     implicit none
@@ -27,6 +29,7 @@ module odc
 
     integer, parameter :: dp = selected_real_kind(15, 307)
     integer, parameter :: double_size = 8 !c_sizeof(1.0_dp) !intel compiler...
+    integer, parameter :: int64 = selected_int_kind(15)
 
     type odc_reader
         type(c_ptr) :: impl = c_null_ptr
@@ -110,14 +113,14 @@ module odc
 
     abstract interface
         subroutine failure_handler_t(context, error)
-            use, intrinsic :: iso_c_binding
             implicit none
+            integer, parameter :: int64 = selected_int_kind(15)
+            integer(int64), intent(in) :: context
             integer, intent(in) :: error
-            integer(c_long), intent(in) :: context
         end subroutine
     end interface
 
-    integer(c_long), save :: failure_handler_context
+    integer(int64), save :: failure_handler_context
     procedure(failure_handler_t), pointer, save :: failure_handler_fn
 
     ! For utility
@@ -546,12 +549,12 @@ module odc
             integer(c_int) :: err
         end function
 
-        function odc_encoder_add_property(encoder, property_key, property_value) result(err) bind(c)
+        function odc_encoder_add_property(encoder, key, val) result(err) bind(c)
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: encoder
-            type(c_ptr), intent(in), value :: property_key
-            type(c_ptr), intent(in), value :: property_value
+            type(c_ptr), intent(in), value :: key
+            type(c_ptr), intent(in), value :: val
             integer(c_int) :: err
         end function
 
@@ -622,16 +625,25 @@ contains
         fstr = transfer(tmp(1:length), fstr)
     end function
 
-    subroutine failure_handler_wrapper(unused_context, error)
+    subroutine failure_handler_wrapper(unused_context, error) bind(c)
         type(c_ptr), intent(in), value :: unused_context
         integer(c_long), intent(in), value :: error
         call failure_handler_fn(failure_handler_context, int(error))
     end subroutine
 
     function odc_set_failure_handler(handler, context) result(err)
-        procedure(failure_handler_t), pointer :: handler
-        integer(c_long) :: context
+        integer(int64) :: context
         integer :: err
+
+        interface
+            subroutine handler (ctx, err)
+                implicit none
+                integer, parameter :: int64 = selected_int_kind(15)
+                integer(int64), intent(in) :: ctx
+                integer, intent(in) :: err
+            end subroutine
+        end interface
+
         failure_handler_fn => handler
         failure_handler_context = context
         err = c_odc_set_failure_handler(c_funloc(failure_handler_wrapper), c_null_ptr)
@@ -833,10 +845,11 @@ contains
 
     end function
 
-    function frame_property(frame, key, val) result(err)
+    function frame_property(frame, key, val, exists) result(err)
         class(odc_frame), intent(in) :: frame
         character(*), intent(in) :: key
-        character(:), allocatable, intent(out) :: val
+        character(:), allocatable, intent(out), optional :: val
+        logical, intent(out), optional :: exists
         integer :: err
 
         character(:), allocatable, target :: nullified_key
@@ -848,9 +861,10 @@ contains
 
         if (err == ODC_SUCCESS) then
             if (c_associated(val_tmp)) then
-                val = fortranise_cstr(val_tmp)
+                if (present(val)) val = fortranise_cstr(val_tmp)
+                if (present(exists)) exists = .true.
             else
-                val = ''
+                if (present(exists)) exists = .false.
             end if
         end if
 
@@ -1086,16 +1100,16 @@ contains
         err = odc_encoder_add_column(encoder%impl, c_loc(nullified_name), type)
     end function
 
-    function encoder_add_property(encoder, property_key, property_value) result(err)
+    function encoder_add_property(encoder, key, val) result(err)
         class(odc_encoder), intent(inout) :: encoder
-        character(*), intent(in) :: property_key
-        character(*), intent(in) :: property_value
+        character(*), intent(in) :: key
+        character(*), intent(in) :: val
         integer :: err
         character(:), allocatable, target :: nullified_key
-        character(:), allocatable, target :: nullified_value
-        nullified_key = trim(property_key) // c_null_char
-        nullified_value = trim(property_value) // c_null_char
-        err = odc_encoder_add_property(encoder%impl, c_loc(nullified_key), c_loc(nullified_value))
+        character(:), allocatable, target :: nullified_val
+        nullified_key = trim(key) // c_null_char
+        nullified_val = trim(val) // c_null_char
+        err = odc_encoder_add_property(encoder%impl, c_loc(nullified_key), c_loc(nullified_val))
     end function
 
     function encoder_column_set_data_size(encoder, col, element_size, element_size_doubles) result(err)

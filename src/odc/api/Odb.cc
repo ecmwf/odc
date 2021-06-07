@@ -20,7 +20,9 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/BufferList.h"
 #include "eckit/log/Log.h"
+#include "eckit/utils/StringTools.h"
 
+#include "odc/core/Column.h"
 #include "odc/core/DecodeTarget.h"
 #include "odc/core/Encoder.h"
 #include "odc/core/Table.h"
@@ -251,15 +253,27 @@ SpanVisitor::~SpanVisitor() {}
 
 struct SpanImpl : core::Span {
     SpanImpl(core::Span&& s) : core::Span(std::move(s)) {}
+    SpanImpl() : core::Span(0, 0) {}
 };
 
 Span::Span(std::unique_ptr<SpanImpl>&& s) :
     impl_(std::move(s)) {}
 
+Span::Span() :
+    impl_(new SpanImpl()) {}
+
+Span::Span(Span&& s) :
+    impl_(std::move(s.impl_)) {}
+
 Span::~Span() {}
 
 bool Span::operator==(const Span& rhs) const {
     return(*impl_ == *rhs.impl_);
+}
+
+Span& Span::operator=(Span&& rhs) {
+    std::swap(impl_, rhs.impl_);
+    return *this;
 }
 
 void Span::visit(SpanVisitor& visitor) const {
@@ -621,6 +635,12 @@ double Settings::doubleMissingValue() {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+const std::string columnTypeName(const ColumnType& type) {
+    return StringTools::lower(odc::core::Column::columnTypeName(type));
+}
+
+//------------------------------------------------------------------------------------------------------------
 
 size_t odbFromCSV(DataHandle& dh_in, DataHandle& dh_out, const std::string& delimiter) {
 

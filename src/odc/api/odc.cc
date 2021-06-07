@@ -9,6 +9,7 @@
  */
 
 #include <cstdint>
+#include <cstring>
 #include <functional>
 #include <numeric>
 #include <unistd.h>
@@ -178,23 +179,21 @@ int odc_column_type_count(int* count) {
 
 int odc_column_type_name(int type, const char** type_name) {
     return wrapApiFunction([type, type_name] {
+        std::string name = columnTypeName((ColumnType)type);
 
-        static const char* names[] = {
-            OdbTypes<ColumnType(0)>::name,
-            OdbTypes<ColumnType(1)>::name,
-            OdbTypes<ColumnType(2)>::name,
-            OdbTypes<ColumnType(3)>::name,
-            OdbTypes<ColumnType(4)>::name,
-            OdbTypes<ColumnType(5)>::name
-        };
-
-        if (type < 0 || size_t(type) >= sizeof(names)/sizeof(names[0])) {
+        if (name == "unknown_type") {
             std::stringstream ss;
             ss << "Unknown type id: " << type;
             throw UserError(ss.str(), Here());
         }
 
-        *type_name = names[type];
+        const char *name_ptr = name.c_str();
+        std::size_t size = std::strlen(name_ptr);
+
+        char *name_copy = new char[size];
+        std::strcpy(name_copy, name_ptr);
+
+        *type_name = name_copy;
     });
 }
 
