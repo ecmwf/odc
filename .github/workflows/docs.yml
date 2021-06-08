@@ -26,8 +26,8 @@ jobs:
 
     - name: Install system requirements
       run: >
-        apt-get -y update
-        && apt-get -y install doxygen
+        sudo apt-get -y update
+        && sudo apt-get -y install doxygen
 
     - name: Setup Python
       uses: actions/setup-python@v2
