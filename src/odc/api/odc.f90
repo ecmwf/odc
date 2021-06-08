@@ -628,6 +628,7 @@ contains
     subroutine failure_handler_wrapper(unused_context, error) bind(c)
         type(c_ptr), intent(in), value :: unused_context
         integer(c_long), intent(in), value :: error
+        if (c_associated(unused_context)) continue
         call failure_handler_fn(failure_handler_context, int(error))
     end subroutine
 

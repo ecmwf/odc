@@ -173,7 +173,7 @@ contains
         call cycle_ints(bitfield_values, bitfield_pool)
 
         ! Fill in the passed data arrays with scratch values
-        do i = 1, nrows
+        do i = 1, int(nrows)
             data1(i) = expver_str // c_null_char  ! expver
             data2(i) = date  ! date@hdr
 

@@ -152,7 +152,7 @@ contains
         call cycle_ints(bitfield_values, bitfield_pool)
 
         ! Fill in the passed data array with scratch values
-        do i = 1, nrows
+        do i = 1, int(nrows)
             write(expver_str, '(a,a)') 'xxxx', '' // c_null_char  ! proper string termination
             data(1, i) = transfer(expver_str, data(1, i))  ! expver
 

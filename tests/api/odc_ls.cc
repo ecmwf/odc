@@ -29,8 +29,13 @@ void write_data(size_t nrows, size_t ncols, std::vector<odc::api::ColumnInfo> co
     long integer_missing = odc::api::Settings::integerMissingValue();
     double double_missing = odc::api::Settings::doubleMissingValue();
 
-    for (long row = 0; row < nrows; ++row) {
-        for (int col = 0; col < ncols; ++col) {
+    size_t row;
+
+    for (row = 0; row < nrows; ++row) {
+
+        size_t col;
+
+        for (col = 0; col < ncols; ++col) {
             switch (columnInfo[col].type) {
                 case odc::api::INTEGER: {
                     int64_t val = *reinterpret_cast<const int64_t*>(strides[col][row]);
@@ -107,8 +112,9 @@ int main(int argc, char** argv) {
         // Print headers & determine storage requirements
 
         size_t row_size = 0;
+        size_t i;
 
-        for (int i = 0; i < frame.columnCount(); ++i) {
+        for (i = 0; i < frame.columnCount(); ++i) {
             const auto& col(columnInfo[i]);
 
             write_header(i, col);

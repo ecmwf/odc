@@ -37,7 +37,7 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
     int64_t data1[nrows];
     double data2[nrows];
 
-    int i;
+    size_t i;
 
     // Set up the allocated arrays with scratch data
     for (i = 0; i < nrows; i++) {

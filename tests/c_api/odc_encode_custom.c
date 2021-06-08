@@ -101,10 +101,10 @@ void create_scratch_data(long nrows, char data0[][8], int64_t data1[], char data
 
     // Fill in the passed data arrays with scratch values
     for (i = 0; i < nrows; i++) {
-        snprintf(data0[i], 8, "xxxx");  // expver
+        if (snprintf(data0[i], 8, "xxxx") < 0) return;  // expver
         data1[i] = date;  // date@hdr
-        snprintf(data2[i], 7, "stat%02d", i);  // statid@hdr
-        snprintf(data3[i], 16, "0-12345-0-678%02d", i);  // wigos@hdr
+        if (snprintf(data2[i], 7, "stat%02d", i) < 0) return;  // statid@hdr
+        if (snprintf(data3[i], 16, "0-12345-0-678%02d", i) < 0) return;  // wigos@hdr
         data4[i] = 12.3456 * i;  // obsvalue@body
         data5[i] = missing_integers[i];  // integer_missing
         data6[i] = missing_doubles[i];  // double_missing
