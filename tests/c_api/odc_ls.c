@@ -104,7 +104,7 @@ void write_data(odc_decoder_t* decoder, odc_frame_t* frame, long nrows, int ncol
         int col;
 
         for (col = 0; col < ncols; col++) {
-            const void* value_p = &data[column_offsets[col] + (width * row)];
+            const void* value_p = &((const char*)data)[column_offsets[col] + (width * row)];
 
             switch (column_types[col]) {
                 case ODC_INTEGER:
