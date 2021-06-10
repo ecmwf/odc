@@ -331,7 +331,7 @@ private: // members
  * \param type Column data type
  * \returns Column data type name
  */
-const std::string columnTypeName(const ColumnType& type);
+const char* columnTypeName(const ColumnType& type);
 
 //----------------------------------------------------------------------------------------------------------------------
 

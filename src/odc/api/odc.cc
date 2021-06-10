@@ -179,21 +179,7 @@ int odc_column_type_count(int* count) {
 
 int odc_column_type_name(int type, const char** type_name) {
     return wrapApiFunction([type, type_name] {
-        std::string name = columnTypeName((ColumnType)type);
-
-        if (name == "unknown_type") {
-            std::stringstream ss;
-            ss << "Unknown type id: " << type;
-            throw UserError(ss.str(), Here());
-        }
-
-        const char *name_ptr = name.c_str();
-        std::size_t size = std::strlen(name_ptr);
-
-        char *name_copy = new char[size];
-        std::strcpy(name_copy, name_ptr);
-
-        *type_name = name_copy;
+        (*type_name) = columnTypeName(static_cast<ColumnType>(type));
     });
 }
 
