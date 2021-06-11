@@ -602,7 +602,7 @@ TEST(hash_operator_in_where)
 
 TEST(bitfields_hash_operator)
 {
-    PathName f("2000010106.4.0.odb");
+    PathName f("2000010106.odb");
     //odc::Select select("select lat,lat#1 from \"" + f + "\"");
     odc::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\";");
     odc::Select::iterator it = select.begin();
