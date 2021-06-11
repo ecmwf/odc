@@ -534,7 +534,7 @@ Executes SQL statement.
 Usage
    .. code-block:: shell
 
-      odc sql [-T] [-offset <offset>] [-length <length>] [-N] [-i <inputfile>] [-o <outputfile>] [-f default|wide|odb] [-delimiter <delim>] [--binary|--bin] [--no_alignment] [--full_precision] <select-statement> | <script-filename>
+      odc sql [-T] [-offset <offset>] [-length <length>] [-N] [-i <inputfile>] [-o <outputfile>] [-f default|wide|ascii|odb] [-delimiter <delim>] [--binary|--bin] [--no_alignment] [--full_precision] <select-statement> | <script-filename>
 
 Options
    ``-T``
@@ -555,11 +555,12 @@ Options
    ``-o <outputfile>``
       ODB-2 output file.
 
-   ``-f default|wide|odb``
+   ``-f default|wide|ascii|odb``
       ODB-2 output format:
 
-      - ``default`` is ASCII
-      - ``wide`` is ASCII with bitfields definitions in header
+      - ``default`` is ``ascii`` on stdout and ``odb`` to file
+      - ``wide`` is ASCII formatted with column definitions in header
+      - ``ascii`` is ASCII formatted
       - ``odb`` is binary ODB-2
 
    ``-delimiter <delim>``
