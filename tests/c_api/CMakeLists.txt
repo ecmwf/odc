@@ -2,7 +2,7 @@
 list( APPEND _capi_odc_tests
     read
     encode
-    errors
+    # errors
     usage_examples
 )
 

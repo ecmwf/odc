@@ -14,7 +14,7 @@ list( APPEND _core_odc_tests
     test_select_iterator
     test_text_reader
     test_table_iterator
-    test_table
+    # test_table
 )
 
 foreach( _test ${_core_odc_tests} )
