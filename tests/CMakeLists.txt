@@ -2,40 +2,40 @@
 
 
 list( APPEND test_data_files
-2000010106.odb.gz
+# 2000010106.odb.gz
 2000010106.odb
-2000010106.1.0.odb
-2000010106.2.0.odb
-2000010106.3.0.odb
+# 2000010106.1.0.odb
+# 2000010106.2.0.odb
+# 2000010106.3.0.odb
 2000010106.4.0.odb
-2000010106.5.0.odb
-2000010106.6.0.odb
-2000010106.7.0.odb
-2000010106.7.1.odb
-2000010106.7.2.odb
-2000010106.7.3.odb
-mondb.1.12.odb
-TestIntegerValues.odb
-split_crash_on_andate_and_antime.odb
-TestMetaDataReader.odb
-a1to10twice.odb
-TestAggregateFunctions2.odb
-dribu.odb
-TestAggregateFunctions3.odb
+# 2000010106.5.0.odb
+# 2000010106.6.0.odb
+# 2000010106.7.0.odb
+# 2000010106.7.1.odb
+# 2000010106.7.2.odb
+# 2000010106.7.3.odb
+# mondb.1.12.odb
+# TestIntegerValues.odb
+# split_crash_on_andate_and_antime.odb
+# TestMetaDataReader.odb
+# a1to10twice.odb
+# TestAggregateFunctions2.odb
+# dribu.odb
+# TestAggregateFunctions3.odb
 
 # MetOffice schema for testing ODB-127
-ECMA.ddl
-ECMATMP.ddl
-cma.hh
-bitfields.hh
-group_id.hh
-mdi.hh
-ops_obsgroups.hh
-ops_subtypes.hh
-report_types.hh
-sensor.hh
-varno.hh
-vertco_type.hh
+# ECMA.ddl
+# ECMATMP.ddl
+# cma.hh
+# bitfields.hh
+# group_id.hh
+# mdi.hh
+# ops_obsgroups.hh
+# ops_subtypes.hh
+# report_types.hh
+# sensor.hh
+# varno.hh
+# vertco_type.hh
 )
 
 ecbuild_get_test_multidata( TARGET odc_get_test_data
@@ -133,13 +133,13 @@ endforeach()
 # n.b. Old behaviour (c.f. ODB-394) re-enabled with ODB_PATCH_TIME_ENCODE_RELATIVE.
 # This is a bit of a hack...
 
-ecbuild_get_test_multidata( TARGET  odc_get_mars_client_test_data_mo
-                            DIRNAME odc/tests
-                            NAMES   20150218_glu_surface_odb2 )
+# ecbuild_get_test_multidata( TARGET  odc_get_mars_client_test_data_mo
+#                             DIRNAME odc/tests
+#                             NAMES   20150218_glu_surface_odb2 )
 
-ecbuild_get_test_multidata( TARGET  odc_get_mars_client_test_data_ec
-                            DIRNAME odc/tests
-                            NAMES   conv_mfb_20151108_12.odb )
+# ecbuild_get_test_multidata( TARGET  odc_get_mars_client_test_data_ec
+#                             DIRNAME odc/tests
+#                             NAMES   conv_mfb_20151108_12.odb )
 
 ecbuild_add_executable( TARGET      test_client_lib_fortran
                         CONDITION   HAVE_FORTRAN AND HAVE_ODB

@@ -1,11 +1,11 @@
 
-list( APPEND tools_data_files
-    2000010106.odb
-)
+# list( APPEND tools_data_files
+#     2000010106.odb
+# )
 
-ecbuild_get_test_multidata( TARGET odc_get_tools_data
-                            NAMES ${tools_data_files}
-                            NOCHECK )
+# ecbuild_get_test_multidata( TARGET odc_get_tools_data
+#                             NAMES ${tools_data_files}
+#                             NOCHECK )
 
 
 list( APPEND tools_tests_scripts
