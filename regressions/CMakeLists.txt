@@ -27,7 +27,7 @@ foreach( _script ${regressions_scripts})
         TYPE script
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
         ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-        TEST_DEPENDS odc_get_regressions_data
+        TEST_DEPENDS odc_get_test_data odc_get_regressions_data
     )
 endforeach()
 
