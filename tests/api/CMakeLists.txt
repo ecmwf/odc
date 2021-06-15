@@ -29,7 +29,7 @@ list( APPEND _api_odc_test_extras
 foreach( _extra ${_api_odc_test_extras} )
     file(
         COPY        ${_extra}
-        DESTINATION "${CMAKE_BINARY_DIR}/tests/api")
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
 list( APPEND _api_odc_example_sources
