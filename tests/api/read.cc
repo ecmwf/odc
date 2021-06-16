@@ -26,7 +26,7 @@ bool test_check_file_exists(std::string file_path) {
     return file_stream.good();
 }
 
-void test_generate_odb(const std::string &path, int propertiesMode) {
+void test_generate_odb_properties(const std::string &path, int propertiesMode = 0) {
     odc::api::Settings::treatIntegersAsDoubles(false);
 
     // Define row count
@@ -99,11 +99,102 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
                 break;
             }
 
+            default:
+                break;
         }
 
         // Encode the ODB-2 frame into a data handle
         encode(fh, columns, strides, properties);
     }
+
+    ASSERT(test_check_file_exists(path));
+}
+
+void test_generate_odb_span(const std::string &path) {
+    odc::api::Settings::treatIntegersAsDoubles(false);
+
+    // Define row count
+    const size_t nrows = 10;
+
+    // Allocate data array for each column in all three of the frames
+    char data0_0[nrows][8];
+    int64_t data0_1[nrows];
+    double data0_2[nrows];
+    double data0_3[nrows];
+
+    char data1_0[nrows][8];
+    int64_t data1_1[nrows];
+    double data1_2[nrows];
+    double data1_3[nrows];
+
+    char data2_0[nrows][8];
+    int64_t data2_1[nrows];
+    double data2_2[nrows];
+    double data2_3[nrows];
+
+    int i;
+
+    // Set up the allocated arrays with scratch data
+    for (i = 0; i < nrows; i++) {
+        snprintf(data0_0[i], 8, "xxxx");  // expver
+        data0_1[i] = 20210527;  // date@hdr
+        data0_2[i] = 12.3456 * i;  // obsvalue@body
+        data0_3[i] = odc::api::Settings::doubleMissingValue(); // missing_value
+
+        snprintf(data1_0[i], 8, "xxxx");  // expver
+        data1_1[i] = 20210528;  // date@hdr
+        data1_2[i] = 12.3456 * i;  // obsvalue@body
+        data1_3[i] = odc::api::Settings::doubleMissingValue(); // missing_value
+
+        snprintf(data2_0[i], 8, "xxxx");  // expver
+        data2_1[i] = 20210529;  // date@hdr
+        data2_2[i] = 12.3456 * i;  // obsvalue@body
+        data2_3[i] = odc::api::Settings::doubleMissingValue(); // missing_value
+    }
+
+    // Define all column names, their types and sizes
+    std::vector<odc::api::ColumnInfo> columns = {
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("missing_value"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+    };
+
+    // Set a custom data layout and data array for each column and frame
+    std::vector<odc::api::ConstStridedData> strides0 {
+        // ptr, nrows, element_size, stride
+        {data0_0, nrows, 8, 8},
+        {data0_1, nrows, sizeof(int64_t), sizeof(int64_t)},
+        {data0_2, nrows, sizeof(double), sizeof(double)},
+        {data0_3, nrows, sizeof(double), sizeof(double)},
+    };
+
+    std::vector<odc::api::ConstStridedData> strides1 {
+        // ptr, nrows, element_size, stride
+        {data1_0, nrows, 8, 8},
+        {data1_1, nrows, sizeof(int64_t), sizeof(int64_t)},
+        {data1_2, nrows, sizeof(double), sizeof(double)},
+        {data1_3, nrows, sizeof(double), sizeof(double)},
+    };
+
+    std::vector<odc::api::ConstStridedData> strides2 {
+        // ptr, nrows, element_size, stride
+        {data2_0, nrows, 8, 8},
+        {data2_1, nrows, sizeof(int64_t), sizeof(int64_t)},
+        {data2_2, nrows, sizeof(double), sizeof(double)},
+        {data2_3, nrows, sizeof(double), sizeof(double)},
+    };
+
+    const eckit::Length length;
+
+    eckit::FileHandle fh(path);
+    fh.openForWrite(length);
+    eckit::AutoClose closer(fh);
+
+    // Encode each ODB-2 frame into the same data handle
+    encode(fh, columns, strides0);
+    encode(fh, columns, strides1);
+    encode(fh, columns, strides2);
 
     ASSERT(test_check_file_exists(path));
 }
@@ -134,7 +225,7 @@ CASE("Count lines in an existing ODB file") {
 
 CASE("Where the properties in the two frames are distinct (non-aggregated)") {
 
-    test_generate_odb("properties-1.odb", 1);
+    test_generate_odb_properties("properties-1.odb", 1);
 
     bool aggregated = false;
     odc::api::Reader reader("properties-1.odb", aggregated);
@@ -174,8 +265,6 @@ CASE("Where the properties in the two frames are distinct (non-aggregated)") {
     EXPECT(seenProperties.size() == 3);
 }
 
-// ------------------------------------------------------------------------------------------------------
-
 CASE("Where the properties in the two frames are distinct (aggregated)") {
 
     ASSERT(test_check_file_exists("properties-1.odb"));
@@ -211,11 +300,9 @@ CASE("Where the properties in the two frames are distinct (aggregated)") {
     }
 }
 
-// ------------------------------------------------------------------------------------------------------
-
 CASE("Where the properties in the two frames overlap with entries that are the same (non-aggregated)") {
 
-    test_generate_odb("properties-2.odb", 2);
+    test_generate_odb_properties("properties-2.odb", 2);
 
     bool aggregated = false;
     odc::api::Reader reader("properties-2.odb", aggregated);
@@ -259,8 +346,6 @@ CASE("Where the properties in the two frames overlap with entries that are the s
     EXPECT(seenProperties.size() == 3);
 }
 
-// ------------------------------------------------------------------------------------------------------
-
 CASE("Where the properties in the two frames overlap with entries that are the same (aggregated)") {
 
     ASSERT(test_check_file_exists("properties-2.odb"));
@@ -296,11 +381,9 @@ CASE("Where the properties in the two frames overlap with entries that are the s
     }
 }
 
-// ------------------------------------------------------------------------------------------------------
-
 CASE("Where the properties overlap with entries whose keys are the same, but the values different (non-aggregated)") {
 
-    test_generate_odb("properties-3.odb", 3);
+    test_generate_odb_properties("properties-3.odb", 3);
 
     bool aggregated = false;
     odc::api::Reader reader("properties-3.odb", aggregated);
@@ -340,8 +423,6 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
     EXPECT(seenProperties.size() == 2);
 }
 
-// ------------------------------------------------------------------------------------------------------
-
 CASE("Where the properties overlap with entries whose keys are the same, but the values different (aggregated)") {
 
     ASSERT(test_check_file_exists("properties-3.odb"));
@@ -373,6 +454,466 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
             || property.second == std::string("odc version ") + odc::api::Settings::version()
         );
     }
+}
+
+// ------------------------------------------------------------------------------------------------------
+
+class TestVisitor : public odc::api::SpanVisitor {
+public:
+
+    TestVisitor(int frame, bool mustBeConstant) : frame_(frame), mustBeConstant_(mustBeConstant) {};
+
+private:
+
+    template <typename T>
+    void test(const std::string& columnName, const std::set<T>& vals) {
+        if (mustBeConstant_) {
+            ASSERT(vals.size() == 1);
+        }
+        else {
+            if (columnName == "obsvalue@body") ASSERT(vals.size() == 10);
+            else ASSERT(vals.size() == 1);
+        }
+
+        std::stringstream val;
+        val << *vals.begin();
+
+        switch (frame_) {
+            case 0:
+                if (columnName == "expver") {
+                    ASSERT(val.str() == "xxxx");
+                }
+                else if (columnName == "date@hdr") {
+                    ASSERT(val.str() == "20210527");
+                }
+                else if (columnName == "obsvalue@body") {
+                    int i = 0;
+                    for (auto obsvalue : vals) {
+                        std::stringstream obsvalue_stream;
+                        obsvalue_stream << obsvalue;
+                        std::stringstream expvalue_stream;
+                        expvalue_stream << 12.3456 * i++;
+                        ASSERT(obsvalue_stream.str() == expvalue_stream.str());
+                    }
+                }
+                else if (columnName == "missing_value") {
+                    std::stringstream expvalue_stream;
+                    expvalue_stream << odc::api::Settings::doubleMissingValue();
+                    ASSERT(val.str() == expvalue_stream.str());
+                }
+                break;
+            case 1:
+                if (columnName == "expver") {
+                    ASSERT(val.str() == "xxxx");
+                }
+                else if (columnName == "date@hdr") {
+                    ASSERT(val.str() == "20210528");
+                }
+                else if (columnName == "obsvalue@body") {
+                    int i = 0;
+                    for (auto obsvalue : vals) {
+                        std::stringstream obsvalue_stream;
+                        obsvalue_stream << obsvalue;
+                        std::stringstream expvalue_stream;
+                        expvalue_stream << 12.3456 * i++;
+                        ASSERT(obsvalue_stream.str() == expvalue_stream.str());
+                    }
+                }
+                break;
+            case 2:
+                if (columnName == "expver") {
+                    ASSERT(val.str() == "xxxx");
+                }
+                else if (columnName == "date@hdr") {
+                    ASSERT(val.str() == "20210529");
+                }
+                else if (columnName == "obsvalue@body") {
+                    int i = 0;
+                    for (auto obsvalue : vals) {
+                        std::stringstream obsvalue_stream;
+                        obsvalue_stream << obsvalue;
+                        std::stringstream expvalue_stream;
+                        expvalue_stream << 12.3456 * i++;
+                        ASSERT(obsvalue_stream.str() == expvalue_stream.str());
+                    }
+                }
+                break;
+        }
+    }
+
+    void operator()(const std::string& columnName, const std::set<long>& vals) override { test(columnName, vals); }
+    void operator()(const std::string& columnName, const std::set<double>& vals) override { test(columnName, vals); }
+    void operator()(const std::string& columnName, const std::set<std::string>& vals) override { test(columnName, vals); }
+
+    int frame_;
+    bool mustBeConstant_;
+};
+
+CASE("Where Span interface is used with constant value constraint") {
+
+    test_generate_odb_span("span.odb");
+
+    // Define columns with constant values
+    std::vector<std::string> cols {"expver", "date@hdr"};
+
+    // Parse frames in non-aggregated mode
+    bool aggregated = false;
+
+    // Enforce the constant values constraint
+    bool mustBeConstant = true;
+
+    {
+        odc::api::Reader reader("span.odb", aggregated);
+
+        odc::api::Frame frame;
+        odc::api::Span lastSpan;
+        long offset = 0;
+        long length = 0;
+        bool first = true;
+        int i = 0;
+
+        // Iterate over frames
+        while ((frame = reader.next())) {
+
+            // Get values for the frame
+            odc::api::Span span = frame.span(cols, mustBeConstant);
+
+            // If the values are the same, just increase the length
+            if (span == lastSpan || first) {
+                length += span.length();
+
+                // Remember the first set of values
+                if (first) std::swap(lastSpan, span);
+            }
+
+            // If the values differ, output the last set
+            else {
+                TestVisitor v(i, mustBeConstant);
+                lastSpan.visit(v);
+
+                ASSERT(offset == i++ * 453);
+                ASSERT(length == 453);
+
+                // Reset offset and length counters
+                offset = span.offset();
+                length = span.length();
+
+                // Remember the current set of values
+                std::swap(lastSpan, span);
+            }
+
+            first = false;
+        }
+
+        TestVisitor v(i, mustBeConstant);
+        lastSpan.visit(v);
+
+        ASSERT(offset == 906);
+        ASSERT(length == 453);
+    }
+
+    // Add a non-constant value column to the list
+    cols.emplace_back("obsvalue@body");
+
+    {
+        odc::api::Reader reader("span.odb", aggregated);
+
+        odc::api::Frame frame;
+
+        // Iterate over frames
+        while ((frame = reader.next())) {
+
+            // Try to get values for the frame
+            try {
+                odc::api::Span span = frame.span(cols, mustBeConstant);
+            }
+
+            // A user error is raised when constant value constraint is not met
+            catch(eckit::Exception e) {
+                ASSERT(std::string(e.what()) == "UserError: Non-constant columns required in span: [obsvalue@body]");
+            }
+        }
+    }
+}
+
+CASE("Where Span interface is used without constant value constraint") {
+
+    ASSERT(test_check_file_exists("span.odb"));
+
+    // Define columns
+    std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body"};
+
+    // Parse frames in non-aggregated mode
+    bool aggregated = false;
+
+    // Do not enforce the constant values constraint
+    bool mustBeConstant = false;
+
+    odc::api::Reader reader("span.odb", aggregated);
+
+    odc::api::Frame frame;
+    odc::api::Span lastSpan;
+    long offset = 0;
+    long length = 0;
+    bool first = true;
+    int i = 0;
+
+    // Iterate over frames
+    while ((frame = reader.next())) {
+
+        // Get values for the frame
+        odc::api::Span span = frame.span(cols, mustBeConstant);
+
+        // If the values are the same, just increase the length
+        if (span == lastSpan || first) {
+            length += span.length();
+
+            // Remember the first set of values
+            if (first) std::swap(lastSpan, span);
+        }
+
+        // If the values differ, output the last set
+        else {
+            TestVisitor v(i, mustBeConstant);
+            lastSpan.visit(v);
+
+            ASSERT(offset == i++ * 453);
+            ASSERT(length == 453);
+
+            // Reset offset and length counters
+            offset = span.offset();
+            length = span.length();
+
+            // Remember the current set of values
+            std::swap(lastSpan, span);
+        }
+
+        first = false;
+    }
+
+    TestVisitor v(i, mustBeConstant);
+    lastSpan.visit(v);
+
+    ASSERT(offset == 906);
+    ASSERT(length == 453);
+}
+
+CASE("Where Span interface is used with a missing column") {
+
+    ASSERT(test_check_file_exists("span.odb"));
+
+    // Define columns and include a missing one
+    std::vector<std::string> cols {"expver", "date@hdr", "foo@bar"};
+
+    // Parse frames in non-aggregated mode
+    bool aggregated = false;
+
+    // Do not enforce the constant values constraint
+    bool mustBeConstant = false;
+
+    odc::api::Reader reader("span.odb", aggregated);
+
+    odc::api::Frame frame;
+
+    // Iterate over frames
+    while ((frame = reader.next())) {
+
+        // Try to get values for the frame
+        try {
+            odc::api::Span span = frame.span(cols, mustBeConstant);
+        }
+
+        // A user error is raised when specified column cannot be found
+        catch(eckit::Exception e) {
+            ASSERT(std::string(e.what()) == "UserError: Column 'foo@bar' not found.");
+        }
+    }
+}
+
+CASE("Where Span interface is used with no columns specified") {
+
+    ASSERT(test_check_file_exists("span.odb"));
+
+    // Define empty list of columns
+    std::vector<std::string> cols {};
+
+    // Parse frames in non-aggregated mode
+    bool aggregated = false;
+
+    // Do not enforce the constant values constraint
+    bool mustBeConstant = false;
+
+    odc::api::Reader reader("span.odb", aggregated);
+
+    odc::api::Frame frame;
+    odc::api::Span lastSpan;
+    long offset = 0;
+    long length = 0;
+    bool first = true;
+    int i = 0;
+
+    // Iterate over frames
+    while ((frame = reader.next())) {
+
+        // Get values for the frame
+        odc::api::Span span = frame.span(cols, mustBeConstant);
+
+        // If the values are the same, just increase the length
+        if (span == lastSpan || first) {
+            length += span.length();
+
+            // Remember the first set of values
+            if (first) std::swap(lastSpan, span);
+        }
+
+        // If the values differ, output the last set
+        else {
+            TestVisitor v(i++, mustBeConstant);
+            lastSpan.visit(v);
+
+            ASSERT(offset == 0);
+            ASSERT(length == 0);
+
+            // Reset offset and length counters
+            offset = span.offset();
+            length = span.length();
+
+            // Remember the current set of values
+            std::swap(lastSpan, span);
+        }
+
+        first = false;
+    }
+
+    TestVisitor v(i, mustBeConstant);
+    lastSpan.visit(v);
+
+    ASSERT(offset == 0);
+    ASSERT(length == 1359);
+}
+
+CASE("Where Span interface is used with all columns specified") {
+
+    ASSERT(test_check_file_exists("span.odb"));
+
+    // Define list of columns with all of them
+    std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body", "missing_value"};
+
+    // Parse frames in non-aggregated mode
+    bool aggregated = false;
+
+    // Do not enforce the constant values constraint
+    bool mustBeConstant = false;
+
+    odc::api::Reader reader("span.odb", aggregated);
+
+    odc::api::Frame frame;
+    odc::api::Span lastSpan;
+    long offset = 0;
+    long length = 0;
+    bool first = true;
+    int i = 0;
+
+    // Iterate over frames
+    while ((frame = reader.next())) {
+
+        // Get values for the frame
+        odc::api::Span span = frame.span(cols, mustBeConstant);
+
+        // If the values are the same, just increase the length
+        if (span == lastSpan || first) {
+            length += span.length();
+
+            // Remember the first set of values
+            if (first) std::swap(lastSpan, span);
+        }
+
+        // If the values differ, output the last set
+        else {
+            TestVisitor v(i, mustBeConstant);
+            lastSpan.visit(v);
+
+            ASSERT(offset == 453 * i++);
+            ASSERT(length == 453);
+
+            // Reset offset and length counters
+            offset = span.offset();
+            length = span.length();
+
+            // Remember the current set of values
+            std::swap(lastSpan, span);
+        }
+
+        first = false;
+    }
+
+    TestVisitor v(i, mustBeConstant);
+    lastSpan.visit(v);
+
+    ASSERT(offset == 906);
+    ASSERT(length == 453);
+}
+
+CASE("Where Span interface is used with missing values") {
+
+    ASSERT(test_check_file_exists("span.odb"));
+
+    // Add missing value column to the list
+    std::vector<std::string> cols {"missing_value"};
+
+    // Parse frames in non-aggregated mode
+    bool aggregated = false;
+
+    // Enforce the constant values constraint
+    bool mustBeConstant = false;
+
+    odc::api::Reader reader("span.odb", aggregated);
+
+    odc::api::Frame frame;
+    odc::api::Span lastSpan;
+    long offset = 0;
+    long length = 0;
+    bool first = true;
+    int i = 0;
+
+    // Iterate over frames
+    while ((frame = reader.next())) {
+
+        // Get values for the frame
+        odc::api::Span span = frame.span(cols, mustBeConstant);
+
+        // If the values are the same, just increase the length
+        if (span == lastSpan || first) {
+            length += span.length();
+
+            // Remember the first set of values
+            if (first) std::swap(lastSpan, span);
+        }
+
+        // If the values differ, output the last set
+        else {
+            TestVisitor v(i++, mustBeConstant);
+            lastSpan.visit(v);
+
+            ASSERT(offset == 0);
+            ASSERT(length == 0);
+
+            // Reset offset and length counters
+            offset = span.offset();
+            length = span.length();
+
+            // Remember the current set of values
+            std::swap(lastSpan, span);
+        }
+
+        first = false;
+    }
+
+    TestVisitor v(i, mustBeConstant);
+    lastSpan.visit(v);
+
+    ASSERT(offset == 0);
+    ASSERT(length == 1359);
 }
 
 // ------------------------------------------------------------------------------------------------------

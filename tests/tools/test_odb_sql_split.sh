@@ -13,7 +13,7 @@ cd ${test_wd}
 # In case we are resuming from a previous failed run, which has left output in the directory
 rm *.odb || true
 
-odc sql "select lat,lon,varno,obsvalue" -i ../2000010106.odb -f odb -o "2000010106_varno_{varno}.odb"
+odc sql "select lat,lon,varno,obsvalue" -i ../../2000010106.odb -f odb -o "2000010106_varno_{varno}.odb"
 
 nfiles=$(ls -lh *.odb | wc -l)
 
