@@ -29,13 +29,8 @@ void write_data(size_t nrows, size_t ncols, std::vector<odc::api::ColumnInfo> co
     long integer_missing = odc::api::Settings::integerMissingValue();
     double double_missing = odc::api::Settings::doubleMissingValue();
 
-    size_t row;
-
-    for (row = 0; row < nrows; ++row) {
-
-        size_t col;
-
-        for (col = 0; col < ncols; ++col) {
+    for (size_t row = 0; row < nrows; ++row) {
+        for (size_t col = 0; col < ncols; ++col) {
             switch (columnInfo[col].type) {
                 case odc::api::INTEGER: {
                     int64_t val = *reinterpret_cast<const int64_t*>(strides[col][row]);

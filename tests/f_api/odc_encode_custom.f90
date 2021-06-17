@@ -152,7 +152,7 @@ contains
         real(8), target :: missing_doubles(nrows)
         integer(8) :: bitfield_pool(3)
         integer(8), target :: bitfield_values(nrows)
-        integer :: i
+        integer(8) :: i
 
         ! Prepare the current date as an integer
         call date_and_time(date=date_str)
@@ -173,7 +173,7 @@ contains
         call cycle_ints(bitfield_values, bitfield_pool)
 
         ! Fill in the passed data arrays with scratch values
-        do i = 1, int(nrows)
+        do i = 1, nrows
             data1(i) = expver_str // c_null_char  ! expver
             data2(i) = date  ! date@hdr
 
@@ -183,7 +183,7 @@ contains
             write(wigos_str, '(a,i0.2,a)') '0-12345-0-678', i - 1, '' // c_null_char
             data4(i) = wigos_str  ! wigos@hdr
 
-            data5(i) = 12.3456 * (i - 1)  ! obsvalue@body
+            data5(i) = 12.3456 * real(i - 1)  ! obsvalue@body
             data6(i) = missing_integers(i)  ! integer_missing
             data7(i) = missing_doubles(i)  ! double_missing
             data8(i) = bitfield_values(i)  ! bitfield_column
