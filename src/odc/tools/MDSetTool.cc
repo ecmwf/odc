@@ -10,6 +10,7 @@
 
 #include "odc/tools/MDSetTool.h"
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
@@ -53,7 +54,9 @@ void MDSetTool::run()
         Log::error() << "Usage: ";
         usage(parameters(0), Log::error());
         Log::error() << std::endl;
-        return;
+        std::stringstream ss;
+        ss << "Expected exactly 4 command line parameters";
+        throw UserError(ss.str());
     }
 
     PathName inFile = parameters(2), outFile = parameters(3);

@@ -9,6 +9,7 @@
  */
 
 #include "eckit/eckit.h"
+#include "eckit/exception/Exceptions.h"
 #include "odc/core/MetaData.h"
 #include "odc/core/TablesReader.h"
 #include "odc/Reader.h"
@@ -43,7 +44,9 @@ void CountTool::run()
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected at least 2 command line parameters";
+        throw UserError(ss.str());
 	}
 
 	unsigned long long n (0);

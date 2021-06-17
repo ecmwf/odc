@@ -12,6 +12,7 @@
 #include <ostream>
 #include <memory>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/io/PartFileHandle.h"
@@ -87,7 +88,9 @@ void SQLTool::run()
         Log::error() << "Usage: ";
         usage(parameters(0), Log::error());
         Log::error() << std::endl;
-        return;// 1;
+        std::stringstream ss;
+        ss << "Expected at least 2 command line parameters";
+        throw UserError(ss.str());
     }
 
     std::vector<std::string> params(parameters());

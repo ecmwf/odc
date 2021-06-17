@@ -30,10 +30,12 @@ CompareTool::CompareTool (int argc, char *argv[])
     registerOptionWithArgument("-excludeColumns");
     if (parameters().size() != 3)
 	{
-		Log::error() << "Usage:";
+		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		throw Exception("Wrong number of parameters.");
+        std::stringstream ss;
+        ss << "Expected exactly 3 command line parameters";
+        throw UserError(ss.str());
 	}
 
 	PathName p;

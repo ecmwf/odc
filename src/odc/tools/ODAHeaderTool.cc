@@ -10,6 +10,8 @@
 
 #include <sstream>
 
+#include "eckit/exception/Exceptions.h"
+
 #include "ODAHeaderTool.h"
 #include "odc/core/TablesReader.h"
 
@@ -156,12 +158,13 @@ HeaderTool::HeaderTool (int argc, char *argv[]) : Tool(argc, argv) {}
 void HeaderTool::run()
 {
     registerOptionWithArgument("-table");
-	if (parameters().size() < 2)
+	if (parameters().size() != 2)
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
-		Log::error() << std::endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected exactly 2 command line parameters";
+        throw UserError(ss.str());
 	}
 
 	const std::string db (parameters(1));

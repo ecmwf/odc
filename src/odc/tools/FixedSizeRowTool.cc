@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "odc/Comparator.h"
@@ -29,7 +30,9 @@ void FixedSizeRowTool::run()
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected exactly 3 command line parameters";
+        throw UserError(ss.str());
 	}
 
 	PathName inFile = parameters(1);
