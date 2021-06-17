@@ -2,7 +2,6 @@
 list( APPEND _capi_odc_tests
     read
     encode
-    errors
     usage_examples
 )
 
@@ -29,7 +28,7 @@ list( APPEND _api_odc_test_extras
 foreach( _extra ${_api_odc_test_extras} )
     file(
         COPY        ${_extra}
-        DESTINATION "${CMAKE_BINARY_DIR}/tests/c_api")
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
 list( APPEND _capi_odc_example_sources

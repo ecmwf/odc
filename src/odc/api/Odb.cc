@@ -636,8 +636,24 @@ double Settings::doubleMissingValue() {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-const std::string columnTypeName(const ColumnType& type) {
-    return StringTools::lower(odc::core::Column::columnTypeName(type));
+const char* columnTypeName(const ColumnType& type) {
+
+    static const char* names[] = {
+        OdbTypes<ColumnType(0)>::name,
+        OdbTypes<ColumnType(1)>::name,
+        OdbTypes<ColumnType(2)>::name,
+        OdbTypes<ColumnType(3)>::name,
+        OdbTypes<ColumnType(4)>::name,
+        OdbTypes<ColumnType(5)>::name,
+    };
+
+    if (int(type) < 0 || size_t(type) >= sizeof(names)/sizeof(names[0])) {
+        std::stringstream ss;
+        ss << "Unknown type id: " << type;
+        throw UserError(ss.str(), Here());
+    }
+
+    return names[int(type)];
 }
 
 //------------------------------------------------------------------------------------------------------------
