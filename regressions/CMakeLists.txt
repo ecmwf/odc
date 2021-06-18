@@ -20,6 +20,7 @@ set(regressions_scripts
     ODB-463.sh
     SD-45315.sh
     SD-45479.sh
+    ODB-529.sh
 )
 
 foreach( _script ${regressions_scripts})
