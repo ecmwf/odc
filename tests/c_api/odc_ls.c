@@ -186,6 +186,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    CHECK_RESULT(odc_free_frame(frame));
     CHECK_RESULT(odc_close(reader));  // closing reader
 
     return 0;

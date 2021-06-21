@@ -125,6 +125,8 @@ int main(int argc, char* argv[]) {
             return 1;
         }
 
+        CHECK_RESULT(odc_free_frame(frame));
+
         // Deallocate reader instance
         CHECK_RESULT(odc_close(reader));
     }

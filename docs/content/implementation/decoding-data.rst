@@ -104,6 +104,8 @@ The **Reader** controls the file resources, and gives access to the underlying f
              }
          }
 
+         rc = odc_free_frame(frame);
+
 
    .. group-tab:: C++
 
