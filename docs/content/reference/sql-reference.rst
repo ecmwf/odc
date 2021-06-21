@@ -187,18 +187,7 @@ Aggregate functions return a single value, calculated from values an expression 
 Data Types
 ----------
 
-The columns in ODB-2 files can currently be one of the following types.
-
-=====  ============  ================================================
-ID     Type          Description
-=====  ============  ================================================
-``1``  ``INTEGER``   Any integral data types
-``2``  ``REAL``      Floating point <= 32 bits
-``3``  ``STRING``    Characters strings
-``4``  ``BITFIELD``  A sequence of bits, packaged in an integral type
-``5``  ``DOUBLE``    Floating point <= 64 bits
-=====  ============  ================================================
-
+The columns in ODB-2 files can currently be one of :ref:`the following data types <column-type>`.
 
 The actual type of a column can be found using :ref:`odc header <odc-header>` tool.
 
