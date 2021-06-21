@@ -316,7 +316,7 @@ CASE("Extraction of bitfield values") {
         eckit::AutoClose closer(source_odb);
 
         odc::api::Settings::treatIntegersAsDoubles(false);
-        quick_encode(source_odb, "bitfield1", bf1Vals, bits1, "bitfield2", bf2Vals, bits2);
+        quick_encode(source_odb, "bitfield1", bf1Vals, bits1, "bitfield2@table", bf2Vals, bits2);
     }
 
     // Select a selection of bits, both with and without the entire column
@@ -368,6 +368,51 @@ CASE("Extraction of bitfield values") {
                         "bitfield1.bit3", bit3Vals,
                         "bitfield1.bit2", bit2Vals,
                         "bitfield1", bf1Vals,
+                        "bitfield2.bit5", bit5Vals,
+                        "bitfield2.bit4", bit4Vals,
+                        "bitfield2.bit6", bit6Vals);
+    }
+
+    // Check if expansion of elements works, both with and without the table name as part of column identifier
+
+    select_string = "select bitfield1.*, bitfield2.*@table";
+    filtered = false;
+
+    {
+#if 0
+        SECTION("Select Class (integer internals)") {
+            odc::api::Settings::treatIntegersAsDoubles(false);
+            EXPECT_THROWS_AS(::odc::api::filter(select_string, source_odb, output_odb), eckit::SeriousBug);
+        }
+#endif
+
+        SECTION("Select Class (double internals)") {
+            odc::api::Settings::treatIntegersAsDoubles(true);
+            ::odc::api::filter(select_string, source_odb, output_odb);
+            filtered = true;
+        }
+
+#if 0
+        SECTION( "ODAOutput (integer internals)") {
+            odc::api::Settings::treatIntegersAsDoubles(false);
+            EXPECT_THROWS_AS(oda_select_filter(select_string, source_odb, output_odb), eckit::SeriousBug);
+        }
+#endif
+
+        SECTION( "ODAOutput (double internals)") {
+            odc::api::Settings::treatIntegersAsDoubles(true);
+            oda_select_filter(select_string, source_odb, output_odb);
+            filtered = true;
+        }
+    }
+
+    // Read back from the source ODB, and check that the contents are sane
+
+    if (filtered) {
+        decode_and_test(output_odb,
+                        "bitfield1.bit1", bit1Vals,
+                        "bitfield1.bit3", bit3Vals,
+                        "bitfield1.bit2", bit2Vals,
                         "bitfield2.bit5", bit5Vals,
                         "bitfield2.bit4", bit4Vals,
                         "bitfield2.bit6", bit6Vals);
