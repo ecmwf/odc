@@ -132,9 +132,6 @@ Scalar functions return a single value, based on one or more input values.
 |                                                |       | of radius ``refdist_km`` (in kilometres) with origin        |
 |                                                |       | (``reflat``, ``reflon``)                                    |
 +------------------------------------------------+-------+-------------------------------------------------------------+
-| ``thin(value,x)``                              | ``2`` | Returns a new vector where only 1 over ``value`` is kept    |
-|                                                |       | from the vector ``x``                                       |
-+------------------------------------------------+-------+-------------------------------------------------------------+
 | ``rownumber()``                                | ``0`` | Returns the current row number, indexed at 1                |
 +------------------------------------------------+-------+-------------------------------------------------------------+
 | ``nvl(expression, alt_value)``                 | ``2`` | Returns an ``alt_value`` when ``expression`` is null        |
