@@ -551,7 +551,7 @@ private:
 
 CASE("Where Span interface is used with constant value constraint") {
 
-    test_generate_odb_span("span.odb");
+    test_generate_odb_span("span-1.odb");
 
     // Define columns with constant values
     std::vector<std::string> cols {"expver", "date@hdr"};
@@ -563,7 +563,7 @@ CASE("Where Span interface is used with constant value constraint") {
     bool mustBeConstant = true;
 
     {
-        odc::api::Reader reader("span.odb", aggregated);
+        odc::api::Reader reader("span-1.odb", aggregated);
 
         odc::api::Frame frame;
         odc::api::Span lastSpan;
@@ -616,7 +616,7 @@ CASE("Where Span interface is used with constant value constraint") {
     cols.emplace_back("obsvalue@body");
 
     {
-        odc::api::Reader reader("span.odb", aggregated);
+        odc::api::Reader reader("span-1.odb", aggregated);
 
         odc::api::Frame frame;
 
@@ -638,7 +638,7 @@ CASE("Where Span interface is used with constant value constraint") {
 
 CASE("Where Span interface is used without constant value constraint") {
 
-    ASSERT(test_check_file_exists("span.odb"));
+    ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define columns
     std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body"};
@@ -649,7 +649,7 @@ CASE("Where Span interface is used without constant value constraint") {
     // Do not enforce the constant values constraint
     bool mustBeConstant = false;
 
-    odc::api::Reader reader("span.odb", aggregated);
+    odc::api::Reader reader("span-1.odb", aggregated);
 
     odc::api::Frame frame;
     odc::api::Span lastSpan;
@@ -700,7 +700,7 @@ CASE("Where Span interface is used without constant value constraint") {
 
 CASE("Where Span interface is used with a missing column") {
 
-    ASSERT(test_check_file_exists("span.odb"));
+    ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define columns and include a missing one
     std::vector<std::string> cols {"expver", "date@hdr", "foo@bar"};
@@ -711,7 +711,7 @@ CASE("Where Span interface is used with a missing column") {
     // Do not enforce the constant values constraint
     bool mustBeConstant = false;
 
-    odc::api::Reader reader("span.odb", aggregated);
+    odc::api::Reader reader("span-1.odb", aggregated);
 
     odc::api::Frame frame;
 
@@ -732,7 +732,7 @@ CASE("Where Span interface is used with a missing column") {
 
 CASE("Where Span interface is used with no columns specified") {
 
-    ASSERT(test_check_file_exists("span.odb"));
+    ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define empty list of columns
     std::vector<std::string> cols {};
@@ -743,7 +743,7 @@ CASE("Where Span interface is used with no columns specified") {
     // Do not enforce the constant values constraint
     bool mustBeConstant = false;
 
-    odc::api::Reader reader("span.odb", aggregated);
+    odc::api::Reader reader("span-1.odb", aggregated);
 
     odc::api::Frame frame;
     odc::api::Span lastSpan;
@@ -794,7 +794,7 @@ CASE("Where Span interface is used with no columns specified") {
 
 CASE("Where Span interface is used with all columns specified") {
 
-    ASSERT(test_check_file_exists("span.odb"));
+    ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define list of columns with all of them
     std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body", "missing_value"};
@@ -805,7 +805,7 @@ CASE("Where Span interface is used with all columns specified") {
     // Do not enforce the constant values constraint
     bool mustBeConstant = false;
 
-    odc::api::Reader reader("span.odb", aggregated);
+    odc::api::Reader reader("span-1.odb", aggregated);
 
     odc::api::Frame frame;
     odc::api::Span lastSpan;
@@ -856,7 +856,7 @@ CASE("Where Span interface is used with all columns specified") {
 
 CASE("Where Span interface is used with missing values") {
 
-    ASSERT(test_check_file_exists("span.odb"));
+    ASSERT(test_check_file_exists("span-1.odb"));
 
     // Add missing value column to the list
     std::vector<std::string> cols {"missing_value"};
@@ -867,7 +867,7 @@ CASE("Where Span interface is used with missing values") {
     // Enforce the constant values constraint
     bool mustBeConstant = false;
 
-    odc::api::Reader reader("span.odb", aggregated);
+    odc::api::Reader reader("span-1.odb", aggregated);
 
     odc::api::Frame frame;
     odc::api::Span lastSpan;
