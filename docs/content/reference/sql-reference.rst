@@ -187,21 +187,17 @@ Aggregate functions return a single value, calculated from values an expression 
 Data Types
 ----------
 
-The columns in ODB API files can currently be one of the following types.
+The columns in ODB-2 files can currently be one of the following types.
 
-+--------------+----------------------------------------------------+
-| Type         | Description                                        |
-+==============+====================================================+
-| ``REAL``     | Single precision (32bits) floating point number    |
-+--------------+----------------------------------------------------+
-| ``STRING``   | Text column                                        |
-+--------------+----------------------------------------------------+
-| ``INTEGER``  | 32 bits signed integer                             |
-+--------------+----------------------------------------------------+
-| ``BITFIELD`` | For efficient encoding of flags                    |
-+--------------+----------------------------------------------------+
-| ``DOUBLE``   | Double precision (64 bits) floating point numbers  |
-+--------------+----------------------------------------------------+
+=====  ============  ================================================
+ID     Type          Description
+=====  ============  ================================================
+``1``  ``INTEGER``   Any integral data types
+``2``  ``REAL``      Floating point <= 32 bits
+``3``  ``STRING``    Characters strings
+``4``  ``BITFIELD``  A sequence of bits, packaged in an integral type
+``5``  ``DOUBLE``    Floating point <= 64 bits
+=====  ============  ================================================
 
 
 The actual type of a column can be found using :ref:`odc header <odc-header>` tool.
@@ -211,24 +207,6 @@ Bitfields
 ---------
 
 Bitfields allow for naming and accessing sequences of bits in a column.
-
-
-Defining with ``CREATE TABLE``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-When creating a table with a bitfield column using ``CREATE TABLE`` statement, the type of the column needs to be already defined with ``CREATE TYPE``, for example:
-
-.. code-block:: sql
-
-   CREATE TYPE bf AS (f1 bit1, f2 bit2);
-   CREATE TABLE foo AS
-     (x INTEGER, y DOUBLE, v STRING, status bf)
-   ON 'bitfield_example.odb';
-
-In the above example we have declared a bitfield type called ``bf``, consisting of two members: ``f1`` and ``f2``. ``f1`` occupies 1 bit (``bit1``), ``f2`` 2 bits (``bit2``).
-
-Later the type ``bf`` was used to declare column status in the ``CREATE TABLE`` statement.
-
 
 Referring to Bitfield Members
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,28 +254,14 @@ will be expanded to:
 Finding Details of Bitfield Definition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :ref:`odc header <odc-header>` tool can be used to find out details of bitfield definition: its members and number of bits they occupy:
-
-.. code-block:: shell
-
-   odc header example.odb | grep datum_status | head -n 1
-
-   10. name: datum_status@body, type: BITFIELD [active:1;passive:1;rejected:1;blacklisted:1;use_emiskf_only:1] , codec: int8, range=<1.000000,12.000000>, hasMissing=false
-
-Option ``-dll`` produces output in the Data Definition Language (part of SQL) format:
-
-.. code-block:: shell
-
-   odc header -ddl example.odb | grep datum_status | head -n 1
-
-   CREATE TYPE datum_status@body_at_foo_t AS (active bit1, passive bit1, rejected bit1, blacklisted bit1, use_emiskf_only bit1);
+The :ref:`odc header <odc-header>` tool can be used to find out details of bitfield definition: its members and number of bits they occupy.
 
 
 Examples
 --------
 
 Unique station identifiers
-   Which station identifiers are in the ODB file?
+   Which station identifiers are in the ODB-2 file?
 
    .. code-block:: shell
 
@@ -313,16 +277,27 @@ Unique station identifiers
       '   34172'
 
 
-Available columns
-   What is the list of columns (or keys) available in the file?
+Row limit
+   How to display first 10 rows from an ODB-2 file?
 
    .. code-block:: shell
 
-      odc header example.odb
+      odc sql -i example.odb 'select date, lat, lon, obsvalue where rownumber() < 10'
+
+      date@hdr	       lat@hdr	       lon@hdr	 obsvalue@body
+      20210618	      1.480000	    110.330002	    260.000000
+      20210618	      1.480000	    110.330002	    296.399994
+      20210618	      1.480000	    110.330002	    295.600006
+      20210618	      1.480000	    110.330002	      0.952672
+      20210618	      1.480000	    110.330002	      0.016915
+      20210618	      1.480000	    110.330002	     50.000000
+      20210618	      1.480000	    110.330002	      1.000000
+      20210618	      1.480000	    110.330002	     -0.766044
+      20210618	      1.480000	    110.330002	     -0.642788
 
 
 Geophysical variables
-   What geophysical variables are in the ODB file?
+   What geophysical variables are in the ODB-2 file?
 
    .. code-block:: shell
 
