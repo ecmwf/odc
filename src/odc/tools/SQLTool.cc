@@ -93,6 +93,10 @@ void SQLTool::run()
         throw UserError(ss.str());
     }
 
+    if (sqlOutputConfig_->outputFormat() == "odb" && !optionIsSet("-o")) {
+        throw UserError("Output file is required (option -o) for binary output format (option -f odb)");
+    }
+
     std::vector<std::string> params(parameters());
     params.erase(params.begin());
 
