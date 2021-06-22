@@ -4,7 +4,7 @@ Usage Examples
 ==============
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    usage-examples/list-program
    usage-examples/header-statistics

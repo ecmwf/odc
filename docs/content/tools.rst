@@ -3,6 +3,18 @@ Tools
 
 **odc** provides several tools for manipulating and inspecting ODB-2 data from the command line.
 
+.. note::
+
+   All example commands on this page can be run against the following files:
+
+      * :download:`data-1.csv </_static/data-1.csv>`
+      * :download:`data-1.odb </_static/data-1.odb>`
+      * :download:`data-2.odb </_static/data-2.odb>`
+      * :download:`data-3.odb </_static/data-3.odb>`
+
+   The examples assume the binary directory of **odc** installation is in your ``$PATH``.
+
+
 ``odc``
 -------
 
@@ -61,23 +73,23 @@ Options
 Example
    .. code-block:: shell
 
-      odc compare -excludeColumns "expver,wigos@hdr,integer_missing,double_missing" data-1.odb data-3.odb
+      odc compare -excludeColumns "wigos@hdr,integer_missing,double_missing" data-1.odb data-3.odb
 
-      000 2021-05-11 14:19:53 (I) excludedColumns:[wigos@hdr,integer_missing,double_missing,]
-      000 2021-05-11 14:19:53 (I) Comparator::compare: (1) data-1.odb to (2) data-3.odb
-      000 2021-05-11 14:19:53 (E) Exception: Values different in column expver: 1 is not equal 2
-      000 2021-05-11 14:19:53 (E)
-      000 2021-05-11 14:19:53 (I) While comparing rows number 1, columns 0 found different.
-      000 2021-05-11 14:19:53 (I)  Values different in column expver: 1 is not equal 2
+      000 2021-06-18 12:02:08 (I) excludedColumns:[wigos@hdr,integer_missing,double_missing,]
+      000 2021-06-18 12:02:08 (I) Comparator::compare: (1) data-1.odb to (2) data-3.odb
+      000 2021-06-18 12:02:08 (E) Exception: Values different in column expver: 1 is not equal 2
+      000 2021-06-18 12:02:08 (E)
+      000 2021-06-18 12:02:08 (I) While comparing rows number 1, columns 0 found different.
+      000 2021-06-18 12:02:08 (I)  Values different in column expver: 1 is not equal 2
 
-      000 2021-05-11 14:19:53 (I)  data1[0] = 1.000000e+00
-      000 2021-05-11 14:19:53 (I)  data2[0] = 2.000000e+00
-      000 2021-05-11 14:19:53 (I)  md1[0] = name: expver, type: INTEGER, codec: constant, value=1.000000, hasMissing=false
-      000 2021-05-11 14:19:53 (I)  md2[0] = name: expver, type: INTEGER, codec: constant, value=2.000000, hasMissing=false
-      000 2021-05-11 14:19:53 (E) Exception: Files differ.
-      000 2021-05-11 14:19:53 (I) Comparing files data-1.odb and data-3.odb: 0.001221 second elapsed, 0.001068 second cpu
-      000 2021-05-11 14:19:53 (E) ** Files differ.  Caught in  (../src/eckit/runtime/Tool.cc +31 start)
-      000 2021-05-11 14:19:53 (E) ** Exception terminates odc
+      000 2021-06-18 12:02:08 (I)  data1[0] = 1.000000e+00
+      000 2021-06-18 12:02:08 (I)  data2[0] = 2.000000e+00
+      000 2021-06-18 12:02:08 (I)  md1[0] = name: expver, type: INTEGER, codec: constant, value=1.000000, hasMissing=false
+      000 2021-06-18 12:02:08 (I)  md2[0] = name: expver, type: INTEGER, codec: constant, value=2.000000, hasMissing=false
+      000 2021-06-18 12:02:08 (E) Exception: Files differ.
+      000 2021-06-18 12:02:08 (I) Comparing files data-1.odb and data-3.odb: 0.001613 second elapsed, 0.001372 second cpu
+      000 2021-06-18 12:02:08 (E) ** Files differ.  Caught in  (eckit/runtime/Tool.cc +31 start)
+      000 2021-06-18 12:02:08 (E) ** Exception terminates odc
 
 
 ``count``
@@ -97,10 +109,12 @@ Options
 Example
    .. code-block:: shell
 
-      odc count data.odb
+      odc count data-1.odb
 
-      161811
+      10
 
+
+.. _`odc-header`:
 
 ``header``
 ----------
@@ -128,54 +142,38 @@ Options
 Examples
    .. code-block:: shell
 
-      odc header data.odb
+      odc header data-1.odb
 
-      Header 1. Begin offset: 0, end offset: 67698, number of rows in block: 10000, byteOrder: same
-      0. name: date@hdr, type: INTEGER, codec: constant, value=20210401.000000, hasMissing=false
-      1. name: lat@hdr, type: REAL, codec: short_real, range=<-54.840000,79.980003>, hasMissing=false
-      2. name: lon@hdr, type: REAL, codec: short_real, range=<-172.009995,177.740005>, hasMissing=false
-      3. name: obsvalue@body, type: REAL, codec: short_real, range=<-12.400000,102980.000000>, hasMissing=true, missingValue=-2147483647.000000
+      Header 1. Begin offset: 0, end offset: 1111, number of rows in block: 10, byteOrder: same
+      0. name: expver, type: INTEGER, codec: constant, value=1.000000, hasMissing=false
+      1. name: date@hdr, type: INTEGER, codec: constant, value=20210420.000000, hasMissing=false
+      2. name: statid@hdr, type: STRING, codec: int8_string, width=8, #words=10
+      3. name: wigos@hdr, type: STRING, codec: int8_string, width=16, #words=10
+      4. name: obsvalue@body, type: REAL, codec: short_real2, range=<0.000000,111.110397>, hasMissing=false
+      5. name: integer_missing, type: INTEGER, codec: int16, range=<0.000000,4321.000000>, hasMissing=false
+      6. name: double_missing, type: REAL, codec: short_real2, range=<12.340000,43.209999>, hasMissing=false
 
-      Header 2. Begin offset: 67698, end offset: 135476, number of rows in block: 10000, byteOrder: same
-      0. name: date@hdr, type: INTEGER, codec: constant, value=20210401.000000, hasMissing=false
-      1. name: lat@hdr, type: REAL, codec: short_real, range=<-62.189999,70.680000>, hasMissing=false
-      2. name: lon@hdr, type: REAL, codec: short_real, range=<-175.149994,179.199997>, hasMissing=false
-      3. name: obsvalue@body, type: REAL, codec: short_real, range=<-15.756924,103320.000000>, hasMissing=true, missingValue=-2147483647.000000
-
-      ...
 
    .. code-block:: shell
 
-      odc header -offsets data.odb
+      odc header -offsets data-1.odb
 
-      0 67698 10000 4
-      67698 67778 10000 4
-      135476 67831 10000 4
-      203307 67738 10000 4
-      271045 67953 10000 4
-      338998 68023 10000 4
-      407021 68054 10000 4
-      475075 67664 10000 4
-      542739 67844 10000 4
-      610583 67964 10000 4
-      678547 67826 10000 4
-      746373 68043 10000 4
-      814416 68016 10000 4
-      882432 67781 10000 4
-      950213 67774 10000 4
-      1017987 67575 10000 4
-      1085562 12660 1811 4
+      0 1111 10 7
+
 
    .. code-block:: shell
 
-      odc header -ddl -table observations data.odb
+      odc header -ddl -table observations data-1.odb
 
       CREATE TABLE observations AS (
-         date@hdr INTEGER,
-         lat@hdr REAL,
-         lon@hdr REAL,
-         obsvalue@body REAL,
-      ) ON 'data.odb';
+        expver INTEGER,
+        date@hdr INTEGER,
+        statid@hdr STRING,
+        wigos@hdr STRING,
+        obsvalue@body REAL,
+        integer_missing INTEGER,
+        double_missing REAL,
+      ) ON 'data-1.odb';
 
 
 ``import``
@@ -301,9 +299,9 @@ Options
 Example
    .. code-block:: shell
 
-      odc ls -o data.txt data.odb
+      odc ls -o data-1.txt data-1.odb
 
-      000 2021-05-11 14:33:01 (I) Selected 161811 row(s).
+      000 2021-06-18 12:05:22 (I) Selected 10 row(s).
 
 
 ``mdset``
@@ -382,9 +380,19 @@ Options
 Example
    .. code-block:: shell
 
-      odc merge -o data-merged.odb data-1.odb data-2.odb data-3.odb
+      odc merge -o data-merged.odb data-1.odb data-2.odb
 
-      000 2021-05-11 14:47:45 (I) Merging files 'data-1.odb,data-2.odb,data-3.odb,' into 'data-merged.odb': 0.000996 second elapsed, 0.000887 second cpu
+      000 2021-06-18 12:08:36 (I) MergeTool::merge: output metadata: 0. name: expver, type: INTEGER, codec: int32,      range=<2147483647.000000,2147483647.000000>, hasMissing=false
+      000 2021-06-18 12:08:36 (I) 1. name: date@hdr, type: INTEGER, codec: int32, range=<2147483647.000000,2147483647.     000000>, hasMissing=false
+      000 2021-06-18 12:08:36 (I) 2. name: statid@hdr, type: STRING, codec: chars, width=8, #words=0
+      000 2021-06-18 12:08:36 (I) 3. name: wigos@hdr, type: STRING, codec: chars, width=16, #words=0
+      000 2021-06-18 12:08:36 (I) 4. name: obsvalue@body, type: REAL, codec: long_real, range=<-2147483647.000000,-2147483647.      000000>, hasMissing=false
+      000 2021-06-18 12:08:36 (I) 5. name: integer_missing, type: INTEGER, codec: int32, range=<2147483647.000000,2147483647.    000000>, hasMissing=false
+      000 2021-06-18 12:08:36 (I) 6. name: double_missing, type: REAL, codec: long_real, range=<-2147483647.000000,     -2147483647.000000>, hasMissing=false
+      000 2021-06-18 12:08:36 (I) 7. name: obsvalue@duplicate, type: REAL, codec: long_real, range=<-2147483647.000000,    -2147483647.000000>, hasMissing=false
+
+      000 2021-06-18 12:08:36 (I) Input file number 0 ended.
+      000 2021-06-18 12:08:36 (I) Merging files 'data-1.odb,data-2.odb,' into 'data-merged.odb': 0.001281 second elapsed, 0.    000904 second cpu
 
 
 ``set``
@@ -455,17 +463,18 @@ Options
 Example
    .. code-block:: shell
 
-      odc split data-1.odb data-1.{expver}.{statid}.odb
-
-      000 2021-05-12 08:25:54 (I) Verifying split...
-      000 2021-05-12 08:25:54 (I) Number of rows: 10. Total number of differences: 0
-      000 2021-05-12 08:25:54 (I) Split verification: 0.006566 second elapsed, 0.001783 second cpu
+      odc split -no_verification data-1.odb data-1.{expver}.{statid}.odb
 
 
 ``sql``
 -------
 
 Executes SQL statement.
+
+.. seealso::
+
+   For additional reference and examples, see :doc:`/content/reference/sql-reference`.
+
 
 Usage
    .. code-block:: shell
@@ -519,7 +528,7 @@ Options
 Example
    .. code-block:: shell
 
-      odc sql -i data-1.odb --no_alignment --full_precision "SELECT obsvalue@body;"
+      odc sql -i data-1.odb --no_alignment --full_precision "select obsvalue@body"
 
       obsvalue@body
       0.00000000000000000
