@@ -11,6 +11,8 @@
 
 #include <fstream>
 
+#include "eckit/exception/Exceptions.h"
+
 #include "odc/Reader.h"
 #include "odc/tools/LSTool.h"
 
@@ -87,12 +89,14 @@ unsigned long long LSTool::printData(const std::string &db, std::ostream &out)
 
 void LSTool::run()
 {
-	if (parameters().size() < 2)
+	if (parameters().size() != 2)
 	{
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected exactly 2 command line parameters";
+        throw UserError(ss.str());
 	}
 
     std::string db = parameters(1);

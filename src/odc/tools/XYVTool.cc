@@ -12,6 +12,7 @@
 
 #include <fstream>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "odc/Select.h"
@@ -33,7 +34,9 @@ void XYVTool::run()
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		return;// 1;
+        std::stringstream ss;
+        ss << "Expected exactly 4 command line parameters";
+        throw UserError(ss.str());
 	}
 
 	PathName inputFile = parameters(1);

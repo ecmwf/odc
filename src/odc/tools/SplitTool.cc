@@ -12,6 +12,7 @@
 
 #include <ostream>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/PartFileHandle.h"
 #include "eckit/types/Types.h"
@@ -43,7 +44,9 @@ void SplitTool::run()
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected exactly 3 command line parameters";
+        throw UserError(ss.str());
 	}
 
 	if (optionIsSet("-sort")) sort_ = true;

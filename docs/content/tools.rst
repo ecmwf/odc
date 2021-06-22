@@ -30,8 +30,10 @@ Options
    ``<command>``
       One of available commands:
 
+      - `compact`_
       - `compare`_
       - `count`_
+      - `fixrowsize`_
       - `header`_
       - `import`_
       - `ls`_
@@ -40,8 +42,35 @@ Options
       - `set`_
       - `split`_
       - `sql`_
+      - `xyv`_
 
       .. - `index`_
+
+
+``compact``
+-----------
+
+Tries to compress a file.
+
+Usage
+   .. code-block:: shell
+
+      odc compact <input.odb> <output.odb>
+
+Options
+   ``<input.odb>``
+      Name of the input ODB-2 file.
+
+   ``<output.odb>``
+      Name of the output ODB-2 file.
+
+Example
+   .. code-block:: shell
+
+      odc compact data.odb data-compacted.odb
+
+      000 2021-05-11 14:17:13 (I) Verifying.
+      000 2021-05-11 14:17:13 (I) Comparator::compare: (1) data.odb to (2) data-compacted.odb
 
 
 ``compare``
@@ -115,6 +144,32 @@ Example
 
 
 .. _`odc-header`:
+
+``fixrowsize``
+---------
+
+Converts file to a format with fixed size rows.
+
+Usage
+   .. code-block:: shell
+
+      odc fixrowsize <input.odb> <output.odb>
+
+Options
+   ``<input.odb>``
+      Name of the input ODB-2 file.
+
+   ``<output.odb>``
+      Name of the output ODB-2 file.
+
+Example
+   .. code-block:: shell
+
+      odc fixrowsize data.odb data-fixed.odb
+
+      000 2021-06-17 13:59:45 (I) Verifying.
+      000 2021-06-17 13:59:45 (I) Comparator::compare: (1) data.odb to (2) data-fixed.odb
+
 
 ``header``
 ----------
@@ -541,3 +596,31 @@ Example
       86.41919708251953125
       98.76480102539062500
       111.11039733886718750
+
+
+``xyv``
+-------
+
+Creates XYV representation of file for displaying in a graphics program.
+
+Usage
+   .. code-block:: shell
+
+      odc xyv <input.odb> <value-column> <output.odb>
+
+Options
+   ``<input.odb>``
+      Name of the input ODB-2 file.
+
+   ``<value-column>``
+      Name of the value column.
+
+   ``<output.odb>``
+      Name of the output ODB-2 file.
+
+Example
+   .. code-block:: shell
+
+      odc xyv data.odb "obsvalue@body" data-xyv.odb
+
+      000 2021-05-12 08:29:54 (I) select lat, lon, obsvalue@body from "data.odb";

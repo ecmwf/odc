@@ -9,6 +9,7 @@
  */
 
 #include "eckit/eckit.h"
+#include "eckit/exception/Exceptions.h"
 #include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
@@ -48,7 +49,9 @@ void IndexTool::run()
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected exactly 2 or 3 command line parameters";
+        throw UserError(ss.str());
 	}
 
     PathName dataFile (parameters(1));
