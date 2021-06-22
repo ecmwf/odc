@@ -5,6 +5,7 @@ list( APPEND tools_tests_scripts
     test_odb_sql_bitfields.sh
     test_odb_sql_variables.sh
     test_odb_sql_like.sh
+    test_odb_sql_format.sh
     test_odb_import.sh )
 
 
