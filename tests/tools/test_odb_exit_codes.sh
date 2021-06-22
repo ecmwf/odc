@@ -151,7 +151,7 @@ odc help merge && exit_code=$? ; expect_success
 
 odc header || exit_code=$? ; expect_error
 odc header data-1.odb && exit_code=$? ; expect_success
-odc header -offsets data-1.odb && exit_code=$? ; expect_success
+odc header -ddl data-1.odb && exit_code=$? ; expect_success
 odc header data-1.odb data-2.odb || exit_code=$? ; expect_error
 odc header data-1.odb foobar || exit_code=$? ; expect_error
 odc header foobar || exit_code=$? ; expect_error

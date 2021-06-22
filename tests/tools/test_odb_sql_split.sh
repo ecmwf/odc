@@ -39,4 +39,4 @@ ls -lh
 # Clean up
 
 cd ${wd}
-#rm -rf ${test_wd}
+rm -rf ${test_wd}

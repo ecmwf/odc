@@ -591,8 +591,8 @@ CASE("Where Span interface is used with constant value constraint") {
                 TestVisitor v(i, mustBeConstant);
                 lastSpan.visit(v);
 
-                ASSERT(offset == i++ * 453);
-                ASSERT(length == 453);
+                EXPECT(offset == i++ * 453);
+                EXPECT(length == 453);
 
                 // Reset offset and length counters
                 offset = span.offset();
@@ -608,8 +608,8 @@ CASE("Where Span interface is used with constant value constraint") {
         TestVisitor v(i, mustBeConstant);
         lastSpan.visit(v);
 
-        ASSERT(offset == 906);
-        ASSERT(length == 453);
+        EXPECT(offset == 906);
+        EXPECT(length == 453);
     }
 
     // Add a non-constant value column to the list
@@ -630,7 +630,7 @@ CASE("Where Span interface is used with constant value constraint") {
 
             // A user error is raised when constant value constraint is not met
             catch(eckit::Exception e) {
-                ASSERT(std::string(e.what()) == "UserError: Non-constant columns required in span: [obsvalue@body]");
+                EXPECT(std::string(e.what()) == "UserError: Non-constant columns required in span: [obsvalue@body]");
             }
         }
     }
@@ -677,8 +677,8 @@ CASE("Where Span interface is used without constant value constraint") {
             TestVisitor v(i, mustBeConstant);
             lastSpan.visit(v);
 
-            ASSERT(offset == i++ * 453);
-            ASSERT(length == 453);
+            EXPECT(offset == i++ * 453);
+            EXPECT(length == 453);
 
             // Reset offset and length counters
             offset = span.offset();
@@ -694,8 +694,8 @@ CASE("Where Span interface is used without constant value constraint") {
     TestVisitor v(i, mustBeConstant);
     lastSpan.visit(v);
 
-    ASSERT(offset == 906);
-    ASSERT(length == 453);
+    EXPECT(offset == 906);
+    EXPECT(length == 453);
 }
 
 CASE("Where Span interface is used with a missing column") {
@@ -725,7 +725,7 @@ CASE("Where Span interface is used with a missing column") {
 
         // A user error is raised when specified column cannot be found
         catch(eckit::Exception e) {
-            ASSERT(std::string(e.what()) == "UserError: Column 'foo@bar' not found.");
+            EXPECT(std::string(e.what()) == "UserError: Column 'foo@bar' not found.");
         }
     }
 }
@@ -771,8 +771,8 @@ CASE("Where Span interface is used with no columns specified") {
             TestVisitor v(i++, mustBeConstant);
             lastSpan.visit(v);
 
-            ASSERT(offset == 0);
-            ASSERT(length == 0);
+            EXPECT(offset == 0);
+            EXPECT(length == 0);
 
             // Reset offset and length counters
             offset = span.offset();
@@ -788,8 +788,8 @@ CASE("Where Span interface is used with no columns specified") {
     TestVisitor v(i, mustBeConstant);
     lastSpan.visit(v);
 
-    ASSERT(offset == 0);
-    ASSERT(length == 1359);
+    EXPECT(offset == 0);
+    EXPECT(length == 1359);
 }
 
 CASE("Where Span interface is used with all columns specified") {
@@ -833,8 +833,8 @@ CASE("Where Span interface is used with all columns specified") {
             TestVisitor v(i, mustBeConstant);
             lastSpan.visit(v);
 
-            ASSERT(offset == 453 * i++);
-            ASSERT(length == 453);
+            EXPECT(offset == 453 * i++);
+            EXPECT(length == 453);
 
             // Reset offset and length counters
             offset = span.offset();
@@ -850,8 +850,8 @@ CASE("Where Span interface is used with all columns specified") {
     TestVisitor v(i, mustBeConstant);
     lastSpan.visit(v);
 
-    ASSERT(offset == 906);
-    ASSERT(length == 453);
+    EXPECT(offset == 906);
+    EXPECT(length == 453);
 }
 
 CASE("Where Span interface is used with missing values") {
@@ -895,8 +895,8 @@ CASE("Where Span interface is used with missing values") {
             TestVisitor v(i++, mustBeConstant);
             lastSpan.visit(v);
 
-            ASSERT(offset == 0);
-            ASSERT(length == 0);
+            EXPECT(offset == 0);
+            EXPECT(length == 0);
 
             // Reset offset and length counters
             offset = span.offset();
@@ -912,8 +912,133 @@ CASE("Where Span interface is used with missing values") {
     TestVisitor v(i, mustBeConstant);
     lastSpan.visit(v);
 
-    ASSERT(offset == 0);
-    ASSERT(length == 1359);
+    EXPECT(offset == 0);
+    EXPECT(length == 1359);
+}
+
+CASE("Where Span interface is used to read values without decoding") {
+
+    ASSERT(test_check_file_exists("span-1.odb"));
+
+    // Add columns of all three types to the list
+    std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body"};
+
+    // Parse frames in aggregated mode
+    bool aggregated = true;
+
+    // Do not enforce the constant values constraint
+    bool mustBeConstant = false;
+
+    odc::api::Reader reader("span-1.odb", aggregated);
+
+    odc::api::Frame frame;
+    std::set<std::string> expver_vals;
+    std::set<long> date_vals;
+    std::set<double> obsvalue_vals;
+
+    // Iterate over frames
+    while ((frame = reader.next())) {
+
+        // Get values for the frame
+        odc::api::Span span = frame.span(cols, mustBeConstant);
+
+        expver_vals = span.getStringValues("expver");
+        date_vals = span.getIntegerValues("date@hdr");
+        obsvalue_vals = span.getRealValues("obsvalue@body");
+    }
+
+    // Check string values
+    for (const std::string val : expver_vals) {
+        EXPECT(val == "xxxx");
+    }
+
+    std::vector<long> expdate_vals = { 20210527, 20210528, 20210529 };
+    int i = 0;
+
+    // Check integer values
+    for (const long val : date_vals) {
+        EXPECT(val == expdate_vals[i++]);
+    }
+
+    i = 0;
+
+    // Check real values
+    for (const double val : obsvalue_vals) {
+        EXPECT(eckit::types::is_approximately_equal(val, 12.3456 * i++, 0.0001));
+    }
+}
+
+// ------------------------------------------------------------------------------------------------------
+
+CASE("Filter a subset of ODB-2 data") {
+
+    eckit::FileHandle in("../2000010106.odb");
+    in.openForRead();
+    eckit::AutoClose close_in(in);
+
+    const eckit::Length length;
+
+    eckit::FileHandle out("2000010106-filtered.odb");
+    out.openForWrite(length);
+    eckit::AutoClose close_out(out);
+
+    // Create a new file with a subset of data
+    odc::api::filter("select expver, date, lat, lon, obsvalue where rownumber() <= 10", in, out);
+
+    EXPECT(test_check_file_exists("2000010106-filtered.odb"));
+
+    eckit::FileHandle fh("2000010106-filtered.odb");
+    fh.openForRead();
+    eckit::AutoClose close_fh(fh);
+
+    // Access file via data handle reference, in order to test alternate constructor
+    eckit::DataHandle* dh = fh.clone();
+
+    bool aggregated = true;
+    odc::api::Reader reader(dh, aggregated);
+
+    size_t nframes = 0;
+    size_t totalRows = 0;
+    odc::api::Frame frame = reader.next();
+
+    // Test second type of frame constructor via an existing copy
+    odc::api::Frame test_frame(frame);
+
+    EXPECT(test_frame.rowCount() == 10);
+
+    // Access encoded data directly from a frame
+    EXPECT(test_frame.encodedData().size() == 487);
+
+    // Check if frame has expected columns.
+    EXPECT(test_frame.columnCount() == 5);
+    EXPECT(test_frame.hasColumn("expver"));
+    EXPECT(test_frame.hasColumn("date@hdr"));
+    EXPECT(test_frame.hasColumn("lat@hdr"));
+    EXPECT(test_frame.hasColumn("lon@hdr"));
+    EXPECT(test_frame.hasColumn("obsvalue@body"));
+
+    // Check expected frame bounds
+    EXPECT(int(test_frame.offset()) == 0);
+    EXPECT(long(test_frame.length()) == 487);
+
+    // Duplicate current frame via the SQL filter function
+    odc::api::Frame sub_frame(test_frame.filter("select *"));
+
+    // Check that frames are indeed identical
+    EXPECT(sub_frame.rowCount() == 10);
+    EXPECT(sub_frame.columnCount() == 5);
+    EXPECT(sub_frame.hasColumn("expver"));
+    EXPECT(sub_frame.hasColumn("date@hdr"));
+    EXPECT(sub_frame.hasColumn("lat@hdr"));
+    EXPECT(sub_frame.hasColumn("lon@hdr"));
+    EXPECT(sub_frame.hasColumn("obsvalue@body"));
+    EXPECT(int(sub_frame.offset()) == 0);
+    EXPECT(long(sub_frame.length()) == 487);
+
+    // Test creation of a frame via the assignment operator
+    odc::api::Frame dummy_frame = frame;
+
+    EXPECT(dummy_frame.rowCount() == 10);
 }
 
 // ------------------------------------------------------------------------------------------------------
