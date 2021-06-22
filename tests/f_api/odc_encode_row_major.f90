@@ -131,7 +131,7 @@ contains
         real(8), target :: missing_doubles(nrows)
         integer(8) :: bitfield_pool(3)
         integer(8), target :: bitfield_values(nrows)
-        integer :: i
+        integer(8) :: i
 
         ! Prepare the current date as an integer
         call date_and_time(date=date_str)
@@ -164,7 +164,7 @@ contains
             write(wigos_str, '(a,i0.2,a)') '0-12345-0-678', i - 1, '' // c_null_char  ! proper string termination
             data(4:5, i) = transfer(wigos_str, data(4:5, i))  ! wigos@hdr
 
-            data(6, i) = 12.3456 * (i - 1)  ! obsvalue@body
+            data(6, i) = 12.3456 * real(i - 1)  ! obsvalue@body
             data(7, i) = transfer(missing_integers(i), data(7, i))  ! integer_missing
             data(8, i) = missing_doubles(i)  ! double_missing
             data(9, i) = transfer(bitfield_values(i), data(9, i))  ! bitfield_column

@@ -86,14 +86,12 @@ void create_scratch_data(size_t nrows, char data0[][8], int64_t data1[], char da
     long bitfield_values[nrows];
     cycle_longs(bitfield_values, nrows, bitfield_pool, bitfield_pool_size);
 
-    int i;
-
     // Fill in the passed data arrays with scratch values
-    for (i = 0; i < nrows; i++) {
-        snprintf(data0[i], 8, "xxxx");  // expver
+    for (size_t i = 0; i < nrows; i++) {
+        ASSERT(snprintf(data0[i], 8, "xxxx") == 4);  // expver
         data1[i] = date;  // date@hdr
-        snprintf(data2[i], 7, "stat%02d", i);  // statid@hdr
-        snprintf(data3[i], 16, "0-12345-0-678%02d", i);  // wigos@hdr
+        ASSERT(snprintf(data2[i], 7, "stat%02ld", i) == 6);  // statid@hdr
+        ASSERT(snprintf(data3[i], 16, "0-12345-0-678%02ld", i) == 15);  // wigos@hdr
         data4[i] = 12.3456 * i;  // obsvalue@body
         data5[i] = missing_integers[i];  // integer_missing
         data6[i] = missing_doubles[i];  // double_missing

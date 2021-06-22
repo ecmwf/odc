@@ -228,7 +228,7 @@ contains
         character(:), allocatable, target :: file_contents
         integer, target :: file_unit, file_contents_size
 
-        open(unit=file_unit, file=trim(file_name), action='read', form='unformatted', access='stream')
+        open(newunit=file_unit, file=trim(file_name), action='read', form='unformatted', access='stream')
         inquire(unit=file_unit, size=file_contents_size)
         allocate(character(file_contents_size) :: file_contents)
         read(file_unit) file_contents

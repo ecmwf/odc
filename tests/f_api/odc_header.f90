@@ -9,7 +9,7 @@ program odc_header
     use odc
     implicit none
 
-    character(255) :: path, spacer
+    character(255) :: path
     type(odc_reader) :: reader
     type(odc_frame) :: frame
     integer(8), target :: nrows

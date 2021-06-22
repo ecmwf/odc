@@ -59,7 +59,6 @@ void write_data(odc_decoder_t* decoder, odc_frame_t* frame, long nrows, int ncol
     CHECK_RESULT(odc_decoder_data_array(decoder, &data, &width, &height, &columnMajor));
 
     const char* name;
-    int element_size;
     int bitfield_count;
 
     int column_types[ncols];
