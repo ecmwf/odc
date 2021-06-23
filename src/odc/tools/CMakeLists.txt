@@ -49,7 +49,6 @@ Examples.cc
 CAPIExamples.cc
 UnitTests.cc
 TestAggregateFunctions.cc
-TestAggregateFunctions.sql
 TestAggregateFunctions2.cc
 TestAggregateFunctions3.cc
 TestAtTableInTheOutput.cc

@@ -27,7 +27,7 @@ using namespace odc;
 ///
 static void test()
 {
-	const string fileName = "2000010106.odb";
+	const string fileName = "2000010106-reduced.odb";
 
 	odc::Reader oda(fileName);
 	odc::Reader::iterator it = oda.begin();

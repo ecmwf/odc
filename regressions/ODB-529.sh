@@ -12,7 +12,7 @@ cd ${test_wd}
 
 # Select a bitfield from an existing odb
 
-odc sql "select status.active@body" -i ../../tests/2000010106.odb -f odb -o first.odb
+odc sql "select status.active@body" -i ../../tests/2000010106-reduced.odb -f odb -o first.odb
 
 # Check that appropriate columns are there
 

@@ -14,11 +14,11 @@ cd ${test_wd}
 # i) Selects fields
 # ii) Implicitly and explicitly uses tables
 
-odc sql "select anflag.final, anflag.varqc, anflag,status.active@hdr, status.passive@hdr, status.active@body, status.passive@body where statid=' 00247'" -i ../../tests/2000010106.odb -o temporary.odb
+odc sql "select anflag.final, anflag.varqc, anflag,status.active@hdr, status.passive@hdr, status.active@body, status.passive@body where statid=' 00247'" -i ../../tests/2000010106-reduced.odb -o temporary.odb
 
 # And check that we made a change, and reverted it
 
-odc compare ../sd_45315.odb temporary.odb
+odc compare ../sd_45315-reduced.odb temporary.odb
 
 # Clean up
 

@@ -44,7 +44,7 @@ static void test()
 
 "--obstype@hdr as obstype, varno@body as varno,  status@body as status, lldegrees(lat@hdr)<=-20 as latbin0, lldegrees(lat@hdr)<=20 AND lldegrees(lat@hdr)>-20 as latbin1, lldegrees(lat@hdr)>20 as latbin2 \n"
 
-"FROM \"2000010106.odb\" "
+"FROM \"2000010106-reduced.odb\" "
 
 "WHERE (biascorr@body is not NULL and biascorr@body <> 0)"
 "	AND  not((obstype@hdr == 10 and obschar.codetype@hdr == 250))"
@@ -58,8 +58,8 @@ static void test()
 
 	//Log::info() << "it->columns().size() => " << it->columns().size() << std::endl;
 	ASSERT(it->columns().size() == 14);
-	ASSERT((*it)[0] == 91119); // COUNT(*) == 91119
-	ASSERT((*it)[1] == 91119); // COUNT(lat) == 91119
+	ASSERT((*it)[0] == 805); // COUNT(*) == 805
+	ASSERT((*it)[1] == 805); // COUNT(lat) == 805
 }
 
 

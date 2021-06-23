@@ -131,7 +131,7 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
 CASE("Count lines in an existing ODB file") {
 
     odc_reader_t* reader = nullptr;
-    CHECK_RETURN(odc_open_path(&reader, "../2000010106.odb"));
+    CHECK_RETURN(odc_open_path(&reader, "../2000010106-reduced.odb"));
     std::unique_ptr<odc_reader_t> reader_deleter(reader);
 
     odc_frame_t* frame = nullptr;
@@ -156,8 +156,8 @@ CASE("Count lines in an existing ODB file") {
     }
 
     EXPECT(ierr == ODC_ITERATION_COMPLETE);
-    EXPECT(ntables == 333);
-    EXPECT(totalRows == 3321753);
+    EXPECT(ntables == 5);
+    EXPECT(totalRows == 50000);
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -590,7 +590,7 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
 //CASE("Decode an entire ODB file") {
 //
 //
-//    std::unique_ptr<odb_t> o(odc_open_path("../2000010106.odb"));
+//    std::unique_ptr<odb_t> o(odc_open_path("../2000010106-reduced.odb"));
 //
 //    size_t ntables = 0;
 //
@@ -609,10 +609,10 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
 //
 //CASE("Decode an entire ODB file preallocated data structures") {
 //
-//    std::unique_ptr<odb_t> o(odc_open_path("../2000010106.odb"));
+//    std::unique_ptr<odb_t> o(odc_open_path("../2000010106-reduced.odb"));
 //
 //    int ntables = odc_num_frames(o.get());
-//    EXPECT(ntables == 333);
+//    EXPECT(ntables == 5);
 //
 //    odb_decoded_t decoded;
 //    odb_strided_data_t strided_data[51];

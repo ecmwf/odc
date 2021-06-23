@@ -1,9 +1,8 @@
 
 list( APPEND regressions_data_files
-    # 2000010106.odb
     odb_387_mdset.odb
     odb_463.odb
-    sd_45315.odb
+    sd_45315-reduced.odb
     sd_45479_source.odb
     sd_45479_compare.odb
 )

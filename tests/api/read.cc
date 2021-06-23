@@ -204,7 +204,7 @@ void test_generate_odb_span(const std::string &path) {
 CASE("Count lines in an existing ODB file") {
 
     bool aggregated = false;
-    odc::api::Reader reader("../2000010106.odb", aggregated);
+    odc::api::Reader reader("../2000010106-reduced.odb", aggregated);
 
     size_t nframes = 0;
     size_t totalRows = 0;
@@ -217,8 +217,8 @@ CASE("Count lines in an existing ODB file") {
         ++nframes;
     }
 
-    EXPECT(nframes == 333);
-    EXPECT(totalRows == 3321753);
+    EXPECT(nframes == 5);
+    EXPECT(totalRows == 50000);
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -972,7 +972,7 @@ CASE("Where Span interface is used to read values without decoding") {
 
 CASE("Filter a subset of ODB-2 data") {
 
-    eckit::FileHandle in("../2000010106.odb");
+    eckit::FileHandle in("../2000010106-reduced.odb");
     in.openForRead();
     eckit::AutoClose close_in(in);
 
@@ -1045,7 +1045,7 @@ CASE("Filter a subset of ODB-2 data") {
 
 //CASE("Decode an entire ODB file") {
 //
-//    odc::api::Odb o("../2000010106.odb");
+//    odc::api::Odb o("../2000010106-reduced.odb");
 //
 //    size_t ntables = 0;
 //
@@ -1065,7 +1065,7 @@ CASE("Filter a subset of ODB-2 data") {
 //
 //CASE("Decode only some columns") {
 //
-//    odc::api::Odb o("../2000010106.odb");
+//    odc::api::Odb o("../2000010106-reduced.odb");
 //
 //    size_t ntables = 0;
 //
@@ -1089,10 +1089,10 @@ CASE("Filter a subset of ODB-2 data") {
 //
 // CASE("Decode an entire ODB file preallocated data structures") {
 //
-//    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106.odb"));
+//    std::unique_ptr<odb_t> o(odc_open_for_read("../2000010106-reduced.odb"));
 //
 //    int ntables = odc_num_tables(o.get());
-//    EXPECT(ntables == 333);
+//    EXPECT(ntables == 5);
 //
 //    odb_decoded_t decoded;
 //    odb_strided_data_t strided_data[51];
