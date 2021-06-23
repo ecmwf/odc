@@ -146,7 +146,7 @@ Example
 .. _`odc-header`:
 
 ``fixrowsize``
----------
+--------------
 
 Converts file to a format with fixed size rows.
 
