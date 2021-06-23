@@ -163,7 +163,7 @@ CASE("Test bugfix 01, quote <<UnitTest problem fixed with p4 change 23687>>") {
 
     eckit::Resource<eckit::PathName> testDataPath("$TEST_DATA_DIRECTORY", "..");
     std::stringstream ss_select;
-    ss_select << "select obsvalue from \"" << (testDataPath / "2000010106.odb") << "\";";
+    ss_select << "select obsvalue from \"" << (testDataPath / "2000010106-reduced.odb") << "\";";
 
     odc::Select oda(ss_select.str());
 

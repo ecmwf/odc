@@ -32,7 +32,7 @@ contains
         logical :: success
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open ODB", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open ODB", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         frame_count = 0
@@ -57,13 +57,13 @@ contains
 
         if (err /= ODC_ITERATION_COMPLETE) call check_call(err, "next frame", success)
 
-        if (frame_count /= 333) then
-            write(error_unit, *) 'Unexpected frame count: ', frame_count, ' /= 333'
+        if (frame_count /= 5) then
+            write(error_unit, *) 'Unexpected frame count: ', frame_count, ' /= 5'
             success = .false.
         endif
 
-        if (row_count /= 3321753) then
-            write(error_unit, *) 'Unexpected row count: ', row_count, ' /= 3321753'
+        if (row_count /= 50000) then
+            write(error_unit, *) 'Unexpected row count: ', row_count, ' /= 50000'
             success = .false.
         endif
 
@@ -116,7 +116,7 @@ contains
             1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1]
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         call check_call(frame%next(), "get the first frame", success)
@@ -285,7 +285,7 @@ contains
         real(8), pointer :: array_data(:,:)
 
         success =.true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         ! Read the second frame, because why not.
@@ -345,7 +345,7 @@ contains
         real(8), target :: array_data(11000, 51)
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         call check_call(frame%next(), "get first frame", success)
@@ -400,7 +400,7 @@ contains
         real(8), pointer :: array_data(:,:)
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         call check_call(frame%next(maximum_rows=99999_8), "get first (aggregate) frame", success)
@@ -409,14 +409,14 @@ contains
         call check_call(decoder%defaults_from_frame(frame), "decoder frame defaults", success)
         call check_call(decoder%decode(frame, rows_decoded, nthreads=4), "decode threaded", success)
 
-        if (rows_decoded /= 90000) then
+        if (rows_decoded /= 50000) then
             write(error_unit, *) 'Unexpected number of rows decoded'
             success = .false.
         end if
 
         call check_call(decoder%row_count(nrows), "decoder row count", success)
-        if (nrows /= 90000) then
-            write(error_unit, *) 'Got row count ', nrows, ' not 90000'
+        if (nrows /= 50000) then
+            write(error_unit, *) 'Got row count ', nrows, ' not 50000'
             success = .false.
         end if
 
@@ -428,7 +428,7 @@ contains
 
         call check_call(decoder%data(array_data), "get array data", success)
 
-        if (any(shape(array_data) /= [90000, 51])) then
+        if (any(shape(array_data) /= [50000, 51])) then
             write(error_unit, *) 'Unexpected data dimensions'
             success = .false.
         end if

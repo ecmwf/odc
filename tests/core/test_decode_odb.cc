@@ -40,7 +40,7 @@ struct CellData {
 };
 
 
-// Checker picks a couple of rows in 2000010106.odb to test.
+// Checker picks a couple of rows in 2000010106-reduced.odb to test.
 // Can be extended to check anything depending on initialisation
 // TODO: Build a random ODB, and test it.
 
@@ -221,7 +221,7 @@ eckit::Resource<eckit::PathName> testDataPath("$TEST_DATA_DIRECTORY", "..");
 
 CASE("The correct number of rows are decoded") {
 
-    eckit::PathName filename = testDataPath / "2000010106.odb";
+    eckit::PathName filename = testDataPath / "2000010106-reduced.odb";
 
     odc::Reader in(filename);
     odc::Reader::iterator it = in.begin();
@@ -241,14 +241,14 @@ CASE("The correct number of rows are decoded") {
     }
 
     // All of the lines correctly decoded
-    EXPECT(count == 3321753);
+    EXPECT(count == 50000);
 }
 
 
 
 CASE("The correct data is present in a selection of random rows") {
 
-    eckit::PathName filename = testDataPath / "2000010106.odb";
+    eckit::PathName filename = testDataPath / "2000010106-reduced.odb";
 
     odc::Reader in(filename);
     odc::Reader::iterator it = in.begin();

@@ -2,7 +2,7 @@
 
 
 list( APPEND test_data_files
-2000010106.odb
+2000010106-reduced.odb
 )
 
 ecbuild_get_test_multidata( TARGET odc_get_test_data

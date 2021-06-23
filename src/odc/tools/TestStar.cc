@@ -26,7 +26,7 @@ using namespace odc;
 ///
 static void test()
 {
-    const std::string SELECT = "select *@hdr from \"2000010106.odb\";";
+    const std::string SELECT = "select *@hdr from \"2000010106-reduced.odb\";";
 
 	odc::Select oda(SELECT);
 
