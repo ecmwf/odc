@@ -92,7 +92,13 @@ odc sql 'select *' -i data.odb -o odb_out3.odb -f odb
 
 odc compare odb_out3.odb data.odb
 
-if [[ ! "$(odc sql 'select *' -i data.odb -f odb)" ]]; then
+# Regression test for ODB-522
+
+odc sql 'select *' -i data.odb -f odb || exit_code=$?
+
+exit_code="${exit_code-0}"
+
+if [[ "$exit_code" -eq 0 ]]; then
     echo "Got success. Expected 'odb' output format without output file to fail"
     exit -1
 fi

@@ -165,6 +165,8 @@ odc sql -i data-1.odb "select col1" && exit_code=$? ; expect_success
 odc sql -T -i data-1.odb "select col1" && exit_code=$? ; expect_success
 odc sql -i data-1.odb "select col1" foobar || exit_code=$? ; expect_error
 odc sql -i foobar "select col1" || exit_code=$? ; expect_error
+odc sql -i data-1.odb -f odb "select col1" || exit_code=$? ; expect_error
+odc sql -i data-1.odb -f odb -o data-1-col1.odb "select col1" && exit_code=$? ; expect_success
 odc help sql && exit_code=$? ; expect_success
 
 # Set tool
