@@ -1,13 +1,12 @@
-Row-major Encode
-================
+Row-major Encoding
+==================
 
-Shown below is a simple program that encodes sample data from a row-major memory layout and outputs an ODB-2 file.
+Shown below is a simple program that encodes sample data from a standardised row-major memory layout and outputs an ODB-2 file.
 
 
 .. note::
 
-   C++ interface does not support data encoding from a row-major layout. In this case, recommended API is C. Alternatively, you can encode from a :ref:`custom memory layout <odc-encode-custom>` instead.
-
+   The C++ interface does not support automatically encoding data from a row-major layout. If this functionality is needed, the C API should be used. Alternatively the row-major memory layout can be explicitly specified as a :ref:`custom memory layout <odc-encode-custom>`, which is what the C API does internally.
 
 .. tabs::
 

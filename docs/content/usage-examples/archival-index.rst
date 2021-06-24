@@ -1,7 +1,9 @@
 Archival Index
 ==============
 
-Shown below is a simple program written in C++ that generates archival index from an ODB-2 file without decoding underlying data.
+Shown below is a simple program written in C++ to extract metadata from a sequence of frames to use as an index for archival. The Span API used to extract this information is only available using the C++ interface.
+
+For archival purposes this example specifies a number of columns to use to identify the data, and then checks that the values are constant within each frame for those columns.
 
 .. note::
 

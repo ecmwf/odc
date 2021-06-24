@@ -1,7 +1,7 @@
-List Program
+Data Listing
 ============
 
-Shown below is a simple list program that decodes and outputs ODB-2 contents to the terminal.
+Shown below is a simple program that decodes all the data in an ODB-2 file and outputs it to stdout.
 
 .. tabs::
 

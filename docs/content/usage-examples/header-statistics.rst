@@ -1,7 +1,7 @@
-Header Statistics
-=================
+Frame Headers
+=============
 
-Shown below is a simple program that outputs frame header stats to the terminal, without actually decoding one or more supplied ODB-2 streams.
+Shown below is a simple program that outputs information extracted from the header of each frame in an ODB-2 data stream, without actually decoding the data.
 
 .. tabs::
 

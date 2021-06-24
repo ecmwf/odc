@@ -1,10 +1,10 @@
 
 .. _`odc-encode-custom`:
 
-Custom Encode
-=============
+Custom Encoding
+===============
 
-Shown below is a simple program that encodes sample data from a custom memory layout and outputs an ODB-2 file.
+Shown below is a simple program that encodes sample data using a customised, periodic memory layout specified for each of the columns independently, before outputting an ODB-2 file.
 
 .. tabs::
 
