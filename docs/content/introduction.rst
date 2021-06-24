@@ -5,7 +5,7 @@ Introduction
 
 ODB-2 is a compact data format for the storage, transmission and archival of tabular meteorological observation data. ODB-2 data streams are comprised of independent, self-describing messages. Each of these messages contains a number of rows of data sharing the same columnar format.
 
-**odc** provides C, C++ and Fortran libraries for encoding and decoding ODB-2 data. It also provides an interface the data and metadata without decoding it, and a collection of command line tools for handling and manipulating ODB-2 data.
+**odc** provides C, C++ and Fortran libraries for encoding and decoding ODB-2 data. It also provides an interface for the data and metadata without decoding it, and a collection of command line tools for handling and manipulating ODB-2 data.
 
 
 Observation Data
@@ -13,14 +13,14 @@ Observation Data
 
 ODB-2 supports encoding of observation data from a range of different scientific instruments and sources. The data is in a tabular format, with the types and data sizes of each column of data normally defined by an appropriate external schema. Each cell in the table may contain a value, or be marked as missing. Each row in the table corresponds to an observation, and is treated independently of other rows.
 
-A stream of ODB-2 data consists of a sequence of these tables, which may be unrelated to each other in content or structure. These tables may be grouped according to the needs of the data producer. For archival purposes, a subset of the columns will be used for indexing the data - and in these cases the tables should be grouped such that the data in the index columns is constant within a table.
+A stream of ODB-2 data consists of a sequence of these tables, which may be unrelated to each other in content or structure. These tables may be grouped according to the needs of the data producer. For archival purposes, a subset of the columns will be used for indexing the data – and in these cases the tables should be grouped such that the data in the index columns is constant within a table.
 
 .. csv-table:: An Example of Tabular Data
    :header-rows: 1
    :width: 100%
    :file: ../_static/example-table.csv
 
-This structure matches **pandas** data frames extremely well. Please see the `pyodc`_ python package for a python library handling ODB-2 data.
+This structure matches **pandas** data frames extremely well. Please see the `pyodc`_ package for a Python library handling ODB-2 data.
 
 .. note::
 
@@ -43,7 +43,7 @@ Type Name      Numeric Value    Corresponding API Type
 ``DOUBLE``     ``5``            ``double`` [#f3]_
 =============  ===============  ======================
 
-.. [#f1] 64-bit integral types are used in the API. Please note the section on Integer Handling in the :ref:`First Steps` section.
+.. [#f1] 64-bit integral types are used in the API. Please note the section on :ref:`integer-handling`.
 
 .. [#f2] The ``REAL`` data type truncates a 64-bit floating point value to a 32-bit floating point value prior to encoding, which results in smaller encoded data at a cost of a loss of precision. Encoding is lossless by default, so the use of the ``REAL`` type must be explicit.
 
@@ -81,8 +81,8 @@ For encoding as ODB-2 data, first large tables will be split into a sequence of 
 
 
 
-The frames can be concatenated in any order to form a valid stream of ODB-2 data, even if the encoded tables do not have the same structure, and are therefore incompatible. This capability suits the needs of data archival, as large amount of data can be packed, indexed externally, and since the data is self-describing, it can be validated against the index.
+The frames can be concatenated in any order to form a valid stream of ODB-2 data, even if the encoded tables do not have the same structure, and are therefore :ref:`incompatible <data-compatibility>`. This capability suits the needs of data archival, as large amount of data can be packed, indexed externally, and since the data is self-describing, it can be validated against the index.
 
-The data stream ODB-2 data need not be stored in files - it is used equally as an in-memory format, and for transmitting collections of observation data over the network. As such, ODB-2 is considered to be a message format rather than a file format.
+The data stream ODB-2 data need not be stored in files – it is used equally as an in-memory format, and for transmitting collections of observation data over the network. As such, ODB-2 is considered to be a message format rather than a file format.
 
 .. _`pyodc`: https://pyodc.readthedocs.io

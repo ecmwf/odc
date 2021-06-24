@@ -40,6 +40,18 @@ img.badge {
     display: none;
 }
 
+/* Code reference */
+
+.rst-content dl:not(.docutils) em.property,
+.rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) em.property {
+    padding-right: 0 !important;
+}
+
+.rst-content dl:not(.docutils) span.pre,
+.rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple) span.pre {
+    padding-right: 3px;
+}
+
 /* Sphinx Tabs */
 
 div.sphinx-tabs > div[role="tablist"] {

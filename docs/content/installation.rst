@@ -10,7 +10,7 @@ Dependencies
    single: Dependencies; Required
 
 Required
-^^^^^^^^
+~~~~~~~~
 
 * C or C++ compiler
 * `CMake`_
@@ -21,9 +21,10 @@ Required
 .. index:: Dependencies; Optional
 
 Optional
-^^^^^^^^
+~~~~~~~~
 
 * Fortran compiler
+* `Doxygen`_
 
 
 .. index:: Build, Install
@@ -59,6 +60,20 @@ Build & Install
    $INSTALL_DIR/bin/odc --version
 
 
+.. index:: Build; Optional Features, Install; Optional Features
+
+Optional Features
+~~~~~~~~~~~~~~~~~
+
+Fortran interface is an optional feature, which requires an activation flag to be set during build configuration:
+
+.. code-block:: shell
+
+   ENABLE_FORTRAN=ON
+   ecbuild --prefix=$INSTALL_DIR -- -DENABLE_FORTRAN=$ENABLE_FORTRAN $SRC_DIR
+
+
 .. _`CMake`: https://cmake.org
 .. _`ecbuild`: https://github.com/ecmwf/ecbuild
 .. _`eckit`: https://github.com/ecmwf/eckit
+.. _`Doxygen`: https://www.doxygen.nl

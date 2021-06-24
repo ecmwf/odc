@@ -17,7 +17,7 @@ Decoding Data
 Reader
 ------
 
-The **Reader** object is responsble for controlling underlying resources associated with an ODB-2 data stream. We can define the source of the data according to its location (on the network, in memeroy, in file, etc.) and construct an appropriate **Reader** object.
+The **Reader** object is responsible for controlling underlying resources associated with an ODB-2 data stream. We can define the source of the data according to its location (on the network, in memory, in file, etc.) and construct an appropriate **Reader** object.
 
 .. tabs::
 
@@ -75,7 +75,7 @@ The **Reader** object is responsble for controlling underlying resources associa
          end if
 
 
-The **Reader** instance then makes the sequence of **Frames** accessible. It also controls if access to compatible data is aggregated.
+The **Reader** instance then makes the sequence of **Frames** accessible. It also controls if access to :ref:`compatible data <data-compatibility>` is aggregated.
 
 .. tabs::
 
@@ -271,7 +271,7 @@ The **Frame** makes metadata about each chunk of data accessible without necessa
          end do
 
 
-The **Frame** object may correspond to one underlying frame within the ODB-2 stream (as described earlier), or may be a logical *aggregated frame* referencing multiple compatible frames internally.
+The **Frame** object may correspond to one underlying frame within the ODB-2 stream (as described earlier), or may be a logical *aggregated frame* referencing multiple :ref:`compatible frames <data-compatibility>` internally.
 
 
 .. index:: Decoding Data; Span
@@ -481,7 +481,7 @@ A **Decoder** instance can be reused if the set of columns and the desired memor
 
 .. note::
 
-   The **Decoder** does not have to be filled in from the information in the **Frame**, and certainly not from the current one. A decoder can be reused. For example in the case of a sequence of incompatible frames that have just two columns in common, it is possible to use one decoder to extract just those two columns from all the frames.
+   The **Decoder** does not have to be filled in from the information in the **Frame**, and certainly not from the current one. A decoder can be reused. For example in the case of a sequence of :ref:`incompatible frames <data-compatibility>` that have just two columns in common, it is possible to use one decoder to extract just those two columns from all the frames.
 
 
 The **Decoder** provides several options for handling memory layouts.
@@ -667,7 +667,7 @@ Column-major layout
 Custom layout
    A periodic memory layout can be explicitly specified for each column to be decoded. This comprises a memory location for the first data element, the size of each data element, the spacing (or stride) between each data element and the maximum number of rows that can be decoded.
 
-   As an example, this is used to implement an efficient decoder to *pandas* DataFrames in *pyodc*, by specifiying the internal memory layout of the constructed DataFrame.
+   As an example, this is used to implement an efficient decoder to *pandas* ``DataFrames`` in *pyodc*, by specifying the internal memory layout of the constructed ``DataFrame``.
 
    .. tabs::
 

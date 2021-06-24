@@ -67,7 +67,7 @@ The return code is always one of the following:
 
 .. note::
 
-   Internally, **odc** is written in C++ and the error handling uses based on exceptions. All exceptions will be caught on the C/C++ boundary in the C API and an appropriate error code will be returned.
+   Internally, **odc** is written in C++ and the error handling uses exceptions. All exceptions will be caught on the C/C++ boundary in the C API and an appropriate error code will be returned.
 
 
 To facilitate consistent error handling, it may be useful to define wrapper functions or macros to handle the error checking. As a trivial example,
@@ -122,7 +122,7 @@ The Fortran interface wraps the :ref:`C functions <c-interface>`, with a number 
 Calling Convention
 ~~~~~~~~~~~~~~~~~~
 
-Unlike C, Fortran supports custom types. As such, the objects referenced in the API are presented as fortran objects with the appropriate types. The appropriate function calls are thus methods on these type instances.
+Unlike C, Fortran supports custom types. As such, the objects referenced in the API are presented as Fortran objects with the appropriate types. The appropriate function calls are thus methods on these type instances.
 
 All functions return a status code that should be checked for error conditions. The standard Fortran mechanism is used to suport optional arguments.
 
@@ -220,7 +220,7 @@ This approach is very useful when a specific clean-up procedure is needed, befor
    end subroutine
 
 
-The ``context`` parameter is under user control, and is defined sa the second argument to ``odc_set_failure_handler``.
+The ``context`` parameter is under user control, and is defined as the second argument to ``odc_set_failure_handler``.
 
 
 Optional Parameters
@@ -247,7 +247,7 @@ The two calls below can be considered identical.
 C++ Interface
 -------------
 
-The interface in C++ mainly exists as an underlying base for implementing :ref:`the C API <c-interface>` which wraps it. It is only suitable to be used within an environment in which `eckit`_ is being used. If this is not the case it’s recommended use the C API.
+The interface in C++ mainly exists as an underlying base for implementing :ref:`the C API <c-interface>` which wraps it. It is only suitable to be used within an environment in which `eckit`_ is being used. If this is not the case it’s recommended to use the C API.
 
 All C++ functions will throw an exception in case of error.
 

@@ -3,7 +3,7 @@
 Encoding Data
 =============
 
-The encoding process is strutured as the reverse of the decoding process. Data in memory is described in an **Encoder** object. This data is then encoded into a sequence of frames and written to an output data stream.
+The encoding process is structured as the reverse of the decoding process. Data in memory is described in an **Encoder** object. This data is then encoded into a sequence of frames and written to an output data stream.
 
 .. index:: Encoding Data; Encoder
 
@@ -333,9 +333,9 @@ Once an **Encoder** describing the data has been constructed, the data can be en
             odc_encode_to_stream(encoder, context, write_fn, &bytes_encoded);
 
 
-   .. group-tab:: C++
+   .. group-tab:: C++``
 
-      C++ supports data encoding into `eckit`_ ``DataHandle`` objects. There are a range of available DataHandle classes supporting a wide range of output types, and they can be extended as required to support other outputs.
+      C++ supports data encoding into `eckit`_ ``DataHandle`` objects. There are a range of available ``DataHandle`` classes supporting a wide range of output types, and they can be extended as required to support other outputs.
 
       ``FileHandle`` (eckit)
          .. code-block:: cpp
