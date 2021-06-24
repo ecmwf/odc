@@ -6,11 +6,11 @@ File Format Reference
 Data Stream
 -----------
 
-The file format associated with ODB is a compact, tabular streaming format. The format consists of a series of frames (or tables), each of which has a header and is followed by a specified number of rows of data. The data is organised by columns, which are encoded by the codec specified in the header. There is no requirement that multiple frames have the same number, or the same type, of columns.
+The ODB-2 data format is a compact, binary format encoding tabular data. The format consists of a series of frames (or tables), each of which has a header and is followed by a specified number of rows of data. The data is organised by columns, which are encoded by the codec specified in the header. There is no requirement that sequential frames have the same number, or the same type, of columns.
 
 The data is designed to be straightforward to stream. Two valid ODB files which are concatenated form a valid ODB file.
 
-Each element (either header or row) is preceded by an ``uint16`` marker. This allows distinguishing between rows and headers, and should be consistent with the expected values.
+Each element (either header or row) is preceded by a ``uint16`` marker. This allows distinguishing between rows and headers, and should be consistent with the expected values.
 
 Endianness
 ~~~~~~~~~~
@@ -45,7 +45,13 @@ Type         Bytes    Description
 Missing Values
 ~~~~~~~~~~~~~~
 
-The missing value used in the different contexts is different. Unless otherwise indicated, this value can be selected at runtime when encoding, and the value used as the missing value (and correspondingly returned by the codecs) is stored inside the resultant file.
+There are three categories of mising value:
+
+  1. The value used in the API to communicate that a value is missing with calling code
+  2. A missing value chosen to represent a missing value during encoded, which is stored in the column header during encoding. This typically matches the API missing value used during encoding.
+  3. Codec-specific values or markers used to indicate that a value is missing.
+
+By default the values used for (1) and (2) are
 
 ========  ===============
 Type      Value
@@ -83,7 +89,7 @@ Type         Value                    Description
 ``string``   ``md5``                  The MD5 hash of the data section of the table
 ``uint32``   ``headerLength``         The number of bytes occupied by the header
 ``uint64``   ``dataSize``             The number of bytes occupied by the payload (rows)
-``uint64``   ``prevFrameOffset``      The offset of the previous table in the ODB file. Appears to be unused, and
+``uint64``   ``prevFrameOffset``      The offset of the previous table in the ODB file. Currently unused, and
                                       always equal to zero.
 ``uint64``   ``numberOfRows``         The number of rows of data encoded in the table (before EOF or the next header)
 ===========  =======================  ==================================================================================
@@ -92,7 +98,7 @@ Type         Value                    Description
 Variable Header
 ~~~~~~~~~~~~~~~
 
-Variable header describes column structure and contains codec-specific information. Flags and properties can be used to store additional meta data. String tables are part of codec-specific information.
+The variable part of the header describes column structure and contains codec-specific information. Flags and properties can be used to store additional meta data. String tables are part of codec-specific information.
 
 Columns
 ^^^^^^^
@@ -130,10 +136,10 @@ ID     Type          Description
 =====  ============  ================================================
 ``0``  ``IGNORE``    *Not used*
 ``1``  ``INTEGER``   Any integral data types
-``2``  ``REAL``      Floating point <= 32 bits
+``2``  ``REAL``      32-bit floating point (float)
 ``3``  ``STRING``    Characters strings
 ``4``  ``BITFIELD``  A sequence of bits, packaged in an integral type
-``5``  ``DOUBLE``    Floating point <= 64 bits
+``5``  ``DOUBLE``    64-bit floating point (double)
 =====  ============  ================================================
 
 
@@ -151,7 +157,8 @@ Type        Value	        Description
 ``double``  ``flag``      A sequence of flags, the number of these included is determined by ``numFlags``
 ==========  ============  ===============================================================================
 
-In production, the ODB API library always encodes 10 flags, all with value zero.
+In production, historical data always encoded exactly 10 flags all with zero value. Currently zero flags
+are typically encoded.
 
 
 Properties
@@ -173,7 +180,9 @@ Type        Value              Description
 Data
 ~~~~
 
-Each row is encoded sequentially in the file. It starts with an ``uint16`` marker, and indicates which column is the first to have changed from the previous row. The marker is followed by the values for the remaining columns, which are sorted in order of rate of change. Since most columns do not change for most rows, *compression* is achieved.
+Each row is encoded sequentially in the file. It starts with an ``uint16`` marker, and indicates which column is the first to have changed from the previous row. The marker is followed by the values for the remaining columns.
+
+Since most columns do not change for most rows, this structure suggests that the encoder should sort the columns in order from least to most rapidly changing, resulting in data compression.
 
 
 Row Format
@@ -208,7 +217,8 @@ Type        Value             Description
 ==========  ================  =========================================================
 
 
-Some codecs read further data at initialisation time. Otherwise, they consume further data whilst decoding rows.
+Some codecs store further data appended to this header block as described below. This data must be
+consumed when frame headers are read rather than when the data is decoded.
 
 
 Constant ``constant`` ``constant_string``
@@ -268,7 +278,7 @@ Value               Returned value
 
 .. note::
 
-   Despite the name, the output value is not constant, it may vary by up to ``254``.
+   Despite the name, the output value is not necessarily constant, it may vary by up to ``254``. Constantness is enforced only by convention in the encoder.
 
 
 Character Strings ``chars``

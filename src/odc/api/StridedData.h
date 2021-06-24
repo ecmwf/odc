@@ -27,7 +27,7 @@ namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/** Describes periodic data in memory which is not yet owned */
+/** Describes the layout of periodic data in memory. This is the template base class for the StridedData and ConstStridedData types. */
 template <typename value_type>
 class StridedDataT {
 
@@ -64,7 +64,7 @@ public: // methods
 
     // Slice the StridedData to get a sub-strided-data
 
-    /** Returns a new object which contains a subset of current data
+    /** Returns a new object which references a contiguous subset of the data elements of the original
      * \param rowOffset Data element offset where to start slicing
      * \param nrows Number of data elements to slice
      * \returns Subset of current data
@@ -94,14 +94,14 @@ public: // methods
      */
     size_t stride() const { return stride_; }
 
-    /** Returns mutable data elements at provided periodic offset
+    /** Returns the address of the i'th data element (mutable)
      * \param i Periodic offset
      * \returns Target mutable data element
      */
     value_type* get(int i) {
         return &data_[i*stride_];
     }
-    /** Returns constant data elements at provided periodic offset
+    /** Returns the address of the i'th data element (const)
      * \param i Periodic offset
      * \returns Target constant data element
      */
@@ -115,13 +115,13 @@ public: // methods
     value_type* operator*() { return data_; }
     const_value_type* operator*() const { return data_; }
 
-    /** Makes a copy of an existing data element
+    /** Copy the value contained in one data element into the following contiguous elements.
      * \param sourceRow Source data element offset
      * \param finalRow Target data element offset
      */
     void fill(int sourceRow, int finalRow);
 
-    /** Checks if data element offset already exists
+    /** Checks if data element differs from the previous data element
      * \param row Data element offset to check
      * \param *True* if data element does not exist yet, *false* otherwise
      */
@@ -207,9 +207,9 @@ inline void StridedDataT<value_type>::fill(int sourceRow, int finalRow) {
     }
 }
 
-/** Describes mutable periodic data in memory which is not yet owned */
+/** Describes the layout of periodic data in memory (mutable) */
 typedef StridedDataT<char> StridedData;
-/** Describes constant periodic data in memory which is not yet owned */
+/** Describes the layout of periodic data in memory (const) */
 typedef StridedDataT<const char> ConstStridedData;
 
 //----------------------------------------------------------------------------------------------------------------------

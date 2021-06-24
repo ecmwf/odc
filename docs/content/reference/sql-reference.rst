@@ -3,7 +3,7 @@
 SQL Reference
 =============
 
-The query language supported by **odc** is generally a small subset of the `SQL (Structured Query Language)`_, but it has some small extensions, for example `bitfields`_ allow for naming and accessing sequences of bits in a column.
+The query language supported by **odc** is a small subset of `SQL (Structured Query Language)`_ with a few domain-specific extensions, most notably `bitfields`_ allow for naming and accessing sequences of bits in a column.
 
 .. note::
 
@@ -11,7 +11,7 @@ The query language supported by **odc** is generally a small subset of the `SQL 
 
       * :download:`example.odb </_static/example.odb>`
 
-   The examples assume the binary directory of **odc** installation is in your ``$PATH``.
+   The examples assume the **odc** binary is in your ``$PATH``.
 
 
 Built-in Functions

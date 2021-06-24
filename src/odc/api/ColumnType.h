@@ -19,19 +19,19 @@ namespace api {
 
 //------------------------------------------------------------------------------------------------------------
 
-/** Column data types */
+/** Identifies the type of data encoded in a column */
 enum ColumnType {
-    /** Defines the encoded data type for an ignored column */
+    /** Specifies that the column is ignored (invalid for real data) */
     IGNORE   = 0,
-    /** Defines the encoded data type for an integer column */
+    /** Specifies the column contains integer data */
     INTEGER  = 1,
-    /** Defines the encoded data type for a real column */
+    /** Specifies the column contains 32-bit floating point values */
     REAL     = 2,
-    /** Defines the encoded data type for a string column */
+    /** Specifies the column contains character (string) data */
     STRING   = 3,
-    /** Defines the encoded data type for a bitfield column */
+    /** Specifies the column contains bitfield data */
     BITFIELD = 4,
-    /** Defines the encoded data type for a double column */
+    /** Specifies the column contains 64-bit floating point values */
     DOUBLE   = 5,
 
     /** \cond INTERNAL

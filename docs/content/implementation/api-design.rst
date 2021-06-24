@@ -49,7 +49,7 @@ The return code is always one of the following:
    A known error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 ``ODC_ERROR_UNKNOWN_EXCEPTION``
-   An unexpected and unrecognised error was encountered, call ``odc_error_string()`` with the returned code for details.
+   An unexpected and unrecognised error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 
 .. code-block:: c
@@ -156,7 +156,7 @@ The return code is always one of the following:
    A known error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 ``ODC_ERROR_UNKNOWN_EXCEPTION``
-   An unexpected and unrecognised error was encountered, call ``odc_error_string()`` with the returned code for details.
+   An unexpected and unrecognised error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 
 .. code-block:: fortran

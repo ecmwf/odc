@@ -9,7 +9,7 @@ Types
 
 .. f:type:: odc_reader
 
-   Controls the ODB-2 file resources, and gives access to the underlying frames
+   Controls the ODB-2 data stream and associated resources, and gives access to the underlying frames
 
    :f open_path(path): :f:func:`🔗 <reader_open_path>`
    :f close(): :f:func:`🔗 <reader_close>`
@@ -81,42 +81,42 @@ Column Data Types
    :type: integer(c_int)
    :attrs: parameter=0
 
-   Defines the encoded data type for an ignored column
+   Specifies that the column is ignored (invalid for real data)
 
 
 .. f:variable:: ODC_INTEGER
    :type: integer(c_int)
    :attrs: parameter=1
 
-   Defines the encoded data type for an integer column
+   Specifies the column contains integer data
 
 
 .. f:variable:: ODC_REAL
    :type: integer(c_int)
    :attrs: parameter=2
 
-   Defines the encoded data type for a real column
+   Specifies the column contains 32-bit floating point values
 
 
 .. f:variable:: ODC_STRING
    :type: integer(c_int)
    :attrs: parameter=3
 
-   Defines the encoded data type for a string column
+   Specifies the column contains character (string) data
 
 
 .. f:variable:: ODC_BITFIELD
    :type: integer(c_int)
    :attrs: parameter=4
 
-   Defines the encoded data type for a bitfield column
+   Specifies the column contains bitfield data
 
 
 .. f:variable:: ODC_DOUBLE
    :type: integer(c_int)
    :attrs: parameter=5
 
-   Defines the encoded data type for a double column
+   Specifies the column contains 64-bit floating point values
 
 
 .. _`f-return-codes`:
@@ -128,28 +128,27 @@ Return Codes
    :type: integer
    :attrs: parameter=0
 
-   Defines return code for success
+   The function completed successfully
 
 
 .. f:variable:: ODC_ITERATION_COMPLETE
    :type: integer
    :attrs: parameter=1
 
-   Defines return code for successful end of iteration
+   All frames have been returned, and the loop can be terminated sucessfully.
 
 
 .. f:variable:: ODC_ERROR_GENERAL_EXCEPTION
    :type: integer
    :attrs: parameter=2
 
-   Defines return code for a general error
-
+   A known error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 .. f:variable:: ODC_ERROR_UNKNOWN_EXCEPTION
    :type: integer
    :attrs: parameter=3
 
-   Defines return code for an unknown error
+   An unexpected and unknown error was encountered. Call `odc_error_string() with the returned code for details.
 
 
 .. _`f-integer-behaviour`:
@@ -161,14 +160,14 @@ Integer Behaviour
    :type: integer
    :attrs: parameter=1
 
-   Defines integer behaviour as double data type (default)
+   Represent integers as doubles in the API (default)
 
 
 .. f:variable:: ODC_INTEGERS_AS_LONGS
    :type: integer
    :attrs: parameter=2
 
-   Defines integer behaviour as long data type
+   Represent integers as 64-bit integers in the API
 
 
 Module Functions
@@ -187,7 +186,7 @@ Module Functions
 
 .. f:function:: odc_version(version_str)
 
-   Retrieves release version of the library in human-readable format, e.g. ``1.3.0``
+   Retrieves the release version of the library in human-readable format, e.g. ``1.3.0``
 
    :p character(:) version_str [out,allocatable]: Return variable for version number
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
@@ -228,7 +227,7 @@ Module Functions
 
 .. f:function:: odc_missing_integer(missing_integer)
 
-   Retrieves the value that identifies a missing integer
+   Retrieves the value that identifies a missing integer in the API
 
    :p integer(c_long) missing_integer [out]: Return variable for missing integer value
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
@@ -236,7 +235,7 @@ Module Functions
 
 .. f:function:: odc_missing_double(missing_double)
 
-   Retrieves the value that identifies a missing double
+   Retrieves the value that identifies a missing double in the API
 
    :p real(c_double) missing_double [out]: Return variable for missing double value
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
@@ -244,7 +243,7 @@ Module Functions
 
 .. f:function:: odc_set_missing_integer(missing_integer)
 
-   Sets the value that identifies a missing integer
+   Sets the value that identifies a missing integer in the API
 
    :p integer(c_long) missing_integer [in,value]: Missing integer value
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
@@ -252,7 +251,7 @@ Module Functions
 
 .. f:function:: odc_missing_double(missing_double)
 
-   Sets the value that identifies a missing double
+   Sets the value that identifies a missing double in the API
 
    :p real(c_double) missing_double [in,value]: Missing double value
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
@@ -280,7 +279,7 @@ Type Methods
 
 .. f:function:: reader_open_path(path)
 
-   Opens the specified file path
+   Initialise the reader to read the ODB-2 data stream in the specified path.
 
    :p character(:) path [in]: File path to open
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
@@ -288,14 +287,14 @@ Type Methods
 
 .. f:function:: reader_close
 
-   Closes opened resource
+   Closes opened reader
 
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
 
 
 .. f:function:: frame_initialise(reader)
 
-   Initialises current frame
+   Initialises current frame associated with the specified reader
 
    :p odc_reader reader [inout]: Reader instance
    :r integer err: Return code :ref:`🔗 <f-return-codes>`
@@ -343,7 +342,7 @@ Type Methods
 
 .. f:function:: frame_column_attributes(col[, name, type, element_size, element_size_doubles, bitfield_count])
 
-   Retrieves column attributes in current frame
+   Retrieves column attributes from current frame
 
    :p integer col [in]: Target column index
    :o character(:) name [out,allocatable]: Return variable for column name

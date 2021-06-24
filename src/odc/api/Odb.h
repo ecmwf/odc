@@ -46,7 +46,7 @@ namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/** Provides global settings and version utility methods */
+/** Provides access to global settings and version utility methods */
 class Settings {
 public: // methods
 
@@ -86,23 +86,26 @@ public: // methods
 
 struct SpanImpl;
 
-/** Provides functor interface for values spanned in specific columns within a frame */
+/** Provides an interface for accessing the contents of a Span class using a visitor pattern.
+ *  The appropriate operator() will be called for each column with its associated values. */
 class SpanVisitor {
 public:
 
     virtual ~SpanVisitor();
 
-    /** Operator for processing long values
+    /** Method for processing long values
      * \param columnName Column name
      * \param vals Long values
      */
     virtual void operator()(const std::string& columnName, const std::set<long>& vals) = 0;
-    /** Operator for processing double values
+
+    /** Method for processing double values
      * \param columnName Column name
      * \param vals Double values
      */
     virtual void operator()(const std::string& columnName, const std::set<double>& vals) = 0;
-    /** Operator for processing string values
+
+    /** Method for processing string values
      * \param columnName Column name
      * \param vals String values
      */
@@ -112,7 +115,7 @@ public:
 
 //----------------------------------------------------------------------------------------------------------------------
 
-/** Provides details of the values spanned in specific columns within a frame */
+/** Provides details of the range of values spanned by each column within a given frame */
 class Span {
 
 public: // methods
@@ -122,43 +125,47 @@ public: // methods
     Span();
     ~Span();
 
-    /** Activates the functor interface on spanned columns
+    /** Visit the Span object with the specified visitor. Calls the appropriate typed method
+     *  on the visitor for each column in the Span with the set of associated values.
      * \param visitor Span visitor instance
      */
     void visit(SpanVisitor& visitor) const;
 
-    /** Returns integer values of a column
+    /** Returns integer values present in the specified column
      * \param column Column name
      * \returns Integer values
      */
     const std::set<long>& getIntegerValues(const std::string& column) const;
-    /** Returns real values of a column
+
+    /** Returns floating point values present in the specified column
      * \param column Column name
      * \returns Real values
      */
     const std::set<double>& getRealValues(const std::string& column) const;
-    /** Returns string values of a column
+
+    /** Returns string values present in the specified column
      * \param column Column name
      * \returns String values
      */
     const std::set<std::string>& getStringValues(const std::string& column) const;
 
-    /** Equal-to operator overload
+    /** Compare Spans for equality
      * \param rhs Reference to span object to compare with
      * \returns Returns *true* if span objects are equal
      */
     bool operator==(const Span& rhs) const;
 
-    /** Assignment operator overload
+    /** Move assignment operator
      * \param rhs Reference to a span value to assign
      */
     Span& operator=(Span&& rhs);
 
-    /** Returns current span offset
+    /** Returns the offset of the associated frame in the data stream
      * \returns Span offset
      */
     eckit::Offset offset() const;
-    /** Returns current span length
+
+    /** Returns the length of the encoded data of the associated frame in the data stream
      * \returns Span length
      */
     eckit::Length length() const;
@@ -175,7 +182,7 @@ class Decoder;
 
 class FrameImpl;
 
-/** Provides a viewport into a chunk of contiguous data within the ODB-2 stream */
+/** Provides a viewport onto a chunk of contiguous, compatible data within the ODB-2 stream. This may be a logical Frame comprising multiple underlying frames in the data stream. */
 class Frame {
 
 public: // methods
@@ -195,16 +202,18 @@ public: // methods
      * \returns Number of rows
      */
     size_t rowCount() const;
+
     /** Returns number of columns in current frame
      * \returns Number of columns
      */
     size_t columnCount() const;
 
-    /** Returns current frame data offset
+    /** Returns current frame data offset within the data stream owned by the Reader
      * \returns Frame offset
      */
     eckit::Offset offset() const;
-    /** Returns current frame data length
+
+    /** Returns the size of the encoded data in bytes
      * \returns Frame length
      */
     eckit::Length length() const;
@@ -213,24 +222,28 @@ public: // methods
      * \returns Column information
      */
     const std::vector<ColumnInfo>& columnInfo() const;
+
     /** Checks if frame has a named column
      * \param name Column name
      * \returns *True* if named column exists, *false* otherwise
      */
     bool hasColumn(const std::string& name) const;
 
-    /** Filters current frame according to an SQL-like query and returns another frame object attached to a memory
+    /** Filters current frame according to an SQL-like query and returns another frame object
+     *  (which owns its own attached memory buffer)
      *  buffer
      * \param sql SQL query
      * \returns Frame object attached to a memory buffer
      */
     Frame filter(const std::string& sql);
-    /** Returns encoded data of the current frame
+
+    /** Returns the encoded data of the current frame
      * \returns Encoded frame data
      */
     eckit::Buffer encodedData();
 
-    /** Returns a span object for a glimpse into column values without decoding them
+    /** Returns a Span object describing the range of values in the Frame associated with the specified columns,
+     *  without decoding the frame.
      * \param columns List of column names
      * \param onlyConstantValues Introduces a constraint that a frame must have constant values in a column if *true*
      * \returns Span object
@@ -255,27 +268,28 @@ class FrameImpl;
 
 class ReaderImpl;
 
-/** Controls the ODB-2 file resources, and gives access to the underlying frames */
+/** Own the ODB-2 data stream and controls associated resources. The Reader object gives access to the sequence of frames */
 class Reader {
 
 public: // methods
 
-    /** Constructor via file path
+    /** Construct from file path
      * \param path File path to open
      * \param aggregated Whether to aggregate compatible data into a logical frame
-     * \param rowlimit Maximum number of aggregated rows
+     * \param rowlimit Maximum number of rows to aggregate into one logical frame
      */
     Reader(const std::string& path, bool aggregated=true, long rowlimit=-1);
-    /** Constructor via data handle reference
+    /** Construct from data handle reference. This does not take ownership of the data handle,
+     *  and managing the lifetime of this data handle is the responsibiltiy of the caller.
      * \param dh Data handle (eckit)
      * \param aggregated Whether to aggregate compatible data into a logical frame
-     * \param rowlimit Maximum number of aggregated rows
+     * \param rowlimit Maximum number of rows to aggregate into one logical frame
      */
     Reader(eckit::DataHandle& dh, bool aggregated=true, long rowlimit=-1);
-    /** Constructor via data handle pointer
+    /** Construct via data handle pointer. This takes ownership of the DataHandle.
      * \param dh Data handle (eckit)
      * \param aggregated Whether to aggregate compatible data into a logical frame
-     * \param rowlimit Maximum number of aggregated rows
+     * \param rowlimit Maximum number of rows to aggregate into one logical frame
      */
     Reader(eckit::DataHandle* dh, bool aggregated=true, long rowlimit=-1); // takes ownership
     ~Reader();
@@ -294,20 +308,21 @@ private: // members
 
 struct DecoderImpl;
 
-/** Specifies which ODB-2 columns should be decoded and the memory that the decoded data should be put into */
+/** Specifies the ODB-2 columns to decode and the memory layout for the decoded data */
 class Decoder {
 
 public: // methods
 
     /** Constructor
-     * \param columns Column names
-     * \param columnFacades Column data
+     * \param columns The names of the columns to decode
+     * \param columnFacades A description of the periodic data layout for each named column
      */
     Decoder(const std::vector<std::string>& columns,
             std::vector<StridedData>& columnFacades);
     ~Decoder();
 
-    /** Slices provided number of rows
+    /** Obtain a sub-decoder associated with a contiguous subset of the rows reference by
+     *  the main decoder
      * \param rowOffset Row offset where to start slicing
      * \param nrows Number of rows to slice
      * \returns Sliced decoder
@@ -337,9 +352,9 @@ const char* columnTypeName(const ColumnType& type);
 
 /** Encodes ODB-2 into a data handle
  * \param out Data handle (eckit)
- * \param columns Column information
- * \param data Column data
- * \param properties Additional key/value properties to encode
+ * \param columns Name and type specification for each column to encode
+ * \param data Description of the periodic data layout for each column to encode
+ * \param properties Dictionary of key/value properties to encode
  * \param maxRowsPerFrame Maximum number of rows per frame
  */
 void encode(eckit::DataHandle& out,
@@ -351,7 +366,8 @@ void encode(eckit::DataHandle& out,
 //----------------------------------------------------------------------------------------------------------------------
 
 /** Filters ODB-2 data according to an SQL-like query and writes result into another data handle
- * \note SQL filtering may not be appropriate to do on a per-Frame basis, as aggregate values won't behave properly.
+ * \note Depending on the query, SQL filtering may not be appropriate to do on a per-Frame basis, as aggregate
+ *       values won't behave properly. This function allows filtering of an entire data stream.
  * \param sql SQL query
  * \param in Source data handle
  * \param out Target data handle
@@ -362,7 +378,7 @@ size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& 
 //----------------------------------------------------------------------------------------------------------------------
 
 /** Imports CSV from a source data handle into a ODB-2 data handle
- * \param dh_in CSV data handle (eckit)
+ * \param dh_in Input data stream (CSV data)
  * \param dh_out ODB-2 data handle (eckit)
  * \param delimiter CSV delimiter
  * \returns Number of imported lines
@@ -370,7 +386,7 @@ size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& 
 size_t odbFromCSV(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
 
 /** Imports CSV from a stream handle into a ODB-2 data handle
- * \param is Stream handle
+ * \param is Input data stream (CSV data)
  * \param dh_out ODB-2 data handle (eckit)
  * \param delimiter CSV delimiter
  * \returns Number of imported lines
@@ -378,7 +394,7 @@ size_t odbFromCSV(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std
 size_t odbFromCSV(std::istream& is, eckit::DataHandle& dh_out, const std::string& delimiter=",");
 
 /** Imports CSV from a string into a ODB-2 data handle
- * \param in Stream handle
+ * \param is String containing CSV data
  * \param dh_out ODB-2 data handle (eckit)
  * \param delimiter CSV delimiter
  * \returns Number of imported lines

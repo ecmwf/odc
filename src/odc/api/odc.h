@@ -32,9 +32,10 @@ extern "C" {
 /** \defgroup Initialisation */
 /** @{ */
 
-/** Defines integer behaviour as double data type (default) */
+/** Represent integers as doubles in the API (default) */
 const int ODC_INTEGERS_AS_DOUBLES = 1; // this is the default
-/** Defines integer behaviour as long data type */
+
+/** Represent integers as 64-bit integers in the API */
 const int ODC_INTEGERS_AS_LONGS = 2;
 
 /** Initialises API, must be called before any other function
@@ -42,7 +43,7 @@ const int ODC_INTEGERS_AS_LONGS = 2;
  * \returns Return code (#OdcErrorValues)
  */
 int odc_initialise_api();
-/** Sets treatment of integers in ODB-2 data
+/** Sets treatment of integers in the odc API
  * \param integerBehaviour Desired integer behaviour (#ODC_INTEGERS_AS_DOUBLES #ODC_INTEGERS_AS_LONGS)
  * \returns Return code (#OdcErrorValues)
  */
@@ -54,7 +55,7 @@ int odc_integer_behaviour(int integerBehaviour);
 /** \defgroup Version Accessors */
 /** @{ */
 
-/** Retrieves release version of the library in human-readable format, e.g. ``1.3.0``
+/** Retrieves the release version of the library in human-readable format, e.g. ``1.3.0``
  * \param version Return variable for release version
  * \returns Return code (#OdcErrorValues)
  */
@@ -73,17 +74,17 @@ int odc_vcs_version(const char** version);
 
 /** Return codes */
 enum OdcErrorValues {
-    /** Defines return code for success */
+    /** The function completed successfully */
     ODC_SUCCESS                  = 0,
-    /** Defines return code for successful end of iteration */
+    /** All frames have been returned, and the loop can be terminated sucessfully. */
     ODC_ITERATION_COMPLETE       = 1,
-    /** Defines return code for a general error */
+    /** A known error was encountered. Call ``odc_error_string()`` with the returned code for details. */
     ODC_ERROR_GENERAL_EXCEPTION  = 2,
-    /** Defines return code for an unknown error */
+    /** An unexpected and unknown error was encountered. Call `odc_error_string() with the returned code for details. */
     ODC_ERROR_UNKNOWN_EXCEPTION  = 3
 };
 
-/** Returns a human-readable error message for an error code
+/** Returns a human-readable error message for the last error given an error code
  * \param err Error code (#OdcErrorValues)
  * \returns Error message
  */
@@ -91,7 +92,7 @@ const char* odc_error_string(int err);
 
 // int odc_abort_on_failure(bool abort); ///< @todo to remove
 
-/** Error handler function signature
+/** Error handler callback function signature
  * \param context Error handler context
  * \param error_code Error code (#OdcErrorValues)
  */
@@ -111,17 +112,17 @@ int odc_set_failure_handler(odc_failure_handler_t handler, void* context);
 
 /** Column data types */
 enum OdcColumnType {
-    /** Defines the encoded data type for an ignored column */
+    /** Specifies that the column is ignored (invalid for real data) */
     ODC_IGNORE   = 0,
-    /** Defines the encoded data type for an integer column */
+    /** Specifies the column contains integer data */
     ODC_INTEGER  = 1,
-    /** Defines the encoded data type for a real column */
+    /** Specifies the column contains 32-bit floating point values */
     ODC_REAL     = 2,
-    /** Defines the encoded data type for a string column */
+    /** Specifies the column contains character (string) data */
     ODC_STRING   = 3,
-    /** Defines the encoded data type for a bitfield column */
+    /** Specifies the column contains bitfield data */
     ODC_BITFIELD = 4,
-    /** Defines the encoded data type for a double column */
+    /** Specifies the column contains 64-bit floating point values */
     ODC_DOUBLE   = 5
 };
 
@@ -142,24 +143,24 @@ int odc_column_type_name(int type, const char** type_name);
 /// @todo In the top CMakelists.txt assert that in this system C double is 64 bit
 
 
-/** Sets the value that identifies a missing integer
+/** Sets the value that identifies a missing integer in the API
  * \param missing_integer Missing integer value
  * \returns Return code (#OdcErrorValues)
  */
 int odc_set_missing_integer(long missing_integer);
 
-/** Sets the value that identifies a missing double
+/** Sets the value that identifies a missing double in the API
  * \param missing_double Missing double value
  * \returns Return code (#OdcErrorValues)
  */
 int odc_set_missing_double(double missing_double);
 
-/** Retrieves the value that identifies a missing integer
+/** Retrieves the value that identifies a missing integer in the API
  * \param missing_value Return variable for missing integer value
  * \returns Return code (#OdcErrorValues)
  */
 int odc_missing_integer(long* missing_value);
-/** Retrieves the value that identifies a missing double
+/** Retrieves the value that identifies a missing double in the API
  * \param missing_value Return variable for missing double value
  * \returns Return code (#OdcErrorValues)
  */
@@ -172,7 +173,7 @@ int odc_missing_double(double* missing_value);
 /** @{ */
 
 struct odc_reader_t;
-/** Controls the ODB-2 file resources, and gives access to the underlying frames */
+/** Opaque type for the Reader object. Controls the ODB-2 data stream and associated resources, and gives access to the underlying frames */
 typedef struct odc_reader_t odc_reader_t;
 /** Creates a reader and opens the specified file path
  * \param reader Reader instance
@@ -183,7 +184,7 @@ int odc_open_path(odc_reader_t** reader, const char* filename);
 
 /** Creates a reader from an already open file descriptor.
  *
- * It will duplicate the file descriptor so the calling code is safe to close the file descriptor.
+ * The file descriptor will be duplicated so the calling code is safe to close the file descriptor.
  *
  * \param reader Reader instance
  * \param fd File descriptor
@@ -199,14 +200,14 @@ int odc_open_file_descriptor(odc_reader_t** reader, int fd);
  */
 int odc_open_buffer(odc_reader_t** reader, const void* data, long length);
 
-/** Reader stream handler function signature
+/** Reader stream handler callback function signature. Functions analagously to the POSIX read() function.
  * \param context Stream handler context
  * \param buffer Memory buffer to handle
  * \param buffer Size of the memory buffer
  */
 typedef long (*odc_stream_read_t)(void* context, void* buffer, long length);
 
-/** Creates a reader associated to a stream handler
+/** Creates a reader associated to a custom stream handler. The callback specified will be called in the same way as the POSIX read() function to obtain data from the custom stream.
  * \param reader Reader instance
  * \param context Stream handler context
  * \param stream_proc Stream handler function
@@ -227,36 +228,36 @@ int odc_close(const odc_reader_t* reader);
 /** @{ */
 
 struct odc_frame_t;
-/** Provides a viewport into a chunk of contiguous data within the ODB-2 stream */
+/** Opaque type for the Frame object. Provides a viewport onto a chunk of contiguous data within the ODB-2 stream */
 typedef struct odc_frame_t odc_frame_t;
 
-/** Creates a frame instance for interrogating ODB-2 data
+/** Creates a frame instance associated with a specific reader instance, for interrogating ODB-2 data
  * \param frame Frame instance
  * \param reader Reader instance
  * \returns Return code (#OdcErrorValues)
  */
 int odc_new_frame(odc_frame_t** frame, odc_reader_t* reader);
 
-/** Deallocates memory used up by a frame
+/** Deallocates frame object and associated resources.
  * \param frame Frame instance
  * \returns Return code (#OdcErrorValues)
  */
 int odc_free_frame(const odc_frame_t* frame);
 
-/** Advances to the next frame in the stream
+/** Advances the viewport to the next frame in the stream
  * \param frame Frame instance
  * \returns Return code (#OdcErrorValues)
  */
 int odc_next_frame(odc_frame_t* frame);
 
-/** Advances to the next logical frame in the stream
+/** Advances the viewport to the next logical frame in the stream
  * \param frame Frame instance
- * \param maximum_rows Maximum number of aggregated rows
+ * \param maximum_rows Maximum number of rows to aggregae into one logical frame
  * \returns Return code (#OdcErrorValues)
  */
 int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows);
 
-/** Copies the frame to another frame
+/** Creates an independent copy of the frame object, resulting in an independent viewport on the ODB data stream with its own associated resources. To use the new copied frame independently from the first requires the ODB-2 data stream to be seekable.
  * \param source_frame Source frame instance to copy from
  * \param copy Target frame instance to copy to
  * \returns Return code (#OdcErrorValues)
@@ -277,7 +278,7 @@ int odc_frame_row_count(const odc_frame_t* frame, long* count);
  */
 int odc_frame_column_count(const odc_frame_t* frame, int* count);
 
-/** Retrieves column attributes in current frame
+/** Retrieves column attributes from current frame
  * \param frame Frame instance
  * \param col Target column index
  * \param name Return variable for column name
@@ -331,7 +332,7 @@ int odc_frame_property(const odc_frame_t* frame, const char* key, const char** v
 /** @{ */
 
 struct odc_decoder_t;
-/** Specifies which ODB-2 columns should be decoded and the memory that the decoded data should be put into */
+/** Opaque type for the Decoder object. Specifies which ODB-2 columns should be decoded and the memory that should be used for the decoded data */
 typedef struct odc_decoder_t odc_decoder_t;
 
 /* A decode target may allocate its own buffer to decode into, or use one that is
@@ -472,7 +473,7 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
 /** @{ */
 
 struct odc_encoder_t;
-/** Describes data in memory and encodes it into ODB-2 frames **/
+/** Opaque type for the Encoder object. Describes the column properties and the data layout of the source data for encoding into ODB-2 frames **/
 typedef struct odc_encoder_t odc_encoder_t;
 
 /** Creates an encoder instance for encoding into ODB-2 format
