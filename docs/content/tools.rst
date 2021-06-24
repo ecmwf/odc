@@ -1,7 +1,7 @@
 Tools
 =====
 
-**odc** provides several tools for manipulating and inspecting ODB-2 data from the command line.
+**odc** provides several tools for manipulating and inspecting ODB-2 data on the command line.
 
 .. note::
 
@@ -18,7 +18,7 @@ Tools
 ``odc``
 -------
 
-All commands and their help pages are available under this joint command.
+All commands and their help pages are available under this umbrella command.
 
 Usage
    .. code-block:: shell
@@ -50,7 +50,7 @@ Options
 ``compact``
 -----------
 
-Tries to compress a file.
+Reads the ODB-2 data found in one file and re-encodes it into an output file. If the data in the first file is made of many small frames, this can result in significantly reduced file size.
 
 Usage
    .. code-block:: shell
@@ -59,10 +59,10 @@ Usage
 
 Options
    ``<input.odb>``
-      Name of the input ODB-2 file.
+      Input ODB-2 file path
 
    ``<output.odb>``
-      Name of the output ODB-2 file.
+      Output ODB-2 file path
 
 Example
    .. code-block:: shell
@@ -76,7 +76,7 @@ Example
 ``compare``
 -----------
 
-Compares two ODB files.
+Compares two ODB files. Fails with a non-zero return code if the two files differ
 
 Usage
    .. code-block:: shell
@@ -85,19 +85,19 @@ Usage
 
 Options
    ``-excludeColumns <list-of-columns>``
-      Exclude columns from the comma-separated list.
+      Exclude specified columns from the comparison. Columns are specified in a column-separated list.
 
    ``-excludeColumnsTypes <list-of-column-types>``
-      Exclude columns of listed data types (comma-separated list).
+      Exclude data of specified type(s) from the comparison. Types are specified in a columns-separated list.
 
    ``-dontCheckMissing``
       Do not compare missing values.
 
    ``<file1.odb>``
-      File to compare.
+      Path to first ODB-2 file.
 
    ``<file2.odb>``
-      File to compare with.
+      Path to second ODB-2 file.
 
 Example
    .. code-block:: shell
@@ -124,7 +124,7 @@ Example
 ``count``
 ---------
 
-Counts number of rows in files.
+Determine the number of rows of data in an ODB-2 file.
 
 Usage
    .. code-block:: shell
@@ -133,7 +133,7 @@ Usage
 
 Options
    ``<file.odb>``
-      Name of the ODB-2 file.
+      ODB-2 file path.
 
 Example
    .. code-block:: shell
@@ -157,10 +157,10 @@ Usage
 
 Options
    ``<input.odb>``
-      Name of the input ODB-2 file.
+      Input ODB-2 file path.
 
    ``<output.odb>``
-      Name of the output ODB-2 file.
+      Output ODB-2 file path.
 
 Example
    .. code-block:: shell
@@ -174,7 +174,7 @@ Example
 ``header``
 ----------
 
-Shows header(s) and metadata(s) of file.
+For each frame in a specified ODB-2 file display metadata associated with the frames and the columnar structure of the data.
 
 Usage
    .. code-block:: shell
@@ -183,16 +183,16 @@ Usage
 
 Options
    ``-offsets``
-      Print only data offsets within the file.
+      Print only data offsets and sizes within the file. This produces a tabular output with one row per frame in the source file. The columns specify the offset of the frame in the file (in bytes), the size of the frame (in bytes), the size of the frame (in rows) and the number of columns in the frame.
 
    ``-ddl``
       Print Data Definition Language (DDL) query that describes the data frame.
 
    ``-table <table-name-in-the-generated-ddl>``
-      Define the name of the table in the DDL query.
+      Specify the name of the table in the DDL query.
 
    ``<file.odb>``
-      Name of the ODB-2 file.
+      Input ODB-2 file path.
 
 Examples
    .. code-block:: shell
@@ -234,7 +234,7 @@ Examples
 ``import``
 ----------
 
-Imports data from a text file.
+Imports data from a text file into ODB-2 format. This typically imports data from a CSV format.
 
 Data column headers must be in the following format:
 
@@ -242,7 +242,7 @@ Data column headers must be in the following format:
 
    NAME:TYPE
 
-For example:
+For example (using ',' as the delimiter):
 
 .. code-block:: none
 
@@ -255,13 +255,13 @@ Usage
 
 Options
    ``-d delimiter``
-      Data delimiter, can be a single character (e.g.: ``,``) or ``TAB``.
+      Data delimiter, can be a single character (e.g.: ``,``) or ``TAB``. The default delimiter is ','.
 
    ``<file.txt>``
-      Name of the text file.
+      Path to source text file.
 
    ``<file.odb>``
-      Name of the ODB-2 file.
+      Path of the ODB-2 file to create.
 
 Example
    .. code-block:: shell
@@ -275,69 +275,10 @@ Example
       000 2021-05-11 14:09:36 (I) ImportTool::odbFromCSV: Copied 10 rows.
 
 
-.. .. todo::
-   Check why this command does not work:
-
-   .. code-block:: shell
-
-      odc index data.odb
-      000 2021-05-12 08:38:13 (E) Exception: Assertion failed: !s->second.opened_ in open, line 104 of /tmp/metabuilds/ecflow-metab_5062/leap42/GNU.73/eckit/eckit/src/eckit/io/PooledHandle.cc
-      Assertion failed: !s->second.opened_ in open, line 104 of /tmp/metabuilds/ecflow-metab_5062/leap42/GNU.73/eckit/eckit/src/eckit/io/PooledHandle.cc
-      backtrace [2] stack has 13 addresses
-      (/usr/local/apps/eckit/1.16.0/GNU/7.3.0/lib/libeckit.so+eckit::BackTrace::dump[abi:cxx11]())0x18b
-      (/usr/local/apps/eckit/1.16.0/GNU/7.3.0/lib/libeckit.so+eckit::AssertionFailed::AssertionFailed(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, eckit::CodeLocation const&))0x58a
-      (/usr/local/apps/eckit/1.16.0/GNU/7.3.0/lib/libeckit.so+eckit::PooledHandle::openForRead())0x6a3
-      (/usr/local/apps/eckit/1.16.0/GNU/7.3.0/lib/libeckit.so+eckit::PartFileHandle::openForRead())0x26
-      (/usr/local/apps/odc/1.3.0/GNU/7.3.0/bin/../lib/libodccore.so+odc::Select::Select(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, eckit::DataHandle&, bool))0x30
-      (/usr/local/apps/odc/1.3.0/GNU/7.3.0/bin/../lib/libodccore.so+odc::Indexer::createIndex(eckit::PathName const&, eckit::PathName const&))0x519
-      (/usr/local/apps/odc/1.3.0/GNU/7.3.0/bin/../lib/libodctools.so+odc::tool::IndexTool::run())0x4b7
-      (/usr/local/apps/odc/1.3.0/GNU/7.3.0/bin/../lib/libodctools.so+odc::tool::ToolRunnerApplication::run())0x21
-      (/usr/local/apps/eckit/1.16.0/GNU/7.3.0/lib/libeckit.so+eckit::Tool::start())0x11
-      (odc)
-      (odc)
-      (/lib64/libc.so.6+__libc_start_main)0xf5
-      (odc)
-
-      end of backtrace dump ...
-      000 2021-05-12 08:38:13 (E) ** Assertion failed: !s->second.opened_ in open, line 104 of /tmp/metabuilds/ecflow-metab_5062/leap42/GNU.73/eckit/eckit/src/eckit/io/PooledHandle.cc Caught in  (/tmp/metabuilds/ecflow-metab_5062/leap42/GNU.73/eckit/eckit/src/eckit/runtime/Tool.cc +31 start)
-      000 2021-05-12 08:38:13 (E) ** Exception terminates odc
-
-   ``index``
-   ---------
-
-   Creates index of reports for a given file.
-
-   The index file is an ODB-2 file with following integer columns:
-
-   - ``block_begin``
-   - ``block_length``
-   - ``seqno``
-   - ``n_rows``
-
-   One entry is made for each unique ``seqno``, a block pair within the source ODB-2 file.
-
-   Usage
-      .. code-block:: shell
-
-         odc index <file.odb> [<file.odb.idx>]
-
-   Options
-      ``<file.odb>``
-         Name of the ODB-2 file.
-
-      ``<file.odb.idx>``
-         Name of the index file.
-
-   Example
-      .. code-block:: shell
-
-         odc index data.odb data.odb.idx
-
-
 ``ls``
 ------
 
-Shows file’s contents.
+Decode and print the contents of an ODB-2 file to stdout or a specified text output file.
 
 Usage
    .. code-block:: shell
@@ -346,10 +287,10 @@ Usage
 
 Options
    ``-o <file.txt>``
-      Name of the output file. If omitted, contents will be printed on standard output.
+      Output file path. If omitted, contents will be printed on standard output.
 
    ``<file.odb>``
-      Name of the ODB-2 file.
+      Path to the input ODB-2 file.
 
 Example
    .. code-block:: shell
@@ -362,7 +303,7 @@ Example
 ``mdset``
 ---------
 
-Creates a new file resetting types or values (constants only) of columns.
+Create a copy of an ODB-2 file with metadata-only values modified, including modifications to the value of constant columns.
 
 Usage
    .. code-block:: shell
@@ -389,10 +330,10 @@ Options
       Both type and value are optional, but at least one of the two should be present.
 
    ``<input.odb>``
-      Name of the input ODB-2 file.
+      Path to the input ODB-2 file.
 
    ``<output.odb>``
-      Name of the output ODB-2 file.
+      Path to the output ODB-2 file.
 
 Example
    .. code-block:: shell
@@ -407,7 +348,7 @@ Example
 ``merge``
 ---------
 
-Merges rows from ODB-2 files.
+Merges rows from ODB-2 files to form a single ODB-2 file with the union of the columns of the source files.
 
 Each of the ODB-2 files being merged must have unique columns.
 
@@ -424,13 +365,13 @@ Usage
 
 Options
    ``-S``
-      Apply SQL-like query before merging.
+      Apply SQL-like query before merging (see SQL reference).
 
    ``-o <output-file.odb>``
-      Name of the ODB-2 output file.
+      Path to the ODB-2 output file.
 
    ``<input1.odb> <input2.odb> ...``
-      Names of the input ODB-2 files.
+      Path to the input ODB-2 files.
 
 Example
    .. code-block:: shell
@@ -453,7 +394,7 @@ Example
 ``set``
 -------
 
-Creates a new file setting columns to given values.
+Copy and ODB-2 file replacing the values associated with specified columns with the (constant) values specified.
 
 Usage
    .. code-block:: shell
@@ -469,10 +410,10 @@ Options
          <column-name> = <value>
 
    ``<input.odb>``
-      Name of the input ODB-2 file.
+      Path to the input ODB-2 file.
 
    ``<output.odb>``
-      Name of the output ODB-2 file.
+      Path to the output ODB-2 file.
 
 Example
    .. code-block:: shell
@@ -485,9 +426,7 @@ Example
 ``split``
 ---------
 
-Splits file according to given template.
-
-Input file will be split along the same values of the column names which appear in the `output template`_ option.
+Split the rows from a single ODB-2 file across multiple new files according to the values in specified columns. The naming of the new files and the columns used for the split are according to the filename template specified in the `output template`_ option.
 
 Usage
    .. code-block:: shell
@@ -502,7 +441,7 @@ Options
       Maximum number of open files at one time.
 
    ``<input.odb>``
-      Name of the input ODB-2 file.
+      Path to the input ODB-2 file.
 
    .. _`output template`:
 
@@ -524,7 +463,7 @@ Example
 ``sql``
 -------
 
-Executes SQL statement.
+Interrogate ODB-2 data using SQL-like queries.
 
 .. seealso::
 
@@ -550,10 +489,10 @@ Options
       Do not write NULLs, but proper missing data values.
 
    ``-i <inputfile>``
-      ODB-2 input file.
+      Path to the ODB-2 input file.
 
    ``-o <outputfile>``
-      ODB-2 output file.
+      Path to the output file to create.
 
    ``-f default|wide|ascii|odb``
       ODB-2 output format:
@@ -561,10 +500,10 @@ Options
       - ``default`` is ``ascii`` on stdout and ``odb`` to file
       - ``wide`` is ASCII formatted with column definitions in header
       - ``ascii`` is ASCII formatted
-      - ``odb`` is binary ODB-2
+      - ``odb`` is binary ODB-2. This option is only supported with the ``-o`` argument.
 
    ``-delimiter <delim>``
-      Changes the default values’ delimiter (``TAB`` by default). ``delim`` can be any character or string.
+      Changes the delimiter used when printing output in a human readable, ascii, format (``TAB`` by default). ``delim`` can be any character or string.
 
    ``--binary|--bin``
       Print bitfields in binary notation.
@@ -611,13 +550,13 @@ Usage
 
 Options
    ``<input.odb>``
-      Name of the input ODB-2 file.
+      Path to the input ODB-2 file.
 
    ``<value-column>``
       Name of the value column.
 
    ``<output.odb>``
-      Name of the output ODB-2 file.
+      Path to the output ODB-2 file to create.
 
 Example
    .. code-block:: shell
