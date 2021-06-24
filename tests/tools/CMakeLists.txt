@@ -1,5 +1,6 @@
 list( APPEND tools_tests_scripts
     test_odb_exit_codes.sh
+    test_odb_header.sh
     test_odb_split.sh
     test_odb_sql_split.sh
     test_odb_sql_bitfields.sh
