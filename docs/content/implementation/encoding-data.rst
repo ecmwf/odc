@@ -3,20 +3,17 @@
 Encoding Data
 =============
 
-The encoding process works in the other way. Data in memory is described by the **Encoder** and, given an appropriate data stream, data will be encoded into frames.
-
-Each time a new data structure is encountered, it will be described by a different encoder instance, but the encoded data will result in a subsequent frame in the stream.
-
+The encoding process is strutured as the reverse of the decoding process. Data in memory is described in an **Encoder** object. This data is then encoded into a sequence of frames and written to an output data stream.
 
 .. index:: Encoding Data; Encoder
 
 Encoder
 -------
 
-Just like the **Decoder**, the **Encoder** provides several options for handling memory layouts.
+The **Encoder** provides several options for handling memory layouts, in the same way as the **Decoder**.
 
 Row-major layout
-   In :ref:`row-major layout <decoder-row-major-layout>`, the consecutive elements of a single data row reside one next to each other.
+   In :ref:`row-major layout <decoder-row-major-layout>`, consecutive elements in a data row reside adjacent to each other in memory, and the block of memory comprises a sequence of rows.
 
    .. tabs::
 
@@ -88,7 +85,7 @@ Row-major layout
 
 
 Column-major layout
-   In :ref:`column-major layout <decoder-column-major-layout>`, the consecutive elements of a single data column reside one below each other.
+   In :ref:`column-major layout <decoder-column-major-layout>`, consecutive elements in a single data column are adjacent to each other in memory, and the block of memory comprises a sequence of columns.
 
    .. tabs::
 
@@ -163,7 +160,7 @@ Column-major layout
 .. _`encoder-custom-layout`:
 
 Custom layout
-   For a :ref:`custom layout <decoder-custom-layout>`, the stride size can be specified, leading to a more complex layout that better fits the data.
+   For a :ref:`custom periodic layout <decoder-custom-layout>`, a periodic memory layout can be specified for each column independently to match the data layout of a specific source of data.
 
    .. tabs::
 
@@ -279,8 +276,7 @@ Custom layout
 
             rc = encoder%free()
 
-
-Once an **Encoder** has been set up properly, data can be encoded with it.
+Once an **Encoder** describing the data has been constructed, the data can be encoded into frames.
 
 .. tabs::
 
@@ -321,7 +317,7 @@ Once an **Encoder** has been set up properly, data can be encoded with it.
 
 
       Stream handler
-         Data can be encoded via a stream handler using ``odc_encode_to_stream()`` function. A callback of signature ``odc_stream_write_t`` is passed together with ``context``, which will be sequentially called with appropriate ``buffer`` and ``length`` pairs.
+         Data can be encoded via a stream handler using ``odc_encode_to_stream()`` function. A write callback function is called for each chunk of data to be written to the output stream in an analogue to the POSIX ``write()`` function.
 
          .. code-block:: c
 
@@ -339,7 +335,7 @@ Once an **Encoder** has been set up properly, data can be encoded with it.
 
    .. group-tab:: C++
 
-      C++ supports data encoding into `eckit`_ ``DataHandle`` objects and their derivatives. These are very general objects, that can refer to any data source, hence their utility.
+      C++ supports data encoding into `eckit`_ ``DataHandle`` objects. There are a range of available DataHandle classes supporting a wide range of output types, and they can be extended as required to support other outputs.
 
       ``FileHandle`` (eckit)
          .. code-block:: cpp
@@ -374,7 +370,7 @@ Once an **Encoder** has been set up properly, data can be encoded with it.
 Bitfields
 ---------
 
-Bitfield columns can be used to store data for *flags*, up to a maximum of 32-bits per column. Within an integer, the bits can be identified and named by their offset. Groups of bits are identified as well as individual bits, therefore each item has an offset and a size.
+Bitfield columns can be used to store data for *flags*, up to a maximum of 32-bits per column. Within an integer, the bits can be identified and named by their offset. Groups of bits can be named and identified as well as individual bits, therefore each item has an offset and a size.
 
    .. tabs::
 
@@ -468,7 +464,7 @@ Bitfield columns can be used to store data for *flags*, up to a maximum of 32-bi
 Properties
 ----------
 
-Additional properties may be encoded as part of frame’s data, in the form of key/value pairs. This can be useful for metadata that describes the encoded data itself.
+An arbitrary dictionary of string key:value pairs can be associated with a frame.
 
 .. tabs::
 

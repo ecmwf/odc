@@ -17,7 +17,7 @@ Decoding Data
 Reader
 ------
 
-Depending on where the data is located (on the network, in the memory, in a file), we can define its source and pass it to the **Reader** object.
+The **Reader** object is responsble for controlling underlying resources associated with an ODB-2 data stream. We can define the source of the data according to its location (on the network, in memeroy, in file, etc.) and construct an appropriate **Reader** object.
 
 .. tabs::
 
@@ -75,7 +75,7 @@ Depending on where the data is located (on the network, in the memory, in a file
          end if
 
 
-The **Reader** controls the file resources, and gives access to the underlying frames. The instance provides control of the aggregated or disaggregated access to frames, depending on whether the data is compatible or incompatible.
+The **Reader** instance then makes the sequence of **Frames** accessible. It also controls if access to compatible data is aggregated.
 
 .. tabs::
 
@@ -150,14 +150,13 @@ The **Reader** controls the file resources, and gives access to the underlying f
 Frame
 -----
 
-The **Frame** is a viewport into a chunk of contiguous data within the ODB-2 stream. This data all has the same columnar structure (i.e. number, names of columns, and associated data types).
+A **Frame** provides viewport into a chunk of contiguous data within the ODB-2 stream. This data all has the same columnar structure (i.e. number, names of columns, and associated data types).
 
-The **Frame** provides metadata about each chunk of data, including row counts, column information, etc. It can be used only for interrogating underlying data, without actually decoding it.
-
+The **Frame** makes metadata about each chunk of data accessible without necessarily decoding the data. This includes row counts and column information.
 
 .. note::
 
-   For the sake of clarity, many code snippets below omit necessary error checking when calling **odc** functions. Please see :doc:`/content/usage-examples` for full, runnable code examples with built-in error control.
+   For the sake of clarity, many code snippets below omit necessary error checking when calling **odc** functions. Please see :doc:`/content/usage-examples` for full, runnable code examples with functional error handling.
 
 
 .. tabs::
@@ -272,7 +271,7 @@ The **Frame** provides metadata about each chunk of data, including row counts, 
          end do
 
 
-The **Frame** may map exactly to one frame within the ODB-2 format (as described earlier), or may be an *aggregated frame* containing multiple compatible frames.
+The **Frame** object may correspond to one underlying frame within the ODB-2 stream (as described earlier), or may be a logical *aggregated frame* referencing multiple compatible frames internally.
 
 
 .. index:: Decoding Data; Span
@@ -280,9 +279,9 @@ The **Frame** may map exactly to one frame within the ODB-2 format (as described
 Span
 ^^^^
 
-The C++ API also provides the **Span** interface, which can be used to glimpse the values of specific columns within a **Frame**. This is useful when indexing data, where only certain columns might be used for the index.
+The C++ API also provides the **Span** interface. This can be used to determine the set of values encoded for specified columns within a **Frame**. This is especially useful when archiving and indexing data, where only a subset of columns are important for indexing, and it is necessary to extract their values and ensure that they are constant within each **Frame**.
 
-In case there is a need for it, a **Span** also supports introducing constraints that a **Frame** must have constant values in a column. This offers a much quicker processing, as the data does not have to be decoded first.
+**Span** is also able to enforce a constraint that a **Frame** must have constant values in specified columns, returning an error otherwise.
 
 .. code-block:: cpp
 
@@ -331,7 +330,7 @@ In case there is a need for it, a **Span** also supports introducing constraints
 Properties
 ^^^^^^^^^^
 
-Additional properties may be read from the **Frame**, in the form of key/value pairs. These are normally used for storing metadata.
+The ODB-2 format allows annotation of any frame of data with an arbitrary dictionary of string key:value pairs. These metadata values are accessible from the **Frame** object.
 
 .. tabs::
 
@@ -409,9 +408,9 @@ Additional properties may be read from the **Frame**, in the form of key/value p
 Decoder
 -------
 
-The **Decoder** specifies how a decoding operation should be carried out: the columns that should be decoded, and the memory that the decoded data should be put into.
+The **Decoder** specifies how a decoding operation should be carried out. It is configured with the set of columns to be decoded and the data layout in memory into which the data should be decoded.
 
-The decoding details can be filled in automatically from the **Frame**, in which case the **Decoder** will decode everything.
+For typical cases, much of this configuration can be filled in with sensible default values by interrogating the **Frame** object. In these cases all columns will be decoded, and the memory layout will be either simple row-major or column-major. The decoder can allocate memory for these default layouts if required.
 
 .. tabs::
 
@@ -478,11 +477,11 @@ The decoding details can be filled in automatically from the **Frame**, in which
          rc = decoder%free()
 
 
-The **Decoder** instance can be reused, in case memory mapping is the same across different frames. However, if the encoded data is sufficiently incompatible, a new **Decoder** instance will have to be created.
+A **Decoder** instance can be reused if the set of columns and the desired memory layout is the same for multiple frames.
 
 .. note::
 
-   The **Decoder** does not have to be filled in from the information in the **Frame**, and certainly not from the current one. A decoder can be reused, for example in case a sequence of incompatible frames, that all have just two columns in common. It‘s possible to specify to extract just those two columns.
+   The **Decoder** does not have to be filled in from the information in the **Frame**, and certainly not from the current one. A decoder can be reused. For example in the case of a sequence of incompatible frames that have just two columns in common, it is possible to use one decoder to extract just those two columns from all the frames.
 
 
 The **Decoder** provides several options for handling memory layouts.
@@ -491,7 +490,7 @@ The **Decoder** provides several options for handling memory layouts.
 .. _`decoder-row-major-layout`:
 
 Row-major layout
-   In row-major layout, the consecutive elements of a single data row reside one next to each other. The stride is the width of each row, representing a contiguous block in memory. In row-major mode, the width of each row is the combined size of all cells.
+   In row-major layout, the consecutive elements of a single data row reside adjacent to each other in memory. The stride between elements in the same column is the width of each row, representing a contiguous block in memory. In row-major mode, the width of each row is the combined size of all cells.
 
    .. figure:: /_static/odb-2-row-major.svg
       :alt: A Diagram Showing a Row-major Layout
@@ -540,7 +539,7 @@ Row-major layout
 
          .. note::
 
-            C++ interface does not support decoding of frame data into row-major layout. In this case, recommended API is C. Alternatively, you can construct a :ref:`custom memory layout <decoder-custom-layout>` decoder instead.
+            C++ interface does not support automated decoding of frame data into row-major layout. In this case, recommended API is C. Alternatively, you can construct a :ref:`custom memory layout <decoder-custom-layout>` decoder instead.
 
 
       .. group-tab:: Fortran
@@ -577,7 +576,9 @@ Row-major layout
 .. _`decoder-column-major-layout`:
 
 Column-major layout
-   In column-major layout, the consecutive elements of a single data column reside one below each other. The stride is the height of each column, representing a contiguous block in memory. In column-major mode, when the table is built, the cells are always 8-bytes wide.
+   In a column-major layout, the consecutive elements of a single data column reside adjacent to each other in memory. The stride between elements in the same column is thus the size of the decoded data element, and the columns are arranged sequentially in memory.
+
+   To support C and Fortran 2D array indexing, in column-major mode the data element sizes are always 64-bit. In the case of string columns that are wider than 8-bytes this results in the strings being split across multiple columns in memory.
 
    .. figure:: /_static/odb-2-column-major.svg
       :alt: A Diagram Showing a Column-major Layout
@@ -664,9 +665,9 @@ Column-major layout
 .. _`decoder-custom-layout`:
 
 Custom layout
-   For a custom layout, the stride size can be specified, leading to a more complex layout that better fits the data.
+   A periodic memory layout can be explicitly specified for each column to be decoded. This comprises a memory location for the first data element, the size of each data element, the spacing (or stride) between each data element and the maximum number of rows that can be decoded.
 
-   For example, this is useful in Python workflows since *pandas/numpy* data frames are constructed with more optimized layouts. In this case all of the strings in data might be grouped by length, followed by all integers, and finally by real numbers.
+   As an example, this is used to implement an efficient decoder to *pandas* DataFrames in *pyodc*, by specifiying the internal memory layout of the constructed DataFrame.
 
    .. tabs::
 
@@ -794,4 +795,4 @@ Custom layout
 
 .. note::
 
-   The decoded string data is highly likely to not be null terminated, and the storage space will be in multiples of 8 bytes (e.g. 8, 16, ...). If a decoded string is equal to the maximum length, there will be no null terminator in it. The user *must* account for this, by specifying a maximum length while using decoded strings.
+   Decoded string data is not explicitly null terminated, although strings shorter than the cell size are null padded. If a decoded string is equal in length to the maximum length it will have no null termination, and as such the user *must* account for this by specifying a maximum length when reading decoded strings.

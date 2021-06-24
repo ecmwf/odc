@@ -11,21 +11,23 @@ API Design
 C Interface
 -----------
 
-The interface in C is consistent, and implements a couple of concepts.
+The C API interface is designed to have a consistent approach to function call design, and to error and argument handling.
 
 
 Calling Convention
 ~~~~~~~~~~~~~~~~~~
 
-All functions always return an integer return code. This is beneficial for :ref:`error-handling`, since it’s possible to wrap every function in the same way.
+The library is built around a collection of objects which handle functionality. As C does not expose objects directly, the API uses pointers to opaque types (such as ``odc_frame_t``). Objects are allocated internally and these pointers provide handles to the objects. Methods called against these objects are presented as C functions of the form ``odc_<object-type>_<method-name>(<opaque-handle>, ...)``.
 
-Side-effect of this design choice is that input and output values are always passed as arguments in all functions. All output parameters are passes as pointers, and many functions take a null pointer if output value is optional.
+All functions return an integer return code, with the sole exception of ``odc_error_string`` which obtains the details of a previous error. This is beneficial for :ref:`error-handling` as it makes it possible to wrap every function in the same way.
+
+A side effect of this design choice is that all inputs and outputs are passed as arguments to functions. All output values are passed as pointers, and many functions accept a null pointers for optional output values.
 
 .. code-block:: c
 
    long row_count;
 
-   odc_frame_row_count(frame, &row_count);
+   int rc = odc_frame_row_count(frame, &row_count);
 
 
 .. _`error-handling`:
@@ -33,21 +35,21 @@ Side-effect of this design choice is that input and output values are always pas
 Error Handling
 ~~~~~~~~~~~~~~
 
-For effective error handling, return value of a function call should be checked. In case of an error, additional function can be called to get a human-readable error message.
+All functions return a status code, which should be checked. In case of error a human readable message can be obtained using ``odc_error_string``.
 
 The return code is always one of the following:
 
 ``ODC_SUCCESS``
-   The function call was a success, and processing can continue.
+   The function completed successfully.
 
 ``ODC_ITERATION_COMPLETE``
-   All frames have been processed, the loop can be terminated.
+   All frames have been returned, and the loop can be terminated successfully.
 
 ``ODC_ERROR_GENERAL_EXCEPTION``
-   A general error was encountered, call ``odc_error_string()`` with the returned code for details.
+   A known error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 ``ODC_ERROR_UNKNOWN_EXCEPTION``
-   An unknown error was encountered, call ``odc_error_string()`` with the returned code for details.
+   An unexpected and unrecognised error was encountered, call ``odc_error_string()`` with the returned code for details.
 
 
 .. code-block:: c
@@ -65,10 +67,10 @@ The return code is always one of the following:
 
 .. note::
 
-   Internally, **odc** is written in C++ and the error handling is based on exceptions. However, in the C interface, all exceptions will be caught, and an appropriate error code will be returned.
+   Internally, **odc** is written in C++ and the error handling uses based on exceptions. All exceptions will be caught on the C/C++ boundary in the C API and an appropriate error code will be returned.
 
 
-To facilitate consistent error handling, it may be useful to define macro functions, as they can be effectively reused.
+To facilitate consistent error handling, it may be useful to define wrapper functions or macros to handle the error checking. As a trivial example,
 
 .. code-block:: c
 
@@ -91,7 +93,7 @@ To facilitate consistent error handling, it may be useful to define macro functi
 Failure Handler
 ~~~~~~~~~~~~~~~
 
-In certain scenarios, it might be more appropriate to have a callback on error. Instead of checking return code every time, a handler function can be set that will be called back in case of an error.
+In certain scenarios, it might be more appropriate to have a callback on error. Instead of checking return code after each call, a handler function can be set that will be called back after an error has occurred.
 
 This approach is very useful when a specific clean-up procedure is needed, before current process is aborted.
 
@@ -106,7 +108,7 @@ This approach is very useful when a specific clean-up procedure is needed, befor
    odc_set_failure_handler(handle_failure, NULL);
 
 
-Parameter ``context`` is under user control, and can be defined at the time the failure handler is being set, as a second argument.
+The ``context`` parameter is user-specified, and is defined as the second argument to ``odc_set_failure_handler``.
 
 
 .. index:: API Design; Fortran Interface
@@ -114,17 +116,15 @@ Parameter ``context`` is under user control, and can be defined at the time the 
 Fortran Interface
 -----------------
 
-The interface in Fortran wraps around :ref:`C functions <c-interface>`, however there are a couple of notable differences.
+The Fortran interface wraps the :ref:`C functions <c-interface>`, with a number of practical differences.
 
 
 Calling Convention
 ~~~~~~~~~~~~~~~~~~
 
-All functions always return an integer return code.
+Unlike C, Fortran supports custom types. As such, the objects referenced in the API are presented as fortran objects with the appropriate types. The appropriate function calls are thus methods on these type instances.
 
-Most of the Fortran interface is implemented as custom data types. Methods should be called on initialised type instances.
-
-Where possible, output values should be declared as ``TARGET`` in Fortran. Coincidentally, all constant parameters should make use of ``PARAMETER`` keyword.
+All functions return a status code that should be checked for error conditions. The standard Fortran mechanism is used to suport optional arguments.
 
 .. code-block:: fortran
 
@@ -142,21 +142,21 @@ Where possible, output values should be declared as ``TARGET`` in Fortran. Coinc
 Error Handling
 ~~~~~~~~~~~~~~
 
-Return value of a function call should always be checked. In case of an error, additional function can be called to get a human-readable error message.
+All functions return a status code, which should be checked. In case of error a human readable message can be obtained using ``odc_error_string``.
 
 The return code is always one of the following:
 
 ``ODC_SUCCESS``
-   The function call was a success, and processing can continue.
+   The function completed successfully.
 
 ``ODC_ITERATION_COMPLETE``
-   All frames have been processed, the loop can be terminated.
+   All frames have been returned, and the loop can be terminated successfully.
 
 ``ODC_ERROR_GENERAL_EXCEPTION``
-   A general error was encountered, call ``odc_error_string()`` with the returned code for details.
+   A known error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 ``ODC_ERROR_UNKNOWN_EXCEPTION``
-   An unknown error was encountered, call ``odc_error_string()`` with the returned code for details.
+   An unexpected and unrecognised error was encountered, call ``odc_error_string()`` with the returned code for details.
 
 
 .. code-block:: fortran
@@ -171,7 +171,7 @@ The return code is always one of the following:
    end if
 
 
-It may be useful to define a wrapper function for checking the return codes in a consistent manner.
+To facilitate consistent error handling, it may be useful to define a wrapper function for checking the return codes in a consistent manner.
 
 .. code-block:: fortran
 
@@ -197,7 +197,7 @@ It may be useful to define a wrapper function for checking the return codes in a
 Failure Handler
 ~~~~~~~~~~~~~~~
 
-Setting callbacks on errors is also supported. Instead of checking the return code every time, a handler function can be set that will be called back in case of an error.
+In certain scenarios, it might be more appropriate to have a callback on error. Instead of checking return code after each call, a handler function can be set that will be called back after an error has occurred.
 
 This approach is very useful when a specific clean-up procedure is needed, before current process is aborted.
 
@@ -220,13 +220,13 @@ This approach is very useful when a specific clean-up procedure is needed, befor
    end subroutine
 
 
-Parameter ``context`` is under user control, and can be defined at the time the failure handler is being set, as a second argument.
+The ``context`` parameter is under user control, and is defined sa the second argument to ``odc_set_failure_handler``.
 
 
 Optional Parameters
 ~~~~~~~~~~~~~~~~~~~
 
-Many API functions have optional parameters, especially for returning (selected) attributes about **Frames** or other objects. These parameters may be omitted as indicated in :doc:`the API Reference </content/reference/f90-reference>`.
+Many API functions take optional parameters, especially for returning (selected) attributes about **Frames** or other objects. These parameters may be omitted as indicated in :doc:`the API Reference </content/reference/f90-reference>`.
 
 The two calls below can be considered identical.
 
@@ -247,9 +247,9 @@ The two calls below can be considered identical.
 C++ Interface
 -------------
 
-The interface in C++ mainly exists as an underlying base of :ref:`the C API <c-interface>`, which wraps around it. Therefore, it is only suited to be used within an `eckit`_ environment, and if this is not the case it’s recommended to switch to C.
+The interface in C++ mainly exists as an underlying base for implementing :ref:`the C API <c-interface>` which wraps it. It is only suitable to be used within an environment in which `eckit`_ is being used. If this is not the case it’s recommended use the C API.
 
-All C++ functions will throw an exception in case an error is encountered. The API can be used under normal C++ usage practices.
+All C++ functions will throw an exception in case of error.
 
 
 .. _`eckit`: https://github.com/ecmwf/eckit

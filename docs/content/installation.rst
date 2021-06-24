@@ -41,15 +41,14 @@ Build & Install
    SRC_DIR=$(pwd)
    BUILD_DIR=build
    INSTALL_DIR=$HOME/local
-   export eckit_DIR=$HOME/local # set to eckit prefix
-   ENABLE_FORTRAN=OFF # set to ON for Fortran support
+   export eckit_DIR=$INSTALL_DIR # set to eckit install prefix
 
    # Create the the build directory
    mkdir $BUILD_DIR
    cd $BUILD_DIR
 
    # Run ecbuild (CMake)
-   ecbuild --prefix=$INSTALL_DIR -- -DENABLE_FORTRAN=$ENABLE_FORTRAN $SRC_DIR
+   ecbuild --prefix=$INSTALL_DIR -- $SRC_DIR
 
    # Build and install
    make -j10

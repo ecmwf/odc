@@ -3,7 +3,7 @@
 Implementation
 ==============
 
-Data handling implementation in **odc** library is API independent and is the same for all supported languages.
+The API design has significant consistency in concepts for all of the supported languges. This section gives an overview of how the **odc** library should be used.
 
 .. toctree::
    :maxdepth: 1

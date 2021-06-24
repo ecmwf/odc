@@ -1,7 +1,9 @@
 Welcome to odc’s documentation!
 ===============================
 
-A package to read and write ODB\-2 data.
+C, C++ and Fortran libraries providing encoders and decoders and interrogation
+of meteorological data encoded in ODB\-2 format as well as command line tools
+for investigation and manipulation of ODB\-2 data.
 
 
 .. index:: Contents
