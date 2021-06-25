@@ -268,7 +268,7 @@ class FrameImpl;
 
 class ReaderImpl;
 
-/** Own the ODB-2 data stream and controls associated resources. The Reader object gives access to the sequence of frames */
+/** Owns the ODB-2 data stream and controls associated resources. The Reader object gives access to the sequence of frames. */
 class Reader {
 
 public: // methods
@@ -280,7 +280,7 @@ public: // methods
      */
     Reader(const std::string& path, bool aggregated=true, long rowlimit=-1);
     /** Construct from data handle reference. This does not take ownership of the data handle,
-     *  and managing the lifetime of this data handle is the responsibiltiy of the caller.
+     *  and managing the lifetime of this data handle is the responsibility of the caller.
      * \param dh Data handle (eckit)
      * \param aggregated Whether to aggregate compatible data into a logical frame
      * \param rowlimit Maximum number of rows to aggregate into one logical frame

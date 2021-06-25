@@ -12,7 +12,7 @@ Tools
       * :download:`data-2.odb </_static/data-2.odb>`
       * :download:`data-3.odb </_static/data-3.odb>`
 
-   The examples assume the binary directory of **odc** installation is in your ``$PATH``.
+   The examples assume the **odc** binary is in your ``$PATH``.
 
 
 ``odc``

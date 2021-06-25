@@ -45,13 +45,13 @@ Type         Bytes    Description
 Missing Values
 ~~~~~~~~~~~~~~
 
-There are three categories of mising value:
+There are three categories of missing value:
 
-  1. The value used in the API to communicate that a value is missing with calling code
-  2. A missing value chosen to represent a missing value during encoded, which is stored in the column header during encoding. This typically matches the API missing value used during encoding.
-  3. Codec-specific values or markers used to indicate that a value is missing.
+   1. The value used in the API to communicate that a value is missing with calling code
+   2. A missing value chosen to represent a missing value during encoded, which is stored in the column header during encoding. This typically matches the API missing value used during encoding.
+   3. Codec-specific values or markers used to indicate that a value is missing.
 
-By default the values used for (1) and (2) are
+By default the values used for (1) and (2) are:
 
 ========  ===============
 Type      Value
@@ -89,8 +89,8 @@ Type         Value                    Description
 ``string``   ``md5``                  The MD5 hash of the data section of the table
 ``uint32``   ``headerLength``         The number of bytes occupied by the header
 ``uint64``   ``dataSize``             The number of bytes occupied by the payload (rows)
-``uint64``   ``prevFrameOffset``      The offset of the previous table in the ODB file. Currently unused, and
-                                      always equal to zero.
+``uint64``   ``prevFrameOffset``      The offset of the previous table in the ODB file. Currently unused, and always
+                                      equal to zero.
 ``uint64``   ``numberOfRows``         The number of rows of data encoded in the table (before EOF or the next header)
 ===========  =======================  ==================================================================================
 
@@ -157,8 +157,7 @@ Type        Value	        Description
 ``double``  ``flag``      A sequence of flags, the number of these included is determined by ``numFlags``
 ==========  ============  ===============================================================================
 
-In production, historical data always encoded exactly 10 flags all with zero value. Currently zero flags
-are typically encoded.
+In production, historical data always encoded exactly 10 flags all with zero value. Currently zero flags are typically encoded.
 
 
 Properties
@@ -217,8 +216,7 @@ Type        Value             Description
 ==========  ================  =========================================================
 
 
-Some codecs store further data appended to this header block as described below. This data must be
-consumed when frame headers are read rather than when the data is decoded.
+Some codecs store further data appended to this header block as described below. This data must be consumed when frame headers are read rather than when the data is decoded.
 
 
 Constant ``constant`` ``constant_string``

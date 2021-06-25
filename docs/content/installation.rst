@@ -65,7 +65,7 @@ Build & Install
 Optional Features
 ~~~~~~~~~~~~~~~~~
 
-Fortran interface is an optional feature, which requires an activation flag to be set during build configuration:
+Fortran interface is an optional feature, and requires an activation flag to be set during build configuration:
 
 .. code-block:: shell
 

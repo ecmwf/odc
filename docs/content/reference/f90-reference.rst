@@ -135,7 +135,7 @@ Return Codes
    :type: integer
    :attrs: parameter=1
 
-   All frames have been returned, and the loop can be terminated sucessfully.
+   All frames have been returned, and the loop can be terminated successfully.
 
 
 .. f:variable:: ODC_ERROR_GENERAL_EXCEPTION
@@ -148,7 +148,7 @@ Return Codes
    :type: integer
    :attrs: parameter=3
 
-   An unexpected and unknown error was encountered. Call `odc_error_string() with the returned code for details.
+   An unexpected and unknown error was encountered. Call ``odc_error_string()`` with the returned code for details.
 
 
 .. _`f-integer-behaviour`:
@@ -268,7 +268,7 @@ Module Functions
 
 .. f:function:: odc_integer_behaviour(integer_behaviour)
 
-   Sets treatment of integers in ODB-2 data
+   Sets treatment of integers in the API
 
    :p integer(c_int) integer_behaviour [in,value]: Desired integer behaviour :ref:`🔗 <f-integer-behaviour>`
    :r integer err: Return code :ref:`🔗 <f-return-codes>`

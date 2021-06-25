@@ -57,7 +57,6 @@ version = parse_version(release)  # feature version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.todo",
     "sphinx_rtd_theme",
     "sphinx_copybutton",
     "sphinx_tabs.tabs",
@@ -99,17 +98,6 @@ html_show_sourcelink = False
 
 # Remove "Created using Sphinx" from the HTML footer.
 html_show_sphinx = False
-
-
-# -- Options for the todo extension ------------------------------------------
-
-# To disable output of `todo` blocks, just set the `NO_INCLUDE_TODOS` environment variable to any value, i.e:
-#
-#   NO_INCLUDE_TODOS=1
-#
-#   Unfortunately, this cannot be done via the configuration file for the Read the Docs service, you must use their web
-#   interface instead. More information here: https://github.com/readthedocs/readthedocs.org/issues/6311
-todo_include_todos = False if os.environ.get("NO_INCLUDE_TODOS") else True
 
 
 # -- Breathe configuration ---------------------------------------------------

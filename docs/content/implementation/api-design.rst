@@ -124,7 +124,7 @@ Calling Convention
 
 Unlike C, Fortran supports custom types. As such, the objects referenced in the API are presented as Fortran objects with the appropriate types. The appropriate function calls are thus methods on these type instances.
 
-All functions return a status code that should be checked for error conditions. The standard Fortran mechanism is used to suport optional arguments.
+All functions return a status code that should be checked for error conditions. The standard Fortran mechanism is used to support optional arguments.
 
 .. code-block:: fortran
 

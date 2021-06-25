@@ -6,7 +6,9 @@ Contributions
 
 .. index:: Github
 
-The code repository is hosted on `Github`_, feel free to fork it and submit your PRs against the **develop** branch. To clone the repository locally, you can use the following command:
+The code repository is hosted on `Github`_. Feel free to fork it and submit your PRs against the **develop** branch. The first time you do this, you will be asked to sign our Contributor License Agreement via an automatic comment in the pull request.
+
+To clone the repository locally, you can use the following command:
 
 .. code-block:: shell
 
@@ -19,7 +21,7 @@ Development Dependencies
 ------------------------
 
 Required
-^^^^^^^^
+~~~~~~~~
 
 * C or C++ compiler
 * `CMake`_ (>= 3.20.1)
@@ -28,10 +30,10 @@ Required
 
 
 Optional
-^^^^^^^^
+~~~~~~~~
 
-* `Doxygen`_ (>= 1.9.1)
 * Fortran compiler
+* `Doxygen`_ (>= 1.9.1)
 
 
 .. index:: Unit Tests
@@ -58,6 +60,17 @@ To run the test suite, you can use the following command:
    # Build and test
    make -j10
    make test
+
+
+Optional Features
+~~~~~~~~~~~~~~~~~
+
+Fortran interface and its tests are an optional feature, and require an activation flag to be set during build configuration:
+
+.. code-block:: shell
+
+   ENABLE_FORTRAN=ON
+   ecbuild -- -DENABLE_FORTRAN=$ENABLE_FORTRAN $SRC_DIR
 
 
 .. index:: Dependencies; Documentation
