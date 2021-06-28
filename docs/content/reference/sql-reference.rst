@@ -372,6 +372,39 @@ Number of temperature records per station identifier
            50.000000    '   96413'
 
 
+Group records by several columns at the same time
+   Count the number of temperature records, per station identifier and date, and display the average observed value as a separate column.
+
+   .. code-block:: shell
+
+      odc sql -i example.odb 'select count(*), avg(obsvalue), statid, date where varno=2 and obsvalue is not null'
+
+            count(1)	 avg(obsvalue)	statid@hdr	      date@hdr
+           39.000000	    243.792309	'   27707'	      20210618
+           49.000000	    243.603535	'   27730'	      20210618
+           37.000000	    241.151352	'   27962'	      20210618
+           44.000000	    246.002271	'   27995'	      20210618
+           38.000000	    245.532427	'   34009'	      20210618
+            9.000000	    287.548445	'   34172'	      20210618
+           50.000000	    233.472708	'   96413'	      20210618
+
+   For each set of non-aggregated rows an independent aggregate variable is kept. The returned result is exactly the same as for the following statement:
+
+   .. code-block:: shell
+
+      odc sql -i example.odb 'select count(*), avg(obsvalue), statid, date where varno=2 and obsvalue is not null group by statid, date'
+
+      000 2021-06-28 14:28:18 (I) GROUP BY clause seen and ignored. Non aggregated values on select list will be used instead.
+            count(1)	 avg(obsvalue)	statid@hdr	      date@hdr
+           39.000000	    243.792309	'   27707'	      20210618
+           49.000000	    243.603535	'   27730'	      20210618
+           37.000000	    241.151352	'   27962'	      20210618
+           44.000000	    246.002271	'   27995'	      20210618
+           38.000000	    245.532427	'   34009'	      20210618
+            9.000000	    287.548445	'   34172'	      20210618
+           50.000000	    233.472708	'   96413'	      20210618
+
+
 Average temperature at 100 hPa
    Get the observation count at one station and average temperature observation value by pressure level bins of 100 hPa each, showing also the average pressure in each pressure bin.
 
