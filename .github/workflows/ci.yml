@@ -65,6 +65,7 @@ jobs:
           compiler_cc: gcc-10
           compiler_cxx: g++-10
           compiler_fc: gfortran-10
+        # Xcode compiler requires empty environment variables, so we pass null (~) here
         - name: clang-12@macos-10.15
           os: macos-10.15
           compiler: clang-12
@@ -310,15 +311,60 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
     - ci
-    if: failure() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+    if: always() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
     steps:
+    - name: Check Workflow Runs
+      id: check-workflow-runs
+      shell: bash -eux {0}
+      continue-on-error: true
+      run: |
+        # Check results of previous jobs in the same run.
+        #   This context has no access to special job status functions.
+        if [[ "${{ needs.ci.result }}" == "failure" ]]
+        then
+          WORKFLOW_STATUS="failure"
+          MESSAGE_TITLE="failed"
+          MESSAGE_TEXT="Some jobs were not successful"
+          MESSAGE_COLOUR="#cb2431"
+        elif [[ "${{ needs.ci.result }}" == "cancelled" ]]
+        then
+          WORKFLOW_STATUS="cancelled"
+          MESSAGE_TITLE="cancelled"
+          MESSAGE_TEXT="Some jobs were not successful"
+          MESSAGE_COLOUR="#959da5"
+        else
+          WORKFLOW_STATUS="success"
+          MESSAGE_TITLE="succeeded"
+          MESSAGE_TEXT="All jobs were successful"
+          MESSAGE_COLOUR="#28a745"
+        fi
+        echo ::set-output name=workflow-status::$WORKFLOW_STATUS
+        echo ::set-output name=message-title::$MESSAGE_TITLE
+        echo ::set-output name=message-text::$MESSAGE_TEXT
+        echo ::set-output name=message-colour::$MESSAGE_COLOUR
+
+        # Fetch previous workflow run conclusion via REST API for the same branch
+        BRANCH_NAME=${GITHUB_REF##refs/heads/}
+        PREVIOUS_CONCLUSION=$( curl https://api.github.com/repos/${{ github.repository }}/actions/workflows/ci.yml/runs\?branch\=$BRANCH_NAME\&status\=completed\&per_page\=1 | jq .workflow_runs\[0\].conclusion | tr -d '"' )
+        echo ::set-output name=previous-conclusion::$PREVIOUS_CONCLUSION
+
+    # Sends a status message to the configured MS Teams channel.
+    #   It will get triggered in case:
+    #   - current workflow run has failed
+    #   - this is the first successful run after a failure
+    #   - this is the first successful run after a cancellation
     - name: Send a Message to Microsoft Teams
       uses: aliencube/microsoft-teams-actions@v0.8.0
+      if: steps.check-workflow-runs.outputs.workflow-status == 'failure' || contains(steps.check-workflow-runs.outputs.previous-conclusion, 'failure') || steps.check-workflow-runs.outputs.previous-conclusion == 'cancelled'
+      env:
+        MESSAGE_TITLE: ${{ steps.check-workflow-runs.outputs.message-title }}
+        MESSAGE_TEXT: ${{ steps.check-workflow-runs.outputs.message-text }}
+        MESSAGE_COLOUR: ${{ steps.check-workflow-runs.outputs.message-colour }}
       with:
         webhook_uri: ${{ secrets.MS_TEAMS_INCOMING_WEBHOOK }}
-        title: '[${{ github.repository }}] Run failed: ${{ github.workflow }} - ${{ github.ref }} (${{ github.sha }})'
-        summary: '${{ github.workflow }}: Some jobs were not successful'
-        text: '${{ github.workflow }}: Some jobs were not successful'
-        theme_color: '#0069a8'
+        title: '[${{ github.repository }}] Run ${{ env.MESSAGE_TITLE }}: ${{ github.workflow }} - ${{ github.ref }} (${{ github.sha }})'
+        summary: '${{ github.workflow }}: ${{ env.MESSAGE_TEXT }}'
+        text: '${{ github.workflow }}: ${{ env.MESSAGE_TEXT }}'
+        theme_color: '${{ env.MESSAGE_COLOUR }}'
         sections: '[{"facts":[{"name":"Build & Test","value":"${{ needs.ci.result }}"}]}]'
         actions: '[{"@type":"OpenUri","name":"View workflow run","targets":[{"os":"default","uri":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}]}]'
