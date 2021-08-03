@@ -12,6 +12,12 @@
 /** @author Simon Smart */
 /** @date January 2019 */
 
+/** @note The API reference of this code is generated automatically, however only existing groups are included in the
+ * resultant documentation. In case any new groups that provide the public API are added, they must be manually
+ * inserted into an appropriate section. Same goes for removal or renaming of existing groups, otherwise non-propagated
+ * changes can fail the documentation build. Please see <c-reference.rst> in this repository for more information.
+ */
+
 #ifndef odc_api_odc_H
 #define odc_api_odc_H
 
@@ -23,356 +29,569 @@ extern "C" {
 
 #include <stdbool.h>
 
-/**
- * Initialise API
- * @note This is only required if being used from a context where eckit::Main() is not otherwise initialised
- */
+/** \defgroup Initialisation */
+/** @{ */
 
-///@{
-
+/** Represent integers as doubles in the API (default) */
 const int ODC_INTEGERS_AS_DOUBLES = 1; // this is the default
+
+/** Represent integers as 64-bit integers in the API */
 const int ODC_INTEGERS_AS_LONGS = 2;
 
+/** Initialises API, must be called before any other function
+ * \note This is only required if being used from a context where **eckit::Main()** is not otherwise initialised.
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_initialise_api();
+/** Sets treatment of integers in the odc API
+ * \param integerBehaviour Desired integer behaviour (#ODC_INTEGERS_AS_DOUBLES #ODC_INTEGERS_AS_LONGS)
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_integer_behaviour(int integerBehaviour);
 
-///@}
+/** @} */
 
 
-/** Version accessors */
+/** \defgroup Version Accessors */
+/** @{ */
 
-///@{
-
-/** Human readable release version e.g. 1.2.3 */
+/** Retrieves the release version of the library in human-readable format, e.g. ``1.3.0``
+ * \param version Return variable for release version
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_version(const char** version);
-/** Version under VCS system, typically a git sha1. Not useful for computing software dependencies. */
+/** Retrieves version control checksum of the latest change, e.g. ``a88011c007a0db48a5d16e296934a197eac2050a``
+ * \param version Return variable for version control checksum
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_vcs_version(const char** version);
 
-///@}
+/** @} */
 
 
-/** Error handling */
+/** \defgroup Error Handling */
+/** @{ */
 
-///@{
-
+/** Return codes */
 enum OdcErrorValues {
+    /** The function completed successfully */
     ODC_SUCCESS                  = 0,
+    /** All frames have been returned, and the loop can be terminated successfully. */
     ODC_ITERATION_COMPLETE       = 1,
+    /** A known error was encountered. Call ``odc_error_string()`` with the returned code for details. */
     ODC_ERROR_GENERAL_EXCEPTION  = 2,
+    /** An unexpected and unknown error was encountered. Call ``odc_error_string()`` with the returned code for details. */
     ODC_ERROR_UNKNOWN_EXCEPTION  = 3
 };
 
+/** Returns a human-readable error message for the last error given an error code
+ * \param err Error code (#OdcErrorValues)
+ * \returns Error message
+ */
 const char* odc_error_string(int err);
 
 // int odc_abort_on_failure(bool abort); ///< @todo to remove
 
+/** Error handler callback function signature
+ * \param context Error handler context
+ * \param error_code Error code (#OdcErrorValues)
+ */
 typedef void (*odc_failure_handler_t)(void* context, int error_code);
 
-/** Set a function to be called on error in addition to returning an error code.
- *  The handler can can access odc_error_string()
- *  The handler can also access std::current_exception() if needed (and even rethrow if required).
+/** Sets an error handler which will be called on error with the supplied context and an error code
+ * \param handler Error handler function
+ * \param context Error handler context
  */
 int odc_set_failure_handler(odc_failure_handler_t handler, void* context);
 
-///@}
+/** @} */
 
 
-/** Values and Types */
+/** \defgroup Values and Types */
+/** @{ */
 
-///@{
-
+/** Column data types */
 enum OdcColumnType {
+    /** Specifies that the column is ignored (invalid for real data) */
     ODC_IGNORE   = 0,
+    /** Specifies the column contains integer data */
     ODC_INTEGER  = 1,
+    /** Specifies the column contains 32-bit floating point values */
     ODC_REAL     = 2,
+    /** Specifies the column contains character (string) data */
     ODC_STRING   = 3,
+    /** Specifies the column contains bitfield data */
     ODC_BITFIELD = 4,
+    /** Specifies the column contains 64-bit floating point values */
     ODC_DOUBLE   = 5
 };
 
-/** Get the number of column types. */
+/** Retrieves number of supported column data types
+ * \param count Return variable for number of data types
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_column_type_count(int* count);
 
-/** Get the name of the column type identified by the integer */
+/** Retrieves a human-readable name of a column data type
+ * \param type Column data type (#OdcColumnType)
+ * \param type_name Return variable for column data type name
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_column_type_name(int type, const char** type_name);
 
 /// @todo In the top CMakelists.txt assert that in this system C long is 64 bit
 /// @todo In the top CMakelists.txt assert that in this system C double is 64 bit
 
 
-/** Set the value that identifies a missing integer (64 bit long) when encoding and decoding via this interface.
-    This differs from the marker used to identify missing values in the encoded ODB message,
-    which depends on the codec used. */
+/** Sets the value that identifies a missing integer in the API
+ * \param missing_integer Missing integer value
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_set_missing_integer(long missing_integer);
 
-/** Set the value that identifies a missing double (64 bit double) when encoding and decoding via this interface.
-    This differs from the marker used to identify missing values in the encoded ODB message,
-    which depends on the codec used. */
+/** Sets the value that identifies a missing double in the API
+ * \param missing_double Missing double value
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_set_missing_double(double missing_double);
 
-/** The value that identifies a missing integer (64 bit long) when encoding and decoding via this interface. */
+/** Retrieves the value that identifies a missing integer in the API
+ * \param missing_value Return variable for missing integer value
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_missing_integer(long* missing_value);
-/** The value that identifies a missing double (64 bit double) when encoding and decoding via this interface. */
+/** Retrieves the value that identifies a missing double in the API
+ * \param missing_value Return variable for missing double value
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_missing_double(double* missing_value);
 
-///@}
+/** @} */
 
 
-/** Basic Read API */
-
-///@{
+/** \defgroup Reader */
+/** @{ */
 
 struct odc_reader_t;
+/** Opaque type for the Reader object. Controls the ODB-2 data stream and associated resources, and gives access to the underlying frames. */
 typedef struct odc_reader_t odc_reader_t;
-/** Creates a reader and opens the speficied file. */
+/** Creates a reader and opens the specified file path
+ * \param reader Reader instance
+ * \param filename File path to open
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_open_path(odc_reader_t** reader, const char* filename);
 
 /** Creates a reader from an already open file descriptor.
- *  It will duplicate the file descriptor so the calling code is safe to close the file descriptor.
+ *
+ * The file descriptor will be duplicated so the calling code is safe to close the file descriptor.
+ *
+ * \param reader Reader instance
+ * \param fd File descriptor
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_open_file_descriptor(odc_reader_t** reader, int fd);
 
-/** Creates a reader from a memory buffer. */
+/** Creates a reader from a memory buffer
+ * \param reader Reader instance
+ * \param data Memory buffer
+ * \param length Length of memory buffer
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_open_buffer(odc_reader_t** reader, const void* data, long length);
 
+/** Reader stream handler callback function signature. Functions analogously to the POSIX read() function.
+ * \param context Stream handler context
+ * \param buffer Memory buffer to handle
+ * \param buffer Size of the memory buffer
+ */
 typedef long (*odc_stream_read_t)(void* context, void* buffer, long length);
 
-/** Creates a reader associated to a stream handler. */
+/** Creates a reader associated to a custom stream handler. The callback specified will be called in the same way as the POSIX read() function to obtain data from the custom stream.
+ * \param reader Reader instance
+ * \param context Stream handler context
+ * \param stream_proc Stream handler function
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_open_stream(odc_reader_t** reader, void* context, odc_stream_read_t stream_proc);
 
-/** Closes and destroys the reader.
- *  Must be called for every reader created.
+/** Closes opened resource and destroys the reader
+ * \param reader Reader instance
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_close(const odc_reader_t* reader);
 
-///@}
+/** @} */
 
 
-/** Frame handling */
-
-///@{
+/** \defgroup Frame */
+/** @{ */
 
 struct odc_frame_t;
+/** Opaque type for the Frame object. Provides a viewport onto a chunk of contiguous data within the ODB-2 stream. */
 typedef struct odc_frame_t odc_frame_t;
 
-/** Creates a frame object, with client responsible to free it. */
+/** Creates a frame instance associated with a specific reader instance, for interrogating ODB-2 data
+ * \param frame Frame instance
+ * \param reader Reader instance
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_new_frame(odc_frame_t** frame, odc_reader_t* reader);
 
-/** Frees the frame object. */
+/** Deallocates frame object and associated resources.
+ * \param frame Frame instance
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_free_frame(const odc_frame_t* frame);
 
-/** Advance to the next frame.
- *  Must be called to access the first frame.
- *  Once iteration is complete (no more valid frames), it returns ODC_ITERATION_COMPLETE
+/** Advances the viewport to the next frame in the stream
+ * \param frame Frame instance
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_next_frame(odc_frame_t* frame);
 
-/** Advance to the next logical frame.
-    ODB2 files contain multiple encoded frames.
-    This function merges multiple sequential frames that have the same structure.
-*/
+/** Advances the viewport to the next logical frame in the stream
+ * \param frame Frame instance
+ * \param maximum_rows Maximum number of rows to aggregate into one logical frame
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows);
 
-/** Copies a frame to another newly allocated frame. */
+/** Creates an independent copy of the frame object, resulting in an independent viewport on the ODB data stream with its own associated resources. To use the new copied frame independently from the first requires the ODB-2 data stream to be seekable.
+ * \param source_frame Source frame instance to copy from
+ * \param copy Target frame instance to copy to
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_copy_frame(odc_frame_t* source_frame, odc_frame_t** copy);
 
-/** The number of rows in the frame. */
+/** Retrieves number of rows in the frame
+ * \param frame Frame instance
+ * \param count Return variable for number of rows
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_frame_row_count(const odc_frame_t* frame, long* count);
 
-/** The number of columns in the frame. */
+/** Retrieves number of columns in the frame
+ * \param frame Frame instance
+ * \param count Return variable for number of columns
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_frame_column_count(const odc_frame_t* frame, int* count);
 
-/** The properties of a columns in the frame.
-    NULL pointers will be understood as a parameter that is not required to be filled in.
-    @param frame the frame
-    @param col   the column number (0-based)
-    @param name  return the name of the column
-    @param type  return the type of the column
-    @param element_size  return the element size in bytes (guaranteed to be a multiple of 8)
-    @param bitfield_count  return the number of entries associated with the bitfield column (0 if type is not ODC_BITFIELD)
+/** Retrieves column attributes from current frame
+ * \param frame Frame instance
+ * \param col Target column index
+ * \param name (*optional*) Return variable for column name
+ * \param type (*optional*) Return variable for column type
+ * \param element_size (*optional*) Return variable for column size in bytes
+ * \param bitfield_count (*optional*) Return variable for number of column bitfields
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_frame_column_attributes(const odc_frame_t* frame, int col, const char** name, int* type, int* element_size, int* bitfield_count);
 
-/** The properties of an entry in a bitfield column.
-    NULL pointers will be understood as a parameter that is not required to be filled in.
-    @param frame  the frame
-    @param col    the column number (0-based)
-    @param entry  the entry number in the bitfield (0-based)
-    @param name   return the name of the column
-    @param offset return which bit at which the entry in the bitfield begins
-    @param size   return the entry size in bits
+/** Retrieves bitfield attributes of a column
+ * \param frame Frame instance
+ * \param col Target column index
+ * \param entry Target bitfield index
+ * \param name (*optional*) Return variable for bitfield name
+ * \param offset (*optional*) Return variable for bitfield offset
+ * \param size (*optional*) Return variable for bitfield size in bits
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_frame_bitfield_attributes(const odc_frame_t* frame, int col, int entry, const char** name, int* offset, int* size);
 
-///@}
-
-
-
-/**
- * Decoding data
+/** Retrieves the number of properties encoded in the frame
+ * \param frame Frame instance
+ * \param nproperties Return variable for number of properties
+ * \returns Return code (#OdcErrorValues)
  */
+int odc_frame_properties_count(const odc_frame_t* frame, int* nproperties);
 
-///@{
+/** Retrieves the property key and value by its index
+ * \param frame Frame instance
+ * \param idx Property index
+ * \param key Return variable for property key
+ * \param value Return variable for property value
+ * \returns Return code (#OdcErrorValues)
+ */
+int odc_frame_property_idx(const odc_frame_t* frame, int idx, const char** key, const char** value);
+
+/** Retrieves the property value by its key
+ * \param frame Frame instance
+ * \param key Property key
+ * \param value Return variable for property value
+ * \returns Return code (#OdcErrorValues)
+ */
+int odc_frame_property(const odc_frame_t* frame, const char* key, const char** value);
+
+/** @} */
+
+
+
+/** \defgroup Decoder */
+/** @{ */
 
 struct odc_decoder_t;
+/** Opaque type for the Decoder object. Specifies which ODB-2 columns should be decoded and the memory that should be used for the decoded data. */
 typedef struct odc_decoder_t odc_decoder_t;
 
 /* A decode target may allocate its own buffer to decode into, or use one that is
  * externally supplied */
 
-/** Creates a decoder for decoding ODB2 format */
+/** Creates a decoder instance for decoding ODB-2 format
+ * \param decoder Decoder instance
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_new_decoder(odc_decoder_t** decoder);
 
-/** Deallocates the decoder */
+/** Deallocates memory used up by a decoder
+ * \param decoder Decoder instance
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_free_decoder(const odc_decoder_t* decoder);
 
-/** Configures a decoder to decode all the data contained in the frame.
- *  This is the most typical way to decode data, and is equivalent to adding all columns to the decoder.
+/** Configures a decoder to decode all data contained in the supplied frame
+ * \param decoder Decoder instance
+ * \param frame Frame instance
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* frame);
 
-/** Instruct the decoder to output in column major form */
+/** Instructs the decoder whether to output in column-major form
+ * \param decoder Decoder instance
+ * \param columnMajor Whether to output in column-major form
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_decoder_set_column_major(odc_decoder_t* decoder, bool columnMajor);
 
-/** If the decoder is to allocate its buffer internally, specify the number of rows to allocate
-    if this is to be different from the number of rows in the frame decoded.
-    This is only really useful if we are re-using a decoder. */
+/** Sets number of rows to allocate in a decoder
+ * \param decoder Decoder instance
+ * \param nrows Number of rows to allocate
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_decoder_set_row_count(odc_decoder_t* decoder, long nrows);
 
-/** Get the number of rows the decoder is configured to decode data into */
+/** Retrieves number of rows that are allocated in a decoder
+ * \param decoder Decoder instance
+ * \param nrows Return variable for number of rows
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_decoder_row_count(const odc_decoder_t* decoder, long* nrows);
 
 /**
- * Define the output data array into which the data may be decoded.
- * This is a shortcut to calling odc_decoder_column_set_data_array for every column.
+ * Sets an output data array into which the data may be decoded
+ * \param decoder Decoder instance
+ * \param data Data array to decode into
+ * \param width Width of data array in bytes
+ * \param height Height of data array in rows
+ * \param columnMajor Whether the column-major memory layout is used
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decoder_set_data_array(odc_decoder_t* decoder, void* data, long width, long height, bool columnMajor);
 
-/** Gets the output data array into which the data may be decoded */
+/** Retrieves the output data array into which the data may be decoded
+ * \param decoder Decoder instance
+ * \param data (*optional*) Data array to decode into
+ * \param width (*optional*) Width of data array in bytes
+ * \param height (*optional*) Height of data array in rows
+ * \param columnMajor (*optional*) Whether the column-major memory layout is used
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_decoder_data_array(const odc_decoder_t* decoder, const void** data, long* width, long* height, bool* columnMajor);
 
-/**
- *  Adds a column to the set for decoding.
- *  This is an alternative to odc_decoder_defaults_from_frame
+/** Adds a data column to a decoder
+ * \param decoder Decoder instance
+ * \param name Data column name
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decoder_add_column(odc_decoder_t* decoder, const char* name);
 
-/** The number of columns the decoder is configured to decode */
+/** Retrieves number of columns that are allocated in a decoder
+ * \param decoder Decoder instance
+ * \param count Return variable for number of columns
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_decoder_column_count(const odc_decoder_t* decoder, int* count);
 
-/**
- * Set the decoded data size for a column in bytes.
+/** Sets the decoded data size for a column in bytes
+ * \param decoder Decoder instance
+ * \param col Column index
+ * \param element_size Column data size in bytes
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decoder_column_set_data_size(odc_decoder_t* decoder, int col, int element_size);
 
 /**
- * Sets a specific data array into which the data associated with the column can be decoded
- * This is an alternative to the odc_decoder_set_data_array.
+ * Sets an output data array into which the data associated with the column can be decoded
+ * \param decoder Decoder instance
+ * \param col Column index
+ * \param element_size Column data size in bytes
+ * \param stride Column data width in bytes
+ * \param data Column data array
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decoder_column_set_data_array(odc_decoder_t* decoder, int col, int element_size, int stride, void* data);
 
 /**
- * Gets the buffer and data layout into which the data has been decoded.
- * Only valid after calling odc_decode
+ * Retrieves the buffer and data layout into which the data has been decoded
+ * \param decoder Decoder instance
+ * \param col Column index
+ * \param element_size (*optional*) Return variable for column data size in bytes
+ * \param stride (*optional*) Return variable for column data width in bytes
+ * \param data (*optional*) Return variable for column data array
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decoder_column_data_array(const odc_decoder_t* decoder, int col, int* element_size, int* stride, const void** data);
 
 /**
- * Decode the data described by the frame into the data array(s) configured in the decoder.
- * If no data array has been set above, an array to decode into will be allocated. This can be
- * obtained by using the odc_decoder_data_array function.
+ * Decodes the data described by the frame into the configured data array(s)
+ * \param decoder Decoder instance
+ * \param frame Frame instance
+ * \param rows_decoded (*optional*) Return variable for number of decoded rows
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decode(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded);
 
 /**
- * Decode the data described by the frame into the data array(s) configured in the decoder.
- * If the frame is logical aggregated over multiple frames in the message,
- * then parallelise the decoding over multiple threads.
+ * Decodes the data described by the frame into the configured data array(s).
+ *
+ * If the frame is a logical one, parallelise the decoding over multiple threads.
+ *
+ * \param decoder Decoder instance
+ * \param frame Frame instance
+ * \param rows_decoded (*optional*) Return variable for number of decoded rows
+ * \param nthreads Number of threads
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded, int nthreads);
 
-///@}
+/** @} */
 
 
 
-/**
- * Encoding data
- */
-
-///@{
+/** \defgroup Encoder */
+/** @{ */
 
 struct odc_encoder_t;
+/** Opaque type for the Encoder object. Describes the column properties and the data layout of the source data for encoding into ODB-2 frames. **/
 typedef struct odc_encoder_t odc_encoder_t;
 
-/** Creates an encoder for encoding into ODB2 format */
+/** Creates an encoder instance for encoding into ODB-2 format
+ * \param encoder Encoder instance
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_new_encoder(odc_encoder_t** encoder);
 
-/** Deallocates the encoder */
+/** Deallocates memory used up by an encoder
+ * \param encoder Encoder instance
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_free_encoder(const odc_encoder_t* encoder);
 
-/** Add a property (key-value) to the encoder to encode into the ODB2 file */
+/** Adds a key/value property to encode as part of the frame
+ * \param encoder Encoder instance
+ * \param key Property key
+ * \param value Property value
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encoder_add_property(odc_encoder_t* encoder, const char* key, const char* value);
 
-/** Declare the number of rows you are going to encode */
+/** Sets number of rows to allocate in an encoder
+ * \param encoder Encoder instance
+ * \param nrows Number of rows
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encoder_set_row_count(odc_encoder_t* encoder, long nrows);
 
-/** Overrides the default number of rows which will be grouped together into frames */
+/** Sets number of rows to encode per frame
+ * \param encoder Encoder instance
+ * \param rows_per_frame Number of rows per frame
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encoder_set_rows_per_frame(odc_encoder_t* encoder, long rows_per_frame);
 
-/** Associate a 2D data array to an encoder and describe its shape.
- *  Note this does not yet encode the data and the data isn't copied.
- *  The client code is responsible for keeping the data in memory until encoded.
- *  There can be only one associated data array at a time per encoder,
- *  but an encoder can be used to encode a sequence of data arrays with interleaved calls to odc_encode_to_* functions.
- *  @param encoder the encoder
- *  @param data the memory buffer
- *  @param width the width of the 2D array in bytes. NOTE it is in BYTES.
- *  @param height the height of the 2D array in rows, being greater or equal than the row count.
- *  @param columnMajorWidth if zero then 2D array is interpreted as row-major, otherwise its the size in bytes of the
- *         column entries, typically 8 bytes.
+/** Sets input data array from which data may be encoded
+ * \param encoder Encoder instance
+ * \param data Data array to encode
+ * \param width Width of the data array in bytes
+ * \param height Height of the data array in rows
+ * \param columnMajorWidth Column size in bytes for column-major layout, if zero interpret as row-major layout
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height, int columnMajorWidth);
 
-/// @todo implment the int columnMajorWidth  in the above function
+/// @todo implement the int columnMajorWidth in the above function
 
-/** Describes a new column in the encoder */
+/** Adds a data column to current encoder
+ * \param encoder Encoder instance
+ * \param name Column name
+ * \param type Column data type (#OdcColumnType)
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encoder_add_column(odc_encoder_t* encoder, const char* name, int type);
 
 /**
- * Set the source data size for a given column in bytes
- *  @param encoder the encoder
- *  @param col the column (zero indexed)
- *  @param element_size the element size in bytes (must be a multiple of 8) [a value of 0 uses default]
+ * Sets the source data size for a column
+ * \param encoder Encoder instance
+ * \param col Column index
+ * \param element_size Column data size in bytes
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_encoder_column_set_data_size(odc_encoder_t* encoder, int col, int element_size);
 
-/** Associates a custom data layout and data array with the column.
- *  This function is used as an alternative to odc_encoder_set_data_array
- *  @param encoder the encoder
- *  @param col the column (zero indexed)
- *  @param element_size the element size in bytes (must be a multiple of 8) [a value of 0 uses default]
- *  @param stride the separation in memory between consecutive elements in bytes [0 uses default, i.e. contiguous]
- *  @param data a pointer to the first element
+/** Sets a custom data layout and data array for a column
+ * \param encoder Encoder instance
+ * \param col Column index
+ * \param element_size Column size in bytes
+ * \param stride Column width in bytes
+ * \param data Column data array
+ * \returns Return code (#OdcErrorValues)
  */
 int odc_encoder_column_set_data_array(odc_encoder_t* encoder, int col, int element_size, int stride, const void* data);
 
-/** Adds a bitfield to a column */
+/** Adds a bitfield to a column
+ * \param encoder Encoder instance
+ * \param col Column index
+ * \param name Bitfield name
+ * \param nbits Bitfield size in bits
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encoder_column_add_bitfield(odc_encoder_t* encoder, int col, const char* name, int nbits);
 
-
+/** Encoder stream handler function signature
+ * \param context Stream handler context
+ * \param buffer Memory buffer to handle
+ * \param length Size of memory buffer in bytes
+ */
 typedef long (*odc_stream_write_t)(void* context, const void* buffer, long length);
 
-/** Encodes ODB2 in a stream handler */
+/** Encodes ODB-2 into a stream handler
+ * \param encoder Encoder instance
+ * \param context Stream handler context
+ * \param write_fn Stream handler function
+ * \param bytes_encoded Return variable for number of encoded bytes
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encode_to_stream(odc_encoder_t* encoder, void* context, odc_stream_write_t write_fn, long* bytes_encoded);
 
-/** Encodes ODB2 into an already open file descriptor */
+/** Encodes ODB-2 into an already open file descriptor
+ * \param encoder Encoder instance
+ * \param fd File descriptor
+ * \param bytes_encoded (*optional*) Return variable for number of encoded bytes
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encode_to_file_descriptor(odc_encoder_t* encoder, int fd, long* bytes_encoded);
 
-/** Encodes ODB2 into a pre-allocated memory buffer.
-    Returns an error if an insufficiently large buffer is supplied */
+/** Encodes ODB-2 into a pre-allocated memory buffer
+ * \param encoder Encoder instance
+ * \param buffer Memory buffer
+ * \param length Buffer size
+ * \param bytes_encoded (*optional*) Return variable for number of encoded bytes
+ * \returns Return code (#OdcErrorValues)
+ */
 int odc_encode_to_buffer(odc_encoder_t* encoder, void* buffer, long length, long* bytes_encoded);
 
-///@}
+/** @} */
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 

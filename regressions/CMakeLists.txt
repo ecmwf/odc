@@ -1,9 +1,8 @@
 
 list( APPEND regressions_data_files
-    2000010106.odb
     odb_387_mdset.odb
     odb_463.odb
-    sd_45315.odb
+    sd_45315-reduced.odb
     sd_45479_source.odb
     sd_45479_compare.odb
 )
@@ -20,6 +19,7 @@ set(regressions_scripts
     ODB-463.sh
     SD-45315.sh
     SD-45479.sh
+    ODB-529.sh
 )
 
 foreach( _script ${regressions_scripts})
@@ -27,7 +27,7 @@ foreach( _script ${regressions_scripts})
         TYPE script
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
         ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
-        TEST_DEPENDS odc_get_regressions_data
+        TEST_DEPENDS odc_get_test_data odc_get_regressions_data
     )
 endforeach()
 

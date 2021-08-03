@@ -602,7 +602,7 @@ TEST(hash_operator_in_where)
 
 TEST(bitfields_hash_operator)
 {
-    PathName f("2000010106.4.0.odb");
+    PathName f("2000010106-reduced.odb");
     //odc::Select select("select lat,lat#1 from \"" + f + "\"");
     odc::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\";");
     odc::Select::iterator it = select.begin();
@@ -689,7 +689,7 @@ TEST(create_table_using_variable)
 
 TEST(meta_data_reader_checks_if_file_truncated)
 {
-    ASSERT(0 == system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=1913000 count=1"));
+    ASSERT(0 == system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=30121 count=1"));
     core::TablesReader mdr("disp.7.1.odb.truncated");
     try {
         for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)

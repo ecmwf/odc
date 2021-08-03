@@ -27,6 +27,7 @@ namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+/** Describes the layout of periodic data in memory. This is the template base class for the StridedData and ConstStridedData types. */
 template <typename value_type>
 class StridedDataT {
 
@@ -45,6 +46,12 @@ public: // methods
 
     // Construction and copy
 
+    /** Constructor
+     * \param data Data array
+     * \param nelem Number of data elements
+     * \param dataSize Size of each data element
+     * \param stride Size between periodic data elements
+     */
     StridedDataT(void_arg_t data, size_t nelem, size_t dataSize, size_t stride) :
         data_(reinterpret_cast<value_type*>(data)), nelem_(nelem), dataSize_(dataSize), stride_(stride) {
     }
@@ -57,6 +64,11 @@ public: // methods
 
     // Slice the StridedData to get a sub-strided-data
 
+    /** Returns a new object which references a contiguous subset of the data elements of the original
+     * \param rowOffset Data element offset where to start slicing
+     * \param nrows Number of data elements to slice
+     * \returns Subset of current data
+     */
     StridedDataT<value_type> slice(size_t rowOffset, size_t nrows) {
         ASSERT(rowOffset + nrows <= nelem_);
         return StridedDataT<value_type>(get(rowOffset), nrows, dataSize_, stride_);
@@ -69,13 +81,30 @@ public: // methods
 
     // Accessing the data
 
+    /** Returns number of data elements
+     * \returns Number of data elements
+     */
     size_t nelem() const { return nelem_; }
+    /** Returns size of each data element
+     * \returns Size of each data element
+     */
     size_t dataSize() const { return dataSize_; }
+    /** Returns size between periodic data elements
+     * \returns Size between periodic data elements
+     */
     size_t stride() const { return stride_; }
 
+    /** Returns the address of the i'th data element (mutable)
+     * \param i Periodic offset
+     * \returns Target mutable data element
+     */
     value_type* get(int i) {
         return &data_[i*stride_];
     }
+    /** Returns the address of the i'th data element (const)
+     * \param i Periodic offset
+     * \returns Target constant data element
+     */
     const_value_type* get(int i) const {
         return &data_[i*stride_];
     }
@@ -86,8 +115,16 @@ public: // methods
     value_type* operator*() { return data_; }
     const_value_type* operator*() const { return data_; }
 
+    /** Copy the value contained in one data element into the following contiguous elements.
+     * \param sourceRow Source data element offset
+     * \param finalRow Target data element offset
+     */
     void fill(int sourceRow, int finalRow);
 
+    /** Checks if data element differs from the previous data element
+     * \param row Data element offset to check
+     * \param *True* if data element does not exist yet, *false* otherwise
+     */
     bool isNewValue(size_t row) const {
         if (row == 0) return true;
         return ::memcmp(get(row), get(row-1), dataSize_) != 0;
@@ -170,8 +207,10 @@ inline void StridedDataT<value_type>::fill(int sourceRow, int finalRow) {
     }
 }
 
-using StridedData = StridedDataT<char>;
-using ConstStridedData = StridedDataT<const char>;
+/** Describes the layout of periodic data in memory (mutable) */
+typedef StridedDataT<char> StridedData;
+/** Describes the layout of periodic data in memory (const) */
+typedef StridedDataT<const char> ConstStridedData;
 
 //----------------------------------------------------------------------------------------------------------------------
 

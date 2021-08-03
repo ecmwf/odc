@@ -25,17 +25,26 @@ namespace api {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+/** Describes a column and the data encoded in it */
 struct ColumnInfo {
 
+    /** Describes a bit or bit group in a bitfield */
     struct Bit {
+        /** Bit group name */
         std::string name;
+        /** Bit group size in bits */
         int size;
+        /** Bit group offset in bits */
         int offset;
     };
 
+    /** Column name */
     std::string name;
+    /** Column data type */
     ColumnType type;
+    /** Size of a single decoded value in bytes */
     size_t decodedSize;
+    /** List of bit and bit groups associated with a bitfield column */
     std::vector<Bit> bitfield;
 };
 

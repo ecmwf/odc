@@ -4,6 +4,7 @@ module fapi_read_tests
     use odc
     use odc_config
     use, intrinsic :: iso_fortran_env
+    use, intrinsic :: iso_c_binding, only: c_loc,c_null_char
     implicit none
 
 contains
@@ -20,7 +21,6 @@ contains
         end if
     end subroutine
 
-
     function test_count_lines() result(success)
 
         ! Test that we obtain the expected version number
@@ -32,7 +32,7 @@ contains
         logical :: success
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open ODB", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open ODB", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         frame_count = 0
@@ -57,13 +57,13 @@ contains
 
         if (err /= ODC_ITERATION_COMPLETE) call check_call(err, "next frame", success)
 
-        if (frame_count /= 333) then
-            write(error_unit, *) 'Unexpected frame count: ', frame_count, ' /= 333'
+        if (frame_count /= 5) then
+            write(error_unit, *) 'Unexpected frame count: ', frame_count, ' /= 5'
             success = .false.
         endif
 
-        if (row_count /= 3321753) then
-            write(error_unit, *) 'Unexpected row count: ', row_count, ' /= 3321753'
+        if (row_count /= 50000) then
+            write(error_unit, *) 'Unexpected row count: ', row_count, ' /= 50000'
             success = .false.
         endif
 
@@ -116,7 +116,7 @@ contains
             1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1]
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         call check_call(frame%next(), "get the first frame", success)
@@ -285,7 +285,7 @@ contains
         real(8), pointer :: array_data(:,:)
 
         success =.true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         ! Read the second frame, because why not.
@@ -345,7 +345,7 @@ contains
         real(8), target :: array_data(11000, 51)
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         call check_call(frame%next(), "get first frame", success)
@@ -400,7 +400,7 @@ contains
         real(8), pointer :: array_data(:,:)
 
         success = .true.
-        call check_call(reader%open_path("../2000010106.odb"), "open reader", success)
+        call check_call(reader%open_path("../2000010106-reduced.odb"), "open reader", success)
         call check_call(frame%initialise(reader), "initialise frame", success)
 
         call check_call(frame%next(maximum_rows=99999_8), "get first (aggregate) frame", success)
@@ -409,14 +409,14 @@ contains
         call check_call(decoder%defaults_from_frame(frame), "decoder frame defaults", success)
         call check_call(decoder%decode(frame, rows_decoded, nthreads=4), "decode threaded", success)
 
-        if (rows_decoded /= 90000) then
+        if (rows_decoded /= 50000) then
             write(error_unit, *) 'Unexpected number of rows decoded'
             success = .false.
         end if
 
         call check_call(decoder%row_count(nrows), "decoder row count", success)
-        if (nrows /= 90000) then
-            write(error_unit, *) 'Got row count ', nrows, ' not 90000'
+        if (nrows /= 50000) then
+            write(error_unit, *) 'Got row count ', nrows, ' not 50000'
             success = .false.
         end if
 
@@ -428,7 +428,7 @@ contains
 
         call check_call(decoder%data(array_data), "get array data", success)
 
-        if (any(shape(array_data) /= [90000, 51])) then
+        if (any(shape(array_data) /= [50000, 51])) then
             write(error_unit, *) 'Unexpected data dimensions'
             success = .false.
         end if
@@ -437,6 +437,711 @@ contains
         call check_call(reader%close(), "close reader", success)
 
     end function
+
+    function test_frame_properties_1_non_aggregated() result(success)
+
+        ! Where the properties in the two frames are distinct (non-aggregated)
+
+        type(odc_reader) :: reader
+        type(odc_frame) :: frame
+        integer :: err, nframes = 1, nproperties, idx
+        logical :: aggregated = .false.
+        character(:), allocatable, target :: version, key, val
+        character(255) :: version_str
+        logical :: success, exists
+        success = .true.
+
+        call test_generate_odb('properties-1.odb', 1, success)
+
+        call check_call(reader%open_path('properties-1.odb'), 'opening path', success)
+        call check_call(frame%initialise(reader), 'initialising frame', success)
+
+        call check_call(odc_version(version), 'getting version number', success)
+        write(version_str, *) 'odc version ', version
+        version_str = trim(adjustl(version_str))
+
+        ! Advance to the first frame in the stream in non-aggregated mode
+        err = frame%next(aggregated)
+
+        do while (err == ODC_SUCCESS)
+            call check_call(frame%properties_count(nproperties), 'getting properties count', success)
+
+            ! Check properties count
+            if (nproperties /= 2) then
+                write(error_unit, *) 'unexpected number of properties:', nproperties, '/=', 2
+                success = .false.
+            end if
+
+            do idx = 1, 2
+                call check_call(frame%property_idx(idx, key, val), 'getting property by index', success)
+
+                ! Check getting properties by index
+                if ((idx == 1 .and. nframes == 1) .or. (idx == 2 .and. nframes == 2)) then
+                    if (key /= 'encoder' .or. val /= version_str) then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= encoder => ', version_str
+                        success = .false.
+                    end if
+                else if (nframes == 1) then
+                    if (key /= 'foo' .or. val /= 'bar') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= foo => bar'
+                        success = .false.
+                    end if
+                else
+                    if (key /= 'baz' .or. val /= 'qux') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= baz => qux'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check getting property values by key
+                if (nframes == 1) then
+                    call check_call(frame%property('encoder', val), 'getting property by key', success)
+                    if (val /= version_str) then
+                        write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                        success = .false.
+                    end if
+
+                    call check_call(frame%property('foo', val), 'getting property by key', success)
+                    if (val /= 'bar') then
+                        write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    end if
+                else
+                    call check_call(frame%property('encoder', val), 'getting property by key', success)
+                    if (val /= version_str) then
+                        write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                        success = .false.
+                    end if
+
+                    call check_call(frame%property('baz', val), 'getting property by key', success)
+                    if (val /= 'qux') then
+                        write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check for reading of non-existent properties
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
+                end if
+            end do
+
+            nframes = nframes + 1
+
+            ! Advances to the next frame in the stream in non-aggregated mode
+            err = frame%next(aggregated)
+        end do
+
+        if (err /= ODC_ITERATION_COMPLETE) call check_call(err, 'get next frame', success)
+
+        call check_call(reader%close(), 'closing reader', success)
+
+        ! Check number of frames
+        if (nframes - 1 /= 2) then
+            write(error_unit, *) 'unexpected number of frames:', nframes - 1, '/=', 2
+            success = .false.
+        end if
+
+    end function
+
+    function test_frame_properties_1_aggregated() result(success)
+
+        ! Where the properties in the two frames are distinct (aggregated)
+
+        type(odc_reader) :: reader
+        type(odc_frame) :: frame
+        integer :: err, nframes = 1, nproperties, idx
+        logical :: aggregated = .true.
+        character(:), allocatable, target :: version, key, val
+        character(255) :: version_str
+        logical :: success, exists
+        success = .true.
+
+        call test_check_file_exists('properties-1.odb', success)
+
+        call check_call(reader%open_path('properties-1.odb'), 'opening path', success)
+        call check_call(frame%initialise(reader), 'initialising frame', success)
+
+        call check_call(odc_version(version), 'getting version number', success)
+        write(version_str, *) 'odc version ', version
+        version_str = trim(adjustl(version_str))
+
+        ! Advance to the first frame in the stream in aggregated mode
+        err = frame%next(aggregated)
+
+        do while (err == ODC_SUCCESS)
+            call check_call(frame%properties_count(nproperties), 'getting properties count', success)
+
+            ! Check properties count
+            if (nproperties /= 3) then
+                write(error_unit, *) 'unexpected number of properties:', nproperties, '/=', 3
+                success = .false.
+            end if
+
+            do idx = 1, 3
+                call check_call(frame%property_idx(idx, key, val), 'getting property by index', success)
+
+                ! Check getting properties by index
+                if (idx == 1) then
+                    if (key /= 'baz' .or. val /= 'qux') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= baz => qux'
+                        success = .false.
+                    end if
+                else if (idx == 2) then
+                    if (key /= 'encoder' .or. val /= version_str) then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= encoder => ', version_str
+                        success = .false.
+                    end if
+                else
+                    if (key /= 'foo' .or. val /= 'bar') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= foo => bar'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check getting property values by key
+                call check_call(frame%property('encoder', val), 'getting property by key', success)
+                if (val /= version_str) then
+                    write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                    success = .false.
+                end if
+
+                call check_call(frame%property('foo', val), 'getting property by key', success)
+                if (val /= 'bar') then
+                    write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
+                end if
+
+                call check_call(frame%property('baz', val), 'getting property by key', success)
+                if (val /= 'qux') then
+                    write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                    success = .false.
+                end if
+
+                ! Check for reading of non-existent properties
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
+                end if
+            end do
+
+            nframes = nframes + 1
+
+            ! Advances to the next frame in the stream in aggregated mode
+            err = frame%next(aggregated)
+        end do
+
+        if (err /= ODC_ITERATION_COMPLETE) call check_call(err, 'get next frame', success)
+
+        call check_call(reader%close(), 'closing reader', success)
+
+        ! Check number of frames
+        if (nframes - 1 /= 1) then
+            write(error_unit, *) 'unexpected number of frames:', nframes - 1, '/=', 1
+            success = .false.
+        end if
+
+    end function
+
+    function test_frame_properties_2_non_aggregated() result(success)
+
+        ! Where the properties in the two frames overlap with entries that are the same (non-aggregated)
+
+        type(odc_reader) :: reader
+        type(odc_frame) :: frame
+        integer :: err, nframes = 1, nproperties, idx
+        logical :: aggregated = .false.
+        character(:), allocatable, target :: version, key, val
+        character(255) :: version_str
+        logical :: success, exists
+        success = .true.
+
+        call test_generate_odb('properties-2.odb', 2, success)
+
+        call check_call(reader%open_path('properties-2.odb'), 'opening path', success)
+        call check_call(frame%initialise(reader), 'initialising frame', success)
+
+        call check_call(odc_version(version), 'getting version number', success)
+        write(version_str, *) 'odc version ', version
+        version_str = trim(adjustl(version_str))
+
+        ! Advance to the first frame in the stream in non-aggregated mode
+        err = frame%next(aggregated)
+
+        do while (err == ODC_SUCCESS)
+            call check_call(frame%properties_count(nproperties), 'getting properties count', success)
+
+            ! Check properties count
+            if (nproperties /= 3) then
+                write(error_unit, *) 'unexpected number of properties:', nproperties, '/=', 3
+                success = .false.
+            end if
+
+            do idx = 1, 3
+                call check_call(frame%property_idx(idx, key, val), 'getting property by index', success)
+
+                ! Check getting properties by index
+                if (idx == 1) then
+                    if (key /= 'baz' .or. val /= 'qux') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= baz => qux'
+                        success = .false.
+                    end if
+                else if (idx == 2) then
+                    if (key /= 'encoder' .or. val /= version_str) then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= encoder => ', version_str
+                        success = .false.
+                    end if
+                else
+                    if (key /= 'foo' .or. val /= 'bar') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= foo => bar'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check getting property values by key
+                call check_call(frame%property('encoder', val), 'getting property by key', success)
+                if (val /= version_str) then
+                    write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                    success = .false.
+                end if
+
+                call check_call(frame%property('foo', val), 'getting property by key', success)
+                if (val /= 'bar') then
+                    write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
+                end if
+
+                call check_call(frame%property('baz', val), 'getting property by key', success)
+                if (val /= 'qux') then
+                    write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                    success = .false.
+                end if
+
+                ! Check for reading of non-existent properties
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
+                end if
+            end do
+
+            nframes = nframes + 1
+
+            ! Advances to the next frame in the stream in non-aggregated mode
+            err = frame%next(aggregated)
+        end do
+
+        if (err /= ODC_ITERATION_COMPLETE) call check_call(err, 'get next frame', success)
+
+        call check_call(reader%close(), 'closing reader', success)
+
+        ! Check number of frames
+        if (nframes - 1 /= 2) then
+            write(error_unit, *) 'unexpected number of frames:', nframes - 1, '/=', 2
+            success = .false.
+        end if
+
+    end function
+
+    function test_frame_properties_2_aggregated() result(success)
+
+        ! Where the properties in the two frames overlap with entries that are the same (aggregated)
+
+        type(odc_reader) :: reader
+        type(odc_frame) :: frame
+        integer :: err, nframes = 1, nproperties, idx
+        logical :: aggregated = .true.
+        character(:), allocatable, target :: version, key, val
+        character(255) :: version_str
+        logical :: success, exists
+        success = .true.
+
+        call test_check_file_exists('properties-2.odb', success)
+
+        call check_call(reader%open_path('properties-2.odb'), 'opening path', success)
+        call check_call(frame%initialise(reader), 'initialising frame', success)
+
+        call check_call(odc_version(version), 'getting version number', success)
+        write(version_str, *) 'odc version ', version
+        version_str = trim(adjustl(version_str))
+
+        ! Advance to the first frame in the stream in aggregated mode
+        err = frame%next(aggregated)
+
+        do while (err == ODC_SUCCESS)
+            call check_call(frame%properties_count(nproperties), 'getting properties count', success)
+
+            ! Check properties count
+            if (nproperties /= 3) then
+                write(error_unit, *) 'unexpected number of properties:', nproperties, '/=', 3
+                success = .false.
+            end if
+
+            do idx = 1, 3
+                call check_call(frame%property_idx(idx, key, val), 'getting property by index', success)
+
+                ! Check getting properties by index
+                if (idx == 1) then
+                    if (key /= 'baz' .or. val /= 'qux') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= baz => qux'
+                        success = .false.
+                    end if
+                else if (idx == 2) then
+                    if (key /= 'encoder' .or. val /= version_str) then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= encoder => ', version_str
+                        success = .false.
+                    end if
+                else
+                    if (key /= 'foo' .or. val /= 'bar') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= foo => bar'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check getting property values by key
+                call check_call(frame%property('encoder', val), 'getting property by key', success)
+                if (val /= version_str) then
+                    write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                    success = .false.
+                end if
+
+                call check_call(frame%property('foo', val), 'getting property by key', success)
+                if (val /= 'bar') then
+                    write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
+                end if
+
+                call check_call(frame%property('baz', val), 'getting property by key', success)
+                if (val /= 'qux') then
+                    write(error_unit, *) 'unexpected property value for baz: ', val , ' /= qux'
+                    success = .false.
+                end if
+
+                ! Check for reading of non-existent properties
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
+                end if
+            end do
+
+            nframes = nframes + 1
+
+            ! Advances to the next frame in the stream in aggregated mode
+            err = frame%next(aggregated)
+        end do
+
+        if (err /= ODC_ITERATION_COMPLETE) call check_call(err, 'get next frame', success)
+
+        call check_call(reader%close(), 'closing reader', success)
+
+        ! Check number of frames
+        if (nframes - 1 /= 1) then
+            write(error_unit, *) 'unexpected number of frames:', nframes - 1, '/=', 1
+            success = .false.
+        end if
+
+    end function
+
+    function test_frame_properties_3_non_aggregated() result(success)
+
+        ! Where the properties overlap with entries whose keys are the same, but the values different (non-aggregated)
+
+        type(odc_reader) :: reader
+        type(odc_frame) :: frame
+        integer :: err, nframes = 1, nproperties, idx
+        logical :: aggregated = .false.
+        character(:), allocatable, target :: version, key, val
+        character(255) :: version_str
+        logical :: success, exists
+        success = .true.
+
+        call test_generate_odb('properties-3.odb', 3, success)
+
+        call check_call(reader%open_path('properties-3.odb'), 'opening path', success)
+        call check_call(frame%initialise(reader), 'initialising frame', success)
+
+        call check_call(odc_version(version), 'getting version number', success)
+        write(version_str, *) 'odc version ', version
+        version_str = trim(adjustl(version_str))
+
+        ! Advance to the first frame in the stream in non-aggregated mode
+        err = frame%next(aggregated)
+
+        do while (err == ODC_SUCCESS)
+            call check_call(frame%properties_count(nproperties), 'getting properties count', success)
+
+            ! Check properties count
+            if (nproperties /= 2) then
+                write(error_unit, *) 'unexpected number of properties:', nproperties, '/=', 2
+                success = .false.
+            end if
+
+            do idx = 1, 2
+                call check_call(frame%property_idx(idx, key, val), 'getting property by index', success)
+
+                ! Check getting properties by index
+                if (idx == 1) then
+                    if (key /= 'encoder' .or. val /= version_str) then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= encoder => ', version_str
+                        success = .false.
+                    end if
+                else if (nframes == 1) then
+                    if (key /= 'foo' .or. val /= 'bar') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= foo => bar'
+                        success = .false.
+                    end if
+                else
+                    if (key /= 'foo' .or. val /= 'baz') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= foo => baz'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check getting property values by key
+                if (nframes == 1) then
+                    call check_call(frame%property('encoder', val), 'getting property by key', success)
+                    if (val /= version_str) then
+                        write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                        success = .false.
+                    end if
+
+                    call check_call(frame%property('foo', val), 'getting property by key', success)
+                    if (val /= 'bar') then
+                        write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                        success = .false.
+                    end if
+                else
+                    call check_call(frame%property('encoder', val), 'getting property by key', success)
+                    if (val /= version_str) then
+                        write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                        success = .false.
+                    end if
+
+                    call check_call(frame%property('foo', val), 'getting property by key', success)
+                    if (val /= 'baz') then
+                        write(error_unit, *) 'unexpected property value for foo: ', val , ' /= baz'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check for reading of non-existent properties
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= F'
+                    success = .false.
+                end if
+            end do
+
+            nframes = nframes + 1
+
+            ! Advances to the next frame in the stream in non-aggregated mode
+            err = frame%next(aggregated)
+        end do
+
+        if (err /= ODC_ITERATION_COMPLETE) call check_call(err, 'get next frame', success)
+
+        call check_call(reader%close(), 'closing reader', success)
+
+        ! Check number of frames
+        if (nframes - 1 /= 2) then
+            write(error_unit, *) 'unexpected number of frames:', nframes - 1, '/=', 2
+            success = .false.
+        end if
+
+    end function
+
+    function test_frame_properties_3_aggregated() result(success)
+
+        ! Where the properties overlap with entries whose keys are the same, but the values different (aggregated)
+
+        type(odc_reader) :: reader
+        type(odc_frame) :: frame
+        integer :: err, nframes = 1, nproperties, idx
+        logical :: aggregated = .true.
+        character(:), allocatable, target :: version, key, val
+        character(255) :: version_str
+        logical :: success, exists
+        success = .true.
+
+        call test_check_file_exists('properties-3.odb', success)
+
+        call check_call(reader%open_path('properties-3.odb'), 'opening path', success)
+        call check_call(frame%initialise(reader), 'initialising frame', success)
+
+        call check_call(odc_version(version), 'getting version number', success)
+        write(version_str, *) 'odc version ', version
+        version_str = trim(adjustl(version_str))
+
+        ! Advance to the first frame in the stream in aggregated mode
+        err = frame%next(aggregated)
+
+        do while (err == ODC_SUCCESS)
+            call check_call(frame%properties_count(nproperties), 'getting properties count', success)
+
+            ! Check properties count
+            if (nproperties /= 2) then
+                write(error_unit, *) 'unexpected number of properties:', nproperties, '/=', 2
+                success = .false.
+            end if
+
+            do idx = 1, 2
+                call check_call(frame%property_idx(idx, key, val), 'getting property by index', success)
+
+                ! Check getting properties by index
+                if (idx == 1) then
+                    if (key /= 'encoder' .or. val /= version_str) then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= encoder => ', version_str
+                        success = .false.
+                    end if
+                else
+                    ! Value from the first frame will win
+                    if (key /= 'foo' .or. val /= 'bar') then
+                        write(error_unit, *) 'unexpected property: ', key, ' => ', val , ' /= foo => bar'
+                        success = .false.
+                    end if
+                end if
+
+                ! Check getting property values by key
+                call check_call(frame%property('encoder', val), 'getting property by key', success)
+                if (val /= version_str) then
+                    write(error_unit, *) 'unexpected property value for encoder: ', val , ' /= ', version_str
+                    success = .false.
+                end if
+
+                call check_call(frame%property('foo', val), 'getting property by key', success)
+
+                ! Value from the first frame will win
+                if (val /= 'bar') then
+                    write(error_unit, *) 'unexpected property value for foo: ', val , ' /= bar'
+                    success = .false.
+                end if
+
+                ! Check for reading of non-existent properties
+                call check_call(frame%property('non-existent', exists=exists), 'getting property by key', success)
+                if (exists) then
+                    write(error_unit, *) 'unexpected non-existent property: ', exists, ' /= .false.'
+                    success = .false.
+                end if
+            end do
+
+            nframes = nframes + 1
+
+            ! Advances to the next frame in the stream in aggregated mode
+            err = frame%next(aggregated)
+        end do
+
+        if (err /= ODC_ITERATION_COMPLETE) call check_call(err, 'get next frame', success)
+
+        call check_call(reader%close(), 'closing reader', success)
+
+        ! Check number of frames
+        if (nframes - 1 /= 1) then
+            write(error_unit, *) 'unexpected number of frames:', nframes - 1, '/=', 1
+            success = .false.
+        end if
+
+    end function
+
+    subroutine test_check_file_exists(path, success)
+        character(*), intent(in) :: path
+        logical, intent(inout) :: success
+
+        inquire(file=path, exist=success)
+
+        if (.not. success) then
+            write(error_unit, *) 'unexpected missing file: ', path
+        end if
+    end subroutine
+
+    subroutine test_generate_odb(path, properties_mode, success)
+        character(*), intent(in) :: path
+        integer, intent(in) :: properties_mode
+        logical, intent(inout) :: success
+
+        integer(8), parameter :: nrows = 10
+        character(8), target :: data1(nrows)
+        integer(8), target :: data2(nrows)
+        real(8), target :: data3(nrows)
+
+        character(4) :: expver_str = 'xxxx'
+        integer(8) :: date = 20210401
+        integer :: i
+
+        type(odc_encoder) :: encoder
+        integer, target :: outunit
+        integer(8), target :: bytes_written
+
+        ! Set treatment of integers as longs
+        call check_call(odc_integer_behaviour(ODC_INTEGERS_AS_LONGS), 'setting integer behaviour to longs', success)
+
+        ! Fill in the passed data arrays with scratch values
+        do i = 1, nrows
+            data1(i) = expver_str // c_null_char  ! expver
+            data2(i) = date  ! date@hdr
+            data3(i) = 12.3456 * (i - 1)  ! obsvalue@body
+        end do
+
+        ! Encode ODB-2 into a file
+        open(newunit=outunit, file=path, access='stream', form='unformatted', status='replace')
+
+        ! Encode two ODB-2 frames with the same data
+        do i = 1, 2
+
+            ! Initialise encoder
+            call check_call(encoder%initialise(), 'initialising encoder', success)
+
+            ! Set number of rows to allocate in the encoder
+            call check_call(encoder%set_row_count(nrows), 'setting number of rows', success)
+
+            ! Define all column names and their types
+            call check_call(encoder%add_column('expver', ODC_STRING), 'adding expver column', success)
+            call check_call(encoder%add_column('date@hdr', ODC_INTEGER), 'adding date@hdr column', success)
+            call check_call(encoder%add_column('obsvalue@body', ODC_REAL), 'adding obsvalue@body column', success)
+
+            ! Set a custom data layout and data array for each column
+            call check_call(encoder%column_set_data_array(1, 8, stride=8, data=c_loc(data1)), 'setting expver array', success)
+            call check_call(encoder%column_set_data_array(2, 8, stride=8, data=c_loc(data2)), 'setting date array', success)
+            call check_call(encoder%column_set_data_array(3, 8, stride=8, data=c_loc(data3)), 'setting obsvalue array', success)
+
+            ! Encode additional properties depending on the current mode
+
+            select case(properties_mode)
+
+                ! Where the properties in the two frames are distinct
+                case (1)
+                    if (i == 1) then
+                        call check_call(encoder%add_property('foo', 'bar'), 'adding property', success)
+                    else
+                        call check_call(encoder%add_property('baz', 'qux'), 'adding property', success)
+                    end if
+
+                ! Where the properties in the two frames overlap with entries that are the same
+                case (2)
+                    call check_call(encoder%add_property('foo', 'bar'), 'adding property', success)
+                    call check_call(encoder%add_property('baz', 'qux'), 'adding property', success)
+
+                ! Where the properties overlap with entries whose keys are the same, but the values different
+                case (3)
+                    if (i == 1) then
+                        call check_call(encoder%add_property('foo', 'bar'), 'adding property', success)
+                    else
+                        call check_call(encoder%add_property('foo', 'baz'), 'adding property', success)
+                    end if
+
+            end select
+
+            call check_call(encoder%encode(outunit, bytes_written), 'do encode', success)
+
+            ! Deallocate memory used up by the encoder
+            call check_call(encoder%free(), 'cleaning up encoder', success)
+        end do
+
+        close(outunit)
+
+    end subroutine
 
 end module
 
@@ -456,6 +1161,12 @@ program fapi_general
     success = test_decode_columns_allocate() .and. success
     success = test_decode_array_reuse() .and. success
     success = test_decode_aggregate() .and. success
+    success = test_frame_properties_1_non_aggregated() .and. success
+    success = test_frame_properties_1_aggregated() .and. success
+    success = test_frame_properties_2_non_aggregated() .and. success
+    success = test_frame_properties_2_aggregated() .and. success
+    success = test_frame_properties_3_non_aggregated() .and. success
+    success = test_frame_properties_3_aggregated() .and. success
 
     if (.not. success) stop -1
 

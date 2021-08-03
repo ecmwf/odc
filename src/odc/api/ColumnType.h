@@ -19,16 +19,26 @@ namespace api {
 
 //------------------------------------------------------------------------------------------------------------
 
+/** Identifies the type of data encoded in a column */
 enum ColumnType {
-	IGNORE   = 0,
-	INTEGER  = 1,
-	REAL     = 2,
-	STRING   = 3,
-	BITFIELD = 4,
-	DOUBLE   = 5,
+    /** Specifies that the column is ignored (invalid for real data) */
+    IGNORE   = 0,
+    /** Specifies the column contains integer data */
+    INTEGER  = 1,
+    /** Specifies the column contains 32-bit floating point values */
+    REAL     = 2,
+    /** Specifies the column contains character (string) data */
+    STRING   = 3,
+    /** Specifies the column contains bitfield data */
+    BITFIELD = 4,
+    /** Specifies the column contains 64-bit floating point values */
+    DOUBLE   = 5,
 
-	// This value exists only to keep the Clang Undefined Behaviour sanitizer happy in unit tests.
+    /** \cond INTERNAL
+     * This value exists only to keep the Clang Undefined Behaviour sanitizer happy in unit tests.
+     */
     INVALID_ONLY_FOR_TESTING = 123
+    /** \endcond */
 };
 
 constexpr int NUM_TYPES = 6;
@@ -65,6 +75,6 @@ template <> struct OdbTypes<DOUBLE> {
 //------------------------------------------------------------------------------------------------------------
 
 } // namespace api
-} // namespace odc 
+} // namespace odc
 
 #endif // odc_api_ColumnType_H

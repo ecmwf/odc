@@ -26,7 +26,7 @@ eckit::Resource<eckit::PathName> testDataPath("$TEST_DATA_DIRECTORY", "..");
 
 CASE("Test access Table iterator") {
 
-    eckit::PathName filename = testDataPath / "2000010106.odb";
+    eckit::PathName filename = testDataPath / "2000010106-reduced.odb";
 
     std::unique_ptr<eckit::DataHandle> dh(filename.fileHandle());
     dh->openForRead();
@@ -40,7 +40,7 @@ CASE("Test access Table iterator") {
     size_t tableCount = 0;
     eckit::Offset lastOffset = 0;
 
-    EXPECT(dh->estimate() == eckit::Length(155557962));
+    EXPECT(dh->estimate() == eckit::Length(2449313));
 
     while (it != end) {
         tableCount++;
@@ -48,16 +48,16 @@ CASE("Test access Table iterator") {
         EXPECT(it->rowCount() == (tableCount == 333? 1753 : 10000));
         EXPECT(it->nextPosition() > lastOffset);
         EXPECT(it->nextPosition() <= dh->estimate());
-        EXPECT(dh->estimate() == eckit::Length(155557962));
+        EXPECT(dh->estimate() == eckit::Length(2449313));
         lastOffset = it->nextPosition();
 
         numRows += it->rowCount();
         ++it;
     }
 
-    EXPECT(dh->estimate() == eckit::Length(155557962));
-    EXPECT(lastOffset == eckit::Offset(155557962));
-    EXPECT(numRows == 3321753);
+    EXPECT(dh->estimate() == eckit::Length(2449313));
+    EXPECT(lastOffset == eckit::Offset(2449313));
+    EXPECT(numRows == 50000);
 
     dh->close();
 }

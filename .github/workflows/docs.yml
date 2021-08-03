@@ -1,0 +1,48 @@
+name: Documentation Build Test
+
+# Controls when the action will run
+on:
+
+  # Trigger the workflow on all pushes, except on tag creation
+  push:
+    branches:
+    - '**'
+    tags-ignore:
+    - '**'
+
+  # Trigger the workflow on all pull requests
+  pull_request: ~
+
+  # Allow workflow to be dispatched on demand
+  workflow_dispatch: ~
+
+jobs:
+  docs:
+    name: Build Documentation
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Install System Dependencies
+      shell: bash -eux {0}
+      run: |
+        sudo apt-get -q -y update
+        sudo apt-get -q -y install doxygen
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Setup Python Environment
+      shell: bash -eux {0}
+      run: python -m pip install -r docs/requirements.txt
+
+    - name: Build Documentation
+      shell: bash -eux {0}
+      run: |
+        cd docs
+        rm -rf _build
+        sphinx-build -b html . _build/html -W --keep-going
+        test -f _build/html/index.html

@@ -30,7 +30,7 @@ static void test()
 	//string sql = "select * where obstype = 7;";
 	//string sql = "select obstype from \"input.oda\";";
 
-	const string fileName = "2000010106.odb";
+	const string fileName = "2000010106-reduced.odb";
 	FileHandle fh(fileName);
 	fh.openForRead();
 	AutoClose closer(fh);
@@ -48,7 +48,7 @@ static void test()
 			++n;
 	}
 	Log::info() << "test: selected " << n << " rows." << std::endl;
-	ASSERT(n == 3134386); 
+	ASSERT(n == 44969);
 	fh.close();
 }
 

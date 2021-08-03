@@ -9,6 +9,7 @@
  */
 
 #include <cstdint>
+#include <cstring>
 #include <functional>
 #include <numeric>
 #include <unistd.h>
@@ -42,6 +43,8 @@ struct odc_reader_t {
 
 struct odc_frame_t {
     odc_reader_t& reader_;
+    mutable bool propertiesMemoised_;
+    mutable std::vector<std::map<std::string, std::string>::const_iterator> propertiesIndex_;
     Frame frame_;
 };
 
@@ -89,7 +92,6 @@ struct odc_encoder_t {
     std::vector<EncodeColumn> columnData;
     std::map<std::string, std::string> properties;
 };
-
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -177,23 +179,7 @@ int odc_column_type_count(int* count) {
 
 int odc_column_type_name(int type, const char** type_name) {
     return wrapApiFunction([type, type_name] {
-
-        static const char* names[] = {
-            OdbTypes<ColumnType(0)>::name,
-            OdbTypes<ColumnType(1)>::name,
-            OdbTypes<ColumnType(2)>::name,
-            OdbTypes<ColumnType(3)>::name,
-            OdbTypes<ColumnType(4)>::name,
-            OdbTypes<ColumnType(5)>::name
-        };
-
-        if (type < 0 || size_t(type) >= sizeof(names)/sizeof(names[0])) {
-            std::stringstream ss;
-            ss << "Unknown type id: " << type;
-            throw UserError(ss.str(), Here());
-        }
-
-        *type_name = names[type];
+        (*type_name) = columnTypeName(static_cast<ColumnType>(type));
     });
 }
 
@@ -354,7 +340,7 @@ int odc_close(const odc_reader_t* reader) {
 int odc_new_frame(odc_frame_t** frame, odc_reader_t* reader) {
     return wrapApiFunction([frame, reader] {
         ASSERT(reader);
-        (*frame) = new odc_frame_t {*reader};
+        (*frame) = new odc_frame_t {*reader, false};
     });
 }
 
@@ -376,6 +362,9 @@ int odc_next_frame(odc_frame_t* frame) {
         }
 
         if ((frame->frame_ = r.impl_->next())) {
+            frame->propertiesMemoised_ = false;
+            frame->propertiesIndex_.clear();
+
             return ODC_SUCCESS;
         } else {
             return ODC_ITERATION_COMPLETE;
@@ -394,9 +383,12 @@ int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows) {
         }
 
         if ((frame->frame_ = r.impl_->next())) {
-             return ODC_SUCCESS;
+            frame->propertiesMemoised_ = false;
+            frame->propertiesIndex_.clear();
+
+            return ODC_SUCCESS;
         } else {
-             return ODC_ITERATION_COMPLETE;
+            return ODC_ITERATION_COMPLETE;
         }
     }});
 }
@@ -454,6 +446,46 @@ int odc_frame_bitfield_attributes(const odc_frame_t* frame, int col, int field, 
         if (name) (*name) = colInfo.bitfield[field].name.c_str();
         if (offset) (*offset) = colInfo.bitfield[field].offset;
         if (size) (*size) = colInfo.bitfield[field].size;
+    });
+}
+
+int odc_frame_properties_count(const odc_frame_t* frame, int* nproperties) {
+    return wrapApiFunction([frame, nproperties] {
+        ASSERT(frame);
+
+        (*nproperties) = frame->frame_.properties().size();
+    });
+}
+
+int odc_frame_property_idx(const odc_frame_t* frame, int idx, const char** key, const char** value) {
+    return wrapApiFunction([frame, idx, key, value] {
+        ASSERT(frame);
+
+        if (!frame->propertiesMemoised_) {
+            const auto& properties(frame->frame_.properties());
+            ASSERT(idx >= 0 && size_t(idx) < properties.size());
+
+            frame->propertiesIndex_.reserve(properties.size());
+            for (std::map<std::string, std::string>::const_iterator it = properties.begin();
+                it != properties.end(); ++it) {
+                frame->propertiesIndex_.push_back(it);
+            }
+
+            frame->propertiesMemoised_ = true;
+        }
+
+        *key = frame->propertiesIndex_[idx]->first.c_str();
+        *value = frame->propertiesIndex_[idx]->second.c_str();
+    });
+}
+
+int odc_frame_property(const odc_frame_t* frame, const char* key, const char** value) {
+    return wrapApiFunction([frame, key, value] {
+        ASSERT(frame);
+        const auto& properties(frame->frame_.properties());
+
+        auto it = properties.find(key);
+        *value = (it == properties.end()) ? nullptr : it->second.c_str();
     });
 }
 

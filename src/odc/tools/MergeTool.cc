@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/log/Timer.h"
 #include "odc/Reader.h"
@@ -44,10 +45,12 @@ MergeTool::MergeTool (int ac, char *av[])
 	registerOptionWithArgument("-o");
 	if (parameters().size() < 3)
 	{
-		Log::error() << "Usage:";
+		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected at least 3 command line parameters";
+        throw UserError(ss.str());
 	}
     sqlFiltering_ = optionIsSet("-S");
 	std::string o(optionArgument("-o", std::string("<no-default>")));

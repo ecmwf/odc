@@ -10,6 +10,7 @@
 
 #include <strings.h>
 
+#include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
 #include "eckit/utils/Tokenizer.h"
@@ -35,7 +36,9 @@ void SetTool::run()
 		Log::error() << "Usage: ";
 		usage(parameters(0), Log::error());
 		Log::error() << std::endl;
-		return;
+        std::stringstream ss;
+        ss << "Expected exactly 4 command line parameters";
+        throw UserError(ss.str());
 	}
 
 	std::vector<std::string> columns;

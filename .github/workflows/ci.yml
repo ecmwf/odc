@@ -1,0 +1,370 @@
+##########################################################
+# CI workflow file generated using Cookiecutter          #
+# DO NOT EDIT MANUALLY, ANY CHANGES WILL BE OVERWRITTEN! #
+##########################################################
+
+name: Continuous Integration
+
+# Controls when the action will run
+on:
+
+  # Trigger the workflow on all pushes, except on tag creation
+  push:
+    branches:
+    - '**'
+    tags-ignore:
+    - '**'
+
+  # Trigger the workflow on all pull requests
+  pull_request: ~
+
+  # Allow workflow to be dispatched on demand
+  workflow_dispatch: ~
+
+jobs:
+
+  ci:
+    name: Build & Test
+    strategy:
+      matrix:
+        name:
+        - gnu-10@ubuntu-20.04
+        - clang-12@ubuntu-20.04
+        - gnu-10@ubuntu-18.04
+        - clang-9@ubuntu-18.04
+        - gnu-10@macos-10.15
+        - clang-12@macos-10.15
+        include:
+        - name: gnu-10@ubuntu-20.04
+          os: ubuntu-20.04
+          compiler: gnu-10
+          compiler_cc: gcc-10
+          compiler_cxx: g++-10
+          compiler_fc: gfortran-10
+        - name: clang-12@ubuntu-20.04
+          os: ubuntu-20.04
+          compiler: clang-12
+          compiler_cc: clang-12
+          compiler_cxx: clang++-12
+          compiler_fc: gfortran-10
+        - name: gnu-10@ubuntu-18.04
+          os: ubuntu-18.04
+          compiler: gnu-10
+          compiler_cc: gcc-10
+          compiler_cxx: g++-10
+          compiler_fc: gfortran-10
+        - name: clang-9@ubuntu-18.04
+          os: ubuntu-18.04
+          compiler: clang-9
+          compiler_cc: clang-9
+          compiler_cxx: clang++-9
+          compiler_fc: gfortran-9
+        - name: gnu-10@macos-10.15
+          os: macos-10.15
+          compiler: gnu-10
+          compiler_cc: gcc-10
+          compiler_cxx: g++-10
+          compiler_fc: gfortran-10
+        # Xcode compiler requires empty environment variables, so we pass null (~) here
+        - name: clang-12@macos-10.15
+          os: macos-10.15
+          compiler: clang-12
+          compiler_cc: ~
+          compiler_cxx: ~
+          compiler_fc: gfortran-10
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Environment
+      env:
+        OS: ${{ matrix.os }}
+      shell: bash -eux {0}
+      run: |
+        # Get installed CMake version number.
+        CMAKE_VERSION="$( cmake -E capabilities | jq .version.string | tr -d '"' )"
+        echo "CMAKE_VERSION=$CMAKE_VERSION" >> $GITHUB_ENV
+
+        # Linking against system OpenSSL library is not permitted on macOS.
+        #   Instead, we link against Homebrew version.
+        if [[ "${OS}" == "macos-10.15" ]]; then
+            OPENSSL_ROOT_DIR="$(brew --prefix openssl@1.1)"
+            OPENSSL_INCLUDE_DIR="$(brew --prefix openssl@1.1)/include"
+            echo "OPENSSL_ROOT_DIR=$OPENSSL_ROOT_DIR" >> $GITHUB_ENV
+            echo "OPENSSL_INCLUDE_DIR=$OPENSSL_INCLUDE_DIR" >> $GITHUB_ENV
+        fi
+
+    - name: Download ecbuild Artifact
+      id: download-ecbuild-artifact
+      uses: dawidd6/action-download-artifact@v2
+      continue-on-error: true
+      with:
+        repo: ecmwf/ecbuild
+        branch: develop
+        workflow: ci.yml
+        name: ecbuild-${{ matrix.os }}-cmake-${{ env.CMAKE_VERSION }}
+
+    - name: Extract ecbuild Artifact
+      if: steps.download-ecbuild-artifact.outcome == 'success'
+      env:
+        INSTALL_DIR: ${{ runner.temp }}/ecbuild
+      shell: bash -eux {0}
+      run: |
+        mkdir -p $INSTALL_DIR
+        tar -C $INSTALL_DIR -xvf ecbuild-${{ matrix.os }}-cmake-${{ env.CMAKE_VERSION }}.tar
+
+    # Calculates a cache key for the dependency as an SHA digest from a string that includes:
+    #   - current CMake release version
+    #   - the latest commit hash of the branch in dependency repository
+    #   In case any of these parameters changes, cache will be invalidated.
+    #   We do this by fetching commit SHA via GitHub REST API and reading environment variable, and piping their output
+    #   to the checksum utility. This step will set a number of output variables for later use.
+    - name: Calculate ecbuild Cache Key
+      id: cache-key-ecbuild
+      if: steps.download-ecbuild-artifact.outcome != 'success'
+      shell: bash -eux {0}
+      run: |
+        ECBUILD_SHA=$( curl https://api.github.com/repos/ecmwf/ecbuild/git/ref/heads/develop | jq .object.sha | tr -d '"' )
+        CACHE_KEY_STR="v=1.0.0::cmake=$CMAKE_VERSION::ecbuild=$ECBUILD_SHA"
+        CACHE_KEY_SHA=$( echo -n $CACHE_KEY_STR | shasum | awk '{print $1}' )
+        echo ::set-output name=ecbuild-sha::$ECBUILD_SHA
+        echo ::set-output name=cache-key-str::$CACHE_KEY_STR
+        echo ::set-output name=cache-key-sha::$CACHE_KEY_SHA
+
+    # Checks if the dependency cache exists for the current cache key.
+    #   If found, cache will be restored to the correct local directory.
+    #   Otherwise, this step is skipped, but if the job is successful, cache will saved for later.
+    - name: Check for ecbuild Cache
+      id: ecbuild-cache
+      if: steps.download-ecbuild-artifact.outcome != 'success'
+      uses: actions/cache@v2
+      env:
+        INSTALL_DIR: ${{ runner.temp }}/ecbuild
+      with:
+        path: ${{ env.INSTALL_DIR }}
+        key: ${{ matrix.os }}-${{ matrix.compiler }}-${{ steps.cache-key-ecbuild.outputs.cache-key-sha }}
+
+    - name: Checkout ecbuild Repository
+      if: steps.download-ecbuild-artifact.outcome != 'success' && steps.ecbuild-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: ecmwf/ecbuild
+        ref: develop
+        path: ./ecbuild
+
+    - name: Install ecbuild
+      if: steps.download-ecbuild-artifact.outcome != 'success' && steps.ecbuild-cache.outputs.cache-hit != 'true'
+      env:
+        INSTALL_DIR: ${{ runner.temp }}/ecbuild
+        LOCAL_PATH: ''
+        CC: ${{ matrix.compiler_cc }}
+        CXX: ${{ matrix.compiler_cxx }}
+        FC: ${{ matrix.compiler_fc }}
+      working-directory: ./ecbuild
+      shell: bash -eux {0}
+      run: |
+        export PATH="$LOCAL_PATH:$PATH"
+
+        SRC_DIR=$(pwd)
+        BUILD_DIR=build
+        COMPILER_FLAGS=$(cat .github/.compiler-flags || true)
+
+        rm -rf $BUILD_DIR
+        mkdir $BUILD_DIR
+        cd $BUILD_DIR
+
+        ../bin/ecbuild --prefix=$INSTALL_DIR -- -DENABLE_TESTS=OFF $COMPILER_FLAGS $SRC_DIR
+        make install
+
+    - name: Cleanup ecbuild Repository
+      if: steps.download-ecbuild-artifact.outcome != 'success' && steps.ecbuild-cache.outputs.cache-hit != 'true'
+      run: rm -rvf ./ecbuild
+
+    - name: Download eckit Artifact
+      id: download-eckit-artifact
+      uses: dawidd6/action-download-artifact@v2
+      continue-on-error: true
+      with:
+        repo: ecmwf/eckit
+        branch: develop
+        workflow: ci.yml
+        name: eckit-${{ matrix.os }}-${{ matrix.compiler }}
+
+    - name: Extract eckit Artifact
+      if: steps.download-eckit-artifact.outcome == 'success'
+      env:
+        INSTALL_DIR: ${{ runner.temp }}/eckit
+      shell: bash -eux {0}
+      run: |
+        mkdir -p $INSTALL_DIR
+        tar -C $INSTALL_DIR -xvf eckit-${{ matrix.os }}-${{ matrix.compiler }}.tar
+
+    # Calculates a cache key for the dependency as an SHA digest from a string that includes:
+    #   - current CMake release version
+    #   - the latest commit hash of the branch in dependency repository
+    #   In case any of these parameters changes, cache will be invalidated.
+    #   We do this by fetching commit SHA via GitHub REST API and reading environment variable, and piping their output
+    #   to the checksum utility. This step will set a number of output variables for later use.
+    - name: Calculate eckit Cache Key
+      id: cache-key-eckit
+      if: steps.download-eckit-artifact.outcome != 'success'
+      shell: bash -eux {0}
+      run: |
+        ECKIT_SHA=$( curl https://api.github.com/repos/ecmwf/eckit/git/ref/heads/develop | jq .object.sha | tr -d '"' )
+        CACHE_KEY_STR="v=1.0.0::cmake=$CMAKE_VERSION::eckit=$ECKIT_SHA"
+        CACHE_KEY_SHA=$( echo -n $CACHE_KEY_STR | shasum | awk '{print $1}' )
+        echo ::set-output name=eckit-sha::$ECKIT_SHA
+        echo ::set-output name=cache-key-str::$CACHE_KEY_STR
+        echo ::set-output name=cache-key-sha::$CACHE_KEY_SHA
+
+    # Checks if the dependency cache exists for the current cache key.
+    #   If found, cache will be restored to the correct local directory.
+    #   Otherwise, this step is skipped, but if the job is successful, cache will saved for later.
+    - name: Check for eckit Cache
+      id: eckit-cache
+      if: steps.download-eckit-artifact.outcome != 'success'
+      uses: actions/cache@v2
+      env:
+        INSTALL_DIR: ${{ runner.temp }}/eckit
+      with:
+        path: ${{ env.INSTALL_DIR }}
+        key: ${{ matrix.os }}-${{ matrix.compiler }}-${{ steps.cache-key-eckit.outputs.cache-key-sha }}
+
+    - name: Checkout eckit Repository
+      if: steps.download-eckit-artifact.outcome != 'success' && steps.eckit-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: ecmwf/eckit
+        ref: develop
+        path: ./eckit
+
+    - name: Install eckit
+      if: steps.download-eckit-artifact.outcome != 'success' && steps.eckit-cache.outputs.cache-hit != 'true'
+      env:
+        INSTALL_DIR: ${{ runner.temp }}/eckit
+        LOCAL_PATH: '${{ runner.temp }}/ecbuild/bin'
+        CC: ${{ matrix.compiler_cc }}
+        CXX: ${{ matrix.compiler_cxx }}
+        FC: ${{ matrix.compiler_fc }}
+      working-directory: ./eckit
+      shell: bash -eux {0}
+      run: |
+        export PATH="$LOCAL_PATH:$PATH"
+
+        SRC_DIR=$(pwd)
+        BUILD_DIR=build
+        COMPILER_FLAGS=$(cat .github/.compiler-flags || true)
+
+        rm -rf $BUILD_DIR
+        mkdir $BUILD_DIR
+        cd $BUILD_DIR
+
+        ecbuild --prefix=$INSTALL_DIR -- -DENABLE_TESTS=OFF $COMPILER_FLAGS $SRC_DIR
+        make -j2
+        make install
+
+    - name: Cleanup eckit Repository
+      if: steps.download-eckit-artifact.outcome != 'success' && steps.eckit-cache.outputs.cache-hit != 'true'
+      run: rm -rvf ./eckit
+
+    - name: Build & Test
+      env:
+        LOCAL_PATH: '${{ runner.temp }}/ecbuild/bin:${{ runner.temp }}/eckit/bin'
+        INSTALL_DIR: ${{ runner.temp }}/install
+        CC: ${{ matrix.compiler_cc }}
+        CXX: ${{ matrix.compiler_cxx }}
+        FC: ${{ matrix.compiler_fc }}
+      shell: bash -eux {0}
+      run: |
+        export PATH="$LOCAL_PATH:$PATH"
+
+        SRC_DIR=$(pwd)
+        BUILD_DIR=build
+        COMPILER_FLAGS=$(cat .github/.compiler-flags || true)
+
+        rm -rf $BUILD_DIR
+        mkdir $BUILD_DIR
+        cd $BUILD_DIR
+
+        ecbuild --prefix=$INSTALL_DIR -- $COMPILER_FLAGS $SRC_DIR
+        make -j2
+        make test -j2
+        make install
+
+    - name: Archive Build Artifact
+      env:
+        INSTALL_DIR: ${{ runner.temp }}/install
+        TMP_DIR: ${{ runner.temp }}
+      run: tar -C $INSTALL_DIR -cvf $TMP_DIR/odc-${{ matrix.os }}-${{ matrix.compiler }}.tar .
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      env:
+        TMP_DIR: ${{ runner.temp }}
+      with:
+        name: odc-${{ matrix.os }}-${{ matrix.compiler }}
+        path: ${{ env.TMP_DIR }}/odc-${{ matrix.os }}-${{ matrix.compiler }}.tar
+
+  notify:
+    name: Notify Maintainers
+    runs-on: ubuntu-20.04
+    needs:
+    - ci
+    if: always() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+    steps:
+    - name: Check Workflow Runs
+      id: check-workflow-runs
+      shell: bash -eux {0}
+      continue-on-error: true
+      run: |
+        # Check results of previous jobs in the same run.
+        #   This context has no access to special job status functions.
+        if [[ "${{ needs.ci.result }}" == "failure" ]]
+        then
+          WORKFLOW_STATUS="failure"
+          MESSAGE_TITLE="failed"
+          MESSAGE_TEXT="Some jobs were not successful"
+          MESSAGE_COLOUR="#cb2431"
+        elif [[ "${{ needs.ci.result }}" == "cancelled" ]]
+        then
+          WORKFLOW_STATUS="cancelled"
+          MESSAGE_TITLE="cancelled"
+          MESSAGE_TEXT="Some jobs were not successful"
+          MESSAGE_COLOUR="#959da5"
+        else
+          WORKFLOW_STATUS="success"
+          MESSAGE_TITLE="succeeded"
+          MESSAGE_TEXT="All jobs were successful"
+          MESSAGE_COLOUR="#28a745"
+        fi
+        echo ::set-output name=workflow-status::$WORKFLOW_STATUS
+        echo ::set-output name=message-title::$MESSAGE_TITLE
+        echo ::set-output name=message-text::$MESSAGE_TEXT
+        echo ::set-output name=message-colour::$MESSAGE_COLOUR
+
+        # Fetch previous workflow run conclusion via REST API for the same branch
+        BRANCH_NAME=${GITHUB_REF##refs/heads/}
+        PREVIOUS_CONCLUSION=$( curl https://api.github.com/repos/${{ github.repository }}/actions/workflows/ci.yml/runs\?branch\=$BRANCH_NAME\&status\=completed\&per_page\=1 | jq .workflow_runs\[0\].conclusion | tr -d '"' )
+        echo ::set-output name=previous-conclusion::$PREVIOUS_CONCLUSION
+
+    # Sends a status message to the configured MS Teams channel.
+    #   It will get triggered in case:
+    #   - current workflow run has failed
+    #   - this is the first successful run after a failure
+    #   - this is the first successful run after a cancellation
+    - name: Send a Message to Microsoft Teams
+      uses: aliencube/microsoft-teams-actions@v0.8.0
+      if: steps.check-workflow-runs.outputs.workflow-status == 'failure' || contains(steps.check-workflow-runs.outputs.previous-conclusion, 'failure') || steps.check-workflow-runs.outputs.previous-conclusion == 'cancelled'
+      env:
+        MESSAGE_TITLE: ${{ steps.check-workflow-runs.outputs.message-title }}
+        MESSAGE_TEXT: ${{ steps.check-workflow-runs.outputs.message-text }}
+        MESSAGE_COLOUR: ${{ steps.check-workflow-runs.outputs.message-colour }}
+      with:
+        webhook_uri: ${{ secrets.MS_TEAMS_INCOMING_WEBHOOK }}
+        title: '[${{ github.repository }}] Run ${{ env.MESSAGE_TITLE }}: ${{ github.workflow }} - ${{ github.ref }} (${{ github.sha }})'
+        summary: '${{ github.workflow }}: ${{ env.MESSAGE_TEXT }}'
+        text: '${{ github.workflow }}: ${{ env.MESSAGE_TEXT }}'
+        theme_color: '${{ env.MESSAGE_COLOUR }}'
+        sections: '[{"facts":[{"name":"Build & Test","value":"${{ needs.ci.result }}"}]}]'
+        actions: '[{"@type":"OpenUri","name":"View workflow run","targets":[{"os":"default","uri":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}]}]'

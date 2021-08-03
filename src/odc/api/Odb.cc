@@ -20,7 +20,9 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/BufferList.h"
 #include "eckit/log/Log.h"
+#include "eckit/utils/StringTools.h"
 
+#include "odc/core/Column.h"
 #include "odc/core/DecodeTarget.h"
 #include "odc/core/Encoder.h"
 #include "odc/core/Table.h"
@@ -69,10 +71,14 @@ public: // methods
     Frame filter(const std::string& sql);
     Buffer encodedData();
 
+    const std::map<std::string, std::string>& properties() const;
+
 private: // members
 
     mutable std::vector<ColumnInfo> columnInfo_;
     std::vector<core::Table> tables_;
+    mutable bool propertiesRetrieved_;
+    mutable std::map<std::string, std::string> properties_;
 };
 
 
@@ -175,6 +181,23 @@ Buffer FrameImpl::encodedData() {
     return buffers.consolidate();
 }
 
+const std::map<std::string, std::string>& FrameImpl::properties() const {
+
+    ASSERT(!tables_.empty());
+
+    // Properties are memoised, so only filled in once
+    if (!propertiesRetrieved_) {
+
+        for (auto& t : tables_) {
+            properties_.insert(t.properties().begin(), t.properties().end());
+        }
+
+        propertiesRetrieved_ = true;
+    }
+
+    return properties_;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 // API Forwarding
@@ -230,15 +253,27 @@ SpanVisitor::~SpanVisitor() {}
 
 struct SpanImpl : core::Span {
     SpanImpl(core::Span&& s) : core::Span(std::move(s)) {}
+    SpanImpl() : core::Span(0, 0) {}
 };
 
 Span::Span(std::unique_ptr<SpanImpl>&& s) :
     impl_(std::move(s)) {}
 
+Span::Span() :
+    impl_(new SpanImpl()) {}
+
+Span::Span(Span&& s) :
+    impl_(std::move(s.impl_)) {}
+
 Span::~Span() {}
 
 bool Span::operator==(const Span& rhs) const {
     return(*impl_ == *rhs.impl_);
+}
+
+Span& Span::operator=(Span&& rhs) {
+    std::swap(impl_, rhs.impl_);
+    return *this;
 }
 
 void Span::visit(SpanVisitor& visitor) const {
@@ -270,11 +305,12 @@ Length Span::length() const {
 // Table implementation
 
 FrameImpl::FrameImpl(std::vector<core::Table>&& tables) :
-    tables_(std::move(tables)) {}
+    tables_(std::move(tables)),
+    propertiesRetrieved_(false) {}
 
 const std::vector<ColumnInfo>& FrameImpl::columnInfo() const {
 
-    ASSERT(tables_.size() > 0);
+    ASSERT(!tables_.empty());
 
     // ColumnInfo is memoised, so only constructed once
 
@@ -317,7 +353,7 @@ const std::vector<ColumnInfo>& FrameImpl::columnInfo() const {
 }
 
 bool FrameImpl::hasColumn(const std::string& column) const {
-    ASSERT(tables_.size() > 0);
+    ASSERT(!tables_.empty());
     return tables_.front().columns().hasColumn(column);
 }
 
@@ -394,7 +430,7 @@ public:
     }
 
     Length openForRead() override {
-        ASSERT(tables_.size() > 0);
+        ASSERT(!tables_.empty());
 
         table_ = 0;
         pos_ = 0;
@@ -561,6 +597,10 @@ Buffer Frame::encodedData() {
     return impl_->encodedData();
 }
 
+const std::map<std::string, std::string>& Frame::properties() const {
+    ASSERT(impl_);
+    return impl_->properties();
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -595,6 +635,28 @@ double Settings::doubleMissingValue() {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+const char* columnTypeName(const ColumnType& type) {
+
+    static const char* names[] = {
+        OdbTypes<ColumnType(0)>::name,
+        OdbTypes<ColumnType(1)>::name,
+        OdbTypes<ColumnType(2)>::name,
+        OdbTypes<ColumnType(3)>::name,
+        OdbTypes<ColumnType(4)>::name,
+        OdbTypes<ColumnType(5)>::name,
+    };
+
+    if (int(type) < 0 || size_t(type) >= sizeof(names)/sizeof(names[0])) {
+        std::stringstream ss;
+        ss << "Unknown type id: " << type;
+        throw UserError(ss.str(), Here());
+    }
+
+    return names[int(type)];
+}
+
+//------------------------------------------------------------------------------------------------------------
 
 size_t odbFromCSV(DataHandle& dh_in, DataHandle& dh_out, const std::string& delimiter) {
 
