@@ -160,6 +160,13 @@ void Table::decode(DecodeTarget& target) {
     // Read the data in in bulk for this table
 
     const Buffer readBuffer(readEncodedData());
+
+    // Special case for the empty table
+
+    if (nrows == 0) return;
+
+    // Prepare decoders for reading
+
     GeneralDataStream ds(otherByteOrder(), readBuffer);
 
     std::vector<std::reference_wrapper<Codec>> decoders;
@@ -167,6 +174,16 @@ void Table::decode(DecodeTarget& target) {
     for (auto& col : metadata) {
         decoders.push_back(col->coder());
         decoders.back().get().setDataStream(ds);
+    }
+
+    // Fill the initial row with missingValues. This means that if we have an (old, unsupported)
+    // ODB that doesn't start from column zero in the first column, then it gets the correct
+    // value
+
+    for (int col = 0; col < long(ncols); col++) {
+        if (visitColumn[col]) {
+            *reinterpret_cast<double*>((*facades[col])[0]) = decoders[col].get().missingValue();
+        }
     }
 
     // Do the decoding

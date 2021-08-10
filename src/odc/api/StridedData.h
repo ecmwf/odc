@@ -181,7 +181,7 @@ private: // members
 template <typename value_type>
 inline void StridedDataT<value_type>::fill(int sourceRow, int finalRow) {
 
-    ASSERT(sourceRow < finalRow);
+    ASSERT(sourceRow <= finalRow);
 
     // Specialisations for speed
 

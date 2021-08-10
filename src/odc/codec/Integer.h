@@ -45,6 +45,13 @@ public: // methods
 
     ~BaseCodecInteger() override {}
 
+    double missingValue() const override {
+        static_assert(sizeof(ValueType) == sizeof(double), "unsafe casting check");
+        ValueType casted_value = static_cast<ValueType>(this->missingValue_);
+        const double* punned_value = reinterpret_cast<const double*>(&casted_value);
+        return *punned_value;
+    }
+
 private: // methods
 
     void gatherStats(const double& v) override {
