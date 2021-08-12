@@ -5,6 +5,8 @@ configure_file( odc_config.f90.in odc_config.f90 )
 
 list( APPEND odclib_src_files
 
+${CMAKE_CURRENT_BINARY_DIR}/ODBAPIVersionSHA1.cc
+
 api/odc.h
 api/odc.cc
 api/Odb.h
@@ -14,7 +16,6 @@ api/ColumnInfo.h
 api/StridedData.h
 
 pyodbapi.h
-ODBAPIVersionSHA1.cc
 StringTool.cc
 StringTool.h
 CommandLineParser.cc
@@ -156,8 +157,6 @@ ecbuild_add_library( TARGET odccore
                         ${INSTALL_INCLUDE_DIR}/odc
                      SOURCES
                         ${odclib_src_files}
-                     GENERATED
-                        ODBAPIVersionSHA1.cc
                      TEMPLATES
                         ${odclib_templates}
                      PUBLIC_INCLUDES
@@ -170,8 +169,7 @@ ecbuild_add_library(
     TARGET          fodc
     CONDITION       HAVE_FORTRAN
     SOURCES         api/odc.f90
-                    odc_config.f90
-    GENERATED       odc_config.f90
+                    ${CMAKE_CURRENT_BINARY_DIR}/odc_config.f90
     PUBLIC_INCLUDES $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/module>
     PUBLIC_LIBS     odccore
 )
