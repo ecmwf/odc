@@ -72,6 +72,9 @@ private: // methods
 
 protected: // members
 
+    /// @note - this indirection via castedMissingValue_ rather than just using missingValue_
+    ///         directly where needed is to work around a Cray 8.7 compiler bug, where
+    ///         where the punned version gets optimised out
     ValueType castedMissingValue_;
 };
 
