@@ -56,6 +56,9 @@ extern "C" void python_api_start()
 
 namespace {
 
+/// @note - These functions work around a Cray 8.7 compiler bug, where
+///         where the punned version gets optimised out
+
 int64_t forceDoubleAsInteger(double v) {
     const int64_t* punned_value = reinterpret_cast<const int64_t*>(
                                       reinterpret_cast<const char*>(&v));
