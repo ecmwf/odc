@@ -183,6 +183,8 @@ Each row is encoded sequentially in the file. It starts with an ``uint16`` marke
 
 Since most columns do not change for most rows, this structure suggests that the encoder should sort the columns in order from least to most rapidly changing, resulting in data compression.
 
+For the data to be valid, in the first row of the frame the marker must not indicate a column higher than the first non-missing value. Typically the first marker will equal zero, with the row fully specified. If the marker is non-zero, the values associated with the skipped columns are treated as missing values.
+
 
 Row Format
 ^^^^^^^^^^
