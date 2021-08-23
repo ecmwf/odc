@@ -36,7 +36,8 @@ public: // definitions
 public: // methods
 
     BaseCodecInteger(api::ColumnType type, const std::string& name, double minmaxmissing=odc::MDI::integerMDI()) :
-        core::DataStreamCodec<ByteOrder>(name, type) {
+        core::DataStreamCodec<ByteOrder>(name, type),
+        castedMissingValue_(static_cast<ValueType>(minmaxmissing)) {
 
             this->min_ = minmaxmissing;
             this->max_ = minmaxmissing;
@@ -47,11 +48,34 @@ public: // methods
 
 private: // methods
 
+    void missingValue(double v) override {
+        core::Codec::missingValue(v);
+        castedMissingValue_ = static_cast<ValueType>(this->missingValue_);
+    }
+
+    double missingValue() const override {
+        static_assert(sizeof(ValueType) == sizeof(double), "unsafe casting check");
+        const double* punned_value = reinterpret_cast<const double*>(&castedMissingValue_);
+        return *punned_value;
+    }
+
+    void load(odc::core::DataStream<ByteOrder>& ds) override {
+        core::DataStreamCodec<ByteOrder>::load(ds);
+        castedMissingValue_ = static_cast<ValueType>(this->missingValue_);
+    }
+
     void gatherStats(const double& v) override {
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
         const ValueType& val(reinterpret_cast<const ValueType&>(v));
         core::Codec::gatherStats(val);
     }
+
+protected: // members
+
+    /// @note - this indirection via castedMissingValue_ rather than just using missingValue_
+    ///         directly where needed is to work around a Cray 8.7 compiler bug, where
+    ///         where the punned version gets optimised out
+    ValueType castedMissingValue_;
 };
 
 

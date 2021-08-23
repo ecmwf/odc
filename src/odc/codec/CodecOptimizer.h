@@ -46,8 +46,8 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
 		double min = col.min();
 		double max = col.max();
 		bool hasMissing = col.hasMissing();
-		double missing = col.missingValue();
-                //LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << std::endl;
+		double missing = col.rawMissingValue();
+		 //LOG << "CodecOptimizer::setOptimalCodecs: " << i << " " << col.name() << ", min=" << min << ", max=" << max << std::endl;
 		std::string codec(defaultCodec_[col.type()]);
         switch(col.type())
 		{

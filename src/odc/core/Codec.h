@@ -69,8 +69,9 @@ public:
 	void max(double m) { max_ = m; }
 	double max() const { return max_; }
 
-	void missingValue(double v); 
-    double missingValue() const { return missingValue_; }
+    virtual void missingValue(double v); 
+    double rawMissingValue() const { return missingValue_; }
+    virtual double missingValue() const { return missingValue_; }
 
     // Some special functions for string handling inside the CodecOptimizer
     virtual size_t numStrings() const { NOTIMP; }

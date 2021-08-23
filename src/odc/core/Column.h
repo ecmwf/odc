@@ -79,6 +79,7 @@ public:
 
 	void missingValue(double v) { coder_->missingValue(v); }
 	double missingValue() const { return coder_->missingValue(); } 
+	double rawMissingValue() const { return coder_->rawMissingValue(); }
 
     void resetStats() { ASSERT(coder_); coder_->resetStats(); }
 

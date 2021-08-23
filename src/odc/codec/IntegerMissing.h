@@ -133,6 +133,8 @@ public: // methods
         CodecConstantOrMissing<ByteOrder, double>(type, codec_name(), odc::MDI::realMDI()) {}
 
     ~CodecRealConstantOrMissing() override {}
+
+    double missingValue() const override { return this->missingValue_; }
 };
 
 //----------------------------------------------------------------------------------------------------------------------
