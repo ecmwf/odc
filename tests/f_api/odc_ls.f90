@@ -179,11 +179,33 @@ contains
         integer, intent(in) :: iunit
         real(8), intent(in), dimension(:) :: double_string
         character(8*size(double_string)) :: strtmp
+
         if (all(transfer(double_string, 1_8, size(double_string)) == 0)) then
             write(iunit, '(a)', advance='no') '.'
         else
-            write(iunit, '(a)', advance='no') trim(adjustl(transfer(double_string, strtmp)))
+            write(iunit, '(a)', advance='no') trim(adjustl(strip_null_chars(transfer(double_string, strtmp))))
         end if
     end subroutine
+
+    function strip_null_chars(input_str) result(output_str)
+        character(*), intent(in) :: input_str
+        character(:), allocatable, target :: output_str
+        character :: c
+        integer :: i
+
+        do i = 1, len(input_str)
+            c = input_str(i:i)
+            if (c == achar(0)) then
+                allocate(character(i-1) :: output_str)
+                output_str = input_str(1:i-1)
+                exit
+            end if
+        end do
+
+        if (.not. allocated(output_str)) then
+            allocate(character(len(input_str)) :: output_str)
+            output_str = input_str
+        end if
+    end function
 
 end program

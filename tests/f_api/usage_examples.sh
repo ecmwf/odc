@@ -80,9 +80,6 @@ cmp ls-usage.txt ls-usage-expected.txt
 
 ${wd}/odc-fortran-ls ${test_wd}/test-1.odb > ls.txt && exit_code=$? ; expect_success
 
-# Remove non-printable binary characters from the output
-tr -cd '\11\12\15\40-\176' < ls.txt > ls-ascii.txt
-
 current_date=$(date +"%Y%m%d")
 
 cat > ls-expected.txt <<EOF
@@ -109,7 +106,7 @@ xxxx	$current_date	stat18	0-12345-0-67818	222.2208	1234	12.3400	0000001
 xxxx	$current_date	stat19	0-12345-0-67819	234.5664	4321	43.2100	0001011	
 EOF
 
-cmp ls-ascii.txt ls-expected.txt
+cmp ls.txt ls-expected.txt
 
 # Test Fortran header stats example
 
