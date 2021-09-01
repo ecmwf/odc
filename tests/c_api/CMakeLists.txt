@@ -2,7 +2,6 @@
 list( APPEND _capi_odc_tests
     read
     encode
-    usage_examples
 )
 
 foreach( _test ${_capi_odc_tests} )
@@ -12,23 +11,6 @@ foreach( _test ${_capi_odc_tests} )
         ENVIRONMENT  ${test_environment}
         TEST_DEPENDS odc_get_test_data
         LIBS         eckit odccore )
-endforeach()
-
-list( APPEND _api_odc_test_extras
-    odc-c-header.1
-    odc-c-header.2
-    odc-c-encode-custom.1
-    odc-c-encode-custom.2
-    odc-c-encode-row-major.1
-    odc-c-encode-row-major.2
-    odc-c-ls.1
-    odc-c-ls.2
-)
-
-foreach( _extra ${_api_odc_test_extras} )
-    file(
-        COPY        ${_extra}
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
 list( APPEND _capi_odc_example_sources
@@ -56,4 +38,17 @@ foreach( _i RANGE ${_count} )
                             SOURCES    ${_sources}.c
                             LIBS       odccore
                             NOINSTALL )
+endforeach()
+
+list( APPEND _capi_odc_tests_scripts
+    usage_examples.sh
+)
+
+foreach( _script ${_capi_odc_tests_scripts} )
+    ecbuild_add_test(
+        TARGET odc_capi_${_script}
+        TYPE script
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
+        ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
+    )
 endforeach()

@@ -3,7 +3,6 @@ list( APPEND _api_fodc_tests
     general
     read
     encode
-    usage_examples
 )
 
 foreach( _test ${_api_fodc_tests} )
@@ -14,23 +13,6 @@ foreach( _test ${_api_fodc_tests} )
         TEST_DEPENDS odc_get_test_data
         CONDITION    HAVE_FORTRAN
         LIBS         fodc )
-endforeach()
-
-list( APPEND _api_fodc_test_extras
-    odc-fortran-header.1
-    odc-fortran-header.2
-    odc-fortran-encode-custom.1
-    odc-fortran-encode-custom.2
-    odc-fortran-encode-row-major.1
-    odc-fortran-encode-row-major.2
-    odc-fortran-ls.1
-    odc-fortran-ls.2
-)
-
-foreach( _extra ${_api_fodc_test_extras} )
-    file(
-        COPY        ${_extra}
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
 list( APPEND _api_fodc_example_sources
@@ -59,4 +41,17 @@ foreach( _i RANGE ${_count} )
                             LIBS       fodc
                             CONDITION  HAVE_FORTRAN
                             NOINSTALL )
+endforeach()
+
+list( APPEND _fapi_odc_tests_scripts
+    usage_examples.sh
+)
+
+foreach( _script ${_fapi_odc_tests_scripts} )
+    ecbuild_add_test(
+        TARGET odc_fapi_${_script}
+        TYPE script
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
+        ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
+    )
 endforeach()
