@@ -5,6 +5,7 @@
 !     gfortran -lodccore -lfodc -o odc-fortran-ls odc_ls.f90
 
 program odc_ls
+    use, intrinsic :: iso_c_binding, only: c_null_char
     use, intrinsic :: iso_fortran_env, only: error_unit,output_unit
     use odc
     implicit none
@@ -178,34 +179,30 @@ contains
     subroutine write_string(iunit, double_string)
         integer, intent(in) :: iunit
         real(8), intent(in), dimension(:) :: double_string
-        character(8*size(double_string)) :: strtmp
 
         if (all(transfer(double_string, 1_8, size(double_string)) == 0)) then
             write(iunit, '(a)', advance='no') '.'
         else
-            write(iunit, '(a)', advance='no') trim(adjustl(strip_null_chars(transfer(double_string, strtmp))))
+            write(iunit, '(a)', advance='no') trim(adjustl(strip_nulls(double_string)))
         end if
     end subroutine
 
-    function strip_null_chars(input_str) result(output_str)
-        character(*), intent(in) :: input_str
-        character(:), allocatable, target :: output_str
-        character :: c
+    function strip_nulls(dstr) result(fstr)
+        real(8), intent(in) :: dstr(:)
+        character(8 * size(dstr)) :: tmpstr
+        character(:), allocatable :: fstr
         integer :: i
 
-        do i = 1, len(input_str)
-            c = input_str(i:i)
-            if (c == achar(0)) then
-                allocate(character(i-1) :: output_str)
-                output_str = input_str(1:i-1)
-                exit
+        tmpstr = transfer(dstr, tmpstr)
+
+        do i = 1, len(tmpstr)
+            if (tmpstr(i:i) == c_null_char) then
+                fstr = tmpstr(1:i-1)
+                return
             end if
         end do
 
-        if (.not. allocated(output_str)) then
-            allocate(character(len(input_str)) :: output_str)
-            output_str = input_str
-        end if
+        fstr = tmpstr
     end function
 
 end program
