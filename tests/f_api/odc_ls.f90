@@ -181,7 +181,7 @@ contains
         if (all(transfer(double_string, 1_8, size(double_string)) == 0)) then
             write(iunit, '(a)', advance='no') '.'
         else
-            write(iunit, '(a)', advance='no') trim(adjustl(strip_nulls(double_string)))
+            write(iunit, '(a)', advance='no') strip_nulls(double_string)
         end if
     end subroutine
 
