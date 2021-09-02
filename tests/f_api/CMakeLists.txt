@@ -53,5 +53,6 @@ foreach( _script ${_fapi_odc_tests_scripts} )
         TYPE script
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
         ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
+        CONDITION   HAVE_FORTRAN
     )
 endforeach()

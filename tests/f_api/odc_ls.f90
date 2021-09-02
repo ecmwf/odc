@@ -1,10 +1,9 @@
-! To build this program, please make sure to first compile odc Fortran module,
-! and then reference linked libraries:
+! To build this program, please make sure to reference linked libraries:
 !
-!     gfortran -c ../../src/odc/api/odc.f90
 !     gfortran -lodccore -lfodc -o odc-fortran-ls odc_ls.f90
 
 program odc_ls
+    use, intrinsic :: iso_c_binding, only: c_null_char
     use, intrinsic :: iso_fortran_env, only: error_unit,output_unit
     use odc
     implicit none
@@ -178,12 +177,30 @@ contains
     subroutine write_string(iunit, double_string)
         integer, intent(in) :: iunit
         real(8), intent(in), dimension(:) :: double_string
-        character(8*size(double_string)) :: strtmp
+
         if (all(transfer(double_string, 1_8, size(double_string)) == 0)) then
             write(iunit, '(a)', advance='no') '.'
         else
-            write(iunit, '(a)', advance='no') trim(adjustl(transfer(double_string, strtmp)))
+            write(iunit, '(a)', advance='no') strip_nulls(double_string)
         end if
     end subroutine
+
+    function strip_nulls(dstr) result(fstr)
+        real(8), intent(in) :: dstr(:)
+        character(8 * size(dstr)) :: tmpstr
+        character(:), allocatable :: fstr
+        integer :: i
+
+        tmpstr = transfer(dstr, tmpstr)
+
+        do i = 1, len(tmpstr)
+            if (tmpstr(i:i) == c_null_char) then
+                fstr = tmpstr(1:i-1)
+                return
+            end if
+        end do
+
+        fstr = tmpstr
+    end function
 
 end program

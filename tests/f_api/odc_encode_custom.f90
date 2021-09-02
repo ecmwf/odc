@@ -1,7 +1,5 @@
-! To build this program, please make sure to first compile odc Fortran module,
-! and then reference linked libraries:
+! To build this program, please make sure to reference linked libraries:
 !
-!     gfortran -c ../../src/odc/api/odc.f90
 !     gfortran -lodccore -lfodc -o odc-fortran-encode-custom odc_encode_custom.f90
 
 program odc_ls
