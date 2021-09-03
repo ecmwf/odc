@@ -160,6 +160,204 @@ CASE("Count lines in an existing ODB file") {
     EXPECT(totalRows == 50000);
 }
 
+CASE("Check column details in an existing ODB file") {
+
+    char example_column_names[][24] = {
+        "expver@desc", "andate@desc", "antime@desc", "seqno@hdr", "obstype@hdr", "obschar@hdr", "subtype@hdr",
+        "date@hdr", "time@hdr", "rdbflag@hdr", "status@hdr", "event1@hdr", "blacklist@hdr", "sortbox@hdr",
+        "sitedep@hdr", "statid@hdr", "ident@hdr", "lat@hdr", "lon@hdr", "stalt@hdr", "modoro@hdr", "trlat@hdr",
+        "trlon@hdr", "instspec@hdr", "event2@hdr", "anemoht@hdr", "baroht@hdr", "sensor@hdr", "numlev@hdr",
+        "varno_presence@hdr", "varno@body", "vertco_type@body", "rdbflag@body", "anflag@body", "status@body",
+        "event1@body", "blacklist@body", "entryno@body", "press@body", "press_rl@body", "obsvalue@body", "aux1@body",
+        "event2@body", "ppcode@body", "level@body", "biascorr@body", "final_obs_error@errstat", "obs_error@errstat",
+        "repres_error@errstat", "pers_error@errstat", "fg_error@errstat",
+    };
+
+    int example_column_types[] = {
+        ODC_STRING, ODC_INTEGER, ODC_INTEGER, ODC_INTEGER, ODC_INTEGER, ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER,
+        ODC_INTEGER, ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER, ODC_STRING,
+        ODC_INTEGER, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_INTEGER, ODC_INTEGER, ODC_REAL,
+        ODC_REAL, ODC_INTEGER, ODC_INTEGER, ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER, ODC_BITFIELD, ODC_BITFIELD,
+        ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_INTEGER, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_INTEGER,
+        ODC_INTEGER, ODC_BITFIELD, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL,
+    };
+
+    char column_10_bitfield_names[][15] = {
+        "lat_humon", "lat_qcsub", "lat_override", "lat_flag", "lat_hqc_flag", "lon_humon", "lon_qcsub", "lon_override",
+        "lon_flag", "lon_hqc_flag", "date_humon", "date_qcsub", "date_override", "date_flag", "date_hqc_flag",
+        "time_humon", "time_qcsub", "time_override", "time_flag", "time_hqc_flag", "stalt_humon", "stalt_qcsub",
+        "stalt_override", "stalt_flag", "stalt_hqc_flag",
+    };
+
+    int column_10_bitfield_sizes[] = {
+        1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1,
+    };
+
+    odc_reader_t* reader = nullptr;
+    CHECK_RETURN(odc_open_path(&reader, "../2000010106-reduced.odb"));
+    std::unique_ptr<odc_reader_t> reader_deleter(reader);
+
+    odc_frame_t* frame = nullptr;
+    CHECK_RETURN(odc_new_frame(&frame, reader));
+    std::unique_ptr<odc_frame_t> frame_deleter(frame);
+
+    // Get the first frame
+    CHECK_RETURN(odc_next_frame(frame));
+
+    int ncols;
+    CHECK_RETURN(odc_frame_column_count(frame, &ncols));
+    EXPECT(ncols == 51);
+
+    int col;
+
+    for (col = 0; col < ncols; ++col) {
+        const char* name;
+        int type;
+        int element_size;
+        int bitfield_count;
+
+        CHECK_RETURN(odc_frame_column_attributes(frame, col, &name, &type, &element_size, &bitfield_count));
+
+        EXPECT(strcmp(name, example_column_names[col]) == 0);
+        EXPECT(type == example_column_types[col]);
+        EXPECT(element_size == 8);
+
+        if (type == ODC_BITFIELD) {
+            EXPECT(bitfield_count > 0);
+        }
+        else {
+            EXPECT(bitfield_count == 0);
+        }
+
+        // Test bitfields for column 10
+        if (col == 9) {
+            EXPECT(bitfield_count == 25);
+
+            int bf;
+            int expected_offset = 0;
+
+            for (bf = 0; bf < bitfield_count; ++bf) {
+                const char* bf_name;
+                int bf_offset;
+                int bf_size;
+
+                CHECK_RETURN(odc_frame_bitfield_attributes(frame, col, bf, &bf_name, &bf_offset, &bf_size));
+
+                EXPECT(strcmp(bf_name, column_10_bitfield_names[bf]) == 0);
+                EXPECT(bf_size == column_10_bitfield_sizes[bf]);
+                EXPECT(bf_offset == expected_offset);
+
+                expected_offset = expected_offset + bf_size;
+            }
+        }
+    }
+}
+
+CASE("Decode data in an existing ODB file") {
+
+    CHECK_RETURN(odc_integer_behaviour(ODC_INTEGERS_AS_LONGS));
+
+    odc_reader_t* reader = nullptr;
+    CHECK_RETURN(odc_open_path(&reader, "../2000010106-reduced.odb"));
+    std::unique_ptr<odc_reader_t> reader_deleter(reader);
+
+    odc_frame_t* frame = nullptr;
+    CHECK_RETURN(odc_new_frame(&frame, reader));
+    std::unique_ptr<odc_frame_t> frame_deleter(frame);
+
+    size_t ntables = 0;
+    size_t totalRows = 0;
+
+    // Get the first frame
+    CHECK_RETURN(odc_next_frame(frame));
+
+    // Read the second frame, because why not
+    CHECK_RETURN(odc_next_frame(frame));
+
+    odc_decoder_t* decoder;
+    CHECK_RETURN(odc_new_decoder(&decoder));
+    EXPECT(decoder);
+    std::unique_ptr<odc_decoder_t> decoder_deleter(decoder);
+
+    CHECK_RETURN(odc_decoder_defaults_from_frame(decoder, frame));
+
+    long nrows;
+    CHECK_RETURN(odc_decode(decoder, frame, &nrows));
+    EXPECT(nrows == 10000);
+
+    long nrows2;
+    CHECK_RETURN(odc_decoder_row_count(decoder, &nrows2));
+    EXPECT(nrows2 == 10000);
+
+    int ncols;
+    CHECK_RETURN(odc_decoder_column_count(decoder, &ncols));
+    EXPECT(ncols == 51);
+
+    const void* data;
+    long row_stride;
+    bool column_major;
+    CHECK_RETURN(odc_decoder_data_array(decoder, &data, &row_stride, 0, &column_major));
+    EXPECT(!column_major);
+    EXPECT(data != nullptr);
+    EXPECT(row_stride == 51 * sizeof(double));
+
+    const int64_t expected_seqno[] = {
+        (int64_t)6106691,
+        (int64_t)6002665,
+        (int64_t)6162889,
+        (int64_t)6162885
+    };
+
+    const int64_t expected_obschar[] = {
+        (int64_t)537918674,
+        (int64_t)135265490,
+        (int64_t)605027538,
+        (int64_t)605027538,
+    };
+
+    const double expected_lat[] = {
+        (double)0.370279,
+        (double)0.369519,
+        (double)0.367451,
+        (double)0.360161,
+    };
+
+    const int width = 8;
+
+    long missing_integer;
+    double missing_double;
+
+    CHECK_RETURN(odc_missing_integer(&missing_integer));
+    CHECK_RETURN(odc_missing_double(&missing_double));
+
+    int i;
+    int row;
+
+    for (i = 0; i < 4; ++i) {
+        row = i * 765;
+
+        // expver@desc (ODC_STRING, col 1)
+        char* expver = &((char*)data)[width * 0 + width * row];
+        expver[4] = '\0';
+        EXPECT(strcmp(expver, "0018") == 0);
+
+        // seqno@hdr (ODC_INTEGER, col 4)
+        EXPECT(*(const int64_t*)&((const char*)data)[width * 3 + width * row] == expected_seqno[i]);
+
+        // obschar@hdr (ODC_BITFIELD, col 6)
+        EXPECT(*(const int64_t*)&((const char*)data)[width * 5 + width * row] == expected_obschar[i]);
+
+        // sortbox@hdr (ODC_INTEGER, col 14, missing value!)
+        EXPECT(*(const int64_t*)&((const char*)data)[width * 13 + 8 * row] == missing_integer);
+
+        // lat@hdr (ODC_REAL, col 18)
+        EXPECT(eckit::types::is_approximately_equal(*(const double*)&((const char*)data)[width * 17 + 8 * row],expected_lat[i], 0.000001));
+
+        // repres_error@errstat (ODC_REAL, col 49, missing value!)
+        EXPECT(*(const double*)&((const char*)data)[width * 48 + 8 * row] == missing_double);
+    }
+}
+
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Where the properties in the two frames are distinct (non-aggregated)") {
