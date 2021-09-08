@@ -221,6 +221,198 @@ CASE("Count lines in an existing ODB file") {
     EXPECT(totalRows == 50000);
 }
 
+CASE("Check column details in an existing ODB file") {
+
+    std::vector<std::string> cols {
+        "expver@desc", "andate@desc", "antime@desc", "seqno@hdr", "obstype@hdr", "obschar@hdr", "subtype@hdr",
+        "date@hdr", "time@hdr", "rdbflag@hdr", "status@hdr", "event1@hdr", "blacklist@hdr", "sortbox@hdr",
+        "sitedep@hdr", "statid@hdr", "ident@hdr", "lat@hdr", "lon@hdr", "stalt@hdr", "modoro@hdr", "trlat@hdr",
+        "trlon@hdr", "instspec@hdr", "event2@hdr", "anemoht@hdr", "baroht@hdr", "sensor@hdr", "numlev@hdr",
+        "varno_presence@hdr", "varno@body", "vertco_type@body", "rdbflag@body", "anflag@body", "status@body",
+        "event1@body", "blacklist@body", "entryno@body", "press@body", "press_rl@body", "obsvalue@body", "aux1@body",
+        "event2@body", "ppcode@body", "level@body", "biascorr@body", "final_obs_error@errstat", "obs_error@errstat",
+        "repres_error@errstat", "pers_error@errstat", "fg_error@errstat",
+    };
+
+    std::vector<int> types {
+        odc::api::STRING, odc::api::INTEGER, odc::api::INTEGER, odc::api::INTEGER, odc::api::INTEGER,
+        odc::api::BITFIELD, odc::api::INTEGER, odc::api::INTEGER, odc::api::INTEGER, odc::api::BITFIELD,
+        odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD, odc::api::INTEGER, odc::api::INTEGER,
+        odc::api::STRING, odc::api::INTEGER, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::REAL,
+        odc::api::REAL, odc::api::REAL, odc::api::INTEGER, odc::api::INTEGER, odc::api::REAL, odc::api::REAL,
+        odc::api::INTEGER, odc::api::INTEGER, odc::api::BITFIELD, odc::api::INTEGER, odc::api::INTEGER,
+        odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD,
+        odc::api::INTEGER, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::INTEGER,
+        odc::api::INTEGER, odc::api::BITFIELD, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::REAL,
+        odc::api::REAL, odc::api::REAL,
+    };
+
+    std::vector<std::string> bitfields {
+        "lat_humon", "lat_qcsub", "lat_override", "lat_flag", "lat_hqc_flag", "lon_humon", "lon_qcsub", "lon_override",
+        "lon_flag", "lon_hqc_flag", "date_humon", "date_qcsub", "date_override", "date_flag", "date_hqc_flag",
+        "time_humon", "time_qcsub", "time_override", "time_flag", "time_hqc_flag", "stalt_humon", "stalt_qcsub",
+        "stalt_override", "stalt_flag", "stalt_hqc_flag",
+    };
+
+    std::vector<int> bitfield_sizes {
+        1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1,
+    };
+
+    bool aggregated = false;
+    odc::api::Reader reader("../2000010106-reduced.odb", aggregated);
+
+    // Get the first frame
+    odc::api::Frame frame = reader.next();
+
+    EXPECT(frame.columnCount() == 51);
+
+    int i = 0;
+
+    // Iterate over frame columns
+    for (const auto& column : frame.columnInfo()) {
+        const int col = i++;
+
+        EXPECT(column.name == cols.at(col));
+        EXPECT(column.type == types.at(col));
+        EXPECT(column.decodedSize == 8);
+
+        if (column.type == odc::api::BITFIELD) {
+            EXPECT(column.bitfield.size() > 0);
+        }
+        else {
+            EXPECT(column.bitfield.size() == 0);
+        }
+
+        // Test bitfields for column 10
+        if (col == 9) {
+            EXPECT(column.bitfield.size() == 25);
+
+            int j = 0;
+            int expected_offset = 0;
+
+            for (auto const& bitfield : column.bitfield) {
+                const int bf = j++;
+
+                EXPECT(bitfield.name == bitfields.at(bf));
+                EXPECT(bitfield.size == bitfield_sizes.at(bf));
+                EXPECT(bitfield.offset == expected_offset);
+
+                expected_offset = expected_offset + bitfield.size;
+            }
+        }
+    }
+}
+
+CASE("Decode data in an existing ODB file") {
+
+    odc::api::Settings::treatIntegersAsDoubles(false);
+
+    bool aggregated = false;
+    odc::api::Reader reader("../2000010106-reduced.odb", aggregated);
+
+    // Get the first frame
+    odc::api::Frame frame = reader.next();
+
+    // Read the second frame, because why not
+    frame = reader.next();
+
+    // Properties of this frame
+
+    size_t ncols = frame.columnCount();
+    size_t nrows = frame.rowCount();
+    const auto& columnInfo = frame.columnInfo();
+
+    EXPECT(nrows == 10000);
+    EXPECT(ncols == 51);
+
+    // Determine storage requirements
+
+    size_t row_size = 0;
+    size_t i;
+
+    for (i = 0; i < frame.columnCount(); ++i) {
+        const auto& col(columnInfo[i]);
+        row_size += col.decodedSize;
+    }
+
+    // Allocate storage required
+
+    size_t storage_size = row_size * nrows;
+    std::vector<char> buffer(storage_size);
+
+    // Decoder prerequisites
+
+    std::vector<std::string> columns;
+    std::vector<odc::api::StridedData> strides;
+
+    char* ptr = &buffer[0];
+    for (const auto& col : columnInfo) {
+        columns.push_back(col.name);
+        strides.emplace_back(odc::api::StridedData{ptr, nrows, col.decodedSize, col.decodedSize});
+        ptr += nrows * col.decodedSize;
+    }
+
+    EXPECT(ptr == (&buffer[0] + storage_size));
+
+    // Decode the data
+
+    int nthreads = 4;
+    odc::api::Decoder decoder(columns, strides);
+    decoder.decode(frame, nthreads);
+
+    std::vector<int64_t> expected_seqno {
+        (int64_t)6106691,
+        (int64_t)6002945,
+        (int64_t)6003233,
+        (int64_t)6105819
+    };
+
+    std::vector<int64_t> expected_obschar {
+        (int64_t)537918674,
+        (int64_t)135265490,
+        (int64_t)135265490,
+        (int64_t)537918674,
+    };
+
+    std::vector<double> expected_lat {
+        (double)0.370279,
+        (double)0.226484,
+        (double)0.105947,
+        (double)-0.0300668,
+    };
+
+    const int width = 8;
+
+    long integer_missing = odc::api::Settings::integerMissingValue();
+    double double_missing = odc::api::Settings::doubleMissingValue();
+
+    size_t row;
+
+    for (i = 0; i < 4; ++i) {
+        row = i * 765;
+
+        // expver@desc (ODC_STRING, col 1)
+        EXPECT(std::string(strides[0][row],
+                          ::strnlen(strides[0][row], columnInfo[0].decodedSize)).substr(0, 4) == "0018");
+
+        // seqno@hdr (ODC_INTEGER, col 4)
+        EXPECT(*reinterpret_cast<const int64_t*>(strides[3][row]) == expected_seqno.at(i));
+
+        // obschar@hdr (ODC_BITFIELD, col 6)
+        EXPECT(*reinterpret_cast<const int64_t*>(strides[5][row]) == expected_obschar.at(i));
+
+        // sortbox@hdr (ODC_INTEGER, col 14, missing value!)
+        EXPECT(*reinterpret_cast<const int64_t*>(strides[13][row]) == integer_missing);
+
+        // lat@hdr (ODC_REAL, col 18)
+        EXPECT(eckit::types::is_approximately_equal(*reinterpret_cast<const double*>(strides[17][row]),
+                                                    expected_lat.at(i), 0.000001));
+
+        // repres_error@errstat (ODC_REAL, col 49, missing value!)
+        EXPECT(*reinterpret_cast<const double*>(strides[48][row]) == double_missing);
+    }
+}
+
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Where the properties in the two frames are distinct (non-aggregated)") {
