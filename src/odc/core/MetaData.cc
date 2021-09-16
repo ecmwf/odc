@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/utils/StringTools.h"
 #include "odc/core/MetaData.h"
 
 #include <algorithm>
@@ -87,26 +88,28 @@ Column* MetaData::columnByName(const std::string& name) const
 bool MetaData::hasColumn(const std::string& name) const
 { 
 	for (size_t i = 0; i < size(); i++)
-		if (at(i)->name() == name || at(i)->name().find(name + "@") == 0)
+		if (columnNameMatches(at(i)->name(), name))
 			return true;
 	return false;
 }
 
 size_t MetaData::columnIndex(const std::string& name) const
 {
-	std::vector<size_t> indices;
+	const size_t notFound = static_cast<size_t>(-1);
+	size_t index = notFound;
 
 	for (size_t i = 0; i < size(); i++)
-		if (at(i)->name() == name || at(i)->name().find(name + "@") == 0)
-			indices.push_back(i);
+		if (columnNameMatches(at(i)->name(), name)) {
+			if (index == notFound)
+				index = i;
+			else
+				throw eckit::UserError(std::string("Ambiguous column name: '") + name + "'");
+		}
 
-	if (indices.size() > 1)
-		throw eckit::UserError(std::string("Ambiguous column name: '") + name + "'");
-
-	if (indices.size() == 0)
+	if (index == notFound)
 		throw eckit::UserError(std::string("Column '") + name + "' not found.");
 
-	return indices[0];
+	return index;
 }
 
 MetaData& MetaData::operator=(const MetaData& other)
@@ -300,6 +303,18 @@ MetaData& MetaData::addBitfield(const std::string& name, const eckit::sql::Bitfi
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+bool columnNameMatches(const std::string &fullColumnName,
+                       const std::string &columnNamePossiblyWithoutTableName) {
+	if (eckit::StringTools::startsWith(fullColumnName, columnNamePossiblyWithoutTableName)) {
+		if (fullColumnName.size() == columnNamePossiblyWithoutTableName.size())
+			return true;  // exact match
+		if (fullColumnName.size() > columnNamePossiblyWithoutTableName.size() &&
+		    fullColumnName[columnNamePossiblyWithoutTableName.size()] == '@')
+			return true;  // column name matches; no table name specified
+	}
+	return false;
+}
 
 } // namespace core
 } // namespace odc

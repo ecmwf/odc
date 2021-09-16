@@ -10,6 +10,7 @@
 
 #include "eckit/sql/SQLColumn.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/utils/StringTools.h"
 
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
@@ -20,6 +21,33 @@
 
 namespace odc {
 namespace sql {
+
+//----------------------------------------------------------------------------------------------------------------------
+
+namespace {
+
+/// Return the index of column `columnName` in metadata. If not found or ambiguous,
+/// throw an exception.
+size_t columnIndex(const std::string& columnName, const core::MetaData &md)
+{
+    size_t idx;
+    try {
+        idx = md.columnIndex(columnName);
+    } catch (const eckit::UserError &e) {
+        // Make some error messages more precise
+        if (eckit::StringTools::startsWith(e.what(), "Ambiguous column name:"))
+            throw eckit::UserError("Ambiguous column name \"" + columnName +
+                                   "\" specified in SQL request.", Here());
+        else if (eckit::StringTools::endsWith(e.what(), "not found."))
+            throw eckit::UserError("Column \"" + columnName +
+                                   "\" not found in table, but required in SQL request.", Here());
+        else
+            throw;
+    }
+    return idx;
+}
+
+}  // namespace
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -87,12 +115,8 @@ void TODATableIterator<READER>::updateMetaData() {
     columnsHaveMissing_.clear();
     columnMissingValues_.clear();
     for (const eckit::sql::SQLColumn& col : columns_) {
+        const size_t idx = columnIndex(col.name(), md);
 
-        if (!md.hasColumn(col.name())) {
-            throw eckit::UserError("Column \"" + col.name() + "\" not found in table, but required in SQL request", Here());
-        }
-
-        size_t idx = md.columnIndex(col.name());
         columnOffsets_.push_back(it_->dataOffset(idx));
         columnDoublesSizes_.push_back(it_->dataSizeDoubles(idx));
         columnsHaveMissing_.push_back(it_->hasMissing(idx));

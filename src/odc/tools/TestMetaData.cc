@@ -45,6 +45,11 @@ static void test()
 
 	ASSERT(sum2.size() == md1.size() + md2.size());
 	ASSERT(sum == sum2);
+
+	ASSERT(columnNameMatches("column@body", "column@body"));
+	ASSERT(columnNameMatches("column@body", "column"));
+	ASSERT(!columnNameMatches("columns@body", "column"));
+	ASSERT(!columnNameMatches("another_column@body", "column"));
 }
 
 

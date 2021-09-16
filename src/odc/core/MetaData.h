@@ -163,6 +163,13 @@ MetaData& MetaData::addBitfieldPrivate(const std::string& name, const eckit::sql
 
 //----------------------------------------------------------------------------------------------------------------------
 
+/// Return true if `fullColumnName` is equal to `columnNamePossiblyWithoutTableName` or
+/// if it starts with `columnNamePossiblyWithoutTableName` followed by the `@` character.
+bool columnNameMatches(const std::string &fullColumnName,
+                       const std::string &columnNamePossiblyWithoutTableName);
+
+//----------------------------------------------------------------------------------------------------------------------
+
 } // namespace core
 } // namespace odc
 
