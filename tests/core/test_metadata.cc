@@ -13,6 +13,7 @@
 #include "eckit/testing/Test.h"
 
 #include "odc/core/MetaData.h"
+#include "odc/Reader.h"
 #include "odc/Writer.h"
 
 using namespace eckit::testing;
@@ -55,6 +56,18 @@ CASE("Copy metadata in Writer") {
     eckit::Log::info() << "Found: " << it->columns().at(0)->dataSizeDoubles() << std::endl;
     EXPECT(it->columns().at(0)->dataSizeDoubles() == 2);
     EXPECT(it->columns().at(1)->dataSizeDoubles() == 1);
+}
+
+
+CASE("Missing/ambiguous column names") {
+    odc::Reader reader("../2000010106-reduced.odb");
+    auto it = reader.begin();
+    EXPECT(it != reader.end());
+    const odc::core::MetaData &md = it->columns();
+    EXPECT(md.columnIndex("event1@hdr") == 11);
+    EXPECT(md.columnIndex("event1@body") == 35);
+    EXPECT_THROWS_AS(md.columnIndex("event1"), odc::core::AmbiguousColumnException);
+    EXPECT_THROWS_AS(md.columnIndex("bogus"), odc::core::ColumnNotFoundException);
 }
 
 // ------------------------------------------------------------------------------------------------------
