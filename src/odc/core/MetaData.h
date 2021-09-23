@@ -13,6 +13,7 @@
 
 #include "odc/core/Column.h"
 #include "eckit/sql/SQLTypedefs.h"
+#include "eckit/exception/Exceptions.h"
 
 #ifdef SWIGPYTHON
 #include "odc/IteratorProxy.h"
@@ -73,7 +74,21 @@ public:
     template<typename ByteOrder> MetaData& addBitfieldPrivate(const std::string& name, const eckit::sql::BitfieldDef&);
 
 	bool hasColumn(const std::string&) const;
+
+    /// \brief Return a pointer to the object representing the column with the specified name.
+    /// The name may, but does not need to, be qualified with a table name (e.g. both `varno` and
+    /// `varno@body` are accepted).
+    ///
+    /// This function throws the same exceptions as columnIndex().
 	Column* columnByName(const std::string&) const;
+
+    /// \brief Return the index of the column with the specified name. The name may, but does not
+    /// need to, be qualified with a table name (e.g. both `varno` and `varno@body` are accepted).
+    ///
+    /// If no column with this name is found, a ColumnNotFoundException is thrown.
+    ///
+    /// If the column name is not qualified with a table name and a column with this name is found
+    /// in multiple tables, an AmbiguousColumnException is thrown.
 	size_t columnIndex(const std::string&) const;
 
     static api::ColumnType convertType(const std::string&);

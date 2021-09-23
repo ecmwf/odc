@@ -10,7 +10,6 @@
 
 #include "eckit/sql/SQLColumn.h"
 #include "eckit/exception/Exceptions.h"
-#include "eckit/utils/StringTools.h"
 
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
@@ -33,16 +32,13 @@ size_t columnIndex(const std::string& columnName, const core::MetaData &md)
     size_t idx;
     try {
         idx = md.columnIndex(columnName);
-    } catch (const eckit::UserError &e) {
-        // Make some error messages more precise
-        if (eckit::StringTools::startsWith(e.what(), "Ambiguous column name:"))
-            throw eckit::UserError("Ambiguous column name \"" + columnName +
-                                   "\" specified in SQL request.", Here());
-        else if (eckit::StringTools::endsWith(e.what(), "not found."))
-            throw eckit::UserError("Column \"" + columnName +
-                                   "\" not found in table, but required in SQL request.", Here());
-        else
-            throw;
+    // Make some error messages more precise
+    } catch (const core::AmbiguousColumnException &e) {
+        throw eckit::UserError("Ambiguous column name \"" + columnName +
+                               "\" specified in SQL request.", Here());
+    } catch (const core::ColumnNotFoundException &e) {
+        throw eckit::UserError("Column \"" + columnName +
+                               "\" not found in table, but required in SQL request.", Here());
     }
     return idx;
 }

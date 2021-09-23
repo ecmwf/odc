@@ -95,7 +95,7 @@ bool MetaData::hasColumn(const std::string& name) const
 
 size_t MetaData::columnIndex(const std::string& name) const
 {
-	const size_t notFound = static_cast<size_t>(-1);
+    const size_t notFound = std::numeric_limits<size_t>::max();
 	size_t index = notFound;
 
 	for (size_t i = 0; i < size(); i++)
@@ -103,11 +103,11 @@ size_t MetaData::columnIndex(const std::string& name) const
 			if (index == notFound)
 				index = i;
 			else
-				throw eckit::UserError(std::string("Ambiguous column name: '") + name + "'");
+                throw AmbiguousColumnException(name);
 		}
 
 	if (index == notFound)
-		throw eckit::UserError(std::string("Column '") + name + "' not found.");
+        throw ColumnNotFoundException(name);
 
 	return index;
 }
