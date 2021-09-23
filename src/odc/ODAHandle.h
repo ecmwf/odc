@@ -15,6 +15,9 @@
 #define ODAHandle_H
 
 #include "eckit/io/Offset.h"
+#include "eckit/log/Log.h"
+
+#include "odc/LibOdc.h"
 #include "odc/ODATranslator.h"
 
 namespace odc {
@@ -31,7 +34,7 @@ public:
 		void getValue(const std::string& name, T& value)
 	{
 		value = ODATranslator<T>()(values_[name]);
-		eckit::Log::debug() << "ODAHandle::getValue('" << name << "',=>" << value << ")" << std::endl;
+		LOG_DEBUG_LIB(odc::LibOdc) << "ODAHandle::getValue('" << name << "',=>" << value << ")" << std::endl;
 	}
 
 	void print(std::ostream&) const;

@@ -18,9 +18,11 @@
 
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/HandleHolder.h"
+#include "eckit/log/Log.h"
 
 #include "odc/codec/CodecOptimizer.h"
 #include "odc/IteratorProxy.h"
+#include "odc/LibOdc.h"
 
 namespace eckit { class PathName; }
 namespace eckit { class DataHandle; }
@@ -153,7 +155,7 @@ private:
 template<typename T>
 void WriterBufferingIterator::pass1init(T& it, const T& end)
 {
-    eckit::Log::debug() << "WriterBufferingIterator::pass1init" << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::pass1init" << std::endl;
 
 	// Copy columns from the input iterator.
     columns(it->columns());
@@ -170,7 +172,7 @@ void WriterBufferingIterator::pass1init(T& it, const T& end)
 template<typename T>
 unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 {
-    eckit::Log::debug() << "WriterBufferingIterator::pass1" << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::pass1" << std::endl;
 
 	pass1init(it, end);
     writeHeader();
@@ -180,7 +182,7 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	{
         if (it->isNewDataset() && it->columns() != columns())
 		{
-            eckit::Log::debug() << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
+            LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
 			flush();
 			pass1init(it, end);
             writeHeader();
@@ -189,10 +191,10 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
         writeRow(it->data(), it->columns().size());
 	} 
 
-    eckit::Log::debug() << "Flushing rest of the buffer..." << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << "Flushing rest of the buffer..." << std::endl;
 	flush();
 
-    eckit::Log::debug() << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << std::endl;
 	ASSERT(close() == 0);
 	return nrows;
 }

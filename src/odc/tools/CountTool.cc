@@ -10,8 +10,11 @@
 
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
+
 #include "odc/core/MetaData.h"
 #include "odc/core/TablesReader.h"
+#include "odc/LibOdc.h"
 #include "odc/Reader.h"
 #include "odc/tools/CountTool.h"
 
@@ -54,7 +57,7 @@ void CountTool::run()
     {
         const std::string fileName (parameters(i));
 
-        Log::debug() << "CountTool: counting " << fileName << std::endl;
+        LOG_DEBUG_LIB(LibOdc) << "CountTool: counting " << fileName << std::endl;
 
         n += rowCount(fileName);
     }

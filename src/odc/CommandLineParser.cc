@@ -12,8 +12,10 @@
 /// @author Piotr Kuchta, ECMWF, July 2009
 
 #include "odc/CommandLineParser.h"
+#include "odc/LibOdc.h"
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 
 namespace odc {
@@ -116,20 +118,20 @@ void CommandLineParser::parseCommandLine()
 		if (s[0] != '-' || s.size() == 1)
 		{
 			parameters_.push_back(s);
-            eckit::Log::debug() << "CommandLineParser::parseCommandLine: parameter: " << s << std::endl;
+			LOG_DEBUG_LIB(LibOdc) << "CommandLineParser::parseCommandLine: parameter: " << s << std::endl;
 		}
 		else
 		{
 			if (registeredOptionsWithArguments_.find(s) != registeredOptionsWithArguments_.end())
 			{	
 				optionsWithArguments_[s] = argv(++i);
-                eckit::Log::debug() << "CommandLineParser::parseCommandLine: option with argument: "
+				LOG_DEBUG_LIB(LibOdc) << "CommandLineParser::parseCommandLine: option with argument: "
 					<< s << " = " << optionsWithArguments_[s] << std::endl;
 			}
 			else
 			{
 				optionsNoArguments_.insert(s);
-                eckit::Log::debug() << "CommandLineParser::parseCommandLine: option with no argument: " << s << std::endl;
+				LOG_DEBUG_LIB(LibOdc) << "CommandLineParser::parseCommandLine: option with no argument: " << s << std::endl;
 			}
 		}
 	}

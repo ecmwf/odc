@@ -8,7 +8,10 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/log/Log.h"
 #include "eckit/types/Types.h"
+
+#include "odc/LibOdc.h"
 #include "odc/ODAHandle.h"
 
 using namespace eckit;
@@ -21,7 +24,7 @@ ODAHandle::ODAHandle(Offset start, Offset end)
 : start_(start),
   end_(end)
 {
-	Log::debug() << "ODAHandle::ODAHandle(" << start << ", " << end << ")" << std::endl; 
+	LOG_DEBUG_LIB(LibOdc) << "ODAHandle::ODAHandle(" << start << ", " << end << ")" << std::endl; 
 }
 
 void ODAHandle::print(std::ostream& o) const
@@ -31,12 +34,12 @@ void ODAHandle::print(std::ostream& o) const
 
 ODAHandle::~ODAHandle()
 {
-	Log::debug() << "ODAHandle::~ODAHandle()" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "ODAHandle::~ODAHandle()" << std::endl;
 }
 
 void ODAHandle::addValue(const std::string& columnName, double v)
 {
-	Log::debug() << "ODAHandle::addValue('" << columnName << "', '" << v << "')" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "ODAHandle::addValue('" << columnName << "', '" << v << "')" << std::endl;
 	ASSERT(values_.find(columnName) == values_.end());
 	values_[columnName] = v;
 }

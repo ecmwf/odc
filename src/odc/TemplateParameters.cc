@@ -13,6 +13,9 @@
 ///
 /// @author Piotr Kuchta, Feb 2009
 
+#include "eckit/log/Log.h"
+
+#include "odc/LibOdc.h"
 #include "odc/TemplateParameters.h"
 
 using namespace eckit;
@@ -61,7 +64,7 @@ TemplateParameters& TemplateParameters::parse(const std::string& fileNameTemplat
 
 		params.push_back(new TemplateParameter(l, r, index, name));	
 
-		Log::debug() << "TemplateParameters::parse: new param: " << l << ", " << r << ", " << index << ", " << name << std::endl;
+		LOG_DEBUG_LIB(LibOdc) << "TemplateParameters::parse: new param: " << l << ", " << r << ", " << index << ", " << name << std::endl;
 	}
 	return params;
 }

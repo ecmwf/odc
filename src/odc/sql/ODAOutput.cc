@@ -8,6 +8,7 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/log/Log.h"
 #include "eckit/sql/expression/SQLExpressions.h"
 #include "eckit/sql/SQLSelect.h"
 
@@ -112,7 +113,7 @@ void ODAOutput<WRITER>::initUpdateTypes(eckit::sql::SQLSelect& sql) {
 
         it_->writeHeader();
 
-        Log::debug<LibOdc>() << " => ODAOutput: " << std::endl << it_->columns() << std::endl;
+        LOG_DEBUG_LIB(LibOdc) << " => ODAOutput: " << std::endl << it_->columns() << std::endl;
 
     } else {
 

@@ -8,13 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/WriterDispatchingIterator.h"
-
+#include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/Translator.h"
 
 #include "odc/Comparator.h"
+#include "odc/LibOdc.h"
 #include "odc/Reader.h"
+#include "odc/WriterDispatchingIterator.h"
 
 using namespace odc::core;
 
@@ -137,7 +138,7 @@ std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(c
         diff = outputFileTemplate_.size() - fileName.size();
     }
 
-    //eckit::Log::debug() << "WriterDispatchingIterator::generateFileName: fileName = " << fileName <<  std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "WriterDispatchingIterator::generateFileName: fileName = " << fileName <<  std::endl;
     return fileName;
 }
 
@@ -171,8 +172,6 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::dispatchIndex(const double
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Values& dispatchedValues, const std::string& fileName)
 {
-    std::ostream& L(eckit::Log::debug());
-
     int iteratorIndex (iterators_.size());
     if (iterators_.size() >= maxOpenFiles_)
     {
@@ -190,7 +189,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Value
         }
 		iteratorIndex = oldest;
 
-		L << "split writer: evicted iterator " << iteratorIndex
+		LOG_DEBUG_LIB(LibOdc) << "split writer: evicted iterator " << iteratorIndex
 			<< "' " << iteratorIndex2fileName_[iteratorIndex] << "' "
 			<< " (oldest row: " << oldestRow << "), nrows_=" << nrows_ <<  std::endl;
 
@@ -224,7 +223,7 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::createIterator(const Value
         }
     }
 
-    L << iteratorIndex << ": " << operation << " '" << fileName << "'" << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << iteratorIndex << ": " << operation << " '" << fileName << "'" << std::endl;
 
     if (iteratorIndex == iterators_.size())
     {
@@ -259,7 +258,7 @@ std::vector<eckit::PathName> WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::o
 template <typename WRITE_ITERATOR, typename OWNER>
 WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::~WriterDispatchingIterator()
 {
-    //eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::~WriterDispatchingIterator()" << std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "WriterDispatchingIterator<WRITE_ITERATOR>::~WriterDispatchingIterator()" << std::endl;
     delete [] lastValues_;
     delete [] nextRow_;
     delete [] columnOffsets_;
@@ -276,7 +275,7 @@ unsigned long WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::gatherStats(cons
 template <typename WRITE_ITERATOR, typename OWNER>
 void WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::writeHeader()
 {
-	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::writeHeader" << std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "WriterDispatchingIterator<WRITE_ITERATOR>::writeHeader" << std::endl;
 
     delete [] lastValues_;
     delete [] nextRow_;
@@ -443,7 +442,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 	size_t maxcols = columns().size();
 	ASSERT(maxcols > 0);
 
-    eckit::Log::debug() << "WriterDispatchingIterator::pass1<WriterBufferingIterator>: columns().size() => " << maxcols << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "WriterDispatchingIterator::pass1<WriterBufferingIterator>: columns().size() => " << maxcols << std::endl;
 
 	nrows_  = 0;
 	for (; it != end; ++it)
@@ -467,7 +466,7 @@ unsigned long WriterDispatchingIterator<WriterBufferingIterator,DispatchingWrite
 		ASSERT(rc == 0);
 	}
 
-    eckit::Log::debug() << "Split: processed " << nrows_ << " row(s)." << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "Split: processed " << nrows_ << " row(s)." << std::endl;
 	return nrows_;
 }
 
@@ -564,7 +563,7 @@ std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::property(std::stri
 template <typename WRITE_ITERATOR, typename OWNER>
 int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::close()
 {
-	//eckit::Log::debug() << "WriterDispatchingIterator<WRITE_ITERATOR>::close()" << std::endl;
+	//LOG_DEBUG_LIB(LibOdc) << "WriterDispatchingIterator<WRITE_ITERATOR>::close()" << std::endl;
 	int rc = 0;
 	for (typename Iterators::iterator it = iterators_.begin(); it != iterators_.end(); ++it)
 	{

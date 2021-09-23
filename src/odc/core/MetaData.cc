@@ -8,9 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/core/MetaData.h"
-
 #include <algorithm>
+
+#include "eckit/log/Log.h"
+
+#include "odc/core/MetaData.h"
+#include "odc/LibOdc.h"
 
 using namespace eckit;
 using namespace odc::api;
@@ -139,7 +142,7 @@ MetaData& MetaData::operator+=(const MetaData& rhs)
 	{
 		Column& rhsColumn = *rhs[i];
 
-		//Log::debug() << "MetaData::operator+=: adding " << rhsColumn << std::endl;
+		//LOG_DEBUG_LIB(LibOdc) << "MetaData::operator+=: adding " << rhsColumn << std::endl;
 
 		Column* c = new Column(rhsColumn);
 		ASSERT(c);
@@ -170,11 +173,10 @@ MetaData MetaData::operator+(const MetaData& rhs)
 
 bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector<std::string>& constColumns) const 
 {
-    std::ostream& L = Log::debug();
 	for (size_t i = 0; i < constColumns.size(); ++i)
 	{
 		const std::string& columnName = constColumns[i];
-		L << "MetaData::equalsIncludingConstants: check " << columnName << std::endl;
+		LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: check " << columnName << std::endl;
 
         if ( !hasColumn(columnName) && !other.hasColumn(columnName))
 			continue;
@@ -184,9 +186,9 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
 
 		if ( ! c1.isConstant() || ! c2.isConstant())
 		{
-			L << "MetaData::equalsIncludingConstants: c1 " << c1 << " " << c1.coder() << std::endl;
-			L << "MetaData::equalsIncludingConstants: c2 " << c2 << " " << c2.coder() << std::endl;
-			L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
+			LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: c1 " << c1 << " " << c1.coder() << std::endl;
+			LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: c2 " << c2 << " " << c2.coder() << std::endl;
+			LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
 			return false;
 		}
 		else
@@ -195,17 +197,17 @@ bool MetaData::equalsIncludingConstants(const MetaData& other, const std::vector
             Codec& codec2 = c2.coder();
 			if ( codec1.min() != codec2.min() )
 			{
-				L << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
-				L << "MetaData::equalsIncludingConstants: min1=" << codec1.min() << ", max1=" << codec1.max() << std::endl;
-				L << "MetaData::equalsIncludingConstants: min2=" << codec2.min() << ", max2=" << codec2.max() << std::endl;
-				L << "MetaData::equalsIncludingConstants: c1.coder: " << codec1 << std::endl;
-				L << "MetaData::equalsIncludingConstants: c2.coder: " << codec2 << std::endl;
+				LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: column '" << columnName << "'" << std::endl;
+				LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: min1=" << codec1.min() << ", max1=" << codec1.max() << std::endl;
+				LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: min2=" << codec2.min() << ", max2=" << codec2.max() << std::endl;
+				LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: c1.coder: " << codec1 << std::endl;
+				LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: c2.coder: " << codec2 << std::endl;
 				return false;
 			}
 		}
 	}
 
-	L << "MetaData::equalsIncludingConstants: yes" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "MetaData::equalsIncludingConstants: yes" << std::endl;
 	return true;
 }
 
@@ -262,7 +264,7 @@ bool MetaData::compatible(const MetaData& other) const {
 
 void MetaData::resetStats()
 {
-	//Log::debug() << "MetaData::resetStats" << std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "MetaData::resetStats" << std::endl;
     for (size_t i = 0; i < size(); i++) {
         (*this)[i]->resetStats();
     }

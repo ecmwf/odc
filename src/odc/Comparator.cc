@@ -11,10 +11,12 @@
 #include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
 
 #include "odc/Comparator.h"
 #include "odc/core/Column.h"
 #include "odc/core/MetaData.h"
+#include "odc/LibOdc.h"
 #include "odc/Reader.h"
 #include "odc/StringTool.h"
 #include "odc/utility/Tracer.h"
@@ -70,7 +72,7 @@ void Comparator::compare(const PathName& p1, const PathName& p2,
                          const std::vector<std::string>& excludedColumnsTypes,
                          const std::vector<std::string>& excludedColumns)
 {
-    Tracer t(Log::debug(), std::string("Comparator::compare: ") + p1 + ", " + p2);
+    Tracer t(Log::debug<LibOdc>(), std::string("Comparator::compare: ") + p1 + ", " + p2);
 
 	odc::Reader oda1(p1);
 	odc::Reader oda2(p2);
