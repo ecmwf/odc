@@ -15,8 +15,10 @@
 #include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
 #include "eckit/utils/Tokenizer.h"
+
 #include "odc/FastODA2Request.h"
 #include "odc/GribCodes.h"
+#include "odc/LibOdc.h"
 #include "odc/Select.h"
 #include "odc/tools/ODA2RequestTool.h"
 
@@ -96,19 +98,19 @@ void ODA2RequestTool::readConfig() { readConfig(config()); }
 
 void ODA2RequestTool::readConfig(const PathName& fileName)
 {
-	Log::debug() << "ODA2RequestTool::readConfig: reading file '" << fileName << "'" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "ODA2RequestTool::readConfig: reading file '" << fileName << "'" << std::endl;
 	columnName2requestKey_.clear();
 
 	string s = readFile(fileName);
 	
-	Log::debug() << "ODA2RequestTool::readConfig: parsing '" << s << "'" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "ODA2RequestTool::readConfig: parsing '" << s << "'" << std::endl;
 
 	parseConfig(s);
 }
 
 void ODA2RequestTool::parseConfig(const std::string& s)
 {
-	Log::debug() << "ODA2RequestTool::parseConfig: '" << s << "'" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "ODA2RequestTool::parseConfig: '" << s << "'" << std::endl;
 
     vector<std::string> lines;
     Tokenizer("\n")(s, lines);
@@ -199,19 +201,19 @@ string ODA2RequestTool::generateMarsRequest(const PathName& inputFile, bool fast
 			for (Values::iterator vi = vs.begin(); vi != vs.end(); ++vi)
 			{
 				string v = *vi;
-				Log::debug() << "ODA2RequestTool::genRequest: v = '" << v  << "', key = " << key << std::endl;
+				LOG_DEBUG_LIB(LibOdc) << "ODA2RequestTool::genRequest: v = '" << v  << "', key = " << key << std::endl;
 				if (k == "TIME")
 					v = StringTool::patchTimeForMars(v);
 				else
 				if (k == "CLASS" || k == "TYPE" || k == "STREAM")
 				{
-					Log::debug() << "ODA2RequestTool::genRequest: checking if '" << v << "' is numeric" << std::endl;
+					LOG_DEBUG_LIB(LibOdc) << "ODA2RequestTool::genRequest: checking if '" << v << "' is numeric" << std::endl;
 					if (StringTool::check(v, isdigit))
 					{
 						v = StringTools::trim(v);
-						Log::debug() << "ODA2RequestTool::genRequest: replacing " << v << " with ";
+						LOG_DEBUG_LIB(LibOdc) << "ODA2RequestTool::genRequest: replacing " << v << " with ";
 						v = GribCodes::alphanumeric(StringTools::lower(key), v);
-						Log::debug() << v << std::endl;
+						LOG_DEBUG_LIB(LibOdc) << v << std::endl;
 					}
 					v = StringTools::upper(v);
 				}

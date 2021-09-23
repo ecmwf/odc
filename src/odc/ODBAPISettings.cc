@@ -15,9 +15,11 @@
 # include "eckit/io/AIOHandle.h"
 #endif
 #include "eckit/io/FileHandle.h"
+#include "eckit/log/Log.h"
 #include "eckit/thread/ThreadSingleton.h"
 #include "eckit/utils/StringTools.h"
 
+#include "odc/LibOdc.h"
 #include "odc/ODBAPISettings.h"
 
 using namespace eckit;
@@ -68,7 +70,7 @@ void odc::ODBAPISettings::setHome(const char *argv0)
             
         }
         vector<string> ps(StringTools::split("/", full));
-        Log::debug() << "ODBAPISettings::setHome: argv0: " << ps << endl;
+        LOG_DEBUG_LIB(odc::LibOdc) << "ODBAPISettings::setHome: argv0: " << ps << endl;
         ASSERT("odb executable should be in a bin directory" && ps.size() >= 2 && ps[ps.size() - 2] == "bin");
         ps.pop_back(); // odb
         ps.pop_back(); // bin
@@ -127,7 +129,7 @@ void ODBAPISettings::createDirectories(const PathName& path)
     parts.pop_back();
     PathName directory ((string(path)[0] == '/' ? "/" : "") + StringTools::join("/", parts));
 
-    Log::debug() << "Making sure diretory " << directory << " exists" << endl;
+    LOG_DEBUG_LIB(LibOdc) << "Making sure diretory " << directory << " exists" << endl;
 
     directory.mkdir();
 }

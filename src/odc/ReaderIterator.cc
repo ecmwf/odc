@@ -8,13 +8,14 @@
  * does it submit to any jurisdiction.
  */
 
-#include "odc/ReaderIterator.h"
-
 #include "eckit/io/DataHandle.h"
+#include "eckit/log/Log.h"
 
 #include "odc/core/Codec.h"
 #include "odc/core/Header.h"
+#include "odc/LibOdc.h"
 #include "odc/Reader.h"
+#include "odc/ReaderIterator.h"
 
 using namespace eckit;
 using namespace odc::core;
@@ -133,7 +134,7 @@ bool ReaderIterator::loadHeaderAndBufferData() {
 
 ReaderIterator::~ReaderIterator () noexcept(false)
 {
-	Log::debug() << "ReaderIterator::~ReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "ReaderIterator::~ReaderIterator: headers read: " << headerCounter_ << " rows:" << nrows_ << std::endl;
 
 	close();
 	delete [] lastValues_;

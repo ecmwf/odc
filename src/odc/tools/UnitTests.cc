@@ -689,7 +689,7 @@ TEST(create_table_using_variable)
 
 TEST(meta_data_reader_checks_if_file_truncated)
 {
-    ASSERT(0 == system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=30121 count=1"));
+    ASSERT(0 == std::system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=30121 count=1"));
     core::TablesReader mdr("disp.7.1.odb.truncated");
     try {
         for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
@@ -900,9 +900,9 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
         }
         Log::info() << "CREATE_TABLE_and_SELECT_INTO: counter=" << counter << endl;
     }
-    system("ls -l foo.odb; ");
-    system((eckit::PathName("~/bin/odc").asString() + " header foo.odb").c_str());
-    system((eckit::PathName("~/bin/odc").asString() + " ls foo.odb").c_str());
+    std::system("ls -l foo.odb; ");
+    std::system((eckit::PathName("~/bin/odc").asString() + " header foo.odb").c_str());
+    std::system((eckit::PathName("~/bin/odc").asString() + " ls foo.odb").c_str());
 }
 
 /*
@@ -911,7 +911,7 @@ TEST(SELECT_ALL)
     ostream& L(eckit::Log::info());
     odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n", "select_all_1.odb");
     odc::api::odbFromCSV("a:INTEGER,b:INTEGER,c:INTEGER\n1,2,3\n", "select_all_2.odb");
-    system("cat select_all_1.odb select_all_2.odb >select_all.odb");
+    std::system("cat select_all_1.odb select_all_2.odb >select_all.odb");
 
     L << "--- Test_SELECT_ALL: open select_all.odb" << endl;
     odc::Select o("SELECT ALL * FROM \"select_all.odb\";");

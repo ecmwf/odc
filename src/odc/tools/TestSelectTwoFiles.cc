@@ -12,10 +12,13 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odc/Select.h"
+#include "eckit/log/Log.h"
 
+#include "odc/LibOdc.h"
+#include "odc/Select.h"
 #include "odc/utility/Tracer.h"
 #include "odc/Writer.h"
+
 #include "TestCase.h"
 
 using namespace std;
@@ -25,7 +28,7 @@ using namespace odc::utility;
 
 static void setUp()
 {
-	Tracer t(Log::debug(), "setUp");
+	Tracer t(Log::debug<LibOdc>(), "setUp");
 	{
 		odc::Writer<> f("TestSelectTwoFiles1.odb");
 		odc::Writer<>::iterator it = f.begin();
@@ -48,7 +51,7 @@ static void setUp()
 
 static void test()
 {
-	Tracer t(Log::debug(), "test");
+	Tracer t(Log::debug<LibOdc>(), "test");
 
     odc::Select s("select * from \"TestSelectTwoFiles1.odb\", \"TestSelectTwoFiles2.odb\";");
 	odc::Select::iterator it = s.begin();
@@ -59,7 +62,7 @@ static void test()
 	unsigned long i = 0;
 	for (; it != end; ++it)
 	{
-		Log::debug() << "test:    " << (*it)[0] << "    " << (*it)[0] << std::endl;
+		LOG_DEBUG_LIB(LibOdc) << "test:    " << (*it)[0] << "    " << (*it)[0] << std::endl;
 
 		ASSERT( ((*it)[0] == 1) && ((*it)[1] == 2) );
 		++i;

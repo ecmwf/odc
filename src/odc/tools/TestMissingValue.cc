@@ -12,14 +12,16 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
+#include "eckit/log/Log.h"
 #include "eckit/sql/SQLTypedefs.h"
 
 #include "odc/Comparator.h"
+#include "odc/LibOdc.h"
 #include "odc/Select.h"
 #include "odc/Reader.h"
-
 #include "odc/utility/Tracer.h"
 #include "odc/Writer.h"
+
 #include "TestCase.h"
 
 using namespace std;
@@ -30,7 +32,7 @@ using namespace odc::core;
 
 static void setUp()
 {
-    Tracer t(Log::debug(), "setUp");
+    Tracer t(Log::debug<LibOdc>(), "setUp");
 
 	odc::Writer<> f("TestMissingValue.odb");
 	odc::Writer<>::iterator it = f.begin();
@@ -61,7 +63,7 @@ static void setUp()
 
 static void selectIntoSecondFile()
 {
-    Tracer t(Log::debug(), "selectIntoSecondFile");
+    Tracer t(Log::debug<LibOdc>(), "selectIntoSecondFile");
 
     const string fileName = "TestMissingValue.odb";
     string sql = "select lat,bf into \"TestMissingValue2.odb\"";

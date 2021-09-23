@@ -12,11 +12,14 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Jan 2010
 
+#include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
-#include "odc/core/MetaData.h"
-#include "odc/Reader.h"
 
+#include "odc/core/MetaData.h"
+#include "odc/LibOdc.h"
+#include "odc/Reader.h"
 #include "odc/Writer.h"
+
 #include "MockReader.h"
 #include "TestCase.h"
 
@@ -119,11 +122,11 @@ static void test()
 
 	string name = coder.name();
 
-	Log::debug() << "test: codec name is '" << name << "'" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "test: codec name is '" << name << "'" << std::endl;
 
 	ASSERT(name == "int16_missing");
 
-	Log::debug() << "test: OK" << std::endl;
+	LOG_DEBUG_LIB(LibOdc) << "test: OK" << std::endl;
 }
 
 

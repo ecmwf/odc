@@ -16,6 +16,7 @@
 #include "eckit/utils/Tokenizer.h"
 
 #include "odc/ConstantSetter.h"
+#include "odc/LibOdc.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
 
@@ -100,7 +101,7 @@ void SetTool::parseUpdateList(std::string s, std::vector<std::string>& columns, 
 				char *p = 0;
 				unsigned char x;
 				reinterpret_cast<unsigned char*>(&v)[i] = x = static_cast<unsigned char>(strtoul(byteInHex.c_str(), &p, 16));
-				Log::debug() << "SetTool::parseUpdateList: '" << byteInHex << "' => " << x << std::endl;
+				LOG_DEBUG_LIB(LibOdc)<< "SetTool::parseUpdateList: '" << byteInHex << "' => " << x << std::endl;
 			}
 		}
 

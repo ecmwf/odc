@@ -24,6 +24,7 @@
 #include "eckit/utils/Translator.h"
 #include "eckit/utils/Regex.h"
 
+#include "odc/LibOdc.h"
 #include "odc/StringTool.h"
 
 using namespace std;
@@ -69,7 +70,7 @@ int StringTool::shell(std::string cmd, const CodeLocation& where, bool assertSuc
     Log::info() << " " << where.file() << " +" << where.line();
 	Log::info() << std::endl;
 
-	int rc = system(c.c_str());
+	int rc = std::system(c.c_str());
 
 	if (assertSuccess && rc != 0)
 	{
@@ -187,7 +188,7 @@ std::string StringTool::patchTimeForMars(const std::string& ss)
 	{
 		std::string s = v;
 		v = v.substr(0, 4);
-		Log::debug() << "StringTool::patchTimeForMars: stripping seconds from TIME: '"
+		LOG_DEBUG_LIB(odc::LibOdc)<< "StringTool::patchTimeForMars: stripping seconds from TIME: '"
 				<< s << "' => '" << v << "'" << std::endl;
 	}
 	return v;
