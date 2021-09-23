@@ -46,6 +46,20 @@ public:
     ODBEndOfDataStream(const std::string&, const eckit::CodeLocation&);
 };
 
+
+/// Exception thrown when a column without an associated table name is found in multiple tables.
+class AmbiguousColumnException : public eckit::UserError {
+ public:
+  explicit AmbiguousColumnException(const std::string& columnName);
+};
+
+/// Exception thrown when a requested column is not found.
+class ColumnNotFoundException : public eckit::UserError {
+ public:
+  explicit ColumnNotFoundException(const std::string& columnName);
+};
+
+
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace core
