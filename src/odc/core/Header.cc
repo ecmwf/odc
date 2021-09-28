@@ -12,12 +12,14 @@
 
 #include "eckit/io/DataHandle.h"
 #include "eckit/io/Buffer.h"
+#include "eckit/log/Log.h"
 #include "eckit/types/FixedString.h"
 #include "eckit/utils/MD5.h"
 
 #include "odc/core/DataStream.h"
 #include "odc/core/Exceptions.h"
 #include "odc/core/MetaData.h"
+#include "odc/LibOdc.h"
 #include "odc/ODBAPISettings.h"
 
 using namespace eckit;
@@ -105,7 +107,7 @@ void Header::load(DataHandle& dh) {
     rowsNumber_ = numberOfRows;
     md_.rowsNumber(rowsNumber_);
 
-    eckit::Log::debug() << "Header::load: numberOfRows = " << numberOfRows << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << "Header::load: numberOfRows = " << numberOfRows << std::endl;
 
     // Flags -> ODAFlags
     Flags flags;

@@ -15,8 +15,10 @@
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/io/DataHandle.h"
+#include "eckit/log/Log.h"
 
 #include "odc/core/Header.h"
+#include "odc/LibOdc.h"
 #include "odc/WriterBufferingIterator.h"
 #include "odc/Writer.h"
 
@@ -264,7 +266,7 @@ int WriterBufferingIterator::doWriteRow(core::DataStream<core::SameByteOrder>& s
 
 int WriterBufferingIterator::open()
 {
-    //Log::debug() << "WriterBufferingIterator::open@" << this << ": Opening data handle " << handle() << std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::open@" << this << ": Opening data handle " << handle() << std::endl;
 
     Length estimatedLen = 20 * 1024 * 1024;
     handle().openForWrite(estimatedLen);
@@ -275,7 +277,7 @@ int WriterBufferingIterator::open()
 
 int WriterBufferingIterator::setColumn(size_t index, std::string name, api::ColumnType type)
 {
-	//Log::debug() << "WriterBufferingIterator::setColumn: " << std::endl;
+	//LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::setColumn: " << std::endl;
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
 	ASSERT(col);
@@ -299,7 +301,7 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, api::Colu
 
 int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b)
 {
-	//Log::debug() << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
+	//LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
 	ASSERT(index < columns().size());
 	Column* col = columns_[index];
 	ASSERT(col);
@@ -346,12 +348,12 @@ void WriterBufferingIterator::flush()
     std::pair<Buffer, size_t> encodedHeader = serializeHeader(encodedStream.position(), rowsWritten);
     ASSERT(encodedHeader.second <= encodedHeader.first.size());
 
-    Log::debug() << "WriterBufferingIterator::flush: header size: " << encodedHeader.second << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::flush: header size: " << encodedHeader.second << std::endl;
 
     ASSERT(dataHandle().write(encodedHeader.first, encodedHeader.second) == long(encodedHeader.second)); // Write header
     ASSERT(dataHandle().write(encodedBuffer, encodedStream.position()) == encodedStream.position()); // Write encoded data
 
-	Log::debug() << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << std::endl;
+    LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << std::endl;
 
     // Reset the write buffers
 

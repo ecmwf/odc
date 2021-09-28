@@ -13,18 +13,19 @@
 ///
 /// @author Piotr Kuchta, Oct 2010
 
-#include "odc/csv/TextReaderIterator.h"
-
 #include <algorithm>
 #include <fstream>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
-#include "eckit/types/Types.h"
 #include "eckit/utils/Translator.h"
+#include "eckit/types/Types.h"
 
-#include "odc/csv/TextReader.h"
 #include "odc/api/ColumnType.h"
+#include "odc/csv/TextReader.h"
+#include "odc/csv/TextReaderIterator.h"
+#include "odc/LibOdc.h"
 
 using namespace eckit;
 
@@ -72,8 +73,6 @@ TextReaderIterator::TextReaderIterator(TextReader &owner, const PathName& pathNa
 
 eckit::sql::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 {
-    //std::ostream& L( Log::debug() );
-
     size_t leftBracket (c.find('['));
     size_t rightBracket (c.find(']'));
 
@@ -82,7 +81,7 @@ eckit::sql::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
 
     std::string s(c.substr(leftBracket + 1,  rightBracket - leftBracket - 1));
 
-    //L << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "TextReaderIterator::parseBitfields: s='" << s << "'" << std::endl;
 
     eckit::sql::FieldNames names;
     eckit::sql::Sizes      sizes;
@@ -90,13 +89,13 @@ eckit::sql::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
     size_t numberOfBits = 0;
     std::vector<std::string> bs(S::split(";", s));
 
-    //L << "TextReaderIterator::parseBitfields: bs=" << bs << std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "TextReaderIterator::parseBitfields: bs=" << bs << std::endl;
 
     for (size_t i = 0; i < bs.size(); ++i)
     {
 		std::vector<std::string> v(S::split(":", bs[i]));
 
-        //L << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << std::endl;
+        //LOG_DEBUG_LIB(LibOdc) << "TextReaderIterator::parseBitfields:   bs[" << i << "] = " << bs[i] << " " << v << " :  " << v.size() << std::endl;
 
 		if (v.size() != 2)
             throw UserError("Bitfields definition parse error");
@@ -114,7 +113,7 @@ eckit::sql::BitfieldDef TextReaderIterator::parseBitfields(const std::string& c)
         numberOfBits += size;
 		sizes.push_back(size);
 	}
-    //L << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << std::endl;
+    //LOG_DEBUG_LIB(LibOdc) << "TextReaderIterator::parseBitfields: numberOfbits=" << numberOfBits << std::endl;
 
     if (numberOfBits > 31) {
         throw UserError("Bitfields can have up to 31 bits only currently");
@@ -138,7 +137,7 @@ void TextReaderIterator::parseHeader()
 
 	for (size_t i = 0; i < columns.size(); ++i)
 	{
-		Log::debug() << "TextReaderIterator::parseHeader: column " << i << " '" << columns[i] << "'" << std::endl;
+		LOG_DEBUG_LIB(LibOdc) << "TextReaderIterator::parseHeader: column " << i << " '" << columns[i] << "'" << std::endl;
 		std::vector<std::string> column (S::split(":", columns[i]));
 		if (column.size() < 2)
 			throw UserError(std::string("Column '") + columns[i] + "': format should be NAME \":\" TYPE");
@@ -148,13 +147,13 @@ void TextReaderIterator::parseHeader()
 
 		if (! S::startsWith(columnType, "BITFIELD"))
 		{
-			Log::debug() << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
+			LOG_DEBUG_LIB(LibOdc) << "TextReaderIterator::parseHeader: adding column " << columns_.size() << " '" << columnName << "' : " 
 						<< columnType << std::endl;
 			columns_.addColumn(columnName, columnType);
 		}
 		else
 		{
-			Log::debug() << "TextReaderIterator::parseHeader: adding BITFIELD " << columns_.size() << " '" << columns[i] << std::endl;
+			LOG_DEBUG_LIB(LibOdc) << "TextReaderIterator::parseHeader: adding BITFIELD " << columns_.size() << " '" << columns[i] << std::endl;
 			columns_.addBitfield(columnName, parseBitfields(columns[i]));
 		}
 	}

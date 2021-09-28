@@ -54,7 +54,7 @@ static void createFile(size_t numberOfColumns, long long numberOfRows, size_t se
 
 static void tearDown()
 {
-	int catStatus = system("ls -l TestSetvbuffer.odb");
+	int catStatus = std::system("ls -l TestSetvbuffer.odb");
 	ASSERT(WEXITSTATUS(catStatus) == 0);
 }
 

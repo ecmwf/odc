@@ -12,16 +12,18 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include <sstream>
-#include <memory>
 #include <fstream>
+#include <memory>
+#include <sstream>
 
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 #include "eckit/utils/StringTools.h"
 
 #include "odc/CommandLineParser.h"
+#include "odc/LibOdc.h"
 #include "odc/tools/Tool.h"
 #include "odc/tools/TestCase.h"
 #include "odc/tools/ToolFactory.h"
@@ -172,7 +174,7 @@ void TestRunner::runTests(const TestCases& tests)
 
 void TestRunner::readConfig(const PathName fileName)
 {
-	Log::debug() << "TestRunner::readConfig: reading file '" << fileName << "'" << endl;
+	LOG_DEBUG_LIB(LibOdc) << "TestRunner::readConfig: reading file '" << fileName << "'" << endl;
 	suites_.clear();
 
     vector<string> lines = StringTool::readLines(fileName);
@@ -184,7 +186,7 @@ void TestRunner::readConfig(const PathName fileName)
 		ASSERT("Each line of config file should be like: '<suite_name> : TestPattern1 TestPattern2 ...'" && words.size() == 2);
 
 		suites_[words[0]] = StringTools::split(" \t", words[1]);
-		Log::debug() << "TestRunner::readConfig(\"" << fileName << "\"): "
+		LOG_DEBUG_LIB(LibOdc) << "TestRunner::readConfig(\"" << fileName << "\"): "
 			<< words[0] << ": "
 			<< suites_[words[0]].size() << " entries." << endl;
 	}
@@ -196,7 +198,7 @@ void TestRunner::smslabel(const string &s)
 		return;
 	string cmd = "smslabel ";
 	cmd += label_ + " " + s;
-    system(cmd.c_str());
+	std::system(cmd.c_str());
 }
 
 } // namespace test

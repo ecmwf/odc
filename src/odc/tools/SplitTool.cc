@@ -15,10 +15,12 @@
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/io/PartFileHandle.h"
+#include "eckit/log/Log.h"
 #include "eckit/types/Types.h"
 
 #include "odc/core/TablesReader.h"
 #include "odc/DispatchingWriter.h"
+#include "odc/LibOdc.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
 #include "odc/TemplateParameters.h"
@@ -52,7 +54,7 @@ void SplitTool::run()
 	if (optionIsSet("-sort")) sort_ = true;
    
 	maxOpenFiles_ = optionArgument("-maxopenfiles", maxOpenFiles_);
-	Log::debug() << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
+	LOG_DEBUG_LIB(LibOdc) << "SplitTool: maxOpenFiles_ = " << maxOpenFiles_ << endl;
 
 	PathName inFile (parameters(1));
 	string outFileTemplate (parameters(2));
@@ -68,8 +70,7 @@ void SplitTool::run()
 */
 vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t maxExpandedSize)
 {
-    ostream &L(Log::debug());
-	L << "SplitTool::getChunks: " << endl;
+    LOG_DEBUG_LIB(LibOdc) << "SplitTool::getChunks: " << endl;
 
     vector<pair<Offset,Length> > r;
 
@@ -87,12 +88,12 @@ vector<pair<Offset,Length> > SplitTool::getChunks(const PathName& inFile, size_t
         size_t numberOfRows (it->rowCount());
         size_t numberOfColumns (it->columnCount());
 
-		L << "SplitTool::getChunks: " << offset << " " << length << endl;
+		LOG_DEBUG_LIB(LibOdc) << "SplitTool::getChunks: " << offset << " " << length << endl;
 
 		size_t size (numberOfRows * numberOfColumns * sizeof(double));
 		if (currentSize + size > maxExpandedSize)
 		{
-			L << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << endl;
+			LOG_DEBUG_LIB(LibOdc) << "SplitTool::getChunks: collect " << currentOffset << " " << currentLength << endl;
             r.push_back(make_pair(currentOffset, currentLength));
 			currentOffset = offset;
 			currentLength = length;

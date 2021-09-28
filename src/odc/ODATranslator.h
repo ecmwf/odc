@@ -15,9 +15,12 @@
 #define odc_ODATranslator_H
 
 #include "eckit/eckit.h"
+#include "eckit/log/Log.h"
 #include "eckit/utils/Translator.h"
 #include "eckit/types/Date.h"
 #include "eckit/types/Time.h"
+
+#include "odc/LibOdc.h"
 #include "odc/StringTool.h"
 
 template <typename T>
@@ -30,7 +33,7 @@ struct ODATranslator<std::string> {
     std::string operator()(double n) 
     {
         std::string r (odc::StringTool::double_as_string(n));
-        eckit::Log::debug() << "ODATranslator<std::string>::operator()(double n=" << n << ") => " << r << std::endl;
+        LOG_DEBUG_LIB(odc::LibOdc) << "ODATranslator<std::string>::operator()(double n=" << n << ") => " << r << std::endl;
         return r;
     }
 };
@@ -46,7 +49,7 @@ struct ODATranslator<eckit::Time> {
             t = std::string(zeroes + t.size()) + t;
 
         eckit::Time tm (t);
-        eckit::Log::debug() << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << std::endl;
+        LOG_DEBUG_LIB(odc::LibOdc) << "ODATranslator<Time>::operator()(double n=" << n << ") => " << tm << std::endl;
         return tm;
     }
 };
@@ -62,7 +65,7 @@ struct ODATranslator<eckit::Date> {
             t = std::string(zeroes + t.size()) + t;
 
         eckit::Date d (t);
-        eckit::Log::debug() << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << std::endl;
+        LOG_DEBUG_LIB(odc::LibOdc) << "ODATranslator<Date>::operator()(double n=" << n << ") => " << d << std::endl;
         return d;
     }
 };
