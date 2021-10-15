@@ -23,6 +23,30 @@ namespace sql {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+namespace {
+
+/// Return the index of column `columnName` in metadata. If not found or ambiguous,
+/// throw an exception.
+size_t columnIndex(const std::string& columnName, const core::MetaData &md)
+{
+    size_t idx;
+    try {
+        idx = md.columnIndex(columnName);
+    // Make some error messages more precise
+    } catch (const core::AmbiguousColumnException &e) {
+        throw eckit::UserError("Ambiguous column name \"" + columnName +
+                               "\" specified in SQL request.", Here());
+    } catch (const core::ColumnNotFoundException &e) {
+        throw eckit::UserError("Column \"" + columnName +
+                               "\" not found in table, but required in SQL request.", Here());
+    }
+    return idx;
+}
+
+}  // namespace
+
+//----------------------------------------------------------------------------------------------------------------------
+
 // TODO: It is not appropriate for parent_.oda() to be const_cast<>-ed.
 //       Not entirely clear how to resolve this. But there is no reason for us intrinsically
 //       to be modifying the parent. Perhaps we should take a copy of somethnig (oda, dh?)
@@ -87,12 +111,8 @@ void TODATableIterator<READER>::updateMetaData() {
     columnsHaveMissing_.clear();
     columnMissingValues_.clear();
     for (const eckit::sql::SQLColumn& col : columns_) {
+        const size_t idx = columnIndex(col.name(), md);
 
-        if (!md.hasColumn(col.name())) {
-            throw eckit::UserError("Column \"" + col.name() + "\" not found in table, but required in SQL request", Here());
-        }
-
-        size_t idx = md.columnIndex(col.name());
         columnOffsets_.push_back(it_->dataOffset(idx));
         columnDoublesSizes_.push_back(it_->dataSizeDoubles(idx));
         columnsHaveMissing_.push_back(it_->hasMissing(idx));

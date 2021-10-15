@@ -31,6 +31,14 @@ ODBInvalid::ODBInvalid(const std::string& file, const std::string& reason, const
 ODBEndOfDataStream::ODBEndOfDataStream(const std::string& s, const eckit::CodeLocation& loc) :
     ODBDecodeError(s, loc) {}
 
+
+AmbiguousColumnException::AmbiguousColumnException(const std::string& columnName) :
+    UserError("Ambiguous column name: '" + columnName + "'") {}
+
+
+ColumnNotFoundException::ColumnNotFoundException(const std::string& columnName) :
+    UserError("Column '" + columnName + "' not found.") {}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 } // namespace core
