@@ -56,12 +56,12 @@ int odc_integer_behaviour(int integerBehaviour);
 /** @{ */
 
 /** Retrieves the release version of the library in human-readable format, e.g. ``1.3.0``
- * \param version Return variable for release version
+ * \param version Return variable for release version. Returned pointer valid throughout program lifetime.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_version(const char** version);
 /** Retrieves version control checksum of the latest change, e.g. ``a88011c007a0db48a5d16e296934a197eac2050a``
- * \param version Return variable for version control checksum
+ * \param version Return variable for version control checksum. Returned pointer valid throughout program lifetime.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_vcs_version(const char** version);
@@ -134,7 +134,7 @@ int odc_column_type_count(int* count);
 
 /** Retrieves a human-readable name of a column data type
  * \param type Column data type (#OdcColumnType)
- * \param type_name Return variable for column data type name
+ * \param type_name Return variable for column data type name. Returned pointer valid throughout program lifetime.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_column_type_name(int type, const char** type_name);
@@ -176,7 +176,7 @@ struct odc_reader_t;
 /** Opaque type for the Reader object. Controls the ODB-2 data stream and associated resources, and gives access to the underlying frames. */
 typedef struct odc_reader_t odc_reader_t;
 /** Creates a reader and opens the specified file path
- * \param reader Reader instance
+ * \param reader Reader instance. Returned instance must be freed using #odc_close.
  * \param filename File path to open
  * \returns Return code (#OdcErrorValues)
  */
@@ -186,14 +186,14 @@ int odc_open_path(odc_reader_t** reader, const char* filename);
  *
  * The file descriptor will be duplicated so the calling code is safe to close the file descriptor.
  *
- * \param reader Reader instance
+ * \param reader Reader instance. Returned instance must be freed using #odc_close.
  * \param fd File descriptor
  * \returns Return code (#OdcErrorValues)
  */
 int odc_open_file_descriptor(odc_reader_t** reader, int fd);
 
 /** Creates a reader from a memory buffer
- * \param reader Reader instance
+ * \param reader Reader instance. Returned instance must be freed using #odc_close.
  * \param data Memory buffer
  * \param length Length of memory buffer
  * \returns Return code (#OdcErrorValues)
@@ -208,7 +208,7 @@ int odc_open_buffer(odc_reader_t** reader, const void* data, long length);
 typedef long (*odc_stream_read_t)(void* context, void* buffer, long length);
 
 /** Creates a reader associated to a custom stream handler. The callback specified will be called in the same way as the POSIX read() function to obtain data from the custom stream.
- * \param reader Reader instance
+ * \param reader Reader instance. Returned instance must be freed using #odc_close.
  * \param context Stream handler context
  * \param stream_proc Stream handler function
  * \returns Return code (#OdcErrorValues)
@@ -232,7 +232,7 @@ struct odc_frame_t;
 typedef struct odc_frame_t odc_frame_t;
 
 /** Creates a frame instance associated with a specific reader instance, for interrogating ODB-2 data
- * \param frame Frame instance
+ * \param frame Frame instance. Returned instance must be freed using #odc_free_frame.
  * \param reader Reader instance
  * \returns Return code (#OdcErrorValues)
  */
@@ -259,7 +259,7 @@ int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows);
 
 /** Creates an independent copy of the frame object, resulting in an independent viewport on the ODB data stream with its own associated resources. To use the new copied frame independently from the first requires the ODB-2 data stream to be seekable.
  * \param source_frame Source frame instance to copy from
- * \param copy Target frame instance to copy to
+ * \param copy Target frame instance to copy to. Returned instance must be freed using #odc_free_frame.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_copy_frame(odc_frame_t* source_frame, odc_frame_t** copy);
@@ -281,7 +281,7 @@ int odc_frame_column_count(const odc_frame_t* frame, int* count);
 /** Retrieves column attributes from current frame
  * \param frame Frame instance
  * \param col Target column index
- * \param name (*optional*) Return variable for column name
+ * \param name (*optional*) Return variable for column name. Returned pointer valid until frame object destroyed or advanced to the next frame.
  * \param type (*optional*) Return variable for column type
  * \param element_size (*optional*) Return variable for column size in bytes
  * \param bitfield_count (*optional*) Return variable for number of column bitfields
@@ -293,7 +293,7 @@ int odc_frame_column_attributes(const odc_frame_t* frame, int col, const char** 
  * \param frame Frame instance
  * \param col Target column index
  * \param entry Target bitfield index
- * \param name (*optional*) Return variable for bitfield name
+ * \param name (*optional*) Return variable for bitfield name. Returned pointer valid until frame object destroyed or advanced to the next frame.
  * \param offset (*optional*) Return variable for bitfield offset
  * \param size (*optional*) Return variable for bitfield size in bits
  * \returns Return code (#OdcErrorValues)
@@ -310,8 +310,8 @@ int odc_frame_properties_count(const odc_frame_t* frame, int* nproperties);
 /** Retrieves the property key and value by its index
  * \param frame Frame instance
  * \param idx Property index
- * \param key Return variable for property key
- * \param value Return variable for property value
+ * \param key Return variable for property key. Returned pointer valid until frame object destroyed or advanced to the next frame.
+ * \param value Return variable for property value. Returned pointer valid until frame object destroyed or advanced to the next frame.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_frame_property_idx(const odc_frame_t* frame, int idx, const char** key, const char** value);
@@ -319,7 +319,7 @@ int odc_frame_property_idx(const odc_frame_t* frame, int idx, const char** key, 
 /** Retrieves the property value by its key
  * \param frame Frame instance
  * \param key Property key
- * \param value Return variable for property value
+ * \param value Return variable for property value. Returned pointer valid until frame object destroyed or advanced to the next frame.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_frame_property(const odc_frame_t* frame, const char* key, const char** value);
@@ -339,7 +339,7 @@ typedef struct odc_decoder_t odc_decoder_t;
  * externally supplied */
 
 /** Creates a decoder instance for decoding ODB-2 format
- * \param decoder Decoder instance
+ * \param decoder Decoder instance. Returned instance must be freed using #odc_free_decoder.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_new_decoder(odc_decoder_t** decoder);
@@ -391,7 +391,7 @@ int odc_decoder_set_data_array(odc_decoder_t* decoder, void* data, long width, l
 
 /** Retrieves the output data array into which the data may be decoded
  * \param decoder Decoder instance
- * \param data (*optional*) Data array to decode into
+ * \param data (*optional*) Data array to decode into. Returned pointer valid until decoder object destroyed.
  * \param width (*optional*) Width of data array in bytes
  * \param height (*optional*) Height of data array in rows
  * \param columnMajor (*optional*) Whether the column-major memory layout is used
@@ -438,7 +438,7 @@ int odc_decoder_column_set_data_array(odc_decoder_t* decoder, int col, int eleme
  * \param col Column index
  * \param element_size (*optional*) Return variable for column data size in bytes
  * \param stride (*optional*) Return variable for column data width in bytes
- * \param data (*optional*) Return variable for column data array
+ * \param data (*optional*) Return variable for column data array. Returned pointer valid until decoder object destroyed.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_decoder_column_data_array(const odc_decoder_t* decoder, int col, int* element_size, int* stride, const void** data);
@@ -477,7 +477,7 @@ struct odc_encoder_t;
 typedef struct odc_encoder_t odc_encoder_t;
 
 /** Creates an encoder instance for encoding into ODB-2 format
- * \param encoder Encoder instance
+ * \param encoder Encoder instance. Returned instance must be freed using #odc_free_encoder.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_new_encoder(odc_encoder_t** encoder);
