@@ -176,6 +176,6 @@ ecbuild_add_library(
 
 if ( HAVE_FORTRAN AND ECBUILD_INSTALL_FORTRAN_MODULES )
     install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odc.mod
-             DESTINATION ${INSTALL_INCLUDE_DIR}
+             DESTINATION module/odc
              COMPONENT modules )
 endif()
