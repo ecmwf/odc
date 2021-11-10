@@ -173,3 +173,9 @@ ecbuild_add_library(
     PUBLIC_INCLUDES $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/module>
     PUBLIC_LIBS     odccore
 )
+
+if ( HAVE_FORTRAN AND ECBUILD_INSTALL_FORTRAN_MODULES )
+    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odc.mod
+             DESTINATION module/odc
+             COMPONENT modules )
+endif()

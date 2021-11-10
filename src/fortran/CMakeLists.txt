@@ -42,5 +42,7 @@ if( HAVE_FORTRAN )
     endforeach()
 
 # Legacy Fortran bindings:
-    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odc_c_binding.mod DESTINATION ${INSTALL_INCLUDE_DIR} )
+    install( FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/odc_c_binding.mod
+             DESTINATION module/odc
+             COMPONENT modules )
 endif()
