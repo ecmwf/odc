@@ -98,9 +98,3 @@ ecbuild_pkgconfig( NAME ${PROJECT_NAME}
 ecbuild_install_project( NAME odc )
 
 ecbuild_print_summary()
-
-if ( HAVE_FORTRAN AND ECBUILD_INSTALL_FORTRAN_MODULES )
-    install( DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}
-             DESTINATION module/odc
-             COMPONENT modules )
-endif()
