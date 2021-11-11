@@ -10,7 +10,9 @@ ecbuild_add_library(TARGET		odc_fortran
 
                     PUBLIC_LIBS odccore
 
-                    PUBLIC_INCLUDES $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}> )
+                    PUBLIC_INCLUDES $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
+                                    $<INSTALL_INTERFACE:module/odc>
+)
 
 set( test_environment_fortran
      TEST_DHSHOME=${PROJECT_SOURCE_DIR}/tests/dhshome/
