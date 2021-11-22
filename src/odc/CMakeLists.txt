@@ -171,6 +171,7 @@ ecbuild_add_library(
     SOURCES         api/odc.f90
                     ${CMAKE_CURRENT_BINARY_DIR}/odc_config.f90
     PUBLIC_INCLUDES $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/module>
+                    $<INSTALL_INTERFACE:module/odc>
     PUBLIC_LIBS     odccore
 )
 
