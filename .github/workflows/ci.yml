@@ -1,6 +1,6 @@
 name: ci
 
-# Controls when the action will run
+# Controls when the workflow will run
 on:
 
   # Trigger the workflow on all pushes, except on tag creation
@@ -17,135 +17,20 @@ on:
   workflow_dispatch: ~
 
 jobs:
+
+  # Calls a reusable CI workflow to build & test the current repository.
+  #   It will pull in all needed dependencies and produce a code coverage report on success.
   ci:
     name: ci
-    strategy:
-      matrix:
-        name:
-        - gnu-10@ubuntu-20.04
-        - clang-12@ubuntu-20.04
-        - gnu-10@ubuntu-18.04
-        - clang-9@ubuntu-18.04
-        - gnu-10@macos-10.15
-        - clang-12@macos-10.15
-        include:
-        - name: gnu-10@ubuntu-20.04
-          os: ubuntu-20.04
-          compiler: gnu-10
-          compiler_cc: gcc-10
-          compiler_cxx: g++-10
-          compiler_fc: gfortran-10
-        - name: clang-12@ubuntu-20.04
-          os: ubuntu-20.04
-          compiler: clang-12
-          compiler_cc: clang-12
-          compiler_cxx: clang++-12
-          compiler_fc: gfortran-10
-        - name: gnu-10@ubuntu-18.04
-          os: ubuntu-18.04
-          compiler: gnu-10
-          compiler_cc: gcc-10
-          compiler_cxx: g++-10
-          compiler_fc: gfortran-10
-        - name: clang-9@ubuntu-18.04
-          os: ubuntu-18.04
-          compiler: clang-9
-          compiler_cc: clang-9
-          compiler_cxx: clang++-9
-          compiler_fc: gfortran-9
-        - name: gnu-10@macos-10.15
-          os: macos-10.15
-          compiler: gnu-10
-          compiler_cc: gcc-10
-          compiler_cxx: g++-10
-          compiler_fc: gfortran-10
-        # Xcode compiler requires empty environment variables, so we pass null (~) here
-        - name: clang-12@macos-10.15
-          os: macos-10.15
-          compiler: clang-12
-          compiler_cc: ~
-          compiler_cxx: ~
-          compiler_fc: gfortran-10
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Build & Test
-      id: build-test
-      uses: ecmwf-actions/build-package@v1
-      with:
+    uses: ecmwf-actions/reusable-workflows/.github/workflows/ci.yml@v1
+    with:
+      codecov_upload: true
+      notify_teams: true
+      build_package_inputs: |
         self_coverage: true
         dependencies: |
           ecmwf/ecbuild
           ecmwf/eckit
         dependency_branch: develop
-
-    - name: Codecov Upload
-      if: steps.build-test.outputs.coverage_file && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
-      uses: codecov/codecov-action@v2
-      with:
-        files: ${{ steps.build-test.outputs.coverage_file }}
-
-  notify:
-    name: notify
-    runs-on: ubuntu-20.04
-    needs:
-    - ci
-    if: always() && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
-    steps:
-    - name: Check Workflow Runs
-      id: check-workflow-runs
-      shell: bash -eux {0}
-      continue-on-error: true
-      run: |
-        # Check results of previous jobs in the same run.
-        #   This context has no access to special job status functions.
-        if [[ "${{ needs.ci.result }}" == "failure" ]]
-        then
-          WORKFLOW_STATUS="failure"
-          MESSAGE_TITLE="failed"
-          MESSAGE_TEXT="Some jobs were not successful"
-          MESSAGE_COLOUR="#cb2431"
-        elif [[ "${{ needs.ci.result }}" == "cancelled" ]]
-        then
-          WORKFLOW_STATUS="cancelled"
-          MESSAGE_TITLE="cancelled"
-          MESSAGE_TEXT="Some jobs were not successful"
-          MESSAGE_COLOUR="#959da5"
-        else
-          WORKFLOW_STATUS="success"
-          MESSAGE_TITLE="succeeded"
-          MESSAGE_TEXT="All jobs were successful"
-          MESSAGE_COLOUR="#28a745"
-        fi
-        echo ::set-output name=workflow-status::$WORKFLOW_STATUS
-        echo ::set-output name=message-title::$MESSAGE_TITLE
-        echo ::set-output name=message-text::$MESSAGE_TEXT
-        echo ::set-output name=message-colour::$MESSAGE_COLOUR
-
-        # Fetch previous workflow run conclusion via REST API for the same branch
-        BRANCH_NAME=${GITHUB_REF##refs/heads/}
-        PREVIOUS_CONCLUSION=$( curl https://api.github.com/repos/${{ github.repository }}/actions/workflows/ci.yml/runs\?branch\=$BRANCH_NAME\&status\=completed\&per_page\=1 | jq .workflow_runs\[0\].conclusion | tr -d '"' )
-        echo ::set-output name=previous-conclusion::$PREVIOUS_CONCLUSION
-
-    # Sends a status message to the configured MS Teams channel.
-    #   It will get triggered in case:
-    #   - current workflow run has failed
-    #   - this is the first successful run after a failure
-    #   - this is the first successful run after a cancellation
-    - name: Send a Message to Microsoft Teams
-      uses: aliencube/microsoft-teams-actions@v0.8.0
-      if: steps.check-workflow-runs.outputs.workflow-status == 'failure' || contains(steps.check-workflow-runs.outputs.previous-conclusion, 'failure') || steps.check-workflow-runs.outputs.previous-conclusion == 'cancelled'
-      env:
-        MESSAGE_TITLE: ${{ steps.check-workflow-runs.outputs.message-title }}
-        MESSAGE_TEXT: ${{ steps.check-workflow-runs.outputs.message-text }}
-        MESSAGE_COLOUR: ${{ steps.check-workflow-runs.outputs.message-colour }}
-      with:
-        webhook_uri: ${{ secrets.MS_TEAMS_INCOMING_WEBHOOK }}
-        title: '[${{ github.repository }}] Run ${{ env.MESSAGE_TITLE }}: ${{ github.workflow }} - ${{ github.ref }} (${{ github.sha }})'
-        summary: '${{ github.workflow }}: ${{ env.MESSAGE_TEXT }}'
-        text: '${{ github.workflow }}: ${{ env.MESSAGE_TEXT }}'
-        theme_color: '${{ env.MESSAGE_COLOUR }}'
-        sections: '[{"facts":[{"name":"Build & Test","value":"${{ needs.ci.result }}"}]}]'
-        actions: '[{"@type":"OpenUri","name":"View workflow run","targets":[{"os":"default","uri":"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}]}]'
+    secrets:
+      incoming_webhook: ${{ secrets.MS_TEAMS_INCOMING_WEBHOOK }}
