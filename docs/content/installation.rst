@@ -73,7 +73,34 @@ Fortran interface is an optional feature, and requires an activation flag to be 
    ecbuild --prefix=$INSTALL_DIR -- -DENABLE_FORTRAN=$ENABLE_FORTRAN $SRC_DIR
 
 
+.. index::
+   single: Install; Conda Forge
+
+Conda Forge
+-----------
+
+Alternatively, you can install **odc** package in `Conda`_ environment via `conda-forge`_ channel:
+
+.. code-block:: shell
+
+   conda install -c conda-forge odc
+
+
+.. note::
+
+   Installing **odc** via **conda-forge** channel will provide Fortran interface out of the box.
+
+
+Check if the package was installed correctly:
+
+.. code-block:: shell
+
+   odc --version
+
+
 .. _`CMake`: https://cmake.org
 .. _`ecbuild`: https://github.com/ecmwf/ecbuild
 .. _`eckit`: https://github.com/ecmwf/eckit
 .. _`Doxygen`: https://www.doxygen.nl
+.. _`Conda`: https://docs.conda.io
+.. _`conda-forge`: https://conda-forge.org
