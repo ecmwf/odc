@@ -83,6 +83,8 @@ endif()
 ########################################################################################################################
 # contents
 
+include(cmake/compiler_warnings.cmake) # optionally handle compiler specific warnings
+
 add_subdirectory( src )
 add_subdirectory( regressions )
 add_subdirectory( tests )
