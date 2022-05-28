@@ -59,14 +59,14 @@ namespace {
 /// @note - These functions work around a Cray 8.7 compiler bug, where
 ///         where the punned version gets optimised out
 
-int64_t forceDoubleAsInteger(double v) {
+inline int64_t forceDoubleAsInteger(double v) {
     const int64_t* punned_value = reinterpret_cast<const int64_t*>(
                                       reinterpret_cast<const char*>(&v));
     return *punned_value;
 }
 
 
-bool castedCompareDoublesEqual(double lhs, double rhs) {
+inline bool castedCompareDoublesEqual(double lhs, double rhs) {
     int64_t lhs_val = forceDoubleAsInteger(lhs);
     int64_t rhs_val = forceDoubleAsInteger(rhs);
     return lhs_val == rhs_val;

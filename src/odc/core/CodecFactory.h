@@ -35,8 +35,8 @@ namespace core {
 class CodecBuilderBase;
 class Codec;
 template <typename ByteOrder> class DataStream;
-class SameByteOrder;
-class OtherByteOrder;
+struct SameByteOrder;
+struct OtherByteOrder;
 
 
 class CodecFactory : private eckit::NonCopyable {
