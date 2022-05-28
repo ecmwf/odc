@@ -329,7 +329,8 @@ void WriterBufferingIterator::flush()
 
     setOptimalCodecs();
 
-    Buffer encodedBuffer(rowsBuffer_.size());
+    // n.b. ensure that we leave space for the header in the worst case (data doesn't compress at all)
+    Buffer encodedBuffer(rowsBuffer_.size() + (sizeof(uint16_t) * rowsBufferSize_));
     core::DataStream<core::SameByteOrder> encodedStream(encodedBuffer);
 
     // Iterate over stored rows, and re-encode them into the encodedBuffer
