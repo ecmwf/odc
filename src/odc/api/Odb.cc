@@ -136,8 +136,6 @@ void ReaderImpl::restart() {
 
 Frame ReaderImpl::next() {
 
-    std::vector<core::Table> tables;
-
     if (it_ == tablesReader_.end()) return Frame();
 
     if (!first_) {
@@ -146,7 +144,7 @@ Frame ReaderImpl::next() {
     }
 
     first_ = false;
-    tables.emplace_back(*it_);
+    std::vector<core::Table> tables{*it_};
     long nrows = tables.back().rowCount();
 
     if (aggregated_) {
@@ -202,14 +200,39 @@ const std::map<std::string, std::string>& FrameImpl::properties() const {
 
 // API Forwarding
 
-Reader::Reader(const std::string& path, bool aggregated, long rowlimit) :
-    impl_(new ReaderImpl(path, aggregated, rowlimit)) {}
+/// @note we can do a more memory-efficient approach to SQL, by deriving a second type of ReaderImpl, which only
+///       iterates through the filtered data handle as needed, and then does the aggregagation logic on the components
 
-Reader::Reader(eckit::DataHandle& dh, bool aggregated, long rowlimit) :
-    impl_(new ReaderImpl(dh, aggregated, rowlimit)) {}
+Reader::Reader(const std::string& path, bool aggregated, long rowlimit, const char* sql) {
+    if (sql && ::strlen(sql) > 0) {
+        std::unique_ptr<DataHandle> dh(eckit::PathName(path).fileHandle());
+        std::unique_ptr<MemoryHandle> filtered_dh(new MemoryHandle);
+        ::odc::api::filter(sql, *dh, *filtered_dh);
+        impl_.reset(new ReaderImpl(filtered_dh.release(), aggregated, rowlimit));
+    } else {
+        impl_.reset(new ReaderImpl(path, aggregated, rowlimit));
+    }
+}
 
-Reader::Reader(eckit::DataHandle* dh, bool aggregated, long rowlimit) :
-    impl_(new ReaderImpl(dh, aggregated, rowlimit)) {}
+Reader::Reader(eckit::DataHandle& dh, bool aggregated, long rowlimit, const char* sql) {
+    if (sql && ::strlen(sql) > 0) {
+        std::unique_ptr<MemoryHandle> filtered_dh(new MemoryHandle);
+        ::odc::api::filter(sql, dh, *filtered_dh);
+        impl_.reset(new ReaderImpl(filtered_dh.release(), aggregated, rowlimit));
+    } else {
+        impl_.reset(new ReaderImpl(dh, aggregated, rowlimit));
+    }
+}
+
+Reader::Reader(eckit::DataHandle* dh, bool aggregated, long rowlimit, const char* sql) {
+    if (sql && ::strlen(sql) > 0) {
+        std::unique_ptr<MemoryHandle> filtered_dh(new MemoryHandle);
+        ::odc::api::filter(sql, *dh, *filtered_dh);
+        delete dh;
+        dh = filtered_dh.release();
+    }
+    impl_.reset(new ReaderImpl(dh, aggregated, rowlimit));
+}
 
 Reader::~Reader() {}
 

@@ -277,21 +277,24 @@ public: // methods
      * \param path File path to open
      * \param aggregated Whether to aggregate compatible data into a logical frame
      * \param rowlimit Maximum number of rows to aggregate into one logical frame
+     * \param sqlfilter An SQL query to pre-filter the data by. Note this will significantly increase memory usage
      */
-    Reader(const std::string& path, bool aggregated=true, long rowlimit=-1);
+    Reader(const std::string& path, bool aggregated=true, long rowlimit=-1, const char* sqlfilter=nullptr);
     /** Construct from data handle reference. This does not take ownership of the data handle,
      *  and managing the lifetime of this data handle is the responsibility of the caller.
      * \param dh Data handle (eckit)
      * \param aggregated Whether to aggregate compatible data into a logical frame
      * \param rowlimit Maximum number of rows to aggregate into one logical frame
+     * \param sqlfilter An SQL query to pre-filter the data by. Note this will significantly increase memory usage
      */
-    Reader(eckit::DataHandle& dh, bool aggregated=true, long rowlimit=-1);
+    Reader(eckit::DataHandle& dh, bool aggregated=true, long rowlimit=-1, const char* sqlfilter=nullptr);
     /** Construct via data handle pointer. This takes ownership of the DataHandle.
      * \param dh Data handle (eckit)
      * \param aggregated Whether to aggregate compatible data into a logical frame
      * \param rowlimit Maximum number of rows to aggregate into one logical frame
+     * \param sqlfilter An SQL query to pre-filter the data by. Note this will significantly increase memory usage
      */
-    Reader(eckit::DataHandle* dh, bool aggregated=true, long rowlimit=-1); // takes ownership
+    Reader(eckit::DataHandle* dh, bool aggregated=true, long rowlimit=-1, const char* sqlfilter=nullptr); // takes ownership
     ~Reader();
 
     /** Advances to the next frame in the stream

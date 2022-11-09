@@ -37,6 +37,7 @@ struct odc_reader_t {
     ~odc_reader_t() noexcept(false) {
         dh_->close();
     }
+    std::string sql_;
     std::unique_ptr<Reader> impl_;
     std::unique_ptr<DataHandle> dh_;
 };
@@ -324,6 +325,18 @@ int odc_open_stream(odc_reader_t** reader, void* handle, odc_stream_read_t strea
     });
 }
 
+int odc_apply_filter(odc_reader_t* reader, const char* sql) {
+
+    return wrapApiFunction([reader, sql] {
+        ASSERT(!reader->impl_);
+        if (sql) {
+            reader->sql_ = sql;
+        } else {
+            reader->sql_.clear();
+        }
+    });
+}
+
 int odc_close(const odc_reader_t* reader) {
     return wrapApiFunction([reader]{
         ASSERT(reader);
@@ -358,7 +371,7 @@ int odc_next_frame(odc_frame_t* frame) {
         odc_reader_t& r(frame->reader_);
         if (!r.impl_) {
             bool aggregated = false;
-            r.impl_.reset(new Reader(*r.dh_, aggregated));
+            r.impl_.reset(new Reader(*r.dh_, aggregated, -1, r.sql_.empty() ? nullptr : r.sql_.c_str()));
         }
 
         if ((frame->frame_ = r.impl_->next())) {
@@ -379,7 +392,8 @@ int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows) {
         odc_reader_t& r(frame->reader_);
         if (!r.impl_) {
             bool aggregated = true;
-            r.impl_.reset(new Reader(*r.dh_, aggregated, maximum_rows));
+            r.impl_.reset(new Reader(*r.dh_, aggregated, maximum_rows,
+                                     r.sql_.empty() ? nullptr : r.sql_.c_str()));
         }
 
         if ((frame->frame_ = r.impl_->next())) {

@@ -215,6 +215,15 @@ typedef long (*odc_stream_read_t)(void* context, void* buffer, long length);
  */
 int odc_open_stream(odc_reader_t** reader, void* context, odc_stream_read_t stream_proc);
 
+/** Specify an SQL filter to apply to the specified data stream prior to decoding
+ * \note This comes with memory and performance overheads, as general SQL statements can require processing of the
+ *       entire ODB-2 stream prior to outputting aggregated values.
+ * \param reader Reader instance to apply filter to
+ * \param sql SQL filter (SELECT statement) to apply to the specified data stream
+ * \returns Return code (#OdcErrorValues)
+ */
+int odc_apply_filter(odc_reader_t* reader, const char* sql);
+
 /** Closes opened resource and destroys the reader
  * \param reader Reader instance
  * \returns Return code (#OdcErrorValues)
