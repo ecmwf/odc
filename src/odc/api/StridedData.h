@@ -15,7 +15,7 @@
 #ifndef odc_api_StridedData_H
 #define odc_api_StridedData_H
 
-#include <cstddef>
+#include <cstdint>
 #include <string.h>
 #include <algorithm>
 
