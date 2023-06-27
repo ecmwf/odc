@@ -48,7 +48,7 @@ To run the test suite, you can use the following command:
    # Setup environment variables (edit as needed)
    SRC_DIR=$(pwd)
    BUILD_DIR=build
-   export eckit_DIR=$HOME/local # set to eckit prefix
+   export eckit_DIR=$HOME/.local # set to eckit prefix
 
    # Create the the build directory
    mkdir $BUILD_DIR
