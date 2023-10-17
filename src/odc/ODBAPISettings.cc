@@ -18,6 +18,7 @@
 #include "eckit/log/Log.h"
 #include "eckit/thread/ThreadSingleton.h"
 #include "eckit/utils/StringTools.h"
+#include "eckit/sql/LibEcKitSQL.h"
 
 #include "odc/LibOdc.h"
 #include "odc/ODBAPISettings.h"
@@ -88,10 +89,19 @@ string odc::ODBAPISettings::fileInHome(const string& fileName)
 
 void odc::ODBAPISettings::treatIntegersAsDoubles(bool flag) {
     integersAsDoubles_ = flag;
+    LibEcKitSQL::instance().treatIntegersAsDoubles(flag);
 }
 
 bool odc::ODBAPISettings::integersAsDoubles() const {
     return integersAsDoubles_;
+}
+
+bool odc::ODBAPISettings::fullyQualifySQLColumnNames() const {
+    return LibEcKitSQL::instance().fullyQualifyColumnNames();
+}
+
+void odc::ODBAPISettings::fullyQualifySQLColumnNames(bool flag) {
+    LibEcKitSQL::instance().fullyQualifyColumnNames(flag);
 }
 
 void debugMeNow() {

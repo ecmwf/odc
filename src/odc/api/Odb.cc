@@ -627,8 +627,20 @@ const std::map<std::string, std::string>& Frame::properties() const {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+bool Settings::treatIntegersAsDoubles() {
+    return odc::ODBAPISettings::instance().integersAsDoubles();
+}
+
 void Settings::treatIntegersAsDoubles(bool flag) {
     odc::ODBAPISettings::instance().treatIntegersAsDoubles(flag);
+}
+
+bool Settings::fullyQualifySQLColumnNames() {
+    return odc::ODBAPISettings::instance().fullyQualifySQLColumnNames();
+}
+
+void Settings::fullyQualifySQLColumnNames(bool flag) {
+    odc::ODBAPISettings::instance().fullyQualifySQLColumnNames(flag);
 }
 
 void Settings::setIntegerMissingValue(long val) {

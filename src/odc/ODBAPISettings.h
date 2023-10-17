@@ -41,6 +41,9 @@ public:
     void treatIntegersAsDoubles(bool flag);
     bool integersAsDoubles() const;
 
+    bool fullyQualifySQLColumnNames() const;
+    void fullyQualifySQLColumnNames(bool flag);
+
 	static bool debug;
 
 private:

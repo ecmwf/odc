@@ -113,6 +113,11 @@ void ThreadSharedDataHandle::close() {
     internal_->dh_->close();
 }
 
+eckit::Length ThreadSharedDataHandle::size() {
+    ASSERT(internal_);
+    return internal_->dh_->size();
+}
+
 eckit::Length ThreadSharedDataHandle::estimate() {
     ASSERT(internal_);
     return internal_->dh_->estimate();

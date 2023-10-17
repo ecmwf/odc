@@ -52,8 +52,6 @@ public:
         Length length (tbl.nextPosition() - tbl.startPosition());
         o << offset << " " << length << " " << tbl.rowCount() << " " << tbl.columnCount() << std::endl;
 	}
-private:
-	unsigned long headerCount_;
 };
 
 class DDLPrinter : public MDPrinter {

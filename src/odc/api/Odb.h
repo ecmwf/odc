@@ -50,10 +50,22 @@ namespace api {
 class Settings {
 public: // methods
 
+    /** Determine whether integers are treated as doubles across the interface and internally
+     */
+    static bool treatIntegersAsDoubles();
+
     /** Sets treatment of integers in ODB-2 data as doubles
      * \param flag Whether to treat integers as doubles (*true*) or longs (*false*)
      */
     static void treatIntegersAsDoubles(bool flag);
+
+    /** Determine if column names is SQL query results are fully qualified, or returned as queried
+     */
+    static bool fullyQualifySQLColumnNames();
+
+    /** Set if column names is SQL query results are fully qualified, or returned as queried
+     */
+    static void fullyQualifySQLColumnNames(bool flag);
 
     /** Returns the value that identifies a missing integer
      * \returns Missing integer value

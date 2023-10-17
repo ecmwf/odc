@@ -54,6 +54,7 @@ public: // methods
     void close() override;
 
     eckit::Length estimate() override;
+    eckit::Length size() override;
     eckit::Offset position() override;
     eckit::Offset seek(const eckit::Offset&) override;
 

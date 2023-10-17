@@ -228,6 +228,15 @@ int odc_integer_behaviour(int integerBehaviour) {
     });
 }
 
+int odc_sql_column_behaviour(int columnBehaviour) {
+    return wrapApiFunction([columnBehaviour] {
+        if (columnBehaviour != ODC_SQL_COLUMNS_FULLY_QUALIFIED && columnBehaviour != ODC_SQL_COLUMNS_AS_REFERENCED) {
+            throw SeriousBug("ODC column behaviour must be either ODC_SQL_COLUMNS_FULLY_QUALIFIED or ODC_SQL_COLUMNS_AS_REFERENCED", Here());
+        }
+        Settings::fullyQualifySQLColumnNames(columnBehaviour == ODC_SQL_COLUMNS_FULLY_QUALIFIED);
+    });
+}
+
 int odc_set_failure_handler(odc_failure_handler_t handler, void* context) {
     return wrapApiFunction([handler, context] {
         g_failure_handler = handler;

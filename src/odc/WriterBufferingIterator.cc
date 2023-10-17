@@ -40,6 +40,7 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
     columnOffsets_(0),
     columnByteSizes_(0),
     nrows_(0),
+    nrowsInFrame_(0),
     path_(owner.path()),
     initialisedColumns_(false),
     properties_(),
@@ -63,6 +64,7 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle &dh, b
     columnOffsets_(0),
     columnByteSizes_(0),
     nrows_(0),
+    nrowsInFrame_(0),
     path_(owner.path()),
     initialisedColumns_(false),
     properties_(),
@@ -155,6 +157,7 @@ void WriterBufferingIterator::allocRowsBuffer()
     rowByteSize_ = rowDataSizeDoubles() * sizeof(double);
     rowsBuffer_ = Buffer(rowsBufferSize_ * rowByteSize_);
     nextRowInBuffer_ = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
+    nrowsInFrame_ = 0;
 }
 
 void WriterBufferingIterator::writeHeader()
@@ -359,6 +362,7 @@ void WriterBufferingIterator::flush()
     // Reset the write buffers
 
     nextRowInBuffer_ = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
+    nrowsInFrame_ = 0;
 
     // This is a bad place to be. We need to reset the coders in the columns, not clone
     // the existing ones (which have been optimised).

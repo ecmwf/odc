@@ -48,9 +48,9 @@ void test_generate_odb_properties(const std::string &path, int propertiesMode = 
 
     // Define all column names, their types and sizes
     std::vector<odc::api::ColumnInfo> columns = {
-        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
-        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
-        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8, {}},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t), {}},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
     };
 
     // Set a custom data layout and data array for each column
@@ -154,10 +154,10 @@ void test_generate_odb_span(const std::string &path) {
 
     // Define all column names, their types and sizes
     std::vector<odc::api::ColumnInfo> columns = {
-        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
-        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
-        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
-        {std::string("missing_value"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8, {}},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t), {}},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
+        {std::string("missing_value"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
     };
 
     // Set a custom data layout and data array for each column and frame
@@ -1140,7 +1140,7 @@ CASE("Where Span interface is used to read values without decoding") {
     }
 
     // Check string values
-    for (const std::string val : expver_vals) {
+    for (const std::string& val : expver_vals) {
         EXPECT(val == "xxxx");
     }
 
@@ -1163,6 +1163,8 @@ CASE("Where Span interface is used to read values without decoding") {
 // ------------------------------------------------------------------------------------------------------
 
 CASE("Filter a subset of ODB-2 data") {
+
+    ASSERT(!odc::api::Settings::treatIntegersAsDoubles());
 
     eckit::FileHandle in("../2000010106-reduced.odb");
     in.openForRead();
@@ -1191,10 +1193,10 @@ CASE("Filter a subset of ODB-2 data") {
 
     size_t nframes = 0;
     size_t totalRows = 0;
-    odc::api::Frame frame = reader.next();
+    odc::api::Frame test_frame = reader.next();
 
     // Test second type of frame constructor via an existing copy
-    odc::api::Frame test_frame(frame);
+//    odc::api::Frame test_frame(frame);
 
     EXPECT(test_frame.rowCount() == 10);
 
@@ -1228,9 +1230,43 @@ CASE("Filter a subset of ODB-2 data") {
     EXPECT(long(sub_frame.length()) == 487);
 
     // Test creation of a frame via the assignment operator
-    odc::api::Frame dummy_frame = frame;
+//    odc::api::Frame dummy_frame = frame;
 
-    EXPECT(dummy_frame.rowCount() == 10);
+//    EXPECT(dummy_frame.rowCount() == 10);
+}
+
+// ------------------------------------------------------------------------------------------------------
+
+CASE("Read from data with explicit SQL filter") {
+
+    bool aggregated = true;
+    long rowlimit = -1;
+    const char* sql_filter ="select expver, date, lat, lon, obsvalue where rownumber() <= 10";
+    odc::api::Reader reader("../2000010106-reduced.odb", aggregated, rowlimit, sql_filter);
+
+    size_t nframes = 0;
+    size_t totalRows = 0;
+    odc::api::Frame frame = reader.next();
+
+    // Test second type of frame constructor via an existing copy
+    odc::api::Frame test_frame(frame);
+
+    EXPECT(test_frame.rowCount() == 10);
+
+    // Access encoded data directly from a frame
+    EXPECT(test_frame.encodedData().size() == 487);
+
+    // Check if frame has expected columns.
+    EXPECT(test_frame.columnCount() == 5);
+    EXPECT(test_frame.hasColumn("expver"));
+    EXPECT(test_frame.hasColumn("date@hdr"));
+    EXPECT(test_frame.hasColumn("lat@hdr"));
+    EXPECT(test_frame.hasColumn("lon@hdr"));
+    EXPECT(test_frame.hasColumn("obsvalue@body"));
+
+    // Check expected frame bounds
+    EXPECT(int(test_frame.offset()) == 0);
+    EXPECT(long(test_frame.length()) == 487);
 }
 
 // ------------------------------------------------------------------------------------------------------

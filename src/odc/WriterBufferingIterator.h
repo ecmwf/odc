@@ -98,6 +98,8 @@ public:
     std::vector<eckit::PathName> outputFiles();
     bool next();
 
+    unsigned long long nrowsInFrame() const { return nrowsInFrame_; }
+
     // If we are encoding strings, and the relevant string column size changes, we need
     // to restart the encoding process
     void flushAndResetColumnSizes(const std::map<std::string, size_t>& resetColumnSizeDoubles);
@@ -114,6 +116,7 @@ protected:
     size_t* columnOffsets_; // in doubles
     size_t* columnByteSizes_;
 	unsigned long long nrows_;
+    unsigned long long nrowsInFrame_;
 
     eckit::PathName path_;
 
@@ -172,8 +175,6 @@ void WriterBufferingIterator::pass1init(T& it, const T& end)
 template<typename T>
 unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 {
-    LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::pass1" << std::endl;
-
 	pass1init(it, end);
     writeHeader();
 
@@ -182,7 +183,6 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
 	{
         if (it->isNewDataset() && it->columns() != columns())
 		{
-            LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::pass1: Change of input metadata." << std::endl;
 			flush();
 			pass1init(it, end);
             writeHeader();
@@ -191,10 +191,8 @@ unsigned long WriterBufferingIterator::pass1(T& it, const T& end)
         writeRow(it->data(), it->columns().size());
 	} 
 
-    LOG_DEBUG_LIB(LibOdc) << "Flushing rest of the buffer..." << std::endl;
 	flush();
 
-    LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::pass1: processed " << nrows << " row(s)." << std::endl;
 	ASSERT(close() == 0);
 	return nrows;
 }

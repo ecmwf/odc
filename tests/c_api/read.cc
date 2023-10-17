@@ -66,9 +66,9 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
 
     // Define all column names, their types and sizes
     std::vector<odc::api::ColumnInfo> columns = {
-        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
-        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
-        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8, {}},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t), {}},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
     };
 
     // Set a custom data layout and data array for each column

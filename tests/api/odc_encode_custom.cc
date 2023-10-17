@@ -139,13 +139,13 @@ int main(int argc, char** argv) {
 
     // Define all column names, their types and sizes
     std::vector<ColumnInfo> columns = {
-        ColumnInfo{std::string("expver"), ColumnType(STRING), 8},
-        ColumnInfo{std::string("date@hdr"), ColumnType(INTEGER), sizeof(int64_t)},
-        ColumnInfo{std::string("statid@hdr"), ColumnType(STRING), 8},
-        ColumnInfo{std::string("wigos@hdr"), ColumnType(STRING), 16},
-        ColumnInfo{std::string("obsvalue@body"), ColumnType(REAL), sizeof(double)},
-        ColumnInfo{std::string("integer_missing"), ColumnType(INTEGER), sizeof(int64_t)},
-        ColumnInfo{std::string("double_missing"), ColumnType(REAL), sizeof(double)},
+        ColumnInfo{std::string("expver"), ColumnType(STRING), 8, {}},
+        ColumnInfo{std::string("date@hdr"), ColumnType(INTEGER), sizeof(int64_t), {}},
+        ColumnInfo{std::string("statid@hdr"), ColumnType(STRING), 8, {}},
+        ColumnInfo{std::string("wigos@hdr"), ColumnType(STRING), 16, {}},
+        ColumnInfo{std::string("obsvalue@body"), ColumnType(REAL), sizeof(double), {}},
+        ColumnInfo{std::string("integer_missing"), ColumnType(INTEGER), sizeof(int64_t), {}},
+        ColumnInfo{std::string("double_missing"), ColumnType(REAL), sizeof(double), {}},
         ColumnInfo{std::string("bitfield_column"), ColumnType(BITFIELD), sizeof(int64_t), bitfields},
     };
 

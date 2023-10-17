@@ -33,21 +33,34 @@ extern "C" {
 /** @{ */
 
 /** Represent integers as doubles in the API (default) */
-const int ODC_INTEGERS_AS_DOUBLES = 1; // this is the default
+const int ODC_INTEGERS_AS_DOUBLES = 1; /* this is the default */
 
 /** Represent integers as 64-bit integers in the API */
 const int ODC_INTEGERS_AS_LONGS = 2;
+
+/** Always fully qualify column names, including table names, in SQL query results */
+const int ODC_SQL_COLUMNS_FULLY_QUALIFIED = 1; /* this is the default */
+
+/** Always fully qualify column names, including table names, in SQL query results */
+const int ODC_SQL_COLUMNS_AS_REFERENCED = 2;
 
 /** Initialises API, must be called before any other function
  * \note This is only required if being used from a context where **eckit::Main()** is not otherwise initialised.
  * \returns Return code (#OdcErrorValues)
  */
 int odc_initialise_api();
+
 /** Sets treatment of integers in the odc API
  * \param integerBehaviour Desired integer behaviour (#ODC_INTEGERS_AS_DOUBLES #ODC_INTEGERS_AS_LONGS)
  * \returns Return code (#OdcErrorValues)
  */
 int odc_integer_behaviour(int integerBehaviour);
+
+/** Sets behaviour of column naming in SQL queries
+ * \param columnBehaviour Desired column naming behaviour (#ODC_SQL_COLUMNS_FULLY_QUALIFIED #ODC_SQL_COLUMNS_AS_REFERENCED)
+ * \returns Return  code (#OdcErrorValues)
+ */
+int odc_sql_column_behaviour(int columnBehaviour);
 
 /** @} */
 
@@ -89,8 +102,6 @@ enum OdcErrorValues {
  * \returns Error message
  */
 const char* odc_error_string(int err);
-
-// int odc_abort_on_failure(bool abort); ///< @todo to remove
 
 /** Error handler callback function signature
  * \param context Error handler context
@@ -139,8 +150,8 @@ int odc_column_type_count(int* count);
  */
 int odc_column_type_name(int type, const char** type_name);
 
-/// @todo In the top CMakelists.txt assert that in this system C long is 64 bit
-/// @todo In the top CMakelists.txt assert that in this system C double is 64 bit
+/** @todo In the top CMakelists.txt assert that in this system C long is 64 bit */
+/** @todo In the top CMakelists.txt assert that in this system C double is 64 bit */
 
 
 /** Sets the value that identifies a missing integer in the API
@@ -529,7 +540,7 @@ int odc_encoder_set_rows_per_frame(odc_encoder_t* encoder, long rows_per_frame);
  */
 int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height, int columnMajorWidth);
 
-/// @todo implement the int columnMajorWidth in the above function
+/** @todo implement the int columnMajorWidth in the above function */
 
 /** Adds a data column to current encoder
  * \param encoder Encoder instance
