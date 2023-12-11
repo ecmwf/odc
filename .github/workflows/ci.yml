@@ -1,36 +1,40 @@
 name: ci
 
-# Controls when the workflow will run
 on:
-
-  # Trigger the workflow on all pushes, except on tag creation
+  # Trigger the workflow on push to master or develop, except tag creation
   push:
     branches:
-    - '**'
+      - 'master'
+      - 'develop'
     tags-ignore:
-    - '**'
+      - '**'
 
-  # Trigger the workflow on all pull requests
+  # Trigger the workflow on pull request
   pull_request: ~
 
-  # Allow workflow to be dispatched on demand
+  # Trigger the workflow manually
   workflow_dispatch: ~
 
-jobs:
+  # Trigger after public PR approved for CI
+  pull_request_target:
+    types: [labeled]
 
-  # Calls a reusable CI workflow to build & test the current repository.
-  #   It will pull in all needed dependencies and produce a code coverage report on success.
-  ci:
-    name: ci
-    uses: ecmwf-actions/reusable-workflows/.github/workflows/ci.yml@v1
+jobs:
+  # Run CI including downstream packages on self-hosted runners
+  downstream-ci:
+    name: downstream-ci
+    if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
+    uses: ecmwf-actions/downstream-ci/.github/workflows/downstream-ci.yml@main
     with:
+      odc: ecmwf/odc@${{ github.event.pull_request.head.sha || github.sha }}
       codecov_upload: true
-      notify_teams: true
-      build_package_inputs: |
-        self_coverage: true
-        dependencies: |
-          ecmwf/ecbuild
-          ecmwf/eckit
-        dependency_branch: develop
-    secrets:
-      incoming_webhook: ${{ secrets.MS_TEAMS_INCOMING_WEBHOOK }}
+    secrets: inherit
+
+  # Build downstream packages on HPC
+  downstream-ci-hpc:
+    name: downstream-ci-hpc
+    if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
+    uses: ecmwf-actions/downstream-ci/.github/workflows/downstream-ci-hpc.yml@main
+    with:
+      odc: ecmwf/odc@${{ github.event.pull_request.head.sha || github.sha }}
+    secrets: inherit
