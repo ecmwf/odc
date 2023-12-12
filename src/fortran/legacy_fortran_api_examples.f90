@@ -94,7 +94,7 @@ subroutine example_fortran_api_append
    one_row(offsets(1)) = i
    one_row(offsets(2)) = i
    one_row(offsets(3)) = 5
-   one_row(offsets(4):offsets(4)+3) = transfer(wigos, one_row(offsets(4):offsets(4)+3))
+   one_row(offsets(4):offsets(4)+3) = transfer(wigos(1:32), one_row(offsets(4):offsets(4)+3))
    one_row(offsets(5)) = transfer(expver, one_row(5))
    one_row(offsets(6)) = 5
    cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
@@ -135,7 +135,7 @@ subroutine example_fortran_api_append
    one_row(offsets(1)) = i
    one_row(offsets(2)) = i
    one_row(offsets(3)) = 5
-   one_row(offsets(4):offsets(4)+3) = transfer(wigos, one_row(offsets(4):offsets(4)+3))
+   one_row(offsets(4):offsets(4)+3) = transfer(wigos(1:32), one_row(offsets(4):offsets(4)+3))
    one_row(offsets(5)) = transfer(expver, one_row(5))
    one_row(offsets(6)) = 5
    cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
@@ -197,7 +197,7 @@ subroutine example_fortran_api_setup
    one_row(offsets(1)) = i
    one_row(offsets(2)) = i
    one_row(offsets(3)) = 5
-   one_row(offsets(4):offsets(4)+3) = transfer(wigos, one_row(offsets(4):offsets(4)+3))
+   one_row(offsets(4):offsets(4)+3) = transfer(wigos(1:32), one_row(offsets(4):offsets(4)+3))
    one_row(offsets(5)) = transfer(expver, one_row(5))
    one_row(offsets(6)) = 5
    cerr = odb_write_set_next_row(odb_it, one_row, c_ncolumns)
