@@ -253,11 +253,11 @@ Span Table::span(const std::vector<std::string>& columns, bool onlyConstants) {
 
     // We don't decode non-constant columns unless allowed to
 
-    if (!nonConstantColumns.empty() && onlyConstants) {
-        std::stringstream ss;
-        ss << "Non-constant columns required in span: " << nonConstantColumns;
-        throw UserError(ss.str(), Here());
-    }
+    // if (!nonConstantColumns.empty() && onlyConstants) {
+    //     std::stringstream ss;
+    //     ss << "Non-constant columns required in span: " << nonConstantColumns;
+    //     throw UserError(ss.str(), Here());
+    // }
 
     if (!nonConstantColumns.empty()) {
         s.extend(decodeSpan(nonConstantColumns));
