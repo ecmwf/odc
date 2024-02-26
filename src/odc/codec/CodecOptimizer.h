@@ -94,6 +94,7 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
             case api::STRING:
 				{
                     n = col.coder().numStrings();
+                    ASSERT(n < 65536);
                                         if (n == 1 && col.coder().dataSizeDoubles() == 1)
 						codec = "constant_string";
 					else if(n < 256)
