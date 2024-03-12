@@ -308,7 +308,9 @@ int odc_open_stream(odc_reader_t** reader, void* handle, odc_stream_read_t strea
         ReadStreamDataHandle(void* handle, odc_stream_read_t fn) : handle_(handle), fn_(fn) {}
         virtual ~ReadStreamDataHandle() {}
         void print(std::ostream& s) const override { s << "StreamReadHandle(" << fn_ << "(" << handle_ << "))"; }
-        Length openForRead() override { return 0; }
+        // Hack for compiler bug on clang-14.0.3 running on MacOS 13
+        static Length workaroundFunction() { return 0; }
+        Length openForRead() override { return workaroundFunction(); }
         void openForWrite(const Length&) override { NOTIMP; }
         void openForAppend(const Length&) override { NOTIMP; }
         long read(void* buffer, long length) override { return fn_(handle_, buffer, length); }
