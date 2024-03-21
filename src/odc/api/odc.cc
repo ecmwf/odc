@@ -231,7 +231,6 @@ int odc_set_failure_handler(odc_failure_handler_t handler, void* context) {
     return wrapApiFunction([handler, context] {
         g_failure_handler = handler;
         g_failure_handler_context = context;
-        eckit::Log::info() << "ODC setting failure handler fn." << std::endl;
     });
 }
 
