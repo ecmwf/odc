@@ -12,6 +12,7 @@ foreach( _test ${_api_fodc_tests} )
         ENVIRONMENT  ${test_environment}
         TEST_DEPENDS odc_get_test_data
         CONDITION    HAVE_FORTRAN
+        LINKER_LANGUAGE Fortran
         LIBS         fodc )
 endforeach()
 
@@ -40,6 +41,7 @@ foreach( _i RANGE ${_count} )
                             SOURCES    ${_sources}.f90
                             LIBS       fodc
                             CONDITION  HAVE_FORTRAN
+                            LINKER_LANGUAGE Fortran
                             NOINSTALL )
 endforeach()
 
