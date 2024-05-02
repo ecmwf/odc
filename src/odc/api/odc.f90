@@ -130,7 +130,7 @@ module odc
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_ptr), intent(in), value :: str
-            integer(c_int) :: len
+            integer(c_long) :: len
         end function
     end interface
 
