@@ -21,7 +21,5 @@ formats: []
 
 # Pin the version of Python and requirements required to build the docs.
 python:
-   version: 3.8
    install:
      - requirements: docs/requirements.txt
-   system_packages: true
