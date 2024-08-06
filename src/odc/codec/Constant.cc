@@ -23,6 +23,7 @@ namespace codec {
 namespace {
     core::IntegerCodecBuilder<CodecConstant> constantBuilder;
     core::CodecBuilder<CodecConstantString> constantStringBuilder;
+    core::CodecBuilder<CodecLongConstantString> LongConstantStringBuilder;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
