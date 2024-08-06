@@ -16,6 +16,7 @@
 #define odc_core_codec_Constant_H
 
 #include "odc/core/Codec.h"
+#include "odc/codec/String.h"
 
 namespace odc {
 namespace codec {
@@ -70,6 +71,25 @@ private: // methods
 
     using CodecConstant<ByteOrder, double>::load;
     using CodecConstant<ByteOrder, double>::save;
+    void load(core::DataStream<ByteOrder>& ds) override;
+    void save(core::DataStream<ByteOrder>& ds) override;
+};
+
+template<typename ByteOrder>
+class CodecLongConstantString : public CodecChars<ByteOrder> {
+
+public: // methods
+    constexpr static const char* codec_name() { return "long_constant_string"; }
+    CodecLongConstantString(api::ColumnType type) : CodecChars<ByteOrder>(type, codec_name()) {};
+    ~CodecLongConstantString() override {}
+
+private: // methods
+    unsigned char* encode(unsigned char* p, const double& d) override;
+    void decode(double* out) override;
+    void skip() override;
+
+    size_t numStrings() const override { return 1; }
+
     void load(core::DataStream<ByteOrder>& ds) override;
     void save(core::DataStream<ByteOrder>& ds) override;
 };
@@ -147,6 +167,39 @@ void CodecConstantString<ByteOrder>::print(std::ostream& s) const {
     s << this->name_ << ", value='"
       << std::string(cstr, ::strnlen(cstr, sizeof(double)))
       << "'";
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Implementation of LongConstantString
+
+template <typename ByteOrder>
+unsigned char* CodecLongConstantString<ByteOrder>::encode(unsigned char* p, const double&) {
+    return p;
+}
+
+template <typename ByteOrder>
+void CodecLongConstantString<ByteOrder>::decode(double* out) {
+    ::memset(out, 0, this->decodedSizeDoubles_*sizeof(double));
+    ::memcpy(reinterpret_cast<char*>(out), &this->strings_[0][0], std::min(this->strings_[0].length(), this->decodedSizeDoubles_*sizeof(double)));
+}
+
+template <typename ByteOrder>
+void CodecLongConstantString<ByteOrder>::skip() {}
+
+template <typename ByteOrder>
+void CodecLongConstantString<ByteOrder>::load(core::DataStream<ByteOrder>& ds) {
+    core::DataStreamCodec<ByteOrder>::load(ds);
+    std::string s;
+    ds.read(s);
+    this->decodedSizeDoubles_ = ((s.length()-1) / sizeof(double)) +1;
+    this->strings_.push_back(s);
+}
+
+template <typename ByteOrder>
+void CodecLongConstantString<ByteOrder>::save(core::DataStream<ByteOrder>& ds) {
+    core::DataStreamCodec<ByteOrder>::save(ds);
+    ds.write(this->strings_[0]);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
