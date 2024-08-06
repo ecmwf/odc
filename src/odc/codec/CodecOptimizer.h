@@ -96,6 +96,8 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns)
                     n = col.coder().numStrings();
                                         if (n == 1 && col.coder().dataSizeDoubles() == 1)
 						codec = "constant_string";
+                    else if (n == 1 && std::getenv("ODC_ENABLE_WRITING_LONG_STRING_CODEC") != NULL)
+                        codec = "long_constant_string";
 					else if(n < 256)
 						codec = "int8_string";
 					else if(n < 65536)
