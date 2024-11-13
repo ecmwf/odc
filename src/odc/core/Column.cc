@@ -90,7 +90,8 @@ bool Column::isConstant()
 {
 	// FIXME
 	return coder().name() == "constant"
-		|| coder().name() == "constant_string";
+		|| coder().name() == "constant_string"
+        || coder().name() == "long_constant_string";
 }
 
 //Column::Column(DataHandle *dataHandle) : dataHandle_(dataHandle), name_(), type_(IGNORE/*?*/), coder_(0) {}
