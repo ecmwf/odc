@@ -31,7 +31,7 @@ cd odc
 # Setup environment variables (edit as needed)
 SRC_DIR=$(pwd)
 BUILD_DIR=build
-INSTALL_DIR=$HOME/local
+INSTALL_DIR=$HOME/.local
 export eckit_DIR=$INSTALL_DIR # set to eckit install prefix
 
 # Create the the build directory
