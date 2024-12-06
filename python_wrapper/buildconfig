@@ -14,3 +14,4 @@ NAME="odc"
 CMAKE_PARAMS=""
 PYPROJECT_DIR="python_wrapper"
 export eckit_ROOT="/target/eckit"
+FINDLIBS_DEPENDENCIES='["eckitlibs"]'
