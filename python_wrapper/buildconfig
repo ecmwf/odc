@@ -11,7 +11,6 @@
 # TODO we duplicate information -- pyproject.toml's `name` and `packages` are derivable from $NAME and must stay consistent
 
 NAME="odc"
-CMAKE_PARAMS=""
+CMAKE_PARAMS="-Deckit_ROOT=/tmp/odc/prereqs/eckitlib"
 PYPROJECT_DIR="python_wrapper"
-export eckit_ROOT="/tmp/prereqs/eckit"
-DEPENDENCIES='["eckit"]'
+DEPENDENCIES='["eckitlib"]'
