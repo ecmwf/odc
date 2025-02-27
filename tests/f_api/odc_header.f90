@@ -35,7 +35,7 @@ program odc_header
         call check_call(frame%initialise(reader), 'initialising frame')
 
         write(output_unit, '(a,a)') 'File: ', trim(path)
-        call flush(output_unit)
+        flush(output_unit)
 
         nframe = 1
 
@@ -50,7 +50,7 @@ program odc_header
 
             write(output_unit, '(a,i0,a,i0,a,i0)') '  Frame: ', nframe, ', Row count: ', nrows, &
                 ', Column count: ', ncols
-            call flush(output_unit)
+            flush(output_unit)
 
             ! Get number of properties encoded in the frame
             call check_call(frame%properties_count(nproperties), 'getting property count')
@@ -75,7 +75,7 @@ program odc_header
 
                 write(output_unit, '(a,i0,a,a,a,a,a,i0)') '    Column: ', col, ', Name: ', name, &
                     ', Type: ', type_name, ', Size: ', element_size
-                call flush(output_unit)
+                flush(output_unit)
 
                 ! Process bitfields only
                 if (type == ODC_BITFIELD) then
@@ -87,14 +87,14 @@ program odc_header
 
                         write(output_unit, '(a,i0,a,a,a,i0,a,i0)') '      Bitfield: ', bf, ', Name: ', bf_name, &
                             ', Offset: ', bf_offset, ', Nbits: ', bf_size
-                        call flush(output_unit)
+                        flush(output_unit)
                     end do
                 end if
             end do
 
             nframe = nframe + 1
             write(output_unit, '(a)') ''
-            call flush(output_unit)
+            flush(output_unit)
 
             ! Advances to the next frame in the stream in non-aggregated mode
             err = frame%next()
