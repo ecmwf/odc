@@ -19,6 +19,7 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <string_view>
 #include <cstdint>
 
 #include "eckit/memory/NonCopyable.h"
@@ -90,7 +91,10 @@ template <template <typename> class CODEC>
 class CodecBuilder : public CodecBuilderBase {
 
 #ifndef _CRAYC
-    static_assert(CODEC<SameByteOrder>::codec_name() == CODEC<OtherByteOrder>::codec_name(), "Invalid name");
+    static_assert(
+        std::string_view(CODEC<SameByteOrder>::codec_name()) ==
+        std::string_view(CODEC<OtherByteOrder>::codec_name()),
+        "Invalid name");
 #endif
 
 public: // methods
