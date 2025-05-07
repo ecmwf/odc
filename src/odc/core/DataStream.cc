@@ -34,13 +34,13 @@ inline void checkRead(int code, const char *msg, const DH& dh, const eckit::Code
     }
 }
 
-#define CHECK_READ(d, a) \
-{ \
-    long _v; \
-    if (!(_v = (a))) { \
-        ::odc::checkRead(_v, #a, d, Here()); \
-    } \
-}
+#define CHECK_READ(d, a)                         \
+    {                                            \
+        long _v;                                 \
+        if (!(_v = (a))) {                       \
+            ::odc::checkRead(_v, #a, d, Here()); \
+        }                                        \
+    }
 
 template <typename T, typename D>
 DataStream<T,D>::DataStream() : f() {}

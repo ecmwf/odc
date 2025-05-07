@@ -4,11 +4,11 @@
  *     gcc -lodccore -o odc-c-encode-custom odc_encode_custom.c
  */
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
-#include <fcntl.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "odc/api/odc.h"
@@ -18,37 +18,39 @@
 #define Ob00001011 11
 #define Ob01101011 107
 
-#define CHECK_RESULT(x) \
-    do { \
-        int rc = (x); \
-        if (rc != ODC_SUCCESS) { \
+#define CHECK_RESULT(x)                                                                           \
+    do {                                                                                          \
+        int rc = (x);                                                                             \
+        if (rc != ODC_SUCCESS) {                                                                  \
             fprintf(stderr, "Error calling odc function \"%s\": %s\n", #x, odc_error_string(rc)); \
-            exit(1); \
-        } \
-    } while (false); \
+            exit(1);                                                                              \
+        }                                                                                         \
+    } while (false);
 
 void usage() {
     fprintf(stderr, "Usage:\n");
     fprintf(stderr, "    odc-c-encode-custom <odb2 output file>\n\n");
 }
 
-void cycle_longs(long *list, int size, long *pool, int pool_size) {
+void cycle_longs(long* list, int size, long* pool, int pool_size) {
     int index = 0;
     int i;
 
     for (i = 0; i < size; i++) {
-        if (index == pool_size) index = 0;
+        if (index == pool_size)
+            index = 0;
         list[i] = pool[index];
         index++;
     }
 }
 
-void cycle_doubles(double *list, int size, double *pool, int pool_size) {
+void cycle_doubles(double* list, int size, double* pool, int pool_size) {
     int index = 0;
     int i;
 
     for (i = 0; i < size; i++) {
-        if (index == pool_size) index = 0;
+        if (index == pool_size)
+            index = 0;
         list[i] = pool[index];
         index++;
     }
@@ -62,7 +64,7 @@ void create_scratch_data(long nrows, char data0[][8], int64_t data1[], char data
     time_t rawtime;
     time(&rawtime);
 
-    struct tm * timeinfo;
+    struct tm* timeinfo;
     timeinfo = localtime(&rawtime);
 
     int64_t date = 10000 * (timeinfo->tm_year + 1900) + 100 * (timeinfo->tm_mon + 1) + timeinfo->tm_mday;
@@ -72,8 +74,8 @@ void create_scratch_data(long nrows, char data0[][8], int64_t data1[], char data
     long missing_integer;
     CHECK_RESULT(odc_missing_integer(&missing_integer));
 
-    long integer_pool[] = { 1234, 4321, missing_integer };
-    int integer_pool_size = sizeof(integer_pool)/sizeof(integer_pool[0]);
+    long integer_pool[]   = {1234, 4321, missing_integer};
+    int integer_pool_size = sizeof(integer_pool) / sizeof(integer_pool[0]);
 
     long missing_integers[nrows];
     cycle_longs(missing_integers, nrows, integer_pool, integer_pool_size);
@@ -83,16 +85,16 @@ void create_scratch_data(long nrows, char data0[][8], int64_t data1[], char data
     double missing_double;
     CHECK_RESULT(odc_missing_double(&missing_double));
 
-    double double_pool[] = { 12.34, 43.21, missing_double };
-    int double_pool_size = sizeof(double_pool)/sizeof(double_pool[0]);
+    double double_pool[] = {12.34, 43.21, missing_double};
+    int double_pool_size = sizeof(double_pool) / sizeof(double_pool[0]);
 
     double missing_doubles[nrows];
     cycle_doubles(missing_doubles, nrows, double_pool, double_pool_size);
 
     // Prepare the list of bitfield values
 
-    long bitfield_pool[] = { Ob00000001, Ob00001011, Ob01101011 };
-    int bitfield_pool_size = sizeof(bitfield_pool)/sizeof(bitfield_pool[0]);
+    long bitfield_pool[]   = {Ob00000001, Ob00001011, Ob01101011};
+    int bitfield_pool_size = sizeof(bitfield_pool) / sizeof(bitfield_pool[0]);
 
     long bitfield_values[nrows];
     cycle_longs(bitfield_values, nrows, bitfield_pool, bitfield_pool_size);
@@ -101,14 +103,14 @@ void create_scratch_data(long nrows, char data0[][8], int64_t data1[], char data
 
     // Fill in the passed data arrays with scratch values
     for (i = 0; i < nrows; i++) {
-        snprintf(data0[i], 8, "xxxx");  // expver
-        data1[i] = date;  // date@hdr
-        snprintf(data2[i], 7, "stat%02d", i);  // statid@hdr
+        snprintf(data0[i], 8, "xxxx");                   // expver
+        data1[i] = date;                                 // date@hdr
+        snprintf(data2[i], 7, "stat%02d", i);            // statid@hdr
         snprintf(data3[i], 16, "0-12345-0-678%02d", i);  // wigos@hdr
-        data4[i] = 12.3456 * i;  // obsvalue@body
-        data5[i] = missing_integers[i];  // integer_missing
-        data6[i] = missing_doubles[i];  // double_missing
-        data7[i] = bitfield_values[i];  // bitfield_column
+        data4[i] = 12.3456 * i;                          // obsvalue@body
+        data5[i] = missing_integers[i];                  // integer_missing
+        data6[i] = missing_doubles[i];                   // double_missing
+        data7[i] = bitfield_values[i];                   // bitfield_column
     }
 }
 
@@ -177,13 +179,13 @@ int main(int argc, char* argv[]) {
     CHECK_RESULT(odc_encoder_column_set_data_array(encoder, 6, sizeof(double), sizeof(double), data6));
     CHECK_RESULT(odc_encoder_column_set_data_array(encoder, 7, sizeof(int64_t), sizeof(int64_t), data7));
 
-    const char* property_key = "encoded_by";
+    const char* property_key   = "encoded_by";
     const char* property_value = "odc_example";
 
     // Add some key/value metadata to the frame
     CHECK_RESULT(odc_encoder_add_property(encoder, property_key, property_value));
 
-    int file_descriptor = open(path, O_CREAT|O_TRUNC|O_WRONLY, 0666);
+    int file_descriptor = open(path, O_CREAT | O_TRUNC | O_WRONLY, 0666);
     long size;
 
     // Encode ODB-2 into an already open file descriptor

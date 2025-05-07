@@ -14,9 +14,9 @@
 ///
 /// @author Piotr Kuchta, ECMWF, September 2015
 
+#include <math.h>
 #include <cstring>
 #include <iostream>
-#include <math.h>
 #include <string>
 #include <vector>
 
@@ -32,7 +32,7 @@ namespace {
 
 // TODO: Migrate this test over!!!
 
-#if 0 // DISABLED
+#if 0  // DISABLED
 
 TEST(c_api_example_select_data_read_results)
 {
@@ -178,10 +178,9 @@ TEST(c_api_example_read_data)
 
 #endif
 
-TEST(c_api_example_write_data)
-{
+TEST(c_api_example_write_data) {
     int err;
-    oda_writer* writer = odb_writer_create("", &err);
+    oda_writer* writer     = odb_writer_create("", &err);
     oda_write_iterator* wi = odb_create_write_iterator(writer, "c_api_example_write_data.odb", &err);
     ASSERT(0 == odb_write_iterator_set_no_of_columns(wi, 4));
     ASSERT(0 == odb_write_iterator_set_column(wi, 0, odc::api::INTEGER, "x"));
@@ -192,8 +191,7 @@ TEST(c_api_example_write_data)
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
     double data[4];
-    for (int i = 1; i <= 10; ++i)
-    {
+    for (int i = 1; i <= 10; ++i) {
         data[0] = i;
         data[1] = i * 10;
         data[2] = i * 100;
@@ -206,5 +204,4 @@ TEST(c_api_example_write_data)
     ASSERT(0 == odb_writer_destroy(writer));
 }
 
-} // namespace
-
+}  // namespace

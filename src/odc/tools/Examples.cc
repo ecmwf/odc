@@ -10,8 +10,8 @@
 
 /// This file contains examples of usage of public APIs.
 
-#include <string>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "eckit/filesystem/PathName.h"
@@ -19,8 +19,8 @@
 
 #include "odc/api/Odb.h"
 
-#include "odc/Select.h"
 #include "odc/Reader.h"
+#include "odc/Select.h"
 #include "odc/Writer.h"
 
 #include "TestCase.h"
@@ -29,8 +29,7 @@ using namespace eckit;
 
 namespace {
 
-TEST(example_select_data_read_results)
-{
+TEST(example_select_data_read_results) {
     // Prepare input data
     const std::string data =
         R"(x:INTEGER,y:INTEGER,v:DOUBLE
@@ -46,66 +45,52 @@ TEST(example_select_data_read_results)
 
     odc::Select select("select x,min(v),max(v);", "example_select_data_read_results.odb");
 
-    for (odc::Select::iterator it (select.begin()),
-                               end (select.end());
-         it != end;
-         ++it)
-    {
-        double r0 = (*it)[0],
-               r1 = (*it)[1],
-               r2 = (*it)[2];
+    for (odc::Select::iterator it(select.begin()), end(select.end()); it != end; ++it) {
+        double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2];
 
         std::cout << r0 << ", " << r1 << ", " << r2 << std::endl;
     }
 }
 
 
-TEST(example_read_data)
-{
+TEST(example_read_data) {
     // Prepare input data
-    const std::string data = "x:INTEGER,y:INTEGER,v:DOUBLE\n" "1,1,0.3\n" "1,1,0.2\n" "2,2,0.4\n" "2,2,0.1\n";
+    const std::string data =
+        "x:INTEGER,y:INTEGER,v:DOUBLE\n"
+        "1,1,0.3\n"
+        "1,1,0.2\n"
+        "2,2,0.4\n"
+        "2,2,0.1\n";
     FileHandle out("example_read_data.odb");
     out.openForWrite(0);
     AutoClose close(out);
     odc::api::odbFromCSV(data, out);
 
     odc::Reader o("example_read_data.odb");
-    for (odc::Reader::iterator it (o.begin()),
-                               end (o.end());
-         it != end;
-         ++it)
-    {
-        double r0 = (*it)[0],
-               r1 = (*it)[1],
-               r2 = (*it)[2];
+    for (odc::Reader::iterator it(o.begin()), end(o.end()); it != end; ++it) {
+        double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2];
 
         std::cout << r0 << ", " << r1 << ", " << r2 << std::endl;
     }
 }
 
-TEST(example_write_data)
-{
+TEST(example_write_data) {
     odc::core::MetaData metaData;
-    metaData
-        .addColumn("x", "INTEGER")
-        .addColumn("y", "INTEGER")
-        .addColumn("v", "DOUBLE");
+    metaData.addColumn("x", "INTEGER").addColumn("y", "INTEGER").addColumn("v", "DOUBLE");
 
     odc::Writer<> writer("example_write_data.odb");
-    odc::Writer<>::iterator it (writer.begin());
+    odc::Writer<>::iterator it(writer.begin());
     it->columns(metaData);
     it->writeHeader();
 
-    for (size_t i (1); i <= 1000; ++i)
-    {
+    for (size_t i(1); i <= 1000; ++i) {
         (*it)[0] = i;
-        (*it)[1] = i*2;
-        (*it)[2] = i*3;
+        (*it)[1] = i * 2;
+        (*it)[2] = i * 3;
 
         // Incrementing iterator moves coursor to the next row.
         ++it;
     }
 }
 
-} // namespace
-
+}  // namespace

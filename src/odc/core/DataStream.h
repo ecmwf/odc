@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -38,19 +38,18 @@ namespace core {
 
 struct SameByteOrder {
     /// With same byte order, we always to nothing!
-    template<typename T> static void swap(T &) {}
+    template <typename T>
+    static void swap(T&) {}
     static void swap(char* addr, size_t size) {}
 };
 
 
 struct OtherByteOrder {
-    template<typename T>
+    template <typename T>
     static void swap(T& o) {
         std::reverse(reinterpret_cast<char*>(&o), reinterpret_cast<char*>(&o) + sizeof(T));
     }
-    static void swap(char* addr, size_t size) {
-        std::reverse(addr, addr+size);
-    }
+    static void swap(char* addr, size_t size) { std::reverse(addr, addr + size); }
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -60,7 +59,7 @@ class DataStream {
 
 public:
 
-    DataStream(const void* data, size_t size, bool const=true);
+    DataStream(const void* data, size_t size, bool const = true);
     DataStream(const eckit::Buffer& data);
     DataStream(void* data, size_t size);
     DataStream(eckit::Buffer& data);
@@ -70,32 +69,45 @@ public:
 
     // Reading
 
-    template <typename T> void read(T& elem);
-    template <typename T> void read(std::vector<T>& vec);
-    template <typename T, typename S> void read(std::map<T,S>& props);
+    template <typename T>
+    void read(T& elem);
+    template <typename T>
+    void read(std::vector<T>& vec);
+    template <typename T, typename S>
+    void read(std::map<T, S>& props);
     void read(std::string& s);
 
     void read(void* addr, size_t bytes);
-    void readBytes(void* addr, size_t bytes); // ReadBytes does no endianness checks
+    void readBytes(void* addr, size_t bytes);  // ReadBytes does no endianness checks
 
     // Writing
 
-    template <typename T> void write(const T& elem);
-    template <typename T> void write(const std::vector<T>& vec);
-    template <typename T, typename S> void write(const std::map<T,S>& props);
+    template <typename T>
+    void write(const T& elem);
+    template <typename T>
+    void write(const std::vector<T>& vec);
+    template <typename T, typename S>
+    void write(const std::map<T, S>& props);
     void write(const std::string& s);
 
     void write(const void* addr, size_t bytes);
-    void writeBytes(const void* addr, size_t bytes); // ReadBytes does no endianness checks
+    void writeBytes(const void* addr, size_t bytes);  // ReadBytes does no endianness checks
 
     // These are a hack to get WriterBufferingIterator::doWriteRow to work.
     // TODO: Remove this hack.
 
     char* get() { return current_; }
-    void set(char* p) { ASSERT(p >= start_); ASSERT(p <= end_); current_ = p; }
-    void advance(size_t nbytes) { current_ += nbytes; ASSERT(current_ <= end_); }
+    void set(char* p) {
+        ASSERT(p >= start_);
+        ASSERT(p <= end_);
+        current_ = p;
+    }
+    void advance(size_t nbytes) {
+        current_ += nbytes;
+        ASSERT(current_ <= end_);
+    }
 
-private: // members
+private:  // members
 
     bool const_;
     char* start_;
@@ -115,50 +127,56 @@ public:
 
     GeneralDataStream() {}
 
-    template <typename ...Args>
+    template <typename... Args>
     GeneralDataStream(bool otherByteOrder, Args&&... args) :
         sameDs_(otherByteOrder ? 0 : new DataStream<SameByteOrder>(std::forward<Args>(args)...)),
         otherDs_(otherByteOrder ? new DataStream<OtherByteOrder>(std::forward<Args>(args)...) : 0) {}
 
     ~GeneralDataStream() {}
 
-    GeneralDataStream(GeneralDataStream&& rhs) = default;
+    GeneralDataStream(GeneralDataStream&& rhs)            = default;
     GeneralDataStream& operator=(GeneralDataStream&& rhs) = default;
 
     bool isOther() const { return !!otherDs_; }
-    DataStream<SameByteOrder>& same() { ASSERT(sameDs_); return *sameDs_; }
-    DataStream<OtherByteOrder>& other() { ASSERT(otherDs_); return *otherDs_; }
+    DataStream<SameByteOrder>& same() {
+        ASSERT(sameDs_);
+        return *sameDs_;
+    }
+    DataStream<OtherByteOrder>& other() {
+        ASSERT(otherDs_);
+        return *otherDs_;
+    }
 
     eckit::Offset position() const {
         ASSERT(sameDs_ || otherDs_);
         return sameDs_ ? sameDs_->position() : otherDs_->position();
     }
 
-    template <typename ...Args>
+    template <typename... Args>
     void read(Args&&... args) {
         ASSERT(sameDs_ || otherDs_);
         sameDs_ ? sameDs_->read(std::forward<Args>(args)...) : otherDs_->read(std::forward<Args>(args)...);
     }
 
-    template <typename ...Args>
+    template <typename... Args>
     void readBytes(Args&&... args) {
         ASSERT(sameDs_ || otherDs_);
-        sameDs_ ?  sameDs_->readBytes(std::forward<Args>(args)...) : otherDs_->readBytes(std::forward<Args>(args)...);
+        sameDs_ ? sameDs_->readBytes(std::forward<Args>(args)...) : otherDs_->readBytes(std::forward<Args>(args)...);
     }
 
-    template <typename ...Args>
+    template <typename... Args>
     void write(Args&&... args) {
         ASSERT(sameDs_ || otherDs_);
-        sameDs_ ? sameDs_->write(std::forward<Args>(args)...) :  otherDs_->write(std::forward<Args>(args)...);
+        sameDs_ ? sameDs_->write(std::forward<Args>(args)...) : otherDs_->write(std::forward<Args>(args)...);
     }
 
-    template <typename ...Args>
+    template <typename... Args>
     void writeBytes(Args&&... args) {
         ASSERT(sameDs_ || otherDs_);
-        sameDs_ ? sameDs_->writeBytes(std::forward<Args>(args)...) :  otherDs_->writeBytes(std::forward<Args>(args)...);
+        sameDs_ ? sameDs_->writeBytes(std::forward<Args>(args)...) : otherDs_->writeBytes(std::forward<Args>(args)...);
     }
 
-private: // members
+private:  // members
 
     std::unique_ptr<DataStream<SameByteOrder>> sameDs_;
     std::unique_ptr<DataStream<OtherByteOrder>> otherDs_;
@@ -181,13 +199,11 @@ inline DataStream<ByteOrder>::DataStream(const eckit::Buffer& buffer) :
 
 
 template <typename ByteOrder>
-inline DataStream<ByteOrder>::DataStream(void* data, size_t size) :
-    DataStream<ByteOrder>(data, size, false) {}
+inline DataStream<ByteOrder>::DataStream(void* data, size_t size) : DataStream<ByteOrder>(data, size, false) {}
 
 
 template <typename ByteOrder>
-inline DataStream<ByteOrder>::DataStream(eckit::Buffer& buffer) :
-    DataStream<ByteOrder>(buffer.data(), buffer.size()) {}
+inline DataStream<ByteOrder>::DataStream(eckit::Buffer& buffer) : DataStream<ByteOrder>(buffer.data(), buffer.size()) {}
 
 
 template <typename ByteOrder>
@@ -214,7 +230,8 @@ inline void DataStream<ByteOrder>::read(std::vector<T>& vec) {
     int32_t count;
     read(count);
     vec.resize(count);
-    for (auto& elem : vec) read(elem);
+    for (auto& elem : vec)
+        read(elem);
 }
 
 
@@ -241,7 +258,7 @@ inline void DataStream<ByteOrder>::read(std::string& s) {
     read(len);
 
     s.resize(len);
-    readBytes(&s[0], len); // n.b. raw read. Bytes are in order.
+    readBytes(&s[0], len);  // n.b. raw read. Bytes are in order.
 }
 
 
@@ -261,8 +278,8 @@ inline void DataStream<ByteOrder>::readBytes(void* addr, size_t bytes) {
 
     if (newpos > end_) {
         std::stringstream ss;
-        ss << "Attempting to read " << bytes
-           << " bytes from DataStream with only " << (end_ - current_) << " bytes remaining";
+        ss << "Attempting to read " << bytes << " bytes from DataStream with only " << (end_ - current_)
+           << " bytes remaining";
         throw ODBEndOfDataStream(ss.str(), Here());
     }
 
@@ -283,7 +300,8 @@ template <typename T>
 inline void DataStream<ByteOrder>::write(const std::vector<T>& vec) {
     int32_t len = vec.size();
     write(len);
-    for (const auto& elem : vec) write(elem);
+    for (const auto& elem : vec)
+        write(elem);
 }
 
 
@@ -304,7 +322,7 @@ inline void DataStream<ByteOrder>::write(const std::string& s) {
 
     int32_t len = s.length();
     write(len);
-    writeBytes(&s[0], len); // n.b. raw read. Bytes are in order.
+    writeBytes(&s[0], len);  // n.b. raw read. Bytes are in order.
 }
 
 
@@ -312,7 +330,7 @@ inline void DataStream<ByteOrder>::write(const std::string& s) {
 template <typename ByteOrder>
 inline void DataStream<ByteOrder>::write(const void* addr, size_t bytes) {
     writeBytes(addr, bytes);
-    ByteOrder::swap(current_ - bytes, bytes); // n.b. swap bytes on mutable target, not unknown source.
+    ByteOrder::swap(current_ - bytes, bytes);  // n.b. swap bytes on mutable target, not unknown source.
 }
 
 
@@ -326,8 +344,7 @@ inline void DataStream<ByteOrder>::writeBytes(const void* addr, size_t bytes) {
 
     if (newpos > end_) {
         std::stringstream ss;
-        ss << "Attempting to write " << bytes
-           << " to DataStream with only " << (end_ - current_) << " bytes remaining";
+        ss << "Attempting to write " << bytes << " to DataStream with only " << (end_ - current_) << " bytes remaining";
         throw ODBEndOfDataStream(ss.str(), Here());
     }
 
@@ -337,7 +354,7 @@ inline void DataStream<ByteOrder>::writeBytes(const void* addr, size_t bytes) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc
 
 #endif

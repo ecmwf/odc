@@ -26,27 +26,26 @@ namespace codec {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template<typename ByteOrder, typename ValueType>
+template <typename ByteOrder, typename ValueType>
 class BaseCodecInteger : public core::DataStreamCodec<ByteOrder> {
 
-public: // definitions
+public:  // definitions
 
     using value_type = ValueType;
 
-public: // methods
+public:  // methods
 
-    BaseCodecInteger(api::ColumnType type, const std::string& name, double minmaxmissing=odc::MDI::integerMDI()) :
-        core::DataStreamCodec<ByteOrder>(name, type),
-        castedMissingValue_(static_cast<ValueType>(minmaxmissing)) {
+    BaseCodecInteger(api::ColumnType type, const std::string& name, double minmaxmissing = odc::MDI::integerMDI()) :
+        core::DataStreamCodec<ByteOrder>(name, type), castedMissingValue_(static_cast<ValueType>(minmaxmissing)) {
 
-            this->min_ = minmaxmissing;
-            this->max_ = minmaxmissing;
-            this->missingValue_ = minmaxmissing;
+        this->min_          = minmaxmissing;
+        this->max_          = minmaxmissing;
+        this->missingValue_ = minmaxmissing;
     }
 
     ~BaseCodecInteger() override {}
 
-private: // methods
+private:  // methods
 
     void missingValue(double v) override {
         core::Codec::missingValue(v);
@@ -70,7 +69,7 @@ private: // methods
         core::Codec::gatherStats(val);
     }
 
-protected: // members
+protected:  // members
 
     /// @note - this indirection via castedMissingValue_ rather than just using missingValue_
     ///         directly where needed is to work around a Cray 8.7 compiler bug, where
@@ -81,18 +80,17 @@ protected: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template <typename ByteOrder,
-          typename ValueType,
-          typename InternalValueType,
-          class DerivedCodec> // codec_nam passed through CRTP as char* is odd to deal with in template
+template <typename ByteOrder, typename ValueType, typename InternalValueType,
+          class DerivedCodec>  // codec_nam passed through CRTP as char* is odd to deal with in template
 class CodecIntegerOffset : public BaseCodecInteger<ByteOrder, ValueType> {
 
-public: // methods
+public:  // methods
 
-    CodecIntegerOffset(api::ColumnType type) : BaseCodecInteger<ByteOrder, ValueType>(type, DerivedCodec::codec_name()) {}
+    CodecIntegerOffset(api::ColumnType type) :
+        BaseCodecInteger<ByteOrder, ValueType>(type, DerivedCodec::codec_name()) {}
     ~CodecIntegerOffset() override {}
 
-private: // methods
+private:  // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override {
         static_assert(sizeof(ValueType) == sizeof(d), "unsafe casting check");
@@ -116,26 +114,23 @@ private: // methods
         (*val_out) = s + this->min_;
     }
 
-    void skip() override {
-        this->ds().advance(sizeof(InternalValueType));
-    }
+    void skip() override { this->ds().advance(sizeof(InternalValueType)); }
 };
 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template <typename ByteOrder,
-          typename ValueType,
-          typename InternalValueType,
-          class DerivedCodec> // codec_nam passed through CRTP as char* is odd to deal with in template
+template <typename ByteOrder, typename ValueType, typename InternalValueType,
+          class DerivedCodec>  // codec_nam passed through CRTP as char* is odd to deal with in template
 class CodecIntegerDirect : public BaseCodecInteger<ByteOrder, ValueType> {
 
-public: // methods
+public:  // methods
 
-    CodecIntegerDirect(api::ColumnType type) : BaseCodecInteger<ByteOrder, ValueType>(type, DerivedCodec::codec_name()) {}
+    CodecIntegerDirect(api::ColumnType type) :
+        BaseCodecInteger<ByteOrder, ValueType>(type, DerivedCodec::codec_name()) {}
     ~CodecIntegerDirect() override {}
 
-private: // methods
+private:  // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override {
         static_assert(sizeof(ValueType) == sizeof(d), "unsafe casting check");
@@ -156,14 +151,12 @@ private: // methods
         (*val_out) = s;
     }
 
-    void skip() override {
-        this->ds().advance(sizeof(InternalValueType));
-    }
+    void skip() override { this->ds().advance(sizeof(InternalValueType)); }
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template<typename ByteOrder, typename ValueType>
+template <typename ByteOrder, typename ValueType>
 struct CodecInt8 : public CodecIntegerOffset<ByteOrder, ValueType, uint8_t, CodecInt8<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int8"; }
     using CodecIntegerOffset<ByteOrder, ValueType, uint8_t, CodecInt8<ByteOrder, ValueType>>::CodecIntegerOffset;
@@ -171,7 +164,7 @@ struct CodecInt8 : public CodecIntegerOffset<ByteOrder, ValueType, uint8_t, Code
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template<typename ByteOrder, typename ValueType>
+template <typename ByteOrder, typename ValueType>
 struct CodecInt16 : public CodecIntegerOffset<ByteOrder, ValueType, uint16_t, CodecInt16<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int16"; }
     using CodecIntegerOffset<ByteOrder, ValueType, uint16_t, CodecInt16<ByteOrder, ValueType>>::CodecIntegerOffset;
@@ -179,7 +172,7 @@ struct CodecInt16 : public CodecIntegerOffset<ByteOrder, ValueType, uint16_t, Co
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template<typename ByteOrder, typename ValueType>
+template <typename ByteOrder, typename ValueType>
 struct CodecInt32 : public CodecIntegerDirect<ByteOrder, ValueType, int32_t, CodecInt32<ByteOrder, ValueType>> {
     constexpr static const char* codec_name() { return "int32"; }
     using CodecIntegerDirect<ByteOrder, ValueType, int32_t, CodecInt32<ByteOrder, ValueType>>::CodecIntegerDirect;
@@ -187,8 +180,7 @@ struct CodecInt32 : public CodecIntegerDirect<ByteOrder, ValueType, int32_t, Cod
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace codec
-} // namespace odc
+}  // namespace codec
+}  // namespace odc
 
 #endif
-

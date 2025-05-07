@@ -55,18 +55,16 @@ int main(int argc, char** argv) {
 
             // Iterate over frame columns
             for (const auto& column : frame.columnInfo()) {
-                std::cout << "    Column: " << ++j
-                          << ", Name: " << column.name
-                          << ", Type: " << columnTypeName(column.type)
-                          << ", Size: " << column.decodedSize << std::endl;
+                std::cout << "    Column: " << ++j << ", Name: " << column.name
+                          << ", Type: " << columnTypeName(column.type) << ", Size: " << column.decodedSize << std::endl;
 
                 // Process bitfields only
                 if (column.type == BITFIELD) {
                     int k = 0;
 
                     for (auto const& bf : column.bitfield) {
-                        std::cout << "      Bitfield: " << ++k << ", Name: " << bf.name
-                                  << ", Offset: " << bf.offset << ", Nbits: " << bf.size << std::endl;
+                        std::cout << "      Bitfield: " << ++k << ", Name: " << bf.name << ", Offset: " << bf.offset
+                                  << ", Nbits: " << bf.size << std::endl;
                     }
                 }
             }

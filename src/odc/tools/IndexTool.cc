@@ -1,40 +1,39 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
+#include "odc/tools/IndexTool.h"
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
-#include "odc/core/MetaData.h"
+#include "eckit/io/Length.h"
+#include "eckit/io/Offset.h"
+#include "eckit/io/PartFileHandle.h"
+#include "odc/Indexer.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
-#include "odc/Indexer.h"
-#include "odc/tools/IndexTool.h"
+#include "odc/core/MetaData.h"
 #include "odc/tools/CountTool.h"
-#include "eckit/io/PartFileHandle.h"
-#include "eckit/io/Offset.h"
-#include "eckit/io/Length.h"
 
 using namespace eckit;
 
 namespace odc {
 namespace tool {
 
-IndexTool::IndexTool (int argc, char *argv[]) : Tool(argc, argv) { }
+IndexTool::IndexTool(int argc, char* argv[]) : Tool(argc, argv) {}
 
-void IndexTool::help(std::ostream &o) {
+void IndexTool::help(std::ostream& o) {
     o << "Creates index of reports for a given file";
 }
 
 
-void IndexTool::usage(const std::string& name, std::ostream &o) {
-    o << name
-      << " <file.odb> [<file.odb.idx>] " << std::endl
+void IndexTool::usage(const std::string& name, std::ostream& o) {
+    o << name << " <file.odb> [<file.odb.idx>] " << std::endl
       << std::endl
       << "\tSpecifically the index file is an ODB file with (INTEGER) columns: block_begin, block_length, seqno, n_rows"
       << std::endl
@@ -42,26 +41,21 @@ void IndexTool::usage(const std::string& name, std::ostream &o) {
 }
 
 
-void IndexTool::run()
-{
-	if (! (parameters().size() == 2 || parameters().size() == 3))
-	{
-		Log::error() << "Usage: ";
-		usage(parameters(0), Log::error());
-		Log::error() << std::endl;
+void IndexTool::run() {
+    if (!(parameters().size() == 2 || parameters().size() == 3)) {
+        Log::error() << "Usage: ";
+        usage(parameters(0), Log::error());
+        Log::error() << std::endl;
         std::stringstream ss;
         ss << "Expected exactly 2 or 3 command line parameters";
         throw UserError(ss.str());
-	}
+    }
 
-    PathName dataFile (parameters(1));
-    PathName indexFile (parameters().size() == 3 
-                        ? parameters(2) 
-                        : parameters(1) + ".idx");
+    PathName dataFile(parameters(1));
+    PathName indexFile(parameters().size() == 3 ? parameters(2) : parameters(1) + ".idx");
 
-	Indexer::createIndex(dataFile, indexFile);
+    Indexer::createIndex(dataFile, indexFile);
 }
 
-} // namespace tool 
-} // namespace odc 
-
+}  // namespace tool
+}  // namespace odc

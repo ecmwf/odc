@@ -21,24 +21,24 @@
 #ifndef odc_api_Odb_H
 #define odc_api_Odb_H
 
-#include <string>
-#include <memory>
-#include <vector>
-#include <type_traits>
-#include <set>
 #include <map>
+#include <memory>
+#include <set>
+#include <string>
+#include <type_traits>
+#include <vector>
 
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
 
-#include "odc/api/ColumnType.h"
 #include "odc/api/ColumnInfo.h"
+#include "odc/api/ColumnType.h"
 #include "odc/api/StridedData.h"
 
 namespace eckit {
-    class DataHandle;
-    class Buffer;
-}
+class DataHandle;
+class Buffer;
+}  // namespace eckit
 
 
 namespace odc {
@@ -48,7 +48,7 @@ namespace api {
 
 /** Provides access to global settings and version utility methods */
 class Settings {
-public: // methods
+public:  // methods
 
     /** Sets treatment of integers in ODB-2 data as doubles
      * \param flag Whether to treat integers as doubles (*true*) or longs (*false*)
@@ -118,7 +118,7 @@ public:
 /** Provides details of the range of values spanned by each column within a given frame */
 class Span {
 
-public: // methods
+public:  // methods
 
     Span(std::unique_ptr<SpanImpl>&& s);
     Span(Span&&);
@@ -170,7 +170,7 @@ public: // methods
      */
     eckit::Length length() const;
 
-private: // members
+private:  // members
 
     std::unique_ptr<SpanImpl> impl_;
 };
@@ -182,12 +182,13 @@ class Decoder;
 
 class FrameImpl;
 
-/** Provides a viewport onto a chunk of contiguous, compatible data within the ODB-2 stream. This may be a logical Frame comprising multiple underlying frames in the data stream. */
+/** Provides a viewport onto a chunk of contiguous, compatible data within the ODB-2 stream. This may be a logical Frame
+ * comprising multiple underlying frames in the data stream. */
 class Frame {
 
-public: // methods
+public:  // methods
 
-    Frame(); // Construct a null frame
+    Frame();  // Construct a null frame
     Frame(std::unique_ptr<FrameImpl>&&);
     Frame(const Frame&);
     Frame(Frame&&);
@@ -255,7 +256,7 @@ public: // methods
      */
     const std::map<std::string, std::string>& properties() const;
 
-private: // members
+private:  // members
 
     std::unique_ptr<FrameImpl> impl_;
 
@@ -268,30 +269,31 @@ class FrameImpl;
 
 class ReaderImpl;
 
-/** Owns the ODB-2 data stream and controls associated resources. The Reader object gives access to the sequence of frames. */
+/** Owns the ODB-2 data stream and controls associated resources. The Reader object gives access to the sequence of
+ * frames. */
 class Reader {
 
-public: // methods
+public:  // methods
 
     /** Construct from file path
      * \param path File path to open
      * \param aggregated Whether to aggregate compatible data into a logical frame
      * \param rowlimit Maximum number of rows to aggregate into one logical frame
      */
-    Reader(const std::string& path, bool aggregated=true, long rowlimit=-1);
+    Reader(const std::string& path, bool aggregated = true, long rowlimit = -1);
     /** Construct from data handle reference. This does not take ownership of the data handle,
      *  and managing the lifetime of this data handle is the responsibility of the caller.
      * \param dh Data handle (eckit)
      * \param aggregated Whether to aggregate compatible data into a logical frame
      * \param rowlimit Maximum number of rows to aggregate into one logical frame
      */
-    Reader(eckit::DataHandle& dh, bool aggregated=true, long rowlimit=-1);
+    Reader(eckit::DataHandle& dh, bool aggregated = true, long rowlimit = -1);
     /** Construct via data handle pointer. This takes ownership of the DataHandle.
      * \param dh Data handle (eckit)
      * \param aggregated Whether to aggregate compatible data into a logical frame
      * \param rowlimit Maximum number of rows to aggregate into one logical frame
      */
-    Reader(eckit::DataHandle* dh, bool aggregated=true, long rowlimit=-1); // takes ownership
+    Reader(eckit::DataHandle* dh, bool aggregated = true, long rowlimit = -1);  // takes ownership
     ~Reader();
 
     /** Advances to the next frame in the stream
@@ -299,7 +301,7 @@ public: // methods
      */
     Frame next();
 
-private: // members
+private:  // members
 
     std::unique_ptr<ReaderImpl> impl_;
 };
@@ -311,14 +313,13 @@ struct DecoderImpl;
 /** Specifies the ODB-2 columns to decode and the memory layout for the decoded data */
 class Decoder {
 
-public: // methods
+public:  // methods
 
     /** Constructor
      * \param columns The names of the columns to decode
      * \param columnFacades A description of the periodic data layout for each named column
      */
-    Decoder(const std::vector<std::string>& columns,
-            std::vector<StridedData>& columnFacades);
+    Decoder(const std::vector<std::string>& columns, std::vector<StridedData>& columnFacades);
     ~Decoder();
 
     /** Obtain a sub-decoder associated with a contiguous subset of the rows reference by
@@ -333,9 +334,9 @@ public: // methods
      * \param frame Frame object
      * \param nthreads Number of threads
      */
-    void decode(const Frame& frame, size_t nthreads=1);
+    void decode(const Frame& frame, size_t nthreads = 1);
 
-private: // members
+private:  // members
 
     std::unique_ptr<DecoderImpl> impl_;
 };
@@ -357,11 +358,8 @@ const char* columnTypeName(const ColumnType& type);
  * \param properties Dictionary of key/value properties to encode
  * \param maxRowsPerFrame Maximum number of rows per frame
  */
-void encode(eckit::DataHandle& out,
-            const std::vector<ColumnInfo>& columns,
-            const std::vector<ConstStridedData>& data,
-            const std::map<std::string, std::string>& properties = {},
-            size_t maxRowsPerFrame=10000);
+void encode(eckit::DataHandle& out, const std::vector<ColumnInfo>& columns, const std::vector<ConstStridedData>& data,
+            const std::map<std::string, std::string>& properties = {}, size_t maxRowsPerFrame = 10000);
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -383,7 +381,7 @@ size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& 
  * \param delimiter CSV delimiter
  * \returns Number of imported lines
  */
-size_t odbFromCSV(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t odbFromCSV(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std::string& delimiter = ",");
 
 /** Imports CSV from a stream handle into a ODB-2 data handle
  * \param is Input data stream (CSV data)
@@ -391,7 +389,7 @@ size_t odbFromCSV(eckit::DataHandle& dh_in, eckit::DataHandle& dh_out, const std
  * \param delimiter CSV delimiter
  * \returns Number of imported lines
  */
-size_t odbFromCSV(std::istream& is, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t odbFromCSV(std::istream& is, eckit::DataHandle& dh_out, const std::string& delimiter = ",");
 
 /** Imports CSV from a string into a ODB-2 data handle
  * \param is String containing CSV data
@@ -399,11 +397,11 @@ size_t odbFromCSV(std::istream& is, eckit::DataHandle& dh_out, const std::string
  * \param delimiter CSV delimiter
  * \returns Number of imported lines
  */
-size_t odbFromCSV(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter=",");
+size_t odbFromCSV(const std::string& in, eckit::DataHandle& dh_out, const std::string& delimiter = ",");
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace api
-} // namespace odc
+}  // namespace api
+}  // namespace odc
 
-#endif // odc_api_Odb_H
+#endif  // odc_api_Odb_H

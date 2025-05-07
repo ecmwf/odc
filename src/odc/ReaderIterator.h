@@ -20,40 +20,48 @@
 
 #include "odc/core/MetaData.h"
 
-namespace eckit { class PathName; }
-namespace eckit { class DataHandle; }
+namespace eckit {
+class PathName;
+}
+namespace eckit {
+class DataHandle;
+}
 
 extern "C" {
-	typedef void oda;
-	typedef void oda_read_iterator;
-	typedef void oda_write_iterator;
-	oda_write_iterator* odb_create_write_iterator(oda*, const char *,int *);
-	int odb_read_iterator_get_next_row(oda_read_iterator*, int, double*, int*);
+typedef void oda;
+typedef void oda_read_iterator;
+typedef void oda_write_iterator;
+oda_write_iterator* odb_create_write_iterator(oda*, const char*, int*);
+int odb_read_iterator_get_next_row(oda_read_iterator*, int, double*, int*);
 }
 
 namespace odc {
-    namespace core { class Codec; }
-	namespace sql { class ODATableIterator; }
+namespace core {
+class Codec;
 }
+namespace sql {
+class ODATableIterator;
+}
+}  // namespace odc
 
 namespace odc {
 
 class Reader;
 
-class ReaderIterator
-{
+class ReaderIterator {
 public:
-    ReaderIterator (Reader &owner);
-    ReaderIterator (Reader &owner, const eckit::PathName&);
 
-	~ReaderIterator () noexcept(false);
+    ReaderIterator(Reader& owner);
+    ReaderIterator(Reader& owner, const eckit::PathName&);
 
-	bool isNewDataset();
+    ~ReaderIterator() noexcept(false);
+
+    bool isNewDataset();
     const double* data() const { return lastValues_; }
     double* data() { return lastValues_; }
-	double& data(size_t);
+    double& data(size_t);
 
-	bool operator!=(const ReaderIterator& other);
+    bool operator!=(const ReaderIterator& other);
 
     void property(std::string, std::string);
     std::string property(std::string);
@@ -66,80 +74,88 @@ public:
 
 #ifdef SWIGPYTHON
     int setColumn(size_t, const std::string&, api::ColumnType) { NOTIMP; }
-	void writeHeader() { NOTIMP; }
+    void writeHeader() { NOTIMP; }
     int setBitfieldColumn(size_t, const std::string&, api::ColumnType, eckit::sql::BitfieldDef) { NOTIMP; }
-	void missingValue(size_t, double) { NOTIMP; }
+    void missingValue(size_t, double) { NOTIMP; }
 #endif
 
     api::ColumnType columnType(unsigned long index);
     const std::string& columnName(unsigned long index) const;
     const std::string& codecName(unsigned long index) const;
-	double columnMissingValue(unsigned long index);
+    double columnMissingValue(unsigned long index);
     const eckit::sql::BitfieldDef& bitfieldDef(unsigned long index);
 
-	int32_t byteOrder() const { return byteOrder_; }
+    int32_t byteOrder() const { return byteOrder_; }
     eckit::DataHandle* dataHandle();
-//protected:
+    // protected:
 
-	int close();
+    int close();
 
     bool next();
 
     /// The offset of a given column in the doubles[] data array
-    size_t dataOffset(size_t i) const { ASSERT(columnOffsets_); return columnOffsets_[i]; }
+    size_t dataOffset(size_t i) const {
+        ASSERT(columnOffsets_);
+        return columnOffsets_[i];
+    }
 
     // Get the number of doubles per row.
     size_t rowDataSizeDoubles() const { return rowDataSizeDoubles_; }
 
 protected:
-	size_t readBuffer(size_t dataSize);
+
+    size_t readBuffer(size_t dataSize);
     size_t rowDataSizeDoublesInternal() const;
 
 private:
-// No copy allowed.
+
+    // No copy allowed.
     ReaderIterator(const ReaderIterator&);
     ReaderIterator& operator=(const ReaderIterator&);
 
-	void initRowBuffer();
+    void initRowBuffer();
     bool loadHeaderAndBufferData();
 
     Reader& owner_;
     core::MetaData columns_;
-	double* lastValues_;
-    size_t* columnOffsets_; // in doubles
+    double* lastValues_;
+    size_t* columnOffsets_;  // in doubles
     size_t rowDataSizeDoubles_;
     std::vector<core::Codec*> codecs_;
-	unsigned long long nrows_;
+    unsigned long long nrows_;
     size_t rowsRemainingInTable_;
 
     std::unique_ptr<eckit::DataHandle> f_;
     core::Properties properties_;
 
-	bool newDataset_;
+    bool newDataset_;
 
     eckit::Buffer rowDataBuffer_;
     core::GeneralDataStream rowDataStream_;
 
 public:
-	bool noMore_;
+
+    bool noMore_;
+
 private:
 
-	unsigned long headerCounter_;
-	int32_t byteOrder_;
+    unsigned long headerCounter_;
+    int32_t byteOrder_;
 
 public:
-	int refCount_;
+
+    int refCount_;
 
 protected:
 
-	friend ::oda_write_iterator* ::odb_create_write_iterator(::oda*, const char *,int *); // for next()
-	friend int ::odb_read_iterator_get_next_row(::oda_read_iterator*, int, double*, int*);
+    friend ::oda_write_iterator* ::odb_create_write_iterator(::oda*, const char*, int*);  // for next()
+    friend int ::odb_read_iterator_get_next_row(::oda_read_iterator*, int, double*, int*);
 
-	friend class odc::Reader;
-	friend class odc::IteratorProxy<odc::ReaderIterator, odc::Reader, const double>;
-	friend class odc::sql::ODATableIterator;
+    friend class odc::Reader;
+    friend class odc::IteratorProxy<odc::ReaderIterator, odc::Reader, const double>;
+    friend class odc::sql::ODATableIterator;
 };
 
-} // namespace odc
+}  // namespace odc
 
 #endif

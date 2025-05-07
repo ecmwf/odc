@@ -28,8 +28,7 @@ ODBInvalid::ODBInvalid(const std::string& file, const std::string& reason, const
     ODBDecodeError(std::string("Invalid ODB (") + file + ") -- " + reason, Here()) {}
 
 
-ODBEndOfDataStream::ODBEndOfDataStream(const std::string& s, const eckit::CodeLocation& loc) :
-    ODBDecodeError(s, loc) {}
+ODBEndOfDataStream::ODBEndOfDataStream(const std::string& s, const eckit::CodeLocation& loc) : ODBDecodeError(s, loc) {}
 
 
 AmbiguousColumnException::AmbiguousColumnException(const std::string& columnName) :
@@ -41,5 +40,5 @@ ColumnNotFoundException::ColumnNotFoundException(const std::string& columnName) 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc

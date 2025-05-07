@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -14,9 +14,9 @@
 
 #include "eckit/io/FileHandle.h"
 
-#include "odc/api/Odb.h"
 #include "odc/Select.h"
 #include "odc/Writer.h"
+#include "odc/api/Odb.h"
 
 #include "TestCase.h"
 
@@ -24,45 +24,42 @@ using namespace std;
 using namespace eckit;
 using namespace odc;
 
-static void test()
-{
-	string sql = "select count(*) from \"TestAggregateFunctions2.odb\";";
+static void test() {
+    string sql = "select count(*) from \"TestAggregateFunctions2.odb\";";
 
-	Log::info() << "Executing: '" << sql << "'" << std::endl;
+    Log::info() << "Executing: '" << sql << "'" << std::endl;
 
-	odc::Select oda(sql);
-	odc::Select::iterator it = oda.begin();
+    odc::Select oda(sql);
+    odc::Select::iterator it = oda.begin();
 
-	ASSERT(it->columns().size() == 1);
-	ASSERT((*it)[0] == 10); 
+    ASSERT(it->columns().size() == 1);
+    ASSERT((*it)[0] == 10);
 
-	odc::Select sel(sql);
-	odc::Select::iterator it2 = sel.begin();
-	odc::Select::iterator end2 = sel.end();
+    odc::Select sel(sql);
+    odc::Select::iterator it2  = sel.begin();
+    odc::Select::iterator end2 = sel.end();
 
-	FileHandle fhout("TestAggregateFunctions2.odb");
-	fhout.openForWrite(0);
-	AutoClose closer(fhout);
+    FileHandle fhout("TestAggregateFunctions2.odb");
+    fhout.openForWrite(0);
+    AutoClose closer(fhout);
 
-	odc::Writer<> writer(fhout);
-	odc::Writer<>::iterator outit = writer.begin();
+    odc::Writer<> writer(fhout);
+    odc::Writer<>::iterator outit = writer.begin();
 
-	//outit->pass1(it2, end2);
-	size_t i = 0;
-	for (; it2 != end2; ++it2)
-	{
-		++i;
-		ASSERT( (*it2)[0] == 10);
-	}
-	ASSERT( i == 1);
+    // outit->pass1(it2, end2);
+    size_t i = 0;
+    for (; it2 != end2; ++it2) {
+        ++i;
+        ASSERT((*it2)[0] == 10);
+    }
+    ASSERT(i == 1);
 }
 
-static void setUp()
-{
-	stringstream s;
-	s << "a:REAL" << std::endl;
-	for (size_t i = 1; i <= 10; ++i)
-		s << i << std::endl;
+static void setUp() {
+    stringstream s;
+    s << "a:REAL" << std::endl;
+    for (size_t i = 1; i <= 10; ++i)
+        s << i << std::endl;
     FileHandle dh("TestAggregateFunctions2.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
@@ -70,6 +67,6 @@ static void setUp()
 }
 
 
-static void tearDown(){}
+static void tearDown() {}
 
 SIMPLE_TEST(AggregateFunctions2)

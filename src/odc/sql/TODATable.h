@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -36,22 +36,23 @@ public:
 
     const READER& oda() const;
 
-private: // methods
+private:  // methods
 
     void populateMetaData();
-//    void updateMetaData(const std::vector<SQLColumn*>&);
+    //    void updateMetaData(const std::vector<SQLColumn*>&);
 
-protected: // methods
+protected:  // methods
 
     TODATable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name, READER&& oda);
 
-private: // methods (overrides)
+private:  // methods (overrides)
 
     virtual bool hasColumn(const std::string&) const override;
     virtual const eckit::sql::SQLColumn& column(const std::string&) const override;
 
-    virtual eckit::sql::SQLTableIterator* iterator(const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>&,
-                                                   std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const override;
+    virtual eckit::sql::SQLTableIterator* iterator(
+        const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>&,
+        std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const override;
 
     virtual void print(std::ostream& s) const override;
 
@@ -59,7 +60,7 @@ public:
 
     READER oda_;
 
-private: // members
+private:  // members
 
     // This is a hack. Avoid calling begin() twice on non-seekable DataHandle if possible
     typename READER::iterator readerIterator_;
@@ -81,16 +82,18 @@ struct ODATable : public TODATable<Reader> {
 
 
 struct ODBCSVTable : public TODATable<TextReader> {
-    ODBCSVTable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name, const std::string& delimiter) :
+    ODBCSVTable(eckit::sql::SQLDatabase& owner, const std::string& path, const std::string& name,
+                const std::string& delimiter) :
         TODATable<TextReader>(owner, path, name, TextReader(path, delimiter)) {}
-    ODBCSVTable(eckit::sql::SQLDatabase& owner, std::istream& is, const std::string& name, const std::string& delimiter) :
+    ODBCSVTable(eckit::sql::SQLDatabase& owner, std::istream& is, const std::string& name,
+                const std::string& delimiter) :
         TODATable<TextReader>(owner, "<none>", name, TextReader(is, delimiter)) {}
 };
 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql 
-} // namespace odc 
+}  // namespace sql
+}  // namespace odc
 
 #endif

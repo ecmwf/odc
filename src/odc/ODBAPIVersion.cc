@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -12,19 +12,30 @@
 /// This file will be updated autmatically by the make.sms script
 ///
 
-#include "odc_config.h"
 #include "odc/ODBAPIVersion.h"
 #include "odc/core/Header.h"
+#include "odc_config.h"
 
 namespace odc {
 
-    const char *ODBAPIVersion::version() { return odc_VERSION_STR; }
-    const char *gitsha1() { return odc_GIT_SHA1; }
+const char* ODBAPIVersion::version() {
+    return odc_VERSION_STR;
+}
+const char* gitsha1() {
+    return odc_GIT_SHA1;
+}
 
-    unsigned int ODBAPIVersion::formatVersionMajor() { return core::FORMAT_VERSION_NUMBER_MAJOR; }
-    unsigned int ODBAPIVersion::formatVersionMinor() { return core::FORMAT_VERSION_NUMBER_MINOR; }
-	const char *ODBAPIVersion::installPrefix()       { return odc_INSTALL_PREFIX; }
-	const char *ODBAPIVersion::buildDirectory()      { return odc_BINARY_DIR; }
+unsigned int ODBAPIVersion::formatVersionMajor() {
+    return core::FORMAT_VERSION_NUMBER_MAJOR;
+}
+unsigned int ODBAPIVersion::formatVersionMinor() {
+    return core::FORMAT_VERSION_NUMBER_MINOR;
+}
+const char* ODBAPIVersion::installPrefix() {
+    return odc_INSTALL_PREFIX;
+}
+const char* ODBAPIVersion::buildDirectory() {
+    return odc_BINARY_DIR;
+}
 
-} // namespace odc
-
+}  // namespace odc

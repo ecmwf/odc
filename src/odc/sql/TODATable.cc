@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -11,15 +11,15 @@
 #include <sstream>
 
 #include "eckit/io/FileHandle.h"
-#include "eckit/utils/StringTools.h"
+#include "eckit/sql/SQLColumn.h"
 #include "eckit/sql/SQLTableFactory.h"
 #include "eckit/sql/type/SQLBitfield.h"
+#include "eckit/utils/StringTools.h"
 #include "eckit/utils/Translator.h"
-#include "eckit/sql/SQLColumn.h"
 
+#include "odc/Reader.h"
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
-#include "odc/Reader.h"
 #include "odc/sql/TODATable.h"
 #include "odc/sql/TODATableIterator.h"
 
@@ -42,7 +42,8 @@ class ODAFactory : public eckit::sql::SQLTableFactoryBase {
     virtual SQLTable* build(SQLDatabase& owner, const std::string& name, const std::string& location) const override {
 
         PathName path(location);
-        if (!path.exists()) return 0;
+        if (!path.exists())
+            return 0;
 
         // Check that this is an ODB file
         FileHandle fh(path, false);
@@ -50,8 +51,9 @@ class ODAFactory : public eckit::sql::SQLTableFactoryBase {
         AutoClose closer(fh);
 
         char buf[5];
-        char oda[5] {'\xff', '\xff', 'O', 'D', 'A'};
-        if (fh.read(buf, 5) != 5 || ::memcmp(buf, oda, 5) != 0) return 0;
+        char oda[5]{'\xff', '\xff', 'O', 'D', 'A'};
+        if (fh.read(buf, 5) != 5 || ::memcmp(buf, oda, 5) != 0)
+            return 0;
 
         return new odc::sql::ODATable(owner, location, name);
     }
@@ -59,16 +61,14 @@ class ODAFactory : public eckit::sql::SQLTableFactoryBase {
 
 ODAFactory odaFactoryInstance;
 
-}
+}  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 
 
 template <typename READER>
 TODATable<READER>::TODATable(SQLDatabase& owner, const std::string& path, const std::string& name, READER&& oda) :
-    SQLTable(owner, path, name),
-    oda_(std::move(oda)),
-    readerIterator_(oda_.begin()) {
+    SQLTable(owner, path, name), oda_(std::move(oda)), readerIterator_(oda_.begin()) {
 
     populateMetaData();
 }
@@ -84,31 +84,38 @@ const READER& TODATable<READER>::oda() const {
 
 
 template <typename READER>
-void TODATable<READER>::populateMetaData()
-{
+void TODATable<READER>::populateMetaData() {
     auto& it(readerIterator_);
 
     size_t count = it->columns().size();
 
-    for(size_t i = 0; i < count; i++)
-    {
-        Column& column (*it->columns()[i]);
+    for (size_t i = 0; i < count; i++) {
+        Column& column(*it->columns()[i]);
 
-        const std::string name (column.name());
-        bool hasMissing (column.hasMissing());
-        double missing (column.missingValue());
-        BitfieldDef bitfieldDef (column.bitfieldDef());
+        const std::string name(column.name());
+        bool hasMissing(column.hasMissing());
+        double missing(column.missingValue());
+        BitfieldDef bitfieldDef(column.bitfieldDef());
 
         std::string sqlType;
         size_t typeSizeDoubles = it->dataSizeDoubles(i);
 
-        switch(column.type()) {
-            case INTEGER: sqlType = "integer"; break;
-            case STRING:  sqlType = "string"; break;
-            case REAL:    sqlType = "real"; break;
-            case DOUBLE:  sqlType = "double"; break;
+        switch (column.type()) {
+            case INTEGER:
+                sqlType = "integer";
+                break;
+            case STRING:
+                sqlType = "string";
+                break;
+            case REAL:
+                sqlType = "real";
+                break;
+            case DOUBLE:
+                sqlType = "double";
+                break;
             case BITFIELD: {
-                std::string typeSignature = type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
+                std::string typeSignature =
+                    type::SQLBitfield::make("Bitfield", bitfieldDef.first, bitfieldDef.second, "DummyTypeAlias");
                 addColumn(name, i, type::SQLType::lookup(typeSignature), hasMissing, missing, true, bitfieldDef);
                 continue;
             }
@@ -116,15 +123,16 @@ void TODATable<READER>::populateMetaData()
                 throw SeriousBug("Unknown type: " + Translator<int, std::string>()(column.type()), Here());
         }
 
-        addColumn(name, i, type::SQLType::lookup(sqlType, typeSizeDoubles), hasMissing, missing, column.type() == BITFIELD, bitfieldDef);
-	}
+        addColumn(name, i, type::SQLType::lookup(sqlType, typeSizeDoubles), hasMissing, missing,
+                  column.type() == BITFIELD, bitfieldDef);
+    }
 }
 
-//void TODATable<READER>::updateMetaData(const std::vector<SQLColumn*>& selected)
+// void TODATable<READER>::updateMetaData(const std::vector<SQLColumn*>& selected)
 //{
-//    // TODO: Whoah! whoah! whoah!
-//    // n.b. we don't really want to modify the table. We should probabyl deal with this in the iterator...
-//    NOTIMP;
+//     // TODO: Whoah! whoah! whoah!
+//     // n.b. we don't really want to modify the table. We should probabyl deal with this in the iterator...
+//     NOTIMP;
 //
 ////	MetaData newColumns (it_->columns());
 ////	for(size_t i = 0; i < selected.size(); i++)
@@ -171,27 +179,28 @@ bool TODATable<READER>::hasColumn(const std::string& name) const {
     // If the column is simply in the table, then use it.
 
     if (SQLTable::hasColumn(name)) {
-		return true;
-	}
+        return true;
+    }
 
     // Find columns that also have an (unspecified) section name
 
-	std::string colName (name + "@");
+    std::string colName(name + "@");
     int n = 0;
 
     for (const auto& column : columnsByName_) {
-        const std::string& s (column.first);
+        const std::string& s(column.first);
         if (StringTools::startsWith(s, colName)) {
             n++;
         }
-	}
+    }
 
-	if (n == 1) return true;
+    if (n == 1)
+        return true;
     if (n > 1) {
         throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
     }
 
-	return false;
+    return false;
 }
 
 template <typename READER>
@@ -205,25 +214,28 @@ const SQLColumn& TODATable<READER>::column(const std::string& name) const {
 
     // Find columns that also have an (unspecified) section name
 
-    const std::string colName (name + "@");
+    const std::string colName(name + "@");
     SQLColumn* column = 0;
 
     for (const auto& col : columnsByName_) {
-        const std::string& s (col.first);
+        const std::string& s(col.first);
         if (StringTools::startsWith(s, colName)) {
-            if (column) throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
+            if (column)
+                throw UserError(std::string("TODATable:hasColumn(\"") + name + "\"): ambiguous name");
             column = col.second;
         }
     }
 
-    if (!column) throw SeriousBug("Requesting column \"" + name + "\": not found", Here());
+    if (!column)
+        throw SeriousBug("Requesting column \"" + name + "\": not found", Here());
 
     return *column;
 }
 
 template <typename READER>
-SQLTableIterator* TODATable<READER>::iterator(const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
-                                              std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const {
+SQLTableIterator* TODATable<READER>::iterator(
+    const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
+    std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback) const {
     return new TODATableIterator<READER>(*this, columns, metadataUpdateCallback, readerIterator_);
 }
 
@@ -240,5 +252,5 @@ template class TODATable<TextReader>;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql
-} // namespace odc
+}  // namespace sql
+}  // namespace odc

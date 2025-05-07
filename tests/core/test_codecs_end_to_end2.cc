@@ -13,12 +13,12 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/testing/Test.h"
 
-#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
-#include "odc/tools/MockReader.h"
 #include "odc/codec/Integer.h"
 #include "odc/codec/String.h"
+#include "odc/core/MetaData.h"
+#include "odc/tools/MockReader.h"
 
 using namespace eckit::testing;
 
@@ -38,63 +38,65 @@ using namespace eckit::testing;
 
 namespace {
 
-    // This looks-like a read-iterator. It isn't, but that doesn't matter!
+// This looks-like a read-iterator. It isn't, but that doesn't matter!
 
-    const int num_rows_to_write = 10;
+const int num_rows_to_write = 10;
 
-    class MockReadIterator {
-    public:
-        MockReadIterator(odc::api::ColumnType type, double data) :
-            columns_(1),
-            type_(type),
-            data_(data),
-            nRows_(num_rows_to_write),
-            refCount_(0),
-            noMore_(false) {
+class MockReadIterator {
+public:
 
-            columns_[0] = new odc::core::Column(columns_);
-            ASSERT(columns_[0]);
+    MockReadIterator(odc::api::ColumnType type, double data) :
+        columns_(1), type_(type), data_(data), nRows_(num_rows_to_write), refCount_(0), noMore_(false) {
 
-            columns_[0]->name("a-col");
-            columns_[0]->type<odc::core::SameByteOrder>(type_);
-            columns_[0]->hasMissing(false);
-        }
+        columns_[0] = new odc::core::Column(columns_);
+        ASSERT(columns_[0]);
 
-        odc::core::MetaData& columns() { return columns_; }
-        bool isNewDataset()      { return false; }
-        double* data()           { return &data_; }
+        columns_[0]->name("a-col");
+        columns_[0]->type<odc::core::SameByteOrder>(type_);
+        columns_[0]->hasMissing(false);
+    }
 
-        bool next() {
-            if (nRows_ == 0) return false;
-            nRows_--;
-            if (nRows_ == 0) noMore_ = true;
-            return true;
-        }
+    odc::core::MetaData& columns() { return columns_; }
+    bool isNewDataset() { return false; }
+    double* data() { return &data_; }
 
-    protected:
-        odc::core::MetaData columns_;
-        odc::api::ColumnType type_;
-        double data_;
-        int nRows_;
+    bool next() {
+        if (nRows_ == 0)
+            return false;
+        nRows_--;
+        if (nRows_ == 0)
+            noMore_ = true;
+        return true;
+    }
 
-    public: // Required for IteratorProxy
-        int refCount_;
-        bool noMore_;
-    };
+protected:
 
-    // n.b. Cannot use local classes as template arguments until c++11, so declare it here.
+    odc::core::MetaData columns_;
+    odc::api::ColumnType type_;
+    double data_;
+    int nRows_;
 
-    // A constant string value (shorter than 8 bytes)
+public:  // Required for IteratorProxy
 
-    // too-big, aligned storage --> undefined sanitizer is happy with access as casted double
-    alignas(sizeof(double)) const char const_string_2[16] = "pies\0\0\0\0";
+    int refCount_;
+    bool noMore_;
+};
 
-    struct MockReadIteratorConstString2 : public MockReadIterator {
-        MockReadIteratorConstString2() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_2)) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
-        }
-    };
-}
+// n.b. Cannot use local classes as template arguments until c++11, so declare it here.
+
+// A constant string value (shorter than 8 bytes)
+
+// too-big, aligned storage --> undefined sanitizer is happy with access as casted double
+alignas(sizeof(double)) const char const_string_2[16] = "pies\0\0\0\0";
+
+struct MockReadIteratorConstString2 : public MockReadIterator {
+    MockReadIteratorConstString2() :
+        MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_2)) {
+        columns_[0]->coder(
+            std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
+    }
+};
+}  // namespace
 
 CASE("The constant codec can also store strings shorter than 8 bytes") {
 
@@ -120,13 +122,13 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
         dh.openForRead();
         odc::Reader oda(dh);
 
-        odc::Reader::iterator it = oda.begin();
+        odc::Reader::iterator it  = oda.begin();
         odc::Reader::iterator end = oda.end();
 
         EXPECT(it->columns()[0]->name() == "a-col");
 
         size_t count = 0;
-        for ( ; it != end; ++it) {
+        for (; it != end; ++it) {
             double val = (*it)[0];
             EXPECT(::memcmp(const_string_2, &val, sizeof(val)) == 0);
             count++;
@@ -145,4 +147,3 @@ CASE("The constant codec can also store strings shorter than 8 bytes") {
 int main(int argc, char* argv[]) {
     return run_tests(argc, argv);
 }
-
