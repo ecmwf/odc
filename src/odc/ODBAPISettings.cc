@@ -18,11 +18,13 @@
 #include "eckit/log/Log.h"
 #include "eckit/thread/ThreadSingleton.h"
 #include "eckit/utils/StringTools.h"
+#include "eckit/utils/Literals.h"
 
 #include "odc/LibOdc.h"
 #include "odc/ODBAPISettings.h"
 
 using namespace eckit;
+using namespace eckit::literals;
 using namespace std;
 
 template class eckit::ThreadSingleton<odc::ODBAPISettings>;
@@ -47,7 +49,7 @@ void odc::ODBAPISettings::setHome(const char *argv0)
             ::free(absoluteArgv0);
         } else if (argv0[0] == '.' && argv0[1] == '/')
         {
-            size_t bufferLen =1024*8;
+            constexpr size_t bufferLen = 8_KiB;
             char buffer[bufferLen];
             full = string( ::getcwd(buffer, bufferLen) ) + string(argv0 + 1);
         } else
@@ -60,7 +62,7 @@ void odc::ODBAPISettings::setHome(const char *argv0)
                 {
                     full = ps[i] + "/" + argv0;
                     if (ps[i][0] != '/') {
-                        size_t bufferLen =1024*8;
+                        constexpr size_t bufferLen = 8_KiB;
                         char buffer[bufferLen];
                         full = string( ::getcwd(buffer, bufferLen) ) + full;
                     }

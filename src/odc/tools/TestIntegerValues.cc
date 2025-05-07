@@ -58,10 +58,8 @@ static void test()
 	}
 
 	std::cout << std::endl;
-	int nrows=0;
 	for(; it != odb.end(); ++it)
 	{
-		++nrows;
 		for (size_t i=0; i < it->columns().size(); ++i)
 		{
 			//float nr = ((*it)[i]); /// <- WRONG!

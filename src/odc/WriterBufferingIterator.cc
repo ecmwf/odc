@@ -192,7 +192,7 @@ double* WriterBufferingIterator::data() { return nextRow_; }
 double& WriterBufferingIterator::data(size_t i)
 {
     ASSERT(initialisedColumns_);
-	ASSERT(i >= 0 && i < columns().size());
+	ASSERT(i < columns().size());
     return nextRow_[columnOffsets_[i]];
 }
 
