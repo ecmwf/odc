@@ -12,8 +12,8 @@
 ///
 /// @author Piotr Kuchta, ECMWF, Feb 2009
 
-#include "odc/core/MetaData.h"
 #include "odc/Select.h"
+#include "odc/core/MetaData.h"
 
 #include "TestCase.h"
 
@@ -23,8 +23,7 @@ using namespace odc;
 
 /// UnitTest expansion of '*@hdr' into a list of columns of the hdr ODB table.
 ///
-static void test()
-{
+static void test() {
     // TODO: make sure a 'select ... into ... from ...', e.g.:
     //
     //	const string SELECT = "select *@hdr into \"out.odb\" from \"2000010106-reduced.odb\";";
@@ -51,8 +50,7 @@ static void test()
 }
 
 
-
-static void setUp(){}
-static void tearDown(){}
+static void setUp() {}
+static void tearDown() {}
 
 SIMPLE_TEST(SelectStarAt)

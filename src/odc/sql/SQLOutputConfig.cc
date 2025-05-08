@@ -11,10 +11,10 @@
 #include "eckit/sql/SQLSimpleOutput.h"
 
 #include "odc/DispatchingWriter.h"
-#include "odc/sql/ODAOutput.h"
-#include "odc/sql/SQLOutputConfig.h"
 #include "odc/TemplateParameters.h"
 #include "odc/Writer.h"
+#include "odc/sql/ODAOutput.h"
+#include "odc/sql/SQLOutputConfig.h"
 
 namespace odc {
 namespace sql {
@@ -22,21 +22,16 @@ namespace sql {
 //----------------------------------------------------------------------------------------------------------------------
 
 
-SQLOutputConfig::SQLOutputConfig(bool noColumnNames,
-                                 bool noNULL,
-                                 const std::string& delimiter,
-                                 const std::string& format,
-                                 bool bitfieldsBinary,
-                                 bool noColumnAlignment,
+SQLOutputConfig::SQLOutputConfig(bool noColumnNames, bool noNULL, const std::string& delimiter,
+                                 const std::string& format, bool bitfieldsBinary, bool noColumnAlignment,
                                  bool fullPrecision) :
-    eckit::sql::SQLOutputConfig(noColumnNames, noNULL, delimiter, format,
-                                bitfieldsBinary, noColumnAlignment, fullPrecision),
+    eckit::sql::SQLOutputConfig(noColumnNames, noNULL, delimiter, format, bitfieldsBinary, noColumnAlignment,
+                                fullPrecision),
     outStream_(std::cout) {}
 
-SQLOutputConfig::SQLOutputConfig(const std::string& odbFilename) :
-    SQLOutputConfig() {
+SQLOutputConfig::SQLOutputConfig(const std::string& odbFilename) : SQLOutputConfig() {
     outputFormat_ = "odb";
-    outputFile_ = odbFilename;
+    outputFile_   = odbFilename;
 }
 
 SQLOutputConfig::~SQLOutputConfig() {}
@@ -49,23 +44,25 @@ eckit::sql::SQLOutput* SQLOutputConfig::buildOutput(const eckit::PathName& path)
     std::string format;
     if (outputFormat_ == "default") {
         format = (path.asString().empty() ? "ascii" : "odb");
-    } else {
+    }
+    else {
         format = outputFormat_;
     }
 
     if (format == "wide" || format == "ascii") {
         return new eckit::sql::SQLSimpleOutput(*this, outStream_.get());
-    } else if (format == "odb") {
+    }
+    else if (format == "odb") {
         ASSERT(path.asString().size());
         TemplateParameters templateParameters;
         TemplateParameters::parse(path, templateParameters);
         if (templateParameters.size()) {
             return new odc::sql::ODAOutput<DispatchingWriter>(new DispatchingWriter(path, maxOpenFiles));
-        } else {
+        }
+        else {
             return new odc::sql::ODAOutput<Writer<>>(new Writer<>(path));
             // TODO: toODAColumns
         }
-
     }
     NOTIMP;
 }
@@ -77,5 +74,5 @@ void SQLOutputConfig::setOutputStream(std::ostream& s) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql
-} // namespace odc
+}  // namespace sql
+}  // namespace odc

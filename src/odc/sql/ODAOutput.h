@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -20,8 +20,8 @@
 #include "eckit/sql/SQLOutput.h"
 #include "odc/core/MetaData.h"
 
-#include "odc/WriterBufferingIterator.h"
 #include "odc/DispatchingWriter.h"
+#include "odc/WriterBufferingIterator.h"
 
 namespace odc {
 namespace sql {
@@ -33,28 +33,28 @@ class ODAOutput : public eckit::sql::SQLOutput {
 public:
 
     ODAOutput(WRITER*);
-//	ODAOutput(WRITER*, const MetaData&);
-    virtual ~ODAOutput(); // Change to virtual if base class
+    //	ODAOutput(WRITER*, const MetaData&);
+    virtual ~ODAOutput();  // Change to virtual if base class
 
-private: // methods
+private:  // methods
 
     virtual void print(std::ostream&) const override;
 
-// -- Members
+    // -- Members
 
     std::unique_ptr<WRITER> writer_;
 
-	typename WRITER::iterator it_;
-	int col_;
-	std::vector<size_t> columnSizes_;
-	std::vector<double> missingValues_;
+    typename WRITER::iterator it_;
+    int col_;
+    std::vector<size_t> columnSizes_;
+    std::vector<double> missingValues_;
 
-//    MetaData metaData_;
+    //    MetaData metaData_;
 
-	unsigned long long count_;
+    unsigned long long count_;
     bool initted_;
 
-// -- Overridden methods
+    // -- Overridden methods
     virtual void reset() override;
     virtual void flush() override;
     virtual bool output(const eckit::sql::expression::Expressions&) override;
@@ -79,7 +79,7 @@ private: // methods
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql
+}  // namespace sql
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -87,7 +87,8 @@ private: // methods
 // translation unit.
 
 class WriterBufferingIterator;
-template <typename ITERATOR> class Writer;
+template <typename ITERATOR>
+class Writer;
 class DispatchingWriter;
 
 extern template class sql::ODAOutput<Writer<WriterBufferingIterator>>;
@@ -95,6 +96,6 @@ extern template class sql::ODAOutput<DispatchingWriter>;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odc
+}  // namespace odc
 
 #endif

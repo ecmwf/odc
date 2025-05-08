@@ -20,12 +20,12 @@ namespace codec {
 // Self registration
 
 namespace {
-    core::CodecBuilder<CodecLongReal> longRealBuilder;
-    core::CodecBuilder<CodecShortReal> shortRealBuilder;
-    core::CodecBuilder<CodecShortReal2> shortReal2Builder;
-}
+core::CodecBuilder<CodecLongReal> longRealBuilder;
+core::CodecBuilder<CodecShortReal> shortRealBuilder;
+core::CodecBuilder<CodecShortReal2> shortReal2Builder;
+}  // namespace
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace codec
-} // namespace odc
+}  // namespace codec
+}  // namespace odc

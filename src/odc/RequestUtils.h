@@ -15,8 +15,8 @@
 #ifndef odc_RequestUtils_h
 #define odc_RequestUtils_h
 
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 
 
@@ -24,7 +24,7 @@ namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-typedef  std::map<std::string, std::vector<std::string>> RequestDict;
+typedef std::map<std::string, std::vector<std::string>> RequestDict;
 
 RequestDict unquoteRequestValues(const RequestDict& r);
 
@@ -32,6 +32,6 @@ void checkKeywordsHaveValues(const RequestDict& request, const std::vector<std::
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odc
+}  // namespace odc
 
 #endif

@@ -1,15 +1,15 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
-#include <limits>
 #include <algorithm>
+#include <limits>
 #include <numeric>
 
 #include "eckit/eckit.h"
@@ -50,11 +50,12 @@ void SQLSelectOutput::resetBuffer(double* out, size_t count) {
 
     // The fortran interface doesn't pass in the buffer size, so just assume it is correct
     // if the size is specified to be zero
-    if (count == 0) count = requiredBufferSize_;
+    if (count == 0)
+        count = requiredBufferSize_;
 
     ASSERT(!manageOwnBuffer_);
-    out_ = pos_ = out;
-    end_ = out_ + count;
+    out_ = pos_     = out;
+    end_            = out_ + count;
     bufferElements_ = count;
     ASSERT(bufferElements_ >= requiredBufferSize_);
 }
@@ -64,11 +65,12 @@ void SQLSelectOutput::print(std::ostream& s) const {
 }
 
 
-void SQLSelectOutput::reset() { pos_ = out_; }
+void SQLSelectOutput::reset() {
+    pos_ = out_;
+}
 void SQLSelectOutput::flush() {}
 
-bool SQLSelectOutput::output(const expression::Expressions& results)
-{
+bool SQLSelectOutput::output(const expression::Expressions& results) {
     ASSERT(results.size() == columnSizesDoubles_.size());
     pos_ = out_;
     for (currentColumn_ = 0; currentColumn_ < columnSizesDoubles_.size(); currentColumn_++) {
@@ -79,14 +81,15 @@ bool SQLSelectOutput::output(const expression::Expressions& results)
 
     if (isNewDataset_) {
         if (newDatasetOutputted_) {
-            isNewDataset_ = false;
+            isNewDataset_        = false;
             newDatasetOutputted_ = false;
-        } else {
+        }
+        else {
             newDatasetOutputted_ = true;
         }
     }
 
-	return true;
+    return true;
 }
 
 
@@ -97,11 +100,21 @@ void SQLSelectOutput::outputNumber(double x, bool missing) {
 
 // TODO: We can add special missing-value behaviour here --- with user specified missing values!
 
-void SQLSelectOutput::outputReal(double x, bool missing) { outputNumber(x, missing); }
-void SQLSelectOutput::outputDouble(double x, bool missing) { outputNumber(x, missing); }
-void SQLSelectOutput::outputInt(double x, bool missing) { outputNumber(x, missing); }
-void SQLSelectOutput::outputUnsignedInt(double x, bool missing) { outputNumber(x, missing); }
-void SQLSelectOutput::outputBitfield(double x, bool missing) { outputNumber(x, missing); }
+void SQLSelectOutput::outputReal(double x, bool missing) {
+    outputNumber(x, missing);
+}
+void SQLSelectOutput::outputDouble(double x, bool missing) {
+    outputNumber(x, missing);
+}
+void SQLSelectOutput::outputInt(double x, bool missing) {
+    outputNumber(x, missing);
+}
+void SQLSelectOutput::outputUnsignedInt(double x, bool missing) {
+    outputNumber(x, missing);
+}
+void SQLSelectOutput::outputBitfield(double x, bool missing) {
+    outputNumber(x, missing);
+}
 
 void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
 
@@ -116,12 +129,13 @@ void SQLSelectOutput::outputString(const char* s, size_t len, bool missing) {
 
     if (missing) {
         len = 0;
-    } else {
+    }
+    else {
         ::memcpy(reinterpret_cast<char*>(pos_), s, len);
     }
 
     if (len < charSize) {
-        ::memset(&reinterpret_cast<char*>(pos_)[len], 0, charSize-len);
+        ::memset(&reinterpret_cast<char*>(pos_)[len], 0, charSize - len);
     }
 
     pos_ += columnSizesDoubles_[currentColumn_];
@@ -146,7 +160,7 @@ void SQLSelectOutput::updateTypes(SQLSelect& sql) {
 
     // TODO: What happens here if the metadata/columns change during an odb?
     // --> We need to update this allocation as we go.
-    isNewDataset_ = true;
+    isNewDataset_        = true;
     newDatasetOutputted_ = false;
 
     for (size_t i = 0; i < output.size(); i++) {
@@ -182,8 +196,8 @@ void SQLSelectOutput::updateTypes(SQLSelect& sql) {
 
     if (manageOwnBuffer_) {
         data_.resize(offset);
-        pos_ = out_ = &data_[0];
-        end_ = pos_ + offset;
+        pos_ = out_     = &data_[0];
+        end_            = pos_ + offset;
         bufferElements_ = offset;
 
         // If a buffer is being provided at the time of doing each request, then we need to
@@ -194,9 +208,11 @@ void SQLSelectOutput::updateTypes(SQLSelect& sql) {
 
 void SQLSelectOutput::cleanup(SQLSelect& sql) {}
 
-unsigned long long SQLSelectOutput::count() { return count_; }
+unsigned long long SQLSelectOutput::count() {
+    return count_;
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql
-} // namespace odc
+}  // namespace sql
+}  // namespace odc

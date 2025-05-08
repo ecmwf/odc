@@ -39,18 +39,18 @@ struct ColumnInfo {
     };
 
     /** Column name */
-    std::string name;
+    std::string name{};
     /** Column data type */
-    ColumnType type;
+    ColumnType type{};
     /** Size of a single decoded value in bytes */
-    size_t decodedSize;
+    size_t decodedSize{};
     /** List of bit and bit groups associated with a bitfield column */
-    std::vector<Bit> bitfield;
+    std::vector<Bit> bitfield{};
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace api
-} // namespace odc
+}  // namespace api
+}  // namespace odc
 
-#endif // odc_api_StridedData_H
+#endif  // odc_api_StridedData_H

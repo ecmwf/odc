@@ -11,8 +11,8 @@
 #include "eckit/testing/Test.h"
 #include "eckit/types/FloatCompare.h"
 
-#include "odc/Writer.h"
 #include "odc/Select.h"
+#include "odc/Writer.h"
 
 #include "TemporaryFiles.h"
 
@@ -59,13 +59,10 @@ CASE("Various distance measuring functions return sensible things") {
 
     // And test that the SQL functions get the right data out!!!
 
-    const std::string sql = std::string("select rad(45.0,0.0,1.0,lat,lon), ") +
-                                        "rad(10.0,0.0,0.0,lat,lon), " +
-                                        "distance(46.0,0.0,lat,lon), " +
-                                        "km(46.0,0.0,lat,lon), " +
-                                        "dist(100.,46.0,1.0,lat,lon), " +
-                                        "dist(40.0,5.0,1000.0,lat,lon) " +
-                                        "from \"" + f.path() + "\";";
+    const std::string sql = std::string("select rad(45.0,0.0,1.0,lat,lon), ") + "rad(10.0,0.0,0.0,lat,lon), " +
+                            "distance(46.0,0.0,lat,lon), " + "km(46.0,0.0,lat,lon), " +
+                            "dist(100.,46.0,1.0,lat,lon), " + "dist(40.0,5.0,1000.0,lat,lon) " + "from \"" + f.path() +
+                            "\";";
 
     const double eps = 7.e-6;
 
@@ -73,51 +70,53 @@ CASE("Various distance measuring functions return sensible things") {
         odc::Select oda(sql);
         odc::Select::iterator it = oda.begin();
 
-        EXPECT((*it)[0] == 1);                                  // Inside relevant great-circle
+        EXPECT((*it)[0] == 1);  // Inside relevant great-circle
         EXPECT((*it)[1] == 0);
-        EXPECT(is_approximately_equal((*it)[2], 111120., eps)); // Surface distance to specified point
-        EXPECT(is_approximately_equal((*it)[3], 111.12, eps));  // In m
-        EXPECT((*it)[4] == 0);                                  // Within specified distance of given point
+        EXPECT(is_approximately_equal((*it)[2], 111120., eps));  // Surface distance to specified point
+        EXPECT(is_approximately_equal((*it)[3], 111.12, eps));   // In m
+        EXPECT((*it)[4] == 0);                                   // Within specified distance of given point
         EXPECT((*it)[5] == 1);
         ++it;
 
-        EXPECT((*it)[0] == 0);                                  // Inside relevant great-circle
+        EXPECT((*it)[0] == 0);  // Inside relevant great-circle
         EXPECT((*it)[1] == 0);
         // pi/4 * R
-        EXPECT(is_approximately_equal((*it)[2], 4889280., eps)); // Surface distance to specified point
-        EXPECT(is_approximately_equal((*it)[3], 4889.28, eps));  // In m
-        EXPECT((*it)[4] == 0);                                  // Within specified distance of given point
+        EXPECT(is_approximately_equal((*it)[2], 4889280., eps));  // Surface distance to specified point
+        EXPECT(is_approximately_equal((*it)[3], 4889.28, eps));   // In m
+        EXPECT((*it)[4] == 0);                                    // Within specified distance of given point
         EXPECT((*it)[5] == 0);
         ++it;
 
-        EXPECT((*it)[0] == 0);                                  // Inside relevant great-circle
+        EXPECT((*it)[0] == 0);  // Inside relevant great-circle
         EXPECT((*it)[1] == 0);
         // 3*pi/4 * R
-        EXPECT(is_approximately_equal((*it)[2], 15112320., eps)); // Surface distance to specified point
-        EXPECT(is_approximately_equal((*it)[3], 15112.32, eps));  // In m
-        EXPECT((*it)[4] == 0);                                  // Within specified distance of given point
+        EXPECT(is_approximately_equal((*it)[2], 15112320., eps));  // Surface distance to specified point
+        EXPECT(is_approximately_equal((*it)[3], 15112.32, eps));   // In m
+        EXPECT((*it)[4] == 0);                                     // Within specified distance of given point
         EXPECT((*it)[5] == 0);
         ++it;
 
-        EXPECT((*it)[0] == 0);                                  // Inside relevant great-circle
+        EXPECT((*it)[0] == 0);  // Inside relevant great-circle
         EXPECT((*it)[1] == 0);
-        EXPECT(is_approximately_equal((*it)[2], 13398177.5541776344, eps)); // Surface distance to specified point
+        EXPECT(is_approximately_equal((*it)[2], 13398177.5541776344, eps));  // Surface distance to specified point
         EXPECT(is_approximately_equal((*it)[3], 13398.1775541776344, eps));  // In m
-        EXPECT((*it)[4] == 0);                                  // Within specified distance of given point
+        EXPECT((*it)[4] == 0);                                               // Within specified distance of given point
         EXPECT((*it)[5] == 0);
         ++it;
     }
 
     // Test against things measured from the north and south poles
 
-    const std::string sql2 = std::string("select "
-                                         "distance(90.0,0.0,lat,lon), "
-                                         "km(90.0,0.0,lat,lon), "
-                                         "distance(-90.0,0.0,lat,lon), "
-                                         "km(-90.0,0.0,lat,lon), "
-                                         "distance(0.0,180.0,lat,lon), "
-                                         "km(0.0,180.0,lat,lon), "
-                                         "from \"") + f.path() + "\";";
+    const std::string sql2 = std::string(
+                                 "select "
+                                 "distance(90.0,0.0,lat,lon), "
+                                 "km(90.0,0.0,lat,lon), "
+                                 "distance(-90.0,0.0,lat,lon), "
+                                 "km(-90.0,0.0,lat,lon), "
+                                 "distance(0.0,180.0,lat,lon), "
+                                 "km(0.0,180.0,lat,lon), "
+                                 "from \"") +
+                             f.path() + "\";";
 
     {
         odc::Select oda(sql2);
@@ -201,14 +200,15 @@ CASE("Inside or outside detection works for circles") {
     // And test that the SQL functions get the right data out!!!
 
     const std::string sql = std::string("select ") +
-                                        "circle(x, 46.0, y, 11.0, 1.0), "
-                                        "circle(x, 46.0, y, 11.0, 1.5), "
-                                        "circle(x, 0.0, y, 0.0, 1.0), "
-                                        "circle(x, 0.0, y, 0.0, -1.0), "
-                                        "circle(x, 0.0, y, 0.0, 0.0), "         // If we are on a point, a radius of zero is OK!
-                                        "circle(x, 45.5, y, -37.4, 117.7966), "
-                                        "circle(x, 45.5, y, -37.4, 117.7967) "
-                                        "from \"" + f.path() + "\";";
+                            "circle(x, 46.0, y, 11.0, 1.0), "
+                            "circle(x, 46.0, y, 11.0, 1.5), "
+                            "circle(x, 0.0, y, 0.0, 1.0), "
+                            "circle(x, 0.0, y, 0.0, -1.0), "
+                            "circle(x, 0.0, y, 0.0, 0.0), "  // If we are on a point, a radius of zero is OK!
+                            "circle(x, 45.5, y, -37.4, 117.7966), "
+                            "circle(x, 45.5, y, -37.4, 117.7967) "
+                            "from \"" +
+                            f.path() + "\";";
 
     {
         odc::Select oda(sql);
@@ -283,8 +283,9 @@ CASE("Norms are correctly calculated") {
     // See ODB-382 for buggy behaviour.
 
     const std::string sql = std::string("select ") +
-                                        "norm(x, y) "
-                                        "from \"" + f.path() + "\";";
+                            "norm(x, y) "
+                            "from \"" +
+                            f.path() + "\";";
 
     {
         odc::Select oda(sql);

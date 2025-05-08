@@ -34,11 +34,10 @@ public:
 protected:
 
     const void* addr() const;
-
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace eckit
+}  // namespace odc
 
-#endif // odb_api_LibOdc_H
+#endif  // odb_api_LibOdc_H

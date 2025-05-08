@@ -27,12 +27,10 @@ namespace core {
 
 class DecodeTarget {
 
-public: // methods
+public:  // methods
 
-    DecodeTarget(const std::vector<std::string> & columns,
-                 const std::vector<api::StridedData>& facades);
-    DecodeTarget(const std::vector<std::string> & columns,
-                 std::vector<api::StridedData>&& facades);
+    DecodeTarget(const std::vector<std::string>& columns, const std::vector<api::StridedData>& facades);
+    DecodeTarget(const std::vector<std::string>& columns, std::vector<api::StridedData>&& facades);
     ~DecodeTarget();
 
     const std::vector<std::string>& columns() const;
@@ -40,7 +38,7 @@ public: // methods
 
     DecodeTarget slice(size_t rowOffset, size_t nrows);
 
-private: // members
+private:  // members
 
     std::vector<std::string> columns_;
     std::vector<api::StridedData> columnFacades_;
@@ -49,7 +47,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc
 
 #endif

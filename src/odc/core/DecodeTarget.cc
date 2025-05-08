@@ -16,19 +16,15 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-DecodeTarget::DecodeTarget(const std::vector<std::string>& columns,
-                           const std::vector<api::StridedData>& facades) :
-    columns_(columns),
-    columnFacades_(facades) {}
+DecodeTarget::DecodeTarget(const std::vector<std::string>& columns, const std::vector<api::StridedData>& facades) :
+    columns_(columns), columnFacades_(facades) {}
 
-DecodeTarget::DecodeTarget(const std::vector<std::string>& columns,
-                           std::vector<api::StridedData>&& facades) :
-    columns_(columns),
-    columnFacades_(std::move(facades)) {}
+DecodeTarget::DecodeTarget(const std::vector<std::string>& columns, std::vector<api::StridedData>&& facades) :
+    columns_(columns), columnFacades_(std::move(facades)) {}
 
 DecodeTarget::~DecodeTarget() {}
 
-const std::vector<std::string>&DecodeTarget::columns() const {
+const std::vector<std::string>& DecodeTarget::columns() const {
     return columns_;
 }
 
@@ -49,6 +45,5 @@ DecodeTarget DecodeTarget::slice(size_t rowOffset, size_t nrows) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
-
+}  // namespace core
+}  // namespace odc

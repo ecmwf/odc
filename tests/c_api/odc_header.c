@@ -9,14 +9,14 @@
 
 #include "odc/api/odc.h"
 
-#define CHECK_RESULT(x) \
-    do { \
-        int rc = (x); \
-        if (rc != ODC_SUCCESS) { \
+#define CHECK_RESULT(x)                                                                           \
+    do {                                                                                          \
+        int rc = (x);                                                                             \
+        if (rc != ODC_SUCCESS) {                                                                  \
             fprintf(stderr, "Error calling odc function \"%s\": %s\n", #x, odc_error_string(rc)); \
-            exit(1); \
-        } \
-    } while (false); \
+            exit(1);                                                                              \
+        }                                                                                         \
+    } while (false);
 
 void usage() {
     fprintf(stderr, "Usage:\n");
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
         char* path = argv[argi];
 
         odc_reader_t* reader = NULL;
-        odc_frame_t* frame = NULL;
+        odc_frame_t* frame   = NULL;
 
         // Open current path and initialise frame
         CHECK_RESULT(odc_open_path(&reader, path));

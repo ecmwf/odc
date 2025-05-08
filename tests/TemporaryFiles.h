@@ -24,10 +24,9 @@
 
 class TemporaryFile {
 
-public: // methods
+public:  // methods
 
-    TemporaryFile() :
-        path_(eckit::PathName::unique("_temporary_testing_file")) {}
+    TemporaryFile() : path_(eckit::PathName::unique("_temporary_testing_file")) {}
 
     virtual ~TemporaryFile() {
         if (path_.exists()) {
@@ -37,7 +36,7 @@ public: // methods
 
     const eckit::PathName& path() const { return path_; }
 
-private: // members
+private:  // members
 
     eckit::PathName path_;
 };
@@ -45,4 +44,4 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-#endif // odc_tests_TemporaryODB_H
+#endif  // odc_tests_TemporaryODB_H

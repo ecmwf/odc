@@ -8,32 +8,32 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/testing/Test.h"
 #include "eckit/log/Log.h"
+#include "eckit/testing/Test.h"
 
-#include "odc/api/Odb.h"
 #include "odc/Reader.h"
+#include "odc/api/Odb.h"
 
 
 using namespace eckit::testing;
 
 namespace {
-    struct TestIntegerDecoding {
-        TestIntegerDecoding() { odc::api::Settings::treatIntegersAsDoubles(false); }
-        ~TestIntegerDecoding() { odc::api::Settings::treatIntegersAsDoubles(true); }
-    };
-}
+struct TestIntegerDecoding {
+    TestIntegerDecoding() { odc::api::Settings::treatIntegersAsDoubles(false); }
+    ~TestIntegerDecoding() { odc::api::Settings::treatIntegersAsDoubles(true); }
+};
+}  // namespace
 
 // ------------------------------------------------------------------------------------------------------
 
 namespace {
-    int64_t integer_cast(const double& val) {
-        static_assert(sizeof(double) == sizeof(int64_t), "Punning is not valid");
-        auto punnable_val = reinterpret_cast<const char*>(&val);
-        auto punned_val = reinterpret_cast<const int64_t*>(punnable_val);
-        return *punned_val;
-    }
+int64_t integer_cast(const double& val) {
+    static_assert(sizeof(double) == sizeof(int64_t), "Punning is not valid");
+    auto punnable_val = reinterpret_cast<const char*>(&val);
+    auto punned_val   = reinterpret_cast<const int64_t*>(punnable_val);
+    return *punned_val;
 }
+}  // namespace
 
 CASE("Test all-missing first row with Decoder integers-as-doubles") {
 
@@ -54,12 +54,12 @@ CASE("Test all-missing first row with Decoder integers-as-doubles") {
     double doublevals[nrows];
 
     // n.b. columns in reverse order, to be awkward
-    std::vector<std::string> columns { "doubleval", "realval", "intval", "stringval" };
-    std::vector<odc::api::StridedData> strides {
-            {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
-            {realvals,   nrows, sizeof(realvals[0]),   sizeof(realvals[0])},
-            {intvals,    nrows, sizeof(intvals[0]),    sizeof(intvals[0])},
-            {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
+    std::vector<std::string> columns{"doubleval", "realval", "intval", "stringval"};
+    std::vector<odc::api::StridedData> strides{
+        {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
+        {realvals, nrows, sizeof(realvals[0]), sizeof(realvals[0])},
+        {intvals, nrows, sizeof(intvals[0]), sizeof(intvals[0])},
+        {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
     };
 
     odc::api::Decoder decoder(columns, strides);
@@ -97,12 +97,12 @@ CASE("Test all-missing first row with Decoder integers-as-integers") {
     double doublevals[nrows];
 
     // n.b. columns in reverse order, to be awkward
-    std::vector<std::string> columns { "doubleval", "realval", "intval", "stringval" };
-    std::vector<odc::api::StridedData> strides {
-            {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
-            {realvals,   nrows, sizeof(realvals[0]),   sizeof(realvals[0])},
-            {intvals,    nrows, sizeof(intvals[0]),    sizeof(intvals[0])},
-            {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
+    std::vector<std::string> columns{"doubleval", "realval", "intval", "stringval"};
+    std::vector<odc::api::StridedData> strides{
+        {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
+        {realvals, nrows, sizeof(realvals[0]), sizeof(realvals[0])},
+        {intvals, nrows, sizeof(intvals[0]), sizeof(intvals[0])},
+        {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
     };
 
     odc::api::Decoder decoder(columns, strides);
@@ -141,13 +141,13 @@ CASE("Test some-missing first row with Decoder integers-as-doubles") {
     double changing[nrows];
 
     // n.b. columns in reverse order, to be awkward
-    std::vector<std::string> columns { "changing", "doubleval", "realval", "intval", "stringval" };
-    std::vector<odc::api::StridedData> strides {
-            {changing,   nrows, sizeof(changing[0]),   sizeof(changing[0])},
-            {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
-            {realvals,   nrows, sizeof(realvals[0]),   sizeof(realvals[0])},
-            {intvals,    nrows, sizeof(intvals[0]),    sizeof(intvals[0])},
-            {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
+    std::vector<std::string> columns{"changing", "doubleval", "realval", "intval", "stringval"};
+    std::vector<odc::api::StridedData> strides{
+        {changing, nrows, sizeof(changing[0]), sizeof(changing[0])},
+        {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
+        {realvals, nrows, sizeof(realvals[0]), sizeof(realvals[0])},
+        {intvals, nrows, sizeof(intvals[0]), sizeof(intvals[0])},
+        {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
     };
 
     odc::api::Decoder decoder(columns, strides);
@@ -189,13 +189,13 @@ CASE("Test some-missing first row with Decoder integers-as-integers") {
     int64_t changing[nrows];
 
     // n.b. columns in reverse order, to be awkward
-    std::vector<std::string> columns { "changing", "doubleval", "realval", "intval", "stringval" };
-    std::vector<odc::api::StridedData> strides {
-            {changing,   nrows, sizeof(changing[0]),   sizeof(changing[0])},
-            {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
-            {realvals,   nrows, sizeof(realvals[0]),   sizeof(realvals[0])},
-            {intvals,    nrows, sizeof(intvals[0]),    sizeof(intvals[0])},
-            {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
+    std::vector<std::string> columns{"changing", "doubleval", "realval", "intval", "stringval"};
+    std::vector<odc::api::StridedData> strides{
+        {changing, nrows, sizeof(changing[0]), sizeof(changing[0])},
+        {doublevals, nrows, sizeof(doublevals[0]), sizeof(doublevals[0])},
+        {realvals, nrows, sizeof(realvals[0]), sizeof(realvals[0])},
+        {intvals, nrows, sizeof(intvals[0]), sizeof(intvals[0])},
+        {stringvals, nrows, sizeof(stringvals[0]), sizeof(stringvals[0])},
     };
 
     odc::api::Decoder decoder(columns, strides);
@@ -219,7 +219,7 @@ CASE("Test all-missing first row with Reader iterator integers-as-doubles") {
 
     odc::Reader reader("odb_533_1.odb");
 
-    auto it = reader.begin();
+    auto it  = reader.begin();
     auto end = reader.end();
     EXPECT(it != end);
 
@@ -233,9 +233,9 @@ CASE("Test all-missing first row with Reader iterator integers-as-doubles") {
     EXPECT(it->columns()[3]->name() == "doubleval");
     EXPECT(it->columns()[3]->coder().name() == "real_constant_or_missing");
 
-    EXPECT( it->isMissing(1));
-    EXPECT( it->isMissing(2));
-    EXPECT( it->isMissing(3));
+    EXPECT(it->isMissing(1));
+    EXPECT(it->isMissing(2));
+    EXPECT(it->isMissing(3));
     EXPECT(it->string(0) == "");
     EXPECT((*it)[1] == odc::api::Settings::integerMissingValue());
     EXPECT(static_cast<int64_t>((*it)[1]) == odc::api::Settings::integerMissingValue());
@@ -245,9 +245,9 @@ CASE("Test all-missing first row with Reader iterator integers-as-doubles") {
     ++it;
     EXPECT(it != end);
 
-    EXPECT( !it->isMissing(1));
-    EXPECT( !it->isMissing(2));
-    EXPECT( !it->isMissing(3));
+    EXPECT(!it->isMissing(1));
+    EXPECT(!it->isMissing(2));
+    EXPECT(!it->isMissing(3));
     EXPECT(it->string(0) == "testing");
     EXPECT((*it)[1] == 12345678);
     EXPECT(static_cast<int64_t>((*it)[1]) == 12345678);
@@ -263,7 +263,7 @@ CASE("Test all-missing first row with Reader iterator integers-as-integers") {
     TestIntegerDecoding integers;
     odc::Reader reader("odb_533_1.odb");
 
-    auto it = reader.begin();
+    auto it  = reader.begin();
     auto end = reader.end();
     EXPECT(it != end);
 
@@ -277,9 +277,9 @@ CASE("Test all-missing first row with Reader iterator integers-as-integers") {
     EXPECT(it->columns()[3]->name() == "doubleval");
     EXPECT(it->columns()[3]->coder().name() == "real_constant_or_missing");
 
-    EXPECT( it->isMissing(1));
-    EXPECT( it->isMissing(2));
-    EXPECT( it->isMissing(3));
+    EXPECT(it->isMissing(1));
+    EXPECT(it->isMissing(2));
+    EXPECT(it->isMissing(3));
     EXPECT(it->string(0) == "");
     EXPECT(integer_cast((*it)[1]) == odc::api::Settings::integerMissingValue());
     EXPECT((*it)[2] == odc::api::Settings::doubleMissingValue());
@@ -288,9 +288,9 @@ CASE("Test all-missing first row with Reader iterator integers-as-integers") {
     ++it;
     EXPECT(it != end);
 
-    EXPECT( !it->isMissing(1));
-    EXPECT( !it->isMissing(2));
-    EXPECT( !it->isMissing(3));
+    EXPECT(!it->isMissing(1));
+    EXPECT(!it->isMissing(2));
+    EXPECT(!it->isMissing(3));
     EXPECT(it->string(0) == "testing");
     EXPECT(integer_cast((*it)[1]) == 12345678);
     EXPECT((*it)[2] == 1234.56);
@@ -304,7 +304,7 @@ CASE("Test some-missing first row with Reader iterator integers-as-doubles") {
 
     odc::Reader reader("odb_533_2.odb");
 
-    auto it = reader.begin();
+    auto it  = reader.begin();
     auto end = reader.end();
     EXPECT(it != end);
 
@@ -320,10 +320,10 @@ CASE("Test some-missing first row with Reader iterator integers-as-doubles") {
     EXPECT(it->columns()[4]->name() == "changing");
     EXPECT(it->columns()[4]->coder().name() == "int16");
 
-    EXPECT( it->isMissing(1));
-    EXPECT( it->isMissing(2));
-    EXPECT( it->isMissing(3));
-    EXPECT( !it->isMissing(4));
+    EXPECT(it->isMissing(1));
+    EXPECT(it->isMissing(2));
+    EXPECT(it->isMissing(3));
+    EXPECT(!it->isMissing(4));
     EXPECT(it->string(0) == "");
     EXPECT((*it)[1] == odc::api::Settings::integerMissingValue());
     EXPECT(static_cast<int64_t>((*it)[1]) == odc::api::Settings::integerMissingValue());
@@ -334,9 +334,9 @@ CASE("Test some-missing first row with Reader iterator integers-as-doubles") {
     ++it;
     EXPECT(it != end);
 
-    EXPECT( !it->isMissing(1));
-    EXPECT( !it->isMissing(2));
-    EXPECT( !it->isMissing(3));
+    EXPECT(!it->isMissing(1));
+    EXPECT(!it->isMissing(2));
+    EXPECT(!it->isMissing(3));
     EXPECT(it->string(0) == "testing");
     EXPECT((*it)[1] == 12345678);
     EXPECT(static_cast<int64_t>((*it)[1]) == 12345678);
@@ -353,7 +353,7 @@ CASE("Test some-missing first row with Reader iterator integers-as-integers") {
     TestIntegerDecoding integers;
     odc::Reader reader("odb_533_2.odb");
 
-    auto it = reader.begin();
+    auto it  = reader.begin();
     auto end = reader.end();
     EXPECT(it != end);
 
@@ -369,9 +369,9 @@ CASE("Test some-missing first row with Reader iterator integers-as-integers") {
     EXPECT(it->columns()[4]->name() == "changing");
     EXPECT(it->columns()[4]->coder().name() == "int16");
 
-    EXPECT( it->isMissing(1));
-    EXPECT( it->isMissing(2));
-    EXPECT( it->isMissing(3));
+    EXPECT(it->isMissing(1));
+    EXPECT(it->isMissing(2));
+    EXPECT(it->isMissing(3));
     EXPECT(it->string(0) == "");
     EXPECT(integer_cast((*it)[1]) == odc::api::Settings::integerMissingValue());
     EXPECT((*it)[2] == odc::api::Settings::doubleMissingValue());
@@ -381,9 +381,9 @@ CASE("Test some-missing first row with Reader iterator integers-as-integers") {
     ++it;
     EXPECT(it != end);
 
-    EXPECT( !it->isMissing(1));
-    EXPECT( !it->isMissing(2));
-    EXPECT( !it->isMissing(3));
+    EXPECT(!it->isMissing(1));
+    EXPECT(!it->isMissing(2));
+    EXPECT(!it->isMissing(3));
     EXPECT(it->string(0) == "testing");
     EXPECT(integer_cast((*it)[1]) == 12345678);
     EXPECT((*it)[2] == 1234.56);

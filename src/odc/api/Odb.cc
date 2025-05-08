@@ -11,17 +11,22 @@
 #include "odc/api/Odb.h"
 
 #include <algorithm>
-#include <numeric>
-#include <mutex>
 #include <future>
+#include <mutex>
+#include <numeric>
 
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/BufferList.h"
 #include "eckit/io/HandleBuf.h"
 #include "eckit/io/MemoryHandle.h"
-#include "eckit/io/BufferList.h"
 #include "eckit/log/Log.h"
 #include "eckit/utils/StringTools.h"
 
+#include "odc/LibOdc.h"
+#include "odc/MDI.h"
+#include "odc/ODBAPISettings.h"
+#include "odc/Select.h"
+#include "odc/Writer.h"
 #include "odc/core/Column.h"
 #include "odc/core/DecodeTarget.h"
 #include "odc/core/Encoder.h"
@@ -29,11 +34,6 @@
 #include "odc/core/TablesReader.h"
 #include "odc/csv/TextReader.h"
 #include "odc/csv/TextReaderIterator.h"
-#include "odc/LibOdc.h"
-#include "odc/MDI.h"
-#include "odc/ODBAPISettings.h"
-#include "odc/Writer.h"
-#include "odc/Select.h"
 
 using namespace eckit;
 
@@ -49,7 +49,7 @@ struct DecoderImpl;
 
 class FrameImpl {
 
-public: // methods
+public:  // methods
 
     FrameImpl(std::vector<core::Table>&& tables);
 
@@ -73,7 +73,7 @@ public: // methods
 
     const std::map<std::string, std::string>& properties() const;
 
-private: // members
+private:  // members
 
     mutable std::vector<ColumnInfo> columnInfo_;
     std::vector<core::Table> tables_;
@@ -86,7 +86,7 @@ private: // members
 
 class ReaderImpl {
 
-public: // methods
+public:  // methods
 
     ReaderImpl(const std::string& path, bool aggregated, long rowlimit);
     ReaderImpl(eckit::DataHandle& dh, bool aggregated, long rowlimit);
@@ -95,7 +95,7 @@ public: // methods
     void restart();
     Frame next();
 
-private: // members
+private:  // members
 
     core::TablesReader tablesReader_;
     core::TablesReader::iterator it_;
@@ -109,28 +109,16 @@ private: // members
 //----------------------------------------------------------------------------------------------------------------------
 
 ReaderImpl::ReaderImpl(const std::string& path, bool aggregated, long rowlimit) :
-    tablesReader_(path),
-    it_(tablesReader_.begin()),
-    rowlimit_(rowlimit),
-    aggregated_(aggregated),
-    first_(true) {}
+    tablesReader_(path), it_(tablesReader_.begin()), rowlimit_(rowlimit), aggregated_(aggregated), first_(true) {}
 
 ReaderImpl::ReaderImpl(eckit::DataHandle& dh, bool aggregated, long rowlimit) :
-    tablesReader_(dh),
-    it_(tablesReader_.begin()),
-    rowlimit_(rowlimit),
-    aggregated_(aggregated),
-    first_(true) {}
+    tablesReader_(dh), it_(tablesReader_.begin()), rowlimit_(rowlimit), aggregated_(aggregated), first_(true) {}
 
 ReaderImpl::ReaderImpl(eckit::DataHandle* dh, bool aggregated, long rowlimit) :
-    tablesReader_(dh),
-    it_(tablesReader_.begin()),
-    rowlimit_(rowlimit),
-    aggregated_(aggregated),
-    first_(true) {}
+    tablesReader_(dh), it_(tablesReader_.begin()), rowlimit_(rowlimit), aggregated_(aggregated), first_(true) {}
 
 void ReaderImpl::restart() {
-    it_ = tablesReader_.begin();
+    it_    = tablesReader_.begin();
     first_ = true;
 }
 
@@ -138,11 +126,13 @@ Frame ReaderImpl::next() {
 
     std::vector<core::Table> tables;
 
-    if (it_ == tablesReader_.end()) return Frame();
+    if (it_ == tablesReader_.end())
+        return Frame();
 
     if (!first_) {
         ++it_;
-        if (it_ == tablesReader_.end()) return Frame();
+        if (it_ == tablesReader_.end())
+            return Frame();
     }
 
     first_ = false;
@@ -153,11 +143,14 @@ Frame ReaderImpl::next() {
         while (true) {
             auto it_next = it_;
             ++it_next;
-            if (it_next == tablesReader_.end()) break;
+            if (it_next == tablesReader_.end())
+                break;
 
             long next_nrows = nrows + it_next->rowCount();
-            if (rowlimit_ >= 0 && next_nrows > rowlimit_) break;
-            if (!tables.front().columns().compatible(it_next->columns())) break;
+            if (rowlimit_ >= 0 && next_nrows > rowlimit_)
+                break;
+            if (!tables.front().columns().compatible(it_next->columns()))
+                break;
 
             ++it_;
             tables.emplace_back(*it_);
@@ -223,11 +216,11 @@ Frame Reader::next() {
 // Shim for decoding
 struct DecoderImpl : public core::DecodeTarget {
 public:
+
     using core::DecodeTarget::DecodeTarget;
 };
 
-Decoder::Decoder(const std::vector<std::string>& columns,
-                           std::vector<StridedData>& columnFacades) :
+Decoder::Decoder(const std::vector<std::string>& columns, std::vector<StridedData>& columnFacades) :
     impl_(new DecoderImpl(columns, columnFacades)) {}
 
 Decoder::~Decoder() {}
@@ -256,19 +249,16 @@ struct SpanImpl : core::Span {
     SpanImpl() : core::Span(0, 0) {}
 };
 
-Span::Span(std::unique_ptr<SpanImpl>&& s) :
-    impl_(std::move(s)) {}
+Span::Span(std::unique_ptr<SpanImpl>&& s) : impl_(std::move(s)) {}
 
-Span::Span() :
-    impl_(new SpanImpl()) {}
+Span::Span() : impl_(new SpanImpl()) {}
 
-Span::Span(Span&& s) :
-    impl_(std::move(s.impl_)) {}
+Span::Span(Span&& s) : impl_(std::move(s.impl_)) {}
 
 Span::~Span() {}
 
 bool Span::operator==(const Span& rhs) const {
-    return(*impl_ == *rhs.impl_);
+    return (*impl_ == *rhs.impl_);
 }
 
 Span& Span::operator=(Span&& rhs) {
@@ -304,9 +294,7 @@ Length Span::length() const {
 
 // Table implementation
 
-FrameImpl::FrameImpl(std::vector<core::Table>&& tables) :
-    tables_(std::move(tables)),
-    propertiesRetrieved_(false) {}
+FrameImpl::FrameImpl(std::vector<core::Table>&& tables) : tables_(std::move(tables)), propertiesRetrieved_(false) {}
 
 const std::vector<ColumnInfo>& FrameImpl::columnInfo() const {
 
@@ -330,22 +318,18 @@ const std::vector<ColumnInfo>& FrameImpl::columnInfo() const {
 
             uint8_t offset = 0;
             for (size_t i = 0; i < bf.first.size(); i++) {
-                bitfield.emplace_back(ColumnInfo::Bit {
-                    bf.first[i],    // name
-                    bf.second[i],   // size
-                    offset          // offset
+                bitfield.emplace_back(ColumnInfo::Bit{
+                    bf.first[i],   // name
+                    bf.second[i],  // size
+                    offset         // offset
                 });
                 offset += bf.second[i];
             }
 
             // Construct column details
 
-            columnInfo_.emplace_back(ColumnInfo {
-                col->name(),
-                col->type(),
-                col->dataSizeDoubles() * sizeof(double),
-                std::move(bitfield)
-            });
+            columnInfo_.emplace_back(
+                ColumnInfo{col->name(), col->type(), col->dataSizeDoubles() * sizeof(double), std::move(bitfield)});
         }
     }
 
@@ -371,7 +355,8 @@ void FrameImpl::decode(DecoderImpl& target, size_t nthreads) {
 
     if (tables_.size() == 1) {
         tables_[0].decode(target);
-    } else {
+    }
+    else {
 
         std::vector<core::DecodeTarget> targets;
 
@@ -381,7 +366,8 @@ void FrameImpl::decode(DecoderImpl& target, size_t nthreads) {
             core::DecodeTarget&& subTarget(target.slice(rowOffset, rows));
             if (nthreads == 1) {
                 t.decode(subTarget);
-            } else {
+            }
+            else {
                 targets.emplace_back(subTarget);
             }
             rowOffset += rows;
@@ -401,7 +387,8 @@ void FrameImpl::decode(DecoderImpl& target, size_t nthreads) {
                             std::lock_guard<std::mutex> guard(guard_mutex);
                             if (next_frame < tables_.size()) {
                                 frame = next_frame++;
-                            } else {
+                            }
+                            else {
                                 return;
                             }
                         }
@@ -423,20 +410,17 @@ void FrameImpl::decode(DecoderImpl& target, size_t nthreads) {
 namespace {
 class SerialTableReadHandle : public DataHandle {
 public:
-    SerialTableReadHandle(std::vector<core::Table>& tables) :
-        tables_(tables),
-        buffer_(0) {
-        ASSERT(tables.size() > 0);
-    }
+
+    SerialTableReadHandle(std::vector<core::Table>& tables) : tables_(tables), buffer_(0) { ASSERT(tables.size() > 0); }
 
     Length openForRead() override {
         ASSERT(!tables_.empty());
 
         table_ = 0;
-        pos_ = 0;
+        pos_   = 0;
 
         bool includeHeader = true;
-        buffer_ = tables_[0].readEncodedData(includeHeader);
+        buffer_            = tables_[0].readEncodedData(includeHeader);
         return buffer_.size();
     }
 
@@ -445,11 +429,12 @@ public:
     long read(void* out, long length) override {
 
         if (pos_ == buffer_.size()) {
-            if (table_ >= tables_.size()-1) return 0;
+            if (table_ >= tables_.size() - 1)
+                return 0;
             table_++;
-            pos_ = 0;
+            pos_               = 0;
             bool includeHeader = true;
-            buffer_ = tables_[table_].readEncodedData(includeHeader);
+            buffer_            = tables_[table_].readEncodedData(includeHeader);
         }
 
         ASSERT(pos_ < buffer_.size());
@@ -459,13 +444,9 @@ public:
         return readlength;
     }
 
-    void print(std::ostream& s) const override {
-        s << "SerialTableReadHandle(" << tables_.size() << ")";
-    }
+    void print(std::ostream& s) const override { s << "SerialTableReadHandle(" << tables_.size() << ")"; }
 
-    DataHandle *clone() const override {
-      return new SerialTableReadHandle(tables_);
-    }
+    DataHandle* clone() const override { return new SerialTableReadHandle(tables_); }
 
 private:
 
@@ -475,7 +456,7 @@ private:
     size_t table_;
     size_t pos_;
 };
-}
+}  // namespace
 
 Frame FrameImpl::filter(const std::string& sql) {
 
@@ -523,17 +504,13 @@ eckit::Length FrameImpl::length() const {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Frame::Frame() :
-    impl_(nullptr) {}
+Frame::Frame() : impl_(nullptr) {}
 
-Frame::Frame(std::unique_ptr<FrameImpl>&& impl) :
-    impl_(std::move(impl)) {}
+Frame::Frame(std::unique_ptr<FrameImpl>&& impl) : impl_(std::move(impl)) {}
 
-Frame::Frame(const Frame& rhs) :
-    impl_(new FrameImpl(*rhs.impl_)) {}
+Frame::Frame(const Frame& rhs) : impl_(new FrameImpl(*rhs.impl_)) {}
 
-Frame::Frame(Frame&& rhs) :
-    impl_(std::move(rhs.impl_)) {}
+Frame::Frame(Frame&& rhs) : impl_(std::move(rhs.impl_)) {}
 
 Frame::~Frame() {}
 
@@ -618,12 +595,12 @@ void Settings::setDoubleMissingValue(double val) {
 
 const std::string& Settings::version() {
     static std::string vstring = LibOdc::instance().version();
-    return  vstring;
+    return vstring;
 }
 
 const std::string& Settings::gitsha1() {
     static std::string vstring = LibOdc::instance().gitsha1(40);
-    return  vstring;
+    return vstring;
 }
 
 long Settings::integerMissingValue() {
@@ -639,15 +616,11 @@ double Settings::doubleMissingValue() {
 const char* columnTypeName(const ColumnType& type) {
 
     static const char* names[] = {
-        OdbTypes<ColumnType(0)>::name,
-        OdbTypes<ColumnType(1)>::name,
-        OdbTypes<ColumnType(2)>::name,
-        OdbTypes<ColumnType(3)>::name,
-        OdbTypes<ColumnType(4)>::name,
-        OdbTypes<ColumnType(5)>::name,
+        OdbTypes<ColumnType(0)>::name, OdbTypes<ColumnType(1)>::name, OdbTypes<ColumnType(2)>::name,
+        OdbTypes<ColumnType(3)>::name, OdbTypes<ColumnType(4)>::name, OdbTypes<ColumnType(5)>::name,
     };
 
-    if (int(type) < 0 || size_t(type) >= sizeof(names)/sizeof(names[0])) {
+    if (int(type) < 0 || size_t(type) >= sizeof(names) / sizeof(names[0])) {
         std::stringstream ss;
         ss << "Unknown type id: " << type;
         throw UserError(ss.str(), Here());
@@ -684,11 +657,8 @@ size_t odbFromCSV(const std::string& in, eckit::DataHandle& dh_out, const std::s
     return odbFromCSV(dh_in, dh_out, delimiter);
 }
 
-void encode(DataHandle& out,
-            const std::vector<ColumnInfo>& columns,
-            const std::vector<ConstStridedData>& data,
-            const std::map<std::string, std::string>& properties,
-            size_t maxRowsPerFrame) {
+void encode(DataHandle& out, const std::vector<ColumnInfo>& columns, const std::vector<ConstStridedData>& data,
+            const std::map<std::string, std::string>& properties, size_t maxRowsPerFrame) {
 
     ASSERT(columns.size() == data.size());
     ASSERT(data.size() > 0);
@@ -699,7 +669,8 @@ void encode(DataHandle& out,
 
     if (nrows <= maxRowsPerFrame) {
         core::encodeFrame(out, columns, data, properties);
-    } else {
+    }
+    else {
         std::vector<ConstStridedData> sliced;
         sliced.reserve(ncols);
         size_t start = 0;
@@ -720,9 +691,10 @@ size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& 
 
     if (sql.empty()) {
         in.saveInto(out);
-    } else {
+    }
+    else {
         odc::Select odb(sql, in);
-        odc::Select::iterator it = odb.begin();
+        odc::Select::iterator it  = odb.begin();
         odc::Select::iterator end = odb.end();
 
         odc::Writer<> writer(out);
@@ -734,5 +706,5 @@ size_t filter(const std::string& sql, eckit::DataHandle& in, eckit::DataHandle& 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace api
-} // namespace odc
+}  // namespace api
+}  // namespace odc

@@ -8,23 +8,23 @@
  * does it submit to any jurisdiction.
  */
 
+#include "eckit/eckit_config.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/testing/Test.h"
-#include "eckit/exception/Exceptions.h"
-#include "eckit/eckit_config.h"
 
-#include "odc/Writer.h"
 #include "odc/Reader.h"
+#include "odc/Writer.h"
 #include "odc/api/ColumnType.h"
 
 using namespace eckit::testing;
 
 #if __cplusplus <= 199711L
-const float float_lowest = -std::numeric_limits<float>::max();
+const float float_lowest   = -std::numeric_limits<float>::max();
 const double double_lowest = -std::numeric_limits<double>::max();
 #else
-const float float_lowest = std::numeric_limits<float>::lowest();
+const float float_lowest   = std::numeric_limits<float>::lowest();
 const double double_lowest = std::numeric_limits<double>::lowest();
 #endif
 
@@ -118,7 +118,7 @@ CASE("If out-of range columns are created, exceptions are thrown") {
     odc::Writer<>::iterator writer = oda.begin();
 
     writer->setNumberOfColumns(10);
-    writer->setColumn(2, "str", odc::api::STRING); // This is fine
+    writer->setColumn(2, "str", odc::api::STRING);  // This is fine
 
     // If we create columns out of range, it throws exceptions
 
@@ -136,7 +136,7 @@ CASE("If columns are created with invalid types, exceptions are thrown") {
     // Set up the columns
 
     writer->setNumberOfColumns(10);
-    writer->setColumn(6, "real", odc::api::REAL); // This is fine
+    writer->setColumn(6, "real", odc::api::REAL);  // This is fine
 
     // We cannot create a column of "IGNORE" type, or any type that is not listed in the enum
 
@@ -251,7 +251,7 @@ CASE("Data is encoded and read back correctly") {
 
         (*writer)[0] = i1;
         (*writer)[1] = static_cast<double>(f1);
-        ::strncpy(reinterpret_cast<char*>(&(*writer)[2]), s1, 24); // strncpy pads with \0
+        ::strncpy(reinterpret_cast<char*>(&(*writer)[2]), s1, 24);  // strncpy pads with \0
         (*writer)[3] = b1;
         (*writer)[4] = d1;
         (*writer)[5] = i2;
@@ -263,7 +263,7 @@ CASE("Data is encoded and read back correctly") {
 
         writer->data()[writer->dataOffset(0)] = i3;
         writer->data()[writer->dataOffset(1)] = static_cast<double>(f3);
-        ::strncpy(reinterpret_cast<char*>(&writer->data()[writer->dataOffset(2)]), s3, 24); // strncpy pads with \0
+        ::strncpy(reinterpret_cast<char*>(&writer->data()[writer->dataOffset(2)]), s3, 24);  // strncpy pads with \0
         writer->data()[writer->dataOffset(3)] = b3;
         writer->data()[writer->dataOffset(4)] = d3;
         writer->data()[writer->dataOffset(5)] = i4;
@@ -275,7 +275,7 @@ CASE("Data is encoded and read back correctly") {
 
         writer->data(0) = i5;
         writer->data(1) = static_cast<double>(f5);
-        ::strncpy(reinterpret_cast<char*>(&writer->data(2)), s5, 24); // strncpy pads with \0
+        ::strncpy(reinterpret_cast<char*>(&writer->data(2)), s5, 24);  // strncpy pads with \0
         writer->data(3) = b5;
         writer->data(4) = d5;
         writer->data(5) = i6;
@@ -321,7 +321,7 @@ CASE("Data is encoded and read back correctly") {
 
         EXPECT(reader->data()[reader->dataOffset(0)] == i3);
         EXPECT(reader->data()[reader->dataOffset(1)] == static_cast<double>(f3));
-        EXPECT(::strncmp(reinterpret_cast<const char*>(&reader->data()[reader->dataOffset(2)]),s3, 24) == 0);
+        EXPECT(::strncmp(reinterpret_cast<const char*>(&reader->data()[reader->dataOffset(2)]), s3, 24) == 0);
         EXPECT(reader->data()[reader->dataOffset(3)] == b3);
         EXPECT(reader->data()[reader->dataOffset(4)] == d3);
         EXPECT(reader->data()[reader->dataOffset(5)] == i4);
@@ -345,7 +345,7 @@ CASE("Data is encoded and read back correctly") {
 }
 
 
-#if 0 // This test needs to be reassesed -- AssertionFailed is not likely the correct Exception to be thrown
+#if 0  // This test needs to be reassesed -- AssertionFailed is not likely the correct Exception to be thrown
 
 CASE("We cannot encode short_real with both possible internal missing values") {
 
@@ -420,11 +420,11 @@ CASE("Pathological data for integral codecs is correctly encoded") {
     for (int i = 0; i < 4; i++) {
 
         bool withMissing = (i % 2 == 1);
-        bool bits16 = (i > 1);
+        bool bits16      = (i > 1);
 
-//        eckit::Log::info() << "iteration: " << i
-//                           << (withMissing ? "T":"F")
-//                           << (bits16 ? "T":"F") << std::endl;
+        //        eckit::Log::info() << "iteration: " << i
+        //                           << (withMissing ? "T":"F")
+        //                           << (bits16 ? "T":"F") << std::endl;
 
         int32_t i1 = 12345;
         int32_t i2 = 12345 + (bits16 ? 0xffff : 0xff);
@@ -475,11 +475,14 @@ CASE("Pathological data for integral codecs is correctly encoded") {
 
             if (withMissing && bits16) {
                 EXPECT(reader->columns()[0]->coder().name() == "int32");
-            } else if (withMissing) {
+            }
+            else if (withMissing) {
                 EXPECT(reader->columns()[0]->coder().name() == "int16_missing");
-            } else if (bits16) {
+            }
+            else if (bits16) {
                 EXPECT(reader->columns()[0]->coder().name() == "int16");
-            } else {
+            }
+            else {
                 EXPECT(reader->columns()[0]->coder().name() == "int8");
             }
 
@@ -494,7 +497,6 @@ CASE("Pathological data for integral codecs is correctly encoded") {
             }
         }
     }
-
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -502,5 +504,3 @@ CASE("Pathological data for integral codecs is correctly encoded") {
 int main(int argc, char* argv[]) {
     return run_tests(argc, argv);
 }
-
-

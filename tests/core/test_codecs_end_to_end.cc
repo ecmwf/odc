@@ -13,12 +13,12 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/testing/Test.h"
 
-#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
-#include "odc/tools/MockReader.h"
 #include "odc/codec/Integer.h"
 #include "odc/codec/String.h"
+#include "odc/core/MetaData.h"
+#include "odc/tools/MockReader.h"
 
 using namespace eckit::testing;
 
@@ -35,73 +35,76 @@ using namespace eckit::testing;
 
 namespace {
 
-    // This looks-like a read-iterator. It isn't, but that doesn't matter!
+// This looks-like a read-iterator. It isn't, but that doesn't matter!
 
-    const int num_rows_to_write = 10;
+const int num_rows_to_write = 10;
 
-    class MockReadIterator {
-    public:
-        MockReadIterator(odc::api::ColumnType type, double data) :
-            columns_(1),
-            type_(type),
-            data_(data),
-            nRows_(num_rows_to_write),
-            refCount_(0),
-            noMore_(false) {
+class MockReadIterator {
+public:
 
-            columns_[0] = new odc::core::Column(columns_);
-            ASSERT(columns_[0]);
+    MockReadIterator(odc::api::ColumnType type, double data) :
+        columns_(1), type_(type), data_(data), nRows_(num_rows_to_write), refCount_(0), noMore_(false) {
 
-            columns_[0]->name("a-col");
-            columns_[0]->type<odc::core::SameByteOrder>(type_);
-            columns_[0]->hasMissing(false);
-        }
+        columns_[0] = new odc::core::Column(columns_);
+        ASSERT(columns_[0]);
 
-        odc::core::MetaData& columns() { return columns_; }
-        bool isNewDataset()      { return false; }
-        double* data()           { return &data_; }
+        columns_[0]->name("a-col");
+        columns_[0]->type<odc::core::SameByteOrder>(type_);
+        columns_[0]->hasMissing(false);
+    }
 
-        bool next() {
-            if (nRows_ == 0) return false;
-            nRows_--;
-            if (nRows_ == 0) noMore_ = true;
-            return true;
-        }
+    odc::core::MetaData& columns() { return columns_; }
+    bool isNewDataset() { return false; }
+    double* data() { return &data_; }
 
-    protected:
-        odc::core::MetaData columns_;
-        odc::api::ColumnType type_;
-        double data_;
-        int nRows_;
+    bool next() {
+        if (nRows_ == 0)
+            return false;
+        nRows_--;
+        if (nRows_ == 0)
+            noMore_ = true;
+        return true;
+    }
 
-    public: // Required for IteratorProxy
-        int refCount_;
-        bool noMore_;
-    };
+protected:
 
-    // n.b. Cannot use local classes as template arguments until c++11, so declare it here.
+    odc::core::MetaData columns_;
+    odc::api::ColumnType type_;
+    double data_;
+    int nRows_;
 
-    // A constant integer value ...
+public:  // Required for IteratorProxy
 
-    const long the_const_value = 20090624;
+    int refCount_;
+    bool noMore_;
+};
 
-    struct MockReadIteratorConstInt : public MockReadIterator {
-        MockReadIteratorConstInt() : MockReadIterator(odc::api::INTEGER, the_const_value) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecInt32<odc::core::SameByteOrder, double>(odc::api::INTEGER)));
-        }
-    };
+// n.b. Cannot use local classes as template arguments until c++11, so declare it here.
 
-    // A constant string value (the full 8 bytes)
+// A constant integer value ...
 
-    // too-big, aligned storage --> undefined sanitizer is happy with access as casted double
-    alignas(sizeof(double)) const char const_string_1[16] = "a-string";
+const long the_const_value = 20090624;
 
-    struct MockReadIteratorConstString1 : public MockReadIterator {
-        MockReadIteratorConstString1() : MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_1)) {
-            columns_[0]->coder(std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
-        }
-    };
-}
+struct MockReadIteratorConstInt : public MockReadIterator {
+    MockReadIteratorConstInt() : MockReadIterator(odc::api::INTEGER, the_const_value) {
+        columns_[0]->coder(std::unique_ptr<odc::core::Codec>(
+            new odc::codec::CodecInt32<odc::core::SameByteOrder, double>(odc::api::INTEGER)));
+    }
+};
+
+// A constant string value (the full 8 bytes)
+
+// too-big, aligned storage --> undefined sanitizer is happy with access as casted double
+alignas(sizeof(double)) const char const_string_1[16] = "a-string";
+
+struct MockReadIteratorConstString1 : public MockReadIterator {
+    MockReadIteratorConstString1() :
+        MockReadIterator(odc::api::STRING, *reinterpret_cast<const double*>(const_string_1)) {
+        columns_[0]->coder(
+            std::unique_ptr<odc::core::Codec>(new odc::codec::CodecChars<odc::core::SameByteOrder>(odc::api::STRING)));
+    }
+};
+}  // namespace
 
 
 CASE("The constant integer codec stores a constant integer") {
@@ -127,13 +130,13 @@ CASE("The constant integer codec stores a constant integer") {
         dh.openForRead();
         odc::Reader oda(dh);
 
-        odc::Reader::iterator it = oda.begin();
+        odc::Reader::iterator it  = oda.begin();
         odc::Reader::iterator end = oda.end();
 
         EXPECT(it->columns()[0]->name() == "a-col");
 
         size_t count = 0;
-        for ( ; it != end; ++it) {
+        for (; it != end; ++it) {
             EXPECT(static_cast<long>((*it)[0]) == the_const_value);
             EXPECT((*it)[0] == static_cast<double>(the_const_value));
             count++;
@@ -171,13 +174,13 @@ CASE("The constant codec can also store strings") {
         dh.openForRead();
         odc::Reader oda(dh);
 
-        odc::Reader::iterator it = oda.begin();
+        odc::Reader::iterator it  = oda.begin();
         odc::Reader::iterator end = oda.end();
 
         EXPECT(it->columns()[0]->name() == "a-col");
 
         size_t count = 0;
-        for ( ; it != end; ++it) {
+        for (; it != end; ++it) {
             double val = (*it)[0];
             EXPECT(::memcmp(const_string_1, &val, sizeof(val)) == 0);
             count++;
@@ -198,7 +201,7 @@ CASE("The constant codec can also store doubles") {
 
     // Don't use the pass1 mechanism here. Build a writer explicitly to show that we can
 
-    odc::api::ColumnType types[] = { odc::api::REAL, odc::api::DOUBLE };
+    odc::api::ColumnType types[] = {odc::api::REAL, odc::api::DOUBLE};
 
     for (size_t i = 0; i < 2; i++) {
 
@@ -231,13 +234,13 @@ CASE("The constant codec can also store doubles") {
             dh.openForRead();
             odc::Reader oda(dh);
 
-            odc::Reader::iterator it = oda.begin();
+            odc::Reader::iterator it  = oda.begin();
             odc::Reader::iterator end = oda.end();
 
             EXPECT(it->columns()[0]->name() == "abcdefg");
 
             size_t count = 0;
-            for ( ; it != end; ++it) {
+            for (; it != end; ++it) {
                 double val = (*it)[0];
                 EXPECT(val == constant_value);
                 count++;
@@ -264,17 +267,18 @@ CASE("Missing values are encoded and decoded correctly") {
     codec_value_map["short_real2"]   = std::make_pair(odc::MDI::realMDI(), sizeof(float));
     codec_value_map["long_real"]     = std::make_pair(odc::MDI::realMDI(), sizeof(double));
     codec_value_map["int8_missing"]  = std::make_pair(odc::MDI::integerMDI(), sizeof(int8_t));
-    codec_value_map["int16_missing"]  = std::make_pair(odc::MDI::integerMDI(), sizeof(int16_t));
+    codec_value_map["int16_missing"] = std::make_pair(odc::MDI::integerMDI(), sizeof(int16_t));
 
     for (MapType::const_iterator it = codec_value_map.begin(); it != codec_value_map.end(); ++it) {
 
         const std::string& codec_name(it->first);
         double missing_value = it->second.first;
-        int encoded_size = it->second.second;
+        int encoded_size     = it->second.second;
 
         // Get the appropriate codec
 
-        std::unique_ptr<odc::core::Codec> c(odc::core::CodecFactory::instance().build<odc::core::SameByteOrder>(codec_name, odc::api::DOUBLE));
+        std::unique_ptr<odc::core::Codec> c(
+            odc::core::CodecFactory::instance().build<odc::core::SameByteOrder>(codec_name, odc::api::DOUBLE));
 
         EXPECT(c->name() == codec_name);
 
@@ -305,4 +309,3 @@ CASE("Missing values are encoded and decoded correctly") {
 int main(int argc, char* argv[]) {
     return run_tests(argc, argv);
 }
-

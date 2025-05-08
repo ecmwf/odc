@@ -11,53 +11,56 @@
 #ifndef ODBAPISettings_H
 #define ODBAPISettings_H
 
-#include "eckit/thread/ThreadSingleton.h"
 #include "eckit/io/Length.h"
+#include "eckit/thread/ThreadSingleton.h"
 
 namespace eckit {
 class PathName;
 class DataHandle;
-}
+}  // namespace eckit
 
 namespace odc {
 
 class ODBAPISettings : private eckit::NonCopyable {
 public:
 
-	static ODBAPISettings& instance();
+    static ODBAPISettings& instance();
 
-	size_t headerBufferSize();
-	void headerBufferSize(size_t);
+    size_t headerBufferSize();
+    void headerBufferSize(size_t);
 
-	size_t setvbufferSize();
-	void setvbufferSize(size_t);
+    size_t setvbufferSize();
+    void setvbufferSize(size_t);
 
-    eckit::DataHandle* writeToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0), bool openDataHandle = true);
-    eckit::DataHandle* appendToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0), bool openDataHandle = true);
+    eckit::DataHandle* writeToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0),
+                                   bool openDataHandle = true);
+    eckit::DataHandle* appendToFile(const eckit::PathName&, const eckit::Length& = eckit::Length(0),
+                                    bool openDataHandle = true);
 
-    void setHome(const char *argv0);
+    void setHome(const char* argv0);
     std::string fileInHome(const std::string&);
 
     void treatIntegersAsDoubles(bool flag);
     bool integersAsDoubles() const;
 
-	static bool debug;
+    static bool debug;
 
 private:
+
     ODBAPISettings();
 
     static void createDirectories(const eckit::PathName& path);
 
-	size_t headerBufferSize_;
-	size_t setvbufferSize_;
+    size_t headerBufferSize_;
+    size_t setvbufferSize_;
 
-	bool useAIO_;
+    bool useAIO_;
     bool integersAsDoubles_;
 
     friend struct eckit::NewAlloc0<ODBAPISettings>;
     std::string home_;
 };
 
-} // namespace odc
+}  // namespace odc
 
 #endif

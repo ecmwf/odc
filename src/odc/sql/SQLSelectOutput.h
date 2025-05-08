@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -46,10 +46,10 @@ namespace sql {
 
 class SQLSelectOutput : public eckit::sql::SQLOutput {
 
-public: // methods
+public:  // methods
 
     /// out/count specify an output buffer and its size in doubles.
-    SQLSelectOutput(bool manageOwnBuffer=true);
+    SQLSelectOutput(bool manageOwnBuffer = true);
     virtual ~SQLSelectOutput();
 
     void resetBuffer(double* out, size_t count);
@@ -63,30 +63,30 @@ public: // methods
     size_t dataOffset(size_t i) const { return offsets_[i]; }
     bool isNewDataset() const { return isNewDataset_; }
 
-private: // utility
+private:  // utility
 
     void outputNumber(double val, bool missing);
 
-private: // methods (overrides)
+private:  // methods (overrides)
 
     virtual void print(std::ostream&) const;
 
-	virtual void reset();
+    virtual void reset();
     virtual void flush();
     virtual bool output(const eckit::sql::expression::Expressions&);
     virtual void prepare(eckit::sql::SQLSelect&);
     virtual void updateTypes(eckit::sql::SQLSelect&);
     virtual void cleanup(eckit::sql::SQLSelect&);
-	virtual unsigned long long count();
+    virtual unsigned long long count();
 
-	virtual void outputReal(double, bool);
-	virtual void outputDouble(double, bool);
-	virtual void outputInt(double, bool);
-	virtual void outputUnsignedInt(double, bool);
+    virtual void outputReal(double, bool);
+    virtual void outputDouble(double, bool);
+    virtual void outputInt(double, bool);
+    virtual void outputUnsignedInt(double, bool);
     virtual void outputString(const char*, size_t, bool);
     virtual void outputBitfield(double, bool);
 
-private: // members
+private:  // members
 
     /// Only used if managing own buffer.
     std::vector<double> data_;
@@ -116,7 +116,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql
-} // namespace odc
+}  // namespace sql
+}  // namespace odc
 
 #endif

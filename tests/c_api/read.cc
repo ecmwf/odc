@@ -14,8 +14,8 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/testing/Test.h"
 
-#include "odc/api/odc.h"
 #include "odc/api/Odb.h"
+#include "odc/api/odc.h"
 
 using namespace eckit::testing;
 
@@ -24,18 +24,21 @@ using namespace eckit::testing;
 #define CHECK_RETURN(x) EXPECT((x) == ODC_SUCCESS)
 
 namespace std {
-template <> struct default_delete<odc_reader_t> {
-    void operator() (const odc_reader_t* reader) { CHECK_RETURN(odc_close(reader)); }
+template <>
+struct default_delete<odc_reader_t> {
+    void operator()(const odc_reader_t* reader) { CHECK_RETURN(odc_close(reader)); }
 };
 
-template <> struct default_delete<odc_frame_t> {
-    void operator() (const odc_frame_t* frame) { CHECK_RETURN(odc_free_frame(frame)); }
+template <>
+struct default_delete<odc_frame_t> {
+    void operator()(const odc_frame_t* frame) { CHECK_RETURN(odc_free_frame(frame)); }
 };
 
-template <> struct default_delete<odc_decoder_t> {
-    void operator() (odc_decoder_t* t) { CHECK_RETURN(odc_free_decoder(t)); }
+template <>
+struct default_delete<odc_decoder_t> {
+    void operator()(odc_decoder_t* t) { CHECK_RETURN(odc_free_decoder(t)); }
 };
-}
+}  // namespace std
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -44,7 +47,7 @@ bool test_check_file_exists(std::string file_path) {
     return file_stream.good();
 }
 
-void test_generate_odb(const std::string &path, int propertiesMode) {
+void test_generate_odb(const std::string& path, int propertiesMode) {
     odc::api::Settings::treatIntegersAsDoubles(false);
 
     // Define row count
@@ -60,8 +63,8 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
     // Set up the allocated arrays with scratch data
     for (i = 0; i < nrows; i++) {
         snprintf(data0[i], 8, "xxxx");  // expver
-        data1[i] = 20210527;  // date@hdr
-        data2[i] = 12.3456 * i;  // obsvalue@body
+        data1[i] = 20210527;            // date@hdr
+        data2[i] = 12.3456 * i;         // obsvalue@body
     }
 
     // Define all column names, their types and sizes
@@ -72,7 +75,7 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
     };
 
     // Set a custom data layout and data array for each column
-    std::vector<odc::api::ConstStridedData> strides {
+    std::vector<odc::api::ConstStridedData> strides{
         // ptr, nrows, element_size, stride
         {data0, nrows, 8, 8},
         {data1, nrows, sizeof(int64_t), sizeof(int64_t)},
@@ -95,9 +98,10 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
 
             // Where the properties in the two frames are distinct
             case 1: {
-                if (i == 0) properties["foo"] = "bar";
+                if (i == 0)
+                    properties["foo"] = "bar";
                 else {
-                    properties = {};  // reset
+                    properties        = {};  // reset
                     properties["baz"] = "qux";
                 }
                 break;
@@ -112,11 +116,12 @@ void test_generate_odb(const std::string &path, int propertiesMode) {
 
             // Where the properties overlap with entries whose keys are the same, but the values different
             case 3: {
-                if (i == 0) properties["foo"] = "bar";
-                else properties["foo"] = "baz";
+                if (i == 0)
+                    properties["foo"] = "bar";
+                else
+                    properties["foo"] = "baz";
                 break;
             }
-
         }
 
         // Encode the ODB-2 frame into a data handle
@@ -138,7 +143,7 @@ CASE("Count lines in an existing ODB file") {
     CHECK_RETURN(odc_new_frame(&frame, reader));
     std::unique_ptr<odc_frame_t> frame_deleter(frame);
 
-    size_t ntables = 0;
+    size_t ntables   = 0;
     size_t totalRows = 0;
 
     int ierr;
@@ -163,30 +168,75 @@ CASE("Count lines in an existing ODB file") {
 CASE("Check column details in an existing ODB file") {
 
     char example_column_names[][24] = {
-        "expver@desc", "andate@desc", "antime@desc", "seqno@hdr", "obstype@hdr", "obschar@hdr", "subtype@hdr",
-        "date@hdr", "time@hdr", "rdbflag@hdr", "status@hdr", "event1@hdr", "blacklist@hdr", "sortbox@hdr",
-        "sitedep@hdr", "statid@hdr", "ident@hdr", "lat@hdr", "lon@hdr", "stalt@hdr", "modoro@hdr", "trlat@hdr",
-        "trlon@hdr", "instspec@hdr", "event2@hdr", "anemoht@hdr", "baroht@hdr", "sensor@hdr", "numlev@hdr",
-        "varno_presence@hdr", "varno@body", "vertco_type@body", "rdbflag@body", "anflag@body", "status@body",
-        "event1@body", "blacklist@body", "entryno@body", "press@body", "press_rl@body", "obsvalue@body", "aux1@body",
-        "event2@body", "ppcode@body", "level@body", "biascorr@body", "final_obs_error@errstat", "obs_error@errstat",
-        "repres_error@errstat", "pers_error@errstat", "fg_error@errstat",
+        "expver@desc",
+        "andate@desc",
+        "antime@desc",
+        "seqno@hdr",
+        "obstype@hdr",
+        "obschar@hdr",
+        "subtype@hdr",
+        "date@hdr",
+        "time@hdr",
+        "rdbflag@hdr",
+        "status@hdr",
+        "event1@hdr",
+        "blacklist@hdr",
+        "sortbox@hdr",
+        "sitedep@hdr",
+        "statid@hdr",
+        "ident@hdr",
+        "lat@hdr",
+        "lon@hdr",
+        "stalt@hdr",
+        "modoro@hdr",
+        "trlat@hdr",
+        "trlon@hdr",
+        "instspec@hdr",
+        "event2@hdr",
+        "anemoht@hdr",
+        "baroht@hdr",
+        "sensor@hdr",
+        "numlev@hdr",
+        "varno_presence@hdr",
+        "varno@body",
+        "vertco_type@body",
+        "rdbflag@body",
+        "anflag@body",
+        "status@body",
+        "event1@body",
+        "blacklist@body",
+        "entryno@body",
+        "press@body",
+        "press_rl@body",
+        "obsvalue@body",
+        "aux1@body",
+        "event2@body",
+        "ppcode@body",
+        "level@body",
+        "biascorr@body",
+        "final_obs_error@errstat",
+        "obs_error@errstat",
+        "repres_error@errstat",
+        "pers_error@errstat",
+        "fg_error@errstat",
     };
 
     int example_column_types[] = {
-        ODC_STRING, ODC_INTEGER, ODC_INTEGER, ODC_INTEGER, ODC_INTEGER, ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER,
-        ODC_INTEGER, ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER, ODC_STRING,
-        ODC_INTEGER, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_INTEGER, ODC_INTEGER, ODC_REAL,
-        ODC_REAL, ODC_INTEGER, ODC_INTEGER, ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER, ODC_BITFIELD, ODC_BITFIELD,
-        ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_INTEGER, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_INTEGER,
-        ODC_INTEGER, ODC_BITFIELD, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL, ODC_REAL,
+        ODC_STRING,   ODC_INTEGER,  ODC_INTEGER,  ODC_INTEGER,  ODC_INTEGER,  ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER,
+        ODC_INTEGER,  ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_INTEGER,  ODC_INTEGER, ODC_STRING,
+        ODC_INTEGER,  ODC_REAL,     ODC_REAL,     ODC_REAL,     ODC_REAL,     ODC_REAL,     ODC_REAL,    ODC_INTEGER,
+        ODC_INTEGER,  ODC_REAL,     ODC_REAL,     ODC_INTEGER,  ODC_INTEGER,  ODC_BITFIELD, ODC_INTEGER, ODC_INTEGER,
+        ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_BITFIELD, ODC_INTEGER,  ODC_REAL,    ODC_REAL,
+        ODC_REAL,     ODC_REAL,     ODC_INTEGER,  ODC_INTEGER,  ODC_BITFIELD, ODC_REAL,     ODC_REAL,    ODC_REAL,
+        ODC_REAL,     ODC_REAL,     ODC_REAL,
     };
 
     char column_10_bitfield_names[][15] = {
-        "lat_humon", "lat_qcsub", "lat_override", "lat_flag", "lat_hqc_flag", "lon_humon", "lon_qcsub", "lon_override",
-        "lon_flag", "lon_hqc_flag", "date_humon", "date_qcsub", "date_override", "date_flag", "date_hqc_flag",
-        "time_humon", "time_qcsub", "time_override", "time_flag", "time_hqc_flag", "stalt_humon", "stalt_qcsub",
-        "stalt_override", "stalt_flag", "stalt_hqc_flag",
+        "lat_humon",   "lat_qcsub",   "lat_override",   "lat_flag",   "lat_hqc_flag",
+        "lon_humon",   "lon_qcsub",   "lon_override",   "lon_flag",   "lon_hqc_flag",
+        "date_humon",  "date_qcsub",  "date_override",  "date_flag",  "date_hqc_flag",
+        "time_humon",  "time_qcsub",  "time_override",  "time_flag",  "time_hqc_flag",
+        "stalt_humon", "stalt_qcsub", "stalt_override", "stalt_flag", "stalt_hqc_flag",
     };
 
     int column_10_bitfield_sizes[] = {
@@ -265,7 +315,7 @@ CASE("Decode data in an existing ODB file") {
     CHECK_RETURN(odc_new_frame(&frame, reader));
     std::unique_ptr<odc_frame_t> frame_deleter(frame);
 
-    size_t ntables = 0;
+    size_t ntables   = 0;
     size_t totalRows = 0;
 
     // Get the first frame
@@ -301,12 +351,7 @@ CASE("Decode data in an existing ODB file") {
     EXPECT(data != nullptr);
     EXPECT(row_stride == 51 * sizeof(double));
 
-    const int64_t expected_seqno[] = {
-        (int64_t)6106691,
-        (int64_t)6002665,
-        (int64_t)6162889,
-        (int64_t)6162885
-    };
+    const int64_t expected_seqno[] = {(int64_t)6106691, (int64_t)6002665, (int64_t)6162889, (int64_t)6162885};
 
     const int64_t expected_obschar[] = {
         (int64_t)537918674,
@@ -338,7 +383,7 @@ CASE("Decode data in an existing ODB file") {
 
         // expver@desc (ODC_STRING, col 1)
         char* expver = &((char*)data)[width * 0 + width * row];
-        expver[4] = '\0';
+        expver[4]    = '\0';
         EXPECT(strcmp(expver, "0018") == 0);
 
         // seqno@hdr (ODC_INTEGER, col 4)
@@ -351,7 +396,8 @@ CASE("Decode data in an existing ODB file") {
         EXPECT(*(const int64_t*)&((const char*)data)[width * 13 + 8 * row] == missing_integer);
 
         // lat@hdr (ODC_REAL, col 18)
-        EXPECT(eckit::types::is_approximately_equal(*(const double*)&((const char*)data)[width * 17 + 8 * row],expected_lat[i], 0.000001));
+        EXPECT(eckit::types::is_approximately_equal(*(const double*)&((const char*)data)[width * 17 + 8 * row],
+                                                    expected_lat[i], 0.000001));
 
         // repres_error@errstat (ODC_REAL, col 49, missing value!)
         EXPECT(*(const double*)&((const char*)data)[width * 48 + 8 * row] == missing_double);
@@ -393,10 +439,7 @@ CASE("Where the properties in the two frames are distinct (non-aggregated)") {
         for (i = 0; i < 2; i++) {
             CHECK_RETURN(odc_frame_property_idx(frame, i, &key, &value));
 
-            if (
-                (i == 0 && nframes == 0)
-                || (i == 1 && nframes == 1)
-            ) {
+            if ((i == 0 && nframes == 0) || (i == 1 && nframes == 1)) {
                 EXPECT(strcmp(key, "encoder") == 0);
                 EXPECT(strcmp(value, odc_version_str) == 0);
             }
@@ -404,7 +447,7 @@ CASE("Where the properties in the two frames are distinct (non-aggregated)") {
                 EXPECT(strcmp(key, "foo") == 0);
                 EXPECT(strcmp(value, "bar") == 0);
             }
-            else  {
+            else {
                 EXPECT(strcmp(key, "baz") == 0);
                 EXPECT(strcmp(value, "qux") == 0);
             }
@@ -461,7 +504,7 @@ CASE("Where the properties in the two frames are distinct (aggregated)") {
     strcat(odc_version_str, version);
 
     long max_aggregated_rows = 1000000;
-    int nframes = 0;
+    int nframes              = 0;
     int rc;
 
     while ((rc = odc_next_frame_aggregated(frame, max_aggregated_rows)) == ODC_SUCCESS) {
@@ -600,7 +643,7 @@ CASE("Where the properties in the two frames overlap with entries that are the s
     strcat(odc_version_str, version);
 
     long max_aggregated_rows = 1000000;
-    int nframes = 0;
+    int nframes              = 0;
     int rc;
 
     while ((rc = odc_next_frame_aggregated(frame, max_aggregated_rows)) == ODC_SUCCESS) {
@@ -688,7 +731,7 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
                 EXPECT(strcmp(key, "foo") == 0);
                 EXPECT(strcmp(value, "bar") == 0);
             }
-            else  {
+            else {
                 EXPECT(strcmp(key, "foo") == 0);
                 EXPECT(strcmp(value, "baz") == 0);
             }
@@ -745,7 +788,7 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
     strcat(odc_version_str, version);
 
     long max_aggregated_rows = 1000000;
-    int nframes = 0;
+    int nframes              = 0;
     int rc;
 
     while ((rc = odc_next_frame_aggregated(frame, max_aggregated_rows)) == ODC_SUCCESS) {
@@ -785,27 +828,27 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
 
 // ------------------------------------------------------------------------------------------------------
 
-//CASE("Decode an entire ODB file") {
+// CASE("Decode an entire ODB file") {
 //
 //
-//    std::unique_ptr<odb_t> o(odc_open_path("../2000010106-reduced.odb"));
+//     std::unique_ptr<odb_t> o(odc_open_path("../2000010106-reduced.odb"));
 //
-//    size_t ntables = 0;
+//     size_t ntables = 0;
 //
-//    std::unique_ptr<odb_frame_t> table;
-//    while (table.reset(odc_alloc_next_frame(o.get())), table) {
+//     std::unique_ptr<odb_frame_t> table;
+//     while (table.reset(odc_alloc_next_frame(o.get())), table) {
 //
-//        std::unique_ptr<const odb_decoded_t> decoded(odc_frame_decode_all(table.get()));
-//        EXPECT(decoded->nrows == odc_frame_row_count(table.get()));
-//        EXPECT(decoded->ncolumns == 51);
+//         std::unique_ptr<const odb_decoded_t> decoded(odc_frame_decode_all(table.get()));
+//         EXPECT(decoded->nrows == odc_frame_row_count(table.get()));
+//         EXPECT(decoded->ncolumns == 51);
 //
-//        ++ntables;
-//    }
-//}
+//         ++ntables;
+//     }
+// }
 //
 //// ------------------------------------------------------------------------------------------------------
 //
-//CASE("Decode an entire ODB file preallocated data structures") {
+// CASE("Decode an entire ODB file preallocated data structures") {
 //
 //    std::unique_ptr<odb_t> o(odc_open_path("../2000010106-reduced.odb"));
 //

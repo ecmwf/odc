@@ -32,6 +32,7 @@ CASE("Test reading min, max and intermediate values") {
 
         class TemporaryMinMaxODB : public TemporaryFile {
         public:
+
             TemporaryMinMaxODB() {
                 odc::Writer<> oda(path());
                 odc::Writer<>::iterator writer = oda.begin();
@@ -68,8 +69,7 @@ CASE("Test reading min, max and intermediate values") {
             EXPECT((*it)[0] == std::numeric_limits<int32_t>::max());
             ++it;
 
-            EXPECT((*it)[0] == std::numeric_limits<int32_t>::max() +
-                               std::numeric_limits<int32_t>::min());
+            EXPECT((*it)[0] == std::numeric_limits<int32_t>::max() + std::numeric_limits<int32_t>::min());
             ++it;
         }
     }
@@ -80,4 +80,3 @@ CASE("Test reading min, max and intermediate values") {
 int main(int argc, char* argv[]) {
     return run_tests(argc, argv);
 }
-
