@@ -90,7 +90,7 @@ private: // members
 template <template <typename> class CODEC>
 class CodecBuilder : public CodecBuilderBase {
 
-#ifndef _CRAYC
+#if !defined(_CRAYC) && !(defined(__GNUC__) && __GNUC__ < 8)
     static_assert(
         std::string_view(CODEC<SameByteOrder>::codec_name()) ==
         std::string_view(CODEC<OtherByteOrder>::codec_name()),
