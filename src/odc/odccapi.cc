@@ -220,12 +220,12 @@ oda_select_iterator_ptr odb_create_select_iterator(oda_ptr co, const char *sql, 
         *err = !iter;
         return oda_select_iterator_ptr(iter);
     }
-    catch (eckit::CantOpenFile e)
+    catch (eckit::CantOpenFile& e)
     {
 		*err = 1;
 		return 0;
     }
-    catch (eckit::ReadError e)
+    catch (eckit::ReadError& e)
     {
 		*err = 2; 
 		return 0;
