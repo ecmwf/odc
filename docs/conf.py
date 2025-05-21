@@ -21,7 +21,10 @@ sys.path.append(os.path.abspath("../tests"))
 # -- Run Doxygen -------------------------------------------------------------
 
 # Generate Doxygen documentation in the XML format.
-assert subprocess.check_call("doxygen Doxyfile.in", stdout=subprocess.DEVNULL, shell=True) == 0
+assert (
+    subprocess.check_call("doxygen Doxyfile", stdout=subprocess.DEVNULL, shell=True)
+    == 0
+)
 
 
 # -- Project information -----------------------------------------------------
@@ -91,13 +94,15 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-html_context = {"css_files": ["_static/style.css"]}
-
 # Remove links to the reST sources from the page headers.
 html_show_sourcelink = False
 
 # Remove "Created using Sphinx" from the HTML footer.
 html_show_sphinx = False
+
+html_theme_options = {
+    "version_selector": True,
+}
 
 
 # -- Breathe configuration ---------------------------------------------------
