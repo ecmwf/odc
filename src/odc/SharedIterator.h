@@ -15,11 +15,11 @@ namespace odc {
  *
  *  @see IteratorFacade
  *  @todo Write some test cases.
- */ 
+ */
 template <typename T>
-class SharedIterator
-{
+class SharedIterator {
 public:
+
     /// @brief Difference type of the managed iterator.
     /// Provided for compatibility with C++ STL algorithms.
 
@@ -56,21 +56,17 @@ public:
      *  will result in undefined behavior.
      */
     template <typename U>
-    explicit SharedIterator(U* it)
-      : it_(it),
-        useCount_(0)
-    {
-        if (it_) useCount_ = new long (1);
+    explicit SharedIterator(U* it) : it_(it), useCount_(0) {
+        if (it_)
+            useCount_ = new long(1);
     }
 
     /*! @brief Creates a smart iterator which shares ownership of the iterator
      *  object managed by the @em other smart iterator.
      */
-    SharedIterator(const SharedIterator& other)
-      : it_(other.it_),
-        useCount_(other.useCount_)
-    {
-        if (it_) ++(*useCount_);
+    SharedIterator(const SharedIterator& other) : it_(other.it_), useCount_(other.useCount_) {
+        if (it_)
+            ++(*useCount_);
     }
 
     /*! @brief Creates a smart iterator which shares ownership of the iterator
@@ -81,29 +77,23 @@ public:
      *  convertible to @em T.
      */
     template <typename U>
-    SharedIterator(const SharedIterator<U>& other)
-      : it_(other.it_),
-        useCount_(other.useCount_)
-    {
-        if (it_) ++(*useCount_);
+    SharedIterator(const SharedIterator<U>& other) : it_(other.it_), useCount_(other.useCount_) {
+        if (it_)
+            ++(*useCount_);
     }
 
     /// @brief Destroys the managed iterator if there are no more SharedIterator
     /// instances referring to it.
-    ~SharedIterator()
-    {
-        destruct();
-    }
+    ~SharedIterator() { destruct(); }
 
     /// @brief Replaces the wrapped iterator object with the one managed by @em other.
-    SharedIterator& operator=(const SharedIterator& other)
-    {
+    SharedIterator& operator=(const SharedIterator& other) {
         if (it_ == other.it_)
             return *this;
-    
+
         destruct();
 
-        it_ = other.it_;
+        it_       = other.it_;
         useCount_ = other.useCount_;
         ++(*useCount_);
 
@@ -111,20 +101,13 @@ public:
     }
 
     /// @brief Compares two managed iterator objects.
-    bool operator==(const SharedIterator& other)
-    {
-        return (*it_ == *other.it_);
-    }
+    bool operator==(const SharedIterator& other) { return (*it_ == *other.it_); }
 
     /// @brief Compares two managed iterator objects.
-    bool operator!=(const SharedIterator& other)
-    {
-        return (*it_ != *other.it_);
-    }
+    bool operator!=(const SharedIterator& other) { return (*it_ != *other.it_); }
 
     /// @brief Increments the managed iterator object.
-    SharedIterator& operator++()
-    {
+    SharedIterator& operator++() {
         ++(*it_);
         return *this;
     }
@@ -145,24 +128,17 @@ public:
      *  the current iterator object (i.e. useCount() == 1), otherwise returns
      *  @c false.
      */
-    bool unique() const
-    {
-        return useCount_ && (*useCount_ == 1);
-    }
+    bool unique() const { return useCount_ && (*useCount_ == 1); }
 
     /*! @brief Returns the number of SharedIterator instances (including
      *  @c this) managing the same iterator object.
      */
-    long useCount() const
-    {
-        return useCount_ ? *useCount_ : 0;
-    }
+    long useCount() const { return useCount_ ? *useCount_ : 0; }
 
 private:
-    void destruct()
-    {
-        if (it_ && (--(*useCount_) == 0))
-        {
+
+    void destruct() {
+        if (it_ && (--(*useCount_) == 0)) {
             delete it_;
             delete useCount_;
         }
@@ -172,6 +148,6 @@ private:
     long* useCount_;
 };
 
-} // namespace odc
+}  // namespace odc
 
-#endif // ODBLIB_SHAREDITERATOR_H_
+#endif  // ODBLIB_SHAREDITERATOR_H_

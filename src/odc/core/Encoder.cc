@@ -22,10 +22,8 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void encodeFrame(eckit::DataHandle& out,
-                 const std::vector<api::ColumnInfo>& columns,
-                 const std::vector<api::ConstStridedData>& data,
-                 const std::map<std::string, std::string>& properties) {
+void encodeFrame(eckit::DataHandle& out, const std::vector<api::ColumnInfo>& columns,
+                 const std::vector<api::ConstStridedData>& data, const std::map<std::string, std::string>& properties) {
 
     ASSERT(columns.size() == data.size());
     ASSERT(columns.size() > 0);
@@ -54,7 +52,7 @@ void encodeFrame(eckit::DataHandle& out,
 
     // Gather statistics over all the columns
 
-    size_t maxRowSize = sizeof(uint16_t); // all rows contain a marker
+    size_t maxRowSize = sizeof(uint16_t);  // all rows contain a marker
 
     for (size_t col = 0; col < ncols; ++col) {
         ASSERT(data[col].nelem() == nrows);
@@ -72,15 +70,16 @@ void encodeFrame(eckit::DataHandle& out,
 
     // TODO: Sort the columns into the optimal order for encoding
 
-//    std::sort(md.begin(), md.end(), [](Column* a, Column* b) { ASSERT(false); });
+    //    std::sort(md.begin(), md.end(), [](Column* a, Column* b) { ASSERT(false); });
 
     // TODO: Sort the data columns as well.
-//    ASSERT(false);
+    //    ASSERT(false);
 
     // Encode the data
     const std::vector<api::ConstStridedData>& sortedData(data);
     std::vector<Codec*> coders;
-    for (const auto& col : md) coders.push_back(&col->coder());
+    for (const auto& col : md)
+        coders.push_back(&col->coder());
 
     Buffer encodedBuffer(maxRowSize * nrows);
     DataStream<SameByteOrder> encodedStream(encodedBuffer);
@@ -90,16 +89,14 @@ void encodeFrame(eckit::DataHandle& out,
 
         if (row != 0) {
             for (; startCol < ncols; ++startCol) {
-                if (sortedData[startCol].isNewValue(row)) break;
+                if (sortedData[startCol].isNewValue(row))
+                    break;
             }
         }
 
         // Write the marker
-        uint8_t marker[2] {
-            static_cast<uint8_t>((startCol / 256) % 256),
-            static_cast<uint8_t>(startCol % 256)
-        };
-        encodedStream.writeBytes(marker, sizeof(marker)); // n.b. raw write
+        uint8_t marker[2]{static_cast<uint8_t>((startCol / 256) % 256), static_cast<uint8_t>(startCol % 256)};
+        encodedStream.writeBytes(marker, sizeof(marker));  // n.b. raw write
 
         // Write the updated values
         char* p = encodedStream.get();
@@ -111,8 +108,8 @@ void encodeFrame(eckit::DataHandle& out,
 
     // Encode the header
 
-    Properties props {properties};
-    props["encoder"] = std::string("odc version ") + LibOdc::instance().version();
+    Properties props{properties};
+    props["encoder"]                        = std::string("odc version ") + LibOdc::instance().version();
     std::pair<Buffer, size_t> encodedHeader = Header::serializeHeader(encodedStream.position(), nrows, props, md);
 
     // And output the data
@@ -123,5 +120,5 @@ void encodeFrame(eckit::DataHandle& out,
 
 //----------------------------------------------------------------------------------------------------------------------
 
-}
-}
+}  // namespace core
+}  // namespace odc

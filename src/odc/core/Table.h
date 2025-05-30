@@ -18,12 +18,14 @@
 
 #include "eckit/io/Buffer.h"
 
-#include "odc/core/ThreadSharedDataHandle.h"
 #include "odc/core/MetaData.h"
 #include "odc/core/Span.h"
+#include "odc/core/ThreadSharedDataHandle.h"
 
 
-namespace eckit { class DataHandle; }
+namespace eckit {
+class DataHandle;
+}
 
 namespace odc {
 namespace core {
@@ -35,7 +37,7 @@ class DecodeTarget;
 
 class Table {
 
-public: // methods
+public:  // methods
 
     // Construct a table. This is a static function rather than a constructor
     // so that we can return false for no-more-data rather than throwing an
@@ -55,14 +57,14 @@ public: // methods
     const MetaData& columns() const;
     const Properties& properties() const;
 
-    eckit::Buffer readEncodedData(bool includeHeader=false);
+    eckit::Buffer readEncodedData(bool includeHeader = false);
 
     void decode(DecodeTarget& target);
 
-    Span span(const std::vector<std::string>& columns, bool onlyConstant=false);
+    Span span(const std::vector<std::string>& columns, bool onlyConstant = false);
     Span decodeSpan(const std::vector<std::string>& columns);
 
-private: // methods
+private:  // methods
 
     Table(const ThreadSharedDataHandle& dh);
 
@@ -70,7 +72,7 @@ private: // methods
     const std::map<std::string, size_t>& columnLookup();
     const std::map<std::string, size_t>& simpleColumnLookup();
 
-private: // members
+private:  // members
 
     ThreadSharedDataHandle dh_;
 
@@ -93,7 +95,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc
 
 #endif

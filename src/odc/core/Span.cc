@@ -23,9 +23,7 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Span::Span(Offset start, Length length) :
-    start_(start),
-    length_(length) {}
+Span::Span(Offset start, Length length) : start_(start), length_(length) {}
 
 Span::~Span() {}
 
@@ -35,9 +33,12 @@ void Span::extend(const Span& other) {
         length_ += other.length_;
     }
 
-    for (const auto& kv : other.integerValues_) addValues(kv.first, kv.second);
-    for (const auto& kv : other.realValues_) addValues(kv.first, kv.second);
-    for (const auto& kv : other.stringValues_) addValues(kv.first, kv.second);
+    for (const auto& kv : other.integerValues_)
+        addValues(kv.first, kv.second);
+    for (const auto& kv : other.realValues_)
+        addValues(kv.first, kv.second);
+    for (const auto& kv : other.stringValues_)
+        addValues(kv.first, kv.second);
 }
 
 void Span::extend(Length length) {
@@ -48,34 +49,33 @@ void Span::addValue(const std::string& column, api::ColumnType t, double val) {
 
     switch (t) {
 
-    case api::INTEGER:
-    case api::BITFIELD:
-        ASSERT(realValues_.find(column) == realValues_.end());
-        ASSERT(stringValues_.find(column) == stringValues_.end());
-        integerValues_[column].insert(static_cast<int64_t>(val));
-        break;
+        case api::INTEGER:
+        case api::BITFIELD:
+            ASSERT(realValues_.find(column) == realValues_.end());
+            ASSERT(stringValues_.find(column) == stringValues_.end());
+            integerValues_[column].insert(static_cast<int64_t>(val));
+            break;
 
-    case api::REAL:
-    case api::DOUBLE:
-        ASSERT(integerValues_.find(column) == integerValues_.end());
-        ASSERT(stringValues_.find(column) == stringValues_.end());
-        realValues_[column].insert(val);
-        break;
+        case api::REAL:
+        case api::DOUBLE:
+            ASSERT(integerValues_.find(column) == integerValues_.end());
+            ASSERT(stringValues_.find(column) == stringValues_.end());
+            realValues_[column].insert(val);
+            break;
 
-    case api::STRING: {
-        ASSERT(realValues_.find(column) == realValues_.end());
-        ASSERT(integerValues_.find(column) == integerValues_.end());
-        const char* c = reinterpret_cast<const char*>(&val);
-        stringValues_[column].insert(std::string(c, ::strnlen(c, sizeof(double))));
+        case api::STRING: {
+            ASSERT(realValues_.find(column) == realValues_.end());
+            ASSERT(integerValues_.find(column) == integerValues_.end());
+            const char* c = reinterpret_cast<const char*>(&val);
+            stringValues_[column].insert(std::string(c, ::strnlen(c, sizeof(double))));
+        } break;
+
+        case api::IGNORE:
+        default: {
+            std::stringstream ss;
+            ss << "Unsupported column type " << t << " found for column '" << column << "'";
+            throw SeriousBug(ss.str(), Here());
         }
-        break;
-
-    case api::IGNORE:
-    default: {
-        std::stringstream ss;
-        ss << "Unsupported column type " << t << " found for column '" << column << "'";
-        throw SeriousBug(ss.str(), Here());
-    }
     };
 }
 
@@ -131,6 +131,5 @@ const std::set<std::string>& Span::getStringValues(const std::string& column) co
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
-
+}  // namespace core
+}  // namespace odc

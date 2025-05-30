@@ -4,12 +4,12 @@
  *     g++ -std=c++11 -leckit -lodccore -o odc-cpp-ls odc_ls.cc
  */
 
-#include <iostream>
-#include <iomanip>
-#include <cstdint>
-#include <vector>
-#include <numeric>
 #include <math.h>
+#include <cstdint>
+#include <iomanip>
+#include <iostream>
+#include <numeric>
+#include <vector>
 
 #include "eckit/runtime/Main.h"
 
@@ -26,7 +26,7 @@ void write_header(int i, odc::api::ColumnInfo col) {
 
 void write_data(size_t nrows, size_t ncols, std::vector<odc::api::ColumnInfo> columnInfo,
                 std::vector<odc::api::StridedData> strides, std::vector<int> nbits) {
-    long integer_missing = odc::api::Settings::integerMissingValue();
+    long integer_missing  = odc::api::Settings::integerMissingValue();
     double double_missing = odc::api::Settings::doubleMissingValue();
 
     for (size_t row = 0; row < nrows; ++row) {
@@ -44,7 +44,7 @@ void write_data(size_t nrows, size_t ncols, std::vector<odc::api::ColumnInfo> co
                 }
                 case odc::api::BITFIELD: {
                     int64_t val = *reinterpret_cast<const int64_t*>(strides[col][row]);
-                    for (int bit = nbits[col]-1; bit >= 0; --bit) {
+                    for (int bit = nbits[col] - 1; bit >= 0; --bit) {
                         std::cout << ((val & (1 << bit)) ? "1" : "0");
                     }
                     break;
@@ -54,7 +54,8 @@ void write_data(size_t nrows, size_t ncols, std::vector<odc::api::ColumnInfo> co
                     double val = *reinterpret_cast<const double*>(strides[col][row]);
                     if (val == double_missing) {
                         std::cout << ".";
-                    } else {
+                    }
+                    else {
                         std::cout << std::left << std::setw(columnInfo[col].decodedSize) << val;
                     }
                     break;
@@ -62,9 +63,9 @@ void write_data(size_t nrows, size_t ncols, std::vector<odc::api::ColumnInfo> co
                     std::cout << *reinterpret_cast<const int64_t*>(strides[col][row]);
                     break;
                 case odc::api::STRING:
-                    std::cout << std::left << std::setw(columnInfo[col].decodedSize) <<
-                        std::string(strides[col][row],
-                                    ::strnlen(strides[col][row], columnInfo[col].decodedSize));
+                    std::cout << std::left << std::setw(columnInfo[col].decodedSize)
+                              << std::string(strides[col][row],
+                                             ::strnlen(strides[col][row], columnInfo[col].decodedSize));
                     break;
                 default:
                     ASSERT(false);
@@ -100,8 +101,8 @@ int main(int argc, char** argv) {
 
         // Properties of this frame
 
-        size_t ncols = frame.columnCount();
-        size_t nrows = frame.rowCount();
+        size_t ncols           = frame.columnCount();
+        size_t nrows           = frame.rowCount();
         const auto& columnInfo = frame.columnInfo();
 
         // Print headers & determine storage requirements
@@ -138,11 +139,8 @@ int main(int argc, char** argv) {
 
             // Bits for formatting bitfields
             if (col.type == odc::api::BITFIELD) {
-                nbits.push_back(
-                    std::accumulate(col.bitfield.begin(), col.bitfield.end(), 0,
-                                    [](int l, const odc::api::ColumnInfo::Bit& r) {
-                                        return l + r.size;
-                                    }));
+                nbits.push_back(std::accumulate(col.bitfield.begin(), col.bitfield.end(), 0,
+                                                [](int l, const odc::api::ColumnInfo::Bit& r) { return l + r.size; }));
             }
             else {
                 nbits.push_back(0);
@@ -164,4 +162,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-

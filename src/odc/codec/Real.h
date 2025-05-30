@@ -19,20 +19,20 @@ namespace codec {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-static constexpr uint32_t minFloatAsInt = 0x800000;
-static constexpr uint32_t maxFloatAsInt = 0x7f7fffff;
-static constexpr uint32_t real2MissingAsInt = 0xff7fffff; // = - reinterpret_cast<float&>(maxFloatAsInt)
+static constexpr uint32_t minFloatAsInt     = 0x800000;
+static constexpr uint32_t maxFloatAsInt     = 0x7f7fffff;
+static constexpr uint32_t real2MissingAsInt = 0xff7fffff;  // = - reinterpret_cast<float&>(maxFloatAsInt)
 
 //----------------------------------------------------------------------------------------------------------------------
 
-template<typename ByteOrder>
+template <typename ByteOrder>
 class CodecLongReal : public core::DataStreamCodec<ByteOrder> {
 
-public: // definitions
+public:  // definitions
 
     constexpr static const char* codec_name() { return "long_real"; }
 
-public: // methods
+public:  // methods
 
     CodecLongReal(api::ColumnType type) :
         core::DataStreamCodec<ByteOrder>(codec_name(), type),
@@ -44,7 +44,7 @@ public: // methods
     bool hasShortRealInternalMissing() const { return hasShortRealInternalMissing_; }
     bool hasShortReal2InternalMissing() const { return hasShortReal2InternalMissing_; }
 
-private: // methods
+private:  // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override {
         double e = d;
@@ -53,25 +53,23 @@ private: // methods
         return p + sizeof(e);
     }
 
-    void decode(double* out) override {
-        this->ds().read(*out);
-    }
+    void decode(double* out) override { this->ds().read(*out); }
 
-    void skip() override {
-        this->ds().advance(sizeof(double));
-    }
+    void skip() override { this->ds().advance(sizeof(double)); }
 
     /// Keep track on internal missing value collisions, to help the CodecOptimizer.
     void gatherStats(const double& v) override {
         core::Codec::gatherStats(v);
 
-        float realInternalMissing = reinterpret_cast<const float&>(minFloatAsInt);
+        float realInternalMissing  = reinterpret_cast<const float&>(minFloatAsInt);
         float realInternalMissing2 = reinterpret_cast<const float&>(maxFloatAsInt);
-        if (v == realInternalMissing) hasShortRealInternalMissing_ = true;
-        if (v == realInternalMissing2) hasShortReal2InternalMissing_ = true;
+        if (v == realInternalMissing)
+            hasShortRealInternalMissing_ = true;
+        if (v == realInternalMissing2)
+            hasShortReal2InternalMissing_ = true;
     }
 
-private: // members
+private:  // members
 
     bool hasShortRealInternalMissing_;
     bool hasShortReal2InternalMissing_;
@@ -83,22 +81,23 @@ private: // members
 template <typename ByteOrder, uint32_t InternalMissing>
 class ShortRealBase : public core::DataStreamCodec<ByteOrder> {
 
-public: // methods
+public:  // methods
 
     ShortRealBase(api::ColumnType type, const std::string& name) : core::DataStreamCodec<ByteOrder>(name, type) {}
     ~ShortRealBase() override {}
 
-private: // methods
+private:  // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override {
 
         const uint32_t internalMissingInt = InternalMissing;
-        const float internalMissing = reinterpret_cast<const float&>(internalMissingInt);
+        const float internalMissing       = reinterpret_cast<const float&>(internalMissingInt);
 
         float s;
         if (d == this->missingValue_) {
             s = internalMissing;
-        } else {
+        }
+        else {
             s = d;
             ASSERT(s != internalMissing);
         }
@@ -112,13 +111,11 @@ private: // methods
         float s;
         this->ds().read(s);
         const uint32_t internalMissingInt = InternalMissing;
-        const float internalMissing = reinterpret_cast<const float&>(internalMissingInt);
-        (*out) = (s == internalMissing ? this->missingValue_ : s);
+        const float internalMissing       = reinterpret_cast<const float&>(internalMissingInt);
+        (*out)                            = (s == internalMissing ? this->missingValue_ : s);
     }
 
-    void skip() override {
-        this->ds().advance(sizeof(float));
-    }
+    void skip() override { this->ds().advance(sizeof(float)); }
 };
 
 
@@ -140,8 +137,7 @@ struct CodecShortReal2 : public ShortRealBase<ByteOrder, real2MissingAsInt> {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace codec
-} // namespace odc
+}  // namespace codec
+}  // namespace odc
 
 #endif
-

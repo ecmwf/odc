@@ -21,7 +21,9 @@
 #include "odc/core/ThreadSharedDataHandle.h"
 
 
-namespace eckit { class DataHandle; }
+namespace eckit {
+class DataHandle;
+}
 
 namespace odc {
 namespace core {
@@ -32,9 +34,9 @@ class TablesReader;
 
 class ReadTablesIterator {
 
-public: // methods
+public:  // methods
 
-    ReadTablesIterator(TablesReader& owner, long pos=0);
+    ReadTablesIterator(TablesReader& owner, long pos = 0);
 
     // Functionality to work as an iterator
 
@@ -50,14 +52,14 @@ public: // methods
     Table& operator*();
     const Table& operator*() const;
 
-private: // methods
+private:  // methods
 
     friend std::ostream& operator<<(std::ostream& os, const ReadTablesIterator& rti) {
         os << "ReadTablesIterator(" << &rti.owner_ << ", " << rti.pos_ << ")";
         return os;
     }
 
-private: // members
+private:  // members
 
     std::reference_wrapper<TablesReader> owner_;
     long pos_;
@@ -76,27 +78,27 @@ private: // members
 
 class TablesReader {
 
-public: // types
+public:  // types
 
     using iterator = ReadTablesIterator;
 
-public: // methods
+public:  // methods
 
     TablesReader(eckit::DataHandle& dh);
-    TablesReader(eckit::DataHandle* dh); // n.b. takes ownership
+    TablesReader(eckit::DataHandle* dh);  // n.b. takes ownership
     TablesReader(const eckit::PathName& path);
 
     iterator begin();
     iterator end();
 
-private: // members
+private:  // members
 
     friend class ReadTablesIterator;
 
     bool ensureTable(long idx);
     Table& getTable(long idx);
 
-private: // members
+private:  // members
 
     std::mutex m_;
 
@@ -108,7 +110,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc
 
 #endif
