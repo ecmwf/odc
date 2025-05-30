@@ -8,8 +8,11 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef RowsCounter_H
-#define RowsCounter_H
+#pragma once
+
+namespace eckit {
+    class PathName;
+}
 
 namespace odc {
 
@@ -27,4 +30,3 @@ private:
 
 }  // namespace odc
 
-#endif
