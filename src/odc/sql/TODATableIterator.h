@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -24,22 +24,23 @@
 namespace odc {
 namespace sql {
 
-template <typename READER> class TODATable;
+template <typename READER>
+class TODATable;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 template <typename READER>
 class TODATableIterator : public eckit::sql::SQLTableIterator {
 
-public: // methods
+public:  // methods
 
     TODATableIterator(const TODATable<READER>& parent,
                       const std::vector<std::reference_wrapper<const eckit::sql::SQLColumn>>& columns,
                       std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback,
                       const typename READER::iterator& seedIterator);
-	virtual ~TODATableIterator();
+    virtual ~TODATableIterator();
 
-private: // methods (override>
+private:  // methods (override>
 
     virtual void rewind() override;
     virtual bool next() override;
@@ -50,11 +51,11 @@ private: // methods (override>
     virtual std::vector<double> missingValues() const override;
     virtual const double* data() const override;
 
-private: // methods
+private:  // methods
 
     void updateMetaData();
 
-private: // members
+private:  // members
 
     const TODATable<READER>& parent_;
     typename READER::iterator it_;
@@ -68,7 +69,7 @@ private: // members
 
     std::function<void(eckit::sql::SQLTableIterator&)> metadataUpdateCallback_;
 
-	bool firstRow_;
+    bool firstRow_;
 };
 
 extern template class TODATableIterator<Reader>;
@@ -76,7 +77,7 @@ extern template class TODATableIterator<TextReader>;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql
-} // namespace odc
+}  // namespace sql
+}  // namespace odc
 
 #endif

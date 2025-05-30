@@ -8,12 +8,12 @@
  * does it submit to any jurisdiction.
  */
 
+#include "TestCase.h"
 #include "eckit/eckit.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/log/Timer.h"
 #include "odc/Writer.h"
-#include "TestCase.h"
 
 #include "odc/odccapi.h"
 
@@ -27,10 +27,9 @@ namespace odc {
 namespace tool {
 namespace test {
 
-int test_odacapi_setup_in_C(int argc, char* argv[])
-{
-    const char *filename = "test.odb";
-    int err = 0;
+int test_odacapi_setup_in_C(int argc, char* argv[]) {
+    const char* filename = "test.odb";
+    int err              = 0;
 
     oda_writer* writer = odb_writer_create("", &err);
     ASSERT(writer);
@@ -45,8 +44,7 @@ int test_odacapi_setup_in_C(int argc, char* argv[])
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
     double data[2];
-    for (int i = 1; i <= 10; i++)
-    {
+    for (int i = 1; i <= 10; i++) {
         data[0] = i;
         data[1] = i;
 
@@ -58,8 +56,7 @@ int test_odacapi_setup_in_C(int argc, char* argv[])
     return 0;
 }
 
-int test_odacapi_setup(int argc, char* argv[])
-{
+int test_odacapi_setup(int argc, char* argv[]) {
     Timer t("Writing test.odb");
     odc::Writer<> oda("test.odb");
 
@@ -71,18 +68,16 @@ int test_odacapi_setup(int argc, char* argv[])
 
     writer->writeHeader();
 
-    for (int i = 1; i <= 10; i++)
-    {
-        writer->data()[0] = i; // col 0
-        writer->data()[1] = i; // col 1
+    for (int i = 1; i <= 10; i++) {
+        writer->data()[0] = i;  // col 0
+        writer->data()[1] = i;  // col 1
         ++writer;
     }
-    //writer->close();
+    // writer->close();
     return 0;
 }
 
-int test_odacapi1(int argc, char* argv[])
-{
+int test_odacapi1(int argc, char* argv[]) {
     std::cout << "UnitTest odacapi..." << std::endl;
 
     int err;
@@ -107,20 +102,19 @@ int test_odacapi1(int argc, char* argv[])
     ASSERT(0 == odb_read_iterator_get_column_type(it, 1, &type1));
     ASSERT(type1 == 2 /*REAL*/);
 
-    char *name0;
+    char* name0;
     int name0size;
     ASSERT(0 == odb_read_iterator_get_column_name(it, 0, &name0, &name0size));
 
-    char *name1;
+    char* name1;
     int name1size;
     ASSERT(0 == odb_read_iterator_get_column_name(it, 1, &name1, &name1size));
 
     double buffer[2];
-    double* data = buffer;
+    double* data   = buffer;
     int newDataset = 0;
-    int nRows = 0;
-    while (0 == odb_read_iterator_get_next_row(it, 2, data, &newDataset))
-    {
+    int nRows      = 0;
+    while (0 == odb_read_iterator_get_next_row(it, 2, data, &newDataset)) {
         ++nRows;
         int v0 = int(data[0]);
 
@@ -135,8 +129,7 @@ int test_odacapi1(int argc, char* argv[])
     return 0;
 }
 
-int test_odacapi2(int argc, char* argv[])
-{
+int test_odacapi2(int argc, char* argv[]) {
     std::cout << "UnitTest odacapi 2..." << std::endl;
 
     int err;
@@ -166,20 +159,19 @@ int test_odacapi2(int argc, char* argv[])
     ASSERT(0 == odb_select_iterator_get_column_type(it, 1, &type1));
     ASSERT(type1 == 2 /*REAL*/);
 
-    char *name0;
+    char* name0;
     int name0size;
     ASSERT(0 == odb_select_iterator_get_column_name(it, 0, &name0, &name0size));
 
-    char *name1;
+    char* name1;
     int name1size;
     ASSERT(0 == odb_select_iterator_get_column_name(it, 1, &name1, &name1size));
 
     double buffer[2];
-    double* data = buffer;
+    double* data   = buffer;
     int newDataset = 0;
-    int nRows = 0;
-    while (0 == odb_select_iterator_get_next_row(it, 2, data, &newDataset))
-    {
+    int nRows      = 0;
+    while (0 == odb_select_iterator_get_next_row(it, 2, data, &newDataset)) {
         ++nRows;
         int v0 = int(data[0]);
 
@@ -194,12 +186,11 @@ int test_odacapi2(int argc, char* argv[])
     return 0;
 }
 
-int test_odacapi3(int argc, char* argv[])
-{
+int test_odacapi3(int argc, char* argv[]) {
     std::cout << "UnitTest ODB C API append to file functionality..." << std::endl;
 
-    const char *filename = "test.odb";
-    int err = 0;
+    const char* filename = "test.odb";
+    int err              = 0;
 
     double n = odb_count(filename);
     std::cout << "test_odacapi3: number of rows = " << n << std::endl;
@@ -220,8 +211,7 @@ int test_odacapi3(int argc, char* argv[])
     ASSERT(0 == odb_write_iterator_write_header(wi));
 
     double data[2];
-    for (int i = 1; i <= 10; i++)
-    {
+    for (int i = 1; i <= 10; i++) {
         data[0] = i;
         data[1] = i;
 
@@ -239,20 +229,16 @@ int test_odacapi3(int argc, char* argv[])
     return 0;
 }
 
-int test_odacapi(int argc, char* argv[])
-{
+int test_odacapi(int argc, char* argv[]) {
     std::cout << "Calling odb_init..." << std::endl;
     odb_start_with_args(argc, argv);
     Log::info() << "Log::info initialised properly." << std::endl;
 
-    //return test_odacapi_setup()
-    return test_odacapi_setup_in_C(argc, argv)
-            || test_odacapi1(argc, argv)
-            || test_odacapi2(argc, argv)
-            || test_odacapi3(argc, argv);
+    // return test_odacapi_setup()
+    return test_odacapi_setup_in_C(argc, argv) || test_odacapi1(argc, argv) || test_odacapi2(argc, argv) ||
+           test_odacapi3(argc, argv);
 }
 
-} // namespace test 
-} // namespace tool 
-} // namespace odc 
-
+}  // namespace test
+}  // namespace tool
+}  // namespace odc

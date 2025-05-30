@@ -14,12 +14,14 @@
 #ifndef odc_core_ThreadSharedDataHandle_H
 #define odc_core_ThreadSharedDataHandle_H
 
-#include <mutex>
 #include <memory>
+#include <mutex>
 
 #include "eckit/io/DataHandle.h"
 
-namespace eckit { class DataHandle; }
+namespace eckit {
+class DataHandle;
+}
 
 namespace odc {
 namespace core {
@@ -28,10 +30,10 @@ namespace core {
 
 class ThreadSharedDataHandle : public eckit::DataHandle {
 
-public: // methods
+public:  // methods
 
-    ThreadSharedDataHandle (eckit::DataHandle& dh);
-    ThreadSharedDataHandle (eckit::DataHandle* dh);
+    ThreadSharedDataHandle(eckit::DataHandle& dh);
+    ThreadSharedDataHandle(eckit::DataHandle* dh);
     ~ThreadSharedDataHandle() override;
 
     ThreadSharedDataHandle(const ThreadSharedDataHandle&);
@@ -49,8 +51,8 @@ public: // methods
     void openForWrite(const eckit::Length&) override;
     void openForAppend(const eckit::Length&) override;
 
-    long read(void*,long) override;
-    long write(const void*,long) override;
+    long read(void*, long) override;
+    long write(const void*, long) override;
     void close() override;
 
     eckit::Length estimate() override;
@@ -59,7 +61,7 @@ public: // methods
 
     std::string title() const override;
 
-private: // members
+private:  // members
 
     struct Internal {
 
@@ -78,7 +80,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc
 
 #endif

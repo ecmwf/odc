@@ -6,8 +6,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
+#include <time.h>
 #include <iostream>
 
 #include "eckit/io/FileHandle.h"
@@ -27,23 +27,25 @@ void usage() {
     std::cerr << "Usage:\n    odc-cpp-encode-custom <odb2 output file>" << std::endl << std::endl;
 }
 
-void cycle_longs(long *list, int size, long *pool, int pool_size) {
+void cycle_longs(long* list, int size, long* pool, int pool_size) {
     int index = 0;
     int i;
 
     for (i = 0; i < size; i++) {
-        if (index == pool_size) index = 0;
+        if (index == pool_size)
+            index = 0;
         list[i] = pool[index];
         index++;
     }
 }
 
-void cycle_doubles(double *list, int size, double *pool, int pool_size) {
+void cycle_doubles(double* list, int size, double* pool, int pool_size) {
     int index = 0;
     int i;
 
     for (i = 0; i < size; i++) {
-        if (index == pool_size) index = 0;
+        if (index == pool_size)
+            index = 0;
         list[i] = pool[index];
         index++;
     }
@@ -57,45 +59,45 @@ void create_scratch_data(size_t nrows, char data0[][8], int64_t data1[], char da
     time_t rawtime;
     time(&rawtime);
 
-    struct tm * timeinfo;
+    struct tm* timeinfo;
     timeinfo = localtime(&rawtime);
 
     int64_t date = 10000 * (timeinfo->tm_year + 1900) + 100 * (timeinfo->tm_mon + 1) + timeinfo->tm_mday;
 
     // Prepare the list of integer values, including the missing value
 
-    long integer_pool[] = { 1234, 4321, Settings::integerMissingValue() };
-    int integer_pool_size = sizeof(integer_pool)/sizeof(integer_pool[0]);
+    long integer_pool[]   = {1234, 4321, Settings::integerMissingValue()};
+    int integer_pool_size = sizeof(integer_pool) / sizeof(integer_pool[0]);
 
     long missing_integers[nrows];
     cycle_longs(missing_integers, nrows, integer_pool, integer_pool_size);
 
     // Prepare the list of double values, including the missing value
 
-    double double_pool[] = { 12.34, 43.21, Settings::doubleMissingValue() };
-    int double_pool_size = sizeof(double_pool)/sizeof(double_pool[0]);
+    double double_pool[] = {12.34, 43.21, Settings::doubleMissingValue()};
+    int double_pool_size = sizeof(double_pool) / sizeof(double_pool[0]);
 
     double missing_doubles[nrows];
     cycle_doubles(missing_doubles, nrows, double_pool, double_pool_size);
 
     // Prepare the list of bitfield values
 
-    long bitfield_pool[] = { Ob00000001, Ob00001011, Ob01101011 };
-    int bitfield_pool_size = sizeof(bitfield_pool)/sizeof(bitfield_pool[0]);
+    long bitfield_pool[]   = {Ob00000001, Ob00001011, Ob01101011};
+    int bitfield_pool_size = sizeof(bitfield_pool) / sizeof(bitfield_pool[0]);
 
     long bitfield_values[nrows];
     cycle_longs(bitfield_values, nrows, bitfield_pool, bitfield_pool_size);
 
     // Fill in the passed data arrays with scratch values
     for (size_t i = 0; i < nrows; i++) {
-        ASSERT(snprintf(data0[i], 8, "xxxx") == 4);  // expver
-        data1[i] = date;  // date@hdr
-        ASSERT(snprintf(data2[i], 7, "stat%02ld", i) == 6);  // statid@hdr
+        ASSERT(snprintf(data0[i], 8, "xxxx") == 4);                     // expver
+        data1[i] = date;                                                // date@hdr
+        ASSERT(snprintf(data2[i], 7, "stat%02ld", i) == 6);             // statid@hdr
         ASSERT(snprintf(data3[i], 16, "0-12345-0-678%02ld", i) == 15);  // wigos@hdr
-        data4[i] = 12.3456 * i;  // obsvalue@body
-        data5[i] = missing_integers[i];  // integer_missing
-        data6[i] = missing_doubles[i];  // double_missing
-        data7[i] = bitfield_values[i];  // bitfield_column
+        data4[i] = 12.3456 * i;                                         // obsvalue@body
+        data5[i] = missing_integers[i];                                 // integer_missing
+        data6[i] = missing_doubles[i];                                  // double_missing
+        data7[i] = bitfield_values[i];                                  // bitfield_column
     }
 }
 
@@ -150,7 +152,7 @@ int main(int argc, char** argv) {
     };
 
     // Set a custom data layout and data array for each column
-    std::vector<ConstStridedData> strides {
+    std::vector<ConstStridedData> strides{
         // ptr, nrows, element_size, stride
         {data0, nrows, 8, 8},
         {data1, nrows, sizeof(int64_t), sizeof(int64_t)},
@@ -164,7 +166,7 @@ int main(int argc, char** argv) {
 
     // Add some key/value metadata to the frame
     std::map<std::string, std::string> properties = {
-        { "encoded_by", "odc_example" },
+        {"encoded_by", "odc_example"},
     };
 
     const Length length;
