@@ -8,20 +8,22 @@
  * does it submit to any jurisdiction.
  */
 
-#ifndef FixedSizeRowTool_H
-#define FixedSizeRowTool_H
+#pragma once
 
 #include "odc/tools/Tool.h"
 
-namespace odc {
-namespace tool {
+#include <ostream>
+
+namespace odc::tool {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class FixedSizeRowTool : public Tool {
 public:
 
     FixedSizeRowTool(int argc, char* argv[]);
 
-    void run();
+    void run() override;
 
     static void help(std::ostream& o) { o << "Converts file to a format with fixed size rows"; }
 
@@ -42,7 +44,7 @@ struct ExperimentalTool<FixedSizeRowTool> {
     };
 };
 
-}  // namespace tool
-}  // namespace odc
+//----------------------------------------------------------------------------------------------------------------------
 
-#endif
+}  // namespace odc::tool
+

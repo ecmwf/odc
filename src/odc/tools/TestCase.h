@@ -8,19 +8,19 @@
  * does it submit to any jurisdiction.
  */
 
-/// \file TestCase.h
-///
-/// @author Piotr Kuchta, ECMWF, Feb 2009
+/// @author Piotr Kuchta
+/// @date Feb 2009
 
-#ifndef TestCase_H
-#define TestCase_H
+#pragma once
 
 #include "Tool.h"
 #include "ToolFactory.h"
 
-namespace odc {
-namespace tool {
-namespace test {
+#include <iostream>
+
+namespace odc::tool::test {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class TestCase : public Tool {
 public:
@@ -95,8 +95,6 @@ bool CheckArrayEqual(const Expected& expected, const Actual& actual, const int c
 
 #define CHECK_ARRAY_EQUAL(expected, actual, count) ASSERT(odc::tool::test::CheckArrayEqual(expected, actual, count))
 
-}  // namespace test
-}  // namespace tool
-}  // namespace odc
+//----------------------------------------------------------------------------------------------------------------------
 
-#endif
+}  // namespace odc::tool::test

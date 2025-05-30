@@ -7,20 +7,23 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-#ifndef CompactTool_H
-#define CompactTool_H
+
+#pragma once
 
 #include "odc/tools/Tool.h"
 
-namespace odc {
-namespace tool {
+#include <ostream>
+
+namespace odc::tool {
+
+//----------------------------------------------------------------------------------------------------------------------
 
 class CompactTool : public Tool {
 public:
 
     CompactTool(int argc, char* argv[]);
 
-    void run();
+    void run() override;
 
     static void help(std::ostream& o) { o << "Tries to compress a file"; }
 
@@ -41,7 +44,6 @@ struct ExperimentalTool<CompactTool> {
     };
 };
 
-}  // namespace tool
-}  // namespace odc
+//----------------------------------------------------------------------------------------------------------------------
 
-#endif
+}  // namespace odc::tool
