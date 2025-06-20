@@ -11,7 +11,7 @@
 #pragma once
 
 namespace eckit {
-    class PathName;
+class PathName;
 }
 
 namespace odc {
@@ -29,4 +29,3 @@ private:
 };
 
 }  // namespace odc
-
