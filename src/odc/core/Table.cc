@@ -300,14 +300,25 @@ protected:  // members
     std::set<T> values_;
 };
 
+struct IntegerColumnValuesAsDoubles : ColumnValues<long> {
+    using ColumnValues<long>::ColumnValues;
+    void addValue(double* val) override {
+        values_.insert(static_cast<int64_t>(*val));
+    }
+};
+
 struct IntegerColumnValues : ColumnValues<long> {
     using ColumnValues<long>::ColumnValues;
-    void addValue(double* val) override { values_.insert(static_cast<int64_t>(*val)); }
+    void addValue(double* val) override {
+        values_.insert(*reinterpret_cast<int64_t*>(val));
+    }
 };
 
 struct DoubleColumnValues : ColumnValues<double> {
     using ColumnValues<double>::ColumnValues;
-    void addValue(double* val) override { values_.insert(*val); }
+    void addValue(double* val) override {
+        values_.insert(*val);
+    }
 };
 
 struct StringColumnValues : ColumnValues<std::string> {
@@ -356,7 +367,11 @@ Span Table::decodeSpan(const std::vector<std::string>& columns) {
         switch (metadata[it->second]->type()) {
             case api::BITFIELD:
             case api::INTEGER:
-                columnValues[it->second].reset(new IntegerColumnValues(columnName));
+                if (ODBAPISettings::instance().integersAsDoubles()) {
+                    columnValues[it->second].reset(new IntegerColumnValuesAsDoubles(columnName));
+                } else {
+                    columnValues[it->second].reset(new IntegerColumnValues(columnName));
+                }
                 break;
             case api::REAL:
             case api::DOUBLE:

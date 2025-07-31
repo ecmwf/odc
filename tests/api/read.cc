@@ -48,9 +48,9 @@ void test_generate_odb_properties(const std::string& path, int propertiesMode = 
 
     // Define all column names, their types and sizes
     std::vector<odc::api::ColumnInfo> columns = {
-        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
-        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
-        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8, {}},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t), {}},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
     };
 
     // Set a custom data layout and data array for each column
@@ -157,10 +157,10 @@ void test_generate_odb_span(const std::string& path) {
 
     // Define all column names, their types and sizes
     std::vector<odc::api::ColumnInfo> columns = {
-        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
-        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
-        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
-        {std::string("missing_value"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8, {}},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t), {}},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
+        {std::string("missing_value"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
     };
 
     // Set a custom data layout and data array for each column and frame
@@ -1230,6 +1230,55 @@ CASE("Filter a subset of ODB-2 data") {
     odc::api::Frame dummy_frame = frame;
 
     EXPECT(dummy_frame.rowCount() == 10);
+}
+
+CASE("Test Span interface with and without treatIntegersAsDoubles") {
+
+    // Construct some test data
+
+    std::vector<int64_t> RESTRICTED{1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0};
+    std::vector<int64_t> VALUES    {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
+    eckit::PathName path = "span-test-1";
+
+    {
+        odc::api::Settings::treatIntegersAsDoubles(false);
+
+        std::unique_ptr<eckit::DataHandle> dh(path.fileHandle());
+        dh->openForWrite(0);
+        eckit::AutoClose closer(*dh);
+
+        std::vector<odc::api::ColumnInfo> columns {
+            {"values@body", odc::api::ColumnType::INTEGER, sizeof(int64_t), {}},
+            {"restricted@hdr", odc::api::ColumnType::INTEGER, sizeof(int64_t), {}},
+        };
+        std::vector<odc::api::ConstStridedData> strides {
+            {&VALUES[0], VALUES.size(), sizeof(int64_t), sizeof(int64_t)},
+            {&RESTRICTED[0], RESTRICTED.size(), sizeof(int64_t), sizeof(int64_t)},
+        };
+
+        odc::api::encode(*dh, columns, strides);
+    }
+
+    // Get the span of this data
+
+    for (bool asDoubles : {false, true}) {
+        odc::api::Settings::treatIntegersAsDoubles(asDoubles);
+
+        std::unique_ptr<eckit::DataHandle> dh(path.fileHandle());
+        dh->openForRead();
+        eckit::AutoClose closer(*dh);
+
+        odc::api::Reader reader(*dh, /* aggregated */ true);
+        odc::api::Frame frame = reader.next();
+
+        odc::api::Span s = frame.span(std::vector<std::string>({"values", "restricted"}), /* onlyConst */ false);
+
+        EXPECT(s.getIntegerValues("values") == std::set<int64_t>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}));
+        EXPECT(s.getIntegerValues("restricted") == std::set<int64_t>({0, 1}));
+
+        EXPECT(!reader.next());
+    }
 }
 
 // ------------------------------------------------------------------------------------------------------
