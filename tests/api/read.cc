@@ -1237,7 +1237,7 @@ CASE("Test Span interface with and without treatIntegersAsDoubles") {
     // Construct some test data
 
     std::vector<int64_t> RESTRICTED{1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0};
-    std::vector<int64_t> VALUES    {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+    std::vector<int64_t> VALUES{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
     eckit::PathName path = "span-test-1";
 
@@ -1248,11 +1248,11 @@ CASE("Test Span interface with and without treatIntegersAsDoubles") {
         dh->openForWrite(0);
         eckit::AutoClose closer(*dh);
 
-        std::vector<odc::api::ColumnInfo> columns {
+        std::vector<odc::api::ColumnInfo> columns{
             {"values@body", odc::api::ColumnType::INTEGER, sizeof(int64_t), {}},
             {"restricted@hdr", odc::api::ColumnType::INTEGER, sizeof(int64_t), {}},
         };
-        std::vector<odc::api::ConstStridedData> strides {
+        std::vector<odc::api::ConstStridedData> strides{
             {&VALUES[0], VALUES.size(), sizeof(int64_t), sizeof(int64_t)},
             {&RESTRICTED[0], RESTRICTED.size(), sizeof(int64_t), sizeof(int64_t)},
         };
