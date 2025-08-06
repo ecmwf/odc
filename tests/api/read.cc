@@ -1274,8 +1274,8 @@ CASE("Test Span interface with and without treatIntegersAsDoubles") {
 
         odc::api::Span s = frame.span(std::vector<std::string>({"values", "restricted"}), /* onlyConst */ false);
 
-        EXPECT(s.getIntegerValues("values") == std::set<int64_t>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}));
-        EXPECT(s.getIntegerValues("restricted") == std::set<int64_t>({0, 1}));
+        EXPECT(s.getIntegerValues("values") == std::set<long>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}));
+        EXPECT(s.getIntegerValues("restricted") == std::set<long>({0, 1}));
 
         EXPECT(!reader.next());
     }
