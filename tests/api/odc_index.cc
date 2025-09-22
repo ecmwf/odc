@@ -8,9 +8,9 @@
 
 #include "odc/api/Odb.h"
 
-#include <iostream>
-#include <iomanip>
 #include <cstdint>
+#include <iomanip>
+#include <iostream>
 #include <vector>
 
 using namespace odc::api;
@@ -27,7 +27,9 @@ class Printer : public SpanVisitor {
     }
     void operator()(const std::string& columnName, const std::set<long>& vals) override { prnt(columnName, vals); }
     void operator()(const std::string& columnName, const std::set<double>& vals) override { prnt(columnName, vals); }
-    void operator()(const std::string& columnName, const std::set<std::string>& vals) override { prnt(columnName, vals); }
+    void operator()(const std::string& columnName, const std::set<std::string>& vals) override {
+        prnt(columnName, vals);
+    }
 };
 
 void write_index(Span& span, long offset, long length) {
@@ -60,13 +62,13 @@ int main(int argc, char** argv) {
     Reader reader(path, aggregated);
 
     // Define which columns will be used as index keys
-    std::vector<std::string> index_keys {"key1", "key2", "key3"};
+    std::vector<std::string> index_keys{"key1", "key2", "key3"};
 
     Frame frame;
     Span lastSpan;
     long offset = 0;
     long length = 0;
-    bool first = true;
+    bool first  = true;
 
     // Iterate over frames
     while ((frame = reader.next())) {
@@ -82,7 +84,8 @@ int main(int argc, char** argv) {
             length += span.length();
 
             // Remember the first set of index values
-            if (first) std::swap(lastSpan, span);
+            if (first)
+                std::swap(lastSpan, span);
         }
 
         // If the index values differ, output the last set

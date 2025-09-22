@@ -19,13 +19,12 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-ReadTablesIterator::ReadTablesIterator(TablesReader& owner, long pos) :
-    owner_(owner),
-    pos_(pos) {
+ReadTablesIterator::ReadTablesIterator(TablesReader& owner, long pos) : owner_(owner), pos_(pos) {
 
     // Ensure the first table is loaded
     if (pos_ != -1) {
-        if (!owner_.get().ensureTable(0)) pos_ = -1;
+        if (!owner_.get().ensureTable(0))
+            pos_ = -1;
     }
 }
 
@@ -79,16 +78,13 @@ const Table& ReadTablesIterator::operator*() const {
 //----------------------------------------------------------------------------------------------------------------------
 
 
-TablesReader::TablesReader(DataHandle& dh) :
-    dh_(dh) {}
+TablesReader::TablesReader(DataHandle& dh) : dh_(dh) {}
 
 
-TablesReader::TablesReader(DataHandle* dh) :
-    dh_(dh) {}
+TablesReader::TablesReader(DataHandle* dh) : dh_(dh) {}
 
 
-TablesReader::TablesReader(const PathName& path) :
-    TablesReader(path.fileHandle()) {}
+TablesReader::TablesReader(const PathName& path) : TablesReader(path.fileHandle()) {}
 
 
 TablesReader::iterator TablesReader::begin() {
@@ -121,7 +117,8 @@ bool TablesReader::ensureTable(long idx) {
         }
 
         std::unique_ptr<Table> tbl(Table::readTable(dh_));
-        if (!tbl) return false;
+        if (!tbl)
+            return false;
         tables_.emplace_back(std::move(tbl));
     }
 
@@ -139,5 +136,5 @@ Table& TablesReader::getTable(long idx) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-}
-}
+}  // namespace core
+}  // namespace odc

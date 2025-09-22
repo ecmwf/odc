@@ -11,8 +11,8 @@
 #ifndef odc_core_Span_H
 #define odc_core_Span_H
 
-#include <set>
 #include <map>
+#include <set>
 #include <string>
 
 #include "eckit/io/Length.h"
@@ -29,7 +29,7 @@ namespace core {
 
 class Span {
 
-public: // methods
+public:  // methods
 
     Span(eckit::Offset start, eckit::Length length);
     ~Span();
@@ -51,16 +51,19 @@ public: // methods
 
     template <typename T>
     void visit(T& visitor) {
-        for (const auto& kv : integerValues_) visitor(kv.first, kv.second);
-        for (const auto& kv : realValues_) visitor(kv.first, kv.second);
-        for (const auto& kv : stringValues_) visitor(kv.first, kv.second);
+        for (const auto& kv : integerValues_)
+            visitor(kv.first, kv.second);
+        for (const auto& kv : realValues_)
+            visitor(kv.first, kv.second);
+        for (const auto& kv : stringValues_)
+            visitor(kv.first, kv.second);
     }
 
     const std::set<long>& getIntegerValues(const std::string& column) const;
     const std::set<double>& getRealValues(const std::string& column) const;
     const std::set<std::string>& getStringValues(const std::string& column) const;
 
-private: // members
+private:  // members
 
     eckit::Offset start_;
     eckit::Length length_;
@@ -72,8 +75,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc
 
 #endif
-

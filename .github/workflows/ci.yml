@@ -28,6 +28,7 @@ jobs:
     with:
       odc: ecmwf/odc@${{ github.event.pull_request.head.sha || github.sha }}
       codecov_upload: true
+      clang_format: true
     secrets: inherit
 
   # Build downstream packages on HPC

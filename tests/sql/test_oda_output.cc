@@ -26,38 +26,55 @@
 #include "odc/sql/TODATable.h"
 
 #include <cstdint>
+#include <iomanip>
 #include <sstream>
 #include <type_traits>
-#include <iomanip>
 
 using namespace eckit::testing;
 using eckit::Log;
 
 // ------------------------------------------------------------------------------------------------------
 
-template <typename T> odc::api::ColumnType typeToName() { ASSERT(false); return odc::api::IGNORE; }
-template <> odc::api::ColumnType typeToName<double>() { return odc::api::DOUBLE; }
-template <> odc::api::ColumnType typeToName<int64_t>() { return odc::api::INTEGER; }
-template <> odc::api::ColumnType typeToName<uint64_t>() { return odc::api::BITFIELD; }
-template <> odc::api::ColumnType typeToName<eckit::FixedString<8>>() { return odc::api::STRING; }
-template <> odc::api::ColumnType typeToName<eckit::FixedString<16>>() { return odc::api::STRING; }
-template <> odc::api::ColumnType typeToName<eckit::FixedString<32>>() { return odc::api::STRING; }
+template <typename T>
+odc::api::ColumnType typeToName() {
+    ASSERT(false);
+    return odc::api::IGNORE;
+}
+template <>
+odc::api::ColumnType typeToName<double>() {
+    return odc::api::DOUBLE;
+}
+template <>
+odc::api::ColumnType typeToName<int64_t>() {
+    return odc::api::INTEGER;
+}
+template <>
+odc::api::ColumnType typeToName<uint64_t>() {
+    return odc::api::BITFIELD;
+}
+template <>
+odc::api::ColumnType typeToName<eckit::FixedString<8>>() {
+    return odc::api::STRING;
+}
+template <>
+odc::api::ColumnType typeToName<eckit::FixedString<16>>() {
+    return odc::api::STRING;
+}
+template <>
+odc::api::ColumnType typeToName<eckit::FixedString<32>>() {
+    return odc::api::STRING;
+}
 
-void quick_encode_internal(eckit::DataHandle& out,
-                           std::vector<odc::api::ColumnInfo>& columnInfo,
+void quick_encode_internal(eckit::DataHandle& out, std::vector<odc::api::ColumnInfo>& columnInfo,
                            std::vector<odc::api::ConstStridedData>& strides) {
     odc::api::encode(out, columnInfo, strides);
 }
 
-template <typename T,
-          typename ...Ts>
-typename std::enable_if<!std::is_same<T, uint64_t>::value, void>::type
-quick_encode_internal(eckit::DataHandle& out,
-                           std::vector<odc::api::ColumnInfo>& columnInfo,
-                           std::vector<odc::api::ConstStridedData>& strides,
-                           const std::string& colname,
-                           const std::vector<T>& vals,
-                           Ts&&... args) {
+template <typename T, typename... Ts>
+typename std::enable_if<!std::is_same<T, uint64_t>::value, void>::type quick_encode_internal(
+    eckit::DataHandle& out, std::vector<odc::api::ColumnInfo>& columnInfo,
+    std::vector<odc::api::ConstStridedData>& strides, const std::string& colname, const std::vector<T>& vals,
+    Ts&&... args) {
 
     columnInfo.emplace_back(odc::api::ColumnInfo{colname, typeToName<T>(), sizeof(vals[0])});
     strides.emplace_back(odc::api::ConstStridedData{&vals[0], vals.size(), sizeof(vals[0]), sizeof(vals[0])});
@@ -66,13 +83,10 @@ quick_encode_internal(eckit::DataHandle& out,
 
 // Bitfields need some extra info
 
-template <typename ...Ts>
-void quick_encode_internal(eckit::DataHandle& out,
-                           std::vector<odc::api::ColumnInfo>& columnInfo,
-                           std::vector<odc::api::ConstStridedData>& strides,
-                           const std::string& colname,
-                           const std::vector<uint64_t>& vals,
-                           const std::vector<odc::api::ColumnInfo::Bit>& bits,
+template <typename... Ts>
+void quick_encode_internal(eckit::DataHandle& out, std::vector<odc::api::ColumnInfo>& columnInfo,
+                           std::vector<odc::api::ConstStridedData>& strides, const std::string& colname,
+                           const std::vector<uint64_t>& vals, const std::vector<odc::api::ColumnInfo::Bit>& bits,
                            Ts&&... args) {
 
     columnInfo.emplace_back(odc::api::ColumnInfo{colname, odc::api::BITFIELD, sizeof(vals[0]), bits});
@@ -80,7 +94,7 @@ void quick_encode_internal(eckit::DataHandle& out,
     quick_encode_internal(out, columnInfo, strides, std::forward<Ts>(args)...);
 }
 
-template <typename ...Ts>
+template <typename... Ts>
 void quick_encode(eckit::DataHandle& out, Ts&&... args) {
     std::vector<odc::api::ColumnInfo> columnInfo;
     std::vector<odc::api::ConstStridedData> strides;
@@ -99,16 +113,17 @@ bool vectorEquals(const std::vector<T>& lhs, const std::vector<S>& rhs) {
 
 template <int L1, int L2>
 bool vectorEquals(const std::vector<eckit::FixedString<L1>>& lhs, const std::vector<eckit::FixedString<L2>>& rhs) {
-    if (lhs.size() != rhs.size()) return false;
+    if (lhs.size() != rhs.size())
+        return false;
     for (size_t i = 0; i < lhs.size(); ++i) {
-        if (lhs[i].asString() != rhs[i].asString()) return false;
+        if (lhs[i].asString() != rhs[i].asString())
+            return false;
     }
     return true;
 }
 
-template <typename ...Ts>
-void decode_and_test_internal(eckit::DataHandle& in,
-                              std::vector<std::string>& columnNames,
+template <typename... Ts>
+void decode_and_test_internal(eckit::DataHandle& in, std::vector<std::string>& columnNames,
                               std::vector<odc::api::StridedData>& strides) {
 
     odc::api::Decoder decoder(columnNames, strides);
@@ -124,7 +139,7 @@ void decode_and_test_internal(eckit::DataHandle& in,
     while (nrows < strides[0].nelem()) {
         odc::api::Frame frame = reader.next();
         EXPECT(frame);
-        size_t frameRows = frame.rowCount();
+        size_t frameRows               = frame.rowCount();
         odc::api::Decoder&& subDecoder = decoder.slice(nrows, frameRows);
         subDecoder.decode(frame);
         nrows += frameRows;
@@ -134,13 +149,10 @@ void decode_and_test_internal(eckit::DataHandle& in,
     EXPECT(!reader.next());
 }
 
-template <typename T, typename ...Ts>
-void decode_and_test_internal(eckit::DataHandle& in,
-                              std::vector<std::string>& columnNames,
-                              std::vector<odc::api::StridedData>& strides,
-                              const std::string& colname,
-                              const std::vector<T>& correctVals,
-                              Ts&&... args) {
+template <typename T, typename... Ts>
+void decode_and_test_internal(eckit::DataHandle& in, std::vector<std::string>& columnNames,
+                              std::vector<odc::api::StridedData>& strides, const std::string& colname,
+                              const std::vector<T>& correctVals, Ts&&... args) {
 
     std::vector<T> decodeBuffer(correctVals.size());
     ASSERT(decodeBuffer.size() == correctVals.size());
@@ -154,18 +166,15 @@ void decode_and_test_internal(eckit::DataHandle& in,
         ASSERT(decodeBuffer.size() == correctVals.size());
         for (size_t i = 0; i < decodeBuffer.size(); ++i) {
             bool match = (decodeBuffer[i] == correctVals[i]);
-            Log::warning() << (match ? "      " : "  *** ")
-                           << std::setw(15) << std::right << correctVals[i]
-                           << (match ? " == " : " != ")
-                           << std::setw(15) << std::left << decodeBuffer[i]
-                           << (match ? "      " : "  *** ")
-                           << std::endl;
+            Log::warning() << (match ? "      " : "  *** ") << std::setw(15) << std::right << correctVals[i]
+                           << (match ? " == " : " != ") << std::setw(15) << std::left << decodeBuffer[i]
+                           << (match ? "      " : "  *** ") << std::endl;
         }
     }
     EXPECT(vectorEquals(decodeBuffer, correctVals));
 }
 
-template <typename ...Ts>
+template <typename... Ts>
 void decode_and_test(eckit::DataHandle& in, Ts&&... args) {
     odc::api::Settings::treatIntegersAsDoubles(false);
     std::vector<std::string> columnNames;
@@ -180,8 +189,8 @@ class DHOutputConfig : public eckit::sql::SQLOutputConfig {
     eckit::DataHandle& dh_;
 
 public:
-    DHOutputConfig(eckit::DataHandle& dh) :
-        eckit::sql::SQLOutputConfig(), dh_(dh) {}
+
+    DHOutputConfig(eckit::DataHandle& dh) : eckit::sql::SQLOutputConfig(), dh_(dh) {}
 
     eckit::sql::SQLOutput* buildOutput(const eckit::PathName& path) const override {
         return new odc::sql::ODAOutput<odc::Writer<>>(new odc::Writer<>(dh_));
@@ -197,7 +206,8 @@ void oda_select_filter(const std::string& sql, eckit::DataHandle& dh_in, eckit::
     eckit::AutoClose closer(dh_in);
 
     eckit::sql::SQLDatabase& db(session.currentDatabase());
-    db.addImplicitTable( new odc::sql::ODATable(db, dh_in));;
+    db.addImplicitTable(new odc::sql::ODATable(db, dh_in));
+    ;
 
     eckit::sql::SQLParser parser;
     parser.parseString(session, sql);
@@ -209,7 +219,7 @@ void oda_select_filter(const std::string& sql, eckit::DataHandle& dh_in, eckit::
 
 CASE("short and then longer strings") {
 
-    double dmiss = odc::api::Settings::doubleMissingValue();
+    double dmiss  = odc::api::Settings::doubleMissingValue();
     int64_t imiss = odc::api::Settings::integerMissingValue();
 
     std::vector<double> doubleVals{111.1, 222.2, dmiss, 333.3};
@@ -235,7 +245,7 @@ CASE("short and then longer strings") {
 
     eckit::MemoryHandle output_odb;
     std::string select_string = "select *";
-    bool filtered = false;
+    bool filtered             = false;
 
     {
         SECTION("Select Class (integer internals)") {
@@ -250,13 +260,13 @@ CASE("short and then longer strings") {
             filtered = true;
         }
 
-        SECTION( "ODAOutput (integer internals)") {
+        SECTION("ODAOutput (integer internals)") {
             odc::api::Settings::treatIntegersAsDoubles(false);
             oda_select_filter(select_string, source_odb, output_odb);
             filtered = true;
         }
 
-        SECTION( "ODAOutput (double internals)") {
+        SECTION("ODAOutput (double internals)") {
             odc::api::Settings::treatIntegersAsDoubles(true);
             oda_select_filter(select_string, source_odb, output_odb);
             filtered = true;
@@ -284,27 +294,21 @@ CASE("short and then longer strings") {
 
 CASE("Extraction of bitfield values") {
 
-    int64_t imiss = odc::api::Settings::integerMissingValue();
+    int64_t imiss   = odc::api::Settings::integerMissingValue();
     uint64_t uimiss = static_cast<uint64_t>(odc::api::Settings::integerMissingValue());
 
-    std::vector<odc::api::ColumnInfo::Bit> bits1 {
-        {"bit1", 1, 0},
-        {"bit2", 2, 1},
-        {"bit3", 1, 3}};
-    std::vector<odc::api::ColumnInfo::Bit> bits2 {
-        {"bit4", 4, 0},
-        {"bit5", 2, 4},
-        {"bit6", 1, 6}};
+    std::vector<odc::api::ColumnInfo::Bit> bits1{{"bit1", 1, 0}, {"bit2", 2, 1}, {"bit3", 1, 3}};
+    std::vector<odc::api::ColumnInfo::Bit> bits2{{"bit4", 4, 0}, {"bit5", 2, 4}, {"bit6", 1, 6}};
 
-    std::vector<uint64_t> bf1Vals {0, 5, uimiss, 15};
-    std::vector<uint64_t> bf2Vals {127, uimiss, 42, 0};
+    std::vector<uint64_t> bf1Vals{0, 5, uimiss, 15};
+    std::vector<uint64_t> bf2Vals{127, uimiss, 42, 0};
 
-    std::vector<int64_t> bit1Vals {0, 1, imiss, 1};
-    std::vector<int64_t> bit2Vals {0, 2, imiss, 3};
-    std::vector<int64_t> bit3Vals {0, 0, imiss, 1};
-    std::vector<int64_t> bit4Vals {15, imiss, 10, 0};
-    std::vector<int64_t> bit5Vals { 3, imiss,  2, 0};
-    std::vector<int64_t> bit6Vals { 1, imiss,  0, 0};
+    std::vector<int64_t> bit1Vals{0, 1, imiss, 1};
+    std::vector<int64_t> bit2Vals{0, 2, imiss, 3};
+    std::vector<int64_t> bit3Vals{0, 0, imiss, 1};
+    std::vector<int64_t> bit4Vals{15, imiss, 10, 0};
+    std::vector<int64_t> bit5Vals{3, imiss, 2, 0};
+    std::vector<int64_t> bit6Vals{1, imiss, 0, 0};
 
     // Construct the source odb
 
@@ -329,7 +333,9 @@ CASE("Extraction of bitfield values") {
     /// TODO: Make the eckit layer use only proper integers internally...
 
     eckit::MemoryHandle output_odb;
-    std::string select_string = "select bitfield1.bit1, bitfield1.bit3, bitfield1.bit2, bitfield1, bitfield2.bit5, bitfield2.bit4, bitfield2.bit6";
+    std::string select_string =
+        "select bitfield1.bit1, bitfield1.bit3, bitfield1.bit2, bitfield1, bitfield2.bit5, bitfield2.bit4, "
+        "bitfield2.bit6";
     bool filtered = false;
 
     {
@@ -353,7 +359,7 @@ CASE("Extraction of bitfield values") {
         }
 #endif
 
-        SECTION( "ODAOutput (double internals)") {
+        SECTION("ODAOutput (double internals)") {
             odc::api::Settings::treatIntegersAsDoubles(true);
             oda_select_filter(select_string, source_odb, output_odb);
             filtered = true;
@@ -363,20 +369,15 @@ CASE("Extraction of bitfield values") {
     // Read back from the source ODB, and check that the contents are sane
 
     if (filtered) {
-        decode_and_test(output_odb,
-                        "bitfield1.bit1", bit1Vals,
-                        "bitfield1.bit3", bit3Vals,
-                        "bitfield1.bit2", bit2Vals,
-                        "bitfield1", bf1Vals,
-                        "bitfield2.bit5", bit5Vals,
-                        "bitfield2.bit4", bit4Vals,
-                        "bitfield2.bit6", bit6Vals);
+        decode_and_test(output_odb, "bitfield1.bit1", bit1Vals, "bitfield1.bit3", bit3Vals, "bitfield1.bit2", bit2Vals,
+                        "bitfield1", bf1Vals, "bitfield2.bit5", bit5Vals, "bitfield2.bit4", bit4Vals, "bitfield2.bit6",
+                        bit6Vals);
     }
 
     // Check if expansion of elements works, both with and without the table name as part of column identifier
 
     select_string = "select bitfield1.*, bitfield2.*@table";
-    filtered = false;
+    filtered      = false;
 
     {
 #if 0
@@ -399,7 +400,7 @@ CASE("Extraction of bitfield values") {
         }
 #endif
 
-        SECTION( "ODAOutput (double internals)") {
+        SECTION("ODAOutput (double internals)") {
             odc::api::Settings::treatIntegersAsDoubles(true);
             oda_select_filter(select_string, source_odb, output_odb);
             filtered = true;
@@ -409,13 +410,8 @@ CASE("Extraction of bitfield values") {
     // Read back from the source ODB, and check that the contents are sane
 
     if (filtered) {
-        decode_and_test(output_odb,
-                        "bitfield1.bit1", bit1Vals,
-                        "bitfield1.bit3", bit3Vals,
-                        "bitfield1.bit2", bit2Vals,
-                        "bitfield2.bit5", bit5Vals,
-                        "bitfield2.bit4", bit4Vals,
-                        "bitfield2.bit6", bit6Vals);
+        decode_and_test(output_odb, "bitfield1.bit1", bit1Vals, "bitfield1.bit3", bit3Vals, "bitfield1.bit2", bit2Vals,
+                        "bitfield2.bit5", bit5Vals, "bitfield2.bit4", bit4Vals, "bitfield2.bit6", bit6Vals);
     }
 }
 

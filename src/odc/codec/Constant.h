@@ -15,8 +15,8 @@
 #ifndef odc_core_codec_Constant_H
 #define odc_core_codec_Constant_H
 
-#include "odc/core/Codec.h"
 #include "odc/codec/String.h"
+#include "odc/core/Codec.h"
 
 namespace odc {
 namespace codec {
@@ -26,19 +26,20 @@ namespace codec {
 // Now the actual codecs!
 
 
-template<typename ByteOrder, typename ValueType>
+template <typename ByteOrder, typename ValueType>
 class CodecConstant : public core::DataStreamCodec<ByteOrder> {
 
-public: // definitions
+public:  // definitions
 
     constexpr static const char* codec_name() { return "constant"; }
 
-public: // methods
+public:  // methods
 
-    CodecConstant(api::ColumnType type, const std::string& name=codec_name()) : core::DataStreamCodec<ByteOrder>(name, type) {}
+    CodecConstant(api::ColumnType type, const std::string& name = codec_name()) :
+        core::DataStreamCodec<ByteOrder>(name, type) {}
     ~CodecConstant() {}
 
-private: // methods
+private:  // methods
 
     void gatherStats(const double& v) override;
     unsigned char* encode(unsigned char* p, const double& d) override;
@@ -49,18 +50,18 @@ private: // methods
 };
 
 
-template<typename ByteOrder>
+template <typename ByteOrder>
 class CodecConstantString : public CodecConstant<ByteOrder, double> {
 
-public: // name
+public:  // name
 
     constexpr static const char* codec_name() { return "constant_string"; }
 
-public: // methods
+public:  // methods
 
     CodecConstantString(api::ColumnType type) : CodecConstant<ByteOrder, double>(type, codec_name()) {}
 
-private: // methods
+private:  // methods
 
     unsigned char* encode(unsigned char* p, const double& d) override;
     void decode(double* out) override;
@@ -75,15 +76,17 @@ private: // methods
     void save(core::DataStream<ByteOrder>& ds) override;
 };
 
-template<typename ByteOrder>
+template <typename ByteOrder>
 class CodecLongConstantString : public CodecChars<ByteOrder> {
 
-public: // methods
+public:  // methods
+
     constexpr static const char* codec_name() { return "long_constant_string"; }
     CodecLongConstantString(api::ColumnType type) : CodecChars<ByteOrder>(type, codec_name()) {};
     ~CodecLongConstantString() override {}
 
-private: // methods
+private:  // methods
+
     unsigned char* encode(unsigned char* p, const double& d) override;
     void decode(double* out) override;
     void skip() override;
@@ -122,7 +125,7 @@ void CodecConstant<ByteOrder, ValueType>::skip() {}
 template <typename ByteOrder, typename ValueType>
 void CodecConstant<ByteOrder, ValueType>::print(std::ostream& s) const {
     s << this->name_ << ", value=" << std::fixed << static_cast<ValueType>(this->min_)
-                     << ", hasMissing=" << (this->hasMissing_?"true":"false");
+      << ", hasMissing=" << (this->hasMissing_ ? "true" : "false");
     if (this->hasMissing_) {
         s << ", missingValue=" << this->missingValue_;
     }
@@ -164,9 +167,7 @@ void CodecConstantString<ByteOrder>::save(core::DataStream<ByteOrder>& ds) {
 template <typename ByteOrder>
 void CodecConstantString<ByteOrder>::print(std::ostream& s) const {
     const char* cstr = reinterpret_cast<const char*>(&this->min_);
-    s << this->name_ << ", value='"
-      << std::string(cstr, ::strnlen(cstr, sizeof(double)))
-      << "'";
+    s << this->name_ << ", value='" << std::string(cstr, ::strnlen(cstr, sizeof(double))) << "'";
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -180,8 +181,9 @@ unsigned char* CodecLongConstantString<ByteOrder>::encode(unsigned char* p, cons
 
 template <typename ByteOrder>
 void CodecLongConstantString<ByteOrder>::decode(double* out) {
-    ::memset(out, 0, this->decodedSizeDoubles_*sizeof(double));
-    ::memcpy(reinterpret_cast<char*>(out), &this->strings_[0][0], std::min(this->strings_[0].length(), this->decodedSizeDoubles_*sizeof(double)));
+    ::memset(out, 0, this->decodedSizeDoubles_ * sizeof(double));
+    ::memcpy(reinterpret_cast<char*>(out), &this->strings_[0][0],
+             std::min(this->strings_[0].length(), this->decodedSizeDoubles_ * sizeof(double)));
 }
 
 template <typename ByteOrder>
@@ -192,7 +194,7 @@ void CodecLongConstantString<ByteOrder>::load(core::DataStream<ByteOrder>& ds) {
     core::DataStreamCodec<ByteOrder>::load(ds);
     std::string s;
     ds.read(s);
-    this->decodedSizeDoubles_ = ((s.length()-1) / sizeof(double)) +1;
+    this->decodedSizeDoubles_ = ((s.length() - 1) / sizeof(double)) + 1;
     this->strings_.push_back(s);
 }
 
@@ -204,8 +206,7 @@ void CodecLongConstantString<ByteOrder>::save(core::DataStream<ByteOrder>& ds) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace codec
-} // namespace odc
+}  // namespace codec
+}  // namespace odc
 
 #endif
-

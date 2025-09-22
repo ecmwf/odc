@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -12,8 +12,8 @@
 /// @author Simon Smart
 /// @date April 2010
 
-#include "eckit/io/DataHandle.h"
 #include "eckit/filesystem/PathName.h"
+#include "eckit/io/DataHandle.h"
 
 #include "odc/Select.h"
 #include "odc/SelectIterator.h"
@@ -55,7 +55,7 @@ Select::Select(const std::string& selectStatement, const eckit::PathName& path, 
     db.addImplicitTable(new odc::sql::ODATable(db, *ownDH_));
 }
 
-Select::Select(const std::string &selectStatement, const char *path, bool manageOwnBuffer) :
+Select::Select(const std::string& selectStatement, const char* path, bool manageOwnBuffer) :
     Select(selectStatement, std::string(path), manageOwnBuffer) {}
 
 
@@ -78,17 +78,18 @@ SelectIterator* Select::createSelectIterator(const std::string& sql) {
     return new SelectIterator(sql, session_, *output);
 }
 
-const Select::iterator Select::end() { return iterator(nullptr); }
+const Select::iterator Select::end() {
+    return iterator(nullptr);
+}
 
 // This is horrible, but the TextReader, and any stream based iteraton, can only
 // iterate once, so we MUST NOT create two iterators if begin() is called twice.
-Select::iterator Select::begin()
-{
+Select::iterator Select::begin() {
     if (!initted_) {
         SelectIterator* it = createSelectIterator(selectStatement_);
         ASSERT(it);
         it->next();
-        it_ = iterator(it);
+        it_      = iterator(it);
         initted_ = true;
     }
     return it_;
@@ -96,9 +97,9 @@ Select::iterator Select::begin()
 
 
 #ifdef SWIGPYTHON
-template odc::IteratorProxy< odc::SelectIterator,odc::Select,double const >; 
+template odc::IteratorProxy<odc::SelectIterator, odc::Select, double const>;
 #endif
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odc
+}  // namespace odc

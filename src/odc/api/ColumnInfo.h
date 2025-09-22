@@ -50,7 +50,7 @@ struct ColumnInfo {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace api
-} // namespace odc
+}  // namespace api
+}  // namespace odc
 
-#endif // odc_api_StridedData_H
+#endif  // odc_api_StridedData_H

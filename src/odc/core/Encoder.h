@@ -26,14 +26,12 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void encodeFrame(eckit::DataHandle& out,
-                 const std::vector<api::ColumnInfo>& columns,
-                 const std::vector<api::ConstStridedData>& data,
-                 const std::map<std::string, std::string>& properties);
+void encodeFrame(eckit::DataHandle& out, const std::vector<api::ColumnInfo>& columns,
+                 const std::vector<api::ConstStridedData>& data, const std::map<std::string, std::string>& properties);
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace core
-} // namespace odc
+}  // namespace core
+}  // namespace odc
 
 #endif

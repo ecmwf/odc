@@ -12,9 +12,9 @@
 
 #include "eckit/testing/Test.h"
 
-#include "odc/core/MetaData.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
+#include "odc/core/MetaData.h"
 
 using namespace eckit::testing;
 using eckit::Log;
@@ -63,7 +63,7 @@ CASE("Missing/ambiguous column names") {
     odc::Reader reader("../2000010106-reduced.odb");
     auto it = reader.begin();
     EXPECT(it != reader.end());
-    const odc::core::MetaData &md = it->columns();
+    const odc::core::MetaData& md = it->columns();
     EXPECT(md.columnIndex("event1@hdr") == 11);
     EXPECT(md.columnIndex("event1@body") == 35);
     EXPECT_THROWS_AS(md.columnIndex("event1"), odc::core::AmbiguousColumnException);
@@ -75,4 +75,3 @@ CASE("Missing/ambiguous column names") {
 int main(int argc, char* argv[]) {
     return run_tests(argc, argv);
 }
-
