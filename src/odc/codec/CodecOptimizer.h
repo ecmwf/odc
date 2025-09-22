@@ -97,6 +97,7 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns) {
 
             case api::STRING: {
                 n = col.coder().numStrings();
+                ASSERT(n < 65536);
                 if (n == 1 && col.coder().dataSizeDoubles() == 1)
                     codec = "constant_string";
                 else if (n == 1 && std::getenv("ODC_ENABLE_WRITING_LONG_STRING_CODEC") != NULL)
@@ -105,7 +106,6 @@ int CodecOptimizer::setOptimalCodecs(core::MetaData& columns) {
                     codec = "int8_string";
                 else if (n < 65536)
                     codec = "int16_string";
-
 
                 std::unique_ptr<core::Codec> newCodec =
                     core::CodecFactory::instance().build<ByteOrder>(codec, col.type());
