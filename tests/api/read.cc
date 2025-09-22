@@ -14,8 +14,8 @@
 #include "eckit/io/FileHandle.h"
 #include "eckit/testing/Test.h"
 
-#include "odc/api/odc.h"
 #include "odc/api/Odb.h"
+#include "odc/api/odc.h"
 
 using namespace eckit::testing;
 
@@ -26,7 +26,7 @@ bool test_check_file_exists(std::string file_path) {
     return file_stream.good();
 }
 
-void test_generate_odb_properties(const std::string &path, int propertiesMode = 0) {
+void test_generate_odb_properties(const std::string& path, int propertiesMode = 0) {
     odc::api::Settings::treatIntegersAsDoubles(false);
 
     // Define row count
@@ -42,19 +42,19 @@ void test_generate_odb_properties(const std::string &path, int propertiesMode = 
     // Set up the allocated arrays with scratch data
     for (i = 0; i < nrows; i++) {
         snprintf(data0[i], 8, "xxxx");  // expver
-        data1[i] = 20210527;  // date@hdr
-        data2[i] = 12.3456 * i;  // obsvalue@body
+        data1[i] = 20210527;            // date@hdr
+        data2[i] = 12.3456 * i;         // obsvalue@body
     }
 
     // Define all column names, their types and sizes
     std::vector<odc::api::ColumnInfo> columns = {
-        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
-        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
-        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8, {}},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t), {}},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
     };
 
     // Set a custom data layout and data array for each column
-    std::vector<odc::api::ConstStridedData> strides {
+    std::vector<odc::api::ConstStridedData> strides{
         // ptr, nrows, element_size, stride
         {data0, nrows, 8, 8},
         {data1, nrows, sizeof(int64_t), sizeof(int64_t)},
@@ -77,9 +77,10 @@ void test_generate_odb_properties(const std::string &path, int propertiesMode = 
 
             // Where the properties in the two frames are distinct
             case 1: {
-                if (i == 0) properties["foo"] = "bar";
+                if (i == 0)
+                    properties["foo"] = "bar";
                 else {
-                    properties = {};  // reset
+                    properties        = {};  // reset
                     properties["baz"] = "qux";
                 }
                 break;
@@ -94,8 +95,10 @@ void test_generate_odb_properties(const std::string &path, int propertiesMode = 
 
             // Where the properties overlap with entries whose keys are the same, but the values different
             case 3: {
-                if (i == 0) properties["foo"] = "bar";
-                else properties["foo"] = "baz";
+                if (i == 0)
+                    properties["foo"] = "bar";
+                else
+                    properties["foo"] = "baz";
                 break;
             }
 
@@ -110,7 +113,7 @@ void test_generate_odb_properties(const std::string &path, int propertiesMode = 
     ASSERT(test_check_file_exists(path));
 }
 
-void test_generate_odb_span(const std::string &path) {
+void test_generate_odb_span(const std::string& path) {
     odc::api::Settings::treatIntegersAsDoubles(false);
 
     // Define row count
@@ -136,32 +139,32 @@ void test_generate_odb_span(const std::string &path) {
 
     // Set up the allocated arrays with scratch data
     for (i = 0; i < nrows; i++) {
-        snprintf(data0_0[i], 8, "xxxx");  // expver
-        data0_1[i] = 20210527;  // date@hdr
-        data0_2[i] = 12.3456 * i;  // obsvalue@body
-        data0_3[i] = odc::api::Settings::doubleMissingValue(); // missing_value
+        snprintf(data0_0[i], 8, "xxxx");                        // expver
+        data0_1[i] = 20210527;                                  // date@hdr
+        data0_2[i] = 12.3456 * i;                               // obsvalue@body
+        data0_3[i] = odc::api::Settings::doubleMissingValue();  // missing_value
 
-        snprintf(data1_0[i], 8, "xxxx");  // expver
-        data1_1[i] = 20210528;  // date@hdr
-        data1_2[i] = 12.3456 * i;  // obsvalue@body
-        data1_3[i] = odc::api::Settings::doubleMissingValue(); // missing_value
+        snprintf(data1_0[i], 8, "xxxx");                        // expver
+        data1_1[i] = 20210528;                                  // date@hdr
+        data1_2[i] = 12.3456 * i;                               // obsvalue@body
+        data1_3[i] = odc::api::Settings::doubleMissingValue();  // missing_value
 
-        snprintf(data2_0[i], 8, "xxxx");  // expver
-        data2_1[i] = 20210529;  // date@hdr
-        data2_2[i] = 12.3456 * i;  // obsvalue@body
-        data2_3[i] = odc::api::Settings::doubleMissingValue(); // missing_value
+        snprintf(data2_0[i], 8, "xxxx");                        // expver
+        data2_1[i] = 20210529;                                  // date@hdr
+        data2_2[i] = 12.3456 * i;                               // obsvalue@body
+        data2_3[i] = odc::api::Settings::doubleMissingValue();  // missing_value
     }
 
     // Define all column names, their types and sizes
     std::vector<odc::api::ColumnInfo> columns = {
-        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8},
-        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t)},
-        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
-        {std::string("missing_value"), odc::api::ColumnType(odc::api::REAL), sizeof(double)},
+        {std::string("expver"), odc::api::ColumnType(odc::api::STRING), 8, {}},
+        {std::string("date@hdr"), odc::api::ColumnType(odc::api::INTEGER), sizeof(int64_t), {}},
+        {std::string("obsvalue@body"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
+        {std::string("missing_value"), odc::api::ColumnType(odc::api::REAL), sizeof(double), {}},
     };
 
     // Set a custom data layout and data array for each column and frame
-    std::vector<odc::api::ConstStridedData> strides0 {
+    std::vector<odc::api::ConstStridedData> strides0{
         // ptr, nrows, element_size, stride
         {data0_0, nrows, 8, 8},
         {data0_1, nrows, sizeof(int64_t), sizeof(int64_t)},
@@ -169,7 +172,7 @@ void test_generate_odb_span(const std::string &path) {
         {data0_3, nrows, sizeof(double), sizeof(double)},
     };
 
-    std::vector<odc::api::ConstStridedData> strides1 {
+    std::vector<odc::api::ConstStridedData> strides1{
         // ptr, nrows, element_size, stride
         {data1_0, nrows, 8, 8},
         {data1_1, nrows, sizeof(int64_t), sizeof(int64_t)},
@@ -177,7 +180,7 @@ void test_generate_odb_span(const std::string &path) {
         {data1_3, nrows, sizeof(double), sizeof(double)},
     };
 
-    std::vector<odc::api::ConstStridedData> strides2 {
+    std::vector<odc::api::ConstStridedData> strides2{
         // ptr, nrows, element_size, stride
         {data2_0, nrows, 8, 8},
         {data2_1, nrows, sizeof(int64_t), sizeof(int64_t)},
@@ -206,7 +209,7 @@ CASE("Count lines in an existing ODB file") {
     bool aggregated = false;
     odc::api::Reader reader("../2000010106-reduced.odb", aggregated);
 
-    size_t nframes = 0;
+    size_t nframes   = 0;
     size_t totalRows = 0;
 
     odc::api::Frame frame;
@@ -223,38 +226,83 @@ CASE("Count lines in an existing ODB file") {
 
 CASE("Check column details in an existing ODB file") {
 
-    std::vector<std::string> cols {
-        "expver@desc", "andate@desc", "antime@desc", "seqno@hdr", "obstype@hdr", "obschar@hdr", "subtype@hdr",
-        "date@hdr", "time@hdr", "rdbflag@hdr", "status@hdr", "event1@hdr", "blacklist@hdr", "sortbox@hdr",
-        "sitedep@hdr", "statid@hdr", "ident@hdr", "lat@hdr", "lon@hdr", "stalt@hdr", "modoro@hdr", "trlat@hdr",
-        "trlon@hdr", "instspec@hdr", "event2@hdr", "anemoht@hdr", "baroht@hdr", "sensor@hdr", "numlev@hdr",
-        "varno_presence@hdr", "varno@body", "vertco_type@body", "rdbflag@body", "anflag@body", "status@body",
-        "event1@body", "blacklist@body", "entryno@body", "press@body", "press_rl@body", "obsvalue@body", "aux1@body",
-        "event2@body", "ppcode@body", "level@body", "biascorr@body", "final_obs_error@errstat", "obs_error@errstat",
-        "repres_error@errstat", "pers_error@errstat", "fg_error@errstat",
+    std::vector<std::string> cols{
+        "expver@desc",
+        "andate@desc",
+        "antime@desc",
+        "seqno@hdr",
+        "obstype@hdr",
+        "obschar@hdr",
+        "subtype@hdr",
+        "date@hdr",
+        "time@hdr",
+        "rdbflag@hdr",
+        "status@hdr",
+        "event1@hdr",
+        "blacklist@hdr",
+        "sortbox@hdr",
+        "sitedep@hdr",
+        "statid@hdr",
+        "ident@hdr",
+        "lat@hdr",
+        "lon@hdr",
+        "stalt@hdr",
+        "modoro@hdr",
+        "trlat@hdr",
+        "trlon@hdr",
+        "instspec@hdr",
+        "event2@hdr",
+        "anemoht@hdr",
+        "baroht@hdr",
+        "sensor@hdr",
+        "numlev@hdr",
+        "varno_presence@hdr",
+        "varno@body",
+        "vertco_type@body",
+        "rdbflag@body",
+        "anflag@body",
+        "status@body",
+        "event1@body",
+        "blacklist@body",
+        "entryno@body",
+        "press@body",
+        "press_rl@body",
+        "obsvalue@body",
+        "aux1@body",
+        "event2@body",
+        "ppcode@body",
+        "level@body",
+        "biascorr@body",
+        "final_obs_error@errstat",
+        "obs_error@errstat",
+        "repres_error@errstat",
+        "pers_error@errstat",
+        "fg_error@errstat",
     };
 
-    std::vector<int> types {
-        odc::api::STRING, odc::api::INTEGER, odc::api::INTEGER, odc::api::INTEGER, odc::api::INTEGER,
-        odc::api::BITFIELD, odc::api::INTEGER, odc::api::INTEGER, odc::api::INTEGER, odc::api::BITFIELD,
-        odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD, odc::api::INTEGER, odc::api::INTEGER,
-        odc::api::STRING, odc::api::INTEGER, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::REAL,
-        odc::api::REAL, odc::api::REAL, odc::api::INTEGER, odc::api::INTEGER, odc::api::REAL, odc::api::REAL,
-        odc::api::INTEGER, odc::api::INTEGER, odc::api::BITFIELD, odc::api::INTEGER, odc::api::INTEGER,
-        odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD,
-        odc::api::INTEGER, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::INTEGER,
-        odc::api::INTEGER, odc::api::BITFIELD, odc::api::REAL, odc::api::REAL, odc::api::REAL, odc::api::REAL,
-        odc::api::REAL, odc::api::REAL,
+    std::vector<int> types{
+        odc::api::STRING,   odc::api::INTEGER,  odc::api::INTEGER,  odc::api::INTEGER,  odc::api::INTEGER,
+        odc::api::BITFIELD, odc::api::INTEGER,  odc::api::INTEGER,  odc::api::INTEGER,  odc::api::BITFIELD,
+        odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD, odc::api::INTEGER,  odc::api::INTEGER,
+        odc::api::STRING,   odc::api::INTEGER,  odc::api::REAL,     odc::api::REAL,     odc::api::REAL,
+        odc::api::REAL,     odc::api::REAL,     odc::api::REAL,     odc::api::INTEGER,  odc::api::INTEGER,
+        odc::api::REAL,     odc::api::REAL,     odc::api::INTEGER,  odc::api::INTEGER,  odc::api::BITFIELD,
+        odc::api::INTEGER,  odc::api::INTEGER,  odc::api::BITFIELD, odc::api::BITFIELD, odc::api::BITFIELD,
+        odc::api::BITFIELD, odc::api::BITFIELD, odc::api::INTEGER,  odc::api::REAL,     odc::api::REAL,
+        odc::api::REAL,     odc::api::REAL,     odc::api::INTEGER,  odc::api::INTEGER,  odc::api::BITFIELD,
+        odc::api::REAL,     odc::api::REAL,     odc::api::REAL,     odc::api::REAL,     odc::api::REAL,
+        odc::api::REAL,
     };
 
-    std::vector<std::string> bitfields {
-        "lat_humon", "lat_qcsub", "lat_override", "lat_flag", "lat_hqc_flag", "lon_humon", "lon_qcsub", "lon_override",
-        "lon_flag", "lon_hqc_flag", "date_humon", "date_qcsub", "date_override", "date_flag", "date_hqc_flag",
-        "time_humon", "time_qcsub", "time_override", "time_flag", "time_hqc_flag", "stalt_humon", "stalt_qcsub",
-        "stalt_override", "stalt_flag", "stalt_hqc_flag",
+    std::vector<std::string> bitfields{
+        "lat_humon",   "lat_qcsub",   "lat_override",   "lat_flag",   "lat_hqc_flag",
+        "lon_humon",   "lon_qcsub",   "lon_override",   "lon_flag",   "lon_hqc_flag",
+        "date_humon",  "date_qcsub",  "date_override",  "date_flag",  "date_hqc_flag",
+        "time_humon",  "time_qcsub",  "time_override",  "time_flag",  "time_hqc_flag",
+        "stalt_humon", "stalt_qcsub", "stalt_override", "stalt_flag", "stalt_hqc_flag",
     };
 
-    std::vector<int> bitfield_sizes {
+    std::vector<int> bitfield_sizes{
         1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1,
     };
 
@@ -287,7 +335,7 @@ CASE("Check column details in an existing ODB file") {
         if (col == 9) {
             EXPECT(column.bitfield.size() == 25);
 
-            int j = 0;
+            int j               = 0;
             int expected_offset = 0;
 
             for (auto const& bitfield : column.bitfield) {
@@ -318,8 +366,8 @@ CASE("Decode data in an existing ODB file") {
 
     // Properties of this frame
 
-    size_t ncols = frame.columnCount();
-    size_t nrows = frame.rowCount();
+    size_t ncols           = frame.columnCount();
+    size_t nrows           = frame.rowCount();
     const auto& columnInfo = frame.columnInfo();
 
     EXPECT(nrows == 10000);
@@ -360,21 +408,16 @@ CASE("Decode data in an existing ODB file") {
     odc::api::Decoder decoder(columns, strides);
     decoder.decode(frame, nthreads);
 
-    std::vector<int64_t> expected_seqno {
-        (int64_t)6106691,
-        (int64_t)6002945,
-        (int64_t)6003233,
-        (int64_t)6105819
-    };
+    std::vector<int64_t> expected_seqno{(int64_t)6106691, (int64_t)6002945, (int64_t)6003233, (int64_t)6105819};
 
-    std::vector<int64_t> expected_obschar {
+    std::vector<int64_t> expected_obschar{
         (int64_t)537918674,
         (int64_t)135265490,
         (int64_t)135265490,
         (int64_t)537918674,
     };
 
-    std::vector<double> expected_lat {
+    std::vector<double> expected_lat{
         (double)0.370279,
         (double)0.226484,
         (double)0.105947,
@@ -383,7 +426,7 @@ CASE("Decode data in an existing ODB file") {
 
     const int width = 8;
 
-    long integer_missing = odc::api::Settings::integerMissingValue();
+    long integer_missing  = odc::api::Settings::integerMissingValue();
     double double_missing = odc::api::Settings::doubleMissingValue();
 
     size_t row;
@@ -392,8 +435,8 @@ CASE("Decode data in an existing ODB file") {
         row = i * 765;
 
         // expver@desc (ODC_STRING, col 1)
-        EXPECT(std::string(strides[0][row],
-                          ::strnlen(strides[0][row], columnInfo[0].decodedSize)).substr(0, 4) == "0018");
+        EXPECT(std::string(strides[0][row], ::strnlen(strides[0][row], columnInfo[0].decodedSize)).substr(0, 4) ==
+               "0018");
 
         // seqno@hdr (ODC_INTEGER, col 4)
         EXPECT(*reinterpret_cast<const int64_t*>(strides[3][row]) == expected_seqno.at(i));
@@ -429,24 +472,14 @@ CASE("Where the properties in the two frames are distinct (non-aggregated)") {
     while ((frame = reader.next())) {
         for (const auto& property : frame.properties()) {
             if (nframes == 0) {
-                EXPECT(
-                    property.first == "foo"
-                    || property.first == "encoder"
-                );
-                EXPECT(
-                    property.second == "bar"
-                    || property.second == std::string("odc version ") + odc::api::Settings::version()
-                );
+                EXPECT(property.first == "foo" || property.first == "encoder");
+                EXPECT(property.second == "bar" ||
+                       property.second == std::string("odc version ") + odc::api::Settings::version());
             }
             else {
-                EXPECT(
-                    property.first == "baz"
-                    || property.first == "encoder"
-                );
-                EXPECT(
-                    property.second == "qux"
-                    || property.second == std::string("odc version ") + odc::api::Settings::version()
-                );
+                EXPECT(property.first == "baz" || property.first == "encoder");
+                EXPECT(property.second == "qux" ||
+                       property.second == std::string("odc version ") + odc::api::Settings::version());
             }
             seenProperties[property.first] = property.second;
         }
@@ -479,16 +512,9 @@ CASE("Where the properties in the two frames are distinct (aggregated)") {
     EXPECT(seenProperties.size() == 3);
 
     for (const auto& property : seenProperties) {
-        EXPECT(
-            property.first == "foo"
-            || property.first == "baz"
-            || property.first == "encoder"
-        );
-        EXPECT(
-            property.second == "bar"
-            || property.second == "qux"
-            || property.second == std::string("odc version ") + odc::api::Settings::version()
-        );
+        EXPECT(property.first == "foo" || property.first == "baz" || property.first == "encoder");
+        EXPECT(property.second == "bar" || property.second == "qux" ||
+               property.second == std::string("odc version ") + odc::api::Settings::version());
     }
 }
 
@@ -506,28 +532,14 @@ CASE("Where the properties in the two frames overlap with entries that are the s
     while ((frame = reader.next())) {
         for (const auto& property : frame.properties()) {
             if (nframes == 0) {
-                EXPECT(
-                    property.first == "foo"
-                    || property.first == "baz"
-                    || property.first == "encoder"
-                );
-                EXPECT(
-                    property.second == "bar"
-                    || property.second == "qux"
-                    || property.second == std::string("odc version ") + odc::api::Settings::version()
-                );
+                EXPECT(property.first == "foo" || property.first == "baz" || property.first == "encoder");
+                EXPECT(property.second == "bar" || property.second == "qux" ||
+                       property.second == std::string("odc version ") + odc::api::Settings::version());
             }
             else {
-                EXPECT(
-                    property.first == "foo"
-                    || property.first == "baz"
-                    || property.first == "encoder"
-                );
-                EXPECT(
-                    property.second == "bar"
-                    || property.second == "qux"
-                    || property.second == std::string("odc version ") + odc::api::Settings::version()
-                );
+                EXPECT(property.first == "foo" || property.first == "baz" || property.first == "encoder");
+                EXPECT(property.second == "bar" || property.second == "qux" ||
+                       property.second == std::string("odc version ") + odc::api::Settings::version());
             }
             seenProperties[property.first] = property.second;
         }
@@ -560,16 +572,9 @@ CASE("Where the properties in the two frames overlap with entries that are the s
     EXPECT(seenProperties.size() == 3);
 
     for (const auto& property : seenProperties) {
-        EXPECT(
-            property.first == "foo"
-            || property.first == "baz"
-            || property.first == "encoder"
-        );
-        EXPECT(
-            property.second == "bar"
-            || property.second == "qux"
-            || property.second == std::string("odc version ") + odc::api::Settings::version()
-        );
+        EXPECT(property.first == "foo" || property.first == "baz" || property.first == "encoder");
+        EXPECT(property.second == "bar" || property.second == "qux" ||
+               property.second == std::string("odc version ") + odc::api::Settings::version());
     }
 }
 
@@ -587,24 +592,14 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
     while ((frame = reader.next())) {
         for (const auto& property : frame.properties()) {
             if (nframes == 0) {
-                EXPECT(
-                    property.first == "foo"
-                    || property.first == "encoder"
-                );
-                EXPECT(
-                    property.second == "bar"
-                    || property.second == std::string("odc version ") + odc::api::Settings::version()
-                );
+                EXPECT(property.first == "foo" || property.first == "encoder");
+                EXPECT(property.second == "bar" ||
+                       property.second == std::string("odc version ") + odc::api::Settings::version());
             }
             else {
-                EXPECT(
-                    property.first == "foo"
-                    || property.first == "encoder"
-                );
-                EXPECT(
-                    property.second == "baz"
-                    || property.second == std::string("odc version ") + odc::api::Settings::version()
-                );
+                EXPECT(property.first == "foo" || property.first == "encoder");
+                EXPECT(property.second == "baz" ||
+                       property.second == std::string("odc version ") + odc::api::Settings::version());
             }
             seenProperties[property.first] = property.second;
         }
@@ -637,14 +632,9 @@ CASE("Where the properties overlap with entries whose keys are the same, but the
     EXPECT(seenProperties.size() == 2);
 
     for (const auto& property : seenProperties) {
-        EXPECT(
-            property.first == "foo"
-            || property.first == "encoder"
-        );
-        EXPECT(
-            property.second == "bar"  // value from the first frame will win!
-            || property.second == std::string("odc version ") + odc::api::Settings::version()
-        );
+        EXPECT(property.first == "foo" || property.first == "encoder");
+        EXPECT(property.second == "bar"  // value from the first frame will win!
+               || property.second == std::string("odc version ") + odc::api::Settings::version());
     }
 }
 
@@ -663,8 +653,10 @@ private:
             ASSERT(vals.size() == 1);
         }
         else {
-            if (columnName == "obsvalue@body") ASSERT(vals.size() == 10);
-            else ASSERT(vals.size() == 1);
+            if (columnName == "obsvalue@body")
+                ASSERT(vals.size() == 10);
+            else
+                ASSERT(vals.size() == 1);
         }
 
         std::stringstream val;
@@ -735,7 +727,9 @@ private:
 
     void operator()(const std::string& columnName, const std::set<long>& vals) override { test(columnName, vals); }
     void operator()(const std::string& columnName, const std::set<double>& vals) override { test(columnName, vals); }
-    void operator()(const std::string& columnName, const std::set<std::string>& vals) override { test(columnName, vals); }
+    void operator()(const std::string& columnName, const std::set<std::string>& vals) override {
+        test(columnName, vals);
+    }
 
     int frame_;
     bool mustBeConstant_;
@@ -746,7 +740,7 @@ CASE("Where Span interface is used with constant value constraint") {
     test_generate_odb_span("span-1.odb");
 
     // Define columns with constant values
-    std::vector<std::string> cols {"expver", "date@hdr"};
+    std::vector<std::string> cols{"expver", "date@hdr"};
 
     // Parse frames in non-aggregated mode
     bool aggregated = false;
@@ -761,8 +755,8 @@ CASE("Where Span interface is used with constant value constraint") {
         odc::api::Span lastSpan;
         long offset = 0;
         long length = 0;
-        bool first = true;
-        int i = 0;
+        bool first  = true;
+        int i       = 0;
 
         // Iterate over frames
         while ((frame = reader.next())) {
@@ -775,7 +769,8 @@ CASE("Where Span interface is used with constant value constraint") {
                 length += span.length();
 
                 // Remember the first set of values
-                if (first) std::swap(lastSpan, span);
+                if (first)
+                    std::swap(lastSpan, span);
             }
 
             // If the values differ, output the last set
@@ -821,7 +816,7 @@ CASE("Where Span interface is used with constant value constraint") {
             }
 
             // A user error is raised when constant value constraint is not met
-            catch(eckit::Exception& e) {
+            catch (eckit::Exception& e) {
                 EXPECT(std::string(e.what()) == "UserError: Non-constant columns required in span: [obsvalue@body]");
             }
         }
@@ -833,7 +828,7 @@ CASE("Where Span interface is used without constant value constraint") {
     ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define columns
-    std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body"};
+    std::vector<std::string> cols{"expver", "date@hdr", "obsvalue@body"};
 
     // Parse frames in non-aggregated mode
     bool aggregated = false;
@@ -847,8 +842,8 @@ CASE("Where Span interface is used without constant value constraint") {
     odc::api::Span lastSpan;
     long offset = 0;
     long length = 0;
-    bool first = true;
-    int i = 0;
+    bool first  = true;
+    int i       = 0;
 
     // Iterate over frames
     while ((frame = reader.next())) {
@@ -861,7 +856,8 @@ CASE("Where Span interface is used without constant value constraint") {
             length += span.length();
 
             // Remember the first set of values
-            if (first) std::swap(lastSpan, span);
+            if (first)
+                std::swap(lastSpan, span);
         }
 
         // If the values differ, output the last set
@@ -895,7 +891,7 @@ CASE("Where Span interface is used with a missing column") {
     ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define columns and include a missing one
-    std::vector<std::string> cols {"expver", "date@hdr", "foo@bar"};
+    std::vector<std::string> cols{"expver", "date@hdr", "foo@bar"};
 
     // Parse frames in non-aggregated mode
     bool aggregated = false;
@@ -916,7 +912,7 @@ CASE("Where Span interface is used with a missing column") {
         }
 
         // A user error is raised when specified column cannot be found
-        catch(eckit::Exception& e) {
+        catch (eckit::Exception& e) {
             EXPECT(std::string(e.what()) == "UserError: Column 'foo@bar' not found.");
         }
     }
@@ -927,7 +923,7 @@ CASE("Where Span interface is used with no columns specified") {
     ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define empty list of columns
-    std::vector<std::string> cols {};
+    std::vector<std::string> cols{};
 
     // Parse frames in non-aggregated mode
     bool aggregated = false;
@@ -941,8 +937,8 @@ CASE("Where Span interface is used with no columns specified") {
     odc::api::Span lastSpan;
     long offset = 0;
     long length = 0;
-    bool first = true;
-    int i = 0;
+    bool first  = true;
+    int i       = 0;
 
     // Iterate over frames
     while ((frame = reader.next())) {
@@ -955,7 +951,8 @@ CASE("Where Span interface is used with no columns specified") {
             length += span.length();
 
             // Remember the first set of values
-            if (first) std::swap(lastSpan, span);
+            if (first)
+                std::swap(lastSpan, span);
         }
 
         // If the values differ, output the last set
@@ -989,7 +986,7 @@ CASE("Where Span interface is used with all columns specified") {
     ASSERT(test_check_file_exists("span-1.odb"));
 
     // Define list of columns with all of them
-    std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body", "missing_value"};
+    std::vector<std::string> cols{"expver", "date@hdr", "obsvalue@body", "missing_value"};
 
     // Parse frames in non-aggregated mode
     bool aggregated = false;
@@ -1003,8 +1000,8 @@ CASE("Where Span interface is used with all columns specified") {
     odc::api::Span lastSpan;
     long offset = 0;
     long length = 0;
-    bool first = true;
-    int i = 0;
+    bool first  = true;
+    int i       = 0;
 
     // Iterate over frames
     while ((frame = reader.next())) {
@@ -1017,7 +1014,8 @@ CASE("Where Span interface is used with all columns specified") {
             length += span.length();
 
             // Remember the first set of values
-            if (first) std::swap(lastSpan, span);
+            if (first)
+                std::swap(lastSpan, span);
         }
 
         // If the values differ, output the last set
@@ -1051,7 +1049,7 @@ CASE("Where Span interface is used with missing values") {
     ASSERT(test_check_file_exists("span-1.odb"));
 
     // Add missing value column to the list
-    std::vector<std::string> cols {"missing_value"};
+    std::vector<std::string> cols{"missing_value"};
 
     // Parse frames in non-aggregated mode
     bool aggregated = false;
@@ -1065,8 +1063,8 @@ CASE("Where Span interface is used with missing values") {
     odc::api::Span lastSpan;
     long offset = 0;
     long length = 0;
-    bool first = true;
-    int i = 0;
+    bool first  = true;
+    int i       = 0;
 
     // Iterate over frames
     while ((frame = reader.next())) {
@@ -1079,7 +1077,8 @@ CASE("Where Span interface is used with missing values") {
             length += span.length();
 
             // Remember the first set of values
-            if (first) std::swap(lastSpan, span);
+            if (first)
+                std::swap(lastSpan, span);
         }
 
         // If the values differ, output the last set
@@ -1113,7 +1112,7 @@ CASE("Where Span interface is used to read values without decoding") {
     ASSERT(test_check_file_exists("span-1.odb"));
 
     // Add columns of all three types to the list
-    std::vector<std::string> cols {"expver", "date@hdr", "obsvalue@body"};
+    std::vector<std::string> cols{"expver", "date@hdr", "obsvalue@body"};
 
     // Parse frames in aggregated mode
     bool aggregated = true;
@@ -1134,8 +1133,8 @@ CASE("Where Span interface is used to read values without decoding") {
         // Get values for the frame
         odc::api::Span span = frame.span(cols, mustBeConstant);
 
-        expver_vals = span.getStringValues("expver");
-        date_vals = span.getIntegerValues("date@hdr");
+        expver_vals   = span.getStringValues("expver");
+        date_vals     = span.getIntegerValues("date@hdr");
         obsvalue_vals = span.getRealValues("obsvalue@body");
     }
 
@@ -1144,8 +1143,8 @@ CASE("Where Span interface is used to read values without decoding") {
         EXPECT(val == "xxxx");
     }
 
-    std::vector<long> expdate_vals = { 20210527, 20210528, 20210529 };
-    int i = 0;
+    std::vector<long> expdate_vals = {20210527, 20210528, 20210529};
+    int i                          = 0;
 
     // Check integer values
     for (const long val : date_vals) {
@@ -1189,8 +1188,8 @@ CASE("Filter a subset of ODB-2 data") {
     bool aggregated = true;
     odc::api::Reader reader(dh, aggregated);
 
-    size_t nframes = 0;
-    size_t totalRows = 0;
+    size_t nframes        = 0;
+    size_t totalRows      = 0;
     odc::api::Frame frame = reader.next();
 
     // Test second type of frame constructor via an existing copy
@@ -1233,29 +1232,78 @@ CASE("Filter a subset of ODB-2 data") {
     EXPECT(dummy_frame.rowCount() == 10);
 }
 
+CASE("Test Span interface with and without treatIntegersAsDoubles") {
+
+    // Construct some test data
+
+    std::vector<int64_t> RESTRICTED{1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0};
+    std::vector<int64_t> VALUES{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
+    eckit::PathName path = "span-test-1";
+
+    {
+        odc::api::Settings::treatIntegersAsDoubles(false);
+
+        std::unique_ptr<eckit::DataHandle> dh(path.fileHandle());
+        dh->openForWrite(0);
+        eckit::AutoClose closer(*dh);
+
+        std::vector<odc::api::ColumnInfo> columns{
+            {"values@body", odc::api::ColumnType::INTEGER, sizeof(int64_t), {}},
+            {"restricted@hdr", odc::api::ColumnType::INTEGER, sizeof(int64_t), {}},
+        };
+        std::vector<odc::api::ConstStridedData> strides{
+            {&VALUES[0], VALUES.size(), sizeof(int64_t), sizeof(int64_t)},
+            {&RESTRICTED[0], RESTRICTED.size(), sizeof(int64_t), sizeof(int64_t)},
+        };
+
+        odc::api::encode(*dh, columns, strides);
+    }
+
+    // Get the span of this data
+
+    for (bool asDoubles : {false, true}) {
+        odc::api::Settings::treatIntegersAsDoubles(asDoubles);
+
+        std::unique_ptr<eckit::DataHandle> dh(path.fileHandle());
+        dh->openForRead();
+        eckit::AutoClose closer(*dh);
+
+        odc::api::Reader reader(*dh, /* aggregated */ true);
+        odc::api::Frame frame = reader.next();
+
+        odc::api::Span s = frame.span(std::vector<std::string>({"values", "restricted"}), /* onlyConst */ false);
+
+        EXPECT(s.getIntegerValues("values") == std::set<long>({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}));
+        EXPECT(s.getIntegerValues("restricted") == std::set<long>({0, 1}));
+
+        EXPECT(!reader.next());
+    }
+}
+
 // ------------------------------------------------------------------------------------------------------
 
-//CASE("Decode an entire ODB file") {
+// CASE("Decode an entire ODB file") {
 //
-//    odc::api::Odb o("../2000010106-reduced.odb");
+//     odc::api::Odb o("../2000010106-reduced.odb");
 //
-//    size_t ntables = 0;
+//     size_t ntables = 0;
 //
-//    while (const auto& table = o.next()) {
+//     while (const auto& table = o.next()) {
 //
-//        DecodeTarget decoded;
-//        table.get().decode();
+//         DecodeTarget decoded;
+//         table.get().decode();
 //
-//        EXPECT(decoded.rows() == table.get().rowCount());
-//        EXPECT(decoded.columns() == 51);
+//         EXPECT(decoded.rows() == table.get().rowCount());
+//         EXPECT(decoded.columns() == 51);
 //
-//        ++ntables;
-//    }
-//}
+//         ++ntables;
+//     }
+// }
 //
 //// ------------------------------------------------------------------------------------------------------
 //
-//CASE("Decode only some columns") {
+// CASE("Decode only some columns") {
 //
 //    odc::api::Odb o("../2000010106-reduced.odb");
 //

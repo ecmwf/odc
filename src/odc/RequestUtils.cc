@@ -11,10 +11,10 @@
 #include <algorithm>
 #include <iterator>
 
-#include "eckit/utils/StringTools.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/log/Log.h"
 #include "eckit/types/Types.h"
+#include "eckit/utils/StringTools.h"
 
 #include "odc/RequestUtils.h"
 
@@ -55,5 +55,4 @@ void checkKeywordsHaveValues(const RequestDict& request, const std::vector<std::
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odc
-
+}  // namespace odc

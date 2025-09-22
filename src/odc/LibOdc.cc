@@ -26,23 +26,27 @@ LibOdc::LibOdc() : Library("odc") {}
 
 const LibOdc& LibOdc::instance() {
     static LibOdc theinstance;
-    return theinstance;;
+    return theinstance;
+    ;
 }
 
-const void* LibOdc::addr() const { return this; }
+const void* LibOdc::addr() const {
+    return this;
+}
 
-std::string LibOdc::version() const { return ODBAPIVersion::version(); }
+std::string LibOdc::version() const {
+    return ODBAPIVersion::version();
+}
 
 std::string LibOdc::gitsha1(unsigned int count) const {
     std::string sha1(ODBAPIVersion::gitsha1());
-    if(sha1.empty()) {
+    if (sha1.empty()) {
         return "not available";
     }
 
-    return sha1.substr(0,std::min(count,40u));
+    return sha1.substr(0, std::min(count, 40u));
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace eckit
-
+}  // namespace odc

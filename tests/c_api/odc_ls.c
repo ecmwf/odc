@@ -4,20 +4,20 @@
  *     gcc -lodccore -o odc-c-ls odc_ls.c
  */
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 #include "odc/api/odc.h"
 
-#define CHECK_RESULT(x) \
-    do { \
-        int rc = (x); \
-        if (rc != ODC_SUCCESS) { \
+#define CHECK_RESULT(x)                                                                           \
+    do {                                                                                          \
+        int rc = (x);                                                                             \
+        if (rc != ODC_SUCCESS) {                                                                  \
             fprintf(stderr, "Error calling odc function \"%s\": %s\n", #x, odc_error_string(rc)); \
-            exit(1); \
-        } \
-    } while (false); \
+            exit(1);                                                                              \
+        }                                                                                         \
+    } while (false);
 
 void usage() {
     fprintf(stderr, "Usage:\n");
@@ -46,7 +46,7 @@ void write_header(odc_frame_t* frame, int ncols) {
 void write_bitfield(int64_t val, int nbits) {
     int bit;
 
-    for (bit = nbits-1; bit >= 0; --bit) {
+    for (bit = nbits - 1; bit >= 0; --bit) {
         fprintf(stdout, "%s", (val & (1 << bit)) ? "1" : "0");
     }
 }
@@ -73,8 +73,8 @@ void write_data(odc_decoder_t* decoder, odc_frame_t* frame, long nrows, int ncol
     int col;
 
     for (col = 0; col < ncols; ++col) {
-        CHECK_RESULT(odc_frame_column_attributes(frame, col, &name, &column_types[col],
-                                                 &column_sizes[col], &bitfield_count));
+        CHECK_RESULT(
+            odc_frame_column_attributes(frame, col, &name, &column_types[col], &column_sizes[col], &bitfield_count));
         column_offsets[col] = current_offset;
         current_offset += column_sizes[col];
 
@@ -88,8 +88,10 @@ void write_data(odc_decoder_t* decoder, odc_frame_t* frame, long nrows, int ncol
 
                 CHECK_RESULT(odc_frame_bitfield_attributes(frame, col, bf, &bf_name, &bf_offset, &bf_size));
 
-                if (bf == 0) column_bf_sizes[col] = bf_size;
-                else column_bf_sizes[col] += bf_size;
+                if (bf == 0)
+                    column_bf_sizes[col] = bf_size;
+                else
+                    column_bf_sizes[col] += bf_size;
             }
         }
     }
@@ -152,13 +154,13 @@ int main(int argc, char* argv[]) {
 
     char* path = argv[1];
 
-    CHECK_RESULT(odc_initialise_api());  // initialising api
+    CHECK_RESULT(odc_initialise_api());                          // initialising api
     CHECK_RESULT(odc_integer_behaviour(ODC_INTEGERS_AS_LONGS));  // change from default doubles
 
     odc_reader_t* reader = NULL;
-    odc_frame_t* frame = NULL;
+    odc_frame_t* frame   = NULL;
 
-    CHECK_RESULT(odc_open_path(&reader, path));  // opening path
+    CHECK_RESULT(odc_open_path(&reader, path));   // opening path
     CHECK_RESULT(odc_new_frame(&frame, reader));  // initialising frame
 
     int rc;
@@ -173,9 +175,9 @@ int main(int argc, char* argv[]) {
         long nrows;
         odc_decoder_t* decoder = NULL;
 
-        CHECK_RESULT(odc_new_decoder(&decoder));  // initialising decoder
+        CHECK_RESULT(odc_new_decoder(&decoder));                        // initialising decoder
         CHECK_RESULT(odc_decoder_defaults_from_frame(decoder, frame));  // setting decoder structure
-        CHECK_RESULT(odc_decode(decoder, frame, &nrows));  // decoding data
+        CHECK_RESULT(odc_decode(decoder, frame, &nrows));               // decoding data
         write_data(decoder, frame, nrows, ncols);
         CHECK_RESULT(odc_free_decoder(decoder));  // cleaning up decoder
     }

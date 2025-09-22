@@ -10,8 +10,8 @@
 
 #include <memory>
 
-#include "eckit/testing/Test.h"
 #include "eckit/io/MemoryHandle.h"
+#include "eckit/testing/Test.h"
 
 #include "odc/api/Odb.h"
 

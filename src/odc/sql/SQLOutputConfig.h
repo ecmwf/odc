@@ -24,15 +24,11 @@ namespace sql {
 
 class SQLOutputConfig : public eckit::sql::SQLOutputConfig {
 
-public: // methods
+public:  // methods
 
-    SQLOutputConfig(bool noColumnNames=false,
-                    bool noNULL=false,
-                    const std::string& delimiter=defaultDelimiter,
-                    const std::string& format=defaultOutputFormat,
-                    bool bitfieldsBinary=false,
-                    bool noColumnAlignment=false,
-                    bool fullPrecision=false);
+    SQLOutputConfig(bool noColumnNames = false, bool noNULL = false, const std::string& delimiter = defaultDelimiter,
+                    const std::string& format = defaultOutputFormat, bool bitfieldsBinary = false,
+                    bool noColumnAlignment = false, bool fullPrecision = false);
 
     SQLOutputConfig(const std::string& odbFilename);
 
@@ -42,7 +38,7 @@ public: // methods
 
     void setOutputStream(std::ostream& s);
 
-private: // members
+private:  // members
 
     std::reference_wrapper<std::ostream> outStream_;
 };
@@ -50,7 +46,7 @@ private: // members
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace sql
-} // namespace odc
+}  // namespace sql
+}  // namespace odc
 
 #endif

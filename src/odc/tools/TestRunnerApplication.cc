@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -14,29 +14,25 @@
 
 #include <sstream>
 
-#include "Tool.h"
 #include "TestCase.h"
-#include "ToolFactory.h"
-#include "TestRunnerApplication.h"
 #include "TestRunner.h"
+#include "TestRunnerApplication.h"
+#include "Tool.h"
+#include "ToolFactory.h"
 
 namespace odc {
 namespace tool {
 namespace test {
 
-TestRunnerApplication::TestRunnerApplication (int argc, char **argv)
-: ODBApplication(argc, argv)
-{}
+TestRunnerApplication::TestRunnerApplication(int argc, char** argv) : ODBApplication(argc, argv) {}
 
-TestRunnerApplication::~TestRunnerApplication () {}
+TestRunnerApplication::~TestRunnerApplication() {}
 
-void TestRunnerApplication::run()
-{
-	TestRunner testRunner(commandLineParser());
-	testRunner.run();
+void TestRunnerApplication::run() {
+    TestRunner testRunner(commandLineParser());
+    testRunner.run();
 }
 
-} // namespace test
-} // namespace tool 
-} // namespace odc 
-
+}  // namespace test
+}  // namespace tool
+}  // namespace odc

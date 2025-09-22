@@ -10,18 +10,18 @@
 
 #include "odc/core/Table.h"
 
-#include <functional>
 #include <bitset>
+#include <functional>
 
 #include "eckit/io/AutoCloser.h"
 #include "eckit/io/Buffer.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/types/FixedString.h"
 
+#include "odc/core/Codec.h"
 #include "odc/core/DecodeTarget.h"
 #include "odc/core/Header.h"
 #include "odc/core/MetaData.h"
-#include "odc/core/Codec.h"
 
 using namespace eckit;
 
@@ -31,8 +31,7 @@ namespace core {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-Table::Table(const ThreadSharedDataHandle& dh) :
-    dh_(dh) {}
+Table::Table(const ThreadSharedDataHandle& dh) : dh_(dh) {}
 
 Offset Table::startPosition() const {
     return startPosition_;
@@ -78,7 +77,8 @@ Buffer Table::readEncodedData(bool includeHeader) {
         dh_.seek(startPosition());
         dh_.read(data, nextPosition() - startPosition());
         return data;
-    } else {
+    }
+    else {
         Buffer data(dataSize_);
         dh_.seek(dataPosition_);
         dh_.read(data, dataSize_);
@@ -107,7 +107,7 @@ const std::map<std::string, size_t>& Table::columnLookup() {
     return columnLookup_;
 }
 
-const std::map<std::string, size_t>&Table::simpleColumnLookup() {
+const std::map<std::string, size_t>& Table::simpleColumnLookup() {
 
     if (simpleColumnLookup_.empty()) {
         columnLookup();
@@ -129,7 +129,8 @@ void Table::decode(DecodeTarget& target) {
     // Loop over the specified output columns, and select the correct ones for decoding.
 
     std::vector<char> visitColumn(ncols, false);
-    std::vector<api::StridedData*> facades(ncols, 0); // TODO: Do we want to do a copy, rather than point to StridedData*?
+    std::vector<api::StridedData*> facades(ncols,
+                                           0);  // TODO: Do we want to do a copy, rather than point to StridedData*?
 
     ASSERT(target.columns().size() == target.dataFacades().size());
     ASSERT(target.columns().size() <= ncols);
@@ -138,7 +139,8 @@ void Table::decode(DecodeTarget& target) {
 
         const auto& nm(target.columns()[i]);
         auto it = columnLookup.find(nm);
-        if (it == columnLookup.end()) it = lookupSimple.find(nm);
+        if (it == columnLookup.end())
+            it = lookupSimple.find(nm);
         if (it == lookupSimple.end()) {
             std::stringstream ss;
             ss << "Column '" << nm << "' not found in ODB";
@@ -153,7 +155,7 @@ void Table::decode(DecodeTarget& target) {
         }
 
         visitColumn[pos] = true;
-        facades[pos] = &target.dataFacades()[i];
+        facades[pos]     = &target.dataFacades()[i];
         ASSERT(target.dataFacades()[i].nelem() >= nrows);
     }
 
@@ -163,7 +165,8 @@ void Table::decode(DecodeTarget& target) {
 
     // Special case for the empty table
 
-    if (nrows == 0) return;
+    if (nrows == 0)
+        return;
 
     // Prepare decoders for reading
 
@@ -195,12 +198,12 @@ void Table::decode(DecodeTarget& target) {
 
         unsigned char marker[2];
         ds.readBytes(&marker, sizeof(marker));
-        int startCol = (marker[0] * 256) + marker[1]; // Endian independant
+        int startCol = (marker[0] * 256) + marker[1];  // Endian independant
 
         if (lastStartCol > startCol) {
             for (int col = startCol; col < lastStartCol; col++) {
                 if (visitColumn[col]) {
-                    facades[col]->fill(lastDecoded[col], rowCount-1);
+                    facades[col]->fill(lastDecoded[col], rowCount - 1);
                 }
             }
         }
@@ -209,7 +212,8 @@ void Table::decode(DecodeTarget& target) {
             if (visitColumn[col]) {
                 decoders[col].get().decode(reinterpret_cast<double*>((*facades[col])[rowCount]));
                 lastDecoded[col] = rowCount;
-            } else {
+            }
+            else {
                 decoders[col].get().skip();
             }
         }
@@ -220,11 +224,12 @@ void Table::decode(DecodeTarget& target) {
     // And fill in any columns that are incomplete
 
     for (size_t col = 0; col < ncols; col++) {
-        if (lastDecoded[col] < nrows-1) {
+        if (lastDecoded[col] < nrows - 1) {
             if (visitColumn[col]) {
-                facades[col]->fill(lastDecoded[col], nrows-1);
+                facades[col]->fill(lastDecoded[col], nrows - 1);
             }
-        } else {
+        }
+        else {
             break;
         }
     }
@@ -233,7 +238,7 @@ void Table::decode(DecodeTarget& target) {
 
 Span Table::span(const std::vector<std::string>& columns, bool onlyConstants) {
 
-    Span s(startPosition(), nextPosition()-startPosition());
+    Span s(startPosition(), nextPosition() - startPosition());
 
     // Get any constant columns
 
@@ -242,11 +247,13 @@ Span Table::span(const std::vector<std::string>& columns, bool onlyConstants) {
     for (const std::string& columnName : columns) {
 
         Column* column = metadata_.columnByName(columnName);
-        if (!column) throw UserError("Column '" + columnName + "' not found", Here());
+        if (!column)
+            throw UserError("Column '" + columnName + "' not found", Here());
 
         if (column->isConstant()) {
             s.addValue(columnName, column->type(), column->min());
-        } else {
+        }
+        else {
             nonConstantColumns.push_back(columnName);
         }
     }
@@ -270,33 +277,37 @@ Span Table::span(const std::vector<std::string>& columns, bool onlyConstants) {
 // Helper workers to simplify building span decoder
 
 class ColumnValuesBase {
-public: // methods
+public:  // methods
 
     virtual ~ColumnValuesBase() {}
 
     virtual void updateSpan(Span& span) = 0;
-    virtual void addValue(double* val) = 0;
+    virtual void addValue(double* val)  = 0;
 };
 
 
 template <typename T>
 class ColumnValues : public ColumnValuesBase {
-public: // methods
+public:  // methods
 
     ColumnValues(const std::string& name) : name_(name) {}
 
-    void updateSpan(Span& s) override {
-        s.addValues(name_, values_);
-    }
+    void updateSpan(Span& s) override { s.addValues(name_, values_); }
 
-protected: // members
+protected:  // members
+
     std::string name_;
     std::set<T> values_;
 };
 
-struct IntegerColumnValues : ColumnValues<long> {
+struct IntegerColumnValuesAsDoubles : ColumnValues<long> {
     using ColumnValues<long>::ColumnValues;
     void addValue(double* val) override { values_.insert(static_cast<int64_t>(*val)); }
+};
+
+struct IntegerColumnValues : ColumnValues<long> {
+    using ColumnValues<long>::ColumnValues;
+    void addValue(double* val) override { values_.insert(*reinterpret_cast<int64_t*>(val)); }
 };
 
 struct DoubleColumnValues : ColumnValues<double> {
@@ -312,7 +323,6 @@ struct StringColumnValues : ColumnValues<std::string> {
     }
     size_t maxLength_;
 };
-
 
 
 Span Table::decodeSpan(const std::vector<std::string>& columns) {
@@ -336,7 +346,8 @@ Span Table::decodeSpan(const std::vector<std::string>& columns) {
     for (const std::string& columnName : columns) {
 
         auto it = columnLookup.find(columnName);
-        if (it == columnLookup.end()) it = lookupSimple.find(columnName);
+        if (it == columnLookup.end())
+            it = lookupSimple.find(columnName);
         if (it == lookupSimple.end()) {
             std::stringstream ss;
             ss << "Column '" << columnName << "' not found in ODB";
@@ -348,20 +359,26 @@ Span Table::decodeSpan(const std::vector<std::string>& columns) {
         // What do we do with the values?
 
         switch (metadata[it->second]->type()) {
-        case api::BITFIELD:
-        case api::INTEGER:
-            columnValues[it->second].reset(new IntegerColumnValues(columnName));
-            break;
-        case api::REAL:
-        case api::DOUBLE:
-            columnValues[it->second].reset(new DoubleColumnValues(columnName));
-            break;
-        case api::STRING:
-            columnValues[it->second].reset(new StringColumnValues(columnName, sizeof(double)*metadata[it->second]->dataSizeDoubles()));
-            maxDoublesDecode = std::max(maxDoublesDecode, metadata[it->second]->dataSizeDoubles());
-            break;
-        default:
-            throw SeriousBug("Unexpected type in decoding column: " + columnName, Here());
+            case api::BITFIELD:
+            case api::INTEGER:
+                if (ODBAPISettings::instance().integersAsDoubles()) {
+                    columnValues[it->second].reset(new IntegerColumnValuesAsDoubles(columnName));
+                }
+                else {
+                    columnValues[it->second].reset(new IntegerColumnValues(columnName));
+                }
+                break;
+            case api::REAL:
+            case api::DOUBLE:
+                columnValues[it->second].reset(new DoubleColumnValues(columnName));
+                break;
+            case api::STRING:
+                columnValues[it->second].reset(
+                    new StringColumnValues(columnName, sizeof(double) * metadata[it->second]->dataSizeDoubles()));
+                maxDoublesDecode = std::max(maxDoublesDecode, metadata[it->second]->dataSizeDoubles());
+                break;
+            default:
+                throw SeriousBug("Unexpected type in decoding column: " + columnName, Here());
         };
     }
 
@@ -386,13 +403,14 @@ Span Table::decodeSpan(const std::vector<std::string>& columns) {
 
         unsigned char marker[2];
         ds.readBytes(&marker, sizeof(marker));
-        int startCol = (marker[0] * 256) + marker[1]; // Endian independant
+        int startCol = (marker[0] * 256) + marker[1];  // Endian independant
 
         for (int col = startCol; col < long(ncols); col++) {
             if (visitColumn[col]) {
                 decoders[col].get().decode(decodeBuffer);
                 columnValues[col]->addValue(decodeBuffer);
-            } else {
+            }
+            else {
                 decoders[col].get().skip();
             }
         }
@@ -400,9 +418,10 @@ Span Table::decodeSpan(const std::vector<std::string>& columns) {
 
     // And add these to the spans
 
-    Span s(startPosition(), nextPosition()-startPosition());
+    Span s(startPosition(), nextPosition() - startPosition());
     for (const auto& values : columnValues) {
-        if (values.get()) values->updateSpan(s);
+        if (values.get())
+            values->updateSpan(s);
     }
     return s;
 }
@@ -414,7 +433,8 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
 
     // Check the magic number. If no more data, we are done
 
-    if (!Header::readMagic(dh)) return 0;
+    if (!Header::readMagic(dh))
+        return 0;
 
     // Load the header
 
@@ -423,10 +443,10 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
     hdr.loadAfterMagic(dh);
 
     newTable->startPosition_ = startPosition;
-    newTable->dataPosition_ = dh.position();
-    newTable->dataSize_ = hdr.dataSize();
-    newTable->nextPosition_ = dh.position() + newTable->dataSize_;
-    newTable->byteOrder_ = hdr.byteOrder();
+    newTable->dataPosition_  = dh.position();
+    newTable->dataSize_      = hdr.dataSize();
+    newTable->nextPosition_  = dh.position() + newTable->dataSize_;
+    newTable->byteOrder_     = hdr.byteOrder();
 
     // Check that the ODB hasn't been truncated.
     // n.b. Some DataHandles always return 0 (e.g. on a stream), so leth that pass.
@@ -439,5 +459,5 @@ std::unique_ptr<Table> Table::readTable(odc::core::ThreadSharedDataHandle& dh) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-}
-}
+}  // namespace core
+}  // namespace odc

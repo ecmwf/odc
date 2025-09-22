@@ -22,6 +22,6 @@ jobs:
   #   It will install required system dependencies and test Read the Docs build process.
   docs:
     name: docs
-    uses: ecmwf-actions/reusable-workflows/.github/workflows/docs.yml@v1
+    uses: ecmwf/reusable-workflows/.github/workflows/docs.yml@v1
     with:
       system_dependencies: doxygen
