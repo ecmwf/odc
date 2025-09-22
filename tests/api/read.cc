@@ -816,7 +816,7 @@ CASE("Where Span interface is used with constant value constraint") {
             }
 
             // A user error is raised when constant value constraint is not met
-            catch (eckit::Exception e) {
+            catch (eckit::Exception& e) {
                 EXPECT(std::string(e.what()) == "UserError: Non-constant columns required in span: [obsvalue@body]");
             }
         }
@@ -912,7 +912,7 @@ CASE("Where Span interface is used with a missing column") {
         }
 
         // A user error is raised when specified column cannot be found
-        catch (eckit::Exception e) {
+        catch (eckit::Exception& e) {
             EXPECT(std::string(e.what()) == "UserError: Column 'foo@bar' not found.");
         }
     }
