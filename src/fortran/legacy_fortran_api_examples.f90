@@ -31,7 +31,7 @@ program example_fortran_api
     function strlen(s) result(l) bind(c, name='strlen')
       use, intrinsic    :: iso_c_binding
       character(c_char) :: s
-      integer(c_int)    :: l
+      integer(c_long)   :: l
     end function
   end interface
 
