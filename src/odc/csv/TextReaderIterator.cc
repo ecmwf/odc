@@ -197,8 +197,10 @@ bool TextReaderIterator::next() {
     std::vector<std::string> values(S::split(delimiter_, line));
 
     size_t nCols = values.size();
-    if (nCols == 0)
-        return !(noMore_ = true);
+    if (nCols == 0) {
+        noMore_ = true;
+        return false;
+    }
     ASSERT(nCols == columns().size());
 
     for (size_t i = 0; i < nCols; ++i) {

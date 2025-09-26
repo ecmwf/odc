@@ -1139,7 +1139,7 @@ CASE("Where Span interface is used to read values without decoding") {
     }
 
     // Check string values
-    for (const std::string val : expver_vals) {
+    for (const auto& val : expver_vals) {
         EXPECT(val == "xxxx");
     }
 

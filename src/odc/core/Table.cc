@@ -397,7 +397,9 @@ Span Table::decodeSpan(const std::vector<std::string>& columns) {
     // Do the decoding
 
     std::vector<size_t> lastDecoded(ncols, 0);
-    double decodeBuffer[maxDoublesDecode];
+
+    std::vector<double> decodeBufferVec(maxDoublesDecode);
+    auto decodeBuffer = decodeBufferVec.data();
 
     for (size_t rowCount = 0; rowCount < nrows; ++rowCount) {
 

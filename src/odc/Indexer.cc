@@ -7,10 +7,13 @@
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
-
 #include "odc/Indexer.h"
 
-#include "eckit/eckit.h"
+#include <cstddef>
+#include <utility>
+#include <vector>
+
+#include "eckit/io/DataHandle.h"
 #include "eckit/io/Length.h"
 #include "eckit/io/Offset.h"
 #include "eckit/io/PartFileHandle.h"

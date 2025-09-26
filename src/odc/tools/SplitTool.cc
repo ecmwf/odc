@@ -31,7 +31,7 @@ using namespace std;
 namespace odc {
 namespace tool {
 
-SplitTool::SplitTool(int argc, char* argv[]) : Tool(argc, argv), sort_(false), maxOpenFiles_(200) {
+SplitTool::SplitTool(int argc, char* argv[]) : Tool(argc, argv), maxOpenFiles_(200), sort_(false) {
     registerOptionWithArgument("-maxopenfiles");
 }
 

@@ -66,8 +66,8 @@ public:
                 data_ = columns_[0]->coder().missingValue();
                 break;
             default:
-                return !(noMore_ = true);
-                break;
+                noMore_ = true;
+                return false;
         }
         return true;
     }

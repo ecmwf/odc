@@ -319,7 +319,6 @@ CASE("Encode data with custom stride") {
     const int ncols = 5;
 
     // Construct some source data
-
     long icol[2 * nrows]                     = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
     long bcol[2 * nrows]                     = {1101, 2202, 3303, 4404, 5505, 6606, 7707, 8808, 9909, 0};
     char scol[2 * nrows][3 * sizeof(double)] = {0};
@@ -421,7 +420,6 @@ CASE("Encode with more rows that fit inside a table") {
     const int ncols = 5;
 
     // Construct some source data
-
     long icol[nrows]                     = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
     long bcol[nrows]                     = {1101, 2202, 3303, 4404, 5505, 6606, 7707, 8808, 9909, 0};
     char scol[nrows][3 * sizeof(double)] = {0};

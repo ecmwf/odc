@@ -19,28 +19,9 @@
 
 using namespace odc::core;
 
-
-namespace {
-// n.b. Duplicated from eckit::sql::expression::function::FunctionEQ::trimStringInDouble.
-//      TODO: Put somewhere better.
-void trimStringInDouble(char*& p, size_t& len) {
-    len = 0;
-    for (; len < sizeof(double) && isprint(p[len]); ++len)
-        ;
-    for (; len > 0 && isspace(p[len - 1]); --len)
-        ;
-    size_t plen = len;
-    for (char* pp = p; isspace(*p) && p < pp + plen;) {
-        ++p;
-        --len;
-    }
-}
-}  // namespace
-
 namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
-
 
 template <typename WRITE_ITERATOR, typename OWNER>
 WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::WriterDispatchingIterator(OWNER& owner, int maxOpenFiles,
@@ -103,6 +84,23 @@ int WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::setBitfieldColumn(size_t i
 template <typename WRITE_ITERATOR, typename OWNER>
 std::string WriterDispatchingIterator<WRITE_ITERATOR, OWNER>::generateFileName(const double* values,
                                                                                unsigned long count) {
+    // n.b. Duplicated from eckit::sql::expression::function::FunctionEQ::trimStringInDouble.
+    // Provided as static lambda because this .cc file is included in the header and even when the
+    // function is declared in an annonymos workspace the declaration is marked as unneeded and emits
+    // a warning.
+    //      TODO: Put somewhere better.
+    static const auto trimStringInDouble = [](char*& p, size_t& len) {
+        len = 0;
+        for (; len < sizeof(double) && isprint(p[len]); ++len)
+            ;
+        for (; len > 0 && isspace(p[len - 1]); --len)
+            ;
+        size_t plen = len;
+        for (char* pp = p; isspace(*p) && p < pp + plen;) {
+            ++p;
+            --len;
+        }
+    };
     std::string fileName(outputFileTemplate_);
     int diff(0);
     for (TemplateParameters::iterator it(templateParameters_.begin()); it != templateParameters_.end(); ++it) {
