@@ -69,24 +69,24 @@ void create_scratch_data(size_t nrows, char data0[][8], int64_t data1[], char da
     long integer_pool[]   = {1234, 4321, Settings::integerMissingValue()};
     int integer_pool_size = sizeof(integer_pool) / sizeof(integer_pool[0]);
 
-    long missing_integers[nrows];
-    cycle_longs(missing_integers, nrows, integer_pool, integer_pool_size);
+    std::vector<long> missing_integers(nrows);
+    cycle_longs(missing_integers.data(), nrows, integer_pool, integer_pool_size);
 
     // Prepare the list of double values, including the missing value
 
     double double_pool[] = {12.34, 43.21, Settings::doubleMissingValue()};
     int double_pool_size = sizeof(double_pool) / sizeof(double_pool[0]);
 
-    double missing_doubles[nrows];
-    cycle_doubles(missing_doubles, nrows, double_pool, double_pool_size);
+    std::vector<double> missing_doubles(nrows);
+    cycle_doubles(missing_doubles.data(), nrows, double_pool, double_pool_size);
 
     // Prepare the list of bitfield values
 
     long bitfield_pool[]   = {Ob00000001, Ob00001011, Ob01101011};
     int bitfield_pool_size = sizeof(bitfield_pool) / sizeof(bitfield_pool[0]);
 
-    long bitfield_values[nrows];
-    cycle_longs(bitfield_values, nrows, bitfield_pool, bitfield_pool_size);
+    std::vector<long> bitfield_values(nrows);
+    cycle_longs(bitfield_values.data(), nrows, bitfield_pool, bitfield_pool_size);
 
     // Fill in the passed data arrays with scratch values
     for (size_t i = 0; i < nrows; i++) {

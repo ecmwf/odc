@@ -10,9 +10,7 @@
 
 #pragma once
 
-namespace eckit {
-class PathName;
-}
+#include <eckit/filesystem/PathName.h>
 
 namespace odc {
 

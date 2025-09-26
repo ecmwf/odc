@@ -70,7 +70,7 @@ endif()
 ########################################################################################################################
 ### dependencies and options
 
-ecbuild_find_package( NAME eckit VERSION 1.4 REQUIRED )
+ecbuild_find_package( NAME eckit VERSION 1.29 REQUIRED )
 
 ecbuild_add_option( FEATURE FORTRAN
                     DESCRIPTION "whether or not to build the Fortran interface"

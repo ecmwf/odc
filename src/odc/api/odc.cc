@@ -327,7 +327,7 @@ int odc_close(const odc_reader_t* reader) {
 int odc_new_frame(odc_frame_t** frame, odc_reader_t* reader) {
     return wrapApiFunction([frame, reader] {
         ASSERT(reader);
-        (*frame) = new odc_frame_t{*reader, false};
+        (*frame) = new odc_frame_t{*reader, false, {}, {}};
     });
 }
 
@@ -835,7 +835,7 @@ int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long wi
 int odc_encoder_add_column(odc_encoder_t* encoder, const char* name, int type) {
     return wrapApiFunction([encoder, name, type] {
         ASSERT(encoder);
-        encoder->columnInfo.emplace_back(ColumnInfo{std::string(name), ColumnType(type)});
+        encoder->columnInfo.emplace_back(ColumnInfo{std::string(name), ColumnType(type), {}, {}});
         encoder->columnData.emplace_back(odc_encoder_t::EncodeColumn{0, 0});
     });
 }
