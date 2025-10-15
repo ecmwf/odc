@@ -34,7 +34,7 @@ CASE("Simple select on CSV (one column) data") {
         size_t count = 0;
         for (odc::Select::iterator it = select.begin(); it != select.end(); ++it) {
             count++;
-            EXPECT((*it)[0] == count+4);
+            EXPECT((*it)[0] == count + 4);
         }
 
         EXPECT(count == 6);
@@ -87,8 +87,8 @@ CASE("Simple select on CSV (two columns) data") {
         DATA << i << ",";
         // length=16/17 --> tests overflowing 16 char and resizing string on last row
         DATA << "a-long-" << i << "-str****,";
-        DATA << 11-i << ",";
-        DATA << int(i/3) << "\n";
+        DATA << 11 - i << ",";
+        DATA << int(i / 3) << "\n";
     }
 
     SECTION("Select with where condition") {
@@ -99,11 +99,11 @@ CASE("Simple select on CSV (two columns) data") {
         for (odc::Select::iterator it = select.begin(); it != select.end(); ++it) {
             count++;
             std::stringstream colb;
-            colb << "a-long-" << (count+4) << "-str****";
-            EXPECT(it->data(0) == count+4);
+            colb << "a-long-" << (count + 4) << "-str****";
+            EXPECT(it->data(0) == count + 4);
             EXPECT(it->dataSizeDoubles(1) == (count == 6 ? 3 : 2));
-            EXPECT(::strncmp(colb.str().c_str(), (char*)&it->data(1), it->dataSizeDoubles(1)*sizeof(double)) == 0);
-            EXPECT(it->data(2) == 11-(count+4));
+            EXPECT(::strncmp(colb.str().c_str(), (char*)&it->data(1), it->dataSizeDoubles(1) * sizeof(double)) == 0);
+            EXPECT(it->data(2) == 11 - (count + 4));
         }
 
         EXPECT(count == 6);
@@ -139,28 +139,28 @@ CASE("Simple select on CSV (two columns) data") {
         for (odc::Select::iterator it = select.begin(); it != select.end(); ++it) {
             EXPECT(0 <= it->data(0) && 3 >= it->data(0));
             found[int(it->data(0))] = true;
-            switch(int(it->data(0))) {
-            case 0:
-                EXPECT(it->data(1) == 3);
-                EXPECT(it->data(2) == 2);
-                break;
-            case 1:
-                EXPECT(it->data(1) == 12);
-                EXPECT(it->data(2) == 3);
-                break;
-            case 2:
-                EXPECT(it->data(1) == 21);
-                EXPECT(it->data(2) == 3);
-                break;
-            case 3:
-                EXPECT(it->data(1) == 19);
-                EXPECT(it->data(2) == 2);
-                break;
-            default:
-                ASSERT(false);
+            switch (int(it->data(0))) {
+                case 0:
+                    EXPECT(it->data(1) == 3);
+                    EXPECT(it->data(2) == 2);
+                    break;
+                case 1:
+                    EXPECT(it->data(1) == 12);
+                    EXPECT(it->data(2) == 3);
+                    break;
+                case 2:
+                    EXPECT(it->data(1) == 21);
+                    EXPECT(it->data(2) == 3);
+                    break;
+                case 3:
+                    EXPECT(it->data(1) == 19);
+                    EXPECT(it->data(2) == 2);
+                    break;
+                default:
+                    ASSERT(false);
             }
         }
-        EXPECT(std::all_of(std::begin(found), std::end(found), [](bool x){return x;}));
+        EXPECT(std::all_of(std::begin(found), std::end(found), [](bool x) { return x; }));
     }
 }
 

@@ -14,26 +14,26 @@
 
 #include <fstream>
 
-#include "eckit/io/FileHandle.h"
+#include "eckit/exception/Exceptions.h"
 #include "eckit/io/BufferedHandle.h"
+#include "eckit/io/FileHandle.h"
 #include "eckit/log/Number.h"
 #include "eckit/log/Timer.h"
-#include "eckit/exception/Exceptions.h"
 #include "eckit/sql/SQLParser.h"
 #include "eckit/sql/SQLSelectFactory.h"
 
-#include "odc/api/Odb.h"
 #include "odc/Comparator.h"
-#include "odc/core/TablesReader.h"
 #include "odc/DispatchingWriter.h"
 #include "odc/ODBAPISettings.h"
-#include "odc/odccapi.h"
 #include "odc/Reader.h"
 #include "odc/Select.h"
+#include "odc/Writer.h"
+#include "odc/api/Odb.h"
+#include "odc/core/TablesReader.h"
+#include "odc/odccapi.h"
 #include "odc/tools/CountTool.h"
 #include "odc/tools/SplitTool.h"
 #include "odc/tools/TestCase.h"
-#include "odc/Writer.h"
 
 using namespace std;
 using namespace eckit;
@@ -43,10 +43,9 @@ using namespace odc::sql;
 
 typedef long long llong;
 
-static void foobar()
-{
+static void foobar() {
     Reader in("concatenated.odb");
-    Reader::iterator it = in.begin();
+    Reader::iterator it  = in.begin();
     Reader::iterator end = in.end();
 
     Writer<> out("copy_of_concatenated.odb");
@@ -55,18 +54,16 @@ static void foobar()
 
     Comparator().compare("concatenated.odb", "copy_of_concatenated.odb");
 }
-//TESTCASE(foobar);
+// TESTCASE(foobar);
 
-static void createDataForMixedAggregated()
-{
+static void createDataForMixedAggregated() {
     // See UnitTest.sql as well
-    const char *data =
-            "x:INTEGER,y:INTEGER,v:DOUBLE\n"
-            "1,1,0.3\n"
-            "1,1,0.2\n"
-            "2,2,0.4\n"
-            "2,2,0.1\n"
-            ;
+    const char* data =
+        "x:INTEGER,y:INTEGER,v:DOUBLE\n"
+        "1,1,0.3\n"
+        "1,1,0.2\n"
+        "2,2,0.4\n"
+        "2,2,0.1\n";
 
     eckit::FileHandle dh("selectAggregatedAndNonAggregated.odb");
     dh.openForWrite(0);
@@ -74,8 +71,7 @@ static void createDataForMixedAggregated()
     odc::api::odbFromCSV(data, dh);
 }
 
-TEST(selectAggregatedAndNonAggregated)
-{
+TEST(selectAggregatedAndNonAggregated) {
     createDataForMixedAggregated();
 
     odc::Select oda("select x,min(v),max(v) from \"selectAggregatedAndNonAggregated.odb\";");
@@ -97,24 +93,23 @@ TEST(selectAggregatedAndNonAggregated)
 
     Log::info() << "selectAggregatedAndNonAggregated: " << r0 << ", " << r1 << ", " << r2 << std::endl;
 
-    //ASSERT((*it)[0] == 2 && (*it)[1] == 0.1);
+    // ASSERT((*it)[0] == 2 && (*it)[1] == 0.1);
     ASSERT(r0 == 2);
     ASSERT(r1 == 0.1);
     ASSERT(r2 == 0.4);
     ++it;
-    ASSERT( ! (it != oda.end() ));
+    ASSERT(!(it != oda.end()));
 }
 
 
-static void createDataForMixedAggregated2()
-{
+static void createDataForMixedAggregated2() {
     Writer<> out("selectAggregatedAndNonAggregated2.odb");
     Writer<>::iterator o = out.begin();
     MetaData md(o->columns());
 
-    md.addColumn /* <DS> */("x", "INTEGER");//, true, .0);
-    md.addColumn /* <DS> */("y", "INTEGER");//, true, .0);
-    md.addColumn /* <DS> */("v", "DOUBLE");//, true, .0);
+    md.addColumn /* <DS> */ ("x", "INTEGER");  //, true, .0);
+    md.addColumn /* <DS> */ ("y", "INTEGER");  //, true, .0);
+    md.addColumn /* <DS> */ ("v", "DOUBLE");   //, true, .0);
     o->columns(md);
     o->writeHeader();
 
@@ -125,31 +120,28 @@ static void createDataForMixedAggregated2()
                     ++o;
 }
 
-TEST(selectAggregatedAndNonAggregated2)
-{
+TEST(selectAggregatedAndNonAggregated2) {
     createDataForMixedAggregated2();
     odc::Select oda("select x,min(v),y,max(v) from \"selectAggregatedAndNonAggregated2.odb\";");
     odc::Select::iterator it = oda.begin();
-    unsigned long counter = 0;
-    for ( ; it != oda.end(); ++it, ++counter)
-    {
-        //double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2], r3 = (*it)[3];
-        //Log::info() << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 << std::endl;
+    unsigned long counter    = 0;
+    for (; it != oda.end(); ++it, ++counter) {
+        // double r0 = (*it)[0], r1 = (*it)[1], r2 = (*it)[2], r3 = (*it)[3];
+        // Log::info() << "selectAggregatedAndNonAggregated2: " << r0 << ", " << r1 << ", " << r2 << ", " << r3 <<
+        // std::endl;
     }
     Log::info() << "selectAggregatedAndNonAggregated2: counter= " << counter << std::endl;
     ASSERT(counter == 110);
 }
 
-static void createDataForMixedAggregated3()
-{
+static void createDataForMixedAggregated3() {
     // See UnitTest.sql as well
-    const char *data =
-            "x:STRING,y:INTEGER,v:DOUBLE\n"
-            "'A',1,0.3\n"
-            "'A',1,0.2\n"
-            "'B',2,0.4\n"
-            "'B',2,0.1\n"
-            ;
+    const char* data =
+        "x:STRING,y:INTEGER,v:DOUBLE\n"
+        "'A',1,0.3\n"
+        "'A',1,0.2\n"
+        "'B',2,0.4\n"
+        "'B',2,0.1\n";
 
     FileHandle dh("selectAggregatedAndNonAggregated3.odb");
     dh.openForWrite(0);
@@ -157,15 +149,13 @@ static void createDataForMixedAggregated3()
     odc::api::odbFromCSV(data, dh);
 }
 
-TEST(selectAggregatedAndNonAggregated3)
-{
+TEST(selectAggregatedAndNonAggregated3) {
     createDataForMixedAggregated3();
 
     odc::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregated3.odb\";");
     odc::Select::iterator it = oda.begin();
-    unsigned long counter = 0;
-    for ( ; it != oda.end(); ++it, ++counter)
-    {
+    unsigned long counter    = 0;
+    for (; it != oda.end(); ++it, ++counter) {
         double r0 = (*it)[0], r1 = (*it)[1];
         Log::info() << "selectAggregatedAndNonAggregated3: " << r0 << ", " << r1 << std::endl;
     }
@@ -174,19 +164,17 @@ TEST(selectAggregatedAndNonAggregated3)
 }
 
 
-static void createDataForMixedAggregatedNULL()
-{
+static void createDataForMixedAggregatedNULL() {
     // See UnitTest.sql as well
-    const char *data =
-            "x:REAL,y:INTEGER,v:DOUBLE\n"
-            "100,1,0.3\n"
-            "100,1,0.2\n"
-            "101,2,0.4\n"
-            "101,2,0.1\n"
-            "NULL,1,0.1\n"
-            "NULL,2,0.2\n"
-            "NULL,3,0.3\n"
-            ;
+    const char* data =
+        "x:REAL,y:INTEGER,v:DOUBLE\n"
+        "100,1,0.3\n"
+        "100,1,0.2\n"
+        "101,2,0.4\n"
+        "101,2,0.1\n"
+        "NULL,1,0.1\n"
+        "NULL,2,0.2\n"
+        "NULL,3,0.3\n";
 
     FileHandle dh("selectAggregatedAndNonAggregatedNULL.odb");
     dh.openForWrite(0);
@@ -194,15 +182,13 @@ static void createDataForMixedAggregatedNULL()
     odc::api::odbFromCSV(data, dh);
 }
 
-TEST(selectAggregatedAndNonAggregatedNULL)
-{
+TEST(selectAggregatedAndNonAggregatedNULL) {
     createDataForMixedAggregatedNULL();
 
     odc::Select oda("select x,count(*) from \"selectAggregatedAndNonAggregatedNULL.odb\";");
     odc::Select::iterator it = oda.begin();
-    unsigned long counter = 0;
-    for ( ; it != oda.end(); ++it, ++counter)
-    {
+    unsigned long counter    = 0;
+    for (; it != oda.end(); ++it, ++counter) {
         double r0 = (*it)[0], r1 = (*it)[1];
         Log::info() << "selectAggregatedAndNonAggregatedNULL: " << r0 << ", " << r1 << std::endl;
     }
@@ -214,15 +200,13 @@ TEST(selectAggregatedAndNonAggregatedNULL)
 /////////////////////////////////////////
 // Regular expressions on the select list
 
-static void createDataForRegex1()
-{
+static void createDataForRegex1() {
     // See UnitTest.sql as well
-    const char *data =
-            "aa:INTEGER,ab:INTEGER,ba:INTEGER,bb:INTEGER\n"
-            "1,2,3,4\n"
-            "10,20,30,40\n"
-            "11,22,33,44\n"
-            ;
+    const char* data =
+        "aa:INTEGER,ab:INTEGER,ba:INTEGER,bb:INTEGER\n"
+        "1,2,3,4\n"
+        "10,20,30,40\n"
+        "11,22,33,44\n";
 
     FileHandle dh("regex1.odb");
     dh.openForWrite(0);
@@ -230,9 +214,8 @@ static void createDataForRegex1()
     odc::api::odbFromCSV(data, dh);
 }
 
-static void regex1()
-{
-    //createDataForRegex1();
+static void regex1() {
+    // createDataForRegex1();
     odc::Select oda("select \"/a.*/\" from \"regex1.odb\";");
     odc::Select::iterator it = oda.begin();
 
@@ -240,24 +223,22 @@ static void regex1()
 
     ASSERT(it->columns().size() == 2);
 }
-//TESTCASE(regex1);
+// TESTCASE(regex1);
 
-TEST(vector_syntax)
-{
+TEST(vector_syntax) {
 
-    const char *data =
-            "a:INTEGER,b:INTEGER\n"
-            "1,1\n"
-            "2,2\n"
-            "3,3\n"
-            "4,4\n"
-            "5,5\n"
-            "6,6\n"
-            "7,7\n"
-            "8,8\n"
-            "9,9\n"
-            "10,10\n"
-            ;
+    const char* data =
+        "a:INTEGER,b:INTEGER\n"
+        "1,1\n"
+        "2,2\n"
+        "3,3\n"
+        "4,4\n"
+        "5,5\n"
+        "6,6\n"
+        "7,7\n"
+        "8,8\n"
+        "9,9\n"
+        "10,10\n";
 
     {
         FileHandle dh("vector_syntax.odb");
@@ -266,35 +247,33 @@ TEST(vector_syntax)
         odc::api::odbFromCSV(data, dh);
     }
 
-    const char *sql =
-            "set $X = [1,2,3,4,5];"
-            "select * from \"vector_syntax.odb\" where a in $X;"
-            ;
+    const char* sql =
+        "set $X = [1,2,3,4,5];"
+        "select * from \"vector_syntax.odb\" where a in $X;";
 
     odc::Select oda(sql);
-    odc::Select::iterator it = oda.begin();
+    odc::Select::iterator it  = oda.begin();
     odc::Select::iterator end = oda.end();
-    unsigned long counter = 0;
-    for ( ; it != oda.end(); ++it, ++counter)
+    unsigned long counter     = 0;
+    for (; it != oda.end(); ++it, ++counter)
         ;
     ASSERT(counter == 5);
 }
 
 
-TEST(bitfieldsLength)
-{
+TEST(bitfieldsLength) {
     Log::info() << "sizeof(eckit::log::Number::W)" << sizeof(eckit::log::Number::W) << std::endl;
     Log::info() << "sizeof(double)" << sizeof(double) << std::endl;
 
     //>>> int('0b11100110011',2)
-    //1843
+    // 1843
     //>>> len('0b11100110011')
-    //13
+    // 13
     //>>>
-    //stringstream s;
-    //eckit::log::Number::printBinary(s, 1843);
-    //string r = s.str();
-    //Log::info() << "r: " << r << std::endl;
+    // stringstream s;
+    // eckit::log::Number::printBinary(s, 1843);
+    // string r = s.str();
+    // Log::info() << "r: " << r << std::endl;
 
     ASSERT(eckit::log::Number::printBinary(1843).size() == 11);
     ASSERT(eckit::log::Number::printBinary(1843) == "11100110011");
@@ -304,34 +283,30 @@ TEST(bitfieldsLength)
 }
 
 /// ODB-85
-TEST(bitfieldsPrintHexadecimal) 
-{
+TEST(bitfieldsPrintHexadecimal) {
     ASSERT(eckit::log::Number::printHexadecimal(1843) == std::string("733"));
 
-    //eckit::Log::info() << eckit::log::Number::printHexadecimal(15)  << std::endl;
+    // eckit::Log::info() << eckit::log::Number::printHexadecimal(15)  << std::endl;
     ASSERT(eckit::log::Number::printHexadecimal(10) == std::string("a"));
     ASSERT(eckit::log::Number::printHexadecimal(11) == std::string("b"));
     ASSERT(eckit::log::Number::printHexadecimal(15) == std::string("f"));
     ASSERT(eckit::log::Number::printHexadecimal(255) == std::string("ff"));
 }
 
-static void create_stringInWhere_file()
-{
-    const char *data =
-            "a:STRING,b:INTEGER\n"
-            "'aaa',1\n"
-            "'aaaa',2\n"
-            "'bbb',2\n"
-            "'bbbc',2\n"
-            ;
+static void create_stringInWhere_file() {
+    const char* data =
+        "a:STRING,b:INTEGER\n"
+        "'aaa',1\n"
+        "'aaaa',2\n"
+        "'bbb',2\n"
+        "'bbbc',2\n";
     FileHandle dh("stringInWhere.odb");
     dh.openForWrite(0);
     AutoClose close(dh);
     odc::api::odbFromCSV(data, dh);
 }
 
-TEST(stringInWhere)
-{
+TEST(stringInWhere) {
     create_stringInWhere_file();
     odc::Select oda("select * from 'stringInWhere.odb' where a = 'aaa';");
 
@@ -341,16 +316,25 @@ TEST(stringInWhere)
     ASSERT(counter == 1);
 }
 
-TEST(vector_syntax2)
-{
+TEST(vector_syntax2) {
     const char* sql = "set $y = 100; set $x = [$y, 'a', 'b', [1, 2]];";
     eckit::sql::SQLSession session;
     eckit::sql::SQLParser::parseString(session, sql);
 }
 
-TEST(rownumber1)
-{
-	const char *inputData = "a:INTEGER,b:INTEGER\n" "1,1\n" "2,2\n" "3,3\n" "4,4\n" "5,5\n" "6,6\n" "7,7\n" "8,8\n" "9,9\n" "10,10\n";
+TEST(rownumber1) {
+    const char* inputData =
+        "a:INTEGER,b:INTEGER\n"
+        "1,1\n"
+        "2,2\n"
+        "3,3\n"
+        "4,4\n"
+        "5,5\n"
+        "6,6\n"
+        "7,7\n"
+        "8,8\n"
+        "9,9\n"
+        "10,10\n";
     string path("Test_rownumber1.odb");
 
     {
@@ -363,19 +347,17 @@ TEST(rownumber1)
     string query("SELECT rownumber() from \"" + path + "\";");
 
     odc::Select select(query);
-    odc::Select::iterator it = select.begin();
+    odc::Select::iterator it  = select.begin();
     odc::Select::iterator end = select.end();
 
     llong i = 0;
-    for (; it != end; ++it)
-    {
+    for (; it != end; ++it) {
         ASSERT((*it)[0] == ++i);
     }
     ASSERT(i == 10);
 }
 
-TEST(sqlOutputFormatting)
-{
+TEST(sqlOutputFormatting) {
     /*
     // See UnitTest.sql as well
     const char *data =
@@ -404,7 +386,8 @@ TEST(sqlOutputFormatting)
     string outputFormat;        // default is ascii
 
     odc::sql::SQLSelectFactory::instance()
-            .config(odc::sql::SQLOutputConfig(doNotWriteColumnNames, doNotWriteNULL, delimiter, outputFile, outputFormat));
+            .config(odc::sql::SQLOutputConfig(doNotWriteColumnNames, doNotWriteNULL, delimiter, outputFile,
+    outputFormat));
 
     ostream& out = cout;
     odc::sql::SQLInteractiveSession session(out);
@@ -415,18 +398,15 @@ TEST(sqlOutputFormatting)
     //p.parseString(StringTool::readFile(fileName), &fh, odc::sql::SQLSelectFactory::instance().config());
     p.parseString("select x,y,v;", &fh, odc::sql::SQLSelectFactory::instance().config());
     */
-
 }
 
-static void createDataForWindSpeedWindDirection()
-{
-    const char *data =
-            "u:REAL,v:REAL\n"
-            "11.7,-5.8\n"
-            "0.0,0.0\n"
-            "0,5.4\n"
-            "5.4,0.0\n"
-            ;
+static void createDataForWindSpeedWindDirection() {
+    const char* data =
+        "u:REAL,v:REAL\n"
+        "11.7,-5.8\n"
+        "0.0,0.0\n"
+        "0,5.4\n"
+        "5.4,0.0\n";
 
     FileHandle dh("uv.odb");
     dh.openForWrite(0);
@@ -434,19 +414,18 @@ static void createDataForWindSpeedWindDirection()
     odc::api::odbFromCSV(data, dh);
 }
 
-TEST(windSpeedWindDirection)
-{
+TEST(windSpeedWindDirection) {
     createDataForWindSpeedWindDirection();
     string path("uv.odb");
-    string query("SELECT ff(u,v), dd(u,v), speed(u,v),dir(u,v), sqrt(u*u+v*v), fmod(atan2(-u,-v)+360.,360.) from \"" + path + "\";");
+    string query("SELECT ff(u,v), dd(u,v), speed(u,v),dir(u,v), sqrt(u*u+v*v), fmod(atan2(-u,-v)+360.,360.) from \"" +
+                 path + "\";");
 
     odc::Select select(query);
-    odc::Select::iterator it = select.begin();
+    odc::Select::iterator it  = select.begin();
     odc::Select::iterator end = select.end();
 
     llong i = 0;
-    for (; it != end; ++it)
-    {
+    for (; it != end; ++it) {
         Log::info() << " ff = " << (*it)[0] << " speed sqrt= " << (*it)[4] << std::endl;
         Log::info() << " dd = " << (*it)[1] << " direction atan= " << (*it)[5] << std::endl;
         ASSERT((*it)[0] == (*it)[4]);
@@ -454,35 +433,32 @@ TEST(windSpeedWindDirection)
     }
 }
 
-//TEST(odbcapi)
+// TEST(odbcapi)
 //{
 //	odc::tool::test::test_odacapi_setup_in_C(0,0);
 //	odc::tool::test::test_odacapi3(0,0);
-//}
+// }
 
 
-static void SplitTool_chunks()
-{
-    const char * fn = "selectAggregatedAndNonAggregated.odb";
-    size_t n = odc::tool::CountTool::rowCount(fn);
-    vector<pair<Offset,Length> > chunks = odc::tool::SplitTool::getChunks(fn);
+static void SplitTool_chunks() {
+    const char* fn                       = "selectAggregatedAndNonAggregated.odb";
+    size_t n                             = odc::tool::CountTool::rowCount(fn);
+    vector<pair<Offset, Length> > chunks = odc::tool::SplitTool::getChunks(fn);
 
     Log::info() << "chunks.size():" << chunks.size() << std::endl;
     ASSERT(chunks.size() == 1 && chunks[0].first == Offset(0) && chunks[0].second == Length(357));
 }
-//TESTCASE(SplitTool_chunks);
+// TESTCASE(SplitTool_chunks);
 
 
-static void FilePool1()
-{
-    //FilePool<SimpleFilePoolTraits> pool(1);
+static void FilePool1() {
+    // FilePool<SimpleFilePoolTraits> pool(1);
 }
-//TESTCASE(FilePool1);
+// TESTCASE(FilePool1);
 
-static void copyVectorToArray()
-{
+static void copyVectorToArray() {
     const size_t size = 1024;
-    const size_t n = 1000000;
+    const size_t n    = 1000000;
 
     vector<double> v(size);
     double a[size];
@@ -499,49 +475,49 @@ static void copyVectorToArray()
             for (size_t j = 0; j < size; ++j)
                 a[j] = v[j];
     }
-
 }
-//TESTCASE(copyVectorToArray);
+// TESTCASE(copyVectorToArray);
 
 
-static void count(void *counter, const double* data, size_t n) { ++*((llong*)counter); }
-static void *create_counter()
-{
+static void count(void* counter, const double* data, size_t n) {
+    ++*((llong*)counter);
+}
+static void* create_counter() {
     llong* r = new llong;
-    *r = 0;
+    *r       = 0;
     return r;
 }
-static void destroy_counter(void *counter) { delete (llong*) counter; }
-static void *reduce_counter(void *left, void *right)
-{
-    llong *result = new llong;
-    *result = (*(llong *) left) + (*(llong *) right);
+static void destroy_counter(void* counter) {
+    delete (llong*)counter;
+}
+static void* reduce_counter(void* left, void* right) {
+    llong* result = new llong;
+    *result       = (*(llong*)left) + (*(llong*)right);
     return result;
 }
 
 class TemporaryPathName : public PathName {
 public:
-    TemporaryPathName(const string &fn) : PathName (fn) {}
+
+    TemporaryPathName(const string& fn) : PathName(fn) {}
     ~TemporaryPathName() { unlink(); }
 };
 
 typedef TemporaryPathName ScratchFile;
 
-TEST(hash_operator_on_select_list)
-{
-    const char *data =
-            "x:INTEGER,y:INTEGER\n"
-            "1,1\n"
-            "2,2\n"
-            "3,3\n"
-            "4,4\n"
-            "5,5\n"
-            "6,6\n"
-            "7,7\n"
-            "8,8\n"
-            "9,9\n"
-            "10,10\n"
-            ;
+TEST(hash_operator_on_select_list) {
+    const char* data =
+        "x:INTEGER,y:INTEGER\n"
+        "1,1\n"
+        "2,2\n"
+        "3,3\n"
+        "4,4\n"
+        "5,5\n"
+        "6,6\n"
+        "7,7\n"
+        "8,8\n"
+        "9,9\n"
+        "10,10\n";
 
     ScratchFile f("hash_operator_on_select_list.odb");
 
@@ -554,32 +530,28 @@ TEST(hash_operator_on_select_list)
 
     string sql("select x,x#-1,x#1 from \"" + f + "\";");
     odc::Select select(sql);
-    odc::Select::iterator it = select.begin();
+    odc::Select::iterator it  = select.begin();
     odc::Select::iterator end = select.end();
-    for (; it != end; ++it)
-    {
+    for (; it != end; ++it) {
         Log::info() << it << std::endl;
     }
-
 }
 
 /// Shift or hash (#) operator doesn't work in the WHERE clause.
 /// This test doesn't test anything yet.
-TEST(hash_operator_in_where)
-{
-    const char *data =
-            "x:INTEGER,y:INTEGER\n"
-            "1,1\n"
-            "2,2\n"
-            "3,3\n"
-            "4,4\n"
-            "5,5\n"
-            "6,6\n"
-            "7,7\n"
-            "8,8\n"
-            "9,9\n"
-            "10,10\n"
-            ;
+TEST(hash_operator_in_where) {
+    const char* data =
+        "x:INTEGER,y:INTEGER\n"
+        "1,1\n"
+        "2,2\n"
+        "3,3\n"
+        "4,4\n"
+        "5,5\n"
+        "6,6\n"
+        "7,7\n"
+        "8,8\n"
+        "9,9\n"
+        "10,10\n";
 
     ScratchFile f("hash_operator_in_where.odb");
 
@@ -592,75 +564,62 @@ TEST(hash_operator_in_where)
 
     string sql("select x,x#-1,x#1 from \"" + f + "\" where x=2 and x#1=3;");
     odc::Select select(sql);
-    odc::Select::iterator it = select.begin();
+    odc::Select::iterator it  = select.begin();
     odc::Select::iterator end = select.end();
-    for (; it != end; ++it)
-    {
+    for (; it != end; ++it) {
         Log::info() << it << std::endl;
     }
 }
 
-TEST(bitfields_hash_operator)
-{
+TEST(bitfields_hash_operator) {
     PathName f("2000010106-reduced.odb");
-    //odc::Select select("select lat,lat#1 from \"" + f + "\"");
+    // odc::Select select("select lat,lat#1 from \"" + f + "\"");
     odc::Select select("select anflag@body,anflag.final@body,anflag.*@body from \"" + f + "\";");
-    odc::Select::iterator it = select.begin();
+    odc::Select::iterator it  = select.begin();
     odc::Select::iterator end = select.end();
-    for (; it != end; ++it)
-    {
+    for (; it != end; ++it) {
         Log::info() << it << std::endl;
     }
-
 }
 
-TEST(select_constant_value)
-{
-    const char *sql =
-            "set $foo = 27;"
-            "select $foo;"
-            ;
+TEST(select_constant_value) {
+    const char* sql =
+        "set $foo = 27;"
+        "select $foo;";
 
     odc::Select o(sql);
 
-    odc::Select::iterator it = o.begin();
+    odc::Select::iterator it  = o.begin();
     odc::Select::iterator end = o.end();
-    unsigned long counter = 0;
-    for ( ; it != o.end(); ++it, ++counter)
-    {
+    unsigned long counter     = 0;
+    for (; it != o.end(); ++it, ++counter) {
         Log::info() << it << std::endl;
         CHECK_EQUAL(it->data(0), 27);
     }
     CHECK_EQUAL(counter, 1);
 }
 
-TEST(include)
-{
+TEST(include) {
     ofstream f("stuff.sql");
     f
-            //<< "select * from \"file1.odb\";" << endl
-            << "set $foo = 10;" << endl
-            << "set $bar = 20;" << std::endl;
+        //<< "select * from \"file1.odb\";" << endl
+        << "set $foo = 10;" << endl
+        << "set $bar = 20;" << std::endl;
     f.close();
 
-    const char *sql =
-            "#include \"stuff.sql\"\n"
-            "set $baz = $bar;"
-            "select $foo * $bar;"
-            ;
+    const char* sql =
+        "#include \"stuff.sql\"\n"
+        "set $baz = $bar;"
+        "select $foo * $bar;";
 
     unsigned long counter = 0;
     odc::Select o(sql);
-    for (odc::Select::iterator it(o.begin()), end(o.end());
-         it != o.end();
-         ++it, ++counter)
-    {
+    for (odc::Select::iterator it(o.begin()), end(o.end()); it != o.end(); ++it, ++counter) {
         Log::info() << it << std::endl;
     }
 }
 
-TEST(log_error)
-{
+TEST(log_error) {
     Log::error() << "Just a logger test" << std::endl;
     // TODO: test Log::error writes to stderr
     // TODO: test Log::error has a prefirx with timestamp and other things
@@ -687,34 +646,32 @@ TEST(create_table_using_variable)
 }
 */
 
-TEST(meta_data_reader_checks_if_file_truncated)
-{
+TEST(meta_data_reader_checks_if_file_truncated) {
     ASSERT(0 == std::system("dd if=disp.7.1.odb of=disp.7.1.odb.truncated bs=30121 count=1"));
     core::TablesReader mdr("disp.7.1.odb.truncated");
     try {
-        for(auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
+        for (auto it(mdr.begin()), end(mdr.end()); it != end; ++it)
             ;
         ASSERT(0 && "Scanning of truncated file did not fail");
-    } catch (odc::core::ODBIncomplete ex) {
+    }
+    catch (odc::core::ODBIncomplete& ex) {
         Log::info() << "Scanning of truncated file disp.7.1.odb.truncated failed as expected." << std::endl;
     }
 }
 
-TEST(operator_ge)
-{
-    const char *data =
-            "a:INTEGER,b:INTEGER\n"
-            "1,1\n"
-            "2,2\n"
-            "3,3\n"
-            "4,4\n"
-            "5,5\n"
-            "6,6\n"
-            "7,7\n"
-            "8,8\n"
-            "9,9\n"
-            "10,10\n"
-            ;
+TEST(operator_ge) {
+    const char* data =
+        "a:INTEGER,b:INTEGER\n"
+        "1,1\n"
+        "2,2\n"
+        "3,3\n"
+        "4,4\n"
+        "5,5\n"
+        "6,6\n"
+        "7,7\n"
+        "8,8\n"
+        "9,9\n"
+        "10,10\n";
 
     {
         FileHandle dh("1to10.odb");
@@ -725,28 +682,24 @@ TEST(operator_ge)
 
     odc::Select odb("select a,b from \"1to10.odb\" where a >= 3;");
     unsigned long counter = 0;
-    for (odc::Select::iterator it = odb.begin(), end = odb.end();
-         it != end;
-         ++it, ++counter)
+    for (odc::Select::iterator it = odb.begin(), end = odb.end(); it != end; ++it, ++counter)
         ;
     ASSERT(counter == 8);
 }
 
-static void create_1to10()
-{
-    const char *data =
-            "a:INTEGER,b:INTEGER\n"
-            "1,1\n"
-            "2,2\n"
-            "3,3\n"
-            "4,4\n"
-            "5,5\n"
-            "6,6\n"
-            "7,7\n"
-            "8,8\n"
-            "9,9\n"
-            "10,10\n"
-            ;
+static void create_1to10() {
+    const char* data =
+        "a:INTEGER,b:INTEGER\n"
+        "1,1\n"
+        "2,2\n"
+        "3,3\n"
+        "4,4\n"
+        "5,5\n"
+        "6,6\n"
+        "7,7\n"
+        "8,8\n"
+        "9,9\n"
+        "10,10\n";
 
     FileHandle dh("1to10.odb");
     dh.openForWrite(0);
@@ -770,17 +723,14 @@ TEST(Select_isNewDataset)
 }
 */
 
-template<typename T> 
-static void test_isNewDataset()
-{
+template <typename T>
+static void test_isNewDataset() {
     create_1to10();
-    size_t blocks (0);
+    size_t blocks(0);
 
     blocks = 0;
     T odb("1to10.odb");
-    for (typename T::iterator it = odb.begin(), end = odb.end();
-         it != end;
-         ++it)
+    for (typename T::iterator it = odb.begin(), end = odb.end(); it != end; ++it)
         if (it->isNewDataset())
             ++blocks;
     ASSERT(blocks == 1);
@@ -845,14 +795,12 @@ TEST(create_temporary_table)
 */
 
 
-TEST(JULIAN_SECONDS)
-{
+TEST(JULIAN_SECONDS) {
     ASSERT(1 == (*odc::Select("select julian_seconds(19750311,0) < julian_seconds(20140210,0) from dual;").begin())[0]);
 }
 
-TEST(CREATE_TABLE_and_SELECT_INTO)
-{
-    const char *inputData =
+TEST(CREATE_TABLE_and_SELECT_INTO) {
+    const char* inputData =
         R"(a:INTEGER,b:INTEGER
         1,1
         2,2
@@ -892,9 +840,9 @@ TEST(CREATE_TABLE_and_SELECT_INTO)
     {
         odc::Select o(sql);
         odc::Select::iterator it = o.begin();
-        unsigned long counter = 0;
+        unsigned long counter    = 0;
         Log::info() << "Inside select" << std::endl;
-        for ( ; it != o.end(); ++it, ++counter) {
+        for (; it != o.end(); ++it, ++counter) {
             Log::info() << "Getting a line..." << std::endl;
             ;
         }
@@ -926,8 +874,7 @@ TEST(SELECT_ALL)
 */
 
 // ODB-106
-TEST(SELECT_WHERE_0)
-{
+TEST(SELECT_WHERE_0) {
     {
         FileHandle dh("select_where_0.odb");
         dh.openForWrite(0);
@@ -935,20 +882,18 @@ TEST(SELECT_WHERE_0)
         odc::api::odbFromCSV("a:INTEGER,b:INTEGER\n1,2\n3,4\n", dh);
     }
     odc::Select o("SELECT * FROM \"select_where_0.odb\" WHERE 0;");
-    odc::Select::iterator it (o.begin()), end (o.end());
+    odc::Select::iterator it(o.begin()), end(o.end());
     ++it;
 }
 
-TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
-{
-    const char *inFile ("ODB_235.odb");
-    const char *data (
-            "a:INTEGER,b:INTEGER,expver:STRING\n"
-            "1,1,'?'\n"
-            "2,2,'?'\n"
-            "3,3,'?'\n"
-            );
-    const char* outFileTemplate ("ODB_235_{a}_{expver}.odb");
+TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235) {
+    const char* inFile("ODB_235.odb");
+    const char* data(
+        "a:INTEGER,b:INTEGER,expver:STRING\n"
+        "1,1,'?'\n"
+        "2,2,'?'\n"
+        "3,3,'?'\n");
+    const char* outFileTemplate("ODB_235_{a}_{expver}.odb");
 
     {
         FileHandle dh(inFile);
@@ -957,11 +902,11 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
         odc::api::odbFromCSV(data, dh);
     }
 
-	odc::Reader in(inFile);
-	odc::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
+    odc::Reader in(inFile);
+    odc::DispatchingWriter out(outFileTemplate, /*maxOpenFiles*/ 3);
 
-	odc::DispatchingWriter::iterator outIt (out.begin());
-	outIt->pass1(in.begin(), in.end());
+    odc::DispatchingWriter::iterator outIt(out.begin());
+    outIt->pass1(in.begin(), in.end());
 
     ASSERT(PathName("ODB_235_1_?.odb").exists());
     ASSERT(PathName("ODB_235_2_?.odb").exists());
@@ -973,8 +918,7 @@ TEST(QuestionMarkHandlingWhenSplittingByStringColumn_ODB235)
     PathName("ODB_235.odb").unlink();
 }
 
-TEST(LegacyAPIExecuteSelectTwice)
-{
+TEST(LegacyAPIExecuteSelectTwice) {
     const std::string fn("legacy_execute_select_twice.odb");
     {
         FileHandle dh(fn);
@@ -984,21 +928,20 @@ TEST(LegacyAPIExecuteSelectTwice)
     }
     odc::Select o(std::string("SELECT * FROM \"") + fn + "\";");
 
-    int i (0), j (0);
+    int i(0), j(0);
 
-    for (odc::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Select::iterator it(o.begin()), end(o.end()); it != end; ++it)
         ++i;
 
     ASSERT(i == 2);
 
-    for (odc::Select::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Select::iterator it(o.begin()), end(o.end()); it != end; ++it)
         ++j;
 
     ASSERT(j == 2);
 }
 
-TEST(LegacyAPITraverseReaderTwice)
-{
+TEST(LegacyAPITraverseReaderTwice) {
     const std::string fn("legacy_traverse_reader_twice.odb");
     {
         FileHandle dh(fn);
@@ -1008,17 +951,15 @@ TEST(LegacyAPITraverseReaderTwice)
     }
     odc::Reader o(fn);
 
-    int i (0), j (0);
+    int i(0), j(0);
 
-    for (odc::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Reader::iterator it(o.begin()), end(o.end()); it != end; ++it)
         ++i;
 
     ASSERT(i == 2);
 
-    for (odc::Reader::iterator it (o.begin()), end (o.end()); it != end; ++it)
+    for (odc::Reader::iterator it(o.begin()), end(o.end()); it != end; ++it)
         ++j;
 
     ASSERT(j == 2);
 }
-
-

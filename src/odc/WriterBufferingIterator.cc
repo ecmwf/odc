@@ -1,9 +1,9 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
@@ -17,10 +17,10 @@
 #include "eckit/io/DataHandle.h"
 #include "eckit/log/Log.h"
 
-#include "odc/core/Header.h"
 #include "odc/LibOdc.h"
-#include "odc/WriterBufferingIterator.h"
 #include "odc/Writer.h"
+#include "odc/WriterBufferingIterator.h"
+#include "odc/core/Header.h"
 
 using namespace eckit;
 using namespace odc::api;
@@ -30,7 +30,8 @@ namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, bool openDataHandle, const odc::sql::TableDef* tableDef) :
+WriterBufferingIterator::WriterBufferingIterator(Owner& owner, DataHandle* dh, bool openDataHandle,
+                                                 const odc::sql::TableDef* tableDef) :
     HandleHolder(dh),
     refCount_(0),
     owner_(owner),
@@ -47,73 +48,70 @@ WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle *dh, b
     nextRowInBuffer_(0),
     rowsBufferSize_(owner.rowsBufferSize()),
     tableDef_(tableDef),
-    openDataHandle_(openDataHandle)
-{
-	if (openDataHandle)
-		open();
-}
-
-WriterBufferingIterator::WriterBufferingIterator(Owner &owner, DataHandle &dh, bool openDataHandle, const odc::sql::TableDef* tableDef) :
-    HandleHolder(dh),
-    refCount_(0),
-    owner_(owner),
-    columns_(0),
-    lastValues_(0),
-    nextRow_(0),
-    columnOffsets_(0),
-    columnByteSizes_(0),
-    nrows_(0),
-    path_(owner.path()),
-    initialisedColumns_(false),
-    properties_(),
-    rowsBuffer_(0),
-    nextRowInBuffer_(0),
-    rowsBufferSize_(owner.rowsBufferSize()),
-    tableDef_(tableDef),
-    openDataHandle_(openDataHandle)
-{
+    openDataHandle_(openDataHandle) {
     if (openDataHandle)
         open();
 }
 
-WriterBufferingIterator::~WriterBufferingIterator()
-{
-    close();
-    delete [] lastValues_;
-    delete [] nextRow_;
-    delete [] columnOffsets_;
-    delete [] columnByteSizes_;
+WriterBufferingIterator::WriterBufferingIterator(Owner& owner, DataHandle& dh, bool openDataHandle,
+                                                 const odc::sql::TableDef* tableDef) :
+    HandleHolder(dh),
+    refCount_(0),
+    owner_(owner),
+    columns_(0),
+    lastValues_(0),
+    nextRow_(0),
+    columnOffsets_(0),
+    columnByteSizes_(0),
+    nrows_(0),
+    path_(owner.path()),
+    initialisedColumns_(false),
+    properties_(),
+    rowsBuffer_(0),
+    nextRowInBuffer_(0),
+    rowsBufferSize_(owner.rowsBufferSize()),
+    tableDef_(tableDef),
+    openDataHandle_(openDataHandle) {
+    if (openDataHandle)
+        open();
 }
 
-unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigned long count)
-{
-	ASSERT(count == columns().size());
+WriterBufferingIterator::~WriterBufferingIterator() {
+    close();
+    delete[] lastValues_;
+    delete[] nextRow_;
+    delete[] columnOffsets_;
+    delete[] columnByteSizes_;
+}
 
-	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "gatherStats: columns_[" << i << "]=" << *columns_[i] << std::endl;
+unsigned long WriterBufferingIterator::gatherStats(const double* values, unsigned long count) {
+    ASSERT(count == columns().size());
 
-    for(size_t i = 0; i < count; i++) {
+    // for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "gatherStats: columns_[" << i << "]=" << *columns_[i]
+    // << std::endl;
+
+    for (size_t i = 0; i < count; i++) {
         columns_[i]->coder().gatherStats(values[columnOffsets_[i]]);
     }
 
-	return 0;
-} 
+    return 0;
+}
 
-int WriterBufferingIterator::setOptimalCodecs()
-{
+int WriterBufferingIterator::setOptimalCodecs() {
     return codecOptimizer_.setOptimalCodecs<SameByteOrder>(const_cast<MetaData&>(columns()));
 }
 
-void WriterBufferingIterator::allocBuffers()
-{
-    delete [] lastValues_;
-	delete [] nextRow_;
-    delete [] columnOffsets_;
-    delete [] columnByteSizes_;
+void WriterBufferingIterator::allocBuffers() {
+    delete[] lastValues_;
+    delete[] nextRow_;
+    delete[] columnOffsets_;
+    delete[] columnByteSizes_;
 
     // Don't do anything until evenything is initialised (this check is before we do rowDataSizeDoubles
     // which makes use of the coders).
 
-    for (const Column* column : columns_) ASSERT(column->hasInitialisedCoder());
+    for (const Column* column : columns_)
+        ASSERT(column->hasInitialisedCoder());
 
     // Initialise this value
     rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
@@ -121,11 +119,11 @@ void WriterBufferingIterator::allocBuffers()
     // Allocate arrays
 
     int32_t numDoubles = rowDataSizeDoubles();
-	int32_t colSize = columns().size();
+    int32_t colSize    = columns().size();
 
-    lastValues_ = new double [numDoubles];
-    nextRow_ = new double [numDoubles];
-    columnOffsets_ = new size_t[colSize];
+    lastValues_      = new double[numDoubles];
+    nextRow_         = new double[numDoubles];
+    columnOffsets_   = new size_t[colSize];
     columnByteSizes_ = new size_t[colSize];
     ASSERT(lastValues_);
 
@@ -141,35 +139,33 @@ void WriterBufferingIterator::allocBuffers()
         ASSERT(columns_[i]->hasInitialisedCoder());
 
         nextRow_[offset] = lastValues_[offset] = columns_[i]->missingValue();
-        columnOffsets_[i] = offset;
-        columnByteSizes_[i] = columns_[i]->dataSizeDoubles() * sizeof(double);
+        columnOffsets_[i]                      = offset;
+        columnByteSizes_[i]                    = columns_[i]->dataSizeDoubles() * sizeof(double);
         offset += columns_[i]->dataSizeDoubles();
     }
 
-	nrows_ = 0;
+    nrows_ = 0;
 }
 
-void WriterBufferingIterator::allocRowsBuffer()
-{
+void WriterBufferingIterator::allocRowsBuffer() {
     rowDataSizeDoubles_ = rowDataSizeDoublesInternal();
-    rowByteSize_ = rowDataSizeDoubles() * sizeof(double);
-    rowsBuffer_ = Buffer(rowsBufferSize_ * rowByteSize_);
-    nextRowInBuffer_ = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
+    rowByteSize_        = rowDataSizeDoubles() * sizeof(double);
+    rowsBuffer_         = Buffer(rowsBufferSize_ * rowByteSize_);
+    nextRowInBuffer_    = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
 }
 
-void WriterBufferingIterator::writeHeader()
-{
-	allocBuffers();
+void WriterBufferingIterator::writeHeader() {
+    allocBuffers();
 
     // If the calculated buffer size now is bigger than the size used for an
     // existing buffer, then clear it.
     // n.b. if zero, this is no problem as we allocate the buffer lazily in writeRow
 
-    if (rowsBuffer_.size() != 0 && rowByteSize_ < rowDataSizeDoublesInternal()*sizeof(double)) {
+    if (rowsBuffer_.size() != 0 && rowByteSize_ < rowDataSizeDoublesInternal() * sizeof(double)) {
         rowDataSizeDoubles_ = 0;
-        rowByteSize_ = 0;
-        rowsBuffer_ = eckit::Buffer(0);
-        nextRowInBuffer_ = nullptr;
+        rowByteSize_        = 0;
+        rowsBuffer_         = eckit::Buffer(0);
+        nextRowInBuffer_    = nullptr;
     }
 
     for (size_t i = 0; i < columns_.size(); ++i) {
@@ -177,34 +173,34 @@ void WriterBufferingIterator::writeHeader()
         // If we haven't configured a row, then this is bad
         ASSERT(columns_[i]->hasInitialisedCoder());
 
-		columns_[i]->coder().resetStats();
+        columns_[i]->coder().resetStats();
     }
     initialisedColumns_ = true;
-	//for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "writeHeader: columns_[" << i << "]=" << *columns_[i] << std::endl;
+    // for (size_t i = 0; i < columns_.size(); ++i) Log::info() << "writeHeader: columns_[" << i << "]=" << *columns_[i]
+    // << std::endl;
 }
 
-bool WriterBufferingIterator::next()
-{
+bool WriterBufferingIterator::next() {
     return writeRow(nextRow_, columns().size()) == 0;
 }
 
-double* WriterBufferingIterator::data() { return nextRow_; }
-double& WriterBufferingIterator::data(size_t i)
-{
+double* WriterBufferingIterator::data() {
+    return nextRow_;
+}
+double& WriterBufferingIterator::data(size_t i) {
     ASSERT(initialisedColumns_);
-	ASSERT(i >= 0 && i < columns().size());
+    ASSERT(i < columns().size());
     return nextRow_[columnOffsets_[i]];
 }
 
-int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
-{
-	ASSERT(nCols == columns().size());
+int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols) {
+    ASSERT(nCols == columns().size());
     ASSERT(initialisedColumns_);
 
     if (rowsBuffer_.size() == 0)
-		allocRowsBuffer();
+        allocRowsBuffer();
 
-	gatherStats(data, nCols);
+    gatherStats(data, nCols);
 
     std::copy(data, data + rowDataSizeDoubles(), reinterpret_cast<double*>(nextRowInBuffer_));
     nextRowInBuffer_ += rowByteSize_;
@@ -212,7 +208,7 @@ int WriterBufferingIterator::writeRow(const double* data, unsigned long nCols)
     ASSERT((char*)nextRowInBuffer_ <= rowsBuffer_ + rowsBuffer_.size());
 
     if ((char*)nextRowInBuffer_ == rowsBuffer_ + rowsBuffer_.size())
-		flush();
+        flush();
 
     return 0;
 }
@@ -226,26 +222,24 @@ size_t WriterBufferingIterator::rowDataSizeDoublesInternal() const {
     return total;
 }
 
-int WriterBufferingIterator::doWriteRow(core::DataStream<core::SameByteOrder>& stream, const double* values)
-{
-    if (lastValues_ == 0) allocBuffers();
+int WriterBufferingIterator::doWriteRow(core::DataStream<core::SameByteOrder>& stream, const double* values) {
+    if (lastValues_ == 0)
+        allocBuffers();
 
     // Find where the first changing row is
 
     // BUG: First row may not be properly encoded if it is zero.
     uint16_t k = 0;
     for (; k < columns().size(); ++k) {
-        if (::memcmp(&values[columnOffsets_[k]], &lastValues_[columnOffsets_[k]], columnByteSizes_[k]) != 0) break;
+        if (::memcmp(&values[columnOffsets_[k]], &lastValues_[columnOffsets_[k]], columnByteSizes_[k]) != 0)
+            break;
     }
 
     // Marker stores the starting column
     // static_cast eliminates unecessary warnings due to % operator returning an int.
 
-    uint8_t marker[2] {
-        static_cast<uint8_t>((k / 256) % 256),
-        static_cast<uint8_t>(k % 256)
-    };
-    stream.writeBytes(marker, sizeof(marker)); // raw write
+    uint8_t marker[2]{static_cast<uint8_t>((k / 256) % 256), static_cast<uint8_t>(k % 256)};
+    stream.writeBytes(marker, sizeof(marker));  // raw write
 
     // TODO: Update Codecs to encode to a DataStream directly.
     // n.b. We are relying on the sizing of the buffer behind stream to have been done correctly.
@@ -253,34 +247,33 @@ int WriterBufferingIterator::doWriteRow(core::DataStream<core::SameByteOrder>& s
 
     char* p = stream.get();
 
-    for (size_t i = k; i < columns().size(); ++i)  {
+    for (size_t i = k; i < columns().size(); ++i) {
         p = columns_[i]->coder().encode(p, values[columnOffsets_[i]]);
         ::memcpy(&lastValues_[columnOffsets_[i]], &values[columnOffsets_[i]], columnByteSizes_[i]);
-	}
+    }
 
     stream.set(p);
 
-	nrows_++;
-	return 0;
-} 
+    nrows_++;
+    return 0;
+}
 
-int WriterBufferingIterator::open()
-{
-    //LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::open@" << this << ": Opening data handle " << handle() << std::endl;
+int WriterBufferingIterator::open() {
+    // LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::open@" << this << ": Opening data handle " << handle() <<
+    // std::endl;
 
     Length estimatedLen = 20 * 1024 * 1024;
     handle().openForWrite(estimatedLen);
 
-	return 0;
+    return 0;
 }
 
 
-int WriterBufferingIterator::setColumn(size_t index, std::string name, api::ColumnType type)
-{
-	//LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::setColumn: " << std::endl;
-	ASSERT(index < columns().size());
-	Column* col = columns_[index];
-	ASSERT(col);
+int WriterBufferingIterator::setColumn(size_t index, std::string name, api::ColumnType type) {
+    // LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::setColumn: " << std::endl;
+    ASSERT(index < columns().size());
+    Column* col = columns_[index];
+    ASSERT(col);
 
     // Ensure that this column is unique!
     for (size_t i = 0; i < columns_.size(); i++) {
@@ -293,39 +286,37 @@ int WriterBufferingIterator::setColumn(size_t index, std::string name, api::Colu
         }
     }
 
-	col->name(name); 
+    col->name(name);
     col->type<SameByteOrder>(type);
 
     return 0;
 }
 
-int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, api::ColumnType type, eckit::sql::BitfieldDef b)
-{
-	//LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
-	ASSERT(index < columns().size());
-	Column* col = columns_[index];
-	ASSERT(col);
+int WriterBufferingIterator::setBitfieldColumn(size_t index, std::string name, api::ColumnType type,
+                                               eckit::sql::BitfieldDef b) {
+    // LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::setBitfieldColumn: " << std::endl;
+    ASSERT(index < columns().size());
+    Column* col = columns_[index];
+    ASSERT(col);
 
-	col->name(name); 
+    col->name(name);
     col->type<SameByteOrder>(type);
     col->bitfieldDef(b);
-	return 0;
+    return 0;
 }
 
-void WriterBufferingIterator::missingValue(size_t i, double missingValue)
-{
-	ASSERT(i < columns().size());
-	Column* col = columns_[i];
-	ASSERT(col);
+void WriterBufferingIterator::missingValue(size_t i, double missingValue) {
+    ASSERT(i < columns().size());
+    Column* col = columns_[i];
+    ASSERT(col);
 
-	col->missingValue(missingValue);
+    col->missingValue(missingValue);
 }
 
-void WriterBufferingIterator::flush()
-{
+void WriterBufferingIterator::flush() {
     ASSERT(initialisedColumns_);
     if (nextRowInBuffer_ == rowsBuffer_ || rowsBuffer_.size() == 0)
-		return;
+        return;
 
     setOptimalCodecs();
 
@@ -336,9 +327,9 @@ void WriterBufferingIterator::flush()
     // Iterate over stored rows, and re-encode them into the encodedBuffer
 
     size_t rowsWritten = 0;
-    unsigned char* p = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
+    unsigned char* p   = reinterpret_cast<unsigned char*>(rowsBuffer_.data());
     while (p < nextRowInBuffer_) {
-        doWriteRow(encodedStream, reinterpret_cast<double *>(p));
+        doWriteRow(encodedStream, reinterpret_cast<double*>(p));
         p += rowByteSize_;
         ++rowsWritten;
     }
@@ -351,8 +342,10 @@ void WriterBufferingIterator::flush()
 
     LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::flush: header size: " << encodedHeader.second << std::endl;
 
-    ASSERT(dataHandle().write(encodedHeader.first, encodedHeader.second) == long(encodedHeader.second)); // Write header
-    ASSERT(dataHandle().write(encodedBuffer, encodedStream.position()) == encodedStream.position()); // Write encoded data
+    ASSERT(dataHandle().write(encodedHeader.first, encodedHeader.second) ==
+           long(encodedHeader.second));  // Write header
+    ASSERT(dataHandle().write(encodedBuffer, encodedStream.position()) ==
+           encodedStream.position());  // Write encoded data
 
     LOG_DEBUG_LIB(LibOdc) << "WriterBufferingIterator::flush: flushed " << rowsWritten << " rows." << std::endl;
 
@@ -372,19 +365,17 @@ std::pair<Buffer, size_t> WriterBufferingIterator::serializeHeader(size_t dataSi
     return core::Header::serializeHeader(dataSize, rowsNumber, properties_, columns());
 }
 
-int WriterBufferingIterator::close()
-{
-    if (initialisedColumns_) flush();
+int WriterBufferingIterator::close() {
+    if (initialisedColumns_)
+        flush();
 
-    if (!openDataHandle_)
-	{
+    if (!openDataHandle_) {
         handle().close();
-	}
-	return 0;
+    }
+    return 0;
 }
 
-std::vector<eckit::PathName> WriterBufferingIterator::outputFiles()
-{
+std::vector<eckit::PathName> WriterBufferingIterator::outputFiles() {
     std::vector<eckit::PathName> r;
     r.push_back(path_);
     return r;
@@ -403,5 +394,4 @@ void WriterBufferingIterator::flushAndResetColumnSizes(const std::map<std::strin
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // namespace odc 
-
+}  // namespace odc

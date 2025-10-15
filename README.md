@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/github/workflow/status/ecmwf/odc/Continuous%20Integration/develop)](https://github.com/ecmwf/odc/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/odc/badge/?version=latest)](https://odc.readthedocs.io/en/latest/?badge=latest)
 [![Licence](https://img.shields.io/github/license/ecmwf/odc)](https://github.com/ecmwf/odc/blob/develop/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/odclib)](https://pypi.org/project/odclib/)
 
 C, C++ and Fortran libraries providing encoders and decoders and interrogation of meteorological data encoded in ODB-2 format as well as command line tools for investigation and manipulation of ODB-2 data.
 

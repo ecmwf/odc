@@ -1,36 +1,34 @@
 /*
  * (C) Copyright 1996-2012 ECMWF.
- * 
+ *
  * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0. 
- * In applying this licence, ECMWF does not waive the privileges and immunities 
+ * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+ * In applying this licence, ECMWF does not waive the privileges and immunities
  * granted to it by virtue of its status as an intergovernmental organisation nor
  * does it submit to any jurisdiction.
  */
 
+#include "odc/RowsCounter.h"
 #include "eckit/eckit.h"
+#include "odc/Reader.h"
 #include "odc/core/MetaData.h"
 #include "odc/core/TablesReader.h"
-#include "odc/Reader.h"
-#include "odc/RowsCounter.h"
 
 using namespace eckit;
 
 namespace odc {
 
-unsigned long long RowsCounter::fastRowCount(const PathName &db)
-{
-	unsigned long long n = 0;
+unsigned long long RowsCounter::fastRowCount(const PathName& db) {
+    unsigned long long n = 0;
 
     core::TablesReader reader(db);
 
-    auto it = reader.begin();
+    auto it  = reader.begin();
     auto end = reader.end();
-	for (; it != end; ++it)
+    for (; it != end; ++it)
         n += it->rowCount();
-	return n;
+    return n;
 }
 
 
-} // namespace odc 
-
+}  // namespace odc

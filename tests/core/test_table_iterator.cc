@@ -33,11 +33,11 @@ CASE("Test access Table iterator") {
     eckit::AutoClose close(*dh);
 
     odc::core::TablesReader reader(*dh);
-    auto it = reader.begin();
+    auto it  = reader.begin();
     auto end = reader.end();
 
-    size_t numRows = 0;
-    size_t tableCount = 0;
+    size_t numRows           = 0;
+    size_t tableCount        = 0;
     eckit::Offset lastOffset = 0;
 
     EXPECT(dh->estimate() == eckit::Length(2449313));
@@ -45,7 +45,7 @@ CASE("Test access Table iterator") {
     while (it != end) {
         tableCount++;
 
-        EXPECT(it->rowCount() == (tableCount == 333? 1753 : 10000));
+        EXPECT(it->rowCount() == (tableCount == 333 ? 1753 : 10000));
         EXPECT(it->nextPosition() > lastOffset);
         EXPECT(it->nextPosition() <= dh->estimate());
         EXPECT(dh->estimate() == eckit::Length(2449313));
@@ -67,4 +67,3 @@ CASE("Test access Table iterator") {
 int main(int argc, char* argv[]) {
     return run_tests(argc, argv);
 }
-

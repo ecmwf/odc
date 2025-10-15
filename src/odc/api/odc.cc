@@ -8,20 +8,20 @@
  * does it submit to any jurisdiction.
  */
 
+#include <unistd.h>
 #include <cstdint>
 #include <cstring>
 #include <functional>
 #include <numeric>
-#include <unistd.h>
 
 #include "eckit/exception/Exceptions.h"
+#include "eckit/io/FileDescHandle.h"
+#include "eckit/io/MemoryHandle.h"
 #include "eckit/maths/Functions.h"
 #include "eckit/runtime/Main.h"
-#include "eckit/io/MemoryHandle.h"
-#include "eckit/io/FileDescHandle.h"
 
-#include "odc/api/odc.h"
 #include "odc/api/Odb.h"
+#include "odc/api/odc.h"
 
 using namespace odc::api;
 using namespace eckit;
@@ -31,12 +31,8 @@ extern "C" {
 //----------------------------------------------------------------------------------------------------------------------
 
 struct odc_reader_t {
-    odc_reader_t(DataHandle* dh) : impl_(nullptr), dh_(dh) {
-        dh_->openForRead();
-    }
-    ~odc_reader_t() noexcept(false) {
-        dh_->close();
-    }
+    odc_reader_t(DataHandle* dh) : impl_(nullptr), dh_(dh) { dh_->openForRead(); }
+    ~odc_reader_t() noexcept(false) { dh_->close(); }
     std::unique_ptr<Reader> impl_;
     std::unique_ptr<DataHandle> dh_;
 };
@@ -74,7 +70,8 @@ struct odc_decoder_t {
 
 struct odc_encoder_t {
 
-    odc_encoder_t() : arrayData(0), columnMajorWidth(0), nrows(0), arrayWidth(0), arrayHeight(0), maxRowsPerFrame(10000) {}
+    odc_encoder_t() :
+        arrayData(0), columnMajorWidth(0), nrows(0), arrayWidth(0), arrayHeight(0), maxRowsPerFrame(10000) {}
 
     struct EncodeColumn {
         const void* data;
@@ -99,23 +96,23 @@ struct odc_encoder_t {
 
 static std::string g_current_error_str;
 static odc_failure_handler_t g_failure_handler = nullptr;
-static void* g_failure_handler_context = nullptr;
+static void* g_failure_handler_context         = nullptr;
 
 const char* odc_error_string(int err) {
     switch (err) {
-    case ODC_SUCCESS:
-        return "Success";
-    case ODC_ERROR_GENERAL_EXCEPTION:
-    case ODC_ERROR_UNKNOWN_EXCEPTION:
-        return g_current_error_str.c_str();
-    case ODC_ITERATION_COMPLETE:
-        return "Iteration complete";
-    default:
-        return "<unknown>";
+        case ODC_SUCCESS:
+            return "Success";
+        case ODC_ERROR_GENERAL_EXCEPTION:
+        case ODC_ERROR_UNKNOWN_EXCEPTION:
+            return g_current_error_str.c_str();
+        case ODC_ITERATION_COMPLETE:
+            return "Iteration complete";
+        default:
+            return "<unknown>";
     };
 }
 
-} // extern "C"
+}  // extern "C"
 
 // Template can't have C linkage
 
@@ -137,21 +134,24 @@ int wrapApiFunction(FN f) {
 
     try {
         return innerWrapFn(f);
-    } catch (Exception& e) {
+    }
+    catch (Exception& e) {
         Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         g_current_error_str = e.what();
         if (g_failure_handler) {
             g_failure_handler(g_failure_handler_context, ODC_ERROR_GENERAL_EXCEPTION);
         }
         return ODC_ERROR_GENERAL_EXCEPTION;
-    } catch (std::exception& e) {
+    }
+    catch (std::exception& e) {
         Log::error() << "Caught exception on C-C++ API boundary: " << e.what() << std::endl;
         g_current_error_str = e.what();
         if (g_failure_handler) {
             g_failure_handler(g_failure_handler_context, ODC_ERROR_GENERAL_EXCEPTION);
         }
         return ODC_ERROR_GENERAL_EXCEPTION;
-    } catch (...) {
+    }
+    catch (...) {
         Log::error() << "Caught unknown on C-C++ API boundary" << std::endl;
         g_current_error_str = "Unrecognised and unknown exception";
         if (g_failure_handler) {
@@ -163,7 +163,7 @@ int wrapApiFunction(FN f) {
     ASSERT(false);
 }
 
-}
+}  // namespace
 
 extern "C" {
 
@@ -172,15 +172,11 @@ extern "C" {
 // Types for lookup
 
 int odc_column_type_count(int* count) {
-    return wrapApiFunction([count] {
-        (*count) = NUM_TYPES;
-    });
+    return wrapApiFunction([count] { (*count) = NUM_TYPES; });
 }
 
 int odc_column_type_name(int type, const char** type_name) {
-    return wrapApiFunction([type, type_name] {
-        (*type_name) = columnTypeName(static_cast<ColumnType>(type));
-    });
+    return wrapApiFunction([type, type_name] { (*type_name) = columnTypeName(static_cast<ColumnType>(type)); });
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -193,7 +189,7 @@ int odc_column_type_name(int type, const char** type_name) {
  * Initialise API
  * @note This is only required if being used from a context where Main()
  *       is not otherwise initialised
-*/
+ */
 
 int odc_initialise_api() {
     return wrapApiFunction([] {
@@ -209,19 +205,20 @@ int odc_initialise_api() {
             initialised = true;
         }
 
-        ASSERT(ODC_IGNORE   == static_cast<int>(IGNORE));
-        ASSERT(ODC_INTEGER  == static_cast<int>(INTEGER));
-        ASSERT(ODC_REAL     == static_cast<int>(REAL));
-        ASSERT(ODC_STRING   == static_cast<int>(STRING));
+        ASSERT(ODC_IGNORE == static_cast<int>(IGNORE));
+        ASSERT(ODC_INTEGER == static_cast<int>(INTEGER));
+        ASSERT(ODC_REAL == static_cast<int>(REAL));
+        ASSERT(ODC_STRING == static_cast<int>(STRING));
         ASSERT(ODC_BITFIELD == static_cast<int>(BITFIELD));
-        ASSERT(ODC_DOUBLE   == static_cast<int>(DOUBLE));
+        ASSERT(ODC_DOUBLE == static_cast<int>(DOUBLE));
     });
 }
 
 int odc_integer_behaviour(int integerBehaviour) {
     return wrapApiFunction([integerBehaviour] {
         if (integerBehaviour != ODC_INTEGERS_AS_DOUBLES && integerBehaviour != ODC_INTEGERS_AS_LONGS) {
-            throw SeriousBug("ODC integer behaviour must be either ODC_INTEGERS_AS_DOUBLES or ODC_INTEGERS_AS_LONGS", Here());
+            throw SeriousBug("ODC integer behaviour must be either ODC_INTEGERS_AS_DOUBLES or ODC_INTEGERS_AS_LONGS",
+                             Here());
         }
         Settings::treatIntegersAsDoubles(integerBehaviour == ODC_INTEGERS_AS_DOUBLES);
     });
@@ -229,7 +226,7 @@ int odc_integer_behaviour(int integerBehaviour) {
 
 int odc_set_failure_handler(odc_failure_handler_t handler, void* context) {
     return wrapApiFunction([handler, context] {
-        g_failure_handler = handler;
+        g_failure_handler         = handler;
         g_failure_handler_context = context;
     });
 }
@@ -249,27 +246,19 @@ int odc_missing_double(double* missing_value) {
 }
 
 int odc_set_missing_integer(long missing_integer) {
-    return wrapApiFunction([missing_integer] {
-        Settings::setIntegerMissingValue(missing_integer);
-    });
+    return wrapApiFunction([missing_integer] { Settings::setIntegerMissingValue(missing_integer); });
 }
 
 int odc_set_missing_double(double missing_double) {
-    return wrapApiFunction([missing_double] {
-        Settings::setDoubleMissingValue(missing_double);
-    });
+    return wrapApiFunction([missing_double] { Settings::setDoubleMissingValue(missing_double); });
 }
 
 int odc_version(const char** version) {
-    return wrapApiFunction([version]{
-        (*version) = Settings::version().c_str();
-    });
+    return wrapApiFunction([version] { (*version) = Settings::version().c_str(); });
 }
 
 int odc_vcs_version(const char** sha1) {
-    return wrapApiFunction([sha1]{
-        (*sha1) = Settings::gitsha1().c_str();
-    });
+    return wrapApiFunction([sha1] { (*sha1) = Settings::gitsha1().c_str(); });
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -278,7 +267,7 @@ int odc_vcs_version(const char** sha1) {
 
 int odc_open_path(odc_reader_t** reader, const char* filename) {
     return wrapApiFunction([reader, filename] {
-//        ASSERT(!(*reader));
+        //        ASSERT(!(*reader));
         (*reader) = new odc_reader_t(PathName(filename).fileHandle());
     });
 }
@@ -288,16 +277,14 @@ int odc_open_file_descriptor(odc_reader_t** reader, int fd) {
         // Take a copy of the file descriptor. This allows us to decouple the life of this
         // from the life of the caller
         int fd2 = dup(fd);
-        if (fd == -1) throw CantOpenFile("dup() failed on supplied file descriptor", Here());
+        if (fd == -1)
+            throw CantOpenFile("dup() failed on supplied file descriptor", Here());
         (*reader) = new odc_reader_t(new FileDescHandle(fd2, true));
     });
 }
 
 int odc_open_buffer(odc_reader_t** reader, const void* data, long length) {
-    return wrapApiFunction([reader, data, length] {
-        (*reader) = new odc_reader_t(new MemoryHandle(data, length));
-    });
-
+    return wrapApiFunction([reader, data, length] { (*reader) = new odc_reader_t(new MemoryHandle(data, length)); });
 }
 
 int odc_open_stream(odc_reader_t** reader, void* handle, odc_stream_read_t stream_proc) {
@@ -320,13 +307,12 @@ int odc_open_stream(odc_reader_t** reader, void* handle, odc_stream_read_t strea
         odc_stream_read_t fn_;
     };
 
-    return wrapApiFunction([reader, handle, stream_proc] {
-        (*reader) = new odc_reader_t(new ReadStreamDataHandle(handle, stream_proc));
-    });
+    return wrapApiFunction(
+        [reader, handle, stream_proc] { (*reader) = new odc_reader_t(new ReadStreamDataHandle(handle, stream_proc)); });
 }
 
 int odc_close(const odc_reader_t* reader) {
-    return wrapApiFunction([reader]{
+    return wrapApiFunction([reader] {
         ASSERT(reader);
         delete reader;
     });
@@ -341,7 +327,7 @@ int odc_close(const odc_reader_t* reader) {
 int odc_new_frame(odc_frame_t** frame, odc_reader_t* reader) {
     return wrapApiFunction([frame, reader] {
         ASSERT(reader);
-        (*frame) = new odc_frame_t {*reader, false};
+        (*frame) = new odc_frame_t{*reader, false, {}, {}};
     });
 }
 
@@ -353,7 +339,7 @@ int odc_free_frame(const odc_frame_t* frame) {
 }
 
 int odc_next_frame(odc_frame_t* frame) {
-    return wrapApiFunction(std::function<int()> {[frame] {
+    return wrapApiFunction(std::function<int()>{[frame] {
         ASSERT(frame);
 
         odc_reader_t& r(frame->reader_);
@@ -367,14 +353,15 @@ int odc_next_frame(odc_frame_t* frame) {
             frame->propertiesIndex_.clear();
 
             return ODC_SUCCESS;
-        } else {
+        }
+        else {
             return ODC_ITERATION_COMPLETE;
         }
     }});
 }
 
 int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows) {
-    return wrapApiFunction(std::function<int()> {[frame, maximum_rows] {
+    return wrapApiFunction(std::function<int()>{[frame, maximum_rows] {
         ASSERT(frame);
 
         odc_reader_t& r(frame->reader_);
@@ -388,7 +375,8 @@ int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows) {
             frame->propertiesIndex_.clear();
 
             return ODC_SUCCESS;
-        } else {
+        }
+        else {
             return ODC_ITERATION_COMPLETE;
         }
     }});
@@ -397,7 +385,7 @@ int odc_next_frame_aggregated(odc_frame_t* frame, long maximum_rows) {
 int odc_copy_frame(odc_frame_t* source_frame, odc_frame_t** copy) {
     return wrapApiFunction([source_frame, copy] {
         ASSERT(source_frame);
-        (*copy) = new odc_frame_t {*source_frame};
+        (*copy) = new odc_frame_t{*source_frame};
     });
 }
 
@@ -417,11 +405,7 @@ int odc_frame_column_count(const odc_frame_t* frame, int* count) {
     });
 }
 
-int odc_frame_column_attributes(const odc_frame_t* frame,
-                                int col,
-                                const char** name,
-                                int* type,
-                                int* element_size,
+int odc_frame_column_attributes(const odc_frame_t* frame, int col, const char** name, int* type, int* element_size,
                                 int* bitfield_count) {
     return wrapApiFunction([frame, col, name, type, element_size, bitfield_count] {
         ASSERT(frame);
@@ -429,14 +413,19 @@ int odc_frame_column_attributes(const odc_frame_t* frame,
         ASSERT(col >= 0 && size_t(col) < ci.size());
         const auto& colInfo(ci[col]);
 
-        if (name) (*name) = colInfo.name.c_str();
-        if (type) (*type) = colInfo.type;
-        if (element_size) (*element_size) = colInfo.decodedSize;
-        if (bitfield_count) (*bitfield_count) = colInfo.bitfield.size();
+        if (name)
+            (*name) = colInfo.name.c_str();
+        if (type)
+            (*type) = colInfo.type;
+        if (element_size)
+            (*element_size) = colInfo.decodedSize;
+        if (bitfield_count)
+            (*bitfield_count) = colInfo.bitfield.size();
     });
 }
 
-int odc_frame_bitfield_attributes(const odc_frame_t* frame, int col, int field, const char** name, int* offset, int* size) {
+int odc_frame_bitfield_attributes(const odc_frame_t* frame, int col, int field, const char** name, int* offset,
+                                  int* size) {
     return wrapApiFunction([frame, col, field, name, offset, size] {
         ASSERT(frame);
         const auto& ci(frame->frame_.columnInfo());
@@ -444,9 +433,12 @@ int odc_frame_bitfield_attributes(const odc_frame_t* frame, int col, int field, 
         const auto& colInfo(ci[col]);
         ASSERT(field >= 0 && size_t(field) < colInfo.bitfield.size());
 
-        if (name) (*name) = colInfo.bitfield[field].name.c_str();
-        if (offset) (*offset) = colInfo.bitfield[field].offset;
-        if (size) (*size) = colInfo.bitfield[field].size;
+        if (name)
+            (*name) = colInfo.bitfield[field].name.c_str();
+        if (offset)
+            (*offset) = colInfo.bitfield[field].offset;
+        if (size)
+            (*size) = colInfo.bitfield[field].size;
     });
 }
 
@@ -467,15 +459,15 @@ int odc_frame_property_idx(const odc_frame_t* frame, int idx, const char** key, 
             ASSERT(idx >= 0 && size_t(idx) < properties.size());
 
             frame->propertiesIndex_.reserve(properties.size());
-            for (std::map<std::string, std::string>::const_iterator it = properties.begin();
-                it != properties.end(); ++it) {
+            for (std::map<std::string, std::string>::const_iterator it = properties.begin(); it != properties.end();
+                 ++it) {
                 frame->propertiesIndex_.push_back(it);
             }
 
             frame->propertiesMemoised_ = true;
         }
 
-        *key = frame->propertiesIndex_[idx]->first.c_str();
+        *key   = frame->propertiesIndex_[idx]->first.c_str();
         *value = frame->propertiesIndex_[idx]->second.c_str();
     });
 }
@@ -486,7 +478,7 @@ int odc_frame_property(const odc_frame_t* frame, const char* key, const char** v
         const auto& properties(frame->frame_.properties());
 
         auto it = properties.find(key);
-        *value = (it == properties.end()) ? nullptr : it->second.c_str();
+        *value  = (it == properties.end()) ? nullptr : it->second.c_str();
     });
 }
 
@@ -495,20 +487,15 @@ int odc_frame_property(const odc_frame_t* frame, const char* key, const char** v
 /* Decode functionality */
 
 int odc_new_decoder(odc_decoder_t** decoder) {
-    return wrapApiFunction([decoder] {
-        (*decoder) = new odc_decoder_t;
-    });
+    return wrapApiFunction([decoder] { (*decoder) = new odc_decoder_t; });
 }
 
 int odc_free_decoder(const odc_decoder_t* decoder) {
-    return wrapApiFunction([decoder] {
-        delete decoder;
-    });
+    return wrapApiFunction([decoder] { delete decoder; });
 }
 
 int odc_decoder_defaults_from_frame(odc_decoder_t* decoder, const odc_frame_t* frame) {
     return wrapApiFunction([decoder, frame] {
-
         ASSERT(decoder);
         ASSERT(frame);
 
@@ -554,29 +541,34 @@ int odc_decoder_set_data_array(odc_decoder_t* decoder, void* buffer, long width,
         ASSERT(width > 0);
         ASSERT(height > 0);
         decoder->externalData = buffer;
-        decoder->dataWidth = width;
-        decoder->dataHeight = height;
-        decoder->columnMajor = columnMajor;
-        decoder->nrows = height;
+        decoder->dataWidth    = width;
+        decoder->dataHeight   = height;
+        decoder->columnMajor  = columnMajor;
+        decoder->nrows        = height;
     });
 }
 
-int odc_decoder_data_array(const odc_decoder_t* decoder, const void** data, long* width, long* height, bool* columnMajor) {
+int odc_decoder_data_array(const odc_decoder_t* decoder, const void** data, long* width, long* height,
+                           bool* columnMajor) {
     return wrapApiFunction([decoder, data, width, height, columnMajor] {
         ASSERT(decoder);
 
         if (data) {
             if (decoder->ownedData) {
                 (*data) = decoder->ownedData.get();
-            } else {
+            }
+            else {
                 ASSERT(decoder->externalData);
                 (*data) = decoder->externalData;
             }
         }
 
-        if (width) (*width) = decoder->dataWidth;
-        if (height) (*height) = decoder->dataHeight;
-        if (columnMajor) (*columnMajor) = decoder->columnMajor;
+        if (width)
+            (*width) = decoder->dataWidth;
+        if (height)
+            (*height) = decoder->dataHeight;
+        if (columnMajor)
+            (*columnMajor) = decoder->columnMajor;
     });
 }
 
@@ -585,7 +577,7 @@ int odc_decoder_add_column(odc_decoder_t* decoder, const char* name) {
         ASSERT(decoder);
         ASSERT(name);
         decoder->columnNames.emplace_back(name);
-        decoder->columnData.emplace_back(odc_decoder_t::DecodeColumn {0, 0, 0, false});
+        decoder->columnData.emplace_back(odc_decoder_t::DecodeColumn{0, 0, 0, false});
     });
 }
 
@@ -614,20 +606,24 @@ int odc_decoder_column_set_data_array(odc_decoder_t* decoder, int col, int eleme
 
         auto& cd(decoder->columnData[col]);
         cd.elemSize = element_size;
-        cd.stride = stride;
-        cd.data = data;
+        cd.stride   = stride;
+        cd.data     = data;
     });
 }
 
-int odc_decoder_column_data_array(const odc_decoder_t* decoder, int col, int* element_size, int* stride, const void** data) {
+int odc_decoder_column_data_array(const odc_decoder_t* decoder, int col, int* element_size, int* stride,
+                                  const void** data) {
     return wrapApiFunction([decoder, col, element_size, stride, data] {
         ASSERT(decoder);
         ASSERT(col >= 0 && size_t(col) < decoder->columnData.size());
 
         auto& cd(decoder->columnData[col]);
-        if (element_size) (*element_size) = cd.elemSize;
-        if (stride) (*stride) = cd.stride;
-        if (data) (*data) = cd.data;
+        if (element_size)
+            (*element_size) = cd.elemSize;
+        if (stride)
+            (*stride) = cd.stride;
+        if (data)
+            (*data) = cd.data;
     });
 }
 
@@ -638,7 +634,7 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
     }
 
     size_t height = decoder->nrows;  // in rows
-    size_t width = 0;                // in bytes
+    size_t width  = 0;               // in bytes
     std::vector<std::pair<size_t, long>> offsets;
 
     for (size_t i = 0; i < decoder->columnData.size(); ++i) {
@@ -646,8 +642,9 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
 
         if (col.elemSize == 0) {
             if (col.data) {
-                col.elemSize = sizeof(double); // backwards compatible default
-            } else {
+                col.elemSize = sizeof(double);  // backwards compatible default
+            }
+            else {
                 const std::string& colName(decoder->columnNames[i]);
                 auto it = std::find_if(frame->frame_.columnInfo().begin(), frame->frame_.columnInfo().end(),
                                        [&colName](const ColumnInfo& ci) { return ci.name == colName; });
@@ -667,13 +664,14 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
             dataPtr = decoder->externalData;
             ASSERT(width <= decoder->dataWidth);
             ASSERT(height <= decoder->dataHeight);
-            width = decoder->dataWidth;
+            width  = decoder->dataWidth;
             height = decoder->dataHeight;
-        } else {
+        }
+        else {
             decoder->ownedData.reset(new char[width * height]);
-            decoder->dataWidth = width;
+            decoder->dataWidth  = width;
             decoder->dataHeight = height;
-            dataPtr = decoder->ownedData.get();
+            dataPtr             = decoder->ownedData.get();
         }
 
         size_t offset = 0;
@@ -683,13 +681,17 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
                 if (decoder->columnMajor) {
                     col.stride = col.elemSize;
                     offset += height * col.elemSize;
-                    if (col.elemSize > 8) col.transpose = true;
-                } else {
+                    if (col.elemSize > 8)
+                        col.transpose = true;
+                }
+                else {
                     col.stride = width;
                     offset += col.elemSize;
                 }
-            } else {
-                if (col.stride == 0) col.stride = col.elemSize;
+            }
+            else {
+                if (col.stride == 0)
+                    col.stride = col.elemSize;
             }
         }
     }
@@ -698,7 +700,6 @@ static void fill_in_decoder(odc_decoder_t* decoder, const odc_frame_t* frame) {
 
 int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_decoded, int nthreads) {
     return wrapApiFunction([decoder, frame, rows_decoded, nthreads] {
-
         ASSERT(decoder);
         ASSERT(frame);
 
@@ -735,7 +736,8 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
                 temporaryTransposeData.emplace_back(i, std::unique_ptr<double[]>(new double[frame_rows * cols]));
                 data = temporaryTransposeData.back().second.get();
             }
-            dataFacade.emplace_back(StridedData{data, size_t(decoder->nrows), size_t(col.elemSize), size_t(col.stride)});
+            dataFacade.emplace_back(
+                StridedData{data, size_t(decoder->nrows), size_t(col.elemSize), size_t(col.stride)});
         }
 
         Decoder target(decoder->columnNames, dataFacade);
@@ -748,11 +750,11 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
         // For the cases where needed, reorder the data
 
         for (const auto& kv : temporaryTransposeData) {
-            size_t colIndex = kv.first;
+            size_t colIndex        = kv.first;
             const double* tmpArray = kv.second.get();
-            double* output = static_cast<double*>(decoder->columnData[colIndex].data);
-            size_t rows = decoder->nrows;
-            size_t cols = decoder->columnData[colIndex].elemSize / sizeof(double);
+            double* output         = static_cast<double*>(decoder->columnData[colIndex].data);
+            size_t rows            = decoder->nrows;
+            size_t cols            = decoder->columnData[colIndex].elemSize / sizeof(double);
             for (size_t row = 0; row < frame_rows; row++) {
                 for (size_t col = 0; col < cols; col++) {
                     output[row + (col * rows)] = tmpArray[col + (row * cols)];
@@ -762,8 +764,9 @@ int odc_decode_threaded(odc_decoder_t* decoder, const odc_frame_t* frame, long* 
 
         // And return the values
 
-//        decoder->nrows = frame_rows;
-        if (rows_decoded) *(rows_decoded) = frame_rows;
+        //        decoder->nrows = frame_rows;
+        if (rows_decoded)
+            *(rows_decoded) = frame_rows;
     });
 }
 
@@ -776,15 +779,11 @@ int odc_decode(odc_decoder_t* decoder, const odc_frame_t* frame, long* rows_deco
 /* Encode functionality */
 
 int odc_new_encoder(odc_encoder_t** encoder) {
-    return wrapApiFunction([encoder] {
-        (*encoder) = new odc_encoder_t;
-    });
+    return wrapApiFunction([encoder] { (*encoder) = new odc_encoder_t; });
 }
 
 int odc_free_encoder(const odc_encoder_t* encoder) {
-    return wrapApiFunction([encoder] {
-        delete encoder;
-    });
+    return wrapApiFunction([encoder] { delete encoder; });
 }
 
 int odc_encoder_add_property(odc_encoder_t* encoder, const char* key, const char* value) {
@@ -808,7 +807,8 @@ int odc_encoder_set_rows_per_frame(odc_encoder_t* encoder, long rows_per_frame) 
     });
 }
 
-int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height, int columnMajorWidth) {
+int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long width, long height,
+                               int columnMajorWidth) {
     return wrapApiFunction([encoder, data, width, height, columnMajorWidth] {
         ASSERT(encoder);
 
@@ -817,25 +817,26 @@ int odc_encoder_set_data_array(odc_encoder_t* encoder, const void* data, long wi
 
         if (encoder->arrayData != 0) {
             for (auto& col : encoder->columnData) {
-                col.data = 0;
+                col.data   = 0;
                 col.stride = 0;
             }
         }
 
         ASSERT(columnMajorWidth % 8 == 0);
-        encoder->arrayData = data;
-        encoder->arrayWidth = width;
-        encoder->arrayHeight = height;
+        encoder->arrayData        = data;
+        encoder->arrayWidth       = width;
+        encoder->arrayHeight      = height;
         encoder->columnMajorWidth = columnMajorWidth;
-        if (encoder->nrows == 0) encoder->nrows = height;
+        if (encoder->nrows == 0)
+            encoder->nrows = height;
     });
 }
 
 int odc_encoder_add_column(odc_encoder_t* encoder, const char* name, int type) {
     return wrapApiFunction([encoder, name, type] {
         ASSERT(encoder);
-        encoder->columnInfo.emplace_back(ColumnInfo{std::string(name), ColumnType(type)});
-        encoder->columnData.emplace_back(odc_encoder_t::EncodeColumn {0, 0});
+        encoder->columnInfo.emplace_back(ColumnInfo{std::string(name), ColumnType(type), {}, {}});
+        encoder->columnData.emplace_back(odc_encoder_t::EncodeColumn{0, 0});
     });
 }
 
@@ -855,8 +856,8 @@ int odc_encoder_column_set_data_array(odc_encoder_t* encoder, int col, int eleme
         ASSERT(element_size >= 0 && element_size % 8 == 0);
         ASSERT(stride >= 0 && stride % 8 == 0);
         encoder->columnInfo[col].decodedSize = element_size;
-        encoder->columnData[col].stride = stride;
-        encoder->columnData[col].data = data;
+        encoder->columnData[col].stride      = stride;
+        encoder->columnData[col].data        = data;
     });
 }
 
@@ -869,12 +870,13 @@ int odc_encoder_column_add_bitfield(odc_encoder_t* encoder, int col, const char*
         ColumnInfo& ci(encoder->columnInfo[col]);
         if (ci.bitfield.size() == 0) {
             offset = 0;
-        } else {
+        }
+        else {
             offset = ci.bitfield.back().offset + ci.bitfield.back().size;
         }
 
         ASSERT(offset + nbits <= 32);
-        ci.bitfield.emplace_back(ColumnInfo::Bit {name, nbits, int(offset)});
+        ci.bitfield.emplace_back(ColumnInfo::Bit{name, nbits, int(offset)});
     });
 }
 
@@ -885,7 +887,8 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<char[]>
 
     size_t decodedWidth = 0;
     for (auto& info : encoder->columnInfo) {
-        if (info.decodedSize == 0) info.decodedSize = 8;
+        if (info.decodedSize == 0)
+            info.decodedSize = 8;
         decodedWidth += info.decodedSize;
     }
 
@@ -931,9 +934,10 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<char[]>
                     // Transpose data for contiguous elementsn
                     size_t widthInElems = info.decodedSize / encoder->columnMajorWidth;
 
-                    transposedData.push_back(std::unique_ptr<char[]>(new char[widthInElems * encoder->columnMajorWidth * encoder->arrayHeight]));
+                    transposedData.push_back(std::unique_ptr<char[]>(
+                        new char[widthInElems * encoder->columnMajorWidth * encoder->arrayHeight]));
                     const char* psrc = reinterpret_cast<const char*>(c.data);
-                    char* ptgt = transposedData.back().get();
+                    char* ptgt       = transposedData.back().get();
                     for (size_t y = 0; y < encoder->arrayHeight; ++y) {
                         for (size_t x = 0; x < widthInElems; ++x) {
                             ::memcpy(&ptgt[(x + (y * widthInElems)) * encoder->columnMajorWidth],
@@ -944,7 +948,8 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<char[]>
                     c.data = ptgt;
                 }
                 offset += info.decodedSize * encoder->arrayHeight;
-            } else {
+            }
+            else {
                 c.stride = encoder->arrayWidth;
                 offset += info.decodedSize;
             }
@@ -952,7 +957,8 @@ void fill_in_encoder(odc_encoder_t* encoder, std::vector<std::unique_ptr<char[]>
             // sanity checks
             ASSERT(c.stride % sizeof(double) == 0);
         }
-    } else {
+    }
+    else {
 
         // We are constructing the data with a supplied structure per column
 
@@ -995,7 +1001,7 @@ void odc_encode_to_data_handle(odc_encoder_t* encoder, eckit::DataHandle& dh) {
     for (size_t i = 0; i < ncolumns; i++) {
         const ColumnInfo& info{encoder->columnInfo[i]};
         const odc_encoder_t::EncodeColumn& c{encoder->columnData[i]};
-        stridedData.emplace_back(ConstStridedData {c.data, encoder->nrows, info.decodedSize, c.stride});
+        stridedData.emplace_back(ConstStridedData{c.data, encoder->nrows, info.decodedSize, c.stride});
     }
 
     ::odc::api::encode(dh, encoder->columnInfo, stridedData, encoder->properties, encoder->maxRowsPerFrame);
@@ -1041,7 +1047,8 @@ int odc_encode_to_file_descriptor(odc_encoder_t* encoder, int fd, long* bytes_en
         dh.openForWrite(0);
         AutoClose closer(dh);
         odc_encode_to_data_handle(encoder, dh);
-        if (bytes_encoded) (*bytes_encoded) = dh.position();
+        if (bytes_encoded)
+            (*bytes_encoded) = dh.position();
     });
 }
 
@@ -1051,10 +1058,11 @@ int odc_encode_to_buffer(odc_encoder_t* encoder, void* buffer, long length, long
         dh.openForWrite(0);
         AutoClose closer(dh);
         odc_encode_to_data_handle(encoder, dh);
-        if (bytes_encoded) (*bytes_encoded) = dh.position();
+        if (bytes_encoded)
+            (*bytes_encoded) = dh.position();
     });
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 
-} // extern "C"
+}  // extern "C"

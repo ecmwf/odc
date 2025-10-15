@@ -19,9 +19,7 @@ namespace core {
 //----------------------------------------------------------------------------------------------------------------------
 
 
-ThreadSharedDataHandle::Internal::Internal(eckit::DataHandle* dh, bool owned) :
-    dh_(dh),
-    owned_(owned) {
+ThreadSharedDataHandle::Internal::Internal(eckit::DataHandle* dh, bool owned) : dh_(dh), owned_(owned) {
 
     if (owned_) {
         dh_->openForRead();
@@ -37,20 +35,17 @@ ThreadSharedDataHandle::Internal::~Internal() {
 
 
 ThreadSharedDataHandle::ThreadSharedDataHandle(eckit::DataHandle& dh) :
-    internal_(std::make_shared<ThreadSharedDataHandle::Internal>(&dh, false)),
-    position_(internal_->dh_->position()) {}
+    internal_(std::make_shared<ThreadSharedDataHandle::Internal>(&dh, false)), position_(internal_->dh_->position()) {}
 
 
 ThreadSharedDataHandle::ThreadSharedDataHandle(eckit::DataHandle* dh) :
-    internal_(std::make_shared<ThreadSharedDataHandle::Internal>(dh, true)),
-    position_(internal_->dh_->position()) {}
+    internal_(std::make_shared<ThreadSharedDataHandle::Internal>(dh, true)), position_(internal_->dh_->position()) {}
 
 
 ThreadSharedDataHandle::~ThreadSharedDataHandle() {}
 
-ThreadSharedDataHandle::ThreadSharedDataHandle(const ThreadSharedDataHandle& other):
-    internal_(other.internal_),
-    position_(other.position_) {}
+ThreadSharedDataHandle::ThreadSharedDataHandle(const ThreadSharedDataHandle& other) :
+    internal_(other.internal_), position_(other.position_) {}
 
 ThreadSharedDataHandle& ThreadSharedDataHandle::operator=(const ThreadSharedDataHandle& rhs) {
     internal_ = rhs.internal_;
@@ -59,8 +54,7 @@ ThreadSharedDataHandle& ThreadSharedDataHandle::operator=(const ThreadSharedData
 }
 
 ThreadSharedDataHandle::ThreadSharedDataHandle(ThreadSharedDataHandle&& other) :
-    internal_(std::move(other.internal_)),
-    position_(other.position_) {}
+    internal_(std::move(other.internal_)), position_(other.position_) {}
 
 ThreadSharedDataHandle& ThreadSharedDataHandle::operator=(ThreadSharedDataHandle&& rhs) {
     std::swap(internal_, rhs.internal_);
@@ -87,9 +81,13 @@ eckit::Length ThreadSharedDataHandle::openForRead() {
     return internal_->dh_->openForRead();
 }
 
-void ThreadSharedDataHandle::openForWrite(const eckit::Length&) { NOTIMP; }
+void ThreadSharedDataHandle::openForWrite(const eckit::Length&) {
+    NOTIMP;
+}
 
-void ThreadSharedDataHandle::openForAppend(const eckit::Length&) { NOTIMP; }
+void ThreadSharedDataHandle::openForAppend(const eckit::Length&) {
+    NOTIMP;
+}
 
 long ThreadSharedDataHandle::read(void* buffer, long length) {
 
@@ -105,7 +103,9 @@ long ThreadSharedDataHandle::read(void* buffer, long length) {
     return delta;
 }
 
-long ThreadSharedDataHandle::write(const void*, long) { NOTIMP; }
+long ThreadSharedDataHandle::write(const void*, long) {
+    NOTIMP;
+}
 
 void ThreadSharedDataHandle::close() {
     ASSERT(internal_);
@@ -134,5 +134,5 @@ std::string ThreadSharedDataHandle::title() const {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-}
-}
+}  // namespace core
+}  // namespace odc

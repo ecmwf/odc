@@ -37,9 +37,8 @@ private:
 private:
 
     const char* tag_;
-
 };
 
-} // namespace odc
+}  // namespace odc
 
 #endif

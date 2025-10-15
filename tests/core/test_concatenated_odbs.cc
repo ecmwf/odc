@@ -8,17 +8,17 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/testing/Test.h"
 #include "eckit/io/FileHandle.h"
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/io/MultiHandle.h"
+#include "eckit/testing/Test.h"
 
 #include "TemporaryFiles.h"
 
 #include "odc/Comparator.h"
-#include "odc/core/Exceptions.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
+#include "odc/core/Exceptions.h"
 
 #include <stdint.h>
 
@@ -35,6 +35,7 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
         class TemporaryODB1 : public TemporaryFile {
         public:
+
             TemporaryODB1() {
                 odc::Writer<> oda(path());
                 odc::Writer<>::iterator writer = oda.begin();
@@ -46,9 +47,9 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
-                    (*writer)[0] = i; // col 0
-                    (*writer)[1] = i; // col 1
-                    (*writer)[2] = i; // col 2
+                    (*writer)[0] = i;  // col 0
+                    (*writer)[1] = i;  // col 1
+                    (*writer)[2] = i;  // col 2
                     ++writer;
                 }
             }
@@ -58,6 +59,7 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
         class TemporaryODB2 : public TemporaryFile {
         public:
+
             TemporaryODB2() {
                 odc::Writer<> oda(path());
                 odc::Writer<>::iterator writer = oda.begin();
@@ -69,9 +71,9 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
-                    (*writer)[0] = i * 10; // col 0
-                    (*writer)[1] = i * 100; // col 1
-                    (*writer)[2] = i * 1000; // col 2
+                    (*writer)[0] = i * 10;    // col 0
+                    (*writer)[1] = i * 100;   // col 1
+                    (*writer)[2] = i * 1000;  // col 2
                     ++writer;
                 }
             }
@@ -81,6 +83,7 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
         class TemporaryODB3 : public TemporaryFile {
         public:
+
             TemporaryODB3() {
                 odc::Writer<> oda(path());
                 odc::Writer<>::iterator writer = oda.begin();
@@ -93,10 +96,10 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
-                    (*writer)[0] = i * 10; // col 0
-                    (*writer)[1] = i * 1000; // col 1
-                    (*writer)[2] = i * 100; // col 2
-                    (*writer)[3] = 13;     // col 3
+                    (*writer)[0] = i * 10;    // col 0
+                    (*writer)[1] = i * 1000;  // col 1
+                    (*writer)[2] = i * 100;   // col 2
+                    (*writer)[3] = 13;        // col 3
                     ++writer;
                 }
             }
@@ -106,6 +109,7 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
 
         class TemporaryODB4 : public TemporaryFile {
         public:
+
             TemporaryODB4() {
                 odc::Writer<> oda(path());
                 odc::Writer<>::iterator writer = oda.begin();
@@ -116,8 +120,8 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
                 writer->writeHeader();
 
                 for (size_t i = 1; i <= 2; i++) {
-                    (*writer)[0] = i * 5; // col 0
-                    (*writer)[1] = i * 7; // col 1
+                    (*writer)[0] = i * 5;  // col 0
+                    (*writer)[1] = i * 7;  // col 1
                     ++writer;
                 }
             }
@@ -157,7 +161,9 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
             EXPECT(it->columns().rowsNumber() == 2);
 
             for (size_t i = 1; i < 3; i++) {
-                for (size_t j = 0; j < 3; j++) { EXPECT((*it)[j] == i); }
+                for (size_t j = 0; j < 3; j++) {
+                    EXPECT((*it)[j] == i);
+                }
                 ++it;
             }
 
@@ -210,7 +216,7 @@ CASE("ODBs concatenated in a file are valid (columns change)") {
         SECTION("A copy of the concatenated file is identical") {
 
             odc::Reader in(combinedFile.path());
-            odc::Reader::iterator it = in.begin();
+            odc::Reader::iterator it  = in.begin();
             odc::Reader::iterator end = in.end();
 
             TemporaryFile copyFile;
@@ -246,9 +252,9 @@ CASE("If corrupt data follows a valid ODB this should not be treated as a new OD
         writer->writeHeader();
 
         for (size_t i = 1; i <= 2; i++) {
-            (*writer)[0] = i; // col 0
-            (*writer)[1] = i; // col 1
-            (*writer)[2] = i; // col 2
+            (*writer)[0] = i;  // col 0
+            (*writer)[1] = i;  // col 1
+            (*writer)[2] = i;  // col 2
             ++writer;
         }
     }
@@ -303,17 +309,17 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
         writer->writeHeader();
 
         for (size_t i = 1; i <= 2; i++) {
-            (*writer)[0] = i; // col 0
-            (*writer)[1] = i; // col 1
-            (*writer)[2] = i; // col 2
+            (*writer)[0] = i;  // col 0
+            (*writer)[1] = i;  // col 1
+            (*writer)[2] = i;  // col 2
             ++writer;
         }
     }
 
     // The header size is 320 bytes. Copy the data from the start...
 
-//    writeDH.write(buf.data(), 322);
-    writeDH.write(buf.data(), 322 - 80); // -80 == we no longer encode (empty) flags
+    //    writeDH.write(buf.data(), 322);
+    writeDH.write(buf.data(), 322 - 80);  // -80 == we no longer encode (empty) flags
 
     // Now read the data. We should get the data back, and then an error...
 
@@ -345,4 +351,3 @@ CASE("If a corrupted ODB (with no row data following the header) then report an 
 int main(int argc, char* argv[]) {
     return run_tests(argc, argv);
 }
-

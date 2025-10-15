@@ -8,8 +8,8 @@
  * does it submit to any jurisdiction.
  */
 
-#include <memory>
 #include <cstring>
+#include <memory>
 
 // TODO: unneeded
 #include <fcntl.h>
@@ -27,23 +27,27 @@ using namespace eckit::testing;
 
 #define CHECK_RETURN(x) EXPECT((x) == ODC_SUCCESS)
 
-namespace std{
-template <> struct default_delete<odc_encoder_t> {
-    void operator() (odc_encoder_t* e) { CHECK_RETURN(odc_free_encoder(e)); }
+namespace std {
+template <>
+struct default_delete<odc_encoder_t> {
+    void operator()(odc_encoder_t* e) { CHECK_RETURN(odc_free_encoder(e)); }
 };
 
-template <> struct default_delete<odc_reader_t> {
-    void operator() (odc_reader_t* o) { CHECK_RETURN(odc_close(o)); }
+template <>
+struct default_delete<odc_reader_t> {
+    void operator()(odc_reader_t* o) { CHECK_RETURN(odc_close(o)); }
 };
 
-template <> struct default_delete<odc_frame_t> {
-    void operator() (odc_frame_t* t) { CHECK_RETURN(odc_free_frame(t)); }
+template <>
+struct default_delete<odc_frame_t> {
+    void operator()(odc_frame_t* t) { CHECK_RETURN(odc_free_frame(t)); }
 };
 
-template <> struct default_delete<odc_decoder_t> {
-    void operator() (odc_decoder_t* t) { CHECK_RETURN(odc_free_decoder(t)); }
+template <>
+struct default_delete<odc_decoder_t> {
+    void operator()(odc_decoder_t* t) { CHECK_RETURN(odc_free_decoder(t)); }
 };
-}
+}  // namespace std
 
 // ------------------------------------------------------------------------------------------------------
 
@@ -67,7 +71,7 @@ CASE("Encode data in standard tabular form") {
         }
         data[row][4] = 0;
         data[row][5] = 0;
-        ::strncpy(reinterpret_cast<char*>(&data[row][4]), "abcdefghijkl", 2*sizeof(double));
+        ::strncpy(reinterpret_cast<char*>(&data[row][4]), "abcdefghijkl", 2 * sizeof(double));
         for (int col = 6; col < ncols; ++col) {
             data[row][col] = (1000 * row) + (3 * col);
         }
@@ -117,17 +121,17 @@ CASE("Encode data in standard tabular form") {
 
     int column_count;
     CHECK_RETURN(odc_frame_column_count(frame, &column_count));
-    EXPECT(column_count == ncols-1);
+    EXPECT(column_count == ncols - 1);
 
     long row_count;
     CHECK_RETURN(odc_frame_row_count(frame, &row_count));
     EXPECT(row_count == nrows);
 
-    const char* column_names[] = {"col1", "col2", "col3", "col4", "col5", "col6", "col7"};
-    int column_types[] = {ODC_INTEGER, ODC_REAL, ODC_DOUBLE, ODC_DOUBLE, ODC_STRING, ODC_REAL, ODC_BITFIELD};
+    const char* column_names[]   = {"col1", "col2", "col3", "col4", "col5", "col6", "col7"};
+    int column_types[]           = {ODC_INTEGER, ODC_REAL, ODC_DOUBLE, ODC_DOUBLE, ODC_STRING, ODC_REAL, ODC_BITFIELD};
     const char* bitfield_names[] = {"bits1", "bits2", "bits3"};
-    int bitfield_sizes[] = {2, 3, 1};
-    int bitfield_offsets[] = {0, 2, 5};
+    int bitfield_sizes[]         = {2, 3, 1};
+    int bitfield_offsets[]       = {0, 2, 5};
 
     for (int col = 0; col < 7; ++col) {
 
@@ -179,7 +183,7 @@ CASE("Encode data in standard tabular form") {
     EXPECT(p != nullptr);
     EXPECT(pdata != nullptr);
     EXPECT(p == pdata);
-    EXPECT(row_stride == 8*sizeof(double));
+    EXPECT(row_stride == 8 * sizeof(double));
 
     double vals1[] = {0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000};
     double vals2[] = {3, 1003, 2003, 3003, 4003, 5003, 6003, 7003, 8003, 9003, 10003, 11003, 12003, 13003, 14003};
@@ -188,14 +192,14 @@ CASE("Encode data in standard tabular form") {
     double vals6[] = {18, 1018, 2018, 3018, 4018, 5018, 6018, 7018, 8018, 9018, 10018, 11018, 12018, 13018, 14018};
     double vals7[] = {21, 1021, 2021, 3021, 4021, 5021, 6021, 7021, 8021, 9021, 10021, 11021, 12021, 13021, 14021};
 
-    const double (*row_data)[8] = reinterpret_cast<const double (*)[8]>(pdata);
+    const double(*row_data)[8] = reinterpret_cast<const double(*)[8]>(pdata);
 
     for (size_t row = 0; row < nrows; ++row) {
         EXPECT(vals1[row] == row_data[row][0]);
         EXPECT(vals2[row] == row_data[row][1]);
         EXPECT(vals3[row] == row_data[row][2]);
         EXPECT(vals4[row] == row_data[row][3]);
-        EXPECT(::strncmp("abcdefghijkl", reinterpret_cast<const char*>(&row_data[row][4]), 2*sizeof(double)) == 0);
+        EXPECT(::strncmp("abcdefghijkl", reinterpret_cast<const char*>(&row_data[row][4]), 2 * sizeof(double)) == 0);
         EXPECT(vals6[row] == row_data[row][6]);
         EXPECT(vals7[row] == row_data[row][7]);
     }
@@ -213,13 +217,13 @@ CASE("Encode from columnar data") {
 
     // Construct some source data
 
-    long icol[nrows] = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
-    long bcol[nrows] = {1101, 2202, 3303, 4404,  5505, 6606, 7707, 8808, 9909, 0};
+    long icol[nrows]                     = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
+    long bcol[nrows]                     = {1101, 2202, 3303, 4404, 5505, 6606, 7707, 8808, 9909, 0};
     char scol[nrows][3 * sizeof(double)] = {0};
-    double dcol[nrows] = {1131, 2232, 3333, 4434, 5535, 6636, 7737, 8838, 9939, 0};
-    double rcol[nrows] = {1141, 2242, 3343, 4444, 5545, 6646, 7747, 8848, 9949, 0};
+    double dcol[nrows]                   = {1131, 2232, 3333, 4434, 5535, 6636, 7737, 8838, 9939, 0};
+    double rcol[nrows]                   = {1141, 2242, 3343, 4444, 5545, 6646, 7747, 8848, 9949, 0};
     for (size_t i = 0; i < nrows; ++i) {
-        ::strncpy(&scol[i][0], "abcdefghhgfedcbazzzz", 3*sizeof(double));
+        ::strncpy(&scol[i][0], "abcdefghhgfedcbazzzz", 3 * sizeof(double));
     }
 
     // Configure the encoder to encode said data
@@ -289,14 +293,15 @@ CASE("Encode from columnar data") {
     CHECK_RETURN(odc_decoder_data_array(decoder, &pdata, &row_stride, 0, &decodeColumnMajor));
     EXPECT(!decodeColumnMajor);
     EXPECT(pdata != nullptr);
-    EXPECT(row_stride == 7*sizeof(double));
+    EXPECT(row_stride == 7 * sizeof(double));
 
-    const double (*row_data)[7] = reinterpret_cast<const double (*)[7]>(pdata);
+    const double(*row_data)[7] = reinterpret_cast<const double(*)[7]>(pdata);
 
     for (size_t row = 0; row < nrows; ++row) {
         EXPECT(reinterpret_cast<const long&>(row_data[row][0]) == icol[row]);
         EXPECT(reinterpret_cast<const long&>(row_data[row][1]) == bcol[row]);
-        EXPECT(::strncmp("abcdefghhgfedcbazzzz", reinterpret_cast<const char*>(&row_data[row][2]), 3*sizeof(double)) == 0);
+        EXPECT(::strncmp("abcdefghhgfedcbazzzz", reinterpret_cast<const char*>(&row_data[row][2]),
+                         3 * sizeof(double)) == 0);
         EXPECT(row_data[row][5] == dcol[row]);
         EXPECT(row_data[row][6] == rcol[row]);
     }
@@ -314,14 +319,13 @@ CASE("Encode data with custom stride") {
     const int ncols = 5;
 
     // Construct some source data
-
-    long icol[2*nrows] = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
-    long bcol[2*nrows] = {1101, 2202, 3303, 4404,  5505, 6606, 7707, 8808, 9909, 0};
-    char scol[2*nrows][3 * sizeof(double)] = {0};
-    double dcol[2*nrows] = {1131, 2232, 3333, 4434, 5535, 6636, 7737, 8838, 9939, 0};
-    double rcol[2*nrows] = {1141, 2242, 3343, 4444, 5545, 6646, 7747, 8848, 9949, 0};
-    for (size_t i = 0; i < 2*nrows; ++i) {
-        ::strncpy(&scol[i][0], "abcdefghhgfedcbazzzz", 3*sizeof(double));
+    long icol[2 * nrows]                     = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
+    long bcol[2 * nrows]                     = {1101, 2202, 3303, 4404, 5505, 6606, 7707, 8808, 9909, 0};
+    char scol[2 * nrows][3 * sizeof(double)] = {0};
+    double dcol[2 * nrows]                   = {1131, 2232, 3333, 4434, 5535, 6636, 7737, 8838, 9939, 0};
+    double rcol[2 * nrows]                   = {1141, 2242, 3343, 4444, 5545, 6646, 7747, 8848, 9949, 0};
+    for (size_t i = 0; i < 2 * nrows; ++i) {
+        ::strncpy(&scol[i][0], "abcdefghhgfedcbazzzz", 3 * sizeof(double));
     }
 
     // Configure the encoder to encode said data
@@ -337,11 +341,11 @@ CASE("Encode data with custom stride") {
     CHECK_RETURN(odc_encoder_add_column(enc, "col4", ODC_DOUBLE));
     CHECK_RETURN(odc_encoder_add_column(enc, "col5", ODC_REAL));
 
-    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 0, 0, 2*sizeof(icol[0]), icol));
-    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 1, 0, 2*sizeof(bcol[0]), bcol));
-    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 2, sizeof(scol[0]), 2*sizeof(scol[0]), scol));
-    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 3, 0, 2*sizeof(dcol[0]), dcol));
-    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 4, 0, 2*sizeof(rcol[0]), rcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 0, 0, 2 * sizeof(icol[0]), icol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 1, 0, 2 * sizeof(bcol[0]), bcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 2, sizeof(scol[0]), 2 * sizeof(scol[0]), scol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 3, 0, 2 * sizeof(dcol[0]), dcol));
+    CHECK_RETURN(odc_encoder_column_set_data_array(enc, 4, 0, 2 * sizeof(rcol[0]), rcol));
 
     // Do the encoding
 
@@ -390,16 +394,17 @@ CASE("Encode data with custom stride") {
     CHECK_RETURN(odc_decoder_data_array(decoder, &pdata, &row_stride, 0, &decodeColumnMajor));
     EXPECT(!decodeColumnMajor);
     EXPECT(pdata != nullptr);
-    EXPECT(row_stride == 7*sizeof(double));
+    EXPECT(row_stride == 7 * sizeof(double));
 
-    const double (*row_data)[7] = reinterpret_cast<const double (*)[7]>(pdata);
+    const double(*row_data)[7] = reinterpret_cast<const double(*)[7]>(pdata);
 
     for (size_t row = 0; row < nrows; ++row) {
-        EXPECT(reinterpret_cast<const long&>(row_data[row][0]) == icol[2*row]);
-        EXPECT(reinterpret_cast<const long&>(row_data[row][1]) == bcol[2*row]);
-        EXPECT(::strncmp("abcdefghhgfedcbazzzz", reinterpret_cast<const char*>(&row_data[row][2]), 3*sizeof(double)) == 0);
-        EXPECT(row_data[row][5] == dcol[2*row]);
-        EXPECT(row_data[row][6] == rcol[2*row]);
+        EXPECT(reinterpret_cast<const long&>(row_data[row][0]) == icol[2 * row]);
+        EXPECT(reinterpret_cast<const long&>(row_data[row][1]) == bcol[2 * row]);
+        EXPECT(::strncmp("abcdefghhgfedcbazzzz", reinterpret_cast<const char*>(&row_data[row][2]),
+                         3 * sizeof(double)) == 0);
+        EXPECT(row_data[row][5] == dcol[2 * row]);
+        EXPECT(row_data[row][6] == rcol[2 * row]);
     }
 
     EXPECT(odc_next_frame(frame) == ODC_ITERATION_COMPLETE);
@@ -415,14 +420,13 @@ CASE("Encode with more rows that fit inside a table") {
     const int ncols = 5;
 
     // Construct some source data
-
-    long icol[nrows] = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
-    long bcol[nrows] = {1101, 2202, 3303, 4404,  5505, 6606, 7707, 8808, 9909, 0};
+    long icol[nrows]                     = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
+    long bcol[nrows]                     = {1101, 2202, 3303, 4404, 5505, 6606, 7707, 8808, 9909, 0};
     char scol[nrows][3 * sizeof(double)] = {0};
-    double dcol[nrows] = {1131, 2232, 3333, 4434, 5535, 6636, 7737, 8838, 9939, 0};
-    double rcol[nrows] = {1141, 2242, 3343, 4444, 5545, 6646, 7747, 8848, 9949, 0};
+    double dcol[nrows]                   = {1131, 2232, 3333, 4434, 5535, 6636, 7737, 8838, 9939, 0};
+    double rcol[nrows]                   = {1141, 2242, 3343, 4444, 5545, 6646, 7747, 8848, 9949, 0};
     for (size_t i = 0; i < nrows; ++i) {
-        ::strncpy(&scol[i][0], "abcdefghhgfedcbazzzz", 3*sizeof(double));
+        ::strncpy(&scol[i][0], "abcdefghhgfedcbazzzz", 3 * sizeof(double));
     }
 
     // Configure the encoder to encode said data
@@ -480,7 +484,7 @@ CASE("Encode with more rows that fit inside a table") {
 
         long row_count;
         CHECK_RETURN(odc_frame_row_count(frame, &row_count));
-        EXPECT(row_count == (frame_idx ? nrows-maxPerFrame : maxPerFrame));
+        EXPECT(row_count == (frame_idx ? nrows - maxPerFrame : maxPerFrame));
 
         // Test that the data is correctly encoded
 
@@ -501,16 +505,17 @@ CASE("Encode with more rows that fit inside a table") {
         CHECK_RETURN(odc_decoder_data_array(decoder, &pdata, &row_stride, 0, &decodeColumnMajor));
         EXPECT(!decodeColumnMajor);
         EXPECT(pdata != nullptr);
-        EXPECT(row_stride == 7*sizeof(double));
+        EXPECT(row_stride == 7 * sizeof(double));
 
-        const double (*row_data)[7] = reinterpret_cast<const double (*)[7]>(pdata);
+        const double(*row_data)[7] = reinterpret_cast<const double(*)[7]>(pdata);
 
         for (int row = 0; row < row_count; ++row) {
-            EXPECT(reinterpret_cast<const long&>(row_data[row][0]) == icol[row+row_offset]);
-            EXPECT(reinterpret_cast<const long&>(row_data[row][1]) == bcol[row+row_offset]);
-            EXPECT(::strncmp("abcdefghhgfedcbazzzz", reinterpret_cast<const char*>(&row_data[row][2]), 3*sizeof(double)) == 0);
-            EXPECT(row_data[row][5] == dcol[row+row_offset]);
-            EXPECT(row_data[row][6] == rcol[row+row_offset]);
+            EXPECT(reinterpret_cast<const long&>(row_data[row][0]) == icol[row + row_offset]);
+            EXPECT(reinterpret_cast<const long&>(row_data[row][1]) == bcol[row + row_offset]);
+            EXPECT(::strncmp("abcdefghhgfedcbazzzz", reinterpret_cast<const char*>(&row_data[row][2]),
+                             3 * sizeof(double)) == 0);
+            EXPECT(row_data[row][5] == dcol[row + row_offset]);
+            EXPECT(row_data[row][6] == rcol[row + row_offset]);
         }
     }
 
@@ -525,7 +530,7 @@ CASE("Encode to a file descriptor") {
 
     odc_integer_behaviour(ODC_INTEGERS_AS_LONGS);
 
-    const int nrows = 10;
+    const int nrows  = 10;
     long icol[nrows] = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
 
     // Configure the encoder to encode said data
@@ -541,12 +546,13 @@ CASE("Encode to a file descriptor") {
     // Do the encoding
 
     eckit::TmpFile tf;
-    int fd = ::open(tf.asString().c_str(), O_CREAT|O_WRONLY, 0666);
+    int fd = ::open(tf.asString().c_str(), O_CREAT | O_WRONLY, 0666);
     ASSERT(fd != -1);
     long sz;
     try {
         CHECK_RETURN(odc_encode_to_file_descriptor(enc, fd, &sz));
-    } catch(...) {
+    }
+    catch (...) {
         ::close(fd);
         throw;
     }
@@ -619,7 +625,7 @@ CASE("Encode to a custom output stream") {
 
     odc_integer_behaviour(ODC_INTEGERS_AS_LONGS);
 
-    const int nrows = 10;
+    const int nrows  = 10;
     long icol[nrows] = {1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888, 9999, 0};
 
     // Configure the encoder to encode said data
@@ -635,7 +641,7 @@ CASE("Encode to a custom output stream") {
     // Do the encoding
 
     eckit::Buffer encoded(1024 * 1024);
-    custom_buffer_t handle = { (char*)encoded, 0, encoded.size() };
+    custom_buffer_t handle = {(char*)encoded, 0, encoded.size()};
 
     long sz;
     CHECK_RETURN(odc_encode_to_stream(enc, &handle, &custom_buffer_write, &sz));

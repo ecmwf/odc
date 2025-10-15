@@ -12,41 +12,35 @@
 
 #include <iomanip>
 
-#include "eckit/runtime/Monitor.h"
 #include "eckit/log/TimeStamp.h"
+#include "eckit/runtime/Monitor.h"
 
 
 namespace odc {
 
-ODBTarget::ODBTarget(const char* tag, eckit::LogTarget* target)
-: eckit::WrapperTarget(target),
-  tag_(tag)
-{}
+ODBTarget::ODBTarget(const char* tag, eckit::LogTarget* target) : eckit::WrapperTarget(target), tag_(tag) {}
 
 void ODBTarget::writePrefix() {
 
     std::ostringstream oss;
-    oss //<< std::setw(3)
-        //<< std::setfill('0')
-        //<< Monitor::instance().self()
-        << "000"
-        << std::setfill(' ') << ' '
-        << eckit::TimeStamp() << ' ';
+    oss  //<< std::setw(3)
+         //<< std::setfill('0')
+         //<< Monitor::instance().self()
+        << "000" << std::setfill(' ') << ' ' << eckit::TimeStamp() << ' ';
 
-    if(tag_ && *tag_) {
+    if (tag_ && *tag_) {
         oss << tag_ << ' ';
     }
 
-    const std::string& s (oss.str());
-    const char* p (s.c_str());
+    const std::string& s(oss.str());
+    const char* p(s.c_str());
     target_->write(p, p + s.size());
 }
 
-void ODBTarget::print(std::ostream& s) const
-{
+void ODBTarget::print(std::ostream& s) const {
     s << "ODBTarget";
 }
 
-void ODBTarget::writeSuffix() {} 
+void ODBTarget::writeSuffix() {}
 
-} // namespace odc
+}  // namespace odc
