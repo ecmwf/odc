@@ -21,7 +21,6 @@
 #include <mutex>
 #include <string>
 #include <string_view>
-#include <cstdint>
 
 #include "eckit/memory/NonCopyable.h"
 
@@ -92,18 +91,10 @@ private:  // members
 template <template <typename> class CODEC>
 class CodecBuilder : public CodecBuilderBase {
 
-<<<<<<< HEAD
-#ifndef _CRAYC
-    static_assert(
-        std::string_view(CODEC<SameByteOrder>::codec_name()) ==
-        std::string_view(CODEC<OtherByteOrder>::codec_name()),
-        "Invalid name");
-=======
 #if !defined(_CRAYC) && !(defined(__GNUC__) && __GNUC__ < 8)
     static_assert(std::string_view(CODEC<SameByteOrder>::codec_name()) ==
                       std::string_view(CODEC<OtherByteOrder>::codec_name()),
                   "Invalid name");
->>>>>>> release/1.6.2
 #endif
 
 public:  // methods
