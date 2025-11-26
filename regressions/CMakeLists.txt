@@ -23,7 +23,9 @@ set(regressions_scripts
 )
 
 foreach( _script ${regressions_scripts})
+    get_filename_component(test_name ${_script} NAME_WE)
     ecbuild_add_test(
+        TARGET ${test_name}
         TYPE script
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${_script}
         ENVIRONMENT PATH=${CMAKE_BINARY_DIR}/bin:$ENV{PATH}
