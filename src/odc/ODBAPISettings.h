@@ -21,10 +21,13 @@ class DataHandle;
 
 namespace odc {
 
-class ODBAPISettings : private eckit::NonCopyable {
+class ODBAPISettings {
 public:
 
     static ODBAPISettings& instance();
+
+    ODBAPISettings(const ODBAPISettings&)            = delete;
+    ODBAPISettings& operator=(const ODBAPISettings&) = delete;
 
     size_t headerBufferSize();
     void headerBufferSize(size_t);
