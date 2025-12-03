@@ -37,11 +37,15 @@ namespace odc {
 
 class TextReader;
 
-class TextReaderIterator : private eckit::NonCopyable {
+class TextReaderIterator {
 public:
 
     TextReaderIterator(TextReader& owner);
     TextReaderIterator(TextReader& owner, const eckit::PathName&);
+
+    TextReaderIterator(const TextReaderIterator&)            = delete;
+    TextReaderIterator& operator=(const TextReaderIterator&) = delete;
+
     ~TextReaderIterator();
 
     bool isNewDataset();
@@ -72,10 +76,6 @@ public:
     size_t rowDataSizeDoubles() const { return rowDataSizeDoubles_; }
 
 private:
-
-    // No copy allowed.
-    TextReaderIterator(const TextReaderIterator&);
-    TextReaderIterator& operator=(const TextReaderIterator&);
 
     void initRowBuffer();
     void parseHeader();

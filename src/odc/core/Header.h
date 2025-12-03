@@ -23,7 +23,6 @@
 #include <vector>
 
 #include "eckit/io/Buffer.h"
-#include "eckit/memory/NonCopyable.h"
 
 namespace eckit {
 class DataHandle;
@@ -47,11 +46,15 @@ const int32_t FORMAT_VERSION_NUMBER_MINOR = 5;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class Header : private eckit::NonCopyable {
+class Header {
 
 public:  // methods
 
     Header(MetaData& md, Properties& props);
+
+    Header(const Header&)            = delete;
+    Header& operator=(const Header&) = delete;
+
     ~Header();
 
     size_t dataSize() const { return dataSize_; }
