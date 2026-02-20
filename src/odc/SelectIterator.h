@@ -43,10 +43,14 @@ namespace odc {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class SelectIterator : private eckit::NonCopyable {
+class SelectIterator {
 public:
 
     SelectIterator(const std::string& select, eckit::sql::SQLSession& session, sql::SQLSelectOutput& output);
+
+    SelectIterator(const SelectIterator&)            = delete;
+    SelectIterator& operator=(const SelectIterator&) = delete;
+
     ~SelectIterator();
 
     // TODO: New dataset
