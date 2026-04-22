@@ -25,6 +25,7 @@ list( APPEND _core_odc_tests
     test_text_reader
     test_table_iterator
     test_initial_missing
+    test_comparator
 )
 
 foreach( _test ${_core_odc_tests} )
