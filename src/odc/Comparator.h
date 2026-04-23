@@ -77,7 +77,10 @@ public:
         return relativeError;
     }
 
-    inline static int same(double A, double B) { return err(A, B) < maxRelativeError; }
+    inline static int same(double A, double B) {
+        if (std::isnan(A) || std::isnan(B)) return std::isnan(A) && std::isnan(B);
+        return err(A, B) < maxRelativeError;
+    }
 
     void raiseNotEqual(const core::Column&, double, double);
 
@@ -85,7 +88,6 @@ private:
 
     bool skipTestingHaveMissing_;
     long nRow_;
-    bool NaN_isOK_;
 };
 
 template <typename T1, typename T2>
