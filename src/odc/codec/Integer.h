@@ -71,8 +71,8 @@ private:  // methods
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
         if (std::isnan(v)) {
             if (!this->hasNaN_) {
-                eckit::Log::warning() << "odc: NaN value found in INTEGER/BITFIELD column (codec '"
-                                      << this->name() << "'); coerced to missing." << std::endl;
+                eckit::Log::warning() << "odc: NaN value found in INTEGER/BITFIELD column (codec '" << this->name()
+                                      << "'); coerced to missing." << std::endl;
             }
             this->hasNaN_     = true;
             this->hasMissing_ = 1;

@@ -40,8 +40,7 @@ public:
 
 namespace odc {
 
-Comparator::Comparator(bool skipTestingHaveMissing) :
-    skipTestingHaveMissing_(skipTestingHaveMissing), nRow_(0) {}
+Comparator::Comparator(bool skipTestingHaveMissing) : skipTestingHaveMissing_(skipTestingHaveMissing), nRow_(0) {}
 
 
 void Comparator::compare(const PathName& p1, const PathName& p2) {

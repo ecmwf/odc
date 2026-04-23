@@ -78,7 +78,8 @@ public:
     }
 
     inline static int same(double A, double B) {
-        if (std::isnan(A) || std::isnan(B)) return std::isnan(A) && std::isnan(B);
+        if (std::isnan(A) || std::isnan(B))
+            return std::isnan(A) && std::isnan(B);
         return err(A, B) < maxRelativeError;
     }
 
