@@ -38,19 +38,14 @@ private:  // methods
     unsigned char* encode(unsigned char* p, const double& d) override {
         static_assert(sizeof(ValueType) == sizeof(d), "unsafe casting check");
 
+        const ValueType& val(reinterpret_cast<const ValueType&>(d));
         InternalValueType s;
-        if (std::isnan(d)) {
+        if (val == this->missingValue_) {
             s = DerivedCodec::missingMarker;
         }
         else {
-            const ValueType& val(reinterpret_cast<const ValueType&>(d));
-            if (val == this->missingValue_) {
-                s = DerivedCodec::missingMarker;
-            }
-            else {
-                s = val - this->min_;
-                ASSERT(s != DerivedCodec::missingMarker);
-            }
+            s = val - this->min_;
+            ASSERT(s != DerivedCodec::missingMarker);
         }
         ByteOrder::swap(s);
         ::memcpy(p, &s, sizeof(s));
