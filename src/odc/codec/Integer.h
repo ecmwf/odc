@@ -11,6 +11,10 @@
 #ifndef odc_core_codec_Integer_H
 #define odc_core_codec_Integer_H
 
+#include <cmath>
+
+#include "eckit/log/Log.h"
+
 #include "odc/core/Codec.h"
 
 /// @note We have some strange behaviour in here. In particular, we support BOTH decoding
@@ -65,6 +69,15 @@ private:  // methods
 
     void gatherStats(const double& v) override {
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
+        if (std::isnan(v)) {
+            if (!this->hasNaN_) {
+                eckit::Log::warning() << "odc: NaN value found in INTEGER/BITFIELD column (codec '"
+                                      << this->name() << "'); coerced to missing." << std::endl;
+            }
+            this->hasNaN_     = true;
+            this->hasMissing_ = 1;
+            return;
+        }
         const ValueType& val(reinterpret_cast<const ValueType&>(v));
         core::Codec::gatherStats(val);
     }

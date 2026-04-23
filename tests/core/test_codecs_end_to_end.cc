@@ -341,11 +341,11 @@ CASE("NaN before real values preserves correct min/max in column metadata") {
 }
 
 
-CASE("NaN are encoded and decoded correctly") {
+CASE("NaN round-trips as NaN in REAL/DOUBLE columns") {
 
     const double NaN = std::numeric_limits<double>::quiet_NaN();
 
-    for (auto type : {odc::api::DOUBLE, odc::api::REAL, odc::api::INTEGER, odc::api::BITFIELD}) {
+    for (auto type : {odc::api::DOUBLE, odc::api::REAL}) {
 
         eckit::Buffer buf(4096);
         eckit::MemoryHandle writeDH(buf);
@@ -374,6 +374,47 @@ CASE("NaN are encoded and decoded correctly") {
         EXPECT((*it)[0] == 1.0);
         ++it;
         EXPECT(std::isnan((*it)[0]));
+        ++it;
+        EXPECT((*it)[0] == 3.0);
+        ++it;
+        EXPECT(it == oda.end());
+    }
+}
+
+
+CASE("NaN is coerced to missing in INTEGER/BITFIELD columns") {
+
+    const double NaN = std::numeric_limits<double>::quiet_NaN();
+
+    for (auto type : {odc::api::INTEGER, odc::api::BITFIELD}) {
+
+        eckit::Buffer buf(4096);
+        eckit::MemoryHandle writeDH(buf);
+
+        {
+            odc::Writer<> oda(writeDH);
+            odc::Writer<>::iterator writer = oda.begin();
+
+            writer->setNumberOfColumns(1);
+            writer->setColumn(0, "col0", type);
+            writer->writeHeader();
+
+            (*writer)[0] = 1.0;
+            ++writer;
+            (*writer)[0] = NaN;
+            ++writer;
+            (*writer)[0] = 3.0;
+            ++writer;
+        }
+
+        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
+        dh.openForRead();
+        odc::Reader oda(dh);
+
+        odc::Reader::iterator it = oda.begin();
+        EXPECT((*it)[0] == 1.0);
+        ++it;
+        EXPECT((*it)[0] == odc::MDI::integerMDI());
         ++it;
         EXPECT((*it)[0] == 3.0);
         ++it;
