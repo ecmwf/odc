@@ -11,6 +11,11 @@
 #ifndef odc_core_codec_Integer_H
 #define odc_core_codec_Integer_H
 
+#include <cmath>
+
+#include "eckit/log/Log.h"
+
+#include "odc/ODBAPISettings.h"
 #include "odc/core/Codec.h"
 
 /// @note We have some strange behaviour in here. In particular, we support BOTH decoding
@@ -65,6 +70,18 @@ private:  // methods
 
     void gatherStats(const double& v) override {
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
+        // n.b. NaN has no meaningful integer bit pattern. Coerce to missing and flag
+        // hasMissing_ so the optimiser picks an appropriate codec. Gated on
+        // integersAsDoubles: int64 values (e.g. -1) overlap the NaN bit pattern.
+        if (ODBAPISettings::instance().integersAsDoubles() && std::isnan(v)) {
+            if (!this->hasNaN_) {
+                eckit::Log::warning() << "odc: NaN value in INTEGER/BITFIELD column (codec '" << this->name()
+                                      << "'); coerced to missing." << std::endl;
+            }
+            this->hasNaN_     = true;
+            this->hasMissing_ = 1;
+            return;
+        }
         const ValueType& val(reinterpret_cast<const ValueType&>(v));
         core::Codec::gatherStats(val);
     }

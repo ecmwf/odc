@@ -11,6 +11,9 @@
 #ifndef odc_core_codec_IntegerMissing_H
 #define odc_core_codec_IntegerMissing_H
 
+#include <cmath>
+
+#include "odc/ODBAPISettings.h"
 #include "odc/codec/Integer.h"
 
 namespace odc {
@@ -38,14 +41,19 @@ private:  // methods
     unsigned char* encode(unsigned char* p, const double& d) override {
         static_assert(sizeof(ValueType) == sizeof(d), "unsafe casting check");
 
-        const ValueType& val(reinterpret_cast<const ValueType&>(d));
         InternalValueType s;
-        if (val == this->missingValue_) {
+        if (ODBAPISettings::instance().integersAsDoubles() && std::isnan(d)) {
             s = DerivedCodec::missingMarker;
         }
         else {
-            s = val - this->min_;
-            ASSERT(s != DerivedCodec::missingMarker);
+            const ValueType& val(reinterpret_cast<const ValueType&>(d));
+            if (val == this->missingValue_) {
+                s = DerivedCodec::missingMarker;
+            }
+            else {
+                s = val - this->min_;
+                ASSERT(s != DerivedCodec::missingMarker);
+            }
         }
         ByteOrder::swap(s);
         ::memcpy(p, &s, sizeof(s));

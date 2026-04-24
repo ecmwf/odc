@@ -16,9 +16,11 @@
 #include "eckit/io/MemoryHandle.h"
 #include "eckit/testing/Test.h"
 
+#include "odc/MDI.h"
 #include "odc/Reader.h"
 #include "odc/Writer.h"
 #include "odc/api/ColumnType.h"
+#include "odc/api/Odb.h"
 #include "odc/codec/Integer.h"
 #include "odc/codec/String.h"
 #include "odc/core/MetaData.h"
@@ -381,7 +383,6 @@ CASE("NaN round-trips as NaN in REAL/DOUBLE columns") {
     }
 }
 
-#if 0
 CASE("NaN is coerced to missing in INTEGER/BITFIELD columns") {
 
     const double NaN = std::numeric_limits<double>::quiet_NaN();
@@ -421,7 +422,40 @@ CASE("NaN is coerced to missing in INTEGER/BITFIELD columns") {
         EXPECT(it == oda.end());
     }
 }
-#endif
+
+
+CASE("api::encode coerces NaN to Missing for INTEGER/BITFIELD columns") {
+
+    const double NaN = std::numeric_limits<double>::quiet_NaN();
+    std::vector<double> values{1.0, NaN, 3.0};
+
+    for (auto type : {odc::api::INTEGER, odc::api::BITFIELD}) {
+
+        eckit::Buffer buf(4096);
+        eckit::MemoryHandle writeDH(buf);
+        writeDH.openForWrite(0);
+
+        {
+            std::vector<odc::api::ColumnInfo> columns{{"col0", type, sizeof(double), {}}};
+            std::vector<odc::api::ConstStridedData> strides{
+                {values.data(), values.size(), sizeof(double), sizeof(double)}};
+            odc::api::encode(writeDH, columns, strides);
+        }
+
+        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
+        dh.openForRead();
+        odc::Reader oda(dh);
+
+        odc::Reader::iterator it = oda.begin();
+        EXPECT((*it)[0] == 1.0);
+        ++it;
+        EXPECT((*it)[0] == odc::MDI::integerMDI());
+        ++it;
+        EXPECT((*it)[0] == 3.0);
+        ++it;
+        EXPECT(it == oda.end());
+    }
+}
 
 
 // ------------------------------------------------------------------------------------------------------
