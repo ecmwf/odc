@@ -13,7 +13,7 @@
 
 #include <cmath>
 
-#include "eckit/log/Log.h"
+#include "eckit/exception/Exceptions.h"
 
 #include "odc/ODBAPISettings.h"
 #include "odc/core/Codec.h"
@@ -41,7 +41,9 @@ public:  // definitions
 public:  // methods
 
     BaseCodecInteger(api::ColumnType type, const std::string& name, double minmaxmissing = odc::MDI::integerMDI()) :
-        core::DataStreamCodec<ByteOrder>(name, type), castedMissingValue_(static_cast<ValueType>(minmaxmissing)) {
+        core::DataStreamCodec<ByteOrder>(name, type),
+        castedMissingValue_(static_cast<ValueType>(minmaxmissing)),
+        rejectNaN_(ODBAPISettings::instance().integersAsDoubles()) {
 
         this->min_          = minmaxmissing;
         this->max_          = minmaxmissing;
@@ -70,17 +72,9 @@ private:  // methods
 
     void gatherStats(const double& v) override {
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
-        // n.b. NaN has no meaningful integer bit pattern. Coerce to missing and flag
-        // hasMissing_ so the optimiser picks an appropriate codec. Gated on
-        // integersAsDoubles: int64 values (e.g. -1) overlap the NaN bit pattern.
-        if (ODBAPISettings::instance().integersAsDoubles() && std::isnan(v)) {
-            if (!this->hasNaN_) {
-                eckit::Log::warning() << "odc: NaN value in INTEGER/BITFIELD column (codec '" << this->name()
-                                      << "'); coerced to missing." << std::endl;
-            }
-            this->hasNaN_     = true;
-            this->hasMissing_ = 1;
-            return;
+        if (rejectNaN_ && std::isnan(v)) {
+            throw eckit::UserError(
+                "NaN is not a valid value in INTEGER/BITFIELD column '" + this->name() + "'");
         }
         const ValueType& val(reinterpret_cast<const ValueType&>(v));
         core::Codec::gatherStats(val);
@@ -92,6 +86,8 @@ protected:  // members
     ///         directly where needed is to work around a Cray 8.7 compiler bug, where
     ///         where the punned version gets optimised out
     ValueType castedMissingValue_;
+
+    const bool rejectNaN_;
 };
 
 

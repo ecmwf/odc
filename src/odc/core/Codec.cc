@@ -29,7 +29,6 @@ Codec::Codec(const std::string& name, api::ColumnType type) :
     missingValue_(odc::MDI::realMDI()),
     min_(missingValue_),
     max_(missingValue_),
-    hasNaN_(false),
     type_(type) {}
 
 std::unique_ptr<Codec> Codec::clone() {
@@ -38,7 +37,6 @@ std::unique_ptr<Codec> Codec::clone() {
     c->missingValue_ = missingValue_;
     c->min_          = min_;
     c->max_          = max_;
-    c->hasNaN_       = hasNaN_;
     return c;
 }
 
@@ -102,10 +100,8 @@ void Codec::missingValue(double v) {
 }
 
 void Codec::gatherStats(const double& v) {
-    if (std::isnan(v)) {
-        hasNaN_ = true;
+    if (std::isnan(v))
         return;
-    }
     if (v == missingValue_) {
         hasMissing_ = 1;
     }

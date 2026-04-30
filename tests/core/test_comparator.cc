@@ -21,9 +21,21 @@ using namespace eckit::testing;
 CASE("Comparator treats two NaNs as equal") {
     const double NaN = std::numeric_limits<double>::quiet_NaN();
 
-    EXPECT(odc::Comparator::same(NaN, NaN) == 1);
-    EXPECT(odc::Comparator::same(NaN, 1.0) == 0);
-    EXPECT(odc::Comparator::same(1.0, NaN) == 0);
+    EXPECT(odc::Comparator::same(NaN, NaN));
+    EXPECT(!odc::Comparator::same(NaN, 1.0));
+    EXPECT(!odc::Comparator::same(1.0, NaN));
+}
+
+CASE("Comparator treats identical values as equal") {
+    EXPECT(odc::Comparator::same(0.0, 0.0));
+    EXPECT(odc::Comparator::same(1.0, 1.0));
+    EXPECT(odc::Comparator::same(-1.0, -1.0));
+}
+
+CASE("Comparator treats different values as unequal") {
+    EXPECT(!odc::Comparator::same(0.0, 1.0));
+    EXPECT(!odc::Comparator::same(1.0, 2.0));
+    EXPECT(!odc::Comparator::same(1.0, -1.0));
 }
 
 // ------------------------------------------------------------------------------------------------------

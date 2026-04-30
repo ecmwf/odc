@@ -62,16 +62,12 @@ public:
     void resetStats() {
         min_ = max_ = missingValue_;
         hasMissing_ = false;
-        hasNaN_     = false;
     }
 
     virtual void gatherStats(const double& v);
 
     void hasMissing(bool h) { hasMissing_ = h; }
     int32_t hasMissing() const { return hasMissing_; }
-
-    void hasNaN(bool s) { hasNaN_ = s; }
-    bool hasNaN() const { return hasNaN_; }
 
     void min(double m) { min_ = m; }
     double min() const { return min_; }
@@ -110,7 +106,6 @@ protected:
     double missingValue_;
     double min_;
     double max_;
-    bool hasNaN_;
 
     api::ColumnType type_;
 

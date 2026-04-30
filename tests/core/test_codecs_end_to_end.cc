@@ -383,7 +383,7 @@ CASE("NaN round-trips as NaN in REAL/DOUBLE columns") {
     }
 }
 
-CASE("NaN is coerced to missing in INTEGER/BITFIELD columns") {
+CASE("NaN is rejected in INTEGER/BITFIELD columns") {
 
     const double NaN = std::numeric_limits<double>::quiet_NaN();
 
@@ -392,39 +392,22 @@ CASE("NaN is coerced to missing in INTEGER/BITFIELD columns") {
         eckit::Buffer buf(4096);
         eckit::MemoryHandle writeDH(buf);
 
-        {
-            odc::Writer<> oda(writeDH);
-            odc::Writer<>::iterator writer = oda.begin();
+        odc::Writer<> oda(writeDH);
+        odc::Writer<>::iterator writer = oda.begin();
 
-            writer->setNumberOfColumns(1);
-            writer->setColumn(0, "col0", type);
-            writer->writeHeader();
+        writer->setNumberOfColumns(1);
+        writer->setColumn(0, "col0", type);
+        writer->writeHeader();
 
-            (*writer)[0] = 1.0;
-            ++writer;
-            (*writer)[0] = NaN;
-            ++writer;
-            (*writer)[0] = 3.0;
-            ++writer;
-        }
-
-        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
-        dh.openForRead();
-        odc::Reader oda(dh);
-
-        odc::Reader::iterator it = oda.begin();
-        EXPECT((*it)[0] == 1.0);
-        ++it;
-        EXPECT((*it)[0] == odc::MDI::integerMDI());
-        ++it;
-        EXPECT((*it)[0] == 3.0);
-        ++it;
-        EXPECT(it == oda.end());
+        (*writer)[0] = 1.0;
+        ++writer;
+        (*writer)[0] = NaN;
+        EXPECT_THROWS_AS(++writer, eckit::UserError);
     }
 }
 
 
-CASE("api::encode coerces NaN to Missing for INTEGER/BITFIELD columns") {
+CASE("api::encode rejects NaN in INTEGER/BITFIELD columns") {
 
     const double NaN = std::numeric_limits<double>::quiet_NaN();
     std::vector<double> values{1.0, NaN, 3.0};
@@ -435,25 +418,10 @@ CASE("api::encode coerces NaN to Missing for INTEGER/BITFIELD columns") {
         eckit::MemoryHandle writeDH(buf);
         writeDH.openForWrite(0);
 
-        {
-            std::vector<odc::api::ColumnInfo> columns{{"col0", type, sizeof(double), {}}};
-            std::vector<odc::api::ConstStridedData> strides{
-                {values.data(), values.size(), sizeof(double), sizeof(double)}};
-            odc::api::encode(writeDH, columns, strides);
-        }
-
-        eckit::MemoryHandle dh(buf.data(), static_cast<size_t>(writeDH.position()));
-        dh.openForRead();
-        odc::Reader oda(dh);
-
-        odc::Reader::iterator it = oda.begin();
-        EXPECT((*it)[0] == 1.0);
-        ++it;
-        EXPECT((*it)[0] == odc::MDI::integerMDI());
-        ++it;
-        EXPECT((*it)[0] == 3.0);
-        ++it;
-        EXPECT(it == oda.end());
+        std::vector<odc::api::ColumnInfo> columns{{"col0", type, sizeof(double), {}}};
+        std::vector<odc::api::ConstStridedData> strides{
+            {values.data(), values.size(), sizeof(double), sizeof(double)}};
+        EXPECT_THROWS_AS(odc::api::encode(writeDH, columns, strides), eckit::UserError);
     }
 }
 
