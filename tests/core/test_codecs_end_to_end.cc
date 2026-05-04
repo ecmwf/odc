@@ -338,8 +338,8 @@ CASE("NaN before real values preserves correct min/max in column metadata") {
     odc::Reader oda(dh);
     odc::Reader::iterator it = oda.begin();
 
-    EXPECT(it->columns()[0]->min() == 1.1);
-    EXPECT(it->columns()[0]->max() == 3.3);
+    EXPECT_EQUAL(it->columns()[0]->min(), 1.1);
+    EXPECT_EQUAL(it->columns()[0]->max(), 3.3);
 }
 
 
@@ -373,13 +373,13 @@ CASE("NaN round-trips as NaN in REAL/DOUBLE columns") {
         odc::Reader oda(dh);
 
         odc::Reader::iterator it = oda.begin();
-        EXPECT((*it)[0] == 1.0);
+        EXPECT_EQUAL((*it)[0], 1.0);
         ++it;
         EXPECT(std::isnan((*it)[0]));
         ++it;
-        EXPECT((*it)[0] == 3.0);
+        EXPECT_EQUAL((*it)[0], 3.0);
         ++it;
-        EXPECT(it == oda.end());
+        EXPECT_EQUAL(it, oda.end());
     }
 }
 
