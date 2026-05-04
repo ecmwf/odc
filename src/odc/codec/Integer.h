@@ -43,7 +43,7 @@ public:  // methods
     BaseCodecInteger(api::ColumnType type, const std::string& name, double minmaxmissing = odc::MDI::integerMDI()) :
         core::DataStreamCodec<ByteOrder>(name, type),
         castedMissingValue_(static_cast<ValueType>(minmaxmissing)),
-        rejectNaN_(ODBAPISettings::instance().integersAsDoubles()) {
+        integersAsDoubles_(ODBAPISettings::instance().integersAsDoubles()) {
 
         this->min_          = minmaxmissing;
         this->max_          = minmaxmissing;
@@ -72,7 +72,7 @@ private:  // methods
 
     void gatherStats(const double& v) override {
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
-        if (rejectNaN_ && std::isnan(v)) {
+        if (integersAsDoubles_ && std::isnan(v)) {
             throw eckit::UserError(
                 "NaN is not a valid value in INTEGER/BITFIELD column '" + this->name() + "'");
         }
@@ -87,7 +87,7 @@ protected:  // members
     ///         where the punned version gets optimised out
     ValueType castedMissingValue_;
 
-    const bool rejectNaN_;
+    const bool integersAsDoubles_;
 };
 
 
