@@ -73,8 +73,7 @@ private:  // methods
     void gatherStats(const double& v) override {
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
         if (integersAsDoubles_ && std::isnan(v)) {
-            throw eckit::UserError(
-                "NaN is not a valid value in INTEGER/BITFIELD column '" + this->name() + "'");
+            throw eckit::UserError("NaN is not a valid value in INTEGER/BITFIELD column '" + this->name() + "'");
         }
         const ValueType& val(reinterpret_cast<const ValueType&>(v));
         core::Codec::gatherStats(val);

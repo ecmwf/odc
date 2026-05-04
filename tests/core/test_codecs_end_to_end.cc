@@ -419,8 +419,7 @@ CASE("api::encode rejects NaN in INTEGER/BITFIELD columns") {
         writeDH.openForWrite(0);
 
         std::vector<odc::api::ColumnInfo> columns{{"col0", type, sizeof(double), {}}};
-        std::vector<odc::api::ConstStridedData> strides{
-            {values.data(), values.size(), sizeof(double), sizeof(double)}};
+        std::vector<odc::api::ConstStridedData> strides{{values.data(), values.size(), sizeof(double), sizeof(double)}};
         EXPECT_THROWS_AS(odc::api::encode(writeDH, columns, strides), eckit::UserError);
     }
 }
