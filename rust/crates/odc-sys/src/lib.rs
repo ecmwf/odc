@@ -2,6 +2,9 @@
 
 use bindman::track_cpp_api;
 
+// Auto-generated odc Error enum + From<cxx::Exception> impl
+include!(concat!(env!("OUT_DIR"), "/odc_exceptions.rs"));
+
 #[track_cpp_api(
     ("odc/Select.h", class = "Select"),
     ("odc/Writer.h", class = "Writer"),

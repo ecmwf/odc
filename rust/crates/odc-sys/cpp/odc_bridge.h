@@ -2,7 +2,7 @@
 #pragma once
 
 #include "eckit_bridge.h"
-#include "eckit_exceptions.h"
+#include "odc_exceptions.h"
 
 #include "odc/Select.h"
 #include "odc/Writer.h"
