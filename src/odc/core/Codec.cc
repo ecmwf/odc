@@ -10,6 +10,8 @@
 
 #include "odc/core/Codec.h"
 
+#include <cmath>
+
 #include "eckit/exception/Exceptions.h"
 
 #include "odc/core/CodecFactory.h"
@@ -98,6 +100,8 @@ void Codec::missingValue(double v) {
 }
 
 void Codec::gatherStats(const double& v) {
+    if (std::isnan(v))
+        return;
     if (v == missingValue_) {
         hasMissing_ = 1;
     }

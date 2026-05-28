@@ -11,6 +11,11 @@
 #ifndef odc_core_codec_Integer_H
 #define odc_core_codec_Integer_H
 
+#include <cmath>
+
+#include "eckit/exception/Exceptions.h"
+
+#include "odc/ODBAPISettings.h"
 #include "odc/core/Codec.h"
 
 /// @note We have some strange behaviour in here. In particular, we support BOTH decoding
@@ -36,7 +41,9 @@ public:  // definitions
 public:  // methods
 
     BaseCodecInteger(api::ColumnType type, const std::string& name, double minmaxmissing = odc::MDI::integerMDI()) :
-        core::DataStreamCodec<ByteOrder>(name, type), castedMissingValue_(static_cast<ValueType>(minmaxmissing)) {
+        core::DataStreamCodec<ByteOrder>(name, type),
+        castedMissingValue_(static_cast<ValueType>(minmaxmissing)),
+        integersAsDoubles_(ODBAPISettings::instance().integersAsDoubles()) {
 
         this->min_          = minmaxmissing;
         this->max_          = minmaxmissing;
@@ -65,6 +72,9 @@ private:  // methods
 
     void gatherStats(const double& v) override {
         static_assert(sizeof(ValueType) == sizeof(v), "unsafe casting check");
+        if (integersAsDoubles_ && std::isnan(v)) {
+            throw eckit::UserError("NaN is not a valid value in INTEGER/BITFIELD column '" + this->name() + "'");
+        }
         const ValueType& val(reinterpret_cast<const ValueType&>(v));
         core::Codec::gatherStats(val);
     }
@@ -75,6 +85,8 @@ protected:  // members
     ///         directly where needed is to work around a Cray 8.7 compiler bug, where
     ///         where the punned version gets optimised out
     ValueType castedMissingValue_;
+
+    const bool integersAsDoubles_;
 };
 
 
