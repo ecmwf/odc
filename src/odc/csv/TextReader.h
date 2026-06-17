@@ -20,8 +20,6 @@
 #include <Python.h>
 #endif
 
-#include "eckit/memory/NonCopyable.h"
-
 #include "odc/IteratorProxy.h"
 
 namespace eckit {
@@ -34,7 +32,7 @@ namespace odc {
 
 class TextReaderIterator;
 
-class TextReader : private eckit::NonCopyable {
+class TextReader {
 public:
 
     typedef IteratorProxy<TextReaderIterator, TextReader, double> iterator;
@@ -42,6 +40,9 @@ public:
 
     TextReader(std::istream&, const std::string& delimiter);
     TextReader(const std::string& path, const std::string& delimiter);
+
+    TextReader(const TextReader&)            = delete;
+    TextReader& operator=(const TextReader&) = delete;
 
     TextReader(TextReader&&);
     TextReader& operator=(TextReader&&);

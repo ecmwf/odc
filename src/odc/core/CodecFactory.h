@@ -22,8 +22,6 @@
 #include <string>
 #include <string_view>
 
-#include "eckit/memory/NonCopyable.h"
-
 #include "odc/ODBAPISettings.h"
 #include "odc/api/ColumnType.h"
 #include "odc/core/Exceptions.h"
@@ -41,11 +39,15 @@ struct SameByteOrder;
 struct OtherByteOrder;
 
 
-class CodecFactory : private eckit::NonCopyable {
+class CodecFactory {
 
 public:  // methods
 
     CodecFactory();
+
+    CodecFactory(const CodecFactory&)            = delete;
+    CodecFactory& operator=(const CodecFactory&) = delete;
+
     ~CodecFactory();
 
     static CodecFactory& instance();

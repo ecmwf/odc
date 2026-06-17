@@ -30,7 +30,7 @@ class DataHandle;
 
 namespace odc {
 
-class Reader : public eckit::NonCopyable {
+class Reader {
 public:
 
     typedef IteratorProxy<ReaderIterator, Reader, const double> iterator;
@@ -39,6 +39,9 @@ public:
     Reader(eckit::DataHandle&);
     Reader(const eckit::PathName& path);
     Reader();
+
+    Reader(const Reader&)            = delete;
+    Reader& operator=(const Reader&) = delete;
 
     Reader(Reader&& rhs);
     Reader& operator=(Reader&& rhs);

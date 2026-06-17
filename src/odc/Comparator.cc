@@ -8,7 +8,6 @@
  * does it submit to any jurisdiction.
  */
 
-#include "eckit/config/Resource.h"
 #include "eckit/exception/Exceptions.h"
 #include "eckit/filesystem/PathName.h"
 #include "eckit/log/Log.h"
@@ -41,8 +40,7 @@ public:
 
 namespace odc {
 
-Comparator::Comparator(bool skipTestingHaveMissing) :
-    skipTestingHaveMissing_(skipTestingHaveMissing), nRow_(0), NaN_isOK_(Resource<bool>("$odc_NAN_IS_OK", false)) {}
+Comparator::Comparator(bool skipTestingHaveMissing) : skipTestingHaveMissing_(skipTestingHaveMissing), nRow_(0) {}
 
 
 void Comparator::compare(const PathName& p1, const PathName& p2) {
@@ -168,12 +166,11 @@ void Comparator::compare(int nCols, const double* data1, const double* data2, co
                     case INTEGER:
                     case BITFIELD:
                     case DOUBLE:
-                        if (!(same(*pdata1, *pdata2) || (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
+                        if (!same(*pdata1, *pdata2))
                             raiseNotEqual(column, *pdata1, *pdata2);
                         break;
                     case REAL:
-                        if (!(same(float(*pdata1), float(*pdata2)) ||
-                              (NaN_isOK_ && (::isnan(*pdata1) && ::isnan(*pdata2)))))
+                        if (!same(float(*pdata1), float(*pdata2)))
                             raiseNotEqual(column, *pdata1, *pdata2);
                         break;
                     case IGNORE:
