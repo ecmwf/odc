@@ -1,4 +1,7 @@
 //! FFI bindings to ECMWF odc (ODB-2 encoder/decoder) library.
+//!
+//! Wraps the public C++ API (`odc::api`): `Reader` → `Frame` →
+//! `Decoder`/`encode()`, plus the global `Settings`.
 
 use bindman::track_cpp_api;
 
@@ -6,9 +9,11 @@ use bindman::track_cpp_api;
 include!(concat!(env!("OUT_DIR"), "/odc_exceptions.rs"));
 
 #[track_cpp_api(
-    ("odc/Select.h", class = "Select"),
-    ("odc/Writer.h", class = "Writer"),
-    ignore = ["end", "dataHandle"]
+    ("odc/api/Odb.h", class = "Reader"),
+    ("odc/api/Odb.h", class = "Frame"),
+    ("odc/api/Odb.h", class = "Decoder"),
+    ("odc/api/Odb.h", class = "Settings"),
+    ignore = ["offset", "length", "filter", "encodedData", "span", "slice"]
 )]
 #[cxx::bridge(namespace = "odc_bridge")]
 pub mod ffi {
@@ -30,8 +35,36 @@ pub mod ffi {
         Double = 5,
     }
 
+    /// A bit group within a bitfield column.
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    struct BridgeBit {
+        name: String,
+        /// Bit group size in bits.
+        size: i32,
+        /// Bit group offset in bits.
+        offset: i32,
+    }
+
+    /// Metadata for one column of a frame.
+    #[derive(Debug, Clone)]
+    struct BridgeColumnInfo {
+        name: String,
+        column_type: ColumnType,
+        /// Size of a single decoded value in bytes (always a multiple of 8).
+        decoded_size: usize,
+        /// Bit groups — non-empty only for bitfield columns.
+        bitfield: Vec<BridgeBit>,
+    }
+
+    /// A key/value property encoded in a frame.
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    struct BridgeProperty {
+        key: String,
+        value: String,
+    }
+
     unsafe extern "C++" {
-        include!("odc_bridge.h");
+        include!("OdcBridge.h");
 
         // Verify ColumnType matches C++ odc::api::ColumnType at compile time
         #[namespace = "odc::api"]
@@ -41,93 +74,144 @@ pub mod ffi {
         #[namespace = "eckit_bridge"]
         type DataHandleWrapper = eckit_sys::DataHandleWrapper;
 
-        // ==================== SelectIteratorWrapper ====================
+        // ==================== ReaderWrapper ====================
 
-        type SelectIteratorWrapper;
+        type ReaderWrapper;
 
-        #[must_use]
-        fn valid(self: Pin<&mut SelectIteratorWrapper>) -> bool;
-        fn advance(self: Pin<&mut SelectIteratorWrapper>) -> Result<()>;
-        fn column_count(self: &SelectIteratorWrapper) -> usize;
-        fn column_name(self: &SelectIteratorWrapper, idx: usize) -> Result<String>;
-        fn column_type(self: &SelectIteratorWrapper, idx: usize) -> Result<ColumnType>;
-        fn data(self: &SelectIteratorWrapper, idx: usize) -> Result<f64>;
-        fn data_string(self: Pin<&mut SelectIteratorWrapper>, idx: usize) -> Result<String>;
-        fn data_integer(self: Pin<&mut SelectIteratorWrapper>, idx: usize) -> Result<i64>;
+        /// Open an ODB-2 file for reading.
+        #[Self = "ReaderWrapper"]
+        fn from_path(
+            path: &str,
+            aggregated: bool,
+            rowlimit: i64,
+        ) -> Result<UniquePtr<ReaderWrapper>>;
 
-        // ==================== SelectWrapper ====================
-
-        type SelectWrapper;
-
-        fn begin(self: Pin<&mut SelectWrapper>) -> Result<UniquePtr<SelectIteratorWrapper>>;
-        #[cxx_name = "createSelectIterator"]
-        fn create_select_iterator(
-            self: Pin<&mut SelectWrapper>,
-            sql: &str,
-        ) -> Result<UniquePtr<SelectIteratorWrapper>>;
-        fn database_name(self: Pin<&mut SelectWrapper>) -> Result<String>;
-
-        fn select_create(
-            sql: &str,
+        /// Read from an eckit data handle. Does NOT take ownership: the
+        /// handle must be unopened and must outlive the reader and every
+        /// frame it yields.
+        #[Self = "ReaderWrapper"]
+        fn from_handle(
             handle: Pin<&mut DataHandleWrapper>,
-        ) -> Result<UniquePtr<SelectWrapper>>;
+            aggregated: bool,
+            rowlimit: i64,
+        ) -> Result<UniquePtr<ReaderWrapper>>;
 
-        // ==================== WriteIteratorWrapper ====================
+        /// Next frame in the stream; null when exhausted.
+        fn next_frame(self: Pin<&mut ReaderWrapper>) -> Result<UniquePtr<FrameWrapper>>;
 
-        type WriteIteratorWrapper;
+        // ==================== FrameWrapper ====================
 
-        fn set_column(
-            self: Pin<&mut WriteIteratorWrapper>,
-            index: usize,
+        type FrameWrapper;
+
+        fn row_count(self: &FrameWrapper) -> usize;
+        fn column_count(self: &FrameWrapper) -> usize;
+        fn has_column(self: &FrameWrapper, name: &str) -> bool;
+        fn column_info(self: &FrameWrapper) -> Result<Vec<BridgeColumnInfo>>;
+        fn properties(self: &FrameWrapper) -> Result<Vec<BridgeProperty>>;
+
+        // ==================== DecoderWrapper ====================
+
+        type DecoderWrapper;
+
+        #[Self = "DecoderWrapper"]
+        fn create() -> UniquePtr<DecoderWrapper>;
+
+        /// Register a decode target for the named column.
+        ///
+        /// # Safety
+        ///
+        /// `data` must be 8-byte-aligned, valid for `nrows * stride` bytes,
+        /// and must not be dropped or aliased until `decode` returns.
+        unsafe fn add_column(
+            self: Pin<&mut DecoderWrapper>,
             name: &str,
-            col_type: ColumnType,
-        ) -> Result<()>;
-        fn set_number_of_columns(self: Pin<&mut WriteIteratorWrapper>, n: usize) -> Result<()>;
-        fn set_data(self: Pin<&mut WriteIteratorWrapper>, index: usize, value: f64) -> Result<()>;
-        fn set_data_string(
-            self: Pin<&mut WriteIteratorWrapper>,
-            index: usize,
-            value: &str,
-        ) -> Result<()>;
-        fn set_data_integer(
-            self: Pin<&mut WriteIteratorWrapper>,
-            index: usize,
-            value: i64,
-        ) -> Result<()>;
-        fn set_missing_value(
-            self: Pin<&mut WriteIteratorWrapper>,
-            index: usize,
-            value: f64,
-        ) -> Result<()>;
-        fn write_row(self: Pin<&mut WriteIteratorWrapper>) -> Result<()>;
-        fn close(self: Pin<&mut WriteIteratorWrapper>) -> Result<()>;
+            data: *mut u8,
+            nrows: usize,
+            elem_size: usize,
+            stride: usize,
+        );
 
-        // ==================== WriterWrapper ====================
+        /// Decode the frame into the registered buffers; returns rows decoded.
+        fn decode(
+            self: Pin<&mut DecoderWrapper>,
+            frame: &FrameWrapper,
+            nthreads: usize,
+        ) -> Result<usize>;
 
-        type WriterWrapper;
+        // ==================== EncoderWrapper ====================
 
-        fn pass1(self: Pin<&mut WriterWrapper>, select: Pin<&mut SelectWrapper>) -> Result<()>;
-        #[cxx_name = "begin"]
-        fn create_write_iterator(
-            self: Pin<&mut WriterWrapper>,
-        ) -> Result<UniquePtr<WriteIteratorWrapper>>;
-        fn rows_buffer_size(self: &WriterWrapper) -> usize;
-        fn set_rows_buffer_size(self: Pin<&mut WriterWrapper>, n: usize);
-        fn path(self: &WriterWrapper) -> Result<String>;
+        type EncoderWrapper;
 
-        fn writer_create(handle: Pin<&mut DataHandleWrapper>) -> Result<UniquePtr<WriterWrapper>>;
+        #[Self = "EncoderWrapper"]
+        fn create() -> UniquePtr<EncoderWrapper>;
+
+        /// Register a source column for encoding.
+        ///
+        /// # Safety
+        ///
+        /// `data` must be valid for `nrows * stride` bytes and must not be
+        /// dropped until `encode` returns.
+        unsafe fn add_column(
+            self: Pin<&mut EncoderWrapper>,
+            name: &str,
+            column_type: ColumnType,
+            elem_size: usize,
+            data: *const u8,
+            nrows: usize,
+            stride: usize,
+        );
+
+        /// Append a bit group to the most recently added column.
+        fn add_bitfield(
+            self: Pin<&mut EncoderWrapper>,
+            name: &str,
+            size: i32,
+            offset: i32,
+        ) -> Result<()>;
+
+        fn set_property(self: Pin<&mut EncoderWrapper>, key: &str, value: &str);
+
+        /// Encode all registered columns to an (already open) data handle.
+        fn encode(
+            self: Pin<&mut EncoderWrapper>,
+            out: Pin<&mut DataHandleWrapper>,
+            max_rows_per_frame: usize,
+        ) -> Result<()>;
+
+        // ==================== SettingsWrapper (process-global) ====================
+
+        type SettingsWrapper;
+
+        /// Whether INTEGER/BITFIELD columns decode as doubles (true, odc
+        /// default) or as int64 (false).
+        #[Self = "SettingsWrapper"]
+        fn treat_integers_as_doubles(flag: bool);
+        #[Self = "SettingsWrapper"]
+        fn integer_missing_value() -> i64;
+        #[Self = "SettingsWrapper"]
+        fn set_integer_missing_value(value: i64);
+        #[Self = "SettingsWrapper"]
+        fn double_missing_value() -> f64;
+        #[Self = "SettingsWrapper"]
+        fn set_double_missing_value(value: f64);
+        #[Self = "SettingsWrapper"]
+        fn version() -> String;
+        #[Self = "SettingsWrapper"]
+        fn gitsha1() -> String;
     }
 }
 
 pub use cxx::{Exception, UniquePtr};
 pub use ffi::*;
 
-// SAFETY: All odc wrapper types own their data with no thread-local or global mutable state.
+// SAFETY: All odc wrapper types have no thread affinity or thread-local
+// state. Frames share the reader's underlying stream, but that access is
+// serialized C++-side by odc::core::ThreadSharedDataHandle.
 #[allow(clippy::non_send_fields_in_send_ty)]
 mod send_impls {
-    use super::ffi::{SelectIteratorWrapper, SelectWrapper, WriteIteratorWrapper, WriterWrapper};
-    unsafe impl Send for SelectIteratorWrapper {}
-    unsafe impl Send for SelectWrapper {}
-    unsafe impl Send for WriteIteratorWrapper {}
-    unsafe impl Send for WriterWrapper {}
+    use super::ffi::{DecoderWrapper, EncoderWrapper, FrameWrapper, ReaderWrapper};
+    unsafe impl Send for ReaderWrapper {}
+    unsafe impl Send for FrameWrapper {}
+    unsafe impl Send for DecoderWrapper {}
+    unsafe impl Send for EncoderWrapper {}
 }

@@ -19,9 +19,9 @@ odc-sys = { path = "crates/odc-sys" }
 eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "rust-bindings", default-features = false }
 
 # Build tools
-bindman = { git = "ssh://git@github.com/ecmwf/bindman.git", branch = "generate_exception_bridge" }
-bindman-build = { git = "ssh://git@github.com/ecmwf/bindman.git", branch = "generate_exception_bridge" }
-bindman-utils = { git = "ssh://git@github.com/ecmwf/bindman.git", branch = "generate_exception_bridge" }
+bindman = { git = "ssh://git@github.com/ecmwf/bindman.git" }
+bindman-build = { git = "ssh://git@github.com/ecmwf/bindman.git" }
+bindman-utils = { git = "ssh://git@github.com/ecmwf/bindman.git" }
 
 # External
 cxx = "1.0"

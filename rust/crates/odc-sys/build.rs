@@ -6,8 +6,8 @@ const ODC_VERSION: &str = "1.6.3";
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=src/lib.rs");
-    println!("cargo:rerun-if-changed=cpp/odc_bridge.h");
-    println!("cargo:rerun-if-changed=cpp/odc_bridge.cpp");
+    println!("cargo:rerun-if-changed=cpp/OdcBridge.h");
+    println!("cargo:rerun-if-changed=cpp/OdcBridge.cc");
     println!("cargo:rerun-if-env-changed=ODC_DIR");
     println!("cargo:rerun-if-env-changed=DOCS_RS");
 
@@ -68,7 +68,7 @@ fn build_system() {
     println!("cargo:rustc-link-lib=dylib=odccore");
 
     cxx_build::bridge("src/lib.rs")
-        .file(crate_dir.join("cpp/odc_bridge.cpp"))
+        .file(crate_dir.join("cpp/OdcBridge.cc"))
         .include(&odc_include)
         .include(&eckit_include)
         .include(&eckit_cpp_dir)
@@ -161,7 +161,7 @@ fn build_vendored() {
     generate_exceptions(&include_dir);
 
     cxx_build::bridge("src/lib.rs")
-        .file(crate_dir.join("cpp/odc_bridge.cpp"))
+        .file(crate_dir.join("cpp/OdcBridge.cc"))
         .include(&include_dir)
         .include(format!("{eckit_root}/include"))
         .include(&eckit_cpp_dir)
