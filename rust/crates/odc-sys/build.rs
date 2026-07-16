@@ -7,7 +7,16 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=src/lib.rs");
     println!("cargo:rerun-if-changed=cpp/OdcBridge.h");
-    println!("cargo:rerun-if-changed=cpp/OdcBridge.cc");
+    println!("cargo:rerun-if-changed=cpp/DecoderWrapper.h");
+    println!("cargo:rerun-if-changed=cpp/DecoderWrapper.cc");
+    println!("cargo:rerun-if-changed=cpp/EncoderWrapper.h");
+    println!("cargo:rerun-if-changed=cpp/EncoderWrapper.cc");
+    println!("cargo:rerun-if-changed=cpp/FrameWrapper.h");
+    println!("cargo:rerun-if-changed=cpp/FrameWrapper.cc");
+    println!("cargo:rerun-if-changed=cpp/ReaderWrapper.h");
+    println!("cargo:rerun-if-changed=cpp/ReaderWrapper.cc");
+    println!("cargo:rerun-if-changed=cpp/SettingsWrapper.h");
+    println!("cargo:rerun-if-changed=cpp/SettingsWrapper.cc");
     println!("cargo:rerun-if-env-changed=ODC_DIR");
     println!("cargo:rerun-if-env-changed=DOCS_RS");
 
@@ -68,7 +77,11 @@ fn build_system() {
     println!("cargo:rustc-link-lib=dylib=odccore");
 
     cxx_build::bridge("src/lib.rs")
-        .file(crate_dir.join("cpp/OdcBridge.cc"))
+        .file(crate_dir.join("cpp/DecoderWrapper.cc"))
+        .file(crate_dir.join("cpp/EncoderWrapper.cc"))
+        .file(crate_dir.join("cpp/FrameWrapper.cc"))
+        .file(crate_dir.join("cpp/ReaderWrapper.cc"))
+        .file(crate_dir.join("cpp/SettingsWrapper.cc"))
         .include(&odc_include)
         .include(&eckit_include)
         .include(&eckit_cpp_dir)
@@ -161,7 +174,11 @@ fn build_vendored() {
     generate_exceptions(&include_dir);
 
     cxx_build::bridge("src/lib.rs")
-        .file(crate_dir.join("cpp/OdcBridge.cc"))
+        .file(crate_dir.join("cpp/DecoderWrapper.cc"))
+        .file(crate_dir.join("cpp/EncoderWrapper.cc"))
+        .file(crate_dir.join("cpp/FrameWrapper.cc"))
+        .file(crate_dir.join("cpp/ReaderWrapper.cc"))
+        .file(crate_dir.join("cpp/SettingsWrapper.cc"))
         .include(&include_dir)
         .include(format!("{eckit_root}/include"))
         .include(&eckit_cpp_dir)

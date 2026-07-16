@@ -64,6 +64,10 @@ pub mod ffi {
     }
 
     unsafe extern "C++" {
+        // odc_exceptions.h first: it defines the `rust::behavior::trycatch`
+        // that maps C++ exceptions to typed errors, and must be visible in
+        // the cxx-generated translation unit before the wrapper headers.
+        include!("odc_exceptions.h");
         include!("OdcBridge.h");
 
         // Verify ColumnType matches C++ odc::api::ColumnType at compile time
