@@ -12,9 +12,9 @@ namespace odc_bridge {
 // cxx-generated shared structs — defined in "odc-sys/src/lib.rs.h", which
 // the .cc includes. Forward-declared here to avoid a circular include (the
 // generated header includes this one first).
-struct BridgeBit;
-struct BridgeColumnInfo;
-struct BridgeProperty;
+struct Bit;
+struct ColumnInfo;
+struct Property;
 
 /// Owns an `odc::api::Frame` — a viewport onto a chunk of contiguous,
 /// compatible data (possibly a logical frame aggregating several physical
@@ -32,8 +32,8 @@ public:
     size_t row_count() const;
     size_t column_count() const;
     bool has_column(rust::Str name) const;
-    rust::Vec<BridgeColumnInfo> column_info() const;
-    rust::Vec<BridgeProperty> properties() const;
+    rust::Vec<ColumnInfo> column_info() const;
+    rust::Vec<Property> properties() const;
 };
 
 }  // namespace odc_bridge

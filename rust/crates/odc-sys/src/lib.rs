@@ -8,6 +8,7 @@ use bindman::track_cpp_api;
 // Auto-generated odc Error enum + From<cxx::Exception> impl
 include!(concat!(env!("OUT_DIR"), "/odc_exceptions.rs"));
 
+#[allow(clippy::missing_safety_doc)]
 #[track_cpp_api(
     ("odc/api/Odb.h", class = "Reader"),
     ("odc/api/Odb.h", class = "Frame"),
@@ -35,9 +36,9 @@ pub mod ffi {
         Double = 5,
     }
 
-    /// A bit group within a bitfield column.
+    /// A bit group within a bitfield column — C++ `odc::api::ColumnInfo::Bit`.
     #[derive(Debug, Clone, PartialEq, Eq)]
-    struct BridgeBit {
+    struct Bit {
         name: String,
         /// Bit group size in bits.
         size: i32,
@@ -45,20 +46,20 @@ pub mod ffi {
         offset: i32,
     }
 
-    /// Metadata for one column of a frame.
+    /// Metadata for one column of a frame — C++ `odc::api::ColumnInfo`.
     #[derive(Debug, Clone)]
-    struct BridgeColumnInfo {
+    struct ColumnInfo {
         name: String,
         column_type: ColumnType,
         /// Size of a single decoded value in bytes (always a multiple of 8).
         decoded_size: usize,
         /// Bit groups — non-empty only for bitfield columns.
-        bitfield: Vec<BridgeBit>,
+        bitfield: Vec<Bit>,
     }
 
     /// A key/value property encoded in a frame.
     #[derive(Debug, Clone, PartialEq, Eq)]
-    struct BridgeProperty {
+    struct Property {
         key: String,
         value: String,
     }
@@ -107,17 +108,21 @@ pub mod ffi {
 
         type FrameWrapper;
 
+        #[must_use]
         fn row_count(self: &FrameWrapper) -> usize;
+        #[must_use]
         fn column_count(self: &FrameWrapper) -> usize;
+        #[must_use]
         fn has_column(self: &FrameWrapper, name: &str) -> bool;
-        fn column_info(self: &FrameWrapper) -> Result<Vec<BridgeColumnInfo>>;
-        fn properties(self: &FrameWrapper) -> Result<Vec<BridgeProperty>>;
+        fn column_info(self: &FrameWrapper) -> Result<Vec<ColumnInfo>>;
+        fn properties(self: &FrameWrapper) -> Result<Vec<Property>>;
 
         // ==================== DecoderWrapper ====================
 
         type DecoderWrapper;
 
         #[Self = "DecoderWrapper"]
+        #[must_use]
         fn create() -> UniquePtr<DecoderWrapper>;
 
         /// Register a decode target for the named column.
@@ -147,6 +152,7 @@ pub mod ffi {
         type EncoderWrapper;
 
         #[Self = "EncoderWrapper"]
+        #[must_use]
         fn create() -> UniquePtr<EncoderWrapper>;
 
         /// Register a source column for encoding.
@@ -191,16 +197,20 @@ pub mod ffi {
         #[Self = "SettingsWrapper"]
         fn treat_integers_as_doubles(flag: bool);
         #[Self = "SettingsWrapper"]
+        #[must_use]
         fn integer_missing_value() -> i64;
         #[Self = "SettingsWrapper"]
         fn set_integer_missing_value(value: i64);
         #[Self = "SettingsWrapper"]
+        #[must_use]
         fn double_missing_value() -> f64;
         #[Self = "SettingsWrapper"]
         fn set_double_missing_value(value: f64);
         #[Self = "SettingsWrapper"]
+        #[must_use]
         fn version() -> String;
         #[Self = "SettingsWrapper"]
+        #[must_use]
         fn gitsha1() -> String;
     }
 }

@@ -22,24 +22,24 @@ bool FrameWrapper::has_column(rust::Str name) const {
     return frame_.hasColumn(std::string(name));
 }
 
-rust::Vec<BridgeColumnInfo> FrameWrapper::column_info() const {
-    rust::Vec<BridgeColumnInfo> result;
+rust::Vec<ColumnInfo> FrameWrapper::column_info() const {
+    rust::Vec<ColumnInfo> result;
     result.reserve(frame_.columnCount());
     for (const auto& info : frame_.columnInfo()) {
-        rust::Vec<BridgeBit> bitfield;
+        rust::Vec<Bit> bitfield;
         bitfield.reserve(info.bitfield.size());
         for (const auto& bit : info.bitfield) {
-            bitfield.push_back(BridgeBit{rust::String(bit.name), bit.size, bit.offset});
+            bitfield.push_back(Bit{rust::String(bit.name), bit.size, bit.offset});
         }
-        result.push_back(BridgeColumnInfo{rust::String(info.name), info.type, info.decodedSize, std::move(bitfield)});
+        result.push_back(ColumnInfo{rust::String(info.name), info.type, info.decodedSize, std::move(bitfield)});
     }
     return result;
 }
 
-rust::Vec<BridgeProperty> FrameWrapper::properties() const {
-    rust::Vec<BridgeProperty> result;
+rust::Vec<Property> FrameWrapper::properties() const {
+    rust::Vec<Property> result;
     for (const auto& [key, value] : frame_.properties()) {
-        result.push_back(BridgeProperty{rust::String(key), rust::String(value)});
+        result.push_back(Property{rust::String(key), rust::String(value)});
     }
     return result;
 }

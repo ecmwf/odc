@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/odc-sys"]
+members = ["crates/odc", "crates/odc-sys"]
 
 [workspace.package]
 edition = "2024"
@@ -13,9 +13,11 @@ categories = ["science"]
 
 [workspace.dependencies]
 # Internal
-odc-sys = { path = "crates/odc-sys" }
+odc = { path = "crates/odc", default-features = false }
+odc-sys = { path = "crates/odc-sys", default-features = false }
 
 # Foundation crates
+eckit = { git = "ssh://git@github.com/ecmwf/rust-wrappers-playground.git", default-features = false }
 eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "rust-bindings", default-features = false }
 
 # Build tools
@@ -26,4 +28,6 @@ bindman-utils = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68
 # External
 cxx = "1.0"
 cxx-build = "1.0"
+parking_lot = "0.12"
+polars = { version = "0.54", default-features = false, features = ["fmt"] }
 thiserror = "2"
