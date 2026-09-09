@@ -157,7 +157,7 @@ pub fn write_odb_to(
     }
     encoder
         .pin_mut()
-        .encode(handle.inner_mut()?, options.rows_per_frame)?;
+        .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
     Ok(())
 }
 

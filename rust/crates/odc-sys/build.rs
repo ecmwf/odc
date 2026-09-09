@@ -1,8 +1,6 @@
 use std::env;
 use std::path::{Path, PathBuf};
 
-const ODC_VERSION: &str = "1.6.3";
-
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=src/lib.rs");
@@ -21,6 +19,7 @@ fn main() {
     println!("cargo:rerun-if-env-changed=DOCS_RS");
 
     if bindman_utils::is_docs_rs() {
+        generate_exceptions(&docs_source_include());
         return;
     }
 
@@ -60,6 +59,11 @@ fn generate_exceptions(include: &Path) {
     bindman_build::publish_exception_sources(&own, &out_dir);
 }
 
+fn docs_source_include() -> PathBuf {
+    PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set"))
+        .join("docs-headers")
+}
+
 #[cfg(feature = "system")]
 fn build_system() {
     let crate_dir =
@@ -69,7 +73,7 @@ fn build_system() {
     let eckit_include = env::var("DEP_ECKIT_SYS_INCLUDE").expect("DEP_ECKIT_SYS_INCLUDE not set");
     let eckit_cpp_dir = env::var("DEP_ECKIT_SYS_CPP_DIR").expect("DEP_ECKIT_SYS_CPP_DIR not set");
 
-    let (root, odc_include, lib_dir) = bindman_utils::cmake_find_package("odc", ODC_VERSION);
+    let (root, odc_include, lib_dir) = bindman_utils::cmake_find_package("odc", "1.6.3");
 
     generate_exceptions(&odc_include);
 
@@ -104,13 +108,47 @@ fn build_system() {
 }
 
 #[cfg(feature = "vendored")]
+fn resolve_odc_src(src_dir: &Path) -> PathBuf {
+    const ODC_REPO: &str = "https://github.com/ecmwf/odc.git";
+    const ODC_TAG: &str = env!("CARGO_PKG_VERSION");
+
+    let manifest_dir =
+        PathBuf::from(env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set"));
+    if let Some(root) = manifest_dir.ancestors().nth(3)
+        && root.join("CMakeLists.txt").exists()
+        && root.join("VERSION").exists()
+        && root.join("src/odc").is_dir()
+    {
+        eprintln!("odc-sys: building in-tree sources at {}", root.display());
+
+        println!("cargo:rerun-if-changed={}", root.join("src").display());
+        println!(
+            "cargo:rerun-if-changed={}",
+            root.join("CMakeLists.txt").display()
+        );
+        println!("cargo:rerun-if-changed={}", root.join("VERSION").display());
+
+        let tree_version = std::fs::read_to_string(root.join("VERSION"))
+            .map(|s| s.trim().to_string())
+            .unwrap_or_default();
+        if tree_version != ODC_TAG {
+            println!(
+                "cargo:warning=odc-sys {ODC_TAG} is building in-tree odc {tree_version} (versions differ)"
+            );
+        }
+
+        return root.to_path_buf();
+    }
+    bindman_utils::git_clone(ODC_REPO, ODC_TAG, &src_dir.join("odc"))
+}
+
+#[cfg(feature = "vendored")]
 fn build_vendored() {
     use std::fs;
     use std::process::Command;
 
     const ECBUILD_REPO: &str = "https://github.com/ecmwf/ecbuild.git";
     const ECBUILD_TAG: &str = "3.13.1";
-    const ODC_REPO: &str = "https://github.com/ecmwf/odc.git";
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
     let src_dir = out_dir.join("src");
@@ -124,7 +162,17 @@ fn build_vendored() {
     let eckit_cpp_dir = env::var("DEP_ECKIT_SYS_CPP_DIR").expect("DEP_ECKIT_SYS_CPP_DIR not set");
 
     let ecbuild_src = bindman_utils::git_clone(ECBUILD_REPO, ECBUILD_TAG, &src_dir.join("ecbuild"));
-    let odc_src = bindman_utils::git_clone(ODC_REPO, ODC_VERSION, &src_dir.join("odc"));
+    let odc_src = resolve_odc_src(&src_dir);
+
+    if let Ok(cache) = fs::read_to_string(build_dir.join("CMakeCache.txt")) {
+        let cached_src = cache
+            .lines()
+            .find_map(|l| l.strip_prefix("CMAKE_HOME_DIRECTORY:INTERNAL="));
+        if cached_src != odc_src.to_str() {
+            fs::remove_dir_all(&build_dir).expect("Failed to remove stale odc build directory");
+            fs::create_dir_all(&build_dir).expect("Failed to create build directory");
+        }
+    }
 
     let ecbuild_bin = ecbuild_src.join("bin/ecbuild");
     let num_jobs = bindman_utils::build_parallelism();

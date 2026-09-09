@@ -17,8 +17,8 @@ odc = { path = "crates/odc", default-features = false }
 odc-sys = { path = "crates/odc-sys", default-features = false }
 
 # Foundation crates
-eckit = { git = "ssh://git@github.com/ecmwf/rust-wrappers-playground.git", default-features = false }
-eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "rust-bindings", default-features = false }
+eckit = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "pre-publish", default-features = false }
+eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "pre-publish", default-features = false }
 
 # Build tools
 bindman = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }

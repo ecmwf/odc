@@ -98,7 +98,7 @@ impl Reader {
     ) -> Result<Self> {
         init();
         let inner = odc_sys::ReaderWrapper::from_handle(
-            handle.inner_mut()?,
+            handle.as_sys_mut()?,
             options.aggregated,
             options.row_limit.unwrap_or(-1),
         )?;
