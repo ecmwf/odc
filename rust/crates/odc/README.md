@@ -24,10 +24,12 @@ For streaming access, open a `Reader` and iterate its frames, inspecting column 
 
 - `read` — stream a file frame by frame, inspect metadata, decode all or selected columns.
 - `write` — build a `DataFrame` and encode it, including a bitfield column and frame properties.
+- `handles` — encode and decode through eckit `DataHandle`s: explicit write handles and in-memory buffers.
 
 ```sh
 cargo run --example read -- data.odb
 cargo run --example write -- out.odb
+cargo run --example handles -- out.odb
 ```
 
 ## Features

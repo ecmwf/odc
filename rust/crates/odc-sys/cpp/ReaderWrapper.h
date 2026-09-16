@@ -25,7 +25,8 @@ public:
 
     /// Does not take ownership: the DataHandleWrapper must outlive this
     /// reader (and every frame it yields) — enforced on the Rust side.
-    /// The handle must not be open; the reader opens it for reading.
+    /// The handle must already be open for reading; the reader does not
+    /// open or close it.
     static std::unique_ptr<ReaderWrapper> from_handle(eckit_bridge::DataHandleWrapper& handle, bool aggregated,
                                                       int64_t rowlimit);
 

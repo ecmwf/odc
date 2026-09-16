@@ -34,10 +34,23 @@ pub struct ReaderShared {
     // Field order matters: the C++ reader borrows the source handle, so
     // `inner` must drop before `_source`.
     pub(crate) inner: Mutex<odc_sys::UniquePtr<odc_sys::ReaderWrapper>>,
-    _source: Option<Mutex<eckit::DataHandle<eckit::Closed>>>,
+    _source: Option<Mutex<eckit::DataHandle<eckit::Reading>>>,
 }
 
 /// Owns an ODB-2 data stream and yields its [`Frame`]s.
+///
+/// # Example
+///
+/// ```no_run
+/// let reader = odc::Reader::from_path("data.odb")?;
+/// for frame in reader.frames() {
+///     let frame = frame?;
+///     println!("{} rows, {} columns", frame.row_count(), frame.column_count());
+///     let df = frame.dataframe()?;
+///     println!("{df}");
+/// }
+/// # Ok::<(), odc::Error>(())
+/// ```
 ///
 /// # Thread safety
 ///
@@ -93,10 +106,11 @@ impl Reader {
     ///
     /// Fails if the handle cannot be opened or is not valid ODB-2.
     pub fn from_handle(
-        mut handle: eckit::DataHandle<eckit::Closed>,
+        handle: eckit::DataHandle<eckit::Closed>,
         options: &ReaderOptions,
     ) -> Result<Self> {
         init();
+        let (mut handle, _) = handle.open_for_read()?;
         let inner = odc_sys::ReaderWrapper::from_handle(
             handle.as_sys_mut()?,
             options.aggregated,

@@ -2,7 +2,7 @@
 
 Low-level Rust bindings to ECMWF's [odc](https://github.com/ecmwf/odc) (ODB-2 encoder/decoder) C++ library.
 
-This crate provides raw FFI bindings using [cxx](https://cxx.rs/). For a safe, ergonomic API, use the higher-level `odc` crate (planned).
+This crate provides raw FFI bindings using [cxx](https://cxx.rs/) and is not intended for direct use. For a safe, ergonomic API, use the higher-level `odc` crate.
 
 ## Features
 

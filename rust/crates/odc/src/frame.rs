@@ -115,6 +115,19 @@ impl Frame {
 
     /// Decode selected columns into a `DataFrame`.
     ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # let reader = odc::Reader::from_path("data.odb")?;
+    /// # let frame = reader.frames().next().unwrap()?;
+    /// let options = odc::DecodeOptions {
+    ///     columns: Some(vec!["expver".into(), "date@hdr".into()]),
+    ///     ..Default::default()
+    /// };
+    /// let df = frame.dataframe_with(&options)?;
+    /// # Ok::<(), odc::Error>(())
+    /// ```
+    ///
     /// # Errors
     ///
     /// Fails if a requested column does not exist or the underlying stream

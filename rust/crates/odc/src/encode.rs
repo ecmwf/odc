@@ -10,6 +10,24 @@ use crate::error::{Error, Result};
 use crate::init;
 
 /// Options for [`write_odb`].
+///
+/// # Example
+///
+/// Encode an integer column as a BITFIELD with named bit groups:
+///
+/// ```
+/// use odc::{Bit, ColumnType, WriteOptions};
+///
+/// let mut options = WriteOptions::default();
+/// options.types.insert("flags@body".into(), ColumnType::Bitfield);
+/// options.bitfields.insert(
+///     "flags@body".into(),
+///     vec![
+///         Bit { name: "active".into(), size: 1, offset: 0 },
+///         Bit { name: "blacklisted".into(), size: 1, offset: 1 },
+///     ],
+/// );
+/// ```
 #[derive(Debug, Clone)]
 pub struct WriteOptions {
     /// Maximum number of rows per physical output frame.
@@ -41,6 +59,19 @@ impl Default for WriteOptions {
 /// `Boolean`, widened) → INTEGER, `Float64` → DOUBLE, `Float32` → REAL,
 /// `String` → STRING; nulls become ODB missing values. Other dtypes are
 /// rejected.
+///
+/// # Example
+///
+/// ```no_run
+/// use odc::polars::prelude::*;
+///
+/// let df = df!(
+///     "expver" => ["0001", "0001"],
+///     "obsvalue@body" => [Some(274.5_f64), None],
+/// )?;
+/// odc::write_odb(&df, "out.odb", &odc::WriteOptions::default())?;
+/// # Ok::<(), odc::Error>(())
+/// ```
 ///
 /// # Errors
 ///

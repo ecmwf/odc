@@ -41,6 +41,7 @@ mod error;
 mod frame;
 mod reader;
 
+pub use eckit;
 pub use encode::{WriteOptions, write_odb, write_odb_to};
 pub use error::{Error, Result};
 pub use frame::{DecodeOptions, Frame};
