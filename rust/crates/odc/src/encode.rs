@@ -105,32 +105,23 @@ pub fn write_odb_to(
         return Err(Error::EmptyDataFrame);
     }
 
-    let missing_int = SettingsWrapper::integer_missing_value();
-    let missing_dbl = SettingsWrapper::double_missing_value();
-
-    let mut staged: Vec<(String, ColumnType, Staged)> = Vec::with_capacity(df.width());
+    let mut prepared: Vec<(String, ColumnType, Series)> = Vec::with_capacity(df.width());
     for column in df.columns() {
         let name = column.name().to_string();
         let series = column.as_materialized_series().rechunk();
 
-        let (natural, data) = match series.dtype() {
-            DataType::Int64 => (ColumnType::Integer, stage_i64(&series, missing_int)?),
+        let (natural, series) = match series.dtype() {
+            DataType::Int64 => (ColumnType::Integer, series),
             DataType::Int8
             | DataType::Int16
             | DataType::Int32
             | DataType::UInt8
             | DataType::UInt16
             | DataType::UInt32
-            | DataType::Boolean => (
-                ColumnType::Integer,
-                stage_i64(&series.cast(&DataType::Int64)?, missing_int)?,
-            ),
-            DataType::Float64 => (ColumnType::Double, stage_f64(&series, missing_dbl)?),
-            DataType::Float32 => (
-                ColumnType::Real,
-                stage_f64(&series.cast(&DataType::Float64)?, missing_dbl)?,
-            ),
-            DataType::String => (ColumnType::String, stage_str(&series)),
+            | DataType::Boolean => (ColumnType::Integer, series.cast(&DataType::Int64)?),
+            DataType::Float64 => (ColumnType::Double, series),
+            DataType::Float32 => (ColumnType::Real, series.cast(&DataType::Float64)?),
+            DataType::String => (ColumnType::String, series),
             other => {
                 return Err(Error::UnsupportedDtype {
                     column: name,
@@ -155,14 +146,21 @@ pub fn write_odb_to(
             validate_bitfield(&name, options.bitfields.get(&name))?;
         }
 
-        staged.push((name, target, data));
+        prepared.push((name, target, series));
     }
 
+    let missing_int = SettingsWrapper::integer_missing_value();
+    let missing_dbl = SettingsWrapper::double_missing_value();
+    let staged: Vec<Staged> = prepared
+        .iter()
+        .map(|(_, _, series)| stage(series, missing_int, missing_dbl))
+        .collect::<Result<_>>()?;
+
     let mut encoder = odc_sys::EncoderWrapper::create();
-    for (name, column_type, data) in &staged {
+    for ((name, column_type, _), data) in prepared.iter().zip(&staged) {
         let elem_size = data.elem_size();
-        // SAFETY: the staged buffers live in `staged` until after the
-        // encode call below.
+        // SAFETY: borrowed slices point into `prepared` and owned buffers
+        // live in `staged`, both until after the encode call below.
         unsafe {
             encoder.pin_mut().add_column(
                 name,
@@ -192,45 +190,61 @@ pub fn write_odb_to(
     Ok(())
 }
 
-/// Staged (contiguous, null-resolved) source data for one column.
-enum Staged {
-    I64(Vec<i64>),
-    F64(Vec<f64>),
+/// Column data as the encoder consumes it: borrowed straight from the
+/// `DataFrame`'s Arrow buffer when the column has no nulls, otherwise an
+/// owned copy with nulls materialized as ODB missing-value sentinels.
+/// Strings are always re-encoded to fixed-width NUL-padded cells.
+enum Staged<'a> {
+    I64(&'a [i64]),
+    F64(&'a [f64]),
+    OwnedI64(Vec<i64>),
+    OwnedF64(Vec<f64>),
     Bytes { data: Vec<u8>, width: usize },
 }
 
-impl Staged {
+impl Staged<'_> {
     const fn as_ptr(&self) -> *const u8 {
         match self {
             Self::I64(v) => v.as_ptr().cast(),
             Self::F64(v) => v.as_ptr().cast(),
+            Self::OwnedI64(v) => v.as_ptr().cast(),
+            Self::OwnedF64(v) => v.as_ptr().cast(),
             Self::Bytes { data, .. } => data.as_ptr(),
         }
     }
 
     const fn elem_size(&self) -> usize {
         match self {
-            Self::I64(_) | Self::F64(_) => 8,
+            Self::I64(_) | Self::F64(_) | Self::OwnedI64(_) | Self::OwnedF64(_) => 8,
             Self::Bytes { width, .. } => *width,
         }
     }
 }
 
-fn stage_i64(series: &Series, missing: i64) -> Result<Staged> {
-    let values = series.i64()?;
-    Ok(Staged::I64(
-        values.iter().map(|v| v.unwrap_or(missing)).collect(),
-    ))
+fn stage(series: &Series, missing_int: i64, missing_dbl: f64) -> Result<Staged<'_>> {
+    match series.dtype() {
+        DataType::Int64 => {
+            let values = series.i64()?;
+            Ok(if values.null_count() == 0 {
+                Staged::I64(values.cont_slice()?)
+            } else {
+                Staged::OwnedI64(values.iter().map(|v| v.unwrap_or(missing_int)).collect())
+            })
+        }
+        DataType::Float64 => {
+            let values = series.f64()?;
+            Ok(if values.null_count() == 0 {
+                Staged::F64(values.cont_slice()?)
+            } else {
+                Staged::OwnedF64(values.iter().map(|v| v.unwrap_or(missing_dbl)).collect())
+            })
+        }
+        DataType::String => Ok(stage_str(series)),
+        other => unreachable!("prepared columns are Int64, Float64 or String, got {other}"),
+    }
 }
 
-fn stage_f64(series: &Series, missing: f64) -> Result<Staged> {
-    let values = series.f64()?;
-    Ok(Staged::F64(
-        values.iter().map(|v| v.unwrap_or(missing)).collect(),
-    ))
-}
-
-fn stage_str(series: &Series) -> Staged {
+fn stage_str(series: &Series) -> Staged<'_> {
     // Fixed width: longest value rounded up to a multiple of 8 (min 8),
     // NUL-padded. Nulls encode as the empty string.
     let values: Vec<Option<&str>> = series
