@@ -219,14 +219,11 @@ fn to_polars(col: &ColumnInfo, buffer: Buffer, nrows: usize) -> Result<Column> {
             }
         }
         Buffer::Str { data, width } => {
-            let slots = width / 8;
             let mut builder = StringChunkedBuilder::new(name, nrows);
-            let mut cell = Vec::with_capacity(width);
-            for row in 0..nrows {
-                cell.clear();
-                for slot in &data[row * slots..(row + 1) * slots] {
-                    cell.extend_from_slice(&slot.to_ne_bytes());
-                }
+            // SAFETY: any u64 reinterprets as u8s, and u8's alignment of 1
+            // leaves the prefix and suffix empty.
+            let (_, bytes, _) = unsafe { data.align_to::<u8>() };
+            for cell in bytes.chunks_exact(width) {
                 let end = cell.iter().rposition(|&b| b != 0).map_or(0, |i| i + 1);
                 builder.append_value(String::from_utf8_lossy(&cell[..end]));
             }
