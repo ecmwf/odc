@@ -110,18 +110,18 @@ pub fn write_odb_to(
         let name = column.name().to_string();
         let series = column.as_materialized_series().rechunk();
 
-        let (natural, series) = match series.dtype() {
-            DataType::Int64 => (ColumnType::Integer, series),
-            DataType::Int8
+        let natural = match series.dtype() {
+            DataType::Int64
+            | DataType::Int8
             | DataType::Int16
             | DataType::Int32
             | DataType::UInt8
             | DataType::UInt16
             | DataType::UInt32
-            | DataType::Boolean => (ColumnType::Integer, series.cast(&DataType::Int64)?),
-            DataType::Float64 => (ColumnType::Double, series),
-            DataType::Float32 => (ColumnType::Real, series.cast(&DataType::Float64)?),
-            DataType::String => (ColumnType::String, series),
+            | DataType::Boolean => ColumnType::Integer,
+            DataType::Float64 => ColumnType::Double,
+            DataType::Float32 => ColumnType::Real,
+            DataType::String => ColumnType::String,
             other => {
                 return Err(Error::UnsupportedDtype {
                     column: name,
@@ -405,6 +405,15 @@ fn stage(series: &Series, missing_int: i64, missing_dbl: f64) -> Result<Staged<'
                 Staged::OwnedI64(values.iter().map(|v| v.unwrap_or(missing_int)).collect())
             })
         }
+        DataType::Int32 => Ok(Staged::OwnedI64(widened(series.i32()?, missing_int))),
+        DataType::UInt32 => Ok(Staged::OwnedI64(widened(series.u32()?, missing_int))),
+        DataType::Boolean => Ok(Staged::OwnedI64(
+            series
+                .bool()?
+                .iter()
+                .map(|v| v.map_or(missing_int, i64::from))
+                .collect(),
+        )),
         DataType::Float64 => {
             let values = series.f64()?;
             Ok(if values.null_count() == 0 {
@@ -413,30 +422,47 @@ fn stage(series: &Series, missing_int: i64, missing_dbl: f64) -> Result<Staged<'
                 Staged::OwnedF64(values.iter().map(|v| v.unwrap_or(missing_dbl)).collect())
             })
         }
-        DataType::String => Ok(stage_str(series)),
-        other => unreachable!("prepared columns are Int64, Float64 or String, got {other}"),
+        DataType::Float32 => Ok(Staged::OwnedF64(
+            series
+                .f32()?
+                .iter()
+                .map(|v| v.map_or(missing_dbl, f64::from))
+                .collect(),
+        )),
+        DataType::String => stage_str(series),
+        // Integer dtypes behind polars features this crate does not enable
+        // (Int8/Int16/UInt8/UInt16).
+        _ => {
+            let series = series.cast(&DataType::Int64)?;
+            Ok(Staged::OwnedI64(widened(series.i64()?, missing_int)))
+        }
     }
 }
 
-fn stage_str(series: &Series) -> Staged<'_> {
+fn widened<T>(values: &ChunkedArray<T>, missing: i64) -> Vec<i64>
+where
+    T: PolarsIntegerType,
+    i64: From<T::Native>,
+{
+    values
+        .iter()
+        .map(|v| v.map_or(missing, i64::from))
+        .collect()
+}
+
+fn stage_str(series: &Series) -> Result<Staged<'_>> {
     // Fixed width: longest value rounded up to a multiple of 8 (min 8),
     // NUL-padded. Nulls encode as the empty string.
-    let values: Vec<Option<&str>> = series
-        .str()
-        .map_or_else(|_| Vec::new(), |ca| ca.iter().collect());
-    let longest = values
-        .iter()
-        .map(|v| v.map_or(0, str::len))
-        .max()
-        .unwrap_or(0);
+    let values = series.str()?;
+    let longest = values.iter().flatten().map(str::len).max().unwrap_or(0);
     let width = longest.max(1).div_ceil(8) * 8;
-    let mut data = vec![0_u8; series.len() * width];
+    let mut data = vec![0_u8; values.len() * width];
     for (row, value) in values.iter().enumerate() {
         if let Some(value) = value {
             data[row * width..row * width + value.len()].copy_from_slice(value.as_bytes());
         }
     }
-    Staged::Bytes { data, width }
+    Ok(Staged::Bytes { data, width })
 }
 
 fn validate_bitfield(column: &str, bits: Option<&Vec<Bit>>) -> Result<()> {
