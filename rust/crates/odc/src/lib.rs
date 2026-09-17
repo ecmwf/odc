@@ -16,6 +16,9 @@
 //! For streaming access use [`Reader`] and iterate [`Frame`]s, inspecting
 //! column metadata and properties before deciding what to decode.
 //!
+//! For raw access without Polars, [`Frame::decode_into`] decodes into
+//! caller-owned buffers and [`write_odb_raw`] encodes from plain slices.
+//!
 //! # Type mapping
 //!
 //! | ODB type   | decodes to | encoded from                             |
@@ -44,7 +47,9 @@ mod reader;
 
 pub use decode::DecodeTarget;
 pub use eckit;
-pub use encode::{WriteOptions, write_odb, write_odb_to};
+pub use encode::{
+    EncodeSource, RawColumn, WriteOptions, write_odb, write_odb_raw, write_odb_raw_to, write_odb_to,
+};
 pub use error::{Error, Result};
 pub use frame::{DecodeOptions, Frame};
 pub use odc_sys::{Bit, ColumnInfo, ColumnType, Property};

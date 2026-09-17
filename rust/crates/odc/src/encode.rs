@@ -156,23 +156,197 @@ pub fn write_odb_to(
         .map(|(_, _, series)| stage(series, missing_int, missing_dbl))
         .collect::<Result<_>>()?;
 
+    let specs: Vec<ColumnSpec> = prepared
+        .iter()
+        .zip(&staged)
+        .map(|((name, column_type, _), data)| ColumnSpec {
+            name,
+            column_type: *column_type,
+            ptr: data.as_ptr(),
+            elem_size: data.elem_size(),
+        })
+        .collect();
+    // SAFETY: borrowed slices point into `prepared` and owned buffers live
+    // in `staged`, both until after the encode call.
+    unsafe { encode_columns(&specs, nrows, handle, options) }
+}
+
+/// Caller-owned source data for one column of [`write_odb_raw`].
+///
+/// All slots are 8 bytes, matching the encoded ODB layout. Missing values
+/// are in-band: [`crate::integer_missing_value`] in `I64` data and
+/// [`crate::double_missing_value`] in `F64` data. `Str` holds fixed-width
+/// NUL-padded cells of `width` bytes.
+pub enum EncodeSource<'a> {
+    I64(&'a [i64]),
+    F64(&'a [f64]),
+    Str { data: &'a [u8], width: usize },
+}
+
+/// One column of [`write_odb_raw`].
+pub struct RawColumn<'a> {
+    pub name: &'a str,
+    /// `Integer` or `Bitfield` for `I64` data, `Double` or `Real` for
+    /// `F64`, `String` for `Str`.
+    pub column_type: ColumnType,
+    pub data: EncodeSource<'a>,
+}
+
+/// Encode raw column slices into an ODB-2 file, without a `DataFrame`.
+///
+/// [`WriteOptions::types`] is ignored — each column's type is explicit.
+///
+/// # Example
+///
+/// ```no_run
+/// use odc::{ColumnType, EncodeSource, RawColumn, WriteOptions};
+///
+/// let seqno = [1_i64, 2, 3];
+/// let value = [274.5_f64, odc::double_missing_value(), 271.9];
+/// let columns = [
+///     RawColumn {
+///         name: "seqno@hdr",
+///         column_type: ColumnType::Integer,
+///         data: EncodeSource::I64(&seqno),
+///     },
+///     RawColumn {
+///         name: "obsvalue@body",
+///         column_type: ColumnType::Double,
+///         data: EncodeSource::F64(&value),
+///     },
+/// ];
+/// odc::write_odb_raw(&columns, "out.odb", &WriteOptions::default())?;
+/// # Ok::<(), odc::Error>(())
+/// ```
+///
+/// # Errors
+///
+/// Fails on empty input, a buffer that does not fit its column type,
+/// mismatched row counts, invalid bitfield specifications, or if the file
+/// cannot be written.
+pub fn write_odb_raw(
+    columns: &[RawColumn<'_>],
+    path: impl AsRef<Path>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let handle = eckit::DataHandle::from_path(path)?;
+    let mut handle = handle.open_for_write(0)?;
+    let result = write_odb_raw_to(columns, &mut handle, options);
+    let closed = handle.close();
+    result?;
+    closed?;
+    Ok(())
+}
+
+/// Encode raw column slices into an open eckit
+/// [`DataHandle`](eckit::DataHandle).
+///
+/// # Errors
+///
+/// See [`write_odb_raw`].
+pub fn write_odb_raw_to(
+    columns: &[RawColumn<'_>],
+    handle: &mut eckit::DataHandle<eckit::Writing>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let mut specs = Vec::with_capacity(columns.len());
+    let mut nrows = None;
+    for column in columns {
+        let (ptr, elem_size, rows) = raw_spec(column)?;
+        match nrows {
+            None => nrows = Some(rows),
+            Some(expected) if expected != rows => {
+                return Err(Error::InvalidBuffer {
+                    column: column.name.to_string(),
+                    reason: format!("has {rows} rows, expected {expected}"),
+                });
+            }
+            Some(_) => {}
+        }
+        if column.column_type == ColumnType::Bitfield {
+            validate_bitfield(column.name, options.bitfields.get(column.name))?;
+        }
+        specs.push(ColumnSpec {
+            name: column.name,
+            column_type: column.column_type,
+            ptr,
+            elem_size,
+        });
+    }
+    let Some(nrows) = nrows.filter(|&rows| rows > 0) else {
+        return Err(Error::EmptyDataFrame);
+    };
+    // SAFETY: the spec pointers borrow from `columns`, alive until after
+    // the encode call.
+    unsafe { encode_columns(&specs, nrows, handle, options) }
+}
+
+fn raw_spec(column: &RawColumn<'_>) -> Result<(*const u8, usize, usize)> {
+    let mismatch = |reason: String| Error::InvalidBuffer {
+        column: column.name.to_string(),
+        reason,
+    };
+    match (&column.data, column.column_type) {
+        (EncodeSource::I64(data), ColumnType::Integer | ColumnType::Bitfield) => {
+            Ok((data.as_ptr().cast(), 8, data.len()))
+        }
+        (EncodeSource::F64(data), ColumnType::Double | ColumnType::Real) => {
+            Ok((data.as_ptr().cast(), 8, data.len()))
+        }
+        (EncodeSource::Str { data, width }, ColumnType::String) => {
+            if *width == 0 || *width % 8 != 0 {
+                return Err(mismatch(format!(
+                    "string width {width} is not a positive multiple of 8"
+                )));
+            }
+            if data.len() % *width != 0 {
+                return Err(mismatch(format!(
+                    "{} bytes is not a whole number of {width}-byte cells",
+                    data.len()
+                )));
+            }
+            Ok((data.as_ptr(), *width, data.len() / *width))
+        }
+        (_, column_type) => Err(mismatch(format!(
+            "data does not match column type {column_type:?}"
+        ))),
+    }
+}
+
+struct ColumnSpec<'a> {
+    name: &'a str,
+    column_type: ColumnType,
+    ptr: *const u8,
+    elem_size: usize,
+}
+
+/// # Safety
+///
+/// Every `spec.ptr` must point to at least `nrows * spec.elem_size` bytes
+/// that stay alive until this returns.
+unsafe fn encode_columns(
+    specs: &[ColumnSpec<'_>],
+    nrows: usize,
+    handle: &mut eckit::DataHandle<eckit::Writing>,
+    options: &WriteOptions,
+) -> Result<()> {
     let mut encoder = odc_sys::EncoderWrapper::create();
-    for ((name, column_type, _), data) in prepared.iter().zip(&staged) {
-        let elem_size = data.elem_size();
-        // SAFETY: borrowed slices point into `prepared` and owned buffers
-        // live in `staged`, both until after the encode call below.
+    for spec in specs {
+        // SAFETY: guaranteed by the caller.
         unsafe {
             encoder.pin_mut().add_column(
-                name,
-                *column_type,
-                elem_size,
-                data.as_ptr(),
+                spec.name,
+                spec.column_type,
+                spec.elem_size,
+                spec.ptr,
                 nrows,
-                elem_size,
+                spec.elem_size,
             );
         }
-        if *column_type == ColumnType::Bitfield
-            && let Some(bits) = options.bitfields.get(name)
+        if spec.column_type == ColumnType::Bitfield
+            && let Some(bits) = options.bitfields.get(spec.name)
         {
             for bit in bits {
                 encoder
