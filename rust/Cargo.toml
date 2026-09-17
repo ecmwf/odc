@@ -30,4 +30,5 @@ cxx = "1.0"
 cxx-build = "1.0"
 parking_lot = "0.12"
 polars = { version = "0.54", default-features = false, features = ["fmt"] }
+polars-arrow = { version = "0.54", default-features = false }
 thiserror = "2"

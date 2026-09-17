@@ -2,6 +2,7 @@
 
 use odc_sys::{ColumnInfo, ColumnType, SettingsWrapper};
 use polars::prelude::*;
+use polars_arrow::bitmap::Bitmap;
 
 use crate::error::{Error, Result};
 use crate::frame::{DecodeOptions, Frame};
@@ -103,34 +104,25 @@ pub fn dataframe(frame: &Frame, options: &DecodeOptions) -> Result<DataFrame> {
     Ok(DataFrame::new(nrows, columns)?)
 }
 
+/// Wraps the decoded buffer as a Series in place: the buffer becomes the
+/// backing Arrow data, with missing-value sentinels marked null through a
+/// validity bitmap (`None` when the column has no missing values).
 fn to_polars(col: &ColumnInfo, buffer: Buffer, nrows: usize) -> Result<Column> {
     let name: PlSmallStr = col.name.as_str().into();
     let series = match buffer {
         // Bitfields are raw bit patterns — no missing-value mapping.
-        Buffer::I64(values) if col.column_type == ColumnType::Bitfield => Series::new(name, values),
+        Buffer::I64(values) if col.column_type == ColumnType::Bitfield => {
+            Int64Chunked::from_vec(name, values).into_series()
+        }
         Buffer::I64(values) => {
             let missing = SettingsWrapper::integer_missing_value();
-            if values.contains(&missing) {
-                let values: Vec<Option<i64>> = values
-                    .iter()
-                    .map(|&v| (v != missing).then_some(v))
-                    .collect();
-                Series::new(name, values)
-            } else {
-                Series::new(name, values)
-            }
+            let validity = Bitmap::opt_from_iter(values.iter().map(|&v| v != missing));
+            Int64Chunked::from_vec_validity(name, values, validity).into_series()
         }
         Buffer::F64(values) => {
             let missing = SettingsWrapper::double_missing_value().to_bits();
-            let series = if values.iter().any(|v| v.to_bits() == missing) {
-                let values: Vec<Option<f64>> = values
-                    .iter()
-                    .map(|&v| (v.to_bits() != missing).then_some(v))
-                    .collect();
-                Series::new(name, values)
-            } else {
-                Series::new(name, values)
-            };
+            let validity = Bitmap::opt_from_iter(values.iter().map(|v| v.to_bits() != missing));
+            let series = Float64Chunked::from_vec_validity(name, values, validity).into_series();
             if col.column_type == ColumnType::Real {
                 series.cast(&DataType::Float32)?
             } else {
@@ -139,17 +131,17 @@ fn to_polars(col: &ColumnInfo, buffer: Buffer, nrows: usize) -> Result<Column> {
         }
         Buffer::Str { data, width } => {
             let slots = width / 8;
-            let strings: Vec<String> = (0..nrows)
-                .map(|row| {
-                    let cell: Vec<u8> = data[row * slots..(row + 1) * slots]
-                        .iter()
-                        .flat_map(|slot| slot.to_ne_bytes())
-                        .collect();
-                    let end = cell.iter().rposition(|&b| b != 0).map_or(0, |i| i + 1);
-                    String::from_utf8_lossy(&cell[..end]).into_owned()
-                })
-                .collect();
-            Series::new(name, strings)
+            let mut builder = StringChunkedBuilder::new(name, nrows);
+            let mut cell = Vec::with_capacity(width);
+            for row in 0..nrows {
+                cell.clear();
+                for slot in &data[row * slots..(row + 1) * slots] {
+                    cell.extend_from_slice(&slot.to_ne_bytes());
+                }
+                let end = cell.iter().rposition(|&b| b != 0).map_or(0, |i| i + 1);
+                builder.append_value(String::from_utf8_lossy(&cell[..end]));
+            }
+            builder.finish().into_series()
         }
     };
     Ok(series.into_column())

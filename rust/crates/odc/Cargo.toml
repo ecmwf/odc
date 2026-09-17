@@ -22,6 +22,7 @@ odc-sys.workspace = true
 eckit.workspace = true
 parking_lot.workspace = true
 polars.workspace = true
+polars-arrow.workspace = true
 thiserror.workspace = true
 
 [package.metadata.docs.rs]
