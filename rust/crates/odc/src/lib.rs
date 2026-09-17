@@ -28,12 +28,13 @@
 //!
 //! ODB missing values map to nulls in both directions (bitfields excepted).
 //!
-//! # Process-global state
+//! # Shared library state
 //!
-//! odc stores its integer behaviour and missing-value sentinels globally.
-//! This crate pins integers-as-longs on first use, so INTEGER and BITFIELD
-//! columns decode as `i64`. Other in-process users of the odc C++ library
-//! observe the same setting.
+//! odc stores its integer behaviour and missing-value sentinels in
+//! per-thread library state. This crate pins integers-as-longs on every
+//! thread that enters its API, so INTEGER and BITFIELD columns decode as
+//! `i64`. Other in-process users of the odc C++ library observe the same
+//! setting on those threads.
 
 mod decode;
 mod encode;
@@ -53,15 +54,20 @@ use std::path::Path;
 
 use polars::prelude::DataFrame;
 
-/// One-time process-global initialization, called by every public entry
-/// point: eckit runtime (with the Rust log bridge) and integers-as-longs
-/// decode behaviour.
+/// Initialization called by every public entry point: process-global eckit
+/// runtime (with the Rust log bridge), and integers-as-longs decode
+/// behaviour — which lives in a per-thread C++ singleton
+/// (`eckit::ThreadSingleton`), so it must be pinned on every thread that
+/// enters the odc API, not just the first.
 pub(crate) fn init() {
     static ONCE: std::sync::Once = std::sync::Once::new();
-    ONCE.call_once(|| {
-        eckit::init();
-        odc_sys::SettingsWrapper::treat_integers_as_doubles(false);
-    });
+    ONCE.call_once(eckit::init);
+
+    thread_local! {
+        static INTEGERS_AS_LONGS: () =
+            odc_sys::SettingsWrapper::treat_integers_as_doubles(false);
+    }
+    INTEGERS_AS_LONGS.with(|&()| ());
 }
 
 /// Release version of the odc C++ library, e.g. `1.6.3`.

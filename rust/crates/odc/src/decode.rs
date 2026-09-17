@@ -49,6 +49,7 @@ impl Buffer {
 }
 
 pub fn dataframe(frame: &Frame, options: &DecodeOptions) -> Result<DataFrame> {
+    crate::init();
     let nrows = frame.row_count();
 
     let selected: Vec<&ColumnInfo> = match &options.columns {
