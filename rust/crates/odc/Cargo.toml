@@ -25,4 +25,7 @@ polars.workspace = true
 polars-arrow.workspace = true
 thiserror.workspace = true
 
+[dev-dependencies]
+tempfile.workspace = true
+
 [package.metadata.docs.rs]
