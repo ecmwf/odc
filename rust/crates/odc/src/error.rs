@@ -41,6 +41,11 @@ pub enum Error {
     #[error("column not found: {0}")]
     ColumnNotFound(String),
 
+    /// A caller-provided buffer does not fit its column (wrong type,
+    /// length or width).
+    #[error("column '{column}': {reason}")]
+    InvalidBuffer { column: String, reason: String },
+
     /// Encoding requires at least one row and one column.
     #[error("cannot encode an empty DataFrame")]
     EmptyDataFrame,

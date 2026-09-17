@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use polars::prelude::DataFrame;
 
-use crate::decode;
+use crate::decode::{self, DecodeTarget};
 use crate::error::Result;
 use crate::reader::ReaderShared;
 use odc_sys::ColumnInfo;
@@ -134,5 +134,46 @@ impl Frame {
     /// cannot be read or decoded.
     pub fn dataframe_with(&self, options: &DecodeOptions) -> Result<DataFrame> {
         decode::dataframe(self, options)
+    }
+
+    /// Decode the named columns into caller-allocated buffers.
+    ///
+    /// Raw output, unlike [`Frame::dataframe`]: missing values keep their
+    /// ODB sentinels ([`crate::integer_missing_value`] /
+    /// [`crate::double_missing_value`]) and strings stay fixed-width
+    /// NUL-padded cells. [`Frame::columns`] gives each string column's
+    /// cell width as `decoded_size`.
+    ///
+    /// Returns the number of rows decoded.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use odc::DecodeTarget;
+    ///
+    /// # let reader = odc::Reader::from_path("data.odb")?;
+    /// # let frame = reader.frames().next().unwrap()?;
+    /// let mut seqno = vec![0_i64; frame.row_count()];
+    /// let mut obsvalue = vec![0.0_f64; frame.row_count()];
+    /// frame.decode_into(
+    ///     &mut [
+    ///         ("seqno@hdr", DecodeTarget::I64(&mut seqno)),
+    ///         ("obsvalue@body", DecodeTarget::F64(&mut obsvalue)),
+    ///     ],
+    ///     1,
+    /// )?;
+    /// # Ok::<(), odc::Error>(())
+    /// ```
+    ///
+    /// # Errors
+    ///
+    /// Fails if a column does not exist, a buffer does not fit its column,
+    /// or the underlying stream cannot be read or decoded.
+    pub fn decode_into(
+        &self,
+        columns: &mut [(&str, DecodeTarget<'_>)],
+        threads: usize,
+    ) -> Result<usize> {
+        decode::into_buffers(self, columns, threads)
     }
 }

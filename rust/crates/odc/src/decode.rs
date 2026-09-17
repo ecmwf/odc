@@ -48,6 +48,94 @@ impl Buffer {
     }
 }
 
+/// Caller-owned destination buffers for [`Frame::decode_into`].
+///
+/// All slots are 8 bytes, matching the decoded ODB layout: INTEGER and
+/// BITFIELD decode as `i64`, REAL and DOUBLE as `f64`, STRING as
+/// fixed-width NUL-padded cells of `width` bytes held in native-endian
+/// `u64` slots.
+pub enum DecodeTarget<'a> {
+    I64(&'a mut [i64]),
+    F64(&'a mut [f64]),
+    Str { data: &'a mut [u64], width: usize },
+}
+
+pub fn into_buffers(
+    frame: &Frame,
+    columns: &mut [(&str, DecodeTarget<'_>)],
+    threads: usize,
+) -> Result<usize> {
+    crate::init();
+    let nrows = frame.row_count();
+    let mut decoder = odc_sys::DecoderWrapper::create();
+    for (name, target) in columns.iter_mut() {
+        let col = frame
+            .column(name)
+            .ok_or_else(|| Error::ColumnNotFound((*name).to_string()))?;
+        let (ptr, elem_size) = checked_target(col, target, nrows)?;
+        // SAFETY: checked_target guarantees 8-byte-aligned caller memory of
+        // nrows * elem_size bytes, borrowed until decode returns.
+        unsafe {
+            decoder
+                .pin_mut()
+                .add_column(&col.name, ptr, nrows, elem_size, elem_size);
+        }
+    }
+    Ok(decoder.pin_mut().decode(frame.wrapper(), threads)?)
+}
+
+fn checked_target(
+    col: &ColumnInfo,
+    target: &mut DecodeTarget<'_>,
+    nrows: usize,
+) -> Result<(*mut u8, usize)> {
+    let mismatch = |reason: String| Error::InvalidBuffer {
+        column: col.name.clone(),
+        reason,
+    };
+    match (col.column_type, target) {
+        (ColumnType::Integer | ColumnType::Bitfield, DecodeTarget::I64(data)) => {
+            if data.len() != nrows {
+                return Err(mismatch(format!("{} slots for {nrows} rows", data.len())));
+            }
+            Ok((data.as_mut_ptr().cast(), 8))
+        }
+        (ColumnType::Real | ColumnType::Double, DecodeTarget::F64(data)) => {
+            if data.len() != nrows {
+                return Err(mismatch(format!("{} slots for {nrows} rows", data.len())));
+            }
+            Ok((data.as_mut_ptr().cast(), 8))
+        }
+        (ColumnType::String, DecodeTarget::Str { data, width }) => {
+            if *width == 0 || *width % 8 != 0 {
+                return Err(mismatch(format!(
+                    "string width {width} is not a positive multiple of 8"
+                )));
+            }
+            if *width < col.decoded_size {
+                return Err(mismatch(format!(
+                    "width {width} is less than the decoded size {}",
+                    col.decoded_size
+                )));
+            }
+            if data.len() * 8 != nrows * *width {
+                return Err(mismatch(format!(
+                    "{} slots for {nrows} rows of {width}-byte cells",
+                    data.len()
+                )));
+            }
+            Ok((data.as_mut_ptr().cast(), *width))
+        }
+        (ColumnType::Ignore, _) => Err(Error::UnsupportedColumnType {
+            column: col.name.clone(),
+            column_type: col.column_type,
+        }),
+        (column_type, _) => Err(mismatch(format!(
+            "target does not match column type {column_type:?}"
+        ))),
+    }
+}
+
 pub fn dataframe(frame: &Frame, options: &DecodeOptions) -> Result<DataFrame> {
     crate::init();
     let nrows = frame.row_count();
