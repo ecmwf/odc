@@ -59,3 +59,22 @@ Shown below is a simple program that decodes all the data in an ODB-2 file and o
          1		1.2000		abcdefgh	abcdefghijklmnop	0000001
          2		3.4000		01234567	0123456789012345	0001011
          3		5.6000		string  	another string  	1101011
+
+
+   .. group-tab:: Rust
+
+      .. literalinclude:: ../../../rust/crates/odc/examples/odc_ls.rs
+         :language: rust
+         :class: copybutton
+
+
+      To use this sample program, invoke it from the command line with a path to an ODB-2 file:
+
+      .. code-block:: none
+
+         cargo run --example odc_ls -- example.odb
+
+         1. int_column	2. real_column	3. str8_column	4. str16_column      	5. bitfield_column
+         1       	1.200000	abcdefgh	abcdefghijklmnop	0000001
+         2       	3.400000	01234567	0123456789012345	0001011
+         3       	5.600000	string  	another string  	1101011
