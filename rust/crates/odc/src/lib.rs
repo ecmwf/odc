@@ -45,6 +45,7 @@ mod encode;
 mod error;
 mod frame;
 mod reader;
+mod span;
 
 pub use decode::DecodeTarget;
 pub use eckit;
@@ -57,6 +58,7 @@ pub use frame::{DecodeOptions, Frame};
 pub use odc_sys::{Bit, ColumnInfo, ColumnType, Property};
 pub use polars;
 pub use reader::{Frames, Reader, ReaderOptions};
+pub use span::Span;
 
 use std::path::Path;
 

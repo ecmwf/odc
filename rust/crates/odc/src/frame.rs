@@ -8,6 +8,7 @@ use polars::prelude::DataFrame;
 use crate::decode::{self, DecodeTarget};
 use crate::error::Result;
 use crate::reader::ReaderShared;
+use crate::span::Span;
 use odc_sys::ColumnInfo;
 
 /// Options for decoding a [`Frame`] into a `DataFrame`.
@@ -99,6 +100,23 @@ impl Frame {
     #[must_use]
     pub const fn properties(&self) -> &BTreeMap<String, String> {
         &self.properties
+    }
+
+    /// The sets of values of the named columns, and the frame's byte range
+    /// in the stream, determined without decoding the frame.
+    ///
+    /// With `only_constant`, every named column must hold a single constant
+    /// value across the frame.
+    ///
+    /// # Errors
+    ///
+    /// Fails if a named column does not exist, or the `only_constant`
+    /// constraint is violated.
+    pub fn span(&self, columns: &[&str], only_constant: bool) -> Result<Span> {
+        let names = columns.iter().map(ToString::to_string).collect();
+        Ok(Span {
+            inner: self.inner.span(&names, only_constant)?,
+        })
     }
 
     /// Decode all columns into a `DataFrame`.

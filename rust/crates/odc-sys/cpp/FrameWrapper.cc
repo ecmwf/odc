@@ -1,10 +1,12 @@
 // odc Frame bridge — implementation.
 
 #include "FrameWrapper.h"
+#include "SpanWrapper.h"
 #include "odc-sys/src/lib.rs.h"
 
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace odc_bridge {
 
@@ -34,6 +36,15 @@ rust::Vec<ColumnInfo> FrameWrapper::column_info() const {
         result.push_back(ColumnInfo{rust::String(info.name), info.type, info.decodedSize, std::move(bitfield)});
     }
     return result;
+}
+
+std::unique_ptr<SpanWrapper> FrameWrapper::span(const rust::Vec<rust::String>& columns, bool only_constant) const {
+    std::vector<std::string> names;
+    names.reserve(columns.size());
+    for (const auto& column : columns) {
+        names.emplace_back(column.data(), column.size());
+    }
+    return std::make_unique<SpanWrapper>(frame_.span(names, only_constant));
 }
 
 rust::Vec<Property> FrameWrapper::properties() const {

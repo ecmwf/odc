@@ -14,7 +14,7 @@ include!(concat!(env!("OUT_DIR"), "/odc_exceptions.rs"));
     ("odc/api/Odb.h", class = "Frame"),
     ("odc/api/Odb.h", class = "Decoder"),
     ("odc/api/Odb.h", class = "Settings"),
-    ignore = ["offset", "length", "filter", "encodedData", "span", "slice"]
+    ignore = ["offset", "length", "filter", "encodedData", "slice"]
 )]
 #[cxx::bridge(namespace = "odc_bridge")]
 pub mod ffi {
@@ -116,6 +116,25 @@ pub mod ffi {
         fn has_column(self: &FrameWrapper, name: &str) -> bool;
         fn column_info(self: &FrameWrapper) -> Result<Vec<ColumnInfo>>;
         fn properties(self: &FrameWrapper) -> Result<Vec<Property>>;
+        fn span(
+            self: &FrameWrapper,
+            columns: &Vec<String>,
+            only_constant: bool,
+        ) -> Result<UniquePtr<SpanWrapper>>;
+
+        // ==================== SpanWrapper ====================
+
+        type SpanWrapper;
+
+        #[must_use]
+        fn offset(self: &SpanWrapper) -> u64;
+        #[must_use]
+        fn length(self: &SpanWrapper) -> u64;
+        #[must_use]
+        fn equals(self: &SpanWrapper, other: &SpanWrapper) -> bool;
+        fn integer_values(self: &SpanWrapper, column: &str) -> Result<Vec<i64>>;
+        fn real_values(self: &SpanWrapper, column: &str) -> Result<Vec<f64>>;
+        fn string_values(self: &SpanWrapper, column: &str) -> Result<Vec<String>>;
 
         // ==================== DecoderWrapper ====================
 
@@ -223,9 +242,10 @@ pub use ffi::*;
 // serialized C++-side by odc::core::ThreadSharedDataHandle.
 #[allow(clippy::non_send_fields_in_send_ty)]
 mod send_impls {
-    use super::ffi::{DecoderWrapper, EncoderWrapper, FrameWrapper, ReaderWrapper};
+    use super::ffi::{DecoderWrapper, EncoderWrapper, FrameWrapper, ReaderWrapper, SpanWrapper};
     unsafe impl Send for ReaderWrapper {}
     unsafe impl Send for FrameWrapper {}
+    unsafe impl Send for SpanWrapper {}
     unsafe impl Send for DecoderWrapper {}
     unsafe impl Send for EncoderWrapper {}
 }
