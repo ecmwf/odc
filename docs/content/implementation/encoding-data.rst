@@ -84,6 +84,49 @@ Row-major layout
             rc = encoder%free()
 
 
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::{ColumnType, RowMajorColumn};
+
+            let nrows = 1000;
+            let ncells = 6;
+            let mut data = vec![0_u64; nrows * ncells];
+            // set up the data here...
+
+            let columns = [
+                RowMajorColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                RowMajorColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                RowMajorColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+                // column3 is a 16-byte string column (hence takes 2 cells in a row --> ncells=6)
+                RowMajorColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                },
+                RowMajorColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+            ];
+
+            // encode the data here...
+
+
 Column-major layout
    In :ref:`column-major layout <decoder-column-major-layout>`, consecutive elements in a single data column are adjacent to each other in memory, and the block of memory comprises a sequence of columns.
 
@@ -155,6 +198,13 @@ Column-major layout
             ! encode the data here...
 
             rc = encoder%free()
+
+
+      .. group-tab:: Rust
+
+         .. note::
+
+            Rust interface does not support data encoding from a column-major layout. In this case, encode from a Polars ``DataFrame`` or from a :ref:`custom memory layout <encoder-custom-layout>` instead.
 
 
 .. _`encoder-custom-layout`:
@@ -276,6 +326,56 @@ Custom layout
 
             rc = encoder%free()
 
+
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::{ColumnType, EncodeSource, RawColumn};
+
+            let nrows = 1000;
+
+            let data0 = vec![0_i64; nrows];
+            let data1 = vec![0_i64; nrows];
+            let data2 = vec![0.0_f64; nrows];
+            // column3 is a 16-byte string column
+            let data3 = vec![0_u8; nrows * 16];
+            let data4 = vec![0.0_f64; nrows];
+            // set up the data here...
+
+            let columns = [
+                RawColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    data: EncodeSource::I64(&data0),
+                },
+                RawColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    data: EncodeSource::I64(&data1),
+                },
+                RawColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    data: EncodeSource::F64(&data2),
+                },
+                RawColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    data: EncodeSource::Str {
+                        data: &data3,
+                        width: 16,
+                    },
+                },
+                RawColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    data: EncodeSource::F64(&data4),
+                },
+            ];
+
+            // encode the data here...
+
 Once an **Encoder** describing the data has been constructed, the data can be encoded into frames.
 
 .. tabs::
@@ -363,6 +463,34 @@ Once an **Encoder** describing the data has been constructed, the data can be en
          open(newunit=outunit, file="imaginary/path.odb", access="stream", form="unformatted")
          rc = encoder%encode(outunit, bytes_written)
          close(outunit)
+
+
+   .. group-tab:: Rust
+
+      Rust supports data encoding to a file path or into an open eckit ``DataHandle``.
+
+      .. code-block:: rust
+
+         use odc::WriteOptions;
+
+         let options = WriteOptions::default();
+
+         // Encode into a file by path
+         odc::write_odb_raw(&columns, "imaginary/path.odb", &options)?;
+
+      .. code-block:: rust
+
+         use odc::eckit::DataHandle;
+         use odc::WriteOptions;
+
+         let options = WriteOptions::default();
+
+         // Or encode into an open eckit DataHandle
+         let mut handle = DataHandle::from_path("imaginary/path.odb")?.open_for_write(0)?;
+
+         odc::write_odb_raw_to(&columns, &mut handle, &options)?;
+
+         handle.close()?;
 
 
 .. index:: Encoding Data; Bitfields
@@ -459,6 +587,52 @@ Bitfield columns can be used to store data for *flags*, up to a maximum of 32-bi
             rc = encoder%free()
 
 
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::{Bit, ColumnType, EncodeSource, RawColumn, WriteOptions};
+
+            let nrows = 1000;
+            let data = vec![0_i64; nrows];
+            // set up the data here...
+
+            let columns = [RawColumn {
+                name: "flags",
+                column_type: ColumnType::Bitfield,
+                data: EncodeSource::I64(&data),
+            }];
+
+            let mut options = WriteOptions::default();
+            options.bitfields.insert(
+                "flags".into(),
+                vec![
+                    Bit {
+                        name: "flag_a".into(),
+                        size: 1,
+                        offset: 0,
+                    },
+                    Bit {
+                        name: "flag_b".into(),
+                        size: 2,
+                        offset: 1,
+                    },
+                    Bit {
+                        name: "flag_c".into(),
+                        size: 3,
+                        offset: 3,
+                    },
+                    Bit {
+                        name: "flag_d".into(),
+                        size: 1,
+                        offset: 6,
+                    },
+                ],
+            );
+
+            // encode the data here...
+
+
 .. index:: Encoding Data; Properties
 
 Properties
@@ -494,6 +668,17 @@ An arbitrary dictionary of string key:value pairs can be associated with a frame
       .. code-block:: fortran
 
          rc = encoder%add_property("encoded_by", "ECMWF")
+
+
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         let mut options = WriteOptions::default();
+
+         options
+             .properties
+             .insert("encoded_by".into(), "ECMWF".into());
 
 
 .. _`eckit`: https://github.com/ecmwf/eckit
