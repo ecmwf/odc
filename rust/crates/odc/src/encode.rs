@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, HashMap};
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use odc_sys::{Bit, ColumnType, SettingsWrapper};
 use polars::prelude::*;
@@ -510,11 +511,25 @@ unsafe fn encode_columns(
     for (key, value) in &options.properties {
         encoder.pin_mut().set_property(key, value);
     }
-    encoder
-        .pin_mut()
-        .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+    if FIRST_ENCODE_DONE.load(Ordering::Acquire) {
+        encoder
+            .pin_mut()
+            .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+    } else {
+        let _guard = FIRST_ENCODE_LOCK.lock();
+        encoder
+            .pin_mut()
+            .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+        FIRST_ENCODE_DONE.store(true, Ordering::Release);
+    }
     Ok(())
 }
+
+// odc's CodecOptimizer lazily fills a static codec map inside the first
+// encode without synchronization; serialize encodes until one has
+// completed, after which the map is only read.
+static FIRST_ENCODE_DONE: AtomicBool = AtomicBool::new(false);
+static FIRST_ENCODE_LOCK: parking_lot::Mutex<()> = parking_lot::Mutex::new(());
 
 /// Column data as the encoder consumes it: borrowed straight from the
 /// `DataFrame`'s Arrow buffer when the column has no nulls, otherwise an
