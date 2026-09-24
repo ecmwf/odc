@@ -1,0 +1,32 @@
+[package]
+name = "odc-sys"
+version = "1.6.3"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
+description = "C++ bindings to ECMWF odc (ODB-2 encoder/decoder) library using cxx"
+links = "odc_sys"
+build = "build.rs"
+
+[features]
+default = ["vendored"]
+
+# Build strategy (mutually exclusive)
+vendored = ["eckit-sys/vendored"]
+system = ["eckit-sys/system"]
+
+[dependencies]
+cxx.workspace = true
+eckit-sys = { workspace = true, default-features = false, features = ["eckit-sql"] }
+bindman.workspace = true
+
+[build-dependencies]
+cxx-build.workspace = true
+bindman-utils.workspace = true
+bindman-build.workspace = true
+
+[package.metadata.docs.rs]
