@@ -113,6 +113,7 @@ impl Frame {
     /// Fails if a named column does not exist, or the `only_constant`
     /// constraint is violated.
     pub fn span(&self, columns: &[&str], only_constant: bool) -> Result<Span> {
+        crate::init();
         let names = columns.iter().map(ToString::to_string).collect();
         Ok(Span {
             inner: self.inner.span(&names, only_constant)?,
