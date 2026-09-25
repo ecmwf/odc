@@ -25,6 +25,7 @@ Optional
 
 * Fortran compiler
 * `Doxygen`_
+* `Rust`_ toolchain (>= 1.90)
 
 
 .. index:: Build, Install
@@ -98,9 +99,32 @@ Check if the package was installed correctly:
    odc --version
 
 
+.. index::
+   single: Install; Rust
+
+Rust
+----
+
+The Rust crate lives in the ``rust/`` directory of the repository and requires a `Rust`_ toolchain (>= 1.90). By default it builds **odc** and its dependencies from source (the ``vendored`` feature), so no separate installation is needed — add the dependency to ``Cargo.toml``:
+
+.. code-block:: toml
+
+   [dependencies]
+   odc = { git = "https://github.com/ecmwf/odc" }
+
+
+To link against a system-installed **odc** instead, disable the default features and enable ``system``:
+
+.. code-block:: toml
+
+   [dependencies]
+   odc = { git = "https://github.com/ecmwf/odc", default-features = false, features = ["system"] }
+
+
 .. _`CMake`: https://cmake.org
 .. _`ecbuild`: https://github.com/ecmwf/ecbuild
 .. _`eckit`: https://github.com/ecmwf/eckit
 .. _`Doxygen`: https://www.doxygen.nl
 .. _`Conda`: https://docs.conda.io
+.. _`Rust`: https://www.rust-lang.org
 .. _`conda-forge`: https://conda-forge.org
