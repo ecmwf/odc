@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, HashMap};
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use odc_sys::{Bit, ColumnType, SettingsWrapper};
 use polars::prelude::*;
@@ -164,6 +165,7 @@ pub fn write_odb_to(
             column_type: *column_type,
             ptr: data.as_ptr(),
             elem_size: data.elem_size(),
+            stride: data.elem_size(),
         })
         .collect();
     // SAFETY: borrowed slices point into `prepared` and owned buffers live
@@ -273,6 +275,7 @@ pub fn write_odb_raw_to(
             column_type: column.column_type,
             ptr,
             elem_size,
+            stride: elem_size,
         });
     }
     let Some(nrows) = nrows.filter(|&rows| rows > 0) else {
@@ -280,6 +283,154 @@ pub fn write_odb_raw_to(
     };
     // SAFETY: the spec pointers borrow from `columns`, alive until after
     // the encode call.
+    unsafe { encode_columns(&specs, nrows, handle, options) }
+}
+
+/// One column of [`write_odb_row_major`].
+pub struct RowMajorColumn<'a> {
+    pub name: &'a str,
+    /// Any type except `Ignore`; `Bitfield` requires a
+    /// [`WriteOptions::bitfields`] entry.
+    pub column_type: ColumnType,
+    /// Cell size in bytes — 8, except for string columns, which may span
+    /// several 8-byte cells.
+    pub size: usize,
+}
+
+/// Encode rows of 8-byte cells into an ODB-2 file.
+///
+/// `cells` holds consecutive rows, each as wide as the summed column sizes.
+/// Within a row, an integer or bitfield cell holds an `i64` bit pattern, a
+/// real or double cell holds an `f64` bit pattern, and a string column's
+/// cells hold NUL-padded bytes.
+///
+/// [`WriteOptions::types`] is ignored — each column's type is explicit.
+///
+/// # Example
+///
+/// ```no_run
+/// use odc::{ColumnType, RowMajorColumn, WriteOptions};
+///
+/// let columns = [
+///     RowMajorColumn {
+///         name: "seqno@hdr",
+///         column_type: ColumnType::Integer,
+///         size: 8,
+///     },
+///     RowMajorColumn {
+///         name: "obsvalue@body",
+///         column_type: ColumnType::Double,
+///         size: 8,
+///     },
+/// ];
+/// let cells = [
+///     u64::from_ne_bytes(1_i64.to_ne_bytes()),
+///     274.5_f64.to_bits(),
+///     u64::from_ne_bytes(2_i64.to_ne_bytes()),
+///     271.9_f64.to_bits(),
+/// ];
+/// odc::write_odb_row_major(&cells, &columns, "out.odb", &WriteOptions::default())?;
+/// # Ok::<(), odc::Error>(())
+/// ```
+///
+/// # Errors
+///
+/// Fails on an invalid column size, a `cells` length that is not a whole
+/// number of rows, an empty buffer, an invalid bitfield specification, or
+/// if the file cannot be written.
+pub fn write_odb_row_major(
+    cells: &[u64],
+    columns: &[RowMajorColumn<'_>],
+    path: impl AsRef<Path>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let handle = eckit::DataHandle::from_path(path)?;
+    let mut handle = handle.open_for_write(0)?;
+    let result = write_odb_row_major_to(cells, columns, &mut handle, options);
+    let closed = handle.close();
+    result?;
+    closed?;
+    Ok(())
+}
+
+/// Encode rows of 8-byte cells into an open eckit
+/// [`DataHandle`](eckit::DataHandle).
+///
+/// # Errors
+///
+/// See [`write_odb_row_major`].
+pub fn write_odb_row_major_to(
+    cells: &[u64],
+    columns: &[RowMajorColumn<'_>],
+    handle: &mut eckit::DataHandle<eckit::Writing>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let mut row_bytes = 0_usize;
+    for column in columns {
+        let mismatch = |reason: String| Error::InvalidBuffer {
+            column: column.name.to_string(),
+            reason,
+        };
+        if column.size == 0 || column.size % 8 != 0 {
+            return Err(mismatch(format!(
+                "cell size {} is not a positive multiple of 8",
+                column.size
+            )));
+        }
+        if column.size != 8 && column.column_type != ColumnType::String {
+            return Err(mismatch(format!(
+                "cell size {} on a {:?} column",
+                column.size, column.column_type
+            )));
+        }
+        if column.column_type == ColumnType::Ignore {
+            return Err(Error::UnsupportedColumnType {
+                column: column.name.to_string(),
+                column_type: ColumnType::Ignore,
+            });
+        }
+        if column.column_type == ColumnType::Bitfield {
+            validate_bitfield(column.name, options.bitfields.get(column.name))?;
+        }
+        row_bytes += column.size;
+    }
+    let row_cells = row_bytes / 8;
+    if row_cells == 0 {
+        return Err(Error::EmptyDataFrame);
+    }
+    if !cells.len().is_multiple_of(row_cells) {
+        return Err(Error::InvalidRowMajorData(format!(
+            "{} cells is not a whole number of {row_cells}-cell rows",
+            cells.len()
+        )));
+    }
+    let nrows = cells.len() / row_cells;
+    if nrows == 0 {
+        return Err(Error::EmptyDataFrame);
+    }
+
+    let base: *const u8 = cells.as_ptr().cast();
+    let mut offset = 0_usize;
+    let specs: Vec<ColumnSpec> = columns
+        .iter()
+        .map(|column| {
+            // SAFETY: `offset` stays below `row_bytes`, which is within the
+            // `cells` allocation.
+            let ptr = unsafe { base.add(offset) };
+            offset += column.size;
+            ColumnSpec {
+                name: column.name,
+                column_type: column.column_type,
+                ptr,
+                elem_size: column.size,
+                stride: row_bytes,
+            }
+        })
+        .collect();
+    // SAFETY: each pointer offsets into `cells`, alive until after the
+    // encode call, and `(nrows - 1) * row_bytes + size` stays within it.
     unsafe { encode_columns(&specs, nrows, handle, options) }
 }
 
@@ -320,12 +471,14 @@ struct ColumnSpec<'a> {
     column_type: ColumnType,
     ptr: *const u8,
     elem_size: usize,
+    stride: usize,
 }
 
 /// # Safety
 ///
-/// Every `spec.ptr` must point to at least `nrows * spec.elem_size` bytes
-/// that stay alive until this returns.
+/// Every `spec.ptr` must point to at least
+/// `(nrows - 1) * spec.stride + spec.elem_size` bytes that stay alive until
+/// this returns.
 unsafe fn encode_columns(
     specs: &[ColumnSpec<'_>],
     nrows: usize,
@@ -342,7 +495,7 @@ unsafe fn encode_columns(
                 spec.elem_size,
                 spec.ptr,
                 nrows,
-                spec.elem_size,
+                spec.stride,
             );
         }
         if spec.column_type == ColumnType::Bitfield
@@ -358,11 +511,25 @@ unsafe fn encode_columns(
     for (key, value) in &options.properties {
         encoder.pin_mut().set_property(key, value);
     }
-    encoder
-        .pin_mut()
-        .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+    if FIRST_ENCODE_DONE.load(Ordering::Acquire) {
+        encoder
+            .pin_mut()
+            .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+    } else {
+        let _guard = FIRST_ENCODE_LOCK.lock();
+        encoder
+            .pin_mut()
+            .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+        FIRST_ENCODE_DONE.store(true, Ordering::Release);
+    }
     Ok(())
 }
+
+// odc's CodecOptimizer lazily fills a static codec map inside the first
+// encode without synchronization; serialize encodes until one has
+// completed, after which the map is only read.
+static FIRST_ENCODE_DONE: AtomicBool = AtomicBool::new(false);
+static FIRST_ENCODE_LOCK: parking_lot::Mutex<()> = parking_lot::Mutex::new(());
 
 /// Column data as the encoder consumes it: borrowed straight from the
 /// `DataFrame`'s Arrow buffer when the column has no nulls, otherwise an

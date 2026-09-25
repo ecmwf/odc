@@ -75,6 +75,28 @@ The **Reader** object is responsible for controlling underlying resources associ
          end if
 
 
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         use odc::{Reader, ReaderOptions};
+
+         let options = ReaderOptions {
+             aggregated: true,
+             row_limit: None,
+         };
+
+         let reader = match Reader::from_path_with("imaginary/path.odb", &options) {
+             Ok(reader) => reader,
+             Err(err) => {
+                 eprintln!("Failed to open imaginary/path.odb: {err}");
+                 std::process::exit(1);
+             }
+         };
+
+         // Do work involving the reader here
+
+
 The **Reader** instance then makes the sequence of **Frames** accessible. It also controls if access to :ref:`compatible data <data-compatibility>` is aggregated.
 
 .. tabs::
@@ -143,6 +165,23 @@ The **Reader** instance then makes the sequence of **Frames** accessible. It als
                  print *, "An error occurred reading the frames: ", odc_error_string(rc)
              end if
          end if
+
+
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         for frame in reader.frames() {
+             match frame {
+                 Ok(frame) => {
+                     // Do work involving the frame here
+                 }
+                 Err(err) => {
+                     eprintln!("An error occurred reading the frames: {err}");
+                     break;
+                 }
+             }
+         }
 
 
 .. index:: Decoding Data; Frame
@@ -271,6 +310,33 @@ The **Frame** makes metadata about each chunk of data accessible without necessa
          end do
 
 
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         use odc::ColumnType;
+
+         println!("Row count: {}", frame.row_count());
+         println!("Column count: {}", frame.column_count());
+         println!();
+
+         for (col, column) in frame.columns().iter().enumerate() {
+             println!("Column {col}");
+             println!("  name: {}", column.name);
+             println!("  type: {:?}", column.column_type);
+             println!("  size: {}", column.decoded_size);
+
+             if column.column_type == ColumnType::Bitfield {
+                 for (bf, bit) in column.bitfield.iter().enumerate() {
+                     println!("  bitfield {bf}");
+                     println!("      name: {}", bit.name);
+                     println!("    offset: {}", bit.offset);
+                     println!("     nbits: {}", bit.size);
+                 }
+             }
+         }
+
+
 The **Frame** object may correspond to one underlying frame within the ODB-2 stream (as described earlier), or may be a logical *aggregated frame* referencing multiple :ref:`compatible frames <data-compatibility>` internally.
 
 
@@ -279,50 +345,69 @@ The **Frame** object may correspond to one underlying frame within the ODB-2 str
 Span
 ^^^^
 
-The C++ API also provides the **Span** interface. This can be used to determine the set of values encoded for specified columns within a **Frame**. This is especially useful when archiving and indexing data, where only a subset of columns are important for indexing, and it is necessary to extract their values and ensure that they are constant within each **Frame**.
+The C++ and Rust APIs also provide the **Span** interface. This can be used to determine the set of values encoded for specified columns within a **Frame**. This is especially useful when archiving and indexing data, where only a subset of columns are important for indexing, and it is necessary to extract their values and ensure that they are constant within each **Frame**.
 
 **Span** is also able to enforce a constraint that a **Frame** must have constant values in specified columns, returning an error otherwise.
 
-.. code-block:: cpp
+.. tabs::
 
-   class ExampleVisitor : public SpanVisitor {
-       template <typename T>
+   .. group-tab:: C++
 
-       void dumpValues(const std::string& colName, const std::set<T>& vals) {
-           std::cout << "name: " << colName << std::endl;
-           for (const T& val : vals) {
-               std::cout << val << std::endl;
-           }
-       }
+      .. code-block:: cpp
 
-       void operator()(const std::string& colName, const std::set<long>& vals) {
-           std::cout << "Column with integer values" << std::endl;
-           dumpValues(colName, vals);
-       }
+         class ExampleVisitor : public SpanVisitor {
+             template <typename T>
 
-       void operator()(const std::string& colName, const std::set<double>& vals) {
-           std::cout << "Column with real values" << std::endl;
-           dumpValues(colName, vals);
-       }
+             void dumpValues(const std::string& colName, const std::set<T>& vals) {
+                 std::cout << "name: " << colName << std::endl;
+                 for (const T& val : vals) {
+                     std::cout << val << std::endl;
+                 }
+             }
 
-       void operator()(const std::string& colName, const std::set<std::string>& vals) {
-           std::cout << "Column with string values" << std::endl;
-           dumpValues(colName, vals);
-       }
-   };
+             void operator()(const std::string& colName, const std::set<long>& vals) {
+                 std::cout << "Column with integer values" << std::endl;
+                 dumpValues(colName, vals);
+             }
 
-   std::vector<std::string> columns = {
-       "column0",
-       "column2",
-       "column3",
-   };
+             void operator()(const std::string& colName, const std::set<double>& vals) {
+                 std::cout << "Column with real values" << std::endl;
+                 dumpValues(colName, vals);
+             }
 
-   bool onlyConstantValues = false;
+             void operator()(const std::string& colName, const std::set<std::string>& vals) {
+                 std::cout << "Column with string values" << std::endl;
+                 dumpValues(colName, vals);
+             }
+         };
 
-   Span span = frame.span(columns, onlyConstantValues);
-   ExampleVisitor v;
+         std::vector<std::string> columns = {
+             "column0",
+             "column2",
+             "column3",
+         };
 
-   span.visit(v);
+         bool onlyConstantValues = false;
+
+         Span span = frame.span(columns, onlyConstantValues);
+         ExampleVisitor v;
+
+         span.visit(v);
+
+
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         let columns = ["column0", "column2", "column3"];
+
+         let only_constant_values = false;
+
+         let span = frame.span(&columns, only_constant_values)?;
+
+         println!("column0 integer values: {:?}", span.integer_values("column0")?);
+         println!("column2 real values: {:?}", span.real_values("column2")?);
+         println!("column3 string values: {:?}", span.string_values("column3")?);
 
 
 .. index:: Decoding Data; Properties
@@ -401,6 +486,22 @@ The ODB-2 format allows annotation of any frame of data with an arbitrary dictio
          if (exists) print *, "  Property: my_key => ", val
 
 
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         // Go through all properties
+         for (key, value) in frame.properties() {
+             println!("  Property: {key} => {value}");
+         }
+
+         // Or, get property value by its key
+         match frame.properties().get("my_key") {
+             Some(value) => println!("  Property: my_key => {value}"),
+             None => println!("  Property: my_key => (undefined)"),
+         }
+
+
 .. index:: Decoding Data; Decoder
 
 .. _decoder:
@@ -475,6 +576,17 @@ For typical cases, much of this configuration can be filled in with sensible def
          print *, "  Column major: ", merge(" true", "false", column_major)
 
          rc = decoder%free()
+
+
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         // Decode all columns into a Polars DataFrame
+         let df = frame.dataframe()?;
+         println!("Decoded {} rows", df.height());
+
+         println!("{df}");
 
 
 A **Decoder** instance can be reused if the set of columns and the desired memory layout is the same for multiple frames.
@@ -573,6 +685,13 @@ Row-major layout
             ! And use the data ...
 
 
+      .. group-tab:: Rust
+
+         .. note::
+
+            Rust interface does not support decoding of frame data into a row-major layout. In this case, decode into a Polars ``DataFrame`` instead, or use a :ref:`custom memory layout <decoder-custom-layout>`.
+
+
 .. _`decoder-column-major-layout`:
 
 Column-major layout
@@ -660,6 +779,13 @@ Column-major layout
             print *, "Decoded ", rows_decoded, " rows"
 
             ! And use the data ...
+
+
+      .. group-tab:: Rust
+
+         .. note::
+
+            Rust interface does not support decoding of frame data into a column-major layout. In this case, decode into a Polars ``DataFrame`` instead, or use a :ref:`custom memory layout <decoder-custom-layout>`.
 
 
 .. _`decoder-custom-layout`:
@@ -791,6 +917,46 @@ Custom layout
             print *, "Decoded ", rows_decoded, " rows"
 
             ! And use the data ...
+
+
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::DecodeTarget;
+
+            // Decode 5 named columns into a custom data layout
+
+            let nrows = frame.row_count();
+
+            let mut data0 = vec![0_i64; nrows];
+            let mut data1 = vec![0_i64; nrows];
+            let mut data2 = vec![0.0_f64; nrows];
+            // column3 is a 16-byte string column: two 8-byte slots per row
+            let mut data3 = vec![0_u64; nrows * 2];
+            let mut data4 = vec![0.0_f64; nrows];
+
+            let threads = 1;
+
+            let rows_decoded = frame.decode_into(
+                &mut [
+                    ("column0", DecodeTarget::I64(&mut data0)),
+                    ("column1", DecodeTarget::I64(&mut data1)),
+                    ("column2", DecodeTarget::F64(&mut data2)),
+                    (
+                        "column3",
+                        DecodeTarget::Str {
+                            data: &mut data3,
+                            width: 16,
+                        },
+                    ),
+                    ("column4", DecodeTarget::F64(&mut data4)),
+                ],
+                threads,
+            )?;
+            println!("Decoded {rows_decoded} rows");
+
+            // And use the data ...
 
 
 .. note::

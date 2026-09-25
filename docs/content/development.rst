@@ -34,6 +34,7 @@ Optional
 
 * Fortran compiler
 * `Doxygen`_ (>= 1.9.1)
+* `Rust`_ toolchain (>= 1.90)
 
 
 .. index:: Unit Tests
@@ -73,6 +74,21 @@ Fortran interface and its tests are an optional feature, and require an activati
    ecbuild -- -DENABLE_FORTRAN=$ENABLE_FORTRAN $SRC_DIR
 
 
+Rust Interface
+~~~~~~~~~~~~~~
+
+The Rust crates live in the ``rust/`` directory as a separate **cargo** workspace, and by default build **odc** and its dependencies from source. To check formatting, lints and run the test suite:
+
+.. code-block:: shell
+
+   cd rust
+
+   cargo fmt --check
+   cargo clippy --all-targets --features vendored
+   cargo doc --no-deps
+   cargo test
+
+
 .. index:: Dependencies; Documentation
 
 Build Documentation
@@ -103,3 +119,4 @@ The built HTML documentation will be available under the ``docs/_build/html/inde
 .. _`ecbuild`: https://github.com/ecmwf/ecbuild
 .. _`eckit`: https://github.com/ecmwf/eckit
 .. _`Doxygen`: https://www.doxygen.nl
+.. _`Rust`: https://www.rust-lang.org

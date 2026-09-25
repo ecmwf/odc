@@ -17,7 +17,8 @@
 //! column metadata and properties before deciding what to decode.
 //!
 //! For raw access without Polars, [`Frame::decode_into`] decodes into
-//! caller-owned buffers and [`write_odb_raw`] encodes from plain slices.
+//! caller-owned buffers, [`write_odb_raw`] encodes from plain slices, and
+//! [`write_odb_row_major`] encodes from row-major 8-byte cells.
 //!
 //! # Type mapping
 //!
@@ -44,17 +45,20 @@ mod encode;
 mod error;
 mod frame;
 mod reader;
+mod span;
 
 pub use decode::DecodeTarget;
 pub use eckit;
 pub use encode::{
-    EncodeSource, RawColumn, WriteOptions, write_odb, write_odb_raw, write_odb_raw_to, write_odb_to,
+    EncodeSource, RawColumn, RowMajorColumn, WriteOptions, write_odb, write_odb_raw,
+    write_odb_raw_to, write_odb_row_major, write_odb_row_major_to, write_odb_to,
 };
 pub use error::{Error, Result};
 pub use frame::{DecodeOptions, Frame};
 pub use odc_sys::{Bit, ColumnInfo, ColumnType, Property};
 pub use polars;
 pub use reader::{Frames, Reader, ReaderOptions};
+pub use span::Span;
 
 use std::path::Path;
 

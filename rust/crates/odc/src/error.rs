@@ -46,6 +46,10 @@ pub enum Error {
     #[error("column '{column}': {reason}")]
     InvalidBuffer { column: String, reason: String },
 
+    /// A row-major cell buffer does not match its declared columns.
+    #[error("row-major data: {0}")]
+    InvalidRowMajorData(String),
+
     /// Encoding requires at least one row and one column.
     #[error("cannot encode an empty DataFrame")]
     EmptyDataFrame,
