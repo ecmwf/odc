@@ -30,7 +30,7 @@ Types
 
    .. describe:: fn from_handle(handle: DataHandle<Closed>, options: &ReaderOptions) -> Result<Reader>
 
-      Read ODB-2 data from an eckit ``DataHandle`` (file, buffer, multi-file, byte range, …). The handle must not be open — the reader opens it for reading and owns it for its whole lifetime.
+      Read ODB-2 data from an eckit ``DataHandle`` (file, buffer, multi-file, byte range, …). The handle must not be open: the reader opens it for reading and owns it for its whole lifetime.
 
       :Parameters:
          * **handle** – closed eckit data handle to read from
@@ -58,7 +58,7 @@ Types
 
 .. describe:: struct Frame
 
-   A viewport onto a chunk of contiguous, compatible data within an ODB-2 stream — possibly a logical frame aggregating several physical frames. Column metadata and properties are available without decoding.
+   A viewport onto a chunk of contiguous, compatible data within an ODB-2 stream, possibly a logical frame aggregating several physical frames. Column metadata and properties are available without decoding.
 
    .. describe:: fn row_count(&self) -> usize
 
@@ -119,7 +119,7 @@ Types
 
 .. describe:: struct Span
 
-   The sets of values of chosen columns within one frame, and that frame's byte range in the stream — determined without decoding the frame. Two spans compare equal when they cover the same columns with the same value sets.
+   The sets of values of chosen columns within one frame, and that frame's byte range in the stream, determined without decoding the frame. Two spans compare equal when they cover the same columns with the same value sets.
 
    .. describe:: fn offset(&self) -> u64
 
@@ -259,7 +259,7 @@ Column Data Types
 
 .. describe:: ColumnType::Integer
 
-   Specifies the column contains integer data — decodes as ``i64``
+   Specifies the column contains integer data, decoded as ``i64``
 
 .. describe:: ColumnType::Real
 
@@ -271,7 +271,7 @@ Column Data Types
 
 .. describe:: ColumnType::Bitfield
 
-   Specifies the column contains bitfield data — decodes as ``i64``
+   Specifies the column contains bitfield data, decoded as ``i64``
 
 .. describe:: ColumnType::Double
 
@@ -315,7 +315,7 @@ Functions
 
 .. describe:: fn write_odb_raw(columns: &[RawColumn], path: impl AsRef<Path>, options: &WriteOptions) -> Result<()>
 
-   Encode raw column slices into an ODB-2 file, without a ``DataFrame``. ``WriteOptions::types`` is ignored — each column's type is explicit.
+   Encode raw column slices into an ODB-2 file, without a ``DataFrame``. ``WriteOptions::types`` is ignored: each column's type is explicit.
 
    :Parameters:
       * **columns** – the columns to encode

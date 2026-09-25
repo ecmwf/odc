@@ -20,7 +20,7 @@ A stream of ODB-2 data consists of a sequence of these tables, which may be unre
    :width: 100%
    :file: ../_static/example-table.csv
 
-This structure matches **pandas** data frames extremely well. Please see the `pyodc`_ package for a Python library handling ODB-2 data. The Rust library follows the same model with **Polars** data frames.
+This structure matches **pandas** data frames extremely well. Please see the `pyodc`_ package for a Python library handling ODB-2 data. The Rust library decodes ODB-2 data into **Polars** data frames.
 
 .. note::
 

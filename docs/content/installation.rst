@@ -105,7 +105,7 @@ Check if the package was installed correctly:
 Rust
 ----
 
-The Rust crate lives in the ``rust/`` directory of the repository and requires a `Rust`_ toolchain (>= 1.90). By default it builds **odc** and its dependencies from source (the ``vendored`` feature), so no separate installation is needed — add the dependency to ``Cargo.toml``:
+The Rust crate lives in the ``rust/`` directory of the repository and requires a `Rust`_ toolchain (>= 1.90). By default it builds **odc** and its dependencies from source (the ``vendored`` feature), so no separate installation is needed. Add the dependency to ``Cargo.toml``:
 
 .. code-block:: toml
 
