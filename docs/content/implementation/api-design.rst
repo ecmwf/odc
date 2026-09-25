@@ -258,7 +258,7 @@ All C++ functions will throw an exception in case of error.
 Rust Interface
 --------------
 
-The Rust interface is a safe wrapper of :ref:`the C++ API <cpp-interface>`, built around the same model as `pyodc`_: ODB-2 data decodes into `Polars`_ ``DataFrame`` objects and encodes from them, with lower-level functions available for raw, caller-owned buffers.
+The Rust interface is a safe wrapper of :ref:`the C++ API <cpp-interface>`: ODB-2 data decodes into `Polars`_ ``DataFrame`` objects and encodes from them, with lower-level functions available for raw, caller-owned buffers.
 
 
 Calling Convention
@@ -295,5 +295,4 @@ All fallible functions return a ``Result``, carrying the message of the underlyi
 
 
 .. _`eckit`: https://github.com/ecmwf/eckit
-.. _`pyodc`: https://github.com/ecmwf/pyodc
 .. _`Polars`: https://pola.rs
