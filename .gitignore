@@ -10,3 +10,7 @@ Testing/*
 tests/core/Testing/*
 build
 docs/_build
+
+# Rust
+rust/target/
+rust/Cargo.lock
