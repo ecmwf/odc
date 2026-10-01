@@ -50,8 +50,10 @@ mod span;
 pub use decode::DecodeTarget;
 pub use eckit;
 pub use encode::{
-    EncodeSource, RawColumn, RowMajorColumn, WriteOptions, write_odb, write_odb_raw,
-    write_odb_raw_to, write_odb_row_major, write_odb_row_major_to, write_odb_to,
+    CellColumn, EncodeSource, RawColumn, StridedColumn, WriteOptions, write_odb,
+    write_odb_column_major, write_odb_column_major_to, write_odb_raw, write_odb_raw_to,
+    write_odb_row_major, write_odb_row_major_to, write_odb_strided, write_odb_strided_to,
+    write_odb_to,
 };
 pub use error::{Error, Result};
 pub use frame::{DecodeOptions, Frame};

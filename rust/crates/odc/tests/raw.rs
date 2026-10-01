@@ -2,8 +2,8 @@
 
 use odc::polars::prelude::*;
 use odc::{
-    Bit, ColumnType, DecodeTarget, EncodeSource, Error, RawColumn, ReadOptions, RowMajorColumn,
-    WriteOptions,
+    Bit, CellColumn, ColumnType, DecodeTarget, EncodeSource, Error, RawColumn, ReadOptions,
+    StridedColumn, WriteOptions,
 };
 use std::path::PathBuf;
 use tempfile::TempDir;
@@ -234,17 +234,17 @@ fn raw_encode_rejects_bad_columns() -> odc::Result<()> {
 #[test]
 fn row_major_roundtrip() -> odc::Result<()> {
     let columns = [
-        RowMajorColumn {
+        CellColumn {
             name: "i",
             column_type: ColumnType::Integer,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "f",
             column_type: ColumnType::Double,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "s",
             column_type: ColumnType::String,
             size: 16,
@@ -288,12 +288,12 @@ fn row_major_roundtrip() -> odc::Result<()> {
 #[test]
 fn row_major_invalid_input() -> odc::Result<()> {
     let columns = [
-        RowMajorColumn {
+        CellColumn {
             name: "i",
             column_type: ColumnType::Integer,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "f",
             column_type: ColumnType::Double,
             size: 8,
@@ -304,9 +304,9 @@ fn row_major_invalid_input() -> odc::Result<()> {
 
     let cells = [0_u64; 3];
     let result = odc::write_odb_row_major(&cells, &columns, &path, &WriteOptions::default());
-    assert!(matches!(result, Err(Error::InvalidRowMajorData(_))));
+    assert!(matches!(result, Err(Error::InvalidCellLayout(_))));
 
-    let bad_size = [RowMajorColumn {
+    let bad_size = [CellColumn {
         name: "i",
         column_type: ColumnType::Integer,
         size: 16,
@@ -316,5 +316,184 @@ fn row_major_invalid_input() -> odc::Result<()> {
 
     let result = odc::write_odb_row_major(&[], &columns, &path, &WriteOptions::default());
     assert!(matches!(result, Err(Error::EmptyDataFrame)));
+    Ok(())
+}
+
+#[test]
+fn strided_roundtrip() -> odc::Result<()> {
+    let ints = [1_i64, odc::integer_missing_value(), 3];
+    let floats = [0.5_f64, odc::double_missing_value(), 2.5];
+    let strings = ["one", "twotwotwotwo", ""];
+
+    // Column-major cells: ints, floats, then 16-byte strings.
+    let mut cells = vec![0_u64; 12];
+    for row in 0..3 {
+        cells[row] = u64::from_ne_bytes(ints[row].to_ne_bytes());
+        cells[3 + row] = floats[row].to_bits();
+        let mut bytes = [0_u8; 16];
+        bytes[..strings[row].len()].copy_from_slice(strings[row].as_bytes());
+        let mut lo = [0_u8; 8];
+        let mut hi = [0_u8; 8];
+        lo.copy_from_slice(&bytes[..8]);
+        hi.copy_from_slice(&bytes[8..]);
+        cells[6 + row * 2] = u64::from_ne_bytes(lo);
+        cells[7 + row * 2] = u64::from_ne_bytes(hi);
+    }
+    let columns = [
+        StridedColumn {
+            name: "i",
+            column_type: ColumnType::Integer,
+            size: 8,
+            offset: 0,
+            stride: 8,
+        },
+        StridedColumn {
+            name: "f",
+            column_type: ColumnType::Double,
+            size: 8,
+            offset: 24,
+            stride: 8,
+        },
+        StridedColumn {
+            name: "s",
+            column_type: ColumnType::String,
+            size: 16,
+            offset: 48,
+            stride: 16,
+        },
+    ];
+
+    let dir = tempfile::tempdir()?;
+    let path = dir.path().join("strided.odb");
+    odc::write_odb_strided(&cells, &columns, 3, &path, &WriteOptions::default())?;
+
+    let out = odc::read_odb_single(&path, &ReadOptions::default())?;
+    let expected = df!(
+        "i" => [Some(1_i64), None, Some(3)],
+        "f" => [Some(0.5_f64), None, Some(2.5)],
+        "s" => ["one", "twotwotwotwo", ""],
+    )?;
+    assert!(
+        out.equals_missing(&expected),
+        "expected:\n{expected}\ngot:\n{out}"
+    );
+
+    // Decode back into a row-major layout and compare the raw cells.
+    let reader = odc::Reader::from_path(&path)?;
+    let frames: Vec<odc::Frame> = reader.frames().collect::<odc::Result<_>>()?;
+    let out_columns = [
+        StridedColumn {
+            name: "i",
+            column_type: ColumnType::Integer,
+            size: 8,
+            offset: 0,
+            stride: 32,
+        },
+        StridedColumn {
+            name: "f",
+            column_type: ColumnType::Double,
+            size: 8,
+            offset: 8,
+            stride: 32,
+        },
+        StridedColumn {
+            name: "s",
+            column_type: ColumnType::String,
+            size: 16,
+            offset: 16,
+            stride: 32,
+        },
+    ];
+    let mut out_cells = vec![0_u64; 12];
+    let rows = frames[0].decode_strided(&mut out_cells, &out_columns, 1)?;
+    assert_eq!(rows, 3);
+    for row in 0..3 {
+        assert_eq!(out_cells[row * 4], cells[row]);
+        assert_eq!(out_cells[row * 4 + 1], cells[3 + row]);
+        assert_eq!(out_cells[row * 4 + 2], cells[6 + row * 2]);
+        assert_eq!(out_cells[row * 4 + 3], cells[7 + row * 2]);
+    }
+    Ok(())
+}
+
+#[test]
+fn strided_invalid_input() -> odc::Result<()> {
+    let dir = tempfile::tempdir()?;
+    let path = dir.path().join("unused.odb");
+    let cells = [0_u64; 4];
+
+    let short_stride = [StridedColumn {
+        name: "s",
+        column_type: ColumnType::String,
+        size: 16,
+        offset: 0,
+        stride: 8,
+    }];
+    let result = odc::write_odb_strided(&cells, &short_stride, 2, &path, &WriteOptions::default());
+    assert!(matches!(result, Err(Error::InvalidBuffer { .. })));
+
+    let overflowing = [StridedColumn {
+        name: "i",
+        column_type: ColumnType::Integer,
+        size: 8,
+        offset: 0,
+        stride: 16,
+    }];
+    let result = odc::write_odb_strided(&cells, &overflowing, 3, &path, &WriteOptions::default());
+    assert!(matches!(result, Err(Error::InvalidBuffer { .. })));
+
+    let result = odc::write_odb_strided(&cells, &overflowing, 0, &path, &WriteOptions::default());
+    assert!(matches!(result, Err(Error::EmptyDataFrame)));
+    Ok(())
+}
+
+#[test]
+fn cell_layout_roundtrip() -> odc::Result<()> {
+    let ints = [1_i64, 2, 3];
+    let floats = [0.5_f64, 1.5, 2.5];
+
+    // Column-major cells: three ints, then three doubles.
+    let mut cells = vec![0_u64; 6];
+    for row in 0..3 {
+        cells[row] = u64::from_ne_bytes(ints[row].to_ne_bytes());
+        cells[3 + row] = floats[row].to_bits();
+    }
+    let columns = [
+        CellColumn {
+            name: "i",
+            column_type: ColumnType::Integer,
+            size: 8,
+        },
+        CellColumn {
+            name: "f",
+            column_type: ColumnType::Double,
+            size: 8,
+        },
+    ];
+
+    let dir = tempfile::tempdir()?;
+    let path = dir.path().join("cells.odb");
+    odc::write_odb_column_major(&cells, &columns, &path, &WriteOptions::default())?;
+
+    let out = odc::read_odb_single(&path, &ReadOptions::default())?;
+    let expected = df!("i" => ints, "f" => floats)?;
+    assert!(
+        out.equals_missing(&expected),
+        "expected:\n{expected}\ngot:\n{out}"
+    );
+
+    let reader = odc::Reader::from_path(&path)?;
+    let frames: Vec<odc::Frame> = reader.frames().collect::<odc::Result<_>>()?;
+
+    let mut back = vec![0_u64; 6];
+    frames[0].decode_column_major(&mut back, &columns, 1)?;
+    assert_eq!(back, cells);
+
+    let mut rows = vec![0_u64; 6];
+    frames[0].decode_row_major(&mut rows, &columns, 1)?;
+    for row in 0..3 {
+        assert_eq!(rows[row * 2], cells[row]);
+        assert_eq!(rows[row * 2 + 1], cells[3 + row]);
+    }
     Ok(())
 }

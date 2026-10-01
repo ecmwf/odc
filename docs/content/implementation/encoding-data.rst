@@ -88,7 +88,7 @@ Row-major layout
 
          .. code-block:: rust
 
-            use odc::{ColumnType, RowMajorColumn};
+            use odc::{CellColumn, ColumnType, WriteOptions};
 
             let nrows = 1000;
             let ncells = 6;
@@ -96,35 +96,35 @@ Row-major layout
             // set up the data here...
 
             let columns = [
-                RowMajorColumn {
+                CellColumn {
                     name: "column0",
                     column_type: ColumnType::Integer,
                     size: 8,
                 },
-                RowMajorColumn {
+                CellColumn {
                     name: "column1",
                     column_type: ColumnType::Integer,
                     size: 8,
                 },
-                RowMajorColumn {
+                CellColumn {
                     name: "column2",
                     column_type: ColumnType::Real,
                     size: 8,
                 },
                 // column3 is a 16-byte string column (hence takes 2 cells in a row --> ncells=6)
-                RowMajorColumn {
+                CellColumn {
                     name: "column3",
                     column_type: ColumnType::String,
                     size: 16,
                 },
-                RowMajorColumn {
+                CellColumn {
                     name: "column4",
                     column_type: ColumnType::Real,
                     size: 8,
                 },
             ];
 
-            // encode the data here...
+            odc::write_odb_row_major(&data, &columns, "imaginary/path.odb", &WriteOptions::default())?;
 
 
 Column-major layout
@@ -202,9 +202,45 @@ Column-major layout
 
       .. group-tab:: Rust
 
-         .. note::
+         .. code-block:: rust
 
-            Rust interface does not support data encoding from a column-major layout. In this case, encode from a Polars ``DataFrame`` or from a :ref:`custom memory layout <encoder-custom-layout>` instead.
+            use odc::{CellColumn, ColumnType, WriteOptions};
+
+            let nrows = 1000;
+            let ncells = 6;
+            let mut data = vec![0_u64; nrows * ncells];
+            // set up the data here...
+
+            let columns = [
+                CellColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+                // column3 is a 16-byte string column (hence takes 2 cells per row --> ncells=6)
+                CellColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                },
+                CellColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+            ];
+
+            odc::write_odb_column_major(&data, &columns, "imaginary/path.odb", &WriteOptions::default())?;
 
 
 .. _`encoder-custom-layout`:
@@ -375,6 +411,57 @@ Custom layout
             ];
 
             // encode the data here...
+
+         Alternatively, a periodic memory layout within a single buffer of 8-byte cells can be specified for each column independently, with an explicit offset and stride:
+
+         .. code-block:: rust
+
+            use odc::{ColumnType, StridedColumn, WriteOptions};
+
+            let nrows = 1000;
+            let data = vec![0_u64; nrows * 6];
+            // set up the data here...
+
+            let columns = [
+                StridedColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                    offset: 0,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                    offset: 8,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                    offset: 16,
+                    stride: 48,
+                },
+                // column3 is a 16-byte string column
+                StridedColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                    offset: 24,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                    offset: 40,
+                    stride: 48,
+                },
+            ];
+
+            odc::write_odb_strided(&data, &columns, nrows, "imaginary/path.odb", &WriteOptions::default())?;
 
 Once an **Encoder** describing the data has been constructed, the data can be encoded into frames.
 

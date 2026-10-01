@@ -3,7 +3,7 @@
 //!
 //! Usage: `cargo run --example odc_encode_row_major -- <out.odb>`
 
-use odc::{Bit, ColumnType, RowMajorColumn, WriteOptions};
+use odc::{Bit, CellColumn, ColumnType, WriteOptions};
 
 const NROWS: usize = 20;
 const NCELLS: usize = 9;
@@ -58,42 +58,42 @@ fn main() -> odc::Result<()> {
     // Define all column names, their types, and their cell sizes
     //   Column `wigos@hdr` is a 16-byte string column, hence takes 2 cells in the array => NCELLS=9
     let columns = [
-        RowMajorColumn {
+        CellColumn {
             name: "expver",
             column_type: ColumnType::String,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "date@hdr",
             column_type: ColumnType::Integer,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "statid@hdr",
             column_type: ColumnType::String,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "wigos@hdr",
             column_type: ColumnType::String,
             size: 16,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "obsvalue@body",
             column_type: ColumnType::Real,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "integer_missing",
             column_type: ColumnType::Integer,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "double_missing",
             column_type: ColumnType::Real,
             size: 8,
         },
-        RowMajorColumn {
+        CellColumn {
             name: "bitfield_column",
             column_type: ColumnType::Bitfield,
             size: 8,

@@ -116,6 +116,24 @@ Types
          * **threads** – number of decode threads
       :Errors: Fails if a column does not exist, a buffer does not fit its column, or the underlying stream cannot be read or decoded.
 
+   .. describe:: fn decode_strided(&self, cells: &mut [u64], columns: &[StridedColumn], threads: usize) -> Result<usize>
+
+      Decode the named columns into a caller-allocated buffer of 8-byte cells, with a periodic layout per column, returning the number of rows decoded. Raw output, like ``decode_into``.
+
+      :Parameters:
+         * **cells** – the destination cell buffer
+         * **columns** – name, type, element size, offset and stride of each column
+         * **threads** – number of decode threads
+      :Errors: Fails if a column does not exist, a declared type or layout does not match the column, the layout does not fit the buffer, or the underlying stream cannot be read or decoded.
+
+   .. describe:: fn decode_row_major(&self, cells: &mut [u64], columns: &[CellColumn], threads: usize) -> Result<usize>
+
+      Decode the named columns into a row-major block of 8-byte cells: consecutive elements of a row adjacent in memory, rows arranged sequentially. Raw output, like ``decode_into``; the buffer must hold exactly the frame's rows.
+
+   .. describe:: fn decode_column_major(&self, cells: &mut [u64], columns: &[CellColumn], threads: usize) -> Result<usize>
+
+      Decode the named columns into a column-major block of 8-byte cells: each column a contiguous run of elements, columns arranged sequentially. Raw output, like ``decode_into``; the buffer must hold exactly the frame's rows.
+
 
 .. describe:: struct Span
 
@@ -224,14 +242,26 @@ Types
       * **Str { data: &[u8], width: usize }** – fixed-width NUL-padded cells of ``width`` bytes
 
 
-.. describe:: struct RowMajorColumn<'a>
+.. describe:: struct CellColumn<'a>
 
-   One column of ``write_odb_row_major``.
+   One column of the row-major and column-major cell layouts: ``write_odb_row_major``, ``write_odb_column_major``, ``Frame::decode_row_major`` and ``Frame::decode_column_major``.
 
    :Fields:
       * **name** (``&str``) – column name
       * **column_type** (``ColumnType``) – any type except ``Ignore``; ``Bitfield`` requires a ``WriteOptions::bitfields`` entry
       * **size** (``usize``) – cell size in bytes: 8, except for string columns, which may span several 8-byte cells
+
+
+.. describe:: struct StridedColumn<'a>
+
+   One column of ``write_odb_strided`` and ``Frame::decode_strided``: a periodic layout within a shared buffer of 8-byte cells.
+
+   :Fields:
+      * **name** (``&str``) – column name
+      * **column_type** (``ColumnType``) – any type except ``Ignore``; ``Bitfield`` requires a ``WriteOptions::bitfields`` entry when encoding
+      * **size** (``usize``) – element size in bytes: 8, except for string columns, which may span several 8-byte cells
+      * **offset** (``usize``) – byte offset of the first element within the cell buffer
+      * **stride** (``usize``) – byte distance between consecutive elements
 
 
 .. describe:: struct ColumnInfo
@@ -343,7 +373,7 @@ Functions
 
    Encode raw column slices into an open eckit ``DataHandle``.
 
-.. describe:: fn write_odb_row_major(cells: &[u64], columns: &[RowMajorColumn], path: impl AsRef<Path>, options: &WriteOptions) -> Result<()>
+.. describe:: fn write_odb_row_major(cells: &[u64], columns: &[CellColumn], path: impl AsRef<Path>, options: &WriteOptions) -> Result<()>
 
    Encode rows of 8-byte cells into an ODB-2 file. ``cells`` holds consecutive rows, each as wide as the summed column sizes. Within a row, an integer or bitfield cell holds an ``i64`` bit pattern, a real or double cell holds an ``f64`` bit pattern, and a string column's cells hold NUL-padded bytes.
 
@@ -353,9 +383,32 @@ Functions
       * **options** – frame size, properties and bitfields
    :Errors: Fails on an invalid column size, a ``cells`` length that is not a whole number of rows, an empty buffer, an invalid bitfield specification, or if the file cannot be written.
 
-.. describe:: fn write_odb_row_major_to(cells: &[u64], columns: &[RowMajorColumn], handle: &mut DataHandle<Writing>, options: &WriteOptions) -> Result<()>
+.. describe:: fn write_odb_row_major_to(cells: &[u64], columns: &[CellColumn], handle: &mut DataHandle<Writing>, options: &WriteOptions) -> Result<()>
 
    Encode rows of 8-byte cells into an open eckit ``DataHandle``.
+
+.. describe:: fn write_odb_column_major(cells: &[u64], columns: &[CellColumn], path: impl AsRef<Path>, options: &WriteOptions) -> Result<()>
+
+   Encode columns stored as a column-major block of 8-byte cells — each column a contiguous run of elements, columns arranged sequentially — into an ODB-2 file. The number of rows is the buffer size divided by the combined column sizes.
+
+.. describe:: fn write_odb_column_major_to(cells: &[u64], columns: &[CellColumn], handle: &mut DataHandle<Writing>, options: &WriteOptions) -> Result<()>
+
+   Encode columns stored as a column-major block of 8-byte cells into an open eckit ``DataHandle``.
+
+.. describe:: fn write_odb_strided(cells: &[u64], columns: &[StridedColumn], nrows: usize, path: impl AsRef<Path>, options: &WriteOptions) -> Result<()>
+
+   Encode columns laid out with periodic strides within a shared buffer of 8-byte cells into an ODB-2 file. ``WriteOptions::types`` is ignored: each column's type is explicit.
+
+   :Parameters:
+      * **cells** – the source cell buffer
+      * **columns** – name, type, element size, offset and stride of each column
+      * **nrows** – number of rows to encode
+      * **options** – frame size, properties and bitfields
+   :Errors: Fails on an invalid column layout, a layout that does not fit the buffer, an empty input, an invalid bitfield specification, or if the file cannot be written.
+
+.. describe:: fn write_odb_strided_to(cells: &[u64], columns: &[StridedColumn], nrows: usize, handle: &mut DataHandle<Writing>, options: &WriteOptions) -> Result<()>
+
+   Encode columns laid out with periodic strides within a shared buffer of 8-byte cells into an open eckit ``DataHandle``.
 
 .. describe:: fn version() -> String
 
@@ -396,6 +449,6 @@ All fallible functions return ``Result``; see :ref:`the API design guide <rust-i
       * **InvalidTypeOverride** – a type override in ``WriteOptions::types`` is not compatible with the column's dtype
       * **ColumnNotFound** – column not found in the frame
       * **InvalidBuffer** – a caller-provided buffer does not fit its column
-      * **InvalidRowMajorData** – a row-major cell buffer does not match its declared columns
+      * **InvalidCellLayout** – a cell buffer does not match its declared columns
       * **InvalidBitfield** – an invalid bitfield specification
       * **EmptyDataFrame** – nothing to encode

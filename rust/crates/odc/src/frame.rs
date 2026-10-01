@@ -6,6 +6,8 @@ use std::sync::Arc;
 use polars::prelude::DataFrame;
 
 use crate::decode::{self, DecodeTarget};
+use crate::encode::{self, CellColumn, StridedColumn};
+use crate::error::Error;
 use crate::error::Result;
 use crate::reader::ReaderShared;
 use crate::span::Span;
@@ -194,5 +196,120 @@ impl Frame {
         threads: usize,
     ) -> Result<usize> {
         decode::into_buffers(self, columns, threads)
+    }
+
+    /// Decode the named columns into a caller-allocated buffer of 8-byte
+    /// cells, with a periodic layout per column.
+    ///
+    /// Raw output, like [`Frame::decode_into`]: missing values keep their
+    /// ODB sentinels and strings stay fixed-width NUL-padded cells.
+    ///
+    /// Returns the number of rows decoded.
+    ///
+    /// # Example
+    ///
+    /// A row-major layout of one integer and one double column:
+    ///
+    /// ```no_run
+    /// use odc::{ColumnType, StridedColumn};
+    ///
+    /// # let reader = odc::Reader::from_path("data.odb")?;
+    /// # let frame = reader.frames().next().unwrap()?;
+    /// let mut cells = vec![0_u64; frame.row_count() * 2];
+    /// let columns = [
+    ///     StridedColumn {
+    ///         name: "seqno@hdr",
+    ///         column_type: ColumnType::Integer,
+    ///         size: 8,
+    ///         offset: 0,
+    ///         stride: 16,
+    ///     },
+    ///     StridedColumn {
+    ///         name: "obsvalue@body",
+    ///         column_type: ColumnType::Double,
+    ///         size: 8,
+    ///         offset: 8,
+    ///         stride: 16,
+    ///     },
+    /// ];
+    /// let rows = frame.decode_strided(&mut cells, &columns, 1)?;
+    /// # Ok::<(), odc::Error>(())
+    /// ```
+    ///
+    /// # Errors
+    ///
+    /// Fails if a column does not exist, a declared type or layout does
+    /// not match the column, the layout does not fit the buffer, or the
+    /// underlying stream cannot be read or decoded.
+    pub fn decode_strided(
+        &self,
+        cells: &mut [u64],
+        columns: &[StridedColumn<'_>],
+        threads: usize,
+    ) -> Result<usize> {
+        decode::strided_into(self, cells, columns, threads)
+    }
+
+    /// Decode the named columns into a row-major block of 8-byte cells:
+    /// consecutive elements of a row adjacent in memory, rows arranged
+    /// sequentially. Cell contents are as in [`Frame::decode_strided`].
+    ///
+    /// Returns the number of rows decoded.
+    ///
+    /// # Errors
+    ///
+    /// Fails if a column does not exist, a declared type or cell size does
+    /// not match the column, the buffer does not hold exactly the frame's
+    /// rows, or the underlying stream cannot be read or decoded.
+    pub fn decode_row_major(
+        &self,
+        cells: &mut [u64],
+        columns: &[CellColumn<'_>],
+        threads: usize,
+    ) -> Result<usize> {
+        let (row_bytes, nrows) = encode::cell_rows(columns, cells.len())?;
+        self.check_buffer_rows(nrows)?;
+        decode::strided_into(
+            self,
+            cells,
+            &encode::row_major_layout(columns, row_bytes),
+            threads,
+        )
+    }
+
+    /// Decode the named columns into a column-major block of 8-byte cells:
+    /// each column a contiguous run of elements, columns arranged
+    /// sequentially. Cell contents are as in [`Frame::decode_strided`].
+    ///
+    /// Returns the number of rows decoded.
+    ///
+    /// # Errors
+    ///
+    /// See [`Frame::decode_row_major`].
+    pub fn decode_column_major(
+        &self,
+        cells: &mut [u64],
+        columns: &[CellColumn<'_>],
+        threads: usize,
+    ) -> Result<usize> {
+        let (_, nrows) = encode::cell_rows(columns, cells.len())?;
+        self.check_buffer_rows(nrows)?;
+        decode::strided_into(
+            self,
+            cells,
+            &encode::column_major_layout(columns, nrows),
+            threads,
+        )
+    }
+
+    fn check_buffer_rows(&self, nrows: usize) -> Result<()> {
+        if nrows == self.row_count() {
+            Ok(())
+        } else {
+            Err(Error::InvalidCellLayout(format!(
+                "buffer holds {nrows} rows, the frame holds {}",
+                self.row_count()
+            )))
+        }
     }
 }

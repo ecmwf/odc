@@ -695,9 +695,49 @@ Row-major layout
 
       .. group-tab:: Rust
 
-         .. note::
+         .. code-block:: rust
 
-            Rust interface does not support decoding of frame data into a row-major layout. In this case, decode into a Polars ``DataFrame`` instead, or use a :ref:`custom memory layout <decoder-custom-layout>`.
+            use odc::{CellColumn, ColumnType};
+
+            // Decode 5 named columns into a row-major data layout
+
+            let nrows = frame.row_count();
+
+            // column3 is a 16-byte string column (hence takes 2 cells per row --> 6 cells per row)
+            let mut data = vec![0_u64; nrows * 6];
+
+            let columns = [
+                CellColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column2",
+                    column_type: ColumnType::Double,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                },
+                CellColumn {
+                    name: "column4",
+                    column_type: ColumnType::Double,
+                    size: 8,
+                },
+            ];
+
+            let rows_decoded = frame.decode_row_major(&mut data, &columns, 1)?;
+            println!("Decoded {rows_decoded} rows");
+
+            // And use the data ...
 
 
 .. _`decoder-column-major-layout`:
@@ -791,9 +831,48 @@ Column-major layout
 
       .. group-tab:: Rust
 
-         .. note::
+         .. code-block:: rust
 
-            Rust interface does not support decoding of frame data into a column-major layout. In this case, decode into a Polars ``DataFrame`` instead, or use a :ref:`custom memory layout <decoder-custom-layout>`.
+            use odc::{CellColumn, ColumnType};
+
+            // Decode 5 named columns into a column-major data layout
+
+            let nrows = frame.row_count();
+            let mut data = vec![0_u64; nrows * 6];
+
+            let columns = [
+                CellColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column2",
+                    column_type: ColumnType::Double,
+                    size: 8,
+                },
+                // column3 is a 16-byte string column (hence takes 2 cells per row --> 6 cells per row)
+                CellColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                },
+                CellColumn {
+                    name: "column4",
+                    column_type: ColumnType::Double,
+                    size: 8,
+                },
+            ];
+
+            let rows_decoded = frame.decode_column_major(&mut data, &columns, 1)?;
+            println!("Decoded {rows_decoded} rows");
+
+            // And use the data ...
 
 
 .. _`decoder-custom-layout`:
@@ -962,6 +1041,59 @@ Custom layout
                 ],
                 threads,
             )?;
+            println!("Decoded {rows_decoded} rows");
+
+            // And use the data ...
+
+         Alternatively, a periodic memory layout within a single buffer of 8-byte cells can be specified for each column independently, with an explicit offset and stride:
+
+         .. code-block:: rust
+
+            use odc::{ColumnType, StridedColumn};
+
+            let nrows = frame.row_count();
+            let mut data = vec![0_u64; nrows * 6];
+
+            let columns = [
+                StridedColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                    offset: 0,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                    offset: 8,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column2",
+                    column_type: ColumnType::Double,
+                    size: 8,
+                    offset: 16,
+                    stride: 48,
+                },
+                // column3 is a 16-byte string column
+                StridedColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                    offset: 24,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column4",
+                    column_type: ColumnType::Double,
+                    size: 8,
+                    offset: 40,
+                    stride: 48,
+                },
+            ];
+
+            let rows_decoded = frame.decode_strided(&mut data, &columns, 1)?;
             println!("Decoded {rows_decoded} rows");
 
             // And use the data ...
