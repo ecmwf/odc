@@ -2,7 +2,8 @@
 
 use odc::polars::prelude::*;
 use odc::{
-    Bit, ColumnType, DecodeTarget, EncodeSource, Error, RawColumn, ReadOptions, WriteOptions,
+    Bit, ColumnType, DecodeTarget, EncodeSource, Error, RawColumn, ReadOptions, RowMajorColumn,
+    WriteOptions,
 };
 use std::path::PathBuf;
 use tempfile::TempDir;
@@ -226,6 +227,94 @@ fn raw_encode_rejects_bad_columns() -> odc::Result<()> {
     assert!(matches!(result, Err(Error::InvalidBuffer { .. })));
 
     let result = odc::write_odb_raw(&[], &path, &WriteOptions::default());
+    assert!(matches!(result, Err(Error::EmptyDataFrame)));
+    Ok(())
+}
+
+#[test]
+fn row_major_roundtrip() -> odc::Result<()> {
+    let columns = [
+        RowMajorColumn {
+            name: "i",
+            column_type: ColumnType::Integer,
+            size: 8,
+        },
+        RowMajorColumn {
+            name: "f",
+            column_type: ColumnType::Double,
+            size: 8,
+        },
+        RowMajorColumn {
+            name: "s",
+            column_type: ColumnType::String,
+            size: 16,
+        },
+    ];
+
+    let ints = [1_i64, odc::integer_missing_value(), 3];
+    let floats = [0.5_f64, odc::double_missing_value(), 2.5];
+    let strings = ["one", "twotwotwotwo", ""];
+    let mut cells = vec![0_u64; 12];
+    for row in 0..3 {
+        cells[row * 4] = u64::from_ne_bytes(ints[row].to_ne_bytes());
+        cells[row * 4 + 1] = floats[row].to_bits();
+        let mut bytes = [0_u8; 16];
+        bytes[..strings[row].len()].copy_from_slice(strings[row].as_bytes());
+        let mut lo = [0_u8; 8];
+        let mut hi = [0_u8; 8];
+        lo.copy_from_slice(&bytes[..8]);
+        hi.copy_from_slice(&bytes[8..]);
+        cells[row * 4 + 2] = u64::from_ne_bytes(lo);
+        cells[row * 4 + 3] = u64::from_ne_bytes(hi);
+    }
+
+    let dir = tempfile::tempdir()?;
+    let path = dir.path().join("row_major.odb");
+    odc::write_odb_row_major(&cells, &columns, &path, &WriteOptions::default())?;
+
+    let out = odc::read_odb_single(&path, &ReadOptions::default())?;
+    let expected = df!(
+        "i" => [Some(1_i64), None, Some(3)],
+        "f" => [Some(0.5_f64), None, Some(2.5)],
+        "s" => ["one", "twotwotwotwo", ""],
+    )?;
+    assert!(
+        out.equals_missing(&expected),
+        "expected:\n{expected}\ngot:\n{out}"
+    );
+    Ok(())
+}
+
+#[test]
+fn row_major_invalid_input() -> odc::Result<()> {
+    let columns = [
+        RowMajorColumn {
+            name: "i",
+            column_type: ColumnType::Integer,
+            size: 8,
+        },
+        RowMajorColumn {
+            name: "f",
+            column_type: ColumnType::Double,
+            size: 8,
+        },
+    ];
+    let dir = tempfile::tempdir()?;
+    let path = dir.path().join("unused.odb");
+
+    let cells = [0_u64; 3];
+    let result = odc::write_odb_row_major(&cells, &columns, &path, &WriteOptions::default());
+    assert!(matches!(result, Err(Error::InvalidRowMajorData(_))));
+
+    let bad_size = [RowMajorColumn {
+        name: "i",
+        column_type: ColumnType::Integer,
+        size: 16,
+    }];
+    let result = odc::write_odb_row_major(&cells, &bad_size, &path, &WriteOptions::default());
+    assert!(matches!(result, Err(Error::InvalidBuffer { .. })));
+
+    let result = odc::write_odb_row_major(&[], &columns, &path, &WriteOptions::default());
     assert!(matches!(result, Err(Error::EmptyDataFrame)));
     Ok(())
 }

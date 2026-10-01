@@ -15,3 +15,4 @@
 #include "FrameWrapper.h"
 #include "ReaderWrapper.h"
 #include "SettingsWrapper.h"
+#include "SpanWrapper.h"
