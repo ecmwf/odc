@@ -64,6 +64,15 @@ pub mod ffi {
         value: String,
     }
 
+    /// Name and value kind of one spanned column. The kind is the decoded
+    /// kind of the value set: `Integer` for integer and bitfield columns,
+    /// `Double` for real and double columns, `String` for string columns.
+    #[derive(Debug, Clone, PartialEq, Eq)]
+    struct SpanColumn {
+        name: String,
+        kind: ColumnType,
+    }
+
     unsafe extern "C++" {
         // odc_exceptions.h first: it defines the `rust::behavior::trycatch`
         // that maps C++ exceptions to typed errors, and must be visible in
@@ -132,6 +141,7 @@ pub mod ffi {
         fn length(self: &SpanWrapper) -> u64;
         #[must_use]
         fn equals(self: &SpanWrapper, other: &SpanWrapper) -> bool;
+        fn columns(self: &SpanWrapper) -> Result<Vec<SpanColumn>>;
         fn integer_values(self: &SpanWrapper, column: &str) -> Result<Vec<i64>>;
         fn real_values(self: &SpanWrapper, column: &str) -> Result<Vec<f64>>;
         fn string_values(self: &SpanWrapper, column: &str) -> Result<Vec<String>>;

@@ -1,7 +1,7 @@
 //! Span access: `Frame::span`.
 
 use odc::polars::prelude::*;
-use odc::{ReaderOptions, WriteOptions};
+use odc::{ReaderOptions, SpanValues, WriteOptions};
 use std::path::{Path, PathBuf};
 use tempfile::TempDir;
 
@@ -58,6 +58,14 @@ fn span_values_and_equality() -> odc::Result<()> {
     assert_eq!(spans[0].string_values("key3")?, ["foo"]);
     assert_eq!(spans[2].integer_values("key1")?, [2]);
     assert_eq!(spans[2].string_values("key3")?, ["bar"]);
+
+    assert_eq!(
+        spans[0].columns()?,
+        [
+            ("key1".to_string(), SpanValues::Integer(vec![1])),
+            ("key3".to_string(), SpanValues::String(vec!["foo".into()])),
+        ]
+    );
 
     assert!(spans[0] == spans[1]);
     assert!(spans[0] != spans[2]);

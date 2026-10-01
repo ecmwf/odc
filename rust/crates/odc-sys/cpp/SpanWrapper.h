@@ -9,6 +9,8 @@
 
 namespace odc_bridge {
 
+struct SpanColumn;
+
 /// Owns an `odc::api::Span` — the sets of values of chosen columns within
 /// one frame, and that frame's byte range in the stream. Self-contained:
 /// the underlying value sets live in the Span, independent of the frame.
@@ -22,6 +24,7 @@ public:
     uint64_t offset() const;
     uint64_t length() const;
     bool equals(const SpanWrapper& other) const;
+    rust::Vec<SpanColumn> columns() const;
     rust::Vec<int64_t> integer_values(rust::Str column) const;
     rust::Vec<double> real_values(rust::Str column) const;
     rust::Vec<rust::String> string_values(rust::Str column) const;

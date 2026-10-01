@@ -58,7 +58,7 @@ pub use frame::{DecodeOptions, Frame};
 pub use odc_sys::{Bit, ColumnInfo, ColumnType, Property};
 pub use polars;
 pub use reader::{Frames, Reader, ReaderOptions};
-pub use span::Span;
+pub use span::{Span, SpanValues};
 
 use std::path::Path;
 

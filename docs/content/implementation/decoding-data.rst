@@ -399,15 +399,21 @@ The C++ and Rust APIs also provide the **Span** interface. This can be used to d
 
       .. code-block:: rust
 
+         use odc::SpanValues;
+
          let columns = ["column0", "column2", "column3"];
 
          let only_constant_values = false;
 
          let span = frame.span(&columns, only_constant_values)?;
 
-         println!("column0 integer values: {:?}", span.integer_values("column0")?);
-         println!("column2 real values: {:?}", span.real_values("column2")?);
-         println!("column3 string values: {:?}", span.string_values("column3")?);
+         for (name, values) in span.columns()? {
+             match values {
+                 SpanValues::Integer(vals) => println!("Column {name} with integer values: {vals:?}"),
+                 SpanValues::Real(vals) => println!("Column {name} with real values: {vals:?}"),
+                 SpanValues::String(vals) => println!("Column {name} with string values: {vals:?}"),
+             }
+         }
 
 
 .. index:: Decoding Data; Properties

@@ -129,6 +129,12 @@ Types
 
       Length in bytes of the frame's encoded data.
 
+   .. describe:: fn columns(&self) -> Result<Vec<(String, SpanValues)>>
+
+      Names and values of all spanned columns, in the order requested when the span was created.
+
+      :Errors: Fails if the underlying values cannot be read.
+
    .. describe:: fn integer_values(&self, column: &str) -> Result<Vec<i64>>
 
       Integer values present in the named column, in ascending order.
@@ -146,6 +152,16 @@ Types
       String values present in the named column, in ascending order.
 
       :Errors: Fails if the column is not part of the span or holds another type.
+
+
+.. describe:: enum SpanValues
+
+   The set of values of one column of a ``Span``, in ascending order.
+
+   :Variants:
+      * **Integer(Vec<i64>)** – values of an integer or bitfield column
+      * **Real(Vec<f64>)** – values of a real or double column
+      * **String(Vec<String>)** – values of a string column
 
 
 .. describe:: struct ReadOptions
