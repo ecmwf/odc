@@ -513,6 +513,8 @@ The **Decoder** specifies how a decoding operation should be carried out. It is 
 
 For typical cases, much of this configuration can be filled in with sensible default values by interrogating the **Frame** object. In these cases all columns will be decoded, and the memory layout will be either simple row-major or column-major. The decoder can allocate memory for these default layouts if required.
 
+The Rust interface does not expose a **Decoder** object. Like the Python interface, it decodes into data frames: all or selected columns of a **Frame** decode into a `Polars`_ ``DataFrame``, which owns the resulting columnar memory. For decoding into caller-owned memory, use the :ref:`custom memory layout <decoder-custom-layout>`.
+
 .. tabs::
 
    .. group-tab:: C
@@ -962,3 +964,6 @@ Custom layout
 .. note::
 
    Decoded string data is not explicitly null terminated, although strings shorter than the cell size are null padded. If a decoded string is equal in length to the maximum length it will have no null termination, and as such the user *must* account for this by specifying a maximum length when reading decoded strings.
+
+
+.. _`Polars`: https://pola.rs
