@@ -554,7 +554,7 @@ Once an **Encoder** describing the data has been constructed, the data can be en
 
    .. group-tab:: Rust
 
-      Rust supports data encoding to a file path or into an open eckit ``DataHandle``.
+      Rust supports data encoding to a file path, into an open eckit ``DataHandle``, or into any Rust ``std::io::Write`` sink wrapped as a ``DataHandle``.
 
       .. code-block:: rust
 
@@ -574,6 +574,24 @@ Once an **Encoder** describing the data has been constructed, the data can be en
 
          // Or encode into an open eckit DataHandle
          let mut handle = DataHandle::from_path("imaginary/path.odb")?.open_for_write(0)?;
+
+         odc::write_odb_raw_to(&columns, &mut handle, &options)?;
+
+         handle.close()?;
+
+      .. code-block:: rust
+
+         use std::net::TcpStream;
+
+         use odc::WriteOptions;
+         use odc::eckit::DataHandle;
+
+         let options = WriteOptions::default();
+
+         // Or encode into any Rust writer — a socket, a compressor, ...
+         // Each encoded chunk is forwarded to the writer as it is produced.
+         let socket = TcpStream::connect("archive.example:9000")?;
+         let mut handle = DataHandle::from_writer(socket)?.open_for_write(0)?;
 
          odc::write_odb_raw_to(&columns, &mut handle, &options)?;
 
