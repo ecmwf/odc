@@ -78,6 +78,27 @@ If **odc** is being used in a context where **eckit** is not already being used,
 
             gfortran -lfodc odc_test.f90
 
+
+   .. group-tab:: Rust
+
+      The Rust crate initialises the underlying **eckit** runtime automatically the first time any of its API is used, so no explicit initialisation call is needed.
+
+      .. code-block:: rust
+
+         fn main() {
+             println!("odc version {}", odc::version());
+         }
+
+
+      .. note::
+
+         Make sure to add the ``odc`` crate as a dependency in ``Cargo.toml``:
+
+         .. code-block:: toml
+
+            [dependencies]
+            odc = { git = "https://github.com/ecmwf/odc" }
+
 .. note::
 
    All further code snippets in this guide depend on above headers being included and initialisation functions called.
@@ -118,6 +139,13 @@ The integer-handling behaviour can be specified by calling a special function im
       .. code-block:: fortran
 
          rc = odc_integer_behaviour(ODC_INTEGERS_AS_LONGS)
+
+
+   .. group-tab:: Rust
+
+      .. note::
+
+         The Rust crate always sets the integer behaviour to 64-bit integers, on every thread that enters its API. INTEGER and BITFIELD columns decode as ``i64``.
 
 
 .. note::

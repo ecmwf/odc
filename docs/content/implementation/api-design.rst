@@ -252,4 +252,47 @@ The interface in C++ mainly exists as an underlying base for implementing :ref:`
 All C++ functions will throw an exception in case of error.
 
 
+.. index:: API Design; Rust Interface
+   :name: rust-interface
+
+Rust Interface
+--------------
+
+The Rust interface is a safe wrapper of :ref:`the C++ API <cpp-interface>`: ODB-2 data decodes into `Polars`_ ``DataFrame`` objects and encodes from them, with lower-level functions available for raw, caller-owned buffers.
+
+
+Calling Convention
+~~~~~~~~~~~~~~~~~~
+
+The objects referenced in the API are presented as Rust types with the appropriate methods. Underlying resources are managed by ownership: a value releases its resources when dropped, so there are no explicit close or free calls.
+
+.. code-block:: rust
+
+   let reader = Reader::from_path("imaginary/path.odb")?;
+
+   for frame in reader.frames() {
+       let frame = frame?;
+       let row_count = frame.row_count();
+   }
+
+
+Error Handling
+~~~~~~~~~~~~~~
+
+All fallible functions return a ``Result``, carrying the message of the underlying C++ exception in the error case. Errors propagate with the ``?`` operator, so no status codes need to be checked.
+
+.. code-block:: rust
+
+   match Reader::from_path("imaginary/path.odb") {
+       Ok(reader) => {
+           // Success, continue processing.
+       }
+       Err(err) => {
+           // Error, print the message.
+           eprintln!("Failed to construct reader: {err}");
+       }
+   }
+
+
 .. _`eckit`: https://github.com/ecmwf/eckit
+.. _`Polars`: https://pola.rs

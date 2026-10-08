@@ -300,3 +300,43 @@ fn multithreaded_decode_of_integer_columns() -> odc::Result<()> {
     assert_same(&out, &df);
     Ok(())
 }
+
+#[test]
+fn writer_sink_roundtrip() -> odc::Result<()> {
+    use std::io::Write;
+    use std::sync::{Arc, Mutex};
+
+    #[derive(Clone)]
+    struct SharedSink(Arc<Mutex<Vec<u8>>>);
+
+    impl Write for SharedSink {
+        fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+            self.0.lock().expect("sink lock").extend_from_slice(buf);
+            Ok(buf.len())
+        }
+
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+
+    let df = df!(
+        "seqno@hdr" => [1_i64, 2, 3],
+        "obsvalue@body" => [Some(274.5_f64), None, Some(271.9)],
+    )?;
+
+    let sink = SharedSink(Arc::new(Mutex::new(Vec::new())));
+    let bytes = sink.0.clone();
+
+    let mut handle = odc::eckit::DataHandle::from_writer(sink)?.open_for_write(0)?;
+    odc::write_odb_to(&df, &mut handle, &WriteOptions::default())?;
+    handle.close()?;
+
+    let encoded = bytes.lock().expect("sink lock").clone();
+    let handle = odc::eckit::DataHandle::from_buffer(&encoded)?;
+    let reader = odc::Reader::from_handle(handle, &ReaderOptions::default())?;
+    let frames: Vec<odc::Frame> = reader.frames().collect::<odc::Result<_>>()?;
+    let out = frames[0].dataframe()?;
+    assert!(out.equals_missing(&df), "expected:\n{df}\ngot:\n{out}");
+    Ok(())
+}

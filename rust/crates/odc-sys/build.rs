@@ -15,6 +15,8 @@ fn main() {
     println!("cargo:rerun-if-changed=cpp/ReaderWrapper.cc");
     println!("cargo:rerun-if-changed=cpp/SettingsWrapper.h");
     println!("cargo:rerun-if-changed=cpp/SettingsWrapper.cc");
+    println!("cargo:rerun-if-changed=cpp/SpanWrapper.h");
+    println!("cargo:rerun-if-changed=cpp/SpanWrapper.cc");
     println!("cargo:rerun-if-env-changed=ODC_DIR");
     println!("cargo:rerun-if-env-changed=DOCS_RS");
 
@@ -86,6 +88,7 @@ fn build_system() {
         .file(crate_dir.join("cpp/FrameWrapper.cc"))
         .file(crate_dir.join("cpp/ReaderWrapper.cc"))
         .file(crate_dir.join("cpp/SettingsWrapper.cc"))
+        .file(crate_dir.join("cpp/SpanWrapper.cc"))
         .include(&odc_include)
         .include(&eckit_include)
         .include(&eckit_cpp_dir)
@@ -227,6 +230,7 @@ fn build_vendored() {
         .file(crate_dir.join("cpp/FrameWrapper.cc"))
         .file(crate_dir.join("cpp/ReaderWrapper.cc"))
         .file(crate_dir.join("cpp/SettingsWrapper.cc"))
+        .file(crate_dir.join("cpp/SpanWrapper.cc"))
         .include(&include_dir)
         .include(format!("{eckit_root}/include"))
         .include(&eckit_cpp_dir)
