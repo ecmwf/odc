@@ -18,13 +18,13 @@ odc = { version = "1.6", path = "crates/odc", default-features = false }
 odc-sys = { version = "1.6", path = "crates/odc-sys", default-features = false }
 
 # Foundation crates
-eckit = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "pre-publish", default-features = false }
-eckit-sys = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "pre-publish", default-features = false }
+eckit = { version = "2.5", default-features = false }
+eckit-sys = { version = "2.5", default-features = false }
 
 # Build tools
-bindman = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
-bindman-build = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
-bindman-utils = { git = "ssh://git@github.com/ecmwf/bindman.git", rev = "47edf68" }
+bindman = "0.2"
+bindman-build = "0.2"
+bindman-utils = "0.2"
 
 # External
 cxx = "1.0"
