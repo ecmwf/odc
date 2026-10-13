@@ -2,7 +2,19 @@
 
 Safe Rust wrapper for ECMWF's [odc](https://github.com/ecmwf/odc) (ODB-2 encoder/decoder) C++ library.
 
-ODB-2 data decodes into [Polars](https://pola.rs/) data frames and encodes from them, following the same model as [pyodc](https://github.com/ecmwf/pyodc). For raw FFI bindings, see the lower-level `odc-sys` crate.
+ODB-2 data decodes into [Polars](https://pola.rs/) data frames and encodes from them, following the same model as [pyodc](https://github.com/ecmwf/pyodc). For raw FFI bindings, see the lower-level [`odc-sys`](https://crates.io/crates/odc-sys) crate.
+
+## Installation
+
+Add the crate to your `Cargo.toml`:
+
+```toml
+[dependencies]
+odc = "1.6"
+```
+
+The default `vendored` feature builds the odc C++ library (and its eckit
+dependency) from source, which requires CMake and a C++17 compiler.
 
 ## Usage
 
@@ -41,6 +53,10 @@ cargo run --example handles -- out.odb
 
 `vendored` is enabled by default.
 
-## License
+## Copyright and License
 
-Apache-2.0
+Copyright 1996- European Centre for Medium-Range Weather Forecasts (ECMWF).
+
+This software is licensed under the terms of the [Apache License, Version 2.0](LICENSE) which can also be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+
+In applying this licence, ECMWF does not waive the privileges and immunities granted to it by virtue of its status as an intergovernmental organisation nor does it submit to any jurisdiction.
