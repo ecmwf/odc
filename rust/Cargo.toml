@@ -3,6 +3,7 @@ resolver = "2"
 members = ["crates/odc", "crates/odc-sys"]
 
 [workspace.package]
+version = "1.6.3"
 edition = "2024"
 license = "Apache-2.0"
 repository = "https://github.com/ecmwf/odc"
@@ -13,8 +14,8 @@ categories = ["science"]
 
 [workspace.dependencies]
 # Internal
-odc = { path = "crates/odc", default-features = false }
-odc-sys = { path = "crates/odc-sys", default-features = false }
+odc = { version = "1.6", path = "crates/odc", default-features = false }
+odc-sys = { version = "1.6", path = "crates/odc-sys", default-features = false }
 
 # Foundation crates
 eckit = { git = "ssh://git@github.com/ecmwf/eckit.git", branch = "pre-publish", default-features = false }
