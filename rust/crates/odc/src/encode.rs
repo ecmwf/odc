@@ -2,6 +2,7 @@
 
 use std::collections::{BTreeMap, HashMap};
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use odc_sys::{Bit, ColumnType, SettingsWrapper};
 use polars::prelude::*;
@@ -164,6 +165,7 @@ pub fn write_odb_to(
             column_type: *column_type,
             ptr: data.as_ptr(),
             elem_size: data.elem_size(),
+            stride: data.elem_size(),
         })
         .collect();
     // SAFETY: borrowed slices point into `prepared` and owned buffers live
@@ -273,6 +275,7 @@ pub fn write_odb_raw_to(
             column_type: column.column_type,
             ptr,
             elem_size,
+            stride: elem_size,
         });
     }
     let Some(nrows) = nrows.filter(|&rows| rows > 0) else {
@@ -281,6 +284,406 @@ pub fn write_odb_raw_to(
     // SAFETY: the spec pointers borrow from `columns`, alive until after
     // the encode call.
     unsafe { encode_columns(&specs, nrows, handle, options) }
+}
+
+/// One column of [`write_odb_strided`] and
+/// [`decode_strided`](crate::Frame::decode_strided): a periodic layout
+/// within a shared buffer of 8-byte cells.
+pub struct StridedColumn<'a> {
+    pub name: &'a str,
+    /// Any type except `Ignore`; `Bitfield` requires a
+    /// [`WriteOptions::bitfields`] entry when encoding.
+    pub column_type: ColumnType,
+    /// Element size in bytes — 8, except for string columns, which may
+    /// span several 8-byte cells.
+    pub size: usize,
+    /// Byte offset of the first element within the cell buffer.
+    pub offset: usize,
+    /// Byte distance between consecutive elements.
+    pub stride: usize,
+}
+
+/// Validates the layout of one strided column against a buffer of
+/// `buffer_bytes` bytes holding `nrows` elements per column.
+pub fn checked_strided(
+    column: &StridedColumn<'_>,
+    nrows: usize,
+    buffer_bytes: usize,
+) -> Result<()> {
+    let mismatch = |reason: String| Error::InvalidBuffer {
+        column: column.name.to_string(),
+        reason,
+    };
+    if column.column_type == ColumnType::Ignore {
+        return Err(Error::UnsupportedColumnType {
+            column: column.name.to_string(),
+            column_type: column.column_type,
+        });
+    }
+    if column.size == 0 || !column.size.is_multiple_of(8) {
+        return Err(mismatch(format!(
+            "element size {} is not a positive multiple of 8",
+            column.size
+        )));
+    }
+    if column.size != 8 && column.column_type != ColumnType::String {
+        return Err(mismatch(format!(
+            "element size {} on a {:?} column",
+            column.size, column.column_type
+        )));
+    }
+    if !column.offset.is_multiple_of(8) || !column.stride.is_multiple_of(8) {
+        return Err(mismatch(format!(
+            "offset {} and stride {} must be multiples of 8",
+            column.offset, column.stride
+        )));
+    }
+    if column.stride < column.size {
+        return Err(mismatch(format!(
+            "stride {} is less than the element size {}",
+            column.stride, column.size
+        )));
+    }
+    let end = (nrows - 1)
+        .checked_mul(column.stride)
+        .and_then(|span| span.checked_add(column.offset))
+        .and_then(|start| start.checked_add(column.size));
+    match end {
+        Some(end) if end <= buffer_bytes => Ok(()),
+        _ => Err(mismatch(format!(
+            "layout of {nrows} rows does not fit a buffer of {buffer_bytes} bytes"
+        ))),
+    }
+}
+
+/// Encode columns laid out with periodic strides within a shared buffer of
+/// 8-byte cells into an ODB-2 file.
+///
+/// Within the buffer, an integer or bitfield element holds an `i64` bit
+/// pattern, a real or double element holds an `f64` bit pattern, and a
+/// string element holds NUL-padded bytes. [`WriteOptions::types`] is
+/// ignored: each column's type is explicit.
+///
+/// # Example
+///
+/// A column-major layout: each column occupies a contiguous run of cells.
+///
+/// ```no_run
+/// use odc::{ColumnType, StridedColumn, WriteOptions};
+///
+/// let nrows = 3;
+/// let cells = [
+///     u64::from_ne_bytes(1_i64.to_ne_bytes()),
+///     u64::from_ne_bytes(2_i64.to_ne_bytes()),
+///     u64::from_ne_bytes(3_i64.to_ne_bytes()),
+///     274.5_f64.to_bits(),
+///     272.1_f64.to_bits(),
+///     271.9_f64.to_bits(),
+/// ];
+/// let columns = [
+///     StridedColumn {
+///         name: "seqno@hdr",
+///         column_type: ColumnType::Integer,
+///         size: 8,
+///         offset: 0,
+///         stride: 8,
+///     },
+///     StridedColumn {
+///         name: "obsvalue@body",
+///         column_type: ColumnType::Double,
+///         size: 8,
+///         offset: 3 * 8,
+///         stride: 8,
+///     },
+/// ];
+/// odc::write_odb_strided(&cells, &columns, nrows, "out.odb", &WriteOptions::default())?;
+/// # Ok::<(), odc::Error>(())
+/// ```
+///
+/// # Errors
+///
+/// Fails on an invalid column layout, a layout that does not fit the
+/// buffer, an empty input, an invalid bitfield specification, or if the
+/// file cannot be written.
+pub fn write_odb_strided(
+    cells: &[u64],
+    columns: &[StridedColumn<'_>],
+    nrows: usize,
+    path: impl AsRef<Path>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let handle = eckit::DataHandle::from_path(path)?;
+    let mut handle = handle.open_for_write(0)?;
+    let result = write_odb_strided_to(cells, columns, nrows, &mut handle, options);
+    let closed = handle.close();
+    result?;
+    closed?;
+    Ok(())
+}
+
+/// Encode columns laid out with periodic strides within a shared buffer of
+/// 8-byte cells into an open eckit [`DataHandle`](eckit::DataHandle).
+///
+/// # Errors
+///
+/// See [`write_odb_strided`].
+pub fn write_odb_strided_to(
+    cells: &[u64],
+    columns: &[StridedColumn<'_>],
+    nrows: usize,
+    handle: &mut eckit::DataHandle<eckit::Writing>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    if nrows == 0 || columns.is_empty() {
+        return Err(Error::EmptyDataFrame);
+    }
+    let buffer_bytes = cells.len() * 8;
+    let mut specs = Vec::with_capacity(columns.len());
+    for column in columns {
+        checked_strided(column, nrows, buffer_bytes)?;
+        if column.column_type == ColumnType::Bitfield {
+            validate_bitfield(column.name, options.bitfields.get(column.name))?;
+        }
+        // SAFETY: checked_strided keeps the offset within the buffer.
+        let ptr = unsafe { cells.as_ptr().cast::<u8>().add(column.offset) };
+        specs.push(ColumnSpec {
+            name: column.name,
+            column_type: column.column_type,
+            ptr,
+            elem_size: column.size,
+            stride: column.stride,
+        });
+    }
+    // SAFETY: the spec pointers borrow from `cells`, alive until after the
+    // encode call, and checked_strided keeps every element within it.
+    unsafe { encode_columns(&specs, nrows, handle, options) }
+}
+
+/// One column of the row-major and column-major cell layouts.
+///
+/// Used by [`write_odb_row_major`], [`write_odb_column_major`],
+/// [`decode_row_major`](crate::Frame::decode_row_major) and
+/// [`decode_column_major`](crate::Frame::decode_column_major).
+pub struct CellColumn<'a> {
+    pub name: &'a str,
+    /// Any type except `Ignore`; `Bitfield` requires a
+    /// [`WriteOptions::bitfields`] entry.
+    pub column_type: ColumnType,
+    /// Cell size in bytes — 8, except for string columns, which may span
+    /// several 8-byte cells.
+    pub size: usize,
+}
+
+/// Encode rows of 8-byte cells into an ODB-2 file.
+///
+/// `cells` holds consecutive rows, each as wide as the summed column sizes.
+/// Within a row, an integer or bitfield cell holds an `i64` bit pattern, a
+/// real or double cell holds an `f64` bit pattern, and a string column's
+/// cells hold NUL-padded bytes.
+///
+/// [`WriteOptions::types`] is ignored — each column's type is explicit.
+///
+/// # Example
+///
+/// ```no_run
+/// use odc::{ColumnType, CellColumn, WriteOptions};
+///
+/// let columns = [
+///     CellColumn {
+///         name: "seqno@hdr",
+///         column_type: ColumnType::Integer,
+///         size: 8,
+///     },
+///     CellColumn {
+///         name: "obsvalue@body",
+///         column_type: ColumnType::Double,
+///         size: 8,
+///     },
+/// ];
+/// let cells = [
+///     u64::from_ne_bytes(1_i64.to_ne_bytes()),
+///     274.5_f64.to_bits(),
+///     u64::from_ne_bytes(2_i64.to_ne_bytes()),
+///     271.9_f64.to_bits(),
+/// ];
+/// odc::write_odb_row_major(&cells, &columns, "out.odb", &WriteOptions::default())?;
+/// # Ok::<(), odc::Error>(())
+/// ```
+///
+/// # Errors
+///
+/// Fails on an invalid column size, a `cells` length that is not a whole
+/// number of rows, an empty buffer, an invalid bitfield specification, or
+/// if the file cannot be written.
+pub fn write_odb_row_major(
+    cells: &[u64],
+    columns: &[CellColumn<'_>],
+    path: impl AsRef<Path>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let handle = eckit::DataHandle::from_path(path)?;
+    let mut handle = handle.open_for_write(0)?;
+    let result = write_odb_row_major_to(cells, columns, &mut handle, options);
+    let closed = handle.close();
+    result?;
+    closed?;
+    Ok(())
+}
+
+/// Encode rows of 8-byte cells into an open eckit
+/// [`DataHandle`](eckit::DataHandle).
+///
+/// # Errors
+///
+/// See [`write_odb_row_major`].
+pub fn write_odb_row_major_to(
+    cells: &[u64],
+    columns: &[CellColumn<'_>],
+    handle: &mut eckit::DataHandle<eckit::Writing>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let (row_bytes, nrows) = cell_rows(columns, cells.len())?;
+    write_odb_strided_to(
+        cells,
+        &row_major_layout(columns, row_bytes),
+        nrows,
+        handle,
+        options,
+    )
+}
+
+/// Encode columns stored as a column-major block of 8-byte cells — each
+/// column a contiguous run of elements, columns arranged sequentially —
+/// into an ODB-2 file.
+///
+/// The cell contents follow [`write_odb_row_major`]; the number of rows is
+/// the buffer size divided by the combined column sizes.
+///
+/// # Errors
+///
+/// See [`write_odb_row_major`].
+pub fn write_odb_column_major(
+    cells: &[u64],
+    columns: &[CellColumn<'_>],
+    path: impl AsRef<Path>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let handle = eckit::DataHandle::from_path(path)?;
+    let mut handle = handle.open_for_write(0)?;
+    let result = write_odb_column_major_to(cells, columns, &mut handle, options);
+    let closed = handle.close();
+    result?;
+    closed?;
+    Ok(())
+}
+
+/// Encode columns stored as a column-major block of 8-byte cells into an
+/// open eckit [`DataHandle`](eckit::DataHandle).
+///
+/// # Errors
+///
+/// See [`write_odb_row_major`].
+pub fn write_odb_column_major_to(
+    cells: &[u64],
+    columns: &[CellColumn<'_>],
+    handle: &mut eckit::DataHandle<eckit::Writing>,
+    options: &WriteOptions,
+) -> Result<()> {
+    init();
+    let (_, nrows) = cell_rows(columns, cells.len())?;
+    write_odb_strided_to(
+        cells,
+        &column_major_layout(columns, nrows),
+        nrows,
+        handle,
+        options,
+    )
+}
+
+/// Validates the cell sizes of a row of columns and splits a buffer of
+/// `len` cells into whole rows, returning the row width in bytes and the
+/// row count.
+pub fn cell_rows(columns: &[CellColumn<'_>], len: usize) -> Result<(usize, usize)> {
+    let mut row_bytes = 0_usize;
+    for column in columns {
+        if column.size == 0 || !column.size.is_multiple_of(8) {
+            return Err(Error::InvalidBuffer {
+                column: column.name.to_string(),
+                reason: format!("cell size {} is not a positive multiple of 8", column.size),
+            });
+        }
+        if column.size != 8 && column.column_type != ColumnType::String {
+            return Err(Error::InvalidBuffer {
+                column: column.name.to_string(),
+                reason: format!(
+                    "cell size {} on a {:?} column",
+                    column.size, column.column_type
+                ),
+            });
+        }
+        row_bytes += column.size;
+    }
+    let row_cells = row_bytes / 8;
+    if row_cells == 0 {
+        return Err(Error::EmptyDataFrame);
+    }
+    if !len.is_multiple_of(row_cells) {
+        return Err(Error::InvalidCellLayout(format!(
+            "{len} cells is not a whole number of {row_cells}-cell rows"
+        )));
+    }
+    Ok((row_bytes, len / row_cells))
+}
+
+/// The strided form of a row-major cell layout: offsets accumulate within
+/// the row, every column strides by the row width.
+pub fn row_major_layout<'a>(
+    columns: &'a [CellColumn<'a>],
+    row_bytes: usize,
+) -> Vec<StridedColumn<'a>> {
+    let mut offset = 0_usize;
+    columns
+        .iter()
+        .map(|column| {
+            let strided = StridedColumn {
+                name: column.name,
+                column_type: column.column_type,
+                size: column.size,
+                offset,
+                stride: row_bytes,
+            };
+            offset += column.size;
+            strided
+        })
+        .collect()
+}
+
+/// The strided form of a column-major cell layout: each column a
+/// contiguous run of `nrows` elements, columns arranged sequentially.
+pub fn column_major_layout<'a>(
+    columns: &'a [CellColumn<'a>],
+    nrows: usize,
+) -> Vec<StridedColumn<'a>> {
+    let mut offset = 0_usize;
+    columns
+        .iter()
+        .map(|column| {
+            let strided = StridedColumn {
+                name: column.name,
+                column_type: column.column_type,
+                size: column.size,
+                offset,
+                stride: column.size,
+            };
+            offset += column.size * nrows;
+            strided
+        })
+        .collect()
 }
 
 fn raw_spec(column: &RawColumn<'_>) -> Result<(*const u8, usize, usize)> {
@@ -320,12 +723,14 @@ struct ColumnSpec<'a> {
     column_type: ColumnType,
     ptr: *const u8,
     elem_size: usize,
+    stride: usize,
 }
 
 /// # Safety
 ///
-/// Every `spec.ptr` must point to at least `nrows * spec.elem_size` bytes
-/// that stay alive until this returns.
+/// Every `spec.ptr` must point to at least
+/// `(nrows - 1) * spec.stride + spec.elem_size` bytes that stay alive until
+/// this returns.
 unsafe fn encode_columns(
     specs: &[ColumnSpec<'_>],
     nrows: usize,
@@ -342,7 +747,7 @@ unsafe fn encode_columns(
                 spec.elem_size,
                 spec.ptr,
                 nrows,
-                spec.elem_size,
+                spec.stride,
             );
         }
         if spec.column_type == ColumnType::Bitfield
@@ -358,11 +763,25 @@ unsafe fn encode_columns(
     for (key, value) in &options.properties {
         encoder.pin_mut().set_property(key, value);
     }
-    encoder
-        .pin_mut()
-        .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+    if FIRST_ENCODE_DONE.load(Ordering::Acquire) {
+        encoder
+            .pin_mut()
+            .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+    } else {
+        let _guard = FIRST_ENCODE_LOCK.lock();
+        encoder
+            .pin_mut()
+            .encode(handle.as_sys_mut()?, options.rows_per_frame)?;
+        FIRST_ENCODE_DONE.store(true, Ordering::Release);
+    }
     Ok(())
 }
+
+// odc's CodecOptimizer lazily fills a static codec map inside the first
+// encode without synchronization; serialize encodes until one has
+// completed, after which the map is only read.
+static FIRST_ENCODE_DONE: AtomicBool = AtomicBool::new(false);
+static FIRST_ENCODE_LOCK: parking_lot::Mutex<()> = parking_lot::Mutex::new(());
 
 /// Column data as the encoder consumes it: borrowed straight from the
 /// `DataFrame`'s Arrow buffer when the column has no nulls, otherwise an

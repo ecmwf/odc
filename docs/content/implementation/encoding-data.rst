@@ -84,6 +84,49 @@ Row-major layout
             rc = encoder%free()
 
 
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::{CellColumn, ColumnType, WriteOptions};
+
+            let nrows = 1000;
+            let ncells = 6;
+            let mut data = vec![0_u64; nrows * ncells];
+            // set up the data here...
+
+            let columns = [
+                CellColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+                // column3 is a 16-byte string column (hence takes 2 cells in a row --> ncells=6)
+                CellColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                },
+                CellColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+            ];
+
+            odc::write_odb_row_major(&data, &columns, "imaginary/path.odb", &WriteOptions::default())?;
+
+
 Column-major layout
    In :ref:`column-major layout <decoder-column-major-layout>`, consecutive elements in a single data column are adjacent to each other in memory, and the block of memory comprises a sequence of columns.
 
@@ -155,6 +198,49 @@ Column-major layout
             ! encode the data here...
 
             rc = encoder%free()
+
+
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::{CellColumn, ColumnType, WriteOptions};
+
+            let nrows = 1000;
+            let ncells = 6;
+            let mut data = vec![0_u64; nrows * ncells];
+            // set up the data here...
+
+            let columns = [
+                CellColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                },
+                CellColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+                // column3 is a 16-byte string column (hence takes 2 cells per row --> ncells=6)
+                CellColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                },
+                CellColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                },
+            ];
+
+            odc::write_odb_column_major(&data, &columns, "imaginary/path.odb", &WriteOptions::default())?;
 
 
 .. _`encoder-custom-layout`:
@@ -276,6 +362,107 @@ Custom layout
 
             rc = encoder%free()
 
+
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::{ColumnType, EncodeSource, RawColumn};
+
+            let nrows = 1000;
+
+            let data0 = vec![0_i64; nrows];
+            let data1 = vec![0_i64; nrows];
+            let data2 = vec![0.0_f64; nrows];
+            // column3 is a 16-byte string column
+            let data3 = vec![0_u8; nrows * 16];
+            let data4 = vec![0.0_f64; nrows];
+            // set up the data here...
+
+            let columns = [
+                RawColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    data: EncodeSource::I64(&data0),
+                },
+                RawColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    data: EncodeSource::I64(&data1),
+                },
+                RawColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    data: EncodeSource::F64(&data2),
+                },
+                RawColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    data: EncodeSource::Str {
+                        data: &data3,
+                        width: 16,
+                    },
+                },
+                RawColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    data: EncodeSource::F64(&data4),
+                },
+            ];
+
+            // encode the data here...
+
+         Alternatively, a periodic memory layout within a single buffer of 8-byte cells can be specified for each column independently, with an explicit offset and stride:
+
+         .. code-block:: rust
+
+            use odc::{ColumnType, StridedColumn, WriteOptions};
+
+            let nrows = 1000;
+            let data = vec![0_u64; nrows * 6];
+            // set up the data here...
+
+            let columns = [
+                StridedColumn {
+                    name: "column0",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                    offset: 0,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column1",
+                    column_type: ColumnType::Integer,
+                    size: 8,
+                    offset: 8,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column2",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                    offset: 16,
+                    stride: 48,
+                },
+                // column3 is a 16-byte string column
+                StridedColumn {
+                    name: "column3",
+                    column_type: ColumnType::String,
+                    size: 16,
+                    offset: 24,
+                    stride: 48,
+                },
+                StridedColumn {
+                    name: "column4",
+                    column_type: ColumnType::Real,
+                    size: 8,
+                    offset: 40,
+                    stride: 48,
+                },
+            ];
+
+            odc::write_odb_strided(&data, &columns, nrows, "imaginary/path.odb", &WriteOptions::default())?;
+
 Once an **Encoder** describing the data has been constructed, the data can be encoded into frames.
 
 .. tabs::
@@ -363,6 +550,52 @@ Once an **Encoder** describing the data has been constructed, the data can be en
          open(newunit=outunit, file="imaginary/path.odb", access="stream", form="unformatted")
          rc = encoder%encode(outunit, bytes_written)
          close(outunit)
+
+
+   .. group-tab:: Rust
+
+      Rust supports data encoding to a file path, into an open eckit ``DataHandle``, or into any Rust ``std::io::Write`` sink wrapped as a ``DataHandle``.
+
+      .. code-block:: rust
+
+         use odc::WriteOptions;
+
+         let options = WriteOptions::default();
+
+         // Encode into a file by path
+         odc::write_odb_raw(&columns, "imaginary/path.odb", &options)?;
+
+      .. code-block:: rust
+
+         use odc::eckit::DataHandle;
+         use odc::WriteOptions;
+
+         let options = WriteOptions::default();
+
+         // Or encode into an open eckit DataHandle
+         let mut handle = DataHandle::from_path("imaginary/path.odb")?.open_for_write(0)?;
+
+         odc::write_odb_raw_to(&columns, &mut handle, &options)?;
+
+         handle.close()?;
+
+      .. code-block:: rust
+
+         use std::net::TcpStream;
+
+         use odc::WriteOptions;
+         use odc::eckit::DataHandle;
+
+         let options = WriteOptions::default();
+
+         // Or encode into any Rust writer — a socket, a compressor, ...
+         // Each encoded chunk is forwarded to the writer as it is produced.
+         let socket = TcpStream::connect("archive.example:9000")?;
+         let mut handle = DataHandle::from_writer(socket)?.open_for_write(0)?;
+
+         odc::write_odb_raw_to(&columns, &mut handle, &options)?;
+
+         handle.close()?;
 
 
 .. index:: Encoding Data; Bitfields
@@ -459,6 +692,52 @@ Bitfield columns can be used to store data for *flags*, up to a maximum of 32-bi
             rc = encoder%free()
 
 
+      .. group-tab:: Rust
+
+         .. code-block:: rust
+
+            use odc::{Bit, ColumnType, EncodeSource, RawColumn, WriteOptions};
+
+            let nrows = 1000;
+            let data = vec![0_i64; nrows];
+            // set up the data here...
+
+            let columns = [RawColumn {
+                name: "flags",
+                column_type: ColumnType::Bitfield,
+                data: EncodeSource::I64(&data),
+            }];
+
+            let mut options = WriteOptions::default();
+            options.bitfields.insert(
+                "flags".into(),
+                vec![
+                    Bit {
+                        name: "flag_a".into(),
+                        size: 1,
+                        offset: 0,
+                    },
+                    Bit {
+                        name: "flag_b".into(),
+                        size: 2,
+                        offset: 1,
+                    },
+                    Bit {
+                        name: "flag_c".into(),
+                        size: 3,
+                        offset: 3,
+                    },
+                    Bit {
+                        name: "flag_d".into(),
+                        size: 1,
+                        offset: 6,
+                    },
+                ],
+            );
+
+            // encode the data here...
+
+
 .. index:: Encoding Data; Properties
 
 Properties
@@ -494,6 +773,17 @@ An arbitrary dictionary of string key:value pairs can be associated with a frame
       .. code-block:: fortran
 
          rc = encoder%add_property("encoded_by", "ECMWF")
+
+
+   .. group-tab:: Rust
+
+      .. code-block:: rust
+
+         let mut options = WriteOptions::default();
+
+         options
+             .properties
+             .insert("encoded_by".into(), "ECMWF".into());
 
 
 .. _`eckit`: https://github.com/ecmwf/eckit

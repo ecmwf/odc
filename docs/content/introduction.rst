@@ -5,7 +5,7 @@ Introduction
 
 ODB-2 is a compact data format for the storage, transmission and archival of tabular meteorological observation data. ODB-2 data streams are comprised of independent, self-describing messages. Each of these messages contains a number of rows of data sharing the same columnar format.
 
-**odc** provides C, C++ and Fortran libraries for encoding and decoding ODB-2 data. It also provides an interface for the data and metadata without decoding it, and a collection of command line tools for handling and manipulating ODB-2 data.
+**odc** provides C, C++, Fortran and Rust libraries for encoding and decoding ODB-2 data. It also provides an interface for the data and metadata without decoding it, and a collection of command line tools for handling and manipulating ODB-2 data.
 
 
 Observation Data
@@ -20,7 +20,7 @@ A stream of ODB-2 data consists of a sequence of these tables, which may be unre
    :width: 100%
    :file: ../_static/example-table.csv
 
-This structure matches **pandas** data frames extremely well. Please see the `pyodc`_ package for a Python library handling ODB-2 data.
+This structure matches **pandas** data frames extremely well. Please see the `pyodc`_ package for a Python library handling ODB-2 data. The Rust library decodes ODB-2 data into **Polars** data frames.
 
 .. note::
 

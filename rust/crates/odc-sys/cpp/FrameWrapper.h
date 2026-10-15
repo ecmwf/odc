@@ -6,8 +6,11 @@
 #include "rust/cxx.h"
 
 #include <cstddef>
+#include <memory>
 
 namespace odc_bridge {
+
+class SpanWrapper;
 
 // cxx-generated shared structs — defined in "odc-sys/src/lib.rs.h", which
 // the .cc includes. Forward-declared here to avoid a circular include (the
@@ -34,6 +37,7 @@ public:
     bool has_column(rust::Str name) const;
     rust::Vec<ColumnInfo> column_info() const;
     rust::Vec<Property> properties() const;
+    std::unique_ptr<SpanWrapper> span(const rust::Vec<rust::String>& columns, bool only_constant) const;
 };
 
 }  // namespace odc_bridge

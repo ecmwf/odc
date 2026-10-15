@@ -4,6 +4,7 @@ use odc_sys::{ColumnInfo, ColumnType, SettingsWrapper};
 use polars::prelude::*;
 use polars_arrow::bitmap::Bitmap;
 
+use crate::encode::{StridedColumn, checked_strided};
 use crate::error::{Error, Result};
 use crate::frame::{DecodeOptions, Frame};
 
@@ -79,6 +80,62 @@ pub fn into_buffers(
             decoder
                 .pin_mut()
                 .add_column(&col.name, ptr, nrows, elem_size, elem_size);
+        }
+    }
+    Ok(decoder.pin_mut().decode(frame.wrapper(), threads)?)
+}
+
+pub fn strided_into(
+    frame: &Frame,
+    cells: &mut [u64],
+    columns: &[StridedColumn<'_>],
+    threads: usize,
+) -> Result<usize> {
+    crate::init();
+    let nrows = frame.row_count();
+    if nrows == 0 {
+        return Ok(0);
+    }
+    let buffer_bytes = cells.len() * 8;
+    let mut decoder = odc_sys::DecoderWrapper::create();
+    for column in columns {
+        let col = frame
+            .column(column.name)
+            .ok_or_else(|| Error::ColumnNotFound(column.name.to_string()))?;
+        let mismatch = |reason: String| Error::InvalidBuffer {
+            column: column.name.to_string(),
+            reason,
+        };
+        let compatible = matches!(
+            (col.column_type, column.column_type),
+            (
+                ColumnType::Integer | ColumnType::Bitfield,
+                ColumnType::Integer | ColumnType::Bitfield
+            ) | (
+                ColumnType::Real | ColumnType::Double,
+                ColumnType::Real | ColumnType::Double
+            ) | (ColumnType::String, ColumnType::String)
+        );
+        if !compatible {
+            return Err(mismatch(format!(
+                "declared type {:?} does not match column type {:?}",
+                column.column_type, col.column_type
+            )));
+        }
+        if column.column_type == ColumnType::String && column.size < col.decoded_size {
+            return Err(mismatch(format!(
+                "element size {} is less than the decoded size {}",
+                column.size, col.decoded_size
+            )));
+        }
+        checked_strided(column, nrows, buffer_bytes)?;
+        // SAFETY: checked_strided keeps every element of the periodic
+        // layout within `cells`, borrowed until decode returns.
+        unsafe {
+            let ptr = cells.as_mut_ptr().cast::<u8>().add(column.offset);
+            decoder
+                .pin_mut()
+                .add_column(&col.name, ptr, nrows, column.size, column.stride);
         }
     }
     Ok(decoder.pin_mut().decode(frame.wrapper(), threads)?)

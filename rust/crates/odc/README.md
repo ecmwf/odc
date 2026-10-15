@@ -25,12 +25,19 @@ For streaming access, open a `Reader` and iterate its frames, inspecting column 
 - `read` — stream a file frame by frame, inspect metadata, decode all or selected columns.
 - `write` — build a `DataFrame` and encode it, including a bitfield column and frame properties.
 - `handles` — encode and decode through eckit `DataHandle`s: explicit write handles and in-memory buffers.
+- `odc_ls` — decode all the data in a file and print it to stdout.
+- `odc_header` — print frame metadata without decoding the data.
+- `odc_encode_custom` — encode raw column slices, including missing values and bitfields.
+- `odc_encode_row_major` — encode a row-major block of 8-byte cells.
+- `odc_index` — extract archival-index metadata via spans, without decoding the data.
 
 ```sh
 cargo run --example read -- data.odb
 cargo run --example write -- out.odb
 cargo run --example handles -- out.odb
 ```
+
+The `odc_*` examples mirror the multi-language programs in the [odc documentation](https://odc.readthedocs.io/en/latest/content/usage-examples.html).
 
 ## Features
 
