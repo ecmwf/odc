@@ -5,7 +5,6 @@ visibility = "public"
 fork-pull-requests = true
 compiler-inputs = ["cxx-compiler"]
 allow-stale-deps = true
-git-read = ["ecmwf/bindman"]
 
 [[deps]]
 repo = "ecmwf/eckit"
