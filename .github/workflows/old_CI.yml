@@ -1,29 +1,22 @@
-name: ci
+name: old CI
 
 on:
-  # Trigger the workflow on push to master or develop, except tag creation
-  push:
+  # Trigger the workflow after the new CI succeeded on a push
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches:
       - 'master'
       - 'develop'
-    tags-ignore:
-      - '**'
-
-  # Trigger the workflow on pull request
-  pull_request: ~
 
   # Trigger the workflow manually
   workflow_dispatch: ~
-
-  # Trigger after public PR approved for CI
-  pull_request_target:
-    types: [labeled]
 
 jobs:
   # Run Rust CI (fmt + clippy + test) on the rust/ workspace
   ci-rust:
     name: ci-rust
-    if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success') }}
     uses: ecmwf/reusable-workflows/.github/workflows/ci-rust.yml@main
     with:
       manifest-path: rust/Cargo.toml
@@ -34,10 +27,11 @@ jobs:
   # Run CI including downstream packages on self-hosted runners
   downstream-ci:
     name: downstream-ci
-    if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success') }}
     uses: ecmwf/downstream-ci/.github/workflows/downstream-ci.yml@main
     with:
-      odc: ecmwf/odc@${{ github.event.pull_request.head.sha || github.sha }}
+      ci_group: only-self
+      odc: ecmwf/odc@${{ github.event.workflow_run.head_sha || github.sha }}
       codecov_upload: true
       clang_format: true
     secrets: inherit
@@ -45,8 +39,9 @@ jobs:
   # Build downstream packages on HPC
   downstream-ci-hpc:
     name: downstream-ci-hpc
-    if: ${{ !github.event.pull_request.head.repo.fork && github.event.action != 'labeled' || github.event.label.name == 'approved-for-ci' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success') }}
     uses: ecmwf/downstream-ci/.github/workflows/downstream-ci-hpc.yml@main
     with:
-      odc: ecmwf/odc@${{ github.event.pull_request.head.sha || github.sha }}
+      ci_group: only-self
+      odc: ecmwf/odc@${{ github.event.workflow_run.head_sha || github.sha }}
     secrets: inherit
