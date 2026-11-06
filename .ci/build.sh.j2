@@ -1,0 +1,4 @@
+{% extends "ci-infrastructure/cmake-all-lanes.sh.j2" %}
+{% block cmake_args %}
+  -DENABLE_FORTRAN={{ "ON" if "odc-fortran" in ci_packages else "OFF" }} \
+{% endblock %}

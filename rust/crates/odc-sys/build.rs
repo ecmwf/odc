@@ -75,7 +75,10 @@ fn build_system() {
     let eckit_include = env::var("DEP_ECKIT_SYS_INCLUDE").expect("DEP_ECKIT_SYS_INCLUDE not set");
     let eckit_cpp_dir = env::var("DEP_ECKIT_SYS_CPP_DIR").expect("DEP_ECKIT_SYS_CPP_DIR not set");
 
-    let (root, odc_include, lib_dir) = bindman_utils::cmake_find_package("odc", "1.6.3");
+    // The exported `odc` target is the CLI tool, so the probed location is
+    // bin/; libodccore lives in the prefix lib dir.
+    let (root, odc_include, _bin_dir) = bindman_utils::cmake_find_package("odc", "1.6.3");
+    let lib_dir = bindman_utils::resolve_lib_dir(&root);
 
     generate_exceptions(&odc_include);
 

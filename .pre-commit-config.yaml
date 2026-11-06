@@ -1,0 +1,23 @@
+---
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-merge-conflict
+      - id: pretty-format-json
+        args: [--autofix]
+        types: [json]
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v19.1.7
+    hooks:
+      - id: clang-format
+        types_or: [c, c++]
+
+  - repo: https://github.com/ecmwf/ci-infrastructure
+    rev: 708a04c2d56821eafbad5a9296d58b90fe08284a
+    hooks:
+      - id: check-ci-approval
+      - id: check-ci-result

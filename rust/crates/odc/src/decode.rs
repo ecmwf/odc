@@ -250,6 +250,12 @@ pub fn dataframe(frame: &Frame, options: &DecodeOptions) -> Result<DataFrame> {
     Ok(DataFrame::new(nrows, columns)?)
 }
 
+/// Validity bitmap from per-value presence flags; `None` when nothing is missing.
+fn validity(present: impl Iterator<Item = bool>) -> Option<Bitmap> {
+    let bitmap: Bitmap = present.collect();
+    (bitmap.unset_bits() != 0).then_some(bitmap)
+}
+
 /// Wraps the decoded buffer as a Series in place: the buffer becomes the
 /// backing Arrow data, with missing-value sentinels marked null through a
 /// validity bitmap (`None` when the column has no missing values).
@@ -262,12 +268,12 @@ fn to_polars(col: &ColumnInfo, buffer: Buffer, nrows: usize) -> Result<Column> {
         }
         Buffer::I64(values) => {
             let missing = SettingsWrapper::integer_missing_value();
-            let validity = Bitmap::opt_from_iter(values.iter().map(|&v| v != missing));
+            let validity = validity(values.iter().map(|&v| v != missing));
             Int64Chunked::from_vec_validity(name, values, validity).into_series()
         }
         Buffer::F64(values) => {
             let missing = SettingsWrapper::double_missing_value().to_bits();
-            let validity = Bitmap::opt_from_iter(values.iter().map(|v| v.to_bits() != missing));
+            let validity = validity(values.iter().map(|v| v.to_bits() != missing));
             let series = Float64Chunked::from_vec_validity(name, values, validity).into_series();
             if col.column_type == ColumnType::Real {
                 series.cast(&DataType::Float32)?
