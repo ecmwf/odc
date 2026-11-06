@@ -1,0 +1,9 @@
+# This org's ARC scale sets and the `hpc` self-hosted runner, which actionlint
+# would otherwise flag as unknown labels.
+self-hosted-runner:
+  labels:
+    - arc-runner-normal
+    - arc-runner-large
+    - arc-runner-very-large
+    - hpc-submit
+    - hpc
