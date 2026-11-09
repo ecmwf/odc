@@ -17,7 +17,7 @@ repos:
         types_or: [c, c++]
 
   - repo: https://github.com/ecmwf/ci-infrastructure
-    rev: 65ed5155f278e2082434d6ff5f7519d29206f74a
+    rev: 599ecf49c518a0100cb3ec0bab0531168ca75eaa
     hooks:
       - id: check-ci-approval
       - id: check-ci-result
