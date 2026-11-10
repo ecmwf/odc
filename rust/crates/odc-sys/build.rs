@@ -85,6 +85,10 @@ fn build_system() {
     println!("cargo:rustc-link-search=native={}", lib_dir.display());
     println!("cargo:rustc-link-lib=dylib=odccore");
 
+    // Rpaths for this crate's own test binaries; consumers emit their own.
+    println!("cargo:rustc-link-arg=-Wl,-rpath,{}", lib_dir.display());
+    bindman_utils::emit_rpaths();
+
     cxx_build::bridge("src/lib.rs")
         .file(crate_dir.join("cpp/DecoderWrapper.cc"))
         .file(crate_dir.join("cpp/EncoderWrapper.cc"))

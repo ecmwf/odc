@@ -1,6 +1,6 @@
 [package]
 name = "odc"
-version = "0.1.0"
+version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
@@ -9,6 +9,7 @@ readme = "README.md"
 keywords.workspace = true
 categories.workspace = true
 description = "Safe Rust wrapper for ECMWF's odc (ODB-2 encoder/decoder) library"
+build = "build.rs"
 
 [features]
 default = ["vendored"]
@@ -16,6 +17,9 @@ default = ["vendored"]
 # Build strategy (mutually exclusive)
 vendored = ["odc-sys/vendored", "eckit/vendored"]
 system = ["odc-sys/system", "eckit/system"]
+
+[build-dependencies]
+bindman-utils.workspace = true
 
 [dependencies]
 odc-sys.workspace = true
