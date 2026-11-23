@@ -1,11 +1,11 @@
 [package]
 name = "odc-sys"
-version = "1.6.3"
+version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
-readme.workspace = true
+readme = "README.md"
 keywords.workspace = true
 categories.workspace = true
 description = "C++ bindings to ECMWF odc (ODB-2 encoder/decoder) library using cxx"
