@@ -108,35 +108,36 @@ platform = "ubuntu-24.04"
 
 [[matrix.fortran.include]]
 
-[matrix.build-hpc]
-packages = ["odc"]
-execution = "hpc-atos"
-container-credentials = true
-triggers = ["upstream-change", "rebuild-request"]
+# HPC off along with the ARC runners (hpc-submit): lanes disabled until they are back.
+# [matrix.build-hpc]
+# packages = ["odc"]
+# execution = "hpc-atos"
+# container-credentials = true
+# triggers = ["upstream-change", "rebuild-request"]
 
-[matrix.build-hpc.defaults]
-job-script = "./.ci/build.sh.j2"
-cxx-compiler = "g++-8"
-build-type = "RelWithDebInfo"
-runs-on = "hpc-submit"
-container = "eccr.ecmwf.int/private-ci-images/ubuntu24.04-internal-tools"
-site = "hpc-batch"
-platform = "hpc-atos-gnu"
-# gcc/old, not a version number: as of now gives you 8.5.0
-# `module avail gcc` lists no 8.5.0 to pin directly.
-modules = ["load prgenv/gnu", "unload gcc", "load gcc/old", "load cmake", "load ninja"]
-c-compiler-binary = "gcc"
-cxx-compiler-binary = "g++"
-time = "00:40:00"
+# [matrix.build-hpc.defaults]
+# job-script = "./.ci/build.sh.j2"
+# cxx-compiler = "g++-8"
+# build-type = "RelWithDebInfo"
+# runs-on = "hpc-submit"
+# container = "eccr.ecmwf.int/private-ci-images/ubuntu24.04-internal-tools"
+# site = "hpc-batch"
+# platform = "hpc-atos-gnu"
+# # gcc/old, not a version number: as of now gives you 8.5.0
+# # `module avail gcc` lists no 8.5.0 to pin directly.
+# modules = ["load prgenv/gnu", "unload gcc", "load gcc/old", "load cmake", "load ninja"]
+# c-compiler-binary = "gcc"
+# cxx-compiler-binary = "g++"
+# time = "00:40:00"
 
-[[matrix.build-hpc.include]]
+# [[matrix.build-hpc.include]]
 
-[[matrix.build-hpc.include]]
-cxx-compiler = "g++-15"
-platform = "hpc-atos-gnu"
-modules = ["load prgenv/gnu", "unload gcc", "load gcc/15.2.0", "load cmake", "load ninja"]
-c-compiler-binary = "gcc"
-cxx-compiler-binary = "g++"
+# [[matrix.build-hpc.include]]
+# cxx-compiler = "g++-15"
+# platform = "hpc-atos-gnu"
+# modules = ["load prgenv/gnu", "unload gcc", "load gcc/15.2.0", "load cmake", "load ninja"]
+# c-compiler-binary = "gcc"
+# cxx-compiler-binary = "g++"
 
 [packages.odc-rust]
 compiler-inputs = ["cxx-compiler"]
