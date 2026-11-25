@@ -172,4 +172,4 @@ rust-compiler = "rust-1.90"
 
 [[trigger-downstream]]
 repo = "ecmwf/pyodc"
-ref = "master"
+ref = "develop"
